@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.PriceChannelItemMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="price_channel_code" jdbcType="VARCHAR" property="priceChannelCode" />
+    <result column="price_channel_name" jdbcType="VARCHAR" property="priceChannelName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="price_project_code" jdbcType="VARCHAR" property="priceProjectCode" />
+    <result column="price_project_name" jdbcType="VARCHAR" property="priceProjectName" />
+    <result column="price_type_code" jdbcType="VARCHAR" property="priceTypeCode" />
+    <result column="price_type_name" jdbcType="VARCHAR" property="priceTypeName" />
+    <result column="price_category_code" jdbcType="VARCHAR" property="priceCategoryCode" />
+    <result column="price_category_name" jdbcType="VARCHAR" property="priceCategoryName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, price_channel_code, price_channel_name, del_flag, create_time, update_time, create_by, 
+    update_by, price_project_code, price_project_name, price_type_code, price_type_name, 
+    price_category_code, price_category_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from price_channel_item
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByPriceChannelCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from price_channel_item
+    where price_channel_code = #{channelCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from price_channel_item
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByPriceChannelCode">
+     delete from price_channel_item
+    where  price_channel_code = #{channelCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem">
+    insert into price_channel_item (id, price_channel_code, price_channel_name, 
+      del_flag, create_time, update_time, 
+      create_by, update_by, price_project_code, 
+      price_project_name, price_type_code, price_type_name, 
+      price_category_code, price_category_name)
+    values (#{id,jdbcType=BIGINT}, #{priceChannelCode,jdbcType=VARCHAR}, #{priceChannelName,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR}, #{priceProjectCode,jdbcType=VARCHAR}, 
+      #{priceProjectName,jdbcType=VARCHAR}, #{priceTypeCode,jdbcType=VARCHAR}, #{priceTypeName,jdbcType=VARCHAR}, 
+      #{priceCategoryCode,jdbcType=VARCHAR}, #{priceCategoryName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem">
+    insert into price_channel_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="priceChannelCode != null">
+        price_channel_code,
+      </if>
+      <if test="priceChannelName != null">
+        price_channel_name,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="priceProjectCode != null">
+        price_project_code,
+      </if>
+      <if test="priceProjectName != null">
+        price_project_name,
+      </if>
+      <if test="priceTypeCode != null">
+        price_type_code,
+      </if>
+      <if test="priceTypeName != null">
+        price_type_name,
+      </if>
+      <if test="priceCategoryCode != null">
+        price_category_code,
+      </if>
+      <if test="priceCategoryName != null">
+        price_category_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="priceChannelCode != null">
+        #{priceChannelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceChannelName != null">
+        #{priceChannelName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProjectCode != null">
+        #{priceProjectCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProjectName != null">
+        #{priceProjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeCode != null">
+        #{priceTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeName != null">
+        #{priceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceCategoryCode != null">
+        #{priceCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceCategoryName != null">
+        #{priceCategoryName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertBach" parameterType="java.util.List">
+    insert into price_channel_item (price_channel_code, price_channel_name,
+      del_flag, create_time, update_time,
+      create_by, update_by, price_project_code,
+      price_project_name, price_type_code, price_type_name,
+      price_category_code, price_category_name)
+    values
+    <foreach collection="list" item="item" open="" close="" separator=",">
+      (#{item.priceChannelCode,jdbcType=VARCHAR}, #{item.priceChannelName,jdbcType=VARCHAR},
+      #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.createBy,jdbcType=VARCHAR}, #{item.updateBy,jdbcType=VARCHAR}, #{item.priceProjectCode,jdbcType=VARCHAR},
+      #{item.priceProjectName,jdbcType=VARCHAR}, #{item.priceTypeCode,jdbcType=VARCHAR}, #{item.priceTypeName,jdbcType=VARCHAR},
+      #{item.priceCategoryCode,jdbcType=VARCHAR}, #{item.priceCategoryName,jdbcType=VARCHAR})
+    </foreach>
+
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem">
+    update price_channel_item
+    <set>
+      <if test="priceChannelCode != null">
+        price_channel_code = #{priceChannelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceChannelName != null">
+        price_channel_name = #{priceChannelName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProjectCode != null">
+        price_project_code = #{priceProjectCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProjectName != null">
+        price_project_name = #{priceProjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeCode != null">
+        price_type_code = #{priceTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeName != null">
+        price_type_name = #{priceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceCategoryCode != null">
+        price_category_code = #{priceCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceCategoryName != null">
+        price_category_name = #{priceCategoryName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem">
+    update price_channel_item
+    set price_channel_code = #{priceChannelCode,jdbcType=VARCHAR},
+      price_channel_name = #{priceChannelName,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      price_project_code = #{priceProjectCode,jdbcType=VARCHAR},
+      price_project_name = #{priceProjectName,jdbcType=VARCHAR},
+      price_type_code = #{priceTypeCode,jdbcType=VARCHAR},
+      price_type_name = #{priceTypeName,jdbcType=VARCHAR},
+      price_category_code = #{priceCategoryCode,jdbcType=VARCHAR},
+      price_category_name = #{priceCategoryName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

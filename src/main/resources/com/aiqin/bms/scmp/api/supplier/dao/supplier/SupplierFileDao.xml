@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierFileDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierFile">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="apply_type" jdbcType="VARCHAR" property="applyType" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="supplier_name" jdbcType="BIGINT" property="supplierName" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+  </resultMap>
+  <insert id="insertList" parameterType="java.util.List">
+    insert into supplier_file (apply_type, file_path,
+    del_flag, supplier_name, file_name,
+    create_time, create_by, update_time,
+    update_by, supplier_code)
+    values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.applyType,jdbcType=VARCHAR}, #{item.filePath,jdbcType=VARCHAR},
+      #{item.delFlag,jdbcType=TINYINT}, #{item.supplierName,jdbcType=BIGINT}, #{item.fileName,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR}, #{item.supplierCode,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <select id="getSupplierFile" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * from supplier_file WHERE del_flag =0 AND supplier_code=#{code,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteFile" parameterType="java.lang.String">
+    DELETE FROM supplier_file WHERE supplier_code=#{supplierCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierFile">
+    insert into supplier_file (id, apply_type, file_path,
+    del_flag, supplier_name, file_name,
+    create_time, create_by, update_time,
+    update_by, supplier_code)
+    values (#{id,jdbcType=BIGINT}, #{applyType,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR},
+    #{delFlag,jdbcType=TINYINT}, #{supplierName,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR},
+    #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+    #{updateBy,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertFileList" parameterType="java.util.List">
+    insert into supplier_file (apply_type, file_path,
+    del_flag, supplier_name, file_name,
+    create_time, create_by, update_time,
+    update_by, supplier_code)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.applyType,jdbcType=VARCHAR}, #{item.filePath,jdbcType=VARCHAR},
+      #{item.delFlag,jdbcType=TINYINT}, #{item.supplierName,jdbcType=BIGINT}, #{item.fileName,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR}, #{item.supplierCode,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+</mapper>

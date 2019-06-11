@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.SupplierMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supplier_abbreviation" jdbcType="VARCHAR" property="supplierAbbreviation" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="apply_supplier_code" jdbcType="BIGINT" property="applySupplierCode" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="enable" jdbcType="TINYINT" property="enable" />
+    <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
+    <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, supplier_name, supplier_abbreviation,  del_flag, supplier_code, create_time, create_by, update_time,
+    update_by, apply_supplier_code, auditor_by, auditor_time, apply_status,enable,direct_supervisor_code,direct_supervisor_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from supplier
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from supplier
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    insert into supplier (id, supplier_name, supplier_abbreviation,
+      del_flag, supplier_code, create_time, 
+      create_by, update_time, update_by,
+      apply_supplier_code, auditor_by, auditor_time, 
+      apply_status,enable,company_code,company_name,direct_supervisor_code,direct_supervisor_name)
+    values (#{id,jdbcType=BIGINT}, #{supplierName,jdbcType=VARCHAR}, #{supplierAbbreviation,jdbcType=VARCHAR},
+      #{delFlag,jdbcType=TINYINT}, #{supplierCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
+      #{applySupplierCode,jdbcType=BIGINT}, #{auditorBy,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, 
+      #{applyStatus,jdbcType=TINYINT},#{enable,jdbcType=TINYINT},
+      #{companyCode,jdbcType=VARCHAR},#{companyName,jdbcType=VARCHAR},
+      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    insert into supplier
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="supplierName != null">
+        supplier_name,
+      </if>
+      <if test="supplierAbbreviation != null">
+        supplier_abbreviation,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="applySupplierCode != null">
+        apply_supplier_code,
+      </if>
+      <if test="auditorBy != null">
+        auditor_by,
+      </if>
+      <if test="auditorTime != null">
+        auditor_time,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="enable != null">
+        enable,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applySupplierCode != null">
+        #{applySupplierCode,jdbcType=BIGINT},
+      </if>
+      <if test="auditorBy != null">
+        #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="enable != null">
+        #{enable,jdbcType=TINYINT},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    update supplier
+    <set>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierAbbreviation != null">
+        supplier_abbreviation = #{supplierAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applySupplierCode != null">
+        apply_supplier_code = #{applySupplierCode,jdbcType=BIGINT},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="enable != null">
+        enable = #{enable,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    update supplier
+    set supplier_name = #{supplierName,jdbcType=VARCHAR},
+      supplier_abbreviation = #{supplierAbbreviation,jdbcType=VARCHAR},
+      supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      apply_supplier_code = #{applySupplierCode,jdbcType=BIGINT},
+      auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      apply_status = #{applyStatus,jdbcType=TINYINT},
+      enable = #{enable,jdbcType=TINYINT},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      direct_supervisor_code =  #{directSupervisorCode,jdbcType=VARCHAR},
+      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

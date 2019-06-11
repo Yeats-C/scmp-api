@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.ProductDictionaryInfoDao">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductDictionaryInfo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="product_dictionary_value" jdbcType="VARCHAR" property="productDictionaryValue"/>
+        <result column="product_content" jdbcType="VARCHAR" property="productContent"/>
+        <result column="product_weight" jdbcType="INTEGER" property="productWeight"/>
+        <result column="del_flag" jdbcType="TINYINT" property="delFlag"/>
+        <result column="product_dictionary_code" jdbcType="VARCHAR" property="productDictionaryCode"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="product_dictionary_name" jdbcType="VARCHAR" property="productDictionaryName"/>
+        <result column="product_dictionary_info_code" jdbcType="VARCHAR" property="productDictionaryInfoCode"/>
+        <result column="enabled" jdbcType="TINYINT" property="enabled" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, product_dictionary_value, product_content, product_weight, del_flag, product_dictionary_code,
+    create_time, create_by, update_time, update_by, product_dictionary_name, product_dictionary_info_code,enabled
+  </sql>
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductDictionaryInfo">
+        insert into product_dictionary_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="productDictionaryValue != null">
+                product_dictionary_value,
+            </if>
+            <if test="productContent != null">
+                product_content,
+            </if>
+            <if test="productWeight != null">
+                product_weight,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="productDictionaryCode != null">
+                product_dictionary_code,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="productDictionaryName != null">
+                product_dictionary_name,
+            </if>
+            <if test="productDictionaryInfoCode != null">
+                product_dictionary_info_code,
+            </if>
+            <if test="enabled != null">
+                enabled,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="productDictionaryValue != null">
+                #{productDictionaryValue,jdbcType=VARCHAR},
+            </if>
+            <if test="productContent != null">
+                #{productContent,jdbcType=VARCHAR},
+            </if>
+            <if test="productWeight != null">
+                #{productWeight,jdbcType=INTEGER},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=TINYINT},
+            </if>
+            <if test="productDictionaryCode != null">
+                #{productDictionaryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="productDictionaryName != null">
+                #{productDictionaryName,jdbcType=VARCHAR},
+            </if>
+            <if test="productDictionaryInfoCode != null">
+                #{productDictionaryInfoCode,jdbcType=VARCHAR},
+            </if>
+            <if test="enabled != null">
+                #{enabled,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateAndCode">
+    update
+    product_dictionary_info
+    SET
+    product_dictionary_name= #{name,jdbcType=VARCHAR}
+    where
+    product_dictionary_code = #{code,jdbcType=VARCHAR}
+  </update>
+    <insert id="insertList" parameterType="java.util.List">
+        insert into product_dictionary_info
+        (
+        id, product_dictionary_value,product_content, product_weight,del_flag,product_dictionary_code,
+        create_time,create_by, update_time, update_by,product_dictionary_name,product_dictionary_info_code,enabled
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=BIGINT},#{item.productDictionaryValue,jdbcType=VARCHAR},
+            #{item.productContent,jdbcType=VARCHAR},
+            #{item.productWeight,jdbcType=INTEGER},#{item.delFlag,jdbcType=TINYINT},
+            #{item.productDictionaryCode,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
+            #{item.updateTime,jdbcType=TIMESTAMP},
+            #{item.updateBy,jdbcType=VARCHAR},
+            #{item.productDictionaryName,jdbcType=VARCHAR},
+            #{item.productDictionaryInfoCode,jdbcType=VARCHAR},
+            #{item.enabled,jdbcType=TINYINT}
+            )
+        </foreach>
+    </insert>
+    <update id="updateList" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update product_dictionary_info
+            <set>
+                <if test="#{item.id}!= null">
+                    id= #{item.id,jdbcType=BIGINT},
+                </if>
+                <if test="#{item.productDictionaryValue}!= null">
+                    product_dictionary_value=#{item.productDictionaryValue,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.productContent}!= null">
+                    product_content =#{item.productContent,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.productWeight}!= null">
+                    product_weight= #{item.productWeight,jdbcType=INTEGER},
+                </if>
+                <if test="#{item.delFlag}!= null">
+                    del_flag =#{item.delFlag,jdbcType=TINYINT},
+                </if>
+                <if test="#{item.productDictionaryCode}!= null">
+                    product_dictionary_code= #{item.productDictionaryCode,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.createTime}!= null">
+                    create_time =#{item.createTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="#{item.createBy}!= null">
+                    create_by= #{item.createBy,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.updateTime}!= null">
+                    update_time= #{item.updateTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="#{item.updateBy}!= null">
+                    update_by=#{item.updateBy,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.productDictionaryName}!= null">
+                    product_dictionary_name= #{item.productDictionaryName,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.productDictionaryInfoCode} != null">
+                    product_dictionary_info_code = #{item.productDictionaryInfoCode,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.enabled} != null">
+                    enabled=#{item.enabled,jdbcType=TINYINT},
+                </if>
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+    <update id="deleteList">
+        update product_dictionary_info
+        set del_flag = 1
+        where
+        <if test="code !=null and code !=''">
+            product_dictionary_code=#{code,jdbcType=VARCHAR}
+        </if>
+    </update>
+    <select id="getCode" resultType="com.aiqin.bms.scmp.api.product.domain.response.dictionary.DictionaryInfoResponseVO">
+        SELECT
+        id,product_dictionary_value as dictionaryDictionaryValue,
+        product_content as dictionaryContent,product_weight as dictionaryWeight,
+        del_flag as delFlag,enabled
+        FROM product_dictionary_info
+        WHERE del_flag=0
+        <if test="code !=null and code !=''">
+            AND product_dictionary_code=#{code,jdbcType=VARCHAR}
+        </if>
+        order by product_weight asc
+    </select>
+    <select id="dictionaryCode" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        product_dictionary_info
+        WHERE
+        <if test="code!=null and code!='' ">
+            product_dictionary_code = #{code,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product_dictionary_info
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <update id="infoEnabled">
+        update product_dictionary_info
+        set enabled=#{enabled,jdbcType=TINYINT}
+        where
+        <if test="code !=null and code !=''">
+            product_dictionary_code=#{code,jdbcType=VARCHAR}
+        </if>
+    </update>
+</mapper>

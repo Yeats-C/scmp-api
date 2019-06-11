@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.UseTagRecordMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.UseTagRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="tag_code" jdbcType="VARCHAR" property="tagCode" />
+    <result column="tag_name" jdbcType="VARCHAR" property="tagName" />
+    <result column="source_code" jdbcType="VARCHAR" property="sourceCode" />
+    <result column="use_object_code" jdbcType="VARCHAR" property="useObjectCode" />
+    <result column="use_object_name" jdbcType="VARCHAR" property="useObjectName" />
+    <result column="tag_type_code" jdbcType="VARCHAR" property="tagTypeCode" />
+    <result column="tag_type_name" jdbcType="VARCHAR" property="tagTypeName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <resultMap id="ListResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo">
+    <result column="tag_code" jdbcType="VARCHAR" property="tagCode" />
+    <result column="tag_name" jdbcType="VARCHAR" property="tagName" />
+    <result column="use_object_code" jdbcType="VARCHAR" property="useObjectCode" />
+    <result column="use_object_name" jdbcType="VARCHAR" property="useObjectName" />
+    <result column="tag_type_code" jdbcType="VARCHAR" property="tagTypeCode" />
+    <result column="tag_type_name" jdbcType="VARCHAR" property="tagTypeName" />
+    <result column="source_code" jdbcType="VARCHAR" property="sourceCode" />
+    <result column="tag_use_num" javaType="INT" property="useNum"/>
+  </resultMap>
+
+  <resultMap id="UseTagResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.request.tag.UseTagRecordReqVo">
+    <result column="tag_code" jdbcType="VARCHAR" property="tagCode" />
+    <result column="tag_name" jdbcType="VARCHAR" property="tagName" />
+    <result column="use_object_code" jdbcType="VARCHAR" property="useObjectCode" />
+    <result column="use_object_name" jdbcType="VARCHAR" property="useObjectName" />
+    <result column="tag_type_code" jdbcType="VARCHAR" property="tagTypeCode" />
+    <result column="tag_type_name" jdbcType="VARCHAR" property="tagTypeName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, tag_code, tag_name, source_code, use_object_code, use_object_name, tag_type_code, tag_type_name,
+    del_flag, create_by, create_time, update_by, update_time
+  </sql>
+
+  <sql id="List_Column_List">
+    a.tag_code, a.tag_name, a.source_code, a.use_object_code, a.use_object_name, a.tag_type_code, a.tag_type_name, b.tag_use_num
+  </sql>
+
+  <sql id="UseTag_Column_List">
+    tag_code, tag_name, use_object_code, use_object_name, tag_type_code, tag_type_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from use_tag_record
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getListByUseObjectCode" resultMap="ListResultMap">
+    select
+    <include refid="List_Column_List" />
+    from use_tag_record a
+    left join tag_info b on a.tag_code = b.tag_code
+    where a.del_flag = 0
+    and a.use_object_code = #{useObjectCode,jdbcType=VARCHAR}
+    and a.tag_type_code = #{tagTypeCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getListBySourceCode" resultMap="ListResultMap">
+    select
+    <include refid="List_Column_List" />
+    from use_tag_record a
+    left join tag_info b on a.tag_code = b.tag_code
+    where a.del_flag = 0
+    and a.source_code = #{sourceCode,jdbcType=VARCHAR}
+    and a.tag_type_code = #{tagTypeCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getUseTagByUseObjectCode" resultMap="UseTagResultMap">
+  select
+  <include refid="UseTag_Column_List" />
+  from use_tag_record
+  where del_flag = 0
+  and use_object_code = #{useObjectCode,jdbcType=VARCHAR}
+  and tag_type_code = #{tagTypeCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getListByTagCode" resultMap="ListResultMap">
+    select
+      tag_code,
+      tag_name,
+      tag_type_code,
+      tag_type_name,
+      use_object_code,
+      use_object_name,
+      count(*) as tag_use_num
+    from use_tag_record
+    where del_flag = 0
+    and tag_code = #{tagCode,jdbcType=VARCHAR}
+    group by  tag_code,tag_name,tag_type_code,tag_type_name,use_object_code,use_object_name
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from use_tag_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.UseTagRecord">
+    insert into use_tag_record (id, tag_code, tag_name, source_code,
+      use_object_code, use_object_name, tag_type_code,
+      tag_type_name, del_flag, create_by,
+      create_time, update_by, update_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{tagCode,jdbcType=VARCHAR}, #{tagName,jdbcType=VARCHAR}, #{sourceCode,jdbcType=VARCHAR},
+      #{useObjectCode,jdbcType=VARCHAR}, #{useObjectName,jdbcType=VARCHAR}, #{tagTypeCode,jdbcType=VARCHAR},
+      #{tagTypeName,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, #{createBy,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.UseTagRecord">
+    insert into use_tag_record
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="tagCode != null">
+        tag_code,
+      </if>
+      <if test="tagName != null">
+        tag_name,
+      </if>
+      <if test="sourceCode != null">
+        source_code,
+      </if>
+      <if test="useObjectCode != null">
+        use_object_code,
+      </if>
+      <if test="useObjectName != null">
+        use_object_name,
+      </if>
+      <if test="tagTypeCode != null">
+        tag_type_code,
+      </if>
+      <if test="tagTypeName != null">
+        tag_type_name,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="tagCode != null">
+        #{tagCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tagName != null">
+        #{tagName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceCode != null">
+        #{sourceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="useObjectCode != null">
+        #{useObjectCode,jdbcType=VARCHAR},
+      </if>
+      <if test="useObjectName != null">
+        #{useObjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="tagTypeCode != null">
+        #{tagTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tagTypeName != null">
+        #{tagTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.UseTagRecord">
+    update use_tag_record
+    <set>
+      <if test="tagCode != null">
+        tag_code = #{tagCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tagName != null">
+        tag_name = #{tagName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceCode != null">
+        source_code = #{sourceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="useObjectCode != null">
+        use_object_code = #{useObjectCode,jdbcType=VARCHAR},
+      </if>
+      <if test="useObjectName != null">
+        use_object_name = #{useObjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="tagTypeCode != null">
+        tag_type_code = #{tagTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tagTypeName != null">
+        tag_type_name = #{tagTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.UseTagRecord">
+    update use_tag_record
+    set tag_code = #{tagCode,jdbcType=VARCHAR},
+      tag_name = #{tagName,jdbcType=VARCHAR},
+      source_code = #{sourceCode,jdbcType=VARCHAR},
+      use_object_code = #{useObjectCode,jdbcType=VARCHAR},
+      use_object_name = #{useObjectName,jdbcType=VARCHAR},
+      tag_type_code = #{tagTypeCode,jdbcType=VARCHAR},
+      tag_type_name = #{tagTypeName,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <insert id="insertBatch" parameterType="java.util.List">
+     insert into use_tag_record (tag_code, tag_name,source_code,
+      use_object_code, use_object_name,
+      tag_type_code, tag_type_name, del_flag,
+      create_by, create_time, update_by,
+      update_time)
+    values
+    <foreach collection="list" item="item" index= "index" separator =",">
+      (
+        #{item.tagCode,jdbcType=VARCHAR},
+        #{item.tagName,jdbcType=VARCHAR},
+        #{item.sourceCode,jdbcType=VARCHAR},
+        #{item.useObjectCode,jdbcType=VARCHAR},
+        #{item.useObjectName,jdbcType=VARCHAR},
+        #{item.tagTypeCode,jdbcType=VARCHAR},
+        #{item.tagTypeName,jdbcType=VARCHAR},
+        #{item.delFlag,jdbcType=TINYINT},
+        #{item.createBy,jdbcType=VARCHAR},
+        #{item.createTime,jdbcType=TIMESTAMP},
+        #{item.updateBy,jdbcType=VARCHAR},
+        #{item.updateTime,jdbcType=TIMESTAMP}
+      )
+    </foreach>
+  </insert>
+  <update id="updateBatch" parameterType="java.util.List">
+    <foreach collection="list" item="item" open="" close="" separator=";">
+      update use_tag_record set del_flag = 1
+      where tag_code = #{item.tagCode,jdbcType=VARCHAR}
+      and use_object_code = #{item.useObjectCode,jdbcType=VARCHAR}
+      and tag_type_code = #{item.tagTypeCode,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+</mapper>

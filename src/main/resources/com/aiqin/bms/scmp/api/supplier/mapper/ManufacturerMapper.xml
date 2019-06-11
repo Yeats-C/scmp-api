@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.ManufacturerMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.Manufacturer">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="place_origin" jdbcType="VARCHAR" property="placeOrigin" />
+    <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="legal_person" jdbcType="VARCHAR" property="legalPerson" />
+    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital" />
+    <result column="registration_number" jdbcType="VARCHAR" property="registrationNumber" />
+    <result column="unionPay_number" jdbcType="VARCHAR" property="unionpayNumber" />
+    <result column="bank_number" jdbcType="VARCHAR" property="bankNumber" />
+    <result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="account_opening_branch" jdbcType="VARCHAR" property="accountOpeningBranch" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="enable" jdbcType="TINYINT" property="enable" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="manufacturer_code" jdbcType="VARCHAR" property="manufacturerCode" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, place_origin, contact_name, mobile_phone, legal_person, registered_capital, 
+    registration_number, unionPay_number, bank_number, bank_account, account_opening_branch, 
+    account_name, account, del_flag, enable, create_time, manufacturer_code, create_by, 
+    update_time, update_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from manufacturer
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from manufacturer
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Manufacturer">
+    insert into manufacturer (id, name, place_origin, 
+      contact_name, mobile_phone, legal_person, 
+      registered_capital, registration_number, unionPay_number, 
+      bank_number, bank_account, account_opening_branch, 
+      account_name, account, del_flag, 
+      enable, create_time, manufacturer_code, 
+      create_by, update_time, update_by
+      )
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{placeOrigin,jdbcType=VARCHAR}, 
+      #{contactName,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{legalPerson,jdbcType=VARCHAR}, 
+      #{registeredCapital,jdbcType=BIGINT}, #{registrationNumber,jdbcType=VARCHAR}, #{unionpayNumber,jdbcType=VARCHAR}, 
+      #{bankNumber,jdbcType=VARCHAR}, #{bankAccount,jdbcType=VARCHAR}, #{accountOpeningBranch,jdbcType=VARCHAR}, 
+      #{accountName,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, 
+      #{enable,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{manufacturerCode,jdbcType=VARCHAR}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Manufacturer">
+    insert into manufacturer
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="placeOrigin != null">
+        place_origin,
+      </if>
+      <if test="contactName != null">
+        contact_name,
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone,
+      </if>
+      <if test="legalPerson != null">
+        legal_person,
+      </if>
+      <if test="registeredCapital != null">
+        registered_capital,
+      </if>
+      <if test="registrationNumber != null">
+        registration_number,
+      </if>
+      <if test="unionpayNumber != null">
+        unionPay_number,
+      </if>
+      <if test="bankNumber != null">
+        bank_number,
+      </if>
+      <if test="bankAccount != null">
+        bank_account,
+      </if>
+      <if test="accountOpeningBranch != null">
+        account_opening_branch,
+      </if>
+      <if test="accountName != null">
+        account_name,
+      </if>
+      <if test="account != null">
+        account,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="enable != null">
+        enable,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="manufacturerCode != null">
+        manufacturer_code,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="placeOrigin != null">
+        #{placeOrigin,jdbcType=VARCHAR},
+      </if>
+      <if test="contactName != null">
+        #{contactName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPerson != null">
+        #{legalPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="registeredCapital != null">
+        #{registeredCapital,jdbcType=BIGINT},
+      </if>
+      <if test="registrationNumber != null">
+        #{registrationNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="unionpayNumber != null">
+        #{unionpayNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNumber != null">
+        #{bankNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccount != null">
+        #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="accountOpeningBranch != null">
+        #{accountOpeningBranch,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="enable != null">
+        #{enable,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="manufacturerCode != null">
+        #{manufacturerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Manufacturer">
+    update manufacturer
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="placeOrigin != null">
+        place_origin = #{placeOrigin,jdbcType=VARCHAR},
+      </if>
+      <if test="contactName != null">
+        contact_name = #{contactName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="legalPerson != null">
+        legal_person = #{legalPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="registeredCapital != null">
+        registered_capital = #{registeredCapital,jdbcType=BIGINT},
+      </if>
+      <if test="registrationNumber != null">
+        registration_number = #{registrationNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="unionpayNumber != null">
+        unionPay_number = #{unionpayNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNumber != null">
+        bank_number = #{bankNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccount != null">
+        bank_account = #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="accountOpeningBranch != null">
+        account_opening_branch = #{accountOpeningBranch,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="enable != null">
+        enable = #{enable,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="manufacturerCode != null">
+        manufacturer_code = #{manufacturerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Manufacturer">
+    update manufacturer
+    set name = #{name,jdbcType=VARCHAR},
+      place_origin = #{placeOrigin,jdbcType=VARCHAR},
+      contact_name = #{contactName,jdbcType=VARCHAR},
+      mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      legal_person = #{legalPerson,jdbcType=VARCHAR},
+      registered_capital = #{registeredCapital,jdbcType=BIGINT},
+      registration_number = #{registrationNumber,jdbcType=VARCHAR},
+      unionPay_number = #{unionpayNumber,jdbcType=VARCHAR},
+      bank_number = #{bankNumber,jdbcType=VARCHAR},
+      bank_account = #{bankAccount,jdbcType=VARCHAR},
+      account_opening_branch = #{accountOpeningBranch,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      account = #{account,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      enable = #{enable,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      manufacturer_code = #{manufacturerCode,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

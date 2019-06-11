@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryDao">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryListResVO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="supplier_dictionary_code" jdbcType="INTEGER" property="dictionaryCode"/>
+        <result column="supplier_dictionary_name" jdbcType="VARCHAR" property="dictionaryName"/>
+        <result column="supplier_type" jdbcType="VARCHAR" property="dictionaryType"/>
+        <result column="del_flag" jdbcType="TINYINT" property="delFlag"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="enabled" jdbcType="TINYINT" property="enabled"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+    id, supplier_dictionary_code, supplier_dictionary_name, supplier_type, del_flag, create_time, create_by,
+    update_time, update_by,enabled
+  </sql>
+
+    <!--查询所有供应商字典-->
+    <select id="listDictionary" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.QueryDictionaryReqVO"
+            resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        supplier_dictionary
+        WHERE del_flag=0
+        <if test="createTimeStart != null">
+            and create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="createTimeEnd != null">
+            and create_time &lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+        </if>
+        <if test="createBy != null and createBy !=''">
+            and create_by LIKE CONCAT(CONCAT('%',#{createBy},'%'))
+        </if>
+        <if test="updateBy != null and updateBy !=''">
+            and update_by LIKE CONCAT(CONCAT('%',#{updateBy},'%'))
+        </if>
+        <if test="dictionaryName != null and dictionaryName !=''">
+            and supplier_dictionary_name LIKE CONCAT(CONCAT('%',#{dictionaryName},'%'))
+        </if>
+        <if test="dictionaryType != null and dictionaryType !=''">
+            and supplier_type = #{dictionaryType}
+        </if>
+        <if test="enabled != null">
+            and enabled = #{enabled,jdbcType=TINYINT}
+        </if>
+        <if test="companyCode != null and companyCode != '' ">
+            and company_code = #{companyCode,jdbcType=VARCHAR}
+        </if>
+        order by create_time DESC
+    </select>
+
+    <!--禁用 -->
+    <update id="offOrOn" parameterType="java.lang.Long">
+    update supplier_dictionary set
+        del_flag = 1
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionary">
+    insert into supplier_dictionary (id, supplier_dictionary_code, supplier_dictionary_name,
+      supplier_type, del_flag, create_time, 
+      create_by, update_time, update_by, company_code, company_name
+      )
+    values (#{id,jdbcType=BIGINT}, #{supplierDictionaryCode,jdbcType=INTEGER}, #{supplierDictionaryName,jdbcType=VARCHAR},
+      #{supplierType,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
+      #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}
+      )
+  </insert>
+    <!--添加 -->
+    <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id"
+            parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionary">
+        insert into supplier_dictionary
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="supplierDictionaryCode != null">
+                supplier_dictionary_code,
+            </if>
+            <if test="supplierDictionaryName != null">
+                supplier_dictionary_name,
+            </if>
+            <if test="supplierType != null">
+                supplier_type,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="enabled != null">
+                enabled,
+            </if>
+            <if test="companyCode != null">
+                company_code,
+            </if>
+            <if test="companyName != null">
+                company_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="supplierDictionaryCode != null">
+                #{supplierDictionaryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierDictionaryName != null">
+                #{supplierDictionaryName,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierType != null">
+                #{supplierType,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="enabled != null">
+                #{enabled,jdbcType=TINYINT},
+            </if>
+            <if test="companyCode != null">
+                #{companyCode,jdbcType=VARCHAR},
+            </if>
+            <if test="companyName != null">
+                #{companyName,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <select id="checkName" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM
+        supplier_dictionary
+        WHERE del_flag=0
+        <if test="supplierDictionaryName!=null and supplierDictionaryName!=''">
+            AND supplier_dictionary_name=#{supplierDictionaryName,jdbcType=VARCHAR}
+        </if>
+        <if test="id!=null">
+            AND id!=#{id,jdbcType=BIGINT}
+        </if>
+        <if test="companyCode != null and companyCode != '' ">
+            and company_code = #{companyCode,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <select id="getCode" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.DictionaryInfoReqVO" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryCodeResVo">
+        SELECT
+         sinfo.supplier_dictionary_value as dictionaryDictionaryValue,
+        sinfo.supplier_content as dictionaryContent,
+        sinfo.supplier_weight as dictionaryWeight,
+        sinfo.supplier_dictionary_info_code as dictionaryInfoCode
+        FROM supplier_dictionary sdi LEFT JOIN supplier_dictionary_info sinfo
+        ON sdi.supplier_dictionary_code=sinfo.supplier_dictionary_code
+        WHERE sdi.del_flag=0 AND sinfo.del_flag=0 AND sinfo.enabled=0
+        <if test="dictionaryName!=null and dictionaryName!=''">
+           AND sdi.supplier_dictionary_name=#{dictionaryName,jdbcType=VARCHAR}
+        </if>
+        <if test="dictionaryCode!=null and dictionaryCode!=''">
+            AND sdi.supplier_dictionary_code=#{dictionaryCode,jdbcType=VARCHAR}
+        </if>
+        <if test="dictionaryType!=null and dictionaryType!=''">
+            AND sdi.supplier_type=#{dictionaryType,jdbcType=VARCHAR}
+        </if>
+        <if test="companyCode != null and companyCode != '' ">
+            and company_code = #{companyCode,jdbcType=VARCHAR}
+        </if>
+        order by sinfo.supplier_weight ASC
+    </select>
+</mapper>

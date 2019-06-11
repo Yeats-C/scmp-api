@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyAccountMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyAccount">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account_opening_branch" jdbcType="VARCHAR" property="accountOpeningBranch" />
+    <result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="max_payment_amount" jdbcType="BIGINT" property="maxPaymentAmount" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="unionPay_number" jdbcType="VARCHAR" property="unionpayNumber" />
+    <result column="bank_number" jdbcType="VARCHAR" property="bankNumber" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="apply_type" jdbcType="TINYINT" property="applyType" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_supply_company_code" jdbcType="VARCHAR" property="applySupplyCompanyCode" />
+    <result column="apply_supply_company_name" jdbcType="VARCHAR" property="applySupplyCompanyName" />
+    <result column="apply_company_account_code" jdbcType="VARCHAR" property="applyCompanyAccountCode" />
+    <result column="supply_company_code" jdbcType="VARCHAR" property="supplyCompanyCode" />
+    <result column="supply_company_name" jdbcType="VARCHAR" property="supplyCompanyName" />
+    <result column="supply_company_account_code" jdbcType="VARCHAR" property="supplyCompanyAccountCode" />
+    <result column="form_no" jdbcType="VARCHAR" property="formNo" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
+    <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+    <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
+    <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, account_opening_branch, bank_account, account, account_name, max_payment_amount, 
+    del_flag, create_time, create_by, update_time, update_by, unionPay_number, bank_number, 
+    apply_status, apply_type, auditor_by, auditor_time, apply_supply_company_code, apply_supply_company_name, supply_company_account_code,
+    apply_company_account_code, supply_company_code, supply_company_name,supply_company_account_code,form_no,company_code,company_name,
+    direct_supervisor_code,direct_supervisor_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from apply_supply_company_account
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByFormNO" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_supply_company_account
+    where form_no = #{formNo,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from apply_supply_company_account
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyAccount">
+    insert into apply_supply_company_account (id, account_opening_branch, bank_account, 
+      account, account_name, max_payment_amount, 
+      del_flag, create_time, create_by, 
+      update_time, update_by, unionPay_number, 
+      bank_number, apply_status, apply_type, 
+      auditor_by, auditor_time, apply_supply_company_code, 
+      apply_supply_company_name, apply_company_account_code, 
+      supply_company_code, supply_company_name,supply_company_account_code,form_no)
+    values (#{id,jdbcType=BIGINT}, #{accountOpeningBranch,jdbcType=VARCHAR}, #{bankAccount,jdbcType=VARCHAR}, 
+      #{account,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, #{maxPaymentAmount,jdbcType=BIGINT}, 
+      #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{unionpayNumber,jdbcType=VARCHAR}, 
+      #{bankNumber,jdbcType=VARCHAR}, #{applyStatus,jdbcType=TINYINT}, #{applyType,jdbcType=TINYINT}, 
+      #{auditorBy,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, #{applySupplyCompanyCode,jdbcType=VARCHAR}, 
+      #{applySupplyCompanyName,jdbcType=VARCHAR}, #{applyCompanyAccountCode,jdbcType=VARCHAR}, 
+      #{supplyCompanyCode,jdbcType=VARCHAR}, #{supplyCompanyName,jdbcType=VARCHAR},#{supplyCompanyAccountCode,jdbcType=VARCHAR},#{formNo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyAccount">
+    insert into apply_supply_company_account
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="accountOpeningBranch != null">
+        account_opening_branch,
+      </if>
+      <if test="bankAccount != null">
+        bank_account,
+      </if>
+      <if test="account != null">
+        account,
+      </if>
+      <if test="accountName != null">
+        account_name,
+      </if>
+      <if test="maxPaymentAmount != null">
+        max_payment_amount,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="unionpayNumber != null">
+        unionPay_number,
+      </if>
+      <if test="bankNumber != null">
+        bank_number,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="applyType != null">
+        apply_type,
+      </if>
+      <if test="auditorBy != null">
+        auditor_by,
+      </if>
+      <if test="auditorTime != null">
+        auditor_time,
+      </if>
+      <if test="applySupplyCompanyCode != null">
+        apply_supply_company_code,
+      </if>
+      <if test="applySupplyCompanyName != null">
+        apply_supply_company_name,
+      </if>
+      <if test="applyCompanyAccountCode != null">
+        apply_company_account_code,
+      </if>
+      <if test="supplyCompanyCode != null">
+        supply_company_code,
+      </if>
+      <if test="supplyCompanyName != null">
+        supply_company_name,
+      </if>
+      <if test="supplyCompanyAccountCode != null">
+        supply_company_account_code,
+      </if>
+      <if test="formNo != null">
+        form_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="accountOpeningBranch != null">
+        #{accountOpeningBranch,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccount != null">
+        #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="maxPaymentAmount != null">
+        #{maxPaymentAmount,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="unionpayNumber != null">
+        #{unionpayNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNumber != null">
+        #{bankNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="applyType != null">
+        #{applyType,jdbcType=TINYINT},
+      </if>
+      <if test="auditorBy != null">
+        #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applySupplyCompanyCode != null">
+        #{applySupplyCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applySupplyCompanyName != null">
+        #{applySupplyCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyCompanyAccountCode != null">
+        #{applyCompanyAccountCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyCompanyCode != null">
+        #{supplyCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyCompanyName != null">
+        #{supplyCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyCompanyAccountCode!= null">
+        #{supplyCompanyAccountCode,jdbcType=VARCHAR},
+      </if>
+      <if test="formNo!= null">
+        #{formNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyAccount">
+    update apply_supply_company_account
+    <set>
+      <if test="accountOpeningBranch != null">
+        account_opening_branch = #{accountOpeningBranch,jdbcType=VARCHAR},
+      </if>
+      <if test="bankAccount != null">
+        bank_account = #{bankAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="account != null">
+        account = #{account,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="maxPaymentAmount != null">
+        max_payment_amount = #{maxPaymentAmount,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="unionpayNumber != null">
+        unionPay_number = #{unionpayNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="bankNumber != null">
+        bank_number = #{bankNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="applyType != null">
+        apply_type = #{applyType,jdbcType=TINYINT},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applySupplyCompanyCode != null">
+        apply_supply_company_code = #{applySupplyCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applySupplyCompanyName != null">
+        apply_supply_company_name = #{applySupplyCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyCompanyAccountCode != null">
+        apply_company_account_code = #{applyCompanyAccountCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyCompanyCode != null">
+        supply_company_code = #{supplyCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyCompanyName != null">
+        supply_company_name = #{supplyCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyCompanyAccountCode!= null">
+        supply_company_account_code = #{supplyCompanyAccountCode,jdbcType=VARCHAR},
+      </if>
+      <if test="formNo!= null">
+        form_no = #{formNo,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorCode!= null">
+        direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorName!= null">
+        direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyAccount">
+    update apply_supply_company_account
+    set account_opening_branch = #{accountOpeningBranch,jdbcType=VARCHAR},
+      bank_account = #{bankAccount,jdbcType=VARCHAR},
+      account = #{account,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      max_payment_amount = #{maxPaymentAmount,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      unionPay_number = #{unionpayNumber,jdbcType=VARCHAR},
+      bank_number = #{bankNumber,jdbcType=VARCHAR},
+      apply_status = #{applyStatus,jdbcType=TINYINT},
+      apply_type = #{applyType,jdbcType=TINYINT},
+      auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      apply_supply_company_code = #{applySupplyCompanyCode,jdbcType=VARCHAR},
+      apply_supply_company_name = #{applySupplyCompanyName,jdbcType=VARCHAR},
+      apply_company_account_code = #{applyCompanyAccountCode,jdbcType=VARCHAR},
+      supply_company_code = #{supplyCompanyCode,jdbcType=VARCHAR},
+      supply_company_name = #{supplyCompanyName,jdbcType=VARCHAR},
+      supply_company_account_code = #{supplyCompanyAccountCode,jdbcType=VARCHAR},
+      form_no = #{formNo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

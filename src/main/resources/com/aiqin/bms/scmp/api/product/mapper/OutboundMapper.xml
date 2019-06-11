@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.OutboundMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="outbound_status_code" jdbcType="TINYINT" property="outboundStatusCode" />
+    <result column="outbound_status_name" jdbcType="VARCHAR" property="outboundStatusName" />
+    <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
+    <result column="outbound_type_code" jdbcType="TINYINT" property="outboundTypeCode" />
+    <result column="outbound_type_name" jdbcType="VARCHAR" property="outboundTypeName" />
+    <result column="source_oder_code" jdbcType="VARCHAR" property="sourceOderCode" />
+    <result column="outbound_time" jdbcType="TIMESTAMP" property="outboundTime" />
+    <result column="logistics_center_code" jdbcType="VARCHAR" property="logisticsCenterCode" />
+    <result column="logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="pre_arrival_time" jdbcType="TIMESTAMP" property="preArrivalTime" />
+    <result column="wms_document_code" jdbcType="VARCHAR" property="wmsDocumentCode" />
+    <result column="pre_outbound_num" jdbcType="BIGINT" property="preOutboundNum" />
+    <result column="pre_main_unit_num" jdbcType="BIGINT" property="preMainUnitNum" />
+    <result column="pre_tax_amount" jdbcType="BIGINT" property="preTaxAmount" />
+    <result column="pre_amount" jdbcType="BIGINT" property="preAmount" />
+    <result column="pre_tax" jdbcType="BIGINT" property="preTax" />
+    <result column="pra_outbound_num" jdbcType="BIGINT" property="praOutboundNum" />
+    <result column="pra_main_unit_num" jdbcType="BIGINT" property="praMainUnitNum" />
+    <result column="pra_tax_amount" jdbcType="BIGINT" property="praTaxAmount" />
+    <result column="pra_amount" jdbcType="BIGINT" property="praAmount" />
+    <result column="pra_tax" jdbcType="BIGINT" property="praTax" />
+    <result column="consignee" jdbcType="VARCHAR" property="consignee" />
+    <result column="consignee_number" jdbcType="VARCHAR" property="consigneeNumber" />
+    <result column="consignee_rate" jdbcType="VARCHAR" property="consigneeRate" />
+    <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="county_code" jdbcType="VARCHAR" property="countyCode" />
+    <result column="county_name" jdbcType="VARCHAR" property="countyName" />
+    <result column="detailed_address" jdbcType="VARCHAR" property="detailedAddress" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, company_code, company_name, outbound_status_code, outbound_status_name, outbound_oder_code, 
+    outbound_type_code, outbound_type_name, source_oder_code, outbound_time, logistics_center_code, 
+    logistics_center_name, warehouse_code, warehouse_name, supplier_code, supplier_name, 
+    pre_arrival_time, wms_document_code, pre_outbound_num, pre_main_unit_num, pre_tax_amount, 
+    pre_amount, pre_tax, pra_outbound_num, pra_main_unit_num, pra_tax_amount, pra_amount, 
+    pra_tax, consignee, consignee_number, consignee_rate, province_code, province_name, 
+    city_code, city_name, county_code, county_name, detailed_address, create_by, create_time, 
+    update_by, update_time
+  </sql>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from outbound
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from outbound
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
+    insert into outbound (id, company_code, company_name, 
+      outbound_status_code, outbound_status_name, 
+      outbound_oder_code, outbound_type_code, outbound_type_name, 
+      source_oder_code, outbound_time, logistics_center_code, 
+      logistics_center_name, warehouse_code, warehouse_name, 
+      supplier_code, supplier_name, pre_arrival_time, 
+      wms_document_code, pre_outbound_num, pre_main_unit_num, 
+      pre_tax_amount, pre_amount, pre_tax, 
+      pra_outbound_num, pra_main_unit_num, pra_tax_amount, 
+      pra_amount, pra_tax, consignee, 
+      consignee_number, consignee_rate, province_code, 
+      province_name, city_code, city_name, 
+      county_code, county_name, detailed_address, 
+      create_by, create_time, update_by, 
+      update_time)
+    values (#{id,jdbcType=BIGINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{outboundStatusCode,jdbcType=TINYINT}, #{outboundStatusName,jdbcType=VARCHAR}, 
+      #{outboundOderCode,jdbcType=VARCHAR}, #{outboundTypeCode,jdbcType=TINYINT}, #{outboundTypeName,jdbcType=VARCHAR}, 
+      #{sourceOderCode,jdbcType=VARCHAR}, #{outboundTime,jdbcType=TIMESTAMP}, #{logisticsCenterCode,jdbcType=VARCHAR}, 
+      #{logisticsCenterName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, 
+      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{preArrivalTime,jdbcType=TIMESTAMP}, 
+      #{wmsDocumentCode,jdbcType=VARCHAR}, #{preOutboundNum,jdbcType=BIGINT}, #{preMainUnitNum,jdbcType=BIGINT}, 
+      #{preTaxAmount,jdbcType=BIGINT}, #{preAmount,jdbcType=BIGINT}, #{preTax,jdbcType=BIGINT}, 
+      #{praOutboundNum,jdbcType=BIGINT}, #{praMainUnitNum,jdbcType=BIGINT}, #{praTaxAmount,jdbcType=BIGINT}, 
+      #{praAmount,jdbcType=BIGINT}, #{praTax,jdbcType=BIGINT}, #{consignee,jdbcType=VARCHAR}, 
+      #{consigneeNumber,jdbcType=VARCHAR}, #{consigneeRate,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, 
+      #{provinceName,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, 
+      #{countyCode,jdbcType=VARCHAR}, #{countyName,jdbcType=VARCHAR}, #{detailedAddress,jdbcType=VARCHAR}, 
+      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
+    insert into outbound
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="outboundStatusCode != null">
+        outbound_status_code,
+      </if>
+      <if test="outboundStatusName != null">
+        outbound_status_name,
+      </if>
+      <if test="outboundOderCode != null">
+        outbound_oder_code,
+      </if>
+      <if test="outboundTypeCode != null">
+        outbound_type_code,
+      </if>
+      <if test="outboundTypeName != null">
+        outbound_type_name,
+      </if>
+      <if test="sourceOderCode != null">
+        source_oder_code,
+      </if>
+      <if test="outboundTime != null">
+        outbound_time,
+      </if>
+      <if test="logisticsCenterCode != null">
+        logistics_center_code,
+      </if>
+      <if test="logisticsCenterName != null">
+        logistics_center_name,
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code,
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="supplierName != null">
+        supplier_name,
+      </if>
+      <if test="preArrivalTime != null">
+        pre_arrival_time,
+      </if>
+      <if test="wmsDocumentCode != null">
+        wms_document_code,
+      </if>
+      <if test="preOutboundNum != null">
+        pre_outbound_num,
+      </if>
+      <if test="preMainUnitNum != null">
+        pre_main_unit_num,
+      </if>
+      <if test="preTaxAmount != null">
+        pre_tax_amount,
+      </if>
+      <if test="preAmount != null">
+        pre_amount,
+      </if>
+      <if test="preTax != null">
+        pre_tax,
+      </if>
+      <if test="praOutboundNum != null">
+        pra_outbound_num,
+      </if>
+      <if test="praMainUnitNum != null">
+        pra_main_unit_num,
+      </if>
+      <if test="praTaxAmount != null">
+        pra_tax_amount,
+      </if>
+      <if test="praAmount != null">
+        pra_amount,
+      </if>
+      <if test="praTax != null">
+        pra_tax,
+      </if>
+      <if test="consignee != null">
+        consignee,
+      </if>
+      <if test="consigneeNumber != null">
+        consignee_number,
+      </if>
+      <if test="consigneeRate != null">
+        consignee_rate,
+      </if>
+      <if test="provinceCode != null">
+        province_code,
+      </if>
+      <if test="provinceName != null">
+        province_name,
+      </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="cityName != null">
+        city_name,
+      </if>
+      <if test="countyCode != null">
+        county_code,
+      </if>
+      <if test="countyName != null">
+        county_name,
+      </if>
+      <if test="detailedAddress != null">
+        detailed_address,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="outboundStatusCode != null">
+        #{outboundStatusCode,jdbcType=TINYINT},
+      </if>
+      <if test="outboundStatusName != null">
+        #{outboundStatusName,jdbcType=VARCHAR},
+      </if>
+      <if test="outboundOderCode != null">
+        #{outboundOderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="outboundTypeCode != null">
+        #{outboundTypeCode,jdbcType=TINYINT},
+      </if>
+      <if test="outboundTypeName != null">
+        #{outboundTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceOderCode != null">
+        #{sourceOderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="outboundTime != null">
+        #{outboundTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logisticsCenterCode != null">
+        #{logisticsCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsCenterName != null">
+        #{logisticsCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="preArrivalTime != null">
+        #{preArrivalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wmsDocumentCode != null">
+        #{wmsDocumentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="preOutboundNum != null">
+        #{preOutboundNum,jdbcType=BIGINT},
+      </if>
+      <if test="preMainUnitNum != null">
+        #{preMainUnitNum,jdbcType=BIGINT},
+      </if>
+      <if test="preTaxAmount != null">
+        #{preTaxAmount,jdbcType=BIGINT},
+      </if>
+      <if test="preAmount != null">
+        #{preAmount,jdbcType=BIGINT},
+      </if>
+      <if test="preTax != null">
+        #{preTax,jdbcType=BIGINT},
+      </if>
+      <if test="praOutboundNum != null">
+        #{praOutboundNum,jdbcType=BIGINT},
+      </if>
+      <if test="praMainUnitNum != null">
+        #{praMainUnitNum,jdbcType=BIGINT},
+      </if>
+      <if test="praTaxAmount != null">
+        #{praTaxAmount,jdbcType=BIGINT},
+      </if>
+      <if test="praAmount != null">
+        #{praAmount,jdbcType=BIGINT},
+      </if>
+      <if test="praTax != null">
+        #{praTax,jdbcType=BIGINT},
+      </if>
+      <if test="consignee != null">
+        #{consignee,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeNumber != null">
+        #{consigneeNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeRate != null">
+        #{consigneeRate,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null">
+        #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null">
+        #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="countyCode != null">
+        #{countyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="countyName != null">
+        #{countyName,jdbcType=VARCHAR},
+      </if>
+      <if test="detailedAddress != null">
+        #{detailedAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
+    update outbound
+    <set>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="outboundStatusCode != null">
+        outbound_status_code = #{outboundStatusCode,jdbcType=TINYINT},
+      </if>
+      <if test="outboundStatusName != null">
+        outbound_status_name = #{outboundStatusName,jdbcType=VARCHAR},
+      </if>
+      <if test="outboundOderCode != null">
+        outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="outboundTypeCode != null">
+        outbound_type_code = #{outboundTypeCode,jdbcType=TINYINT},
+      </if>
+      <if test="outboundTypeName != null">
+        outbound_type_name = #{outboundTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceOderCode != null">
+        source_oder_code = #{sourceOderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="outboundTime != null">
+        outbound_time = #{outboundTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logisticsCenterCode != null">
+        logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsCenterName != null">
+        logistics_center_name = #{logisticsCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="preArrivalTime != null">
+        pre_arrival_time = #{preArrivalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wmsDocumentCode != null">
+        wms_document_code = #{wmsDocumentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="preOutboundNum != null">
+        pre_outbound_num = #{preOutboundNum,jdbcType=BIGINT},
+      </if>
+      <if test="preMainUnitNum != null">
+        pre_main_unit_num = #{preMainUnitNum,jdbcType=BIGINT},
+      </if>
+      <if test="preTaxAmount != null">
+        pre_tax_amount = #{preTaxAmount,jdbcType=BIGINT},
+      </if>
+      <if test="preAmount != null">
+        pre_amount = #{preAmount,jdbcType=BIGINT},
+      </if>
+      <if test="preTax != null">
+        pre_tax = #{preTax,jdbcType=BIGINT},
+      </if>
+      <if test="praOutboundNum != null">
+        pra_outbound_num = #{praOutboundNum,jdbcType=BIGINT},
+      </if>
+      <if test="praMainUnitNum != null">
+        pra_main_unit_num = #{praMainUnitNum,jdbcType=BIGINT},
+      </if>
+      <if test="praTaxAmount != null">
+        pra_tax_amount = #{praTaxAmount,jdbcType=BIGINT},
+      </if>
+      <if test="praAmount != null">
+        pra_amount = #{praAmount,jdbcType=BIGINT},
+      </if>
+      <if test="praTax != null">
+        pra_tax = #{praTax,jdbcType=BIGINT},
+      </if>
+      <if test="consignee != null">
+        consignee = #{consignee,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeNumber != null">
+        consignee_number = #{consigneeNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeRate != null">
+        consignee_rate = #{consigneeRate,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null">
+        province_code = #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null">
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="countyCode != null">
+        county_code = #{countyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="countyName != null">
+        county_name = #{countyName,jdbcType=VARCHAR},
+      </if>
+      <if test="detailedAddress != null">
+        detailed_address = #{detailedAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
+    update outbound
+    set company_code = #{companyCode,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      outbound_status_code = #{outboundStatusCode,jdbcType=TINYINT},
+      outbound_status_name = #{outboundStatusName,jdbcType=VARCHAR},
+      outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
+      outbound_type_code = #{outboundTypeCode,jdbcType=TINYINT},
+      outbound_type_name = #{outboundTypeName,jdbcType=VARCHAR},
+      source_oder_code = #{sourceOderCode,jdbcType=VARCHAR},
+      outbound_time = #{outboundTime,jdbcType=TIMESTAMP},
+      logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR},
+      logistics_center_name = #{logisticsCenterName,jdbcType=VARCHAR},
+      warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      supplier_name = #{supplierName,jdbcType=VARCHAR},
+      pre_arrival_time = #{preArrivalTime,jdbcType=TIMESTAMP},
+      wms_document_code = #{wmsDocumentCode,jdbcType=VARCHAR},
+      pre_outbound_num = #{preOutboundNum,jdbcType=BIGINT},
+      pre_main_unit_num = #{preMainUnitNum,jdbcType=BIGINT},
+      pre_tax_amount = #{preTaxAmount,jdbcType=BIGINT},
+      pre_amount = #{preAmount,jdbcType=BIGINT},
+      pre_tax = #{preTax,jdbcType=BIGINT},
+      pra_outbound_num = #{praOutboundNum,jdbcType=BIGINT},
+      pra_main_unit_num = #{praMainUnitNum,jdbcType=BIGINT},
+      pra_tax_amount = #{praTaxAmount,jdbcType=BIGINT},
+      pra_amount = #{praAmount,jdbcType=BIGINT},
+      pra_tax = #{praTax,jdbcType=BIGINT},
+      consignee = #{consignee,jdbcType=VARCHAR},
+      consignee_number = #{consigneeNumber,jdbcType=VARCHAR},
+      consignee_rate = #{consigneeRate,jdbcType=VARCHAR},
+      province_code = #{provinceCode,jdbcType=VARCHAR},
+      province_name = #{provinceName,jdbcType=VARCHAR},
+      city_code = #{cityCode,jdbcType=VARCHAR},
+      city_name = #{cityName,jdbcType=VARCHAR},
+      county_code = #{countyCode,jdbcType=VARCHAR},
+      county_name = #{countyName,jdbcType=VARCHAR},
+      detailed_address = #{detailedAddress,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

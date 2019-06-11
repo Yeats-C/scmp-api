@@ -1,0 +1,47 @@
+package com.aiqin.bms.scmp.api.product.dao;
+
+
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryInspectionReportReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.store.InspectionReportRespVO;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+
+/**
+ * @功能说明:
+ * @author: wangxu
+ * @date: 2019/2/21 0021 16:03
+ */
+public interface ProductSkuInspReportDao {
+
+    /**
+     * 根据销售码获取质检信息
+     * @param saleCode
+     * @return
+     */
+    List<InspectionReportRespVO> getInspectionReportsByCode(String saleCode);
+
+    InspectionReportRespVO getInspectionReport(QueryInspectionReportReqVO queryInspectionReportReqVO);
+
+    List<ProductSkuInspReport> getInfo(String skuCode);
+
+    List<ApplyProductSkuInspReport> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+
+    List<ApplyProductSkuInspReport> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
+
+    int insertApplyList(List<ApplyProductSkuInspReport> applyProductSkuInspReports);
+
+    int insertInspReportList(@Param("productSkuInspReports") List<ProductSkuInspReport> productSkuInspReports);
+
+    List<ProductSkuInspReportDraft> getDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);
+
+    List<ProductSkuInspReportRespVo> getDraft(String skuCode);
+
+    int deleteDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);
+
+    int deleteList(String skuCode);
+
+    int insertDraftList(@Param("productSkuInspReportDrafts") List<ProductSkuInspReportDraft> productSkuInspReportDrafts);
+}

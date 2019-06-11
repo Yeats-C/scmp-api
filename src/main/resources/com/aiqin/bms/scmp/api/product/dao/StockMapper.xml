@@ -1,0 +1,1060 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.StockDao">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="stock_code" jdbcType="VARCHAR" property="stockCode"/>
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
+        <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
+        <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum"/>
+        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
+        <result column="lock_num" jdbcType="BIGINT" property="lockNum"/>
+        <result column="purchase_way_num" jdbcType="BIGINT" property="purchaseWayNum"/>
+        <result column="allocation_way_num" jdbcType="BIGINT" property="allocationWayNum"/>
+        <result column="total_way_num" jdbcType="BIGINT" property="totalWayNum"/>
+        <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
+        <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
+        <result column="new_purchase_price" jdbcType="BIGINT" property="newPurchasePrice"/>
+        <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
+        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
+        <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
+        <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
+        <result column="tax_price" jdbcType="BIGINT" property="taxPrice"/>
+        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="del_flag" jdbcType="VARCHAR" property="delFlag"/>
+    </resultMap>
+
+    <resultMap id="StockRespMap" type="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="stock_code" jdbcType="VARCHAR" property="stockCode"/>
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
+        <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
+        <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum"/>
+        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
+        <result column="lock_num" jdbcType="BIGINT" property="lockNum"/>
+        <result column="purchase_way_num" jdbcType="BIGINT" property="purchaseWayNum"/>
+        <result column="allocation_way_num" jdbcType="BIGINT" property="allocationWayNum"/>
+        <result column="total_way_num" jdbcType="BIGINT" property="totalWayNum"/>
+        <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
+        <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
+        <result column="new_purchase_price" jdbcType="BIGINT" property="newPurchasePrice"/>
+        <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
+        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
+        <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
+        <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
+        <result column="tax_price" jdbcType="BIGINT" property="taxPrice"/>
+        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="sale_status" jdbcType="BIGINT" property="saleStatus"/>
+        <result column="purchase_status" jdbcType="BIGINT" property="purchaseStatus"/>
+        <result column="spec" jdbcType="VARCHAR" property="spec"/>
+        <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
+        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
+        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
+        <result column="large_unit" jdbcType="VARCHAR" property="largeUnit"/>
+        <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
+    </resultMap>
+    <resultMap id="QueryStockSkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo">
+        <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="product_category_code" jdbcType="VARCHAR" property="skuCategoryCode"/>
+        <result column="product_category_name" jdbcType="VARCHAR" property="skuCategoryName"/>
+        <result column="product_brand_code" jdbcType="VARCHAR" property="skuBrandCode"/>
+        <result column="product_brand_name" jdbcType="VARCHAR" property="skuBrandName"/>
+        <result column="spec" jdbcType="VARCHAR" property="skuSpecName"/>
+        <result column="color_code" jdbcType="VARCHAR" property="skuColorCode"/>
+        <result column="color_name" jdbcType="VARCHAR" property="skuColorName"/>
+        <result column="model_number" jdbcType="VARCHAR" property="skuModelNumberName"/>
+        <result column="unit_code" jdbcType="VARCHAR" property="skuUnitCode"/>
+        <result column="unit_name" jdbcType="VARCHAR" property="skuUnitName"/>
+        <result column="product_sort_code" jdbcType="VARCHAR" property="skuSortCode"/>
+        <result column="product_sort_name" jdbcType="VARCHAR" property="skuSortName"/>
+        <result column="goods_gifts" jdbcType="BIGINT" property="skuTypeCode"/>
+        <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
+        <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
+        <result column="available_num" jdbcType="BIGINT" property="stock"/>
+        <result column="Input_tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="tax_price" jdbcType="BIGINT" property="price"/>
+        <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient"/>
+    </resultMap>
+
+    <resultMap id="StockFlowMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <id column="stock_code" jdbcType="VARCHAR" property="stockCode"/>
+        <id column="flow_code" jdbcType="VARCHAR" property="flowCode"/>
+        <id column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+        <id column="order_type" jdbcType="INTEGER" property="orderType"/>
+        <id column="order_source" jdbcType="VARCHAR" property="orderSource"/>
+        <id column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <id column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <id column="before_inventory_num" jdbcType="BIGINT" property="beforeInventoryNum"/>
+        <id column="after_inventory_num" jdbcType="BIGINT" property="afterInventoryNum"/>
+        <id column="before_available_num" jdbcType="BIGINT" property="beforeAvailableNum"/>
+        <id column="after_available_num" jdbcType="BIGINT" property="afterAvailableNum"/>
+        <id column="before_lock_num" jdbcType="BIGINT" property="beforeLockNum"/>
+        <id column="after_lock_num" jdbcType="BIGINT" property="afterLockNum"/>
+        <id column="before_purchase_way_num" jdbcType="BIGINT" property="beforePurchaseWayNum"/>
+        <id column="after_purchase_way_num" jdbcType="BIGINT" property="afterPurchaseWayNum"/>
+        <id column="before_allocation_way_num" jdbcType="BIGINT" property="beforeAllocationWayNum"/>
+        <id column="after_allocation_way_num" jdbcType="BIGINT" property="afterAllocationWayNum"/>
+        <id column="before_total_way_num" jdbcType="BIGINT" property="beforeTotalWayNum"/>
+        <id column="after_total_way_num" jdbcType="BIGINT" property="afterTotalWayNum"/>
+        <id column="after_total_way_num" jdbcType="BIGINT" property="afterTotalWayNum"/>
+        <id column="change_num" jdbcType="BIGINT" property="changeNum"/>
+        <id column="operation_type" jdbcType="BIGINT" property="operationType"/>
+
+    </resultMap>
+    <sql id="Stock_flow_Column">
+        id,stock_code,flow_code,order_code,order_type,order_source,sku_code,sku_name,before_inventory_num,after_inventory_num,
+        before_available_num,after_available_num,before_lock_num,after_lock_num,before_purchase_way_num,after_purchase_way_num,
+        before_allocation_way_num,after_allocation_way_num,before_total_way_num,after_total_way_num,change_num,operation_type
+    </sql>
+    <sql id="Base_Column_List">
+      id,stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,warehouse_type,
+        sku_code,sku_name,inventory_num,available_num,lock_num,purchase_way_num,allocation_way_num,total_way_num,new_delivery,new_delivery_name,
+        new_purchase_price,purchase_group_code,purchase_group_name,stock_unit_code,stock_unit_name,tax_price,tax_rate,create_time,create_by,update_time,update_by
+  </sql>
+
+    <sql id="Sum_Column_List">
+    id, sku_code, sku_name, sku_package_code, sku_package_name, warehouse_code, warehouse_name, transport_center_code, transport_center_name,
+    company_code, company_name, purchase_status, sale_status, sum(authentic_num) as authentic_num, sum(available_num) as available_num, sum(lock_num) as lock_num, sum(spare_num) as spare_num,
+    sum(inventory_num) as inventory_num, sum(way_num) as way_num, sum(purchase_way_num) as purchase_way_num, tax_price, new_delivery, new_delivery_name, new_purchase_price,
+    product_category_id, product_category_name, spec_code, spec, unit_code, unit_name, brand_code, brand_name,
+    sum(allocate_product_way_num) as allocate_product_way_num,
+    sum(allocate_spare_way_num) as allocate_spare_way_num, sum(product_tax_price) as product_tax_price, sum(spare_tax_price) as spare_tax_price
+  </sql>
+    <sql id="Sum_GroupBy_List">
+      sku_code, sku_name, sku_package_code, sku_package_name,
+      purchase_status, sale_status, tax_price, new_delivery, new_delivery_name, new_purchase_price,product_category_id, product_category_name,
+      spec_code, spec, unit_code, unit_name, brand_code, brand_name
+  </sql>
+
+    <sql id="Query_Stock_Sku_List">
+        a.sku_code,a.sku_name,c.product_category_code,c.product_category_name,c.product_brand_code,c.product_brand_name,c.spec,
+        c.color_code,c.color_name,c.model_number, c.unit_code,c.unit_name,c.goods_gifts,c.product_sort_code,c.product_sort_name,a.stock_unit_code,a.stock_unit_name,b.Input_tax_rate,a.tax_price,
+        c.product_code,c.product_name,a.available_num, 1 as zero_removal_coefficient
+    </sql>
+
+    <select id="selectWarehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
+        select
+        st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,
+        st.warehouse_code,st.warehouse_name,st.warehouse_type,
+        st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
+        sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
+        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.sale_status,psc.purchase_status,ps.spec,ps.unit_code,ps.product_category_code,ps.product_category_name
+        from stock as st
+        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code AND CONVERT(psc.warehouse_code USING utf8) COLLATE utf8_unicode_ci  = st.warehouse_code
+        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
+        left join product_sku_box_packing as psbp on st.sku_code=psbp.product_sku_code
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and st.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and st.sku_name like concat('%', #{skuName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="saleStatus!=null">
+            and psc.sale_status=#{saleStatus}
+        </if>
+        <if test="purchaseStatus!=null">
+            and psc.purchase_status=#{purchaseStatus}
+        </if>
+        <if test="propertyText !=null and propertyText!=''">
+            and ps.product_property_code like concat('%',#{propertyText},'%')
+        </if>
+        <if test="brandText!=null and brandText!=''">
+            and ps.product_brand_code like concat('%',#{brandText},'%')
+        </if>
+        <if test="productCategoryText!=null and productCategoryText!=''">
+            and ps.product_category_code like concat('%',#{productCategoryText},'%')
+        </if>
+        <if test="inventoryBeginNum!=null">
+            and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+        </if>
+        <if test="inventoryFinishNum!=null">
+            and st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+        </if>
+        <if test="availableBeginNum!=null">
+            and st.available_num <![CDATA[>=]]> #{availableBeginNum}
+        </if>
+        <if test="availableFinishNum!=null">
+            and st.available_num <![CDATA[<=]]> #{availableFinishNum}
+        </if>
+        <if test="companyCode!=null and companyCode!=''">
+            and st.company_code=#{companyCode}
+        </if>
+        group by st.sku_code,st.warehouse_code
+        limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+
+
+    <select id="selectStockSumInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
+        select
+        st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,
+        st.warehouse_code,st.warehouse_name,st.warehouse_type,
+        st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
+        sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
+        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.sale_status,psc.purchase_status,ps.spec,
+        ps.unit_code,ps.product_category_code,ps.product_category_name
+        from stock as st
+        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code AND CONVERT(psc.warehouse_code USING utf8) COLLATE utf8_unicode_ci  = st.warehouse_code
+        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
+        left join product_sku_box_packing as psbp on st.sku_code=psbp.product_sku_code
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and st.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and st.sku_name like concat('%', #{skuName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="saleStatus!=null">
+            and psc.sale_status=#{saleStatus}
+        </if>
+        <if test="purchaseStatus!=null">
+            and psc.purchase_status=#{purchaseStatus}
+        </if>
+        <if test="propertyText !=null and propertyText!=''">
+            and ps.product_property_code like concat('%',#{propertyText},'%')
+        </if>
+        <if test="brandText!=null and brandText!=''">
+            and ps.product_brand_code like concat('%',#{brandText},'%')
+        </if>
+        <if test="productCategoryText!=null and productCategoryText!=''">
+            and ps.product_category_code like concat('%',#{productCategoryText},'%')
+        </if>
+        <if test="inventoryBeginNum!=null">
+            and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+        </if>
+        <if test="inventoryFinishNum!=null">
+            and st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+        </if>
+        <if test="availableBeginNum!=null">
+            and st.available_num <![CDATA[>=]]> #{availableBeginNum}
+        </if>
+        <if test="availableFinishNum!=null">
+            and st.available_num <![CDATA[<=]]> #{availableFinishNum}
+        </if>
+        <if test="companyCode!=null and companyCode!=''">
+            and st.company_code=#{companyCode}
+        </if>
+        group by st.sku_code
+        limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectOneStockInfoByStockId" parameterType="java.lang.Long"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
+        select
+        st.id,st.stock_code,
+        st.company_code,st.company_name,
+        st.transport_center_code,st.transport_center_name,
+        st.warehouse_code,st.warehouse_name,st.warehouse_type,
+        st.sku_code,st.sku_name,st.inventory_num,st.available_num,
+        st.lock_num,st.purchase_way_num,st.allocation_way_num,
+        st.total_way_num,st.new_delivery,st.new_delivery_name,
+        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,
+        st.stock_unit_code,st.stock_unit_name,st.tax_price,st.tax_rate,
+        st.create_time,st.create_by,st.update_time,st.update_by,
+        psc.purchase_status,ps.spec,
+        psc.sale_status,
+        ps.product_brand_name,
+        ps.unit_code,ps.product_category_code,ps.product_category_name,psbp.large_unit
+        from stock as st
+        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
+        AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
+        AND CONVERT(psc.warehouse_code USING utf8) COLLATE utf8_unicode_ci = st.warehouse_code
+        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
+        left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+
+        where st.id = #{stockId, jdbcType=VARCHAR}
+    </select>
+
+    <select id="countStockSumInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockSumRequest"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        st.sku_code
+        from stock as st
+        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
+        AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
+        AND CONVERT(psc.warehouse_code USING utf8) COLLATE utf8_unicode_ci = st.warehouse_code
+        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
+        left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and st.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and st.sku_name like concat('%', #{skuName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="saleStatus!=null">
+            and psc.sale_status=#{saleStatus}
+        </if>
+        <if test="purchaseStatus!=null">
+            and psc.purchase_status=#{purchaseStatus}
+        </if>
+        <if test="propertyText !=null and propertyText!=''">
+            and ps.product_property_code like concat('%',#{propertyText},'%')
+        </if>
+        <if test="brandText!=null and brandText!=''">
+            and ps.product_brand_code like concat('%',#{brandText},'%')
+        </if>
+        <if test="productCategoryText!=null and productCategoryText!=''">
+            and ps.product_category_code like concat('%',#{productCategoryText},'%')
+        </if>
+        <if test="inventoryBeginNum!=null">
+            and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+        </if>
+        <if test="inventoryFinishNum!=null">
+            and st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+        </if>
+        <if test="availableBeginNum!=null">
+            and st.available_num <![CDATA[>=]]> #{availableBeginNum}
+        </if>
+        <if test="availableFinishNum!=null">
+            and st.available_num <![CDATA[<=]]> #{availableFinishNum}
+        </if>
+        <if test="transportCenterText!=null and transportCenterText!=''">
+            and st.transport_center_code like concat('%',#{transportCenterText},'%')
+        </if>
+        <if test="companyCode!=null and companyCode!=''">
+            and st.company_code=#{companyCode}
+        </if>
+        group by st.sku_code
+        ) as tmp
+    </select>
+
+    <select id="countWarehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        st.sku_code
+        from stock as st
+        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
+        AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
+        AND CONVERT(psc.warehouse_code USING utf8) COLLATE utf8_unicode_ci = st.warehouse_code
+        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and st.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and st.sku_name like concat('%', #{skuName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="saleStatus!=null">
+            and psc.sale_status=#{saleStatus}
+        </if>
+        <if test="purchaseStatus!=null">
+            and psc.purchase_status=#{purchaseStatus}
+        </if>
+        <if test="propertyText !=null and propertyText!=''">
+            and ps.product_property_code like concat('%',#{propertyText},'%')
+        </if>
+        <if test="brandText!=null and brandText!=''">
+            and ps.product_brand_code like concat('%',#{brandText},'%')
+        </if>
+        <if test="productCategoryText!=null and productCategoryText!=''">
+            and ps.product_category_code like concat('%',#{productCategoryText},'%')
+        </if>
+        <if test="inventoryBeginNum!=null">
+            and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+        </if>
+        <if test="inventoryFinishNum!=null">
+            and st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+        </if>
+        <if test="availableBeginNum!=null">
+            and st.available_num <![CDATA[>=]]> #{availableBeginNum}
+        </if>
+        <if test="availableFinishNum!=null">
+            and st.available_num <![CDATA[<=]]> #{availableFinishNum}
+        </if>
+        <if test="companyCode!=null and companyCode!=''">
+            and st.company_code=#{companyCode}
+        </if>
+        group by st.sku_code,st.warehouse_code
+        ) as tmp
+    </select>
+
+    <sql id="Query_Stock_Sku_Where">
+        <where>
+            1 = 1
+            <if test="companyCode != null and companyCode != ''">
+             and   a.company_code  =  #{companyCode, jdbcType=VARCHAR}
+            </if>
+            <if test="supplyCode != null and supplyCode != ''">
+                and a.new_delivery  = #{supplyCode, jdbcType=VARCHAR}
+            </if>
+            <if test="transportCenterCode != null and transportCenterCode != ''">
+                and a.transport_center_code  = #{transportCenterCode, jdbcType=VARCHAR}
+            </if>
+            <if test="warehouseCode != null and warehouseCode != ''">
+                and a.warehouse_code  = #{warehouseCode, jdbcType=VARCHAR}
+            </if>
+            <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
+                and a.purchase_group_code = #{purchaseGroupCode, jdbcType=VARCHAR}
+            </if>
+            <if test="skuCode != null and skuCode != ''">
+                and a.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="skuName != null and skuName != ''">
+                and a.sku_name like concat('%', #{skuName, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productPropertyName != null and productPropertyName != ''">
+                and c.product_property_name like concat('%', #{productPropertyName, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productCategoryName != null and productCategoryName != ''">
+                and c.product_category_name like concat('%', #{productCategoryName, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productBrandName != null and productBrandName != ''">
+                and c.product_brand_name like concat('%', #{productBrandName, jdbcType=VARCHAR} ,'%')
+            </if>
+                and a.available_num > 0
+            <if test="skuList != null">
+                and a.sku_code in
+                <foreach collection="skuList" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectStockSkuInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo"
+            resultMap="QueryStockSkuResultMap">
+        select
+        <include refid="Query_Stock_Sku_List"/>
+        from stock a left join product_sku c on a.sku_code = c.sku_code left join product_sku_checkout b on a.sku_code = b.sku_code
+        <include refid="Query_Stock_Sku_Where"/>
+        order by sku_code asc
+    </select>
+    <select id="selectStockByCompanyCodeAndSkuList"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo">
+        SELECT
+        sku_code as skuCode,
+        sku_name as skuName,
+        warehouse_code as warehouseCode,
+        warehouse_name as warehouseName,
+        SUM( available_num ) as num
+        FROM
+        stock
+        <where>
+            <if test="companyCode != null and companyCode != '' ">
+                company_code = #{companyCode, jdbcType=VARCHAR}
+            </if>
+            <if test="skuList != null ">
+                and sku_code in
+                <foreach collection="skuList" item="id" index="index" open="(" close=")" separator=",">
+                    #{id, jdbcType=VARCHAR}
+                </foreach>
+            </if>
+        </where>
+        GROUP BY
+        sku_code,
+        sku_name,
+        warehouse_code,
+        warehouse_name
+    </select>
+
+
+    <update id="updateBatchStock" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update stock
+            <set>
+                <!--加库存  商品库存增加 -->
+                <if test="item.stockStatusCode == 1">
+                    authentic_num = authentic_num + #{item.num,jdbcType=BIGINT},
+                    available_num = available_num + #{item.num,jdbcType=BIGINT},
+                    inventory_num = inventory_num + #{item.num,jdbcType=BIGINT},
+                </if>
+                <!--减少并锁库  可售库存减少,锁定库存增减 -->
+                <if test="item.stockStatusCode == 2">
+                    available_num = available_num - #{item.num,jdbcType=BIGINT},
+                    lock_num = lock_num + #{item.num,jdbcType=BIGINT},
+                </if>
+                <!--减库存并解锁  库存数量减少，可售库存数量不变 -->
+                <if test="item.stockStatusCode == 3">
+                    lock_num = lock_num - #{item.num,jdbcType=BIGINT},
+                    authentic_num = authentic_num - #{item.num,jdbcType=BIGINT},
+                    inventory_num = inventory_num - #{item.num,jdbcType=BIGINT},
+                </if>
+                <!--减少解锁库存 -->
+                <if test="item.stockStatusCode == 4">
+                    available_num = available_num + #{item.num,jdbcType=BIGINT},
+                    lock_num = lock_num - #{item.num,jdbcType=BIGINT},
+                </if>
+                <!--减库存 商品库存减少。不经锁定，直接减少库存 -->
+                <if test="item.stockStatusCode == 5">
+                    authentic_num = authentic_num - #{item.num,jdbcType=BIGINT},
+                    available_num = available_num - #{item.num,jdbcType=BIGINT},
+                    inventory_num = inventory_num - #{item.num,jdbcType=BIGINT},
+                </if>
+            </set>
+            <where>
+                <if test="item.companyCode != null and item.companyCode != ''">
+                    company_code = #{item.companyCode, jdbcType=VARCHAR}
+                </if>
+                <if test="item.supplyCode != null and item.supplyCode != ''">
+                    and new_delivery = #{item.supplyCode, jdbcType=VARCHAR}
+                </if>
+                <if test="item.transportCenterCode != null and item.transportCenterCode != ''">
+                    and transport_center_code = #{item.transportCenterCode, jdbcType=VARCHAR}
+                </if>
+                <if test="item.warehouseCode != null and item.warehouseCode != ''">
+                    and warehouse_code = #{item.warehouseCode, jdbcType=VARCHAR}
+                </if>
+                <if test="item.purchaseGroupCode != null and item.purchaseGroupCode != ''">
+                    and purchase_group_code = #{item.purchaseGroupCode, jdbcType=VARCHAR}
+                </if>
+                <if test="item.skuCode != null and item.skuCode != ''">
+                    and sku_code = #{item.skuCode, jdbcType=VARCHAR}
+                </if>
+            </where>
+        </foreach>
+    </update>
+
+    <select id="selectTransportStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
+        select
+        st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,
+        st.warehouse_code,st.warehouse_name,st.warehouse_type,
+        st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
+        sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
+        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.sale_status,psc.purchase_status,ps.spec,ps.unit_code,ps.product_category_code,ps.product_category_name
+        from stock as st
+        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code AND CONVERT(psc.warehouse_code USING utf8) COLLATE utf8_unicode_ci  = st.warehouse_code
+        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
+        left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and st.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and st.sku_name like concat('%', #{skuName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="saleStatus!=null">
+            and psc.sale_status=#{saleStatus}
+        </if>
+        <if test="purchaseStatus!=null">
+            and psc.purchase_status=#{purchaseStatus}
+        </if>
+        <if test="propertyText !=null and propertyText!=''">
+            and ps.product_property_code like concat('%',#{propertyText},'%')
+        </if>
+        <if test="brandText!=null and brandText!=''">
+            and ps.product_brand_code like concat('%',#{brandText},'%')
+        </if>
+        <if test="productCategoryText!=null and productCategoryText!=''">
+            and ps.product_category_code like concat('%',#{productCategoryText},'%')
+        </if>
+        <if test="inventoryBeginNum!=null">
+            and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+        </if>
+        <if test="inventoryFinishNum!=null">
+            and st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+        </if>
+        <if test="availableBeginNum!=null">
+            and st.available_num <![CDATA[>=]]> #{availableBeginNum}
+        </if>
+        <if test="availableFinishNum!=null">
+            and st.available_num <![CDATA[<=]]> #{availableFinishNum}
+        </if>
+        <if test="transportCenterText!=null and transportCenterText!=''">
+            and st.transport_center_code like concat('%',#{transportCenterText},'%')
+        </if>
+        <if test="companyCode!=null and companyCode!=''">
+            and st.company_code=#{companyCode}
+        </if>
+        group by st.transport_center_code,st.sku_code
+        limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+
+    <select id="countTransportStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        st.sku_code
+        from stock as st
+        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
+        AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
+        AND CONVERT(psc.warehouse_code USING utf8) COLLATE utf8_unicode_ci = st.warehouse_code
+        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
+        left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and st.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and st.sku_name like concat('%', #{skuName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="saleStatus!=null">
+            and psc.sale_status=#{saleStatus}
+        </if>
+        <if test="purchaseStatus!=null">
+            and psc.purchase_status=#{purchaseStatus}
+        </if>
+        <if test="propertyText !=null and propertyText!=''">
+            and ps.product_property_code like concat('%',#{propertyText},'%')
+        </if>
+        <if test="brandText!=null and brandText!=''">
+            and ps.product_brand_code like concat('%',#{brandText},'%')
+        </if>
+        <if test="productCategoryText!=null and productCategoryText!=''">
+            and ps.product_category_code like concat('%',#{productCategoryText},'%')
+        </if>
+        <if test="inventoryBeginNum!=null">
+            and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+        </if>
+        <if test="inventoryFinishNum!=null">
+            and st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+        </if>
+        <if test="availableBeginNum!=null">
+            and st.available_num <![CDATA[>=]]> #{availableBeginNum}
+        </if>
+        <if test="availableFinishNum!=null">
+            and st.available_num <![CDATA[<=]]> #{availableFinishNum}
+        </if>
+        <if test="transportCenterText!=null and transportCenterText!=''">
+            and st.transport_center_code like concat('%',#{transportCenterText},'%')
+        </if>
+        <if test="companyCode!=null and companyCode!=''">
+            and st.company_code=#{companyCode}
+        </if>
+        group by st.sku_code,st.transport_center_code
+        ) as tmp
+    </select>
+
+    <select id="selectStorehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
+        select
+        st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,
+        st.warehouse_code,st.warehouse_name,st.warehouse_type,
+        st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
+        sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
+        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.sale_status,psc.purchase_status,ps.spec,ps.unit_code,ps.product_category_code,ps.product_category_name
+        from stock as st
+        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code AND CONVERT(psc.warehouse_code USING utf8) COLLATE utf8_unicode_ci  = st.warehouse_code
+        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
+        left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and st.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and st.sku_name like concat('%', #{skuName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="saleStatus!=null">
+            and psc.sale_status=#{saleStatus}
+        </if>
+        <if test="purchaseStatus!=null">
+            and psc.purchase_status=#{purchaseStatus}
+        </if>
+        <if test="propertyText !=null and propertyText!=''">
+            and ps.product_property_code like concat('%',#{propertyText},'%')
+        </if>
+        <if test="brandText!=null and brandText!=''">
+            and ps.product_brand_code like concat('%',#{brandText},'%')
+        </if>
+        <if test="productCategoryText!=null and productCategoryText!=''">
+            and ps.product_category_code like concat('%',#{productCategoryText},'%')
+        </if>
+        <if test="inventoryBeginNum!=null">
+            and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+        </if>
+        <if test="inventoryFinishNum!=null">
+            and st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+        </if>
+        <if test="availableBeginNum!=null">
+            and st.available_num <![CDATA[>=]]> #{availableBeginNum}
+        </if>
+        <if test="availableFinishNum!=null">
+            and st.available_num <![CDATA[<=]]> #{availableFinishNum}
+        </if>
+        <if test="transportCenterText!=null and transportCenterText!=''">
+            and st.transport_center_code like concat('%',#{transportCenterText},'%')
+        </if>
+        <if test="companyCode!=null and companyCode!=''">
+            and st.company_code=#{companyCode}
+        </if>
+        <if test="warehouseText!=null and warehouseText!=''">
+            and st.warehouse_code like concat('%',#{warehouseText},'%')
+        </if>
+        group by st.warehouse_code,st.sku_code
+        limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countStorehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        st.sku_code
+        from stock as st
+        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
+        AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
+        AND CONVERT(psc.warehouse_code USING utf8) COLLATE utf8_unicode_ci = st.warehouse_code
+        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
+        left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and st.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and st.sku_name like concat('%', #{skuName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="saleStatus!=null">
+            and psc.sale_status=#{saleStatus}
+        </if>
+        <if test="purchaseStatus!=null">
+            and psc.purchase_status=#{purchaseStatus}
+        </if>
+        <if test="propertyText !=null and propertyText!=''">
+            and ps.product_property_code like concat('%',#{propertyText},'%')
+        </if>
+        <if test="brandText!=null and brandText!=''">
+            and ps.product_brand_code like concat('%',#{brandText},'%')
+        </if>
+        <if test="productCategoryText!=null and productCategoryText!=''">
+            and ps.product_category_code like concat('%',#{productCategoryText},'%')
+        </if>
+        <if test="inventoryBeginNum!=null">
+            and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+        </if>
+        <if test="inventoryFinishNum!=null">
+            and st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+        </if>
+        <if test="availableBeginNum!=null">
+            and st.available_num <![CDATA[>=]]> #{availableBeginNum}
+        </if>
+        <if test="availableFinishNum!=null">
+            and st.available_num <![CDATA[<=]]> #{availableFinishNum}
+        </if>
+        <if test="transportCenterText!=null and transportCenterText!=''">
+            and st.transport_center_code like concat('%',#{transportCenterText},'%')
+        </if>
+        <if test="companyCode!=null and companyCode!=''">
+            and st.company_code=#{companyCode}
+        </if>
+        <if test="warehouseText!=null and warehouseText!=''">
+            and st.warehouse_code like concat('%',#{warehouseText},'%')
+        </if>
+        group by st.sku_code,st.warehouse_code
+        ) as tmp
+    </select>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into stock(
+        stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,
+        warehouse_type,sku_code,sku_name,inventory_num,available_num,lock_num,purchase_way_num,allocation_way_num,total_way_num,
+        new_delivery,new_delivery_name,new_purchase_price,purchase_group_code,purchase_group_name,stock_unit_code,stock_unit_name,
+        tax_price,tax_rate,create_time,create_by,update_time,update_by
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.stockCode},
+            #{item.companyCode},
+            #{item.companyName},
+            #{item.transportCenterCode},
+            #{item.transportCenterName},
+            #{item.warehouseCode},
+            #{item.warehouseName},
+            #{item.warehouseType},
+            #{item.skuCode},
+            #{item.skuName},
+            #{item.inventoryNum},
+            #{item.availableNum},
+            #{item.lockNum},
+            #{item.purchaseWayNum},
+            #{item.allocationWayNum},
+            #{item.totalWayNum},
+            #{item.newDelivery},
+            #{item.newDeliveryName},
+            #{item.newPurchasePrice},
+            #{item.purchaseGroupCode},
+            #{item.purchaseGroupName},
+            #{item.stockUnitCode},
+            #{item.stockUnitName},
+            #{item.taxPrice},
+            #{item.taxRate},
+            #{item.createTime},
+            #{item.createBy},
+            #{item.updateTime},
+            #{item.updateBy}
+            )
+        </foreach>
+    </insert>
+    <update id="updateByPrimaryKey">
+        update stock
+        <set>
+            <if test="stockCode!=null and stockCode!=''">
+                stock_code=#{stockCode},
+            </if>
+            <if test="companyCode!=null and companyCode!=''">
+                company_code=#{companyCode},
+            </if>
+            <if test="companyName!=null and companyName!=''">
+                company_name=#{companyName},
+            </if>
+            <if test="transportCenterCode!=null and transportCenterCode!=''">
+                transport_center_code=#{transportCenterCode},
+            </if>
+            <if test="transportCenterName!=null and transportCenterName!=''">
+                transport_center_name=#{transportCenterName},
+            </if>
+            <if test="warehouseCode!=null and warehouseCode!=''">
+                warehouse_code=#{warehouseCode},
+            </if>
+            <if test="warehouseName!=null and warehouseName!=''">
+                warehouse_name=#{warehouseName},
+            </if>
+            <if test="warehouseType!=null and warehouseType!=''">
+                warehouse_type=#{warehouseType},
+            </if>
+            <if test="skuCode!=null and skuCode!=''">
+                sku_code=#{skuCode},
+            </if>
+            <if test="skuName!=null and skuName!=''">
+                sku_name=#{skuName},
+            </if>
+            <if test="inventoryNum!=null">
+                inventory_num=#{inventoryNum},
+            </if>
+            <if test="availableNum!=null">
+                available_num=#{availableNum},
+            </if>
+            <if test="lockNum!=null">
+                lock_num=#{lockNum},
+            </if>
+            <if test="purchaseWayNum!=null">
+                purchase_way_num=#{purchaseWayNum},
+            </if>
+            <if test="allocationWayNum!=null">
+                allocation_way_num=#{allocationWayNum},
+            </if>
+            <if test="totalWayNum!=null">
+                total_way_num=#{totalWayNum},
+            </if>
+            <if test="newDelivery!=null and newDelivery!=''">
+                new_delivery=#{newDelivery},
+            </if>
+            <if test="newDeliveryName!=null and newDeliveryName!=''">
+                new_delivery_name=#{newDeliveryName},
+            </if>
+            <if test="newPurchasePrice!=null">
+                new_purchase_price=#{newPurchasePrice},
+            </if>
+            <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+                purchase_group_code=#{purchaseGroupCode},
+            </if>
+            <if test="purchaseGroupName!=null and purchaseGroupName!=''">
+                purchase_group_name=#{purchaseGroupName},
+            </if>
+            <if test="stockUnitCode!=null and stockUnitCode!=''">
+                stock_unit_code=#{stockUnitCode},
+            </if>
+            <if test="stockUnitName!=null and stockUnitName!=''">
+                stock_unit_name=#{stockUnitName},
+            </if>
+            <if test="taxPrice!=null">
+                tax_price=#{taxPrice},
+            </if>
+            <if test="createTime!=null">
+                create_time=#{createTime},
+            </if>
+            <if test="createBy!=null and createBy!=''">
+                create_by=#{createBy},
+            </if>
+            <if test="updateTime!=null">
+                update_time=#{updateTime},
+            </if>
+            <if test="updateBy!=null and updateBy!=''">
+                update_by=#{updateBy},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+    <select id="selectListByCodesAndSkuCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from stock
+        where company_code in
+        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
+        #{item.companyCode}
+        </foreach>
+        and transport_center_code in
+        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
+            #{item.transportCenterCode}
+        </foreach>
+        and warehouse_code in
+        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
+            #{item.warehouseCode}
+        </foreach>
+        and sku_code in
+        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
+            #{item.skuCode}
+        </foreach>
+    </select>
+    <update id="updateBatch">
+        <foreach collection="stocks" item="item" separator=";">
+            update stock
+            <set>
+                <if test="item.stockCode!=null and item.stockCode!=''">
+                    stock_code=#{item.stockCode},
+                </if>
+                <if test="item.companyCode!=null and item.companyCode!=''">
+                    company_code=#{item.companyCode},
+                </if>
+                <if test="item.companyName!=null and item.companyName!=''">
+                    company_name=#{item.companyName},
+                </if>
+                <if test="item.transportCenterCode!=null and item.transportCenterCode!=''">
+                    transport_center_code=#{item.transportCenterCode},
+                </if>
+                <if test="item.transportCenterName!=null and item.transportCenterName!=''">
+                    transport_center_name=#{item.transportCenterName},
+                </if>
+                <if test="item.warehouseCode!=null and item.warehouseCode!=''">
+                    warehouse_code=#{item.warehouseCode},
+                </if>
+                <if test="item.warehouseName!=null and item.warehouseName!=''">
+                    warehouse_name=#{item.warehouseName},
+                </if>
+                <if test="item.warehouseType!=null and item.warehouseType!=''">
+                    warehouse_type=#{item.warehouseType},
+                </if>
+                <if test="item.skuCode!=null and item.skuCode!=''">
+                    sku_code=#{item.skuCode},
+                </if>
+                <if test="item.skuName!=null and item.skuName!=''">
+                    sku_name=#{item.skuName},
+                </if>
+                <if test="item.inventoryNum!=null">
+                    inventory_num=#{item.inventoryNum},
+                </if>
+                <if test="item.availableNum!=null">
+                    available_num=#{item.availableNum},
+                </if>
+                <if test="item.lockNum!=null">
+                    lock_num=#{item.lockNum},
+                </if>
+                <if test="item.purchaseWayNum!=null">
+                    purchase_way_num=#{item.purchaseWayNum},
+                </if>
+                <if test="item.allocationWayNum!=null">
+                    allocation_way_num=#{item.allocationWayNum},
+                </if>
+                <if test="item.totalWayNum!=null">
+                    total_way_num=#{item.totalWayNum},
+                </if>
+                <if test="item.newDelivery!=null and item.newDelivery!=''">
+                    new_delivery=#{item.newDelivery},
+                </if>
+                <if test="item.newDeliveryName!=null and item.newDeliveryName!=''">
+                    new_delivery_name=#{item.newDeliveryName},
+                </if>
+                <if test="item.newPurchasePrice!=null">
+                    new_purchase_price=#{item.newPurchasePrice},
+                </if>
+                <if test="item.purchaseGroupCode!=null and item.purchaseGroupCode!=''">
+                    purchase_group_code=#{item.purchaseGroupCode},
+                </if>
+                <if test="item.purchaseGroupName!=null and item.purchaseGroupName!=''">
+                    purchase_group_name=#{item.purchaseGroupName},
+                </if>
+                <if test="item.stockUnitCode!=null and item.stockUnitCode!=''">
+                    stock_unit_code=#{item.stockUnitCode},
+                </if>
+                <if test="item.stockUnitName!=null and item.stockUnitName!=''">
+                    stock_unit_name=#{item.stockUnitName},
+                </if>
+                <if test="item.taxPrice!=null">
+                    tax_price=#{item.taxPrice},
+                </if>
+                <if test="item.createTime!=null">
+                    create_time=#{item.createTime},
+                </if>
+                <if test="item.createBy!=null and item.createBy!=''">
+                    create_by=#{item.createBy},
+                </if>
+                <if test="item.updateTime!=null">
+                    update_time=#{item.updateTime},
+                </if>
+                <if test="item.updateBy!=null and item.updateBy!=''">
+                    update_by=#{item.updateBy},
+                </if>
+            </set>
+            where id=#{item.id}
+        </foreach>
+    </update>
+    <select id="getLatestPurchasePriceBySkuCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        stock
+        WHERE
+        del_flag = 0
+        <if test="list != null and list.size > 0">
+            AND sku_code IN
+            <foreach collection="list" item="item" open="(" separator="," close=")">
+                #{item,jdbcType=VARCHAR}
+            </foreach>
+        </if>
+    </select>
+    <select id="selectByQueryList" resultMap="BaseResultMap">
+        select  a.id as id,
+                a.warehouse_type as warehouse_type,
+                a.warehouse_code as warehouse_code,
+                a.warehouse_name as warehouse_name,
+                a.transport_center_code as transport_center_code,
+                a.transport_center_name as transport_center_name,
+                a.sku_code as sku_code,
+               sum(a.available_num) as available_num
+        from stock a
+               left join product_sku_config b
+                         on b.sku_code = a.sku_code and b.transport_center_code = a.transport_center_code and
+                            b.warehouse_code = a.warehouse_code
+        where a.transport_center_code in
+        <foreach collection="centerCodes" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+          and a.warehouse_code in
+        <foreach collection="warehouseCodes" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+          and a.sku_code in
+        <foreach collection="skuCodes" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+          and b.sale_status = 1
+          and a.company_code = #{companyCode,jdbcType=VARCHAR}
+        group by a.warehouse_code, a.sku_code, a.transport_center_code
+    </select>
+    <select id="selectStockLogs" resultMap="StockFlowMap">
+        select <include refid="Stock_flow_Column"></include> from stock_flow where stock_code=#{stockCode} order by id desc
+    </select>
+    <select id="selectGroup" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>,count(1) from stock group by transport_center_code,warehouse_code
+    </select>
+    <select id="selectListByWareHouseCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from stock where warehouse_code=#{warehouseCode}
+    </select>
+</mapper>

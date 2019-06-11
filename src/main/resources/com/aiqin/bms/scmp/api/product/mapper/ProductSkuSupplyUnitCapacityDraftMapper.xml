@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitCapacityDraftMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
+    <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
+    <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
+    <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
+    <result column="out_put" jdbcType="BIGINT" property="outPut" />
+    <result column="need_days" jdbcType="BIGINT" property="needDays" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+
+  <resultMap id="RespResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
+    <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
+    <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
+    <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
+    <result column="out_put" jdbcType="BIGINT" property="outPut" />
+    <result column="need_days" jdbcType="BIGINT" property="needDays" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, supply_unit_code, supply_unit_name, product_sku_code, product_sku_name, out_put, 
+    need_days, del_flag, create_time, create_by, update_time, update_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku_supply_unit_capacity_draft
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getDraftList" parameterType="java.util.Map" resultMap="RespResultMap">
+
+    select
+      <include refid="Base_Column_List"/>
+    from product_sku_supply_unit_capacity_draft
+    where 1=1
+    and supply_unit_code = #{supplyUnitCode,jdbcType=VARCHAR}
+    and product_sku_code = #{productSkuCode,jdbcType=VARCHAR}
+
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_sku_supply_unit_capacity_draft
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <delete id="delete" parameterType="java.util.List">
+    delete from product_sku_supply_unit_capacity_draft where product_sku_code in
+    <foreach collection="list" item="skuCode" separator="," open="(" close=")">
+      #{skuCode,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft">
+    insert into product_sku_supply_unit_capacity_draft (id, supply_unit_code, supply_unit_name, 
+      product_sku_code, product_sku_name, out_put, 
+      need_days, del_flag, create_time, 
+      create_by, update_time, update_by
+      )
+    values (#{id,jdbcType=BIGINT}, #{supplyUnitCode,jdbcType=VARCHAR}, #{supplyUnitName,jdbcType=VARCHAR}, 
+      #{productSkuCode,jdbcType=VARCHAR}, #{productSkuName,jdbcType=VARCHAR}, #{outPut,jdbcType=BIGINT}, 
+      #{needDays,jdbcType=BIGINT}, #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft">
+    insert into product_sku_supply_unit_capacity_draft
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="supplyUnitCode != null">
+        supply_unit_code,
+      </if>
+      <if test="supplyUnitName != null">
+        supply_unit_name,
+      </if>
+      <if test="productSkuCode != null">
+        product_sku_code,
+      </if>
+      <if test="productSkuName != null">
+        product_sku_name,
+      </if>
+      <if test="outPut != null">
+        out_put,
+      </if>
+      <if test="needDays != null">
+        need_days,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="supplyUnitCode != null">
+        #{supplyUnitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyUnitName != null">
+        #{supplyUnitName,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuCode != null">
+        #{productSkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuName != null">
+        #{productSkuName,jdbcType=VARCHAR},
+      </if>
+      <if test="outPut != null">
+        #{outPut,jdbcType=BIGINT},
+      </if>
+      <if test="needDays != null">
+        #{needDays,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="saveBatch" parameterType="java.util.List">
+    insert into product_sku_supply_unit_capacity_draft (supply_unit_code, supply_unit_name,
+      product_sku_code, product_sku_name, out_put,
+      need_days, del_flag, create_time,
+      create_by, update_time, update_by
+    )
+    values
+    <foreach collection="list" item="item" separator="," open="" close="">
+      (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
+      #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR},
+      #{item.outPut,jdbcType=BIGINT},#{item.needDays,jdbcType=BIGINT},
+      #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR}
+      )
+    </foreach>
+
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft">
+    update product_sku_supply_unit_capacity_draft
+    <set>
+      <if test="supplyUnitCode != null">
+        supply_unit_code = #{supplyUnitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyUnitName != null">
+        supply_unit_name = #{supplyUnitName,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuCode != null">
+        product_sku_code = #{productSkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuName != null">
+        product_sku_name = #{productSkuName,jdbcType=VARCHAR},
+      </if>
+      <if test="outPut != null">
+        out_put = #{outPut,jdbcType=BIGINT},
+      </if>
+      <if test="needDays != null">
+        need_days = #{needDays,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft">
+    update product_sku_supply_unit_capacity_draft
+    set supply_unit_code = #{supplyUnitCode,jdbcType=VARCHAR},
+      supply_unit_name = #{supplyUnitName,jdbcType=VARCHAR},
+      product_sku_code = #{productSkuCode,jdbcType=VARCHAR},
+      product_sku_name = #{productSkuName,jdbcType=VARCHAR},
+      out_put = #{outPut,jdbcType=BIGINT},
+      need_days = #{needDays,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

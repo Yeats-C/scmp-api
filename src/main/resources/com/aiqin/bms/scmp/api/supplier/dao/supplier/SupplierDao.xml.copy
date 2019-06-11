@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierDao">
+  <resultMap id="SupplierListMap" type="com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplierListRespVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supplier_abbreviation" jdbcType="VARCHAR" property="abbreviation" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+    <result column="mobile_phone" jdbcType="INTEGER" property="mobilePhone" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="logic_delete" jdbcType="VARCHAR" property="logicDelete" />
+  </resultMap>
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supplier_abbreviation" jdbcType="VARCHAR" property="supplierAbbreviation" />
+    <result column="supplier_type" jdbcType="VARCHAR" property="supplierType" />
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="district_id" jdbcType="VARCHAR" property="districtId" />
+    <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="fax" jdbcType="VARCHAR" property="fax" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="business_registration_no" jdbcType="VARCHAR" property="businessRegistrationNo" />
+    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital" />
+    <result column="organization_code" jdbcType="VARCHAR" property="organizationCode" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="purchasing_group_code" jdbcType="VARCHAR" property="purchasingGroupCode" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="company_website" jdbcType="VARCHAR" property="companyWebsite" />
+    <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
+    <result column="apply_supplier_code" jdbcType="BIGINT" property="applySupplierCode" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+  </resultMap>
+  <select id="getSupplierList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierReqVO" resultMap="SupplierListMap">
+    SELECT
+      id,
+      supplier_name,
+      supplier_abbreviation,
+      supplier_code,
+      contact_name,
+      mobile_phone,
+      CASE del_flag WHEN 1 THEN '是' WHEN 0 THEN '否' ELSE '否' END logic_delete,
+      create_time,
+      create_by
+    FROM supplier
+    WHERE del_flag=0
+    <if test="supplierCode!=null">
+      and supplier_code LIKE concat('%',#{supplierCode,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="supplierNameOrShort!=null">
+      and (supplier_name LIKE concat('%',#{supplierNameOrShort,jdbcType=VARCHAR},'%') or supplier_abbreviation LIKE concat('%',#{supplierNameOrShort,jdbcType=VARCHAR},'%'))
+    </if>
+    <if test="purchasingGroupCode!=null">
+      and purchasing_group_code LIKE concat('%',#{purchasingGroupCode,jdbcType=VARCHAR},'%')
+    </if>
+    ORDER by update_time desc
+  </select>
+  <select id="checkName" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT COUNT(1) from supplier WHERE del_flag=0
+    <if test="name != null">
+      AND supplier_name =#{name,jdbcType=VARCHAR}
+    </if>
+    <if test="code != null">
+      and supplier_code !=#{code,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="getSupplierByApplyCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * from supplier WHERE apply_supplier_code =#{applyCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

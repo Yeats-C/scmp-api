@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSaleAreaMainDraftMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMainDraft">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <id column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="official_code" jdbcType="VARCHAR" property="officialCode" />
+    <result column="be_disable" jdbcType="INTEGER" property="beDisable" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="apply_type" jdbcType="INTEGER" property="applyType" />
+    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="ext_field_1" jdbcType="VARCHAR" property="extField1" />
+    <result column="ext_field_2" jdbcType="VARCHAR" property="extField2" />
+    <result column="ext_field_3" jdbcType="VARCHAR" property="extField3" />
+    <result column="ext_field_4" jdbcType="TIMESTAMP" property="extField4" />
+    <result column="ext_field_5" jdbcType="INTEGER" property="extField5" />
+    <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, code, name, official_code, be_disable, create_by, create_time, update_by, update_time, 
+    apply_type, company_code, company_name, ext_field_1, ext_field_2, ext_field_3, ext_field_4, 
+    ext_field_5, ext_field_6
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku_sale_area_main_draft
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <resultMap id="selectAllDraftData" type="com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaMainRespVO">
+    <id column="acode"  property="code" />
+    <result column="aname"  property="name" />
+    <result column="abe_disable"  property="beDisable" />
+    <result column="acreate_by" property="createBy" />
+    <result column="acreate_time"  property="createTime" />
+    <result column="aupdate_by"  property="updateBy" />
+    <result column="aupdate_time"  property="updateTime" />
+    <result column="aapply_type"  property="applyType" />
+    <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO">
+      <result column="bsku_code"  property="skuCode" />
+      <result column="bsku_name"  property="skuName" />
+      <result column="bbe_disable"  property="beDisable" />
+      <result column="bcategories_supply_channels_code"  property="categoriesSupplyChannelsCode" />
+      <result column="bcategories_supply_channels_name"  property="categoriesSupplyChannelsName" />
+      <result column="bdirect_delivery_supplier_code"  property="directDeliverySupplierCode" />
+      <result column="bdirect_delivery_supplier_name"  property="directDeliverySupplierName" />
+    </collection>
+    <collection property="areaList" ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaInfoRespVO">
+      <result column="ctype"  property="type" />
+      <result column="cstatus"  property="status" />
+      <result column="cname"  property="name" />
+      <result column="ccode"  property="code" />
+    </collection>
+  </resultMap>
+    <select id="selectAllDraftData" resultMap="selectAllDraftData">
+            select
+             a.code acode,
+             a.name aname,
+             a.be_disable abe_disable,
+             a.create_by acreate_by,
+             a.create_time acreate_time,
+             a.update_by aupdate_by,
+             a.update_time aupdate_time,
+             a.apply_type aapply_type,
+             b.sku_code bsku_code,
+             b.sku_name bsku_name,
+             b.be_disable bbe_disable,
+             b.categories_supply_channels_code bcategories_supply_channels_code,
+             b.categories_supply_channels_name bcategories_supply_channels_name,
+             b.direct_delivery_supplier_code bdirect_delivery_supplier_code,
+             b.direct_delivery_supplier_name bdirect_delivery_supplier_name,
+             c.type ctype,
+             c.status cstatus,
+             c.name cname,
+             c.code ccode
+      from product_sku_sale_area_main_draft a
+             left join product_sku_sale_area_draft b
+                       on a.code = b.code
+             left join product_sku_sale_area_info_draft c
+                       on a.code = c.main_code
+      where a.company_code = #{companyCode};
+    </select>
+  <resultMap id="selectDataByCodes" type="com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO">
+    <!--<id column="aid" jdbcType="BIGINT" property="id" />-->
+    <id column="acode" jdbcType="VARCHAR" property="code" />
+    <result column="aname" jdbcType="VARCHAR" property="name" />
+    <result column="aofficial_code" jdbcType="VARCHAR" property="officialCode" />
+    <result column="abe_disable" jdbcType="INTEGER" property="beDisable" />
+    <result column="acreate_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="acreate_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="aupdate_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="aupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="aapply_type" jdbcType="INTEGER" property="applyType" />
+    <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="aext_field_1" jdbcType="VARCHAR" property="extField1" />
+    <result column="aext_field_2" jdbcType="VARCHAR" property="extField2" />
+    <result column="aext_field_3" jdbcType="VARCHAR" property="extField3" />
+    <result column="aext_field_4" jdbcType="TIMESTAMP" property="extField4" />
+    <result column="aext_field_5" jdbcType="INTEGER" property="extField5" />
+    <result column="aext_field_6" jdbcType="BIGINT" property="extField6" />
+    <collection property="channelList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaChannelDraft">
+      <!--<id column="bid" jdbcType="BIGINT" property="id" />-->
+      <result column="bcode" jdbcType="VARCHAR" property="code" />
+      <result column="bprice_channel_code" jdbcType="VARCHAR" property="priceChannelCode" />
+      <result column="bprice_channel_name" jdbcType="VARCHAR" property="priceChannelName" />
+      <result column="bcompany_code" jdbcType="VARCHAR" property="companyCode" />
+      <result column="bcompany_name" jdbcType="VARCHAR" property="companyName" />
+      <result column="bext_field_1" jdbcType="VARCHAR" property="extField1" />
+      <result column="bext_field_2" jdbcType="VARCHAR" property="extField2" />
+      <result column="bext_field_3" jdbcType="VARCHAR" property="extField3" />
+      <result column="bext_field_4" jdbcType="TIMESTAMP" property="extField4" />
+      <result column="bext_field_5" jdbcType="INTEGER" property="extField5" />
+      <result column="bext_field_6" jdbcType="BIGINT" property="extField6" />
+    </collection>
+    <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaDraft">
+      <!--<id column="cid" jdbcType="BIGINT" property="id" />-->
+      <result column="ccode" jdbcType="VARCHAR" property="code" />
+      <result column="csku_code" jdbcType="VARCHAR" property="skuCode" />
+      <result column="csku_name" jdbcType="VARCHAR" property="skuName" />
+      <result column="cbe_disable" jdbcType="INTEGER" property="beDisable" />
+      <result column="ccategories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+      <result column="ccategories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+      <result column="cdirect_delivery_supplier_code" jdbcType="VARCHAR" property="directDeliverySupplierCode" />
+      <result column="cdirect_delivery_supplier_name" jdbcType="VARCHAR" property="directDeliverySupplierName" />
+      <result column="ccreate_by" jdbcType="VARCHAR" property="createBy" />
+      <result column="ccreate_time" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="cupdate_by" jdbcType="VARCHAR" property="updateBy" />
+      <result column="cupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+      <result column="ccompany_code" jdbcType="VARCHAR" property="companyCode" />
+      <result column="ccompany_name" jdbcType="VARCHAR" property="companyName" />
+      <result column="cext_field_1" jdbcType="VARCHAR" property="extField1" />
+      <result column="cext_field_2" jdbcType="VARCHAR" property="extField2" />
+      <result column="cext_field_3" jdbcType="VARCHAR" property="extField3" />
+      <result column="cext_field_4" jdbcType="TIMESTAMP" property="extField4" />
+      <result column="cext_field_5" jdbcType="INTEGER" property="extField5" />
+      <result column="cext_field_6" jdbcType="BIGINT" property="extField6" />
+    </collection>
+    <collection property="areaList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaInfoDraft">
+      <!--<id column="did" jdbcType="BIGINT" property="id" />-->
+      <result column="dmain_code" jdbcType="VARCHAR" property="mainCode" />
+      <result column="dsku_code" jdbcType="VARCHAR" property="skuCode" />
+      <result column="dtype" jdbcType="INTEGER" property="type" />
+      <result column="dstatus" jdbcType="INTEGER" property="status" />
+      <result column="dname" jdbcType="VARCHAR" property="name" />
+      <result column="dcode" jdbcType="VARCHAR" property="code" />
+      <result column="dcompany_code" jdbcType="VARCHAR" property="companyCode" />
+      <result column="dcompany_name" jdbcType="VARCHAR" property="companyName" />
+      <result column="dprovince_id" jdbcType="VARCHAR" property="provinceId" />
+      <result column="dext_field_1" jdbcType="VARCHAR" property="extField1" />
+      <result column="dext_field_2" jdbcType="VARCHAR" property="extField2" />
+      <result column="dext_field_3" jdbcType="VARCHAR" property="extField3" />
+      <result column="dext_field_4" jdbcType="TIMESTAMP" property="extField4" />
+      <result column="dext_field_5" jdbcType="INTEGER" property="extField5" />
+      <result column="dext_field_6" jdbcType="BIGINT" property="extField6" />
+    </collection>
+  </resultMap>
+  <select id="selectDataByCodes" resultMap="selectDataByCodes" parameterType="list">
+    select a.id aid,
+       a.code acode,
+       a.name aname,
+       a.official_code aofficial_code,
+       a.be_disable abe_disable,
+       a.create_by acreate_by,
+       a.create_time acreate_time,
+       a.update_by aupdate_by,
+       a.update_time aupdate_time,
+       a.apply_type aapply_type,
+       a.company_code acompany_code,
+       a.company_name acompany_name,
+       a.ext_field_1 aext_field_1,
+       a.ext_field_2 aext_field_2,
+       a.ext_field_3 aext_field_3,
+       a.ext_field_4 aext_field_4,
+       a.ext_field_5 aext_field_5,
+       a.ext_field_6 aext_field_6,
+       b.id bid,
+       b.code bcode,
+       b.price_channel_code bprice_channel_code,
+       b.price_channel_name bprice_channel_name,
+       b.company_code bcompany_code,
+       b.company_name bcompany_name,
+       b.ext_field_1 bext_field_1,
+       b.ext_field_2 bext_field_2,
+       b.ext_field_3 bext_field_3,
+       b.ext_field_4 bext_field_4,
+       b.ext_field_5 bext_field_5,
+       b.ext_field_6 bext_field_6,
+       c.id cid,
+       c.code ccode,
+       c.sku_code csku_code,
+       c.sku_name csku_name,
+       c.be_disable cbe_disable,
+       c.categories_supply_channels_code ccategories_supply_channels_code,
+       c.categories_supply_channels_name ccategories_supply_channels_name,
+       c.direct_delivery_supplier_code cdirect_delivery_supplier_code,
+       c.direct_delivery_supplier_name cdirect_delivery_supplier_name,
+       c.create_by ccreate_by,
+       c.create_time ccreate_time,
+       c.update_by cupdate_by,
+       c.update_time cupdate_time,
+       c.company_code ccompany_code,
+       c.company_name ccompany_name,
+       c.ext_field_1 cext_field_1,
+       c.ext_field_2 cext_field_2,
+       c.ext_field_3 cext_field_3,
+       c.ext_field_4 cext_field_4,
+       c.ext_field_5 cext_field_5,
+       c.ext_field_6 cext_field_6,
+       d.id did,
+       d.main_code dmain_code,
+       d.sku_code dsku_code,
+       d.type dtype,
+       d.status dstatus,
+       d.name dname,
+       d.code dcode,
+       d.company_code dcompany_code,
+       d.company_name dcompany_name,
+       d.province_id dprovince_id,
+       d.ext_field_1 dext_field_1,
+       d.ext_field_2 dext_field_2,
+       d.ext_field_3 dext_field_3,
+       d.ext_field_4 dext_field_4,
+       d.ext_field_5 dext_field_5,
+       d.ext_field_6 dext_field_6
+from product_sku_sale_area_main_draft a
+       left join product_sku_sale_area_channel_draft b
+                 on a.code = b.code
+       left join product_sku_sale_area_draft c
+                 on a.code = b.code
+       left join product_sku_sale_area_info_draft d
+                 on a.code = d.main_code
+where a.code in
+    <foreach collection="items" item="item" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_sku_sale_area_main_draft
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteDraftBatchByCodes">
+      delete from product_sku_sale_area_main_draft
+       where code in
+       <foreach collection="items" separator="," close=")" open="(" item="item">
+           #{item}
+       </foreach>
+    </delete>
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMainDraft">
+    insert into product_sku_sale_area_main_draft (id, code, name, 
+      official_code, be_disable, create_by, 
+      create_time, update_by, update_time, 
+      apply_type, company_code, company_name, 
+      ext_field_1, ext_field_2, ext_field_3, 
+      ext_field_4, ext_field_5, ext_field_6
+      )
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{officialCode,jdbcType=VARCHAR}, #{beDisable,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{applyType,jdbcType=INTEGER}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{extField1,jdbcType=VARCHAR}, #{extField2,jdbcType=VARCHAR}, #{extField3,jdbcType=VARCHAR}, 
+      #{extField4,jdbcType=TIMESTAMP}, #{extField5,jdbcType=INTEGER}, #{extField6,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMainDraft">
+    insert into product_sku_sale_area_main_draft
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="officialCode != null">
+        official_code,
+      </if>
+      <if test="beDisable != null">
+        be_disable,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="applyType != null">
+        apply_type,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="extField1 != null">
+        ext_field_1,
+      </if>
+      <if test="extField2 != null">
+        ext_field_2,
+      </if>
+      <if test="extField3 != null">
+        ext_field_3,
+      </if>
+      <if test="extField4 != null">
+        ext_field_4,
+      </if>
+      <if test="extField5 != null">
+        ext_field_5,
+      </if>
+      <if test="extField6 != null">
+        ext_field_6,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="officialCode != null">
+        #{officialCode,jdbcType=VARCHAR},
+      </if>
+      <if test="beDisable != null">
+        #{beDisable,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyType != null">
+        #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="extField1 != null">
+        #{extField1,jdbcType=VARCHAR},
+      </if>
+      <if test="extField2 != null">
+        #{extField2,jdbcType=VARCHAR},
+      </if>
+      <if test="extField3 != null">
+        #{extField3,jdbcType=VARCHAR},
+      </if>
+      <if test="extField4 != null">
+        #{extField4,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extField5 != null">
+        #{extField5,jdbcType=INTEGER},
+      </if>
+      <if test="extField6 != null">
+        #{extField6,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMainDraft">
+    update product_sku_sale_area_main_draft
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="officialCode != null">
+        official_code = #{officialCode,jdbcType=VARCHAR},
+      </if>
+      <if test="beDisable != null">
+        be_disable = #{beDisable,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyType != null">
+        apply_type = #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="extField1 != null">
+        ext_field_1 = #{extField1,jdbcType=VARCHAR},
+      </if>
+      <if test="extField2 != null">
+        ext_field_2 = #{extField2,jdbcType=VARCHAR},
+      </if>
+      <if test="extField3 != null">
+        ext_field_3 = #{extField3,jdbcType=VARCHAR},
+      </if>
+      <if test="extField4 != null">
+        ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extField5 != null">
+        ext_field_5 = #{extField5,jdbcType=INTEGER},
+      </if>
+      <if test="extField6 != null">
+        ext_field_6 = #{extField6,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMainDraft">
+    update product_sku_sale_area_main_draft
+    set name = #{name,jdbcType=VARCHAR},
+      official_code = #{officialCode,jdbcType=VARCHAR},
+      be_disable = #{beDisable,jdbcType=INTEGER},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      apply_type = #{applyType,jdbcType=INTEGER},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      ext_field_1 = #{extField1,jdbcType=VARCHAR},
+      ext_field_2 = #{extField2,jdbcType=VARCHAR},
+      ext_field_3 = #{extField3,jdbcType=VARCHAR},
+      ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
+      ext_field_5 = #{extField5,jdbcType=INTEGER},
+      ext_field_6 = #{extField6,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

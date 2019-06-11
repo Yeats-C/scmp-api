@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.SupplierMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supplier_abbreviation" jdbcType="VARCHAR" property="supplierAbbreviation" />
+    <result column="supplier_type" jdbcType="VARCHAR" property="supplierType" />
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="district_id" jdbcType="VARCHAR" property="districtId" />
+    <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="fax" jdbcType="VARCHAR" property="fax" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="business_registration_no" jdbcType="VARCHAR" property="businessRegistrationNo" />
+    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital" />
+    <result column="organization_code" jdbcType="VARCHAR" property="organizationCode" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="purchasing_group_code" jdbcType="VARCHAR" property="purchasingGroupCode" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="company_website" jdbcType="VARCHAR" property="companyWebsite" />
+    <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
+    <result column="apply_supplier_code" jdbcType="BIGINT" property="applySupplierCode" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, supplier_name, supplier_abbreviation, supplier_type, province_id, province_name, 
+    city_id, city_name, district_id, district_name, area, address, contact_name, mobile_phone, 
+    fax, email, business_registration_no, registered_capital, organization_code, note, 
+    purchasing_group_code, del_flag, supplier_code, create_time, create_by, update_time, 
+    update_by, phone, company_website, corporate_representative, apply_supplier_code, 
+    auditor_by, auditor_time, apply_status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from supplier
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from supplier
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    insert into supplier (id, supplier_name, supplier_abbreviation, 
+      supplier_type, province_id, province_name, 
+      city_id, city_name, district_id, 
+      district_name, area, address, 
+      contact_name, mobile_phone, fax, 
+      email, business_registration_no, registered_capital, 
+      organization_code, note, purchasing_group_code, 
+      del_flag, supplier_code, create_time, 
+      create_by, update_time, update_by, 
+      phone, company_website, corporate_representative, 
+      apply_supplier_code, auditor_by, auditor_time, 
+      apply_status)
+    values (#{id,jdbcType=BIGINT}, #{supplierName,jdbcType=VARCHAR}, #{supplierAbbreviation,jdbcType=VARCHAR}, 
+      #{supplierType,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
+      #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, 
+      #{districtName,jdbcType=VARCHAR}, #{area,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{contactName,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{fax,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{businessRegistrationNo,jdbcType=VARCHAR}, #{registeredCapital,jdbcType=BIGINT}, 
+      #{organizationCode,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{purchasingGroupCode,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=TINYINT}, #{supplierCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{phone,jdbcType=VARCHAR}, #{companyWebsite,jdbcType=VARCHAR}, #{corporateRepresentative,jdbcType=VARCHAR}, 
+      #{applySupplierCode,jdbcType=BIGINT}, #{auditorBy,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, 
+      #{applyStatus,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    insert into supplier
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="supplierName != null">
+        supplier_name,
+      </if>
+      <if test="supplierAbbreviation != null">
+        supplier_abbreviation,
+      </if>
+      <if test="supplierType != null">
+        supplier_type,
+      </if>
+      <if test="provinceId != null">
+        province_id,
+      </if>
+      <if test="provinceName != null">
+        province_name,
+      </if>
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="cityName != null">
+        city_name,
+      </if>
+      <if test="districtId != null">
+        district_id,
+      </if>
+      <if test="districtName != null">
+        district_name,
+      </if>
+      <if test="area != null">
+        area,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="contactName != null">
+        contact_name,
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone,
+      </if>
+      <if test="fax != null">
+        fax,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="businessRegistrationNo != null">
+        business_registration_no,
+      </if>
+      <if test="registeredCapital != null">
+        registered_capital,
+      </if>
+      <if test="organizationCode != null">
+        organization_code,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="purchasingGroupCode != null">
+        purchasing_group_code,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="companyWebsite != null">
+        company_website,
+      </if>
+      <if test="corporateRepresentative != null">
+        corporate_representative,
+      </if>
+      <if test="applySupplierCode != null">
+        apply_supplier_code,
+      </if>
+      <if test="auditorBy != null">
+        auditor_by,
+      </if>
+      <if test="auditorTime != null">
+        auditor_time,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierAbbreviation != null">
+        #{supplierAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierType != null">
+        #{supplierType,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null">
+        #{provinceId,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null">
+        #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null">
+        #{cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="districtId != null">
+        #{districtId,jdbcType=VARCHAR},
+      </if>
+      <if test="districtName != null">
+        #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="contactName != null">
+        #{contactName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null">
+        #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="businessRegistrationNo != null">
+        #{businessRegistrationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="registeredCapital != null">
+        #{registeredCapital,jdbcType=BIGINT},
+      </if>
+      <if test="organizationCode != null">
+        #{organizationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasingGroupCode != null">
+        #{purchasingGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="companyWebsite != null">
+        #{companyWebsite,jdbcType=VARCHAR},
+      </if>
+      <if test="corporateRepresentative != null">
+        #{corporateRepresentative,jdbcType=VARCHAR},
+      </if>
+      <if test="applySupplierCode != null">
+        #{applySupplierCode,jdbcType=BIGINT},
+      </if>
+      <if test="auditorBy != null">
+        #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    update supplier
+    <set>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierAbbreviation != null">
+        supplier_abbreviation = #{supplierAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierType != null">
+        supplier_type = #{supplierType,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null">
+        province_id = #{provinceId,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null">
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null">
+        city_id = #{cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="districtId != null">
+        district_id = #{districtId,jdbcType=VARCHAR},
+      </if>
+      <if test="districtName != null">
+        district_name = #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="area != null">
+        area = #{area,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="contactName != null">
+        contact_name = #{contactName,jdbcType=VARCHAR},
+      </if>
+      <if test="mobilePhone != null">
+        mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="fax != null">
+        fax = #{fax,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="businessRegistrationNo != null">
+        business_registration_no = #{businessRegistrationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="registeredCapital != null">
+        registered_capital = #{registeredCapital,jdbcType=BIGINT},
+      </if>
+      <if test="organizationCode != null">
+        organization_code = #{organizationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null">
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasingGroupCode != null">
+        purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="companyWebsite != null">
+        company_website = #{companyWebsite,jdbcType=VARCHAR},
+      </if>
+      <if test="corporateRepresentative != null">
+        corporate_representative = #{corporateRepresentative,jdbcType=VARCHAR},
+      </if>
+      <if test="applySupplierCode != null">
+        apply_supplier_code = #{applySupplierCode,jdbcType=BIGINT},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier">
+    update supplier
+    set supplier_name = #{supplierName,jdbcType=VARCHAR},
+      supplier_abbreviation = #{supplierAbbreviation,jdbcType=VARCHAR},
+      supplier_type = #{supplierType,jdbcType=VARCHAR},
+      province_id = #{provinceId,jdbcType=VARCHAR},
+      province_name = #{provinceName,jdbcType=VARCHAR},
+      city_id = #{cityId,jdbcType=VARCHAR},
+      city_name = #{cityName,jdbcType=VARCHAR},
+      district_id = #{districtId,jdbcType=VARCHAR},
+      district_name = #{districtName,jdbcType=VARCHAR},
+      area = #{area,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      contact_name = #{contactName,jdbcType=VARCHAR},
+      mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
+      fax = #{fax,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      business_registration_no = #{businessRegistrationNo,jdbcType=VARCHAR},
+      registered_capital = #{registeredCapital,jdbcType=BIGINT},
+      organization_code = #{organizationCode,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      company_website = #{companyWebsite,jdbcType=VARCHAR},
+      corporate_representative = #{corporateRepresentative,jdbcType=VARCHAR},
+      apply_supplier_code = #{applySupplierCode,jdbcType=BIGINT},
+      auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      apply_status = #{applyStatus,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.supplier.SettlementInfoDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SettlementInformation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="settlement_cycle" jdbcType="VARCHAR" property="settlementCycle" />
+    <result column="settlement_method" jdbcType="VARCHAR" property="settlementMethod" />
+    <result column="settlement_group" jdbcType="VARCHAR" property="settlementGroup" />
+    <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
+    <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />
+    <result column="max_payment_amount" jdbcType="BIGINT" property="maxPaymentAmount" />
+    <result column="supply_company_name" jdbcType="VARCHAR" property="supplyCompanyName" />
+    <result column="supply_company_code" jdbcType="VARCHAR" property="supplyCompanyCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="apply_settlement_information_code" jdbcType="VARCHAR" property="applySettlementInformationCode" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="settlement_code" jdbcType="VARCHAR" property="settlementCode" />
+  </resultMap>
+  <select id="getSetInfoByApplyCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * from settlement_information WHERE apply_settlement_information_code=#{applyCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

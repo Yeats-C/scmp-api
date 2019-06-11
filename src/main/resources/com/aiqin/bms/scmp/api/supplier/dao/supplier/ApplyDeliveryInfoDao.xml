@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.supplier.ApplyDeliveryInfoDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyDeliveryInformation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="send_to" jdbcType="VARCHAR" property="sendTo" />
+    <result column="send_province_id" jdbcType="VARCHAR" property="sendProvinceId" />
+    <result column="send_province_name" jdbcType="VARCHAR" property="sendProvinceName" />
+    <result column="send_city_id" jdbcType="VARCHAR" property="sendCityId" />
+    <result column="send_city_name" jdbcType="VARCHAR" property="sendCityName" />
+    <result column="send_district_id" jdbcType="VARCHAR" property="sendDistrictId" />
+    <result column="send_district_name" jdbcType="VARCHAR" property="sendDistrictName" />
+    <result column="sending_address" jdbcType="VARCHAR" property="sendingAddress" />
+    <result column="delivery_days" jdbcType="BIGINT" property="deliveryDays" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="apply_type" jdbcType="TINYINT" property="applyType" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="apply_supply_company_code" jdbcType="VARCHAR" property="applySupplyCompanyCode" />
+    <result column="apply_supply_company_name" jdbcType="VARCHAR" property="applySupplyCompanyName" />
+    <result column="delivery_type" jdbcType="TINYINT" property="deliveryType" />
+  </resultMap>
+  <insert id="insertApply" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplyDeliveryInfoReqDTO" useGeneratedKeys="true" keyProperty="id">
+    insert into apply_delivery_information (send_to,sending_address,delivery_days,send_province_id,
+      send_province_name,send_city_id,send_city_name,send_district_id,send_district_name,
+      apply_supply_company_code,apply_supply_company_name,apply_type,apply_code,apply_status,
+      create_time,create_by,update_time,update_by,delivery_type
+      )
+    values (
+        #{sendTo,jdbcType=VARCHAR},#{sendingAddress,jdbcType=VARCHAR},#{deliveryDays,jdbcType=BIGINT},
+        #{sendProvinceId,jdbcType=VARCHAR},#{sendProvinceName,jdbcType=VARCHAR},#{sendCityId,jdbcType=VARCHAR},
+        #{sendCityName,jdbcType=VARCHAR},#{sendDistrictId,jdbcType=VARCHAR},#{sendDistrictName,jdbcType=VARCHAR},
+        #{applySupplyCompanyCode,jdbcType=VARCHAR}, #{applySupplyCompanyName,jdbcType=VARCHAR},#{applyType,jdbcType=TINYINT},
+        #{applyCode,jdbcType=VARCHAR}, #{applyStatus,jdbcType=TINYINT},#{createTime, jdbcType=TIMESTAMP},
+        #{createBy,jdbcType=VARCHAR}, #{updateTime, jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
+        #{deliveryType,jdbcType=TINYINT}
+      )
+  </insert>
+  <update id="updateAndCode">
+    update
+    apply_settlement_information
+    SET
+    apply_supply_company_name = #{name,jdbcType=VARCHAR}
+    where
+    apply_supply_company_code = #{code,jdbcType=VARCHAR}
+  </update>
+
+  <update id="updateBatch" parameterType="java.util.List">
+    <foreach collection="list" item="item" open="" close="" separator=";">
+      update apply_delivery_information
+        set
+          apply_status = #{item.applyStatus,jdbcType=TINYINT},
+          auditor_by = #{item.auditorBy,jdbcType=TINYINT},
+          auditor_time = #{item.auditorTime,jdbcType=TIMESTAMP}
+      where id = #{item.id,jdbcType=BIGINT}
+    </foreach>
+
+  </update>
+  <delete id="deleteBatch">
+     delete from  apply_delivery_information where apply_supply_company_code=#{applyCode,jdbcType=VARCHAR}
+  </delete>
+  <select id="getApplyDeliveryInfo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplyDeliveryInformationMapper.BaseResultMap">
+    SELECT
+      <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplyDeliveryInformationMapper.Base_Column_List"/>
+    FROM apply_delivery_information
+    WHERE apply_supply_company_code = #{applySupplyComCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

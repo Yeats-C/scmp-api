@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ApplyProductMapper">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProduct">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="bar_code" jdbcType="VARCHAR" property="barCode"/>
+        <result column="apply_status" jdbcType="TINYINT" property="applyStatus"/>
+        <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="del_flag" jdbcType="TINYINT" property="delFlag"/>
+        <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
+        <result column="price_revoke" jdbcType="TINYINT" property="priceRevoke"/>
+        <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime"/>
+        <result column="selection_effective_start_time" jdbcType="TIMESTAMP" property="selectionEffectiveStartTime"/>
+        <result column="selection_effective_end_time" jdbcType="TIMESTAMP" property="selectionEffectiveEndTime"/>
+        <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy"/>
+        <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime"/>
+        <result column="apply_code" jdbcType="VARCHAR" property="applyCode"/>
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
+        <result column="company_name" jdbcType="TINYINT" property="companyName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, bar_code, apply_status, product_code, product_name, create_time, update_time,
+    create_by, update_by, del_flag, form_no, price_revoke, selection_effective_time,
+    selection_effective_start_time, selection_effective_end_time, auditor_by, auditor_time,
+    apply_code,company_code,company_name
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from apply_product
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from apply_product
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProduct">
+    insert into apply_product (id, bar_code, apply_status,
+    product_code, product_name, create_time,
+    update_time, create_by, update_by,
+    del_flag, form_no, price_revoke,
+    selection_effective_time, selection_effective_start_time,
+    selection_effective_end_time, auditor_by,
+    auditor_time, apply_code)
+    values (#{id,jdbcType=BIGINT}, #{barCode,jdbcType=VARCHAR}, #{applyStatus,jdbcType=TINYINT},
+    #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+    #{updateTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR},
+    #{delFlag,jdbcType=TINYINT}, #{formNo,jdbcType=VARCHAR}, #{priceRevoke,jdbcType=TINYINT},
+    #{selectionEffectiveTime,jdbcType=TINYINT}, #{selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+    #{selectionEffectiveEndTime,jdbcType=TIMESTAMP}, #{auditorBy,jdbcType=VARCHAR},
+    #{auditorTime,jdbcType=TIMESTAMP}, #{applyCode,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProduct">
+        insert into apply_product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="barCode != null">
+                bar_code,
+            </if>
+            <if test="applyStatus != null">
+                apply_status,
+            </if>
+            <if test="productCode != null">
+                product_code,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="formNo != null">
+                form_no,
+            </if>
+            <if test="priceRevoke != null">
+                price_revoke,
+            </if>
+            <if test="selectionEffectiveTime != null">
+                selection_effective_time,
+            </if>
+            <if test="selectionEffectiveStartTime != null">
+                selection_effective_start_time,
+            </if>
+            <if test="selectionEffectiveEndTime != null">
+                selection_effective_end_time,
+            </if>
+            <if test="auditorBy != null">
+                auditor_by,
+            </if>
+            <if test="auditorTime != null">
+                auditor_time,
+            </if>
+            <if test="applyCode != null">
+                apply_code,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="barCode != null">
+                #{barCode,jdbcType=VARCHAR},
+            </if>
+            <if test="applyStatus != null">
+                #{applyStatus,jdbcType=TINYINT},
+            </if>
+            <if test="productCode != null">
+                #{productCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=TINYINT},
+            </if>
+            <if test="formNo != null">
+                #{formNo,jdbcType=VARCHAR},
+            </if>
+            <if test="priceRevoke != null">
+                #{priceRevoke,jdbcType=TINYINT},
+            </if>
+            <if test="selectionEffectiveTime != null">
+                #{selectionEffectiveTime,jdbcType=TINYINT},
+            </if>
+            <if test="selectionEffectiveStartTime != null">
+                #{selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="selectionEffectiveEndTime != null">
+                #{selectionEffectiveEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="auditorBy != null">
+                #{auditorBy,jdbcType=VARCHAR},
+            </if>
+            <if test="auditorTime != null">
+                #{auditorTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applyCode != null">
+                #{applyCode,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProduct">
+        update apply_product
+        <set>
+            <if test="barCode != null">
+                bar_code = #{barCode,jdbcType=VARCHAR},
+            </if>
+            <if test="applyStatus != null">
+                apply_status = #{applyStatus,jdbcType=TINYINT},
+            </if>
+            <if test="productCode != null">
+                product_code = #{productCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=TINYINT},
+            </if>
+            <if test="formNo != null">
+                form_no = #{formNo,jdbcType=VARCHAR},
+            </if>
+            <if test="priceRevoke != null">
+                price_revoke = #{priceRevoke,jdbcType=TINYINT},
+            </if>
+            <if test="selectionEffectiveTime != null">
+                selection_effective_time = #{selectionEffectiveTime,jdbcType=TINYINT},
+            </if>
+            <if test="selectionEffectiveStartTime != null">
+                selection_effective_start_time = #{selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="selectionEffectiveEndTime != null">
+                selection_effective_end_time = #{selectionEffectiveEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="auditorBy != null">
+                auditor_by = #{auditorBy,jdbcType=VARCHAR},
+            </if>
+            <if test="auditorTime != null">
+                auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applyCode != null">
+                apply_code = #{applyCode,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProduct">
+    update apply_product
+    set bar_code = #{barCode,jdbcType=VARCHAR},
+    apply_status = #{applyStatus,jdbcType=TINYINT},
+    product_code = #{productCode,jdbcType=VARCHAR},
+    product_name = #{productName,jdbcType=VARCHAR},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    update_time = #{updateTime,jdbcType=TIMESTAMP},
+    create_by = #{createBy,jdbcType=VARCHAR},
+    update_by = #{updateBy,jdbcType=VARCHAR},
+    del_flag = #{delFlag,jdbcType=TINYINT},
+    form_no = #{formNo,jdbcType=VARCHAR},
+    price_revoke = #{priceRevoke,jdbcType=TINYINT},
+    selection_effective_time = #{selectionEffectiveTime,jdbcType=TINYINT},
+    selection_effective_start_time = #{selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+    selection_effective_end_time = #{selectionEffectiveEndTime,jdbcType=TIMESTAMP},
+    auditor_by = #{auditorBy,jdbcType=VARCHAR},
+    auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+    apply_code = #{applyCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <select id="getName" resultType="java.lang.Integer">
+        SELECT
+        COUNT(0)
+        FROM apply_product
+        WHERE del_flag=0
+        <if test="proName!=null and proName!=''">
+            product_name=#{proName,jdbcType=VARCHAR},
+        </if>
+    </select>
+    <insert id="insertList" parameterType="java.util.List">
+        insert into apply_product
+        (
+        id, bar_code, apply_status, product_code, product_name, create_time, update_time,
+        create_by, update_by, del_flag, form_no, price_revoke, selection_effective_time,
+        selection_effective_start_time, selection_effective_end_time, auditor_by, auditor_time,
+        apply_code,company_code,company_name
+        )
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id,jdbcType=BIGINT}, #{item.barCode,jdbcType=VARCHAR}, #{item.applyStatus,jdbcType=TINYINT},
+            #{item.productCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateBy,jdbcType=VARCHAR},
+            #{item.delFlag,jdbcType=TINYINT}, #{item.formNo,jdbcType=VARCHAR}, #{item.priceRevoke,jdbcType=TINYINT},
+            #{item.selectionEffectiveTime,jdbcType=TINYINT}, #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+            #{item.selectionEffectiveEndTime,jdbcType=TIMESTAMP}, #{item.auditorBy,jdbcType=VARCHAR},
+            #{item.auditorTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
+            #{item.companyCode,jdbcType=VARCHAR},#{item.companyName,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <select id="getList" resultType="com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductResponseVO"
+            parameterType="com.aiqin.bms.scmp.api.product.domain.request.newproduct.QueryApplyProductReqVO">
+        select
+        s.createTime,
+        s.createBy,
+        s.applyCode,
+        s.updateTime,
+        s.updateBy,
+        s.productNumber,
+        s.priceRevoke,
+        s.auditorBy,
+        s.auditorTime,
+        s.applyStatus,
+        s.skuNumber,
+        s.formNo,
+        s.productName,
+        s.productCode
+        from (SELECT apk.create_time         as createTime,
+        apk.create_by           as createBy,
+        apk.apply_code          as applyCode,
+        apk.update_time         as updateTime,
+        apk.update_by           as updateBy,
+        COUNT(1) as productNumber,
+        apk.price_revoke        as priceRevoke,
+        apk.auditor_by          as auditorBy,
+        apk.auditor_time        as auditorTime,
+        apk.apply_status        as applyStatus,
+        (SELECT COUNT(1)
+        FROM apply_product_sku
+        WHERE del_flag = 0
+        AND form_no = apk.form_no
+        ) as skuNumber,
+        apk.form_no as formNo,
+        apk.product_name as productName,
+        apk.product_code as productCode
+        FROM apply_product apk
+        WHERE apk.del_flag = 0
+        GROUP BY apk.apply_code
+        union
+        select aps.create_time         as createTime,
+        aps.create_by           as createBy,
+        aps.apply_code          as applyCode,
+        aps.update_time         as updateTime,
+        aps.update_by           as updateBy,
+        (SELECT COUNT(1)
+        FROM apply_product
+        WHERE del_flag = 0
+        AND form_no = aps.form_no
+        ) as productNumber,
+        aps.apply_status        as priceRevoke,
+        aps.auditor_by          as auditorBy,
+        aps.auditor_time        as auditorTime,
+        aps.apply_status        as applyStatus,
+        COUNT(aps.sku_code)     as skuNumber,
+        aps.form_no as formNo,
+        aps.product_name as productName,
+        aps.product_code as productCode
+        from apply_product_sku aps
+        WHERE aps.del_flag = 0
+        GROUP BY aps.apply_code
+        ) s where 1=1
+        <if test="createTimeStart != null">
+            AND s.createTime&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="createTimeEnd != null">
+            AND s.createTime&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+        </if>
+        <if test="productCode != null and productCode !=''">
+            AND s.productCode LIKE CONCAT('%',#{productCode},'%')
+        </if>
+        <if test="productName != null and productName !=''">
+            AND s.productName LIKE CONCAT('%',#{productName},'%')
+        </if>
+        <if test="createBy != null and createBy !=''">
+            AND s.createBy LIKE CONCAT('%',#{createBy},'%')
+        </if>
+        <if test="updateBy != null and updateBy !=''">
+            AND s.updateBy LIKE CONCAT('%',#{updateBy},'%')
+        </if>
+        GROUP BY applyCode ORDER BY applyCode desc
+    </select>
+    <select id="getApplyProduct"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductDetailsResponseVO">
+        SELECT
+        apk.product_code as productCode, apk.product_name as productName,
+        apk.selection_effective_time as selectionEffectiveTime,
+        apk.selection_effective_start_time as selectionEffectiveStartTime,
+        apk.selection_effective_end_time as selectionEffectiveEndTime,
+        COUNT(aspu.id) as skuNumber,aspu.product_category_name as productCategoryName,
+        aspu.product_category_code as productCategoryCode,apk.create_time as createTime,
+        apk.form_no as formNo,
+        apk.create_by as createBy
+        FROM apply_product apk LEFT JOIN apply_product_sku aspu
+        ON apk.product_code=aspu.product_code
+        WHERE apk.del_flag=0
+        <if test="applyCode!=null and applyCode!=''">
+            AND apk.apply_code=#{applyCode,jdbcType=VARCHAR}
+        </if>
+        GROUP BY apk.product_code
+    </select>
+    <select id="getApplyCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from apply_product
+        where
+        price_revoke=0
+        <if test="applyCode!=null and applyCode!=''">
+            AND apply_code=#{applyCode,jdbcType=VARCHAR}
+        </if>
+    </select>
+    <update id="updateList" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update apply_product
+            <set>
+                <if test="#{item.barCode}!= null">
+                    bar_code = #{item.barCode,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.applyStatus}!= null">
+                    apply_status = #{item.applyStatus,jdbcType=TINYINT},
+                </if>
+                <if test="#{item.productCode}!= null">
+                    product_code = #{item.productCode,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.productName}!= null">
+                    product_name = #{item.productName,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.createTime}!= null">
+                    create_time = #{item.createTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="#{item.updateTime}!= null">
+                    update_time = #{item.updateTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="#{item.createBy}!= null">
+                    create_by = #{item.createBy,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.updateBy}!= null">
+                    update_by = #{item.updateBy,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.delFlag} != null">
+                    del_flag = #{item.delFlag,jdbcType=TINYINT},
+                </if>
+                <if test="#{item.formNo} != null">
+                    form_no = #{item.formNo,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.priceRevoke} != null">
+                    price_revoke = #{item.priceRevoke,jdbcType=TINYINT},
+                </if>
+                <if test="#{item.selectionEffectiveTime} != null">
+                    selection_effective_time = #{item.selectionEffectiveTime,jdbcType=TINYINT},
+                </if>
+                <if test="#{item.selectionEffectiveStartTime} != null">
+                    selection_effective_start_time = #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="#{item.selectionEffectiveEndTime} != null">
+                    selection_effective_end_time = #{item.selectionEffectiveEndTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="#{item.auditorBy} != null">
+                    auditor_by = #{item.auditorBy,jdbcType=VARCHAR},
+                </if>
+                <if test="#{item.auditorTime} != null">
+                    auditor_time = #{item.auditorTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="#{item.applyCode} != null">
+                    apply_code = #{item.applyCode,jdbcType=VARCHAR},
+                </if>
+            </set>
+            where id = #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
+    <select id="selectByFormNO" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from apply_product
+        where
+        price_revoke=0
+        <if test="formNo!=null and formNo!=''">
+            AND form_no=#{formNo,jdbcType=VARCHAR}
+        </if>
+    </select>
+  <select id="getFromNo" resultType="java.lang.String">
+    SELECT
+      DISTINCT form_no
+    FROM apply_product
+    WHERE del_flag=0
+    <if test="applyCode!=null and applyCode!=''">
+      AND  apply_code = #{applyCode,jdbcType=VARCHAR}
+    </if>
+      GROUP BY apply_code
+  </select>
+    <select id="getProductApplyList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from apply_product
+        where
+        apply_status = #{number}
+        AND product_code in
+        <foreach collection="productCodes" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+
+    <update id="updateStatusByFormNo">
+        update
+        apply_product
+        set
+        apply_status = #{applyStatus,jdbcType=TINYINT}
+        where
+        price_revoke=0
+        <if test="formNo!=null and formNo!=''">
+            AND form_no = #{formNo,jdbcType=VARCHAR}
+        </if>
+    </update>
+
+</mapper>

@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="config_code" jdbcType="VARCHAR" property="configCode" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="config_status" jdbcType="TINYINT" property="configStatus" />
+    <result column="arrival_cycle" jdbcType="INTEGER" property="arrivalCycle" />
+    <result column="order_cycle" jdbcType="INTEGER" property="orderCycle" />
+    <result column="basic_inventory_day" jdbcType="INTEGER" property="basicInventoryDay" />
+    <result column="large_inventory_warn_day" jdbcType="INTEGER" property="largeInventoryWarnDay" />
+    <result column="big_effect_period_warn_day" jdbcType="INTEGER" property="bigEffectPeriodWarnDay" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_by, create_time, update_by, update_time, del_flag, config_code, product_code, 
+    product_name, sku_code, sku_name, transport_center_code, transport_center_name, config_status, 
+    arrival_cycle, order_cycle, basic_inventory_day, large_inventory_warn_day, big_effect_period_warn_day, 
+    apply_code, apply_status, auditor_by, auditor_time, company_code, company_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku_config
+    where id = #{item.id,jdbcType=BIGINT}
+  </select>
+
+
+  <select id="getList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo"
+          resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
+    from
+    product_sku_config a
+    left join product_sku_config_spare_warehouse b
+    on a.config_code = b.config_code
+    where a.del_flag = 0
+    <if test="skuCode != null">
+      and sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName != null">
+      and sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="transportCenterCode != null">
+      and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    </if>
+    <if test="transportCenterName != null">
+      and transport_center_name like concat('%', #{transportCenterName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="configStatus != null">
+      and config_status = #{configStatus,jdbcType=TINYINT}
+    </if>
+  </select>
+  <resultMap id="SkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo">
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+    <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+    <result column="goods_gifts" jdbcType="TINYINT" property="skuType" />
+    <collection property="configs" column="{skuCode = sku_code}"
+                javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo" select="getList"/>
+  </resultMap>
+  <select id="detail" parameterType="java.lang.String" resultMap="SkuResultMap">
+    select
+      sku_code,
+      sku_name,
+      product_code,
+      product_name,
+      product_sort_code,
+      product_sort_name,
+      product_category_code,
+      product_category_name,
+      categories_supply_channels_code,
+      categories_supply_channels_name,
+      goods_gifts
+    from product_sku
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_sku_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig">
+    insert into product_sku_config (id, create_by, create_time, 
+      update_by, update_time, del_flag, 
+      config_code, product_code, product_name, 
+      sku_code, sku_name, transport_center_code, 
+      transport_center_name, config_status, arrival_cycle, 
+      order_cycle, basic_inventory_day, large_inventory_warn_day, 
+      big_effect_period_warn_day, apply_code, apply_status, 
+      auditor_by, auditor_time, company_code, 
+      company_name)
+    values (#{id,jdbcType=BIGINT}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=TINYINT}, 
+      #{configCode,jdbcType=VARCHAR}, #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, 
+      #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, 
+      #{transportCenterName,jdbcType=VARCHAR}, #{configStatus,jdbcType=TINYINT}, #{arrivalCycle,jdbcType=INTEGER}, 
+      #{orderCycle,jdbcType=INTEGER}, #{basicInventoryDay,jdbcType=INTEGER}, #{largeInventoryWarnDay,jdbcType=INTEGER}, 
+      #{bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{applyCode,jdbcType=VARCHAR}, #{applyStatus,jdbcType=TINYINT}, 
+      #{auditorBy,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, #{companyCode,jdbcType=VARCHAR}, 
+      #{companyName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig">
+    insert into product_sku_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="configCode != null">
+        config_code,
+      </if>
+      <if test="productCode != null">
+        product_code,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="skuName != null">
+        sku_name,
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code,
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name,
+      </if>
+      <if test="configStatus != null">
+        config_status,
+      </if>
+      <if test="arrivalCycle != null">
+        arrival_cycle,
+      </if>
+      <if test="orderCycle != null">
+        order_cycle,
+      </if>
+      <if test="basicInventoryDay != null">
+        basic_inventory_day,
+      </if>
+      <if test="largeInventoryWarnDay != null">
+        large_inventory_warn_day,
+      </if>
+      <if test="bigEffectPeriodWarnDay != null">
+        big_effect_period_warn_day,
+      </if>
+      <if test="applyCode != null">
+        apply_code,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="auditorBy != null">
+        auditor_by,
+      </if>
+      <if test="auditorTime != null">
+        auditor_time,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="configCode != null">
+        #{configCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productCode != null">
+        #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+        #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterName != null">
+        #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="configStatus != null">
+        #{configStatus,jdbcType=TINYINT},
+      </if>
+      <if test="arrivalCycle != null">
+        #{arrivalCycle,jdbcType=INTEGER},
+      </if>
+      <if test="orderCycle != null">
+        #{orderCycle,jdbcType=INTEGER},
+      </if>
+      <if test="basicInventoryDay != null">
+        #{basicInventoryDay,jdbcType=INTEGER},
+      </if>
+      <if test="largeInventoryWarnDay != null">
+        #{largeInventoryWarnDay,jdbcType=INTEGER},
+      </if>
+      <if test="bigEffectPeriodWarnDay != null">
+        #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
+      </if>
+      <if test="applyCode != null">
+        #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="auditorBy != null">
+        #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into product_sku_config (id, create_by, create_time,
+      update_by, update_time, del_flag,
+      config_code, product_code, product_name,
+      sku_code, sku_name, transport_center_code,
+      transport_center_name, config_status, arrival_cycle,
+      order_cycle, basic_inventory_day, large_inventory_warn_day,
+      big_effect_period_warn_day, apply_code, apply_status,
+      auditor_by, auditor_time, company_code,
+      company_name)
+    values
+      <foreach collection="list" item="item" open="" close="" separator=",">
+        (#{item.id,jdbcType=BIGINT}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
+        #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.delFlag,jdbcType=TINYINT},
+        #{item.configCode,jdbcType=VARCHAR}, #{item.productCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
+        #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.transportCenterCode,jdbcType=VARCHAR},
+        #{item.transportCenterName,jdbcType=VARCHAR}, #{item.configStatus,jdbcType=TINYINT}, #{item.arrivalCycle,jdbcType=INTEGER},
+        #{item.orderCycle,jdbcType=INTEGER}, #{item.basicInventoryDay,jdbcType=INTEGER}, #{item.largeInventoryWarnDay,jdbcType=INTEGER},
+        #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{item.applyCode,jdbcType=VARCHAR}, #{item.applyStatus,jdbcType=TINYINT},
+        #{item.auditorBy,jdbcType=VARCHAR}, #{item.auditorTime,jdbcType=TIMESTAMP}, #{item.companyCode,jdbcType=VARCHAR},
+        #{item.companyName,jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig">
+    update product_sku_config
+    <set>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="configCode != null">
+        config_code = #{configCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productCode != null">
+        product_code = #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="configStatus != null">
+        config_status = #{configStatus,jdbcType=TINYINT},
+      </if>
+      <if test="arrivalCycle != null">
+        arrival_cycle = #{arrivalCycle,jdbcType=INTEGER},
+      </if>
+      <if test="orderCycle != null">
+        order_cycle = #{orderCycle,jdbcType=INTEGER},
+      </if>
+      <if test="basicInventoryDay != null">
+        basic_inventory_day = #{basicInventoryDay,jdbcType=INTEGER},
+      </if>
+      <if test="largeInventoryWarnDay != null">
+        large_inventory_warn_day = #{largeInventoryWarnDay,jdbcType=INTEGER},
+      </if>
+      <if test="bigEffectPeriodWarnDay != null">
+        big_effect_period_warn_day = #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
+      </if>
+      <if test="applyCode != null">
+        apply_code = #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig">
+    update product_sku_config
+    set create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      config_code = #{configCode,jdbcType=VARCHAR},
+      product_code = #{productCode,jdbcType=VARCHAR},
+      product_name = #{productName,jdbcType=VARCHAR},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      sku_name = #{skuName,jdbcType=VARCHAR},
+      transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      config_status = #{configStatus,jdbcType=TINYINT},
+      arrival_cycle = #{arrivalCycle,jdbcType=INTEGER},
+      order_cycle = #{orderCycle,jdbcType=INTEGER},
+      basic_inventory_day = #{basicInventoryDay,jdbcType=INTEGER},
+      large_inventory_warn_day = #{largeInventoryWarnDay,jdbcType=INTEGER},
+      big_effect_period_warn_day = #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
+      apply_code = #{applyCode,jdbcType=VARCHAR},
+      apply_status = #{applyStatus,jdbcType=TINYINT},
+      auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateBatch">
+    <foreach collection="list" item="item" open="" close="" separator=";">
+      update product_sku_config
+      set
+      update_by = #{item.updateBy,jdbcType=VARCHAR},
+      update_time = #{item.updateTime,jdbcType=TIMESTAMP},
+      del_flag = #{item.delFlag,jdbcType=TINYINT},
+      product_code = #{item.productCode,jdbcType=VARCHAR},
+      product_name = #{item.productName,jdbcType=VARCHAR},
+      sku_code = #{item.skuCode,jdbcType=VARCHAR},
+      sku_name = #{item.skuName,jdbcType=VARCHAR},
+      transport_center_code = #{item.transportCenterCode,jdbcType=VARCHAR},
+      transport_center_name = #{item.transportCenterName,jdbcType=VARCHAR},
+      config_status = #{item.configStatus,jdbcType=TINYINT},
+      arrival_cycle = #{item.arrivalCycle,jdbcType=INTEGER},
+      order_cycle = #{item.orderCycle,jdbcType=INTEGER},
+      basic_inventory_day = #{item.basicInventoryDay,jdbcType=INTEGER},
+      large_inventory_warn_day = #{item.largeInventoryWarnDay,jdbcType=INTEGER},
+      big_effect_period_warn_day = #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER},
+      apply_code = #{item.applyCode,jdbcType=VARCHAR},
+      apply_status = #{item.applyStatus,jdbcType=TINYINT},
+      auditor_by = #{item.auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{item.auditorTime,jdbcType=TIMESTAMP},
+      where config_code = #{item.configCode,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+</mapper>

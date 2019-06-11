@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ApplyProductDraftMapper">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductDraft">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="bar_code" jdbcType="VARCHAR" property="barCode"/>
+        <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="del_flag" jdbcType="TINYINT" property="delFlag"/>
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
+        <result column="company_name" jdbcType="TINYINT" property="companyName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, bar_code, product_code, product_name, create_time, update_time, create_by, update_by,
+    del_flag,company_code,company_name
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from apply_product_draft
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="getProductCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from apply_product_draft
+        where product_code = #{productCode,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from apply_product_draft
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteCode" parameterType="java.util.List">
+        delete from apply_product_draft
+        where product_code in
+        (
+        <foreach collection="list" item="item" index="index" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+        )
+    </delete>
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductDraft">
+    insert into apply_product_draft (id, bar_code, product_code,
+    product_name, create_time, update_time,
+    create_by, update_by, del_flag,apply_type,apply_type_name
+    )
+    values (#{id,jdbcType=BIGINT}, #{barCode,jdbcType=VARCHAR}, #{productCode,jdbcType=VARCHAR},
+    #{productName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
+    #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT},
+    #{applyType,jdbcType=TINYINT}, #{applyTypeName,jdbcType=VARCHAR}
+    )
+  </insert>
+    <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductDraft">
+        insert into apply_product_draft
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="barCode != null">
+                bar_code,
+            </if>
+            <if test="productCode != null">
+                product_code,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="companyCode != null">
+                company_code,
+            </if>
+            <if test="companyName != null">
+                company_name,
+            </if>
+            <if test="applyType != null">
+                apply_type,
+            </if>
+            <if test="applyTypeName != null">
+                apply_type_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="barCode != null">
+                #{barCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productCode != null">
+                #{productCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=TINYINT},
+            </if>
+            <if test="companyCode != null">
+                #{companyCode,jdbcType=VARCHAR},
+            </if>
+            <if test="companyName != null">
+                #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="applyType != null">
+                #{applyType,jdbcType=TINYINT},
+            </if>
+            <if test="applyTypeName != null">
+                #{applyTypeName,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductDraft">
+        update apply_product_draft
+        <set>
+            <if test="barCode != null">
+                bar_code = #{barCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productCode != null">
+                product_code = #{productCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=TINYINT},
+            </if>
+            <if test="companyCode != null">
+                company_code =  #{companyCode,jdbcType=VARCHAR},
+            </if>
+            <if test="companyName != null">
+                company_name =  #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="applyType != null">
+                apply_type =  #{applyType,jdbcType=TINYINT},
+            </if>
+            <if test="applyTypeName != null">
+                apply_type_name =  #{applyTypeName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductDraft">
+    update apply_product_draft
+    set bar_code = #{barCode,jdbcType=VARCHAR},
+    product_code = #{productCode,jdbcType=VARCHAR},
+    product_name = #{productName,jdbcType=VARCHAR},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    update_time = #{updateTime,jdbcType=TIMESTAMP},
+    create_by = #{createBy,jdbcType=VARCHAR},
+    update_by = #{updateBy,jdbcType=VARCHAR},
+    del_flag = #{delFlag,jdbcType=TINYINT},
+    apply_type =  #{applyType,jdbcType=TINYINT},
+    apply_type_name =  #{applyTypeName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+    <select id="getName" resultType="java.lang.Integer">
+        select
+        COUNT(0)
+        from apply_product_draft
+        where product_name = #{productName,jdbcType=VARCHAR}
+    </select>
+    <select id="getProductDraft"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo">
+        select
+          apply_type as applyType,
+          apply_type_name as applyTypeName,
+          'SPU' as applySort,
+          'SPU' as applySortName,
+          product_code as code,
+          product_name as name,
+          (select count(*) from product_sku_draft where apply_product_draft.product_code = product_code) as productSkuCount,
+          create_time as createTime,
+          create_by as createBy
+        from apply_product_draft
+        where company_code = #{companyCode,jdbcType=VARCHAR}
+    </select>
+</mapper>

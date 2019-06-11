@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
+    <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
+    <result column="no_tax_purchase_price" jdbcType="BIGINT" property="noTaxPurchasePrice" />
+    <result column="tax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
+    <result column="joint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
+    <result column="point" jdbcType="BIGINT" property="point" />
+    <result column="is_default" jdbcType="TINYINT" property="isDefault" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
+    <result column="usage_status" jdbcType="TINYINT" property="usageStatus" />
+    <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, supply_unit_code, supply_unit_name, no_tax_purchase_price, tax_included_price, 
+    joint_franchise_rate, point, is_default, del_flag, create_time, create_by, update_time, 
+    update_by, product_sku_code, usage_status, product_sku_name, apply_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku_supply_unit
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_sku_supply_unit
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit">
+    insert into product_sku_supply_unit (id, supply_unit_code, supply_unit_name, 
+      no_tax_purchase_price, tax_included_price, joint_franchise_rate, 
+      point, is_default, del_flag, 
+      create_time, create_by, update_time, 
+      update_by, product_sku_code, usage_status, 
+      product_sku_name, apply_code)
+    values (#{id,jdbcType=BIGINT}, #{supplyUnitCode,jdbcType=VARCHAR}, #{supplyUnitName,jdbcType=VARCHAR}, 
+      #{noTaxPurchasePrice,jdbcType=BIGINT}, #{taxIncludedPrice,jdbcType=BIGINT}, #{jointFranchiseRate,jdbcType=BIGINT}, 
+      #{point,jdbcType=BIGINT}, #{isDefault,jdbcType=TINYINT}, #{delFlag,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{productSkuCode,jdbcType=VARCHAR}, #{usageStatus,jdbcType=TINYINT}, 
+      #{productSkuName,jdbcType=VARCHAR}, #{applyCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit">
+    insert into product_sku_supply_unit
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="supplyUnitCode != null">
+        supply_unit_code,
+      </if>
+      <if test="supplyUnitName != null">
+        supply_unit_name,
+      </if>
+      <if test="noTaxPurchasePrice != null">
+        no_tax_purchase_price,
+      </if>
+      <if test="taxIncludedPrice != null">
+        tax_included_price,
+      </if>
+      <if test="jointFranchiseRate != null">
+        joint_franchise_rate,
+      </if>
+      <if test="point != null">
+        point,
+      </if>
+      <if test="isDefault != null">
+        is_default,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="productSkuCode != null">
+        product_sku_code,
+      </if>
+      <if test="usageStatus != null">
+        usage_status,
+      </if>
+      <if test="productSkuName != null">
+        product_sku_name,
+      </if>
+      <if test="applyCode != null">
+        apply_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="supplyUnitCode != null">
+        #{supplyUnitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyUnitName != null">
+        #{supplyUnitName,jdbcType=VARCHAR},
+      </if>
+      <if test="noTaxPurchasePrice != null">
+        #{noTaxPurchasePrice,jdbcType=BIGINT},
+      </if>
+      <if test="taxIncludedPrice != null">
+        #{taxIncludedPrice,jdbcType=BIGINT},
+      </if>
+      <if test="jointFranchiseRate != null">
+        #{jointFranchiseRate,jdbcType=BIGINT},
+      </if>
+      <if test="point != null">
+        #{point,jdbcType=BIGINT},
+      </if>
+      <if test="isDefault != null">
+        #{isDefault,jdbcType=TINYINT},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuCode != null">
+        #{productSkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="usageStatus != null">
+        #{usageStatus,jdbcType=TINYINT},
+      </if>
+      <if test="productSkuName != null">
+        #{productSkuName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyCode != null">
+        #{applyCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit">
+    update product_sku_supply_unit
+    <set>
+      <if test="supplyUnitCode != null">
+        supply_unit_code = #{supplyUnitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyUnitName != null">
+        supply_unit_name = #{supplyUnitName,jdbcType=VARCHAR},
+      </if>
+      <if test="noTaxPurchasePrice != null">
+        no_tax_purchase_price = #{noTaxPurchasePrice,jdbcType=BIGINT},
+      </if>
+      <if test="taxIncludedPrice != null">
+        tax_included_price = #{taxIncludedPrice,jdbcType=BIGINT},
+      </if>
+      <if test="jointFranchiseRate != null">
+        joint_franchise_rate = #{jointFranchiseRate,jdbcType=BIGINT},
+      </if>
+      <if test="point != null">
+        point = #{point,jdbcType=BIGINT},
+      </if>
+      <if test="isDefault != null">
+        is_default = #{isDefault,jdbcType=TINYINT},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuCode != null">
+        product_sku_code = #{productSkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="usageStatus != null">
+        usage_status = #{usageStatus,jdbcType=TINYINT},
+      </if>
+      <if test="productSkuName != null">
+        product_sku_name = #{productSkuName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyCode != null">
+        apply_code = #{applyCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit">
+    update product_sku_supply_unit
+    set supply_unit_code = #{supplyUnitCode,jdbcType=VARCHAR},
+      supply_unit_name = #{supplyUnitName,jdbcType=VARCHAR},
+      no_tax_purchase_price = #{noTaxPurchasePrice,jdbcType=BIGINT},
+      tax_included_price = #{taxIncludedPrice,jdbcType=BIGINT},
+      joint_franchise_rate = #{jointFranchiseRate,jdbcType=BIGINT},
+      point = #{point,jdbcType=BIGINT},
+      is_default = #{isDefault,jdbcType=TINYINT},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      product_sku_code = #{productSkuCode,jdbcType=VARCHAR},
+      usage_status = #{usageStatus,jdbcType=TINYINT},
+      product_sku_name = #{productSkuName,jdbcType=VARCHAR},
+      apply_code = #{applyCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

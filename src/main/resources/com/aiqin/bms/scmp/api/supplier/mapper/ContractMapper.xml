@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.ContractMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.Contract">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="year" jdbcType="VARCHAR" property="year" />
+    <result column="year_name" jdbcType="VARCHAR" property="yearName" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="purchasing_group_code" jdbcType="VARCHAR" property="purchasingGroupCode" />
+    <result column="settlement_method" jdbcType="VARCHAR" property="settlementMethod" />
+    <result column="payment_period" jdbcType="INTEGER" property="paymentPeriod" />
+    <result column="shipping_fee" jdbcType="BIGINT" property="shippingFee" />
+    <result column="delivery_charges" jdbcType="TINYINT" property="deliveryCharges" />
+    <result column="unloading_fee" jdbcType="BIGINT" property="unloadingFee" />
+    <result column="other_conventions" jdbcType="VARCHAR" property="otherConventions" />
+    <result column="fixed_rebate_type" jdbcType="TINYINT" property="fixedRebateType" />
+    <result column="return_rate" jdbcType="BIGINT" property="returnRate" />
+    <result column="target_rebate" jdbcType="TINYINT" property="targetRebate" />
+    <result column="plan_type" jdbcType="TINYINT" property="planType" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="purchase_price_standard" jdbcType="TINYINT" property="purchasePriceStandard" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="contract_code" jdbcType="VARCHAR" property="contractCode" />
+    <result column="apply_contract_code" jdbcType="VARCHAR" property="applyContractCode" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="purchasing_group_name" jdbcType="VARCHAR" property="purchasingGroupName" />
+    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+    <result column="early_warn_num" jdbcType="INTEGER" property="earlyWarnNum" />
+    <result column="pre_payment_ratio" jdbcType="BIGINT" property="prePaymentRatio" />
+    <result column="ship_payment_ratio" jdbcType="BIGINT" property="shipPaymentRatio" />
+    <result column="payment_on_delivery_ratio" jdbcType="BIGINT" property="paymentOnDeliveryRatio" />
+      <result column="rebate_clause" jdbcType="TINYINT" property="rebateClause" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
+    payment_period, shipping_fee, delivery_charges, unloading_fee, other_conventions, 
+    fixed_rebate_type, return_rate, target_rebate, plan_type, start_time, end_time, purchase_price_standard, 
+    del_flag, create_time, create_by, update_time, update_by, contract_code, apply_contract_code, 
+    auditor_by, auditor_time, apply_status,company_code,company_name,
+    purchasing_group_name,settlement_method_name,early_warn_num,
+    pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from contract
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from contract
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Contract">
+    insert into contract (id, year, year_name, 
+      supplier_name, supplier_code, purchasing_group_code, 
+      settlement_method, payment_period, shipping_fee, 
+      delivery_charges, unloading_fee, other_conventions, 
+      fixed_rebate_type, return_rate, target_rebate, 
+      plan_type, start_time, end_time, 
+      purchase_price_standard, del_flag, create_time, 
+      create_by, update_time, update_by, 
+      contract_code, apply_contract_code, auditor_by, 
+      auditor_time, apply_status,company_code,company_name,
+      purchasing_group_name,settlement_method_name,early_warn_num,
+      pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause)
+    values (#{id,jdbcType=BIGINT}, #{year,jdbcType=VARCHAR}, #{yearName,jdbcType=VARCHAR}, 
+      #{supplierName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{purchasingGroupCode,jdbcType=VARCHAR}, 
+      #{settlementMethod,jdbcType=VARCHAR}, #{paymentPeriod,jdbcType=INTEGER}, #{shippingFee,jdbcType=BIGINT}, 
+      #{deliveryCharges,jdbcType=TINYINT}, #{unloadingFee,jdbcType=BIGINT}, #{otherConventions,jdbcType=VARCHAR}, 
+      #{fixedRebateType,jdbcType=TINYINT}, #{returnRate,jdbcType=BIGINT}, #{targetRebate,jdbcType=TINYINT}, 
+      #{planType,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{purchasePriceStandard,jdbcType=TINYINT}, #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{contractCode,jdbcType=VARCHAR}, #{applyContractCode,jdbcType=VARCHAR}, #{auditorBy,jdbcType=VARCHAR}, 
+      #{auditorTime,jdbcType=TIMESTAMP}, #{applyStatus,jdbcType=TINYINT},
+      #{companyCode,jdbcType=VARCHAR},#{companyName,jdbcType=VARCHAR},
+      #{purchasingGroupName,jdbcType=VARCHAR},#{settlementMethodName,jdbcType=VARCHAR},#{earlyWarnNum,jdbcType=INTEGER},
+      #{prePaymentRatio,jdbcType=BIGINT},#{shipPaymentRatio,jdbcType=BIGINT},#{paymentOnDeliveryRatio,jdbcType=BIGINT},
+      #{rebateClause,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Contract">
+    insert into contract
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="year != null">
+        year,
+      </if>
+      <if test="yearName != null">
+        year_name,
+      </if>
+      <if test="supplierName != null">
+        supplier_name,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="purchasingGroupCode != null">
+        purchasing_group_code,
+      </if>
+      <if test="settlementMethod != null">
+        settlement_method,
+      </if>
+      <if test="paymentPeriod != null">
+        payment_period,
+      </if>
+      <if test="shippingFee != null">
+        shipping_fee,
+      </if>
+      <if test="deliveryCharges != null">
+        delivery_charges,
+      </if>
+      <if test="unloadingFee != null">
+        unloading_fee,
+      </if>
+      <if test="otherConventions != null">
+        other_conventions,
+      </if>
+      <if test="fixedRebateType != null">
+        fixed_rebate_type,
+      </if>
+      <if test="returnRate != null">
+        return_rate,
+      </if>
+      <if test="targetRebate != null">
+        target_rebate,
+      </if>
+      <if test="planType != null">
+        plan_type,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="purchasePriceStandard != null">
+        purchase_price_standard,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="contractCode != null">
+        contract_code,
+      </if>
+      <if test="applyContractCode != null">
+        apply_contract_code,
+      </if>
+      <if test="auditorBy != null">
+        auditor_by,
+      </if>
+      <if test="auditorTime != null">
+        auditor_time,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="purchasingGroupName != null">
+        purchasing_group_name,
+      </if>
+      <if test="settlementMethodName != null">
+        settlement_method_name,
+      </if>
+      <if test="earlyWarnNum != null">
+        early_warn_num,
+      </if>
+      <if test="prePaymentRatio != null">
+        pre_payment_ratio,
+      </if>
+      <if test="shipPaymentRatio != null">
+        ship_payment_ratio,
+      </if>
+      <if test="paymentOnDeliveryRatio != null">
+        payment_on_delivery_ratio,
+      </if>
+        <if test="rebateClause != null">
+            rebate_clause,
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="year != null">
+        #{year,jdbcType=VARCHAR},
+      </if>
+      <if test="yearName != null">
+        #{yearName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasingGroupCode != null">
+        #{purchasingGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethod != null">
+        #{settlementMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentPeriod != null">
+        #{paymentPeriod,jdbcType=INTEGER},
+      </if>
+      <if test="shippingFee != null">
+        #{shippingFee,jdbcType=BIGINT},
+      </if>
+      <if test="deliveryCharges != null">
+        #{deliveryCharges,jdbcType=TINYINT},
+      </if>
+      <if test="unloadingFee != null">
+        #{unloadingFee,jdbcType=BIGINT},
+      </if>
+      <if test="otherConventions != null">
+        #{otherConventions,jdbcType=VARCHAR},
+      </if>
+      <if test="fixedRebateType != null">
+        #{fixedRebateType,jdbcType=TINYINT},
+      </if>
+      <if test="returnRate != null">
+        #{returnRate,jdbcType=BIGINT},
+      </if>
+      <if test="targetRebate != null">
+        #{targetRebate,jdbcType=TINYINT},
+      </if>
+      <if test="planType != null">
+        #{planType,jdbcType=TINYINT},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchasePriceStandard != null">
+        #{purchasePriceStandard,jdbcType=TINYINT},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCode != null">
+        #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applyContractCode != null">
+        #{applyContractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorBy != null">
+        #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasingGroupName != null">
+        #{purchasingGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodName != null">
+        #{settlementMethodName,jdbcType=VARCHAR},
+      </if>
+      <if test="earlyWarnNum != null">
+        #{earlyWarnNum,jdbcType=INTEGER},
+      </if>
+      <if test="prePaymentRatio != null">
+        #{prePaymentRatio,jdbcType=BIGINT},
+      </if>
+      <if test="shipPaymentRatio != null">
+        #{shipPaymentRatio,jdbcType=BIGINT},
+      </if>
+      <if test="paymentOnDeliveryRatio != null">
+        #{paymentOnDeliveryRatio,jdbcType=BIGINT},
+      </if>
+        <if test="rebateClause != null">
+            #{rebateClause,jdbcType=TINYINT},
+        </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Contract">
+    update contract
+    <set>
+      <if test="year != null">
+        year = #{year,jdbcType=VARCHAR},
+      </if>
+      <if test="yearName != null">
+        year_name = #{yearName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasingGroupCode != null">
+        purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethod != null">
+        settlement_method = #{settlementMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentPeriod != null">
+        payment_period = #{paymentPeriod,jdbcType=INTEGER},
+      </if>
+      <if test="shippingFee != null">
+        shipping_fee = #{shippingFee,jdbcType=BIGINT},
+      </if>
+      <if test="deliveryCharges != null">
+        delivery_charges = #{deliveryCharges,jdbcType=TINYINT},
+      </if>
+      <if test="unloadingFee != null">
+        unloading_fee = #{unloadingFee,jdbcType=BIGINT},
+      </if>
+      <if test="otherConventions != null">
+        other_conventions = #{otherConventions,jdbcType=VARCHAR},
+      </if>
+      <if test="fixedRebateType != null">
+        fixed_rebate_type = #{fixedRebateType,jdbcType=TINYINT},
+      </if>
+      <if test="returnRate != null">
+        return_rate = #{returnRate,jdbcType=BIGINT},
+      </if>
+      <if test="targetRebate != null">
+        target_rebate = #{targetRebate,jdbcType=TINYINT},
+      </if>
+      <if test="planType != null">
+        plan_type = #{planType,jdbcType=TINYINT},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchasePriceStandard != null">
+        purchase_price_standard = #{purchasePriceStandard,jdbcType=TINYINT},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCode != null">
+        contract_code = #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applyContractCode != null">
+        apply_contract_code = #{applyContractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasingGroupName != null">
+        purchasing_group_name = #{purchasingGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodName != null">
+        settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
+      </if>
+      <if test="earlyWarnNum != null">
+        early_warn_num = #{earlyWarnNum,jdbcType=INTEGER},
+      </if>
+      <if test="prePaymentRatio != null">
+        pre_payment_ratio = #{prePaymentRatio,jdbcType=BIGINT},
+      </if>
+      <if test="shipPaymentRatio != null">
+        ship_payment_ratio = #{shipPaymentRatio,jdbcType=BIGINT},
+      </if>
+      <if test="paymentOnDeliveryRatio != null">
+        payment_on_delivery_ratio = #{paymentOnDeliveryRatio,jdbcType=BIGINT},
+      </if>
+        <if test="rebateClause != null">
+            rebate_clause = #{rebateClause,jdbcType=TINYINT},
+        </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Contract">
+    update contract
+    set year = #{year,jdbcType=VARCHAR},
+      year_name = #{yearName,jdbcType=VARCHAR},
+      supplier_name = #{supplierName,jdbcType=VARCHAR},
+      supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR},
+      settlement_method = #{settlementMethod,jdbcType=VARCHAR},
+      payment_period = #{paymentPeriod,jdbcType=INTEGER},
+      shipping_fee = #{shippingFee,jdbcType=BIGINT},
+      delivery_charges = #{deliveryCharges,jdbcType=TINYINT},
+      unloading_fee = #{unloadingFee,jdbcType=BIGINT},
+      other_conventions = #{otherConventions,jdbcType=VARCHAR},
+      fixed_rebate_type = #{fixedRebateType,jdbcType=TINYINT},
+      return_rate = #{returnRate,jdbcType=BIGINT},
+      target_rebate = #{targetRebate,jdbcType=TINYINT},
+      plan_type = #{planType,jdbcType=TINYINT},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      purchase_price_standard = #{purchasePriceStandard,jdbcType=TINYINT},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      contract_code = #{contractCode,jdbcType=VARCHAR},
+      apply_contract_code = #{applyContractCode,jdbcType=VARCHAR},
+      auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      apply_status = #{applyStatus,jdbcType=TINYINT},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      purchasing_group_name = #{purchasingGroupName,jdbcType=VARCHAR},
+      settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
+      early_warn_num = #{earlyWarnNum,jdbcType=INTEGER},
+      pre_payment_ratio = #{prePaymentRatio,jdbcType=BIGINT},
+      ship_payment_ratio = #{shipPaymentRatio,jdbcType=BIGINT},
+      payment_on_delivery_ratio = #{paymentOnDeliveryRatio,jdbcType=BIGINT},
+      rebate_clause = #{rebateClause,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

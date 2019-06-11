@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.NewProductMapper">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="bar_code" jdbcType="VARCHAR" property="barCode"/>
+        <result column="product_id" jdbcType="VARCHAR" property="productId"/>
+        <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="price" jdbcType="INTEGER" property="price"/>
+        <result column="spu_code" jdbcType="VARCHAR" property="spuCode"/>
+        <result column="retail_price" jdbcType="INTEGER" property="retailPrice"/>
+        <result column="logo" jdbcType="VARCHAR" property="logo"/>
+        <result column="images" jdbcType="VARCHAR" property="images"/>
+        <result column="itro_images" jdbcType="VARCHAR" property="itroImages"/>
+        <result column="category_id" jdbcType="VARCHAR" property="categoryId"/>
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="brand_id" jdbcType="VARCHAR" property="brandId"/>
+        <result column="brand_name" jdbcType="VARCHAR" property="brandName"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="del_flag" jdbcType="TINYINT" property="delFlag"/>
+        <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy"/>
+        <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime"/>
+        <result column="apply_status" jdbcType="TINYINT" property="applyStatus"/>
+        <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime"/>
+        <result column="selection_effective_start_time" jdbcType="TIMESTAMP" property="selectionEffectiveStartTime"/>
+        <result column="selection_effective_end_time" jdbcType="TIMESTAMP" property="selectionEffectiveEndTime"/>
+        <result column="price_revoke" jdbcType="TINYINT" property="priceRevoke"/>
+        <result column="apply_code" jdbcType="VARCHAR" property="applyCode"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, bar_code, product_id, product_code, product_name, price, spu_code, retail_price,
+        logo, images, itro_images, category_id, category_name, brand_id, brand_name, create_time,
+        update_time, create_by, update_by, del_flag, auditor_by, auditor_time, apply_status,
+         selection_effective_time, selection_effective_start_time, selection_effective_end_time,
+        price_revoke, apply_code
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="getProductCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where product_code = #{productCode,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        delete from product
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct">
+        insert into product (id, bar_code, product_id,
+        product_code, product_name, price,
+        spu_code, retail_price, logo,
+        images, itro_images, category_id,
+        category_name, brand_id, brand_name,
+        create_time, update_time, create_by,
+        update_by, del_flag, auditor_by,
+        auditor_time, apply_status,
+        selection_effective_time, selection_effective_start_time,
+        selection_effective_end_time, price_revoke,
+        apply_code)
+        values (#{id,jdbcType=BIGINT}, #{barCode,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR},
+        #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{price,jdbcType=INTEGER},
+        #{spuCode,jdbcType=VARCHAR}, #{retailPrice,jdbcType=INTEGER}, #{logo,jdbcType=VARCHAR},
+        #{images,jdbcType=VARCHAR}, #{itroImages,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR},
+        #{categoryName,jdbcType=VARCHAR}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR},
+        #{updateBy,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, #{auditorBy,jdbcType=VARCHAR},
+        #{auditorTime,jdbcType=TIMESTAMP}, #{applyStatus,jdbcType=TINYINT},
+        #{selectionEffectiveTime,jdbcType=TINYINT}, #{selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+        #{selectionEffectiveEndTime,jdbcType=TIMESTAMP}, #{priceRevoke,jdbcType=TINYINT},
+        #{applyCode,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct">
+        insert into product
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="barCode != null">
+                bar_code,
+            </if>
+            <if test="productId != null">
+                product_id,
+            </if>
+            <if test="productCode != null">
+                product_code,
+            </if>
+            <if test="productName != null">
+                product_name,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="spuCode != null">
+                spu_code,
+            </if>
+            <if test="retailPrice != null">
+                retail_price,
+            </if>
+            <if test="logo != null">
+                logo,
+            </if>
+            <if test="images != null">
+                images,
+            </if>
+            <if test="itroImages != null">
+                itro_images,
+            </if>
+            <if test="categoryId != null">
+                category_id,
+            </if>
+            <if test="categoryName != null">
+                category_name,
+            </if>
+            <if test="brandId != null">
+                brand_id,
+            </if>
+            <if test="brandName != null">
+                brand_name,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+            <if test="auditorBy != null">
+                auditor_by,
+            </if>
+            <if test="auditorTime != null">
+                auditor_time,
+            </if>
+            <if test="applyStatus != null">
+                apply_status,
+            </if>
+            <if test="selectionEffectiveTime != null">
+                selection_effective_time,
+            </if>
+            <if test="selectionEffectiveStartTime != null">
+                selection_effective_start_time,
+            </if>
+            <if test="selectionEffectiveEndTime != null">
+                selection_effective_end_time,
+            </if>
+            <if test="priceRevoke != null">
+                price_revoke,
+            </if>
+            <if test="applyCode != null">
+                apply_code,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="barCode != null">
+                #{barCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productCode != null">
+                #{productCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=INTEGER},
+            </if>
+            <if test="spuCode != null">
+                #{spuCode,jdbcType=VARCHAR},
+            </if>
+            <if test="retailPrice != null">
+                #{retailPrice,jdbcType=INTEGER},
+            </if>
+            <if test="logo != null">
+                #{logo,jdbcType=VARCHAR},
+            </if>
+            <if test="images != null">
+                #{images,jdbcType=VARCHAR},
+            </if>
+            <if test="itroImages != null">
+                #{itroImages,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryId != null">
+                #{categoryId,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryName != null">
+                #{categoryName,jdbcType=VARCHAR},
+            </if>
+            <if test="brandId != null">
+                #{brandId,jdbcType=VARCHAR},
+            </if>
+            <if test="brandName != null">
+                #{brandName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=TINYINT},
+            </if>
+            <if test="auditorBy != null">
+                #{auditorBy,jdbcType=VARCHAR},
+            </if>
+            <if test="auditorTime != null">
+                #{auditorTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applyStatus != null">
+                #{applyStatus,jdbcType=TINYINT},
+            </if>
+            <if test="selectionEffectiveTime != null">
+                #{selectionEffectiveTime,jdbcType=TINYINT},
+            </if>
+            <if test="selectionEffectiveStartTime != null">
+                #{selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="selectionEffectiveEndTime != null">
+                #{selectionEffectiveEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="priceRevoke != null">
+                #{priceRevoke,jdbcType=TINYINT},
+            </if>
+            <if test="applyCode != null">
+                #{applyCode,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteList" parameterType="java.util.List">
+        delete from product where product_code in(
+        <foreach collection="list" item="item" index="index" separator=",">
+            #{item.productCode,jdbcType=VARCHAR}
+        </foreach>
+        )
+    </delete>
+
+    <insert id="insertList" parameterType="java.util.List">
+        insert into product(
+        bar_code,product_id,product_code,product_name,price,
+        spu_code,retail_price,logo,images,itro_images,category_id,category_name,brand_id,brand_name,create_time,update_time,create_by,update_by,del_flag,
+        auditor_by,auditor_time,apply_status,selection_effective_time,selection_effective_start_time,selection_effective_end_time,price_revoke,apply_code,
+        company_code,company_name
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+                #{item.barCode,jdbcType=VARCHAR},
+                #{item.productId,jdbcType=VARCHAR},
+                #{item.productCode,jdbcType=VARCHAR},
+                #{item.productName,jdbcType=VARCHAR},
+                #{item.price,jdbcType=INTEGER},
+                #{item.spuCode,jdbcType=VARCHAR},
+                #{item.retailPrice,jdbcType=INTEGER},
+                #{item.logo,jdbcType=VARCHAR},
+                #{item.images,jdbcType=VARCHAR},
+                #{item.itroImages,jdbcType=VARCHAR},
+                #{item.categoryId,jdbcType=VARCHAR},
+                #{item.categoryName,jdbcType=VARCHAR},
+                #{item.brandId,jdbcType=VARCHAR},
+                #{item.brandName,jdbcType=VARCHAR},
+                #{item.createTime,jdbcType=TIMESTAMP},
+                #{item.updateTime,jdbcType=TIMESTAMP},
+                #{item.createBy,jdbcType=VARCHAR},
+                #{item.updateBy,jdbcType=VARCHAR},
+                #{item.delFlag,jdbcType=TINYINT},
+                #{item.auditorBy,jdbcType=VARCHAR},
+                #{item.auditorTime,jdbcType=TIMESTAMP},
+                #{item.applyStatus,jdbcType=TINYINT},
+                #{item.selectionEffectiveTime,jdbcType=TINYINT},
+                #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+                #{item.selectionEffectiveEndTime,jdbcType=TIMESTAMP},
+                #{item.priceRevoke,jdbcType=TINYINT},
+                #{item.applyCode,jdbcType=VARCHAR},
+                #{item.companyCode,jdbcType=VARCHAR},
+                #{item.companyName,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct">
+        update product
+        <set>
+            <if test="barCode != null">
+                bar_code = #{barCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productId != null">
+                product_id = #{productId,jdbcType=VARCHAR},
+            </if>
+            <if test="productCode != null">
+                product_code = #{productCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=INTEGER},
+            </if>
+            <if test="spuCode != null">
+                spu_code = #{spuCode,jdbcType=VARCHAR},
+            </if>
+            <if test="retailPrice != null">
+                retail_price = #{retailPrice,jdbcType=INTEGER},
+            </if>
+            <if test="logo != null">
+                logo = #{logo,jdbcType=VARCHAR},
+            </if>
+            <if test="images != null">
+                images = #{images,jdbcType=VARCHAR},
+            </if>
+            <if test="itroImages != null">
+                itro_images = #{itroImages,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId,jdbcType=VARCHAR},
+            </if>
+            <if test="categoryName != null">
+                category_name = #{categoryName,jdbcType=VARCHAR},
+            </if>
+            <if test="brandId != null">
+                brand_id = #{brandId,jdbcType=VARCHAR},
+            </if>
+            <if test="brandName != null">
+                brand_name = #{brandName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=TINYINT},
+            </if>
+            <if test="auditorBy != null">
+                auditor_by = #{auditorBy,jdbcType=VARCHAR},
+            </if>
+            <if test="auditorTime != null">
+                auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applyStatus != null">
+                apply_status = #{applyStatus,jdbcType=TINYINT},
+            </if>
+            <if test="selectionEffectiveTime != null">
+                selection_effective_time = #{selectionEffectiveTime,jdbcType=TINYINT},
+            </if>
+            <if test="selectionEffectiveStartTime != null">
+                selection_effective_start_time = #{selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="selectionEffectiveEndTime != null">
+                selection_effective_end_time = #{selectionEffectiveEndTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="priceRevoke != null">
+                price_revoke = #{priceRevoke,jdbcType=TINYINT},
+            </if>
+            <if test="applyCode != null">
+                apply_code = #{applyCode,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct">
+        update product
+        set bar_code = #{barCode,jdbcType=VARCHAR},
+        product_id = #{productId,jdbcType=VARCHAR},
+        product_code = #{productCode,jdbcType=VARCHAR},
+        product_name = #{productName,jdbcType=VARCHAR},
+        price = #{price,jdbcType=INTEGER},
+        spu_code = #{spuCode,jdbcType=VARCHAR},
+        retail_price = #{retailPrice,jdbcType=INTEGER},
+        logo = #{logo,jdbcType=VARCHAR},
+        images = #{images,jdbcType=VARCHAR},
+        itro_images = #{itroImages,jdbcType=VARCHAR},
+        category_id = #{categoryId,jdbcType=VARCHAR},
+        category_name = #{categoryName,jdbcType=VARCHAR},
+        brand_id = #{brandId,jdbcType=VARCHAR},
+        brand_name = #{brandName,jdbcType=VARCHAR},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        create_by = #{createBy,jdbcType=VARCHAR},
+        update_by = #{updateBy,jdbcType=VARCHAR},
+        del_flag = #{delFlag,jdbcType=TINYINT},
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+        selection_effective_time = #{selectionEffectiveTime,jdbcType=TINYINT},
+        selection_effective_start_time = #{selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+        selection_effective_end_time = #{selectionEffectiveEndTime,jdbcType=TIMESTAMP},
+        price_revoke = #{priceRevoke,jdbcType=TINYINT},
+        apply_code = #{applyCode,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="getList" resultType="com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO"
+            parameterType="com.aiqin.bms.scmp.api.product.domain.request.newproduct.QueryNewProductReqVO">
+        SELECT
+        pro.id,pro.product_code as productCode,pro.product_name as productName,
+        COUNT(pku.id) as skuNumber,pro.update_time as updateTime,
+        pro.update_by as updateBy,pro.bar_code as barCode
+        FROM product pro LEFT JOIN product_sku pku on pro.product_code=pku.product_code
+        WHERE pro.del_flag=0
+        <if test="createTimeStart != null">
+            AND pro.create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="createTimeEnd != null">
+            AND pro.create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+        </if>
+        <if test="productCode != null and productCode !=''">
+            AND pro.product_code LIKE CONCAT(CONCAT('%',#{productCode},'%'))
+        </if>
+        <if test="productName != null and productName !=''">
+            AND pro.product_name LIKE CONCAT(CONCAT('%',#{productName},'%'))
+        </if>
+        <if test="companyCode != null and companyCode != '' ">
+            and pro.company_code = #{companyCode,jdbcType=VARCHAR}
+        </if>
+        GROUP BY pro.product_code
+        ORDER BY pro.create_time DESC
+    </select>
+    <select id="productSku" resultType="com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewSkuDetailsResponseVO">
+        SELECT
+        id,sku_code as skuCode,sku_name as skuName,product_sort_name as productSortName,
+        product_property_name as productPropertyName,product_category_name as productCategoryName,
+        product_brand_name as productBrandName,create_time as createTime,create_by as createBy
+        FROM product_sku psu WHERE psu.del_flag=0
+        <if test="productCode!=null and productCode!=''">
+            AND product_code=#{productCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productName!=null and productName!=''">
+            AND pro.product_name LIKE CONCAT(CONCAT('%',#{productName},'%'))
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPriceMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPrice">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="add_points_value" jdbcType="BIGINT" property="addPointsValue" />
+    <result column="gross_profit_margin_value" jdbcType="BIGINT" property="grossProfitMarginValue" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="price_type_code" jdbcType="VARCHAR" property="priceTypeCode" />
+    <result column="price_type_name" jdbcType="VARCHAR" property="priceTypeName" />
+    <result column="price_value" jdbcType="BIGINT" property="priceValue" />
+    <result column="effective_time" jdbcType="TIMESTAMP" property="effectiveTime" />
+    <result column="stop_time" jdbcType="TIMESTAMP" property="stopTime" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="is_default" jdbcType="TINYINT" property="isDefault" />
+    <result column="tax_rate" jdbcType="BIGINT" property="taxRate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, add_points_value, gross_profit_margin_value, del_flag, create_time, create_by, 
+    update_time, update_by, price_type_code, price_type_name, price_value, effective_time, 
+    stop_time, sku_code, sku_name, apply_code, supplier_code, supplier_name, is_default, 
+    tax_rate
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from apply_product_sku_price
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from apply_product_sku_price
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPrice">
+    insert into apply_product_sku_price (id, add_points_value, gross_profit_margin_value, 
+      del_flag, create_time, create_by, 
+      update_time, update_by, price_type_code, 
+      price_type_name, price_value, effective_time, 
+      stop_time, sku_code, sku_name, 
+      apply_code, supplier_code, supplier_name, 
+      is_default, tax_rate)
+    values (#{id,jdbcType=BIGINT}, #{addPointsValue,jdbcType=BIGINT}, #{grossProfitMarginValue,jdbcType=BIGINT}, 
+      #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{priceTypeCode,jdbcType=VARCHAR}, 
+      #{priceTypeName,jdbcType=VARCHAR}, #{priceValue,jdbcType=BIGINT}, #{effectiveTime,jdbcType=TIMESTAMP}, 
+      #{stopTime,jdbcType=TIMESTAMP}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
+      #{applyCode,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, 
+      #{isDefault,jdbcType=TINYINT}, #{taxRate,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPrice">
+    insert into apply_product_sku_price
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="addPointsValue != null">
+        add_points_value,
+      </if>
+      <if test="grossProfitMarginValue != null">
+        gross_profit_margin_value,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="priceTypeCode != null">
+        price_type_code,
+      </if>
+      <if test="priceTypeName != null">
+        price_type_name,
+      </if>
+      <if test="priceValue != null">
+        price_value,
+      </if>
+      <if test="effectiveTime != null">
+        effective_time,
+      </if>
+      <if test="stopTime != null">
+        stop_time,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="skuName != null">
+        sku_name,
+      </if>
+      <if test="applyCode != null">
+        apply_code,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="supplierName != null">
+        supplier_name,
+      </if>
+      <if test="isDefault != null">
+        is_default,
+      </if>
+      <if test="taxRate != null">
+        tax_rate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="addPointsValue != null">
+        #{addPointsValue,jdbcType=BIGINT},
+      </if>
+      <if test="grossProfitMarginValue != null">
+        #{grossProfitMarginValue,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeCode != null">
+        #{priceTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeName != null">
+        #{priceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceValue != null">
+        #{priceValue,jdbcType=BIGINT},
+      </if>
+      <if test="effectiveTime != null">
+        #{effectiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stopTime != null">
+        #{stopTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyCode != null">
+        #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null">
+        #{isDefault,jdbcType=TINYINT},
+      </if>
+      <if test="taxRate != null">
+        #{taxRate,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPrice">
+    update apply_product_sku_price
+    <set>
+      <if test="addPointsValue != null">
+        add_points_value = #{addPointsValue,jdbcType=BIGINT},
+      </if>
+      <if test="grossProfitMarginValue != null">
+        gross_profit_margin_value = #{grossProfitMarginValue,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeCode != null">
+        price_type_code = #{priceTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeName != null">
+        price_type_name = #{priceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceValue != null">
+        price_value = #{priceValue,jdbcType=BIGINT},
+      </if>
+      <if test="effectiveTime != null">
+        effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stopTime != null">
+        stop_time = #{stopTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyCode != null">
+        apply_code = #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null">
+        is_default = #{isDefault,jdbcType=TINYINT},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPrice">
+    update apply_product_sku_price
+    set add_points_value = #{addPointsValue,jdbcType=BIGINT},
+      gross_profit_margin_value = #{grossProfitMarginValue,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      price_type_code = #{priceTypeCode,jdbcType=VARCHAR},
+      price_type_name = #{priceTypeName,jdbcType=VARCHAR},
+      price_value = #{priceValue,jdbcType=BIGINT},
+      effective_time = #{effectiveTime,jdbcType=TIMESTAMP},
+      stop_time = #{stopTime,jdbcType=TIMESTAMP},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      sku_name = #{skuName,jdbcType=VARCHAR},
+      apply_code = #{applyCode,jdbcType=VARCHAR},
+      supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      supplier_name = #{supplierName,jdbcType=VARCHAR},
+      is_default = #{isDefault,jdbcType=TINYINT},
+      tax_rate = #{taxRate,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

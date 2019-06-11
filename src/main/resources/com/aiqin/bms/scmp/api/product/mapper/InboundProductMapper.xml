@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.InboundProductMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl" />
+    <result column="norms" jdbcType="VARCHAR" property="norms" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="inbound_norms" jdbcType="VARCHAR" property="inboundNorms" />
+    <result column="inbound_base_content" jdbcType="VARCHAR" property="inboundBaseContent" />
+    <result column="pre_inbound_num" jdbcType="BIGINT" property="preInboundNum" />
+    <result column="pre_inbound_main_num" jdbcType="BIGINT" property="preInboundMainNum" />
+    <result column="pre_tax_purchase_amount" jdbcType="BIGINT" property="preTaxPurchaseAmount" />
+    <result column="pre_tax_amount" jdbcType="BIGINT" property="preTaxAmount" />
+    <result column="pra_inbound_num" jdbcType="BIGINT" property="praInboundNum" />
+    <result column="pra_inbound_main_num" jdbcType="BIGINT" property="praInboundMainNum" />
+    <result column="pra_tax_purchase_amount" jdbcType="BIGINT" property="praTaxPurchaseAmount" />
+    <result column="pra_tax_amount" jdbcType="BIGINT" property="praTaxAmount" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, inbound_oder_code, sku_code, sku_name, picture_url, norms, color_name, color_code, 
+    model, unit_code, unit_name, inbound_norms, inbound_base_content, pre_inbound_num, 
+    pre_inbound_main_num, pre_tax_purchase_amount, pre_tax_amount, pra_inbound_num, pra_inbound_main_num, 
+    pra_tax_purchase_amount, pra_tax_amount, create_by, create_time, update_by, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from inbound_product
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from inbound_product
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct">
+    insert into inbound_product (id, inbound_oder_code, sku_code, 
+      sku_name, picture_url, norms, 
+      color_name, color_code, model, 
+      unit_code, unit_name, inbound_norms, 
+      inbound_base_content, pre_inbound_num, pre_inbound_main_num, 
+      pre_tax_purchase_amount, pre_tax_amount, pra_inbound_num, 
+      pra_inbound_main_num, pra_tax_purchase_amount, 
+      pra_tax_amount, create_by, create_time, 
+      update_by, update_time)
+    values (#{id,jdbcType=BIGINT}, #{inboundOderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
+      #{skuName,jdbcType=VARCHAR}, #{pictureUrl,jdbcType=VARCHAR}, #{norms,jdbcType=VARCHAR}, 
+      #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, 
+      #{unitCode,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, #{inboundNorms,jdbcType=VARCHAR}, 
+      #{inboundBaseContent,jdbcType=VARCHAR}, #{preInboundNum,jdbcType=BIGINT}, #{preInboundMainNum,jdbcType=BIGINT}, 
+      #{preTaxPurchaseAmount,jdbcType=BIGINT}, #{preTaxAmount,jdbcType=BIGINT}, #{praInboundNum,jdbcType=BIGINT}, 
+      #{praInboundMainNum,jdbcType=BIGINT}, #{praTaxPurchaseAmount,jdbcType=BIGINT}, 
+      #{praTaxAmount,jdbcType=BIGINT}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct">
+    insert into inbound_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="inboundOderCode != null">
+        inbound_oder_code,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="skuName != null">
+        sku_name,
+      </if>
+      <if test="pictureUrl != null">
+        picture_url,
+      </if>
+      <if test="norms != null">
+        norms,
+      </if>
+      <if test="colorName != null">
+        color_name,
+      </if>
+      <if test="colorCode != null">
+        color_code,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="unitCode != null">
+        unit_code,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="inboundNorms != null">
+        inbound_norms,
+      </if>
+      <if test="inboundBaseContent != null">
+        inbound_base_content,
+      </if>
+      <if test="preInboundNum != null">
+        pre_inbound_num,
+      </if>
+      <if test="preInboundMainNum != null">
+        pre_inbound_main_num,
+      </if>
+      <if test="preTaxPurchaseAmount != null">
+        pre_tax_purchase_amount,
+      </if>
+      <if test="preTaxAmount != null">
+        pre_tax_amount,
+      </if>
+      <if test="praInboundNum != null">
+        pra_inbound_num,
+      </if>
+      <if test="praInboundMainNum != null">
+        pra_inbound_main_num,
+      </if>
+      <if test="praTaxPurchaseAmount != null">
+        pra_tax_purchase_amount,
+      </if>
+      <if test="praTaxAmount != null">
+        pra_tax_amount,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="inboundOderCode != null">
+        #{inboundOderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureUrl != null">
+        #{pictureUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="norms != null">
+        #{norms,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorCode != null">
+        #{colorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCode != null">
+        #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="inboundNorms != null">
+        #{inboundNorms,jdbcType=VARCHAR},
+      </if>
+      <if test="inboundBaseContent != null">
+        #{inboundBaseContent,jdbcType=VARCHAR},
+      </if>
+      <if test="preInboundNum != null">
+        #{preInboundNum,jdbcType=BIGINT},
+      </if>
+      <if test="preInboundMainNum != null">
+        #{preInboundMainNum,jdbcType=BIGINT},
+      </if>
+      <if test="preTaxPurchaseAmount != null">
+        #{preTaxPurchaseAmount,jdbcType=BIGINT},
+      </if>
+      <if test="preTaxAmount != null">
+        #{preTaxAmount,jdbcType=BIGINT},
+      </if>
+      <if test="praInboundNum != null">
+        #{praInboundNum,jdbcType=BIGINT},
+      </if>
+      <if test="praInboundMainNum != null">
+        #{praInboundMainNum,jdbcType=BIGINT},
+      </if>
+      <if test="praTaxPurchaseAmount != null">
+        #{praTaxPurchaseAmount,jdbcType=BIGINT},
+      </if>
+      <if test="praTaxAmount != null">
+        #{praTaxAmount,jdbcType=BIGINT},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct">
+    update inbound_product
+    <set>
+      <if test="inboundOderCode != null">
+        inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureUrl != null">
+        picture_url = #{pictureUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="norms != null">
+        norms = #{norms,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        color_name = #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorCode != null">
+        color_code = #{colorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCode != null">
+        unit_code = #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="inboundNorms != null">
+        inbound_norms = #{inboundNorms,jdbcType=VARCHAR},
+      </if>
+      <if test="inboundBaseContent != null">
+        inbound_base_content = #{inboundBaseContent,jdbcType=VARCHAR},
+      </if>
+      <if test="preInboundNum != null">
+        pre_inbound_num = #{preInboundNum,jdbcType=BIGINT},
+      </if>
+      <if test="preInboundMainNum != null">
+        pre_inbound_main_num = #{preInboundMainNum,jdbcType=BIGINT},
+      </if>
+      <if test="preTaxPurchaseAmount != null">
+        pre_tax_purchase_amount = #{preTaxPurchaseAmount,jdbcType=BIGINT},
+      </if>
+      <if test="preTaxAmount != null">
+        pre_tax_amount = #{preTaxAmount,jdbcType=BIGINT},
+      </if>
+      <if test="praInboundNum != null">
+        pra_inbound_num = #{praInboundNum,jdbcType=BIGINT},
+      </if>
+      <if test="praInboundMainNum != null">
+        pra_inbound_main_num = #{praInboundMainNum,jdbcType=BIGINT},
+      </if>
+      <if test="praTaxPurchaseAmount != null">
+        pra_tax_purchase_amount = #{praTaxPurchaseAmount,jdbcType=BIGINT},
+      </if>
+      <if test="praTaxAmount != null">
+        pra_tax_amount = #{praTaxAmount,jdbcType=BIGINT},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct">
+    update inbound_product
+    set inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      sku_name = #{skuName,jdbcType=VARCHAR},
+      picture_url = #{pictureUrl,jdbcType=VARCHAR},
+      norms = #{norms,jdbcType=VARCHAR},
+      color_name = #{colorName,jdbcType=VARCHAR},
+      color_code = #{colorCode,jdbcType=VARCHAR},
+      model = #{model,jdbcType=VARCHAR},
+      unit_code = #{unitCode,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      inbound_norms = #{inboundNorms,jdbcType=VARCHAR},
+      inbound_base_content = #{inboundBaseContent,jdbcType=VARCHAR},
+      pre_inbound_num = #{preInboundNum,jdbcType=BIGINT},
+      pre_inbound_main_num = #{preInboundMainNum,jdbcType=BIGINT},
+      pre_tax_purchase_amount = #{preTaxPurchaseAmount,jdbcType=BIGINT},
+      pre_tax_amount = #{preTaxAmount,jdbcType=BIGINT},
+      pra_inbound_num = #{praInboundNum,jdbcType=BIGINT},
+      pra_inbound_main_num = #{praInboundMainNum,jdbcType=BIGINT},
+      pra_tax_purchase_amount = #{praTaxPurchaseAmount,jdbcType=BIGINT},
+      pra_tax_amount = #{praTaxAmount,jdbcType=BIGINT},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

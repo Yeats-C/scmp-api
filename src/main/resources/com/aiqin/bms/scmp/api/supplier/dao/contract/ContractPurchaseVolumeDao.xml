@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.contract.ContractPurchaseVolumeDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractPurchaseVolumeDTO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="contract_code" jdbcType="VARCHAR" property="contractCode" />
+    <result column="tax" jdbcType="TINYINT" property="tax" />
+    <result column="amount_money" jdbcType="BIGINT" property="amountMoney" />
+    <result column="proportion" jdbcType="BIGINT" property="proportion" />
+    <result column="or_amount_money" jdbcType="BIGINT" property="orAmountMoney" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, contract_code, tax, amount_money, proportion, or_amount_money, del_flag, create_time, 
+    create_by, update_time, update_by
+  </sql>
+
+  <insert id="insertContractPurchaseVolume" parameterType="java.util.List">
+    INSERT  INTO  contract_purchase_volume
+    (contract_code,tax,amount_money,proportion,or_amount_money,create_time,create_by ,update_time, update_by)
+    VALUES
+    <foreach collection="list" item="t" index= "index" separator =",">
+      (
+      #{t.contractCode},
+      #{t.tax},
+      #{t.amountMoney},
+      #{t.proportion},
+      #{t.orAmountMoney},
+      #{t.createTime},
+      #{t.createBy},
+      #{t.updateTime},
+      #{t.updateBy}
+      )
+    </foreach>
+  </insert>
+
+  <select id="selectByContractPurchaseVolume" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from contract_purchase_volume
+    where contract_code = #{contractCode,jdbcType=VARCHAR} and del_flag!='1'
+  </select>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete
+    from  contract_purchase_volume
+    where contract_code = #{contractCode,jdbcType=VARCHAR}
+  </delete>
+</mapper>

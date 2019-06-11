@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.ProductStockDetailDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.ProductStockDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="distributor_id" jdbcType="VARCHAR" property="distributorId" />
+    <result column="distributor_code" jdbcType="VARCHAR" property="distributorCode" />
+    <result column="stock_change_type" jdbcType="BIT" property="stockChangeType" />
+    <result column="change_count" jdbcType="INTEGER" property="changeCount" />
+    <result column="sellable_storage" jdbcType="INTEGER" property="sellableStorage" />
+    <result column="stock_change_reason" jdbcType="BIT" property="stockChangeReason" />
+    <result column="release_status" jdbcType="BIT" property="releaseStatus" />
+    <result column="warehousing_id" jdbcType="VARCHAR" property="warehousingId" />
+    <result column="relation_id" jdbcType="VARCHAR" property="relationId" />
+    <result column="warehouse_type" jdbcType="BIT" property="warehouseType" />
+    <result column="position" jdbcType="BIT" property="position" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sku_code, distributor_id, distributor_code, stock_change_type, change_count, 
+    sellable_storage, stock_change_reason, release_status, warehousing_id, relation_id, 
+    warehouse_type, position, create_time, update_time, create_by, update_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_stock_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_stock_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductStockDetail">
+    insert into product_stock_detail (id, sku_code, distributor_id, 
+      distributor_code, stock_change_type, change_count, 
+      sellable_storage, stock_change_reason, release_status, 
+      warehousing_id, relation_id, warehouse_type, 
+      position, create_time, update_time, 
+      create_by, update_by)
+    values (#{id,jdbcType=BIGINT}, #{skuCode,jdbcType=VARCHAR}, #{distributorId,jdbcType=VARCHAR}, 
+      #{distributorCode,jdbcType=VARCHAR}, #{stockChangeType,jdbcType=BIT}, #{changeCount,jdbcType=INTEGER}, 
+      #{sellableStorage,jdbcType=INTEGER}, #{stockChangeReason,jdbcType=BIT}, #{releaseStatus,jdbcType=BIT}, 
+      #{warehousingId,jdbcType=VARCHAR}, #{relationId,jdbcType=VARCHAR}, #{warehouseType,jdbcType=BIT}, 
+      #{position,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductStockDetail">
+    insert into product_stock_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="distributorId != null">
+        distributor_id,
+      </if>
+      <if test="distributorCode != null">
+        distributor_code,
+      </if>
+      <if test="stockChangeType != null">
+        stock_change_type,
+      </if>
+      <if test="changeCount != null">
+        change_count,
+      </if>
+      <if test="sellableStorage != null">
+        sellable_storage,
+      </if>
+      <if test="stockChangeReason != null">
+        stock_change_reason,
+      </if>
+      <if test="releaseStatus != null">
+        release_status,
+      </if>
+      <if test="warehousingId != null">
+        warehousing_id,
+      </if>
+      <if test="relationId != null">
+        relation_id,
+      </if>
+      <if test="warehouseType != null">
+        warehouse_type,
+      </if>
+      <if test="position != null">
+        position,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorId != null">
+        #{distributorId,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorCode != null">
+        #{distributorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stockChangeType != null">
+        #{stockChangeType,jdbcType=BIT},
+      </if>
+      <if test="changeCount != null">
+        #{changeCount,jdbcType=INTEGER},
+      </if>
+      <if test="sellableStorage != null">
+        #{sellableStorage,jdbcType=INTEGER},
+      </if>
+      <if test="stockChangeReason != null">
+        #{stockChangeReason,jdbcType=BIT},
+      </if>
+      <if test="releaseStatus != null">
+        #{releaseStatus,jdbcType=BIT},
+      </if>
+      <if test="warehousingId != null">
+        #{warehousingId,jdbcType=VARCHAR},
+      </if>
+      <if test="relationId != null">
+        #{relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseType != null">
+        #{warehouseType,jdbcType=BIT},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductStockDetail">
+    update product_stock_detail
+    <set>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorId != null">
+        distributor_id = #{distributorId,jdbcType=VARCHAR},
+      </if>
+      <if test="distributorCode != null">
+        distributor_code = #{distributorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="stockChangeType != null">
+        stock_change_type = #{stockChangeType,jdbcType=BIT},
+      </if>
+      <if test="changeCount != null">
+        change_count = #{changeCount,jdbcType=INTEGER},
+      </if>
+      <if test="sellableStorage != null">
+        sellable_storage = #{sellableStorage,jdbcType=INTEGER},
+      </if>
+      <if test="stockChangeReason != null">
+        stock_change_reason = #{stockChangeReason,jdbcType=BIT},
+      </if>
+      <if test="releaseStatus != null">
+        release_status = #{releaseStatus,jdbcType=BIT},
+      </if>
+      <if test="warehousingId != null">
+        warehousing_id = #{warehousingId,jdbcType=VARCHAR},
+      </if>
+      <if test="relationId != null">
+        relation_id = #{relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseType != null">
+        warehouse_type = #{warehouseType,jdbcType=BIT},
+      </if>
+      <if test="position != null">
+        position = #{position,jdbcType=BIT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductStockDetail">
+    update product_stock_detail
+    set sku_code = #{skuCode,jdbcType=VARCHAR},
+      distributor_id = #{distributorId,jdbcType=VARCHAR},
+      distributor_code = #{distributorCode,jdbcType=VARCHAR},
+      stock_change_type = #{stockChangeType,jdbcType=BIT},
+      change_count = #{changeCount,jdbcType=INTEGER},
+      sellable_storage = #{sellableStorage,jdbcType=INTEGER},
+      stock_change_reason = #{stockChangeReason,jdbcType=BIT},
+      release_status = #{releaseStatus,jdbcType=BIT},
+      warehousing_id = #{warehousingId,jdbcType=VARCHAR},
+      relation_id = #{relationId,jdbcType=VARCHAR},
+      warehouse_type = #{warehouseType,jdbcType=BIT},
+      position = #{position,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

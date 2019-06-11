@@ -1,0 +1,771 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ProductSkuChangePriceMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePrice">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="change_price_type" jdbcType="VARCHAR" property="changePriceType" />
+    <result column="change_price_name" jdbcType="VARCHAR" property="changePriceName" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="remake" jdbcType="VARCHAR" property="remake" />
+    <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode" />
+    <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
+    <result column="cost_bearer_code" jdbcType="VARCHAR" property="costBearerCode" />
+    <result column="cost_bearer_name" jdbcType="VARCHAR" property="costBearerName" />
+    <result column="budget" jdbcType="BIGINT" property="budget" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="form_no" jdbcType="VARCHAR" property="formNo" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="original" jdbcType="INTEGER" property="original" />
+    <result column="ext_field_1" jdbcType="VARCHAR" property="extField1" />
+    <result column="ext_field_2" jdbcType="VARCHAR" property="extField2" />
+    <result column="ext_field_3" jdbcType="VARCHAR" property="extField3" />
+    <result column="ext_field_4" jdbcType="TIMESTAMP" property="extField4" />
+    <result column="ext_field_5" jdbcType="INTEGER" property="extField5" />
+    <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
+  </resultMap>
+  <resultMap id="SELECT_BY_FORM_NO_MAP" type="com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO">
+    <id column="aid" jdbcType="BIGINT" property="id" />
+    <result column="acode" jdbcType="VARCHAR" property="code" />
+    <result column="achange_price_type" jdbcType="VARCHAR" property="changePriceType" />
+    <result column="achange_price_name" jdbcType="VARCHAR" property="changePriceName" />
+    <result column="aname" jdbcType="VARCHAR" property="name" />
+    <result column="apurchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="apurchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="aremake" jdbcType="VARCHAR" property="remake" />
+    <result column="adirect_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode" />
+    <result column="adirect_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
+    <result column="acost_bearer_code" jdbcType="VARCHAR" property="costBearerCode" />
+    <result column="acost_bearer_name" jdbcType="VARCHAR" property="costBearerName" />
+    <result column="abudget" jdbcType="BIGINT" property="budget" />
+    <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="acreate_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="acreate_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="aupdate_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="aupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="aauditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="aapply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="aform_no" jdbcType="VARCHAR" property="formNo" />
+    <result column="aauditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="aoriginal" jdbcType="INTEGER" property="original" />
+    <result column="aext_field_1" jdbcType="VARCHAR" property="extField1" />
+    <result column="aext_field_2" jdbcType="VARCHAR" property="extField2" />
+    <result column="aext_field_3" jdbcType="VARCHAR" property="extField3" />
+    <result column="aext_field_4" jdbcType="TIMESTAMP" property="extField4" />
+    <result column="aext_field_5" jdbcType="INTEGER" property="extField5" />
+    <result column="aext_field_6" jdbcType="BIGINT" property="extField6" />
+    <collection property="infos" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo">
+      <id column="bid" jdbcType="BIGINT" property="id" />
+      <result column="bcode" jdbcType="VARCHAR" property="code" />
+      <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
+      <result column="bsku_name" jdbcType="VARCHAR" property="skuName" />
+      <result column="bpurchase_price_newest" jdbcType="BIGINT" property="purchasePriceNewest" />
+      <result column="bsupplier_code" jdbcType="VARCHAR" property="supplierCode" />
+      <result column="bsupplier_name" jdbcType="VARCHAR" property="supplierName" />
+      <result column="bbe_default" jdbcType="INTEGER" property="beDefault" />
+      <result column="bpurchase_price_old" jdbcType="BIGINT" property="purchasePriceOld" />
+      <result column="beffective_time_start" jdbcType="TIMESTAMP" property="effectiveTimeStart" />
+      <result column="beffective_time_end" jdbcType="TIMESTAMP" property="effectiveTimeEnd" />
+      <result column="bpurchase_price_new" jdbcType="BIGINT" property="purchasePriceNew" />
+      <result column="bold_price" jdbcType="BIGINT" property="oldPrice" />
+      <result column="bnew_price" jdbcType="BIGINT" property="newPrice" />
+      <result column="bwarehouse_batch_number" jdbcType="VARCHAR" property="warehouseBatchNumber" />
+      <result column="bwarehouse_batch_name" jdbcType="VARCHAR" property="warehouseBatchName" />
+      <result column="bchange_price_reason_code" jdbcType="VARCHAR" property="changePriceReasonCode" />
+      <result column="bchange_price_reason_name" jdbcType="VARCHAR" property="changePriceReasonName" />
+      <result column="btemporary_price" jdbcType="BIGINT" property="temporaryPrice" />
+      <result column="bprice_item_code" jdbcType="VARCHAR" property="priceItemCode" />
+      <result column="bprice_item_name" jdbcType="VARCHAR" property="priceItemName" />
+      <result column="bprice_type_code" jdbcType="VARCHAR" property="priceTypeCode" />
+      <result column="bprice_type_name" jdbcType="VARCHAR" property="priceTypeName" />
+      <result column="bprice_attribute_code" jdbcType="VARCHAR" property="priceAttributeCode" />
+      <result column="bprice_attribute_name" jdbcType="VARCHAR" property="priceAttributeName" />
+      <result column="bcompany_code" jdbcType="VARCHAR" property="companyCode" />
+      <result column="bcompany_name" jdbcType="VARCHAR" property="companyName" />
+      <result column="btransport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+      <result column="btransport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+      <result column="bwarehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+      <result column="bwarehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+      <result column="bbatch_remark" jdbcType="VARCHAR" property="batchRemark" />
+      <result column="bofficial_code" jdbcType="VARCHAR" property="officialCode" />
+      <result column="bext_field_3" jdbcType="VARCHAR" property="extField3" />
+      <result column="bproduct_time" jdbcType="TIMESTAMP" property="productTime" />
+      <result column="bbe_synchronize" jdbcType="INTEGER" property="beSynchronize" />
+      <result column="bext_field_6" jdbcType="BIGINT" property="extField6" />
+    </collection>
+    <collection property="areaInfos" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceAreaInfo">
+      <id column="cid" jdbcType="BIGINT" property="id" />
+      <result column="cmain_code" jdbcType="VARCHAR" property="mainCode" />
+      <result column="ctype" jdbcType="INTEGER" property="type" />
+      <result column="cstatus" jdbcType="INTEGER" property="status" />
+      <result column="cname" jdbcType="VARCHAR" property="name" />
+      <result column="ccode" jdbcType="VARCHAR" property="code" />
+      <result column="ccompany_code" jdbcType="VARCHAR" property="companyCode" />
+      <result column="ccompany_name" jdbcType="VARCHAR" property="companyName" />
+      <result column="ceffective_time_start" jdbcType="TIMESTAMP" property="effectiveTimeStart" />
+      <result column="ceffective_time_end" jdbcType="TIMESTAMP" property="effectiveTimeEnd" />
+      <result column="cbe_effective" jdbcType="INTEGER" property="beEffective" />
+      <result column="cun_effective_reason" jdbcType="VARCHAR" property="unEffectiveReason" />
+      <result column="cext_field_1" jdbcType="VARCHAR" property="extField1" />
+      <result column="cext_field_2" jdbcType="VARCHAR" property="extField2" />
+      <result column="cext_field_3" jdbcType="VARCHAR" property="extField3" />
+      <result column="cext_field_4" jdbcType="TIMESTAMP" property="extField4" />
+      <result column="cext_field_5" jdbcType="INTEGER" property="extField5" />
+      <result column="cext_field_6" jdbcType="BIGINT" property="extField6" />
+    </collection>
+  </resultMap>
+  <resultMap id="selectInfoByCode" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO">
+    <result column="acode" jdbcType="VARCHAR" property="code" />
+    <result column="achange_price_name" jdbcType="VARCHAR" property="changePriceName" />
+    <result column="achange_price_type" jdbcType="VARCHAR" property="changePriceType" />
+    <result column="aname" jdbcType="VARCHAR" property="name" />
+    <result column="apurchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="apurchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="aremake" jdbcType="VARCHAR" property="remake" />
+    <result column="adirect_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode" />
+    <result column="adirect_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
+    <result column="acost_bearer_code" jdbcType="VARCHAR" property="costBearerCode" />
+    <result column="acost_bearer_name" jdbcType="VARCHAR" property="costBearerName" />
+    <result column="abudget" jdbcType="BIGINT" property="budget" />
+    <result column="aform_no" jdbcType="VARCHAR" property="formNo" />
+    <result column="aapply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+    <collection property="infoList" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceInfoRespVO">
+      <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
+      <result column="bsku_name" jdbcType="VARCHAR" property="skuName" />
+      <result column="bpurchase_price_newest" jdbcType="BIGINT" property="purchasePriceNewest" />
+      <result column="bsupplier_code" jdbcType="VARCHAR" property="supplierCode" />
+      <result column="bsupplier_name" jdbcType="VARCHAR" property="supplierName" />
+      <result column="bbe_default" jdbcType="INTEGER" property="beDefault" />
+      <result column="bpurchase_price_old" jdbcType="BIGINT" property="purchasePriceOld" />
+      <result column="beffective_time_start" jdbcType="TIMESTAMP" property="effectiveTimeStart" />
+      <result column="beffective_time_end" jdbcType="TIMESTAMP" property="effectiveTimeEnd" />
+      <result column="bpurchase_price_new" jdbcType="BIGINT" property="purchasePriceNew" />
+      <result column="bold_price" jdbcType="BIGINT" property="oldPrice" />
+      <result column="bnew_price" jdbcType="BIGINT" property="newPrice" />
+      <result column="bwarehouse_batch_number" jdbcType="VARCHAR" property="warehouseBatchNumber" />
+      <result column="bwarehouse_batch_name" jdbcType="VARCHAR" property="warehouseBatchName" />
+      <result column="bchange_price_reason_code" jdbcType="VARCHAR" property="changePriceReasonCode" />
+      <result column="bchange_price_reason_name" jdbcType="VARCHAR" property="changePriceReasonName" />
+      <result column="btemporary_price" jdbcType="BIGINT" property="temporaryPrice" />
+      <result column="bprice_item_code" jdbcType="VARCHAR" property="priceItemCode" />
+      <result column="bprice_item_name" jdbcType="VARCHAR" property="priceItemName" />
+      <result column="bprice_type_code" jdbcType="VARCHAR" property="priceTypeCode" />
+      <result column="bprice_type_name" jdbcType="VARCHAR" property="priceTypeName" />
+      <result column="bprice_attribute_code" jdbcType="VARCHAR" property="priceAttributeCode" />
+      <result column="bprice_attribute_name" jdbcType="VARCHAR" property="priceAttributeName" />
+      <result column="btransport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+      <result column="btransport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+      <result column="bwarehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+      <result column="bwarehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+      <result column="bproduct_time" jdbcType="VARCHAR" property="productTime" />
+    </collection>
+    <collection property="images" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceImageRespVO">
+      <result column="cname" jdbcType="VARCHAR" property="name" />
+      <result column="curl" jdbcType="VARCHAR" property="url" />
+    </collection>
+    <collection property="areaList" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceAreaInfoRespVO">
+      <result column="dtype" jdbcType="INTEGER" property="type" />
+      <result column="dstatus" jdbcType="INTEGER" property="status" />
+      <result column="dname" jdbcType="VARCHAR" property="name" />
+      <result column="dcode" jdbcType="VARCHAR" property="code" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, change_price_type, change_price_name, name, purchase_group_code, purchase_group_name, 
+    remake, direct_supervisor_code, direct_supervisor_name, cost_bearer_code, cost_bearer_name, 
+    budget, company_code, company_name, create_by, create_time, update_by, update_time, 
+    auditor_by, apply_status, form_no, auditor_time, original, ext_field_1, ext_field_2, 
+    ext_field_3, ext_field_4, ext_field_5, ext_field_6
+  </sql>
+  <!--<sql id="select_by_form_no">-->
+    <!--a.id,a.code,a.change_price_type,a.change_price_name,a.name,a.purchase_group_code,a.purchase_group_name,a.remake,a.direct_supervisor_code,a.direct_supervisor_name,a.cost_bearer_code,a.cost_bearer_name,a.budget,a.company_code,a.company_name,a.create_by,a.create_time,a.update_by,a.update_time,a.auditor_by,a.apply_status,a.form_no,a.auditor_time,a.original,a.ext_field_1,a.ext_field_2,a.ext_field_3,a.ext_field_4,a.ext_field_5,a.ext_field_6,b.id,b.code,b.sku_code,b.sku_name,b.purchase_price_newest,b.supplier_code,b.supplier_name,b.be_default,b.purchase_price_old,b.effective_time_start,b.effective_time_end,b.purchase_price_new,b.old_price,b.new_price,b.warehouse_batch_number,b.warehouse_batch_name,b.change_price_reason_code,b.change_price_reason_name,b.temporary_price,b.price_item_code,b.price_item_name,b.price_type_code,b.price_type_name,b.price_attribute_code,b.price_attribute_name,b.company_code,b.company_name,b.transport_center_code,b.transport_center_name,b.warehouse_code,b.warehouse_name,b.batch_remark,b.official_code,b.ext_field_3,b.product_time,b.be_synchronize,b.ext_field_6,c.id,c.main_code,c.type,c.status,c.name,c.code,c.company_code,c.company_name,c.effective_time_start,c.effective_time_end,c.be_effective,c.un_effective_reason,c.ext_field_1,c.ext_field_2,c.ext_field_3,c.ext_field_4,c.ext_field_5,c.ext_field_6-->
+  <!--</sql>-->
+  <sql id="select_by_form_no">
+  a.id aid,a.code acode,a.change_price_type achange_price_type,a.change_price_name achange_price_type,a.name aname,a.purchase_group_code apurchase_group_code,a.purchase_group_name apurchase_group_name,a.remake aremake,a.direct_supervisor_code adirect_supervisor_code,a.direct_supervisor_name adirect_supervisor_code,a.cost_bearer_code acost_bearer_code,a.cost_bearer_name acost_bearer_name,a.budget abudget,a.company_code acompany_code,a.company_name acompany_name,a.create_by acreate_by,a.create_time acreate_by,a.update_by aupdate_by,a.update_time aupdate_time,a.auditor_by aauditor_by,a.apply_status aapply_status,a.form_no aform_no,a.auditor_time aauditor_time,a.original aoriginal,a.ext_field_1 aext_field_1,a.ext_field_2 aext_field_2,a.ext_field_3 aext_field_3,a.ext_field_4 aext_field_4,a.ext_field_5 aext_field_5,a.ext_field_6 aext_field_6,b.id bid,b.code bcode,b.sku_code,b.sku_code,b.sku_name bsku_name,b.purchase_price_newest bpurchase_price_newest,b.supplier_code bpurchase_price_newest,b.supplier_name bsupplier_name,b.be_default bbe_default,b.purchase_price_old bpurchase_price_old,b.effective_time_start beffective_time_start,b.effective_time_end beffective_time_end,b.purchase_price_new bpurchase_price_new,b.old_price bold_price,b.new_price bnew_price,b.warehouse_batch_number bwarehouse_batch_number,b.warehouse_batch_name bwarehouse_batch_name,b.change_price_reason_code bchange_price_reason_code,b.change_price_reason_name bchange_price_reason_name,b.temporary_price btemporary_price,b.price_item_code bprice_item_code,b.price_item_name bprice_item_name,b.price_type_code bprice_type_code,b.price_type_name bprice_type_name,b.price_attribute_code bprice_attribute_code,b.price_attribute_name bprice_attribute_name,b.company_code bcompany_code,b.company_name bcompany_name,b.transport_center_code btransport_center_code,b.transport_center_name btransport_center_name,b.warehouse_code bwarehouse_code,b.warehouse_name bwarehouse_name,b.batch_remark bbatch_remark,b.official_code bofficial_code,b.ext_field_3 bext_field_3,b.product_time bproduct_time,b.be_synchronize bbe_synchronize,b.ext_field_6 bext_field_6,c.id cid,c.main_code cmain_code,c.type ctype,c.status cstatus,c.name cname,c.code ccode,c.company_code ccompany_code,c.company_name ccompany_name,c.effective_time_start ceffective_time_start,c.effective_time_end ceffective_time_end,c.be_effective cbe_effective,c.un_effective_reason cun_effective_reason,c.ext_field_1 cext_field_1,c.ext_field_2 cext_field_2,c.ext_field_3 cext_field_3,c.ext_field_4 cext_field_4,c.ext_field_5 cext_field_5,c.ext_field_6 cext_field_6
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku_change_price
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+    <select id="checkRepeat"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryChangePriceRepeatRespVO">
+      select a.change_price_name      as changePriceName,
+             b.sku_code               as skuCode,
+             b.supplier_name          as supplierName,
+             b.warehouse_batch_number as warehouseBatchNumber,
+             b.transport_center_name  as transportCenterName,
+             b.warehouse_name         as warehouseName,
+             c.name                   as name,
+             b.price_item_name        as priceItemName
+      from product_sku_change_price a
+             left join product_sku_change_price_info b
+                       on a.code = b.code
+             left join product_sku_change_price_area_info c
+                       on a.code = c.main_code
+      where a.company_code = #{vo.companyCode}
+      <if test="vo.changePriceType != null">
+        and a.change_price_type = #{vo.changePriceType}
+      </if>
+      <if test="vo.skuCode != null and vo.skuCode.size>0">
+        and b.sku_code in
+        <foreach collection="vo.skuCode" separator="," open="(" close=")" item="item">
+          #{item}
+        </foreach>
+      </if>
+      <if test="vo.supplierCode != null and vo.supplierCode.size>0">
+        and b.supplier_code in
+        <foreach collection="vo.supplierCode" separator="," open="(" close=")" item="item">
+          #{item}
+        </foreach>
+      </if>
+      <if test="vo.warehouseBatchNumber != null and vo.warehouseBatchNumber.size>0">
+        and b.warehouse_batch_number in
+        <foreach collection="vo.warehouseBatchNumber" separator="," open="(" close=")" item="item">
+          #{item}
+        </foreach>
+      </if>
+      <if test="vo.transportCenterCode != null and vo.transportCenterCode.size>0">
+        and b.transport_center_code in
+        <foreach collection="vo.transportCenterCode" separator="," open="(" close=")" item="item">
+          #{item}
+        </foreach>
+      </if>
+      <if test="vo.warehouseCode != null and vo.warehouseCode.size>0">
+        and b.warehouse_code in
+        <foreach collection="vo.warehouseCode" separator="," open="(" close=")" item="item">
+          #{item}
+        </foreach>
+      </if>
+      <if test="vo.priceItemCode != null and vo.priceItemCode.size>0">
+        and b.price_item_code in
+        <foreach collection="vo.priceItemCode" separator="," open="(" close=")" item="item">
+          #{item}
+        </foreach>
+      </if>
+      <if test="vo.code != null and vo.code.size>0">
+        and c.code in
+        <foreach collection="vo.code" separator="," open="(" close=")" item="item">
+          #{item}
+        </foreach>
+      </if>
+    </select>
+  <select id="selectInfoByCode" resultMap="selectInfoByCode">
+          select
+             a.code acode,
+             a.change_price_name achange_price_name,
+             a.change_price_type achange_price_type,
+             a.name aname,
+             a.purchase_group_name apurchase_group_name,
+             a.purchase_group_code apurchase_group_code,
+             a.remake aremake,
+             a.direct_supervisor_code adirect_supervisor_code,
+             a.direct_supervisor_name adirect_supervisor_name,
+             a.cost_bearer_code acost_bearer_code,
+             a.cost_bearer_name acost_bearer_name,
+             a.budget abudget,
+             a.form_no aform_no,
+             a.apply_status aapply_status,
+             a.company_code acompany_code,
+             b.sku_code bsku_code,
+             b.sku_name bsku_name,
+             b.purchase_price_newest bpurchase_price_newest,
+             b.supplier_code bsupplier_code,
+             b.supplier_name bsupplier_name,
+             b.be_default bbe_default,
+             b.purchase_price_old bpurchase_price_old,
+             b.effective_time_start beffective_time_start,
+             b.effective_time_end beffective_time_end,
+             b.purchase_price_new bpurchase_price_new,
+             b.old_price bold_price,
+             b.new_price bnew_price,
+             b.warehouse_batch_number bwarehouse_batch_number,
+             b.warehouse_batch_name bwarehouse_batch_name,
+             b.change_price_reason_code bchange_price_reason_code,
+             b.change_price_reason_name bchange_price_reason_name,
+             b.temporary_price btemporary_price,
+             b.price_item_code bprice_item_code,
+             b.price_item_name bprice_item_name,
+             b.price_type_code bprice_type_code,
+             b.price_type_code bprice_type_code,
+             b.price_attribute_code bprice_attribute_code,
+             b.price_attribute_name bprice_attribute_name,
+             b.transport_center_code btransport_center_code,
+             b.transport_center_code btransport_center_code,
+             b.warehouse_code bwarehouse_code,
+             b.warehouse_name bwarehouse_name,
+             b.product_time bproduct_time,
+             c.name cname,
+             c.url curl,
+             d.name dname,
+             d.code dcode,
+             d.status dstatus,
+             d.type dtype
+             from product_sku_change_price a
+             left join product_sku_change_price_info b
+             on a.code = b.code
+             left join product_sku_change_price_image c
+             on c.code = a.code
+             left join product_sku_change_price_area_info d
+             on d.main_code = a.code
+      where a.code = #{code}
+  </select>
+    <select id="selectByFormNo" resultMap="SELECT_BY_FORM_NO_MAP">
+      select
+      <include refid="select_by_form_no" />
+      from product_sku_change_price a left join product_sku_change_price_info b on a.code=b.code
+      left join product_sku_change_price_area_info c on c.main_code = a.code
+      where a.form_no = #{formNo}
+    </select>
+    <select id="selectByPriceStatusAndDate"
+            resultMap="SELECT_BY_FORM_NO_MAP">
+      select
+      <include refid="select_by_form_no" />
+      from product_sku_change_price a left join product_sku_change_price_info b on a.code=b.code
+      left join product_sku_change_price_area_info c on c.main_code = a.code
+      where  <![CDATA[ now() >= ]]>b.effective_time_end and b.be_synchronize = 0
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_sku_change_price
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePrice">
+    insert into product_sku_change_price (id, code, change_price_type, 
+      change_price_name, name, purchase_group_code, 
+      purchase_group_name, remake, direct_supervisor_code, 
+      direct_supervisor_name, cost_bearer_code, cost_bearer_name, 
+      budget, company_code, company_name, 
+      create_by, create_time, update_by, 
+      update_time, auditor_by, apply_status, 
+      form_no, auditor_time, original, 
+      ext_field_1, ext_field_2, ext_field_3, 
+      ext_field_4, ext_field_5, ext_field_6
+      )
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{changePriceType,jdbcType=VARCHAR}, 
+      #{changePriceName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
+      #{purchaseGroupName,jdbcType=VARCHAR}, #{remake,jdbcType=VARCHAR}, #{directSupervisorCode,jdbcType=VARCHAR}, 
+      #{directSupervisorName,jdbcType=VARCHAR}, #{costBearerCode,jdbcType=VARCHAR}, #{costBearerName,jdbcType=VARCHAR}, 
+      #{budget,jdbcType=BIGINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{auditorBy,jdbcType=VARCHAR}, #{applyStatus,jdbcType=INTEGER}, 
+      #{formNo,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, #{original,jdbcType=INTEGER}, 
+      #{extField1,jdbcType=VARCHAR}, #{extField2,jdbcType=VARCHAR}, #{extField3,jdbcType=VARCHAR},
+      #{extField4,jdbcType=TIMESTAMP}, #{extField5,jdbcType=INTEGER}, #{extField6,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePrice">
+    insert into product_sku_change_price
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="changePriceType != null">
+        change_price_type,
+      </if>
+      <if test="changePriceName != null">
+        change_price_name,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code,
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name,
+      </if>
+      <if test="remake != null">
+        remake,
+      </if>
+      <if test="directSupervisorCode != null">
+        direct_supervisor_code,
+      </if>
+      <if test="directSupervisorName != null">
+        direct_supervisor_name,
+      </if>
+      <if test="costBearerCode != null">
+        cost_bearer_code,
+      </if>
+      <if test="costBearerName != null">
+        cost_bearer_name,
+      </if>
+      <if test="budget != null">
+        budget,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="auditorBy != null">
+        auditor_by,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="formNo != null">
+        form_no,
+      </if>
+      <if test="auditorTime != null">
+        auditor_time,
+      </if>
+      <if test="original != null">
+        original,
+      </if>
+      <if test="extField1 != null">
+        ext_field_1,
+      </if>
+      <if test="extField2 != null">
+        ext_field_2,
+      </if>
+      <if test="extField3 != null">
+        ext_field_3,
+      </if>
+      <if test="extField4 != null">
+        ext_field_4,
+      </if>
+      <if test="extField5 != null">
+        ext_field_5,
+      </if>
+      <if test="extField6 != null">
+        ext_field_6,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="changePriceType != null">
+        #{changePriceType,jdbcType=VARCHAR},
+      </if>
+      <if test="changePriceName != null">
+        #{changePriceName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupCode != null">
+        #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="remake != null">
+        #{remake,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorCode != null">
+        #{directSupervisorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorName != null">
+        #{directSupervisorName,jdbcType=VARCHAR},
+      </if>
+      <if test="costBearerCode != null">
+        #{costBearerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="costBearerName != null">
+        #{costBearerName,jdbcType=VARCHAR},
+      </if>
+      <if test="budget != null">
+        #{budget,jdbcType=BIGINT},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditorBy != null">
+        #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="formNo != null">
+        #{formNo,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="original != null">
+        #{original,jdbcType=INTEGER},
+      </if>
+      <if test="extField1 != null">
+        #{extField1,jdbcType=VARCHAR},
+      </if>
+      <if test="extField2 != null">
+        #{extField2,jdbcType=VARCHAR},
+      </if>
+      <if test="extField3 != null">
+        #{extField3,jdbcType=VARCHAR},
+      </if>
+      <if test="extField4 != null">
+        #{extField4,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extField5 != null">
+        #{extField5,jdbcType=INTEGER},
+      </if>
+      <if test="extField6 != null">
+        #{extField6,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePrice">
+    update product_sku_change_price
+    <set>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="changePriceType != null">
+        change_price_type = #{changePriceType,jdbcType=VARCHAR},
+      </if>
+      <if test="changePriceName != null">
+        change_price_name = #{changePriceName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="remake != null">
+        remake = #{remake,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorCode != null">
+        direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorName != null">
+        direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      </if>
+      <if test="costBearerCode != null">
+        cost_bearer_code = #{costBearerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="costBearerName != null">
+        cost_bearer_name = #{costBearerName,jdbcType=VARCHAR},
+      </if>
+      <if test="budget != null">
+        budget = #{budget,jdbcType=BIGINT},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="formNo != null">
+        form_no = #{formNo,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="original != null">
+        original = #{original,jdbcType=INTEGER},
+      </if>
+      <if test="extField1 != null">
+        ext_field_1 = #{extField1,jdbcType=VARCHAR},
+      </if>
+      <if test="extField2 != null">
+        ext_field_2 = #{extField2,jdbcType=VARCHAR},
+      </if>
+      <if test="extField3 != null">
+        ext_field_3 = #{extField3,jdbcType=VARCHAR},
+      </if>
+      <if test="extField4 != null">
+        ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extField5 != null">
+        ext_field_5 = #{extField5,jdbcType=INTEGER},
+      </if>
+      <if test="extField6 != null">
+        ext_field_6 = #{extField6,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePrice">
+    update product_sku_change_price
+    set code = #{code,jdbcType=VARCHAR},
+      change_price_type = #{changePriceType,jdbcType=VARCHAR},
+      change_price_name = #{changePriceName,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      remake = #{remake,jdbcType=VARCHAR},
+      direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
+      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      cost_bearer_code = #{costBearerCode,jdbcType=VARCHAR},
+      cost_bearer_name = #{costBearerName,jdbcType=VARCHAR},
+      budget = #{budget,jdbcType=BIGINT},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      apply_status = #{applyStatus,jdbcType=INTEGER},
+      form_no = #{formNo,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      original = #{original,jdbcType=INTEGER},
+      ext_field_1 = #{extField1,jdbcType=VARCHAR},
+      ext_field_2 = #{extField2,jdbcType=VARCHAR},
+      ext_field_3 = #{extField3,jdbcType=VARCHAR},
+      ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
+      ext_field_5 = #{extField5,jdbcType=INTEGER},
+      ext_field_6 = #{extField6,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByCodeSelective">
+    update product_sku_change_price
+    <set>
+      <if test="changePriceType != null">
+        change_price_type = #{changePriceType,jdbcType=VARCHAR},
+      </if>
+      <if test="changePriceName != null">
+        change_price_name = #{changePriceName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="remake != null">
+        remake = #{remake,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorCode != null">
+        direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorName != null">
+        direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      </if>
+      <if test="costBearerCode != null">
+        cost_bearer_code = #{costBearerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="costBearerName != null">
+        cost_bearer_name = #{costBearerName,jdbcType=VARCHAR},
+      </if>
+      <if test="budget != null">
+        budget = #{budget,jdbcType=BIGINT},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="formNo != null">
+        form_no = #{formNo,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="original != null">
+        original = #{original,jdbcType=INTEGER},
+      </if>
+      <if test="extField1 != null">
+        ext_field_1 = #{extField1,jdbcType=VARCHAR},
+      </if>
+      <if test="extField2 != null">
+        ext_field_2 = #{extField2,jdbcType=VARCHAR},
+      </if>
+      <if test="extField3 != null">
+        ext_field_3 = #{extField3,jdbcType=VARCHAR},
+      </if>
+      <if test="extField4 != null">
+        ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
+      </if>
+      <if test="extField5 != null">
+        ext_field_5 = #{extField5,jdbcType=INTEGER},
+      </if>
+      <if test="extField6 != null">
+        ext_field_6 = #{extField6,jdbcType=BIGINT},
+      </if>
+    </set>
+    where code = #{code}
+  </update>
+</mapper>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.SupplierOperationLogDao">
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id"  parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierOperationLog">
+    insert into supplier_operation_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="objectId != null">
+        object_id,
+      </if>
+      <if test="handleType != null">
+        handle_type,
+      </if>
+      <if test="objectType != null">
+        object_type,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="handleName != null">
+        handle_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="objectId != null">
+        #{objectId,jdbcType=VARCHAR},
+      </if>
+      <if test="handleType != null">
+        #{handleType,jdbcType=TINYINT},
+      </if>
+      <if test="objectType != null">
+        #{objectType,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=CHAR},
+      </if>
+      <if test="handleName != null">
+        #{handleName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="getLogType" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.LogData">
+    SELECT
+    object_id as objectId,handle_type as handleType,object_type as objectType,
+    content,create_time as createTime,create_by as  createBy,handle_name as handleName
+    FROM supplier_operation_log WHERE
+    del_flag=0
+    <if test="objectType !=null">
+      AND object_type =#{objectType}
+    </if>
+    <if test="objectId !=null and objectId!=''">
+      AND object_id =#{objectId}
+    </if>
+    order by create_time desc
+  </select>
+  <select id="getList" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.LogData">
+    SELECT
+    object_id as objectId,handle_type as handleType,object_type as objectType,
+    content,create_time as createTime,create_by as  createBy,handle_name as handleName
+    FROM supplier_operation_log WHERE
+    del_flag=0
+    order by create_time desc
+  </select>
+  <insert id="insertList"  parameterType="java.util.List">
+    insert into supplier_operation_log
+    (id, object_id, handle_type,
+    object_type, create_time, create_by,
+    update_time, update_by, del_flag,
+    content, handle_name
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.id,jdbcType=BIGINT}, #{item.objectId,jdbcType=VARCHAR}, #{item.handleType,jdbcType=TINYINT},
+      #{item.objectType,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.content,jdbcType=CHAR}, #{item.handleName,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+  <select id="getLogList" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.LogData" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogBean">
+    SELECT
+    object_id as objectId,handle_type as handleType,object_type as objectType,
+    content,create_time as createTime,create_by as createBy,handle_name as handleName
+    FROM supplier_operation_log
+    WHERE  del_flag=0
+    <if test="id !=null">
+     AND id= #{id,jdbcType=BIGINT}
+    </if>
+    <if test="objectId !=null">
+      AND object_id =#{objectId,jdbcType=BIGINT}
+    </if>
+     <if test="handleType !=null">
+       AND handle_type = #{handleType,jdbcType=TINYINT}
+     </if>
+     <if test="objectType!=null" >
+      AND object_type=#{objectType,jdbcType=TINYINT}
+     </if>
+    order by create_time desc
+  </select>
+</mapper>

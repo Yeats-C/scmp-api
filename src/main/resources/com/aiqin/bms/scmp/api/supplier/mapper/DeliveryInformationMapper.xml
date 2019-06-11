@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.DeliveryInformationMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.DeliveryInformation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="supply_company_code" jdbcType="VARCHAR" property="supplyCompanyCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="apply_delivery_information_code" jdbcType="VARCHAR" property="applyDeliveryInformationCode" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="supply_company_name" jdbcType="VARCHAR" property="supplyCompanyName" />
+    <result column="send_to" jdbcType="VARCHAR" property="sendTo" />
+    <result column="send_province_id" jdbcType="VARCHAR" property="sendProvinceId" />
+    <result column="send_province_name" jdbcType="VARCHAR" property="sendProvinceName" />
+    <result column="send_city_id" jdbcType="VARCHAR" property="sendCityId" />
+    <result column="send_city_name" jdbcType="VARCHAR" property="sendCityName" />
+    <result column="send_district_id" jdbcType="VARCHAR" property="sendDistrictId" />
+    <result column="send_district_name" jdbcType="VARCHAR" property="sendDistrictName" />
+    <result column="sending_address" jdbcType="VARCHAR" property="sendingAddress" />
+    <result column="delivery_days" jdbcType="BIGINT" property="deliveryDays" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, del_flag, supply_company_code, create_time, create_by, update_time, update_by,
+    apply_delivery_information_code, auditor_by, auditor_time, apply_status, supply_company_name,
+    send_to, send_province_id, send_province_name, send_city_id, send_city_name, send_district_id,
+    send_district_name, sending_address, delivery_days
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from delivery_information
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from delivery_information
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.DeliveryInformation">
+    insert into delivery_information (id, del_flag, supply_company_code,
+      create_time, create_by, update_time,
+      update_by, apply_delivery_information_code,
+      auditor_by, auditor_time, apply_status,
+      supply_company_name, send_to, send_province_id,
+      send_province_name, send_city_id, send_city_name,
+      send_district_id, send_district_name, sending_address,
+      delivery_days)
+    values (#{id,jdbcType=BIGINT}, #{delFlag,jdbcType=TINYINT}, #{supplyCompanyCode,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+      #{updateBy,jdbcType=VARCHAR}, #{applyDeliveryInformationCode,jdbcType=VARCHAR},
+      #{auditorBy,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, #{applyStatus,jdbcType=TINYINT},
+      #{supplyCompanyName,jdbcType=VARCHAR}, #{sendTo,jdbcType=VARCHAR}, #{sendProvinceId,jdbcType=VARCHAR},
+      #{sendProvinceName,jdbcType=VARCHAR}, #{sendCityId,jdbcType=VARCHAR}, #{sendCityName,jdbcType=VARCHAR},
+      #{sendDistrictId,jdbcType=VARCHAR}, #{sendDistrictName,jdbcType=VARCHAR}, #{sendingAddress,jdbcType=VARCHAR},
+      #{deliveryDays,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.DeliveryInformation">
+    insert into delivery_information
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="supplyCompanyCode != null">
+        supply_company_code,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="applyDeliveryInformationCode != null">
+        apply_delivery_information_code,
+      </if>
+      <if test="auditorBy != null">
+        auditor_by,
+      </if>
+      <if test="auditorTime != null">
+        auditor_time,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="supplyCompanyName != null">
+        supply_company_name,
+      </if>
+      <if test="sendTo != null">
+        send_to,
+      </if>
+      <if test="sendProvinceId != null">
+        send_province_id,
+      </if>
+      <if test="sendProvinceName != null">
+        send_province_name,
+      </if>
+      <if test="sendCityId != null">
+        send_city_id,
+      </if>
+      <if test="sendCityName != null">
+        send_city_name,
+      </if>
+      <if test="sendDistrictId != null">
+        send_district_id,
+      </if>
+      <if test="sendDistrictName != null">
+        send_district_name,
+      </if>
+      <if test="sendingAddress != null">
+        sending_address,
+      </if>
+      <if test="deliveryDays != null">
+        delivery_days,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="supplyCompanyCode != null">
+        #{supplyCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applyDeliveryInformationCode != null">
+        #{applyDeliveryInformationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorBy != null">
+        #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="supplyCompanyName != null">
+        #{supplyCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTo != null">
+        #{sendTo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendProvinceId != null">
+        #{sendProvinceId,jdbcType=VARCHAR},
+      </if>
+      <if test="sendProvinceName != null">
+        #{sendProvinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="sendCityId != null">
+        #{sendCityId,jdbcType=VARCHAR},
+      </if>
+      <if test="sendCityName != null">
+        #{sendCityName,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDistrictId != null">
+        #{sendDistrictId,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDistrictName != null">
+        #{sendDistrictName,jdbcType=VARCHAR},
+      </if>
+      <if test="sendingAddress != null">
+        #{sendingAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDays != null">
+        #{deliveryDays,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.DeliveryInformation">
+    update delivery_information
+    <set>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="supplyCompanyCode != null">
+        supply_company_code = #{supplyCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applyDeliveryInformationCode != null">
+        apply_delivery_information_code = #{applyDeliveryInformationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="supplyCompanyName != null">
+        supply_company_name = #{supplyCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="sendTo != null">
+        send_to = #{sendTo,jdbcType=VARCHAR},
+      </if>
+      <if test="sendProvinceId != null">
+        send_province_id = #{sendProvinceId,jdbcType=VARCHAR},
+      </if>
+      <if test="sendProvinceName != null">
+        send_province_name = #{sendProvinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="sendCityId != null">
+        send_city_id = #{sendCityId,jdbcType=VARCHAR},
+      </if>
+      <if test="sendCityName != null">
+        send_city_name = #{sendCityName,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDistrictId != null">
+        send_district_id = #{sendDistrictId,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDistrictName != null">
+        send_district_name = #{sendDistrictName,jdbcType=VARCHAR},
+      </if>
+      <if test="sendingAddress != null">
+        sending_address = #{sendingAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDays != null">
+        delivery_days = #{deliveryDays,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.DeliveryInformation">
+    update delivery_information
+    set del_flag = #{delFlag,jdbcType=TINYINT},
+      supply_company_code = #{supplyCompanyCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      apply_delivery_information_code = #{applyDeliveryInformationCode,jdbcType=VARCHAR},
+      auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      apply_status = #{applyStatus,jdbcType=TINYINT},
+      supply_company_name = #{supplyCompanyName,jdbcType=VARCHAR},
+      send_to = #{sendTo,jdbcType=VARCHAR},
+      send_province_id = #{sendProvinceId,jdbcType=VARCHAR},
+      send_province_name = #{sendProvinceName,jdbcType=VARCHAR},
+      send_city_id = #{sendCityId,jdbcType=VARCHAR},
+      send_city_name = #{sendCityName,jdbcType=VARCHAR},
+      send_district_id = #{sendDistrictId,jdbcType=VARCHAR},
+      send_district_name = #{sendDistrictName,jdbcType=VARCHAR},
+      sending_address = #{sendingAddress,jdbcType=VARCHAR},
+      delivery_days = #{deliveryDays,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

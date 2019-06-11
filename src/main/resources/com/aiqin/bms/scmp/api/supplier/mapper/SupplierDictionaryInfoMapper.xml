@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.SupplierDictionaryInfoMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supplier_dictionary_value" jdbcType="VARCHAR" property="supplierDictionaryValue" />
+    <result column="supplier_content" jdbcType="VARCHAR" property="supplierContent" />
+    <result column="supplier_weight" jdbcType="INTEGER" property="supplierWeight" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="supplier_dictionary_code" jdbcType="VARCHAR" property="supplierDictionaryCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="supplier_dictionary_name" jdbcType="VARCHAR" property="supplierDictionaryName" />
+    <result column="supplier_dictionary_info_code" jdbcType="VARCHAR" property="supplierDictionaryInfoCode" />
+    <result column="enabled" jdbcType="TINYINT" property="enabled" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, supplier_dictionary_value, supplier_content, supplier_weight, del_flag, supplier_dictionary_code,
+    create_time, create_by, update_time, update_by, supplier_dictionary_name, supplier_dictionary_info_code,enabled
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from supplier_dictionary_info
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from supplier_dictionary_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo">
+    insert into supplier_dictionary_info (id, supplier_dictionary_value, supplier_content,
+    supplier_weight, del_flag, supplier_dictionary_code,
+    create_time, create_by, update_time,
+    update_by, supplier_dictionary_name, supplier_dictionary_info_code,enabled
+    )
+    values (#{id,jdbcType=BIGINT}, #{supplierDictionaryValue,jdbcType=VARCHAR}, #{supplierContent,jdbcType=VARCHAR},
+    #{supplierWeight,jdbcType=INTEGER}, #{delFlag,jdbcType=TINYINT}, #{supplierDictionaryCode,jdbcType=VARCHAR},
+    #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+    #{updateBy,jdbcType=VARCHAR}, #{supplierDictionaryName,jdbcType=VARCHAR}, #{supplierDictionaryInfoCode,jdbcType=VARCHAR},
+    #{enabled,jdbcType=TINYINT}
+    )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo">
+    insert into supplier_dictionary_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="supplierDictionaryValue != null">
+        supplier_dictionary_value,
+      </if>
+      <if test="supplierContent != null">
+        supplier_content,
+      </if>
+      <if test="supplierWeight != null">
+        supplier_weight,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="supplierDictionaryCode != null">
+        supplier_dictionary_code,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="supplierDictionaryName != null">
+        supplier_dictionary_name,
+      </if>
+      <if test="supplierDictionaryInfoCode != null">
+        supplier_dictionary_info_code,
+      </if>
+      <if test="enabled != null">
+        enabled,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="supplierDictionaryValue != null">
+        #{supplierDictionaryValue,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierContent != null">
+        #{supplierContent,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierWeight != null">
+        #{supplierWeight,jdbcType=INTEGER},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="supplierDictionaryCode != null">
+        #{supplierDictionaryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierDictionaryName != null">
+        #{supplierDictionaryName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierDictionaryInfoCode != null">
+        #{supplierDictionaryInfoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo">
+    update supplier_dictionary_info
+    <set>
+      <if test="supplierDictionaryValue != null">
+        supplier_dictionary_value = #{supplierDictionaryValue,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierContent != null">
+        supplier_content = #{supplierContent,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierWeight != null">
+        supplier_weight = #{supplierWeight,jdbcType=INTEGER},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="supplierDictionaryCode != null">
+        supplier_dictionary_code = #{supplierDictionaryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierDictionaryName != null">
+        supplier_dictionary_name = #{supplierDictionaryName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierDictionaryInfoCode != null">
+        supplier_dictionary_info_code = #{supplierDictionaryInfoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        enabled=#{enabled,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo">
+    update supplier_dictionary_info
+    set supplier_dictionary_value = #{supplierDictionaryValue,jdbcType=VARCHAR},
+    supplier_content = #{supplierContent,jdbcType=VARCHAR},
+    supplier_weight = #{supplierWeight,jdbcType=INTEGER},
+    del_flag = #{delFlag,jdbcType=TINYINT},
+    supplier_dictionary_code = #{supplierDictionaryCode,jdbcType=VARCHAR},
+    create_time = #{createTime,jdbcType=TIMESTAMP},
+    create_by = #{createBy,jdbcType=VARCHAR},
+    update_time = #{updateTime,jdbcType=TIMESTAMP},
+    update_by = #{updateBy,jdbcType=VARCHAR},
+    supplier_dictionary_name = #{supplierDictionaryName,jdbcType=VARCHAR},
+    supplier_dictionary_info_code = #{supplierDictionaryInfoCode,jdbcType=VARCHAR},
+    enabled=#{enabled,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

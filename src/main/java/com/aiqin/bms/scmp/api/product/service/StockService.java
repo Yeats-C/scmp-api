@@ -1,0 +1,202 @@
+package com.aiqin.bms.scmp.api.product.service;
+
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
+import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
+import com.github.pagehelper.PageInfo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author knight.xie
+ * @className StockService
+ * @date 2019/1/4 16:08
+ * @description 库存
+ * @version 1.0
+ */
+public interface StockService {
+
+
+    /**
+     *
+     * 功能描述: =查询库存商品(采购退供使用) 分页
+     *
+     * @param reqVO
+     * @return PageInfo
+     * @auther knight.xie
+     * @date 2019/1/4 17:23
+     */
+    PageInfo<QueryStockSkuRespVo> selectStockSkuPage(QueryStockSkuReqVo reqVO);
+
+
+    /**
+     *
+     * 功能描述: 查询库存商品(采购退供使用) 不分页
+     *
+     * @param reqVO
+     * @return List
+     * @auther knight.xie
+     * @date 2019/1/7 17:38
+     */
+    List<QueryStockSkuRespVo> selectStockSkus(QueryStockSkuReqVo reqVO);
+
+    /**
+     * 根据搜索条件查询库房库存stock信息
+     *
+     * @param stockRequest
+     * @return
+     */
+    PageResData selectWarehouseStockInfoByPage(StockRequest stockRequest);
+
+    /**
+     * 根据搜索条件查询物流中心stock信息
+     *
+     * @param stockRequest
+     * @return
+     */
+    PageResData selectTransportStockInfoByPage(StockRequest stockRequest);
+
+    /**
+     * 库房库存
+     * @param stockRequest
+     * @return
+     */
+    PageResData selectStorehouseStockInfoByPage(StockRequest stockRequest);
+
+    List<QueryStockSkuRespVo> selectStockSku(QueryStockSkuReqVo reqVO);
+
+    /**
+     * 根据搜索条件查询stock信息
+     *
+     * @param stockRequest
+     * @return
+     */
+    PageResData selectStockSumInfoByPage(StockRequest stockRequest);
+
+    /**
+     * 根据stockid查询单个库存信息
+     *
+     * @param stockId
+     * @return
+     */
+    StockRespVO selectOneStockInfoByStockId(Long stockId);
+
+
+    /**
+     *
+     * 功能描述: 验证退供商品信息,有错误则会返回list,否则list为空
+     *
+     * @param reqVo
+     * @return HttpResponse<List<VerifyReturnSupplyErrorRespVo>>
+     * @auther knight.xie
+     * @date 2019/1/8 15:14
+     */
+    HttpResponse<PurchaseOutBoundRespVO> verifyReturnSupply(VerifyReturnSupplyReqVo reqVo);
+
+    /**
+     * 库存锁定
+     * @param reqVO
+     */
+    PurchaseOutBoundRespVO lockStock(ILockStockReqVO reqVO);
+
+    /**
+     * 退供锁定库存
+     * @author zth
+     * @date 2019/3/26
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean returnSupplyLockStock(ILockStockReqVO reqVO);
+    /**
+     * 退供解锁库存
+     * @author zth
+     * @date 2019/3/26
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean returnSupplyUnLockStock(ILockStockReqVO reqVO);
+
+    /**
+     * 解锁库存
+     * @param reqVo 原始订单号
+     * @return
+     */
+    HttpResponse unLockStock(UnLockStockReqVo reqVo);
+
+    /**
+     * 减少并解锁库存
+     * @param reqVo
+     * @return
+     */
+    HttpResponse reduceUnlockStock(UpdateOutBoundReqVO reqVo);
+
+    /**
+     * 根据公司编码和sku集合查询商品库存
+     * @param reqVo
+     * @return
+     */
+    List<QueryMerchantStockRepVo> selectStockByCompanyCodeAndSkuList(QueryMerchantStockReqVo reqVo);
+
+    /**
+     * 门店库存锁定
+     * @param vo
+     * @return
+     */
+    List<MerchantLockStockRespVo> lockMerchantStock(MerchantLockStockReqVo vo);
+    /**
+     * 通过条件查询库存数
+     * @author zth
+     * @date 2019/3/16
+     * @param centerCodes 物流中心编码集合
+     * @param warehouseCodes 库房编码集合
+     * @param skuCodes sku 编码集合
+     * @return java.util.List<com.aiqin.mgs.product.api.domain.pojo.Stock> 库存集合
+     */
+    List<Stock> selectByQueryList(List<String> centerCodes, List<String> warehouseCodes, List<String> skuCodes, String companyCode);
+
+    /**
+     * 接受采购单,保存或更新库存,保存入库流水
+     * @param reqVo
+     * @return
+     */
+    InboundReqVo save(InboundReqVo reqVo);
+
+    Boolean purchaseSaveStockInfo(InboundReqVo reqVo) throws Exception;
+
+    /**
+     * 保存库存
+     * @param reqVo
+     * @return
+     */
+    Integer saveStock(InboundReqVo reqVo);
+
+    String stockFlow(StockFlowRequest reqVo);
+
+    HttpResponse changeStock(StockChangeRequest stockChangeRequest) throws Exception;
+
+    boolean changeWayNum(StockWayNumRequest stockWayNumRequest) throws Exception;
+
+    Map<String,Long>getLatestPurchasePriceBySkuCodes(@Param("skuCodes") List<String> skuCodes);
+
+
+    HttpResponse logs(StockLogsRequest stockLogsRequest);
+
+    /**
+     * 
+     * @return
+     */
+    List<Stock> selectGroup();
+
+    List<Stock> selectListByWareHouseCode(Stock stock);
+}

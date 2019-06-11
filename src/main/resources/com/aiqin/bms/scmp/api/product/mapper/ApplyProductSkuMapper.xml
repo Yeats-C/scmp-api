@@ -1,0 +1,865 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
+    <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+    <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="sku_abbreviation" jdbcType="VARCHAR" property="skuAbbreviation" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="quality_assurance_management" jdbcType="TINYINT" property="qualityAssuranceManagement" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="quality_number" jdbcType="VARCHAR" property="qualityNumber" />
+    <result column="quality_date" jdbcType="VARCHAR" property="qualityDate" />
+    <result column="management_style_code" jdbcType="VARCHAR" property="managementStyleCode" />
+    <result column="management_style_name" jdbcType="VARCHAR" property="managementStyleName" />
+    <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+    <result column="on_sale" jdbcType="TINYINT" property="onSale" />
+    <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+    <result column="box_gauge" jdbcType="VARCHAR" property="boxGauge" />
+    <result column="applicable_month_age" jdbcType="VARCHAR" property="applicableMonthAge" />
+    <result column="point" jdbcType="VARCHAR" property="point" />
+    <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+    <result column="mnemonic_code" jdbcType="VARCHAR" property="mnemonicCode" />
+    <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime" />
+    <result column="selection_effective_start_time" jdbcType="VARCHAR" property="selectionEffectiveStartTime" />
+    <result column="selection_effective_end_time" jdbcType="VARCHAR" property="selectionEffectiveEndTime" />
+    <result column="goods_gifts" jdbcType="TINYINT" property="goodsGifts" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="is_main_push" jdbcType="TINYINT" property="isMainPush" />
+    <result column="new_product" jdbcType="TINYINT" property="newProduct" />
+    <result column="manufacturer_guide_price" jdbcType="BIGINT" property="manufacturerGuidePrice" />
+    <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
+    <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode" />
+    <result column="procurement_section_name" jdbcType="VARCHAR" property="procurementSectionName" />
+    <result column="form_no" jdbcType="VARCHAR" property="formNo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, create_time, create_by, update_time, update_by, apply_code, del_flag, product_code, 
+    product_name, product_category_code, product_category_name, sku_code, spec, unit_code, 
+    product_property_code, product_property_name, product_brand_code, product_brand_name, 
+    sku_abbreviation, color_code, color_name, model_number, unit_name, quality_assurance_management, 
+    product_sort_code, product_sort_name, quality_number, quality_date, management_style_code, 
+    management_style_name, categories_supply_channels_code, on_sale, categories_supply_channels_name, 
+    box_gauge, applicable_month_age, point, bar_code, mnemonic_code, selection_effective_time, 
+    selection_effective_start_time, selection_effective_end_time, goods_gifts, sku_name, 
+    apply_status, auditor_by, auditor_time, is_main_push, new_product, manufacturer_guide_price, 
+    zero_removal_coefficient, procurement_section_code, procurement_section_name, form_no
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from apply_product_sku
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByFormNO" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from apply_product_sku
+    where
+    1=1
+    <if test="formNo!=null and formNo!=''">
+      AND form_no=#{formNo,jdbcType=VARCHAR}
+    </if>
+
+  </select>
+    <select id="getProductApplyList" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List"/>
+      from apply_product_sku
+      where
+      apply_status = #{number}
+      AND sku_code in
+      <foreach collection="skuCodes" item="item" open="(" close=")" separator=",">
+        #{item}
+      </foreach>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from apply_product_sku
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku">
+    insert into apply_product_sku (id, create_time, create_by, 
+      update_time, update_by, apply_code, 
+      del_flag, product_code, product_name, 
+      product_category_code, product_category_name, 
+      sku_code, spec, unit_code, 
+      product_property_code, product_property_name, 
+      product_brand_code, product_brand_name, sku_abbreviation, 
+      color_code, color_name, model_number, 
+      unit_name, quality_assurance_management, product_sort_code, 
+      product_sort_name, quality_number, quality_date, 
+      management_style_code, management_style_name, 
+      categories_supply_channels_code, on_sale, categories_supply_channels_name, 
+      box_gauge, applicable_month_age, point, 
+      bar_code, mnemonic_code, selection_effective_time, 
+      selection_effective_start_time, selection_effective_end_time, 
+      goods_gifts, sku_name, apply_status, 
+      auditor_by, auditor_time, is_main_push, 
+      new_product, manufacturer_guide_price, zero_removal_coefficient, 
+      procurement_section_code, procurement_section_name, 
+      form_no)
+    values (#{id,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{applyCode,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=TINYINT}, #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, 
+      #{productCategoryCode,jdbcType=VARCHAR}, #{productCategoryName,jdbcType=VARCHAR}, 
+      #{skuCode,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR}, 
+      #{productPropertyCode,jdbcType=VARCHAR}, #{productPropertyName,jdbcType=VARCHAR}, 
+      #{productBrandCode,jdbcType=VARCHAR}, #{productBrandName,jdbcType=VARCHAR}, #{skuAbbreviation,jdbcType=VARCHAR}, 
+      #{colorCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{modelNumber,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{qualityAssuranceManagement,jdbcType=TINYINT}, #{productSortCode,jdbcType=VARCHAR}, 
+      #{productSortName,jdbcType=VARCHAR}, #{qualityNumber,jdbcType=VARCHAR}, #{qualityDate,jdbcType=VARCHAR}, 
+      #{managementStyleCode,jdbcType=VARCHAR}, #{managementStyleName,jdbcType=VARCHAR}, 
+      #{categoriesSupplyChannelsCode,jdbcType=VARCHAR}, #{onSale,jdbcType=TINYINT}, #{categoriesSupplyChannelsName,jdbcType=VARCHAR}, 
+      #{boxGauge,jdbcType=VARCHAR}, #{applicableMonthAge,jdbcType=VARCHAR}, #{point,jdbcType=VARCHAR}, 
+      #{barCode,jdbcType=VARCHAR}, #{mnemonicCode,jdbcType=VARCHAR}, #{selectionEffectiveTime,jdbcType=TINYINT}, 
+      #{selectionEffectiveStartTime,jdbcType=VARCHAR}, #{selectionEffectiveEndTime,jdbcType=VARCHAR}, 
+      #{goodsGifts,jdbcType=TINYINT}, #{skuName,jdbcType=VARCHAR}, #{applyStatus,jdbcType=TINYINT}, 
+      #{auditorBy,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, #{isMainPush,jdbcType=TINYINT}, 
+      #{newProduct,jdbcType=TINYINT}, #{manufacturerGuidePrice,jdbcType=BIGINT}, #{zeroRemovalCoefficient,jdbcType=BIGINT}, 
+      #{procurementSectionCode,jdbcType=VARCHAR}, #{procurementSectionName,jdbcType=VARCHAR}, 
+      #{formNo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku">
+    insert into apply_product_sku
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="applyCode != null">
+        apply_code,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="productCode != null">
+        product_code,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="productCategoryCode != null">
+        product_category_code,
+      </if>
+      <if test="productCategoryName != null">
+        product_category_name,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="spec != null">
+        spec,
+      </if>
+      <if test="unitCode != null">
+        unit_code,
+      </if>
+      <if test="productPropertyCode != null">
+        product_property_code,
+      </if>
+      <if test="productPropertyName != null">
+        product_property_name,
+      </if>
+      <if test="productBrandCode != null">
+        product_brand_code,
+      </if>
+      <if test="productBrandName != null">
+        product_brand_name,
+      </if>
+      <if test="skuAbbreviation != null">
+        sku_abbreviation,
+      </if>
+      <if test="colorCode != null">
+        color_code,
+      </if>
+      <if test="colorName != null">
+        color_name,
+      </if>
+      <if test="modelNumber != null">
+        model_number,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="qualityAssuranceManagement != null">
+        quality_assurance_management,
+      </if>
+      <if test="productSortCode != null">
+        product_sort_code,
+      </if>
+      <if test="productSortName != null">
+        product_sort_name,
+      </if>
+      <if test="qualityNumber != null">
+        quality_number,
+      </if>
+      <if test="qualityDate != null">
+        quality_date,
+      </if>
+      <if test="managementStyleCode != null">
+        management_style_code,
+      </if>
+      <if test="managementStyleName != null">
+        management_style_name,
+      </if>
+      <if test="categoriesSupplyChannelsCode != null">
+        categories_supply_channels_code,
+      </if>
+      <if test="onSale != null">
+        on_sale,
+      </if>
+      <if test="categoriesSupplyChannelsName != null">
+        categories_supply_channels_name,
+      </if>
+      <if test="boxGauge != null">
+        box_gauge,
+      </if>
+      <if test="applicableMonthAge != null">
+        applicable_month_age,
+      </if>
+      <if test="point != null">
+        point,
+      </if>
+      <if test="barCode != null">
+        bar_code,
+      </if>
+      <if test="mnemonicCode != null">
+        mnemonic_code,
+      </if>
+      <if test="selectionEffectiveTime != null">
+        selection_effective_time,
+      </if>
+      <if test="selectionEffectiveStartTime != null">
+        selection_effective_start_time,
+      </if>
+      <if test="selectionEffectiveEndTime != null">
+        selection_effective_end_time,
+      </if>
+      <if test="goodsGifts != null">
+        goods_gifts,
+      </if>
+      <if test="skuName != null">
+        sku_name,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="auditorBy != null">
+        auditor_by,
+      </if>
+      <if test="auditorTime != null">
+        auditor_time,
+      </if>
+      <if test="isMainPush != null">
+        is_main_push,
+      </if>
+      <if test="newProduct != null">
+        new_product,
+      </if>
+      <if test="manufacturerGuidePrice != null">
+        manufacturer_guide_price,
+      </if>
+      <if test="zeroRemovalCoefficient != null">
+        zero_removal_coefficient,
+      </if>
+      <if test="procurementSectionCode != null">
+        procurement_section_code,
+      </if>
+      <if test="procurementSectionName != null">
+        procurement_section_name,
+      </if>
+      <if test="formNo != null">
+        form_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applyCode != null">
+        #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="productCode != null">
+        #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategoryCode != null">
+        #{productCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategoryName != null">
+        #{productCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="spec != null">
+        #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCode != null">
+        #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productPropertyCode != null">
+        #{productPropertyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productPropertyName != null">
+        #{productPropertyName,jdbcType=VARCHAR},
+      </if>
+      <if test="productBrandCode != null">
+        #{productBrandCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productBrandName != null">
+        #{productBrandName,jdbcType=VARCHAR},
+      </if>
+      <if test="skuAbbreviation != null">
+        #{skuAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="colorCode != null">
+        #{colorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelNumber != null">
+        #{modelNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="qualityAssuranceManagement != null">
+        #{qualityAssuranceManagement,jdbcType=TINYINT},
+      </if>
+      <if test="productSortCode != null">
+        #{productSortCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productSortName != null">
+        #{productSortName,jdbcType=VARCHAR},
+      </if>
+      <if test="qualityNumber != null">
+        #{qualityNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="qualityDate != null">
+        #{qualityDate,jdbcType=VARCHAR},
+      </if>
+      <if test="managementStyleCode != null">
+        #{managementStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="managementStyleName != null">
+        #{managementStyleName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoriesSupplyChannelsCode != null">
+        #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+      </if>
+      <if test="onSale != null">
+        #{onSale,jdbcType=TINYINT},
+      </if>
+      <if test="categoriesSupplyChannelsName != null">
+        #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
+      </if>
+      <if test="boxGauge != null">
+        #{boxGauge,jdbcType=VARCHAR},
+      </if>
+      <if test="applicableMonthAge != null">
+        #{applicableMonthAge,jdbcType=VARCHAR},
+      </if>
+      <if test="point != null">
+        #{point,jdbcType=VARCHAR},
+      </if>
+      <if test="barCode != null">
+        #{barCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mnemonicCode != null">
+        #{mnemonicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="selectionEffectiveTime != null">
+        #{selectionEffectiveTime,jdbcType=TINYINT},
+      </if>
+      <if test="selectionEffectiveStartTime != null">
+        #{selectionEffectiveStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="selectionEffectiveEndTime != null">
+        #{selectionEffectiveEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsGifts != null">
+        #{goodsGifts,jdbcType=TINYINT},
+      </if>
+      <if test="skuName != null">
+        #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="auditorBy != null">
+        #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isMainPush != null">
+        #{isMainPush,jdbcType=TINYINT},
+      </if>
+      <if test="newProduct != null">
+        #{newProduct,jdbcType=TINYINT},
+      </if>
+      <if test="manufacturerGuidePrice != null">
+        #{manufacturerGuidePrice,jdbcType=BIGINT},
+      </if>
+      <if test="zeroRemovalCoefficient != null">
+        #{zeroRemovalCoefficient,jdbcType=BIGINT},
+      </if>
+      <if test="procurementSectionCode != null">
+        #{procurementSectionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="procurementSectionName != null">
+        #{procurementSectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="formNo != null">
+        #{formNo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku">
+    update apply_product_sku
+    <set>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applyCode != null">
+        apply_code = #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="productCode != null">
+        product_code = #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategoryCode != null">
+        product_category_code = #{productCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategoryName != null">
+        product_category_name = #{productCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="spec != null">
+        spec = #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCode != null">
+        unit_code = #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productPropertyCode != null">
+        product_property_code = #{productPropertyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productPropertyName != null">
+        product_property_name = #{productPropertyName,jdbcType=VARCHAR},
+      </if>
+      <if test="productBrandCode != null">
+        product_brand_code = #{productBrandCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productBrandName != null">
+        product_brand_name = #{productBrandName,jdbcType=VARCHAR},
+      </if>
+      <if test="skuAbbreviation != null">
+        sku_abbreviation = #{skuAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="colorCode != null">
+        color_code = #{colorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        color_name = #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelNumber != null">
+        model_number = #{modelNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="qualityAssuranceManagement != null">
+        quality_assurance_management = #{qualityAssuranceManagement,jdbcType=TINYINT},
+      </if>
+      <if test="productSortCode != null">
+        product_sort_code = #{productSortCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productSortName != null">
+        product_sort_name = #{productSortName,jdbcType=VARCHAR},
+      </if>
+      <if test="qualityNumber != null">
+        quality_number = #{qualityNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="qualityDate != null">
+        quality_date = #{qualityDate,jdbcType=VARCHAR},
+      </if>
+      <if test="managementStyleCode != null">
+        management_style_code = #{managementStyleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="managementStyleName != null">
+        management_style_name = #{managementStyleName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoriesSupplyChannelsCode != null">
+        categories_supply_channels_code = #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+      </if>
+      <if test="onSale != null">
+        on_sale = #{onSale,jdbcType=TINYINT},
+      </if>
+      <if test="categoriesSupplyChannelsName != null">
+        categories_supply_channels_name = #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
+      </if>
+      <if test="boxGauge != null">
+        box_gauge = #{boxGauge,jdbcType=VARCHAR},
+      </if>
+      <if test="applicableMonthAge != null">
+        applicable_month_age = #{applicableMonthAge,jdbcType=VARCHAR},
+      </if>
+      <if test="point != null">
+        point = #{point,jdbcType=VARCHAR},
+      </if>
+      <if test="barCode != null">
+        bar_code = #{barCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mnemonicCode != null">
+        mnemonic_code = #{mnemonicCode,jdbcType=VARCHAR},
+      </if>
+      <if test="selectionEffectiveTime != null">
+        selection_effective_time = #{selectionEffectiveTime,jdbcType=TINYINT},
+      </if>
+      <if test="selectionEffectiveStartTime != null">
+        selection_effective_start_time = #{selectionEffectiveStartTime,jdbcType=VARCHAR},
+      </if>
+      <if test="selectionEffectiveEndTime != null">
+        selection_effective_end_time = #{selectionEffectiveEndTime,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsGifts != null">
+        goods_gifts = #{goodsGifts,jdbcType=TINYINT},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isMainPush != null">
+        is_main_push = #{isMainPush,jdbcType=TINYINT},
+      </if>
+      <if test="newProduct != null">
+        new_product = #{newProduct,jdbcType=TINYINT},
+      </if>
+      <if test="manufacturerGuidePrice != null">
+        manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=BIGINT},
+      </if>
+      <if test="zeroRemovalCoefficient != null">
+        zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT},
+      </if>
+      <if test="procurementSectionCode != null">
+        procurement_section_code = #{procurementSectionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="procurementSectionName != null">
+        procurement_section_name = #{procurementSectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="formNo != null">
+        form_no = #{formNo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku">
+    update apply_product_sku
+    set create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      apply_code = #{applyCode,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      product_code = #{productCode,jdbcType=VARCHAR},
+      product_name = #{productName,jdbcType=VARCHAR},
+      product_category_code = #{productCategoryCode,jdbcType=VARCHAR},
+      product_category_name = #{productCategoryName,jdbcType=VARCHAR},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      spec = #{spec,jdbcType=VARCHAR},
+      unit_code = #{unitCode,jdbcType=VARCHAR},
+      product_property_code = #{productPropertyCode,jdbcType=VARCHAR},
+      product_property_name = #{productPropertyName,jdbcType=VARCHAR},
+      product_brand_code = #{productBrandCode,jdbcType=VARCHAR},
+      product_brand_name = #{productBrandName,jdbcType=VARCHAR},
+      sku_abbreviation = #{skuAbbreviation,jdbcType=VARCHAR},
+      color_code = #{colorCode,jdbcType=VARCHAR},
+      color_name = #{colorName,jdbcType=VARCHAR},
+      model_number = #{modelNumber,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      quality_assurance_management = #{qualityAssuranceManagement,jdbcType=TINYINT},
+      product_sort_code = #{productSortCode,jdbcType=VARCHAR},
+      product_sort_name = #{productSortName,jdbcType=VARCHAR},
+      quality_number = #{qualityNumber,jdbcType=VARCHAR},
+      quality_date = #{qualityDate,jdbcType=VARCHAR},
+      management_style_code = #{managementStyleCode,jdbcType=VARCHAR},
+      management_style_name = #{managementStyleName,jdbcType=VARCHAR},
+      categories_supply_channels_code = #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+      on_sale = #{onSale,jdbcType=TINYINT},
+      categories_supply_channels_name = #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
+      box_gauge = #{boxGauge,jdbcType=VARCHAR},
+      applicable_month_age = #{applicableMonthAge,jdbcType=VARCHAR},
+      point = #{point,jdbcType=VARCHAR},
+      bar_code = #{barCode,jdbcType=VARCHAR},
+      mnemonic_code = #{mnemonicCode,jdbcType=VARCHAR},
+      selection_effective_time = #{selectionEffectiveTime,jdbcType=TINYINT},
+      selection_effective_start_time = #{selectionEffectiveStartTime,jdbcType=VARCHAR},
+      selection_effective_end_time = #{selectionEffectiveEndTime,jdbcType=VARCHAR},
+      goods_gifts = #{goodsGifts,jdbcType=TINYINT},
+      sku_name = #{skuName,jdbcType=VARCHAR},
+      apply_status = #{applyStatus,jdbcType=TINYINT},
+      auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      is_main_push = #{isMainPush,jdbcType=TINYINT},
+      new_product = #{newProduct,jdbcType=TINYINT},
+      manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=BIGINT},
+      zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT},
+      procurement_section_code = #{procurementSectionCode,jdbcType=VARCHAR},
+      procurement_section_name = #{procurementSectionName,jdbcType=VARCHAR},
+      form_no = #{formNo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <update id="updateList" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update apply_product_sku
+      <set>
+        <if test="item.createTime != null">
+          create_time = #{item.createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.createBy != null">
+          create_by = #{item.createBy,jdbcType=VARCHAR},
+        </if>
+        <if test="item.updateTime != null">
+          update_time = #{item.updateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.updateBy != null">
+          update_by = #{item.updateBy,jdbcType=VARCHAR},
+        </if>
+        <if test="item.applyCode != null">
+          apply_code = #{item.applyCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.delFlag != null">
+          del_flag = #{item.delFlag,jdbcType=TINYINT},
+        </if>
+        <if test="item.productCode != null">
+          product_code = #{item.productCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.productName != null">
+          product_name = #{item.productName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.productCategoryCode != null">
+          product_category_code = #{item.productCategoryCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.productCategoryName != null">
+          product_category_name = #{item.productCategoryName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.skuCode != null">
+          sku_code = #{item.skuCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.spec != null">
+          spec = #{item.spec,jdbcType=VARCHAR},
+        </if>
+        <if test="item.unitCode != null">
+          unit_code = #{item.unitCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.productPropertyCode != null">
+          product_property_code = #{item.productPropertyCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.productPropertyName != null">
+          product_property_name = #{item.productPropertyName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.productBrandCode != null">
+          product_brand_code = #{item.productBrandCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.productBrandName != null">
+          product_brand_name = #{item.productBrandName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.skuAbbreviation != null">
+          sku_abbreviation = #{item.skuAbbreviation,jdbcType=VARCHAR},
+        </if>
+        <if test="item.colorCode != null">
+          color_code = #{item.colorCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.colorName != null">
+          color_name = #{item.colorName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.modelNumber != null">
+          model_number = #{item.modelNumber,jdbcType=VARCHAR},
+        </if>
+        <if test="item.unitName != null">
+          unit_name = #{item.unitName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.qualityAssuranceManagement != null">
+          quality_assurance_management = #{item.qualityAssuranceManagement,jdbcType=TINYINT},
+        </if>
+        <if test="item.productSortCode != null">
+          product_sort_code = #{item.productSortCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.productSortName != null">
+          product_sort_name = #{item.productSortName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.qualityNumber != null">
+          quality_number = #{item.qualityNumber,jdbcType=VARCHAR},
+        </if>
+        <if test="item.qualityDate != null">
+          quality_date = #{item.qualityDate,jdbcType=VARCHAR},
+        </if>
+        <if test="item.managementStyleCode != null">
+          management_style_code = #{item.managementStyleCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.managementStyleName != null">
+          management_style_name = #{item.managementStyleName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.categoriesSupplyChannelsCode != null">
+          categories_supply_channels_code = #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.onSale != null">
+          on_sale = #{item.onSale,jdbcType=TINYINT},
+        </if>
+        <if test="item.categoriesSupplyChannelsName != null">
+          categories_supply_channels_name = #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.boxGauge != null">
+          box_gauge = #{item.boxGauge,jdbcType=VARCHAR},
+        </if>
+        <if test="item.applicableMonthAge != null">
+          applicable_month_age = #{item.applicableMonthAge,jdbcType=VARCHAR},
+        </if>
+        <if test="item.point != null">
+          point = #{item.point,jdbcType=VARCHAR},
+        </if>
+        <if test="item.barCode != null">
+          bar_code = #{item.barCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.mnemonicCode != null">
+          mnemonic_code = #{item.mnemonicCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.selectionEffectiveTime != null">
+          selection_effective_time = #{item.selectionEffectiveTime,jdbcType=TINYINT},
+        </if>
+        <if test="item.selectionEffectiveStartTime != null">
+          selection_effective_start_time = #{item.selectionEffectiveStartTime,jdbcType=VARCHAR},
+        </if>
+        <if test="item.selectionEffectiveEndTime != null">
+          selection_effective_end_time = #{item.selectionEffectiveEndTime,jdbcType=VARCHAR},
+        </if>
+        <if test="item.goodsGifts != null">
+          goods_gifts = #{item.goodsGifts,jdbcType=TINYINT},
+        </if>
+        <if test="item.skuName != null">
+          sku_name = #{item.skuName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.applyStatus != null">
+          apply_status = #{item.applyStatus,jdbcType=TINYINT},
+        </if>
+        <if test="item.auditorBy != null">
+          auditor_by = #{item.auditorBy,jdbcType=VARCHAR},
+        </if>
+        <if test="item.auditorTime != null">
+          auditor_time = #{item.auditorTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.isMainPush != null">
+          is_main_push = #{item.isMainPush,jdbcType=TINYINT},
+        </if>
+        <if test="item.newProduct != null">
+          new_product = #{item.newProduct,jdbcType=TINYINT},
+        </if>
+        <if test="item.manufacturerGuidePrice != null">
+          manufacturer_guide_price = #{item.manufacturerGuidePrice,jdbcType=BIGINT},
+        </if>
+        <if test="item.zeroRemovalCoefficient != null">
+          zero_removal_coefficient = #{item.zeroRemovalCoefficient,jdbcType=BIGINT},
+        </if>
+        <if test="item.procurementSectionCode != null">
+          procurement_section_code = #{item.procurementSectionCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.procurementSectionName != null">
+          procurement_section_name = #{item.procurementSectionName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.formNo != null">
+          form_no = #{item.formNo,jdbcType=VARCHAR},
+        </if>
+      </set>
+      where id = #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+
+  <update id="updateStatusByFormNo">
+    update
+    apply_product_sku
+    set
+    apply_status = #{applyStatus,jdbcType=VARCHAR}
+    where
+    1=1
+    <if test="formNo!=null and formNo!=''">
+      AND form_no = #{formNo,jdbcType=VARCHAR}
+    </if>
+  </update>
+</mapper>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.ProductDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.Product">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="retail_price" jdbcType="INTEGER" property="retailPrice" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="images" jdbcType="VARCHAR" property="images" />
+    <result column="itro_images" jdbcType="VARCHAR" property="itroImages" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyProductCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, bar_code, product_id, product_code, product_name, price, spu_code, retail_price,
+    logo, images, itro_images, category_id, category_name, brand_id, brand_name, create_time,
+    update_time, create_by, update_by, del_flag, auditor_by, auditor_time, apply_status,
+    apply_code
+  </sql>
+  <select id="selectProductInfoBySearch" parameterType="com.aiqin.bms.scmp.api.product.domain.Product"
+          resultMap="BaseResultMap" resultType="java.util.List">
+    select p.*, d.distribution_channel
+    from product p left join product_distributor d on p.product_id = d.product_id
+    <where>
+      <if test="categoryId != null">
+        p.category_id = #{categoryId,jdbcType=VARCHAR}
+      </if>
+      <if test="brandId != null">
+        and p.brand_id = #{brandId,jdbcType=VARCHAR}
+      </if>
+      <if test="productName != null">
+        and p.product_name like concat('%',#{productName,jdbcType=VARCHAR},'%')
+      </if>
+      and d.del_flag != 1
+    </where>
+    limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="countProductInfoBySearch" parameterType="com.aiqin.bms.scmp.api.product.domain.Product"
+          resultType="java.lang.Integer">
+    select count(1)
+    from product p left join product_distributor d on p.product_id = d.product_id
+    <where>
+      <if test="categoryId != null">
+        p.category_id = #{categoryId,jdbcType=VARCHAR}
+      </if>
+      <if test="brandId != null">
+        and p.brand_id = #{brandId,jdbcType=VARCHAR}
+      </if>
+      <if test="productName != null">
+        and p.product_name like concat('%',#{productName,jdbcType=VARCHAR},'%')
+      </if>
+      and d.del_flag != 1
+    </where>
+  </select>
+  <update id="updateProductByProductId" parameterType="com.aiqin.bms.scmp.api.product.domain.request.ProductRequest">
+    update product
+    <set>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="images != null">
+        images = #{images,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=BIGINT},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      update_time = now()
+    </set>
+    where product_id = #{productId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateProductInfoBySearch" parameterType="com.aiqin.bms.scmp.api.product.domain.request.ProductInfoRequest">
+    update product
+    <set>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="retailPrice != null">
+        retail_price = #{retailPrice,jdbcType=INTEGER},
+      </if>
+      update_time = now()
+    </set>
+    where product_id = #{productId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectProductInfoByCategoryAndCode" parameterType="com.aiqin.bms.scmp.api.product.domain.Product"
+          resultMap="BaseResultMap" resultType="java.util.List">
+    select p.*, d.sku_code
+    from product p left join product_distributor d on p.product_id = d.product_id where d.del_flag != 1
+    <choose>
+      <when test="productCodeList != null and productCodeList.size > 0">
+        and (p.product_code in(
+        <foreach collection="productCodeList" item="item" index="" separator=",">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+        ) or p.product_name like concat('%',
+        <foreach collection="productCodeList" item="item" index="" separator=",">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+        ,'%'))
+      </when>
+      <otherwise>
+        <if test="categoryId != null">
+          and p.category_id = #{categoryId,jdbcType=VARCHAR}
+        </if>
+      </otherwise>
+    </choose>
+    limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="countProductInfoByCategoryAndCode" parameterType="com.aiqin.bms.scmp.api.product.domain.Product"
+          resultType="java.lang.Integer">
+    select count(1)
+    from product p left join product_distributor d on p.product_id = d.product_id where d.del_flag != 1
+    <choose>
+      <when test="productCodeList != null and productCodeList.size > 0">
+        and (p.product_code in(
+        <foreach collection="productCodeList" item="item" index="" separator=",">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+        ) or p.product_name like concat('%',
+        <foreach collection="productCodeList" item="item" index="" separator=",">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+        ,'%'))
+      </when>
+      <otherwise>
+        <if test="categoryId != null">
+          and p.category_id = #{categoryId,jdbcType=VARCHAR}
+        </if>
+      </otherwise>
+    </choose>
+  </select>
+  <select id="selectPriceByProductIdList" parameterType="com.aiqin.bms.scmp.api.product.domain.Product"
+          resultMap="BaseResultMap" resultType="java.util.List">
+    select
+    <include refid="Base_Column_List"/>
+    from product
+    <where>
+      <if test="productIdList != null">
+        product_id in(
+        <foreach collection="productIdList" item="item" index="" separator=",">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+        )
+      </if>
+    </where>
+  </select>
+  <select id="getProductDrafts" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductDraftMapper.BaseResultMap">
+    SELECT
+      <include refid="com.aiqin.bms.scmp.api.product.mapper.ApplyProductDraftMapper.Base_Column_List"/>
+    from apply_product_draft WHERE product_code IN
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+  <select id="selectByProductCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from product
+    <where>
+      <if test="productCode != null">
+        product_code = #{productCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+</mapper>

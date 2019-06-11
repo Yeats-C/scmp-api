@@ -1,0 +1,1810 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.ProductSkuDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.ProductSku">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sku_id" jdbcType="VARCHAR" property="skuId" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="sku_status" jdbcType="TINYINT" property="skuStatus" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="images" jdbcType="VARCHAR" property="images" />
+    <result column="itro_images" jdbcType="VARCHAR" property="itroImages" />
+    <result column="price" jdbcType="INTEGER" property="price" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <resultMap id="MerchantSkuListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.merchant.MerchantSkuItemRespVO">
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="product_property_code" jdbcType="VARCHAR" property="propertyCode" />
+    <result column="product_property_name" jdbcType="VARCHAR" property="propertyName" />
+    <result column="product_brand_code" jdbcType="VARCHAR" property="brandCode" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="categoryCode" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="price" jdbcType="BIGINT" property="price"/>
+    <result column="product_introduction" jdbcType="VARCHAR" property="description" />
+    <result column="inventory_num" jdbcType="BIGINT" property="stockQuantity"/>
+    <result column="product_picture_path" jdbcType="VARCHAR" property="skuImage"/>
+  </resultMap>
+  <resultMap id="StoreSkuListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuItemRespVO">
+      <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+      <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+      <result column="product_category_code" jdbcType="VARCHAR" property="categoryCode" />
+      <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+      <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+      <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode"/>
+      <result column="product_property_code" jdbcType="VARCHAR" property="propertyCode" />
+      <result column="product_property_name" jdbcType="VARCHAR" property="propertyName" />
+      <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+      <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+      <result column="spec" jdbcType="VARCHAR" property="spec" />
+      <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+      <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+      <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+      <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+      <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient"/>
+      <result column="purchase_price" jdbcType="BIGINT" property="purchasePrice"/>
+      <result column="sale_price" jdbcType="BIGINT" property="salePrice"/>
+      <result column="sku_image" jdbcType="VARCHAR" property="skuImage"/>
+      <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode"/>
+      <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyUnitName"/>
+      <result column="box_volume" jdbcType="BIGINT" property="boxVolume"/>
+  </resultMap>
+  <resultMap id="StoreSkuInfoMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuBaseInfo">
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="sku_abbreviation" jdbcType="VARCHAR" property="skuAbbreviation" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="quality_assurance_management" jdbcType="TINYINT" property="qualityAssuranceManagement" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="quality_number" jdbcType="VARCHAR" property="qualityNumber" />
+    <result column="management_style_name" jdbcType="VARCHAR" property="managementStyleName" />
+    <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+    <result column="box_gauge" jdbcType="VARCHAR" property="boxGauge" />
+    <result column="applicable_month_age" jdbcType="VARCHAR" property="applicableMonthAge" />
+    <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+    <result column="mnemonic_code" jdbcType="VARCHAR" property="mnemonicCode" />
+    <result column="selection_effective_start_time" jdbcType="VARCHAR" property="selectionEffectiveStartTime" />
+    <result column="selection_effective_end_time" jdbcType="VARCHAR" property="selectionEffectiveEndTime" />
+    <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode"/>
+    <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyUnitName"/>
+    <result column="box_volume" jdbcType="BIGINT" property="boxVolume"/>
+  </resultMap>
+  <resultMap id="SkuDefaultFactoryMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuFactoryInfo">
+    <result column="manufacturer_name" jdbcType="VARCHAR" property="manufacturerName" />
+    <result column="manufacturer_code" jdbcType="VARCHAR" property="factoryProductNumber" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+  </resultMap>
+  <resultMap id="SkuDefaultSalesMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuSalesInfo">
+    <result column="product_width" jdbcType="BIGINT" property="productWidth" />
+    <result column="product_length" jdbcType="BIGINT" property="productLength" />
+    <result column="product_height" jdbcType="BIGINT" property="productHeight" />
+    <result column="sales_code" jdbcType="VARCHAR" property="salesCode" />
+  </resultMap>
+  <resultMap id="SkuPicListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuPicInfo">
+    <result column="product_picture_path" jdbcType="VARCHAR" property="picturePath" />
+    <result column="product_introduction" jdbcType="VARCHAR" property="productIntroduction" />
+    <result column="main_picture" jdbcType="TINYINT" property="mainPicture" />
+  </resultMap>
+  <resultMap id="SkuWarehouseStockMap" type="com.aiqin.bms.scmp.api.product.domain.SkuWarehouseStockNum">
+    <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
+  </resultMap>
+  <resultMap id="ProductItemStoreMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.store.ProductItemStoreRespVO">
+    <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+    <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+    <result column="product_image" jdbcType="VARCHAR" property="productImage"/>
+    <result column="lowest_price" jdbcType="BIGINT" property="lowestPrice"/>
+    <result column="highest_price" jdbcType="BIGINT" property="highestPrice"/>
+  </resultMap>
+  <resultMap id="CheckPurchaseSkuMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.CheckPurchaseItemRespVO">
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag"/>
+  </resultMap>
+  <resultMap id="PurchaseSkuMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo">
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="zero_removal_coefficient" jdbcType="VARCHAR" property="convertNum" />
+    <result column="tax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="goods_gifts" jdbcType="VARCHAR" property="productTypeCode" />
+  </resultMap>
+  <resultMap id="ProductSkuDraftMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="sku_status" jdbcType="TINYINT" property="skuStatus" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
+    <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+    <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="sku_abbreviation" jdbcType="VARCHAR" property="skuAbbreviation" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="quality_assurance_management" jdbcType="TINYINT" property="qualityAssuranceManagement" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="quality_number" jdbcType="VARCHAR" property="qualityNumber" />
+    <result column="quality_date" jdbcType="VARCHAR" property="qualityDate" />
+    <result column="management_style_code" jdbcType="VARCHAR" property="managementStyleCode" />
+    <result column="management_style_name" jdbcType="VARCHAR" property="managementStyleName" />
+    <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+    <result column="on_sale" jdbcType="TINYINT" property="onSale" />
+    <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+    <result column="box_gauge" jdbcType="VARCHAR" property="boxGauge" />
+    <result column="applicable_month_age" jdbcType="VARCHAR" property="applicableMonthAge" />
+    <result column="point" jdbcType="VARCHAR" property="point" />
+    <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+    <result column="mnemonic_code" jdbcType="VARCHAR" property="mnemonicCode" />
+    <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime" />
+    <result column="selection_effective_start_time" jdbcType="VARCHAR" property="selectionEffectiveStartTime" />
+    <result column="selection_effective_end_time" jdbcType="VARCHAR" property="selectionEffectiveEndTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="goods_gifts" jdbcType="TINYINT" property="goodsGifts" />
+    <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+    <result column="images" jdbcType="VARCHAR" property="images" />
+    <result column="itro_images" jdbcType="VARCHAR" property="itroImages" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+  </resultMap>
+
+  <resultMap id="QuerySkuListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp">
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="on_sale_name" jdbcType="VARCHAR" property="onSale" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="sale_price" jdbcType="BIGINT" property="skuPrice"/>
+    <result column="product_sort_name" jdbcType="BIGINT" property="productSort"/>
+  </resultMap>
+  <resultMap id="QueryApplySkuListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.QuerySkuApplyListResp">
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="reviewer" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="reviewTime" />
+    <result column="auditor_status_name" jdbcType="VARCHAR" property="approvalStatus" />
+    <result column="sku_num" jdbcType="INTEGER" property="skuNum" />
+    <result column="product_num" jdbcType="INTEGER" property="productNum" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <resultMap id="ProductDraftListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductDraftListResp">
+    <result column="sku_num" jdbcType="INTEGER" property="skuNum" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="categoryName"/>
+    <result column="bar_code" jdbcType="VARCHAR" property="barCode"/>
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <resultMap id="ApplyDetailProductMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ApplyDetailProductListResp">
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="sku_num" jdbcType="INTEGER" property="skuNum" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+    <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+  </resultMap>
+  <resultMap id="ApplyDetailSkuMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ApplyDetailSkuListResp">
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
+    <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+    <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime"/>
+    <result column="selection_effective_start_time" jdbcType="VARCHAR" property="selectionEffectiveStartTime"/>
+    <result column="selection_effective_end_time" jdbcType="VARCHAR" property="selectionEffectiveEndTime"/>
+    <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
+  </resultMap>
+  <resultMap id="OmsProductItemMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsProductListItemResp">
+    <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+    <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+    <result column="product_image" jdbcType="VARCHAR" property="imagePath"/>
+    <result column="low_price" jdbcType="BIGINT" property="lowPrice"/>
+    <result column="high_price" jdbcType="BIGINT" property="highPrice"/>
+  </resultMap>
+  <resultMap id="ProductTagMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsSkuTagResp">
+    <result column="is_main_push" jdbcType="TINYINT" property="mainPush"/>
+    <result column="new_product" jdbcType="TINYINT" property="newProduct"/>
+    <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+  </resultMap>
+  <resultMap id="ProductBrandMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsSkuBrandResp">
+    <result column="product_brand_code" jdbcType="VARCHAR" property="brandId"/>
+    <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+  </resultMap>
+  <resultMap id="ProductCategoryMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsSkuCategoryResp">
+    <result column="product_category_code" jdbcType="VARCHAR" property="categoryId"/>
+    <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+  </resultMap>
+  <resultMap id="ProductSkuItemMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsProductSkuItemResp">
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="sale_price" jdbcType="BIGINT" property="skuPrice" />
+    <result column="inventory_num" jdbcType="BIGINT" property="skuStock" />
+  </resultMap>
+  <resultMap id="OmsSkusListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.oms.QuerySkuListResp">
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="categoryId" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="categoryName"/>
+    <result column="product_brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="product_brand_code" jdbcType="VARCHAR" property="brandId"/>
+    <result column="product_property_code" jdbcType="VARCHAR" property="propertyCode" />
+    <result column="product_property_name" jdbcType="VARCHAR" property="propertyName" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="sale_price" jdbcType="BIGINT" property="skuPrice"/>
+    <result column="product_picture_path" jdbcType="VARCHAR" property="imagePath"/>
+    <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyCompanyCode"/>
+    <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyCompanyName"/>
+  </resultMap>
+  <resultMap id="OmsPageSkuListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.oms.QueryOmsSkusPageResp">
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="product_property_code" jdbcType="VARCHAR" property="propertyCode" />
+    <result column="product_property_name" jdbcType="VARCHAR" property="propertyName" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="sale_price" jdbcType="BIGINT" property="skuPrice"/>
+    <result column="product_picture_path" jdbcType="VARCHAR" property="productImage"/>
+    <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyCompanyCode"/>
+    <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyCompanyName"/>
+  </resultMap>
+  <select id="getProductSkuInfoList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO" resultMap="BaseResultMap">
+
+  </select>
+  <select id="getSalesSkuList" parameterType="java.util.List" resultMap="PurchaseSkuMap">
+    SELECT
+      ps.sku_code sku_code,
+      ps.sku_name sku_name,
+      ps.spec spec,
+      ps.product_name  product_name,
+      ps.product_code product_code,
+      ps.product_category_name product_category_name,
+      ps.product_category_code product_category_code,
+      ps.product_brand_name product_brand_name,
+      ps.product_brand_code product_brand_code,
+      ps.unit_code unit_code,
+      ps.unit_name unit_name,
+      ps.color_code color_code,
+      ps.color_name color_name,
+      ps.model_number model_number,
+      ps.product_sort_code product_sort_code,
+      ps.product_sort_name product_sort_name,
+      IFNULL(null,1) as zero_removal_coefficient,
+      IFNULL((psc.output_tax_rate),0) as tax_rate,
+      psp.product_picture_path as pic_url
+    FROM
+      product_sku ps
+      left join  product_sku_checkout psc on psc.sku_code = ps.sku_code
+      left join product_sku_pictures psp on psp.product_sku_code = ps.sku_code
+    WHERE ps.del_flag=0
+    <if test="list !=null and list.size>0">
+      AND ps.sku_code IN
+      <foreach collection="list" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+  <select id="getPurchaseSkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.purchase.QueryPurchaseSkuReqVO" resultMap="PurchaseSkuMap">
+    SELECT
+      a.sku_code,
+      a.sku_name,
+      concat(a.spec,',',pspi.spec) as spec,
+      a.product_name,
+      a.product_code,
+      a.product_category_name,
+      a.product_category_code,
+      a.product_brand_name,
+      a.product_brand_code,
+      concat(a.unit_code,',',pspi.unit_code) as unit_code,
+      concat(a.unit_name,',',pspi.unit_name) as unit_name,
+      a.color_code,
+      a.color_name,
+      a.model_number,
+      a.product_sort_code,
+      a.product_sort_name,
+      a.goods_gifts,
+      concat(1,',',IFNULL((pspi.base_product_content),1)) as zero_removal_coefficient,
+      IFNULL((psc1.Input_tax_rate),0) as tax_rate
+    FROM
+      product_sku a LEFT JOIN product_sku_checkout b ON a.sku_code=b.sku_code
+      LEFT JOIN product_sku_config psc ON a.sku_code=psc.sku_code and psc.purchase_status = 1 and psc.del_flag = 0 and psc.config_status = 0
+      LEFT JOIN product_sku_supply_unit pssu on a.sku_code = pssu.product_sku_code and pssu.is_default = 1 and pssu.del_flag = 0 and pssu.usage_status = 1
+      LEFT JOIN product_sku_checkout psc1 on psc1.sku_code = a.sku_code
+      LEFT JOIN product_sku_purchase_info pspi on a.sku_code = pspi.product_sku_code and pspi.del_flag = 0
+    WHERE a.del_flag=0
+    <if test="skuCode != null and skuCode != ''">
+      and a.sku_code=#{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName != null and skuName != ''">
+      and a.sku_name=#{skuName,jdbcType=VARCHAR}
+    </if>
+    <if test="productPropertyName != null and productPropertyName != ''">
+      and a.product_property_name=#{productPropertyName,jdbcType=VARCHAR}
+    </if>
+    <if test="productCategoryName != null and productCategoryName != ''">
+      and a.product_category_name=#{productCategoryName,jdbcType=VARCHAR}
+    </if>
+    <if test="productBrandName != null and productBrandName != ''">
+      and a.product_brand_name=#{productBrandName,jdbcType=VARCHAR}
+    </if>
+    <if test="transportCenterCode != null and transportCenterCode != ''">
+      and psc.transport_center_code=#{transportCenterCode,jdbcType=VARCHAR}
+    </if>
+    <if test="warehouseCode != null and warehouseCode != ''">
+      and psc.warehouse_code=#{warehouseCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
+      and a.procurement_section_code=#{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="supplyCode != null and supplyCode != ''">
+      and pssu.supply_unit_code=#{supplyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="getMerchantSkuListByCodes" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryMerchantSkuListReqVO" resultMap="MerchantSkuListMap">
+    select
+      a.sku_code,
+      a.sku_name,
+      a.product_brand_code,
+      a.product_brand_name,
+      a.product_category_code,
+      a.product_category_name,
+      a.product_brand_name,
+      a.product_property_code,
+      a.product_property_name,
+      a.color_code,
+      a.color_name,
+      a.spec,
+      a.model_number,
+      a.unit_code,
+      a.unit_name,
+      b.price_value price,
+      s.inventory_num,
+      psp.product_picture_path,
+      psp.product_introduction
+    from
+      product_sku a LEFT JOIN stock s ON a.sku_code=s.sku_code
+    LEFT JOIN product_sku_pictures psp ON a.sku_code=psp.sku_code AND psp.main_picture=1
+    LEFT JOIN (
+      SELECT
+      CASE WHEN
+      a.price_value_ls IS NULL THEN
+      b.price_value ELSE a.price_value_ls
+      END sale_price,
+      b.sku_code
+      FROM
+    (SELECT price_value, sku_code FROM product_sku_price WHERE price_type_code = '2' AND is_default = 1 ) b
+    LEFT JOIN
+    (SELECT max( id ), price_value price_value_ls, sku_code FROM product_sku_price WHERE price_type_code = '12'
+    AND effective_time &gt;=#{requestTime,jdbcType=TIMESTAMP} AND stop_time &lt;=#{requestTime,jdbcType=TIMESTAMP}) a
+    ON a.sku_code = b.sku_code
+    ) b ON a.sku_code = b.sku_code
+    WHERE a.del_flag=0
+    <if test="skuCodes!=null and skuCodes.size>0">
+      AND a.sku_code IN
+      <foreach collection="skuCodes" index="index" item="skuCode" open="(" separator="," close=")">
+        #{skuCode}
+      </foreach>
+    </if>
+  </select>
+  <select id="getSkuListByProductCode" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkuListReqVO" resultMap="StoreSkuListMap">
+    SELECT
+      a.sku_code,
+      a.sku_name,
+      a.product_category_code,
+      a.product_category_name,
+      a.product_brand_name,
+      a.product_brand_code,
+      a.product_property_code,
+      a.product_property_name,
+      a.color_code,
+      a.color_name,
+      a.spec,
+      a.bar_code,
+      a.model_number,
+      a.unit_code,
+      a.unit_name,
+      psp.product_picture_path sku_image,
+      case when b.price_value is null then 0 else b.price_value end sale_price,
+      case when c.price_value is null then 0 else c.price_value end purchase_price,
+      a.zero_removal_coefficient,
+      e.box_volume,
+      f.supply_unit_code,
+      f.supply_unit_name
+    FROM product_sku a
+    LEFT JOIN product_sku_pictures psp
+    ON a.sku_code = psp.product_sku_code
+    AND psp.main_picture = 1
+    LEFT JOIN (SELECT
+    CASE WHEN
+    a.price_value_ls IS NULL THEN
+    b.price_value ELSE a.price_value_ls
+    END price_value,
+    b.sku_code
+    FROM
+    (SELECT price_value, sku_code FROM product_sku_price WHERE price_type_code = '4' AND is_default = 1 ) b
+    LEFT JOIN
+    ( SELECT max( id ), price_value price_value_ls, sku_code FROM product_sku_price WHERE price_type_code = '13'
+    AND effective_time &gt;=#{requestTime,jdbcType=TIMESTAMP} AND stop_time &lt;=#{requestTime,jdbcType=TIMESTAMP}) a
+    ON a.sku_code = b.sku_code
+    ) b
+    ON a.sku_code = b.sku_code
+    LEFT JOIN (SELECT
+                CASE WHEN
+                a.price_value_ls IS NULL THEN
+                b.price_value ELSE a.price_value_ls
+                END price_value,
+                b.sku_code
+      FROM
+    (SELECT price_value, sku_code FROM product_sku_price WHERE price_type_code = '2' AND is_default = 1 ) b
+    LEFT JOIN
+    ( SELECT max( id ), price_value price_value_ls, sku_code FROM product_sku_price WHERE price_type_code = '12'
+    AND effective_time &gt;=#{requestTime,jdbcType=TIMESTAMP} AND stop_time &lt;=#{requestTime,jdbcType=TIMESTAMP}) a
+    ON a.sku_code = b.sku_code
+    )c on a.sku_code = c.sku_code
+    LEFT JOIN product_sku_box_packing e
+    ON a.sku_code = e.product_sku_code and e.del_flag=0
+    LEFT JOIN product_sku_supply_unit f
+    ON a.sku_code = f.product_sku_code and f.del_flag=0 AND f.is_default=1
+    WHERE a.del_flag=0 AND a.on_sale=1
+    <if test="skuCodes !=null and skuCodes.size>0">
+      AND a.sku_code in
+      <foreach collection="skuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="spuCode !=null and spuCode!=''">
+      AND a.product_code=#{spuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="wareHouses != null and wareHouses.size > 0">
+      AND a.sku_code IN
+      (SELECT sku_code FROM product_sku_config
+      WHERE purchase_status = 1
+        AND transport_center_code IN
+        <foreach collection="wareHouses" item="item" open="(" separator="," close=")">
+          #{item.logisticsCenterCode,jdbcType=VARCHAR}
+        </foreach>
+        )
+    </if>
+    <if test="colorName!=null">
+      and a.color_name=#{colorName,jdbcType=VARCHAR}
+    </if>
+    <if test="modelNumber!=null">
+      and a.model_number=#{modelNumber,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="getStoreSkuBaseByCode" parameterType="java.lang.String" resultMap="StoreSkuInfoMap">
+    SELECT
+      a.product_name,
+      a.product_category_name,
+      a.sku_code,
+      a.sku_name,
+      a.spec,
+      a.product_property_name,
+      a.product_brand_name,
+      a.sku_abbreviation,
+      a.color_name,
+      a.model_number,
+      a.unit_name,
+      a.quality_assurance_management,
+      a.product_sort_name,
+      a.quality_number,
+      a.management_style_name,
+      a.categories_supply_channels_name,
+      a.box_gauge,
+      a.applicable_month_age,
+      a.bar_code,
+      a.mnemonic_code,
+      a.selection_effective_start_time,
+      a.selection_effective_end_time,
+      e.box_volume,
+      f.supply_unit_code,
+      f.supply_unit_name
+    FROM
+      product_sku a
+    LEFT JOIN product_sku_box_packing e
+    ON a.sku_code = e.product_sku_code and e.del_flag=0
+    LEFT JOIN product_sku_supply_unit f
+    ON a.sku_code = f.product_sku_code and f.del_flag=0 AND f.is_default=1
+    WHERE
+      a.del_flag=0 and a.on_sale=1 and a.sku_code=#{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getDefaultSkuFactory" parameterType="java.lang.String" resultMap="SkuDefaultFactoryMap">
+    SELECT
+      psm.manufacturer_name,
+      psm.manufacturer_code,
+      psm.address
+    FROM product_sku_manufacturer psm
+    LEFT JOIN product_sku ps
+    ON psm.product_sku_code = ps.sku_code
+    AND ps.del_flag = 0
+    AND ps.on_sale = 1
+    WHERE psm.is_default = 1
+    AND psm.del_flag = 0
+    AND ps.sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getDefaultSkuSales" parameterType="java.lang.String" resultMap="SkuDefaultSalesMap">
+    SELECT
+      pssi.product_width,
+      pssi.product_length,
+      pssi.product_height,
+      pssi.sales_code
+    FROM product_sku_sales_info pssi
+      LEFT JOIN product_sku ps
+        ON pssi.product_sku_code = ps.sku_code
+        AND ps.del_flag = 0
+        AND ps.on_sale = 1
+    WHERE pssi.is_default = 1
+    AND pssi.del_flag = 0 AND pssi.product_sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getSkuPicList" parameterType="java.lang.String" resultMap="SkuPicListMap">
+    SELECT
+      psp.product_picture_path,
+      psp.product_introduction,
+      psp.main_picture
+    FROM product_sku_pictures psp
+    LEFT JOIN product_sku ps
+    ON psp.product_sku_code = ps.sku_code
+    AND ps.del_flag = 0
+    AND ps.on_sale = 1
+    WHERE psp.del_flag = 0
+    AND ps.sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getSkuWarehouseStockNum" parameterType="com.aiqin.bms.scmp.api.product.domain.SkuWarehouseStockNum" resultMap="SkuWarehouseStockMap">
+  SELECT
+    sku_code,
+    available_num as inventory_num,
+    warehouse_code,
+    warehouse_name
+  FROM stock
+  WHERE del_flag = 0
+    <if test="logisticsCenterApiResVoList!=null and logisticsCenterApiResVoList.size > 0">
+      AND warehouse_code IN
+      <foreach collection="logisticsCenterApiResVoList" item="item"  open="(" separator="," close=")">
+        <if test="item.list!=null and item.list.size > 0">
+          <foreach collection="item.list" item="item1">
+            #{item1.warehouseCode,jdbcType=VARCHAR}
+          </foreach>
+        </if>
+      </foreach>
+    </if>
+    <if test="storeSkuItemRespVOList != null and storeSkuItemRespVOList.size > 0">
+      AND sku_code IN
+      <foreach collection="storeSkuItemRespVOList" item="item" open="(" separator="," close=")">
+        #{item.skuCode,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  <if test="companyCode!=null">
+    AND company_code =#{companyCode,jdbcType=VARCHAR}
+  </if>
+  </select>
+  <select id="getProductItemList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreProductListReqDTO" resultMap="ProductItemStoreMap">
+    SELECT
+      a.product_code,
+      a.product_name,
+      min( a.sale_price ) lowest_price,
+      max( a.sale_price ) highest_price,
+      b.product_image,
+      c.sale_volume as sale_volume,
+      c.purchase_volume as purchase_volume,
+      c.inventory_num as inventory_num
+    FROM
+    (SELECT
+        a.product_code,
+        a.product_name,
+        CASE WHEN b.sale_price IS NULL THEN 0 ELSE b.sale_price END sale_price
+    FROM product_sku a
+    LEFT JOIN (
+    SELECT
+    CASE WHEN
+    a.price_value_ls IS NULL THEN
+    b.price_value ELSE a.price_value_ls
+    END sale_price,
+    b.sku_code
+    FROM
+    ( SELECT price_value, sku_code FROM product_sku_price WHERE price_type_code = '2' AND is_default = 1 ) b
+    LEFT JOIN ( SELECT max( id ), price_value price_value_ls, sku_code FROM product_sku_price WHERE price_type_code = '12'
+    AND effective_time &gt;=#{requestTime,jdbcType=TIMESTAMP} AND stop_time &lt;=#{requestTime,jdbcType=TIMESTAMP} ) a ON a.sku_code = b.sku_code
+    ) b ON a.sku_code = b.sku_code
+        <if test="showType ==1 and warehouseApiResVos != null and warehouseApiResVos.size > 0">
+          LEFT JOIN (SELECT sku_code,if(MAX(inventory_num) is null,0,MAX(inventory_num)) max_num FROM stock WHERE del_flag = 0
+            AND warehouse_code in
+            <foreach collection="warehouseApiResVos" item="item" open="(" separator="," close=")">
+                #{item.warehouseCode,jdbcType=VARCHAR}
+            </foreach>
+            GROUP BY sku_code) c
+          on a.sku_code=c.sku_code
+        </if>
+    WHERE a.del_flag = 0
+      AND a.on_sale = 1
+      <if test="showType ==1">
+        and c.max_num > 0
+      </if>
+      <if test="productType!=null">
+        AND (a.is_main_push=#{productType,jdbcType=TINYINT} or a.new_product=#{productType,jdbcType=TINYINT})
+      </if>
+      <if test="logisticsCenterApiResVos != null and logisticsCenterApiResVos.size > 0">
+        AND a.sku_code IN
+        (SELECT sku_code FROM product_sku_config
+        WHERE sale_status = 1
+        AND transport_center_code IN
+        <foreach collection="logisticsCenterApiResVos" item="item" open="(" separator="," close=")">
+          #{item.logisticsCenterCode,jdbcType=VARCHAR}
+        </foreach>
+        )
+      </if>
+      <if test="categoryId!=null">
+        AND a.product_category_code =#{categoryId,jdbcType=VARCHAR}
+      </if>
+      <if test="brandId!=null">
+        AND a.product_brand_code =#{brandId,jdbcType=VARCHAR}
+      </if>
+      <if test="shipMethod!=null">
+        AND a.categories_supply_channels_name = #{shipMethod,jdbcType=VARCHAR}
+      </if>
+      <if test="text!=null">
+        AND
+        (
+        a.product_name LIKE concat('%',#{text,jdbcType=VARCHAR},'%')
+        OR a.product_code LIKE concat('%',#{text,jdbcType=VARCHAR},'%')
+        OR a.sku_code LIKE concat('%',#{text,jdbcType=VARCHAR},'%')
+        )
+      </if>
+      <if test="skuCodes!=null and skuCodes.size>0">
+        AND a.sku_code in
+        <foreach collection="skuCodes" item="item" open="(" separator="," close=")">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+      </if>
+      ) a
+      LEFT JOIN
+      (SELECT
+          ps.product_code,
+          psp.product_picture_path product_image
+        FROM product_sku ps
+          LEFT JOIN product_sku_pictures psp
+            ON ps.sku_code = psp.product_sku_code
+            AND psp.del_flag = 0
+            AND psp.main_picture = 1
+        WHERE ps.del_flag = 0
+        AND ps.on_sale = 1
+        GROUP BY ps.product_code
+    ) b ON a.product_code = b.product_code
+    LEFT JOIN(
+      SELECT
+      a.product_code,
+      sum(a.sale_volume) sale_volume,
+      sum(a.purchase_volume) purchase_volume,
+      sum(a.inventory_num) inventory_num
+      FROM
+      (SELECT
+      a.product_code,
+      CASE WHEN b.sale_volume IS NULL THEN 0 ELSE b.sale_volume END sale_volume,
+      case when c.purchase_volume is null then 0 else c.purchase_volume end purchase_volume,
+      CASE WHEN d.inventory_num is NULL THEN 0 ELSE d.inventory_num END inventory_num
+      FROM
+      product_sku a
+      LEFT JOIN sku_sale_volume b ON a.sku_code = b.sku_code
+      LEFT JOIN sku_purchase_volume c ON a.sku_code = c.sku_code
+      LEFT JOIN (SELECT sku_code,sum(inventory_num)inventory_num FROM stock where warehouse_code in
+      <foreach collection="warehouseApiResVos" item="item" open="(" separator="," close=")">
+        #{item.warehouseCode,jdbcType=VARCHAR}
+      </foreach>
+      GROUP BY sku_code) d ON a.sku_code = d.sku_code
+      ) a GROUP BY a.product_code
+    ) c ON a.product_code = c.product_code
+    GROUP BY a.product_code
+    <if test="sortBy !=null and sortBy == 0">
+      order by sale_volume ${sort}
+    </if>
+    <if test="sortBy !=null and sortBy == 1">
+      order by lowest_price ${sort}
+    </if>
+    <if test="sortBy !=null and sortBy == 3">
+      order by purchase_volume ${sort}
+    </if>
+    <if test="sortBy !=null and sortBy == 4">
+      order by sale_volume desc,inventory_num
+    </if>
+  </select>
+  <select id="getCheckSkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.purchase.CheckPurchaseSkuReqVO" resultMap="PurchaseSkuMap">
+    select
+      a.sku_code,
+      a.sku_name,
+      concat(a.spec,',',b.spec) as spec,
+      a.product_name,
+      a.product_code,
+      a.product_category_name,
+      a.product_category_code,
+      a.product_brand_name,
+      a.product_brand_code,
+      concat(a.unit_code,',',b.unit_code) as unit_code,
+      concat(a.unit_name,',',b.unit_name) as unit_name,
+      a.color_code,
+      a.color_name,
+      a.model_number,
+      a.product_sort_code,
+      a.product_sort_name,
+      a.goods_gifts,
+      concat(1,',',IFNULL((b.base_product_content),1)) as zero_removal_coefficient,
+      IFNULL((e.input_tax_rate),0) as tax_rate
+    from product_sku a
+       left join product_sku_purchase_info b
+                 on b.product_sku_code = a.sku_code and b.del_flag = 0
+       left join product_sku_config c
+                 on a.sku_code = c.sku_code and c.del_flag = 0 and c.purchase_status = 1 and config_status = 0
+       left join product_sku_supply_unit d
+                 on a.sku_code = d.product_sku_code and d.del_flag =0 and d.is_default = 1 and d.usage_status = 1
+       left join product_sku_checkout e
+                 on a.sku_code = e.sku_code and e.del_flag = 0
+    where a.del_flag = 0
+    <if test="transportCenterCode != null and transportCenterCode != ''">
+      and c.transport_center_code=#{transportCenterCode,jdbcType=VARCHAR}
+    </if>
+    <if test="warehouseCode != null and warehouseCode != ''">
+      and c.warehouse_code=#{warehouseCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
+      and a.procurement_section_code=#{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="supplyCode != null and supplyCode != ''">
+      and d.supply_unit_code=#{supplyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuList != null and skuList.size>0">
+      and a.sku_code in
+      <foreach collection="skuList" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+  <select id="getSkuDraft" parameterType="java.lang.String" resultMap="Product_Sku_Resp_Map">
+    SELECT
+    <include refid="Product_Sku_Resp_Column"/>,
+    apply_type,
+    apply_type_name
+    from product_sku_draft where sku_code=#{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getSkuInfo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.BaseResultMap">
+    SELECT * FROM product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="querySkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO" resultMap="QuerySkuListMap">
+    SELECT
+      sku_code,
+      sku_name,
+      product_code,
+      product_name,
+      CASE on_sale
+      WHEN 1 THEN '上架'
+      WHEN 0 THEN '下架'
+      ELSE '其他' END on_sale_name,
+      product_property_name,
+      product_brand_name,
+      product_category_name,
+      create_by,
+      create_time,
+      product_sort_name
+    FROM
+      product_sku
+      WHERE del_flag=0
+      <if test="skuCode!=null and skuCode!=''">
+        AND sku_code LIKE CONCAT('%',#{skuCode,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="skuName!=null and skuName!=''">
+        AND sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="productName!=null and productName!=''">
+        AND product_name=#{productName,jdbcType=VARCHAR}
+      </if>
+      <if test="productPropertyName!=null and productPropertyName!=''">
+        AND product_property_name =#{productPropertyName,jdbcType=VARCHAR}
+      </if>
+      <if test="productCategoryName!=null and productCategoryName!=''">
+        AND product_category_name =#{productCategoryName,jdbcType=VARCHAR}
+      </if>
+      <if test="companyCode != null and companyCode != '' ">
+        and company_code = #{companyCode,jdbcType=VARCHAR}
+      </if>
+    order by create_time desc
+  </select>
+  <select id="getProductDraftList" resultMap="ProductDraftListMap">
+    SELECT
+      a.bar_code,
+      a.product_code,
+      a.product_name,
+      a.create_by,
+      a.create_time,
+      CASE WHEN b.sku_num IS NULL THEN
+      c.sku_number ELSE b.sku_num
+      END sku_num,
+      CASE WHEN b.product_category_name IS NULL THEN
+      c.product_category_name ELSE b.product_category_name
+      END product_category_name
+    FROM
+      apply_product_draft a
+      LEFT JOIN ( SELECT count( sku_code ) sku_num, product_code, min( id ), product_category_name FROM product_sku WHERE del_flag = 0 GROUP BY product_code ) b ON a.product_code = b.product_code
+      LEFT JOIN ( SELECT count( sku_code ) sku_number, product_code, min( id ), product_category_name FROM product_sku_draft WHERE del_flag = 0 GROUP BY product_code ) c ON a.product_code = c.product_code
+    WHERE
+      a.del_flag =0
+  </select>
+  <select id="getProductSkuDraftList" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper.BaseResultMap">
+    SELECT
+      sku_code,
+      sku_name,
+      product_name,
+      product_category_name,
+      create_by,
+      create_time
+    FROM
+      product_sku_draft
+    WHERE del_flag=0
+  </select>
+  <select id="getSkuDraftByCodes" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper.BaseResultMap">
+    SELECT * FROM product_sku_draft WHERE del_flag=0 AND sku_code IN
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+  <select id="getSkuDraftByProductCodes" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper.BaseResultMap">
+    SELECT * FROM product_sku_draft WHERE del_flag=0 AND product_code IN
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+  <delete id="deleteSkuDraftByCodes" parameterType="java.util.List">
+    DELETE FROM product_sku_draft WHERE sku_code IN
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  <delete id="deleteSkuDraftByProductCodes" parameterType="java.util.List">
+    DELETE FROM product_sku_draft WHERE product_code IN
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  <insert id="insertApplySkuList" parameterType="java.util.List">
+    INSERT INTO apply_product_sku
+    (create_time, create_by,
+    update_time, update_by, apply_code,
+    del_flag, product_code, product_name,
+    product_category_code, product_category_name,
+    sku_code, spec, unit_code,
+    product_property_code, product_property_name,
+    product_brand_code, product_brand_name, sku_abbreviation,
+    color_code, color_name, model_number,
+    unit_name, quality_assurance_management, product_sort_code,
+    product_sort_name, quality_number, quality_date,
+    management_style_code, management_style_name,
+    categories_supply_channels_code, on_sale, categories_supply_channels_name,
+    box_gauge, applicable_month_age, point,
+    bar_code, mnemonic_code, selection_effective_time,
+    selection_effective_start_time, selection_effective_end_time,
+    goods_gifts, sku_name, apply_status,
+    auditor_by, auditor_time, is_main_push,
+    new_product, manufacturer_guide_price, zero_removal_coefficient,
+    procurement_section_code, procurement_section_name,
+    form_no)
+    VALUES
+    <foreach collection="applyProductSkus" item="item" index="index" separator="," >
+      (#{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR},
+      #{item.delFlag,jdbcType=TINYINT}, #{item.productCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
+      #{item.productCategoryCode,jdbcType=VARCHAR}, #{item.productCategoryName,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR}, #{item.unitCode,jdbcType=VARCHAR},
+      #{item.productPropertyCode,jdbcType=VARCHAR}, #{item.productPropertyName,jdbcType=VARCHAR},
+      #{item.productBrandCode,jdbcType=VARCHAR}, #{item.productBrandName,jdbcType=VARCHAR}, #{item.skuAbbreviation,jdbcType=VARCHAR},
+      #{item.colorCode,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR},
+      #{item.unitName,jdbcType=VARCHAR}, #{item.qualityAssuranceManagement,jdbcType=TINYINT}, #{item.productSortCode,jdbcType=VARCHAR},
+      #{item.productSortName,jdbcType=VARCHAR}, #{item.qualityNumber,jdbcType=VARCHAR}, #{item.qualityDate,jdbcType=VARCHAR},
+      #{item.managementStyleCode,jdbcType=VARCHAR}, #{item.managementStyleName,jdbcType=VARCHAR},
+      #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR}, #{item.onSale,jdbcType=TINYINT}, #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},
+      #{item.boxGauge,jdbcType=VARCHAR}, #{item.applicableMonthAge,jdbcType=VARCHAR}, #{item.point,jdbcType=VARCHAR},
+      #{item.barCode,jdbcType=VARCHAR}, #{item.mnemonicCode,jdbcType=VARCHAR}, #{item.selectionEffectiveTime,jdbcType=TINYINT},
+      #{item.selectionEffectiveStartTime,jdbcType=VARCHAR}, #{item.selectionEffectiveEndTime,jdbcType=VARCHAR},
+      #{item.goodsGifts,jdbcType=TINYINT}, #{item.skuName,jdbcType=VARCHAR}, #{item.applyStatus,jdbcType=TINYINT},
+      #{item.auditorBy,jdbcType=VARCHAR}, #{item.auditorTime,jdbcType=TIMESTAMP}, #{item.isMainPush,jdbcType=TINYINT},
+      #{item.newProduct,jdbcType=TINYINT}, #{item.manufacturerGuidePrice,jdbcType=BIGINT}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT},
+      #{item.procurementSectionCode,jdbcType=VARCHAR}, #{item.procurementSectionName,jdbcType=VARCHAR},
+      #{item.formNo,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <insert id="insertSkuList" parameterType="java.util.List">
+    insert into product_sku (product_code, product_name,
+      product_category_code, product_category_name,
+      sku_code, sku_name, spec,
+      unit_code, sku_status, del_flag,
+      product_property_code, product_property_name,
+      product_brand_code, product_brand_name, sku_abbreviation,
+      color_code, color_name, model_number,
+      unit_name, quality_assurance_management, product_sort_code,
+      product_sort_name, quality_number, quality_date,
+      management_style_code, management_style_name,
+      categories_supply_channels_code, on_sale, categories_supply_channels_name,
+      box_gauge, applicable_month_age, point,
+      bar_code, mnemonic_code, selection_effective_time,
+      selection_effective_start_time, selection_effective_end_time,
+      apply_code, create_time, create_by,
+      update_time, update_by, goods_gifts,
+      spu_code, logo, images,
+      itro_images, is_main_push, new_product,
+      remark, manufacturer_guide_price, zero_removal_coefficient,
+      procurement_section_code, procurement_section_name
+      )
+    values
+    <foreach collection="productSkuInfos" item="item" index="index" separator=",">
+      (#{item.productCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
+      #{item.productCategoryCode,jdbcType=VARCHAR}, #{item.productCategoryName,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR},
+      #{item.unitCode,jdbcType=VARCHAR}, #{item.skuStatus,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.productPropertyCode,jdbcType=VARCHAR}, #{item.productPropertyName,jdbcType=VARCHAR},
+      #{item.productBrandCode,jdbcType=VARCHAR}, #{item.productBrandName,jdbcType=VARCHAR}, #{item.skuAbbreviation,jdbcType=VARCHAR},
+      #{item.colorCode,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR},
+      #{item.unitName,jdbcType=VARCHAR}, #{item.qualityAssuranceManagement,jdbcType=TINYINT}, #{item.productSortCode,jdbcType=VARCHAR},
+      #{item.productSortName,jdbcType=VARCHAR}, #{item.qualityNumber,jdbcType=VARCHAR}, #{item.qualityDate,jdbcType=VARCHAR},
+      #{item.managementStyleCode,jdbcType=VARCHAR}, #{item.managementStyleName,jdbcType=VARCHAR},
+      #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR}, #{item.onSale,jdbcType=TINYINT}, #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},
+      #{item.boxGauge,jdbcType=VARCHAR}, #{item.applicableMonthAge,jdbcType=VARCHAR}, #{item.point,jdbcType=VARCHAR},
+      #{item.barCode,jdbcType=VARCHAR}, #{item.mnemonicCode,jdbcType=VARCHAR}, #{item.selectionEffectiveTime,jdbcType=TINYINT},
+      #{item.selectionEffectiveStartTime,jdbcType=VARCHAR}, #{item.selectionEffectiveEndTime,jdbcType=VARCHAR},
+      #{item.applyCode,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.goodsGifts,jdbcType=TINYINT},
+      #{item.spuCode,jdbcType=VARCHAR}, #{item.logo,jdbcType=VARCHAR}, #{item.images,jdbcType=VARCHAR},
+      #{item.itroImages,jdbcType=VARCHAR}, #{item.isMainPush,jdbcType=TINYINT}, #{item.newProduct,jdbcType=TINYINT},
+      #{item.remark,jdbcType=VARCHAR}, #{item.manufacturerGuidePrice,jdbcType=BIGINT}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT},
+      #{item.procurementSectionCode,jdbcType=VARCHAR}, #{item.procurementSectionName,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+  <select id="getApplyProductList" parameterType="java.lang.String" resultMap="ApplyDetailProductMap">
+    SELECT
+      product_code,
+      product_name,
+      count(sku_code),
+      create_by,
+      create_time,
+      apply_code
+    FROM
+	  apply_product_sku
+	WHERE del_flag=0 AND apply_code=#{applyCode,jdbcType=VARCHAR}
+    GROUP BY
+	  product_code
+  </select>
+  <select id="getApplySkuList" parameterType="java.lang.String" resultMap="ApplyDetailSkuMap">
+    SELECT
+      product_name,
+      sku_code,
+      sku_name,
+      product_category_name,
+      create_by,
+      create_time,
+      selection_effective_time,
+      selection_effective_start_time,
+      selection_effective_end_time,
+      form_no
+    FROM
+	  apply_product_sku
+	WHERE del_flag=0 and apply_code=#{applyCode,jdbcType=VARCHAR}
+  </select>
+  <select id="queryOmsSkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.oms.SearchOmsSkuListReqVO" resultMap="QuerySkuListMap">
+    SELECT
+      a.sku_code,
+      a.sku_name,
+      a.product_code,
+      a.product_name,
+      a.product_brand_name,
+      a.product_category_name,
+      a.create_by,
+      a.create_time,
+      a.product_sort_name,
+      case when b.sale_price is null then 0 else b.sale_price end sale_price
+    FROM
+      product_sku a
+    left join ( SELECT
+    CASE WHEN
+    a.price_value_ls IS NULL THEN
+    b.price_value ELSE a.price_value_ls
+    END sale_price,
+    b.sku_code
+    FROM
+    ( SELECT price_value, sku_code FROM product_sku_price WHERE price_type_code = '2' AND is_default = 1 ) b
+    LEFT JOIN ( SELECT max( id ), price_value price_value_ls, sku_code FROM product_sku_price WHERE price_type_code = '12'
+    AND effective_time &gt;=#{requestTime,jdbcType=TIMESTAMP} AND stop_time &lt;=#{requestTime,jdbcType=TIMESTAMP} ) a ON a.sku_code = b.sku_code
+    ) b on a.sku_code=b.sku_code
+    WHERE a.del_flag=0
+    <if test="keyword!=null and keyword!=''">
+      AND (a.sku_code LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%') or a.sku_name LIKE CONCAT('%',#{keyword,jdbcType=VARCHAR},'%'))
+    </if>
+  </select>
+  <select id="getStoreSkuListByCodes" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkusReqVO" resultMap="StoreSkuListMap">
+    SELECT
+      a.sku_code,
+      a.sku_name,
+      a.color_code,
+      a.color_name,
+      a.model_number,
+      a.spec,
+      b.sale_price
+    FROM
+        product_sku a
+        LEFT JOIN
+    (
+    SELECT
+      CASE WHEN
+      a.price_value_ls IS NULL THEN
+      b.price_value ELSE a.price_value_ls
+      END sale_price,
+      b.sku_code
+    FROM
+    ( SELECT price_value, sku_code FROM product_sku_price WHERE price_type_code = '2' AND is_default = 1 ) b
+    LEFT JOIN
+    ( SELECT max( id ), price_value price_value_ls, sku_code FROM product_sku_price
+    WHERE price_type_code = '12' AND effective_time &gt;=#{requestTime,jdbcType=TIMESTAMP} AND stop_time &lt;=#{requestTime,jdbcType=TIMESTAMP}
+    ) a ON a.sku_code = b.sku_code
+    ) b ON a.sku_code = b.sku_code
+    WHERE
+        a.del_flag = 0
+      AND on_sale =1
+    <if test="skuCodes != null and skuCodes.size > 0">
+      AND a.sku_code IN
+      <foreach collection="skuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+  <select id="getOmsProductList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.oms.SearchOrderReqVO" resultMap="OmsProductItemMap">
+    SELECT
+      a.product_code,
+      a.product_name,
+      min(a.sale_price) low_price,
+      max(a.sale_price) high_price,
+      a.product_picture_path product_image from
+      ( SELECT
+          a.product_code,
+          a.product_name,
+          case when b.sale_price is null then 0 else b.sale_price end sale_price,
+          c.product_picture_path
+        FROM
+          product_sku a
+        LEFT JOIN (
+            SELECT
+            CASE WHEN a.price_value_ls IS NULL THEN b.price_value ELSE a.price_value_ls END sale_price,
+            b.sku_code
+            FROM
+            (SELECT price_value,
+                    sku_code
+              FROM product_sku_price
+              WHERE price_type_code = '2' AND is_default = 1
+            ) b LEFT JOIN (
+              SELECT max(id), price_value price_value_ls, sku_code
+              FROM product_sku_price
+              WHERE price_type_code = '12' AND effective_time &gt;=#{requestTime,jdbcType=TIMESTAMP} AND stop_time &lt;=#{requestTime,jdbcType=TIMESTAMP} ) a
+              ON a.sku_code = b.sku_code
+          ) b ON a.sku_code = b.sku_code
+          LEFT JOIN (SELECT product_picture_path, product_sku_code FROM product_sku_pictures where del_flag=0 and main_picture = 1 ) c ON a.sku_code = c.product_sku_code
+    WHERE
+    a.del_flag = 0
+    AND a.on_sale = 1
+    <if test="product != null and product!=''">
+      and (a.product_code=#{product,jdbcType=VARCHAR} or a.product_name=#{product,jdbcType=VARCHAR})
+    </if>
+    <if test="includeSkuCodes !=null and includeSkuCodes.size > 0">
+      and a.sku_code in
+      <foreach collection="includeSkuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="excludeSkuCodes !=null and excludeSkuCodes.size > 0">
+      and a.sku_code not in
+      <foreach collection="excludeSkuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="categoryIds != null and categoryIds.size > 0">
+      and a.product_category_code in
+      <foreach collection="categoryIds" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="brandIds != null and brandIds.size > 0">
+      and a.product_brand_code in
+      <foreach collection="brandIds" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="productProperties !=null and productProperties.size > 0">
+      and (a.product_category_code,a.product_brand_code) in
+      <foreach collection="productProperties" item="item" open="(" separator="," close=")">
+        (#{item.categoryId,jdbcType=VARCHAR},#{item.brandId,jdbcType=VARCHAR})
+      </foreach>
+    </if>
+    <if test="skuCodes !=null and skuCodes.size > 0">
+      and a.sku_code in
+      <foreach collection="skuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    ) a GROUP BY a.product_code
+  </select>
+  <select id="getOmsSkuTagList" parameterType="java.util.List" resultMap="ProductTagMap">
+    SELECT
+      product_code,
+      is_main_push,
+      new_product
+    FROM
+      product_sku WHERE del_flag=0
+    <if test="list != null and list.size > 0">
+      and product_code IN
+      <foreach collection="list" item="item" open="(" separator="," close=")">
+        #{item.productCode,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+  <select id="getOmsProductBrandList" parameterType="java.util.List" resultMap="ProductBrandMap">
+    SELECT product_code,product_brand_code from product_sku WHERE del_flag=0
+    <if test="list != null and list.size > 0">
+      and product_code  IN
+      <foreach collection="list" item="item" open="(" separator="," close=")">
+        #{item.productCode,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+  <select id="getOmsProductCategoryList" parameterType="java.util.List" resultMap="ProductCategoryMap">
+    SELECT product_code,product_category_code from product_sku WHERE del_flag=0
+    <if test="list != null and list.size > 0">
+      and product_code IN
+      <foreach collection="list" item="item" open="(" separator="," close=")">
+        #{item.productCode,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+  <select id="getOmsProductSkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.oms.OmsProductSkuListReq" resultMap="ProductSkuItemMap">
+    SELECT
+      a.sku_code,
+      a.sku_name,
+      a.color_code,
+      a.color_name,
+      a.spec,
+      a.model_number,
+      a.unit_code,
+      a.unit_name,
+      a.product_property_code,
+      a.product_property_name,
+      a.product_brand_code,
+      d.product_picture_path,
+      case when b.sale_price is null then 0 else b.sale_price end sale_price,
+      case when c.inventory_num is null then 0 else c.inventory_num end inventory_num
+    FROM
+      product_sku a
+      LEFT JOIN (
+      SELECT
+      CASE WHEN a.price_value_ls IS NULL THEN b.price_value ELSE a.price_value_ls END sale_price,b.sku_code
+      FROM
+      (SELECT price_value, sku_code FROM product_sku_price WHERE price_type_code = '2' AND is_default = 1 ) b
+      LEFT JOIN
+      (SELECT max(id),price_value price_value_ls,sku_code FROM product_sku_price
+      WHERE price_type_code = '12' AND effective_time &gt;=#{requestTime,jdbcType=TIMESTAMP} AND stop_time &lt;=#{requestTime,jdbcType=TIMESTAMP}) a
+      ON a.sku_code = b.sku_code
+      ) b ON a.sku_code = b.sku_code
+      left join (select sku_code,sum(inventory_num) inventory_num from stock where warehouse_type = 1 AND del_flag = 0 GROUP BY sku_code ) c on a.sku_code=c.sku_code
+      left join (SELECT product_sku_code,product_picture_path
+                 FROM product_sku_pictures WHERE main_picture = 1 and del_flag=0) d on a.sku_code=d.product_sku_code
+    WHERE
+      a.del_flag = 0
+    AND a.on_sale = 1 and a.product_code=#{productCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getOmsSkus" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkusReqVO" resultMap="OmsSkusListMap">
+    SELECT
+    a.sku_code,
+    a.sku_name,
+    a.spec,
+    a.model_number,
+    a.product_code,
+    a.product_brand_code,
+    a.product_brand_name,
+    a.product_category_code,
+    a.product_category_name,
+    a.unit_code,
+    a.unit_name,
+    a.product_property_code,
+    a.product_property_name,
+    a.color_code,
+    a.color_name,
+    b.supply_unit_code,
+    b.supply_unit_name,
+    case when c.inventory_num is null then 0 else c.inventory_num end inventory_num,
+    case when d.sale_price is null then 0 else d.sale_price end sale_price,
+    e.product_picture_path
+    FROM
+    product_sku a
+    LEFT JOIN product_sku_supply_unit b ON a.sku_code = b.product_sku_code and b.is_default = 1 AND b.del_flag = 0
+    LEFT JOIN (select sku_code,sum(inventory_num) inventory_num from stock where warehouse_type = 1 AND del_flag = 0 GROUP BY sku_code ) c ON a.sku_code = c.sku_code
+    left join (SELECT
+    CASE WHEN
+    a.price_value_ls IS NULL THEN
+    b.price_value ELSE a.price_value_ls
+    END sale_price,
+    b.sku_code
+    FROM
+    ( SELECT price_value, sku_code FROM product_sku_price WHERE price_type_code = '2' AND is_default = 1 ) b
+    LEFT JOIN ( SELECT max( id ), price_value price_value_ls, sku_code FROM product_sku_price WHERE price_type_code = '12'
+    AND effective_time &gt;=#{requestTime,jdbcType=TIMESTAMP} AND stop_time &lt;=#{requestTime,jdbcType=TIMESTAMP} ) a ON a.sku_code = b.sku_code
+    ) d on a.sku_code=d.sku_code
+    left join product_sku_pictures e on a.sku_code=e.product_sku_code and e.del_flag=0 and e.main_picture=1
+    where a.del_flag=0
+    <if test="skuCodes!= null and skuCodes.size> 0">
+      and a.sku_code in
+      <foreach collection="skuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+  <select id="queryOmsSkuPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.oms.QuerySkuListPageReq" resultMap="OmsPageSkuListMap">
+  SELECT
+    a.sku_code,
+    a.sku_name,
+    a.spec,
+    a.model_number,
+    a.product_code,
+    a.product_brand_code,
+    a.product_brand_name,
+    a.product_category_code,
+    a.product_category_name,
+    a.unit_code,
+    a.unit_name,
+    a.product_property_code,
+    a.product_property_name,
+    a.color_code,
+    a.color_name,
+    b.supply_unit_code,
+    b.supply_unit_name,
+    case when d.sale_price is null then 0 else d.sale_price end sale_price,
+    e.product_picture_path
+    FROM
+    product_sku a
+    LEFT JOIN product_sku_supply_unit b ON a.sku_code = b.product_sku_code and b.is_default = 1 AND b.del_flag = 0
+    left join ( SELECT
+    CASE WHEN
+    a.price_value_ls IS NULL THEN
+    b.price_value ELSE a.price_value_ls
+    END sale_price,
+    b.sku_code
+    FROM
+    ( SELECT price_value, sku_code FROM product_sku_price WHERE price_type_code = '2' AND is_default = 1 ) b
+    LEFT JOIN ( SELECT max( id ), price_value price_value_ls, sku_code FROM product_sku_price WHERE price_type_code = '12'
+    AND effective_time &gt;=#{requestTime,jdbcType=TIMESTAMP} AND stop_time &lt;=#{requestTime,jdbcType=TIMESTAMP} ) a ON a.sku_code = b.sku_code
+    ) d on a.sku_code=d.sku_code
+    left join product_sku_pictures e on a.sku_code=e.product_sku_code and e.del_flag=0 and e.main_picture=1
+    where a.del_flag=0
+    <if test="includeSkuCodes !=null and includeSkuCodes.size > 0">
+      and a.sku_code in
+      <foreach collection="includeSkuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="excludeSkuCodes !=null and excludeSkuCodes.size > 0">
+      and a.sku_code not in
+      <foreach collection="excludeSkuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="productProperties !=null and productProperties.size > 0">
+      and (a.product_category_code,a.product_brand_code) in
+      <foreach collection="productProperties" item="item" open="(" separator="," close=")">
+        (#{item.categoryId,jdbcType=VARCHAR},#{item.brandId,jdbcType=VARCHAR})
+      </foreach>
+    </if>
+    <if test="skuCodes !=null and skuCodes.size > 0">
+      and a.sku_code in
+      <foreach collection="skuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+  </select>
+  <select id="getSkuCodesByCenter" parameterType="java.util.List" resultType="String">
+    SELECT
+	  sku_code
+    FROM
+	  product_sku_config
+    WHERE
+	  del_flag = 0
+	  <if test="list != null and list.size > 0">
+        AND transport_center_code IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+          #{item.logisticsCenterCode,jdbcType=VARCHAR}
+        </foreach>
+      </if>
+  </select>
+  <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.BaseResultMap">
+    SELECT  * from apply_product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
+    and apply_code=#{applyCode,jdbcType=VARCHAR}
+    and del_flag=0
+  </select>
+  <select id="getSkuApplyList" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.BaseResultMap">
+    SELECT  * from apply_product_sku where apply_code=#{applyCode,jdbcType=VARCHAR} and del_flag=0
+  </select>
+  <select id="getApplySkuByFormNo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.BaseResultMap">
+    SELECT * from apply_product_sku WHERE del_flag=0 and form_no=#{formNo,jdbcType=VARCHAR}
+  </select>
+  <select id="queryOcenterSkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.ocenter.QueryCenterSkuListReqVo"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.sku.ocenter.QueryCenterSkuListRespVo">
+    SELECT
+      sku.sku_code as skuCode,
+      sku.sku_name as skuName,
+      pictures.product_picture_path as logo,
+      IFNULL(distributor.display_stock,0) - IFNULL(distributor.lock_stock,0) as stock
+    FROM
+        product_sku sku
+    LEFT JOIN product_sku_config config ON sku.sku_code = config.sku_code
+    LEFT JOIN product_sku_pictures pictures ON sku.sku_code = pictures.product_sku_code AND pictures.main_picture = 1 and pictures.del_flag = 0
+    LEFT JOIN product_distributor distributor ON sku.sku_code = distributor.sku_code and distributor.del_flag = 0
+    WHERE
+        sku.del_flag = 0
+    and config.config_status = 0
+    AND config.sale_status = 1
+    AND config.del_flag = 0
+    <if test="companyCode != null and companyCode != '' ">
+
+    </if>
+    <if test="includeSkuCodes !=null and includeSkuCodes.size > 0">
+      and sku.sku_code in
+      <foreach collection="includeSkuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="excludeSkuCodes !=null and excludeSkuCodes.size > 0">
+      and sku.sku_code not in
+      <foreach collection="excludeSkuCodes" item="item" open="(" separator="," close=")">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+    </if>
+    <if test="wareHouses !=null and wareHouses.size > 0">
+      and
+      <foreach collection="wareHouses" item="item" open="(" separator=" or" close=")">
+        (config.transport_center_code = #{item.logisticsCenterCode,jdbcType=VARCHAR}
+        <if test="item.list !=null and item.list.size > 0">
+          and config.warehouse_code in
+          <foreach collection="item.list" item="item1" open="(" separator="," close=")">
+            #{item1.warehouseCode,jdbcType=VARCHAR}
+          </foreach>
+        </if>
+        )
+      </foreach>
+    </if>
+    <if test="productProperties !=null and productProperties.size > 0">
+      and
+      <foreach collection="productProperties" item="item" open="(" separator=" or" close=")">
+        (
+          <if test="item.brandId != null and item.brandId != '' ">
+            sku.product_brand_code =  #{item.brandId,jdbcType=VARCHAR}
+          </if>
+          <if test="item.brandId != null and item.brandId != '' and item.categoryId != null and item.categoryId != '' ">
+            and
+          </if>
+          <if test="item.categoryId != null and item.categoryId != '' ">
+            sku.product_category_code in (#{item.categoryId,jdbcType=VARCHAR})
+          </if>
+        )
+      </foreach>
+    </if>
+
+  </select>
+  <select id="querySkuListBySupplyUnitCode" resultMap="QuerySkuListMap">
+    SELECT
+      sku.sku_code,
+      sku.sku_name,
+      sku.product_code,
+      sku.product_name,
+      CASE sku.on_sale
+      WHEN 1 THEN '上架'
+      WHEN 0 THEN '下架'
+      ELSE '其他' END on_sale_name,
+      sku.product_property_name,
+      sku.product_brand_name,
+      sku.product_category_name,
+      sku.create_by,
+      sku.create_time,
+      sku.product_sort_name
+    FROM
+	  product_sku sku,
+	  product_sku_supply_unit supply
+    WHERE
+        sku.sku_code = supply.product_sku_code
+      and supply.del_flag = 0
+--       and supply.usage_status = 1
+--       and sku.sku_status = 0
+      and sku.del_flag = 0
+      and supply.supply_unit_code = #{supplyUnitCode,jdbcType=VARCHAR}
+  </select>
+
+  <resultMap id="Product_Sku_Resp_Map" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="sku_abbreviation" jdbcType="VARCHAR" property="skuAbbreviation" />
+    <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="goods_gifts" jdbcType="TINYINT" property="goodsGifts" />
+    <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
+    <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode"/>
+    <result column="procurement_section_name" jdbcType="VARCHAR" property="procurementSectionName"/>
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="management_style_code" jdbcType="VARCHAR" property="managementStyleCode" />
+    <result column="management_style_name" jdbcType="VARCHAR" property="managementStyleName" />
+    <result column="quality_assurance_management" jdbcType="TINYINT" property="qualityAssuranceManagement" />
+    <result column="quality_number" jdbcType="VARCHAR" property="qualityNumber" />
+    <result column="quality_date" jdbcType="VARCHAR" property="qualityDate" />
+    <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+    <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+    <result column="mnemonic_code" jdbcType="VARCHAR" property="mnemonicCode" />
+    <result column="manufacturer_guide_price" jdbcType="BIGINT" property="manufacturerGuidePrice"/>
+    <result column="applicable_month_age" jdbcType="VARCHAR" property="applicableMonthAge" />
+    <result column="seasonal_goods" jdbcType="TINYINT" property="seasonalGoods"/>
+    <result column="warehouse_type_code" jdbcType="VARCHAR" property="warehouseTypeCode"/>
+    <result column="warehouse_type_name" jdbcType="VARCHAR" property="warehouseTypeName"/>
+    <result column="structural_goods" jdbcType="TINYINT" property="structuralGoods"/>
+    <result column="is_main_push" jdbcType="TINYINT" property="isMainPush"/>
+    <result column="new_product" jdbcType="TINYINT" property="newProduct"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
+    <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+    <result column="apply_type" jdbcType="VARCHAR" property="applyType"/>
+    <result column="apply_type_name" jdbcType="VARCHAR" property="applyTypeName"/>
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Product_Sku_Resp_Column">
+  id,product_code,product_name,sku_code,sku_name,sku_abbreviation,product_brand_code,product_brand_name,product_category_code,
+  product_category_name,goods_gifts,product_property_code,product_property_name,product_sort_code,product_sort_name,
+  procurement_section_code,procurement_section_name,color_code,color_name,model_number,management_style_code,management_style_name,
+  quality_assurance_management,quality_number,quality_date,categories_supply_channels_code,categories_supply_channels_name,
+  mnemonic_code,manufacturer_guide_price,applicable_month_age,seasonal_goods,warehouse_type_code,warehouse_type_name,
+  structural_goods,is_main_push,new_product,remark,company_code,company_name,
+  del_flag,create_time,create_by,update_time,update_by
+  </sql>
+  <select id="getProductSkuInfos"  parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuReqVO" resultMap="Product_Sku_Resp_Map">
+    select
+      <include refid="Product_Sku_Resp_Column"/>
+    from product_sku
+    where del_flag = 0
+    <if test="skuCode!=null and skuCode!=''">
+      AND sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName!=null and skuName!=''">
+      AND sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productName!=null and productName!=''">
+      AND product_name LIKE CONCAT('%', #{productName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCode!=null and productCode!=''">
+      AND product_code = #{productCode,jdbcType=VARCHAR}
+    </if>
+    <if test="productPropertyName!=null and productPropertyName!=''">
+      AND product_property_name = #{productPropertyName,jdbcType=VARCHAR}
+    </if>
+    <if test="productCategoryName!=null and productCategoryName!=''">
+      AND product_category_name = #{productCategoryName,jdbcType=VARCHAR}
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+    order by create_time desc
+  </select>
+  <resultMap id="SkuListForSalePriceMap" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO">
+    <result column="skuCode" property="skuCode"></result>
+    <result column="skuName" property="skuName"></result>
+    <result column="productCategoryName" property="productBrandName"></result>
+    <result column="productBrandName" property="productBrandName"></result>
+    <result column="spec" property="spec"></result>
+    <result column="colorName" property="colorName"></result>
+    <result column="modelNumber" property="modelNumber"></result>
+    <result column="unitName" property="unitName"></result>
+    <result column="productSortName" property="productSortName"></result>
+    <result column="goodsGifts" property="goodsGifts"></result>
+    <result column="productPropertyName" property="productPropertyName"></result>
+    <result column="spuName" property="spuName"></result>
+    <result column="spuCode" property="spuCode"></result>
+    <collection property="priceChannelList" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice">
+      <result column="priceItemCode" property="priceItemCode"></result>
+      <result column="priceItemName" property="priceItemName"></result>
+      <result column="priceTypeCode" property="priceTypeCode"></result>
+      <result column="priceTypeName" property="priceTypeName"></result>
+      <result column="priceAttributeCode" property="priceAttributeCode"></result>
+      <result column="priceAttributeName" property="priceAttributeName"></result>
+    </collection>
+    <collection property="supplierInfoVOS" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO">
+      <result column="supplierCode" property="supplierCode"></result>
+      <result column="supplierName" property="supplierName"></result>
+      <result column="purchasePriceOld" property="purchasePriceOld"></result>
+    </collection>
+  </resultMap>
+  <select id="selectSkuListForSalePrice"
+          resultMap="SkuListForSalePriceMap">
+      select a.sku_code              as skuCode,
+      a.sku_name              as skuName,
+      a.product_category_name as productCategoryName,
+      a.product_brand_name    as productBrandName,
+      c.spec                  as spec,
+      a.color_name            as colorName,
+      a.model_number          as modelNumber,
+      c.unit_name             as unitName,
+      a.product_sort_name     as productSortName,
+      a.goods_gifts           as goodsGifts,
+      a.product_property_name as productPropertyName,
+      b.product_name          as spuName,
+      b.product_code          as spuCode,
+      f.price_project_code    as priceItemCode,
+      f.price_project_name    as priceItemName,
+      f.price_type_code       as priceTypeCode,
+      f.price_type_name       as priceTypeName,
+      f.price_category_code   as priceAttributeCode,
+      f.price_category_name   as priceAttributeName
+      from product_sku a
+      left join product b
+      on a.spu_code = b.product_code
+      left join product_sku_purchase_info c
+      on a.sku_code = c.product_sku_code
+      left join product_sku_channel d
+      on d.sku_code = a.sku_code
+      left join price_channel e
+      on e.price_channel_code = d.price_channel_code
+      left join price_channel_item f
+      on f.price_channel_code = e.price_channel_code
+      where a.procurement_section_code = #{purchaseGroupCode} and f.price_category_code = #{changePriceType} and a.company_code = #{companyCode}
+    <if test="skuCode!=null and skuCode!=''">
+        AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuName!=null and skuName!=''">
+        AND a.sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="productCategoryName!=null and productCategoryName!=''">
+        AND a.product_category_name LIKE CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="productBrandName!=null and productBrandName!=''">
+        AND a.product_brand_name LIKE CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="productPropertyCode!=null and productPropertyCode!=''">
+        AND a.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="spuCode!=null and spuCode!=''">
+        AND b.product_code = #{spuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="spuName!=null and spuName!=''">
+        AND b.product_name LIKE CONCAT('%',#{spuName,jdbcType=VARCHAR},'%')
+      </if>
+    </select>
+  <select id="selectSkuListForPurchasePrice"
+          resultMap="SkuListForSalePriceMap">
+select a.sku_code              as skuCode,
+       a.sku_name              as skuName,
+       a.product_category_name as productCategoryName,
+       a.product_brand_name    as productBrandName,
+       c.spec                  as spec,
+       a.color_name            as colorName,
+       a.model_number          as modelNumber,
+       c.unit_name             as unitName,
+       a.product_sort_name     as productSortName,
+       a.goods_gifts           as goodsGifts,
+       a.product_property_name as productPropertyName,
+       b.product_name          as spuName,
+       b.product_code          as spuCode,
+       f.price_project_code    as priceItemCode,
+       f.price_project_name    as priceItemName,
+       f.price_type_code       as priceTypeCode,
+       f.price_type_name       as priceTypeName,
+       f.price_category_code   as priceAttributeCode,
+       f.price_category_name   as priceAttributeName,
+       d.supply_unit_code as supplierCode,
+       d.supply_unit_name as supplierName,
+       e.price_tax as purchasePriceOld
+      from product_sku a
+       left join product b
+                 on a.spu_code = b.product_code
+       left join product_sku_purchase_info c
+                 on a.sku_code = c.product_sku_code
+       left join product_sku_supply_unit_capacity d
+                 on a.sku_code = d.product_sku_code
+       left join product_sku_price_info e
+                 on a.sku_code = e.sku_code and d.supply_unit_code = e.supplier_code
+       left join price_project f
+                 on f.price_category_code = #{changePriceType} and f.price_project_enable = 0
+    where a.procurement_section_code = #{purchaseGroupCode} and a.company_code =#{companyCode}
+    <if test="skuCode!=null and skuCode!=''">
+      AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName!=null and skuName!=''">
+      AND a.sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCategoryName!=null and productCategoryName!=''">
+      AND a.product_category_name LIKE CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productBrandName!=null and productBrandName!=''">
+      AND a.product_brand_name LIKE CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productPropertyCode!=null and productPropertyCode!=''">
+      AND a.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="spuCode!=null and spuCode!=''">
+      AND b.product_code = #{spuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="spuName!=null and spuName!=''">
+      AND b.product_name LIKE CONCAT('%',#{spuName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="skuCodes!=null and skuCodes.size>0">
+      AND a.sku_code in
+      <foreach collection="skuCodes" item="item" close=")" open="(" separator=",">
+        #{item}
+      </foreach>
+    </if>
+  </select>
+    <resultMap id="selectDirectSupplierBySkuCodes" type="com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO">
+      <result property="skuCode" column="skuCode"/>
+      <collection property="supplierList" ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaSupplierInfo">
+        <result column="directDeliverySupplierCode" property="directDeliverySupplierCode"/>
+        <result column="directDeliverySupplierName" property="directDeliverySupplierName"/>
+      </collection>
+    </resultMap>
+    <select id="selectDirectSupplierBySkuCodes" resultMap="selectDirectSupplierBySkuCodes">
+        select a.sku_code skuCode,
+               b.supply_unit_code supplierCode,
+               b.supply_unit_name supplierName
+               from product_sku a
+        left join product_sku_supply_unit b
+        on a.sku_code = b.product_sku_code
+        where b.categories_supply_channels_code = 1 and a.sku_code in
+        <foreach collection="items" open="(" close=")" separator="," item="item">
+          #{item}
+        </foreach>
+    </select>
+    <resultMap id="selectSkuListForSaleArea" type="com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO">
+      <result column="sku_code" property="skuCode"/>
+      <result column="sku_name" property="skuName"/>
+      <result column="product_category_name" property="productCategoryName"/>
+      <result column="product_brand_name" property="productBrandName"/>
+      <result column="spec" property="spec"/>
+      <result column="color_name" property="colorName"/>
+      <result column="model_number" property="modelNumber"/>
+      <result column="unit_name" property="unitName"/>
+      <result column="product_sort_name" property="productSortName"/>
+      <result column="goods_gifts" property="goodsGifts"/>
+      <result column="product_property_name" property="productPropertyName"/>
+      <result column="priceChannelName" property="priceChannelName"/>
+      <collection property="supplierList" ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaSupplierInfo">
+        <result column="directDeliverySupplierCode" property="directDeliverySupplierCode"/>
+        <result column="directDeliverySupplierName" property="directDeliverySupplierName"/>
+      </collection>
+    </resultMap>
+    <select id="selectSkuListForSaleArea" resultMap="selectSkuListForSaleArea">
+        select
+               a.sku_code,
+               a.sku_name,
+               a.product_brand_name,
+               a.product_category_name,
+               a.product_property_name,
+               a.goods_gifts,
+               d.spec,
+               a.color_name,
+               a.model_number,
+               d.unit_name,
+               group_concat(b.price_channel_name) priceChannelName,
+               c.supply_unit_name directDeliverySupplierCode,
+               c.supply_unit_code directDeliverySupplierName
+        from product_sku a
+               left join product_sku_channel b
+                         on a.sku_code = b.sku_code
+               left join product_sku_supply_unit c
+                         on a.sku_code = c.product_sku_code and c.categories_supply_channels_code = 1
+               left join product_sku_purchase_info d
+                         on a.sku_code = d.product_sku_code
+         where a.company_code = #{companyCode}
+          <if test="skuCode!=null and skuCode!=''">
+            AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+          </if>
+          <if test="skuName!=null and skuName!=''">
+            AND a.sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="productCategoryName!=null and productCategoryName!=''">
+            AND a.product_category_name LIKE CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="productBrandName!=null and productBrandName!=''">
+            AND a.product_brand_name LIKE CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+          </if>
+          <if test="productPropertyCode!=null and productPropertyCode!=''">
+            AND a.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+          </if>
+          <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+            AND a.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+          </if>
+          <if test="supplierCode!=null and supplierCode!=''">
+            AND c.supply_unit_code = #{supplierCode,}
+          </if>
+          <if test="skuCodes!=null and skuCodes.size>0">
+            AND a.sku_code in
+            <foreach collection="skuCodes" item="item" close=")" open="(" separator=",">
+              #{item}
+            </foreach>
+          </if>
+    </select>
+</mapper>

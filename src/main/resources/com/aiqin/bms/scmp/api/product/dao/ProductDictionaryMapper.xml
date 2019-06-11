@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.ProductDictionaryDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.dictionary.DictionaryListResVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_code" jdbcType="INTEGER" property="dictionaryCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="dictionaryName" />
+    <result column="product_type" jdbcType="VARCHAR" property="dictionaryType" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="enabled" jdbcType="TINYINT" property="enabled" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_code, product_name, product_type, del_flag, create_time, create_by, update_time, 
+    update_by, enabled
+  </sql>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductDictionary">
+    insert into product_dictionary
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productCode != null">
+        product_code,
+      </if>
+      <if test="productName != null">
+        product_name,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="enabled != null">
+        enabled,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="productCode != null">
+        #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <!--禁用 -->
+  <update id="offOrOn" parameterType="java.lang.Long">
+    update product_dictionary set
+    del_flag = 1
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="listDictionary" parameterType="com.aiqin.bms.scmp.api.product.domain.request.dictionary.QueryDictionaryReqVO" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM
+    product_dictionary
+    WHERE del_flag=0
+    <if test="createTimeStart != null">
+      and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createTimeEnd != null">
+      and create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createBy != null and createBy !=''">
+      and create_by LIKE CONCAT(CONCAT('%',#{createBy},'%'))
+    </if>
+    <if test="updateBy != null and updateBy !=''">
+      and update_by LIKE CONCAT(CONCAT('%',#{updateBy},'%'))
+    </if>
+    <if test="dictionaryType != null and dictionaryType !=''">
+      and product_type LIKE CONCAT(CONCAT('%',#{dictionaryType},'%'))
+    </if>
+    <if test="dictionaryName != null and dictionaryName !=''">
+      and product_name LIKE CONCAT(CONCAT('%',#{dictionaryName},'%'))
+    </if>
+    <if test="enabled != null">
+      and enabled = #{enabled,jdbcType=TINYINT}
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+    order by create_time DESC
+  </select>
+
+  <resultMap id="DictionaryBaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductDictionary">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_type" jdbcType="VARCHAR" property="productType" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="enabled" jdbcType="TINYINT" property="enabled" />
+  </resultMap>
+  <sql id="DictionaryBase_Column_List">
+    id, product_code, product_name, product_type, del_flag, create_time, create_by, update_time,
+    update_by, enabled
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="DictionaryBaseResultMap">
+    select
+    <include refid="DictionaryBase_Column_List" />
+    from product_dictionary
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductDictionary">
+    update product_dictionary
+    <set>
+      <if test="productCode != null">
+        product_code = #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null">
+        enabled = #{enabled,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="checkName" resultType="java.lang.Integer">
+    SELECT
+    COUNT(1)
+    FROM
+    product_dictionary
+    WHERE del_flag=0
+    <if test="productName!=null and productName!=''">
+      AND product_name=#{productName,jdbcType=VARCHAR}
+    </if>
+    <if test="id!=null">
+      AND id!=#{id,jdbcType=BIGINT}
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="getCode" parameterType="com.aiqin.bms.scmp.api.product.domain.request.dictionary.DictionaryInfoReqVO" resultType="com.aiqin.bms.scmp.api.product.domain.response.dictionary.DictionaryCodeResVo">
+    SELECT
+    sinfo.product_dictionary_value as dictionaryDictionaryValue,
+    sinfo.product_content as dictionaryContent,
+    sinfo.product_weight as dictionaryWeight,
+    sinfo.product_dictionary_info_code as dictionaryInfoCode
+    FROM product_dictionary sdi LEFT JOIN product_dictionary_info sinfo
+    ON sdi.product_code=sinfo.product_dictionary_code
+    WHERE sdi.del_flag=0 AND sinfo.del_flag=0 AND sinfo.enabled=0
+    <if test="dictionaryName!=null and dictionaryName!=''">
+      AND sdi.product_name=#{dictionaryName,jdbcType=VARCHAR}
+    </if>
+    <if test="dictionaryCode!=null and dictionaryCode!=''">
+      AND sdi.product_code=#{dictionaryCode,jdbcType=VARCHAR}
+    </if>
+    <if test="dictionaryType!=null and dictionaryType!=''">
+      AND sdi.product_type=#{dictionaryType,jdbcType=VARCHAR}
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+    order by sinfo.product_weight ASC
+  </select>
+</mapper>

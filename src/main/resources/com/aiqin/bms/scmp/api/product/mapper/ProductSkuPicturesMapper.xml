@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ProductSkuPicturesMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="product_picture_path" jdbcType="VARCHAR" property="productPicturePath" />
+    <result column="product_picture_name" jdbcType="VARCHAR" property="productPictureName" />
+    <result column="product_introduction" jdbcType="VARCHAR" property="productIntroduction" />
+    <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
+    <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="main_picture" jdbcType="TINYINT" property="mainPicture" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, product_picture_path, product_picture_name, product_introduction, product_sku_code, 
+    product_sku_name, del_flag, main_picture, apply_code, create_time, create_by, update_time, 
+    update_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku_pictures
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_sku_pictures
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures">
+    insert into product_sku_pictures (id, product_picture_path, product_picture_name, 
+      product_introduction, product_sku_code, product_sku_name, 
+      del_flag, main_picture, apply_code, 
+      create_time, create_by, update_time, 
+      update_by)
+    values (#{id,jdbcType=BIGINT}, #{productPicturePath,jdbcType=VARCHAR}, #{productPictureName,jdbcType=VARCHAR}, 
+      #{productIntroduction,jdbcType=VARCHAR}, #{productSkuCode,jdbcType=VARCHAR}, #{productSkuName,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=TINYINT}, #{mainPicture,jdbcType=TINYINT}, #{applyCode,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures">
+    insert into product_sku_pictures
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="productPicturePath != null">
+        product_picture_path,
+      </if>
+      <if test="productPictureName != null">
+        product_picture_name,
+      </if>
+      <if test="productIntroduction != null">
+        product_introduction,
+      </if>
+      <if test="productSkuCode != null">
+        product_sku_code,
+      </if>
+      <if test="productSkuName != null">
+        product_sku_name,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="mainPicture != null">
+        main_picture,
+      </if>
+      <if test="applyCode != null">
+        apply_code,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="productPicturePath != null">
+        #{productPicturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="productPictureName != null">
+        #{productPictureName,jdbcType=VARCHAR},
+      </if>
+      <if test="productIntroduction != null">
+        #{productIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuCode != null">
+        #{productSkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuName != null">
+        #{productSkuName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="mainPicture != null">
+        #{mainPicture,jdbcType=TINYINT},
+      </if>
+      <if test="applyCode != null">
+        #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures">
+    update product_sku_pictures
+    <set>
+      <if test="productPicturePath != null">
+        product_picture_path = #{productPicturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="productPictureName != null">
+        product_picture_name = #{productPictureName,jdbcType=VARCHAR},
+      </if>
+      <if test="productIntroduction != null">
+        product_introduction = #{productIntroduction,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuCode != null">
+        product_sku_code = #{productSkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productSkuName != null">
+        product_sku_name = #{productSkuName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="mainPicture != null">
+        main_picture = #{mainPicture,jdbcType=TINYINT},
+      </if>
+      <if test="applyCode != null">
+        apply_code = #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures">
+    update product_sku_pictures
+    set product_picture_path = #{productPicturePath,jdbcType=VARCHAR},
+      product_picture_name = #{productPictureName,jdbcType=VARCHAR},
+      product_introduction = #{productIntroduction,jdbcType=VARCHAR},
+      product_sku_code = #{productSkuCode,jdbcType=VARCHAR},
+      product_sku_name = #{productSkuName,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      main_picture = #{mainPicture,jdbcType=TINYINT},
+      apply_code = #{applyCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

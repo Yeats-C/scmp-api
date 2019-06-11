@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.ProductSkuSalesInfoDao">
+  <insert id="insertDraftList" parameterType="java.util.List" >
+    insert into product_sku_sales_info_draft (product_code, product_name,
+    description, usage_status, spec,
+    small_unit, sales_code, base_product_content,
+    product_width, product_length, product_height,
+    is_default, del_flag, create_time,
+    create_by, update_time, update_by,
+    product_sku_code, product_sku_name,unit_code,zero_removal_coefficient)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.productCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
+      #{item.description,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT}, #{item.spec,jdbcType=VARCHAR},
+      #{item.smallUnit,jdbcType=VARCHAR}, #{item.salesCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=INTEGER},
+      #{item.productWidth,jdbcType=BIGINT}, #{item.productLength,jdbcType=BIGINT}, #{item.productHeight,jdbcType=BIGINT},
+      #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR},
+      #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR},#{item.unitCode,jdbcType=VARCHAR},
+      #{item.zeroRemovalCoefficient,jdbcType=BIGINT})
+    </foreach>
+  </insert>
+  <insert id="insertList" parameterType="java.util.List" >
+    insert into product_sku_sales_info (apply_code, product_code,
+    product_name, description, usage_status,
+    spec, small_unit, sales_code,
+    base_product_content, product_width, product_length,
+    product_height, is_default, del_flag,
+    create_time, create_by, update_time,
+    update_by, product_sku_code, product_sku_name
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.applyCode,jdbcType=VARCHAR}, #{item.productCode,jdbcType=VARCHAR},
+      #{item.productName,jdbcType=VARCHAR}, #{item.description,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT},
+      #{item.spec,jdbcType=VARCHAR}, #{item.smallUnit,jdbcType=VARCHAR}, #{item.salesCode,jdbcType=VARCHAR},
+      #{item.baseProductContent,jdbcType=VARCHAR}, #{item.productWidth,jdbcType=BIGINT}, #{item.productLength,jdbcType=BIGINT},
+      #{item.productHeight,jdbcType=BIGINT}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+  <insert id="insertApplyList" parameterType="java.util.List">
+    insert into apply_product_sku_sales_info (product_code, product_name,
+    description, usage_status, spec,
+    small_unit, sales_code, base_product_content,
+    product_width, product_length, product_height,
+    is_default, del_flag, create_time,
+    create_by, update_time, update_by,
+    product_sku_code, product_sku_name, apply_code
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.productCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
+      #{item.description,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT}, #{item.spec,jdbcType=VARCHAR},
+      #{item.smallUnit,jdbcType=VARCHAR}, #{item.salesCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=VARCHAR},
+      #{item.productWidth,jdbcType=BIGINT}, #{item.productLength,jdbcType=BIGINT}, #{item.productHeight,jdbcType=BIGINT},
+      #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR},
+      #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+  <select id="getDraft" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoDraftMapper.BaseResultMap">
+    SELECT * FROM product_sku_sales_info_draft WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getInfo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoMapper.BaseResultMap">
+    SELECT * FROM product_sku_sales_info WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getDrafts" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoDraftMapper.BaseResultMap">
+    SELECT * FROM product_sku_sales_info_draft WHERE del_flag=0 and product_sku_code IN
+    <foreach collection="productSkus" item="item" open="(" separator="," close=")">
+      #{item.skuCode,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+  <delete id="deleteDrafts" parameterType="java.util.List">
+    DELETE FROM product_sku_sales_info_draft WHERE product_sku_code IN
+    <foreach collection="productSkus" item="item" open="(" separator="," close=")">
+      #{item.skuCode,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  <delete id="deleteList" parameterType="java.lang.String">
+    DELETE FROM product_sku_sales_info WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
+  </delete>
+  <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSalesInfoMapper.BaseResultMap">
+    SELECT * FROM apply_product_sku_sales_info WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
+    and apply_code=#{applyCode}
+  </select>
+  <select id="getApplys" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSalesInfoMapper.BaseResultMap">
+    SELECT * FROM apply_product_sku_sales_info WHERE product_sku_code in
+    <foreach collection="applyProductSkus" item="item" open="(" separator="," close=")">
+      #{item.skuCode,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+</mapper>

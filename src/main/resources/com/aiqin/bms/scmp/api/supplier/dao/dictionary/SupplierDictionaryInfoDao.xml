@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.DictionaryInfoSaveReqVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supplier_dictionary_value" jdbcType="VARCHAR" property="supplierDictionaryValue" />
+    <result column="supplier_content" jdbcType="VARCHAR" property="supplierContent" />
+    <result column="supplier_weight" jdbcType="INTEGER" property="supplierWeight" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="supplier_dictionary_code" jdbcType="VARCHAR" property="supplierDictionaryCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="supplier_dictionary_name" jdbcType="VARCHAR" property="supplierDictionaryName" />
+    <result column="supplier_dictionary_info_code" jdbcType="VARCHAR" property="supplierDictionaryInfoCode" />
+    <result column="enabled" jdbcType="TINYINT" property="enabled"/>
+  </resultMap>
+  <resultMap id="InfoBaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supplier_dictionary_value" jdbcType="VARCHAR" property="supplierDictionaryValue" />
+    <result column="supplier_content" jdbcType="VARCHAR" property="supplierContent" />
+    <result column="supplier_weight" jdbcType="INTEGER" property="supplierWeight" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="supplier_dictionary_code" jdbcType="VARCHAR" property="supplierDictionaryCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="supplier_dictionary_name" jdbcType="VARCHAR" property="supplierDictionaryName" />
+    <result column="supplier_dictionary_info_code" jdbcType="VARCHAR" property="supplierDictionaryInfoCode" />
+    <result column="enabled" jdbcType="TINYINT" property="enabled"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, supplier_dictionary_value, supplier_content, supplier_weight, del_flag, supplier_dictionary_code,
+    create_time, create_by, update_time, update_by, supplier_dictionary_name,supplier_dictionary_info_code,enabled
+  </sql>
+  <sql id="Info_Base_Column_List">
+    id, supplier_dictionary_value, supplier_content, supplier_weight, del_flag, supplier_dictionary_code,
+    create_time, create_by, update_time, update_by, supplier_dictionary_name,supplier_dictionary_info_code,enabled
+  </sql>
+  <insert id="insertList" parameterType="java.util.List">
+    insert into supplier_dictionary_info
+    (id, supplier_dictionary_value, supplier_content, supplier_weight, del_flag, supplier_dictionary_code,
+    create_time, create_by, update_time, update_by,supplier_dictionary_name,supplier_dictionary_info_code,enabled
+    )
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.id,jdbcType=BIGINT},#{item.supplierDictionaryValue,jdbcType=VARCHAR}, #{item.supplierContent,jdbcType=VARCHAR},
+      #{item.supplierWeight,jdbcType=INTEGER}, #{item.delFlag,jdbcType=TINYINT}, #{item.supplierDictionaryCode,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR},
+      #{item.supplierDictionaryName,jdbcType=VARCHAR},
+      #{item.supplierDictionaryInfoCode,jdbcType=VARCHAR},
+      #{item.enabled,jdbcType=TINYINT}
+      )
+    </foreach>
+  </insert>
+  <update id="updateList"  parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update supplier_dictionary_info
+      <set>
+        <if test="#{item.id}!= null">
+        id= #{item.id,jdbcType=BIGINT},
+        </if>
+        <if test="#{item.supplierDictionaryValue}!= null">
+        supplier_dictionary_value=#{item.supplierDictionaryValue,jdbcType=VARCHAR},
+        </if>
+        <if test="#{item.supplierContent}!= null">
+        supplier_content =#{item.supplierContent,jdbcType=VARCHAR},
+        </if>
+        <if test="#{item.supplierWeight}!= null">
+        supplier_weight= #{item.supplierWeight,jdbcType=INTEGER},
+        </if>
+        <if test="#{item.delFlag}!= null">
+        del_flag =#{item.delFlag,jdbcType=TINYINT},
+        </if>
+        <if test="#{item.supplierDictionaryCode}!= null">
+        supplier_dictionary_code= #{item.supplierDictionaryCode,jdbcType=VARCHAR},
+        </if>
+        <if test="#{item.createTime}!= null">
+        create_time =#{item.createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="#{item.createBy}!= null">
+        create_by= #{item.createBy,jdbcType=VARCHAR},
+        </if>
+        <if test="#{item.updateTime}!= null">
+        update_time= #{item.updateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="#{item.updateBy}!= null">
+        update_by=#{item.updateBy,jdbcType=VARCHAR},
+        </if>
+        <if test="#{item.supplierDictionaryName}!= null">
+          supplier_dictionary_name= #{item.supplierDictionaryName,jdbcType=VARCHAR},
+        </if>
+        <if test="#{item.supplierDictionaryInfoCode} != null">
+          supplier_dictionary_info_code = #{item.supplierDictionaryInfoCode,jdbcType=VARCHAR},
+        </if>
+        <if test="#{item.enabled} != null">
+          enabled = #{item.enabled,jdbcType=TINYINT},
+        </if>
+      </set>
+      where id = #{item.id}
+    </foreach>
+  </update>
+
+<select id="getCode" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryInfoResponseVO">
+  SELECT
+  id,supplier_dictionary_value as dictionaryDictionaryValue,
+  supplier_content as dictionaryContent,supplier_weight as dictionaryWeight,
+  del_flag as delFlag,enabled
+  FROM supplier_dictionary_info
+  WHERE del_flag=0
+  <if test="code !=null and code !=''">
+   AND supplier_dictionary_code=#{code,jdbcType=VARCHAR}
+  </if>
+  order by supplier_weight ASC
+</select>
+  <update id="deleteList">
+   update supplier_dictionary_info
+     set del_flag = 1
+    where
+    <if test="code !=null and code !=''">
+     supplier_dictionary_code=#{code,jdbcType=VARCHAR}
+     </if>
+</update>
+  <update id="updateAndCode">
+    update
+    supplier_dictionary_info
+    SET
+      supplier_dictionary_name = #{name,jdbcType=VARCHAR}
+    where
+    supplier_dictionary_code = #{code,jdbcType=VARCHAR}
+  </update>
+  <select id="dictionaryCode" resultMap="InfoBaseResultMap">
+    SELECT
+    <include refid="Info_Base_Column_List" />
+    FROM
+    supplier_dictionary_info
+    WHERE
+    <if test="code!=null and code!='' ">
+      supplier_dictionary_code = #{code,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <update id="infoEnabled">
+    update supplier_dictionary_info
+    set enabled=#{enabled,jdbcType=TINYINT}
+    where
+    <if test="code !=null and code !=''">
+      supplier_dictionary_code=#{code,jdbcType=VARCHAR}
+    </if>
+  </update>
+</mapper>

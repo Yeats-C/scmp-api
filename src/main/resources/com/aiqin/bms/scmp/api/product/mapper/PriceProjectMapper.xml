@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.PriceProjectMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.PriceProject">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="price_project_code" jdbcType="VARCHAR" property="priceProjectCode" />
+    <result column="price_project_name" jdbcType="VARCHAR" property="priceProjectName" />
+    <result column="price_type_code" jdbcType="VARCHAR" property="priceTypeCode" />
+    <result column="price_type_name" jdbcType="VARCHAR" property="priceTypeName" />
+    <result column="price_category_code" jdbcType="VARCHAR" property="priceCategoryCode" />
+    <result column="price_category_name" jdbcType="VARCHAR" property="priceCategoryName" />
+    <result column="price_project_order" jdbcType="INTEGER" property="priceProjectOrder" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="price_project_enable" jdbcType="TINYINT" property="priceProjectEnable" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+
+  <resultMap id="ListMap" type="com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProjectRespVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="price_project_code" jdbcType="VARCHAR" property="priceProjectCode" />
+    <result column="price_project_name" jdbcType="VARCHAR" property="priceProjectName" />
+    <result column="price_type_code" jdbcType="VARCHAR" property="priceTypeCode" />
+    <result column="price_type_name" jdbcType="VARCHAR" property="priceTypeName" />
+    <result column="price_category_code" jdbcType="VARCHAR" property="priceCategoryCode" />
+    <result column="price_category_name" jdbcType="VARCHAR" property="priceCategoryName" />
+    <result column="price_project_order" jdbcType="INTEGER" property="priceProjectOrder" />
+    <result column="price_project_enable" jdbcType="VARCHAR" property="priceProjectEnable" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, price_project_code, price_project_name, price_type_code,price_type_name,
+    price_category_code,price_category_name, price_project_order,
+    company_code, company_name, price_project_enable, del_flag, create_time, update_time, 
+    create_by, update_by
+  </sql>
+
+  <sql id="List_Column_List">
+    id, price_project_code, price_project_name, price_type_code,price_type_name,
+    price_category_code,price_category_name, price_project_order,
+    case price_project_enable when 0 then '启用' else '禁用' end price_project_enable, create_time, update_time,
+    create_by, update_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from price_project
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.basicprice.QueryPriceProjectReqVo"
+          resultMap="ListMap">
+    select
+    <include refid="List_Column_List"/>
+    from price_project
+    <where>
+      <if test="code != null and code.length()  > 0 ">
+        price_project_code =  #{code,jdbcType=VARCHAR}
+      </if>
+      <if test="name != null and name.length()  > 0 ">
+        and price_project_name LIKE CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="enable != null and enable.length()  > 0 ">
+        and price_project_enable =  #{enable,jdbcType=TINYINT}
+      </if>
+      <if test="priceType != null and priceType.length()  > 0 ">
+        and price_type_code =  #{priceType,jdbcType=VARCHAR}
+      </if>
+      <if test="priceCategory != null and priceCategory.length()  > 0 ">
+        and price_category_code =  #{priceCategory,jdbcType=VARCHAR}
+      </if>
+      <if test="companyCode != null and companyCode.length()  > 0 ">
+        and company_code =  #{companyCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by price_project_order asc,update_time desc
+  </select>
+  <select id="checkName" resultType="java.lang.Integer">
+    select
+      count(*)
+    from price_project
+    <where>
+      <if test="id != null">
+        id != #{id,jdbcType=BIGINT}
+      </if>
+      <if test="name != null  and name.length() > 0 ">
+        and price_project_name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="companyCode != null and companyCode.length()  > 0 ">
+        and company_code =  #{companyCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from price_project
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceProject">
+    insert into price_project (id, price_project_code, price_project_name, 
+      price_type_code, price_type_name, price_category_code, price_category_name,
+      price_project_order,
+      company_code, company_name, price_project_enable, 
+      del_flag, create_time, update_time, 
+      create_by, update_by)
+    values (#{id,jdbcType=BIGINT}, #{priceProjectCode,jdbcType=VARCHAR}, #{priceProjectName,jdbcType=VARCHAR}, 
+      #{priceTypeCode,jdbcType=VARCHAR}, #{priceTypeName,jdbcType=VARCHAR}, #{priceCategoryCode,jdbcType=VARCHAR},
+      #{priceCategoryName,jdbcType=VARCHAR},#{priceProjectOrder,jdbcType=INTEGER},
+      #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{priceProjectEnable,jdbcType=TINYINT}, 
+      #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceProject">
+    insert into price_project
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="priceProjectCode != null">
+        price_project_code,
+      </if>
+      <if test="priceProjectName != null">
+        price_project_name,
+      </if>
+      <if test="priceTypeCode != null">
+        price_type_code,
+      </if>
+      <if test="priceTypeName != null">
+        price_type_name,
+      </if>
+      <if test="priceCategoryCode != null">
+        price_category_code,
+      </if>
+      <if test="priceCategoryName != null">
+        price_category_name,
+      </if>
+      <if test="priceProjectOrder != null">
+        price_project_order,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="priceProjectEnable != null">
+        price_project_enable,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="priceProjectCode != null">
+        #{priceProjectCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProjectName != null">
+        #{priceProjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeCode != null">
+        #{priceTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeName != null">
+        #{priceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceCategoryCode != null">
+        #{priceCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceCategoryName != null">
+        #{priceCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProjectOrder != null">
+        #{priceProjectOrder,jdbcType=INTEGER},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProjectEnable != null">
+        #{priceProjectEnable,jdbcType=TINYINT},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceProject">
+    update price_project
+    <set>
+      <if test="priceProjectCode != null">
+        price_project_code = #{priceProjectCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProjectName != null">
+        price_project_name = #{priceProjectName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeCode != null">
+        price_type_code = #{priceTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceTypeName != null">
+        price_type_name = #{priceTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceCategoryCode != null">
+        price_category_code = #{priceCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="priceCategoryName != null">
+        price_category_name = #{priceCategoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProjectOrder != null">
+        price_project_order = #{priceProjectOrder,jdbcType=INTEGER},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="priceProjectEnable != null">
+        price_project_enable = #{priceProjectEnable,jdbcType=TINYINT},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceProject">
+    update price_project
+    set price_project_code = #{priceProjectCode,jdbcType=VARCHAR},
+      price_project_name = #{priceProjectName,jdbcType=VARCHAR},
+      price_type_code = #{priceTypeCode,jdbcType=VARCHAR},
+      price_type_name = #{priceTypeName,jdbcType=VARCHAR},
+      price_category_code = #{priceCategoryCode,jdbcType=VARCHAR},
+      price_category_name = #{priceCategoryName,jdbcType=VARCHAR},
+      price_project_order = #{priceProjectOrder,jdbcType=INTEGER},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      price_project_enable = #{priceProjectEnable,jdbcType=TINYINT},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

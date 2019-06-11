@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.supplier.ApplySupplierFileDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplierFile">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="apply_type" jdbcType="VARCHAR" property="applyType" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="apply_supplier_code" jdbcType="VARCHAR" property="applySupplierCode" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="apply_supplier_name" jdbcType="VARCHAR" property="applySupplierName" />
+  </resultMap>
+  <insert id="insertList" parameterType="java.util.List">
+    insert into apply_supplier_file (apply_type, file_path,
+      del_flag, apply_supplier_code, file_name,
+      create_time, create_by, update_time,
+      update_by, apply_supplier_name)
+    values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.applyType,jdbcType=TINYINT}, #{item.filePath,jdbcType=VARCHAR},
+      #{item.delFlag,jdbcType=TINYINT}, #{item.applySupplierCode,jdbcType=VARCHAR},
+      #{item.fileName,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP},
+      #{item.createBy,jdbcType=VARCHAR},#{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR},#{item.applySupplierName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <delete id="deleteApplySupplierFileByApplyCode" parameterType="java.lang.String">
+      update apply_supplier_file set del_flag =1 where apply_supplier_code=#{applyCode,jdbcType=VARCHAR}
+  </delete>
+    <select id="getApplySupplierFile" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * from apply_supplier_file WHERE del_flag =0 AND apply_supplier_code=#{applyCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

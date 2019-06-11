@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.StockFlowDao">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="stock_code" jdbcType="VARCHAR" property="stockCode"/>
+        <result column="flow_code" jdbcType="VARCHAR" property="flowCode"/>
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
+        <result column="order_type" jdbcType="INTEGER" property="orderType"/>
+        <result column="order_source" jdbcType="VARCHAR" property="orderSource"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="before_inventory_num" jdbcType="BIGINT" property="beforeInventoryNum"/>
+        <result column="after_inventory_num" jdbcType="BIGINT" property="afterInventoryNum"/>
+        <result column="before_available_num" jdbcType="BIGINT" property="beforeAvailableNum"/>
+        <result column="after_available_num" jdbcType="BIGINT" property="afterAvailableNum"/>
+        <result column="before_lock_num" jdbcType="BIGINT" property="beforeLockNum"/>
+        <result column="after_lock_num" jdbcType="BIGINT" property="afterLockNum"/>
+        <result column="before_purchase_way_num" jdbcType="BIGINT" property="beforePurchaseWayNum"/>
+        <result column="after_purchase_way_num" jdbcType="BIGINT" property="afterPurchaseWayNum"/>
+        <result column="before_allocation_way_num" jdbcType="BIGINT" property="beforeAllocationWayNum"/>
+        <result column="after_allocation_way_num" jdbcType="BIGINT" property="afterAllocationWayNum"/>
+        <result column="before_total_way_num" jdbcType="BIGINT" property="beforeTotalWayNum"/>
+        <result column="after_total_way_num" jdbcType="BIGINT" property="afterTotalWayNum"/>
+        <result column="change_num" jdbcType="BIGINT" property="changeNum"/>
+        <result column="operation_type" jdbcType="BIGINT" property="operationType"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <resultMap id="StockResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="stock_code" jdbcType="VARCHAR" property="stockCode"/>
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
+        <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
+        <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum"/>
+        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
+        <result column="lock_num" jdbcType="BIGINT" property="lockNum"/>
+        <result column="purchase_way_num" jdbcType="BIGINT" property="purchaseWayNum"/>
+        <result column="allocation_way_num" jdbcType="BIGINT" property="allocationWayNum"/>
+        <result column="total_way_num" jdbcType="BIGINT" property="totalWayNum"/>
+        <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
+        <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
+        <result column="new_purchase_price" jdbcType="BIGINT" property="newPurchasePrice"/>
+        <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
+        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
+        <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
+        <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
+        <result column="tax_price" jdbcType="BIGINT" property="taxPrice"/>
+        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,stock_code,flow_code,order_code,order_type,order_source,sku_code,sku_name,
+        before_inventory_num,after_inventory_num,before_available_num,after_available_num,before_lock_num,
+        after_lock_num,before_purchase_way_num,after_purchase_way_num,before_allocation_way_num,after_allocation_way_num,
+        before_total_way_num,after_total_way_num,change_num,operation_type,create_time,create_by,update_time,update_by
+    </sql>
+    
+    <sql id="Stock_Column">
+
+    </sql>
+    
+    <select id="selectOneStockInfoByStockFlow"  resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock" resultMap="StockResultMap">
+        select <include refid="Stock_Column"></include> from stock
+        where company_code=#{companyCode}
+        and transport_center_code=#{transportCenterCode}
+        and warehouse_code=#{warehouseCode}
+        and sku_code=#{skuCode}
+    </select>
+
+    <select id="selectOneByLockCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from stock_flow where lock_code=#{lockCode}
+    </select>
+    <select id="selectOneByHistoryCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from stock_flow where history_code=#{lockCode}
+    </select>
+    <insert id="insertOne">
+        insert into stock_flow (
+        stock_code,flow_code,order_code,order_type,order_source,sku_code,sku_name,
+        before_inventory_num,after_inventory_num,before_available_num,after_available_num,before_lock_num,
+        after_lock_num,before_purchase_way_num,after_purchase_way_num,before_allocation_way_num,after_allocation_way_num,
+        before_total_way_num,after_total_way_num,change_num,operation_type,create_time,create_by,update_time,update_by
+        )
+        value (
+        #{stockCode},#{flowCode},#{orderCode},#{orderType},#{orderSource},#{skuCode},#{skuName},
+        #{beforeInventoryNum},#{afterInventoryNum},#{beforeAvailableNum},#{afterAvailableNum},#{beforeLockNum},
+        #{afterLockNum},#{beforePurchaseWayNum},#{afterPurchaseWayNum},#{beforeAllocationWayNum},#{afterAllocationWayNum},
+        #{beforeTotalWayNum},#{afterTotalWayNum},#{changeNum},#{operationType},#{createTime},#{createBy},#{updateTime},#{updateBy}
+
+        )
+    </insert>
+
+    <insert id="insertBatch">
+        insert into stock_flow
+        (
+        stock_code,
+        flow_code,
+        order_code,
+        order_type,
+        order_source,
+        sku_code,
+        sku_name,
+        before_inventory_num,
+        after_inventory_num,
+        before_available_num,
+        after_available_num,
+        before_lock_num,
+        after_lock_num,
+        before_purchase_way_num,
+        after_purchase_way_num,
+        before_allocation_way_num,
+        after_allocation_way_num,
+        before_total_way_num,
+        after_total_way_num,
+        change_num,
+        operation_type,
+        create_time,
+        create_by,
+        update_time,
+        update_by
+        )
+        values
+        <foreach collection="stockFlows" item="item" index="index" separator=",">
+        (
+            #{item.stockCode},
+            #{item.flowCode},
+            #{item.orderCode},
+            #{item.orderType},
+            #{item.orderSource},
+            #{item.skuCode},
+            #{item.skuName},
+            #{item.beforeInventoryNum},
+            #{item.afterInventoryNum},
+            #{item.beforeAvailableNum},
+            #{item.afterAvailableNum},
+            #{item.beforeLockNum},
+            #{item.afterLockNum},
+            #{item.beforePurchaseWayNum},
+            #{item.afterPurchaseWayNum},
+            #{item.beforeAllocationWayNum},
+            #{item.afterAllocationWayNum},
+            #{item.beforeTotalWayNum},
+            #{item.afterTotalWayNum},
+            #{item.changeNum},
+            #{item.operationType},
+            #{item.createTime},
+            #{item.createBy},
+            #{item.updateTime},
+            #{item.updateBy}
+        )
+        </foreach>
+    </insert>
+
+</mapper>

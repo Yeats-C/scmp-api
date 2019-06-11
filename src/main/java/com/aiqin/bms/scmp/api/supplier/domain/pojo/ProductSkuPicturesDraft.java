@@ -1,0 +1,33 @@
+package com.aiqin.bms.scmp.api.supplier.domain.pojo;
+
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+@ApiModel("sku图片及介绍")
+@Data
+public class ProductSkuPicturesDraft {
+    @ApiModelProperty("主键id")
+    private Long id;
+
+    @ApiModelProperty("图片路径")
+    private String productPicturePath;
+
+    @ApiModelProperty("图片名称")
+    private String productPictureName;
+
+    @ApiModelProperty("商品介绍")
+    private String productIntroduction;
+
+    @ApiModelProperty("商品sku code")
+    private String productSkuCode;
+
+    @ApiModelProperty("商品sku名称")
+    private String productSkuName;
+
+    @ApiModelProperty("是否主图，0不是主图，1为主图")
+    private Byte mainPicture;
+
+
+}

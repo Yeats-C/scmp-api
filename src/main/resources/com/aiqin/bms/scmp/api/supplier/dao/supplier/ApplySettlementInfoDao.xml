@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.supplier.ApplySettlementInfoDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySettlementInformation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="settlement_cycle" jdbcType="VARCHAR" property="settlementCycle" />
+    <result column="settlement_method" jdbcType="VARCHAR" property="settlementMethod" />
+    <result column="settlement_group" jdbcType="VARCHAR" property="settlementGroup" />
+    <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
+    <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />
+    <result column="max_payment_amount" jdbcType="BIGINT" property="maxPaymentAmount" />
+    <result column="apply_supply_company_code" jdbcType="VARCHAR" property="applySupplyCompanyCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="apply_type" jdbcType="TINYINT" property="applyType" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_supply_company_name" jdbcType="VARCHAR" property="applySupplyCompanyName" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="supply_company_code" jdbcType="VARCHAR" property="supplyCompanyCode" />
+    <result column="supply_company_name" jdbcType="VARCHAR" property="supplyCompanyName" />
+  </resultMap>
+  <insert id="insertApply" keyProperty="id" useGeneratedKeys="true" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySettlementInfoReqDTO">
+    insert into apply_settlement_information (settlement_cycle, settlement_method,
+      settlement_group, min_order_amount, max_order_amount, apply_supply_company_code,
+      create_time, create_by,apply_type,apply_code,apply_status,apply_supply_company_name,
+      update_time, update_by
+      )
+    values (#{settlementCycle,jdbcType=VARCHAR}, #{settlementMethod,jdbcType=VARCHAR},
+      #{settlementGroup,jdbcType=VARCHAR}, #{minOrderAmount,jdbcType=BIGINT}, #{maxOrderAmount,jdbcType=BIGINT}, 
+      #{applySupplyCompanyCode,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR},#{applyType,jdbcType=TINYINT},
+      #{applyCode,jdbcType=VARCHAR},#{applyStatus,jdbcType=TINYINT},#{applySupplyCompanyName,jdbcType=VARCHAR},
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateApply" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySettlementInfoReqDTO">
+    update apply_settlement_information
+    <set>
+      <if test="settlementCycle != null">
+        settlement_cycle = #{settlementCycle,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethod != null">
+        settlement_method = #{settlementMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementGroup != null">
+        settlement_group = #{settlementGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="minOrderAmount != null">
+        min_order_amount = #{minOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxOrderAmount != null">
+        max_order_amount = #{maxOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxPaymentAmount != null">
+        max_payment_amount = #{maxPaymentAmount,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="applyType != null">
+        apply_type = #{applyType,jdbcType=TINYINT},
+      </if>
+    </set>
+    where apply_supply_company_code = #{applySupplyCompanyCode,jdbcType=VARCHAR}
+  </update>
+  <!--<insert id="insertSelective" keyProperty="id" useGeneratedKeys="true" parameterType="com.aiqin.bms.scmp.api.scmp.pojo.ApplySettlementInformation">
+    insert into apply_settlement_information
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="settlementCycle != null">
+        settlement_cycle,
+      </if>
+      <if test="settlementMethod != null">
+        settlement_method,
+      </if>
+      <if test="settlementGroup != null">
+        settlement_group,
+      </if>
+      <if test="minOrderAmount != null">
+        min_order_amount,
+      </if>
+      <if test="maxOrderAmount != null">
+        max_order_amount,
+      </if>
+      <if test="maxPaymentAmount != null">
+        max_payment_amount,
+      </if>
+      <if test="applySupplierId != null">
+        apply_supplier_id,
+      </if>
+      <if test="applySupplyCompanyId != null">
+        apply_supply_company_id,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="applyType != null">
+        apply_type,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="settlementCycle != null">
+        #{settlementCycle,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethod != null">
+        #{settlementMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementGroup != null">
+        #{settlementGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="minOrderAmount != null">
+        #{minOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxOrderAmount != null">
+        #{maxOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxPaymentAmount != null">
+        #{maxPaymentAmount,jdbcType=BIGINT},
+      </if>
+      <if test="applySupplierId != null">
+        #{applySupplierId,jdbcType=BIGINT},
+      </if>
+      <if test="applySupplyCompanyId != null">
+        #{applySupplyCompanyId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="applyType != null">
+        #{applyType,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>-->
+  <update id="updateAndCode">
+   update
+    apply_settlement_information
+    SET
+     apply_supply_company_name = #{name,jdbcType=VARCHAR}
+    where
+     apply_supply_company_code = #{code,jdbcType=VARCHAR}
+  </update>
+  <select id="getApplySettInfo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplySettlementInformationMapper.BaseResultMap">
+    SELECT * from apply_settlement_information where apply_supply_company_code=#{applySupplyComCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

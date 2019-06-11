@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.TaxCostLogDao">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.TaxCostLog">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="tax_date" jdbcType="VARCHAR" property="taxDate"></result>
+        <result column="stock_code" jdbcType="VARCHAR" property="stockCode"></result>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"></result>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"></result>
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"></result>
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"></result>
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"></result>
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"></result>
+        <result column="stock_num" jdbcType="BIGINT" property="stockNum"></result>
+        <result column="stock_change_num" jdbcType="BIGINT" property="stockChangeNum"></result>
+        <result column="new_purchase_price" jdbcType="BIGINT" property="newPurchasePrice"></result>
+        <result column="tax_cost_last_day" jdbcType="BIGINT" property="taxCostLastDay"></result>
+        <result column="tax_cost" jdbcType="BIGINT" property="taxCost"></result>
+        <result column="create_time" jdbcType="DATE" property="createTime"></result>
+    </resultMap>
+    <sql id="Base_sql">
+        id,tax_date,stock_code,sku_code,sku_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,stock_num,stock_change_num,new_purchase_price,tax_cost_last_day,tax_cost,create_time
+    </sql>
+    <select id="selectByTaxDate" resultMap="BaseResultMap">
+        select <include refid="Base_sql"></include> from tax_cost_log where tax_date=#{taxDate} and warehouse_code=#{warehouseCode} and sku_code=#{skuCode}
+    </select>
+    <insert id="insertOne">
+        insert into tax_cost_log(
+        tax_date,stock_code,
+        sku_code,sku_name,
+        transport_center_code,transport_center_name,
+        warehouse_code,warehouse_name,
+        stock_num,stock_change_num,
+        new_purchase_price,tax_cost_last_day,
+        tax_cost,create_time
+        ) values (
+        #{taxDate},#{stockCode},
+        #{skuCode},#{skuName},
+        #{transportCenterCode},#{transportCenterName},
+        #{warehouseCode},#{warehouseName},
+        #{stockNum},#{stockChangeNum},
+        #{newPurchasePrice}, #{taxCostLastDay},
+        #{taxCost},#{createTime}
+        )
+    </insert>
+    <update id="updateStockTaxCost">
+        update stock set tax_cost=#{taxCost} where id=#{id}
+    </update>
+
+</mapper>

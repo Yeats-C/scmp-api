@@ -1,0 +1,467 @@
+server:
+    port: 80
+spring:
+    profiles:
+        active: ${profile.name}
+    resources:
+        chain:
+            strategy:
+                content:
+                    enabled: true
+                    paths: /**
+    swagger:
+        enabled: true
+        title: SUPPLIER-API
+        description: 熙耘供应链系统的API文档
+        version: 1.0.0
+        contact:
+            name: liuxiaohan
+        base-package: com.aiqin.mgs.scmp.api.web
+    servlet:
+        multipart:
+            max-file-size: 2MB
+            max-request-size: 20MB
+mybatis-plus:
+    mapper-locations: com.aiqin.bms.scmp.api.supplier.dao/*.xml,com.aiqin.bms.scmp.api.supplier.mapper/*.xml
+    #实体扫描，多个package用逗号或者分号分隔
+    type-aliases-package: com.aiqin.mgs.scmp.api.product.domain,com.aiqin.mgs.scmp.api.supplier.domain
+    configuration:
+        call-setters-on-nulls: true
+logging:
+    config: classpath:logback.xml
+    level:
+        io.swagger.models.parameters.AbstractSerializableParameter: error
+image:
+  upload:
+    path: D:\\images\\
+marker:
+  info:
+    url: http://market.api.aiqin.com/
+Visit:
+    #url: http://product.api.aiqin.com
+    url: http://127.0.0.1:9021
+Central:
+    url: http://control.api.aiqin.com
+Purchase:
+    #本地启动调用商品的地址
+    #url: http://127.0.0.1:9022
+    url: http://purchase.api.aiqin.com
+Store:
+  url: http://store.api.aiqin.com
+Workflow:
+    url: http://finance.bms.aiqin.com/tpm/workflowcontroller/submit
+    #  url: http://172.20.10.4/tpm/workflowcontroller/submit
+    cancelUrl: http://finance.bms.aiqin.com/tpm/workflowcontroller/cancel
+#审批流的前缀url地址
+WorkFlowBaseUrl:
+    #回调url
+    callBackBaseUrl: http://scmp.api.aiqin.com/scmp/workFlowCallBack/
+    #各个页面详情url
+    supplierUrl:
+        #合同申请详情
+        applyContract: http://scm.bms.aiqin.com/#/Supplier/ContractAppDetails/
+        #供应商申请详情
+        applySupplier: http://scm.bms.aiqin.com/#/Supplier/SupplierDetails/
+        #供应商集团申请详情
+        applySupplierGroup: http://scm.bms.aiqin.com/#/Supplier/SupplierGroupDetails/
+        #供应商账户申请详情
+        applySupplierAccount: http://scm.bms.aiqin.com/#/Supplier/SupplierAccountDetails/
+        #制造商申请详情
+        applyManu: http://scm.bms.aiqin.com/#/Supplier/ManuApplieDetail/
+        #采购申请详情
+        applyPurchase: http://scm.bms.aiqin.com/#/Supplier/PurchaseDetails/
+        #退供申请详情
+        applyRefund: http://scm.bms.aiqin.com/#/Supplier/RefundDetails/
+        #调拨申请详情
+        applyAllocattion: http://scm.bms.aiqin.com/#/Supplier/AllocattionDetail/
+        #商品申请详情
+        applyGoods: http://scm.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail/
+        #商品配置申请详情
+        applyGoodsConfig: http://scm.bms.aiqin.com/#/Supplier/DetailsAppConfiguration/
+        #商品价格申请详情
+        applyGoodsPrice:
+    productUrl:
+      #/Supplier/IntendingDetails?variablePriceName=促销活动&priceTypeCode=1&variablePriceCode=10001
+      variablePrice: http://scm.bms.aiqin.com/#/Supplier/IntendingDetails
+      applySku: http://scm.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail
+      applySkuConfig: http://scm.bms.aiqin.com/#/Supplier/DetailsConfiguration
+      #销售区域
+      applySaleArea: http://scm.bms.aiqin.com/#/Supplier/DetailsConfiguration
+      #调拨申请详情
+      applyAllocattion: http://scm.bms.aiqin.com/#/Supplier/AllocattionDetail/
+      #移库查看详情
+      movement: http://scm.bms.aiqin.com/#/Supplier/MoveWareHouseDetail
+#审批流的host
+WorkFlowBaseHost:
+    supplierHost: http://scm.bms.aiqin.com
+#不拦截的公参
+BaseParam:
+    authority: authority=0
+WMS:
+  url: http://39.96.81.67:9003
+order:
+  info:
+    url: http://order.api.aiqin.com/
+mgs:
+    control:
+        system-code: scmp-system
+        center: http://control.api.aiqin.com/system/plan
+        resources:
+        - code: SUP001
+          name: 基础资料管理
+          link: ''
+          icon: icon-scm-ziliao
+          resources:
+          - code: SUP001001
+            name: 字典管理
+            link: '/Supplier/TheDictionary'
+            icon: fa-home
+            methods:
+            - code: SUP001001001
+              name: 查询
+            - code: SUP001001002
+              name: 增加
+          - code: SUP001002
+            name: 采购组管理
+            link: '/Supplier/PurchasingGroup'
+            icon: fa-home
+            methods:
+            - code: SUP001002001
+              name: 查询
+            - code: SUP001002002
+              name: 增加
+          - code: SUP001003
+            name: 仓库管理
+            link: '/Supplier/BasedLogistics'
+            icon: fa-home
+            methods:
+            - code: SUP001003001
+              name: 查询
+            - code: SUP001003002
+              name: 增加
+          - code: SUP001004
+            name: 库房管理
+            link: '/Supplier/BasedWarehouse'
+            icon: fa-home
+            methods:
+            - code: SUP001004001
+              name: 查询
+            - code: SUP001004002
+              name: 增加
+          - code: SUP001005
+            name: 价格项目管理
+            link: '/Supplier/PriceProject'
+            icon: fa-home
+            methods:
+            - code: SUP001005001
+              name: 查询
+            - code: SUP001005002
+              name: 增加
+          - code: SUP001006
+            name: 渠道管理
+            link: '/Supplier/ChannelManagement'
+            icon: fa-home
+            methods:
+            - code: SUP001006001
+              name: 查询
+            - code: SUP001006002
+              name: 增加
+          - code: SUP001007
+            name: 标签管理
+            link: '/Supplier/LabelManagement'
+            icon: fa-home
+            methods:
+            - code: SUP001007001
+              name: 查询
+            - code: SUP001007002
+              name: 增加
+        - code: SUP003
+          name: 供应商管理
+          link: ''
+          icon: icon-scm-scmp
+          resources:
+          - code: SUP003001
+            name: 供应商管理
+            link: '/Supplier/SupManage'
+            icon: fa-home
+            methods:
+            - code: SUP003001001
+              name: 查询
+            - code: SUP003001002
+              name: 增加
+          - code: SUP003002
+            name: 供应商集团管理
+            link: '/Supplier/SupplierGroupManagement'
+            icon: fa-home
+            methods:
+            - code: SUP003002001
+              name: 查询
+          - code: SUP003003
+            name: 账户管理
+            link: '/Supplier/SupUnitAccountManage'
+            icon: fa-home
+            methods:
+            - code: SUP003003001
+              name: 查询
+            - code: SUP003003002
+              name: 增加
+          - code: SUP003004
+            name: 供应商申请管理
+            link: '/Supplier/SupApplicationManage'
+            icon: fa-home
+            methods:
+            - code: SUP003004001
+              name: 查询
+          - code: SUP003007
+            name: 合同管理
+            link: '/Supplier/ContractManage'
+            icon: fa-home
+            methods:
+            - code: SUP003007001
+              name: 查询
+            - code: SUP003007002
+              name: 增加
+          - code: SUP003009
+            name: 制造商管理
+            link: '/Supplier/SupManuManage'
+            icon: fa-home
+            methods:
+            - code: SUP003009001
+              name: 查询
+            - code: SUP003009002
+              name: 增加
+        - code: SUP002
+          name: 商品管理
+          link: ''
+          icon: icon-scm-shangpin
+          resources:
+          - code: SUP002001
+            name: 品类管理
+            link: '/Supplier/Category'
+            icon: fa-home
+            methods:
+            - code: SUP002001001
+              name: 新增
+            - code: SUP002001002
+              name: 显示启用
+            - code: SUP002001003
+              name: 显示全部
+          - code: SUP002002
+            name: 品牌管理
+            link: '/Supplier/Brand'
+            icon: fa-home
+            methods:
+            - code: SUP002002001
+              name: 查询
+            - code: SUP002002002
+              name: 增加
+          - code: SUP002003
+            name: 商品管理
+            link: '/Supplier/CommodityManagement'
+            icon: fa-home
+            methods:
+            - code: SUP002003001
+              name: 查询
+            - code: SUP002003002
+              name: 增加
+          - code: SUP002004
+            name: SKU管理
+            link: '/Supplier/SkuManagement'
+            icon: fa-home
+            methods:
+            - code: SUP002004001
+              name: 查询
+            - code: SUP002004002
+              name: 增加
+          - code: SUP002005
+            name: 商品申请管理
+            link: '/Supplier/GoodsApplyManage'
+            icon: fa-home
+            methods:
+            - code: SUP002005001
+              name: 查询
+            - code: SUP002005002
+              name: 增加
+          - code: SUP002006
+            name: 商品配置管理
+            link: '/Supplier/GoodsConfiguration'
+            icon: fa-home
+            methods:
+            - code: SUP002006001
+              name: 查询
+            - code: SUP002006002
+              name: 增加
+          - code: SUP002007
+            name: 商品配置申请管理
+            link: '/Supplier/GoodsConfigurationApp'
+            icon: fa-home
+            methods:
+            - code: SUP002007001
+              name: 查询
+        - code: SUP007
+          name: 价格管理
+          link: ''
+          icon: icon-scm-price1
+          resources:
+          - code: SUP007001
+            name: 价格管理
+            link: '/Supplier/PriceManagement'
+            icon: fa-home
+            methods:
+            - code: SUP007001001
+              name: 查询
+          - code: SUP007002
+            name: 变价管理
+            link: '/Supplier/IntendingManagement'
+            icon: fa-home
+            methods:
+            - code: SUP007001001
+              name: 查询
+            - code: SUP007001002
+              name: 增加
+        - code: SUP004
+          name: 库存管理
+          link: ''
+          icon: icon-scm-kucun
+          resources:
+          - code: SUP004001
+            name: 总库存管理
+            link: '/Supplier/InvGeneralManage'
+            icon: fa-home
+            methods:
+            - code: SUP004001001
+              name: 查询
+          - code: SUP004002
+            name: 物流中心库存管理
+            link: '/Supplier/InvDistributeCenterManage'
+            icon: fa-home
+            methods:
+            - code: SUP004002001
+              name: 查询
+          - code: SUP004003
+            name: 库房库存管理
+            link: '/Supplier/InvWarehouseManage'
+            icon: fa-home
+            methods:
+            - code: SUP004003001
+              name: 查询
+        - code: SUP005
+          name: 采购管理
+          link: ''
+          icon: icon-scm-caigou
+          resources:
+          - code: SUP005003
+            name: 采购商品
+            link: '/Supplier/PurchasingGoods'
+            icon: fa-home
+            methods:
+            - code: SUP005003001
+              name: 查询
+          - code: SUP005004
+            name: 采购申请
+            link: '/Supplier/PurchasingApply'
+            icon: fa-home
+            methods:
+            - code: SUP005004001
+              name: 查询
+            - code: SUP005004002
+              name: 采购对比
+            - code: SUP005004003
+              name: 申请采购
+          - code: SUP005001
+            name: 采购管理
+            link: '/Supplier/PurchasingSupplyManagement'
+            icon: fa-home
+            methods:
+            - code: SUP005001001
+              name: 查询
+            - code: SUP005001002
+              name: 增加
+          - code: SUP005002
+            name: 退供管理
+            link: '/Supplier/RefundManagement'
+            icon: fa-home
+            methods:
+            - code: SUP005002001
+              name: 查询
+            - code: SUP005002002
+              name: 增加
+        - code: SUP006
+          name: 销售管理
+          link: ''
+          icon: icon-scm-xiaoshou
+          resources:
+          - code: SUP006001
+            name: 订单管理
+            link: '/Supplier/OrderManage'
+            icon: fa-home
+            methods:
+            - code: SUP006001001
+              name: 查询
+          - code: SUP006002
+            name: 退货管理
+            link: '/Supplier/RefundGoodsManage'
+            icon: fa-home
+            methods:
+            - code: SUP006002001
+              name: 查询
+        - code: SUP008
+          name: 库房管理
+          link: ''
+          icon: icon-scm-kufang
+          resources:
+          - code: SUP008001
+            name: 入库管理
+            link: '/Supplier/StoreManageIn'
+            icon: fa-home
+            methods:
+            - code: SUP008001001
+              name: 查询
+          - code: SUP008002
+            name: 出库管理
+            link: '/Supplier/StoreManageOut'
+            icon: fa-home
+            methods:
+            - code: SUP008002001
+              name: 查询
+          - code: SUP008003
+            name: 调拨管理
+            link: '/Supplier/AllocattionManage'
+            icon: fa-home
+            methods:
+            - code: SUP005003001
+              name: 查询
+            - code: SUP005003002
+              name: 增加
+          - code: SUP008004
+            name: 移库管理
+            link: '/Supplier/MoveLibraryManage'
+            icon: fa-home
+            methods:
+            - code: SUP005004001
+              name: 查询
+            - code: SUP005005002
+              name: 增加
+        - code: SUP009
+          name: 运输管理
+          link: ''
+          icon: icon-scm-kufang
+          resources:
+          - code: SUP009001
+            name: 发运管理
+            link: '/Supplier/ShipManagement'
+            icon: fa-home
+            methods:
+            - code: SUP009001001
+              name: 查询
+            - code: SUP009001002
+              name: 新增
+          - code: SUP009002
+            name: 运输管理
+            link: '/Supplier/TransportationManagement'
+            icon: fa-home
+            methods:
+            - code: SUP009002001
+              name: 查询
+            - code: SUP009002002
+              name: 新增

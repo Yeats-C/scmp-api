@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.SettlementInformationMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SettlementInformation">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="settlement_cycle" jdbcType="VARCHAR" property="settlementCycle" />
+    <result column="settlement_method" jdbcType="VARCHAR" property="settlementMethod" />
+    <result column="settlement_group" jdbcType="VARCHAR" property="settlementGroup" />
+    <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
+    <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />
+    <result column="max_payment_amount" jdbcType="BIGINT" property="maxPaymentAmount" />
+    <result column="supply_company_name" jdbcType="VARCHAR" property="supplyCompanyName" />
+    <result column="supply_company_code" jdbcType="VARCHAR" property="supplyCompanyCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="apply_settlement_information_code" jdbcType="VARCHAR" property="applySettlementInformationCode" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="settlement_code" jdbcType="VARCHAR" property="settlementCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, settlement_cycle, settlement_method, settlement_group, min_order_amount, max_order_amount, 
+    max_payment_amount, supply_company_name, supply_company_code, create_time, create_by, 
+    update_time, update_by, del_flag, apply_settlement_information_code, auditor_by, 
+    auditor_time, apply_status, settlement_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from settlement_information
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from settlement_information
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SettlementInformation">
+    insert into settlement_information (id, settlement_cycle, settlement_method, 
+      settlement_group, min_order_amount, max_order_amount, 
+      max_payment_amount, supply_company_name, supply_company_code, 
+      create_time, create_by, update_time, 
+      update_by, del_flag, apply_settlement_information_code, 
+      auditor_by, auditor_time, apply_status, 
+      settlement_code)
+    values (#{id,jdbcType=BIGINT}, #{settlementCycle,jdbcType=VARCHAR}, #{settlementMethod,jdbcType=VARCHAR}, 
+      #{settlementGroup,jdbcType=VARCHAR}, #{minOrderAmount,jdbcType=BIGINT}, #{maxOrderAmount,jdbcType=BIGINT}, 
+      #{maxPaymentAmount,jdbcType=BIGINT}, #{supplyCompanyName,jdbcType=VARCHAR}, #{supplyCompanyCode,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, #{applySettlementInformationCode,jdbcType=VARCHAR}, 
+      #{auditorBy,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, #{applyStatus,jdbcType=TINYINT}, 
+      #{settlementCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SettlementInformation">
+    insert into settlement_information
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="settlementCycle != null">
+        settlement_cycle,
+      </if>
+      <if test="settlementMethod != null">
+        settlement_method,
+      </if>
+      <if test="settlementGroup != null">
+        settlement_group,
+      </if>
+      <if test="minOrderAmount != null">
+        min_order_amount,
+      </if>
+      <if test="maxOrderAmount != null">
+        max_order_amount,
+      </if>
+      <if test="maxPaymentAmount != null">
+        max_payment_amount,
+      </if>
+      <if test="supplyCompanyName != null">
+        supply_company_name,
+      </if>
+      <if test="supplyCompanyCode != null">
+        supply_company_code,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="applySettlementInformationCode != null">
+        apply_settlement_information_code,
+      </if>
+      <if test="auditorBy != null">
+        auditor_by,
+      </if>
+      <if test="auditorTime != null">
+        auditor_time,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="settlementCode != null">
+        settlement_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="settlementCycle != null">
+        #{settlementCycle,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethod != null">
+        #{settlementMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementGroup != null">
+        #{settlementGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="minOrderAmount != null">
+        #{minOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxOrderAmount != null">
+        #{maxOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxPaymentAmount != null">
+        #{maxPaymentAmount,jdbcType=BIGINT},
+      </if>
+      <if test="supplyCompanyName != null">
+        #{supplyCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyCompanyCode != null">
+        #{supplyCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="applySettlementInformationCode != null">
+        #{applySettlementInformationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorBy != null">
+        #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="settlementCode != null">
+        #{settlementCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SettlementInformation">
+    update settlement_information
+    <set>
+      <if test="settlementCycle != null">
+        settlement_cycle = #{settlementCycle,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethod != null">
+        settlement_method = #{settlementMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementGroup != null">
+        settlement_group = #{settlementGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="minOrderAmount != null">
+        min_order_amount = #{minOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxOrderAmount != null">
+        max_order_amount = #{maxOrderAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxPaymentAmount != null">
+        max_payment_amount = #{maxPaymentAmount,jdbcType=BIGINT},
+      </if>
+      <if test="supplyCompanyName != null">
+        supply_company_name = #{supplyCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyCompanyCode != null">
+        supply_company_code = #{supplyCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="applySettlementInformationCode != null">
+        apply_settlement_information_code = #{applySettlementInformationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="settlementCode != null">
+        settlement_code = #{settlementCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SettlementInformation">
+    update settlement_information
+    set settlement_cycle = #{settlementCycle,jdbcType=VARCHAR},
+      settlement_method = #{settlementMethod,jdbcType=VARCHAR},
+      settlement_group = #{settlementGroup,jdbcType=VARCHAR},
+      min_order_amount = #{minOrderAmount,jdbcType=BIGINT},
+      max_order_amount = #{maxOrderAmount,jdbcType=BIGINT},
+      max_payment_amount = #{maxPaymentAmount,jdbcType=BIGINT},
+      supply_company_name = #{supplyCompanyName,jdbcType=VARCHAR},
+      supply_company_code = #{supplyCompanyCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      apply_settlement_information_code = #{applySettlementInformationCode,jdbcType=VARCHAR},
+      auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      apply_status = #{applyStatus,jdbcType=TINYINT},
+      settlement_code = #{settlementCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

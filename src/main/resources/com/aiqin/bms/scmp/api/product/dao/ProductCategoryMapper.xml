@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.ProductCategory">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="category_status" jdbcType="BIT" property="categoryStatus" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="category_level" jdbcType="BIT" property="categoryLevel" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
+    <result column="picture_path" jdbcType="VARCHAR" property="picturePath" />
+    <result column="weight" jdbcType="INTEGER" property="weight" />
+    <result column="picture_name" jdbcType="VARCHAR" property="pictureName" />
+    <result column="del_flag" jdbcType="BIT" property="delFlag" />
+  </resultMap>
+  <resultMap id="ProductCategoryMap" type="com.aiqin.bms.scmp.api.product.domain.ProductCategory">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="category_status" jdbcType="TINYINT" property="categoryStatus" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="category_level" jdbcType="TINYINT" property="categoryLevel" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+    <result column="picture_path" jdbcType="VARCHAR" property="picturePath" />
+    <result column="weight" jdbcType="INTEGER" property="weight" />
+    <result column="picture_name" jdbcType="VARCHAR" property="pictureName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+  </resultMap>
+  <resultMap id="ProductCategoryListMap" type="com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="category_status" jdbcType="TINYINT" property="categoryStatus" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="category_level" jdbcType="TINYINT" property="categoryLevel" />
+    <result column="weight" jdbcType="INTEGER" property="weight" />
+    <result column="picture_path" jdbcType="VARCHAR" property="picturePath" />
+    <result column="picture_name" jdbcType="VARCHAR" property="pictureName" />
+    <!--<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    -->
+  </resultMap>
+  <resultMap id="ProductCategoryResponse" type="com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="category_status" jdbcType="TINYINT" property="categoryStatus" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="category_level" jdbcType="TINYINT" property="categoryLevel" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+    <result column="picture_path" jdbcType="VARCHAR" property="picturePath" />
+    <result column="weight" jdbcType="INTEGER" property="weight" />
+    <result column="picture_name" jdbcType="VARCHAR" property="pictureName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, category_id, category_name, category_status, parent_id, category_level, create_time, 
+    update_time, create_by, update_by, product_category_code, picture_path, weight, picture_name,
+    del_flag
+  </sql>
+  <select id="selectFirstCategoryList" resultType="java.util.List"
+          resultMap="ProductCategoryResponse">
+    select
+    <include refid="Base_Column_List" />
+    from product_category
+    where category_level = 1 and category_status = 0;
+  </select>
+  <select id="selecSecondCategoryList" resultType="java.util.List"
+          resultMap="ProductCategoryResponse">
+    select
+    <include refid="Base_Column_List"/>
+    from product_category
+    where category_level = 2 and category_status = 0;
+  </select>
+  <select id="selecThirdCategoryList" resultType="java.util.List"
+          resultMap="ProductCategoryResponse">
+    select
+    <include refid="Base_Column_List"/>
+    from product_category
+    where category_level = 3 and category_status = 0;
+  </select>
+  <select id="selecFouthCategoryList" resultType="java.util.List"
+          resultMap="ProductCategoryResponse">
+    select
+    <include refid="Base_Column_List"/>
+    from product_category
+    where category_level = 4 and category_status = 0;
+  </select>
+  <select id="selectSencondCategoryListByCategoryId" parameterType="string"
+          resultType="java.util.List" resultMap="ProductCategoryResponse">
+    select
+    <include refid="Base_Column_List" />
+    from product_category
+    where category_level = 2 and category_status = 0 and parent_id = #{categoryId};
+  </select>
+  <select id="selectThirdCategoryListByCategoryId" parameterType="string"
+          resultType="java.util.List" resultMap="ProductCategoryResponse">
+    select
+    <include refid="Base_Column_List" />
+    from product_category
+    where category_level = 3 and category_status = 0 and parent_id = #{categoryId};
+  </select>
+  <select id="selectFouthCategoryListByCategoryId" parameterType="string"
+          resultType="java.util.List" resultMap="ProductCategoryResponse">
+    select
+    <include refid="Base_Column_List"/>
+    from product_category
+    where category_level = 4 and category_status = 0 and parent_id = #{categoryId};
+  </select>
+  <select id="selectCategoryLevelByCategoryId" parameterType="string"
+          resultMap="ProductCategoryResponse"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse">
+    select
+    <include refid="Base_Column_List" />
+    from product_category where category_id = #{categoryId, jdbcType=VARCHAR}
+  </select>
+  <select id="countAllCategory" resultType="java.lang.Integer">
+    select count(1) from product_category
+    <where>
+      <if test="categoryIdList != null">
+        category_id in (
+        <foreach collection="categoryIdList" item="item" index="" separator=",">
+          #{item,jdbcType=VARCHAR}
+        </foreach>
+        )
+      </if>
+      and category_level = 1
+    </where>
+  </select>
+    <select id="selectCategoryByParentId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_category
+        where category_status=0
+        <if test="parentId!=null and parentId!=''">
+            and parent_id = #{parentId}
+        </if>
+        <if test="parentId==null or parentId==''">
+            and parent_id is null
+        </if>
+        <if test="companyCode != null and companyCode != '' ">
+            and company_code = #{companyCode,jdbcType=VARCHAR}
+        </if>
+    </select>
+  <select id="getMaxCategoryIdByParentId" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT MAX(category_id) FROM product_category  WHERE parent_id=#{parentId,jdbcType=VARCHAR}
+  </select>
+  <select id="getMaxChildNodeByCategoryId" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT
+      MAX(category_id)
+    FROM product_category
+    WHERE parent_id = #{categoryId,jdbcType=VARCHAR}
+    AND category_level = (SELECT category_level
+                          FROM product_category
+                          WHERE category_id = #{categoryId,jdbcType=VARCHAR}) + 1
+  </select>
+  <insert id="insertList" parameterType="java.util.List">
+    INSERT  INTO  product_category
+      (category_id,category_name,category_status,
+      parent_id,category_level,create_time,
+      create_by,weight,picture_path,
+      picture_name,company_code,company_name)
+    VALUES
+    <foreach collection="list" item="pc" index="index" separator=",">
+      (#{pc.categoryId,jdbcType=VARCHAR}, #{pc.categoryName,jdbcType=VARCHAR},
+      #{pc.categoryStatus,jdbcType=TINYINT}, #{pc.parentId,jdbcType=VARCHAR}, #{pc.categoryLevel,jdbcType=TINYINT},
+      #{pc.createTime,jdbcType=TIMESTAMP}, #{pc.createBy,jdbcType=VARCHAR},
+      #{pc.weight,jdbcType=INTEGER},#{pc.picturePath,jdbcType=VARCHAR},#{pc.pictureName,jdbcType=VARCHAR},
+      #{pc.companyCode,jdbcType=VARCHAR},#{pc.companyName,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+  <select id="getProductCategoryList" parameterType="java.lang.Byte" resultMap="ProductCategoryListMap">
+    SELECT  * from product_category where del_flag=0
+    <if test="categoryStatus == 0">
+      and category_status=#{categoryStatus,jdbcType=TINYINT}
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductCategory">
+    update product_category
+    <set>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryName != null">
+        category_name = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryStatus != null">
+        category_status = #{categoryStatus,jdbcType=TINYINT},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryLevel != null">
+        category_level = #{categoryLevel,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategoryCode != null">
+        product_category_code = #{productCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="picturePath != null">
+        picture_path = #{picturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=INTEGER},
+      </if>
+      <if test="pictureName != null">
+        picture_name = #{pictureName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="getProductCategoryById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * from product_category where category_id=#{categoryId,jdbcType=VARCHAR}
+  </select>
+</mapper>

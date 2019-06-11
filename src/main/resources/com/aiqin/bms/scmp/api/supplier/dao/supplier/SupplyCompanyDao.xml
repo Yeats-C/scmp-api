@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao">
+  <resultMap id="SupplyComListMap" type="com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComListRespVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supply_code" jdbcType="VARCHAR" property="supplyComCode" />
+    <result column="supply_type" jdbcType="VARCHAR" property="supplyComType" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supply_name" jdbcType="VARCHAR" property="supplyComName" />
+    <result column="supply_abbreviation" jdbcType="VARCHAR" property="abbreviation" />
+    <result column="enable" jdbcType="VARCHAR" property="enable" />
+    <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="purchasing_group_code" jdbcType="VARCHAR" property="purchasingGroupCode" />
+    <result column="purchasing_group_name" jdbcType="VARCHAR" property="purchasingGroupName" />
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="district_id" jdbcType="VARCHAR" property="districtId" />
+    <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+  </resultMap>
+  <resultMap id="SupplyComDetailMap" type="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompanyDetailDTO">
+    <result column="id" jdbcType="BIGINT" property="supplyComId" />
+    <result column="supply_name" jdbcType="VARCHAR" property="supplyName" />
+    <result column="supply_code" jdbcType="VARCHAR" property="supplyCode"/>
+    <result column="supply_type" jdbcType="VARCHAR" property="supplyType" />
+    <result column="supply_abbreviation" jdbcType="VARCHAR" property="supplyAbbreviation" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="district_id" jdbcType="VARCHAR" property="districtId" />
+    <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="fax" jdbcType="VARCHAR" property="fax" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="company_website" jdbcType="VARCHAR" property="companyWebsite" />
+    <result column="supply_purchasing_group_code" jdbcType="VARCHAR" property="supplyPurchasingGroupCode" />
+    <result column="supply_purchasing_group_name" jdbcType="VARCHAR" property="supplyPurchasingGroupName" />
+    <result column="zip_code" jdbcType="VARCHAR" property="zipCode" />
+    <result column="tax_id" jdbcType="VARCHAR" property="taxId" />
+    <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
+    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital" />
+    <result column="enable" jdbcType="TINYINT" property="enable" />
+    <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
+    <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />
+    <result column="business_license" jdbcType="VARCHAR" property="businessLicense" />
+    <result column="star_score" jdbcType="DECIMAL" property="starScore" />
+    <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
+    <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName"/>
+
+  </resultMap>
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="supply_name" jdbcType="VARCHAR" property="supplyName" />
+    <result column="supply_type" jdbcType="VARCHAR" property="supplyType" />
+    <result column="supply_abbreviation" jdbcType="VARCHAR" property="supplyAbbreviation" />
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="district_id" jdbcType="VARCHAR" property="districtId" />
+    <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+    <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="fax" jdbcType="VARCHAR" property="fax" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="company_website" jdbcType="VARCHAR" property="companyWebsite" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supply_code" jdbcType="VARCHAR" property="supplyCode" />
+    <result column="apply_supply_company_code" jdbcType="VARCHAR" property="applySupplyCompanyCode" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="purchasing_group_code" jdbcType="VARCHAR" property="purchasingGroupCode" />
+    <result column="zip_code" jdbcType="VARCHAR" property="zipCode" />
+    <result column="purchasing_group_name" jdbcType="VARCHAR" property="purchasingGroupName"/>
+    <result column="tax_id" jdbcType="VARCHAR" property="taxId"/>
+    <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative"/>
+    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital"/>
+    <result column="enable" jdbcType="TINYINT" property="enable"/>
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
+    <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+    <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount"/>
+    <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount"/>
+  </resultMap>
+  <select id="getSupplyCompanyList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO" resultMap="SupplyComListMap">
+    SELECT
+      id,
+      supply_code,
+      supply_name,
+      supply_abbreviation,
+      supply_type,
+      supplier_code,
+      supplier_name,
+      CASE enable
+      WHEN 1 THEN '禁用'
+      WHEN 0 THEN '启用'
+      ELSE '禁用' END enable,
+      contact_name,
+      mobile_phone,
+      create_by,
+      create_time,
+      update_by,
+      update_time,
+      apply_status,
+      purchasing_group_code,
+      purchasing_group_name,
+      province_id,
+      province_name,
+      city_id,
+      city_name,
+      district_id,
+      district_name
+    FROM
+      supply_company
+    WHERE del_flag=0
+    <if test="supplyCompanyCode!=null and supplyCompanyCode!=''">
+      and supply_code = #{supplyCompanyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="enable != null and enable != ''">
+      and enable = #{enable,jdbcType=TINYINT}
+    </if>
+    <if test="supplyComNameOrShort!=null and supplyComNameOrShort!=''">
+      and (supply_name LIKE concat('%',#{supplyComNameOrShort,jdbcType=VARCHAR},'%') or supply_abbreviation LIKE concat('%',#{supplyComNameOrShort,jdbcType=VARCHAR},'%'))
+    </if>
+    <if test="purchasingGroupCode!=null and purchasingGroupCode!=''">
+      and purchasing_group_code =#{purchasingGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="provinceId!=null and provinceId!=''">
+      and province_id =#{provinceId,jdbcType=VARCHAR}
+    </if>
+    <if test="cityId!=null and cityId!=''">
+      and city_id =#{cityId,jdbcType=VARCHAR}
+    </if>
+    <if test="districtId!=null and districtId!=''">
+      and district_id =#{districtId,jdbcType=VARCHAR}
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="supplierCode != null and supplierCode != '' ">
+      and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </if>
+    ORDER by update_time desc
+  </select>
+  <select id="getSupplyComDetail" parameterType="java.lang.Long" resultMap="SupplyComDetailMap">
+    SELECT
+      sc.id,
+      sc.supply_name,
+      sc.supply_code,
+      sc.supply_type,
+      sc.supply_abbreviation,
+      sc.supplier_name,
+      sc.supplier_code,
+      sc.province_id,
+      sc.province_name,
+      sc.city_id,
+      sc.city_name,
+      sc.district_id,
+      sc.district_name,
+      sc.address,
+      sc.contact_name,
+      sc.mobile_phone,
+      sc.phone,
+      sc.fax,
+      sc.email,
+      sc.company_website,
+      sc.purchasing_group_code supply_purchasing_group_code,
+	  sc.purchasing_group_name supply_purchasing_group_name,
+      sc.zip_code,
+      sc.tax_id,
+      sc.corporate_representative,
+      sc.registered_capital,
+      sc.enable,
+      sc.min_order_amount,
+      sc.max_order_amount,
+      sc.business_license,
+      sc.star_score,
+      sc.direct_supervisor_code,
+      sc.direct_supervisor_name
+    FROM supply_company sc
+    WHERE sc.id=#{id,jdbcType=BIGINT}
+  </select>
+  <select id="checkName" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT COUNT(1) from supply_company WHERE del_flag=0
+    <if test="name != null">
+      AND supply_name =#{name,jdbcType=VARCHAR}
+    </if>
+    <if test="code != null">
+      and supply_code !=#{code,jdbcType=VARCHAR}
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="getSupplyComByApplyCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+      <include refid="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.Base_Column_List"/>
+    from supply_company where apply_supply_company_code =#{applyCode,jdbcType=VARCHAR}
+  </select>
+  <select id="detailByCode" resultMap="BaseResultMap">
+    SELECT
+      <include refid="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.Base_Column_List"/>
+    from supply_company where supply_code =#{supplyCode,jdbcType=VARCHAR}
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+</mapper>

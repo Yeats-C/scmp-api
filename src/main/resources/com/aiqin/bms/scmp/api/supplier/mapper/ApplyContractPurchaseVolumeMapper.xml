@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.ApplyContractPurchaseVolumeMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPurchaseVolume">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="apply_contract_code" jdbcType="VARCHAR" property="applyContractCode" />
+    <result column="tax" jdbcType="TINYINT" property="tax" />
+    <result column="amount_money" jdbcType="BIGINT" property="amountMoney" />
+    <result column="proportion" jdbcType="BIGINT" property="proportion" />
+    <result column="or_amount_money" jdbcType="BIGINT" property="orAmountMoney" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, apply_contract_code, tax, amount_money, proportion, or_amount_money, del_flag, 
+    create_time, create_by, update_time, update_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from apply_contract_purchase_volume
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from apply_contract_purchase_volume
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPurchaseVolume">
+    insert into apply_contract_purchase_volume (id, apply_contract_code, tax, 
+      amount_money, proportion, or_amount_money, 
+      del_flag, create_time, create_by, 
+      update_time, update_by)
+    values (#{id,jdbcType=BIGINT}, #{applyContractCode,jdbcType=VARCHAR}, #{tax,jdbcType=TINYINT}, 
+      #{amountMoney,jdbcType=BIGINT}, #{proportion,jdbcType=BIGINT}, #{orAmountMoney,jdbcType=BIGINT}, 
+      #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPurchaseVolume">
+    insert into apply_contract_purchase_volume
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="applyContractCode != null">
+        apply_contract_code,
+      </if>
+      <if test="tax != null">
+        tax,
+      </if>
+      <if test="amountMoney != null">
+        amount_money,
+      </if>
+      <if test="proportion != null">
+        proportion,
+      </if>
+      <if test="orAmountMoney != null">
+        or_amount_money,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="applyContractCode != null">
+        #{applyContractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tax != null">
+        #{tax,jdbcType=TINYINT},
+      </if>
+      <if test="amountMoney != null">
+        #{amountMoney,jdbcType=BIGINT},
+      </if>
+      <if test="proportion != null">
+        #{proportion,jdbcType=BIGINT},
+      </if>
+      <if test="orAmountMoney != null">
+        #{orAmountMoney,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPurchaseVolume">
+    update apply_contract_purchase_volume
+    <set>
+      <if test="applyContractCode != null">
+        apply_contract_code = #{applyContractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="tax != null">
+        tax = #{tax,jdbcType=TINYINT},
+      </if>
+      <if test="amountMoney != null">
+        amount_money = #{amountMoney,jdbcType=BIGINT},
+      </if>
+      <if test="proportion != null">
+        proportion = #{proportion,jdbcType=BIGINT},
+      </if>
+      <if test="orAmountMoney != null">
+        or_amount_money = #{orAmountMoney,jdbcType=BIGINT},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPurchaseVolume">
+    update apply_contract_purchase_volume
+    set apply_contract_code = #{applyContractCode,jdbcType=VARCHAR},
+      tax = #{tax,jdbcType=TINYINT},
+      amount_money = #{amountMoney,jdbcType=BIGINT},
+      proportion = #{proportion,jdbcType=BIGINT},
+      or_amount_money = #{orAmountMoney,jdbcType=BIGINT},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
