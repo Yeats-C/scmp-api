@@ -22,9 +22,9 @@ spring:
             max-file-size: 2MB
             max-request-size: 20MB
 mybatis-plus:
-    mapper-locations: com.aiqin.bms.scmp.api.supplier.dao/*.xml,com.aiqin.bms.scmp.api.supplier.mapper/*.xml
+    mapper-locations: com.aiqin.bms.scmp.api.*.dao/*.xml,com.aiqin.bms.scmp.api.*.mapper/*.xml
     #实体扫描，多个package用逗号或者分号分隔
-    type-aliases-package: com.aiqin.mgs.scmp.api.product.domain,com.aiqin.mgs.scmp.api.supplier.domain
+    type-aliases-package: com.aiqin.mgs.scmp.api.*.domain
     configuration:
         call-setters-on-nulls: true
 logging:
