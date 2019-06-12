@@ -50,7 +50,6 @@ Store:
   url: http://store.api.aiqin.com
 Workflow:
     url: http://finance.bms.aiqin.com/tpm/workflowcontroller/submit
-    #  url: http://172.20.10.4/tpm/workflowcontroller/submit
     cancelUrl: http://finance.bms.aiqin.com/tpm/workflowcontroller/cancel
 #审批流的前缀url地址
 WorkFlowBaseUrl:
