@@ -1,5 +1,4 @@
-package com.aiqin.bms.scmp.api.product.service.helper;
-
+package com.aiqin.bms.scmp.api.workflow.helper;
 
 import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 
@@ -10,7 +9,7 @@ import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
  * @date: 2019-01-19
  * @time: 15:29
  */
-public interface WorkflowHelper {
+public interface WorkFlowHelper {
     /**
      * 审核回调接口
      * @author zth
@@ -18,5 +17,5 @@ public interface WorkflowHelper {
      * @param vo
      * @return
      */
-    String workFlowCallback(WorkFlowCallbackVO vo) throws Exception;
+    String workFlowCallback(WorkFlowCallbackVO vo);
 }

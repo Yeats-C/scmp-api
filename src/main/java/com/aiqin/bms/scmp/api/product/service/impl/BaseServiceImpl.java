@@ -4,10 +4,10 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.common.workflow.WorkFlowVO;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.domain.response.workflow.WorkFlowRespVO;
+import com.aiqin.bms.scmp.api.product.service.BaseService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
-import com.aiqin.bms.scmp.api.product.domain.response.workflow.WorkFlowRespVO;
-import com.aiqin.bms.scmp.api.product.service.ProductBaseService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.MD5Utils;
@@ -29,23 +29,18 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class ProductBaseServiceImpl implements ProductBaseService {
+public class BaseServiceImpl implements BaseService {
     @Autowired
     private UrlConfig urlConfig;
 
     @Autowired
     private EncodingRuleDao encodingRuleDao;
 
-    @Override
-    public String getSupplierApiUrl(String path){
-        StringBuilder sb = new StringBuilder();
-        //sb.append(urlConfig.SUPPLIER_API_URL).append(path);
-        return sb.toString();
-    }
+
 
     @Override
     public WorkFlowRespVO callWorkFlowApi(WorkFlowVO vo, WorkFlow workFlow) {
-       log.info("SupplierBaseServiceImpl-callWorkFlowApi-工作流vo是：[{}],枚举是：[{}]", JSON.toJSONString(vo),JSON.toJSONString(workFlow));
+       log.info("BaseServiceImpl-callWorkFlowApi-工作流vo是：[{}],枚举是：[{}]", JSON.toJSONString(vo),JSON.toJSONString(workFlow));
         vo.setKey(workFlow.getKey());
         if(StringUtils.isEmpty(vo.getTitle())){
             vo.setTitle(workFlow.getTitle());
@@ -123,11 +118,11 @@ public class ProductBaseServiceImpl implements ProductBaseService {
      * @return boolean
      */
     public static boolean isPass(Integer updateFormStatus, String optBtn) {
-        if (updateFormStatus.equals(Indicator.COST_FORM_STATUS_APPROVING.getCode())) {
-            if (optBtn.equals(IndicatorStr.PROCESS_BTN_ISSUE.getCode())
-                    || optBtn.equals(IndicatorStr.PROCESS_BTN_APPROVAL.getCode())
-                    || optBtn.equals(IndicatorStr.PROCESS_BTN_AUDIT.getCode())
-                    || optBtn.equals(IndicatorStr.PROCESS_BTN_BATCH_COMPLETE.getCode())) {
+        if (Indicator.COST_FORM_STATUS_APPROVING.getCode().equals(updateFormStatus)) {
+            if (IndicatorStr.PROCESS_BTN_ISSUE.getCode().equals(optBtn)
+                    || IndicatorStr.PROCESS_BTN_APPROVAL.getCode().equals(optBtn)
+                    || IndicatorStr.PROCESS_BTN_AUDIT.getCode().equals(optBtn)
+                    || IndicatorStr.PROCESS_BTN_BATCH_COMPLETE.getCode().equals(optBtn)) {
                 //已阅 同意 审核
                 return true;
             }
@@ -143,13 +138,13 @@ public class ProductBaseServiceImpl implements ProductBaseService {
      */
     public WorkFlowCallbackVO updateSupStatus(WorkFlowCallbackVO costApplyO) {
         /**保存流程状态*/
-        if (costApplyO.getUpdateFormStatus().equals(Indicator.COST_FORM_STATUS_APPROVED.getCode())) {
+        if (Indicator.COST_FORM_STATUS_APPROVED.getCode().equals(costApplyO.getUpdateFormStatus())) {
             //审核通过
             costApplyO.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
         } else if (isPass(costApplyO.getUpdateFormStatus(), costApplyO.getOptBtn())) {
             //审核中
             costApplyO.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
-        } else if(costApplyO.getOptBtn().equals(IndicatorStr.PROCESS_BTN_CANCEL.getCode())) {
+        } else if(IndicatorStr.PROCESS_BTN_CANCEL.getCode().equals(costApplyO.getOptBtn())) {
             //撤销
             costApplyO.setApplyStatus(ApplyStatus.REVOKED.getNumber());
         } else {
@@ -160,7 +155,7 @@ public class ProductBaseServiceImpl implements ProductBaseService {
     }
 
     public WorkFlowRespVO cancelWorkFlow(WorkFlowVO vo){
-        log.info("SupplierBaseServiceImpl-cancelWorkFlow-工作流vo是：[{}]",JSON.toJSONString(vo));
+        log.info("BaseServiceImpl-cancelWorkFlow-工作流vo是：[{}]",JSON.toJSONString(vo));
 //        vo.setTimeStamp(System.currentTimeMillis()+"");
         //TODO 从登陆人拿，目前暂时拿不到，现在先写死
         vo.setTicket(UUID.randomUUID().toString());

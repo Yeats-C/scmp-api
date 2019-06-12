@@ -12,7 +12,7 @@ import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComListRespVO;
-import com.aiqin.bms.scmp.api.supplier.service.helper.WorkflowHelper;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.List;
  * @author: wangxu
  * @date: 2018/12/3 0003 16:40
  */
-public interface ApplySupplyComServcie extends WorkflowHelper {
+public interface ApplySupplyComServcie extends WorkFlowHelper {
     /**
      * 编码，数据设置
      * @param applySupplyCompanyReqVO

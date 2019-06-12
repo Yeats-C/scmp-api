@@ -7,18 +7,22 @@ import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.common.workflow.WorkFlowVO;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
-import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.workflow.WorkFlowRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
-import com.aiqin.bms.scmp.api.product.service.helper.WorkflowHelper;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
@@ -44,7 +48,8 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class ProductSkuChangePriceServiceImplProduct extends ProductBaseServiceImpl implements ProductSkuChangePriceService, WorkflowHelper {
+@WorkFlowAnnotation(WorkFlow.VARIABLE_PRICE)
+public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements ProductSkuChangePriceService, WorkFlowHelper {
 
     @Autowired
     private ProductSkuChangePriceMapper productSkuChangePriceMapper;
@@ -77,7 +82,7 @@ public class ProductSkuChangePriceServiceImplProduct extends ProductBaseServiceI
     @Transactional(rollbackFor = Exception.class)
     public Boolean save(ProductSkuChangePriceReqVO reqVO) throws Exception {
         //验重
-        StringBuffer errorMsg = checkDataRepeat(reqVO);
+        StringBuilder errorMsg = checkDataRepeat(reqVO);
         if (Objects.nonNull(errorMsg)) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, errorMsg.toString()));
         }
@@ -87,10 +92,24 @@ public class ProductSkuChangePriceServiceImplProduct extends ProductBaseServiceI
         String code = getCode("CP", EncodingRuleType.CHANGE_PRICE_CODE);
         reqVO.setCode(code);
         saveData(reqVO);
-        if (reqVO.getOperation().equals(CommonConstant.SUBMIT)) {
+        if (CommonConstant.SUBMIT.equals(reqVO.getOperation())) {
             callWorkflow(reqVO);
         }
         return true;
+    }
+    /**
+     * 验证数据重复性
+     *
+     * @param reqVO
+     * @return java.util.List<com.aiqin.mgs.product.api.domain.response.changeprice.QueryChangePriceRepeatRespVO>
+     * @author NullPointException
+     * @date 2019/5/22
+     */
+    private StringBuilder checkDataRepeat(ProductSkuChangePriceReqVO reqVO) {
+        List<ProductSkuChangePriceInfoReqVO> infoLists = reqVO.getInfoLists();
+        infoLists.stream().map(ProductSkuChangePriceInfoReqVO::getSkuCode).distinct().collect(Collectors.toList());
+        //TODO 暂时不验重。应该不需要验重。
+        return null;
     }
 
     @Override
@@ -119,56 +138,57 @@ public class ProductSkuChangePriceServiceImplProduct extends ProductBaseServiceI
      * @author NullPointException
      * @date 2019/5/22
      */
-    private StringBuffer checkDataRepeat(ProductSkuChangePriceReqVO reqVO) throws Exception {
-        List<ProductSkuChangePriceInfoReqVO> infoLists = reqVO.getInfoLists();
-        List<ProductSkuChangePriceAreaInfoReqVO> areaList = reqVO.getAreaList();
-        List<String> skuCode = Lists.newArrayList();
-        List<String> supplierCode = Lists.newArrayList();
-        List<String> transportCenterCode = Lists.newArrayList();
-        List<String> warehouseBatchNumber = Lists.newArrayList();
-        List<String> warehouseCode = Lists.newArrayList();
-        List<String> code = Lists.newArrayList();
-        List<String> priceItemCode = Lists.newArrayList();
-        infoLists.forEach(o -> {
-            skuCode.add(o.getSkuCode());
-            supplierCode.add(o.getSupplierCode());
-            transportCenterCode.add(o.getTransportCenterCode());
-            warehouseBatchNumber.add(o.getWarehouseBatchNumber());
-            warehouseCode.add(o.getWarehouseCode());
-            priceItemCode.add(o.getPriceItemCode());
-        });
-        if (CollectionUtils.isNotEmpty(areaList)) {
-            for (ProductSkuChangePriceAreaInfoReqVO o : areaList) {
-                code.add(o.getCode());
-            }
-        }
-        QueryChangePriceRepeatVO vo = new QueryChangePriceRepeatVO(reqVO.getChangePriceType(), reqVO.getCompanyCode(), skuCode, supplierCode, warehouseBatchNumber, transportCenterCode, warehouseCode, code, priceItemCode);
-        List<QueryChangePriceRepeatRespVO> repeats = productSkuChangePriceMapper.checkRepeat(vo);
-        //拼装重复信息
-        if (CollectionUtils.isNotEmpty(repeats)) {
-            StringBuffer sb = new StringBuffer();
-            for (QueryChangePriceRepeatRespVO repeat : repeats) {
-                sb.append(repeat.getChangePriceName()).append("下")
-                        .append(repeat.getSkuCode())
-                        .append(" ")
-                        .append(Optional.ofNullable(repeat.getSupplierName()).orElse(""))
-                        .append(" ")
-                        .append(Optional.ofNullable(repeat.getPriceItemName()).orElse(""))
-                        .append(" ")
-                        .append(Optional.ofNullable(repeat.getTransportCenterName()).orElse(""))
-                        .append("-")
-                        .append(Optional.ofNullable(repeat.getWarehouseName()).orElse(""))
-                        .append("-")
-                        .append(Optional.ofNullable(repeat.getWarehouseBatchNumber()).orElse(""))
-                        .append(" ")
-                        .append(Optional.ofNullable(repeat.getName()).orElse(""))
-                        .append("重复").append(" ");
-            }
-            sb.append("请检查数据后提交");
-            return sb;
-        }
-        return null;
-    }
+//    private StringBuffer checkDataRepeat(ProductSkuChangePriceReqVO reqVO) throws Exception {
+//        List<ProductSkuChangePriceInfoReqVO> infoLists = reqVO.getInfoLists();
+//        List<ProductSkuChangePriceAreaInfoReqVO> areaList = reqVO.getAreaList();
+//        List<String> skuCode = Lists.newArrayList();
+//        List<String> supplierCode = Lists.newArrayList();
+//        List<String> transportCenterCode = Lists.newArrayList();
+//        List<String> warehouseBatchNumber = Lists.newArrayList();
+//        List<String> warehouseCode = Lists.newArrayList();
+//        List<String> code = Lists.newArrayList();
+//        List<String> priceItemCode = Lists.newArrayList();
+//        infoLists.forEach(o -> {
+//            skuCode.add(o.getSkuCode());
+//            supplierCode.add(o.getSupplierCode());
+//            transportCenterCode.add(o.getTransportCenterCode());
+//            warehouseBatchNumber.add(o.getWarehouseBatchNumber());
+//            warehouseCode.add(o.getWarehouseCode());
+//            priceItemCode.add(o.getPriceItemCode());
+//        });
+//        if (CollectionUtils.isNotEmpty(areaList)) {
+//            for (ProductSkuChangePriceAreaInfoReqVO o : areaList) {
+//                code.add(o.getCode());
+//            }
+//        }
+//        QueryChangePriceRepeatVO vo = new QueryChangePriceRepeatVO(reqVO.getChangePriceType(), reqVO.getCompanyCode(), skuCode, supplierCode, warehouseBatchNumber, transportCenterCode, warehouseCode, code, priceItemCode);
+//        List<QueryChangePriceRepeatRespVO> repeats = productSkuChangePriceMapper.checkRepeat(vo);
+//        //拼装重复信息
+//        //TODO 需要重新写验重逻辑
+//        if (CollectionUtils.isNotEmpty(repeats)) {
+//            StringBuffer sb = new StringBuffer();
+//            for (QueryChangePriceRepeatRespVO repeat : repeats) {
+//                sb.append(repeat.getChangePriceName()).append("下")
+//                        .append(repeat.getSkuCode())
+//                        .append(" ")
+//                        .append(Optional.ofNullable(repeat.getSupplierName()).orElse(""))
+//                        .append(" ")
+//                        .append(Optional.ofNullable(repeat.getPriceItemName()).orElse(""))
+//                        .append(" ")
+//                        .append(Optional.ofNullable(repeat.getTransportCenterName()).orElse(""))
+//                        .append("-")
+//                        .append(Optional.ofNullable(repeat.getWarehouseName()).orElse(""))
+//                        .append("-")
+//                        .append(Optional.ofNullable(repeat.getWarehouseBatchNumber()).orElse(""))
+//                        .append(" ")
+//                        .append(Optional.ofNullable(repeat.getName()).orElse(""))
+//                        .append("重复").append(" ");
+//            }
+//            sb.append("请检查数据后提交");
+//            return sb;
+//        }
+//        return null;
+//    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -268,7 +288,7 @@ public class ProductSkuChangePriceServiceImplProduct extends ProductBaseServiceI
         //删除数据
         deleteAttachDataByCode(view);
         //验重
-        StringBuffer errorMsg = checkDataRepeat(reqVO);
+        StringBuilder errorMsg = checkDataRepeat(reqVO);
         if (Objects.nonNull(errorMsg)) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, errorMsg.toString()));
         }
@@ -319,9 +339,7 @@ public class ProductSkuChangePriceServiceImplProduct extends ProductBaseServiceI
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String workFlowCallback(WorkFlowCallbackVO vo) throws Exception {
-        vo.setUpdateFormStatus(15);
-        vo.setFormNo("CP185707740285370368");
+    public String workFlowCallback(WorkFlowCallbackVO vo){
         WorkFlowCallbackVO newVO = updateSupStatus(vo);
         //审批中，直接返回成功
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
@@ -350,7 +368,12 @@ public class ProductSkuChangePriceServiceImplProduct extends ProductBaseServiceI
         //审批通过
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             //保存正式数据数据
-            saveOfficial(newVO, dto);
+            try {
+                saveOfficial(newVO, dto);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+               return WorkFlowReturn.FALSE;
+            }
             return WorkFlowReturn.SUCCESS;
         }
         return WorkFlowReturn.FALSE;
@@ -671,28 +694,28 @@ public class ProductSkuChangePriceServiceImplProduct extends ProductBaseServiceI
         if(CollectionUtils.isNotEmpty(priceInsertInfos)) {
             int i = productSkuPriceInfoMapper.insertBatch(priceInsertInfos);
             if (i != priceInsertInfos.size()) {
-                log.error("ProductSkuChangePriceServiceImplProduct--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", priceInsertInfos.size(), i);
+                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", priceInsertInfos.size(), i);
                 throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入价格表数据异常！"));
             }
         }
         if(CollectionUtils.isNotEmpty(priceUpdateInfos)) {
             int j = productSkuPriceInfoMapper.updateBatch(priceUpdateInfos);
             if (j != priceUpdateInfos.size()) {
-                log.error("ProductSkuChangePriceServiceImplProduct--saveData--需要更新的数据条数:[{}], 实际更新数据的条数[{}]", priceUpdateInfos.size(), j);
+                log.error("ProductSkuChangePriceServiceImpl--saveData--需要更新的数据条数:[{}], 实际更新数据的条数[{}]", priceUpdateInfos.size(), j);
                 throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "更新价格表数据异常！"));
             }
         }
         if(CollectionUtils.isNotEmpty(logList)) {
             int n = productSkuPriceInfoLogMapper.insertBatch(logList);
             if (n != logList.size()) {
-                log.error("ProductSkuChangePriceServiceImplProduct--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", logList.size(), n);
+                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", logList.size(), n);
                 throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入日志表数据异常！"));
             }
         }
         if(CollectionUtils.isNotEmpty(areaInfos)) {
             int m = productSkuPriceAreaInfoMapper.insertBatch(areaInfos);
             if (m != areaInfos.size()) {
-                log.error("ProductSkuChangePriceServiceImplProduct--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", areaInfos.size(), m);
+                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", areaInfos.size(), m);
                 throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入附表数据异常！"));
             }
         }
@@ -700,7 +723,7 @@ public class ProductSkuChangePriceServiceImplProduct extends ProductBaseServiceI
             //更新申请表
             int k = productSkuChangePriceInfoMapper.updateBatch(infoList);
             if (k != infoList.size()) {
-                log.error("ProductSkuChangePriceServiceImplProduct--saveData--需要更新的数据条数:[{}], 实际更新数据的条数[{}]", infoList.size(), k);
+                log.error("ProductSkuChangePriceServiceImpl--saveData--需要更新的数据条数:[{}], 实际更新数据的条数[{}]", infoList.size(), k);
                 throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "更新变价申请表数据异常！"));
             }
         }

@@ -8,8 +8,7 @@ import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
 /**
  * 刘大爷
  */
-public interface ProductBaseService {
-    String getSupplierApiUrl(String path);
+public interface BaseService {
 
     /**
      * 获取商品链接

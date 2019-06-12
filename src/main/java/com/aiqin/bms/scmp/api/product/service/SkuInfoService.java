@@ -15,7 +15,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespV
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
-import com.aiqin.bms.scmp.api.product.service.helper.WorkflowHelper;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ import java.util.List;
  * @author: wangxu
  * @date: 2019/1/28 0028 10:46
  */
-public interface SkuInfoService extends WorkflowHelper {
+public interface SkuInfoService{
     /**
      * 新增sku所有信息
      * @param addSkuInfoReqVO

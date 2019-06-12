@@ -1,7 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.WorkFlow;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
@@ -28,6 +27,8 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.JsonMapper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -47,7 +48,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class ApplyProductServiceImplProduct extends ProductBaseServiceImpl implements ApplyProductService {
+public class ApplyProductServiceImplProduct extends ProductBaseServiceImpl implements ApplyProductService, WorkFlowHelper {
     @Autowired
     private ApplyProductMapper applyProductMapper;
     @Autowired

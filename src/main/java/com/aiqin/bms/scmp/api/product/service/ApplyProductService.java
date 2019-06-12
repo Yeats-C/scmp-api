@@ -45,13 +45,6 @@ public interface ApplyProductService {
     String workFlow(String applyCode) ;
 
     /**
-     * 回调接口
-     * @param vo
-     * @return
-     */
-    String workFlowCallback(WorkFlowCallbackVO vo);
-
-    /**
      * 封装 申请商品状态修改->日志->迁移正式表->日志
      */
     String productFlow(List<ApplyProduct> applyProducts, WorkFlowCallbackVO workFlowCallbackVO);

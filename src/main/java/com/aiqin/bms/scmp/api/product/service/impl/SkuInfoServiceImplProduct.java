@@ -32,6 +32,7 @@ import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -908,12 +909,6 @@ public class SkuInfoServiceImplProduct extends ProductBaseServiceImpl implements
         }
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
-
-    @Override
-    public String workFlowCallback(WorkFlowCallbackVO vo) {
-        return null;
-    }
-
 
     /**
      * 获取商品临时数据

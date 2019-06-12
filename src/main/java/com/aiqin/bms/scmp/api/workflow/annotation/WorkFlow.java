@@ -1,6 +1,11 @@
-package com.aiqin.bms.scmp.api.base;
+package com.aiqin.bms.scmp.api.workflow.annotation;
 
 import lombok.Getter;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -87,13 +92,14 @@ public enum WorkFlow {
     /**
      * 展示的链接地址
      */
-
-
-
     WorkFlow(Integer num, String title, String key) {
         this.num = num;
         this.title = title;
         this.key = key;
+    }
+
+    public static Map<Integer,WorkFlow> getAll(){
+        return Arrays.stream(values()).collect(Collectors.toMap(WorkFlow::getNum, Function.identity()));
     }
 }
 

@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.ApplyStatus;
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.common.workflow.WorkFlowVO;
@@ -35,6 +38,9 @@ import com.aiqin.bms.scmp.api.supplier.service.ApplyContractService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -58,7 +64,8 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
-public class ApplyContractServiceImplSupplier extends SupplierBaseServiceImpl implements ApplyContractService {
+@WorkFlowAnnotation(WorkFlow.APPLY_CONTRACT)
+public class ApplyContractServiceImplSupplier extends SupplierBaseServiceImpl implements ApplyContractService, WorkFlowHelper {
 
     @Autowired
     private ApplyContractDao applyContractDao;
@@ -557,7 +564,7 @@ public class ApplyContractServiceImplSupplier extends SupplierBaseServiceImpl im
         account.setAuditorTime(new Date());
 //        if(account.getApplyStatus().intValue()== ApplyStatus.APPROVAL.getNumber()){
 
-            if(vo.getApplyStatus().intValue()==ApplyStatus.APPROVAL_SUCCESS.getNumber()){
+            if(vo.getApplyStatus().intValue()== ApplyStatus.APPROVAL_SUCCESS.getNumber()){
 
                 int i = applyContractDao.updateByPrimaryKeySelective(account);
                 //审批通过之后，分两种情况一种是添加申请，一种是修改申请

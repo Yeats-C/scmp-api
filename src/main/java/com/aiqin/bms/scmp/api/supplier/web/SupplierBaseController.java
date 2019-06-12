@@ -94,7 +94,7 @@ public class SupplierBaseController {
         try {
             switch (type){
                 case 1:
-                    return applyContractService.workFlowCallback(vo);
+//                    return applyContractService.workFlowCallback(vo);
                 case 2:
                     //供应商集团审批
                     return applySupplierService.workFlowCallback(vo);

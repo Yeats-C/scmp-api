@@ -7,7 +7,6 @@ import com.aiqin.bms.scmp.api.supplier.dao.supplier.ApplySupplyCompanyAcctDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyAccountDao;
 import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.base.WorkFlow;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyAccount;
@@ -34,6 +33,8 @@ import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.EncodingRuleService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -57,6 +58,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service("1")
+@WorkFlowAnnotation(WorkFlow.APPLY_COMPANY_ACC)
 public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceImpl implements ApplySupplyComAcctService {
     @Autowired
     private ApplySupplyCompanyAccountMapper applySupplyCompanyAccountMapper;

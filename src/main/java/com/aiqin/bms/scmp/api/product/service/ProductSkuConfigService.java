@@ -9,7 +9,7 @@ import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
-import com.aiqin.bms.scmp.api.product.service.helper.WorkflowHelper;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
  * @author: wangxu
  * @date: 2019/1/29 0029 15:42
  */
-public interface ProductSkuConfigService  extends WorkflowHelper {
+public interface ProductSkuConfigService  extends WorkFlowHelper {
 
     /**
      * 批量保存临时配置信息

@@ -13,7 +13,6 @@ import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMain
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductSaleAreaApplyVO;
-import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
@@ -22,13 +21,15 @@ import com.aiqin.bms.scmp.api.product.domain.response.workflow.WorkFlowRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSaleAreaService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
-import com.aiqin.bms.scmp.api.product.service.helper.WorkflowHelper;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
@@ -56,7 +57,8 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class ProductSaleAreaServiceImplProduct extends ProductBaseServiceImpl implements ProductSaleAreaService, WorkflowHelper {
+@WorkFlowAnnotation(WorkFlow.APPLY_GOODS)
+public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements ProductSaleAreaService, WorkFlowHelper {
     @Autowired
     private ProductSkuSaleAreaDraftMapper productSkuSaleAreaDraftMapper;
     @Autowired
@@ -103,7 +105,7 @@ public class ProductSaleAreaServiceImplProduct extends ProductBaseServiceImpl im
                 sb.append("该条数据下sku为").append(o.getSkuCode()).append("供货渠道类型为").append(o.getCategoriesSupplyChannelsName()).append("的数据已存在于临时表，无法提交！ ");
            }
         });
-        if (StringUtils.isBlank(sb.toString())) {
+        if (StringUtils.isNotBlank(sb.toString())) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, sb.toString()));
         }
         //判断申请表中是否有该条数据
@@ -117,7 +119,7 @@ public class ProductSaleAreaServiceImplProduct extends ProductBaseServiceImpl im
                 sb2.append("该条数据下sku为").append(o.getSkuCode()).append("供货渠道类型为").append(o.getCategoriesSupplyChannelsName()).append("的数据已存在于申请表，无法提交！ ");
             }
         });
-        if (StringUtils.isBlank(sb2.toString())) {
+        if (StringUtils.isNotBlank(sb2.toString())) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, sb.toString()));
         }
         //保存数据
@@ -144,6 +146,7 @@ public class ProductSaleAreaServiceImplProduct extends ProductBaseServiceImpl im
         skuSaleAreaDrafts.forEach(
                 o ->{
                     o.setCode(code);
+                    o.setBeDisable(request.getBeDisable());
                     o.setCompanyCode(request.getCompanyCode());
                     o.setCompanyName(request.getCompanyName());
                     o.setCreateBy(request.getCreateBy());
@@ -180,9 +183,11 @@ public class ProductSaleAreaServiceImplProduct extends ProductBaseServiceImpl im
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "保存区域信息失败！"));
         }
         //插入渠道数据
-        int k = productSkuSaleAreaChannelDraftMapper.insertBatch(channelDrafts);
-        if (k != channelDrafts.size()) {
-            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "保存区域信息失败！"));
+        if(CollectionUtils.isNotEmpty(channelDrafts)){
+            int k = productSkuSaleAreaChannelDraftMapper.insertBatch(channelDrafts);
+            if (k != channelDrafts.size()) {
+                throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "保存区域信息失败！"));
+            }
         }
     }
 
@@ -206,7 +211,7 @@ public class ProductSaleAreaServiceImplProduct extends ProductBaseServiceImpl im
     public Boolean addSaleAreaApply(ApplySaleAreaReqVO reqVO) {
         //获取登录人
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if (null != currentAuthToken) {
+        if (Objects.isNull(currentAuthToken)) {
             throw new BizException(ResultCode.LOGIN_ERROR);
         }
         //通过编码查询出数据
@@ -236,8 +241,8 @@ public class ProductSaleAreaServiceImplProduct extends ProductBaseServiceImpl im
         List<ApplyProductSkuSaleArea> skuInfoList = null;
         try {
             areaInfoList = BeanCopyUtils.copyList(areaList, ApplyProductSkuSaleAreaInfo.class);
-            channelInfoList = BeanCopyUtils.copyList(areaList, ApplyProductSkuSaleAreaChannel.class);
-            skuInfoList = BeanCopyUtils.copyList(areaList, ApplyProductSkuSaleArea.class);
+            channelInfoList = BeanCopyUtils.copyList(channelList, ApplyProductSkuSaleAreaChannel.class);
+            skuInfoList = BeanCopyUtils.copyList(skuList, ApplyProductSkuSaleArea.class);
         } catch (Exception e) {
             e.printStackTrace();
             throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
@@ -264,7 +269,7 @@ public class ProductSaleAreaServiceImplProduct extends ProductBaseServiceImpl im
         //更新编码
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         //调用审批的接口
-        workFlow(formNo, code, currentAuthToken.getPersonName());
+//        workFlow(formNo, code, currentAuthToken.getPersonName());
         return true;
     }
     @Override
@@ -333,7 +338,7 @@ public class ProductSaleAreaServiceImplProduct extends ProductBaseServiceImpl im
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String workFlowCallback(WorkFlowCallbackVO vo) throws Exception {
+    public String workFlowCallback(WorkFlowCallbackVO vo){
         WorkFlowCallbackVO newVO = updateSupStatus(vo);
         //审批中，直接返回成功
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
@@ -363,7 +368,12 @@ public class ProductSaleAreaServiceImplProduct extends ProductBaseServiceImpl im
         //审批通过
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             //保存正式数据数据
-            saveOfficial(newVO, list);
+            try {
+                saveOfficial(newVO, list);
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                return WorkFlowReturn.FALSE;
+            }
             return WorkFlowReturn.SUCCESS;
         }
         return WorkFlowReturn.FALSE;

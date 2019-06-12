@@ -7,7 +7,6 @@ import com.aiqin.bms.scmp.api.supplier.dao.supplier.*;
 import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.WorkFlow;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplier;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
@@ -24,6 +23,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.workflow.WorkFlowRespVO;
 import com.aiqin.bms.scmp.api.supplier.mapper.*;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -42,6 +43,7 @@ import java.util.*;
  * @date: 2018/12/3 0003 16:50
  */
 @Service
+@WorkFlowAnnotation(WorkFlow.APPLY_SUPPLIER)
 public class ApplySupplierServiceImplSupplier extends SupplierBaseServiceImpl implements ApplySupplierService {
     @Autowired
     private EncodingRuleService encodingRuleService;

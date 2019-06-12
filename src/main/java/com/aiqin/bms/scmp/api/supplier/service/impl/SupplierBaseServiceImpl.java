@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.supplier.service.SupplierBaseService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.MD5Utils;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.alibaba.fastjson.JSON;

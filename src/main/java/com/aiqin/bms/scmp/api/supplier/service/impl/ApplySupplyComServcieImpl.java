@@ -7,7 +7,6 @@ import com.aiqin.bms.scmp.api.supplier.dao.supplier.*;
 import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.WorkFlow;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
@@ -26,6 +25,8 @@ import com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -47,6 +48,7 @@ import java.util.*;
  */
 @Service
 @Slf4j
+@WorkFlowAnnotation(WorkFlow.APPLY_COMPANY)
 public class ApplySupplyComServcieImpl extends SupplierBaseServiceImpl implements ApplySupplyComServcie {
     @Autowired
     private ApplySettlementService applySettlementService;
