@@ -2,7 +2,7 @@ server:
   port: 80
 spring:
   profiles:
-    active: ${profile.name}
+    active: dev
   resources:
     chain:
       strategy:
@@ -15,7 +15,7 @@ spring:
     description: 熙耘供应链系统的API文档
     version: 1.0.0
     contact:
-        name: liuxiaohan
+      name: liuxiaohan
     base-package: com.aiqin.mgs.scmp.api.web
   servlet:
     multipart:
@@ -36,7 +36,7 @@ image:
     path: D:\\images\\
 marker:
   info:
-  url: http://market.api.aiqin.com/
+    url: http://market.api.aiqin.com/
 Visit:
   #url: http://product.api.aiqin.com
   url: http://127.0.0.1:9021
@@ -101,7 +101,7 @@ WMS:
   url: http://39.96.81.67:9003
 order:
   info:
-  url: http://order.api.aiqin.com/
+    url: http://order.api.aiqin.com/
 mgs:
   control:
     system-code: scmp-system
