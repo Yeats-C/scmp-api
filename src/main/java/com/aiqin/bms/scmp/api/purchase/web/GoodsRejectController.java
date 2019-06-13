@@ -59,7 +59,7 @@ public class GoodsRejectController {
     }
     @PostMapping("/apply/import")
     @ApiOperation(value = "批量导入退供申请单")
-    public HttpResponse<List<RejectApplyRequest>> rejectApply(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+    public HttpResponse<List<RejectApplyRequest>> rejectApplys(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
         return goodsRejectService.rejectApply(rejectApplyQueryRequest);
     }
 
