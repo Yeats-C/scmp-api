@@ -256,7 +256,7 @@
                      on a.sku_code = b.sku_code
            left join product_sku_price_area_info c
                      on a.code = c.main_code
-    where 1=1
+    where a.companyCode = #{companyCode}
     <if test="priceTypeCode != null and priceTypeCode !=''">
       and a.price_type_code = #{priceTypeCode}
     </if>

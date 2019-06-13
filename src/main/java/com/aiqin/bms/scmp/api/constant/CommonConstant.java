@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.base;
+package com.aiqin.bms.scmp.api.constant;
 
 /**
  * Description:
@@ -42,4 +42,8 @@ public interface CommonConstant {
     Integer REVIEWR_EJECTION = 4;
     //取消审核
     Integer CANCEL = 5;
+    //供货渠道类型 配送
+    Integer SUPPLY_CHANNEL_TYPE_DELIVERY = 1;
+    //供货渠道类型 直送
+    Integer SUPPLY_CHANNEL_TYPE_DIRECT_DELIVERY = 2;
 }
