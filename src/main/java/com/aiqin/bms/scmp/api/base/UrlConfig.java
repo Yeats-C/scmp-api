@@ -51,10 +51,6 @@ public class UrlConfig {
     @Value("${WMS.url}")
     public String WMS_API_URL;
 
-
-
-
-
     /**
      * 订单中心api地址
      */
