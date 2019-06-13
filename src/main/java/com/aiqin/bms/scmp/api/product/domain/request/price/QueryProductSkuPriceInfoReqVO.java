@@ -73,4 +73,7 @@ public class QueryProductSkuPriceInfoReqVO extends PageReq {
 
     @ApiModelProperty("价格属性编码")
     private String priceAttributeCode;
+
+    @ApiModelProperty("公司编码")
+    private String companyCode;
 }

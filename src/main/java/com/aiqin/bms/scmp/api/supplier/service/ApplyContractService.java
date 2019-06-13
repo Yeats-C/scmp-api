@@ -8,10 +8,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.dto.ApplyCon
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.ApplyContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.QueryApplyContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.UpdateApplyContractReqVo;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.*;
-import com.aiqin.bms.scmp.api.supplier.service.helper.WorkflowHelper;
 
 import java.util.List;
 
@@ -20,7 +18,7 @@ import java.util.List;
  * @author:曾兴旺
  * @date: 2018/11/30
  */
-public interface ApplyContractService  extends WorkflowHelper {
+public interface ApplyContractService{
 
     /**
      * 查询合同申请List
@@ -120,8 +118,6 @@ public interface ApplyContractService  extends WorkflowHelper {
     * @param id
     */
    void workFlow(Long id) ;
-
- String workFlowCallback(WorkFlowCallbackVO vo);
 
  /**
   * 查询供货单位账户列表

@@ -167,9 +167,14 @@ public interface ResultCode {
 
     MessageId LOGIN_ERROR = MessageId.create(Project.PRODUCT_API, 73, "登录信息异常,请重新登录");
 
-    MessageId SUBMIT_ERROR = MessageId.create(Project.PRODUCT_API, 98, "获取数据异常，提交失败");
+    MessageId SUBMIT_ERROR = MessageId.create(Project.PRODUCT_API, 74, "获取数据异常，提交失败");
 
-    MessageId SKU_CONFIG_SUBMIT_ERROR =  MessageId.create(Project.PRODUCT_API, 98, "申请SKU配置数据保存异常！");
+    MessageId SKU_CONFIG_SUBMIT_ERROR =  MessageId.create(Project.PRODUCT_API, 74, "申请SKU配置数据保存异常！");
+
     //变价
     MessageId DATA_ERROR =  MessageId.create(Project.PRODUCT_API, 98, "数据异常");
+    MessageId DATA_NOT_COMPLETE = MessageId.create(Project.PRODUCT_API,98,"数据不完成！请检查并补充数据！");
+
+
+
 }

@@ -1,15 +1,14 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
+import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.ApplySupplyCompanyAcctDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyAccountDao;
-import com.aiqin.bms.scmp.api.base.ApplyStatus;
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.base.WorkFlow;
-import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyAccount;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompanyAccount;
@@ -21,19 +20,21 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompany
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyAcctReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplierComAcctReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierComAcctReqVo;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.*;
-import com.aiqin.bms.scmp.api.supplier.domain.response.workflow.WorkFlowRespVO;
 import com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyAccountMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyAccountMapper;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComAcctService;
-import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.EncodingRuleService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -57,6 +58,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service("1")
+@WorkFlowAnnotation(WorkFlow.APPLY_COMPANY_ACC)
 public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceImpl implements ApplySupplyComAcctService {
     @Autowired
     private ApplySupplyCompanyAccountMapper applySupplyCompanyAccountMapper;

@@ -135,11 +135,11 @@
                     </execution>
                 </executions>
                 <!--<dependencies>-->
-                    <!--<dependency>-->
-                        <!--<groupId>com.biz</groupId>-->
-                        <!--<artifactId>biz-support</artifactId>-->
-                        <!--<version>1.0-SNAPSHOT</version>-->
-                    <!--</dependency>-->
+                <!--<dependency>-->
+                <!--<groupId>com.biz</groupId>-->
+                <!--<artifactId>biz-support</artifactId>-->
+                <!--<version>1.0-SNAPSHOT</version>-->
+                <!--</dependency>-->
                 <!--</dependencies>-->
             </plugin>
         </plugins>

@@ -1,26 +1,28 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.bms.scmp.api.supplier.dao.supplier.ApplySettlementInfoDao;
-import com.aiqin.bms.scmp.api.supplier.dao.supplier.SettlementInfoDao;
 import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.ApplySettlementInfoDao;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SettlementInfoDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySettlementInformation;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SettlementInformation;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySettlementDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySettlementInfoReqDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySettlementInfoReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySettlementVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.supplier.mapper.ApplySettlementInformationMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.SettlementInformationMapper;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySettlementService;
 import com.aiqin.bms.scmp.api.supplier.service.EncodingRuleService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -150,7 +152,7 @@ public class ApplySettlementServiceImplSupplier extends SupplierBaseServiceImpl 
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    public String insideWorkFlowCallback(ApplySettlementInformation applySettlementInformation,WorkFlowCallbackVO vo) {
+    public String insideWorkFlowCallback(ApplySettlementInformation applySettlementInformation, WorkFlowCallbackVO vo) {
         if(Objects.isNull(applySettlementInformation)){
             return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
         }

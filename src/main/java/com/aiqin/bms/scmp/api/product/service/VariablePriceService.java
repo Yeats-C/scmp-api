@@ -4,8 +4,8 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.pojo.VariablePrice;
 import com.aiqin.bms.scmp.api.product.domain.pojo.VariablePriceSku;
 import com.aiqin.bms.scmp.api.product.domain.request.variableprice.*;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.product.domain.response.variableprice.*;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
 import java.util.Map;

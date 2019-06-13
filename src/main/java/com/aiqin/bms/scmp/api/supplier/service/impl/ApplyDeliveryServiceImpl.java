@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -14,7 +15,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplyDelivery
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplyDeliveryInfoReqDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplyDeliveryInfoReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplyDeliveryVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.supplier.mapper.ApplyDeliveryInformationMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.DeliveryInformationMapper;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyDeliveryService;

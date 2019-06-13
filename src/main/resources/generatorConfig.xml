@@ -10,7 +10,7 @@
         <!--<property name="hasLombok" value="true"/>-->
         <!--</plugin>-->
         <!--<plugin type="com.biz.bean.GeneratorPlug">-->
-            <!--<property name="enabledSwagger" value="true"/>-->
+        <!--<property name="enabledSwagger" value="true"/>-->
         <!--</plugin>-->
         <commentGenerator>
             <!-- 是否去除自动生成的所有注释 true：是 ： false:否 -->

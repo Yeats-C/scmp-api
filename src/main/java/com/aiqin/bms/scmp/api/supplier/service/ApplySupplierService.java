@@ -9,7 +9,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupp
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierUpdateReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplierDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplierListRespVO;
-import com.aiqin.bms.scmp.api.supplier.service.helper.WorkflowHelper;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 
 
 /**
@@ -17,7 +17,7 @@ import com.aiqin.bms.scmp.api.supplier.service.helper.WorkflowHelper;
  * @author: wangxu
  * @date: 2018/12/3 0003 16:49
  */
-public interface ApplySupplierService extends WorkflowHelper {
+public interface ApplySupplierService extends WorkFlowHelper {
     /**
      * 生成编码，复制对象
      * @param supplierReq
