@@ -4,8 +4,6 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
-import java.util.List;
-
 /**
  * <p>
  * ━━━━━━神兽出没━━━━━━
@@ -33,7 +31,21 @@ import java.util.List;
  * 思维方式*热情*能力
  */
 public interface GoodsRejectService {
-    HttpResponse<List<RejectApplyQueryRequest>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest);
+    HttpResponse rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest);
 
-    HttpResponse<List<RejectApplyRequest>> rejectApply(RejectApplyRequest rejectApplyQueryRequest);
+    HttpResponse rejectApply(RejectApplyRequest rejectApplyQueryRequest);
+
+    HttpResponse rejectApplyImport(RejectApplyRequest rejectApplyQueryRequest);
+
+    HttpResponse rejectApplyInfo(RejectApplyRequest rejectApplyQueryRequest);
+
+    HttpResponse addReject(RejectApplyRequest rejectApplyQueryRequest);
+
+    HttpResponse updateReject(RejectApplyRequest rejectApplyQueryRequest);
+
+    HttpResponse rejectList(RejectApplyRequest rejectApplyQueryRequest);
+
+    HttpResponse rejectSupplier(RejectApplyRequest rejectApplyQueryRequest);
+
+    HttpResponse rejectInfo(RejectApplyRequest rejectApplyQueryRequest);
 }

@@ -23,16 +23,53 @@
     apply_record_status, sum_sku, sum_count, sum_amount, create_by_id, create_by_name, 
     update_by_id, update_by_name, create_time, update_time
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
+  <resultMap id="queryResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="reject_apply_record_code" jdbcType="VARCHAR" property="rejectApplyRecordCode" />
+    <result column="apply_type" jdbcType="BIT" property="applyType" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="apply_record_status" jdbcType="INTEGER" property="applyRecordStatus" />
+    <result column="sum_sku" jdbcType="INTEGER" property="sumSku" />
+    <result column="sum_count" jdbcType="INTEGER" property="sumCount" />
+    <result column="sum_amount" jdbcType="BIGINT" property="sumAmount" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="LIST_QUERY">
+    <where>
+      <if test="rejectApplyRecordCode!=null and rejectApplyRecordCode!=''">
+        and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+      </if>
+      <if test="applyType!=null ">
+        and apply_type = #{applyType,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+        and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="applyRecordStatus!=null and applyRecordStatus!=''">
+        and apply_record_status = #{applyRecordStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="beginTime!=null and finishTime!=null">
+        and create_time <![CDATA[ >=]]>  #{beginTime,jdbcType=VARCHAR}
+        and create_time <![CDATA[ <=]]>  #{finishTime,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+  <select id="list" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest"
+          resultMap="queryResultMap">
+    select
+      reject_apply_record_code, apply_type, purchase_group_name, apply_record_status, sum_sku, sum_count, sum_amount, create_by_name,  create_time
     from reject_apply_record
-    where id = #{id,jdbcType=BIGINT}
+    <include refid="LIST_QUERY"/>
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from reject_apply_record
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+  <select id="listCount" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest"
+          resultType="java.lang.Integer">
+    select
+     count(1)
+    from reject_apply_record
+    <include refid="LIST_QUERY"/>
+  </select>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
     insert into reject_apply_record (id, reject_apply_record_code, apply_type, 
       purchase_group_code, purchase_group_name, apply_record_status, 
@@ -190,24 +227,6 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
-    update reject_apply_record
-    set reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR},
-      apply_type = #{applyType,jdbcType=BIT},
-      purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
-      purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
-      apply_record_status = #{applyRecordStatus,jdbcType=BIT},
-      sum_sku = #{sumSku,jdbcType=INTEGER},
-      sum_count = #{sumCount,jdbcType=INTEGER},
-      sum_amount = #{sumAmount,jdbcType=BIGINT},
-      create_by_id = #{createById,jdbcType=VARCHAR},
-      create_by_name = #{createByName,jdbcType=VARCHAR},
-      update_by_id = #{updateById,jdbcType=VARCHAR},
-      update_by_name = #{updateByName,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
