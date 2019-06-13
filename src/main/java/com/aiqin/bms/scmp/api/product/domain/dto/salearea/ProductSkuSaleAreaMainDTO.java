@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.domain.dto.salearea;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleArea;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaChannel;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMain;
 import lombok.Data;
 
 import java.util.List;

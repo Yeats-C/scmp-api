@@ -40,11 +40,11 @@ public class ProductSkuChangePriceInfoReqVO {
     private Long purchasePriceOld;
 
     @ApiModelProperty("开始生效时间")
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date effectiveTimeStart;
 
     @ApiModelProperty("结束生效时间")
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date effectiveTimeEnd;
 
     @ApiModelProperty("新的含税采购价")

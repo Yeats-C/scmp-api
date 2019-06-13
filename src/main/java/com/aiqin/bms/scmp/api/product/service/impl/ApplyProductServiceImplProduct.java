@@ -1,11 +1,8 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.WorkFlow;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowVO;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
@@ -18,7 +15,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductSaveRe
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.QueryApplyProductReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductDetailsResponseVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductResponseVO;
-import com.aiqin.bms.scmp.api.product.domain.response.workflow.WorkFlowRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
@@ -28,6 +24,11 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.JsonMapper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -47,7 +48,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class ApplyProductServiceImplProduct extends ProductBaseServiceImpl implements ApplyProductService {
+public class ApplyProductServiceImplProduct extends ProductBaseServiceImpl implements ApplyProductService, WorkFlowHelper {
     @Autowired
     private ApplyProductMapper applyProductMapper;
     @Autowired

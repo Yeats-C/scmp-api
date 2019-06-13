@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
-import com.aiqin.bms.scmp.api.base.WorkFlow;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowVO;
-import com.aiqin.bms.scmp.api.supplier.domain.response.workflow.WorkFlowRespVO;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 
 /**
  * Description:

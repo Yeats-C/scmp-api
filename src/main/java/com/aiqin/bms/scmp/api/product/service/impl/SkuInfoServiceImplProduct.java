@@ -1,9 +1,10 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.CommonConstant;
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowVO;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
@@ -20,7 +21,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductDet
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
-import com.aiqin.bms.scmp.api.product.domain.response.workflow.WorkFlowRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
@@ -32,6 +32,10 @@ import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -908,12 +912,6 @@ public class SkuInfoServiceImplProduct extends ProductBaseServiceImpl implements
         }
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
-
-    @Override
-    public String workFlowCallback(WorkFlowCallbackVO vo) {
-        return null;
-    }
-
 
     /**
      * 获取商品临时数据

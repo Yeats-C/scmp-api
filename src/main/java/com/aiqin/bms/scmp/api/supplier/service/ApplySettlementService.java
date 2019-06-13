@@ -5,7 +5,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySettleme
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySettlementInfoReqDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySettlementInfoReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySettlementVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 /**
  * @功能说明:

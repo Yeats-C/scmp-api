@@ -17,14 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-/**
- * Description:
- * 变价api
- *
- * @author: NullPointException
- * @date: 2019-05-20
- * @time: 17:24
- */
 @RestController
 @Slf4j
 @Api(description = "变价api")

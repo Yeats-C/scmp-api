@@ -1,9 +1,10 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowVO;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
@@ -14,7 +15,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
-import com.aiqin.bms.scmp.api.product.domain.response.workflow.WorkFlowRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -23,6 +23,11 @@ import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -50,6 +55,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+@WorkFlowAnnotation(WorkFlow.APPLY_GOODS_CONFIG)
 public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl implements ProductSkuConfigService {
 
 
@@ -285,7 +291,7 @@ public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl i
      * @date 2019/1/15
      */
     @Override
-    public String workFlowCallback(WorkFlowCallbackVO vo) throws Exception {
+    public String workFlowCallback(WorkFlowCallbackVO vo) {
         WorkFlowCallbackVO newVO = updateSupStatus(vo);
         //审批中，直接返回成功
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
@@ -314,23 +320,28 @@ public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl i
         }
         //审批通过
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-            updateApplyInfoByVO(newVO);
-            //通过formNo查询备用仓库
-            List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
-                    selectByFormNo(newVO.getFormNo());
-            //获取配置编号
-            List<String> configCodes = applySpareWarehouses.stream().map(item -> item.getConfigCode()).distinct().
-                    collect(Collectors.toList());
-            //保存正式备用仓库信息
-            //删除正式
-            spareWarehouseMapper.deleteByConfigCodes(configCodes);
-            //批量插入
-            List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
-                    ProductSkuConfigSpareWarehouse.class);
-            ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
-            //保存商品配置正式数据
-            saveOfficial(newVO, list);
-            return WorkFlowReturn.SUCCESS;
+            try {
+                updateApplyInfoByVO(newVO);
+                //通过formNo查询备用仓库
+                List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
+                        selectByFormNo(newVO.getFormNo());
+                //获取配置编号
+                List<String> configCodes = applySpareWarehouses.stream().map(item -> item.getConfigCode()).distinct().
+                        collect(Collectors.toList());
+                //保存正式备用仓库信息
+                //删除正式
+                spareWarehouseMapper.deleteByConfigCodes(configCodes);
+                //批量插入
+                List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
+                        ProductSkuConfigSpareWarehouse.class);
+                ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
+                //保存商品配置正式数据
+                saveOfficial(newVO, list);
+                return WorkFlowReturn.SUCCESS;
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                return WorkFlowReturn.FALSE;
+            }
         }
         return WorkFlowReturn.FALSE;
     }

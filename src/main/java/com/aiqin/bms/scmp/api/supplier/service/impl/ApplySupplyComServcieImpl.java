@@ -1,31 +1,28 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.*;
-import com.aiqin.bms.scmp.api.base.ApplyStatus;
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.WorkFlow;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.*;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.*;
-import com.aiqin.bms.scmp.api.supplier.domain.response.workflow.WorkFlowRespVO;
 import com.aiqin.bms.scmp.api.supplier.mapper.ApplyDeliveryInformationMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyAccountMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -47,6 +44,7 @@ import java.util.*;
  */
 @Service
 @Slf4j
+@WorkFlowAnnotation(WorkFlow.APPLY_COMPANY)
 public class ApplySupplyComServcieImpl extends SupplierBaseServiceImpl implements ApplySupplyComServcie {
     @Autowired
     private ApplySettlementService applySettlementService;
