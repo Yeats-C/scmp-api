@@ -55,10 +55,8 @@ import javax.sql.DataSource;
 @GroundDataSource
 @EnableTransactionManagement
 @ControlClient
-@MapperScan(basePackages = {"com.aiqin.bms.scmp.api.supplier.dao",
-        "com.aiqin.bms.scmp.api.supplier.mapper",
-        "com.aiqin.bms.scmp.api.product.dao",
-        "com.aiqin.bms.scmp.api.product.mapper"})
+@MapperScan(basePackages = {"com.aiqin.bms.scmp.api.*.dao",
+        "com.aiqin.bms.scmp.api.*.mapper"})
 @EnableAspectJAutoProxy(proxyTargetClass = true,exposeProxy = true)
 @EnableAsync(proxyTargetClass = true)
 @EnableSwagger2
