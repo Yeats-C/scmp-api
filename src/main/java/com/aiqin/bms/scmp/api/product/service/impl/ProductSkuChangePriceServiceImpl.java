@@ -3,6 +3,8 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
@@ -13,10 +15,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRe
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.Calculate;
-import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
@@ -29,6 +28,7 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +81,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean save(ProductSkuChangePriceReqVO reqVO) throws Exception {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
+        reqVO.setCompanyName(currentAuthToken.getCompanyName());
+        reqVO.setCreateBy(currentAuthToken.getPersonName());
+        reqVO.setCreateTime(new Date());
+        //校验参数
+        validateParam(reqVO);
         //验重
         StringBuilder errorMsg = checkDataRepeat(reqVO);
         if (Objects.nonNull(errorMsg)) {
@@ -96,6 +103,31 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             callWorkflow(reqVO);
         }
         return true;
+    }
+    /**
+     * 校验参数是否重复
+     * @author NullPointException
+     * @date 2019/6/6
+     * @param reqVO
+     * @return void
+     */
+    private void validateParam(ProductSkuChangePriceReqVO reqVO) {
+        Set checkRepeat = Sets.newLinkedHashSet();
+        if(CommonConstant.PURCHASE_CHANGE_PRICE.equals(reqVO.getChangePriceType())){
+            //采购变价 Sku+供应商
+            for (ProductSkuChangePriceInfoReqVO vo : reqVO.getInfoLists()) {
+                if(!checkRepeat.add(vo.getSkuCode()+vo.getSupplierCode())){
+                    throw new BizException(ResultCode.DATA_REPEAT);
+                }
+            }
+        }else {
+            //sku+价格项目+仓库
+            for (ProductSkuChangePriceInfoReqVO vo : reqVO.getInfoLists()) {
+                if(!checkRepeat.add(vo.getSkuCode()+vo.getPriceItemCode()+vo.getTransportCenterCode()+vo.getWarehouseCode()+vo.getWarehouseBatchNumber())){
+                    throw new BizException(ResultCode.DATA_REPEAT);
+                }
+            }
+        }
     }
     /**
      * 验证数据重复性
@@ -280,6 +312,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean update(ProductSkuChangePriceReqVO reqVO) throws Exception {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        reqVO.setUpdateBy(currentAuthToken.getPersonName());
+        reqVO.setUpdateTime(new Date());
         ProductSkuChangePriceRespVO view = view(reqVO.getCode());
         reqVO.setFormNo(view.getFormNo());
         if (Objects.isNull(view)) {
@@ -332,6 +367,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Override
     public BasePage<QueryProductSkuChangePriceRespVO> list(QueryProductSkuChangePriceReqVO reqVO) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
         PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         List<QueryProductSkuChangePriceRespVO> list = productSkuChangePriceInfoMapper.selectListByQueryVO(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
@@ -801,5 +838,12 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         }else{
             throw new BizException(ResultCode.DATA_ERROR);
         }
+    }
+
+    @Override
+    public BasePage<QuerySkuInfoRespVO> getSkuListByQueryVO(QuerySkuInfoReqVO reqVO) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
+        return skuInfoService.getSkuListByQueryVO(reqVO);
     }
 }

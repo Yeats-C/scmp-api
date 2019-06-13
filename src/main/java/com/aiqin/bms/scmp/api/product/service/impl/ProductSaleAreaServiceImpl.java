@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.api.store.StoreApi;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.ApplyType;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO;
@@ -32,6 +34,8 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.mgs.control.component.service.AreaBasicService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -47,6 +51,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -90,9 +95,20 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     @Autowired
     private SkuInfoService skuInfoService;
 
+    @Autowired
+    private AreaBasicService areaBasicService;
+    @Autowired
+    private StoreApi storeApi;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean addSaleAreaDraft(ProductSkuSaleAreaMainReqVO request) throws Exception {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        request.setCompanyCode(currentAuthToken.getCompanyCode());
+        request.setCreateBy(currentAuthToken.getPersonName());
+        request.setCompanyName(currentAuthToken.getCompanyName());
+        request.setCreateTime(new Date());
+        //数据本身验重
+        validateRepeat(request);
         //判断草稿表中是否有这条数据
         List<String> skuCodes = request.getSkuList().stream().map(ProductSaleAreaReqVO::getSkuCode).distinct().collect(Collectors.toList());
         List<ProductSkuSaleAreaDraft> repeat = productSkuSaleAreaDraftMapper.selectBySkuCodes(skuCodes);
@@ -124,6 +140,33 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         }
         //保存数据
         return saveDraft(request);
+    }
+
+    private void validateRepeat(ProductSkuSaleAreaMainReqVO request) {
+        //判断重复
+        List<ProductSkuSaleAreaInfoReqVO> areaList = request.getAreaList();
+        Set<String> objects = Sets.newHashSet();
+        areaList.forEach(o->{
+            if(!objects.add(o.getCode())){
+                throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"数据异常，请检查禁用和启用的销售区域是否有交叉"));
+            }
+        });
+        List<ProductSaleAreaReqVO> skuList = request.getSkuList();
+        Set<Object> objects1 = Sets.newHashSet();
+        skuList.forEach(o->{
+            if(!objects1.add(o.getSkuCode()+o.getCategoriesSupplyChannelsCode()+o.getDirectDeliverySupplierCode())){
+                throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"数据异常，请检查sku信息是否有重复！"));
+            }
+            //判断是否为空
+            if(Objects.isNull(o.getCategoriesSupplyChannelsCode())){
+                throw new BizException(ResultCode.DATA_NOT_COMPLETE);
+            }
+            if(o.getCategoriesSupplyChannelsCode().equals(CommonConstant.SUPPLY_CHANNEL_TYPE_DIRECT_DELIVERY)){
+                if(Objects.isNull(o.getDirectDeliverySupplierCode())){
+                    throw new BizException(ResultCode.DATA_NOT_COMPLETE);
+                }
+            }
+        });
     }
 
     @Override
@@ -193,6 +236,8 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     public BasePage<QueryProductSaleAreaMainRespVO> queryListForOfficial(QueryProductSaleAreaMainReqVO request) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        request.setCompanyCode(currentAuthToken.getCompanyCode());
         PageHelper.startPage(request.getPageNo(),request.getPageSize());
         List<QueryProductSaleAreaMainRespVO> respVos = productSkuSaleAreaMainMapper.selectListByQueryVo(request);
         return PageUtil.getPageList(request.getPageNo(),respVos);
@@ -638,6 +683,8 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     public BasePage<QueryProductSaleAreaSkuRespVO> officialSkuList(QueryProductSaleAreaReqVO reqVO) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
         PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
         List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
@@ -645,6 +692,8 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     public BasePage<QueryProductSaleAreaForSkuRespVO> skuList(QueryProductSaleAreaForSkuReqVO reqVO) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
         return skuInfoService.selectSkuListForSaleArea(reqVO);
     }
 
@@ -700,5 +749,76 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         temp.setAuditorTime(new Date());
         temp.setFormNo(newVO.getFormNo());
         return temp;
+    }
+    @Override
+    public BasePage<AreaBasic> areaList(QueryAreaReqVO req) {
+        HttpResponse response = areaBasicService.areaTypeInfo(3);
+        boolean flag = Objects.isNull(response) || !MsgStatus.SUCCESS.equals(response.getCode()) || CollectionUtils.isEmpty((List<LinkedHashMap<String,String>>) response.getData());
+        if(flag){
+            throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"获取省列表失败！"));
+        }
+        List<LinkedHashMap<String,String>> tempList = (List<LinkedHashMap<String,String>>) response.getData();
+        String s = JSON.toJSONString(tempList);
+        List<AreaBasic> list = JSONObject.parseArray(s,AreaBasic.class);
+        Integer tatal = list.size();
+        if(StringUtils.isNotBlank(req.getAreaName())){
+            Stream<AreaBasic> areaBasicStream = list.stream().filter(o -> o.getArea_name().contains(req.getAreaName()));
+            List<AreaBasic> collect = areaBasicStream.collect(Collectors.toList());
+            tatal = collect.size();
+            list = collect.stream().skip((req.getPageNo()-1) * req.getPageSize()).limit(req.getPageSize()).collect(Collectors.toList());
+        }else {
+            list = list.stream().skip((req.getPageNo()-1) * req.getPageSize()).limit(req.getPageSize()).collect(Collectors.toList());
+        }
+        BasePage pageList = PageUtil.getPageList(req.getPageNo(), list);
+        pageList.setTotalCount(tatal.longValue());
+        pageList.setPageNo(req.getPageNo());
+        pageList.setPageSize(req.getPageSize());
+        return pageList;
+    }
+    @Override
+    public BasePage<StoreInfo> storeList(QueryStoreReqVO req) {
+        HttpResponse httpResponse =  storeApi.storeList(req);
+        LinkedHashMap<String,Object> data = (LinkedHashMap<String,Object>)httpResponse.getData();
+        String s = JSON.toJSONString(data);
+        JSONObject object = JSONObject.parseObject(s);
+        Integer totalCount = (Integer) object.get("totalCount");
+        Object dataList = object.get("dataList");
+        String s1 = JSONObject.toJSONString(dataList);
+        List<StoreInfo> storeInfos = JSONObject.parseArray(s1, StoreInfo.class);
+        BasePage pageList = PageUtil.getPageList(req.getPageNo(), storeInfos);
+        pageList.setPageSize(req.getPageSize());
+        pageList.setPageNo(req.getPageNo());
+        pageList.setTotalCount(totalCount.longValue());
+        return pageList;
+    }
+
+    @Override
+    public List<ProductSaleAreaFuzzySearchRespVO> fuzzySearch(String name) {
+        QueryAreaReqVO areaReqVO = new QueryAreaReqVO();
+        areaReqVO.setAreaName(name);
+        areaReqVO.setPageSize(5);
+        //先查区域
+        BasePage<AreaBasic> pageInfo = areaList(areaReqVO);
+        List<AreaBasic> list = pageInfo.getDataList();
+        List<ProductSaleAreaFuzzySearchRespVO> respVOS = Lists.newArrayList();
+        //默认展示5条
+        for (AreaBasic areaBasic : list) {
+            ProductSaleAreaFuzzySearchRespVO temp = new ProductSaleAreaFuzzySearchRespVO(areaBasic.getArea_id(), areaBasic.getArea_name(), 1);
+            respVOS.add(temp);
+            if(respVOS.size()==5){
+                return respVOS;
+            }
+        }
+        //再查门店
+        QueryStoreReqVO req = new QueryStoreReqVO();
+        req.setCondition(name);
+        req.setPageSize(areaReqVO.getPageSize()-respVOS.size());
+        BasePage<StoreInfo> pageInfo1 = storeList(req);
+        List<StoreInfo> list1 = pageInfo1.getDataList();
+        for (StoreInfo o : list1) {
+            ProductSaleAreaFuzzySearchRespVO temp = new ProductSaleAreaFuzzySearchRespVO(o.getStoreCode(), o.getStoreName(), 2);
+            respVOS.add(temp);
+        }
+        return respVOS;
     }
 }

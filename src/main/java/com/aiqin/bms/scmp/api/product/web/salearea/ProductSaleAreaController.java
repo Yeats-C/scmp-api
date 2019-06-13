@@ -1,18 +1,21 @@
-package com.aiqin.bms.scmp.api.product.web;
+package com.aiqin.bms.scmp.api.product.web.salearea;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.bms.scmp.api.base.AreaBasic;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.*;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSaleAreaService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Description:
@@ -152,6 +155,49 @@ public class ProductSaleAreaController {
         log.info("ProductSaleAreaController--officialSkuList--入参: [{}]", JSONObject.toJSONString(reqVO));
         try {
             return HttpResponse.success(productSaleAreaService.skuList(reqVO));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @GetMapping("/fuzzysearch")
+    @ApiOperation("模糊搜索")
+    public HttpResponse<List<ProductSaleAreaFuzzySearchRespVO>> fuzzySearch(@RequestParam String name) {
+        log.info("ProductSaleAreaController--fuzzySearch--入参: [{}]", name);
+        try {
+            return HttpResponse.success(productSaleAreaService.fuzzySearch(name));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/area/list")
+    @ApiOperation("省列表查询")
+    public HttpResponse<BasePage<AreaBasic>> areaList(@RequestBody QueryAreaReqVO req) {
+        log.info("ProductSaleAreaController--areaList--入参: [{}]", JSONObject.toJSONString(req));
+        try {
+            return HttpResponse.success(productSaleAreaService.areaList(req));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @PostMapping("/store/list")
+    @ApiOperation("门店列表查询")
+    public HttpResponse<BasePage<StoreInfo>> storeList(@RequestBody QueryStoreReqVO req) {
+        log.info("ProductSaleAreaController--storeList--入参: [{}]", JSONObject.toJSONString(req));
+        try {
+            return HttpResponse.success(productSaleAreaService.storeList(req));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
             return HttpResponse.failure(e.getMessageId());

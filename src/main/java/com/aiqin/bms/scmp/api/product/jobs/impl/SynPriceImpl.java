@@ -1,16 +1,16 @@
 package com.aiqin.bms.scmp.api.product.jobs.impl;
 
-import com.aiqin.bms.scmp.api.base.CommonConstant;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuChangePriceInfoMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuChangePriceMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoLogMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
+import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuPriceInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog;
 import com.aiqin.bms.scmp.api.product.jobs.SynPrice;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuChangePriceInfoMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuChangePriceMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoLogMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.google.common.collect.Lists;

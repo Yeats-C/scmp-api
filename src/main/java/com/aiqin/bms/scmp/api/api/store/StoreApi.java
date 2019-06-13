@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.supplier.service.api.storeapi;
+package com.aiqin.bms.scmp.api.api.store;
 
 import com.aiqin.bms.scmp.api.base.MsgStatus;
 import com.aiqin.bms.scmp.api.common.BizException;
