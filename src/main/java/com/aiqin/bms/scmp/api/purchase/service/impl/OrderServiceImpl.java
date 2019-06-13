@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import org.springframework.stereotype.Service;
 
@@ -12,4 +13,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class OrderServiceImpl implements OrderService {
+
+    @Override
+    public Boolean save(OrderInfoReqVO reqVO) {
+        //TODO
+        return false;
+    }
 }
