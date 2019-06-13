@@ -1,7 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -33,4 +37,8 @@ import org.springframework.stereotype.Service;
 public class GoodsRejectServiceImpl implements GoodsRejectService {
 
 
+    @Override
+    public HttpResponse<List<RejectApplyQueryRequest>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
+        return null;
+    }
 }

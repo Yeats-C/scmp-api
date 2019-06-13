@@ -1,10 +1,6 @@
-package com.aiqin.bms.scmp.api.purchase.service;
+package com.aiqin.bms.scmp.api.purchase.domain.request;
 
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
-
-import java.util.List;
+import com.aiqin.bms.scmp.api.base.PagesRequest;
 
 /**
  * <p>
@@ -32,8 +28,5 @@ import java.util.List;
  * <p>
  * 思维方式*热情*能力
  */
-public interface GoodsRejectService {
-    HttpResponse<List<RejectApplyQueryRequest>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest);
-
-    HttpResponse<List<RejectApplyRequest>> rejectApply(RejectApplyRequest rejectApplyQueryRequest);
+public class RejectApplyQueryRequest extends PagesRequest {
 }

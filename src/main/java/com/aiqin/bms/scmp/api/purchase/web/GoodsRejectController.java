@@ -1,14 +1,12 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -48,10 +46,23 @@ public class GoodsRejectController {
     @Resource
     private GoodsRejectService goodsRejectService;
 
-    @PostMapping("/apply/list")
+    @GetMapping("/apply/list")
     @ApiOperation(value = "退供单列表")
-    public HttpResponse<List<RejectApplyRequest>> rejectApplyList(@RequestBody RejectApplyRequest rejectApplyRequest) {
-        return goodsRejectService.rejectApplyList(rejectApplyRequest);
+    public HttpResponse<List<RejectApplyQueryRequest>> rejectApplyList(@RequestBody RejectApplyQueryRequest rejectApplyQueryRequest) {
+        return goodsRejectService.rejectApplyList(rejectApplyQueryRequest);
     }
+
+    @PostMapping("/apply")
+    @ApiOperation(value = "退供单增加/修改")
+    public HttpResponse<List<RejectApplyRequest>> rejectApply(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+        return goodsRejectService.rejectApply(rejectApplyQueryRequest);
+    }
+    @PostMapping("/apply/import")
+    @ApiOperation(value = "批量导入退供申请单")
+    public HttpResponse<List<RejectApplyRequest>> rejectApply(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+        return goodsRejectService.rejectApply(rejectApplyQueryRequest);
+    }
+
+
 
 }
