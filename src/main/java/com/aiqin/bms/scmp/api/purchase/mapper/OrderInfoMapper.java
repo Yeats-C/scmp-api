@@ -1,7 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
 
-import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 
 public interface OrderInfoMapper {
     int deleteByPrimaryKey(Long id);

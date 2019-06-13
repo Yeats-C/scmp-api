@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,12 +25,15 @@ import javax.validation.Valid;
  */
 @RestController
 @Slf4j
-@Api("订单相关")
+@Api(description = "订单相关")
 @RequestMapping("/order")
 public class OrderController {
+
     @Autowired
     private OrderService orderService;
+
     @ApiOperation("订单同步")
+    @PostMapping("/save")
     public HttpResponse<Boolean> saveOrder(@RequestBody @Valid OrderInfoReqVO reqVO){
         try {
             return HttpResponse.success(orderService.save(reqVO));
