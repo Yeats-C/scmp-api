@@ -33,7 +33,6 @@ import lombok.val;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,8 +57,6 @@ public class VariablePriceServiceImplProduct extends ProductBaseServiceImpl impl
     private ProductOperationLogService productOperationLogService;
     @Autowired
     private ProductSkuPriceDao productSkuPriceDao;
-    @Value("${Purchase.url}")
-    public String PURCHASE_API_URL;
     @Autowired
     private WorkFlowBaseUrl workFlowBaseUrl;
     @Autowired
