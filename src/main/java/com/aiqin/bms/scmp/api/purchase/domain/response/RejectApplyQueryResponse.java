@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.purchase.domain.request;
+package com.aiqin.bms.scmp.api.purchase.domain.response;
 
 import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -34,7 +34,7 @@ import java.util.Date;
  * 思维方式*热情*能力
  */
 @Data
-public class RejectApplyQueryRequest extends PagesRequest {
+public class RejectApplyQueryResponse {
 
     @ApiModelProperty(value="退货申请单号")
     @JsonProperty("reject_apply_record_code")
@@ -44,20 +44,33 @@ public class RejectApplyQueryRequest extends PagesRequest {
     @JsonProperty("apply_type")
     private Integer applyType;
 
-    @ApiModelProperty(value="采购组 code")
-    @JsonProperty("purchase_group_code")
-    private String purchaseGroupCode;
+    @ApiModelProperty(value="采购组")
+    @JsonProperty("purchase_group_name")
+    private String purchaseGroupName;
 
     @ApiModelProperty(value="退供申请单状态: 0  已完成 1 待提交")
     @JsonProperty("apply_record_status")
     private Integer applyRecordStatus;
 
-    @ApiModelProperty(value="开始时间")
-    @JsonProperty("begin_time")
-    private Date beginTime;
+    @ApiModelProperty(value="总sku数量")
+    @JsonProperty("sum_sku")
+    private Integer sumSku;
 
-    @ApiModelProperty(value="结束时间")
-    @JsonProperty("finish_time")
-    private Date finishTime;
+    @ApiModelProperty(value="总退供数量")
+    @JsonProperty("sum_count")
+    private Integer sumCount;
+
+    @ApiModelProperty(value="总退供金额")
+    @JsonProperty("sum_amount")
+    private Long sumAmount;
+
+    @ApiModelProperty(value="")
+    @JsonProperty("create_by_name")
+    private String createByName;
+
+    @ApiModelProperty(value="")
+    @JsonProperty("create_time")
+    private Date createTime;
+
 
 }

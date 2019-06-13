@@ -1,17 +1,19 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
+
+import java.util.List;
 
 public interface RejectApplyRecordDao {
-    int deleteByPrimaryKey(Long id);
 
     int insert(RejectApplyRecord record);
 
     int insertSelective(RejectApplyRecord record);
 
-    RejectApplyRecord selectByPrimaryKey(Long id);
-
     int updateByPrimaryKeySelective(RejectApplyRecord record);
 
-    int updateByPrimaryKey(RejectApplyRecord record);
+    List<RejectApplyRecord> list(RejectApplyQueryRequest rejectApplyQueryRequest);
+
+    Integer listCount(RejectApplyQueryRequest rejectApplyQueryRequest);
 }

@@ -49,7 +49,7 @@ public class RejectRecordDetail {
 
     @ApiModelProperty(value="商品类型 0赠品 1商品 2实物返回")
     @JsonProperty("product_type")
-    private Boolean productType;
+    private Integer productType;
 
     @ApiModelProperty(value="规格")
     @JsonProperty("product_spec")
@@ -195,11 +195,11 @@ public class RejectRecordDetail {
         this.brandName = brandName;
     }
 
-    public Boolean getProductType() {
+    public Integer getProductType() {
         return productType;
     }
 
-    public void setProductType(Boolean productType) {
+    public void setProductType(Integer productType) {
         this.productType = productType;
     }
 

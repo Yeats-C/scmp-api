@@ -1,10 +1,15 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.purchase.dao.*;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -37,8 +42,61 @@ import java.util.List;
 public class GoodsRejectServiceImpl implements GoodsRejectService {
 
 
+    @Resource
+    private RejectApplyRecordDao rejectApplyRecordDao;
+    @Resource
+    private RejectApplyRecordDetailDao rejectApplyRecordDetailDao;
+    @Resource
+    private RejectRecordDao rejectRecordDao;
+    @Resource
+    private RejectRecordDetailDao rejectRecordDetailDao;
+    @Resource
+    private OperationLogDao operationLogDao;
+
     @Override
-    public HttpResponse<List<RejectApplyQueryRequest>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
+    public HttpResponse rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
+        List<RejectApplyRecord> list = rejectApplyRecordDao.list(rejectApplyQueryRequest);
+        Integer count = rejectApplyRecordDao.listCount(rejectApplyQueryRequest);
+        return HttpResponse.success(new PageResData(count, list));
+    }
+
+    @Override
+    public HttpResponse rejectApply(RejectApplyRequest rejectApplyQueryRequest) {
+        return null;
+    }
+
+    @Override
+    public HttpResponse rejectApplyImport(RejectApplyRequest rejectApplyQueryRequest) {
+        return null;
+    }
+
+    @Override
+    public HttpResponse rejectApplyInfo(RejectApplyRequest rejectApplyQueryRequest) {
+        return null;
+    }
+
+    @Override
+    public HttpResponse addReject(RejectApplyRequest rejectApplyQueryRequest) {
+        return null;
+    }
+
+    @Override
+    public HttpResponse updateReject(RejectApplyRequest rejectApplyQueryRequest) {
+        return null;
+    }
+
+    @Override
+    public HttpResponse rejectList(RejectApplyRequest rejectApplyQueryRequest) {
+        return null;
+    }
+
+    @Override
+    public HttpResponse rejectSupplier(RejectApplyRequest rejectApplyQueryRequest) {
+        return null;
+    }
+
+    @Override
+    public HttpResponse rejectInfo(RejectApplyRequest rejectApplyQueryRequest) {
         return null;
     }
 }
