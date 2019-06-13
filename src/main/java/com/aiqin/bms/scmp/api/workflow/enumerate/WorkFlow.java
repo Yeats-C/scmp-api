@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.workflow.annotation;
+package com.aiqin.bms.scmp.api.workflow.enumerate;
 
 import lombok.Getter;
 
