@@ -37,15 +37,8 @@ image:
 marker:
   info:
     url: http://market.api.aiqin.com/
-Visit:
-    #url: http://product.api.aiqin.com
-    url: http://127.0.0.1:9021
 Central:
     url: http://control.api.aiqin.com
-Purchase:
-    #本地启动调用商品的地址
-    #url: http://127.0.0.1:9022
-    url: http://purchase.api.aiqin.com
 Store:
   url: http://store.api.aiqin.com
 Workflow:
