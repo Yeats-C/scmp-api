@@ -60,4 +60,15 @@ public class RejectApplyQueryRequest extends PagesRequest {
     @JsonProperty("finish_time")
     private Date finishTime;
 
+    public RejectApplyQueryRequest(String rejectApplyRecordCode, Integer applyType, String purchaseGroupCode, Integer applyRecordStatus, Date beginTime, Date finishTime) {
+        this.rejectApplyRecordCode = rejectApplyRecordCode;
+        this.applyType = applyType;
+        this.purchaseGroupCode = purchaseGroupCode;
+        this.applyRecordStatus = applyRecordStatus;
+        this.beginTime = beginTime;
+        this.finishTime = finishTime;
+    }
+
+    public RejectApplyQueryRequest() {
+    }
 }
