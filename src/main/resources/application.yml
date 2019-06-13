@@ -24,7 +24,7 @@ spring:
 mybatis:
     mapper-locations: classpath*:/com/aiqin/bms/scmp/api/*/dao/*.xml,classpath*:/com/aiqin/bms/scmp/api/*/mapper/*.xml
     #实体扫描，多个package用逗号或者分号分隔
-    type-aliases-package: com.aiqin.mgs.scmp.api.*.domain
+    type-aliases-package: com.aiqin.bms.scmp.api.*.domain
     configuration:
       call-setters-on-nulls: true
 logging:
