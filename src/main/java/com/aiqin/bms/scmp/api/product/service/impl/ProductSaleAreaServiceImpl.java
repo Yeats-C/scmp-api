@@ -62,7 +62,7 @@ import java.util.stream.Stream;
  */
 @Service
 @Slf4j
-@WorkFlowAnnotation(WorkFlow.APPLY_GOODS)
+@WorkFlowAnnotation(WorkFlow.APPLY_SALE_AREA)
 public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements ProductSaleAreaService, WorkFlowHelper {
     @Autowired
     private ProductSkuSaleAreaDraftMapper productSkuSaleAreaDraftMapper;
