@@ -18,6 +18,7 @@ import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -40,7 +41,7 @@ import java.util.*;
  */
 @Service
 @WorkFlowAnnotation(WorkFlow.APPLY_SUPPLIER)
-public class ApplySupplierServiceImplSupplier extends SupplierBaseServiceImpl implements ApplySupplierService {
+public class ApplySupplierServiceImplSupplier extends SupplierBaseServiceImpl implements ApplySupplierService, WorkFlowHelper {
     @Autowired
     private EncodingRuleService encodingRuleService;
     @Autowired

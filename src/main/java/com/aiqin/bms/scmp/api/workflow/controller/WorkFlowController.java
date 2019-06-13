@@ -39,7 +39,7 @@ public class WorkFlowController {
             }
             return workFlowService.WorkFlowCallBack(WorkFlow.getAll().get(type), vo);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
             return WorkFlowReturn.FALSE;
         }
     }
