@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.RejectApplyRecordDetailDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="reject_apply_record_code" jdbcType="VARCHAR" property="rejectApplyRecordCode" />
+    <result column="apply_type" jdbcType="BIT" property="applyType" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="apply_record_status" jdbcType="BIT" property="applyRecordStatus" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="product_type" jdbcType="BIT" property="productType" />
+    <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
+    <result column="product_unit" jdbcType="VARCHAR" property="productUnit" />
+    <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
+    <result column="product_count" jdbcType="INTEGER" property="productCount" />
+    <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="product_amount" jdbcType="BIGINT" property="productAmount" />
+    <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
+    <result column="product_cost" jdbcType="BIGINT" property="productCost" />
+    <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+    <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
+    <result column="batch_create_time" jdbcType="TIMESTAMP" property="batchCreateTime" />
+    <result column="settlement_method" jdbcType="VARCHAR" property="settlementMethod" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="district_id" jdbcType="VARCHAR" property="districtId" />
+    <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name, 
+    apply_record_status, sku_code, sku_name, product_id, category_id, category_name, 
+    brand_id, brand_name, product_type, product_spec, product_unit, stock_count, product_count, 
+    tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name, 
+    product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time, 
+    settlement_method, supplier_code, supplier_name, province_id, province_name, city_id, 
+    city_name, district_id, district_name, address, create_by_id, create_by_name, update_by_id, 
+    update_by_name, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from reject_apply_record_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from reject_apply_record_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
+    insert into reject_apply_record_detail (id, reject_apply_record_code, apply_type, 
+      purchase_group_code, purchase_group_name, apply_record_status, 
+      sku_code, sku_name, product_id, 
+      category_id, category_name, brand_id, 
+      brand_name, product_type, product_spec, 
+      product_unit, stock_count, product_count, 
+      tax_rate, transport_center_code, transport_center_name, 
+      warehouse_code, warehouse_name, product_amount, 
+      product_total_amount, product_cost, batch_no, 
+      batch_remark, batch_create_time, settlement_method, 
+      supplier_code, supplier_name, province_id, 
+      province_name, city_id, city_name, 
+      district_id, district_name, address, 
+      create_by_id, create_by_name, update_by_id, 
+      update_by_name, create_time, update_time
+      )
+    values (#{id,jdbcType=BIGINT}, #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{applyType,jdbcType=BIT}, 
+      #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{applyRecordStatus,jdbcType=BIT}, 
+      #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, 
+      #{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, #{brandId,jdbcType=VARCHAR}, 
+      #{brandName,jdbcType=VARCHAR}, #{productType,jdbcType=BIT}, #{productSpec,jdbcType=VARCHAR}, 
+      #{productUnit,jdbcType=VARCHAR}, #{stockCount,jdbcType=INTEGER}, #{productCount,jdbcType=INTEGER}, 
+      #{taxRate,jdbcType=INTEGER}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
+      #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{productAmount,jdbcType=BIGINT}, 
+      #{productTotalAmount,jdbcType=BIGINT}, #{productCost,jdbcType=BIGINT}, #{batchNo,jdbcType=VARCHAR}, 
+      #{batchRemark,jdbcType=VARCHAR}, #{batchCreateTime,jdbcType=TIMESTAMP}, #{settlementMethod,jdbcType=VARCHAR}, 
+      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, 
+      #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, 
+      #{districtId,jdbcType=VARCHAR}, #{districtName,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
+      #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
+      #{updateByName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
+    insert into reject_apply_record_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="rejectApplyRecordCode != null">
+        reject_apply_record_code,
+      </if>
+      <if test="applyType != null">
+        apply_type,
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code,
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name,
+      </if>
+      <if test="applyRecordStatus != null">
+        apply_record_status,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="skuName != null">
+        sku_name,
+      </if>
+      <if test="productId != null">
+        product_id,
+      </if>
+      <if test="categoryId != null">
+        category_id,
+      </if>
+      <if test="categoryName != null">
+        category_name,
+      </if>
+      <if test="brandId != null">
+        brand_id,
+      </if>
+      <if test="brandName != null">
+        brand_name,
+      </if>
+      <if test="productType != null">
+        product_type,
+      </if>
+      <if test="productSpec != null">
+        product_spec,
+      </if>
+      <if test="productUnit != null">
+        product_unit,
+      </if>
+      <if test="stockCount != null">
+        stock_count,
+      </if>
+      <if test="productCount != null">
+        product_count,
+      </if>
+      <if test="taxRate != null">
+        tax_rate,
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code,
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name,
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code,
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name,
+      </if>
+      <if test="productAmount != null">
+        product_amount,
+      </if>
+      <if test="productTotalAmount != null">
+        product_total_amount,
+      </if>
+      <if test="productCost != null">
+        product_cost,
+      </if>
+      <if test="batchNo != null">
+        batch_no,
+      </if>
+      <if test="batchRemark != null">
+        batch_remark,
+      </if>
+      <if test="batchCreateTime != null">
+        batch_create_time,
+      </if>
+      <if test="settlementMethod != null">
+        settlement_method,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="supplierName != null">
+        supplier_name,
+      </if>
+      <if test="provinceId != null">
+        province_id,
+      </if>
+      <if test="provinceName != null">
+        province_name,
+      </if>
+      <if test="cityId != null">
+        city_id,
+      </if>
+      <if test="cityName != null">
+        city_name,
+      </if>
+      <if test="districtId != null">
+        district_id,
+      </if>
+      <if test="districtName != null">
+        district_name,
+      </if>
+      <if test="address != null">
+        address,
+      </if>
+      <if test="createById != null">
+        create_by_id,
+      </if>
+      <if test="createByName != null">
+        create_by_name,
+      </if>
+      <if test="updateById != null">
+        update_by_id,
+      </if>
+      <if test="updateByName != null">
+        update_by_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="rejectApplyRecordCode != null">
+        #{rejectApplyRecordCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applyType != null">
+        #{applyType,jdbcType=BIT},
+      </if>
+      <if test="purchaseGroupCode != null">
+        #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyRecordStatus != null">
+        #{applyRecordStatus,jdbcType=BIT},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryName != null">
+        #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null">
+        #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        #{productType,jdbcType=BIT},
+      </if>
+      <if test="productSpec != null">
+        #{productSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="productUnit != null">
+        #{productUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="stockCount != null">
+        #{stockCount,jdbcType=INTEGER},
+      </if>
+      <if test="productCount != null">
+        #{productCount,jdbcType=INTEGER},
+      </if>
+      <if test="taxRate != null">
+        #{taxRate,jdbcType=INTEGER},
+      </if>
+      <if test="transportCenterCode != null">
+        #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterName != null">
+        #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="productAmount != null">
+        #{productAmount,jdbcType=BIGINT},
+      </if>
+      <if test="productTotalAmount != null">
+        #{productTotalAmount,jdbcType=BIGINT},
+      </if>
+      <if test="productCost != null">
+        #{productCost,jdbcType=BIGINT},
+      </if>
+      <if test="batchNo != null">
+        #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="batchRemark != null">
+        #{batchRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="batchCreateTime != null">
+        #{batchCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="settlementMethod != null">
+        #{settlementMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null">
+        #{provinceId,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null">
+        #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null">
+        #{cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="districtId != null">
+        #{districtId,jdbcType=VARCHAR},
+      </if>
+      <if test="districtName != null">
+        #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createById != null">
+        #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="createByName != null">
+        #{createByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateById != null">
+        #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        #{updateByName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
+    update reject_apply_record_detail
+    <set>
+      <if test="rejectApplyRecordCode != null">
+        reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applyType != null">
+        apply_type = #{applyType,jdbcType=BIT},
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyRecordStatus != null">
+        apply_record_status = #{applyRecordStatus,jdbcType=BIT},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="productId != null">
+        product_id = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryName != null">
+        category_name = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=BIT},
+      </if>
+      <if test="productSpec != null">
+        product_spec = #{productSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="productUnit != null">
+        product_unit = #{productUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="stockCount != null">
+        stock_count = #{stockCount,jdbcType=INTEGER},
+      </if>
+      <if test="productCount != null">
+        product_count = #{productCount,jdbcType=INTEGER},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate,jdbcType=INTEGER},
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="productAmount != null">
+        product_amount = #{productAmount,jdbcType=BIGINT},
+      </if>
+      <if test="productTotalAmount != null">
+        product_total_amount = #{productTotalAmount,jdbcType=BIGINT},
+      </if>
+      <if test="productCost != null">
+        product_cost = #{productCost,jdbcType=BIGINT},
+      </if>
+      <if test="batchNo != null">
+        batch_no = #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="batchRemark != null">
+        batch_remark = #{batchRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="batchCreateTime != null">
+        batch_create_time = #{batchCreateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="settlementMethod != null">
+        settlement_method = #{settlementMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null">
+        province_id = #{provinceId,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null">
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null">
+        city_id = #{cityId,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="districtId != null">
+        district_id = #{districtId,jdbcType=VARCHAR},
+      </if>
+      <if test="districtName != null">
+        district_name = #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null">
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="createById != null">
+        create_by_id = #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="createByName != null">
+        create_by_name = #{createByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
+    update reject_apply_record_detail
+    set reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR},
+      apply_type = #{applyType,jdbcType=BIT},
+      purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      apply_record_status = #{applyRecordStatus,jdbcType=BIT},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      sku_name = #{skuName,jdbcType=VARCHAR},
+      product_id = #{productId,jdbcType=VARCHAR},
+      category_id = #{categoryId,jdbcType=VARCHAR},
+      category_name = #{categoryName,jdbcType=VARCHAR},
+      brand_id = #{brandId,jdbcType=VARCHAR},
+      brand_name = #{brandName,jdbcType=VARCHAR},
+      product_type = #{productType,jdbcType=BIT},
+      product_spec = #{productSpec,jdbcType=VARCHAR},
+      product_unit = #{productUnit,jdbcType=VARCHAR},
+      stock_count = #{stockCount,jdbcType=INTEGER},
+      product_count = #{productCount,jdbcType=INTEGER},
+      tax_rate = #{taxRate,jdbcType=INTEGER},
+      transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      product_amount = #{productAmount,jdbcType=BIGINT},
+      product_total_amount = #{productTotalAmount,jdbcType=BIGINT},
+      product_cost = #{productCost,jdbcType=BIGINT},
+      batch_no = #{batchNo,jdbcType=VARCHAR},
+      batch_remark = #{batchRemark,jdbcType=VARCHAR},
+      batch_create_time = #{batchCreateTime,jdbcType=TIMESTAMP},
+      settlement_method = #{settlementMethod,jdbcType=VARCHAR},
+      supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      supplier_name = #{supplierName,jdbcType=VARCHAR},
+      province_id = #{provinceId,jdbcType=VARCHAR},
+      province_name = #{provinceName,jdbcType=VARCHAR},
+      city_id = #{cityId,jdbcType=VARCHAR},
+      city_name = #{cityName,jdbcType=VARCHAR},
+      district_id = #{districtId,jdbcType=VARCHAR},
+      district_name = #{districtName,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      create_by_id = #{createById,jdbcType=VARCHAR},
+      create_by_name = #{createByName,jdbcType=VARCHAR},
+      update_by_id = #{updateById,jdbcType=VARCHAR},
+      update_by_name = #{updateByName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
