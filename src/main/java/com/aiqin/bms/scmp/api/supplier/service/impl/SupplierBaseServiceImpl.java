@@ -1,15 +1,18 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.bms.scmp.api.base.*;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowVO;
+import com.aiqin.bms.scmp.api.base.ApplyStatus;
+import com.aiqin.bms.scmp.api.base.Indicator;
+import com.aiqin.bms.scmp.api.base.IndicatorStr;
+import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.supplier.domain.response.workflow.WorkFlowRespVO;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierBaseService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.MD5Utils;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.alibaba.fastjson.JSON;

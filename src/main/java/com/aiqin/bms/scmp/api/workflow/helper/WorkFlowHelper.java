@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.workflow.helper;
 
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
+
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 /**
  * Description:

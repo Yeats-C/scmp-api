@@ -1,10 +1,9 @@
 package com.aiqin.bms.scmp.api.workflow.controller;
 
-import ch.qos.logback.classic.Logger;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.service.WorkFlowService;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

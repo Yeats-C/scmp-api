@@ -5,7 +5,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplyDelivery
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplyDeliveryInfoReqDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplyDeliveryInfoReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplyDeliveryVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
 

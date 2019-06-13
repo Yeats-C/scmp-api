@@ -5,9 +5,9 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductOperationLog;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.*;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductDetailsResponseVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductResponseVO;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
 

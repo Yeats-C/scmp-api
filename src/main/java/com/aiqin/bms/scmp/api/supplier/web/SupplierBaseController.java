@@ -1,12 +1,12 @@
 package com.aiqin.bms.scmp.api.supplier.web;
 
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyContractService;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplierService;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComAcctService;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComServcie;
 import com.aiqin.bms.scmp.api.util.BrowserUtils;
 import com.aiqin.bms.scmp.api.util.ExcelUtil;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

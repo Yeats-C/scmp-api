@@ -1,7 +1,7 @@
 /**
   * Copyright 2019 bejson.com 
   */
-package com.aiqin.bms.scmp.api.product.domain.response.workflow;
+package com.aiqin.bms.scmp.api.workflow.vo.response;
 
 import lombok.Data;
 

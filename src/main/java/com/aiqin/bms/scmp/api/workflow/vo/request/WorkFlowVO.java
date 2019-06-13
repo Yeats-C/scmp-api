@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.common.workflow;
+package com.aiqin.bms.scmp.api.workflow.vo.request;
 
 import lombok.Data;
 
