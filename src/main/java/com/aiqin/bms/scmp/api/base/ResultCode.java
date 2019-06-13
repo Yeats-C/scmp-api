@@ -4,6 +4,8 @@ import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 
 public interface ResultCode {
+    //系统相关异常
+    MessageId BEAN_COPY_ERROR = MessageId.create(Project.PURCHASE_API,599,"对象拷贝异常");
     MessageId SYSTEM_ERROR = MessageId.create(Project.STORE_API, 500, "系统异常");
     MessageId REQUIRED_PARAMETER = MessageId.create(Project.STORE_API, 1, "参数缺失");
     MessageId NAME_REPEAT = MessageId.create(Project.STORE_API, 2, "名称重复");
@@ -174,8 +176,7 @@ public interface ResultCode {
     //变价
     MessageId DATA_ERROR =  MessageId.create(Project.PRODUCT_API, 98, "数据异常");
     MessageId DATA_NOT_COMPLETE = MessageId.create(Project.PRODUCT_API,98,"数据不完成！请检查并补充数据！");
-
-
     //订单
+    MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");
 
 }

@@ -245,6 +245,31 @@
       </if>
     </trim>
   </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+        insert into order_product_item (id, order_code, sku_code,
+      sku_name, picture_url, spec,
+      spec_code, color_name, color_code,
+      model, model_code, unit_code,
+      unit_name, zero_disassembly_coefficient, give_promotion,
+      batch_number, price, num,
+      amount, activity_apportionment, preferential_allocation,
+      actual_deliver_num, activity_code, product_line_num,
+      promotion_line_num, return_num, company_name,
+      company_code)
+    values
+    <foreach collection="list" item="item" separator="," close="" open="">
+    (#{item.id,jdbcType=BIGINT}, #{item.orderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR}, #{item.pictureUrl,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR},
+      #{item.specCode,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.colorCode,jdbcType=VARCHAR},
+      #{item.model,jdbcType=VARCHAR}, #{item.modelCode,jdbcType=VARCHAR}, #{item.unitCode,jdbcType=VARCHAR},
+      #{item.unitName,jdbcType=VARCHAR}, #{item.zeroDisassemblyCoefficient,jdbcType=INTEGER}, #{item.givePromotion,jdbcType=INTEGER},
+      #{item.batchNumber,jdbcType=VARCHAR}, #{item.price,jdbcType=BIGINT}, #{item.num,jdbcType=BIGINT},
+      #{item.amount,jdbcType=BIGINT}, #{item.activityApportionment,jdbcType=BIGINT}, #{item.preferentialAllocation,jdbcType=BIGINT},
+      #{item.actualDeliverNum,jdbcType=BIGINT}, #{item.activityCode,jdbcType=VARCHAR}, #{item.productLineNum,jdbcType=BIGINT},
+      #{item.promotionLineNum,jdbcType=BIGINT}, #{item.returnNum,jdbcType=BIGINT}, #{item.companyName,jdbcType=VARCHAR},
+      #{item.companyCode,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
     update order_product_item
     <set>

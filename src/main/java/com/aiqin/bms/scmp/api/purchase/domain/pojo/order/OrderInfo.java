@@ -34,19 +34,19 @@ public class OrderInfo {
     private Integer orderStatus;
 
     @ApiModelProperty("是否锁定(0否1是）")
-    private Integer beLock;
+    private Integer beLock = 0;
 
     @ApiModelProperty("锁定原因")
     private String lockReason;
 
     @ApiModelProperty("是否是异常订单(0否1是)")
-    private Integer beException;
+    private Integer beException = 0;
 
     @ApiModelProperty("异常原因")
     private String exceptionReason;
 
     @ApiModelProperty("是否删除(0否1是)")
-    private Integer beDelete;
+    private Integer beDelete = 0;
 
     @ApiModelProperty("支付状态")
     private Integer paymentStatus;
@@ -175,7 +175,7 @@ public class OrderInfo {
     private Integer logisticsRemissionRatio;
 
     @ApiModelProperty("发运状态")
-    private Integer transportStatus;
+    private Integer transportStatus = 0;
 
     @ApiModelProperty("公司名称")
     private String companyName;
