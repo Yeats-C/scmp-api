@@ -54,13 +54,13 @@ public class RejectApplyQueryRequest extends PagesRequest {
 
     @ApiModelProperty(value="开始时间")
     @JsonProperty("begin_time")
-    private Date beginTime;
+    private String beginTime;
 
     @ApiModelProperty(value="结束时间")
     @JsonProperty("finish_time")
-    private Date finishTime;
+    private String finishTime;
 
-    public RejectApplyQueryRequest(String rejectApplyRecordCode, Integer applyType, String purchaseGroupCode, Integer applyRecordStatus, Date beginTime, Date finishTime) {
+    public RejectApplyQueryRequest(String rejectApplyRecordCode, Integer applyType, String purchaseGroupCode, Integer applyRecordStatus, String beginTime, String finishTime) {
         this.rejectApplyRecordCode = rejectApplyRecordCode;
         this.applyType = applyType;
         this.purchaseGroupCode = purchaseGroupCode;

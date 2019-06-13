@@ -57,14 +57,14 @@ public class GoodsRejectController {
             @ApiImplicitParam(name = "apply_type", value = "申请单类型: 0 手动 1自动", type = "Integer"),
             @ApiImplicitParam(name = "purchase_group_code", value = "采购组 code", type = "String"),
             @ApiImplicitParam(name = "apply_record_status", value = "退供申请单状态: 0  已完成 1 待提交", type = "Integer"),
-            @ApiImplicitParam(name = "begin_time", value = "开始时间", type = "date"),
-            @ApiImplicitParam(name = "finish_time", value = "结束时间", type = "date"),
+            @ApiImplicitParam(name = "begin_time", value = "开始时间", type = "String"),
+            @ApiImplicitParam(name = "finish_time", value = "结束时间", type = "String"),
     })
     public HttpResponse<List<RejectApplyQueryRequest>> rejectApplyList(@RequestParam(value = "reject_apply_record_code", required = false) String rejectApplyRecordCode,
                                                                        @RequestParam(value = "apply_type", required = false) Integer applyType,
                                                                        @RequestParam(value = "apply_record_status", required = false) Integer applyRecordStatus,
-                                                                       @RequestParam(value = "begin_time", required = false) Date beginTime,
-                                                                       @RequestParam(value = "finish_time", required = false) Date finishTime,
+                                                                       @RequestParam(value = "begin_time", required = false) String beginTime,
+                                                                       @RequestParam(value = "finish_time", required = false) String finishTime,
                                                                        @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode) {
         RejectApplyQueryRequest rejectApplyQueryRequest = new RejectApplyQueryRequest(rejectApplyRecordCode,applyType,purchaseGroupCode,applyRecordStatus,beginTime,finishTime);
         return goodsRejectService.rejectApplyList(rejectApplyQueryRequest);
