@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.mapper;
 
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 
 import java.util.List;
@@ -35,4 +36,12 @@ public interface OrderInfoMapper {
      * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO>
      */
     List<QueryOrderListRespVO> selectListByQueryVO(QueryOrderListReqVO reqVO);
+    /**
+     * 通过编码查询订单
+     * @author NullPointException
+     * @date 2019/6/14
+     * @param orderCode
+     * @return com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO
+     */
+    QueryOrderInfoRespVO selectByOrderCode(String orderCode);
 }

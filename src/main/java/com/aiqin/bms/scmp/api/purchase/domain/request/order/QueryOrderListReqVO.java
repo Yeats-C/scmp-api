@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -32,7 +32,7 @@ public class QueryOrderListReqVO extends PageReq {
     private Integer orderStatus;
 
     @ApiModelProperty("订单类型")
-    @NotEmpty(message = "订单类型不能为空！")
+    @NotNull(message = "订单类型不能为空！")
     private Integer orderType;
 
     @ApiModelProperty("物流中心编码")

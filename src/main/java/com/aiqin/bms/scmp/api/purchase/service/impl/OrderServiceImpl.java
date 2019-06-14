@@ -1,5 +1,4 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
-
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
@@ -9,6 +8,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
@@ -96,6 +96,11 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         List<QueryOrderListRespVO> list = orderInfoMapper.selectListByQueryVO(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
+    }
+
+    @Override
+    public QueryOrderInfoRespVO view(String orderCode) {
+        return orderInfoMapper.selectByOrderCode(orderCode);
     }
 
 }
