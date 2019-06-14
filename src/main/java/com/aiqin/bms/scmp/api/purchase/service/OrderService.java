@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 
 import java.util.List;
@@ -44,4 +45,12 @@ public interface OrderService {
      * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO>
      */
     BasePage<QueryOrderListRespVO> list(QueryOrderListReqVO reqVO);
+    /**
+     * 详情
+     * @author NullPointException
+     * @date 2019/6/14
+     * @param orderCode
+     * @return com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO
+     */
+    QueryOrderInfoRespVO view(String orderCode);
 }

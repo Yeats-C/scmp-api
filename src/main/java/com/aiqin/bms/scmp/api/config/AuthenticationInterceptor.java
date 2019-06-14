@@ -58,8 +58,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             AuthToken current = new AuthToken();
             current.setPersonId("12211");
             current.setPositionCode("GW0137");
-            current.setPersonName("测试人员");
-            current.setCompanyCode("01");
+            current.setPersonName("张昀童");
+            current.setCompanyCode("04");
             current.setCompanyName("北京爱亲技术股份有限公司");
             current.setAccountId("b05d34ae4cf442458e141affcdf54532");
             filterThreadLocal.set(current);
