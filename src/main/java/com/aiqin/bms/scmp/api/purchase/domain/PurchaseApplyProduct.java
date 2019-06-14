@@ -9,25 +9,17 @@ import java.util.Date;
 
 @ApiModel
 @Data
-public class PurchaseProduct {
+public class PurchaseApplyProduct {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty(value="采购商品id")
-    @JsonProperty("purchase_product_id")
-    private String purchaseProductId;
+    @ApiModelProperty(value="采购申请单商品id")
+    @JsonProperty("apply_product_id")
+    private String applyProductId;
 
     @ApiModelProperty(value="采购申请id")
     @JsonProperty("purchase_apply_id")
     private String purchaseApplyId;
-
-    @ApiModelProperty(value="采购单id")
-    @JsonProperty("purchase_order_id")
-    private String purchaseOrderId;
-
-    @ApiModelProperty(value="采购单号")
-    @JsonProperty("purchase_order_code")
-    private String purchaseOrderCode;
 
     @ApiModelProperty(value="sku编号")
     @JsonProperty("sku_code")
@@ -75,7 +67,7 @@ public class PurchaseProduct {
 
     @ApiModelProperty(value="商品属性 1.A 2.B 3.C 4.D")
     @JsonProperty("product_nature")
-    private Boolean productNature;
+    private Integer productNature;
 
     @ApiModelProperty(value="品牌id")
     @JsonProperty("brand_id")
@@ -95,11 +87,11 @@ public class PurchaseProduct {
 
     @ApiModelProperty(value="类别  0.OEM 1.服纺  2.辅采")
     @JsonProperty("product_category")
-    private Boolean productCategory;
+    private Integer productCategory;
 
     @ApiModelProperty(value="商品类型 0赠品 1商品 2实物返回")
     @JsonProperty("product_type")
-    private Boolean productType;
+    private Integer productType;
 
     @ApiModelProperty(value="含税采购价")
     @JsonProperty("product_purchase_amount")
@@ -189,33 +181,9 @@ public class PurchaseProduct {
     @JsonProperty("receipt_turnover")
     private Integer receiptTurnover;
 
-    @ApiModelProperty(value="单品数量")
-    @JsonProperty("single_count")
-    private Integer singleCount;
-
-    @ApiModelProperty(value="税率")
-    @JsonProperty("tax_rate")
-    private Integer taxRate;
-
-    @ApiModelProperty(value="含税单价")
-    @JsonProperty("product_amount")
-    private Integer productAmount;
-
-    @ApiModelProperty(value="含税总价")
-    @JsonProperty("product_total_amount")
-    private Integer productTotalAmount;
-
-    @ApiModelProperty(value="实际单品数量")
-    @JsonProperty("actual_single_count")
-    private Integer actualSingleCount;
-
-    @ApiModelProperty(value="实际含税总价")
-    @JsonProperty("actual_total_amount")
-    private Integer actualTotalAmount;
-
-    @ApiModelProperty(value="0.采购单  1.入库单")
-    @JsonProperty("is_purchase")
-    private Boolean isPurchase;
+    @ApiModelProperty(value="错误原因")
+    @JsonProperty("error_info")
+    private String errorInfo;
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")

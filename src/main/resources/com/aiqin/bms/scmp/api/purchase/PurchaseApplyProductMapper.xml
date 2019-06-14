@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseProductDao">
-  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseProduct">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="purchase_product_id" jdbcType="VARCHAR" property="purchaseProductId" />
+    <result column="apply_product_id" jdbcType="VARCHAR" property="applyProductId" />
     <result column="purchase_apply_id" jdbcType="VARCHAR" property="purchaseApplyId" />
-    <result column="purchase_order_id" jdbcType="VARCHAR" property="purchaseOrderId" />
-    <result column="purchase_order_code" jdbcType="VARCHAR" property="purchaseOrderCode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
@@ -18,13 +16,13 @@
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
     <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
-    <result column="product_nature" jdbcType="INTEGER" property="productNature" />
+    <result column="product_nature" jdbcType="BIT" property="productNature" />
     <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
     <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
     <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
     <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
-    <result column="product_category" jdbcType="INTEGER" property="productCategory" />
-    <result column="product_type" jdbcType="INTEGER" property="productType" />
+    <result column="product_category" jdbcType="BIT" property="productCategory" />
+    <result column="product_type" jdbcType="BIT" property="productType" />
     <result column="product_purchase_amount" jdbcType="INTEGER" property="productPurchaseAmount" />
     <result column="purchase_whole" jdbcType="INTEGER" property="purchaseWhole" />
     <result column="purchase_single" jdbcType="INTEGER" property="purchaseSingle" />
@@ -47,86 +45,67 @@
     <result column="shortage_day" jdbcType="INTEGER" property="shortageDay" />
     <result column="stock_turnover" jdbcType="INTEGER" property="stockTurnover" />
     <result column="receipt_turnover" jdbcType="INTEGER" property="receiptTurnover" />
-    <result column="single_count" jdbcType="INTEGER" property="singleCount" />
-    <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
-    <result column="product_amount" jdbcType="INTEGER" property="productAmount" />
-    <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
-    <result column="actual_single_count" jdbcType="INTEGER" property="actualSingleCount" />
-    <result column="actual_total_amount" jdbcType="INTEGER" property="actualTotalAmount" />
-    <result column="is_purchase" jdbcType="INTEGER" property="isPurchase" />
+    <result column="error_info" jdbcType="VARCHAR" property="errorInfo" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, purchase_product_id, purchase_apply_id, purchase_order_id, purchase_order_code, 
-    sku_code, sku_name, spu_code, product_name, warehouse_code, supplier_code, supplier_name, 
-    purchase_group_code, purchase_group_name, transport_center_code, transport_center_name, 
-    product_nature, brand_id, brand_name, category_id, category_name, product_category, 
-    product_type, product_purchase_amount, purchase_whole, purchase_single, return_whole, 
-    return_single, stock_unit_name, stock_count, total_way_num, last_time, sales_volume, 
-    pack_number, pack_unit, purchase_number, receipt_time, purchase_max, product_spec, 
-    color_name, model_number, shortage_number, shortage_day, stock_turnover, receipt_turnover, 
-    single_count, tax_rate, product_amount, product_total_amount, actual_single_count, 
-    actual_total_amount, is_purchase, create_time, update_time, create_by, update_by
+    id, apply_product_id, purchase_apply_id, sku_code, sku_name, spu_code, product_name, 
+    warehouse_code, supplier_code, supplier_name, purchase_group_code, purchase_group_name, 
+    transport_center_code, transport_center_name, product_nature, brand_id, brand_name, 
+    category_id, category_name, product_category, product_type, product_purchase_amount, 
+    purchase_whole, purchase_single, return_whole, return_single, stock_unit_name, stock_count, 
+    total_way_num, last_time, sales_volume, pack_number, pack_unit, purchase_number, 
+    receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number, 
+    shortage_day, stock_turnover, receipt_turnover, error_info, create_time, update_time, 
+    create_by, update_by
   </sql>
   <insert id="insert">
-    insert into purchase_product (id, purchase_product_id, purchase_apply_id, 
-      purchase_order_id, purchase_order_code, sku_code, 
-      sku_name, spu_code, product_name, 
-      warehouse_code, supplier_code, supplier_name, 
-      purchase_group_code, purchase_group_name, transport_center_code, 
-      transport_center_name, product_nature, brand_id, 
-      brand_name, category_id, category_name, 
-      product_category, product_type, product_purchase_amount, 
-      purchase_whole, purchase_single, return_whole, 
-      return_single, stock_unit_name, stock_count, 
-      total_way_num, last_time, sales_volume, 
-      pack_number, pack_unit, purchase_number, 
-      receipt_time, purchase_max, product_spec, 
-      color_name, model_number, shortage_number, 
-      shortage_day, stock_turnover, receipt_turnover, 
-      single_count, tax_rate, product_amount, 
-      product_total_amount, actual_single_count, 
-      actual_total_amount, is_purchase, create_time, 
-      update_time, create_by, update_by
-      )
-    values (#{id,jdbcType=BIGINT}, #{purchaseProductId,jdbcType=VARCHAR}, #{purchaseApplyId,jdbcType=VARCHAR}, 
-      #{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
-      #{skuName,jdbcType=VARCHAR}, #{spuCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, 
-      #{warehouseCode,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, 
-      #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, 
-      #{transportCenterName,jdbcType=VARCHAR}, #{productNature,jdbcType=INTEGER}, #{brandId,jdbcType=VARCHAR}, 
-      #{brandName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, 
-      #{productCategory,jdbcType=INTEGER}, #{productType,jdbcType=INTEGER}, #{productPurchaseAmount,jdbcType=INTEGER}, 
-      #{purchaseWhole,jdbcType=INTEGER}, #{purchaseSingle,jdbcType=INTEGER}, #{returnWhole,jdbcType=INTEGER}, 
-      #{returnSingle,jdbcType=INTEGER}, #{stockUnitName,jdbcType=VARCHAR}, #{stockCount,jdbcType=INTEGER}, 
-      #{totalWayNum,jdbcType=INTEGER}, #{lastTime,jdbcType=TIMESTAMP}, #{salesVolume,jdbcType=INTEGER}, 
-      #{packNumber,jdbcType=INTEGER}, #{packUnit,jdbcType=VARCHAR}, #{purchaseNumber,jdbcType=INTEGER}, 
-      #{receiptTime,jdbcType=TIMESTAMP}, #{purchaseMax,jdbcType=INTEGER}, #{productSpec,jdbcType=VARCHAR}, 
-      #{colorName,jdbcType=VARCHAR}, #{modelNumber,jdbcType=VARCHAR}, #{shortageNumber,jdbcType=INTEGER}, 
-      #{shortageDay,jdbcType=INTEGER}, #{stockTurnover,jdbcType=INTEGER}, #{receiptTurnover,jdbcType=INTEGER}, 
-      #{singleCount,jdbcType=INTEGER}, #{taxRate,jdbcType=INTEGER}, #{productAmount,jdbcType=INTEGER}, 
-      #{productTotalAmount,jdbcType=INTEGER}, #{actualSingleCount,jdbcType=INTEGER}, 
-      #{actualTotalAmount,jdbcType=INTEGER}, #{isPurchase,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR}
-      )
+    insert into purchase_apply_product (id, apply_product_id, purchase_apply_id, 
+      sku_code, sku_name, spu_code, 
+      product_name, warehouse_code, supplier_code, 
+      supplier_name, purchase_group_code, purchase_group_name, 
+      transport_center_code, transport_center_name, 
+      product_nature, brand_id, brand_name, 
+      category_id, category_name, product_category, 
+      product_type, product_purchase_amount, purchase_whole, 
+      purchase_single, return_whole, return_single, 
+      stock_unit_name, stock_count, total_way_num, 
+      last_time, sales_volume, pack_number, 
+      pack_unit, purchase_number, receipt_time, 
+      purchase_max, product_spec, color_name, 
+      model_number, shortage_number, shortage_day, 
+      stock_turnover, receipt_turnover, error_info, 
+      create_time, update_time, create_by, 
+      update_by)
+    values (#{id,jdbcType=BIGINT}, #{applyProductId,jdbcType=VARCHAR}, #{purchaseApplyId,jdbcType=VARCHAR}, 
+      #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{spuCode,jdbcType=VARCHAR}, 
+      #{productName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
+      #{supplierName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
+      #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
+      #{productNature,jdbcType=BIT}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, 
+      #{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, #{productCategory,jdbcType=BIT}, 
+      #{productType,jdbcType=BIT}, #{productPurchaseAmount,jdbcType=INTEGER}, #{purchaseWhole,jdbcType=INTEGER}, 
+      #{purchaseSingle,jdbcType=INTEGER}, #{returnWhole,jdbcType=INTEGER}, #{returnSingle,jdbcType=INTEGER}, 
+      #{stockUnitName,jdbcType=VARCHAR}, #{stockCount,jdbcType=INTEGER}, #{totalWayNum,jdbcType=INTEGER}, 
+      #{lastTime,jdbcType=TIMESTAMP}, #{salesVolume,jdbcType=INTEGER}, #{packNumber,jdbcType=INTEGER}, 
+      #{packUnit,jdbcType=VARCHAR}, #{purchaseNumber,jdbcType=INTEGER}, #{receiptTime,jdbcType=TIMESTAMP}, 
+      #{purchaseMax,jdbcType=INTEGER}, #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, 
+      #{modelNumber,jdbcType=VARCHAR}, #{shortageNumber,jdbcType=INTEGER}, #{shortageDay,jdbcType=INTEGER}, 
+      #{stockTurnover,jdbcType=INTEGER}, #{receiptTurnover,jdbcType=INTEGER}, #{errorInfo,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateBy,jdbcType=VARCHAR})
   </insert>
   <update id="update">
-    update purchase_product
+    update purchase_apply_product
     <set>
-      <if test="purchaseProductId != null">
-        purchase_product_id = #{purchaseProductId,jdbcType=VARCHAR},
+      <if test="applyProductId != null">
+        apply_product_id = #{applyProductId,jdbcType=VARCHAR},
       </if>
       <if test="purchaseApplyId != null">
         purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderId != null">
-        purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderCode != null">
-        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
       </if>
       <if test="skuCode != null">
         sku_code = #{skuCode,jdbcType=VARCHAR},
@@ -162,7 +141,7 @@
         transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
       </if>
       <if test="productNature != null">
-        product_nature = #{productNature,jdbcType=INTEGER},
+        product_nature = #{productNature,jdbcType=BIT},
       </if>
       <if test="brandId != null">
         brand_id = #{brandId,jdbcType=VARCHAR},
@@ -177,10 +156,10 @@
         category_name = #{categoryName,jdbcType=VARCHAR},
       </if>
       <if test="productCategory != null">
-        product_category = #{productCategory,jdbcType=INTEGER},
+        product_category = #{productCategory,jdbcType=BIT},
       </if>
       <if test="productType != null">
-        product_type = #{productType,jdbcType=INTEGER},
+        product_type = #{productType,jdbcType=BIT},
       </if>
       <if test="productPurchaseAmount != null">
         product_purchase_amount = #{productPurchaseAmount,jdbcType=INTEGER},
@@ -248,26 +227,8 @@
       <if test="receiptTurnover != null">
         receipt_turnover = #{receiptTurnover,jdbcType=INTEGER},
       </if>
-      <if test="singleCount != null">
-        single_count = #{singleCount,jdbcType=INTEGER},
-      </if>
-      <if test="taxRate != null">
-        tax_rate = #{taxRate,jdbcType=INTEGER},
-      </if>
-      <if test="productAmount != null">
-        product_amount = #{productAmount,jdbcType=INTEGER},
-      </if>
-      <if test="productTotalAmount != null">
-        product_total_amount = #{productTotalAmount,jdbcType=INTEGER},
-      </if>
-      <if test="actualSingleCount != null">
-        actual_single_count = #{actualSingleCount,jdbcType=INTEGER},
-      </if>
-      <if test="actualTotalAmount != null">
-        actual_total_amount = #{actualTotalAmount,jdbcType=INTEGER},
-      </if>
-      <if test="isPurchase != null">
-        is_purchase = #{isPurchase,jdbcType=INTEGER},
+      <if test="errorInfo != null">
+        error_info = #{errorInfo,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},

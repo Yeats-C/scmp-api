@@ -71,7 +71,7 @@ public class PurchaseOrderDetails {
 
     @ApiModelProperty(value="付款方式  0.预付款  1.货到付款 2.月结 3.实销实结")
     @JsonProperty("payment_type")
-    private Boolean paymentType;
+    private Integer paymentType;
 
     @ApiModelProperty(value="预付款金额")
     @JsonProperty("advance_payment")
@@ -115,7 +115,7 @@ public class PurchaseOrderDetails {
 
     @ApiModelProperty(value="0. 启用 1.禁用  ")
     @JsonProperty("details_status")
-    private Boolean detailsStatus;
+    private Integer detailsStatus;
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")

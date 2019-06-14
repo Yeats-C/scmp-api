@@ -27,7 +27,7 @@ public class PurchaseWarehouseReceipt {
 
     @ApiModelProperty(value="入库状态 0.新建、1.入库开始、2.完成、3.取消")
     @JsonProperty("warehouse_status")
-    private Boolean warehouseStatus;
+    private Integer warehouseStatus;
 
     @ApiModelProperty(value="创建时间（入库时间）")
     @JsonProperty("create_time")
