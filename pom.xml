@@ -34,6 +34,12 @@
             <artifactId>ground-spring-boot-core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jeasy/easy-random-core -->
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-random-core</artifactId>
+            <version>4.0.0</version>
+        </dependency>
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>

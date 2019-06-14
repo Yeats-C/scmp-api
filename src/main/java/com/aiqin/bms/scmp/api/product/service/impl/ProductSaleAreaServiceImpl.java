@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.api.store.StoreApi;
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.ApplyType;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;

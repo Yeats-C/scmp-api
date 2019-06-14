@@ -1,8 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.web.order;
 
+import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * Description:
@@ -34,9 +38,22 @@ public class OrderController {
 
     @ApiOperation("订单同步")
     @PostMapping("/save")
-    public HttpResponse<Boolean> saveOrder(@RequestBody @Valid OrderInfoReqVO reqVO){
+    public HttpResponse<Boolean> saveOrder(@RequestBody @Valid List<OrderInfoReqVO> reqVO){
         try {
             return HttpResponse.success(orderService.save(reqVO));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("订单列表")
+    @PostMapping("/save")
+    public HttpResponse<BasePage<QueryOrderListRespVO>> list(@RequestBody QueryOrderListReqVO reqVO){
+        try {
+            return HttpResponse.success(orderService.list(reqVO));
         } catch (BizException e){
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
