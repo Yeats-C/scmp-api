@@ -1,11 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response;
 
-import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -64,13 +64,16 @@ public class RejectApplyQueryResponse {
     @JsonProperty("sum_amount")
     private Long sumAmount;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="创建人")
     @JsonProperty("create_by_name")
     private String createByName;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;
 
+    @ApiModelProperty(value="商品批次列表")
+    @JsonProperty("detail_list")
+    private List<RejectApplyDetailResponse> detailList;
 
 }

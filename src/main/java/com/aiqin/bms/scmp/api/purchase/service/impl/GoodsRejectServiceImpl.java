@@ -7,12 +7,21 @@ import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
+import com.aiqin.bms.scmp.api.util.FileReaderUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -44,7 +53,11 @@ import java.util.List;
 @Service
 public class GoodsRejectServiceImpl implements GoodsRejectService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
+    private static final String[] importRejectApplyHeaders = new String[]{
+            "SKU编号", "SKU名称", "供应商编号", "仓库编号", "库房编号", "商品类型", "退供数量", "含税单价"
+    };
     @Resource
     private RejectApplyRecordDao rejectApplyRecordDao;
     @Resource
@@ -73,11 +86,35 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         if (file == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        return null;
+        try {
+            String[][] result = FileReaderUtil.readExcel(file, 50);
+
+            if (result != null) {
+                String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
+                if (StringUtils.isNotBlank(validResult)) {
+                    return HttpResponse.failure(MessageId.create(Project.PSC_API, 88888, validResult));
+                }
+                String[] record;
+                for (int i = 3; i <= result.length - 1; i++) {
+                    record = result[i];
+                    //todo 通过sku查询商品的品类,品牌,规格,供应商 ,税率,库存数量,总价,仓库,库房
+                }
+            }
+            return HttpResponse.success();
+        } catch (Exception e) {
+            LOGGER.error("退供申请单导入异常:{}",e.getMessage());
+            return HttpResponse.failure(ResultCode.IMPORT_REJECT_APPLY_ERROR);
+        }
     }
 
     @Override
     public HttpResponse rejectApplyInfo(RejectApplyRequest rejectApplyQueryRequest) {
+        if (CollectionUtils.isEmpty(rejectApplyQueryRequest.getRejectApplyRecordCodes())){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        //退供申请单分组后的列表
+        List<RejectApplyResponse> list  = rejectApplyRecordDao.listForRejectRecord(rejectApplyQueryRequest);
+        //todo 查询商品批次列表
         return null;
     }
 

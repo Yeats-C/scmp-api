@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -59,12 +61,12 @@ public class GoodsRejectController {
             @ApiImplicitParam(name = "begin_time", value = "开始时间", type = "String"),
             @ApiImplicitParam(name = "finish_time", value = "结束时间", type = "String"),
     })
-    public HttpResponse<List<RejectApplyQueryRequest>> rejectApplyList(@RequestParam(value = "reject_apply_record_code", required = false) String rejectApplyRecordCode,
-                                                                       @RequestParam(value = "apply_type", required = false) Integer applyType,
-                                                                       @RequestParam(value = "apply_record_status", required = false) Integer applyRecordStatus,
-                                                                       @RequestParam(value = "begin_time", required = false) String beginTime,
-                                                                       @RequestParam(value = "finish_time", required = false) String finishTime,
-                                                                       @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode) {
+    public HttpResponse<List<RejectApplyQueryResponse>> rejectApplyList(@RequestParam(value = "reject_apply_record_code", required = false) String rejectApplyRecordCode,
+                                                                        @RequestParam(value = "apply_type", required = false) Integer applyType,
+                                                                        @RequestParam(value = "apply_record_status", required = false) Integer applyRecordStatus,
+                                                                        @RequestParam(value = "begin_time", required = false) String beginTime,
+                                                                        @RequestParam(value = "finish_time", required = false) String finishTime,
+                                                                        @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode) {
         RejectApplyQueryRequest rejectApplyQueryRequest = new RejectApplyQueryRequest(rejectApplyRecordCode,applyType,purchaseGroupCode,applyRecordStatus,beginTime,finishTime);
         return goodsRejectService.rejectApplyList(rejectApplyQueryRequest);
     }
@@ -81,15 +83,15 @@ public class GoodsRejectController {
         return goodsRejectService.rejectApplyImport(file,purchaseGroupCode);
     }
 
-    @GetMapping("/apply/info")
+    @PostMapping("/apply/info")
     @ApiOperation(value = "查询退供申请单信息去生成退供单")
-    public HttpResponse<List<RejectApplyRequest>> rejectApplyInfo(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+    public HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
         return goodsRejectService.rejectApplyInfo(rejectApplyQueryRequest);
     }
 
     @PostMapping("/record")
     @ApiOperation(value = "新增退供单记录")
-    public HttpResponse<List<RejectApplyRequest>> addReject(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+    public HttpResponse<List<RejectApplyResponse>> addReject(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
         return goodsRejectService.addReject(rejectApplyQueryRequest);
     }
 
