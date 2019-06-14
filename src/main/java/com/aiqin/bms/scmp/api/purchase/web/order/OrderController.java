@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -12,10 +13,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -29,7 +27,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
-@Api(description = "订单相关")
+@Api(value = "订单相关")
 @RequestMapping("/order")
 public class OrderController {
 
@@ -51,9 +49,22 @@ public class OrderController {
 
     @ApiOperation("订单列表")
     @PostMapping("/list")
-    public HttpResponse<BasePage<QueryOrderListRespVO>> list(@RequestBody QueryOrderListReqVO reqVO){
+    public HttpResponse<BasePage<QueryOrderListRespVO>> list(@RequestBody @Valid QueryOrderListReqVO reqVO){
         try {
             return HttpResponse.success(orderService.list(reqVO));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("订单详情")
+    @GetMapping("/view")
+    public HttpResponse<QueryOrderInfoRespVO> view(@RequestParam String orderCode){
+        try {
+            return HttpResponse.success(orderService.view(orderCode));
         } catch (BizException e){
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
