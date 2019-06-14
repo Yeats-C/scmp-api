@@ -6,6 +6,7 @@ import com.aiqin.ground.util.protocol.Project;
 public interface ResultCode {
     //系统相关异常
     MessageId BEAN_COPY_ERROR = MessageId.create(Project.PURCHASE_API,599,"对象拷贝异常");
+    MessageId USER_NOT_FOUND = MessageId.create(Project.PURCHASE_API,403,"获取登录用户失败！");
     MessageId SYSTEM_ERROR = MessageId.create(Project.STORE_API, 500, "系统异常");
     MessageId REQUIRED_PARAMETER = MessageId.create(Project.STORE_API, 1, "参数缺失");
     MessageId NAME_REPEAT = MessageId.create(Project.STORE_API, 2, "名称重复");

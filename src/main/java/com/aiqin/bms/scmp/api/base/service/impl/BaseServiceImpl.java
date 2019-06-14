@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.base.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -22,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -36,6 +34,14 @@ public class BaseServiceImpl implements BaseService {
     @Autowired
     private EncodingRuleDao encodingRuleDao;
 
+    @Override
+    public AuthToken getUser(){
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(Objects.isNull(currentAuthToken)){
+            throw new BizException(ResultCode.USER_NOT_FOUND);
+        }
+        return currentAuthToken;
+    }
 
 
     @Override

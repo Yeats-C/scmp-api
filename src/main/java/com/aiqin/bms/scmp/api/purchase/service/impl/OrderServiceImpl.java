@@ -92,7 +92,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     public BasePage<QueryOrderListRespVO> list(QueryOrderListReqVO reqVO) {
-        reqVO.setCompanyCode();
+        reqVO.setCompanyCode(getUser().getCompanyCode());
         PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         List<QueryOrderListRespVO> list = orderInfoMapper.selectListByQueryVO(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
