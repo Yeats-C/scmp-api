@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.base.service;
 
 
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -9,6 +10,8 @@ import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
  * 刘大爷
  */
 public interface BaseService {
+
+    AuthToken getUser();
 
     /**
      * 调用审批接口
