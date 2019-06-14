@@ -50,7 +50,7 @@ public class OrderController {
     }
 
     @ApiOperation("订单列表")
-    @PostMapping("/save")
+    @PostMapping("/list")
     public HttpResponse<BasePage<QueryOrderListRespVO>> list(@RequestBody QueryOrderListReqVO reqVO){
         try {
             return HttpResponse.success(orderService.list(reqVO));

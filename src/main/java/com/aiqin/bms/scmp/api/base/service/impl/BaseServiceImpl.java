@@ -38,7 +38,7 @@ public class BaseServiceImpl implements BaseService {
     public AuthToken getUser(){
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(Objects.isNull(currentAuthToken)){
-            throw new BizException(ResultCode.USER_NOT_FOUND);
+            throw new BizException(ResultCode.LOGIN_ERROR);
         }
         return currentAuthToken;
     }

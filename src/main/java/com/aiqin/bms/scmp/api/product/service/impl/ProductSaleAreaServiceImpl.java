@@ -237,8 +237,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     public BasePage<QueryProductSaleAreaMainRespVO> queryListForOfficial(QueryProductSaleAreaMainReqVO request) {
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        request.setCompanyCode(currentAuthToken.getCompanyCode());
+        request.setCompanyCode(getUser().getCompanyCode());
         PageHelper.startPage(request.getPageNo(),request.getPageSize());
         List<QueryProductSaleAreaMainRespVO> respVos = productSkuSaleAreaMainMapper.selectListByQueryVo(request);
         return PageUtil.getPageList(request.getPageNo(),respVos);
@@ -256,10 +255,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     @Transactional(rollbackFor = Exception.class)
     public Boolean addSaleAreaApply(ApplySaleAreaReqVO reqVO) {
         //获取登录人
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if (Objects.isNull(currentAuthToken)) {
-            throw new BizException(ResultCode.LOGIN_ERROR);
-        }
+        AuthToken currentAuthToken = getUser();
         //通过编码查询出数据
         List<ProductSkuSaleAreaMainDraftDTO> dtos = productSkuSaleAreaMainDraftMapper.selectDataByCodes(reqVO.getAreaCodes());
         List<ProductSkuSaleAreaDraft> skuList = Lists.newArrayList();
@@ -684,8 +680,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     public BasePage<QueryProductSaleAreaSkuRespVO> officialSkuList(QueryProductSaleAreaReqVO reqVO) {
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
+        reqVO.setCompanyCode(getUser().getCompanyCode());
         PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
         List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
@@ -693,8 +688,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     public BasePage<QueryProductSaleAreaForSkuRespVO> skuList(QueryProductSaleAreaForSkuReqVO reqVO) {
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
+        reqVO.setCompanyCode(getUser().getCompanyCode());
         return skuInfoService.selectSkuListForSaleArea(reqVO);
     }
 
