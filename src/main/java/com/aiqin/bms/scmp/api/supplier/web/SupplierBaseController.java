@@ -1,22 +1,10 @@
 package com.aiqin.bms.scmp.api.supplier.web;
 
-import com.aiqin.bms.scmp.api.supplier.service.ApplyContractService;
-import com.aiqin.bms.scmp.api.supplier.service.ApplySupplierService;
-import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComAcctService;
-import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComServcie;
 import com.aiqin.bms.scmp.api.util.BrowserUtils;
 import com.aiqin.bms.scmp.api.util.ExcelUtil;
-import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
-import com.alibaba.fastjson.JSONObject;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,17 +20,17 @@ import java.util.List;
 @Controller
 @Slf4j
 public class SupplierBaseController {
-    @Autowired
-    private ApplySupplyComAcctService applySupplyComAcctService;
-
-    @Autowired
-    private ApplyContractService applyContractService;
-
-    @Autowired
-    private ApplySupplierService applySupplierService;
-
-    @Autowired
-    private ApplySupplyComServcie applySupplyComServcie;
+//    @Autowired
+//    private ApplySupplyComAcctService applySupplyComAcctService;
+//
+//    @Autowired
+//    private ApplyContractService applyContractService;
+//
+//    @Autowired
+//    private ApplySupplierService applySupplierService;
+//
+//    @Autowired
+//    private ApplySupplyComServcie applySupplyComServcie;
     /**
      * 导出数据
      *
@@ -85,42 +73,42 @@ public class SupplierBaseController {
             }
         }
     }
-    @PostMapping("supplier/workFlowCallBack/{type}")
-    @ApiOperation("审批回调")
-    @ResponseBody
-    public String workFlowCallBack(@RequestBody WorkFlowCallbackVO vo,
-                                         @PathVariable Integer type){
-        log.info("BaseController-workFlowCallBack-参数是：[{}],类型是：[{}]", JSONObject.toJSONString(vo),type);
-        try {
-            switch (type){
-                case 1:
-//                    return applyContractService.workFlowCallback(vo);
-                case 2:
-                    //供应商集团审批
-                    return applySupplierService.workFlowCallback(vo);
-                case 3:
-                    //供应商审批
-                    return applySupplyComServcie.workFlowCallback(vo);
-                case 4:
-                    //供应商账户的审批
-                    return applySupplyComAcctService.workFlowCallback(vo);
-//                case 5:
-//                    //申请制造商的审批
-//                    return applyManufacturerService.workFlowCallBack(vo);
-                case 6:
-                case 7:
-                case 8:
-//                    //调拨单的审批
-//                    log.info("调拨单的审批");
-//                    return allocationService.workFlowCallback(vo);
-                case 9:
-                case 10:
-                case 11:
-                default: return "false";
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "false";
-        }
-    }
+//    @PostMapping("supplier/workFlowCallBack/{type}")
+//    @ApiOperation("审批回调")
+//    @ResponseBody
+//    public String workFlowCallBack(@RequestBody WorkFlowCallbackVO vo,
+//                                         @PathVariable Integer type){
+//        log.info("BaseController-workFlowCallBack-参数是：[{}],类型是：[{}]", JSONObject.toJSONString(vo),type);
+//        try {
+//            switch (type){
+//                case 1:
+////                    return applyContractService.workFlowCallback(vo);
+//                case 2:
+//                    //供应商集团审批
+//                    return applySupplierService.workFlowCallback(vo);
+//                case 3:
+//                    //供应商审批
+//                    return applySupplyComServcie.workFlowCallback(vo);
+//                case 4:
+//                    //供应商账户的审批
+//                    return applySupplyComAcctService.workFlowCallback(vo);
+////                case 5:
+////                    //申请制造商的审批
+////                    return applyManufacturerService.workFlowCallBack(vo);
+//                case 6:
+//                case 7:
+//                case 8:
+////                    //调拨单的审批
+////                    log.info("调拨单的审批");
+////                    return allocationService.workFlowCallback(vo);
+//                case 9:
+//                case 10:
+//                case 11:
+//                default: return "false";
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return "false";
+//        }
+//    }
 }

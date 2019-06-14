@@ -32,6 +32,7 @@ import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -59,7 +60,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("1")
 @WorkFlowAnnotation(WorkFlow.APPLY_COMPANY_ACC)
-public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceImpl implements ApplySupplyComAcctService {
+public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceImpl implements ApplySupplyComAcctService, WorkFlowHelper {
     @Autowired
     private ApplySupplyCompanyAccountMapper applySupplyCompanyAccountMapper;
     @Autowired

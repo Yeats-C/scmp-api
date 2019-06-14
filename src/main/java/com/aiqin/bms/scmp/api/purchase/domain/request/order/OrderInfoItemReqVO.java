@@ -1,14 +1,19 @@
-package com.aiqin.bms.scmp.api.purchase.domain.pojo.order;
+package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("订单商品信息")
+/**
+ * Description:
+ *
+ * @author: NullPointException
+ * @date: 2019-06-13
+ * @time: 19:06
+ */
 @Data
-public class OrderInfoItem {
-    @ApiModelProperty("商品主键")
-    private Long id;
+@ApiModel("商品信息")
+public class OrderInfoItemReqVO {
 
     @ApiModelProperty("订单主表编码")
     private String orderCode;

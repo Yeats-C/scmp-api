@@ -480,7 +480,52 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo">
+    <insert id="insertBatch" parameterType="java.util.List">
+      insert into order_info (id, order_code, order_type,
+      order_type_code, customer_name, customer_code,
+      create_date, order_status, be_lock,
+      lock_reason, be_exception, exception_reason,
+      be_delete, payment_status, transport_center_name,
+      transport_center_code, warehouse_name, warehouse_code,
+      supplier_name, supplier_code, distribution_mode,
+      distribution_mode_code, consignee, consignee_phone,
+      province_code, province_name, city_code,
+      city_name, district_code, district_name,
+      detail_address, zip_code, payment_type,
+      payment_type_code, deliver_amount, product_total_amount,
+      discount_amount, order_amount, product_num,
+      payment_time, delivery_time, receiving_time,
+      invoice_type, invoice_type_code, invoice_title,
+      operator, operator_code, operator_time,
+      activity_discount, weight, be_master_order,
+      master_order_code, order_original, remake,
+      logistics_remission_ratio, transport_status,
+      company_name, company_code)
+    values
+      <foreach collection="list" item="item" separator="," close="" open="">
+     (#{item.id,jdbcType=BIGINT}, #{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},
+      #{item.orderTypeCode,jdbcType=INTEGER}, #{item.customerName,jdbcType=VARCHAR}, #{item.customerCode,jdbcType=VARCHAR},
+      #{item.createDate,jdbcType=TIMESTAMP}, #{item.orderStatus,jdbcType=INTEGER}, #{item.beLock,jdbcType=INTEGER},
+      #{item.lockReason,jdbcType=VARCHAR}, #{item.beException,jdbcType=INTEGER}, #{item.exceptionReason,jdbcType=VARCHAR},
+      #{item.beDelete,jdbcType=INTEGER}, #{item.paymentStatus,jdbcType=INTEGER}, #{item.transportCenterName,jdbcType=VARCHAR},
+      #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR},
+      #{item.supplierName,jdbcType=VARCHAR}, #{item.supplierCode,jdbcType=VARCHAR}, #{item.distributionMode,jdbcType=VARCHAR},
+      #{item.distributionModeCode,jdbcType=VARCHAR}, #{item.consignee,jdbcType=VARCHAR}, #{item.consigneePhone,jdbcType=VARCHAR},
+      #{item.provinceCode,jdbcType=VARCHAR}, #{item.provinceName,jdbcType=VARCHAR}, #{item.cityCode,jdbcType=VARCHAR},
+      #{item.cityName,jdbcType=VARCHAR}, #{item.districtCode,jdbcType=VARCHAR}, #{item.districtName,jdbcType=VARCHAR},
+      #{item.detailAddress,jdbcType=VARCHAR}, #{item.zipCode,jdbcType=VARCHAR}, #{item.paymentType,jdbcType=VARCHAR},
+      #{item.paymentTypeCode,jdbcType=VARCHAR}, #{item.deliverAmount,jdbcType=BIGINT}, #{item.productTotalAmount,jdbcType=BIGINT},
+      #{item.discountAmount,jdbcType=BIGINT}, #{item.orderAmount,jdbcType=BIGINT}, #{item.productNum,jdbcType=BIGINT},
+      #{item.paymentTime,jdbcType=TIMESTAMP}, #{item.deliveryTime,jdbcType=TIMESTAMP}, #{item.receivingTime,jdbcType=TIMESTAMP},
+      #{item.invoiceType,jdbcType=VARCHAR}, #{item.invoiceTypeCode,jdbcType=VARCHAR}, #{item.invoiceTitle,jdbcType=VARCHAR},
+      #{item.operator,jdbcType=VARCHAR}, #{item.operatorCode,jdbcType=VARCHAR}, #{item.operatorTime,jdbcType=TIMESTAMP},
+      #{item.activityDiscount,jdbcType=BIGINT}, #{item.weight,jdbcType=BIGINT}, #{item.beMasterOrder,jdbcType=INTEGER},
+      #{item.masterOrderCode,jdbcType=VARCHAR}, #{item.orderOriginal,jdbcType=VARCHAR}, #{item.remake,jdbcType=VARCHAR},
+      #{item.logisticsRemissionRatio,jdbcType=INTEGER}, #{item.transportStatus,jdbcType=INTEGER},
+      #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR})
+    </foreach>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo">
     update order_info
     <set>
       <if test="orderCode != null">

@@ -18,7 +18,7 @@ import java.util.List;
  * @author: wangxu
  * @date: 2019/1/29 0029 15:42
  */
-public interface ProductSkuConfigService  extends WorkFlowHelper {
+public interface ProductSkuConfigService {
 
     /**
      * 批量保存临时配置信息

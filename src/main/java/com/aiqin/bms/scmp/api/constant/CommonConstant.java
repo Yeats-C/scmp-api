@@ -46,4 +46,7 @@ public interface CommonConstant {
     Integer SUPPLY_CHANNEL_TYPE_DELIVERY = 1;
     //供货渠道类型 直送
     Integer SUPPLY_CHANNEL_TYPE_DIRECT_DELIVERY = 2;
+    //订单
+    String SYSTEM_AUTO = "系统自动";
+    String SYSTEM_AUTO_CODE = "-1";
 }

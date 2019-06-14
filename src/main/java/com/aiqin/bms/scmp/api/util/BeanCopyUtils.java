@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.util;
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -58,13 +60,17 @@ public class BeanCopyUtils {
      * @param source 对象源
      * @param targer 目标对象
      */
-    public static <T> T copy(Object source, Class<T> targer) throws Exception {
-        if (source != null) {
-            T instance = targer.newInstance();
-            copy(source, instance);
-            return instance;
+    public static <T> T copy(Object source, Class<T> targer){
+        try {
+            if (source != null) {
+                T instance = targer.newInstance();
+                copy(source, instance);
+                return instance;
+            }
+            return null;
+        } catch (Exception e){
+            throw new BizException(ResultCode.BEAN_COPY_ERROR);
         }
-        return null;
     }
 
     /**
@@ -73,7 +79,7 @@ public class BeanCopyUtils {
      * @param sources 对象源
      * @param targer  目标对象
      */
-    public static <T> List copyList(List sources, Class<T> targer) throws Exception {
+    public static <T> List<T> copyList(List sources, Class<T> targer){
         List<T> list = new ArrayList<T>();
         if (!CollectionUtils.isEmpty(sources)) {
             for (Object source : sources) {

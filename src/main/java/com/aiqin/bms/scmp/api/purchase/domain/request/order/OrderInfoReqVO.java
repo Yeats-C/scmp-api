@@ -1,16 +1,21 @@
-package com.aiqin.bms.scmp.api.purchase.domain.pojo.order;
+package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
-@ApiModel("订单主表")
+/**
+ * Description:
+ *
+ * @author: NullPointException
+ * @date: 2019-06-13
+ * @time: 19:03
+ */
 @Data
-public class OrderInfo {
-    @ApiModelProperty("id")
-    private Long id;
+public class OrderInfoReqVO {
 
     @ApiModelProperty("订单编码(订单号)")
     private String orderCode;
@@ -27,26 +32,8 @@ public class OrderInfo {
     @ApiModelProperty("客户编码")
     private String customerCode;
 
-    @ApiModelProperty("创建时间")
-    private Date createDate;
-
     @ApiModelProperty("订单状态(状态有点多，后面补)")
     private Integer orderStatus;
-
-    @ApiModelProperty("是否锁定(0否1是）")
-    private Integer beLock = 0;
-
-    @ApiModelProperty("锁定原因")
-    private String lockReason;
-
-    @ApiModelProperty("是否是异常订单(0否1是)")
-    private Integer beException = 0;
-
-    @ApiModelProperty("异常原因")
-    private String exceptionReason;
-
-    @ApiModelProperty("是否删除(0否1是)")
-    private Integer beDelete = 0;
 
     @ApiModelProperty("支付状态")
     private Integer paymentStatus;
@@ -129,12 +116,6 @@ public class OrderInfo {
     @ApiModelProperty("支付日期")
     private Date paymentTime;
 
-    @ApiModelProperty("发货时间")
-    private Date deliveryTime;
-
-    @ApiModelProperty("收货时间")
-    private Date receivingTime;
-
     @ApiModelProperty("不开、增普、增专")
     private String invoiceType;
 
@@ -143,15 +124,6 @@ public class OrderInfo {
 
     @ApiModelProperty("发票抬头")
     private String invoiceTitle;
-
-    @ApiModelProperty("操作人")
-    private String operator;
-
-    @ApiModelProperty("操作人编码")
-    private String operatorCode;
-
-    @ApiModelProperty("操作时间")
-    private Date operatorTime;
 
     @ApiModelProperty("活动优惠")
     private Long activityDiscount;
@@ -174,12 +146,14 @@ public class OrderInfo {
     @ApiModelProperty("减免比例")
     private Integer logisticsRemissionRatio;
 
-    @ApiModelProperty("发运状态")
-    private Integer transportStatus = 0;
-
     @ApiModelProperty("公司名称")
+    @NotNull(message = "companyName can not be null！")
     private String companyName;
 
     @ApiModelProperty("公司编码")
+    @NotNull(message = "companyCode can not be null！")
     private String companyCode;
+
+    @ApiModelProperty("商品信息")
+    private List<OrderInfoItemReqVO> productList;
 }
