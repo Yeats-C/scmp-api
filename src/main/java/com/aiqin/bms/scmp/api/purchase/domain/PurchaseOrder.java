@@ -59,16 +59,16 @@ public class PurchaseOrder {
 
     @ApiModelProperty(value="采购信息完善状态 0.未完善  1.已完善  2.已提交")
     @JsonProperty("info_status")
-    private Boolean infoStatus;
+    private Integer infoStatus;
 
     @ApiModelProperty(value="采购单状态 0.待审核 1.审核中 2.审核通过  3.备货确认 " +
             "4.发货确认 5.入库开始 6.入库中 7.已入库  8.完成 9.取消 10.审核不通过")
     @JsonProperty("purchase_order_status")
-    private Boolean purchaseOrderStatus;
+    private Integer purchaseOrderStatus;
 
     @ApiModelProperty(value="仓储状态 0.未开始  1.确认中 2.完成")
     @JsonProperty("storage_status")
-    private Boolean storageStatus;
+    private Integer storageStatus;
 
     @ApiModelProperty(value="预计到货时间")
     @JsonProperty("expect_receipt_time")
