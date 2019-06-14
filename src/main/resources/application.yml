@@ -16,7 +16,7 @@ spring:
         version: 1.0.0
         contact:
             name: liuxiaohan
-        base-package: com.aiqin.mgs.scmp.api.web
+        base-package: com.aiqin.bms.scmp.api.webSwagger2Config
     servlet:
         multipart:
             max-file-size: 2MB
