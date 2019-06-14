@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
@@ -9,6 +10,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -67,7 +69,10 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     }
 
     @Override
-    public HttpResponse rejectApplyImport(RejectApplyRequest rejectApplyQueryRequest) {
+    public HttpResponse rejectApplyImport(MultipartFile file, String purchaseGroupCode) {
+        if (file == null) {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
         return null;
     }
 

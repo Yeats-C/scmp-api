@@ -3,16 +3,15 @@ package com.aiqin.bms.scmp.api.purchase.web;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
-import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -78,8 +77,8 @@ public class GoodsRejectController {
 
     @PostMapping("/apply/import")
     @ApiOperation(value = "批量导入退供申请单")
-    public HttpResponse<List<RejectApplyRequest>> rejectApplyImport(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
-        return goodsRejectService.rejectApplyImport(rejectApplyQueryRequest);
+    public HttpResponse rejectApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
+        return goodsRejectService.rejectApplyImport(file,purchaseGroupCode);
     }
 
     @GetMapping("/apply/info")
