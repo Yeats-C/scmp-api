@@ -185,6 +185,10 @@ public class PurchaseApplyProduct {
     @JsonProperty("error_info")
     private String errorInfo;
 
+    @ApiModelProperty(value="0 禁用  1.启用")
+    @JsonProperty("apply_product_status")
+    private Integer applyProductStatus;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

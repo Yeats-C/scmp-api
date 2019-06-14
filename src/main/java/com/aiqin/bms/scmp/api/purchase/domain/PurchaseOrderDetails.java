@@ -113,7 +113,7 @@ public class PurchaseOrderDetails {
     @JsonProperty("remark")
     private String remark;
 
-    @ApiModelProperty(value="0. 启用 1.禁用  ")
+    @ApiModelProperty(value="0 禁用  1.启用")
     @JsonProperty("details_status")
     private Integer detailsStatus;
 
