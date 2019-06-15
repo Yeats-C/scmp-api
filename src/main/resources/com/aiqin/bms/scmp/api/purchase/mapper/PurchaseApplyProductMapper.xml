@@ -10,6 +10,7 @@
     <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
@@ -54,7 +55,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     apply_product_id as applyProductId, purchase_apply_id as purchaseApplyId, sku_code as skuCode, sku_name as skuName, 
-    spu_code as spuCode, product_name as productName, warehouse_code as warehouseCode, supplier_code as supplierCode, 
+    spu_code as spuCode, product_name as productName, warehouse_code as warehouseCode, warehouse_name as warehouseName, supplier_code as supplierCode,
     supplier_name as supplierName, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName, 
     transport_center_code as transportCenterCode, transport_center_name as transportCenterName, product_nature as productNature, 
     brand_id as brandId, brand_name as brandName, category_id as categoryId, category_name as categoryName,
@@ -69,7 +70,7 @@
   <insert id="insert">
     insert into purchase_apply_product (apply_product_id, purchase_apply_id, 
       sku_code, sku_name, spu_code, 
-      product_name, warehouse_code, supplier_code, 
+      product_name, warehouse_code, warehouse_name, supplier_code,
       supplier_name, purchase_group_code, purchase_group_name, 
       transport_center_code, transport_center_name, 
       product_nature, brand_id, brand_name, 
@@ -85,7 +86,7 @@
       create_time, create_by)
     values ( #{applyProductId,jdbcType=VARCHAR}, #{purchaseApplyId,jdbcType=VARCHAR}, 
       #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{spuCode,jdbcType=VARCHAR}, 
-      #{productName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
+      #{productName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehousName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR},
       #{supplierName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{productNature,jdbcType=INTEGER}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, 
@@ -120,6 +121,9 @@
       </if>
       <if test="warehouseCode != null">
         warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
       </if>
       <if test="supplierCode != null">
         supplier_code = #{supplierCode,jdbcType=VARCHAR},

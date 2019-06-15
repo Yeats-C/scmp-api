@@ -14,12 +14,12 @@ public class PurchaseWarehouseReceipt {
     private Long id;
 
     @ApiModelProperty(value="入库单id")
-    @JsonProperty("warehouse_id")
-    private String warehouseId;
+    @JsonProperty("receipt_id")
+    private String receiptId;
 
     @ApiModelProperty(value="入库单号")
-    @JsonProperty("warehouse_code")
-    private String warehouseCode;
+    @JsonProperty("receipt_code")
+    private String receiptCode;
 
     @ApiModelProperty(value="采购单id")
     @JsonProperty("purchase_order_id")

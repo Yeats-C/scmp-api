@@ -41,6 +41,10 @@ public class PurchaseApplyProduct {
     @JsonProperty("warehouse_code")
     private String warehouseCode;
 
+    @ApiModelProperty(value="库房名称")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
+
     @ApiModelProperty(value="供应商编码")
     @JsonProperty("supplier_code")
     private String supplierCode;
