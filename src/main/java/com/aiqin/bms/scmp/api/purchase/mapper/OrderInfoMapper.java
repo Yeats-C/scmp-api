@@ -44,4 +44,21 @@ public interface OrderInfoMapper {
      * @return com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO
      */
     QueryOrderInfoRespVO selectByOrderCode(String orderCode);
+
+    /**
+     * 通过编码查询数据
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param orderCode
+     * @return com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo
+     */
+    OrderInfo selectByOrderCode2(String orderCode);
+    /**
+     * 通过编码更新数据
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param order
+     * @return int
+     */
+    int updateByOrderCode(OrderInfo order);
 }

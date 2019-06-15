@@ -3,6 +3,8 @@ package com.aiqin.bms.scmp.api.purchase.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
@@ -27,6 +29,9 @@ public interface OrderService {
      * @exception
      */
     Boolean save(List<OrderInfoReqVO> reqVO);
+
+    void saveLog(List<OrderInfoLog> logs);
+
     /**
      * 保存订单数据
      * @author NullPointException
@@ -53,4 +58,14 @@ public interface OrderService {
      * @return com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO
      */
     QueryOrderInfoRespVO view(String orderCode);
+    /**
+     * 改变订单状态
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean changeStatus(ChangeOrderStatusReqVO reqVO);
+
+    void updateByOrderCode(OrderInfo order);
 }
