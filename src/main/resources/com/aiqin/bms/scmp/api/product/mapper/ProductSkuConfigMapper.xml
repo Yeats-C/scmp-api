@@ -38,7 +38,7 @@
     select 
     <include refid="Base_Column_List" />
     from product_sku_config
-    where id = #{item.id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </select>
 
 
@@ -50,21 +50,23 @@
     product_sku_config a
     left join product_sku_config_spare_warehouse b
     on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
     where a.del_flag = 0
     <if test="skuCode != null">
-      and sku_code = #{skuCode,jdbcType=VARCHAR}
+      and a.sku_code = #{skuCode,jdbcType=VARCHAR}
     </if>
     <if test="skuName != null">
-      and sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')
+      and a.sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')
     </if>
     <if test="transportCenterCode != null">
-      and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
     </if>
     <if test="transportCenterName != null">
-      and transport_center_name like concat('%', #{transportCenterName,jdbcType=VARCHAR}, '%')
+      and a.transport_center_name like concat('%', #{transportCenterName,jdbcType=VARCHAR}, '%')
     </if>
     <if test="configStatus != null">
-      and config_status = #{configStatus,jdbcType=TINYINT}
+      and a.config_status = #{configStatus,jdbcType=TINYINT}
     </if>
   </select>
   <resultMap id="SkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo">
@@ -97,6 +99,12 @@
       goods_gifts
     from product_sku
     where sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByConfigCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_config
+    where config_code = #{configCode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_config
@@ -411,8 +419,7 @@
   <update id="updateBatch">
     <foreach collection="list" item="item" open="" close="" separator=";">
       update product_sku_config
-      set
-      update_by = #{item.updateBy,jdbcType=VARCHAR},
+      set update_by = #{item.updateBy,jdbcType=VARCHAR},
       update_time = #{item.updateTime,jdbcType=TIMESTAMP},
       del_flag = #{item.delFlag,jdbcType=TINYINT},
       product_code = #{item.productCode,jdbcType=VARCHAR},
@@ -430,8 +437,13 @@
       apply_code = #{item.applyCode,jdbcType=VARCHAR},
       apply_status = #{item.applyStatus,jdbcType=TINYINT},
       auditor_by = #{item.auditorBy,jdbcType=VARCHAR},
-      auditor_time = #{item.auditorTime,jdbcType=TIMESTAMP},
+      auditor_time = #{item.auditorTime,jdbcType=TIMESTAMP}
       where config_code = #{item.configCode,jdbcType=VARCHAR}
     </foreach>
+  </update>
+  <update id="updateApplyStatusByApplyCode">
+    update product_sku_config
+    set apply_status = #{applyStatus,jdbcType=TINYINT}
+    where apply_code = #{applyCode,jdbcType=VARCHAR}
   </update>
 </mapper>

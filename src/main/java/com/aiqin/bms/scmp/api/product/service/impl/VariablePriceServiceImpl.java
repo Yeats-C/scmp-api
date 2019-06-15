@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class VariablePriceServiceImplProduct extends ProductBaseServiceImpl implements VariablePriceService {
+public class VariablePriceServiceImpl extends ProductBaseServiceImpl implements VariablePriceService {
     @Autowired
     private VariablePriceMapper variablePriceMapper;
     @Autowired

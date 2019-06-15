@@ -62,7 +62,7 @@ import java.util.stream.Collectors;
  * @date: 2019/1/28 0028 15:44
  */
 @Service
-public class SkuInfoServiceImplProduct extends ProductBaseServiceImpl implements SkuInfoService {
+public class SkuInfoServiceImpl extends ProductBaseServiceImpl implements SkuInfoService {
     @Autowired
     ProductSkuDraftMapper productSkuDraftMapper;
     @Autowired

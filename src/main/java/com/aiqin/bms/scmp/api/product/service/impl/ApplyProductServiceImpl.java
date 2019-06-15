@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @WorkFlowAnnotation(WorkFlow.APPLY_GOODS)
-public class ApplyProductServiceImplProduct extends ProductBaseServiceImpl implements ApplyProductService, WorkFlowHelper {
+public class ApplyProductServiceImpl extends ProductBaseServiceImpl implements ApplyProductService, WorkFlowHelper {
     @Autowired
     private ApplyProductMapper applyProductMapper;
     @Autowired

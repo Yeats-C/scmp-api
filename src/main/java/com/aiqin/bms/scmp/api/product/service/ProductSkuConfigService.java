@@ -8,7 +8,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
-import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
@@ -33,6 +32,13 @@ public interface ProductSkuConfigService {
      * @return
      */
     Integer updateDraftList(List<UpdateSkuConfigReqVo> configReqVos);
+
+    /**
+     * 批量插入临时配置信息(数据库)
+     * @param drafts
+     * @return
+     */
+    Integer insertDraftBatch(List<ProductSkuConfigDraft> drafts);
 
     /**
      * 保存临时配置信息
