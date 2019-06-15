@@ -78,4 +78,13 @@ public interface ApplyProductSkuSaleAreaMainMapper {
      * @return int
      */
     int updateByCode(@Param("items") List<String> strings);
+    /**
+     * 通过正式编码查询申请数据
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param officialCode
+     * @param applyStatus
+     * @return com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSaleAreaMain
+     */
+    ApplyProductSkuSaleAreaMain selectByOfficialCode(Integer applyStatus,String officialCode);
 }
