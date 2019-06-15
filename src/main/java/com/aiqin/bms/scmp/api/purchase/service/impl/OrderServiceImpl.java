@@ -191,4 +191,15 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         reqVO.setOrderStatus(status);
         return changeStatus(reqVO);
     }
+
+    @Override
+    public void sendToSettlement() {
+
+    }
+
+    @Override
+    public void sendStatusToSettlement() {
+
+    }
+
 }

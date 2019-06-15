@@ -98,4 +98,21 @@ public interface OrderService {
      * @return java.lang.Boolean
      */
     Boolean distribution(String orderCode,Integer status);
+    /**
+     * TODO 订单发货后传给结算系统
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param
+     * @return void
+     */
+    void sendToSettlement();
+
+    /**
+     * TODO 订单完成后传状态给结算系统
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param null
+     * @return
+     */
+    void sendStatusToSettlement();
 }
