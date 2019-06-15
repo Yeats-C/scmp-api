@@ -29,14 +29,29 @@ public interface OrderService {
      * @exception
      */
     Boolean save(List<OrderInfoReqVO> reqVO);
-
+    /**
+     * 推送到库房
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param orders
+     * @param orderItems
+     * @return void
+     */
+    void sendOrderToOutBound(List<OrderInfo> orders, List<OrderInfoItem> orderItems);
+    /**
+     * 保存日志
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param logs
+     * @return void
+     */
     void saveLog(List<OrderInfoLog> logs);
 
     /**
      * 保存订单数据
      * @author NullPointException
      * @date 2019/6/13
-     * @param reqVO
+     * @param infoItems
      * @param info
      * @return void
      * @exception Exception copy异常
@@ -66,6 +81,21 @@ public interface OrderService {
      * @return java.lang.Boolean
      */
     Boolean changeStatus(ChangeOrderStatusReqVO reqVO);
-
+    /**
+     * 通过编码更新
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param order
+     * @return void
+     */
     void updateByOrderCode(OrderInfo order);
+    /**
+     * 配货或者发货
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param orderCode 订单编码
+     * @param status 订单状态
+     * @return java.lang.Boolean
+     */
+    Boolean distribution(String orderCode,Integer status);
 }

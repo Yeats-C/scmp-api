@@ -74,9 +74,9 @@ public class OrderController {
         }
     }
 
-    @ApiOperation("")
+    @ApiOperation("修改订单状态")
     @GetMapping("/changeStatus")
-    public HttpResponse<Boolean> changeStatus(@RequestParam ChangeOrderStatusReqVO reqVO){
+    public HttpResponse<Boolean> changeStatus(@RequestBody ChangeOrderStatusReqVO reqVO){
         try {
             return HttpResponse.success(orderService.changeStatus(reqVO));
         } catch (BizException e){
@@ -86,4 +86,17 @@ public class OrderController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+    @ApiOperation("5配货/11发货/97缺货终止")
+    @GetMapping("/distribution")
+    public HttpResponse<Boolean> distribution(@RequestParam String orderCode, @RequestParam Integer status){
+        try {
+            return HttpResponse.success(orderService.distribution(orderCode, status));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
 }
