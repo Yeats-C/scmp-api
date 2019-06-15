@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuConfigSpareWarehouse">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="config_code" jdbcType="VARCHAR" property="configCode" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
     <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
     <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
     <result column="use_order" jdbcType="INTEGER" property="useOrder" />
@@ -14,7 +15,7 @@
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, config_code, transport_center_code, transport_center_name, use_order, create_by, 
+    id, config_code, apply_code, transport_center_code, transport_center_name, use_order, create_by,
     create_time, update_by, update_time, del_flag
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -23,37 +24,35 @@
     from apply_product_sku_config_spare_warehouse
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectByFormNo" resultMap="BaseResultMap">
+  <select id="selectByApplyCode" resultMap="BaseResultMap">
     select
     a.config_code, a.transport_center_code, a.transport_center_name, a.use_order
     from apply_product_sku_config_spare_warehouse a
-    left join apply_product_sku_config b
-    on a.config_code = b.config_code
-    where b.form_no = #{formNo,jdbcType=VARCHAR}
+    where a.apply_code = #{applyCode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_config_spare_warehouse
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuConfigSpareWarehouse">
-    insert into apply_product_sku_config_spare_warehouse (id, config_code, transport_center_code, 
+    insert into apply_product_sku_config_spare_warehouse (id, apply_code, config_code, transport_center_code,
       transport_center_name, use_order, create_by, 
       create_time, update_by, update_time, 
       del_flag)
-    values (#{id,jdbcType=BIGINT}, #{configCode,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{applyCode,jdbcType=VARCHAR}, #{configCode,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR},
       #{transportCenterName,jdbcType=VARCHAR}, #{useOrder,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{delFlag,jdbcType=TINYINT})
   </insert>
 
   <insert id="insertBatch" parameterType="java.util.List">
-    insert into apply_product_sku_config_spare_warehouse (config_code, transport_center_code,
+    insert into apply_product_sku_config_spare_warehouse (config_code, apply_code, transport_center_code,
     transport_center_name, use_order, create_by,
     create_time, update_by, update_time,
     del_flag)
     values
     <foreach collection="list" item="item" open="" close="" separator=",">
-      (#{item.configCode,jdbcType=VARCHAR},#{item.transportCenterCode,jdbcType=VARCHAR},
+      (#{item.configCode,jdbcType=VARCHAR},#{applyCode,jdbcType=VARCHAR},#{item.transportCenterCode,jdbcType=VARCHAR},
       #{item.transportCenterName,jdbcType=VARCHAR},#{item.useOrder,jdbcType=INTEGER},#{item.createBy,jdbcType=VARCHAR},
       #{item.createTime,jdbcType=TIMESTAMP},#{item.updateBy,jdbcType=VARCHAR},#{item.updateTime,jdbcType=TIMESTAMP},
       #{item.delFlag,jdbcType=TINYINT})
@@ -67,6 +66,9 @@
       </if>
       <if test="configCode != null">
         config_code,
+      </if>
+      <if test="applyCode != null">
+        apply_code,
       </if>
       <if test="transportCenterCode != null">
         transport_center_code,
@@ -100,6 +102,9 @@
       <if test="configCode != null">
         #{configCode,jdbcType=VARCHAR},
       </if>
+      <if test="applyCode != null">
+        #{applyCode,jdbcType=VARCHAR},
+      </if>
       <if test="transportCenterCode != null">
         #{transportCenterCode,jdbcType=VARCHAR},
       </if>
@@ -132,6 +137,9 @@
       <if test="configCode != null">
         config_code = #{configCode,jdbcType=VARCHAR},
       </if>
+      <if test="applyCode != null">
+        apply_code = #{applyCode,jdbcType=VARCHAR},
+      </if>
       <if test="transportCenterCode != null">
         transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
       </if>
@@ -162,6 +170,7 @@
   <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuConfigSpareWarehouse">
     update apply_product_sku_config_spare_warehouse
     set config_code = #{configCode,jdbcType=VARCHAR},
+      apply_code = #{applyCode,jdbcType=VARCHAR},
       transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
       transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
       use_order = #{useOrder,jdbcType=INTEGER},
