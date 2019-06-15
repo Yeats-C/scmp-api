@@ -125,7 +125,7 @@ public class UpdateApplyContractReqVo {
     
     @ApiModelProperty("进货额")
     @NotNull(message = "进货额不能为空")
-    private List<UpdateApplyContractPurchaseVolumeReqVo> purchaseList;
+    private List<UpdateApplyContractPurchaseVolumeReqVo> purchaseVolumeReqVos;
 
     @ApiModelProperty("文件信息")
     private List<UpdateApplyContractFileReqVo> fileReqVos;
