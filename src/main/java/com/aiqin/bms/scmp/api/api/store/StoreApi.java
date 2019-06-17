@@ -1,9 +1,9 @@
 package com.aiqin.bms.scmp.api.api.store;
 
 import com.aiqin.bms.scmp.api.base.MsgStatus;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryStoreReqVO;
-import com.aiqin.bms.scmp.api.supplier.service.impl.SupplierBaseServiceImpl;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 @Service
 @Slf4j
-public class StoreApi extends SupplierBaseServiceImpl {
+public class StoreApi extends BaseServiceImpl {
     /**
      * 获取门店列表
      * @author NullPointException

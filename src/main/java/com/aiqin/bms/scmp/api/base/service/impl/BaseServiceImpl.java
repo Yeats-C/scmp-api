@@ -42,7 +42,12 @@ public class BaseServiceImpl implements BaseService {
         }
         return currentAuthToken;
     }
-
+    @Override
+    public String getStoreApiUrl(String path){
+        StringBuilder sb = new StringBuilder();
+        sb.append(urlConfig.STORE_API_URL).append("/backstage").append(path);
+        return sb.toString();
+    }
 
     @Override
     public WorkFlowRespVO callWorkFlowApi(WorkFlowVO vo, WorkFlow workFlow) {
