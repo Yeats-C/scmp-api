@@ -6,8 +6,10 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -91,6 +93,19 @@ public class OrderController {
     public HttpResponse<Boolean> distribution(@RequestParam String orderCode, @RequestParam Integer status){
         try {
             return HttpResponse.success(orderService.distribution(orderCode, status));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("订单列表")
+    @PostMapping("/orderProductList")
+    public HttpResponse<BasePage<QueryOrderProductListRespVO>> orderProductList(@RequestBody QueryOrderProductListReqVO reqVO){
+        try {
+            return HttpResponse.success(orderService.orderProductList(reqVO));
         } catch (BizException e){
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {

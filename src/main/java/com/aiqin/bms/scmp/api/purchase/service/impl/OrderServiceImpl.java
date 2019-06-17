@@ -13,8 +13,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
@@ -200,6 +202,12 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Override
     public void sendStatusToSettlement() {
 
+    }
+
+    @Override
+    public BasePage<QueryOrderProductListRespVO> orderProductList(QueryOrderProductListReqVO reqVO) {
+        reqVO.setCompanyCode(getUser().getCompanyCode());
+        return null;
     }
 
 }

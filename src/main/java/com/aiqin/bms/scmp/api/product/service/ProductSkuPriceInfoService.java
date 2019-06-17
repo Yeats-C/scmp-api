@@ -1,9 +1,16 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPriceInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * Description:
@@ -29,4 +36,15 @@ public interface ProductSkuPriceInfoService {
      * @return com.aiqin.mgs.product.api.domain.response.price.ProductSkuPriceInfoRespVO
      */
     ProductSkuPriceInfoRespVO view(String code);
+
+    Boolean saveSkuPriceDraft(List<SkuPriceDraftReqVO> reqVOList);
+
+    List<ProductSkuPriceInfoDraft> getSkuPriceListDraftBySkuCodes(List<String> skuCode);
+
+    Boolean deleteSkuPriceDraft(List<String> SkuCode);
+
+    Boolean saveSkuPriceApply(List<ApplyProductSkuPriceInfo> applyList);
+
+    @Transactional(rollbackFor = Exception.class)
+    Boolean saveSkuPriceOfficial(List<ProductSkuPriceInfo> list);
 }

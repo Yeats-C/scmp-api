@@ -7,8 +7,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 
 import java.util.List;
 
@@ -115,4 +117,12 @@ public interface OrderService {
      * @return
      */
     void sendStatusToSettlement();
+    /**
+     * 订单商品列表
+     * @author NullPointException
+     * @date 2019/6/17
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO>
+     */
+    BasePage<QueryOrderProductListRespVO> orderProductList(QueryOrderProductListReqVO reqVO);
 }
