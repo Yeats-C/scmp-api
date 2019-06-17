@@ -206,8 +206,18 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     public BasePage<QueryOrderProductListRespVO> orderProductList(QueryOrderProductListReqVO reqVO) {
+        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
         reqVO.setCompanyCode(getUser().getCompanyCode());
-        return null;
+        List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectOrderProductList(reqVO);//TODO sql 未写
+        return PageUtil.getPageList(reqVO.getPageNo(),list);
     }
+
+//    @Override
+//    public BasePage<QueryOrderProductListRespVO> productUniqueCodeList(QueryOrderProductListReqVO reqVO) {
+//        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
+//        reqVO.setCompanyCode(getUser().getCompanyCode());
+//        List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectOrderProductList(reqVO);//TODO sql 未写
+//        return PageUtil.getPageList(reqVO.getPageNo(),list);
+//    }
 
 }
