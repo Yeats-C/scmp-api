@@ -24,25 +24,25 @@ public class SupplierScore extends CommonBean {
     private String supplierName;
 
     @ApiModelProperty("送货及时性")
-    private BigDecimal deliveryTimely;
+    private BigDecimal deliveryTimely = BigDecimal.ZERO;
 
     @ApiModelProperty("退换货及时性")
-    private BigDecimal returnTimely;
+    private BigDecimal returnTimely = BigDecimal.ZERO;
 
     @ApiModelProperty("订单满足率")
-    private BigDecimal orderFillRate;
+    private BigDecimal orderFillRate = BigDecimal.ZERO;
 
     @ApiModelProperty("残损率")
-    private BigDecimal damageRate;
+    private BigDecimal damageRate = BigDecimal.ZERO;
 
     @ApiModelProperty("费用支持")
-    private BigDecimal costSupport;
+    private BigDecimal costSupport = BigDecimal.ZERO;
 
     @ApiModelProperty("活动支持")
-    private BigDecimal activitySupport;
+    private BigDecimal activitySupport = BigDecimal.ZERO;
 
     @ApiModelProperty("发票返回及时性")
-    private BigDecimal invoiceReturnTimely;
+    private BigDecimal invoiceReturnTimely = BigDecimal.ZERO;
 
     @ApiModelProperty("部门编码")
     private String departCode;

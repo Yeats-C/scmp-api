@@ -3,6 +3,8 @@ package com.aiqin.bms.scmp.api.supplier.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierScore;
 import com.aiqin.bms.scmp.api.supplier.domain.request.score.QueryScoreReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.score.SavePurchaseScoreReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.score.SaveRejectScoreReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.score.SaveScoreReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.score.DetailScoreRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.score.ScoreListRespVo;
@@ -43,4 +45,19 @@ public interface SupplierScoreService {
      * @return
      */
     DetailScoreRespVo detail(Long id);
+
+
+    /**
+     * 退供评分保存
+     * @param reqVo
+     * @return
+     */
+    Integer saveByReject(SaveRejectScoreReqVo reqVo);
+
+    /**
+     * 采购评分保存
+     * @param reqVo
+     * @return
+     */
+    Integer saveByPurchase(SavePurchaseScoreReqVo reqVo);
 }

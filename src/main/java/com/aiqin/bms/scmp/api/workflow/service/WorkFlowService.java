@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.workflow.service;
 
-import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 /**

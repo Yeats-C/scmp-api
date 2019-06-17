@@ -35,7 +35,7 @@ import com.aiqin.bms.scmp.api.supplier.service.ApplyContractService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.*;
-import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
@@ -321,7 +321,7 @@ public class ApplyContractServiceImplSupplier extends SupplierBaseServiceImpl im
         supplierCommonService.getInstance(updateApplyContractReqVo.getApplyContractCode()+"", HandleTypeCoce.APPLY_UPDATE_CONTRACT.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(),updateApplyContractReqVo ,HandleTypeCoce.APPLY_UPDATE_CONTRACT.getName());
 
         if (k > 0) {
-            List<UpdateApplyContractPurchaseVolumeReqVo> purchaseLists = updateApplyContractReqVo.getPurchaseList();
+            List<UpdateApplyContractPurchaseVolumeReqVo> purchaseLists = updateApplyContractReqVo.getPurchaseVolumeReqVos();
             try {
                 //转化成访问数据库实体
                 List<ApplyContractPurchaseVolumeDTO> list =BeanCopyUtils.copyList(purchaseLists,ApplyContractPurchaseVolumeDTO.class);

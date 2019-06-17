@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku.config;
 
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -81,7 +83,24 @@ public class SkuConfigsRepsVo {
     @ApiModelProperty("公司名称")
     private String companyName;
 
+    @ApiModelProperty("备用仓库名称")
+    private String spareWarehouse;
+
+    @ApiModelProperty("采购组编码")
+    private String purchasingGroupCode;
+
+    @ApiModelProperty("采购组名称")
+    private String purchasingGroupName;
+
     @ApiModelProperty("备用仓库")
     private List<SpareWarehouseRepsVo> spareWarehouseList;
 
+    public String getSpareWarehouse() {
+        List<String> stringList = new ArrayList<>();
+        if(CollectionUtils.isNotEmptyCollection(this.spareWarehouseList)) {
+            this.spareWarehouseList.stream().forEach(item->stringList.add(item.getTransportCenterName()));
+        }
+        this.spareWarehouse = String.join(",",stringList);
+        return spareWarehouse;
+    }
 }

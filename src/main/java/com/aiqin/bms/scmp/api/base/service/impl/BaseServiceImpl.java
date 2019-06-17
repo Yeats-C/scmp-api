@@ -1,14 +1,15 @@
-package com.aiqin.bms.scmp.api.product.service.impl;
+package com.aiqin.bms.scmp.api.base.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.product.service.BaseService;
+import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.MD5Utils;
-import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -22,10 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -36,6 +34,14 @@ public class BaseServiceImpl implements BaseService {
     @Autowired
     private EncodingRuleDao encodingRuleDao;
 
+    @Override
+    public AuthToken getUser(){
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(Objects.isNull(currentAuthToken)){
+            throw new BizException(ResultCode.LOGIN_ERROR);
+        }
+        return currentAuthToken;
+    }
 
 
     @Override
@@ -117,7 +123,7 @@ public class BaseServiceImpl implements BaseService {
      * @param optBtn
      * @return boolean
      */
-    public static boolean isPass(Integer updateFormStatus, String optBtn) {
+    protected static boolean isPass(Integer updateFormStatus, String optBtn) {
         if (Indicator.COST_FORM_STATUS_APPROVING.getCode().equals(updateFormStatus)) {
             if (IndicatorStr.PROCESS_BTN_ISSUE.getCode().equals(optBtn)
                     || IndicatorStr.PROCESS_BTN_APPROVAL.getCode().equals(optBtn)
@@ -136,7 +142,7 @@ public class BaseServiceImpl implements BaseService {
      * @param costApplyO
      * @return com.aiqin.mgs.api.api.domain.request.workflow.WorkFlowCallbackVO
      */
-    public WorkFlowCallbackVO updateSupStatus(WorkFlowCallbackVO costApplyO) {
+    protected WorkFlowCallbackVO updateSupStatus(WorkFlowCallbackVO costApplyO) {
         /**保存流程状态*/
         if (Indicator.COST_FORM_STATUS_APPROVED.getCode().equals(costApplyO.getUpdateFormStatus())) {
             //审核通过
@@ -153,7 +159,7 @@ public class BaseServiceImpl implements BaseService {
         }
         return costApplyO;
     }
-
+    @Override
     public WorkFlowRespVO cancelWorkFlow(WorkFlowVO vo){
         log.info("BaseServiceImpl-cancelWorkFlow-工作流vo是：[{}]",JSON.toJSONString(vo));
 //        vo.setTimeStamp(System.currentTimeMillis()+"");

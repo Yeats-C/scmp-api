@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.workflow.utils;
 
-import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.google.common.collect.Maps;

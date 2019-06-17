@@ -1,7 +1,7 @@
 package com.aiqin.bms.scmp.api.workflow.controller;
 
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
-import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.service.WorkFlowService;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.alibaba.fastjson.JSONObject;
@@ -39,7 +39,7 @@ public class WorkFlowController {
             }
             return workFlowService.WorkFlowCallBack(WorkFlow.getAll().get(type), vo);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
             return WorkFlowReturn.FALSE;
         }
     }

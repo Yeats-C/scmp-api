@@ -247,6 +247,9 @@ public class SupplyComServiceImpl implements SupplyComService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer updateStarScore(String supplierCode, BigDecimal starScore) {
-        return supplyCompanyMapper.updateStarScore(supplierCode,starScore);
+        //根据供应商编号获取供应商综合评分
+        SupplyCompany supplyCompany = supplyCompanyDao.detailByCode(supplierCode, null);
+        BigDecimal newStarScore = (starScore.add(supplyCompany.getStarScore())).divide(new BigDecimal(2),1,BigDecimal.ROUND_HALF_UP);
+        return supplyCompanyMapper.updateStarScore(supplierCode,newStarScore);
     }
 }

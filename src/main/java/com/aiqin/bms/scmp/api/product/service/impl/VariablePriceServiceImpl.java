@@ -21,7 +21,7 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.JsonMapper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.bms.scmp.api.util.UUIDUtils;
-import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -33,7 +33,6 @@ import lombok.val;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +42,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class VariablePriceServiceImplProduct extends ProductBaseServiceImpl implements VariablePriceService {
+public class VariablePriceServiceImpl extends ProductBaseServiceImpl implements VariablePriceService {
     @Autowired
     private VariablePriceMapper variablePriceMapper;
     @Autowired
@@ -58,8 +57,6 @@ public class VariablePriceServiceImplProduct extends ProductBaseServiceImpl impl
     private ProductOperationLogService productOperationLogService;
     @Autowired
     private ProductSkuPriceDao productSkuPriceDao;
-    @Value("${Purchase.url}")
-    public String PURCHASE_API_URL;
     @Autowired
     private WorkFlowBaseUrl workFlowBaseUrl;
     @Autowired

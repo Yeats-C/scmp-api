@@ -4,7 +4,6 @@ center:
   main:
   #中控服务端
     url: http://control.api.aiqin.com
-    #url: http://39.106.215.2:9003
   #中控前端
     host: http://control.mgs.aiqin.com
 product:
@@ -12,9 +11,9 @@ product:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
 ground:
   druid:
-    url: jdbc:mysql://qa-001:3306/mgs_supplier?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
-    username: supplier_write
-    password: D80SjZXnBLJxZLEZylj
+    url: jdbc:mysql://qa-001:3306/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: scmp_write
+    password: nCUdR4jBQPVnSDVTSxFaA
     initialSize: 5
     minIdle: 3
     maxActive: 40
@@ -46,3 +45,4 @@ UserName:
   key: 11921
 CurrentPositionCode:
   key: GW0317
+evn: test

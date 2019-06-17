@@ -139,7 +139,7 @@ public class ContractServiceImpl implements ContractService{
             try {
                 if(CollectionUtils.isNotEmptyCollection(purchaseVolume)){
                     List<ContractPurchaseVolumeResVo>  list =BeanCopyUtils.copyList(purchaseVolume,ContractPurchaseVolumeResVo.class);
-                    contractResVo.setPurchaseCount(list);
+                    contractResVo.setPurchaseVolumeReqVos(list);
                 }
                if(CollectionUtils.isNotEmptyCollection(contractFiles)){
                    List<ContractFileResVo>  fileResVos = BeanCopyUtils.copyList(contractFiles, ContractFileResVo.class);
@@ -351,7 +351,7 @@ public class ContractServiceImpl implements ContractService{
             for (ContractResVo resVo : list) {
                 List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(resVo.getContractCode());
                     List<ContractPurchaseVolumeResVo>  contractPurchaseVolumeResVos =BeanCopyUtils.copyList(purchaseVolume,ContractPurchaseVolumeResVo.class);
-                resVo.setPurchaseCount(contractPurchaseVolumeResVos);
+                resVo.setPurchaseVolumeReqVos(contractPurchaseVolumeResVos);
             }
             return list;
         } catch (Exception e) {

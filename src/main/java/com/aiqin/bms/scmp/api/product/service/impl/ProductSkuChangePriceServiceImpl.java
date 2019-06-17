@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
@@ -16,7 +17,7 @@ import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.util.*;
-import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;

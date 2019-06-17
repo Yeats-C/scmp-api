@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.workflow.annotation;
 
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
+
 import java.lang.annotation.*;
 
 /**
