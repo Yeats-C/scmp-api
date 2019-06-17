@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="purchase_apply_id" jdbcType="VARCHAR" property="purchaseApplyId" />
+    <result column="purchase_apply_code" jdbcType="VARCHAR" property="purchaseApplyCode" />
+    <result column="apply_type" jdbcType="INTEGER" property="applyType" />
+    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    purchase_apply_id as purchaseApplyId, purchase_apply_code as purchaseApplyCode, apply_type as applyType,
+    apply_status as applyStatus, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
+    create_time as createTime, create_by as createBy
+  </sql>
+  <insert id="insert">
+    insert into purchase_apply (id, purchase_apply_id, purchase_apply_code, 
+      apply_type, apply_status, purchase_group_code, 
+      purchase_group_name, create_time, update_time, 
+      create_by, update_by)
+    values (#{id,jdbcType=BIGINT}, #{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, 
+      #{applyType,jdbcType=INTEGER}, #{applyStatus,jdbcType=INTEGER}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
+      #{purchaseGroupName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <update id="update">
+    update purchase_apply
+    <set>
+      <if test="purchaseApplyId != null">
+        purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseApplyCode != null">
+        purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applyType != null">
+        apply_type = #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="applyList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse">
+    select <include refid="Base_Column_List"></include> from purchase_apply
+    <where>
+      <if test="beginTime != null">
+        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseApplyCode != null">
+        and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupCode != null">
+        and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="applyType != null">
+        and apply_type = #{applyType,jdbcType=INTEGER}
+      </if>
+      <if test="applyStatus != null">
+        and apply_status = #{applyStatus,jdbcType=INTEGER}
+      </if>
+    </where>
+    order by create_time desc
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="applyCount" resultType="java.lang.Integer">
+    select count(1) from purchase_apply
+    <where>
+      <if test="beginTime != null">
+        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseApplyCode != null">
+        and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupCode != null">
+        and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="applyType != null">
+        and apply_type = #{applyType,jdbcType=INTEGER}
+      </if>
+      <if test="applyStatus != null">
+        and apply_status = #{applyStatus,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+</mapper>

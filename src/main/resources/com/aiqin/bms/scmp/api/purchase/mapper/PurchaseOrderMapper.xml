@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="purchase_order_id" jdbcType="VARCHAR" property="purchaseOrderId" />
+    <result column="purchase_order_code" jdbcType="VARCHAR" property="purchaseOrderCode" />
+    <result column="purchase_apply_id" jdbcType="VARCHAR" property="purchaseApplyId" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="info_status" jdbcType="INTEGER" property="infoStatus" />
+    <result column="purchase_order_status" jdbcType="INTEGER" property="purchaseOrderStatus" />
+    <result column="storage_status" jdbcType="INTEGER" property="storageStatus" />
+    <result column="expect_receipt_time" jdbcType="TIMESTAMP" property="expectReceiptTime" />
+    <result column="term_validity" jdbcType="INTEGER" property="termValidity" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, purchase_order_id, purchase_order_code, purchase_apply_id, transport_center_code, 
+    transport_center_name, purchase_group_code, purchase_group_name, warehouse_code, 
+    warehouse_name, supplier_code, supplier_name, info_status, purchase_order_status, 
+    storage_status, expect_receipt_time, term_validity, create_time, update_time, create_by, 
+    update_by
+  </sql>
+  <insert id="insert">
+    insert into purchase_order (id, purchase_order_id, purchase_order_code, 
+      purchase_apply_id, transport_center_code, transport_center_name, 
+      purchase_group_code, purchase_group_name, warehouse_code, 
+      warehouse_name, supplier_code, supplier_name, 
+      info_status, purchase_order_status, storage_status, 
+      expect_receipt_time, term_validity, create_time, 
+      update_time, create_by, update_by
+      )
+    values (#{id,jdbcType=BIGINT}, #{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR}, 
+      #{purchaseApplyId,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
+      #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, 
+      #{warehouseName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, 
+      #{infoStatus,jdbcType=INTEGER}, #{purchaseOrderStatus,jdbcType=INTEGER}, #{storageStatus,jdbcType=INTEGER}, 
+      #{expectReceiptTime,jdbcType=TIMESTAMP}, #{termValidity,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="update">
+    update purchase_order
+    <set>
+      <if test="purchaseOrderId != null">
+        purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseOrderCode != null">
+        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseApplyId != null">
+        purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="infoStatus != null">
+        info_status = #{infoStatus,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseOrderStatus != null">
+        purchase_order_status = #{purchaseOrderStatus,jdbcType=INTEGER},
+      </if>
+      <if test="storageStatus != null">
+        storage_status = #{storageStatus,jdbcType=INTEGER},
+      </if>
+      <if test="expectReceiptTime != null">
+        expect_receipt_time = #{expectReceiptTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="termValidity != null">
+        term_validity = #{termValidity,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

@@ -3,67 +3,68 @@ package com.aiqin.bms.scmp.api.purchase.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 @ApiModel
 public class RejectApplyRecord {
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty(value="退货申请单号")
+    @ApiModelProperty(value = "退货申请单号")
     @JsonProperty("reject_apply_record_code")
     private String rejectApplyRecordCode;
 
-    @ApiModelProperty(value="申请单类型: 0 手动 1自动")
+    @ApiModelProperty(value = "申请单类型: 0 手动 1自动")
     @JsonProperty("apply_type")
-    private Boolean applyType;
+    private Integer applyType;
 
-    @ApiModelProperty(value="采购组 code")
+    @ApiModelProperty(value = "采购组 code")
     @JsonProperty("purchase_group_code")
     private String purchaseGroupCode;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("purchase_group_name")
     private String purchaseGroupName;
 
-    @ApiModelProperty(value="退供申请单状态: 0  已完成 1 待提交")
+    @ApiModelProperty(value = "退供申请单状态: 0  已完成 1 待提交")
     @JsonProperty("apply_record_status")
-    private Boolean applyRecordStatus;
+    private Integer applyRecordStatus;
 
-    @ApiModelProperty(value="总sku数量")
+    @ApiModelProperty(value = "总sku数量")
     @JsonProperty("sum_sku")
     private Integer sumSku;
 
-    @ApiModelProperty(value="总退供数量")
+    @ApiModelProperty(value = "总退供数量")
     @JsonProperty("sum_count")
     private Integer sumCount;
 
-    @ApiModelProperty(value="总退供金额")
+    @ApiModelProperty(value = "总退供金额")
     @JsonProperty("sum_amount")
     private Long sumAmount;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("create_by_id")
     private String createById;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("create_by_name")
     private String createByName;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("update_by_id")
     private String updateById;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("update_by_name")
     private String updateByName;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("create_time")
     private Date createTime;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("update_time")
     private Date updateTime;
 
@@ -83,11 +84,11 @@ public class RejectApplyRecord {
         this.rejectApplyRecordCode = rejectApplyRecordCode;
     }
 
-    public Boolean getApplyType() {
+    public Integer getApplyType() {
         return applyType;
     }
 
-    public void setApplyType(Boolean applyType) {
+    public void setApplyType(Integer applyType) {
         this.applyType = applyType;
     }
 
@@ -107,11 +108,11 @@ public class RejectApplyRecord {
         this.purchaseGroupName = purchaseGroupName;
     }
 
-    public Boolean getApplyRecordStatus() {
+    public Integer getApplyRecordStatus() {
         return applyRecordStatus;
     }
 
-    public void setApplyRecordStatus(Boolean applyRecordStatus) {
+    public void setApplyRecordStatus(Integer applyRecordStatus) {
         this.applyRecordStatus = applyRecordStatus;
     }
 

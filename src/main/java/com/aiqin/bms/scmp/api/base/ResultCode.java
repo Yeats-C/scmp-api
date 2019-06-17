@@ -4,13 +4,13 @@ import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 
 public interface ResultCode {
+    MessageId SYSTEM_ERROR = MessageId.create(Project.SCMP_API, 500, "系统异常");
+    MessageId REQUIRED_PARAMETER = MessageId.create(Project.SCMP_API, 1, "参数缺失");
+    MessageId NAME_REPEAT = MessageId.create(Project.SCMP_API, 2, "名称重复");
+    MessageId NOT_HAVE_PARAM = MessageId.create(Project.SCMP_API, 3, "参数信息错误");
     //系统相关异常
     MessageId BEAN_COPY_ERROR = MessageId.create(Project.PURCHASE_API,599,"对象拷贝异常");
     MessageId USER_NOT_FOUND = MessageId.create(Project.PURCHASE_API,403,"获取登录用户失败！");
-    MessageId SYSTEM_ERROR = MessageId.create(Project.STORE_API, 500, "系统异常");
-    MessageId REQUIRED_PARAMETER = MessageId.create(Project.STORE_API, 1, "参数缺失");
-    MessageId NAME_REPEAT = MessageId.create(Project.STORE_API, 2, "名称重复");
-    MessageId NOT_HAVE_PARAM = MessageId.create(Project.PRODUCT_API, 3, "参数信息错误");
     MessageId SELECT_WEI_SHOP_SKU_ERROR = MessageId.create(Project.PRODUCT_API, 3, "未查询到微商城sku");
     MessageId SELECT_WEI_SHOP_TOP_SKU_ERROR = MessageId.create(Project.PRODUCT_API, 4, "未查询到微商城已上架sku");
     MessageId SELECT_WARNING_STOCK_SKU_ERROR = MessageId.create(Project.PRODUCT_API, 5, "未查询到库存预警sku");
@@ -173,10 +173,18 @@ public interface ResultCode {
     MessageId SUBMIT_ERROR = MessageId.create(Project.PRODUCT_API, 74, "获取数据异常，提交失败");
 
     MessageId SKU_CONFIG_SUBMIT_ERROR =  MessageId.create(Project.PRODUCT_API, 74, "申请SKU配置数据保存异常！");
+    //价格
+    MessageId SAVE_PRICE_FAILED =MessageId.create(Project.PRODUCT_API, 96, "价格数据保存失败");
+    MessageId DELETE_SKU_PRICE_DRAFT_FAILED =MessageId.create(Project.PRODUCT_API, 96, "删除价格临时表数据失败") ;
+    MessageId PRICE_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.PRODUCT_API, 96, "价格数据不能为空");
+    MessageId SAVE_PRICE_LOG_FAILED = MessageId.create(Project.PRODUCT_API, 96, "保存价格日志失败");
 
     //变价
     MessageId DATA_ERROR =  MessageId.create(Project.PRODUCT_API, 98, "数据异常");
     MessageId DATA_NOT_COMPLETE = MessageId.create(Project.PRODUCT_API,98,"数据不完成！请检查并补充数据！");
+
+
+    MessageId IMPORT_REJECT_APPLY_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入退供申请单异常");
     //订单
     MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");
     MessageId CAN_NOT_FIND_ORDER = MessageId.create(Project.PURCHASE_API,99,"订单数据查询失败");

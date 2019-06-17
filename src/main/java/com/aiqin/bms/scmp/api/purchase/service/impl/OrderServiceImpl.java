@@ -6,14 +6,17 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
@@ -24,8 +27,11 @@ import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -48,6 +54,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private OrderInfoItemMapper orderInfoItemMapper;
     @Autowired
     private OrderInfoLogMapper orderInfoLogMapper;
+    @Autowired
+    private OutboundService outboundService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -76,8 +84,19 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         saveData(orderItems, orders);
         //存日志
         saveLog(logs);
+        //异步调用库房接口推送订单信息
+        OrderServiceImpl service = (OrderServiceImpl) AopContext.currentProxy();
+        service.sendOrderToOutBound(orders,orderItems);
         return true;
     }
+    @Async("myTaskAsyncPool")
+    @Override
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
+    public void sendOrderToOutBound(List<OrderInfo> orders, List<OrderInfoItem> orderItems) {
+        //TODO 调用库房接口
+//        outboundService.save();
+    }
+
     @Override
     public void saveLog(List<OrderInfoLog> logs) {
         if(CollectionUtils.isEmptyCollection(logs)){
@@ -99,6 +118,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
      */
     private void validateOrderData(List<OrderInfoReqVO> reqVOs) {
         //TODO 这里需要参数校验
+
     }
 
     @Override
@@ -162,5 +182,42 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             throw new BizException(ResultCode.UPDATE_ORDER_STATUS_FAILED);
         }
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean distribution(String orderCode,Integer status) {
+        ChangeOrderStatusReqVO reqVO = new ChangeOrderStatusReqVO();
+        reqVO.setOperator(getUser().getPersonName());
+        reqVO.setOperatorCode(getUser().getPersonId());
+        reqVO.setOrderCode(orderCode);
+        reqVO.setOrderStatus(status);
+        return changeStatus(reqVO);
+    }
+
+    @Override
+    public void sendToSettlement() {
+
+    }
+
+    @Override
+    public void sendStatusToSettlement() {
+
+    }
+
+    @Override
+    public BasePage<QueryOrderProductListRespVO> orderProductList(QueryOrderProductListReqVO reqVO) {
+        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
+        reqVO.setCompanyCode(getUser().getCompanyCode());
+        List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectOrderProductList(reqVO);//TODO sql 未写
+        return PageUtil.getPageList(reqVO.getPageNo(),list);
+    }
+
+//    @Override
+//    public BasePage<QueryOrderProductListRespVO> productUniqueCodeList(QueryOrderProductListReqVO reqVO) {
+//        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
+//        reqVO.setCompanyCode(getUser().getCompanyCode());
+//        List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectOrderProductList(reqVO);//TODO sql 未写
+//        return PageUtil.getPageList(reqVO.getPageNo(),list);
+//    }
 
 }

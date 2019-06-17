@@ -6,11 +6,11 @@ public interface Global {
     /**
      * 禁用状态
      */
-    String USER_OFF = "0";
+    Integer USER_OFF = 0;
     /**
      * 启用状态
      */
-    String USER_ON = "1";
+    Integer USER_ON = 1;
     /**
      * 判断增删改是否成功
      */
@@ -77,4 +77,7 @@ public interface Global {
      * 不显示申请SKU配置信息
      */
     Byte APPLY_SKU_CONFIG_UN_SHOW = Byte.valueOf("1");
+
+    String DEFAULT_DEPART_CODE = "3";
+    String DEFAULT_DEPART_NAME = "仓储中心";
 }

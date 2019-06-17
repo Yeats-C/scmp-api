@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="apply_product_id" jdbcType="VARCHAR" property="applyProductId" />
+    <result column="purchase_apply_id" jdbcType="VARCHAR" property="purchaseApplyId" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="product_nature" jdbcType="INTEGER" property="productNature" />
+    <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="product_category" jdbcType="INTEGER" property="productCategory" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
+    <result column="product_purchase_amount" jdbcType="INTEGER" property="productPurchaseAmount" />
+    <result column="purchase_whole" jdbcType="INTEGER" property="purchaseWhole" />
+    <result column="purchase_single" jdbcType="INTEGER" property="purchaseSingle" />
+    <result column="return_whole" jdbcType="INTEGER" property="returnWhole" />
+    <result column="return_single" jdbcType="INTEGER" property="returnSingle" />
+    <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName" />
+    <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
+    <result column="total_way_num" jdbcType="INTEGER" property="totalWayNum" />
+    <result column="last_time" jdbcType="TIMESTAMP" property="lastTime" />
+    <result column="sales_volume" jdbcType="INTEGER" property="salesVolume" />
+    <result column="pack_number" jdbcType="INTEGER" property="packNumber" />
+    <result column="pack_unit" jdbcType="VARCHAR" property="packUnit" />
+    <result column="purchase_number" jdbcType="INTEGER" property="purchaseNumber" />
+    <result column="receipt_time" jdbcType="TIMESTAMP" property="receiptTime" />
+    <result column="purchase_max" jdbcType="INTEGER" property="purchaseMax" />
+    <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="shortage_number" jdbcType="INTEGER" property="shortageNumber" />
+    <result column="shortage_day" jdbcType="INTEGER" property="shortageDay" />
+    <result column="stock_turnover" jdbcType="INTEGER" property="stockTurnover" />
+    <result column="receipt_turnover" jdbcType="INTEGER" property="receiptTurnover" />
+    <result column="error_info" jdbcType="VARCHAR" property="errorInfo" />
+    <result column="apply_product_status" jdbcType="INTEGER" property="applyProductStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    apply_product_id as applyProductId, purchase_apply_id as purchaseApplyId, sku_code as skuCode, sku_name as skuName, 
+    spu_code as spuCode, product_name as productName, warehouse_code as warehouseCode, warehouse_name as warehouseName, supplier_code as supplierCode,
+    supplier_name as supplierName, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName, 
+    transport_center_code as transportCenterCode, transport_center_name as transportCenterName, product_nature as productNature, 
+    brand_id as brandId, brand_name as brandName, category_id as categoryId, category_name as categoryName,
+    product_category as productCategory, product_type as productType, product_purchase_amount as productPurchaseAmount,
+    purchase_whole as purchaseWhole, purchase_single as purchaseSingle, return_whole as returnWhole, return_single as returnSingle,
+    stock_unit_name as stockUnitName, stock_count as stockCount, total_way_num as totalWayNum, last_time as lastTime, sales_volume as salesVolume,
+    pack_number as packNumber, pack_unit as packUnit, purchase_number as purchaseNumber, receipt_time as receiptTime,
+    purchase_max as purchaseMax, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
+    shortage_number as shortageNumber, shortage_day as shortageDay, stock_turnover as stockTurnover,
+    receipt_turnover as receiptTurnover, error_info as errorInfo
+  </sql>
+  <insert id="insert">
+    insert into purchase_apply_product (apply_product_id, purchase_apply_id, 
+      sku_code, sku_name, spu_code, product_name, warehouse_code, warehouse_name, supplier_code,
+      supplier_name, purchase_group_code, purchase_group_name, transport_center_code, transport_center_name,
+      product_nature, brand_id, brand_name, category_id, category_name, product_category,
+      product_type, product_purchase_amount, purchase_whole, purchase_single, return_whole, return_single,
+      stock_unit_name, stock_count, total_way_num, last_time, sales_volume, pack_number,
+      pack_unit, purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
+      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, create_time, create_by)
+    values ( #{applyProductId,jdbcType=VARCHAR}, #{purchaseApplyId,jdbcType=VARCHAR}, 
+      #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{spuCode,jdbcType=VARCHAR}, 
+      #{productName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehousName,jdbcType=VARCHAR},
+      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR},
+      #{purchaseGroupName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR},
+      #{productNature,jdbcType=INTEGER}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, 
+      #{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, #{productCategory,jdbcType=INTEGER}, 
+      #{productType,jdbcType=INTEGER}, #{productPurchaseAmount,jdbcType=INTEGER}, #{purchaseWhole,jdbcType=INTEGER}, 
+      #{purchaseSingle,jdbcType=INTEGER}, #{returnWhole,jdbcType=INTEGER}, #{returnSingle,jdbcType=INTEGER}, 
+      #{stockUnitName,jdbcType=VARCHAR}, #{stockCount,jdbcType=INTEGER}, #{totalWayNum,jdbcType=INTEGER}, 
+      #{lastTime,jdbcType=TIMESTAMP}, #{salesVolume,jdbcType=INTEGER}, #{packNumber,jdbcType=INTEGER}, 
+      #{packUnit,jdbcType=VARCHAR}, #{purchaseNumber,jdbcType=INTEGER}, #{receiptTime,jdbcType=TIMESTAMP}, 
+      #{purchaseMax,jdbcType=INTEGER}, #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, 
+      #{modelNumber,jdbcType=VARCHAR}, #{shortageNumber,jdbcType=INTEGER}, #{shortageDay,jdbcType=INTEGER}, 
+      #{stockTurnover,jdbcType=INTEGER}, #{receiptTurnover,jdbcType=INTEGER}, #{errorInfo,jdbcType=VARCHAR}, 
+      #{applyProductStatus,jdbcType=INTEGER}, now(), #{createBy,jdbcType=VARCHAR})
+  </insert>
+  <update id="update">
+    update purchase_apply_product
+    <set>
+      <if test="applyProductId != null">
+        apply_product_id = #{applyProductId,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="spuCode != null">
+        spu_code = #{spuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="productNature != null">
+        product_nature = #{productNature,jdbcType=INTEGER},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryName != null">
+        category_name = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="productCategory != null">
+        product_category = #{productCategory,jdbcType=INTEGER},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=INTEGER},
+      </if>
+      <if test="productPurchaseAmount != null">
+        product_purchase_amount = #{productPurchaseAmount,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseWhole != null">
+        purchase_whole = #{purchaseWhole,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseSingle != null">
+        purchase_single = #{purchaseSingle,jdbcType=INTEGER},
+      </if>
+      <if test="returnWhole != null">
+        return_whole = #{returnWhole,jdbcType=INTEGER},
+      </if>
+      <if test="returnSingle != null">
+        return_single = #{returnSingle,jdbcType=INTEGER},
+      </if>
+      <if test="stockUnitName != null">
+        stock_unit_name = #{stockUnitName,jdbcType=VARCHAR},
+      </if>
+      <if test="stockCount != null">
+        stock_count = #{stockCount,jdbcType=INTEGER},
+      </if>
+      <if test="totalWayNum != null">
+        total_way_num = #{totalWayNum,jdbcType=INTEGER},
+      </if>
+      <if test="lastTime != null">
+        last_time = #{lastTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="salesVolume != null">
+        sales_volume = #{salesVolume,jdbcType=INTEGER},
+      </if>
+      <if test="packNumber != null">
+        pack_number = #{packNumber,jdbcType=INTEGER},
+      </if>
+      <if test="packUnit != null">
+        pack_unit = #{packUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseNumber != null">
+        purchase_number = #{purchaseNumber,jdbcType=INTEGER},
+      </if>
+      <if test="receiptTime != null">
+        receipt_time = #{receiptTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="purchaseMax != null">
+        purchase_max = #{purchaseMax,jdbcType=INTEGER},
+      </if>
+      <if test="productSpec != null">
+        product_spec = #{productSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        color_name = #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelNumber != null">
+        model_number = #{modelNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="shortageNumber != null">
+        shortage_number = #{shortageNumber,jdbcType=INTEGER},
+      </if>
+      <if test="shortageDay != null">
+        shortage_day = #{shortageDay,jdbcType=INTEGER},
+      </if>
+      <if test="stockTurnover != null">
+        stock_turnover = #{stockTurnover,jdbcType=INTEGER},
+      </if>
+      <if test="receiptTurnover != null">
+        receipt_turnover = #{receiptTurnover,jdbcType=INTEGER},
+      </if>
+      <if test="errorInfo != null">
+        error_info = #{errorInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="applyProductStatus != null">
+        apply_product_status = #{applyProductStatus,jdbcType=INTEGER},
+      </if>
+      update_time = now(),
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where apply_product_id = #{applyProductId,jdbcType=VARCHAR}
+  </update>
+  <select id="applyProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct">
+    select <include refid="Base_Column_List"></include> from purchase_apply_product
+    <where>
+      apply_product_status = 1
+      <if test="supplierCode != null">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuCode != null">
+        and sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuName != null">
+        and sku_name like CONCAT('',#{skuName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="purchaseGroupCode != null">
+        and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productNature != null">
+        and product_nature = #{productNature,jdbcType=VARCHAR}
+      </if>
+      <if test="brandId != null">
+        and brand_id = #{brandId,jdbcType=VARCHAR}
+      </if>
+      <if test="categoryId != null">
+        and category_id = #{categoryId,jdbcType=VARCHAR}
+      </if>
+      <if test="spuCode != null">
+        and spu_code = #{spuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productName != null">
+        and product_name like CONCAT('',#{productName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="aReplenish != null and aReplenish.size > 0">
+        and sku_code in
+        <foreach collection="aReplenish" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="productReplenish != null and productReplenish.size > 0">
+        and sku_code in
+        <foreach collection="productReplenish" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="aShortage != null and aShortage.size > 0">
+        and sku_code in
+        <foreach collection="aShortage" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="productShortage != null and productShortage.size > 0">
+        and sku_code in
+        <foreach collection="productShortage" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+    order by create_time desc
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="applyProductCount" resultType="java.lang.Integer">
+    select count(1) from purchase_apply_product
+    <where>
+      apply_product_status = 1
+      <if test="supplierCode != null">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuCode != null">
+        and sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuName != null">
+        and sku_name like CONCAT('',#{skuName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="purchaseGroupCode != null">
+        and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productNature != null">
+        and product_nature = #{productNature,jdbcType=VARCHAR}
+      </if>
+      <if test="brandId != null">
+        and brand_id = #{brandId,jdbcType=VARCHAR}
+      </if>
+      <if test="categoryId != null">
+        and category_id = #{categoryId,jdbcType=VARCHAR}
+      </if>
+      <if test="spuCode != null">
+        and spu_code = #{spuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productName != null">
+        and product_name like CONCAT('',#{productName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="aReplenish != null and aReplenish.size > 0">
+        and sku_code in
+        <foreach collection="aReplenish" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="productReplenish != null and productReplenish.size > 0">
+        and sku_code in
+        <foreach collection="productReplenish" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="aShortage != null and aShortage.size > 0">
+        and sku_code in
+        <foreach collection="aShortage" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="productShortage != null and productShortage.size > 0">
+        and sku_code in
+        <foreach collection="productShortage" index="index" item="item" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+    </where>
+  </select>
+  <select id="applyProduct" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct">
+    select <include refid="Base_Column_List"></include> from purchase_apply_product
+    <where>
+      apply_product_id = #{applyProductId,jdbcType=VARCHAR}
+    </where>
+  </select>
+</mapper>

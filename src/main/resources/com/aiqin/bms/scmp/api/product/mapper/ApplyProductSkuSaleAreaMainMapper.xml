@@ -387,6 +387,13 @@
       on a.code = d.code
     where a.be_effective = 0 and <![CDATA[a.selection_effective_start_time <= now() ]]>
     </select>
+    <select id="selectByOfficialCode"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from apply_product_sku_sale_area_main
+        where apply_status = #{applyStatus} and official_code = #{officialCode}
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_sale_area_main
     where id = #{id,jdbcType=BIGINT}

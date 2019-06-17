@@ -11,6 +11,10 @@ public class OperationLog {
     @JsonProperty("id")
     private Long id;
 
+    @ApiModelProperty(value="")
+    @JsonProperty("operation_id")
+    private String operationId;
+
     @ApiModelProperty(value="操作状态  : 0 新增 1 修改 2 下载")
     @JsonProperty("operation_type")
     private Boolean operationType;
@@ -45,6 +49,14 @@ public class OperationLog {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getOperationId() {
+        return operationId;
+    }
+
+    public void setOperationId(String operationId) {
+        this.operationId = operationId;
     }
 
     public Boolean getOperationType() {
