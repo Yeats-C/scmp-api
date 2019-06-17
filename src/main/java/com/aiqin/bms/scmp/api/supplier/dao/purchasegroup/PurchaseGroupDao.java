@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.dao.purchasegroup;
 
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.QueryPurchaseGroupReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -49,14 +50,17 @@ public interface PurchaseGroupDao {
 
     /**
      * 获取未禁用的采购组
+     * @param companyCode
+     * @param personId
      * @return
      */
-    List<PurchaseGroupDTO> getPurchaseGroup(@Param("companyCode") String companyCode);
+    List<PurchaseGroupVo> getPurchaseGroup(@Param("companyCode") String companyCode, @Param("personId") String personId);
 
     /**
      * 验证名字是否重复
      * @param purchaseGroupName
      * @param id
+     * @param companyCode
      * @return
      */
     Integer checkName(@Param("purchaseGroupName") String purchaseGroupName, @Param("id") Long id, @Param("companyCode") String companyCode);

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.base.BasePage;
@@ -12,6 +13,8 @@ import com.aiqin.bms.scmp.api.common.TagTypeCode;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierScore;
 import com.aiqin.bms.scmp.api.supplier.domain.request.score.QueryScoreReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.score.SavePurchaseScoreReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.score.SaveRejectScoreReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.score.SaveScoreReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.UpdateUseNumReqVo;
@@ -25,6 +28,7 @@ import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -86,6 +90,7 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
     public Integer save(SaveScoreReqVo reqVo) {
         SupplierScore score = new SupplierScore();
         BeanCopyUtils.copy(reqVo,score);
+        //设置默认值
         //设置编码
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.SUPPLIER_SCORE_CODE);
         score.setScoreCode(String.valueOf(encodingRule.getNumberingValue()));
@@ -97,30 +102,71 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
         BigDecimal starScore =calculateStarScore(score);
         comService.updateStarScore(reqVo.getSupplierCode(),starScore);
         //标签
-        List<UseTagRecordReqVo> useTagRecordReqVos = Lists.newArrayList();
-        List<UpdateUseNumReqVo> updateUseNumReqVos = Lists.newArrayList();
-        ArrayList<SaveUseTagRecordItemReqVo> itemReqVos = reqVo.getTagInfoList().stream()
-                .collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(f -> f.getTagCode()))), ArrayList::new));
-        itemReqVos.forEach(item->{
-            UseTagRecordReqVo useTagRecordReqVo = new UseTagRecordReqVo();
-            useTagRecordReqVo.setUseObjectCode(reqVo.getSupplierCode());
-            useTagRecordReqVo.setUseObjectName(reqVo.getSupplierName());
-            useTagRecordReqVo.setTagTypeCode(TagTypeCode.SUPPLIER.getStatus());
-            useTagRecordReqVo.setTagTypeName(TagTypeCode.SUPPLIER.getName());
-            useTagRecordReqVo.setSourceCode(score.getScoreCode());
-            useTagRecordReqVo.setTagCode(item.getTagCode());
-            useTagRecordReqVo.setTagName(item.getTagName());
-            useTagRecordReqVos.add(useTagRecordReqVo);
-            UpdateUseNumReqVo updateUseNumReqVo = new UpdateUseNumReqVo();
-            updateUseNumReqVo.setChangeNum(1);
-            updateUseNumReqVo.setTagCode(item.getTagCode());
-            updateUseNumReqVos.add(updateUseNumReqVo);
-        });
-        //保存标签记录
-        tagInfoService.saveRecordListRepeat(useTagRecordReqVos);
+        if(CollectionUtils.isNotEmptyCollection(reqVo.getTagInfoList())){
+            List<UseTagRecordReqVo> useTagRecordReqVos = Lists.newArrayList();
+            List<UpdateUseNumReqVo> updateUseNumReqVos = Lists.newArrayList();
+            ArrayList<SaveUseTagRecordItemReqVo> itemReqVos = reqVo.getTagInfoList().stream()
+                    .collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(f -> f.getTagCode()))), ArrayList::new));
+            itemReqVos.forEach(item->{
+                UseTagRecordReqVo useTagRecordReqVo = new UseTagRecordReqVo();
+                useTagRecordReqVo.setUseObjectCode(reqVo.getSupplierCode());
+                useTagRecordReqVo.setUseObjectName(reqVo.getSupplierName());
+                useTagRecordReqVo.setTagTypeCode(TagTypeCode.SUPPLIER.getStatus());
+                useTagRecordReqVo.setTagTypeName(TagTypeCode.SUPPLIER.getName());
+                useTagRecordReqVo.setSourceCode(score.getScoreCode());
+                useTagRecordReqVo.setTagCode(item.getTagCode());
+                useTagRecordReqVo.setTagName(item.getTagName());
+                useTagRecordReqVos.add(useTagRecordReqVo);
+                UpdateUseNumReqVo updateUseNumReqVo = new UpdateUseNumReqVo();
+                updateUseNumReqVo.setChangeNum(1);
+                updateUseNumReqVo.setTagCode(item.getTagCode());
+                updateUseNumReqVos.add(updateUseNumReqVo);
+            });
+            //保存标签记录
+            tagInfoService.saveRecordListRepeat(useTagRecordReqVos);
+        }
         return num;
     }
 
+    /**
+     * 退供评分保存
+     *
+     * @param reqVo
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer saveByReject(SaveRejectScoreReqVo reqVo) {
+        SaveScoreReqVo saveScoreReqVo = dealData(reqVo);
+        return this.save(saveScoreReqVo);
+    }
+
+    /**
+     * 采购评分保存
+     *
+     * @param reqVo
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer saveByPurchase(SavePurchaseScoreReqVo reqVo) {
+        SaveScoreReqVo saveScoreReqVo = dealData(reqVo);
+        return this.save(saveScoreReqVo);
+    }
+
+    private SaveScoreReqVo dealData(Object source){
+        SaveScoreReqVo reqVo = new SaveScoreReqVo();
+        BeanCopyUtils.copy(source,reqVo);
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        String personName = "";
+        if(null != authToken){
+            personName = authToken.getPersonName();
+        }
+        reqVo.setScorerName(personName);
+        reqVo.setDepartCode(Global.DEFAULT_DEPART_CODE);
+        reqVo.setDepartName(Global.DEFAULT_DEPART_NAME);
+        return reqVo;
+    }
     /**
      * 数据插入
      *
@@ -178,12 +224,6 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
                             add(score.getOrderFillRate()).
                             add(score.getInvoiceReturnTimely());
         starScore = total.divide(new BigDecimal(7),1,BigDecimal.ROUND_HALF_UP);
-//        String[] split = starScore.toString().split("\\.");
-//        String decimals = "5";
-//        if (Integer.parseInt(split[1]) < 5 ) {
-//            decimals = "0";
-//        }
-//        String scoreStr = split[0] + "." + decimals;
         return starScore;
     }
 }
