@@ -8,7 +8,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceI
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,17 +35,52 @@ public interface ProductSkuPriceInfoService {
      * @return com.aiqin.mgs.product.api.domain.response.price.ProductSkuPriceInfoRespVO
      */
     ProductSkuPriceInfoRespVO view(String code);
-
+    /**
+     * 保存价格临时表数据
+     * @author NullPointException
+     * @date 2019/6/17
+     * @param reqVOList
+     * @return java.lang.Boolean
+     */
     Boolean saveSkuPriceDraft(List<SkuPriceDraftReqVO> reqVOList);
-
+    /**
+     * 查询临时表价格
+     * @author NullPointException
+     * @date 2019/6/17
+     * @param skuCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft>
+     */
     List<ProductSkuPriceInfoDraft> getSkuPriceListDraftBySkuCodes(List<String> skuCode);
-
+    /**
+     * 查询申请编价格
+     * @author NullPointException
+     * @date 2019/6/17
+     * @param skuCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft>
+     */
     List<ApplyProductSkuPriceInfo> getSkuPriceListApplyBySkuCodes(List<String> skuCode);
-
+    /**
+     * 删除临时表
+     * @author NullPointException
+     * @date 2019/6/17
+     * @param SkuCode
+     * @return java.lang.Boolean
+     */
     Boolean deleteSkuPriceDraft(List<String> SkuCode);
-
+    /**
+     * 保存申请表数据
+     * @author NullPointException
+     * @date 2019/6/17
+     * @param applyList
+     * @return java.lang.Boolean
+     */
     Boolean saveSkuPriceApply(List<ApplyProductSkuPriceInfo> applyList);
-
-    @Transactional(rollbackFor = Exception.class)
+    /**
+     * 保存正式表数据
+     * @author NullPointException
+     * @date 2019/6/17
+     * @param list
+     * @return java.lang.Boolean
+     */
     Boolean saveSkuPriceOfficial(List<ProductSkuPriceInfo> list);
 }
