@@ -25,4 +25,12 @@ public interface ApplyProductSkuPriceInfoMapper {
      * @return int
      */
     int insertBatch(List<ApplyProductSkuPriceInfo> applyList);
+    /**
+     * 通过sku编码查询数据
+     * @author NullPointException
+     * @date 2019/6/17
+     * @param skuCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPriceInfo>
+     */
+    List<ApplyProductSkuPriceInfo> selectBySkuCodes(List<String> skuCode);
 }

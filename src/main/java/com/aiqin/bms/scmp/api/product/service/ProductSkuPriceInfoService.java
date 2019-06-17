@@ -41,6 +41,8 @@ public interface ProductSkuPriceInfoService {
 
     List<ProductSkuPriceInfoDraft> getSkuPriceListDraftBySkuCodes(List<String> skuCode);
 
+    List<ApplyProductSkuPriceInfo> getSkuPriceListApplyBySkuCodes(List<String> skuCode);
+
     Boolean deleteSkuPriceDraft(List<String> SkuCode);
 
     Boolean saveSkuPriceApply(List<ApplyProductSkuPriceInfo> applyList);

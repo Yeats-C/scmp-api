@@ -61,6 +61,16 @@
     from apply_product_sku_price_info
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectBySkuCodes"
+          resultMap="BaseResultMap" parameterType="java.util.List">
+    select
+    <include refid="Base_Column_List" />
+    from apply_product_sku_price_info
+    where sku_code in
+    <foreach collection="list" item="item" separator="," close=")" open="(">
+      #{item}
+    </foreach>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_price_info
     where id = #{id,jdbcType=BIGINT}

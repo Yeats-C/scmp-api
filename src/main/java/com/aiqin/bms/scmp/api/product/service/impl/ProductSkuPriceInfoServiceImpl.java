@@ -80,7 +80,18 @@ public class ProductSkuPriceInfoServiceImpl implements ProductSkuPriceInfoServic
 
     @Override
     public List<ProductSkuPriceInfoDraft> getSkuPriceListDraftBySkuCodes(List<String> skuCode){
+        if(CollectionUtils.isEmptyCollection(skuCode)){
+            return Lists.newArrayList();
+        }
         return productSkuPriceInfoDraftMapper.selectBySkuCodes(skuCode);
+    }
+
+    @Override
+    public List<ApplyProductSkuPriceInfo> getSkuPriceListApplyBySkuCodes(List<String> skuCode){
+        if(CollectionUtils.isEmptyCollection(skuCode)){
+            return Lists.newArrayList();
+        }
+        return applyProductSkuPriceInfoMapper.selectBySkuCodes(skuCode);
     }
 
     @Override
