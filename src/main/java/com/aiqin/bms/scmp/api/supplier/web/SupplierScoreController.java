@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.web;
 
+import com.aiqin.bms.scmp.api.supplier.domain.request.score.SavePurchaseScoreReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.score.SaveRejectScoreReqVo;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -36,7 +38,7 @@ public class SupplierScoreController {
     @PostMapping("/list")
     @ApiOperation("列表查询")
     public HttpResponse<BasePage<ScoreListRespVo>> list(@RequestBody QueryScoreReqVo reqVo){
-        log.info("供应商-评分管理 request uri:{},参数信息:{}","/scmp/score/list", JSON.toJSON(reqVo));
+        log.info("供应商-评分管理 request uri:{},参数信息:{}","/supplier/score/list", JSON.toJSON(reqVo));
         try {
             return HttpResponse.success(scoreService.list(reqVo));
         } catch (Exception e) {
@@ -48,9 +50,33 @@ public class SupplierScoreController {
     @PostMapping("/save")
     @ApiOperation("保存")
     public HttpResponse<Integer> save(@RequestBody SaveScoreReqVo reqVo){
-        log.info("供应商-评分管理 request uri:{},参数信息:{}","/scmp/score/save", JSON.toJSON(reqVo));
+        log.info("供应商-评分管理 request uri:{},参数信息:{}","/supplier/score/save", JSON.toJSON(reqVo));
         try {
             return HttpResponse.success(scoreService.save(reqVo));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/save/reject")
+    @ApiOperation("退供评分保存")
+    public HttpResponse<Integer> saveByReject(@RequestBody SaveRejectScoreReqVo reqVo){
+        log.info("供应商-评分管理 request uri:{},参数信息:{}","/supplier/score/save/reject", JSON.toJSON(reqVo));
+        try {
+            return HttpResponse.success(scoreService.saveByReject(reqVo));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/save/purchase")
+    @ApiOperation("采购评分保存")
+    public HttpResponse<Integer> saveByPurchase(@RequestBody SavePurchaseScoreReqVo reqVo){
+        log.info("供应商-评分管理 request uri:{},参数信息:{}","/supplier/score/save/purchase", JSON.toJSON(reqVo));
+        try {
+            return HttpResponse.success(scoreService.saveByPurchase(reqVo));
         } catch (Exception e) {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
@@ -60,7 +86,7 @@ public class SupplierScoreController {
     @PostMapping("/view")
     @ApiOperation("详情")
     public HttpResponse<DetailScoreRespVo> view(@RequestParam @NotNull(message = "主键ID不能为空") Long id) {
-        log.info("供应商-评分管理 request uri:{},参数信息:{}","/scmp/score/view",id);
+        log.info("供应商-评分管理 request uri:{},参数信息:{}","/supplier/score/view",id);
         try {
             return HttpResponse.success(scoreService.detail(id));
         } catch (BizException e) {

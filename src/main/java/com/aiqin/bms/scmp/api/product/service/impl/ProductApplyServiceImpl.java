@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.bms.scmp.api.base.BasePage;
@@ -36,6 +38,10 @@ public class ProductApplyServiceImpl implements ProductApplyService {
 
     @Override
     public BasePage<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo) {
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            reqVo.setCompanyCode(authToken.getCompanyCode());
+        }
         List<QueryProductApplyRespVO> list = Lists.newArrayList();
         switch (reqVo.getApprovalType()){
             case 1:
@@ -53,6 +59,7 @@ public class ProductApplyServiceImpl implements ProductApplyService {
 
     @Override
     public ProductApplyInfoRespVO view(String code, Integer approvalType) {
+
         switch (approvalType){
             case 1:
             case 2:

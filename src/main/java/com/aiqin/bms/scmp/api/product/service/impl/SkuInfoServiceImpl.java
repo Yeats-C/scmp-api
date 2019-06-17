@@ -32,7 +32,7 @@ import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
-import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -62,7 +62,7 @@ import java.util.stream.Collectors;
  * @date: 2019/1/28 0028 15:44
  */
 @Service
-public class SkuInfoServiceImplProduct extends ProductBaseServiceImpl implements SkuInfoService {
+public class SkuInfoServiceImpl extends ProductBaseServiceImpl implements SkuInfoService {
     @Autowired
     ProductSkuDraftMapper productSkuDraftMapper;
     @Autowired

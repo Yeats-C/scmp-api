@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuConfigSpareWarehouse;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface ApplyProductSkuConfigSpareWarehouseMapper {
 
     int updateByPrimaryKey(ApplyProductSkuConfigSpareWarehouse record);
 
-    int insertBatch(List<ApplyProductSkuConfigSpareWarehouse> draftList);
+    int insertBatch(@Param("list") List<ApplyProductSkuConfigSpareWarehouse> draftList, @Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuConfigSpareWarehouse> selectByFormNo(String formNo);
+    List<ApplyProductSkuConfigSpareWarehouse> selectByApplyCode(String applyCode);
 }

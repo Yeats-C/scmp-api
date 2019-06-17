@@ -57,7 +57,7 @@
     where form_no = #{formNo,jdbcType=VARCHAR}
   </select>
   <resultMap id="QueryApplyList" type="com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO">
-    <result column="apply_sale_area_code" jdbcType="VARCHAR" property="code"/>
+    <result column="apply_code" jdbcType="VARCHAR" property="code"/>
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
@@ -98,7 +98,9 @@
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
     from apply_product_sku_config a
     left join apply_product_sku_config_spare_warehouse b
-    on a.config_code = b.config_code
+    on a.apply_code = b.apply_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
     where a.apply_code = #{applyCode,jdbcType=VARCHAR}
   </select>
   <select id="findFormNoByCode" resultType="java.lang.String">

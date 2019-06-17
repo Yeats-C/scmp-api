@@ -144,7 +144,7 @@ public class ContractResVo {
     private String directSupervisorName;
 
     @ApiModelProperty("进货额")
-    private  List<ContractPurchaseVolumeResVo> purchaseCount;
+    private  List<ContractPurchaseVolumeResVo> purchaseVolumeReqVos;
 
     @ApiModelProperty("操作日志列表")
     private List<LogData> logDataList;

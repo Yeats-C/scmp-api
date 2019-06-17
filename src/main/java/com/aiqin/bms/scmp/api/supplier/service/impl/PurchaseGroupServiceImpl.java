@@ -316,18 +316,19 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
     public List<PurchaseGroupVo> getPurchaseGroup() {
         try{
             String companyCode = "";
+            String personId = "";
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 companyCode = authToken.getCompanyCode();
+                personId = authToken.getPersonId();
             }
-        List<PurchaseGroupDTO> dtoList = purchaseGroupDao.getPurchaseGroup(companyCode);
-        List<PurchaseGroupVo> list =BeanCopyUtils.copyList(dtoList,PurchaseGroupVo.class);
-            for (PurchaseGroupVo purchaseGroupVo : list) {
-                //查询未禁用的关联人员
-                List<PurchaseGroupBuyerDTO> groupBuyerDTOList = purchaseGroupBuyerDao.selectByPurchaseCode(purchaseGroupVo.getPurchaseGroupCode());
-                //转化关联人员实体并且set到返回实体
-                purchaseGroupVo.setList(BeanCopyUtils.copyList(groupBuyerDTOList, PurchaseGroupBuyerVo.class));
-            }
+            List<PurchaseGroupVo> list = purchaseGroupDao.getPurchaseGroup(companyCode,personId);
+//            for (PurchaseGroupVo purchaseGroupVo : list) {
+//                //查询未禁用的关联人员
+//                List<PurchaseGroupBuyerDTO> groupBuyerDTOList = purchaseGroupBuyerDao.selectByPurchaseCode(purchaseGroupVo.getPurchaseGroupCode());
+//                //转化关联人员实体并且set到返回实体
+//                purchaseGroupVo.setList(BeanCopyUtils.copyList(groupBuyerDTOList, PurchaseGroupBuyerVo.class));
+//            }
             return list;
         }catch (Exception e){
             throw new GroundRuntimeException("转化数据出错");
@@ -341,15 +342,20 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
      */
     @Override
     public HttpResponse getPurchaseGroupBuyerList(UserPositionsRequest userPositionsRequest) {
-
+        String companyCode = null;
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            companyCode = authToken.getCompanyCode();
+        }
         BasicNameValuePair pair1 =  new BasicNameValuePair("page_no", userPositionsRequest.getPageNo().toString());
         BasicNameValuePair pair2 =  new BasicNameValuePair("page_size", userPositionsRequest.getPageSize().toString());
         BasicNameValuePair pair3 =  new BasicNameValuePair("person_name", userPositionsRequest.getPersonName());
         BasicNameValuePair pair4 =  new BasicNameValuePair("position_level_name", userPositionsRequest.getPositionLevelName());
         BasicNameValuePair pair5 =  new BasicNameValuePair("position_name", userPositionsRequest.getPositionName());
+        BasicNameValuePair pair6 =  new BasicNameValuePair("company_code", companyCode);
 
         String url = urlConfig.CENTRAL_URL+"/person/list";
-        HttpClient orderOperationClient = HttpClient.get(url).addParameters(pair1,pair2,pair3,pair4,pair5);
+        HttpClient orderOperationClient = HttpClient.get(url).addParameters(pair1,pair2,pair3,pair4,pair5,pair6);
         HttpResponse orderDto = orderOperationClient.action().result(HttpResponse.class);
         return orderDto;
     }

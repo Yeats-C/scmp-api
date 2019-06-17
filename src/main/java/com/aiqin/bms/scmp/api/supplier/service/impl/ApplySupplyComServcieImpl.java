@@ -18,8 +18,9 @@ import com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
-import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -45,7 +46,7 @@ import java.util.*;
 @Service
 @Slf4j
 @WorkFlowAnnotation(WorkFlow.APPLY_COMPANY)
-public class ApplySupplyComServcieImpl extends SupplierBaseServiceImpl implements ApplySupplyComServcie {
+public class ApplySupplyComServcieImpl extends SupplierBaseServiceImpl implements ApplySupplyComServcie, WorkFlowHelper {
     @Autowired
     private ApplySettlementService applySettlementService;
     @Autowired

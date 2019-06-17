@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.workflow.annotation;
+package com.aiqin.bms.scmp.api.workflow.enumerate;
 
 import lombok.Getter;
 
@@ -89,9 +89,6 @@ public enum WorkFlow {
     private String key;
 
 
-    /**
-     * 展示的链接地址
-     */
     WorkFlow(Integer num, String title, String key) {
         this.num = num;
         this.title = title;

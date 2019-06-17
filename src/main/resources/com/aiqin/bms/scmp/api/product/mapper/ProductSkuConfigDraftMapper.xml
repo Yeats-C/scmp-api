@@ -48,6 +48,8 @@
     <result column="big_effect_period_warn_day" jdbcType="INTEGER" property="bigEffectPeriodWarnDay" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="procurement_section_code" jdbcType="VARCHAR" property="purchasingGroupCode"/>
+    <result column="procurement_section_name" jdbcType="VARCHAR" property="purchasingGroupName"/>
     <collection property="spareWarehouseList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo">
       <result column="b_config_code" jdbcType="VARCHAR" property="configCode"/>
       <result column="b_transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
@@ -70,7 +72,7 @@
     a.config_status, a.arrival_cycle, a.order_cycle, a.basic_inventory_day, a.large_inventory_warn_day,
     a.big_effect_period_warn_day,a.company_code,a.company_name, b.config_code as b_config_code,
     b.transport_center_code as b_transport_center_code, b.transport_center_name as b_transport_center_name,
-    b.use_order as b_use_order
+    b.use_order as b_use_order,c.procurement_section_code,c.procurement_section_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -84,6 +86,8 @@
     from product_sku_config_draft a
     left join product_sku_config_spare_warehouse_draft b
     on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
     where a.del_flag = 0
     and a.apply_show = 0
     and a.company_code = #{companyCode,jdbcType=VARCHAR}
@@ -296,7 +300,7 @@
       #{item.configStatus,jdbcType=TINYINT}, #{item.arrivalCycle,jdbcType=INTEGER}, #{item.orderCycle,jdbcType=INTEGER},
       #{item.basicInventoryDay,jdbcType=INTEGER}, #{item.largeInventoryWarnDay,jdbcType=INTEGER},
       #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
-      #{applyType,jdbcType=TINYINT}
+      #{item.applyType,jdbcType=TINYINT}
       )
     </foreach>
   </insert>

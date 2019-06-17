@@ -77,4 +77,7 @@ public interface Global {
      * 不显示申请SKU配置信息
      */
     Byte APPLY_SKU_CONFIG_UN_SHOW = Byte.valueOf("1");
+
+    String DEFAULT_DEPART_CODE = "3";
+    String DEFAULT_DEPART_NAME = "仓储中心";
 }
