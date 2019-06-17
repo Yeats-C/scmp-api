@@ -14,6 +14,10 @@ import java.util.List;
 @Data
 public class PurchaseApplyRequest extends PagesRequest {
 
+    @ApiModelProperty(value="采购申请单id")
+    @JsonProperty("purchase_apply_id")
+    private String purchaseApplyId;
+
     @ApiModelProperty(value="采购申请单")
     @JsonProperty("purchase_apply_code")
     private String purchaseApplyCode;
@@ -74,17 +78,33 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("product_nature")
     private Integer productNature;
 
+    @ApiModelProperty(value="14大A品建议补货传值类型是否有值：0.是 1.否")
+    @JsonProperty("a_replenish_type")
+    private Integer aReplenishType;
+
     @ApiModelProperty(value="14大A品建议补货")
     @JsonProperty("a_replenish")
     private List<String> aReplenish;
+
+    @ApiModelProperty(value="畅销商品建议补货传值类型是否有值：0.是 1.否")
+    @JsonProperty("product_replenish_type")
+    private Integer productReplenishType;
 
     @ApiModelProperty(value="畅销商品建议补货")
     @JsonProperty("product_replenish")
     private List<String> productReplenish;
 
+    @ApiModelProperty(value="14大A品缺货传值类型是否有值：0.是 1.否")
+    @JsonProperty("a_shortage_type")
+    private Integer aShortageType;
+
     @ApiModelProperty(value="14大A品缺货")
     @JsonProperty("a_shortage")
     private List<String> aShortage;
+
+    @ApiModelProperty(value="畅销商品缺货传值类型是否有值：0.是 1.否")
+    @JsonProperty("product_shortage_type")
+    private Integer productShortageType;
 
     @ApiModelProperty(value="畅销商品缺货")
     @JsonProperty("product_shortage")
@@ -102,9 +122,10 @@ public class PurchaseApplyRequest extends PagesRequest {
         this.finishTime = finishTime;
     }
 
-    public PurchaseApplyRequest(String purchaseGroupCode, String skuCode, String skuName, String spuCode, String productName,
+    public PurchaseApplyRequest(String purchaseApplyId, String purchaseGroupCode, String skuCode, String skuName, String spuCode, String productName,
                                 String supplierCode, String transportCenterCode, String brandId, String categoryId, Integer productNature,
-                                List<String> aReplenish, List<String> productReplenish, List<String> aShortage, List<String> productShortage) {
+                                Integer aReplenishType, Integer productReplenishType, Integer aShortageType, Integer productShortageType) {
+        this.purchaseApplyId = purchaseApplyId;
         this.purchaseGroupCode = purchaseGroupCode;
         this.skuCode = skuCode;
         this.skuName = skuName;
@@ -115,9 +136,9 @@ public class PurchaseApplyRequest extends PagesRequest {
         this.brandId = brandId;
         this.categoryId = categoryId;
         this.productNature = productNature;
-        this.aReplenish = aReplenish;
-        this.productReplenish = productReplenish;
-        this.aShortage = aShortage;
-        this.productShortage = productShortage;
+        this.aReplenishType = aReplenishType;
+        this.productReplenishType = productReplenishType;
+        this.aShortageType = aShortageType;
+        this.productShortageType = productShortageType;
     }
 }

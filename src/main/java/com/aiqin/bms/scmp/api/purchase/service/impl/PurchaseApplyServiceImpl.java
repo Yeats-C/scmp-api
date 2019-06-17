@@ -51,10 +51,30 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     @Override
-    public  HttpResponse<List<PurchaseApplyProduct>> applyProductList(PurchaseApplyRequest purchaseApplyRequest){
+    public  HttpResponse<List<PurchaseApplyProduct>> applyProductList(PurchaseApplyRequest purchases){
+        if(StringUtils.isBlank(purchases.getPurchaseApplyId())){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 查询14大A品建议补货
+        if(purchases.getAReplenishType() != null && purchases.getAReplenishType() == 0){
+            // TODO
+            //purchases.setAReplenish();
+        }
+        // 查询畅销商品建议补货
+        if(purchases.getProductReplenishType() != null && purchases.getProductReplenishType() == 0){
+
+        }
+        // 查询14大A品缺货
+        if(purchases.getAShortageType() != null && purchases.getAShortageType() == 0){
+
+        }
+        // 查询畅销商品缺货
+        if(purchases.getProductShortageType() != null && purchases.getProductShortageType() == 0){
+
+        }
         PageResData pageResData = new PageResData();
-        List<PurchaseApplyProduct> applyProducts = purchaseApplyProductDao.applyProductList(purchaseApplyRequest);
-        Integer count = purchaseApplyProductDao.applyProductCount(purchaseApplyRequest);
+        List<PurchaseApplyProduct> applyProducts = purchaseApplyProductDao.applyProductList(purchases);
+        Integer count = purchaseApplyProductDao.applyProductCount(purchases);
         pageResData.setDataList(applyProducts);
         pageResData.setTotalCount(count);
         return HttpResponse.success(pageResData);

@@ -56,6 +56,7 @@ public class PurchaseApplyController {
     @GetMapping("/product/list")
     @ApiOperation("采购申请单商品列表")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "purchase_apply_id", value = "采购申请单id", type = "String"),
             @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
             @ApiImplicitParam(name = "transport_center_code", value = "仓库code", type = "String"),
             @ApiImplicitParam(name = "purchase_group_code", value = "采购组 code", type = "String"),
@@ -66,13 +67,15 @@ public class PurchaseApplyController {
             @ApiImplicitParam(name = "brand_id", value = "品牌", type = "String"),
             @ApiImplicitParam(name = "spu_code", value = "spu 编码", type = "String"),
             @ApiImplicitParam(name = "product_name", value = "spu 名称", type = "String"),
-//            @ApiImplicitParam(name = "a_replenish", value = "14大A品建议补货", type = "Integer"),
-//            @ApiImplicitParam(name = "product_replenish", value = "畅销商品建议补货", type = "Integer"),
-//            @ApiImplicitParam(name = "a_shortage", value = "14大A品缺货", type = "Integer"),
-//            @ApiImplicitParam(name = "product_shortage", value = "畅销商品缺货", type = "Integer"),
+            @ApiImplicitParam(name = "a_replenish_type", value = "14大A品建议补货传值类型是否有值：0.是 1.否", type = "Integer"),
+            @ApiImplicitParam(name = "product_replenish_type", value = "畅销商品建议补货传值类型是否有值：0.是 1.否", type = "Integer"),
+            @ApiImplicitParam(name = "a_shortage_type", value = "14大A品缺货传值类型是否有值：0.是 1.否", type = "Integer"),
+            @ApiImplicitParam(name = "product_shortage_type", value = "畅销商品缺货传值类型是否有值：0.是 1.否", type = "Integer"),
             @ApiImplicitParam(name = "page_no", value = "每页条数", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "当前页", type = "Integer")})
-    public HttpResponse<List<PurchaseApplyProduct>> applyProductList(@RequestParam(value = "supplier_code", required = false) String supplierCode,
+    public HttpResponse<List<PurchaseApplyProduct>> applyProductList(
+                                         @RequestParam(value = "purchase_apply_id") String purchaseApplyId,
+                                         @RequestParam(value = "supplier_code", required = false) String supplierCode,
                                          @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
                                          @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
                                          @RequestParam(value = "sku_code", required = false) String skuCode,
@@ -82,15 +85,15 @@ public class PurchaseApplyController {
                                          @RequestParam(value = "brand_id", required = false) String brandId,
                                          @RequestParam(value = "spu_code", required = false) String spuCode,
                                          @RequestParam(value = "product_name", required = false) String productName,
-                                         @RequestParam(value = "a_replenish", required = false) List<String> aReplenish,
-                                         @RequestParam(value = "product_replenish", required = false) List<String> productReplenish,
-                                         @RequestParam(value = "a_shortage", required = false) List<String> aShortage,
-                                         @RequestParam(value = "product_shortage", required = false) List<String> productShortage,
+                                         @RequestParam(value = "a_replenish_type", required = false) Integer aReplenishType,
+                                         @RequestParam(value = "product_replenish_type", required = false) Integer productReplenishType,
+                                         @RequestParam(value = "a_shortage_type", required = false) Integer aShortageType,
+                                         @RequestParam(value = "product_shortage_type", required = false) Integer productShortageType,
                                          @RequestParam(value = "page_no", required = false) Integer pageNo,
                                          @RequestParam(value = "page_size", required = false) Integer pageSize) {
-        PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseGroupCode, skuCode, skuName, spuCode, productName,
-                supplierCode, transportCenterCode, brandId, categoryId, productNature,
-                aReplenish, productReplenish, aShortage, productShortage);
+        PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseApplyId, purchaseGroupCode, skuCode,
+                skuName, spuCode, productName, supplierCode, transportCenterCode, brandId, categoryId, productNature,
+                aReplenishType, productReplenishType, aShortageType, productShortageType);
         purchaseApplyRequest.setPageSize(pageSize);
         purchaseApplyRequest.setPageNo(pageNo);
         return purchaseApplyService.applyProductList(purchaseApplyRequest);
@@ -117,8 +120,8 @@ public class PurchaseApplyController {
         return purchaseApplyService.deleteApplyProduct(applyProductId);
     }
 
-    @GetMapping("/product")
-    @ApiOperation("查询申请采购商品基本信息")
+    @GetMapping("/product/basic")
+    @ApiOperation("查询申请采购单的商品基本信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "purchase_apply_id", value = "采购申请单id", type = "String")
     })

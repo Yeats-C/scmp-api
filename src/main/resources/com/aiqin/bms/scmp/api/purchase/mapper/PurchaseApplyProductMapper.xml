@@ -69,26 +69,18 @@
   </sql>
   <insert id="insert">
     insert into purchase_apply_product (apply_product_id, purchase_apply_id, 
-      sku_code, sku_name, spu_code, 
-      product_name, warehouse_code, warehouse_name, supplier_code,
-      supplier_name, purchase_group_code, purchase_group_name, 
-      transport_center_code, transport_center_name, 
-      product_nature, brand_id, brand_name, 
-      category_id, category_name, product_category, 
-      product_type, product_purchase_amount, purchase_whole, 
-      purchase_single, return_whole, return_single, 
-      stock_unit_name, stock_count, total_way_num, 
-      last_time, sales_volume, pack_number, 
-      pack_unit, purchase_number, receipt_time, 
-      purchase_max, product_spec, color_name, 
-      model_number, shortage_number, shortage_day, 
-      stock_turnover, receipt_turnover, error_info, apply_product_status,
-      create_time, create_by)
+      sku_code, sku_name, spu_code, product_name, warehouse_code, warehouse_name, supplier_code,
+      supplier_name, purchase_group_code, purchase_group_name, transport_center_code, transport_center_name,
+      product_nature, brand_id, brand_name, category_id, category_name, product_category,
+      product_type, product_purchase_amount, purchase_whole, purchase_single, return_whole, return_single,
+      stock_unit_name, stock_count, total_way_num, last_time, sales_volume, pack_number,
+      pack_unit, purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
+      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, create_time, create_by)
     values ( #{applyProductId,jdbcType=VARCHAR}, #{purchaseApplyId,jdbcType=VARCHAR}, 
       #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{spuCode,jdbcType=VARCHAR}, 
-      #{productName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehousName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR},
-      #{supplierName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
-      #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
+      #{productName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehousName,jdbcType=VARCHAR},
+      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR},
+      #{purchaseGroupName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR},
       #{productNature,jdbcType=INTEGER}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, 
       #{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, #{productCategory,jdbcType=INTEGER}, 
       #{productType,jdbcType=INTEGER}, #{productPurchaseAmount,jdbcType=INTEGER}, #{purchaseWhole,jdbcType=INTEGER}, 
@@ -257,7 +249,7 @@
         and sku_code = #{skuCode,jdbcType=VARCHAR}
       </if>
       <if test="skuName != null">
-        and sku_name = #{skuName,jdbcType=VARCHAR}
+        and sku_name like CONCAT('',#{skuName,jdbcType=VARCHAR},"%")
       </if>
       <if test="purchaseGroupCode != null">
         and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
@@ -275,7 +267,7 @@
         and spu_code = #{spuCode,jdbcType=VARCHAR}
       </if>
       <if test="productName != null">
-        and product_name = #{productName,jdbcType=VARCHAR}
+        and product_name like CONCAT('',#{productName,jdbcType=VARCHAR},"%")
       </if>
       <if test="aReplenish != null and aReplenish.size > 0">
         and sku_code in
@@ -319,7 +311,7 @@
         and sku_code = #{skuCode,jdbcType=VARCHAR}
       </if>
       <if test="skuName != null">
-        and sku_name = #{skuName,jdbcType=VARCHAR}
+        and sku_name like CONCAT('',#{skuName,jdbcType=VARCHAR},"%")
       </if>
       <if test="purchaseGroupCode != null">
         and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
@@ -337,7 +329,7 @@
         and spu_code = #{spuCode,jdbcType=VARCHAR}
       </if>
       <if test="productName != null">
-        and product_name = #{productName,jdbcType=VARCHAR}
+        and product_name like CONCAT('',#{productName,jdbcType=VARCHAR},"%")
       </if>
       <if test="aReplenish != null and aReplenish.size > 0">
         and sku_code in
