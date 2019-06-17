@@ -55,7 +55,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class MovementServiceImplProduct extends ProductBaseServiceImpl implements MovementService {
+public class MovementServiceImpl extends ProductBaseServiceImpl implements MovementService {
 
     @Autowired
     private MovementDao movementDao;

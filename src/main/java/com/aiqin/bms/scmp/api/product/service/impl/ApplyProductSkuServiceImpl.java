@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class ApplyProductSkuServiceImplProduct extends ProductBaseServiceImpl implements ApplyProductSkuServiceProduct {
+public class ApplyProductSkuServiceImpl extends ProductBaseServiceImpl implements ApplyProductSkuServiceProduct {
 
     @Autowired
     private ApplyProductSkuMapper applyProductSkuMapper;

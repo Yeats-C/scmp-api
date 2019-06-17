@@ -57,7 +57,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @WorkFlowAnnotation(WorkFlow.APPLY_GOODS_CONFIG)
-public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl implements ProductSkuConfigService , WorkFlowHelper {
+public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implements ProductSkuConfigService , WorkFlowHelper {
 
 
     @Autowired
@@ -118,9 +118,12 @@ public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl i
      * @return
      */
     @Override
-    @SaveList
     @Transactional(rollbackFor = Exception.class)
     public Integer updateDraftList(List<UpdateSkuConfigReqVo> configReqVos) {
+        if(CollectionUtils.isEmpty(configReqVos)){
+            throw new BizException(ResultCode.UPDATE_ERROR);
+        }
+        String configCode = configReqVos.get(0).getConfigCode();
         Integer num = 0;
         List<ProductSkuConfigDraft> drafts;
         List<SpareWarehouseReqVo> spareWarehouseReqVos = Lists.newArrayList();
@@ -136,15 +139,35 @@ public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl i
             item.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
             item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
         });
-        num = draftMapper.insertBatch(drafts);
+        //插入临时表
+        ProductSkuConfig productSkuConfig = mapper.selectByConfigCode(configCode);
+        num =  ((ProductSkuConfigService)AopContext.currentProxy()).insertDraftBatch(drafts);
+        //更新正式表申请状态
+        mapper.updateApplyStatusByApplyCode(ApplyStatus.APPROVAL.getNumber(),productSkuConfig.getApplyCode());
         List<ProductSkuConfigSpareWarehouseDraft> draftList = null;
         try {
             draftList = BeanCopyUtils.copyList(spareWarehouseReqVos,ProductSkuConfigSpareWarehouseDraft.class);
         } catch (Exception e) {
             throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
         }
+        //插入临时表
         ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseDraftList(draftList);
+
+
         return num;
+    }
+
+    /**
+     * 批量插入临时配置信息(数据库)
+     *
+     * @param drafts
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public Integer insertDraftBatch(List<ProductSkuConfigDraft> drafts) {
+        return draftMapper.insertBatch(drafts);
     }
 
     /**
@@ -236,11 +259,13 @@ public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl i
         EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SKU_CONFIG_CODE);
         String code = numberingType.getNumberingValue().toString();
         String formNo = "SC" + new IdSequenceUtils().nextId();
+        Date currentDate = new Date();
         applyProductSkuConfigs.forEach(item->{
             item.setId(null);
             item.setApplyCode(code);
             item.setFormNo(formNo);
             item.setBeEffective(Global.UN_EFFECTIVE);
+            item.setCreateTime(currentDate);
             item.setSelectionEffectiveTime(reqVo.getSelectionEffectiveTime());
             item.setSelectionEffectiveStartTime(reqVo.getSelectionEffectiveStartTime());
             item.setAuditorStatus(ApplyStatus.APPROVAL.getNumber());
@@ -254,7 +279,7 @@ public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl i
             throw new BizException(ResultCode.SKU_CONFIG_SUBMIT_ERROR);
         }
         //批量保存备用仓库
-        applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses);
+        applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
         //更新编码
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         //删除临时表配置信息
@@ -292,6 +317,7 @@ public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl i
      * @date 2019/1/15
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String workFlowCallback(WorkFlowCallbackVO vo) {
         WorkFlowCallbackVO newVO = updateSupStatus(vo);
         //审批中，直接返回成功
@@ -306,7 +332,7 @@ public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl i
 
         }
         //判断查出来的是否是在审批中的数据
-        if(!list.get(0).getAuditorStatus().equals(ApplyStatus.APPROVAL.getNumber().intValue())){
+        if(!list.get(0).getAuditorStatus().equals(ApplyStatus.APPROVAL.getNumber())){
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "数据异常，不是在审批中的数据！"));
         }
         //审批驳回
@@ -325,7 +351,7 @@ public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl i
                 updateApplyInfoByVO(newVO);
                 //通过formNo查询备用仓库
                 List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
-                        selectByFormNo(newVO.getFormNo());
+                        selectByApplyCode(list.get(0).getApplyCode());
                 //获取配置编号
                 List<String> configCodes = applySpareWarehouses.stream().map(item -> item.getConfigCode()).distinct().
                         collect(Collectors.toList());
@@ -569,6 +595,7 @@ public class ProductSkuConfigServiceImplProduct extends ProductBaseServiceImpl i
         resp.setSelectionEffectiveStartTime(applyProductSkuConfig.getSelectionEffectiveStartTime());
         resp.setSelectionEffectiveTime(applyProductSkuConfig.getSelectionEffectiveTime());
         resp.setCode(applyProductSkuConfig.getApplyCode());
+        resp.setFormNo(applyProductSkuConfig.getFormNo());
         Set<String> skuCodes = Sets.newHashSet();
         //统计sku数量
         for (SkuConfigsRepsVo repsVo : list) {

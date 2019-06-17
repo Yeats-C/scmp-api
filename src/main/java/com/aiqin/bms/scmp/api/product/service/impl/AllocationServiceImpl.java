@@ -59,7 +59,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class AllocationServiceImplProduct extends ProductBaseServiceImpl implements AllocationService  {
+public class AllocationServiceImpl extends ProductBaseServiceImpl implements AllocationService  {
 
 
     @Autowired
