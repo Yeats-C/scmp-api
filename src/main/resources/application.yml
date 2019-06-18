@@ -51,41 +51,41 @@ WorkFlowBaseUrl:
     #各个页面详情url
     supplierUrl:
         #合同申请详情
-        applyContract: http://scm.bms.aiqin.com/#/Supplier/ContractAppDetails/
+        applyContract: http://scmp.bms.aiqin.com/#/Supplier/ContractAppDetails/
         #供应商申请详情
-        applySupplier: http://scm.bms.aiqin.com/#/Supplier/SupplierDetails/
+        applySupplier: http://scmp.bms.aiqin.com/#/Supplier/SupplierDetails/
         #供应商集团申请详情
-        applySupplierGroup: http://scm.bms.aiqin.com/#/Supplier/SupplierGroupDetails/
+        applySupplierGroup: http://scmp.bms.aiqin.com/#/Supplier/SupplierGroupDetails/
         #供应商账户申请详情
-        applySupplierAccount: http://scm.bms.aiqin.com/#/Supplier/SupplierAccountDetails/
+        applySupplierAccount: http://scmp.bms.aiqin.com/#/Supplier/SupplierAccountDetails/
         #制造商申请详情
-        applyManu: http://scm.bms.aiqin.com/#/Supplier/ManuApplieDetail/
+        applyManu: http://scmp.bms.aiqin.com/#/Supplier/ManuApplieDetail/
         #采购申请详情
-        applyPurchase: http://scm.bms.aiqin.com/#/Supplier/PurchaseDetails/
+        applyPurchase: http://scmp.bms.aiqin.com/#/Supplier/PurchaseDetails/
         #退供申请详情
-        applyRefund: http://scm.bms.aiqin.com/#/Supplier/RefundDetails/
+        applyRefund: http://scmp.bms.aiqin.com/#/Supplier/RefundDetails/
         #调拨申请详情
-        applyAllocattion: http://scm.bms.aiqin.com/#/Supplier/AllocattionDetail/
+        applyAllocattion: http://scmp.bms.aiqin.com/#/Supplier/AllocattionDetail/
         #商品申请详情
-        applyGoods: http://scm.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail/
+        applyGoods: http://scmp.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail/
         #商品配置申请详情
-        applyGoodsConfig: http://scm.bms.aiqin.com/#/Supplier/DetailsAppConfiguration/
+        applyGoodsConfig: http://scmp.bms.aiqin.com/#/Supplier/DetailsAppConfiguration/
         #商品价格申请详情
         applyGoodsPrice:
     productUrl:
       #/Supplier/IntendingDetails?variablePriceName=促销活动&priceTypeCode=1&variablePriceCode=10001
-      variablePrice: http://scm.bms.aiqin.com/#/Supplier/IntendingDetails
-      applySku: http://scm.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail
-      applySkuConfig: http://scm.bms.aiqin.com/#/Supplier/DetailsConfiguration
+      variablePrice: http://scmp.bms.aiqin.com/#/Supplier/IntendingDetails
+      applySku: http://scmp.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail
+      applySkuConfig: http://scmp.bms.aiqin.com/#/Supplier/DetailsConfiguration
       #销售区域
-      applySaleArea: http://scm.bms.aiqin.com/#/Supplier/DetailsConfiguration
+      applySaleArea: http://scmp.bms.aiqin.com/#/Supplier/DetailsConfiguration
       #调拨申请详情
-      applyAllocattion: http://scm.bms.aiqin.com/#/Supplier/AllocattionDetail/
+      applyAllocattion: http://scmp.bms.aiqin.com/#/Supplier/AllocattionDetail/
       #移库查看详情
-      movement: http://scm.bms.aiqin.com/#/Supplier/MoveWareHouseDetail
+      movement: http://scmp.bms.aiqin.com/#/Supplier/MoveWareHouseDetail
 #审批流的host
 WorkFlowBaseHost:
-    supplierHost: http://scm.bms.aiqin.com
+    supplierHost: http://scmp.bms.aiqin.com
 #不拦截的公参
 BaseParam:
     authority: authority=0
