@@ -10,13 +10,11 @@ import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
@@ -208,16 +206,16 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     public BasePage<QueryOrderProductListRespVO> orderProductList(QueryOrderProductListReqVO reqVO) {
         PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
         reqVO.setCompanyCode(getUser().getCompanyCode());
-        List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectOrderProductList(reqVO);//TODO sql 未写
+        List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectOrderProductList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
     }
 
-//    @Override
-//    public BasePage<QueryOrderProductListRespVO> productUniqueCodeList(QueryOrderProductListReqVO reqVO) {
-//        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
-//        reqVO.setCompanyCode(getUser().getCompanyCode());
-//        List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectOrderProductList(reqVO);//TODO sql 未写
-//        return PageUtil.getPageList(reqVO.getPageNo(),list);
-//    }
+    @Override
+    public BasePage<QueryProductUniqueCodeListRespVO> productUniqueCodeList(QueryProductUniqueCodeListReqVO reqVO) {
+        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
+        reqVO.setCompanyCode(getUser().getCompanyCode());
+        List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectproductUniqueCodeList(reqVO);
+        return PageUtil.getPageList(reqVO.getPageNo(),list);
+    }
 
 }

@@ -3,13 +3,11 @@ package com.aiqin.bms.scmp.api.purchase.web.order;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -101,11 +99,24 @@ public class OrderController {
         }
     }
 
-    @ApiOperation("订单列表")
+    @ApiOperation("订单商品列表")
     @PostMapping("/orderProductList")
     public HttpResponse<BasePage<QueryOrderProductListRespVO>> orderProductList(@RequestBody QueryOrderProductListReqVO reqVO){
         try {
             return HttpResponse.success(orderService.orderProductList(reqVO));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("商品唯一码")
+    @PostMapping("/productUniqueCodeList")
+    public HttpResponse<BasePage<QueryProductUniqueCodeListRespVO>> productUniqueCodeList(@RequestBody QueryProductUniqueCodeListReqVO reqVO){
+        try {
+            return HttpResponse.success(orderService.productUniqueCodeList(reqVO));
         } catch (BizException e){
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
