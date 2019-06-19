@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoApplyInboundMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInbound">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="return_order_code" jdbcType="VARCHAR" property="returnOrderCode" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="inbound_time" jdbcType="TIMESTAMP" property="inboundTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="be_syn" jdbcType="INTEGER" property="beSyn" />
+    <result column="syn_failed_reason" jdbcType="VARCHAR" property="synFailedReason" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, return_order_code, code, inbound_time, status, transport_center_name, transport_center_code, 
+    warehouse_name, warehouse_code, be_syn, syn_failed_reason, company_name, company_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from return_order_info_apply_inbound
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from return_order_info_apply_inbound
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInbound">
+    insert into return_order_info_apply_inbound (id, return_order_code, code, 
+      inbound_time, status, transport_center_name, 
+      transport_center_code, warehouse_name, warehouse_code, 
+      be_syn, syn_failed_reason, company_name, 
+      company_code)
+    values (#{id,jdbcType=BIGINT}, #{returnOrderCode,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
+      #{inboundTime,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{transportCenterName,jdbcType=VARCHAR}, 
+      #{transportCenterCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, 
+      #{beSyn,jdbcType=INTEGER}, #{synFailedReason,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{companyCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInbound">
+    insert into return_order_info_apply_inbound
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="returnOrderCode != null">
+        return_order_code,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="inboundTime != null">
+        inbound_time,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name,
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code,
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name,
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code,
+      </if>
+      <if test="beSyn != null">
+        be_syn,
+      </if>
+      <if test="synFailedReason != null">
+        syn_failed_reason,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="returnOrderCode != null">
+        #{returnOrderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="inboundTime != null">
+        #{inboundTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="transportCenterName != null">
+        #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+        #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="beSyn != null">
+        #{beSyn,jdbcType=INTEGER},
+      </if>
+      <if test="synFailedReason != null">
+        #{synFailedReason,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInbound">
+    update return_order_info_apply_inbound
+    <set>
+      <if test="returnOrderCode != null">
+        return_order_code = #{returnOrderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="inboundTime != null">
+        inbound_time = #{inboundTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="beSyn != null">
+        be_syn = #{beSyn,jdbcType=INTEGER},
+      </if>
+      <if test="synFailedReason != null">
+        syn_failed_reason = #{synFailedReason,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInbound">
+    update return_order_info_apply_inbound
+    set return_order_code = #{returnOrderCode,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      inbound_time = #{inboundTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=INTEGER},
+      transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      be_syn = #{beSyn,jdbcType=INTEGER},
+      syn_failed_reason = #{synFailedReason,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

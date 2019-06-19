@@ -113,4 +113,380 @@ public class Stock extends CommonBean {
     @ApiModelProperty("含税金额")
     @JsonProperty(value = "tax_rate")
     private Long taxRate;
+
+    @ApiModelProperty("销售库存数")
+    @JsonProperty(value = "sale_num")
+    private Long saleNum;
+
+    @ApiModelProperty("销售锁定库存数")
+    @JsonProperty(value = "sale_lock_num")
+    private Long saleLockNum;
+
+    @ApiModelProperty("销售在途数")
+    @JsonProperty(value = "sale_way_num")
+    private Long saleWayNum;
+
+    @ApiModelProperty("销售采购在途数")
+    @JsonProperty(value = "sale_purchase_way_num")
+    private Long salePurchaseWayNum;
+
+    @ApiModelProperty("赠品库存数")
+    @JsonProperty(value = "gift_num")
+    private Long giftNum;
+
+    @ApiModelProperty("赠品锁定库存数")
+    @JsonProperty(value = "gift_lock_num")
+    private Long giftLockNum;
+
+    @ApiModelProperty("赠品采购在途数")
+    @JsonProperty(value = "gift_way_num")
+    private Long giftWayNum;
+
+    @ApiModelProperty("赠品采购在途数")
+    @JsonProperty(value = "gift_purchase_way_num")
+    private Long giftPurchaseWayNum;
+
+    @ApiModelProperty("特卖库存数")
+    @JsonProperty(value = "special_sale_num")
+    private Long specialSaleNum;
+
+    @ApiModelProperty("特卖锁定库存数")
+    @JsonProperty(value = "special_sale_lock_num")
+    private Long specialSaleLockNum;
+
+    @ApiModelProperty("特卖在途数")
+    @JsonProperty(value = "special_sale_way_num")
+    private Long specialSaleWayNum;
+
+    @ApiModelProperty("残品库存数")
+    @JsonProperty(value = "bad_num")
+    private Long badNum;
+
+    @ApiModelProperty("残品锁定库存数")
+    @JsonProperty(value = "bad_lock_num")
+    private Long badLockNum;
+
+    @ApiModelProperty("残品在途数")
+    @JsonProperty(value = "bad_way_num")
+    private Long badWayNum;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getStockCode() {
+        return stockCode;
+    }
+
+    public void setStockCode(String stockCode) {
+        this.stockCode = stockCode;
+    }
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getTransportCenterCode() {
+        return transportCenterCode;
+    }
+
+    public void setTransportCenterCode(String transportCenterCode) {
+        this.transportCenterCode = transportCenterCode;
+    }
+
+    public String getTransportCenterName() {
+        return transportCenterName;
+    }
+
+    public void setTransportCenterName(String transportCenterName) {
+        this.transportCenterName = transportCenterName;
+    }
+
+    public String getWarehouseCode() {
+        return warehouseCode;
+    }
+
+    public void setWarehouseCode(String warehouseCode) {
+        this.warehouseCode = warehouseCode;
+    }
+
+    public String getWarehouseName() {
+        return warehouseName;
+    }
+
+    public void setWarehouseName(String warehouseName) {
+        this.warehouseName = warehouseName;
+    }
+
+    public String getWarehouseType() {
+        return warehouseType;
+    }
+
+    public void setWarehouseType(String warehouseType) {
+        this.warehouseType = warehouseType;
+    }
+
+    public String getSkuCode() {
+        return skuCode;
+    }
+
+    public void setSkuCode(String skuCode) {
+        this.skuCode = skuCode;
+    }
+
+    public String getSkuName() {
+        return skuName;
+    }
+
+    public void setSkuName(String skuName) {
+        this.skuName = skuName;
+    }
+
+    public Long getInventoryNum() {
+        return inventoryNum;
+    }
+
+    public void setInventoryNum(Long inventoryNum) {
+        this.inventoryNum = inventoryNum;
+    }
+
+    public Long getAvailableNum() {
+        return availableNum;
+    }
+
+    public void setAvailableNum(Long availableNum) {
+        this.availableNum = availableNum;
+    }
+
+    public Long getLockNum() {
+        return lockNum;
+    }
+
+    public void setLockNum(Long lockNum) {
+        this.lockNum = lockNum;
+    }
+
+    public Long getPurchaseWayNum() {
+        return purchaseWayNum;
+    }
+
+    public void setPurchaseWayNum(Long purchaseWayNum) {
+        this.purchaseWayNum = purchaseWayNum;
+    }
+
+    public Long getAllocationWayNum() {
+        return allocationWayNum;
+    }
+
+    public void setAllocationWayNum(Long allocationWayNum) {
+        this.allocationWayNum = allocationWayNum;
+    }
+
+    public Long getTotalWayNum() {
+        return totalWayNum;
+    }
+
+    public void setTotalWayNum(Long totalWayNum) {
+        this.totalWayNum = totalWayNum;
+    }
+
+    public String getNewDelivery() {
+        return newDelivery;
+    }
+
+    public void setNewDelivery(String newDelivery) {
+        this.newDelivery = newDelivery;
+    }
+
+    public String getNewDeliveryName() {
+        return newDeliveryName;
+    }
+
+    public void setNewDeliveryName(String newDeliveryName) {
+        this.newDeliveryName = newDeliveryName;
+    }
+
+    public Long getNewPurchasePrice() {
+        return newPurchasePrice;
+    }
+
+    public void setNewPurchasePrice(Long newPurchasePrice) {
+        this.newPurchasePrice = newPurchasePrice;
+    }
+
+    public String getPurchaseGroupCode() {
+        return purchaseGroupCode;
+    }
+
+    public void setPurchaseGroupCode(String purchaseGroupCode) {
+        this.purchaseGroupCode = purchaseGroupCode;
+    }
+
+    public String getPurchaseGroupName() {
+        return purchaseGroupName;
+    }
+
+    public void setPurchaseGroupName(String purchaseGroupName) {
+        this.purchaseGroupName = purchaseGroupName;
+    }
+
+    public String getStockUnitCode() {
+        return stockUnitCode;
+    }
+
+    public void setStockUnitCode(String stockUnitCode) {
+        this.stockUnitCode = stockUnitCode;
+    }
+
+    public String getStockUnitName() {
+        return stockUnitName;
+    }
+
+    public void setStockUnitName(String stockUnitName) {
+        this.stockUnitName = stockUnitName;
+    }
+
+    public Long getTaxPrice() {
+        return taxPrice;
+    }
+
+    public void setTaxPrice(Long taxPrice) {
+        this.taxPrice = taxPrice;
+    }
+
+    public Long getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(Long taxRate) {
+        this.taxRate = taxRate;
+    }
+
+    public Long getSaleNum() {
+        return saleNum;
+    }
+
+    public void setSaleNum(Long saleNum) {
+        this.saleNum = saleNum;
+    }
+
+    public Long getSaleLockNum() {
+        return saleLockNum;
+    }
+
+    public void setSaleLockNum(Long saleLockNum) {
+        this.saleLockNum = saleLockNum;
+    }
+
+    public Long getSaleWayNum() {
+        return saleWayNum;
+    }
+
+    public void setSaleWayNum(Long saleWayNum) {
+        this.saleWayNum = saleWayNum;
+    }
+
+    public Long getSalePurchaseWayNum() {
+        return salePurchaseWayNum;
+    }
+
+    public void setSalePurchaseWayNum(Long salePurchaseWayNum) {
+        this.salePurchaseWayNum = salePurchaseWayNum;
+    }
+
+    public Long getGiftNum() {
+        return giftNum;
+    }
+
+    public void setGiftNum(Long giftNum) {
+        this.giftNum = giftNum;
+    }
+
+    public Long getGiftLockNum() {
+        return giftLockNum;
+    }
+
+    public void setGiftLockNum(Long giftLockNum) {
+        this.giftLockNum = giftLockNum;
+    }
+
+    public Long getGiftWayNum() {
+        return giftWayNum;
+    }
+
+    public void setGiftWayNum(Long giftWayNum) {
+        this.giftWayNum = giftWayNum;
+    }
+
+    public Long getGiftPurchaseWayNum() {
+        return giftPurchaseWayNum;
+    }
+
+    public void setGiftPurchaseWayNum(Long giftPurchaseWayNum) {
+        this.giftPurchaseWayNum = giftPurchaseWayNum;
+    }
+
+    public Long getSpecialSaleNum() {
+        return specialSaleNum;
+    }
+
+    public void setSpecialSaleNum(Long specialSaleNum) {
+        this.specialSaleNum = specialSaleNum;
+    }
+
+    public Long getSpecialSaleLockNum() {
+        return specialSaleLockNum;
+    }
+
+    public void setSpecialSaleLockNum(Long specialSaleLockNum) {
+        this.specialSaleLockNum = specialSaleLockNum;
+    }
+
+    public Long getSpecialSaleWayNum() {
+        return specialSaleWayNum;
+    }
+
+    public void setSpecialSaleWayNum(Long specialSaleWayNum) {
+        this.specialSaleWayNum = specialSaleWayNum;
+    }
+
+    public Long getBadNum() {
+        return badNum;
+    }
+
+    public void setBadNum(Long badNum) {
+        this.badNum = badNum;
+    }
+
+    public Long getBadLockNum() {
+        return badLockNum;
+    }
+
+    public void setBadLockNum(Long badLockNum) {
+        this.badLockNum = badLockNum;
+    }
+
+    public Long getBadWayNum() {
+        return badWayNum;
+    }
+
+    public void setBadWayNum(Long badWayNum) {
+        this.badWayNum = badWayNum;
+    }
 }
