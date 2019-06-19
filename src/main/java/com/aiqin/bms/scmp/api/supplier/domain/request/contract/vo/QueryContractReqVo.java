@@ -30,4 +30,6 @@ public class QueryContractReqVo  extends PageReq {
     @ApiModelProperty(value = "公司编码", notes = "前端查询接口可以不传,但是其他第三方系统此字段必填", hidden = true)
     private String companyCode;
 
+    @ApiModelProperty("合同名称")
+    private String yearName;
 }

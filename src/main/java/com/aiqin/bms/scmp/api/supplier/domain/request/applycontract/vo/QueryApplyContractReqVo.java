@@ -45,4 +45,7 @@ public class QueryApplyContractReqVo  extends PageReq {
 
     @ApiModelProperty(value = "申请人", hidden = true)
     private String applyBy;
+
+    @ApiModelProperty("合同名称")
+    private String yearName;
 }

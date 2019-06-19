@@ -169,7 +169,7 @@ public class ManufacturerServiceImp  implements ManufacturerService {
         List<ManufacturerBrand>list = manufacturerBrandDao.selectByPrimaryKey(manufacturer.getManufacturerCode());
         try {
             List<ManufacturerBrandResVo> manufacturerBrandResVoList=  BeanCopyUtils.copyList(list, ManufacturerBrandResVo.class);
-            manufacturerResVo.setResVoList(manufacturerBrandResVoList);
+            manufacturerResVo.setList(manufacturerBrandResVoList);
         } catch (Exception e) {
             e.printStackTrace();
             log.error("制造商查看关联品牌转化失败");

@@ -83,7 +83,7 @@ public class SupplierScoreController {
         }
     }
 
-    @PostMapping("/view")
+    @GetMapping("/view")
     @ApiOperation("详情")
     public HttpResponse<DetailScoreRespVo> view(@RequestParam @NotNull(message = "主键ID不能为空") Long id) {
         log.info("供应商-评分管理 request uri:{},参数信息:{}","/supplier/score/view",id);

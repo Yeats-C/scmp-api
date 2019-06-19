@@ -1,11 +1,9 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.Date;
 
 @ApiModel("调拨商品表")
 @Data
@@ -46,42 +44,22 @@ public class AllocationProduct extends CommonBean {
     @ApiModelProperty("类型")
     private String type;
 
-    @ApiModelProperty("库存单位")
-    private String inventoryUnit;
-
-    @ApiModelProperty("库存")
-    private Long inventory;
-
     @ApiModelProperty("税率")
     private Long tax;
 
-    @ApiModelProperty("含税单价")
+    @ApiModelProperty("含税成本")
     private Long taxPrice;
 
     @ApiModelProperty("数量")
     private Long quantity;
 
-    @ApiModelProperty("含税总价")
+    @ApiModelProperty("含税总成本")
     private Long taxAmount;
-
-    @ApiModelProperty("删除标记，0未删除 1已删除")
-    private Byte delFlag;
-
-    @ApiModelProperty("创建时间")
-    private Date createTime;
-
-    @ApiModelProperty("创建人")
-    private String createBy;
-
-    @ApiModelProperty("更新时间")
-    private Date updateTime;
-
-    @ApiModelProperty("更新人")
-    private String updateBy;
 
     @ApiModelProperty("图片地址")
     private String pictureUrl;
 
     @ApiModelProperty("行号")
-    private Long linenum;
+    private Long lineNum;
+
 }
