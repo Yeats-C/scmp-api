@@ -165,9 +165,9 @@
     <result column="aTransport_number" jdbcType="VARCHAR" property="transportNumber" />
     <result column="areturn_reason_content" jdbcType="VARCHAR" property="returnReasonContent" />
     <result column="aremake" jdbcType="VARCHAR" property="remake" />
-    <collection property="itemList" ofType="">
+    <!--<collection property="itemList" ofType="">-->
 
-    </collection>
+    <!--</collection>-->
 
   </resultMap>
   <select id="selectReturnOrderDetail" resultMap="selectReturnOrderDetail">
