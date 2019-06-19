@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.product.mapper;
 
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductToOutboundVo;
 
 import java.util.List;
 
@@ -32,12 +31,5 @@ public interface AllocationProductMapper {
 
     int updateByPrimaryKey(AllocationProduct record);
 
-
-    /**
-     * 通过编码查看出库单sku并有图片属性
-     * @param allocationCode
-     * @return
-     */
-    List<AllocationProductToOutboundVo>selectByPictureUrlAllocationCode(String allocationCode);
 }
 

@@ -26,7 +26,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementProductRe
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
-import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
+import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -100,7 +100,7 @@ public class OutboundServiceImpl implements OutboundService {
 
 
     @Autowired
-    private AllocationProductMapper allocationProductMapper;
+    private AllocationProductBatchMapper allocationProductBatchMapper;
     @Autowired
     private SupplierApiService supplierApiService;
 
@@ -742,7 +742,7 @@ public class OutboundServiceImpl implements OutboundService {
             BeanCopyUtils.copy(allocation,allocationResVo);
             productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.INBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),id ,HandleTypeCoce.INBOUND_ALLOCATION.getName());
 
-            List<AllocationProductToOutboundVo> list = allocationProductMapper.selectByPictureUrlAllocationCode(allocation.getAllocationCode());
+            List<AllocationProductToOutboundVo> list = allocationProductBatchMapper.selectByPictureUrlAllocationCode(allocation.getAllocationCode());
             allocationResVo.setSkuList(list);
             // 转化成出库单
             InboundReqSave convert =  new AllocationResVo2InboundReqVoConverter(supplierApiService).convert(allocationResVo);
@@ -758,10 +758,10 @@ public class OutboundServiceImpl implements OutboundService {
                 StockVoRequest  stockVoRequest = new StockVoRequest();
                 stockVoRequest.setCompanyCode(allocation.getCompanyCode());
                 stockVoRequest.setCompanyName(allocation.getCompanyName());
-                stockVoRequest.setTransportCenterCode(allocation.getCallinLogisticsCenterCode());
-                stockVoRequest.setTransportCenterName(allocation.getCallinLogisticsCenterName());
-                stockVoRequest.setWarehouseCode(allocation.getCallinWarehouseCode());
-                stockVoRequest.setWarehouseName(allocation.getCallinWarehouseName());
+                stockVoRequest.setTransportCenterCode(allocation.getCallInLogisticsCenterCode());
+                stockVoRequest.setTransportCenterName(allocation.getCallInLogisticsCenterName());
+                stockVoRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
+                stockVoRequest.setWarehouseName(allocation.getCallInWarehouseName());
                 stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
                 stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
                 stockVoRequest.setSkuCode(allocationProduct.getSkuCode());

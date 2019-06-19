@@ -45,8 +45,107 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
     <select id="selectOrderProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO">
-
-
+      select
+      b.order_original orderOriginal,
+      b.customer_name customerName,
+      b.customer_code customerCode,
+      a.sku_name skuName,
+      a.sku_code skuCode,
+      a.spec spec,
+      a.unit_name unitName,
+      a.price price,
+      a.amount amount,
+      b.order_code orderCode,
+      b.transport_center_name transportCenterName,
+      b.warehouse_name warehouse_name,
+      a.give_promotion givePromotion,
+      b.create_date createDate,
+      '1' as status
+      from order_info_item a
+      left join order_info b
+      on a.order_code = b.order_code
+      where b.company_code = #{companyCode}
+      <if test="createDateStart != null">
+        and b.create_date &gt;=#{createDateStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createDateEnd != null">
+        and b.create_date &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
+      </if>
+      <if test="transportCenterCode != null and transportCenterCode != ''">
+        and b.transport_center_code = #{transportCenterCode}
+      </if>
+      <if test="warehouseCode != null and warehouseCode != ''">
+        and b.warehouse_code = #{warehouseCode}
+      </if>
+      <if test="storeName != null and storeName != ''">
+        and b.customer_name like concat('%',#{storeName},'%')
+      </if>
+      <if test="storeCode != null and storeCode != ''">
+        and b.customer_name like concat('%',#{storeCode},'%')
+      </if>
+      <if test="skuName != null and skuName != ''">
+        and a.sku_name like concat('%',#{skuName},'%')
+      </if>
+      <if test="skuCode != null and skuCode != ''">
+        and a.sku_code like concat('%',#{skuCode},'%')
+      </if>
+      <if test="orderCode != null and orderCode != ''">
+        and b.order_code = #{orderCode}
+      </if>
+    </select>
+    <select id="selectproductUniqueCodeList"
+            resultType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO">
+      select
+             b.order_original orderOriginal,
+             b.customer_name customerName,
+             b.customer_code customerCode,
+             1 as uniqueCode,
+             a.sku_name skuName,
+             a.sku_code skuCode,
+             a.spec spec,
+             a.unit_name unitName,
+             a.price price,
+             a.amount amount,
+             b.order_code orderCode,
+             b.transport_center_name transportCenterName,
+             b.warehouse_name warehouse_name,
+             a.give_promotion givePromotion,
+             b.create_date createDate,
+             '1' as status
+      from order_info_item a
+               left join order_info b
+                         on a.order_code = b.order_code
+      where b.company_code = #{companyCode}
+      <if test="createDateStart != null">
+        and b.create_date &gt;=#{createDateStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createDateEnd != null">
+        and b.create_date &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
+      </if>
+      <if test="transportCenterCode != null and transportCenterCode != ''">
+        and b.transport_center_code = #{transportCenterCode}
+      </if>
+      <if test="warehouseCode != null and warehouseCode != ''">
+        and b.warehouse_code = #{warehouseCode}
+      </if>
+      <if test="storeName != null and storeName != ''">
+        and b.customer_name like concat('%',#{storeName},'%')
+      </if>
+      <if test="storeCode != null and storeCode != ''">
+        and b.customer_name like concat('%',#{storeCode},'%')
+      </if>
+      <if test="skuName != null and skuName != ''">
+        and a.sku_name like concat('%',#{skuName},'%')
+      </if>
+      <if test="skuCode != null and skuCode != ''">
+        and a.sku_code like concat('%',#{skuCode},'%')
+      </if>
+      <if test="orderCode != null and orderCode != ''">
+        and b.order_code = #{orderCode}
+      </if>
+<!--      <if test="uniqueCode != null and uniqueCode != ''">-->
+<!--        and a.unique_code = #{uniqueCode}-->
+<!--      </if>-->
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from order_info_item

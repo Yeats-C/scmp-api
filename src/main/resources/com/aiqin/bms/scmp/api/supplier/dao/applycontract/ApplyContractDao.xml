@@ -85,6 +85,9 @@
     <if test="applyBy != null and applyBy != '' ">
       and create_by = #{applyBy,jdbcType=VARCHAR}
     </if>
+    <if test="yearName != null and yearName != '' ">
+      and year_name like concat('%',#{yearName},'%')
+    </if>
     order by create_time desc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

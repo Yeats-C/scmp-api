@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,23 +14,17 @@ public class Allocation extends CommonBean {
     @ApiModelProperty("调拨单编号")
     private String allocationCode;
 
-    @ApiModelProperty("调出物流中心编号")
-    private String calloutLogisticsCenterCode;
+    @ApiModelProperty("调出仓库(物流中心)编号")
+    private String callOutLogisticsCenterCode;
 
-    @ApiModelProperty("调出物流中心名称")
-    private String calloutLogisticsCenterName;
+    @ApiModelProperty("调出仓库(物流中心)名称")
+    private String callOutLogisticsCenterName;
 
-    @ApiModelProperty("调出仓库编码")
-    private String calloutWarehouseCode;
+    @ApiModelProperty("调出库房编码")
+    private String callOutWarehouseCode;
 
-    @ApiModelProperty("调出仓库名称")
-    private String calloutWarehouseName;
-
-    @ApiModelProperty("仓库类型编码")
-    private String inventoryAttributesCode;
-
-    @ApiModelProperty("仓库类型名称")
-    private String inventoryAttributesName;
+    @ApiModelProperty("调出库房名称")
+    private String callOutWarehouseName;
 
     @ApiModelProperty("采购组编码")
     private String purchaseGroupCode;
@@ -38,23 +32,17 @@ public class Allocation extends CommonBean {
     @ApiModelProperty("采购组名称")
     private String purchaseGroupName;
 
-    @ApiModelProperty("调入物流中心编码")
-    private String callinLogisticsCenterCode;
+    @ApiModelProperty("调入仓库(物流中心)编码")
+    private String callInLogisticsCenterCode;
 
-    @ApiModelProperty("调入物流中心名称")
-    private String callinLogisticsCenterName;
+    @ApiModelProperty("调入仓库(物流中心)名称")
+    private String callInLogisticsCenterName;
 
-    @ApiModelProperty("调入仓库编码")
-    private String callinWarehouseCode;
+    @ApiModelProperty("调入库房编码")
+    private String callInWarehouseCode;
 
-    @ApiModelProperty("调入仓库名称")
-    private String callinWarehouseName;
-
-    @ApiModelProperty("调拨类型编码")
-    private Byte allocationTypeCode;
-
-    @ApiModelProperty("调拨类型名称")
-    private String allocationTypeName;
+    @ApiModelProperty("调入库房名称")
+    private String callInWarehouseName;
 
     @ApiModelProperty("负责人")
     private String principal;
@@ -62,8 +50,8 @@ public class Allocation extends CommonBean {
     @ApiModelProperty("数量")
     private Long quantity;
 
-    @ApiModelProperty("含税调拨金额")
-    private Long taxRefundAmount;
+    @ApiModelProperty("含税总成本")
+    private Long totalCostRate;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
@@ -85,4 +73,19 @@ public class Allocation extends CommonBean {
 
     @ApiModelProperty("公司名称")
     private String companyName;
+
+    @ApiModelProperty("直属上级编码")
+    private String directSupervisorCode;
+
+    @ApiModelProperty("直属上级名称")
+    private String directSupervisorName;
+
+    @ApiModelProperty("承担单位编码")
+    private String undertakingUnitCode;
+
+    @ApiModelProperty("承担单位名称")
+    private String undertakingUnitName;
+
+    @ApiModelProperty("备注")
+    private String remark;
 }
