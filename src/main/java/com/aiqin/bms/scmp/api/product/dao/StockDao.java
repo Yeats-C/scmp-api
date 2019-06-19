@@ -32,7 +32,7 @@ public interface StockDao {
      * @date 2019/1/7
      *
      **/
-    List<Stock> selectStockSumInfoByPage(StockRequest stockRequest);
+    List<StockRespVO> selectStockSumInfoByPage(StockRequest stockRequest);
 
     Integer countStockSumInfoByPage(StockRequest stockRequest);
 

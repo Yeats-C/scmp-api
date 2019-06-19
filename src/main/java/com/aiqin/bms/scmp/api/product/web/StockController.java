@@ -34,7 +34,7 @@ import java.util.List;
  * @date 2018/11/20 15:04
  */
 @RestController
-@Api(description = "库存库房接口")
+@Api(tags = "库存库房接口")
 @RequestMapping("/stock")
 @Slf4j
 public class StockController {
@@ -50,20 +50,20 @@ public class StockController {
     }
 
     @PostMapping("/search/transport/page")
-    @ApiOperation(value = "物流中心库存管理列表")
-    public HttpResponse<PageResData<Stock>> selectTransportStockInfoByPage(@RequestBody StockRequest stockRequest) {
+    @ApiOperation(value = "仓库库存管理列表")
+    public HttpResponse<PageResData<StockRespVO>> selectTransportStockInfoByPage(@RequestBody StockRequest stockRequest) {
         return HttpResponse.success(stockService.selectTransportStockInfoByPage(stockRequest));
     }
 
     @PostMapping("/search/storehouse/page")
     @ApiOperation(value = "库房库存管理列表")
-    public HttpResponse<PageResData<Stock>> selectStorehouseStockInfoByPage(@RequestBody StockRequest stockRequest) {
+    public HttpResponse<PageResData<StockRespVO>> selectStorehouseStockInfoByPage(@RequestBody StockRequest stockRequest) {
         return HttpResponse.success(stockService.selectStorehouseStockInfoByPage(stockRequest));
     }
 
     @PostMapping("/search/sum/page")
-    @ApiOperation(value = "获取总库存列表")
-    public HttpResponse<PageResData<Stock>> getListSumByPage(@RequestBody StockRequest stockRequest) {
+    @ApiOperation(value = "中央库存列表")
+    public HttpResponse<PageResData<StockRespVO>> getListSumByPage(@RequestBody StockRequest stockRequest) {
         return HttpResponse.success(stockService.selectStockSumInfoByPage(stockRequest));
     }
 
