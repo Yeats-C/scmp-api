@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductLi
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +39,7 @@ public class OrderController {
     @ApiOperation("订单同步")
     @PostMapping("/save")
     public HttpResponse<Boolean> saveOrder(@RequestBody @Valid List<OrderInfoReqVO> reqVO){
+        log.info("OrderController---saveOrder---param：[{}]", JSONObject.toJSONString(reqVO));
         try {
             return HttpResponse.success(orderService.save(reqVO));
         } catch (BizException e){
@@ -51,6 +53,7 @@ public class OrderController {
     @ApiOperation("订单列表")
     @PostMapping("/list")
     public HttpResponse<BasePage<QueryOrderListRespVO>> list(@RequestBody @Valid QueryOrderListReqVO reqVO){
+        log.info("OrderController---list---param：[{}]", JSONObject.toJSONString(reqVO));
         try {
             return HttpResponse.success(orderService.list(reqVO));
         } catch (BizException e){
@@ -64,6 +67,7 @@ public class OrderController {
     @ApiOperation("订单详情")
     @GetMapping("/view")
     public HttpResponse<QueryOrderInfoRespVO> view(@RequestParam String orderCode){
+        log.info("OrderController---view---param：[{}]", orderCode);
         try {
             return HttpResponse.success(orderService.view(orderCode));
         } catch (BizException e){
@@ -77,6 +81,7 @@ public class OrderController {
     @ApiOperation("修改订单状态")
     @GetMapping("/changeStatus")
     public HttpResponse<Boolean> changeStatus(@RequestBody ChangeOrderStatusReqVO reqVO){
+        log.info("OrderController---changeStatus---param：[{}]", JSONObject.toJSONString(reqVO));
         try {
             return HttpResponse.success(orderService.changeStatus(reqVO));
         } catch (BizException e){
@@ -89,6 +94,7 @@ public class OrderController {
     @ApiOperation("5配货/11发货/97缺货终止")
     @GetMapping("/distribution")
     public HttpResponse<Boolean> distribution(@RequestParam String orderCode, @RequestParam Integer status){
+        log.info("OrderController---distribution---param：[{}],[{}]", orderCode,status);
         try {
             return HttpResponse.success(orderService.distribution(orderCode, status));
         } catch (BizException e){
@@ -115,6 +121,7 @@ public class OrderController {
     @ApiOperation("商品唯一码")
     @PostMapping("/productUniqueCodeList")
     public HttpResponse<BasePage<QueryProductUniqueCodeListRespVO>> productUniqueCodeList(@RequestBody QueryProductUniqueCodeListReqVO reqVO){
+        log.info("OrderController---productUniqueCodeList---param：[{}]", JSONObject.toJSONString(reqVO));
         try {
             return HttpResponse.success(orderService.productUniqueCodeList(reqVO));
         } catch (BizException e){
