@@ -3,10 +3,12 @@ package com.aiqin.bms.scmp.api.purchase.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
 @ApiModel
+@Data
 public class RejectRecord {
     @ApiModelProperty(value = "")
     @JsonProperty("id")
@@ -20,15 +22,15 @@ public class RejectRecord {
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "负责人")
     @JsonProperty("duty_person")
     private String dutyPerson;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "联系人")
     @JsonProperty("contacts_person")
     private String contactsPerson;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "联系人电话")
     @JsonProperty("contacts_person_phone")
     private String contactsPersonPhone;
 
@@ -156,299 +158,19 @@ public class RejectRecord {
     @JsonProperty("update_time")
     private Date updateTime;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRejectRecordId() {
-        return rejectRecordId;
-    }
-
-    public void setRejectRecordId(String rejectRecordId) {
-        this.rejectRecordId = rejectRecordId;
-    }
-
-    public String getRejectRecordCode() {
-        return rejectRecordCode;
-    }
-
-    public void setRejectRecordCode(String rejectRecordCode) {
-        this.rejectRecordCode = rejectRecordCode;
-    }
-
-    public String getDutyPerson() {
-        return dutyPerson;
-    }
-
-    public void setDutyPerson(String dutyPerson) {
-        this.dutyPerson = dutyPerson;
-    }
-
-    public String getContactsPerson() {
-        return contactsPerson;
-    }
-
-    public void setContactsPerson(String contactsPerson) {
-        this.contactsPerson = contactsPerson;
-    }
-
-    public String getContactsPersonPhone() {
-        return contactsPersonPhone;
-    }
-
-    public void setContactsPersonPhone(String contactsPersonPhone) {
-        this.contactsPersonPhone = contactsPersonPhone;
-    }
-
-    public String getProvinceId() {
-        return provinceId;
-    }
-
-    public void setProvinceId(String provinceId) {
-        this.provinceId = provinceId;
-    }
-
-    public String getProvinceName() {
-        return provinceName;
-    }
-
-    public void setProvinceName(String provinceName) {
-        this.provinceName = provinceName;
-    }
-
-    public String getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(String cityId) {
-        this.cityId = cityId;
-    }
-
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public String getDistrictId() {
-        return districtId;
-    }
-
-    public void setDistrictId(String districtId) {
-        this.districtId = districtId;
-    }
-
-    public String getDistrictName() {
-        return districtName;
-    }
-
-    public void setDistrictName(String districtName) {
-        this.districtName = districtName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Date getExpectTime() {
-        return expectTime;
-    }
-
-    public void setExpectTime(Date expectTime) {
-        this.expectTime = expectTime;
-    }
-
-    public Date getValidDay() {
-        return validDay;
-    }
-
-    public void setValidDay(Date validDay) {
-        this.validDay = validDay;
-    }
-
-    public String getDictionaryId() {
-        return dictionaryId;
-    }
-
-    public void setDictionaryId(String dictionaryId) {
-        this.dictionaryId = dictionaryId;
-    }
-
-    public String getDictionaryName() {
-        return dictionaryName;
-    }
-
-    public void setDictionaryName(String dictionaryName) {
-        this.dictionaryName = dictionaryName;
-    }
-
-    public String getSupplierCode() {
-        return supplierCode;
-    }
-
-    public void setSupplierCode(String supplierCode) {
-        this.supplierCode = supplierCode;
-    }
-
-    public String getSupplierName() {
-        return supplierName;
-    }
-
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
-    }
-
-    public String getPurchaseGroupCode() {
-        return purchaseGroupCode;
-    }
-
-    public void setPurchaseGroupCode(String purchaseGroupCode) {
-        this.purchaseGroupCode = purchaseGroupCode;
-    }
-
-    public String getPurchaseGroupName() {
-        return purchaseGroupName;
-    }
-
-    public void setPurchaseGroupName(String purchaseGroupName) {
-        this.purchaseGroupName = purchaseGroupName;
-    }
-
-    public Integer getRejectStatus() {
-        return rejectStatus;
-    }
-
-    public void setRejectStatus(Integer rejectStatus) {
-        this.rejectStatus = rejectStatus;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getTransportRemark() {
-        return transportRemark;
-    }
-
-    public void setTransportRemark(String transportRemark) {
-        this.transportRemark = transportRemark;
-    }
-
-    public Date getOutStockTime() {
-        return outStockTime;
-    }
-
-    public void setOutStockTime(Date outStockTime) {
-        this.outStockTime = outStockTime;
-    }
-
-    public Integer getSumCount() {
-        return sumCount;
-    }
-
-    public void setSumCount(Integer sumCount) {
-        this.sumCount = sumCount;
-    }
-
-    public Long getSumAmount() {
-        return sumAmount;
-    }
-
-    public void setSumAmount(Long sumAmount) {
-        this.sumAmount = sumAmount;
-    }
-
-    public Integer getSingleCount() {
-        return singleCount;
-    }
-
-    public void setSingleCount(Integer singleCount) {
-        this.singleCount = singleCount;
-    }
-
-    public Long getSingleAmount() {
-        return singleAmount;
-    }
-
-    public void setSingleAmount(Long singleAmount) {
-        this.singleAmount = singleAmount;
-    }
-
-    public Integer getReturnCount() {
-        return returnCount;
-    }
-
-    public void setReturnCount(Integer returnCount) {
-        this.returnCount = returnCount;
-    }
-
-    public Long getReturnAmount() {
-        return returnAmount;
-    }
-
-    public void setReturnAmount(Long returnAmount) {
-        this.returnAmount = returnAmount;
-    }
-
-    public String getCreateById() {
-        return createById;
-    }
-
-    public void setCreateById(String createById) {
-        this.createById = createById;
-    }
-
-    public String getCreateByName() {
-        return createByName;
-    }
-
-    public void setCreateByName(String createByName) {
-        this.createByName = createByName;
-    }
-
-    public String getUpdateById() {
-        return updateById;
-    }
-
-    public void setUpdateById(String updateById) {
-        this.updateById = updateById;
-    }
-
-    public String getUpdateByName() {
-        return updateByName;
-    }
-
-    public void setUpdateByName(String updateByName) {
-        this.updateByName = updateByName;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
+    @ApiModelProperty(value = "仓编码(物流中心编码)")
+    @JsonProperty("transport_center_code")
+    private String transportCenterCode;
+
+    @ApiModelProperty(value = "仓名称(物流中心名称)")
+    @JsonProperty("transport_center_name")
+    private String transportCenterName;
+
+    @ApiModelProperty(value = "库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty(value = "库房名称")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
 }
