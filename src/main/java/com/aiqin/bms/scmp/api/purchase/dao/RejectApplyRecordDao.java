@@ -20,5 +20,4 @@ public interface RejectApplyRecordDao {
 
     Integer listCount(RejectApplyQueryRequest rejectApplyQueryRequest);
 
-    List<RejectApplyResponse> listForRejectRecord(RejectApplyRequest rejectApplyQueryRequest);
 }

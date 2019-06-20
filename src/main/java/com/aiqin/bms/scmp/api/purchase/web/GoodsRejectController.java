@@ -1,7 +1,10 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectQueryRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
@@ -67,7 +70,7 @@ public class GoodsRejectController {
                                                                         @RequestParam(value = "begin_time", required = false) String beginTime,
                                                                         @RequestParam(value = "finish_time", required = false) String finishTime,
                                                                         @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode) {
-        RejectApplyQueryRequest rejectApplyQueryRequest = new RejectApplyQueryRequest(rejectApplyRecordCode,applyType,purchaseGroupCode,applyRecordStatus,beginTime,finishTime);
+        RejectApplyQueryRequest rejectApplyQueryRequest = new RejectApplyQueryRequest(rejectApplyRecordCode, applyType, purchaseGroupCode, applyRecordStatus, beginTime, finishTime);
         return goodsRejectService.rejectApplyList(rejectApplyQueryRequest);
     }
 
@@ -80,7 +83,7 @@ public class GoodsRejectController {
     @PostMapping("/apply/import")
     @ApiOperation(value = "批量导入退供申请单")
     public HttpResponse rejectApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
-        return goodsRejectService.rejectApplyImport(file,purchaseGroupCode);
+        return goodsRejectService.rejectApplyImport(file, purchaseGroupCode);
     }
 
     @PostMapping("/apply/info")
@@ -91,8 +94,8 @@ public class GoodsRejectController {
 
     @PostMapping("/record")
     @ApiOperation(value = "新增退供单记录")
-    public HttpResponse<List<RejectApplyResponse>> addReject(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
-        return goodsRejectService.addReject(rejectApplyQueryRequest);
+    public HttpResponse addReject(@RequestBody RejectRequest request) {
+        return goodsRejectService.addReject(request);
     }
 
     @PutMapping("/record")
@@ -103,21 +106,21 @@ public class GoodsRejectController {
 
     @GetMapping("/record/list")
     @ApiOperation(value = "查询退供单列表")
-    public HttpResponse<List<RejectApplyRequest>> rejectList(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
-        return goodsRejectService.rejectList(rejectApplyQueryRequest);
+    public HttpResponse<RejectRecord> rejectList(@RequestBody RejectQueryRequest rejectQueryRequest) {
+        return goodsRejectService.rejectList(rejectQueryRequest);
     }
 
-    @GetMapping("/record/info")
+    @GetMapping("/record/{reject_record_code}")
     @ApiOperation(value = "查询退供单详情")
-    public HttpResponse<List<RejectApplyRequest>> rejectInfo(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
-        return goodsRejectService.rejectInfo(rejectApplyQueryRequest);
+    public HttpResponse<List<RejectApplyRequest>> rejectInfo(@PathVariable String reject_record_code ) {
+        return goodsRejectService.rejectInfo(reject_record_code);
     }
 
 
-    @PutMapping("/record/supplier")
+    @PutMapping("/record/supplier/{reject_record_code}")
     @ApiOperation(value = "供应商确认")
-    public HttpResponse<List<RejectApplyRequest>> rejectSupplier(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
-        return goodsRejectService.rejectSupplier(rejectApplyQueryRequest);
+    public HttpResponse<List<RejectApplyRequest>> rejectSupplier(@PathVariable String reject_record_code) {
+        return goodsRejectService.rejectSupplier(reject_record_code);
     }
 
 }

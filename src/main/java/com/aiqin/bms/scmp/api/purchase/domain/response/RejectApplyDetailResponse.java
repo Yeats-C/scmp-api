@@ -35,6 +35,10 @@ import java.util.Date;
 @Data
 public class RejectApplyDetailResponse {
 
+    @ApiModelProperty(value = "业务id")
+    @JsonProperty("reject_apply_record_detail_id")
+    private String rejectApplyRecordDetailId;
+
     @ApiModelProperty(value = "采购组 code")
     @JsonProperty("purchase_group_code")
     private String purchaseGroupCode;
