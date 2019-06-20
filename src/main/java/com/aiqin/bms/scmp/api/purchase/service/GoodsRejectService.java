@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectQueryRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectRequest;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,15 +40,15 @@ public interface GoodsRejectService {
 
     HttpResponse rejectApplyInfo(RejectApplyRequest rejectApplyQueryRequest);
 
-    HttpResponse addReject(RejectApplyRequest rejectApplyQueryRequest);
+    HttpResponse addReject(RejectRequest request);
 
     HttpResponse updateReject(RejectApplyRequest rejectApplyQueryRequest);
 
-    HttpResponse rejectList(RejectApplyRequest rejectApplyQueryRequest);
+    HttpResponse rejectList(RejectQueryRequest rejectApplyQueryRequest);
 
-    HttpResponse rejectSupplier(RejectApplyRequest rejectApplyQueryRequest);
+    HttpResponse rejectSupplier(String rejectApplyQueryRequest);
 
-    HttpResponse rejectInfo(RejectApplyRequest rejectApplyQueryRequest);
+    HttpResponse rejectInfo(String rejectApplyQueryRequest);
 
     HttpResponse rejectApplyImport(MultipartFile file, String purchaseGroupCode);
 }
