@@ -4,15 +4,18 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnOrderManagementRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
+import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
@@ -24,6 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -40,6 +47,12 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
 
     @Autowired
     private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
+
+    @Autowired
+    private StockService stockService;
+
+    @Autowired
+    private WarehouseService warehouseService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -77,13 +90,13 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
         if (CollectionUtils.isNotEmptyCollection(orders)) {
             int i = returnOrderInfoMapper.insertBatch(orders);
             if (i != orderItems.size()) {
-                throw new BizException(ResultCode.save_return_order_failed);
+                throw new BizException(ResultCode.SAVE_RETURN_ORDER_FAILED);
             }
         }
         if (CollectionUtils.isNotEmptyCollection(orderItems)) {
             int i = returnOrderInfoItemMapper.insertBatch(orderItems);
             if (i != orderItems.size()) {
-                throw new BizException(ResultCode.save_return_order_item_failed);
+                throw new BizException(ResultCode.SAVE_RETURN_ORDER_ITEM_FAILED);
             }
         }
     }
@@ -97,7 +110,56 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
 
     @Override
     public ReturnOrderDetailRespVO returnOrderDetail(String code) {
+        //todo 实体已完成，查询还没做，因为入库单的表还没有。这里需要查询入库的信息 sql未写
         ReturnOrderDetailRespVO respVO =  returnOrderInfoMapper.selectReturnOrderDetail(code);
+        if(Objects.isNull(respVO)){
+            throw new BizException(ResultCode.GET_RETURN_GOODS_DETAIL_FAILED);
+        }
+        return respVO;
+    }
+
+    @Override
+    public BasePage<QueryReturnInspectionRespVO> returnInspection(QueryReturnInspectionReqVO reqVO) {
+        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+        List<QueryReturnInspectionRespVO> list = returnOrderInfoMapper.selectreturnInspectionList(reqVO);
+        return PageUtil.getPageList(reqVO.getPageNo(), list);
+    }
+
+    @Override
+    public InspectionDetailRespVO inspectionDetail(String code) {
+        //首先查出数据
+        InspectionDetailRespVO respVO = returnOrderInfoMapper.selectInspectionDetail(code);//TODO sql 未写
+        if(Objects.isNull(respVO)){
+            throw new BizException(ResultCode.QUERY_INSPECTION_DETAIL_ERROR);
+        }
+        List<ReturnOrderInfoInspectionItemRespVO> inspectionItemRespVOS = BeanCopyUtils.copyList(respVO.getItemList(), ReturnOrderInfoInspectionItemRespVO.class);
+        //根据仓编码查询下面的库
+        List<WarehouseResVo> warehouse = warehouseService.getWarehouseByLogisticsCenterCode(respVO.getTransportCenterCode());
+        if(CollectionUtils.isEmptyCollection(warehouse)){
+            throw new BizException(ResultCode.DATA_ERROR);
+        }
+        respVO.setWarehouseResVoList(warehouse);
+        Map<Byte, WarehouseResVo> warehouseTypeMap = warehouse.stream().collect(Collectors.toMap(WarehouseResVo::getWarehouseTypeCode, Function.identity(), (k1, k2) -> k1));
+        Map<String, WarehouseResVo> warehouseCodeMap = warehouse.stream().collect(Collectors.toMap(WarehouseResVo::getWarehouseCode, Function.identity(), (k1, k2) -> k1));
+        for (ReturnOrderInfoInspectionItemRespVO o : inspectionItemRespVOS) {
+            o.setOriginalLineNum(o.getProductLineNum().intValue());
+            o.setProductLineNum(null);
+            //根据批次判断需要入哪个仓
+            //首先判断新品/残品
+            if (Objects.equals(CommonConstant.NEW_PRODUCT, o.getProductStatus())) {
+                o.setWarehouseCode(warehouseTypeMap.get((byte) 1).getWarehouseCode());
+            } else if (Objects.equals(CommonConstant.DEFECTIVE, o.getProductStatus())) {
+                o.setWarehouseCode(warehouseTypeMap.get((byte) 2).getWarehouseCode());
+                continue;
+            } else {
+                throw new BizException(ResultCode.DATA_ERROR);
+            }
+            if (Objects.isNull(o.getQualityAssuranceManagement())) {
+
+            }
+
+        }
+        respVO.setInspectionItemList(inspectionItemRespVOS);
         return respVO;
     }
 

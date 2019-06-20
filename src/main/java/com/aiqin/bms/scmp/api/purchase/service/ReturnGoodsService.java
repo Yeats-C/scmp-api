@@ -3,8 +3,11 @@ package com.aiqin.bms.scmp.api.purchase.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnOrderManagementRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO;
 
@@ -51,4 +54,20 @@ public interface ReturnGoodsService {
      * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO
      */
     ReturnOrderDetailRespVO returnOrderDetail(String code);
+    /**
+     * 退货验货
+     * @author NullPointException
+     * @date 2019/6/20
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO>
+     */
+    BasePage<QueryReturnInspectionRespVO> returnInspection(QueryReturnInspectionReqVO reqVO);
+    /**
+     * 验货详情
+     * @author NullPointException
+     * @date 2019/6/20
+     * @param code
+     * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO
+     */
+    InspectionDetailRespVO inspectionDetail(String code);
 }

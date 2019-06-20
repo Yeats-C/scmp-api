@@ -147,7 +147,7 @@
     <result column="adetail_address" jdbcType="VARCHAR" property="detailAddress" />
     <result column="azip_code" jdbcType="VARCHAR" property="zipCode" />
     <result column="adistribution_mode" jdbcType="VARCHAR" property="distributionMode" />
-    <result column="aorder_status" jdbcType="BIGINT" property="orderStatus" />
+    <result column="aorder_status" jdbcType="INTEGER" property="orderStatus" />
     <result column="apayment_type" jdbcType="VARCHAR" property="paymentType" />
     <result column="adeliver_amount" jdbcType="BIGINT" property="deliverAmount" />
     <result column="aproduct_num" jdbcType="BIGINT" property="productNum" />
@@ -176,7 +176,55 @@
 
 
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <select id="selectreturnInspectionList"
+          resultType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO">
+    select
+    a.return_order_code returnOrderCode,
+    a.return_order_type returnOrderType,
+    a.order_code orderCode,
+    a.order_type orderType,
+    a.customer_name customerName,
+    a.transport_center_name transportCenterName,
+    a.warehouse_name warehouseName,
+    a.supplier_name supplierName,
+    a.order_status orderStatus,
+    a.create_date createDate,
+    a.product_num productNum,
+    a.product_total_amount productTotalAmount,
+    a.return_order_amount returnOrderAmount
+    from return_order_info a
+    left join return_order_info_item b
+    on a.return_order_code = b.return_order_code
+    where a.company_code = #{companyCode}
+    <if test="createDateStart != null">
+      and a.create_date &gt;=#{createDateStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createDateEnd != null">
+      and a.create_date &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
+    </if>
+    <if test="orderStatus != null and orderStatus != ''">
+      and a.order_status = #{orderStatus}
+    </if>
+    <if test="transportCenterCode != null and transportCenterCode != ''">
+      and a.transport_center_code = #{transportCenterCode}
+    </if>
+    <if test="warehouseCode != null and warehouseCode != ''">
+      and a.warehouse_code = #{warehouseCode}
+    </if>
+    <if test="customerCode != null and customerCode != ''">
+      and a.customer_code like concat('%',#{customerCode},'%')
+    </if>
+    <if test="orderCode != null and orderCode != ''">
+      and a.order_code = #{orderCode}
+    </if>
+    <if test="returnOrderCode != null and returnOrderCode != ''">
+      and a.return_order_code = #{returnOrderCode}
+    </if>
+  </select>
+    <select id="selectInspectionDetail" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO">
+
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from return_order_info
     where id = #{id,jdbcType=BIGINT}
   </delete>
@@ -213,7 +261,7 @@
       #{cityCode,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtCode,jdbcType=VARCHAR}, 
       #{districtName,jdbcType=VARCHAR}, #{detailAddress,jdbcType=VARCHAR}, #{zipCode,jdbcType=VARCHAR}, 
       #{distributionMode,jdbcType=VARCHAR}, #{distributionModeCode,jdbcType=VARCHAR}, 
-      #{orderStatus,jdbcType=BIGINT}, #{paymentType,jdbcType=VARCHAR}, #{paymentTypeCode,jdbcType=VARCHAR}, 
+      #{orderStatus,jdbcType=INTEGER}, #{paymentType,jdbcType=VARCHAR}, #{paymentTypeCode,jdbcType=VARCHAR},
       #{deliverAmount,jdbcType=BIGINT}, #{productNum,jdbcType=BIGINT}, #{productTotalAmount,jdbcType=BIGINT}, 
       #{returnOrderAmount,jdbcType=BIGINT}, #{weight,jdbcType=BIGINT}, #{deliveryTime,jdbcType=TIMESTAMP}, 
       #{receivingTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR}, #{operatorCode,jdbcType=VARCHAR}, 
@@ -504,7 +552,7 @@
         #{distributionModeCode,jdbcType=VARCHAR},
       </if>
       <if test="orderStatus != null">
-        #{orderStatus,jdbcType=BIGINT},
+        #{orderStatus,jdbcType=INTEGER},
       </if>
       <if test="paymentType != null">
         #{paymentType,jdbcType=VARCHAR},
@@ -606,7 +654,7 @@
       #{item.cityCode,jdbcType=VARCHAR}, #{item.cityName,jdbcType=VARCHAR}, #{item.districtCode,jdbcType=VARCHAR},
       #{item.districtName,jdbcType=VARCHAR}, #{item.detailAddress,jdbcType=VARCHAR}, #{item.zipCode,jdbcType=VARCHAR},
       #{item.distributionMode,jdbcType=VARCHAR}, #{item.distributionModeCode,jdbcType=VARCHAR},
-      #{item.orderStatus,jdbcType=BIGINT}, #{item.paymentType,jdbcType=VARCHAR}, #{item.paymentTypeCode,jdbcType=VARCHAR},
+      #{item.orderStatus,jdbcType=INTEGER}, #{item.paymentType,jdbcType=VARCHAR}, #{item.paymentTypeCode,jdbcType=VARCHAR},
       #{item.deliverAmount,jdbcType=BIGINT}, #{item.productNum,jdbcType=BIGINT}, #{item.productTotalAmount,jdbcType=BIGINT},
       #{item.returnOrderAmount,jdbcType=BIGINT}, #{item.weight,jdbcType=BIGINT}, #{item.deliveryTime,jdbcType=TIMESTAMP},
       #{item.receivingTime,jdbcType=TIMESTAMP}, #{item.operator,jdbcType=VARCHAR}, #{item.operatorCode,jdbcType=VARCHAR},
@@ -722,7 +770,7 @@
         distribution_mode_code = #{distributionModeCode,jdbcType=VARCHAR},
       </if>
       <if test="orderStatus != null">
-        order_status = #{orderStatus,jdbcType=BIGINT},
+        order_status = #{orderStatus,jdbcType=INTEGER},
       </if>
       <if test="paymentType != null">
         payment_type = #{paymentType,jdbcType=VARCHAR},
@@ -826,7 +874,7 @@
       zip_code = #{zipCode,jdbcType=VARCHAR},
       distribution_mode = #{distributionMode,jdbcType=VARCHAR},
       distribution_mode_code = #{distributionModeCode,jdbcType=VARCHAR},
-      order_status = #{orderStatus,jdbcType=BIGINT},
+      order_status = #{orderStatus,jdbcType=INTEGER},
       payment_type = #{paymentType,jdbcType=VARCHAR},
       payment_type_code = #{paymentTypeCode,jdbcType=VARCHAR},
       deliver_amount = #{deliverAmount,jdbcType=BIGINT},

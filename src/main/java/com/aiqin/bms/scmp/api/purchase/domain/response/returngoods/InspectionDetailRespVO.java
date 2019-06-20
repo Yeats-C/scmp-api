@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response.returngoods;
 
 import com.aiqin.bms.scmp.api.base.ReturnOrderStatus;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,12 +14,12 @@ import java.util.List;
  * Description:
  *
  * @author: NullPointException
- * @date: 2019-06-19
- * @time: 18:35
+ * @date: 2019-06-20
+ * @time: 10:51
  */
 @Data
-@ApiModel("退货详情返回vo")
-public class ReturnOrderDetailRespVO {
+@ApiModel("验货详情")
+public class InspectionDetailRespVO {
     @ApiModelProperty("退货订单编码")
     private String returnOrderCode;
 
@@ -53,8 +54,14 @@ public class ReturnOrderDetailRespVO {
     @ApiModelProperty("物流中心名称")
     private String transportCenterName;
 
+    @ApiModelProperty("物流中心名称")
+    private String transportCenterCode;
+
     @ApiModelProperty("仓库名称")
     private String warehouseName;
+
+    @ApiModelProperty("仓库名称")
+    private String warehouseCode;
 
     @ApiModelProperty("供应商名称")
     private String supplierName;
@@ -149,9 +156,12 @@ public class ReturnOrderDetailRespVO {
     @ApiModelProperty("备注")
     private String remake;
 
-    @ApiModelProperty("退货订单商品")
-    private List<ReturnOrderInfoItemRespVO> itemList;
+    @ApiModelProperty("商品列表")
+    private List<ReturnOrderInfoForInspectionItemRespVO> itemList;
 
-    @ApiModelProperty("退货入库申请单")
-    private List<ReturnOrderInfoApplyInboundRespVO> inboundList;
+    @ApiModelProperty("验货处理")
+    private List<ReturnOrderInfoInspectionItemRespVO> inspectionItemList;
+
+    @ApiModelProperty("库房信息")
+    private List<WarehouseResVo> warehouseResVoList;
 }

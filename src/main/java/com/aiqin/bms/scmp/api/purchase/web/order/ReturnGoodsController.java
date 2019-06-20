@@ -3,8 +3,11 @@ package com.aiqin.bms.scmp.api.purchase.web.order;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnOrderManagementRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
@@ -68,6 +71,33 @@ public class ReturnGoodsController {
         log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
         try {
             return HttpResponse.success(returnGoodsService.returnOrderDetail(code));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("退货验货")
+    @PostMapping("/returnInspection")
+    public HttpResponse<BasePage<QueryReturnInspectionRespVO>> returnInspection(@RequestBody QueryReturnInspectionReqVO reqVO){
+        log.info("ReturnGoodsController---returnOrderManagement---param：[{}]", JSONObject.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(returnGoodsService.returnInspection(reqVO));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @ApiOperation("验货详情")
+    @GetMapping("/inspectionDetail")
+    public HttpResponse<InspectionDetailRespVO> inspectionDetail(@RequestParam String code){
+        log.info("ReturnGoodsController---inspectionDetail---param：[{}]", code);
+        try {
+            return HttpResponse.success(returnGoodsService.inspectionDetail(code));
         } catch (BizException e){
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
