@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateOutBoundReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateStockReqVo;
@@ -12,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.outbound.QueryOutboundReqVo
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.service.impl.OutboundServiceImpl;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -149,6 +151,8 @@ public interface OutboundService {
      * @param id
      */
     void movementCreateInbound(Long id);
+
+    HttpResponse selectOutboundBatchInfoByOutboundOderCode(OutboundBatch outboundBatch);
 
 }
 
