@@ -137,7 +137,7 @@ public class StockServiceImpl implements StockService {
     public PageResData selectStockSumInfoByPage(StockRequest stockRequest) {
         try {
             LOGGER.info("库存列表查询");
-            List<Stock> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
+            List<StockRespVO> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
             Integer total = stockDao.countStockSumInfoByPage(stockRequest);
             return new PageResData<>(total, stockList);
         } catch (Exception e) {
@@ -675,7 +675,7 @@ public class StockServiceImpl implements StockService {
         }
         return respVos;
     }
-//    /**
+    //    /**
 //     * 门店库存锁定
 //     *
 //     * @param vo
@@ -771,7 +771,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-        //增加库存(如果某些商品库存数据不存在,则需要新增一条数据,如果存在则需要增加存库数据)
+    //增加库存(如果某些商品库存数据不存在,则需要新增一条数据,如果存在则需要增加存库数据)
     public Integer saveStock(InboundReqVo reqVo) {
         //1,根据采购单的sku编码,公司编码,物流中心编码,库房编码查看该维度下的商品存在与否,不存在新增
         try {
