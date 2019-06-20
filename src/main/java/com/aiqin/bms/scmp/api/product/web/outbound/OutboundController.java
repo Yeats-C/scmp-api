@@ -32,7 +32,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@Api(description = "库房出库管理")
+@Api(tags = "库房出库管理")
 @RequestMapping("/product/outbound")
 public class OutboundController {
 
