@@ -18,7 +18,8 @@
     <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
     <result column="product_type" jdbcType="BIT" property="productType" />
     <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
-    <result column="product_unit" jdbcType="VARCHAR" property="productUnit" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unit_code" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unit_name" />
     <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
     <result column="product_count" jdbcType="INTEGER" property="productCount" />
     <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
@@ -52,7 +53,7 @@
   <sql id="Base_Column_List">
     id, reject_apply_record_detail_id,reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name,
     apply_record_status, sku_code, sku_name, product_id, category_id, category_name, 
-    brand_id, brand_name, product_type, product_spec, product_unit, stock_count, product_count, 
+    brand_id, brand_name, product_type, product_spec, unit_code,unit_name, stock_count, product_count, 
     tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name, 
     product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time, 
     settlement_method, supplier_code, supplier_name, province_id, province_name, city_id, 
@@ -91,11 +92,18 @@
     from reject_apply_record_detail
     GROUP BY settlement_method,supplier_code,warehouse_code,transport_center_code,purchase_group_code
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByRejectCode"   resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
+    reject_apply_record_detail_id,reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name,
+    apply_record_status, sku_code, sku_name, product_id, category_id, category_name,
+    brand_id, brand_name, product_type, product_spec, unit_code,unit_name, stock_count, product_count,
+    tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name,
+    product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time,
+    settlement_method, supplier_code, supplier_name, province_id, province_name, city_id,
+    city_name, district_id, district_name, address,
     from reject_apply_record_detail
-    where id = #{id,jdbcType=BIGINT}
+    where
+    reject_apply_record_code =  #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </select>
   <select id="listByCondition"   resultMap="BaseResultMap">
     select
@@ -115,7 +123,7 @@
       sku_code, sku_name, product_id, 
       category_id, category_name, brand_id, 
       brand_name, product_type, product_spec, 
-      product_unit, stock_count, product_count, 
+      unit_code, unit_name,stock_count, product_count,
       tax_rate, transport_center_code, transport_center_name, 
       warehouse_code, warehouse_name, product_amount, 
       product_total_amount, product_cost, batch_no, 
@@ -144,7 +152,8 @@
       #{item.brandName,jdbcType=VARCHAR},
       #{item.productType,jdbcType=BIT},
       #{item.productSpec,jdbcType=VARCHAR},
-      #{item.productUnit,jdbcType=VARCHAR},
+      #{item.unitCode,jdbcType=VARCHAR},
+      #{item.unitName,jdbcType=VARCHAR},
       #{item.stockCount,jdbcType=INTEGER},
       #{item.productCount,jdbcType=INTEGER},
       #{item.taxRate,jdbcType=INTEGER},
@@ -221,8 +230,8 @@
       <if test="productSpec != null">
         product_spec = #{productSpec,jdbcType=VARCHAR},
       </if>
-      <if test="productUnit != null">
-        product_unit = #{productUnit,jdbcType=VARCHAR},
+      <if test="unitCode != null">
+        unit_code = #{unitCode,jdbcType=VARCHAR},
       </if>
       <if test="stockCount != null">
         stock_count = #{stockCount,jdbcType=INTEGER},
@@ -330,7 +339,8 @@
       brand_name = #{brandName,jdbcType=VARCHAR},
       product_type = #{productType,jdbcType=BIT},
       product_spec = #{productSpec,jdbcType=VARCHAR},
-      product_unit = #{productUnit,jdbcType=VARCHAR},
+      unit_code = #{unitCode,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
       stock_count = #{stockCount,jdbcType=INTEGER},
       product_count = #{productCount,jdbcType=INTEGER},
       tax_rate = #{taxRate,jdbcType=INTEGER},
@@ -372,5 +382,9 @@
     <foreach collection="list" separator="," open="(" close=")" item="item">
       #{item,jdbcType=VARCHAR}
     </foreach>
+  </update>
+  <update id="deleteAll" parameterType="java.lang.String">
+    delete reject_apply_record_detail
+    where     reject_apply_record_code =  #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -74,9 +74,13 @@ public class RejectApplyRecordDetail {
     @JsonProperty("product_spec")
     private String productSpec;
 
-    @ApiModelProperty(value = "单位")
-    @JsonProperty("product_unit")
-    private String productUnit;
+    @ApiModelProperty(value="单位")
+    @JsonProperty("unit_code")
+    private String unitCode;
+
+    @ApiModelProperty(value="单位")
+    @JsonProperty("unit_name")
+    private String unitName;
 
     @ApiModelProperty(value = "库存数量")
     @JsonProperty("stock_count")

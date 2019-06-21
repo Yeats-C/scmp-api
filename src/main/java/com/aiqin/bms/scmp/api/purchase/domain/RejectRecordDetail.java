@@ -56,8 +56,12 @@ public class RejectRecordDetail {
     private String productSpec;
 
     @ApiModelProperty(value="单位")
-    @JsonProperty("product_unit")
-    private String productUnit;
+    @JsonProperty("unit_code")
+    private String unitCode;
+
+    @ApiModelProperty(value="单位")
+    @JsonProperty("unit_name")
+    private String unitName;
 
     @ApiModelProperty(value="税率")
     @JsonProperty("tax_rate")
@@ -211,12 +215,20 @@ public class RejectRecordDetail {
         this.productSpec = productSpec;
     }
 
-    public String getProductUnit() {
-        return productUnit;
+    public String getUnitCode() {
+        return unitCode;
     }
 
-    public void setProductUnit(String productUnit) {
-        this.productUnit = productUnit;
+    public void setUnitCode(String unitCode) {
+        this.unitCode = unitCode;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 
     public Integer getTaxRate() {

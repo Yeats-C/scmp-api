@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.RejectQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -75,9 +76,23 @@ public class GoodsRejectController {
     }
 
     @PostMapping("/apply")
-    @ApiOperation(value = "退供申请单增加/修改")
+    @ApiOperation(value = "退供申请单增加")
     public HttpResponse<List<RejectApplyRequest>> rejectApply(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
         return goodsRejectService.rejectApply(rejectApplyQueryRequest);
+    }
+
+    @PutMapping("/apply/{reject_apply_record_code}")
+    @ApiOperation(value = "退供申请单修改")
+    @ApiImplicitParam(name = "reject_apply_record_code", value = "退货申请单号", type = "String")
+    public HttpResponse<RejectApplyRequest> updateRejectApply(@PathVariable String reject_apply_record_code,@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+        rejectApplyQueryRequest.setRejectApplyRecordCode(reject_apply_record_code);
+        return goodsRejectService.updateRejectApply(rejectApplyQueryRequest);
+    }
+
+    @GetMapping("/apply/{reject_apply_record_code}")
+    @ApiOperation(value = "退供申请单查询")
+    public HttpResponse<RejectApplyResponse> selectRejectApply(@PathVariable String reject_apply_record_code) {
+        return goodsRejectService.selectRejectApply(reject_apply_record_code);
     }
 
     @PostMapping("/apply/import")
@@ -110,17 +125,35 @@ public class GoodsRejectController {
         return goodsRejectService.rejectList(rejectQueryRequest);
     }
 
-    @GetMapping("/record/{reject_record_code}")
+    @GetMapping("/record/{reject_record_id}")
     @ApiOperation(value = "查询退供单详情")
-    public HttpResponse<List<RejectApplyRequest>> rejectInfo(@PathVariable String reject_record_code ) {
-        return goodsRejectService.rejectInfo(reject_record_code);
+    @ApiImplicitParam(name = "reject_record_id", value = "退货单id", type = "String")
+    public HttpResponse<RejectResponse> rejectInfo(@PathVariable String reject_record_id ) {
+        return goodsRejectService.rejectInfo(reject_record_id);
     }
 
 
-    @PutMapping("/record/supplier/{reject_record_code}")
+    @PutMapping("/record/supplier/{reject_record_id}")
     @ApiOperation(value = "供应商确认")
-    public HttpResponse<List<RejectApplyRequest>> rejectSupplier(@PathVariable String reject_record_code) {
-        return goodsRejectService.rejectSupplier(reject_record_code);
+    @ApiImplicitParam(name = "reject_record_id", value = "退货单id", type = "String")
+    public HttpResponse rejectSupplier(@PathVariable String reject_record_id) {
+        return goodsRejectService.rejectSupplier(reject_record_id);
     }
+
+    @PutMapping("/record/transport/{reject_record_id}")
+    @ApiOperation(value = "退供发运")
+    @ApiImplicitParam(name = "reject_record_id", value = "退货单id", type = "String")
+    public HttpResponse rejectTransport(@PathVariable String reject_record_id,@RequestBody RejectRecord rejectRecord) {
+        rejectRecord.setRejectRecordId(reject_record_id);
+        return goodsRejectService.rejectTransport(rejectRecord);
+    }
+
+    @PutMapping("/record/transport/finish/{reject_record_id}")
+    @ApiOperation(value = "退供完成")
+    @ApiImplicitParam(name = "reject_record_id", value = "退货单id", type = "String")
+    public HttpResponse rejectTransportFinish(@PathVariable String reject_record_id) {
+        return goodsRejectService.rejectTransportFinish(reject_record_id);
+    }
+
 
 }

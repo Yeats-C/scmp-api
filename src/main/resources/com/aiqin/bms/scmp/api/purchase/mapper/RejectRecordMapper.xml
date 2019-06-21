@@ -26,6 +26,7 @@
     <result column="reject_status" jdbcType="BIT" property="rejectStatus" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="transport_remark" jdbcType="VARCHAR" property="transportRemark" />
+    <result column="transport_url" jdbcType="VARCHAR" property="transportUrl" />
     <result column="out_stock_time" jdbcType="TIMESTAMP" property="outStockTime" />
     <result column="sum_count" jdbcType="INTEGER" property="sumCount" />
     <result column="sum_amount" jdbcType="BIGINT" property="sumAmount" />
@@ -48,7 +49,7 @@
     id, reject_record_id, reject_record_code, duty_person, contacts_person, contacts_person_phone, 
     province_id, province_name, city_id, city_name, district_id, district_name, address, 
     expect_time, valid_day, dictionary_id, dictionary_name, supplier_code, supplier_name, 
-    purchase_group_code, purchase_group_name, reject_status, remark, transport_remark, 
+    purchase_group_code, purchase_group_name, reject_status, remark, transport_remark, transport_url,
     out_stock_time, sum_count, sum_amount, single_count, single_amount, return_count, 
     return_amount, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
     update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,
@@ -473,44 +474,17 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
+  <update id="updateStatus" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
     update reject_record
-    set reject_record_id = #{rejectRecordId,jdbcType=VARCHAR},
-      reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR},
-      duty_person = #{dutyPerson,jdbcType=VARCHAR},
-      contacts_person = #{contactsPerson,jdbcType=VARCHAR},
-      contacts_person_phone = #{contactsPersonPhone,jdbcType=VARCHAR},
-      province_id = #{provinceId,jdbcType=VARCHAR},
-      province_name = #{provinceName,jdbcType=VARCHAR},
-      city_id = #{cityId,jdbcType=VARCHAR},
-      city_name = #{cityName,jdbcType=VARCHAR},
-      district_id = #{districtId,jdbcType=VARCHAR},
-      district_name = #{districtName,jdbcType=VARCHAR},
-      address = #{address,jdbcType=VARCHAR},
-      expect_time = #{expectTime,jdbcType=TIMESTAMP},
-      valid_day = #{validDay,jdbcType=TIMESTAMP},
-      dictionary_id = #{dictionaryId,jdbcType=VARCHAR},
-      dictionary_name = #{dictionaryName,jdbcType=VARCHAR},
-      supplier_code = #{supplierCode,jdbcType=VARCHAR},
-      supplier_name = #{supplierName,jdbcType=VARCHAR},
-      purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
-      purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+    set
       reject_status = #{rejectStatus,jdbcType=BIT},
-      remark = #{remark,jdbcType=VARCHAR},
-      transport_remark = #{transportRemark,jdbcType=VARCHAR},
-      out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
-      sum_count = #{sumCount,jdbcType=INTEGER},
-      sum_amount = #{sumAmount,jdbcType=BIGINT},
-      single_count = #{singleCount,jdbcType=INTEGER},
-      single_amount = #{singleAmount,jdbcType=BIGINT},
-      return_count = #{returnCount,jdbcType=INTEGER},
-      return_amount = #{returnAmount,jdbcType=BIGINT},
-      create_by_id = #{createById,jdbcType=VARCHAR},
-      create_by_name = #{createByName,jdbcType=VARCHAR},
-      update_by_id = #{updateById,jdbcType=VARCHAR},
-      update_by_name = #{updateByName,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+      <if test="transportRemark != null">
+        transport_remark = #{transportRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="transportUrl != null">
+        transport_url = #{transportUrl,jdbcType=VARCHAR},
+      </if>
+      update_time =now()
+    where  reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
   </update>
 </mapper>

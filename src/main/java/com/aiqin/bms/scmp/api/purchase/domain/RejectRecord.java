@@ -106,6 +106,10 @@ public class RejectRecord {
     @JsonProperty("transport_remark")
     private String transportRemark;
 
+    @ApiModelProperty(value = "运输单图片")
+    @JsonProperty("transport_url")
+    private String transportUrl;
+
     @ApiModelProperty(value = "")
     @JsonProperty("out_stock_time")
     private Date outStockTime;
