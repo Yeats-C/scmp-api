@@ -1,5 +1,5 @@
 web:
-  host-url: http://scm.bms.aiqin.com
+  host-url: http://scmp.bms.aiqin.com
 center:
   main:
   #中控服务端

@@ -173,6 +173,11 @@ public interface ResultCode {
     MessageId SUBMIT_ERROR = MessageId.create(Project.PRODUCT_API, 74, "获取数据异常，提交失败");
 
     MessageId SKU_CONFIG_SUBMIT_ERROR =  MessageId.create(Project.PRODUCT_API, 74, "申请SKU配置数据保存异常！");
+    //价格
+    MessageId SAVE_PRICE_FAILED =MessageId.create(Project.PRODUCT_API, 96, "价格数据保存失败");
+    MessageId DELETE_SKU_PRICE_DRAFT_FAILED =MessageId.create(Project.PRODUCT_API, 96, "删除价格临时表数据失败") ;
+    MessageId PRICE_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.PRODUCT_API, 96, "价格数据不能为空");
+    MessageId SAVE_PRICE_LOG_FAILED = MessageId.create(Project.PRODUCT_API, 96, "保存价格日志失败");
 
     //变价
     MessageId DATA_ERROR =  MessageId.create(Project.PRODUCT_API, 98, "数据异常");
@@ -186,4 +191,7 @@ public interface ResultCode {
     MessageId CAN_NOT_FIND_ORDER = MessageId.create(Project.PURCHASE_API,99,"订单数据查询失败");
     MessageId UPDATE_ORDER_STATUS_FAILED = MessageId.create(Project.PURCHASE_API,99,"订单状态更新失败");
     MessageId LOG_SAVE_ERROR = MessageId.create(Project.PURCHASE_API,99,"订单日志保存失败");
+    //退货
+    MessageId save_return_order_item_failed = MessageId.create(Project.PURCHASE_API,100,"退货订单附表保存失败");
+    MessageId save_return_order_failed = MessageId.create(Project.PURCHASE_API,100,"退货订单主表保存失败");
 }

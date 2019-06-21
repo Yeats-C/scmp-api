@@ -25,28 +25,28 @@ public class QueryAllocationResVo extends PageReq {
     @ApiModelProperty("调拨单编号")
     private String allocationCode;
 
-    @ApiModelProperty("调出物流中心编号")
+    @ApiModelProperty("调出物流中心(仓库)编号")
     private String calloutLogisticsCenterCode;
 
-    @ApiModelProperty("调出物流中心名称")
+    @ApiModelProperty("调出物流中心(仓库)名称")
     private String calloutLogisticsCenterName;
 
-    @ApiModelProperty("调出仓库编码")
+    @ApiModelProperty("调出库房编码")
     private String calloutWarehouseCode;
 
-    @ApiModelProperty("调出仓库名称")
+    @ApiModelProperty("调出库房名称")
     private String calloutWarehouseName;
 
-    @ApiModelProperty("调入物流中心编码")
+    @ApiModelProperty("调入物流中心(仓库)编码")
     private String callinLogisticsCenterCode;
 
-    @ApiModelProperty("调入物流中心名称")
+    @ApiModelProperty("调入物流中心(仓库)名称")
     private String callinLogisticsCenterName;
 
-    @ApiModelProperty("调入仓库编码")
+    @ApiModelProperty("调入库房编码")
     private String callinWarehouseCode;
 
-    @ApiModelProperty("调入仓库名称")
+    @ApiModelProperty("调入库房名称")
     private String callinWarehouseName;
 
     @ApiModelProperty("数量")

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.returnsupply;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,4 +23,7 @@ public class ReturnSupplyToOutBoundReqVo {
 
     @ApiModelProperty("商品数据")
     List<ReturnSupplyItem> returnSupplyItems;
+
+    @ApiModelProperty("批次商品数据")
+    List<OutboundBatch> outboundBatches;
 }

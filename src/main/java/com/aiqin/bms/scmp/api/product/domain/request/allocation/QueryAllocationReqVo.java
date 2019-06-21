@@ -34,11 +34,16 @@ public class QueryAllocationReqVo extends PageReq {
     @ApiModelProperty("状态编码")
     private Byte allocationStatusCode;
 
-    @ApiModelProperty("调出物流中心名称")
+    @ApiModelProperty("调出(仓库)物流中心名称")
     private String calloutLogisticsCenterName;
+    @ApiModelProperty("调出(仓库)物流中心编码")
+    private String calloutLogisticsCenterCode;
 
-    @ApiModelProperty("调出仓库名称")
+    @ApiModelProperty("调出库房名称")
     private String calloutWarehouseName;
+
+    @ApiModelProperty("调出库房编码")
+    private String calloutWarehouseCode;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;

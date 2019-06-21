@@ -575,9 +575,9 @@
     select
     <include refid="Base_Column_List"/>
     from outbound
-    <where>
+    <where> 1=1
       <if test="companyCode != null">
-        company_code = #{companyCode, jdbcType=VARCHAR}
+        and company_code = #{companyCode, jdbcType=VARCHAR}
       </if>
       <if test="logisticsCenterCode != null">
         and logistics_center_code = #{logisticsCenterCode, jdbcType=VARCHAR}

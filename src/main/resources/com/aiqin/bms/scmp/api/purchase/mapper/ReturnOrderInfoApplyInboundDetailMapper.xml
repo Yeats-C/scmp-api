@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoApplyInboundDetailMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInboundDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="spec_code" jdbcType="VARCHAR" property="specCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="model_code" jdbcType="VARCHAR" property="modelCode" />
+    <result column="base_product_content" jdbcType="INTEGER" property="baseProductContent" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="zero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
+    <result column="give_promotion" jdbcType="INTEGER" property="givePromotion" />
+    <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="price" jdbcType="BIGINT" property="price" />
+    <result column="num" jdbcType="BIGINT" property="num" />
+    <result column="amount" jdbcType="BIGINT" property="amount" />
+    <result column="activity_code" jdbcType="VARCHAR" property="activityCode" />
+    <result column="product_line_num" jdbcType="BIGINT" property="productLineNum" />
+    <result column="promotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
+    <result column="original_line_num" jdbcType="INTEGER" property="originalLineNum" />
+    <result column="product_status" jdbcType="INTEGER" property="productStatus" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, code, sku_code, sku_name, picture_url, spec, spec_code, color_name, color_code, 
+    model, model_code, base_product_content, unit_code, unit_name, zero_disassembly_coefficient, 
+    give_promotion, batch_number, price, num, amount, activity_code, product_line_num, 
+    promotion_line_num, original_line_num, product_status, company_name, company_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from return_order_info_apply_inbound_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from return_order_info_apply_inbound_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInboundDetail">
+    insert into return_order_info_apply_inbound_detail (id, code, sku_code, 
+      sku_name, picture_url, spec, 
+      spec_code, color_name, color_code, 
+      model, model_code, base_product_content, 
+      unit_code, unit_name, zero_disassembly_coefficient, 
+      give_promotion, batch_number, price, 
+      num, amount, activity_code, 
+      product_line_num, promotion_line_num, original_line_num, 
+      product_status, company_name, company_code
+      )
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
+      #{skuName,jdbcType=VARCHAR}, #{pictureUrl,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, 
+      #{specCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR}, 
+      #{model,jdbcType=VARCHAR}, #{modelCode,jdbcType=VARCHAR}, #{baseProductContent,jdbcType=INTEGER}, 
+      #{unitCode,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, #{zeroDisassemblyCoefficient,jdbcType=INTEGER}, 
+      #{givePromotion,jdbcType=INTEGER}, #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=BIGINT}, 
+      #{num,jdbcType=BIGINT}, #{amount,jdbcType=BIGINT}, #{activityCode,jdbcType=VARCHAR}, 
+      #{productLineNum,jdbcType=BIGINT}, #{promotionLineNum,jdbcType=BIGINT}, #{originalLineNum,jdbcType=INTEGER}, 
+      #{productStatus,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInboundDetail">
+    insert into return_order_info_apply_inbound_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="skuName != null">
+        sku_name,
+      </if>
+      <if test="pictureUrl != null">
+        picture_url,
+      </if>
+      <if test="spec != null">
+        spec,
+      </if>
+      <if test="specCode != null">
+        spec_code,
+      </if>
+      <if test="colorName != null">
+        color_name,
+      </if>
+      <if test="colorCode != null">
+        color_code,
+      </if>
+      <if test="model != null">
+        model,
+      </if>
+      <if test="modelCode != null">
+        model_code,
+      </if>
+      <if test="baseProductContent != null">
+        base_product_content,
+      </if>
+      <if test="unitCode != null">
+        unit_code,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="zeroDisassemblyCoefficient != null">
+        zero_disassembly_coefficient,
+      </if>
+      <if test="givePromotion != null">
+        give_promotion,
+      </if>
+      <if test="batchNumber != null">
+        batch_number,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="activityCode != null">
+        activity_code,
+      </if>
+      <if test="productLineNum != null">
+        product_line_num,
+      </if>
+      <if test="promotionLineNum != null">
+        promotion_line_num,
+      </if>
+      <if test="originalLineNum != null">
+        original_line_num,
+      </if>
+      <if test="productStatus != null">
+        product_status,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureUrl != null">
+        #{pictureUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="spec != null">
+        #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="specCode != null">
+        #{specCode,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorCode != null">
+        #{colorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="modelCode != null">
+        #{modelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="baseProductContent != null">
+        #{baseProductContent,jdbcType=INTEGER},
+      </if>
+      <if test="unitCode != null">
+        #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="zeroDisassemblyCoefficient != null">
+        #{zeroDisassemblyCoefficient,jdbcType=INTEGER},
+      </if>
+      <if test="givePromotion != null">
+        #{givePromotion,jdbcType=INTEGER},
+      </if>
+      <if test="batchNumber != null">
+        #{batchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="activityCode != null">
+        #{activityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productLineNum != null">
+        #{productLineNum,jdbcType=BIGINT},
+      </if>
+      <if test="promotionLineNum != null">
+        #{promotionLineNum,jdbcType=BIGINT},
+      </if>
+      <if test="originalLineNum != null">
+        #{originalLineNum,jdbcType=INTEGER},
+      </if>
+      <if test="productStatus != null">
+        #{productStatus,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInboundDetail">
+    update return_order_info_apply_inbound_detail
+    <set>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="pictureUrl != null">
+        picture_url = #{pictureUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="spec != null">
+        spec = #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="specCode != null">
+        spec_code = #{specCode,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        color_name = #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorCode != null">
+        color_code = #{colorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="model != null">
+        model = #{model,jdbcType=VARCHAR},
+      </if>
+      <if test="modelCode != null">
+        model_code = #{modelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="baseProductContent != null">
+        base_product_content = #{baseProductContent,jdbcType=INTEGER},
+      </if>
+      <if test="unitCode != null">
+        unit_code = #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="zeroDisassemblyCoefficient != null">
+        zero_disassembly_coefficient = #{zeroDisassemblyCoefficient,jdbcType=INTEGER},
+      </if>
+      <if test="givePromotion != null">
+        give_promotion = #{givePromotion,jdbcType=INTEGER},
+      </if>
+      <if test="batchNumber != null">
+        batch_number = #{batchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=BIGINT},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=BIGINT},
+      </if>
+      <if test="amount != null">
+        amount = #{amount,jdbcType=BIGINT},
+      </if>
+      <if test="activityCode != null">
+        activity_code = #{activityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productLineNum != null">
+        product_line_num = #{productLineNum,jdbcType=BIGINT},
+      </if>
+      <if test="promotionLineNum != null">
+        promotion_line_num = #{promotionLineNum,jdbcType=BIGINT},
+      </if>
+      <if test="originalLineNum != null">
+        original_line_num = #{originalLineNum,jdbcType=INTEGER},
+      </if>
+      <if test="productStatus != null">
+        product_status = #{productStatus,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInboundDetail">
+    update return_order_info_apply_inbound_detail
+    set code = #{code,jdbcType=VARCHAR},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      sku_name = #{skuName,jdbcType=VARCHAR},
+      picture_url = #{pictureUrl,jdbcType=VARCHAR},
+      spec = #{spec,jdbcType=VARCHAR},
+      spec_code = #{specCode,jdbcType=VARCHAR},
+      color_name = #{colorName,jdbcType=VARCHAR},
+      color_code = #{colorCode,jdbcType=VARCHAR},
+      model = #{model,jdbcType=VARCHAR},
+      model_code = #{modelCode,jdbcType=VARCHAR},
+      base_product_content = #{baseProductContent,jdbcType=INTEGER},
+      unit_code = #{unitCode,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      zero_disassembly_coefficient = #{zeroDisassemblyCoefficient,jdbcType=INTEGER},
+      give_promotion = #{givePromotion,jdbcType=INTEGER},
+      batch_number = #{batchNumber,jdbcType=VARCHAR},
+      price = #{price,jdbcType=BIGINT},
+      num = #{num,jdbcType=BIGINT},
+      amount = #{amount,jdbcType=BIGINT},
+      activity_code = #{activityCode,jdbcType=VARCHAR},
+      product_line_num = #{productLineNum,jdbcType=BIGINT},
+      promotion_line_num = #{promotionLineNum,jdbcType=BIGINT},
+      original_line_num = #{originalLineNum,jdbcType=INTEGER},
+      product_status = #{productStatus,jdbcType=INTEGER},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

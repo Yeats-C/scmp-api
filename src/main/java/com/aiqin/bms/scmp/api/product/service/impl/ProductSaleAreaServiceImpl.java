@@ -27,8 +27,8 @@ import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
-import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
@@ -110,12 +110,19 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         request.setCreateTime(new Date());
         //数据本身验重
         validateRepeat(request);
+        //首先申请表中试是否有申请中的数据
+        if(Objects.nonNull(request.getOfficialCode())){
+           ApplyProductSkuSaleAreaMain apply =  applyProductSkuSaleAreaMainMapper.selectByOfficialCode(ApplyStatus.APPROVAL.getNumber().intValue(),request.getOfficialCode());
+           if(Objects.nonNull(apply)){
+               throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"已有发起修改的数据，无法保存！"));
+           }
+        }
         //判断草稿表中是否有这条数据
         List<String> skuCodes = request.getSkuList().stream().map(ProductSaleAreaReqVO::getSkuCode).distinct().collect(Collectors.toList());
         List<ProductSkuSaleAreaDraft> repeat = productSkuSaleAreaDraftMapper.selectBySkuCodes(skuCodes);
         //key:skuCode+供货渠道编码+供应商编码apper.selec
         Map<String, ProductSkuSaleAreaDraft> repeatMap = repeat.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""), Function.identity()));
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         request.getSkuList().forEach(o->{
             ProductSkuSaleAreaDraft draft = repeatMap.get(o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""));
            if(Objects.nonNull(draft)){
@@ -127,7 +134,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         }
         //判断申请表中是否有该条数据
         List<ApplyProductSkuSaleArea> applyRepeat = applyProductSkuSaleAreaMapper.selectBySkuCodes(skuCodes);
-        StringBuffer sb2 = new StringBuffer();
+        StringBuilder sb2 = new StringBuilder();
         //key:skuCode+供货渠道编码+供应商编码
         Map<String, ApplyProductSkuSaleArea> applyRepeatMap = applyRepeat.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""), Function.identity()));
         request.getSkuList().forEach(o->{
@@ -162,7 +169,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             if(Objects.isNull(o.getCategoriesSupplyChannelsCode())){
                 throw new BizException(ResultCode.DATA_NOT_COMPLETE);
             }
-            if(o.getCategoriesSupplyChannelsCode().equals(CommonConstant.SUPPLY_CHANNEL_TYPE_DIRECT_DELIVERY)){
+            if(CommonConstant.SUPPLY_CHANNEL_TYPE_DIRECT_DELIVERY.equals(o.getCategoriesSupplyChannelsCode())){
                 if(Objects.isNull(o.getDirectDeliverySupplierCode())){
                     throw new BizException(ResultCode.DATA_NOT_COMPLETE);
                 }
@@ -271,24 +278,14 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         }
         //主表数据
         List<ApplyProductSkuSaleAreaMain> temps = null;
-        try {
-            temps = BeanCopyUtils.copyList(dtos, ApplyProductSkuSaleAreaMain.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
-        }
+        temps = BeanCopyUtils.copyList(dtos, ApplyProductSkuSaleAreaMain.class);
         //附表数据
         List<ApplyProductSkuSaleAreaInfo> areaInfoList = null;
         List<ApplyProductSkuSaleAreaChannel> channelInfoList = null;
         List<ApplyProductSkuSaleArea> skuInfoList = null;
-        try {
-            areaInfoList = BeanCopyUtils.copyList(areaList, ApplyProductSkuSaleAreaInfo.class);
-            channelInfoList = BeanCopyUtils.copyList(channelList, ApplyProductSkuSaleAreaChannel.class);
-            skuInfoList = BeanCopyUtils.copyList(skuList, ApplyProductSkuSaleArea.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
-        }
+        areaInfoList = BeanCopyUtils.copyList(areaList, ApplyProductSkuSaleAreaInfo.class);
+        channelInfoList = BeanCopyUtils.copyList(channelList, ApplyProductSkuSaleAreaChannel.class);
+        skuInfoList = BeanCopyUtils.copyList(skuList, ApplyProductSkuSaleArea.class);
         EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SALE_AREA_CODE);
         String code = "SAA" + numberingType.getNumberingValue();
         String formNo = "SAA" + new IdSequenceUtils().nextId();

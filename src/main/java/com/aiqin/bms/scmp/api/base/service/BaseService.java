@@ -12,6 +12,14 @@ import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 public interface BaseService {
 
     AuthToken getUser();
+    /**
+     * 获取门店api前缀
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param path
+     * @return java.lang.String
+     */
+    String getStoreApiUrl(String path);
 
     /**
      * 调用审批接口

@@ -183,7 +183,7 @@ public interface StockService {
 
     String stockFlow(StockFlowRequest reqVo);
 
-    HttpResponse changeStock(StockChangeRequest stockChangeRequest) throws Exception;
+    HttpResponse changeStock(StockChangeRequest stockChangeRequest);
 
     boolean changeWayNum(StockWayNumRequest stockWayNumRequest) throws Exception;
 

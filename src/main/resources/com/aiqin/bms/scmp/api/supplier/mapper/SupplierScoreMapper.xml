@@ -69,7 +69,7 @@
       and a.supplier_name like CONCAT('%', #{supplierName,jdbcType=VARCHAR}, '%')
     </if>
     <if test="purchasingGroupCode != null  and purchasingGroupCode.length > 0">
-      and b,purchasing_group_code =  #{purchasingGroupCode,jdbcType=VARCHAR}
+      and b.purchasing_group_code =  #{purchasingGroupCode,jdbcType=VARCHAR}
     </if>
     <if test="purchasingGroupName != null  and purchasingGroupName.length > 0">
       and b.purchasing_group_name like CONCAT('%', #{purchasingGroupName,jdbcType=VARCHAR}, '%')

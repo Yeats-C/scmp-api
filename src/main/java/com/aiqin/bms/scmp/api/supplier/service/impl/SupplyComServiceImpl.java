@@ -249,7 +249,10 @@ public class SupplyComServiceImpl implements SupplyComService {
     public Integer updateStarScore(String supplierCode, BigDecimal starScore) {
         //根据供应商编号获取供应商综合评分
         SupplyCompany supplyCompany = supplyCompanyDao.detailByCode(supplierCode, null);
-        BigDecimal newStarScore = (starScore.add(supplyCompany.getStarScore())).divide(new BigDecimal(2),1,BigDecimal.ROUND_HALF_UP);
+        BigDecimal newStarScore = starScore;
+        if(null != supplyCompany && null != supplyCompany.getStarScore()){
+            newStarScore = (starScore.add(supplyCompany.getStarScore())).divide(new BigDecimal(2),1,BigDecimal.ROUND_HALF_UP);
+        }
         return supplyCompanyMapper.updateStarScore(supplierCode,newStarScore);
     }
 }
