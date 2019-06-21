@@ -4,13 +4,11 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.OrderInfoReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 
 import java.util.List;
 
@@ -125,4 +123,12 @@ public interface OrderService {
      * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO>
      */
     BasePage<QueryOrderProductListRespVO> orderProductList(QueryOrderProductListReqVO reqVO);
+    /**
+     * 商品唯一码
+     * @author NullPointException
+     * @date 2019/6/18
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO>
+     */
+    BasePage<QueryProductUniqueCodeListRespVO> productUniqueCodeList(QueryProductUniqueCodeListReqVO reqVO);
 }

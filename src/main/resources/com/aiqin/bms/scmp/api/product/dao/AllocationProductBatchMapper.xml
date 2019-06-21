@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper">
-  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="allocation_code" jdbcType="VARCHAR" property="allocationCode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -14,6 +14,8 @@
     <result column="unit" jdbcType="VARCHAR" property="unit" />
     <result column="classes" jdbcType="VARCHAR" property="classes" />
     <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="inventory_unit" jdbcType="VARCHAR" property="inventoryUnit" />
+    <result column="inventory" jdbcType="BIGINT" property="inventory" />
     <result column="tax" jdbcType="BIGINT" property="tax" />
     <result column="tax_price" jdbcType="BIGINT" property="taxPrice" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
@@ -25,32 +27,70 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl" />
     <result column="line_num" jdbcType="BIGINT" property="lineNum" />
+    <result column="callout_batch_number" jdbcType="VARCHAR" property="callOutBatchNumber" />
+    <result column="callin_batch_number" jdbcType="VARCHAR" property="callInBatchNumber" />
+    <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+
+  </resultMap>
+  <resultMap id="BaseResultOutboundSkuMap" type="com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductToOutboundVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="allocation_code" jdbcType="VARCHAR" property="allocationCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="specification" jdbcType="VARCHAR" property="specification" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="classes" jdbcType="VARCHAR" property="classes" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="inventory_unit" jdbcType="VARCHAR" property="inventoryUnit" />
+    <result column="inventory" jdbcType="BIGINT" property="inventory" />
+    <result column="tax" jdbcType="BIGINT" property="tax" />
+    <result column="tax_price" jdbcType="BIGINT" property="taxPrice" />
+    <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="tax_amount" jdbcType="BIGINT" property="taxAmount" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="product_picture_path" jdbcType="VARCHAR" property="pictureUrl" />
+    <result column="line_num" jdbcType="BIGINT" property="linenum" />
   </resultMap>
   <sql id="Base_Column_List">
     id, allocation_code, sku_code, sku_name, category, brand, color, specification, model, 
-    unit, classes, `type`, tax, tax_price, quantity, tax_amount,
-    del_flag, create_time, create_by, update_time, update_by, picture_url, line_num
+    unit, classes, `type`, inventory_unit, inventory, tax, tax_price, quantity, tax_amount,
+    del_flag, create_time, create_by, update_time, update_by, picture_url, line_num,
+    callout_batch_number,callin_batch_number,batch_number_remark,product_date
   </sql>
-
+  <sql id="Base_Column_OutBound_List">
+    a.id, a.allocation_code, a.sku_code, a.sku_name, a.category, a.brand, a.color, a.specification, a.model,
+   a.unit, classes, a.type, a.inventory_unit, a.inventory, a.tax, a.tax_price, a.quantity, a.tax_amount,
+    a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by, b.product_picture_path, a.line_num
+  </sql>
   <select id="selectByAllocationCode" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from allocation_product
+    from allocation_product_batch
     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from allocation_product
+    delete from allocation_product_batch
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="saveList" parameterType="java.util.List">
-    insert into allocation_product (id, allocation_code, sku_code, 
+    insert into allocation_product_batch (id, allocation_code, sku_code,
       sku_name, category, brand, 
       color, specification, model, 
       unit, classes, type,
       inventory_unit, inventory, tax, 
       tax_price, quantity, tax_amount, 
       del_flag, create_time, create_by, 
-      update_time, update_by, picture_url, line_num)
+      update_time, update_by, picture_url, line_num,
+      callout_batch_number,callin_batch_number,batch_number_remark,product_date)
     values
     <foreach collection="list" item="t" index= "index" separator =",">
       (#{t.id,jdbcType=BIGINT},
@@ -65,6 +105,8 @@
       #{t.unit,jdbcType=VARCHAR},
       #{t.classes,jdbcType=VARCHAR},
       #{t.type,jdbcType=VARCHAR},
+      #{t.inventoryUnit,jdbcType=VARCHAR},
+      #{t.inventory,jdbcType=BIGINT},
       #{t.tax,jdbcType=BIGINT},
       #{t.taxPrice,jdbcType=BIGINT},
       #{t.quantity,jdbcType=BIGINT},
@@ -75,12 +117,16 @@
       #{t.updateTime,jdbcType=TIMESTAMP},
       #{t.updateBy,jdbcType=VARCHAR},
       #{t.pictureUrl,jdbcType=VARCHAR},
-      #{t.lineNum,jdbcType=BIGINT}
+      #{t.lineNum,jdbcType=BIGINT},
+      #{t.callOutBatchNumber,jdbcType=VARCHAR},
+      #{t.callInBatchNumber,jdbcType=VARCHAR},
+      #{t.batchNumberRemark,jdbcType=VARCHAR},
+      #{t.productDate,jdbcType=VARCHAR},
       )
     </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct">
-    insert into allocation_product
+    insert into allocation_product_batch
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -156,6 +202,18 @@
       </if>
       <if test="lineNum != null">
         line_num,
+      </if>
+      <if test="callOutBatchNumber != null">
+        callout_batch_number,
+      </if>
+      <if test="callInBatchNumber != null">
+        callin_batch_number,
+      </if>
+      <if test="batchNumberRemark != null">
+        batch_number_remark,
+      </if>
+      <if test="productDate != null">
+        product_date,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -234,10 +292,25 @@
       <if test="lineNum != null">
         #{lineNum,jdbcType=BIGINT},
       </if>
+      <if test="callOutBatchNumber != null">
+        #{callOutBatchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="callInBatchNumber != null">
+        #{callInBatchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="batchProduct != null">
+        #{batchProduct,jdbcType=TINYINT},
+      </if>
+      <if test="batchNumberRemark != null">
+        #{batchNumberRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        #{productDate,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct">
-    update allocation_product
+    update allocation_product_batch
     <set>
       <if test="allocationCode != null">
         allocation_code = #{allocationCode,jdbcType=VARCHAR},
@@ -311,11 +384,23 @@
       <if test="lineNum != null">
         line_num = #{lineNum,jdbcType=BIGINT},
       </if>
+      <if test="callOutBatchNumber != null">
+        callout_batch_number = #{callOutBatchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="callInBatchNumber != null">
+        callin_batch_number =  #{callInBatchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNumberRemark != null">
+        batch_number_remark = #{batchNumberRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct">
-    update allocation_product
+    update allocation_product_batch
     set allocation_code = #{allocationCode,jdbcType=VARCHAR},
       sku_code = #{skuCode,jdbcType=VARCHAR},
       sku_name = #{skuName,jdbcType=VARCHAR},
@@ -339,7 +424,19 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
       picture_url = #{pictureUrl,jdbcType=VARCHAR},
-      line_num = #{lineNum,jdbcType=BIGINT}
+      line_num = #{lineNum,jdbcType=BIGINT},
+      callout_batch_number = #{callOutBatchNumber,jdbcType=VARCHAR},
+      callin_batch_number =  #{callInBatchNumber,jdbcType=VARCHAR},
+      batch_number_remark = #{batchNumberRemark,jdbcType=VARCHAR},
+      product_date = #{productDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectByPictureUrlAllocationCode" parameterType="java.lang.String" resultMap="BaseResultOutboundSkuMap">
+    select
+    <include refid="Base_Column_OutBound_List" />
+    from allocation_product_batch  a  left join   product_sku_pictures b
+    on a.sku_code = b.product_sku_code
+    where a.allocation_code = #{allocationCode,jdbcType=VARCHAR}
+      and b.main_picture=1
+  </select>
 </mapper>

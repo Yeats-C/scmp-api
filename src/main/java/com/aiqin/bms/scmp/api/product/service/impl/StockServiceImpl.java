@@ -1,18 +1,15 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.MsgStatus;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.WarehouseTypeCode;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.Save;
+import com.aiqin.bms.scmp.api.common.StockStatusEnum;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.dao.StockFlowDao;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.converter.InboundReqVo2InboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.PurchaseToStockConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockConverter;
@@ -40,8 +37,11 @@ import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -965,9 +965,9 @@ public class StockServiceImpl implements StockService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @Save
-    public HttpResponse changeStock(StockChangeRequest stockChangeRequest) throws Exception {
+    public HttpResponse changeStock(StockChangeRequest stockChangeRequest){
         if (CollectionUtils.isEmpty(stockChangeRequest.getStockVoRequests())) {
-            HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
+            return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
         }
         //查询需要做修改的库存数据
         List<Stock> stocks = stockDao.selectListByCodesAndSkuCode(stockChangeRequest.getStockVoRequests());

@@ -86,7 +86,7 @@ public class ManufacturerResVo {
     private String updateBy;
 
     @ApiModelProperty("制造商关联品牌")
-    private List<ManufacturerBrandResVo> resVoList;
+    private List<ManufacturerBrandResVo> list;
 
     @ApiModelProperty("操作日志")
     private List<LogData> logDataList;

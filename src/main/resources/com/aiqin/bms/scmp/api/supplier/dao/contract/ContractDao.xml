@@ -75,6 +75,9 @@
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
+    <if test="yearName != null and yearName != '' ">
+      and year_name LIKE  CONCAT('%',#{yearName},'%')
+    </if>
     order by create_time desc
   </select>
 

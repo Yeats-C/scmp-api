@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
+import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
@@ -21,7 +23,7 @@ import java.util.List;
  * @Version 1.0
  * @since 1.0
  */
-public interface AllocationService {
+public interface AllocationService extends BaseService {
 
 
     /**
@@ -67,6 +69,13 @@ public interface AllocationService {
      * @return
      */
     int saveList(List<AllocationProduct> record);
+
+    /**
+     * 批量插入调拨单sku批次
+     * @param record
+     * @return
+     */
+    int saveListBatch(List<AllocationProductBatch> record);
     /**
      * 有选择的更新调拨单实体
      * @param record
