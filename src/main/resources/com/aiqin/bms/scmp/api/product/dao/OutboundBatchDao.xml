@@ -30,7 +30,7 @@
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
 
-  <select id="countOutboundBatchInfoByOutboundOderCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="countOutboundBatchInfoByOutboundOderCode" parameterType="java.lang.String" resultType="java.lang.Integer">
     select count(1)
     from outbound_batch where outbound_oder_code = #{outboundOderCode, jdbcType=VARCHAR}
   </select>
