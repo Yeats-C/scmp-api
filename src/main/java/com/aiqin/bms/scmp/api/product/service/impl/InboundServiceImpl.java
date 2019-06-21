@@ -5,15 +5,13 @@ import com.aiqin.bms.scmp.api.common.AllocationEnum;
 import com.aiqin.bms.scmp.api.common.HandleTypeCoce;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
+import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
 import com.aiqin.bms.scmp.api.product.dao.MovementDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
-import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Movement;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
@@ -33,6 +31,7 @@ import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -73,7 +72,6 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     private SkuService skuService;
 
-
     @Autowired
     private UrlConfig urlConfig;
 
@@ -91,6 +89,9 @@ public class InboundServiceImpl implements InboundService {
 
     @Autowired
     private MovementDao movementDao;
+
+    @Autowired
+    private InboundBatchDao inboundBatchDao;
     /**
      * 分页查询以及列表搜索
      * @param vo
@@ -632,4 +633,17 @@ public class InboundServiceImpl implements InboundService {
             throw new GroundRuntimeException("调拨单更改入库状态失败");
         }
     }
+
+    @Override
+    public HttpResponse selectInboundBatchInfoByInboundOderCode(InboundBatch inboundBatch){
+        try{
+            List<InboundBatch> inboundBatchList = inboundBatchDao.selectInboundBatchInfoByInboundOderCode(inboundBatch);
+            int total = inboundBatchDao.countInboundBatchInfoByInboundOderCode(inboundBatch.getInboundOderCode());
+            return HttpResponse.success(new PageResData<>(total, inboundBatchList));
+        }catch (Exception e){
+            log.error("根据入库单号查询入库商品批次详情失败", e);
+            throw new GroundRuntimeException("根据入库单号查询入库商品批次详情失败");
+        }
+    }
+
 }

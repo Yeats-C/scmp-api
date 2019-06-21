@@ -109,5 +109,12 @@ public interface EncodingRuleType {
     String SKU_CONFIG_CODE = "SKU_CONFIG_CODE";
     String APPLY_SKU_CONFIG_CODE = "APPLY_SKU_CONFIG_CODE";
 
-
+    /**
+     * 退供单编码
+     */
+    String GOODS_REJECT_CODE = "GOODS_REJECT_CODE";
+    /**
+     * 退供申请单编码
+     */
+    String GOODS_REJECT_APPLY_CODE = "GOODS_REJECT_APPLY_CODE";
 }

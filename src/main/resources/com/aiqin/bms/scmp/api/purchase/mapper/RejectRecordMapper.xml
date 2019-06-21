@@ -39,6 +39,10 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, reject_record_id, reject_record_code, duty_person, contacts_person, contacts_person_phone, 
@@ -47,7 +51,33 @@
     purchase_group_code, purchase_group_name, reject_status, remark, transport_remark, 
     out_stock_time, sum_count, sum_amount, single_count, single_amount, return_count, 
     return_amount, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
-    update_time
+    update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,
+  </sql>
+  <sql id="LIST_QUERY">
+    <where>
+      <if test="rejectRecordCode!=null and rejectRecordCode!=''">
+        and reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+        and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="rejectStatus!=null ">
+        and reject_status = #{rejectStatus,jdbcType=VARCHAR}
+      </if>
+      <if test="beginTime!=null and finishTime!=null">
+        and create_time <![CDATA[ >=]]>  #{beginTime,jdbcType=VARCHAR}
+        and create_time <![CDATA[ <=]]>  #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode!=null ">
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode!=null ">
+        and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierCode!=null ">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+    </where>
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -55,12 +85,25 @@
     from reject_record
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="list" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from reject_record
+    <include refid="LIST_QUERY"/>
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="listCount" resultMap="BaseResultMap">
+    select
+     count(1)
+    from reject_record
+    <include refid="LIST_QUERY"/>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from reject_record
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
-    insert into reject_record (id, reject_record_id, reject_record_code, 
+    insert into reject_record (reject_record_id, reject_record_code,
       duty_person, contacts_person, contacts_person_phone, 
       province_id, province_name, city_id, 
       city_name, district_id, district_name, 
@@ -70,10 +113,9 @@
       reject_status, remark, transport_remark, 
       out_stock_time, sum_count, sum_amount, 
       single_count, single_amount, return_count, 
-      return_amount, create_by_id, create_by_name, 
-      update_by_id, update_by_name, create_time, 
-      update_time)
-    values (#{id,jdbcType=BIGINT}, #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR}, 
+      return_amount, create_by_id, create_by_name, transport_center_code,
+      transport_center_name, warehouse_code, warehouse_name,  create_time,  update_time)
+    values ( #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR},
       #{dutyPerson,jdbcType=VARCHAR}, #{contactsPerson,jdbcType=VARCHAR}, #{contactsPersonPhone,jdbcType=VARCHAR}, 
       #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=VARCHAR}, 
       #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, #{districtName,jdbcType=VARCHAR}, 
@@ -83,9 +125,10 @@
       #{rejectStatus,jdbcType=BIT}, #{remark,jdbcType=VARCHAR}, #{transportRemark,jdbcType=VARCHAR}, 
       #{outStockTime,jdbcType=TIMESTAMP}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT}, 
       #{singleCount,jdbcType=INTEGER}, #{singleAmount,jdbcType=BIGINT}, #{returnCount,jdbcType=INTEGER}, 
-      #{returnAmount,jdbcType=BIGINT}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, 
-      #{updateById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{returnAmount,jdbcType=BIGINT}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
+      #{transportCenterCode,jdbcType=VARCHAR},#{transportCenterName,jdbcType=VARCHAR},
+      #{warehouseCode,jdbcType=VARCHAR},#{warehouseName,jdbcType=VARCHAR},
+       now(),now())
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
     insert into reject_record

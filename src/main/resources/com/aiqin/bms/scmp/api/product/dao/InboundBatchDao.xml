@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.InboundBatchDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="inbound_batch_code" jdbcType="VARCHAR" property="inboundBatchCode" />
+    <result column="manufacture_time" jdbcType="TIMESTAMP" property="manufactureTime" />
+    <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
+    <result column="qty" jdbcType="BIGINT" property="qty" />
+    <result column="store_house_code" jdbcType="VARCHAR" property="storeHouseCode" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="line_num" jdbcType="BIGINT" property="linenum" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, inbound_oder_code, sku_code, sku_name, inbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
+    create_by, create_time, update_by, update_time,line_num
+  </sql>
+
+  <select id="selectInboundBatchInfoByInboundOderCode" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from inbound_batch where inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="countInboundBatchInfoByInboundOderCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(1)
+    from inbound_batch where inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
+  </select>
+</mapper>
