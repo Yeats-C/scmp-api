@@ -45,6 +45,9 @@ public class InboundProduct {
     @ApiModelProperty("入库规格")
     private String inboundNorms;
 
+    @ApiModelProperty("入库拆零系数")
+    private String inboundBaseUnit;
+
     @ApiModelProperty("入库基商品含量")
     private String inboundBaseContent;
 

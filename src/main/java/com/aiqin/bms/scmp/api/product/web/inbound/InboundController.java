@@ -113,7 +113,7 @@ public class InboundController {
 
     @ApiOperation("根据入库单号查询入库商品批次详情")
     @GetMapping("/getInfoByOderCode")
-    public HttpResponse selectInboundBatchInfoByInboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode,
+    public HttpResponse<InboundBatch> selectInboundBatchInfoByInboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode,
                                                                 @RequestParam(value = "page_size", required = false)Integer pageSize,
                                                                 @RequestParam(value = "page_no", required = false)Integer pageNo){
         return inboundService.selectInboundBatchInfoByInboundOderCode(new InboundBatch(inboundOderCode, pageSize, pageNo));
