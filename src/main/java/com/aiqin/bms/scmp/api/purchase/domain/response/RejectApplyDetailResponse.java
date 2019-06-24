@@ -47,6 +47,10 @@ public class RejectApplyDetailResponse {
     @JsonProperty("purchase_group_name")
     private String purchaseGroupName;
 
+    @ApiModelProperty(value = "条形码")
+    @JsonProperty("barcode")
+    private String barcode;
+
     @ApiModelProperty(value = "")
     @JsonProperty("sku_code")
     private String skuCode;

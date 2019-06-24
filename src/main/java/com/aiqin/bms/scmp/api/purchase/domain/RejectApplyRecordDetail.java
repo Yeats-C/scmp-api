@@ -38,6 +38,10 @@ public class RejectApplyRecordDetail {
     @JsonProperty("apply_record_status")
     private Integer applyRecordStatus;
 
+    @ApiModelProperty(value="条形码")
+    @JsonProperty("barcode")
+    private String barcode;
+
     @ApiModelProperty(value = "")
     @JsonProperty("sku_code")
     private String skuCode;

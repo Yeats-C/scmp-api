@@ -3,9 +3,12 @@ package com.aiqin.bms.scmp.api.purchase.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.util.Date;
 
 @ApiModel
+@Data
 public class RejectRecordDetail {
     @ApiModelProperty(value="")
     @JsonProperty("id")
@@ -22,6 +25,10 @@ public class RejectRecordDetail {
     @ApiModelProperty(value="")
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
+
+    @ApiModelProperty(value="条形码")
+    @JsonProperty("barcode")
+    private String barcode;
 
     @ApiModelProperty(value="")
     @JsonProperty("sku_code")
@@ -70,6 +77,10 @@ public class RejectRecordDetail {
     @ApiModelProperty(value="税率")
     @JsonProperty("tax_rate")
     private Integer taxRate;
+
+    @ApiModelProperty(value="商品数量")
+    @JsonProperty("product_count")
+    private Long productCount;
 
     @ApiModelProperty(value="含税单价")
     @JsonProperty("product_amount")

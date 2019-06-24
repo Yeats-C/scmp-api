@@ -9,6 +9,7 @@
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="apply_record_status" jdbcType="BIT" property="applyRecordStatus" />
+    <result column="barcode" jdbcType="VARCHAR" property="barcode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="product_id" jdbcType="VARCHAR" property="productId" />
@@ -53,7 +54,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, reject_apply_record_detail_id,reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name,
-    apply_record_status, sku_code, sku_name, product_id, category_id, category_name, 
+    apply_record_status,barcode, sku_code, sku_name, product_id, category_id, category_name,
     brand_id, brand_name, product_type, product_spec, unit_code,unit_name, stock_count, product_count, 
     tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name, 
     product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time, 
@@ -98,7 +99,7 @@
   <select id="selectByRejectCode"   resultMap="BaseResultMap">
     select
     reject_apply_record_detail_id,reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name,
-    apply_record_status, sku_code, sku_name, product_id, category_id, category_name,
+    apply_record_status,barcode, sku_code, sku_name, product_id, category_id, category_name,
     brand_id, brand_name, product_type, product_spec, unit_code,unit_name, stock_count, product_count,
     tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name,
     product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time,
@@ -122,8 +123,8 @@
   </select>
   <insert id="insertAll" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
     insert into reject_apply_record_detail ( reject_apply_record_detail_id, reject_apply_record_code, apply_type,
-      purchase_group_code, purchase_group_name, apply_record_status, 
-      sku_code, sku_name, product_id, 
+      purchase_group_code, purchase_group_name, apply_record_status,
+      barcode,sku_code, sku_name, product_id,
       category_id, category_name, brand_id, 
       brand_name, product_type, product_spec, 
       unit_code, unit_name,stock_count, product_count,
@@ -146,6 +147,7 @@
       #{item.purchaseGroupCode,jdbcType=VARCHAR},
       #{item.purchaseGroupName,jdbcType=VARCHAR},
       #{item.applyRecordStatus,jdbcType=BIT},
+      #{item.barcode,jdbcType=VARCHAR},
       #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR},
       #{item.productId,jdbcType=VARCHAR},

@@ -58,6 +58,10 @@
   </sql>
     <sql id="LIST_QUERY">
         <where>
+            purchase_group_code in
+            <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+                #{item.purchaseGroupCode,jdbcType=VARCHAR}
+            </foreach>
             <if test="rejectRecordCode!=null and rejectRecordCode!=''">
                 and reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
             </if>
