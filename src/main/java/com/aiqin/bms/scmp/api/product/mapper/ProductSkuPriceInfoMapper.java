@@ -50,8 +50,6 @@ public interface ProductSkuPriceInfoMapper {
      * 通过状态和时间查询
      * @author NullPointException
      * @date 2019/5/27
-     * @param i
-     * @param date
      * @return java.util.List<com.aiqin.mgs.product.api.domain.pojo.ProductSkuPriceInfo>
      */
     List<ProductSkuPriceInfoDTO> selectByPriceStatusAndDate();
@@ -87,4 +85,6 @@ public interface ProductSkuPriceInfoMapper {
      * @return com.aiqin.mgs.product.api.domain.response.price.ProductSkuPriceInfoRespVO
      */
     ProductSkuPriceInfoRespVO selectInfoByCode(String code);
+
+    Long selectPriceTax(@Param("skuCode") String skuCode, @Param("supplierCode") String supplierCode);
 }
