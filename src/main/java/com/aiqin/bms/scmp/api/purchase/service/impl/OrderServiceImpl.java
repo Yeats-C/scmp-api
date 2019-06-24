@@ -7,8 +7,10 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
+import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
@@ -16,6 +18,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespV
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemProductBatchMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
@@ -29,12 +32,14 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -54,6 +59,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private OrderInfoLogMapper orderInfoLogMapper;
     @Autowired
     private OutboundService outboundService;
+    @Autowired
+    private StockService stockService;
+    @Autowired
+    private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -84,15 +93,61 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         saveLog(logs);
         //异步调用库房接口推送订单信息
         OrderServiceImpl service = (OrderServiceImpl) AopContext.currentProxy();
-        service.sendOrderToOutBound(orders,orderItems);
+        service.lockBatchStock(orders,orderItems,service);
         return true;
     }
     @Async("myTaskAsyncPool")
     @Override
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRES_NEW)
-    public void sendOrderToOutBound(List<OrderInfo> orders, List<OrderInfoItem> orderItems) {
-        //TODO 调用库房接口
+    @Transactional(rollbackFor = Exception.class)
+    public void sendOrderToOutBound(List<OrderInfo> orders, List<OrderInfoItem> orderItems,List<OrderInfoItemProductBatch> list) {
+        //TODO 调用库房接口传入库单
 //        outboundService.save();
+    }
+
+    @Override
+    @Async("myTaskAsyncPool")
+    @Transactional(rollbackFor = Exception.class)
+    public void lockBatchStock(List<OrderInfo> orders, List<OrderInfoItem> orderItems,OrderServiceImpl service) {
+        //TODO 调用库存接口锁库
+        List<LockOrderItemBatchReqVO> vo = dealData(orders,orderItems);
+        List<OrderInfoItemProductBatch> list = stockService.lockBatchStock(vo);
+        saveLockBatch(list);
+        service.sendOrderToOutBound(orders,orderItems,list);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveLockBatch(List<OrderInfoItemProductBatch> list) {
+        if(CollectionUtils.isEmptyCollection(list)){
+            return;
+        }
+        int i = orderInfoItemProductBatchMapper.insertBatch(list);
+        if(i!=list.size()){
+            throw new BizException(ResultCode.SAVE_LOCK_BATCH_FAILED);
+        }
+    }
+    /**
+     * 拼装锁库数据
+     * @author NullPointException
+     * @date 2019/6/21
+     * @param orders
+     * @param orderItems
+     * @return void
+     */
+    private List<LockOrderItemBatchReqVO> dealData(List<OrderInfo> orders, List<OrderInfoItem> orderItems) {
+        Map<String, OrderInfo> collect = orders.stream().collect(Collectors.toMap(OrderInfo::getOrderCode, Function.identity()));
+        List<LockOrderItemBatchReqVO> vos = Lists.newArrayList();
+        for (OrderInfoItem orderItem : orderItems) {
+            LockOrderItemBatchReqVO copy = BeanCopyUtils.copy(orderItem, LockOrderItemBatchReqVO.class);
+            copy.setOriginalLineNum(orderItem.getProductLineNum());
+            copy.setProductLineNum(null);
+            copy.setTransportCenterCode(collect.get(orderItem.getOrderCode()).getTransportCenterCode());
+            copy.setTransportCenterName(collect.get(orderItem.getOrderCode()).getTransportCenterName());
+            copy.setWarehouseCode(collect.get(orderItem.getOrderCode()).getWarehouseCode());
+            copy.setWarehouseName(collect.get(orderItem.getOrderCode()).getWarehouseName());
+            vos.add(copy);
+        }
+        return vos;
     }
 
     @Override

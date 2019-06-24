@@ -132,7 +132,7 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
         if(Objects.isNull(respVO)){
             throw new BizException(ResultCode.QUERY_INSPECTION_DETAIL_ERROR);
         }
-        List<ReturnOrderInfoInspectionItemRespVO> inspectionItemRespVOS = BeanCopyUtils.copyList(respVO.getItemList(), ReturnOrderInfoInspectionItemRespVO.class);
+        List<ReturnOrderInfoInspectionItemRespVO> inspectionItemRespVO = BeanCopyUtils.copyList(respVO.getItemList(), ReturnOrderInfoInspectionItemRespVO.class);
         //根据仓编码查询下面的库
         List<WarehouseResVo> warehouse = warehouseService.getWarehouseByLogisticsCenterCode(respVO.getTransportCenterCode());
         if(CollectionUtils.isEmptyCollection(warehouse)){
@@ -140,8 +140,7 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
         }
         respVO.setWarehouseResVoList(warehouse);
         Map<Byte, WarehouseResVo> warehouseTypeMap = warehouse.stream().collect(Collectors.toMap(WarehouseResVo::getWarehouseTypeCode, Function.identity(), (k1, k2) -> k1));
-        Map<String, WarehouseResVo> warehouseCodeMap = warehouse.stream().collect(Collectors.toMap(WarehouseResVo::getWarehouseCode, Function.identity(), (k1, k2) -> k1));
-        for (ReturnOrderInfoInspectionItemRespVO o : inspectionItemRespVOS) {
+        for (ReturnOrderInfoInspectionItemRespVO o : inspectionItemRespVO) {
             o.setOriginalLineNum(o.getProductLineNum().intValue());
             o.setProductLineNum(null);
             //根据批次判断需要入哪个仓
@@ -150,16 +149,12 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
                 o.setWarehouseCode(warehouseTypeMap.get((byte) 1).getWarehouseCode());
             } else if (Objects.equals(CommonConstant.DEFECTIVE, o.getProductStatus())) {
                 o.setWarehouseCode(warehouseTypeMap.get((byte) 2).getWarehouseCode());
-                continue;
             } else {
                 throw new BizException(ResultCode.DATA_ERROR);
             }
-            if (Objects.isNull(o.getQualityAssuranceManagement())) {
-
-            }
 
         }
-        respVO.setInspectionItemList(inspectionItemRespVOS);
+        respVO.setInspectionItemList(inspectionItemRespVO);
         return respVO;
     }
 
