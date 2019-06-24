@@ -32,4 +32,10 @@ public class PurchaseGroupResVo {
 
     @ApiModelProperty("采购组专员")
     private List<PurchaseGroupBuyerResVo> groupBuyerResVos;
+
+    @ApiModelProperty("负责人编号")
+    private String responsiblePersonCode;
+
+    @ApiModelProperty("负责人名称")
+    private String responsiblePersonName;
 }
