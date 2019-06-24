@@ -29,7 +29,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
-@Api(value = "订单相关")
+@Api(description = "订单api")
 @RequestMapping("/order")
 public class OrderController {
 

@@ -29,7 +29,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
-@Api("退货相关")
+@Api(description = "退api")
 @RequestMapping("/returnGoods")
 public class ReturnGoodsController {
     @Autowired
