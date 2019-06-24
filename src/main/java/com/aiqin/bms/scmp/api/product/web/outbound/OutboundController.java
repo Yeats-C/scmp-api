@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.web.outbound;
 
+import com.aiqin.bms.scmp.api.product.dao.OutboundBatchDao;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -110,4 +112,12 @@ public class OutboundController {
 //            return HttpResponse.failure(ResultCode.OUTBOUND_SAVE_ERROR);
 //        }
 //    }
+
+    @ApiOperation("根据出库单号查询出库商品批次详情")
+    @GetMapping("/getInfoByOderCode")
+    public HttpResponse<OutboundBatch> selectOutboundBatchInfoByOutboundOderCode(@RequestParam(value = "outbound_oder_code")String outboundOderCode,
+                                                                  @RequestParam(value = "page_size", required = false)Integer pageSize,
+                                                                  @RequestParam(value = "page_no", required = false)Integer pageNo){
+        return outboundService.selectOutboundBatchInfoByOutboundOderCode(new OutboundBatch(outboundOderCode, pageSize, pageNo));
+    }
 }

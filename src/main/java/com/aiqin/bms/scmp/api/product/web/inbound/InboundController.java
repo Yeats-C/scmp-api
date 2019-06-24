@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.web.inbound;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -110,4 +111,11 @@ public class InboundController {
 //        }
 //    }
 
+    @ApiOperation("根据入库单号查询入库商品批次详情")
+    @GetMapping("/getInfoByOderCode")
+    public HttpResponse<InboundBatch> selectInboundBatchInfoByInboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode,
+                                                                @RequestParam(value = "page_size", required = false)Integer pageSize,
+                                                                @RequestParam(value = "page_no", required = false)Integer pageNo){
+        return inboundService.selectInboundBatchInfoByInboundOderCode(new InboundBatch(inboundOderCode, pageSize, pageNo));
+    }
 }
