@@ -14,6 +14,7 @@
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="outbound_norms" jdbcType="VARCHAR" property="outboundNorms" />
+    <result column="outbound_base_unit" jdbcType="VARCHAR" property="outboundBaseUnit" />
     <result column="outbound_base_content" jdbcType="VARCHAR" property="outboundBaseContent" />
     <result column="pre_outbound_num" jdbcType="BIGINT" property="preOutboundNum" />
     <result column="pre_outbound_main_num" jdbcType="BIGINT" property="preOutboundMainNum" />
@@ -41,7 +42,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, outbound_oder_code, sku_code, sku_name, picture_url, norms, color_name, color_code, 
-    model, unit_code, unit_name, outbound_norms, outbound_base_content, pre_outbound_num, 
+    model, unit_code, unit_name, outbound_norms, outbound_base_unit, outbound_base_content, pre_outbound_num,
     pre_outbound_main_num, pre_tax_purchase_amount, pre_tax_amount, pra_outbound_num, 
     pra_outbound_main_num, pra_tax_purchase_amount, pra_tax_amount, create_by, create_time, 
     update_by, update_time,linenum
@@ -60,6 +61,7 @@
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="outbound_norms" jdbcType="VARCHAR" property="outboundNorms" />
+    <result column="outbound_base_unit" jdbcType="VARCHAR" property="outboundBaseUnit" />
     <result column="outbound_base_content" jdbcType="VARCHAR" property="outboundBaseContent" />
     <result column="pre_outbound_num" jdbcType="BIGINT" property="preOutboundNum" />
     <result column="pre_outbound_main_num" jdbcType="BIGINT" property="preOutboundMainNum" />
@@ -79,7 +81,7 @@
   </resultMap>
   <sql id="Base_Column_ReturnOutboundProduct">
     a.id, a.outbound_oder_code, a.sku_code, a.sku_name, a.picture_url, a.norms, a.color_name, a.color_code,
-    a.model, a.unit_code, a.unit_name, a.outbound_norms, a.outbound_base_content, a.pre_outbound_num,
+    a.model, a.unit_code, a.unit_name, a.outbound_norms, a.outbound_base_unit, a.outbound_base_content, a.pre_outbound_num,
     a.pre_outbound_main_num, a.pre_tax_purchase_amount, a.pre_tax_amount, a.pra_outbound_num,
     a.pra_outbound_main_num, a.pra_tax_purchase_amount, a.pra_tax_amount, a.create_by, a.create_time,
     a.update_by, a.update_time,a.linenum,b.output_tax_rate,b.Input_tax_rate

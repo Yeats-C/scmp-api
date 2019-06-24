@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
@@ -10,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.QueryInboundResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderMainReqVOReturn;
 import com.aiqin.bms.scmp.api.product.service.impl.InboundServiceImpl;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -117,4 +119,6 @@ public interface InboundService {
      * @param allocationCode
      */
     void inBoundReturnMovement(String allocationCode);
+
+    HttpResponse selectInboundBatchInfoByInboundOderCode(InboundBatch inboundBatch);
 }

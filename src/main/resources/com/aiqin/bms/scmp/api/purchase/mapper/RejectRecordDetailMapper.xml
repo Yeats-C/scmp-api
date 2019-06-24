@@ -47,27 +47,44 @@
     delete from reject_record_detail
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail">
-    insert into reject_record_detail (id, reject_record_id, reject_record_code, 
+  <insert id="insertAll"  >
+    insert into reject_record_detail ( reject_record_id, reject_record_code,
       sku_code, sku_name, product_id, 
       category_id, category_name, brand_id, 
       brand_name, product_type, product_spec, 
       product_unit, tax_rate, product_amount, 
       product_total_amount, actual_count, actual_amount, 
       batch_no, batch_remark, batch_create_time, 
-      create_by_id, create_by_name, update_by_id, 
-      update_by_name, create_time, update_time
+      create_by_id, create_by_name,  create_time, update_time
       )
-    values (#{id,jdbcType=BIGINT}, #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR}, 
-      #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, 
-      #{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, #{brandId,jdbcType=VARCHAR}, 
-      #{brandName,jdbcType=VARCHAR}, #{productType,jdbcType=BIT}, #{productSpec,jdbcType=VARCHAR}, 
-      #{productUnit,jdbcType=VARCHAR}, #{taxRate,jdbcType=INTEGER}, #{productAmount,jdbcType=BIGINT}, 
-      #{productTotalAmount,jdbcType=BIGINT}, #{actualCount,jdbcType=INTEGER}, #{actualAmount,jdbcType=BIGINT}, 
-      #{batchNo,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, #{batchCreateTime,jdbcType=TIMESTAMP}, 
-      #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
-      #{updateByName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+    values
+    <foreach collection="list" separator="," item="item">
+    (
+      #{rejectRecordId,jdbcType=VARCHAR},
+      #{rejectRecordCode,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR},
+      #{item.productId,jdbcType=VARCHAR},
+      #{item.categoryId,jdbcType=VARCHAR},
+      #{item.categoryName,jdbcType=VARCHAR},
+      #{item.brandId,jdbcType=VARCHAR},
+      #{item.brandName,jdbcType=VARCHAR},
+      #{item.productType,jdbcType=BIT},
+      #{item.productSpec,jdbcType=VARCHAR},
+      #{item.productUnit,jdbcType=VARCHAR},
+      #{item.taxRate,jdbcType=INTEGER},
+      #{item.productAmount,jdbcType=BIGINT},
+      #{item.productTotalAmount,jdbcType=BIGINT},
+      #{item.actualCount,jdbcType=INTEGER},
+      #{item.actualAmount,jdbcType=BIGINT},
+      #{item.batchNo,jdbcType=VARCHAR},
+      #{item.batchRemark,jdbcType=VARCHAR},
+      #{item.batchCreateTime,jdbcType=TIMESTAMP},
+      #{createById,jdbcType=VARCHAR},
+      #{createByName,jdbcType=VARCHAR},
+      now(),now()
       )
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail">
     insert into reject_record_detail

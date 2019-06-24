@@ -2,10 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.product.dao.MovementDao;
-import com.aiqin.bms.scmp.api.product.dao.MovementProductDao;
-import com.aiqin.bms.scmp.api.product.dao.OutboundDao;
-import com.aiqin.bms.scmp.api.product.dao.OutboundProductDao;
+import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2InboundReqVoConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.MovementResVo2InboundReqVoConverter;
@@ -98,7 +95,6 @@ public class OutboundServiceImpl implements OutboundService {
     @Autowired
     private AllocationMapper allocationMapper;
 
-
     @Autowired
     private AllocationProductBatchMapper allocationProductBatchMapper;
     @Autowired
@@ -109,6 +105,9 @@ public class OutboundServiceImpl implements OutboundService {
 
     @Autowired
     private MovementProductDao  movementProductDao;
+
+    @Autowired
+    private OutboundBatchDao outboundBatchDao;
     /**
      * 分页查询以及搜索
      * @param vo
@@ -210,7 +209,7 @@ public class OutboundServiceImpl implements OutboundService {
 
             int j = outboundProductDao.insertBatch(outboundProducts);
             //更新编码
-            encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
+            encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
 
             // 保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy());
@@ -468,7 +467,7 @@ public class OutboundServiceImpl implements OutboundService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        log.info(" 出库单回传实体为 ：[{}]"+reqVo);
+        log.info(" 出库单回传实体为 ：[{}]" + reqVo);
         try{ // 根据入库单编号查询旧的入库单主体
 
             Outbound outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
@@ -587,7 +586,7 @@ public class OutboundServiceImpl implements OutboundService {
         }
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
         List<OutboundProduct>list = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
-        productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),id,HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy());
+        productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy());
 
 
         //如果是订单
@@ -795,56 +794,67 @@ public class OutboundServiceImpl implements OutboundService {
     @Override
     public void movementCreateInbound(Long id) {
         try {
-        MovementResVo allocationResVo =  new MovementResVo();
-        Movement allocation = movementDao.selectByPrimaryKey(id);
-        BeanCopyUtils.copy(allocation,allocationResVo);
-        productCommonService.getInstance(allocation.getMovementCode()+"", HandleTypeCoce.INBOUND_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),id ,HandleTypeCoce.INBOUND_MOVEMENT.getName());
+            MovementResVo allocationResVo =  new MovementResVo();
+            Movement allocation = movementDao.selectByPrimaryKey(id);
+            BeanCopyUtils.copy(allocation,allocationResVo);
+            productCommonService.getInstance(allocation.getMovementCode()+"", HandleTypeCoce.INBOUND_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),id ,HandleTypeCoce.INBOUND_MOVEMENT.getName());
 
-        List<MovementProduct> list = movementProductDao.selectDetailByCode(allocation.getMovementCode());
-            allocationResVo.setList(BeanCopyUtils.copyList(list,MovementProductResVo.class));
+            List<MovementProduct> list = movementProductDao.selectDetailByCode(allocation.getMovementCode());
+                allocationResVo.setList(BeanCopyUtils.copyList(list, MovementProductResVo.class));
 
-        // 转化成出库单
-        InboundReqSave convert =  new MovementResVo2InboundReqVoConverter(supplierApiService).convert(allocationResVo);
-        String inboundOderCode = inboundService.saveInbound(convert);
-        //更改调拨在途数
+            // 转化成出库单
+            InboundReqSave convert =  new MovementResVo2InboundReqVoConverter(supplierApiService).convert(allocationResVo);
+            String inboundOderCode = inboundService.saveInbound(convert);
+            //更改调拨在途数
 
-        StockChangeRequest stockChangeRequest = new StockChangeRequest();
-        stockChangeRequest.setOperationType(7);
-        stockChangeRequest.setOrderCode(allocation.getMovementCode());
-        // stockChangeRequest.setOrderType();
-        List<StockVoRequest> list1 = new ArrayList<>();
-        for (MovementProductResVo allocationProduct : allocationResVo.getList()) {
-            StockVoRequest  stockVoRequest = new StockVoRequest();
-            stockVoRequest.setCompanyCode(allocation.getCompanyCode());
-            stockVoRequest.setCompanyName(allocation.getCompanyName());
-            stockVoRequest.setTransportCenterCode(allocation.getLogisticsCenterCode());
-            stockVoRequest.setTransportCenterName(allocation.getLogisticsCenterName());
-            stockVoRequest.setWarehouseCode(allocation.getCallinWarehouseCode());
-            stockVoRequest.setWarehouseName(allocation.getCallinWarehouseName());
-            stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
-            stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
-            stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
-            stockVoRequest.setSkuName(allocationProduct.getSkuName());
-            stockVoRequest.setChangeNum(allocationProduct.getQuantity());
-            list1.add(stockVoRequest);
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            stockChangeRequest.setOperationType(7);
+            stockChangeRequest.setOrderCode(allocation.getMovementCode());
+            // stockChangeRequest.setOrderType();
+            List<StockVoRequest> list1 = new ArrayList<>();
+            for (MovementProductResVo allocationProduct : allocationResVo.getList()) {
+                StockVoRequest  stockVoRequest = new StockVoRequest();
+                stockVoRequest.setCompanyCode(allocation.getCompanyCode());
+                stockVoRequest.setCompanyName(allocation.getCompanyName());
+                stockVoRequest.setTransportCenterCode(allocation.getLogisticsCenterCode());
+                stockVoRequest.setTransportCenterName(allocation.getLogisticsCenterName());
+                stockVoRequest.setWarehouseCode(allocation.getCallinWarehouseCode());
+                stockVoRequest.setWarehouseName(allocation.getCallinWarehouseName());
+                stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
+                stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
+                stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
+                stockVoRequest.setSkuName(allocationProduct.getSkuName());
+                stockVoRequest.setChangeNum(allocationProduct.getQuantity());
+                list1.add(stockVoRequest);
+            }
+            stockChangeRequest.setStockVoRequests(list1);
+            // 调用锁定库存数
+            HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
+            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
+
+            }else{
+                log.error(httpResponse.getMessage());
+                throw  new GroundRuntimeException("库存操作失败");
+            }
+            allocation.setInboundOderCode(inboundOderCode);
+            allocation.setMovementStatusCode(AllocationEnum.ALLOCATION_TYPE_INBOUND.getStatus());
+            allocation.setMovementStatusName(AllocationEnum.ALLOCATION_TYPE_INBOUND.getName());
+            movementDao.updateByPrimaryKeySelective(allocation);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new GroundRuntimeException("保存出库单失败");
         }
-        stockChangeRequest.setStockVoRequests(list1);
-        // 调用锁定库存数
-        HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
-        if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
-
-        }else{
-            log.error(httpResponse.getMessage());
-            throw  new GroundRuntimeException("库存操作失败");
-        }
-        allocation.setInboundOderCode(inboundOderCode);
-        allocation.setMovementStatusCode(AllocationEnum.ALLOCATION_TYPE_INBOUND.getStatus());
-        allocation.setMovementStatusName(AllocationEnum.ALLOCATION_TYPE_INBOUND.getName());
-        movementDao.updateByPrimaryKeySelective(allocation);
-    } catch (Exception e) {
-        e.printStackTrace();
-        throw  new GroundRuntimeException("保存出库单失败");
     }
-
+    
+    @Override
+    public HttpResponse selectOutboundBatchInfoByOutboundOderCode(OutboundBatch outboundBatch){
+        try{
+            List<OutboundBatch> outboundBatchList = outboundBatchDao.selectOutboundBatchInfoByOutboundOderCode(outboundBatch);
+            Integer total = outboundBatchDao.countOutboundBatchInfoByOutboundOderCode(outboundBatch.getOutboundOderCode());
+            return HttpResponse.success(new PageResData<>(total, outboundBatchList));
+        }catch (Exception e){
+            log.error("根据出库单号查询出库商品批次详情失败", e);
+            throw new GroundRuntimeException("根据出库单号查询出库商品批次详情失败");
+        }
     }
 }

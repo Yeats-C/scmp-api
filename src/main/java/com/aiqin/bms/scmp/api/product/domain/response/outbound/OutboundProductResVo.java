@@ -52,6 +52,9 @@ public class OutboundProductResVo {
     @ApiModelProperty("出库规格")
     private String outboundNorms;
 
+    @ApiModelProperty("出库拆零系数")
+    private String outboundBaseUnit;
+
     @ApiModelProperty("出库基商品含量")
     private String outboundBaseContent;
 

@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="reject_apply_record_code" jdbcType="VARCHAR" property="rejectApplyRecordCode" />
+    <result column="reject_apply_record_detail_id" jdbcType="VARCHAR" property="rejectApplyRecordDetailId" />
     <result column="apply_type" jdbcType="BIT" property="applyType" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
@@ -49,7 +50,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name, 
+    id, reject_apply_record_detail_id,reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name,
     apply_record_status, sku_code, sku_name, product_id, category_id, category_name, 
     brand_id, brand_name, product_type, product_spec, product_unit, stock_count, product_count, 
     tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name, 
@@ -58,18 +59,58 @@
     city_name, district_id, district_name, address, create_by_id, create_by_name, update_by_id, 
     update_by_name, create_time, update_time
   </sql>
+  <resultMap id="ResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse">
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="sum_count" jdbcType="INTEGER" property="sumCount" />
+    <result column="single_count" jdbcType="INTEGER" property="singleCount" />
+    <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
+    <result column="settlement_method" jdbcType="VARCHAR" property="settlementMethod" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+  </resultMap>
+  <select id="listForRejectRecord" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest" resultMap="ResultMap">
+    select
+      settlement_method,
+      supplier_code,
+      supplier_name,
+      warehouse_code,
+      warehouse_name,
+      transport_center_code,
+      transport_center_name,
+      purchase_group_code ,
+      purchase_group_name ,
+      sum(product_count) as sum_count,
+      sum(product_count) as single_count,
+      sum(product_total_amount) as sum_amount,
+      sum(product_total_amount) as single_amount
+    from reject_apply_record_detail
+    GROUP BY settlement_method,supplier_code,warehouse_code,transport_center_code,purchase_group_code
+  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from reject_apply_record_detail
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from reject_apply_record_detail
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
-    insert into reject_apply_record_detail (id, reject_apply_record_code, apply_type, 
+  <select id="listByCondition"   resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from reject_apply_record_detail
+    where
+        apply_record_status =  1
+    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and settlement_method = #{settlementMethod,jdbcType=VARCHAR}
+    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+  </select>
+  <insert id="insertAll" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
+    insert into reject_apply_record_detail ( reject_apply_record_detail_id, reject_apply_record_code, apply_type,
       purchase_group_code, purchase_group_name, apply_record_status, 
       sku_code, sku_name, product_id, 
       category_id, category_name, brand_id, 
@@ -85,299 +126,55 @@
       create_by_id, create_by_name, update_by_id, 
       update_by_name, create_time, update_time
       )
-    values (#{id,jdbcType=BIGINT}, #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{applyType,jdbcType=BIT}, 
-      #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{applyRecordStatus,jdbcType=BIT}, 
-      #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{productId,jdbcType=VARCHAR}, 
-      #{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, #{brandId,jdbcType=VARCHAR}, 
-      #{brandName,jdbcType=VARCHAR}, #{productType,jdbcType=BIT}, #{productSpec,jdbcType=VARCHAR}, 
-      #{productUnit,jdbcType=VARCHAR}, #{stockCount,jdbcType=INTEGER}, #{productCount,jdbcType=INTEGER}, 
-      #{taxRate,jdbcType=INTEGER}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
-      #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{productAmount,jdbcType=BIGINT}, 
-      #{productTotalAmount,jdbcType=BIGINT}, #{productCost,jdbcType=BIGINT}, #{batchNo,jdbcType=VARCHAR}, 
-      #{batchRemark,jdbcType=VARCHAR}, #{batchCreateTime,jdbcType=TIMESTAMP}, #{settlementMethod,jdbcType=VARCHAR}, 
-      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, 
-      #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, 
-      #{districtId,jdbcType=VARCHAR}, #{districtName,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
-      #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
-      #{updateByName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+    values
+    <foreach collection="list" separator="," item="item">
+      (
+      #{item.rejectApplyRecordDetailId,jdbcType=VARCHAR},
+      #{item.rejectApplyRecordCode,jdbcType=VARCHAR},
+      #{item.applyType,jdbcType=BIT},
+      #{item.purchaseGroupCode,jdbcType=VARCHAR},
+      #{item.purchaseGroupName,jdbcType=VARCHAR},
+      #{item.applyRecordStatus,jdbcType=BIT},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR},
+      #{item.productId,jdbcType=VARCHAR},
+      #{item.categoryId,jdbcType=VARCHAR},
+      #{item.categoryName,jdbcType=VARCHAR},
+      #{item.brandId,jdbcType=VARCHAR},
+      #{item.brandName,jdbcType=VARCHAR},
+      #{item.productType,jdbcType=BIT},
+      #{item.productSpec,jdbcType=VARCHAR},
+      #{item.productUnit,jdbcType=VARCHAR},
+      #{item.stockCount,jdbcType=INTEGER},
+      #{item.productCount,jdbcType=INTEGER},
+      #{item.taxRate,jdbcType=INTEGER},
+      #{item.transportCenterCode,jdbcType=VARCHAR},
+      #{item.transportCenterName,jdbcType=VARCHAR},
+      #{item.warehouseCode,jdbcType=VARCHAR},
+      #{item.warehouseName,jdbcType=VARCHAR},
+      #{item.productAmount,jdbcType=BIGINT},
+      #{item.productTotalAmount,jdbcType=BIGINT},
+      #{item.productCost,jdbcType=BIGINT},
+      #{item.batchNo,jdbcType=VARCHAR},
+      #{item.batchRemark,jdbcType=VARCHAR},
+      #{item.batchCreateTime,jdbcType=TIMESTAMP},
+      #{item.settlementMethod,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR},
+      #{item.supplierName,jdbcType=VARCHAR},
+      #{item.provinceId,jdbcType=VARCHAR},
+      #{item.provinceName,jdbcType=VARCHAR},
+      #{item.cityId,jdbcType=VARCHAR},
+      #{item.cityName,jdbcType=VARCHAR},
+      #{item.districtId,jdbcType=VARCHAR},
+      #{item.districtName,jdbcType=VARCHAR},
+      #{item.address,jdbcType=VARCHAR},
+      #{item.createById,jdbcType=VARCHAR},
+      #{item.createByName,jdbcType=VARCHAR},
+      #{item.updateById,jdbcType=VARCHAR},
+      #{item.updateByName,jdbcType=VARCHAR},
+      now(),now()
       )
-  </insert>
-  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
-    insert into reject_apply_record_detail
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="rejectApplyRecordCode != null">
-        reject_apply_record_code,
-      </if>
-      <if test="applyType != null">
-        apply_type,
-      </if>
-      <if test="purchaseGroupCode != null">
-        purchase_group_code,
-      </if>
-      <if test="purchaseGroupName != null">
-        purchase_group_name,
-      </if>
-      <if test="applyRecordStatus != null">
-        apply_record_status,
-      </if>
-      <if test="skuCode != null">
-        sku_code,
-      </if>
-      <if test="skuName != null">
-        sku_name,
-      </if>
-      <if test="productId != null">
-        product_id,
-      </if>
-      <if test="categoryId != null">
-        category_id,
-      </if>
-      <if test="categoryName != null">
-        category_name,
-      </if>
-      <if test="brandId != null">
-        brand_id,
-      </if>
-      <if test="brandName != null">
-        brand_name,
-      </if>
-      <if test="productType != null">
-        product_type,
-      </if>
-      <if test="productSpec != null">
-        product_spec,
-      </if>
-      <if test="productUnit != null">
-        product_unit,
-      </if>
-      <if test="stockCount != null">
-        stock_count,
-      </if>
-      <if test="productCount != null">
-        product_count,
-      </if>
-      <if test="taxRate != null">
-        tax_rate,
-      </if>
-      <if test="transportCenterCode != null">
-        transport_center_code,
-      </if>
-      <if test="transportCenterName != null">
-        transport_center_name,
-      </if>
-      <if test="warehouseCode != null">
-        warehouse_code,
-      </if>
-      <if test="warehouseName != null">
-        warehouse_name,
-      </if>
-      <if test="productAmount != null">
-        product_amount,
-      </if>
-      <if test="productTotalAmount != null">
-        product_total_amount,
-      </if>
-      <if test="productCost != null">
-        product_cost,
-      </if>
-      <if test="batchNo != null">
-        batch_no,
-      </if>
-      <if test="batchRemark != null">
-        batch_remark,
-      </if>
-      <if test="batchCreateTime != null">
-        batch_create_time,
-      </if>
-      <if test="settlementMethod != null">
-        settlement_method,
-      </if>
-      <if test="supplierCode != null">
-        supplier_code,
-      </if>
-      <if test="supplierName != null">
-        supplier_name,
-      </if>
-      <if test="provinceId != null">
-        province_id,
-      </if>
-      <if test="provinceName != null">
-        province_name,
-      </if>
-      <if test="cityId != null">
-        city_id,
-      </if>
-      <if test="cityName != null">
-        city_name,
-      </if>
-      <if test="districtId != null">
-        district_id,
-      </if>
-      <if test="districtName != null">
-        district_name,
-      </if>
-      <if test="address != null">
-        address,
-      </if>
-      <if test="createById != null">
-        create_by_id,
-      </if>
-      <if test="createByName != null">
-        create_by_name,
-      </if>
-      <if test="updateById != null">
-        update_by_id,
-      </if>
-      <if test="updateByName != null">
-        update_by_name,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="rejectApplyRecordCode != null">
-        #{rejectApplyRecordCode,jdbcType=VARCHAR},
-      </if>
-      <if test="applyType != null">
-        #{applyType,jdbcType=BIT},
-      </if>
-      <if test="purchaseGroupCode != null">
-        #{purchaseGroupCode,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseGroupName != null">
-        #{purchaseGroupName,jdbcType=VARCHAR},
-      </if>
-      <if test="applyRecordStatus != null">
-        #{applyRecordStatus,jdbcType=BIT},
-      </if>
-      <if test="skuCode != null">
-        #{skuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="skuName != null">
-        #{skuName,jdbcType=VARCHAR},
-      </if>
-      <if test="productId != null">
-        #{productId,jdbcType=VARCHAR},
-      </if>
-      <if test="categoryId != null">
-        #{categoryId,jdbcType=VARCHAR},
-      </if>
-      <if test="categoryName != null">
-        #{categoryName,jdbcType=VARCHAR},
-      </if>
-      <if test="brandId != null">
-        #{brandId,jdbcType=VARCHAR},
-      </if>
-      <if test="brandName != null">
-        #{brandName,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        #{productType,jdbcType=BIT},
-      </if>
-      <if test="productSpec != null">
-        #{productSpec,jdbcType=VARCHAR},
-      </if>
-      <if test="productUnit != null">
-        #{productUnit,jdbcType=VARCHAR},
-      </if>
-      <if test="stockCount != null">
-        #{stockCount,jdbcType=INTEGER},
-      </if>
-      <if test="productCount != null">
-        #{productCount,jdbcType=INTEGER},
-      </if>
-      <if test="taxRate != null">
-        #{taxRate,jdbcType=INTEGER},
-      </if>
-      <if test="transportCenterCode != null">
-        #{transportCenterCode,jdbcType=VARCHAR},
-      </if>
-      <if test="transportCenterName != null">
-        #{transportCenterName,jdbcType=VARCHAR},
-      </if>
-      <if test="warehouseCode != null">
-        #{warehouseCode,jdbcType=VARCHAR},
-      </if>
-      <if test="warehouseName != null">
-        #{warehouseName,jdbcType=VARCHAR},
-      </if>
-      <if test="productAmount != null">
-        #{productAmount,jdbcType=BIGINT},
-      </if>
-      <if test="productTotalAmount != null">
-        #{productTotalAmount,jdbcType=BIGINT},
-      </if>
-      <if test="productCost != null">
-        #{productCost,jdbcType=BIGINT},
-      </if>
-      <if test="batchNo != null">
-        #{batchNo,jdbcType=VARCHAR},
-      </if>
-      <if test="batchRemark != null">
-        #{batchRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="batchCreateTime != null">
-        #{batchCreateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="settlementMethod != null">
-        #{settlementMethod,jdbcType=VARCHAR},
-      </if>
-      <if test="supplierCode != null">
-        #{supplierCode,jdbcType=VARCHAR},
-      </if>
-      <if test="supplierName != null">
-        #{supplierName,jdbcType=VARCHAR},
-      </if>
-      <if test="provinceId != null">
-        #{provinceId,jdbcType=VARCHAR},
-      </if>
-      <if test="provinceName != null">
-        #{provinceName,jdbcType=VARCHAR},
-      </if>
-      <if test="cityId != null">
-        #{cityId,jdbcType=VARCHAR},
-      </if>
-      <if test="cityName != null">
-        #{cityName,jdbcType=VARCHAR},
-      </if>
-      <if test="districtId != null">
-        #{districtId,jdbcType=VARCHAR},
-      </if>
-      <if test="districtName != null">
-        #{districtName,jdbcType=VARCHAR},
-      </if>
-      <if test="address != null">
-        #{address,jdbcType=VARCHAR},
-      </if>
-      <if test="createById != null">
-        #{createById,jdbcType=VARCHAR},
-      </if>
-      <if test="createByName != null">
-        #{createByName,jdbcType=VARCHAR},
-      </if>
-      <if test="updateById != null">
-        #{updateById,jdbcType=VARCHAR},
-      </if>
-      <if test="updateByName != null">
-        #{updateByName,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
+    </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
     update reject_apply_record_detail
@@ -564,5 +361,16 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByDetailIds" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
+    update reject_apply_record_detail
+    set
+      apply_record_status =  0,
+      update_time = now()
+    where
+      reject_apply_record_detail_id in
+    <foreach collection="list" separator="," open="(" close=")" item="item">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
   </update>
 </mapper>
