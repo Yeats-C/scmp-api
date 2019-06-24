@@ -4,15 +4,15 @@ import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
+import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupply;
+import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
+import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectQueryRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -22,6 +22,7 @@ import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -81,6 +82,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     private OperationLogDao operationLogDao;
     @Resource
     private EncodingRuleDao encodingRuleDao;
+    @Resource
+    private OutboundService outboundService;
 
     @Override
     public HttpResponse rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -217,7 +220,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         List<RejectApplyDetailResponse> detailList;
         for (RejectApplyResponse response : list) {
             //查询商品批次列表
-            detailList = rejectApplyRecordDetailDao.listByCondition(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethod(),
+            detailList = rejectApplyRecordDetailDao.listByCondition(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
                     response.getTransportCenterCode(), response.getWarehouseCode(), request.getRejectApplyRecordCodes());
             response.setDetailList(detailList);
         }
@@ -293,14 +296,29 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         return HttpResponse.success(new PageResData(count, list));
     }
 
-    @Override
+    @Transactional
     public HttpResponse rejectSupplier(String rejectRecordId) {
-        RejectRecord rejectRecord = new RejectRecord();
-        rejectRecord.setRejectRecordId(rejectRecordId);
-        rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
-        Integer count = rejectRecordDao.updateStatus(rejectRecord);
-        LOGGER.info("供应商确认-更改退供申请详情影响条数:{}", count);
-        return HttpResponse.success();
+        try {
+            RejectRecord rejectRecord = rejectRecordDao.selectByRejectId(rejectRecordId);
+            if(rejectRecord==null){
+                return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            }
+            RejectRecord request = new RejectRecord();
+            request.setRejectRecordId(rejectRecordId);
+            request.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
+            Integer count = rejectRecordDao.updateStatus(request);
+            LOGGER.info("供应商确认-更改退供申请详情影响条数:{}", count);
+            ReturnSupplyToOutBoundReqVo reqVo = new ReturnSupplyToOutBoundReqVo();
+            ReturnSupply returnSupply = new ReturnSupply();
+            returnSupply.setCode(rejectRecord.getRejectRecordCode());
+            returnSupply.setLinkMan(rejectRecord.getContactsPerson());
+            returnSupply.setLinkPhone(rejectRecord.getContactsPersonPhone());
+            LOGGER.info("调用退供出库:{}", request);
+            outboundService.returnSupplySave(reqVo);
+            return HttpResponse.success();
+        } catch (Exception e) {
+            throw new RuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
+        }
     }
 
     @Override
@@ -337,6 +355,27 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     /**
      * 出库完成,更新退供单 出库时间 退供单状态
      */
+    @Transactional
+    public void finishStock(RejectStockRequest request) {
+        try {
+            LOGGER.info("出库完成,更新退供单信息:{}", request.toString());
+            RejectRecord rejectRecord = new RejectRecord();
+            rejectRecord.setRejectRecordId(request.getRejectRecordId());
+            rejectRecord.setOutStockTime(request.getOutStockTime());
+            rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_STOCKED);
+            Integer count = rejectRecordDao.updateStatus(rejectRecord);
+            LOGGER.info("更新退供单信息影响条数:{}", count);
+            if(CollectionUtils.isNotEmpty(request.getDetailList())){
+                for (RejectDetailStockRequest detailResponse : request.getDetailList()) {
+                    rejectRecordDetailDao.updateByDetailId(detailResponse);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("更新退供单异常:{}", e.getMessage());
+            throw new RuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
+        }
+
+    }
 
 
 }

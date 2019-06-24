@@ -33,7 +33,8 @@
     <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
     <result column="batch_create_time" jdbcType="TIMESTAMP" property="batchCreateTime" />
-    <result column="settlement_method" jdbcType="VARCHAR" property="settlementMethod" />
+    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
+    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
@@ -56,7 +57,7 @@
     brand_id, brand_name, product_type, product_spec, unit_code,unit_name, stock_count, product_count, 
     tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name, 
     product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time, 
-    settlement_method, supplier_code, supplier_name, province_id, province_name, city_id, 
+    settlement_method_code,settlement_method_name, supplier_code, supplier_name, province_id, province_name, city_id,
     city_name, district_id, district_name, address, create_by_id, create_by_name, update_by_id, 
     update_by_name, create_time, update_time
   </sql>
@@ -70,13 +71,15 @@
     <result column="sum_count" jdbcType="INTEGER" property="sumCount" />
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
     <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
-    <result column="settlement_method" jdbcType="VARCHAR" property="settlementMethod" />
+    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
+    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
   </resultMap>
   <select id="listForRejectRecord" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest" resultMap="ResultMap">
     select
-      settlement_method,
+      settlement_method_code,
+      settlement_method_name,
       supplier_code,
       supplier_name,
       warehouse_code,
@@ -90,7 +93,7 @@
       sum(product_total_amount) as sum_amount,
       sum(product_total_amount) as single_amount
     from reject_apply_record_detail
-    GROUP BY settlement_method,supplier_code,warehouse_code,transport_center_code,purchase_group_code
+    GROUP BY settlement_method_code,settlement_method_name,supplier_code,warehouse_code,transport_center_code,purchase_group_code
   </select>
   <select id="selectByRejectCode"   resultMap="BaseResultMap">
     select
@@ -99,7 +102,7 @@
     brand_id, brand_name, product_type, product_spec, unit_code,unit_name, stock_count, product_count,
     tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name,
     product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time,
-    settlement_method, supplier_code, supplier_name, province_id, province_name, city_id,
+    settlement_method_code,settlement_method_name, supplier_code, supplier_name, province_id, province_name, city_id,
     city_name, district_id, district_name, address,
     from reject_apply_record_detail
     where
@@ -114,7 +117,7 @@
     and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
     and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
     and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-    and settlement_method = #{settlementMethod,jdbcType=VARCHAR}
+    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
     and supplier_code = #{supplierCode,jdbcType=VARCHAR}
   </select>
   <insert id="insertAll" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
@@ -127,7 +130,7 @@
       tax_rate, transport_center_code, transport_center_name, 
       warehouse_code, warehouse_name, product_amount, 
       product_total_amount, product_cost, batch_no, 
-      batch_remark, batch_create_time, settlement_method, 
+      batch_remark, batch_create_time, settlement_method_code, settlement_method_name,
       supplier_code, supplier_name, province_id, 
       province_name, city_id, city_name, 
       district_id, district_name, address, 
@@ -167,7 +170,8 @@
       #{item.batchNo,jdbcType=VARCHAR},
       #{item.batchRemark,jdbcType=VARCHAR},
       #{item.batchCreateTime,jdbcType=TIMESTAMP},
-      #{item.settlementMethod,jdbcType=VARCHAR},
+      #{item.settlementMethodCode,jdbcType=VARCHAR},
+      #{item.settlementMethodName,jdbcType=VARCHAR},
       #{item.supplierCode,jdbcType=VARCHAR},
       #{item.supplierName,jdbcType=VARCHAR},
       #{item.provinceId,jdbcType=VARCHAR},
@@ -272,8 +276,8 @@
       <if test="batchCreateTime != null">
         batch_create_time = #{batchCreateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="settlementMethod != null">
-        settlement_method = #{settlementMethod,jdbcType=VARCHAR},
+      <if test="settlementMethodCode != null">
+        settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
       </if>
       <if test="supplierCode != null">
         supplier_code = #{supplierCode,jdbcType=VARCHAR},
@@ -354,7 +358,7 @@
       batch_no = #{batchNo,jdbcType=VARCHAR},
       batch_remark = #{batchRemark,jdbcType=VARCHAR},
       batch_create_time = #{batchCreateTime,jdbcType=TIMESTAMP},
-      settlement_method = #{settlementMethod,jdbcType=VARCHAR},
+      settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
       supplier_code = #{supplierCode,jdbcType=VARCHAR},
       supplier_name = #{supplierName,jdbcType=VARCHAR},
       province_id = #{provinceId,jdbcType=VARCHAR},

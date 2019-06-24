@@ -16,6 +16,10 @@ public class RejectRecordDetail {
     private String rejectRecordId;
 
     @ApiModelProperty(value="")
+    @JsonProperty("reject_record_detail_id")
+    private String rejectRecordDetailId;
+
+    @ApiModelProperty(value="")
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
 

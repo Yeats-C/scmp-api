@@ -9,11 +9,14 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
+import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectServiceImpl;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,6 +55,9 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class GoodsRejectController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
+
+
     @Resource
     private GoodsRejectService goodsRejectService;
 
@@ -72,12 +78,14 @@ public class GoodsRejectController {
                                                                         @RequestParam(value = "finish_time", required = false) String finishTime,
                                                                         @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode) {
         RejectApplyQueryRequest rejectApplyQueryRequest = new RejectApplyQueryRequest(rejectApplyRecordCode, applyType, purchaseGroupCode, applyRecordStatus, beginTime, finishTime);
+        LOGGER.info("退供申请单列表请求:{}",rejectApplyQueryRequest.toString());
         return goodsRejectService.rejectApplyList(rejectApplyQueryRequest);
     }
 
     @PostMapping("/apply")
     @ApiOperation(value = "退供申请单增加")
     public HttpResponse<List<RejectApplyRequest>> rejectApply(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+        LOGGER.info("退供申请单增加请求:{}",rejectApplyQueryRequest.toString());
         return goodsRejectService.rejectApply(rejectApplyQueryRequest);
     }
 
@@ -86,42 +94,49 @@ public class GoodsRejectController {
     @ApiImplicitParam(name = "reject_apply_record_code", value = "退货申请单号", type = "String")
     public HttpResponse<RejectApplyRequest> updateRejectApply(@PathVariable String reject_apply_record_code,@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
         rejectApplyQueryRequest.setRejectApplyRecordCode(reject_apply_record_code);
+        LOGGER.info("退供申请单修改请求:{}",rejectApplyQueryRequest.toString());
         return goodsRejectService.updateRejectApply(rejectApplyQueryRequest);
     }
 
     @GetMapping("/apply/{reject_apply_record_code}")
     @ApiOperation(value = "退供申请单查询")
     public HttpResponse<RejectApplyResponse> selectRejectApply(@PathVariable String reject_apply_record_code) {
+        LOGGER.info("退供申请单查询请求:{}",reject_apply_record_code);
         return goodsRejectService.selectRejectApply(reject_apply_record_code);
     }
 
     @PostMapping("/apply/import")
     @ApiOperation(value = "批量导入退供申请单")
     public HttpResponse rejectApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
+        LOGGER.info("批量导入退供申请单请求,purchaseGroupCode:{}",purchaseGroupCode);
         return goodsRejectService.rejectApplyImport(file, purchaseGroupCode);
     }
 
     @PostMapping("/apply/info")
     @ApiOperation(value = "查询退供申请单信息去生成退供单")
     public HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+        LOGGER.info("查询退供申请单信息去生成退供单请求,rejectRecord:{}",rejectApplyQueryRequest.toString());
         return goodsRejectService.rejectApplyInfo(rejectApplyQueryRequest);
     }
 
     @PostMapping("/record")
     @ApiOperation(value = "新增退供单记录")
     public HttpResponse addReject(@RequestBody RejectRequest request) {
+        LOGGER.info("新增退供单记录请求,rejectRecord:{}",request.toString());
         return goodsRejectService.addReject(request);
     }
 
     @PutMapping("/record")
     @ApiOperation(value = "修改退供单记录")
     public HttpResponse<List<RejectApplyRequest>> updateReject(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+        LOGGER.info("修改退供单记录请求,rejectRecord:{}",rejectApplyQueryRequest.toString());
         return goodsRejectService.updateReject(rejectApplyQueryRequest);
     }
 
     @GetMapping("/record/list")
     @ApiOperation(value = "查询退供单列表")
     public HttpResponse<RejectRecord> rejectList(@RequestBody RejectQueryRequest rejectQueryRequest) {
+        LOGGER.info("查询退供单列表请求,rejectRecord:{}",rejectQueryRequest.toString());
         return goodsRejectService.rejectList(rejectQueryRequest);
     }
 
@@ -129,6 +144,7 @@ public class GoodsRejectController {
     @ApiOperation(value = "查询退供单详情")
     @ApiImplicitParam(name = "reject_record_id", value = "退货单id", type = "String")
     public HttpResponse<RejectResponse> rejectInfo(@PathVariable String reject_record_id ) {
+        LOGGER.info("查询退供单详情请求,reject_record_id:{}",reject_record_id);
         return goodsRejectService.rejectInfo(reject_record_id);
     }
 
@@ -137,6 +153,7 @@ public class GoodsRejectController {
     @ApiOperation(value = "供应商确认")
     @ApiImplicitParam(name = "reject_record_id", value = "退货单id", type = "String")
     public HttpResponse rejectSupplier(@PathVariable String reject_record_id) {
+        LOGGER.info("供应商确认请求,reject_record_id:{}",reject_record_id);
         return goodsRejectService.rejectSupplier(reject_record_id);
     }
 
@@ -145,6 +162,7 @@ public class GoodsRejectController {
     @ApiImplicitParam(name = "reject_record_id", value = "退货单id", type = "String")
     public HttpResponse rejectTransport(@PathVariable String reject_record_id,@RequestBody RejectRecord rejectRecord) {
         rejectRecord.setRejectRecordId(reject_record_id);
+        LOGGER.info("退供发运请求,rejectRecord:{}",rejectRecord.toString());
         return goodsRejectService.rejectTransport(rejectRecord);
     }
 
@@ -152,6 +170,7 @@ public class GoodsRejectController {
     @ApiOperation(value = "退供完成")
     @ApiImplicitParam(name = "reject_record_id", value = "退货单id", type = "String")
     public HttpResponse rejectTransportFinish(@PathVariable String reject_record_id) {
+        LOGGER.info("提供完成请求,reject_record_id:{}",reject_record_id);
         return goodsRejectService.rejectTransportFinish(reject_record_id);
     }
 

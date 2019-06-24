@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="reject_record_id" jdbcType="VARCHAR" property="rejectRecordId" />
+    <result column="reject_record_detail_id" jdbcType="VARCHAR" property="rejectRecordDetailId" />
     <result column="reject_record_code" jdbcType="VARCHAR" property="rejectRecordCode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
@@ -32,7 +33,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, reject_record_id, reject_record_code, sku_code, sku_name, product_id, category_id, 
+    id, reject_record_id,reject_record_detail_id, reject_record_code, sku_code, sku_name, product_id, category_id,
     category_name, brand_id, brand_name, product_type, product_spec, unit_code, unit_name, tax_rate,
     product_amount, product_total_amount, actual_count, actual_amount, batch_no, batch_remark, 
     batch_create_time, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
@@ -49,7 +50,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insertAll"  >
-    insert into reject_record_detail ( reject_record_id, reject_record_code,
+    insert into reject_record_detail ( reject_record_detail_id,reject_record_id, reject_record_code,
       sku_code, sku_name, product_id, 
       category_id, category_name, brand_id, 
       brand_name, product_type, product_spec, 
@@ -61,6 +62,7 @@
     values
     <foreach collection="list" separator="," item="item">
     (
+      #{item.rejectRecordDetailId,jdbcType=VARCHAR},
       #{rejectRecordId,jdbcType=VARCHAR},
       #{rejectRecordCode,jdbcType=VARCHAR},
       #{item.skuCode,jdbcType=VARCHAR},
@@ -370,5 +372,13 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByDetailId" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest">
+    update reject_record_detail
+    set
+      actual_count = #{actualCount,jdbcType=INTEGER},
+      actual_amount = #{actualAmount,jdbcType=BIGINT},
+      update_time = now()
+    where  reject_record_detail_id = #{rejectRecordDetailId,jdbcType=VARCHAR}
   </update>
 </mapper>

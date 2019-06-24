@@ -22,6 +22,14 @@ public class RejectRecord {
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
 
+    @ApiModelProperty(value = "商品 结算方式")
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value = "商品 结算方式")
+    @JsonProperty("settlement_method_name")
+    private String settlementMethodName;
+
     @ApiModelProperty(value = "负责人")
     @JsonProperty("duty_person")
     private String dutyPerson;

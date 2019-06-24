@@ -1,14 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectQueryRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * <p>
@@ -62,4 +57,6 @@ public interface GoodsRejectService {
     HttpResponse rejectTransport(RejectRecord request);
 
     HttpResponse rejectTransportFinish(String reject_record_id);
+
+    void finishStock(RejectStockRequest request);
 }

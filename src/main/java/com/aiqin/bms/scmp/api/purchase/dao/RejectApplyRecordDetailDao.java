@@ -20,7 +20,7 @@ public interface RejectApplyRecordDetailDao {
 
     List<RejectApplyResponse> listForRejectRecord(RejectApplyRequest rejectApplyQueryRequest);
 
-    List<RejectApplyDetailResponse> listByCondition(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethod") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes);
+    List<RejectApplyDetailResponse> listByCondition(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes);
 
     Integer updateByDetailIds(@Param("list") List<String> detailIds);
 

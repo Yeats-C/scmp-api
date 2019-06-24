@@ -135,8 +135,12 @@ public class RejectApplyRecordDetail {
     private Date batchCreateTime;
 
     @ApiModelProperty(value = "商品 结算方式")
-    @JsonProperty("settlement_method")
-    private String settlementMethod;
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value = "商品 结算方式")
+    @JsonProperty("settlement_method_name")
+    private String settlementMethodName;
 
     @ApiModelProperty(value = "供应商code")
     @JsonProperty("supplier_code")
