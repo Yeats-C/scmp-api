@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
@@ -83,6 +84,31 @@ public interface StockDao {
     List<Stock> selectGroup();
 
     List<Stock> selectListByWareHouseCode(Stock stock);
+
+    /**
+     * 批次库存列表查询
+     * @return
+     */
+    List<StockBatchRespVO> selectStockBatchAllData();
+
+    Integer countStockBatchAllData();
+
+    /**
+     * 批次库存条件查询
+     * @param stockBatchRequest
+     * @return
+     */
+    List<StockBatchRespVO> selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
+
+    Integer countStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
+
+    /**
+     * 根据stockBatchId查询单个库存信息
+     *
+     * @param stockBatchId
+     * @return
+     */
+    StockBatchRespVO selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
 
     List<PurchaseApplyDetailResponse> purchaseProductList(PurchaseApplyRequest purchases);
 

@@ -30,6 +30,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStock
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
@@ -1231,4 +1232,56 @@ public class StockServiceImpl implements StockService {
         return list;
     }
 
+
+    /**
+     * 批次库存管理列表查询
+     * @return
+     */
+    @Override
+    public PageResData selectStockBatchAllData() {
+        try {
+            LOGGER.info("批次库存管理列表查询");
+            List<StockBatchRespVO> stockList = stockDao.selectStockBatchAllData();
+            Integer total = stockDao.countStockBatchAllData();
+            return new PageResData<>(total, stockList);
+        } catch (Exception e) {
+            LOGGER.error("批次库存管理列表查询失败", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
+    }
+
+    /**
+     * 批次库存管理条件查询
+     * @param stockBatchRequest
+     * @return
+     */
+    @Override
+    public PageResData selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest) {
+        try {
+            LOGGER.info("批次库存管理列表条件查询");
+            List<StockBatchRespVO> stockList = stockDao.selectStockBatchInfoByPage(stockBatchRequest);
+            Integer total = stockDao.countStockBatchInfoByPage(stockBatchRequest);
+            return new PageResData<>(total, stockList);
+        } catch (Exception e) {
+            LOGGER.error("批次库存管理列表条件查询失败", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
+    }
+
+    /**
+     * 根据stockBatchId查询单个库存信息
+     *
+     * @param stockBatchId
+     * @return
+     */
+    @Override
+    public StockBatchRespVO selectOneStockBatchInfoByStockBatchId(Long stockBatchId) {
+        try {
+            LOGGER.info("根据stockBatchId查询单个stockBatch信息");
+            return stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId);
+        } catch (Exception e) {
+            LOGGER.error("根据stockBatchId查询单个stockBatch信息失败", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
+    }
 }

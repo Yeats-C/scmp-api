@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
@@ -199,4 +200,25 @@ public interface StockService {
     List<Stock> selectGroup();
 
     List<Stock> selectListByWareHouseCode(Stock stock);
+
+    /**
+     * 批次库存管理列表查询数据
+     * @return
+     */
+    PageResData selectStockBatchAllData();
+
+    /**
+     * 批次库存
+     * @param stockBatchRequest
+     * @return
+     */
+    PageResData selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
+
+    /**
+     * 根据stockBatchId查询单个stockBatch信息
+     *
+     * @param stockBatchId
+     * @return
+     */
+    StockBatchRespVO selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
 }
