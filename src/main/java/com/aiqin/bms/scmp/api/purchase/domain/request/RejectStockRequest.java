@@ -36,9 +36,9 @@ import java.util.List;
 @Data
 public class RejectStockRequest {
 
-    @ApiModelProperty(value = "")
-    @JsonProperty("reject_record_id")
-    private String rejectRecordId;
+    @ApiModelProperty(value = "退供单号")
+    @JsonProperty("reject_record_code")
+    private String rejectRecordCode;
 
     @ApiModelProperty(value = "")
     @JsonProperty("out_stock_time")

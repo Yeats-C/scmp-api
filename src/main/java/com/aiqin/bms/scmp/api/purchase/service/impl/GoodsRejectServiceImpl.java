@@ -313,6 +313,13 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             returnSupply.setCode(rejectRecord.getRejectRecordCode());
             returnSupply.setLinkMan(rejectRecord.getContactsPerson());
             returnSupply.setLinkPhone(rejectRecord.getContactsPersonPhone());
+            returnSupply.setWarehouseCode(rejectRecord.getWarehouseCode());
+            returnSupply.setWarehouseName(rejectRecord.getWarehouseName());
+            returnSupply.setTransportCenterCode(rejectRecord.getTransportCenterCode());
+            returnSupply.setTransportCenterName(rejectRecord.getTransportCenterName());
+
+
+
             LOGGER.info("调用退供出库:{}", request);
             outboundService.returnSupplySave(reqVo);
             return HttpResponse.success();
@@ -360,7 +367,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         try {
             LOGGER.info("出库完成,更新退供单信息:{}", request.toString());
             RejectRecord rejectRecord = new RejectRecord();
-            rejectRecord.setRejectRecordId(request.getRejectRecordId());
+            rejectRecord.setRejectRecordCode(request.getRejectRecordCode());
             rejectRecord.setOutStockTime(request.getOutStockTime());
             rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_STOCKED);
             Integer count = rejectRecordDao.updateStatus(rejectRecord);
