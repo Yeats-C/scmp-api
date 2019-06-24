@@ -1,22 +1,20 @@
-package com.aiqin.bms.scmp.api.purchase.domain.request.order;
+package com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- * Description:
- *
- * @author: NullPointException
- * @date: 2019-06-13
- * @time: 19:06
- */
-@Data
+import java.util.Date;
+
 @ApiModel("订单商品信息")
-public class OrderInfoItemReqVO {
+@Data
+public class ReturnOrderInfoInspectionItem {
+    @ApiModelProperty("商品主键")
+    private Long id;
 
     @ApiModelProperty("订单主表编码")
-    private String orderCode;
+    private String returnOrderCode;
 
     @ApiModelProperty("sku编号")
     private String skuCode;
@@ -45,6 +43,9 @@ public class OrderInfoItemReqVO {
     @ApiModelProperty("型号编码")
     private String modelCode;
 
+    @ApiModelProperty("基商品含量")
+    private Integer baseProductContent;
+
     @ApiModelProperty("商品单位code")
     private String unitCode;
 
@@ -60,23 +61,8 @@ public class OrderInfoItemReqVO {
     @ApiModelProperty("批次号")
     private String batchNumber;
 
-    @ApiModelProperty("单价")
-    private Long price;
-
     @ApiModelProperty("数量")
     private Long num;
-
-    @ApiModelProperty("总价")
-    private Long amount;
-
-    @ApiModelProperty("活动分摊")
-    private Long activityApportionment;
-
-    @ApiModelProperty("优惠分摊")
-    private Long preferentialAllocation;
-
-    @ApiModelProperty("实发数量")
-    private Long actualDeliverNum;
 
     @ApiModelProperty("活动编码(多个，隔开）")
     private String activityCode;
@@ -87,12 +73,34 @@ public class OrderInfoItemReqVO {
     @ApiModelProperty("赠品行号")
     private Long promotionLineNum;
 
-    @ApiModelProperty("退货数量")
-    private Long returnNum;
+    @ApiModelProperty("原sku的行号")
+    private Integer originalLineNum;
+
+    @ApiModelProperty("商品状态1新品2残品")
+    private Integer productStatus;
+
+    @ApiModelProperty("实际入库数量")
+    private Integer actualInboundNum;
 
     @ApiModelProperty("公司名称")
     private String companyName;
 
     @ApiModelProperty("公司编码")
     private String companyCode;
+
+    @ApiModelProperty("物流中心名称")
+    private String transportCenterName;
+
+    @ApiModelProperty("物流中心编码")
+    private String transportCenterCode;
+
+    @ApiModelProperty("仓库名称")
+    private String warehouseName;
+
+    @ApiModelProperty("仓库编码")
+    private String warehouseCode;
+
+    @ApiModelProperty("如果手动输入批次号，那么必须传入生产日期")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date productDate;
 }

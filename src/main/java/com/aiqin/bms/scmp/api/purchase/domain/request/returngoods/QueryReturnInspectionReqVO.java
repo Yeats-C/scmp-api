@@ -12,12 +12,12 @@ import java.util.Date;
  * Description:
  *
  * @author: NullPointException
- * @date: 2019-06-19
- * @time: 16:34
+ * @date: 2019-06-20
+ * @time: 10:12
  */
 @Data
-@ApiModel("退货单管理列表")
-public class QueryReturnOrderManagementReqVO extends PageReq {
+@ApiModel("退货验货请求vo")
+public class QueryReturnInspectionReqVO extends PageReq {
 
     @ApiModelProperty("退货订单编码")
     private String returnOrderCode;
@@ -32,9 +32,6 @@ public class QueryReturnOrderManagementReqVO extends PageReq {
     @ApiModelProperty("创建时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDateEnd;
-
-    @ApiModelProperty("是否删除(0否1是)")
-    private Integer beDelete;
 
     @ApiModelProperty("物流中心编码")
     private String transportCenterCode;

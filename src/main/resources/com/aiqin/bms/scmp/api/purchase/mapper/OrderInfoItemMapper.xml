@@ -491,4 +491,11 @@
       company_code = #{companyCode,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+    <update id="updateBatchNumById" parameterType="java.util.List">
+      <foreach collection="list" open="" close="" separator=";" item="item">
+        update order_info_item
+        set actual_deliver_num = #{item.actualDeliverNum}
+        where id = #{item.id}
+      </foreach>
+    </update>
 </mapper>
