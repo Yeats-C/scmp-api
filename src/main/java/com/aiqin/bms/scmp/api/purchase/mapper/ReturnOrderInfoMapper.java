@@ -6,6 +6,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrd
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoInspectionItemRespVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -61,4 +63,13 @@ public interface ReturnOrderInfoMapper {
      * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO
      */
     InspectionDetailRespVO selectInspectionDetail(String code);
+    /**
+     * TODO
+     * @author NullPointException
+     * @date 2019/6/24
+     * @param code 退货单编码
+     * @param orderCode 订单编码
+     * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoInspectionItemRespVO>
+     */
+    List<ReturnOrderInfoInspectionItemRespVO> selectInspectionItemList(@Param("code") String code, @Param("orderCode") String orderCode);
 }

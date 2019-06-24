@@ -251,7 +251,7 @@ public class ReturnOrderInfoInspectionItem {
         return productLineNum;
     }
 
-    public void setProductLineNum(Long productLineNum) {
+    public void setProductLineNum(long i) {
         this.productLineNum = productLineNum;
     }
 

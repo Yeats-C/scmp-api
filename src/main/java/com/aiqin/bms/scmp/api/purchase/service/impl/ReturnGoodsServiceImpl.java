@@ -6,11 +6,14 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoInspectionItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
@@ -21,7 +24,9 @@ import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +58,8 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
 
     @Autowired
     private WarehouseService warehouseService;
+    @Autowired
+    private ReturnOrderInfoInspectionItemMapper returnOrderInfoInspectionItemMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -128,11 +135,11 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
     @Override
     public InspectionDetailRespVO inspectionDetail(String code) {
         //首先查出数据
-        InspectionDetailRespVO respVO = returnOrderInfoMapper.selectInspectionDetail(code);//TODO sql 未写
+        InspectionDetailRespVO respVO = returnOrderInfoMapper.selectInspectionDetail(code);
         if(Objects.isNull(respVO)){
             throw new BizException(ResultCode.QUERY_INSPECTION_DETAIL_ERROR);
         }
-        List<ReturnOrderInfoInspectionItemRespVO> inspectionItemRespVO = BeanCopyUtils.copyList(respVO.getItemList(), ReturnOrderInfoInspectionItemRespVO.class);
+       List<ReturnOrderInfoInspectionItemRespVO> inspectionItemRespVO =  returnOrderInfoMapper.selectInspectionItemList(code,respVO.getOrderCode());
         //根据仓编码查询下面的库
         List<WarehouseResVo> warehouse = warehouseService.getWarehouseByLogisticsCenterCode(respVO.getTransportCenterCode());
         if(CollectionUtils.isEmptyCollection(warehouse)){
@@ -152,12 +159,36 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
             } else {
                 throw new BizException(ResultCode.DATA_ERROR);
             }
-
         }
         respVO.setInspectionItemList(inspectionItemRespVO);
         return respVO;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean saveReturnInspection(List<ReturnInspectionReq> reqVO) {
+        //首先保存传过来的数据
+        List<ReturnOrderInfoInspectionItem> items = BeanCopyUtils.copyList(reqVO, ReturnOrderInfoInspectionItem.class);
+        for (int i = 0; i < items.size(); i++) {
+            ReturnOrderInfoInspectionItem item = items.get(i);
+            item.setProductLineNum((long)i*10);
+        }
+        int i = returnOrderInfoInspectionItemMapper.insertBatch(items);
+        if(i!=items.size()){
+            throw new BizException(ResultCode.SAVE_INSPECTION_DATA_FAILED);
+        }
+        //调用异步方法传入库单信息
+        ReturnGoodsServiceImpl returnGoodsService =  (ReturnGoodsServiceImpl)AopContext.currentProxy();
+        returnGoodsService.sendToOutBound(items);
+        return Boolean.TRUE;
+    }
+    @Override
+    @Async("myTaskAsyncPool")
+    @Transactional(rollbackFor = Exception.class)
+    public void sendToOutBound(List<ReturnOrderInfoInspectionItem> items) {
+        //TODO 调用库存接口锁库
+        throw new RuntimeException();
+    }
     /**
      * 参数验证
      *

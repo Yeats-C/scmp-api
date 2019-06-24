@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO;
@@ -98,6 +99,19 @@ public class ReturnGoodsController {
         log.info("ReturnGoodsController---inspectionDetail---param：[{}]", code);
         try {
             return HttpResponse.success(returnGoodsService.inspectionDetail(code));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @ApiOperation("验货保存")
+    @PostMapping("/saveReturnInspection")
+    public HttpResponse<Boolean> saveReturnInspection(@RequestBody List<ReturnInspectionReq> reqVO){
+        log.info("ReturnGoodsController---saveReturnInspection---param：[{}]", JSONObject.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(returnGoodsService.saveReturnInspection(reqVO));
         } catch (BizException e){
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
