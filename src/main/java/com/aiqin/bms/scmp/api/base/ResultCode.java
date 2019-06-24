@@ -194,4 +194,8 @@ public interface ResultCode {
     //退货
     MessageId save_return_order_item_failed = MessageId.create(Project.PURCHASE_API,100,"退货订单附表保存失败");
     MessageId save_return_order_failed = MessageId.create(Project.PURCHASE_API,100,"退货订单主表保存失败");
+
+    // 采购
+    MessageId NOT_PURCHASE_GROUP = MessageId.create(Project.SCMP_API,201,"未获取到有效的采购组");
+    MessageId NOT_PURCHASE_GROUP_PERSON = MessageId.create(Project.SCMP_API,202,"此采购组该人员无相关数据");
 }

@@ -80,4 +80,11 @@ public interface Global {
 
     String DEFAULT_DEPART_CODE = "3";
     String DEFAULT_DEPART_NAME = "仓储中心";
+
+    /**
+     * 商品类型  0商品 1赠品 2实物返
+     */
+    Integer PRODUCT_TYPE_0 = 0;
+    Integer PRODUCT_TYPE_1 = 1;
+    Integer PRODUCT_TYPE_2 = 2;
 }

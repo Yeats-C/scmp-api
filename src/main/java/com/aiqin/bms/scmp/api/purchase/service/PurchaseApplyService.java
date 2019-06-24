@@ -11,7 +11,7 @@ public interface PurchaseApplyService {
 
     HttpResponse<List<PurchaseApplyResponse>> applyList(PurchaseApplyRequest purchaseApplyRequest);
 
-    HttpResponse<List<PurchaseApplyProduct>> applyProductList(PurchaseApplyRequest purchaseApplyRequest);
+    HttpResponse applyProductList(PurchaseApplyRequest purchaseApplyRequest);
 
     HttpResponse insertApplyProduct(PurchaseApplyProduct purchaseApplyProduct);
 
@@ -20,4 +20,6 @@ public interface PurchaseApplyService {
     HttpResponse deleteApplyProduct(String applyProductId);
 
     HttpResponse applyProductBasic(String purchaseApplyId);
+
+    HttpResponse applySelectionProduct(String purchaseApplyId);
 }

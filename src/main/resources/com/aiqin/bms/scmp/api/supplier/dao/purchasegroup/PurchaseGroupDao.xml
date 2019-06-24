@@ -176,8 +176,8 @@
   <select id="getPurchaseGroup" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo">
     select
       a.id,
-      a.purchase_group_code,
-      a.purchase_group_name,
+      a.purchase_group_code as purchaseGroupCode,
+      a.purchase_group_name as purchaseGroupName,
       a.create_time,
       a.create_by,
       a.update_time,

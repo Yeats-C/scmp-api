@@ -73,19 +73,19 @@ public class PurchaseOrderProduct {
     @JsonProperty("purchase_single")
     private Integer purchaseSingle;
 
-    @ApiModelProperty(value="采购包装数量")
-    @JsonProperty("pack_number")
-    private Integer packNumber;
+    @ApiModelProperty(value="基商品含量")
+    @JsonProperty("base_product_content")
+    private Integer baseProductContent;
 
-    @ApiModelProperty(value="采购包装单位")
-    @JsonProperty("pack_unit")
-    private String packUnit;
+    @ApiModelProperty(value="采购包装")
+    @JsonProperty("box_gauge")
+    private String boxGauge;
 
     @ApiModelProperty(value="单品数量")
     @JsonProperty("single_count")
     private Integer singleCount;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="税率")
     @JsonProperty("tax_rate")
     private Integer taxRate;
 
