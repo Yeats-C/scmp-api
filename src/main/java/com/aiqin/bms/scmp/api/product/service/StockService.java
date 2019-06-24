@@ -202,12 +202,6 @@ public interface StockService {
     List<Stock> selectListByWareHouseCode(Stock stock);
 
     /**
-     * 批次库存管理列表查询数据
-     * @return
-     */
-    PageResData selectStockBatchAllData();
-
-    /**
      * 批次库存
      * @param stockBatchRequest
      * @return

@@ -1238,29 +1238,6 @@
     <select id="selectListByWareHouseCode" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include> from stock where warehouse_code=#{warehouseCode}
     </select>
-    <select id="selectStockBatchAllData" resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO" resultMap="StockBatchRespMap">
-        select
-        <include refid="Query_Stock_Batch_Sku_List"/>
-        from stock_batch as sb
-        LEFT JOIN stock as st ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code
-        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = sb.transport_center_code
-        LEFT JOIN product_sku AS ps ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
-        left join product_sku_box_packing as psbp on sb.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
-        group by sb.warehouse_code,sb.sku_code
-        limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-    </select>
-    <select id="countStockBatchAllData" resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        st.sku_code
-        from stock_batch as sb
-        LEFT JOIN stock as st ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code
-        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = sb.transport_center_code
-        LEFT JOIN product_sku AS ps ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
-        left join product_sku_box_packing as psbp on sb.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
-        group by sb.sku_code,sb.warehouse_code
-        ) as tmp
-    </select>
     <select id="selectStockBatchInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockBatchRequest"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO" resultMap="StockBatchRespMap">
         select

@@ -171,15 +171,11 @@ public class StockController {
         return stockService.logs(stockLogsRequest);
     }
 
-    @PostMapping("/search/batch")
-    @ApiOperation(value = "批次库存管理列表查询数据")
-    public HttpResponse<PageResData<StockBatchRespVO>> selectStockBatchAllData() {
-        return HttpResponse.success(stockService.selectStockBatchAllData());
-    }
-
     @PostMapping("/search/batch/page")
-    @ApiOperation(value = "批次库存管理列表条件查询")
+    @ApiOperation(value = "批次库存管理列表查询")
     public HttpResponse<PageResData<StockBatchRespVO>> selectStockBatchInfoByPage(@RequestBody StockBatchRequest stockBatchRequest) {
+        //数据不全，暂时不传 TODO
+       // stockBatchRequest.setCompanyCode(null);
         return HttpResponse.success(stockService.selectStockBatchInfoByPage(stockBatchRequest));
     }
 

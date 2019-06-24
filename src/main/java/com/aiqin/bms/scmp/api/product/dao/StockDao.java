@@ -86,15 +86,7 @@ public interface StockDao {
     List<Stock> selectListByWareHouseCode(Stock stock);
 
     /**
-     * 批次库存列表查询
-     * @return
-     */
-    List<StockBatchRespVO> selectStockBatchAllData();
-
-    Integer countStockBatchAllData();
-
-    /**
-     * 批次库存条件查询
+     * 批次库存管理查询
      * @param stockBatchRequest
      * @return
      */

@@ -1232,26 +1232,8 @@ public class StockServiceImpl implements StockService {
         return list;
     }
 
-
     /**
-     * 批次库存管理列表查询
-     * @return
-     */
-    @Override
-    public PageResData selectStockBatchAllData() {
-        try {
-            LOGGER.info("批次库存管理列表查询");
-            List<StockBatchRespVO> stockList = stockDao.selectStockBatchAllData();
-            Integer total = stockDao.countStockBatchAllData();
-            return new PageResData<>(total, stockList);
-        } catch (Exception e) {
-            LOGGER.error("批次库存管理列表查询失败", e);
-            throw new GroundRuntimeException(e.getMessage());
-        }
-    }
-
-    /**
-     * 批次库存管理条件查询
+     * 批次库存管理查询
      * @param stockBatchRequest
      * @return
      */

@@ -124,6 +124,14 @@ public class StockBatch extends PagesRequest {
     @JsonProperty(value = "supplier_name")
     private String supplierName;
 
+    @ApiModelProperty("最新供货单位编码")
+    @JsonProperty(value = "new_delivery")
+    private String newDelivery;
+
+    @ApiModelProperty("最新供货单位名称")
+    @JsonProperty(value = "new_delivery_name")
+    private String newDeliveryName;
+
     @ApiModelProperty("采购价")
     @JsonProperty(value = "purchase_price")
     private String purchasePrice;
@@ -350,6 +358,22 @@ public class StockBatch extends PagesRequest {
 
     public void setSupplierName(String supplierName) {
         this.supplierName = supplierName;
+    }
+
+    public String getNewDelivery() {
+        return newDelivery;
+    }
+
+    public void setNewDelivery(String newDelivery) {
+        this.newDelivery = newDelivery;
+    }
+
+    public String getNewDeliveryName() {
+        return newDeliveryName;
+    }
+
+    public void setNewDeliveryName(String newDeliveryName) {
+        this.newDeliveryName = newDeliveryName;
     }
 
     public String getPurchasePrice() {

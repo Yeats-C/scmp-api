@@ -11,6 +11,15 @@ import java.util.Date;
 @ApiModel("批量库存request")
 @Data
 public class StockBatchRequest extends PagesRequest {
+
+    @ApiModelProperty("公司编码")
+    @JsonProperty(value = "company_code")
+    private String companyCode;
+
+    @ApiModelProperty("公司名称")
+    @JsonProperty(value = "company_name")
+    private String companyName;
+
     @ApiModelProperty("物流中心CodeOrName")
     @JsonProperty(value = "transport_center_text")
     private String transportCenterText;
@@ -70,6 +79,22 @@ public class StockBatchRequest extends PagesRequest {
     @ApiModelProperty("生产日期")
     @JsonProperty(value = "production_date")
     private String productionDate;
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
 
     public String getTransportCenterText() {
         return transportCenterText;
