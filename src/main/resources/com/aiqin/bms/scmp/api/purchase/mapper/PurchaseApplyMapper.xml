@@ -20,14 +20,11 @@
     create_time as createTime, create_by as createBy
   </sql>
   <insert id="insert">
-    insert into purchase_apply (id, purchase_apply_id, purchase_apply_code, 
-      apply_type, apply_status, purchase_group_code, 
-      purchase_group_name, create_time, update_time, 
-      create_by, update_by)
-    values (#{id,jdbcType=BIGINT}, #{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, 
+    insert into purchase_apply (purchase_apply_id, purchase_apply_code, apply_type,
+      apply_status, purchase_group_code, purchase_group_name, create_time, create_by)
+    values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR},
       #{applyType,jdbcType=INTEGER}, #{applyStatus,jdbcType=INTEGER}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
-      #{purchaseGroupName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR})
+      #{purchaseGroupName,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_apply

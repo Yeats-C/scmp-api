@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -135,6 +136,7 @@ public class PurchaseApplyProduct {
 
     @ApiModelProperty(value="最后订货日期")
     @JsonProperty("last_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date lastTime;
 
     @ApiModelProperty(value="近90天销量")
@@ -155,6 +157,7 @@ public class PurchaseApplyProduct {
 
     @ApiModelProperty(value="预测到货时间")
     @JsonProperty("receipt_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date receiptTime;
 
     @ApiModelProperty(value="最高采购价")

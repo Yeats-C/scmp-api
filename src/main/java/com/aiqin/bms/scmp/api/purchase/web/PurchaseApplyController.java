@@ -99,10 +99,10 @@ public class PurchaseApplyController {
         return purchaseApplyService.applyProductList(purchaseApplyRequest);
     }
 
-    @PostMapping("/product/list")
-    @ApiOperation("保存申请单商品列表")
-    public HttpResponse insertApplyProduct(@RequestBody PurchaseApplyProduct purchaseApplyProduct) {
-        return purchaseApplyService.insertApplyProduct(purchaseApplyProduct);
+    @PostMapping("/purchase/form")
+    @ApiOperation("生成采购申请单")
+    public HttpResponse insertPurchaseForm(@RequestBody List<PurchaseApplyProduct> purchaseApplyProduct) {
+        return purchaseApplyService.insertPurchaseForm(purchaseApplyProduct);
     }
 
     @GetMapping("/product")

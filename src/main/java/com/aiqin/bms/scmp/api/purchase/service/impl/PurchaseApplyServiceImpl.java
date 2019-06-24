@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
@@ -10,15 +11,19 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -47,6 +52,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private PurchaseGroupService purchaseGroupService;
     @Resource
     private ProductSkuPriceInfoMapper productSkuPriceInfoMapper;
+    @Resource
+    private EncodingRuleDao encodingRuleDao;
     @Resource
     private StockDao stockDao;
 
@@ -177,8 +184,35 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse insertApplyProduct(PurchaseApplyProduct purchaseApplyProduct){
-
+    public HttpResponse insertPurchaseForm(List<PurchaseApplyProduct> purchaseApplyProduct){
+        if(CollectionUtils.isEmptyCollection(purchaseApplyProduct)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 生成采购申请单id
+        String purchaseApplyId = IdUtil.purchaseId();
+        // 保存采购申请选中商品
+        for(PurchaseApplyProduct product:purchaseApplyProduct){
+            product.setApplyProductId(IdUtil.purchaseId());
+            product.setPurchaseApplyId(purchaseApplyId);
+        }
+        Integer productCount = purchaseApplyProductDao.insertAll(purchaseApplyProduct);
+        if(productCount > 0){
+            // 生成采购申请单
+            PurchaseApply purchaseApply = new PurchaseApply();
+            purchaseApply.setPurchaseApplyId(purchaseApplyId);
+            // 获取采购申请单编码
+            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
+            purchaseApply.setPurchaseApplyCode("CGA" + String.valueOf(encodingRule.getNumberingValue()));
+            purchaseApply.setApplyType(Global.PURCHASE_APPLY_TYPE_0);
+            purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
+            purchaseApply.setPurchaseGroupCode(purchaseApplyProduct.get(0).getPurchaseGroupCode());
+            purchaseApply.setPurchaseGroupName(purchaseApplyProduct.get(0).getPurchaseGroupName());
+            purchaseApply.setCreateBy(purchaseApplyProduct.get(0).getCreateBy());
+            Integer count = purchaseApplyDao.insert(purchaseApply);
+            if(count > 0){
+                encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+            }
+        }
         return HttpResponse.success();
     }
 

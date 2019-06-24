@@ -388,4 +388,42 @@
     where apply_product_status = 1
     and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </select>
+  <insert id="insertAll">
+     insert into purchase_apply_product (apply_product_id, purchase_apply_id,
+      sku_code, sku_name, spu_code, product_name, warehouse_code, warehouse_name, supplier_code,
+      supplier_name, purchase_group_code, purchase_group_name, transport_center_code, transport_center_name,
+      product_property_code, product_property_name, brand_id, brand_name, category_id, category_name, product_sort_code,
+      product_sort_name, product_type, product_purchase_amount, new_purchase_price, purchase_whole, purchase_single,
+      stock_unit_name, stock_count, total_way_num, last_time, sales_volume, box_gauge, base_product_content,
+      purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
+      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, create_time, create_by)
+    values
+     <foreach collection="list" item="item" index="" separator=",">
+      (#{item.applyProductId,jdbcType=VARCHAR},
+       #{item.purchaseApplyId,jdbcType=VARCHAR},
+       #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+       #{item.spuCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
+       #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR},
+       #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR},
+       #{item.purchaseGroupCode,jdbcType=VARCHAR}, #{item.purchaseGroupName,jdbcType=VARCHAR},
+       #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
+       #{item.productPropertyCode,jdbcType=VARCHAR}, #{item.productPropertyName,jdbcType=VARCHAR},
+       #{item.brandId,jdbcType=VARCHAR}, #{item.brandName,jdbcType=VARCHAR},
+       #{item.categoryId,jdbcType=VARCHAR}, #{item.categoryName,jdbcType=VARCHAR},
+       #{item.productSortCode,jdbcType=VARCHAR}, #{item.productSortName,jdbcType=VARCHAR},
+       #{item.productType,jdbcType=INTEGER}, #{item.productPurchaseAmount,jdbcType=INTEGER},
+       #{item.newPurchasePrice,jdbcType=INTEGER}, #{item.purchaseWhole,jdbcType=INTEGER},
+       #{item.purchaseSingle,jdbcType=INTEGER}, #{item.stockUnitName,jdbcType=VARCHAR},
+       #{item.stockCount,jdbcType=INTEGER}, #{item.totalWayNum,jdbcType=INTEGER},
+       #{item.lastTime,jdbcType=VARCHAR}, #{item.salesVolume,jdbcType=INTEGER},
+       #{item.boxGauge,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=INTEGER},
+       #{item.purchaseNumber,jdbcType=INTEGER}, #{item.receiptTime,jdbcType=VARCHAR},
+       #{item.purchaseMax,jdbcType=INTEGER}, #{item.productSpec,jdbcType=VARCHAR},
+       #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR},
+       #{item.shortageNumber,jdbcType=INTEGER}, #{item.shortageDay,jdbcType=INTEGER},
+       #{item.stockTurnover,jdbcType=INTEGER}, #{item.receiptTurnover,jdbcType=INTEGER},
+       #{item.errorInfo,jdbcType=VARCHAR}, #{item.applyProductStatus,jdbcType=INTEGER}, now(),
+       #{item.createBy,jdbcType=VARCHAR})
+     </foreach>
+  </insert>
 </mapper>
