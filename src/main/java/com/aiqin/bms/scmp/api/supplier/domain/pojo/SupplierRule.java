@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("供应商规则")
 @Data
 public class SupplierRule extends CommonBean {
@@ -19,6 +21,12 @@ public class SupplierRule extends CommonBean {
 
     @ApiModelProperty("公司名称")
     private String companyName;
+
+    @ApiModelProperty("订单体积计算系数")
+    private BigDecimal orderVolumeCoefficient;
+
+    @ApiModelProperty("订单重量计算系数")
+    private BigDecimal orderWeightCoefficient;
 
 
 }
