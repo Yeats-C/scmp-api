@@ -8,10 +8,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnIns
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnOrderManagementRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 
 import java.util.List;
 
@@ -88,4 +85,12 @@ public interface ReturnGoodsService {
      * @return void
      */
     void sendToOutBound(List<ReturnOrderInfoInspectionItem> items);
+    /**
+     * 验货查看
+     * @author NullPointException
+     * @date 2019/6/24
+     * @param code
+     * @return InspectionViewRespVO
+     */
+    InspectionViewRespVO inspectionView(String code);
 }

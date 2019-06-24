@@ -1,8 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.returngoods;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * Description:
@@ -74,5 +77,9 @@ public class ReturnInspectionReq {
 
     @ApiModelProperty("物流中心名称")
     private String transportCenterName;
+
+    @ApiModelProperty("如果手动输入批次号，那么必须传入生产日期")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date productDate;
 
 }

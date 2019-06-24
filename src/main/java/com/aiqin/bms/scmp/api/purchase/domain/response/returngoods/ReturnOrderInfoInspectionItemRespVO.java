@@ -72,6 +72,9 @@ public class ReturnOrderInfoInspectionItemRespVO {
     @ApiModelProperty("仓库编码")
     private String warehouseCode;
 
+    @ApiModelProperty("仓库名称")
+    private String warehouseName;
+
     @ApiModelProperty("是否管理保质期")
     private Byte qualityAssuranceManagement;
 

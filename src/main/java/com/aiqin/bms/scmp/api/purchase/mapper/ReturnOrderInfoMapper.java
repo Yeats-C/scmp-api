@@ -3,10 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.mapper;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoInspectionItemRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -64,7 +61,7 @@ public interface ReturnOrderInfoMapper {
      */
     InspectionDetailRespVO selectInspectionDetail(String code);
     /**
-     * TODO
+     * 查需要验货的sku数据
      * @author NullPointException
      * @date 2019/6/24
      * @param code 退货单编码
@@ -72,4 +69,12 @@ public interface ReturnOrderInfoMapper {
      * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoInspectionItemRespVO>
      */
     List<ReturnOrderInfoInspectionItemRespVO> selectInspectionItemList(@Param("code") String code, @Param("orderCode") String orderCode);
+    /**
+     * TODO
+     * @author NullPointException
+     * @date 2019/6/24
+     * @param code
+     * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionViewRespVO
+     */
+    InspectionViewRespVO selectInspectionView(String code);
 }

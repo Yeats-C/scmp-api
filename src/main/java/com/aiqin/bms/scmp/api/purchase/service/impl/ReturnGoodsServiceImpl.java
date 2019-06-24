@@ -187,8 +187,14 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
     @Transactional(rollbackFor = Exception.class)
     public void sendToOutBound(List<ReturnOrderInfoInspectionItem> items) {
         //TODO 调用库存接口锁库
-        throw new RuntimeException();
+        throw new RuntimeException("调用入库接口异常");
     }
+
+    @Override
+    public InspectionViewRespVO inspectionView(String code) {
+        return returnOrderInfoMapper.selectInspectionView(code);
+    }
+
     /**
      * 参数验证
      *
@@ -198,5 +204,6 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
      * @date 2019/6/19
      */
     private void validateOrderData(List<ReturnOrderInfoReqVO> reqVO) {
+
     }
 }
