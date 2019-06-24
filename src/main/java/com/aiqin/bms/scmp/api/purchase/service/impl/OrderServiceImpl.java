@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.OrderStatus;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.ReturnOrderStatus;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
@@ -271,6 +272,18 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         reqVO.setCompanyCode(getUser().getCompanyCode());
         List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectproductUniqueCodeList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean delivery(List<DeliveryReqVO> reqVO, String orderCode) {
+        //更新状态
+        distribution(orderCode, ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+        int i = orderInfoItemMapper.updateBatchNumById(reqVO);
+        if (i != reqVO.size()) {
+            throw new BizException(ResultCode.CHANGE_ACTUAL_DELIVERY_NUM_FAILED);
+        }
+        return Boolean.TRUE;
     }
 
 }

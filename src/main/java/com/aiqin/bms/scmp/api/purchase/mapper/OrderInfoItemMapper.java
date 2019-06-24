@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.DeliveryReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryProductUniqueCodeListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
@@ -43,4 +44,12 @@ public interface OrderInfoItemMapper {
      * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO>
      */
     List<QueryOrderProductListRespVO> selectproductUniqueCodeList(QueryProductUniqueCodeListReqVO reqVO);
+    /**
+     * 通过id批量更新实发数量
+     * @author NullPointException
+     * @date 2019/6/24
+     * @param reqVO
+     * @return int
+     */
+    int updateBatchNumById(List<DeliveryReqVO> reqVO);
 }

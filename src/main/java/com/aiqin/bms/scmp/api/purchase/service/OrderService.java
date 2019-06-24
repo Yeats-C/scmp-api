@@ -151,4 +151,12 @@ public interface OrderService {
      * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO>
      */
     BasePage<QueryProductUniqueCodeListRespVO> productUniqueCodeList(QueryProductUniqueCodeListReqVO reqVO);
+    /**
+     * 直送修改数量
+     * @author NullPointException
+     * @date 2019/6/24
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean delivery(List<DeliveryReqVO> reqVO,String orderCode);
 }
