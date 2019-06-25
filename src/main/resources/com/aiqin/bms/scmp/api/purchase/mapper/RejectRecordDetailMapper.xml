@@ -31,6 +31,9 @@
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
     <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -39,7 +42,7 @@
     category_name, brand_id, brand_name, product_count,product_type, product_spec, unit_code, unit_name, tax_rate,
     product_amount, product_total_amount, actual_count, actual_amount, batch_no, batch_remark, 
     batch_create_time, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
-    update_time
+    update_time,color_code,color_name,model_number
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

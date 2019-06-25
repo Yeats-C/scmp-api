@@ -191,5 +191,17 @@ public class RejectApplyDetailResponse {
     @JsonProperty("actual_amount")
     private Long actualAmount;
 
+    @ApiModelProperty(value="颜色编码")
+    @JsonProperty("color_code")
+    private String colorCode;
+
+    @ApiModelProperty(value="颜色")
+    @JsonProperty("color_name")
+    private String colorName;
+
+    @ApiModelProperty(value="型号")
+    @JsonProperty("model_number")
+    private String modelNumber;
+
 
 }

@@ -74,6 +74,18 @@ public class RejectApplyRecordDetail {
     @JsonProperty("product_type")
     private Integer productType;
 
+    @ApiModelProperty(value="颜色编码")
+    @JsonProperty("color_code")
+    private String colorCode;
+
+    @ApiModelProperty(value="颜色")
+    @JsonProperty("color_name")
+    private String colorName;
+
+    @ApiModelProperty(value="型号")
+    @JsonProperty("model_number")
+    private String modelNumber;
+
     @ApiModelProperty(value = "规格")
     @JsonProperty("product_spec")
     private String productSpec;

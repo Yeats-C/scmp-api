@@ -208,7 +208,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                 String[] record;
                 for (int i = 3; i <= result.length - 1; i++) {
                     record = result[i];
-                    //todo 通过sku查询商品的品类,品牌,规格,供应商 ,税率,库存数量,总价,仓库,库房
+                    //todo 通过sku查询商品的品类,品牌,规格,供应商 ,税率,库存数量,总价,仓库,库房 ,批次信息 ,结算方式
+
                 }
             }
             return HttpResponse.success();
@@ -325,16 +326,10 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             request.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
             Integer count = rejectRecordDao.updateStatus(request);
             LOGGER.info("供应商确认-更改退供申请详情影响条数:{}", count);
+            List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
             ReturnSupplyToOutBoundReqVo reqVo = new ReturnSupplyToOutBoundReqVo();
-            ReturnSupply returnSupply = new ReturnSupply();
-            returnSupply.setCode(rejectRecord.getRejectRecordCode());
-            returnSupply.setLinkMan(rejectRecord.getContactsPerson());
-            returnSupply.setLinkPhone(rejectRecord.getContactsPersonPhone());
-            returnSupply.setWarehouseCode(rejectRecord.getWarehouseCode());
-            returnSupply.setWarehouseName(rejectRecord.getWarehouseName());
-            returnSupply.setTransportCenterCode(rejectRecord.getTransportCenterCode());
-            returnSupply.setTransportCenterName(rejectRecord.getTransportCenterName());
-
+            reqVo.setRejectRecord(rejectRecord);
+            reqVo.setRejectRecordDetails(list);
             LOGGER.info("调用退供出库:{}", request);
             outboundService.returnSupplySave(reqVo);
             return HttpResponse.success();
