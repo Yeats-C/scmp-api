@@ -153,7 +153,14 @@ public interface OutboundService {
     void movementCreateInbound(Long id);
 
     HttpResponse selectOutboundBatchInfoByOutboundOderCode(OutboundBatch outboundBatch);
-
+    /**
+     * 批量保存出库单数据
+     * @author NullPointException
+     * @date 2019/6/25
+     * @param outboundReqVoList
+     * @return java.lang.Boolean
+     */
+    Boolean saveList(List<OutboundReqVo> outboundReqVoList);
 }
 
 

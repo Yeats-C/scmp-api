@@ -37,7 +37,7 @@ public class ApplyContractReqVo{
     private String supplierCode;
 
     @ApiModelProperty(value = "采购组编号",hidden = true)
-    @NotEmpty(message = "采购组编号不能为空")
+
     private String purchasingGroupCode;
 
     @ApiModelProperty("结算方式")

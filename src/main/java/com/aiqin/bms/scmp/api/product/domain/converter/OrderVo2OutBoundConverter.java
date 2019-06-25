@@ -70,11 +70,11 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                 outbound.setPreTaxAmount(reqVo.getOrderAmount());
                 outbound.setPreAmount(reqVo.getOrderAmount());
                 outbound.setPreTax(reqVo.getOrderAmount() - reqVo.getOrderAmount());
-//                outbound.setPraTax(outbound.getPreTax());
-//                outbound.setPraAmount(outbound.getPreAmount());
-//                outbound.setPraTaxAmount(outbound.getPreTaxAmount());
-//                outbound.setPraOutboundNum(outbound.getPraOutboundNum());
-//                outbound.setPraMainUnitNum(outbound.getPreMainUnitNum());
+//                order.setPraTax(order.getPreTax());
+//                order.setPraAmount(order.getPreAmount());
+//                order.setPraTaxAmount(order.getPreTaxAmount());
+//                order.setPraOutboundNum(order.getPraOutboundNum());
+//                order.setPraMainUnitNum(order.getPreMainUnitNum());
                 outbound.setCreateTime(new Date());
                 outbound.setCreateBy(reqVo.getOperator());
                 // 收货人
