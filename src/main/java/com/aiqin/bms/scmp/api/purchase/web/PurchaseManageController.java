@@ -47,7 +47,7 @@ public class PurchaseManageController {
     public HttpResponse purchaseFileList(@RequestParam("purchase_id") String purchaseId) {
         return purchaseManageService.purchaseFileList(purchaseId);
     }
-    @PostMapping("/purchase/form")
+    @PostMapping("/purchase/file")
     @ApiOperation("提交采购单")
     public HttpResponse purchaseForm(@RequestBody List<String> applyIds) {
         return purchaseManageService.purchaseForm(applyIds);
