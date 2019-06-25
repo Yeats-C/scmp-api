@@ -18,8 +18,8 @@ import com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
-import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
@@ -30,6 +30,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -272,6 +273,9 @@ public class ApplySupplyComServcieImpl extends SupplierBaseServiceImpl implement
             workFlowVO.setFormNo(applySupplyCompanyReqDTO.getFormNo());
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_COMPANY.getNum());
             workFlowVO.setTitle(applySupplyCompanyReqDTO.getApplySupplyName()+"申请");
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("auditPersonId",applySupplyCompanyReqDTO.getDirectSupervisorCode());
+            workFlowVO.setVariables(jsonObject.toString());
             WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_COMPANY);
             if(workFlowRespVO.getSuccess()){
                 ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();

@@ -28,16 +28,14 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
@@ -48,8 +46,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -530,7 +526,7 @@ public class SkuInfoServiceImpl extends ProductBaseServiceImpl implements SkuInf
         encodingRuleDao.updateNumberValue(Long.valueOf(code),encodingRule.getId());
         if (CollectionUtils.isNotEmpty(applyProductSkus) || CollectionUtils.isNotEmpty(productDrafts)){
             //调用审批接口
-            workFlow(String.valueOf(code),formNo,applyProductSkus);
+            workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode());
         }
         return 1;
     }
@@ -802,7 +798,7 @@ public class SkuInfoServiceImpl extends ProductBaseServiceImpl implements SkuInf
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus) {
+    public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode) {
         try {
             WorkFlowVO workFlowVO = new WorkFlowVO();
             workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?applyCode="+applyCode+"&"+workFlowBaseUrl.authority);
@@ -811,10 +807,12 @@ public class SkuInfoServiceImpl extends ProductBaseServiceImpl implements SkuInf
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_GOODS.getNum());
             AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
             String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            String currentTime= LocalDateTime.now().format(formatter);
+            String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
             String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
             workFlowVO.setTitle(title);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("auditPersonId",directSupervisorCode);
+            workFlowVO.setVariables(jsonObject.toString());
             WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS);
             if(workFlowRespVO.getSuccess()){
                 List<ApplyProduct> applyProducts = applyProductMapper.getApplyCode(applyCode);

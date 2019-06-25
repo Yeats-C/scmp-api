@@ -22,21 +22,17 @@ public enum WorkFlow {
      */
     APPLY_CONTRACT(1,"合同申请工作流","APPLY_CONTRACT"),
     /**
+     * 供应商集团工作流
+     */
+    APPLY_SUPPLIER(2,"供应商集团申请工作流","APPLY_SUPPLIER"),
+    /**
      * 供应商工作流
      */
-    APPLY_SUPPLIER(2,"供应商申请工作流","APPLY_SUPPLIER"),
+    APPLY_COMPANY(3,"供应商申请工作流","APPLY_COMPANY"),
     /**
-     * 供货单位工作流
+     * 账户申请工作流
      */
-    APPLY_COMPANY(3,"供货单位申请工作流","APPLY_COMPANY"),
-    /**
-     * 供货单位账户申请工作流
-     */
-    APPLY_COMPANY_ACC(4,"供货单位账户申请工作流","APPLY_COMPANY_ACC"),
-    /**
-     * 制造商申请工作流
-     */
-    APPLY_MANU(5,"制造商申请工作流","APPLY_MANU"),
+    APPLY_COMPANY_ACC(4,"账户申请工作流","APPLY_COMPANY_ACC"),
     /**
      * 采购申请工作流
      */
@@ -71,7 +67,12 @@ public enum WorkFlow {
     MOVEMENT_ODER(13,"移库审批流","MOVE_LIBRARY"),
 
     /**
-     * 商品申请工作流
+     * 报废审批工作流
+     */
+    SCRAP(15,"报废审批流","SKU_SCRAP"),
+
+    /**
+     * 商品销售区域申请工作流
      */
     APPLY_SALE_AREA(14,"商品销售区域申请工作流","APPLY_SALE_AREA");
 

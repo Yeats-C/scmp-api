@@ -30,8 +30,8 @@ import com.aiqin.bms.scmp.api.supplier.service.EncodingRuleService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.*;
-import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
@@ -40,6 +40,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
@@ -166,6 +167,9 @@ public class ApplySupplyComAcctServiceImpl extends SupplierBaseServiceImpl imple
             int i1 = applySupplyCompanyAcctReqDTO.getApplyType().intValue();
             String info = "账户信息";
             workFlowVO.setTitle(applySupplyCompanyAcctReqDTO.getAccountName()+info);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("auditPersonId",applySupplyCompanyAcctReqDTO.getDirectSupervisorCode());
+            workFlowVO.setVariables(jsonObject.toString());
             WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_COMPANY_ACC);
             if (workFlowRespVO.getSuccess()) {
                 ApplySupplyCompanyAccount applySupplyCompanyAccount = new ApplySupplyCompanyAccount();

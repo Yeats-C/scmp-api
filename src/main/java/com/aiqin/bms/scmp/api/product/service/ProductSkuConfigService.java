@@ -75,7 +75,7 @@ public interface ProductSkuConfigService {
      * @param applyCode
      * @param userName
      */
-    void workFlow(String formNo, String applyCode, String userName);
+    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode);
 
 
 
