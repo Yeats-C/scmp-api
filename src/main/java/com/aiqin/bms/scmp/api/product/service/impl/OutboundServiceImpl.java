@@ -418,7 +418,7 @@ public class OutboundServiceImpl implements OutboundService {
         List<InboundProductWmsReqVO> inboundProductWmsReqVOS =  outboundProductDao.selectMmsReqByOutboundOderCode(outbound.getOutboundOderCode());
         outboundWmsReqVO.setList(inboundProductWmsReqVOS);
         try{
-            String url =urlConfig.WMS_API_URL+"/deppon/save/outbound";
+            String url =urlConfig.WMS_API_URL+"/deppon/save/order";
             HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO));
 
             HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
@@ -861,5 +861,10 @@ public class OutboundServiceImpl implements OutboundService {
             log.error("根据出库单号查询出库商品批次详情失败", e);
             throw new GroundRuntimeException("根据出库单号查询出库商品批次详情失败");
         }
+    }
+
+    @Override
+    public Boolean saveList(List<OutboundReqVo> outboundReqVoList) {
+        return null;
     }
 }

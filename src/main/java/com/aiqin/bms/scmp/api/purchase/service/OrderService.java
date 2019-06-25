@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
@@ -35,11 +36,10 @@ public interface OrderService {
      * 推送到库房
      * @author NullPointException
      * @date 2019/6/15
-     * @param orders
-     * @param orderItems
+     * @param dtos
      * @return void
      */
-    void sendOrderToOutBound(List<OrderInfo> orders, List<OrderInfoItem> orderItems,List<OrderInfoItemProductBatch> list);
+    void sendOrderToOutBound(List<OrderInfoDTO> dtos);
     /**
      * 锁定批次库存
      * @author NullPointException
