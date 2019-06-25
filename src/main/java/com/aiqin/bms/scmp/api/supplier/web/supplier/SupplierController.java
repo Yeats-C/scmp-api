@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/supplier")
 @Api(description = "供应商集团管理")
-public class SupplierControllerSupplier extends SupplierBaseController {
+public class SupplierController extends SupplierBaseController {
     @Autowired
     private SupplierService supplierService;
     @Autowired

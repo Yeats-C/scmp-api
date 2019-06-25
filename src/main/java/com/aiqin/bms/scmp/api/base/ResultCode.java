@@ -192,11 +192,17 @@ public interface ResultCode {
     MessageId CAN_NOT_FIND_ORDER = MessageId.create(Project.PURCHASE_API,99,"订单数据查询失败");
     MessageId UPDATE_ORDER_STATUS_FAILED = MessageId.create(Project.PURCHASE_API,99,"订单状态更新失败");
     MessageId LOG_SAVE_ERROR = MessageId.create(Project.PURCHASE_API,99,"订单日志保存失败");
-    //退货
-    MessageId save_return_order_item_failed = MessageId.create(Project.PURCHASE_API,100,"退货订单附表保存失败");
-    MessageId save_return_order_failed = MessageId.create(Project.PURCHASE_API,100,"退货订单主表保存失败");
+    MessageId SAVE_LOCK_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,99,"保存批次锁库失败");
+    MessageId CHANGE_ACTUAL_DELIVERY_NUM_FAILED = MessageId.create(Project.PURCHASE_API,99,"修改实发数量失败");
+
 
     // 采购
     MessageId NOT_PURCHASE_GROUP = MessageId.create(Project.SCMP_API,201,"未获取到有效的采购组");
     MessageId NOT_PURCHASE_GROUP_PERSON = MessageId.create(Project.SCMP_API,202,"此采购组该人员无相关数据");
+
+    MessageId SAVE_RETURN_ORDER_ITEM_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单附表保存失败");
+    MessageId SAVE_RETURN_ORDER_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单主表保存失败");
+    MessageId GET_RETURN_GOODS_DETAIL_FAILED = MessageId.create(Project.PURCHASE_API,100,"获取订单详情失败");
+    MessageId QUERY_INSPECTION_DETAIL_ERROR = MessageId.create(Project.PURCHASE_API,100,"查询验货信息失败");
+    MessageId SAVE_INSPECTION_DATA_FAILED = MessageId.create(Project.PURCHASE_API,100,"保存验货信息失败");
 }

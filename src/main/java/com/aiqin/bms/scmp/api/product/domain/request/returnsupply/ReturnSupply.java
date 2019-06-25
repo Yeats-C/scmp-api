@@ -111,11 +111,33 @@ public class ReturnSupply {
 
     @ApiModelProperty("不含税实际退供总数量")
     private Long noTaxActualAmount;
+
     @ApiModelProperty("审批流id")
     private String formNo;
 
     @ApiModelProperty("出库单号")
     private String outBoundCode;
+
+    @ApiModelProperty("省编码")
+    private String provinceCode;
+
+    @ApiModelProperty("省编码")
+    private String provinceName;
+
+    @ApiModelProperty("市编码")
+    private String cityCode;
+
+    @ApiModelProperty("市名称")
+    private String cityName;
+
+    @ApiModelProperty("区编码")
+    private String countyCode;
+
+    @ApiModelProperty("区名称")
+    private String countyName;
+
+    @ApiModelProperty("详细地址")
+    private String detailedAddress;
 
     public String getOutBoundCode() {
         return outBoundCode;

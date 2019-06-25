@@ -38,6 +38,8 @@ import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
@@ -1229,6 +1231,22 @@ public class StockServiceImpl implements StockService {
     @Override
     public List<Stock> selectListByWareHouseCode(Stock stock) {
         List<Stock> list=stockDao.selectListByWareHouseCode(stock);
+        return list;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<OrderInfoItemProductBatch> lockBatchStock(List<LockOrderItemBatchReqVO> vo) {
+        List<OrderInfoItemProductBatch> list = Lists.newArrayList();
+        Date date = new Date();
+        for (int i = 0; i < vo.size(); i++) {
+            LockOrderItemBatchReqVO reqVO = vo.get(i);
+            OrderInfoItemProductBatch copy = BeanCopyUtils.copy(reqVO, OrderInfoItemProductBatch.class);
+            copy.setBatchNumber(System.currentTimeMillis()+i+"");
+            copy.setProductTime(date);
+            copy.setProductLineNum((long) i);
+            list.add(copy);
+        }
         return list;
     }
 

@@ -28,6 +28,12 @@ public class PurchaseGroupVo extends CommonBean {
     @ApiModelProperty("采购组名称")
     private String purchaseGroupName;
 
+    @ApiModelProperty("负责人编号")
+    private String responsiblePersonCode;
+
+    @ApiModelProperty("负责人名称")
+    private String responsiblePersonName;
+
     @ApiModelProperty("采购组人员")
     private List<PurchaseGroupBuyerVo>  list;
 }

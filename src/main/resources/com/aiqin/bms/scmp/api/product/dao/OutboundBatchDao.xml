@@ -9,7 +9,8 @@
     <result column="outbound_batch_code" jdbcType="VARCHAR" property="outboundBatchCode" />
     <result column="manufacture_time" jdbcType="TIMESTAMP" property="manufactureTime" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
-    <result column="qty" jdbcType="BIGINT" property="qty" />
+    <result column="pre_qty" jdbcType="BIGINT" property="preQty" />
+    <result column="pra_qty" jdbcType="BIGINT" property="praQty" />
     <result column="store_house_code" jdbcType="VARCHAR" property="storeHouseCode" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -19,8 +20,8 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, outbound_oder_code, sku_code, sku_name, outbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
-    create_by, create_time, update_by, update_time,line_num
+    id, outbound_oder_code, sku_code, sku_name, outbound_batch_code, manufacture_time, batch_remark, pre_qty, pra_qty, store_house_code,
+    create_by, create_time, update_by, update_time, line_num
   </sql>
 
   <select id="selectOutboundBatchInfoByOutboundOderCode" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch" resultMap="BaseResultMap">
@@ -33,5 +34,34 @@
   <select id="countOutboundBatchInfoByOutboundOderCode" parameterType="java.lang.String" resultType="java.lang.Integer">
     select count(1)
     from outbound_batch where outbound_oder_code = #{outboundOderCode, jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insertInfo" parameterType="java.util.List">
+    insert outbound_batch(outbound_oder_code, sku_code, sku_name, outbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
+    create_by, create_time, update_by, update_time,line_num)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.outboundOderCode,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR},
+      #{item.outboundBatchCode,jdbcType=VARCHAR},
+      #{item.manufactureTime,jdbcType=VARCHAR},
+      #{item.batchRemark,jdbcType=VARCHAR},
+      #{item.qty,jdbcType=BIGINT},
+      #{item.storeHouseCode,jdbcType=VARCHAR},
+      #{item.createBy,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.linenum,jdbcType=BIGINT}
+      )
+    </foreach>
+  </insert>
+
+  <select id="selectByOutboundBatchOderCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound_batch
+    where outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
   </select>
 </mapper>

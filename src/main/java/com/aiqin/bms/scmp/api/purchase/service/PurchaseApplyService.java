@@ -13,7 +13,7 @@ public interface PurchaseApplyService {
 
     HttpResponse applyProductList(PurchaseApplyRequest purchaseApplyRequest);
 
-    HttpResponse insertPurchaseForm(List<PurchaseApplyProduct> purchaseApplyProduct);
+    HttpResponse purchaseApplyForm(List<PurchaseApplyProduct> purchaseApplyProduct);
 
     HttpResponse searchApplyProduct(String applyProductId);
 

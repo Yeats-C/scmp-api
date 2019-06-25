@@ -22,6 +22,10 @@ public class PurchaseApplyProduct {
     @JsonProperty("purchase_apply_id")
     private String purchaseApplyId;
 
+    @ApiModelProperty(value="采购申请单")
+    @JsonProperty("purchase_apply_code")
+    private String purchaseApplyCode;
+
     @ApiModelProperty(value="sku编号")
     @JsonProperty("sku_code")
     private String skuCode;

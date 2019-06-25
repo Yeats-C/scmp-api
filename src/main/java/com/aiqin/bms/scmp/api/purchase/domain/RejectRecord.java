@@ -185,4 +185,12 @@ public class RejectRecord {
     @ApiModelProperty(value = "库房名称")
     @JsonProperty("warehouse_name")
     private String warehouseName;
+
+    @ApiModelProperty("创建人公司编码")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty("创建人公司名称")
+    @JsonProperty("company_name")
+    private String companyName;
 }

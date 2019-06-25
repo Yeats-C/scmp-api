@@ -17,11 +17,13 @@
         <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+        <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     </resultMap>
     <sql id="Base_Column_List">
     id, reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name, 
     apply_record_status, sum_sku, sum_count, sum_amount, create_by_id, create_by_name, 
-    update_by_id, update_by_name, create_time, update_time
+    update_by_id, update_by_name, create_time, update_time, company_name,company_code
   </sql>
     <resultMap id="queryResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -37,6 +39,10 @@
     </resultMap>
     <sql id="LIST_QUERY">
         <where>
+            purchase_group_code in
+            <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+                #{item.purchaseGroupCode,jdbcType=VARCHAR}
+            </foreach>
             <if test="rejectApplyRecordCode!=null and rejectApplyRecordCode!=''">
                 and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
             </if>
@@ -79,13 +85,13 @@
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
     insert into reject_apply_record (id, reject_apply_record_code, apply_type, 
       purchase_group_code, purchase_group_name, apply_record_status, 
-      sum_sku, sum_count, sum_amount, 
+      sum_sku, sum_count, sum_amount,  company_name,company_code,
       create_by_id, create_by_name, update_by_id, 
       update_by_name, create_time, update_time
       )
     values (#{id,jdbcType=BIGINT}, #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{applyType,jdbcType=BIT}, 
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{applyRecordStatus,jdbcType=BIT}, 
-      #{sumSku,jdbcType=INTEGER}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT}, 
+      #{sumSku,jdbcType=INTEGER}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT},  #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR},
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
       #{updateByName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )

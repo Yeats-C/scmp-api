@@ -9,6 +9,7 @@
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="apply_record_status" jdbcType="BIT" property="applyRecordStatus" />
+    <result column="barcode" jdbcType="VARCHAR" property="barcode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="product_id" jdbcType="VARCHAR" property="productId" />
@@ -50,16 +51,19 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
   </resultMap>
   <sql id="Base_Column_List">
     id, reject_apply_record_detail_id,reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name,
-    apply_record_status, sku_code, sku_name, product_id, category_id, category_name, 
+    apply_record_status,barcode, sku_code, sku_name, product_id, category_id, category_name,
     brand_id, brand_name, product_type, product_spec, unit_code,unit_name, stock_count, product_count, 
     tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name, 
     product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time, 
     settlement_method_code,settlement_method_name, supplier_code, supplier_name, province_id, province_name, city_id,
     city_name, district_id, district_name, address, create_by_id, create_by_name, update_by_id, 
-    update_by_name, create_time, update_time
+    update_by_name, create_time, update_time,color_code,color_name,model_number
   </sql>
   <resultMap id="ResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse">
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
@@ -98,7 +102,7 @@
   <select id="selectByRejectCode"   resultMap="BaseResultMap">
     select
     reject_apply_record_detail_id,reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name,
-    apply_record_status, sku_code, sku_name, product_id, category_id, category_name,
+    apply_record_status,barcode, sku_code, sku_name, product_id, category_id, category_name,
     brand_id, brand_name, product_type, product_spec, unit_code,unit_name, stock_count, product_count,
     tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name,
     product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time,
@@ -122,8 +126,8 @@
   </select>
   <insert id="insertAll" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
     insert into reject_apply_record_detail ( reject_apply_record_detail_id, reject_apply_record_code, apply_type,
-      purchase_group_code, purchase_group_name, apply_record_status, 
-      sku_code, sku_name, product_id, 
+      purchase_group_code, purchase_group_name, apply_record_status,
+      barcode,sku_code, sku_name, product_id,
       category_id, category_name, brand_id, 
       brand_name, product_type, product_spec, 
       unit_code, unit_name,stock_count, product_count,
@@ -133,7 +137,7 @@
       batch_remark, batch_create_time, settlement_method_code, settlement_method_name,
       supplier_code, supplier_name, province_id, 
       province_name, city_id, city_name, 
-      district_id, district_name, address, 
+      district_id, district_name, address, color_code,color_name,model_number,
       create_by_id, create_by_name, update_by_id, 
       update_by_name, create_time, update_time
       )
@@ -146,6 +150,7 @@
       #{item.purchaseGroupCode,jdbcType=VARCHAR},
       #{item.purchaseGroupName,jdbcType=VARCHAR},
       #{item.applyRecordStatus,jdbcType=BIT},
+      #{item.barcode,jdbcType=VARCHAR},
       #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR},
       #{item.productId,jdbcType=VARCHAR},
@@ -181,6 +186,9 @@
       #{item.districtId,jdbcType=VARCHAR},
       #{item.districtName,jdbcType=VARCHAR},
       #{item.address,jdbcType=VARCHAR},
+      #{item.colorCode,jdbcType=VARCHAR},
+      #{item.colorName,jdbcType=VARCHAR},
+      #{item.modelNumber,jdbcType=VARCHAR},
       #{item.createById,jdbcType=VARCHAR},
       #{item.createByName,jdbcType=VARCHAR},
       #{item.updateById,jdbcType=VARCHAR},

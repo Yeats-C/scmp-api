@@ -46,6 +46,8 @@
         <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
         <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
         <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+        <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     </resultMap>
     <sql id="Base_Column_List">
     id, reject_record_id, reject_record_code, duty_person, contacts_person, contacts_person_phone, 
@@ -54,10 +56,15 @@
     purchase_group_code, purchase_group_name, reject_status, remark, transport_remark, transport_url,
     out_stock_time, sum_count, sum_amount, single_count, single_amount, return_count, 
     return_amount, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
-    update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name
+    update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name,
+    company_name,company_code
   </sql>
     <sql id="LIST_QUERY">
         <where>
+            purchase_group_code in
+            <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+                #{item.purchaseGroupCode,jdbcType=VARCHAR}
+            </foreach>
             <if test="rejectRecordCode!=null and rejectRecordCode!=''">
                 and reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
             </if>
@@ -117,7 +124,8 @@
       out_stock_time, sum_count, sum_amount, 
       single_count, single_amount, return_count, 
       return_amount, create_by_id, create_by_name, transport_center_code,
-      transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name,  create_time,  update_time)
+      transport_center_name, warehouse_code, warehouse_name,company_name,company_code,
+      settlement_method_code,settlement_method_name,  create_time,  update_time)
     values ( #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR},
       #{dutyPerson,jdbcType=VARCHAR}, #{contactsPerson,jdbcType=VARCHAR}, #{contactsPersonPhone,jdbcType=VARCHAR}, 
       #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=VARCHAR}, 
@@ -130,7 +138,7 @@
       #{singleCount,jdbcType=INTEGER}, #{singleAmount,jdbcType=BIGINT}, #{returnCount,jdbcType=INTEGER}, 
       #{returnAmount,jdbcType=BIGINT}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
       #{transportCenterCode,jdbcType=VARCHAR},#{transportCenterName,jdbcType=VARCHAR},
-      #{warehouseCode,jdbcType=VARCHAR},#{warehouseName,jdbcType=VARCHAR},
+      #{warehouseCode,jdbcType=VARCHAR},#{warehouseName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR},
       #{settlementMethodCode,jdbcType=VARCHAR},#{settlementMethodName,jdbcType=VARCHAR},
        now(),now())
   </insert>

@@ -11,10 +11,12 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="order_volume_coefficient" jdbcType="DECIMAL" property="orderVolumeCoefficient" />
+    <result column="order_weight_coefficient" jdbcType="DECIMAL" property="orderWeightCoefficient" />
   </resultMap>
   <sql id="Base_Column_List">
     id, auto_return_goods_day, company_code, company_name, del_flag, create_by, create_time, 
-    update_by, update_time
+    update_by, update_time,order_volume_coefficient,order_weight_coefficient
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -25,7 +27,9 @@
   <select id="findByCompanyCode" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.rule.DetailRespVo">
     select
       id as id ,
-      auto_return_goods_day as autoReturnGoodsDay
+      auto_return_goods_day as autoReturnGoodsDay,
+      order_volume_coefficient as orderVolumeCoefficient,
+      order_weight_coefficient as orderWeightCoefficient
     from supplier_rule
     where company_code = #{companyCode,jdbcType=VARCHAR}
   </select>
@@ -36,11 +40,13 @@
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierRule">
     insert into supplier_rule (id, auto_return_goods_day, company_code, 
       company_name, del_flag, create_by, 
-      create_time, update_by, update_time
+      create_time, update_by, update_time,
+      order_volume_coefficient,order_weight_coefficient
       )
     values (#{id,jdbcType=BIGINT}, #{autoReturnGoodsDay,jdbcType=INTEGER}, #{companyCode,jdbcType=VARCHAR}, 
       #{companyName,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, #{createBy,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+      #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+      #{orderVolumeCoefficient,jdbcType=DECIMAL}, #{orderWeightCoefficient,jdbcType=DECIMAL}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierRule">
@@ -73,6 +79,12 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="orderVolumeCoefficient != null">
+        order_volume_coefficient,
+      </if>
+      <if test="orderWeightCoefficient != null">
+        order_weight_coefficient,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -101,6 +113,12 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderVolumeCoefficient != null">
+        #{orderVolumeCoefficient,jdbcType=DECIMAL},
+      </if>
+      <if test="orderWeightCoefficient != null">
+        #{orderWeightCoefficient,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
@@ -131,6 +149,12 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="orderVolumeCoefficient != null">
+        order_volume_coefficient = #{orderVolumeCoefficient,jdbcType=DECIMAL},
+      </if>
+      <if test="orderWeightCoefficient != null">
+        order_weight_coefficient = #{orderWeightCoefficient,jdbcType=DECIMAL},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -143,7 +167,9 @@
       create_by = #{createBy,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      order_volume_coefficient = #{orderVolumeCoefficient,jdbcType=DECIMAL},
+      order_weight_coefficient = #{orderWeightCoefficient,jdbcType=DECIMAL},
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

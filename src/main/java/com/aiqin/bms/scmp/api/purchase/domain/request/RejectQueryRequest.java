@@ -1,10 +1,13 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
 import com.aiqin.bms.scmp.api.base.PagesRequest;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * <p>
@@ -67,4 +70,20 @@ public class RejectQueryRequest extends PagesRequest {
     @JsonProperty("reject_status")
     private Integer rejectStatus;
 
+    @ApiModelProperty()
+    private List<PurchaseGroupVo> groupList;
+
+    public RejectQueryRequest() {
+    }
+
+    public RejectQueryRequest(String beginTime, String finishTime, String rejectRecordCode, String purchaseGroupCode, String supplierCode, String transportCenterCode, String warehouseCode, Integer rejectStatus) {
+        this.beginTime = beginTime;
+        this.finishTime = finishTime;
+        this.rejectRecordCode = rejectRecordCode;
+        this.purchaseGroupCode = purchaseGroupCode;
+        this.supplierCode = supplierCode;
+        this.transportCenterCode = transportCenterCode;
+        this.warehouseCode = warehouseCode;
+        this.rejectStatus = rejectStatus;
+    }
 }

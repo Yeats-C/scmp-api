@@ -55,7 +55,7 @@
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="transport_company_code" jdbcType="VARCHAR" property="transportCompanyCode" />
     <result column="transport_company" jdbcType="VARCHAR" property="transportCompany" />
-    <result column="Transport_number" jdbcType="VARCHAR" property="transportNumber" />
+    <result column="transport_number" jdbcType="VARCHAR" property="transportNumber" />
     <result column="return_reason_code" jdbcType="VARCHAR" property="returnReasonCode" />
     <result column="return_reason_content" jdbcType="VARCHAR" property="returnReasonContent" />
     <result column="remake" jdbcType="VARCHAR" property="remake" />
@@ -70,7 +70,7 @@
     payment_type, payment_type_code, deliver_amount, product_num, product_total_amount, 
     return_order_amount, weight, delivery_time, receiving_time, operator, operator_code, 
     operator_time, inspection_remark, company_code, company_name, transport_company_code, 
-    transport_company, Transport_number, return_reason_code, return_reason_content, remake
+    transport_company, transport_number, return_reason_code, return_reason_content, remake
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -147,6 +147,106 @@
     <result column="adetail_address" jdbcType="VARCHAR" property="detailAddress" />
     <result column="azip_code" jdbcType="VARCHAR" property="zipCode" />
     <result column="adistribution_mode" jdbcType="VARCHAR" property="distributionMode" />
+    <result column="aorder_status" jdbcType="INTEGER" property="orderStatus" />
+    <result column="apayment_type" jdbcType="VARCHAR" property="paymentType" />
+    <result column="adeliver_amount" jdbcType="BIGINT" property="deliverAmount" />
+    <result column="aproduct_num" jdbcType="BIGINT" property="productNum" />
+    <result column="aproduct_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
+    <result column="areturn_order_amount" jdbcType="BIGINT" property="returnOrderAmount" />
+    <result column="aweight" jdbcType="BIGINT" property="weight" />
+    <result column="adelivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
+    <result column="areceiving_time" jdbcType="TIMESTAMP" property="receivingTime" />
+    <result column="aoperator" jdbcType="VARCHAR" property="operator" />
+    <result column="aoperator_time" jdbcType="TIMESTAMP" property="operatorTime" />
+    <result column="ainspection_remark" jdbcType="VARCHAR" property="inspectionRemark" />
+    <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="atransport_company" jdbcType="VARCHAR" property="transportCompany" />
+    <result column="atransport_number" jdbcType="VARCHAR" property="transportNumber" />
+    <result column="areturn_reason_content" jdbcType="VARCHAR" property="returnReasonContent" />
+    <result column="aremake" jdbcType="VARCHAR" property="remake" />
+    <!--<collection property="itemList" ofType="">-->
+
+    <!--</collection>-->
+
+  </resultMap>
+  <select id="selectReturnOrderDetail" resultMap="selectReturnOrderDetail">
+
+
+
+
+  </select>
+  <select id="selectreturnInspectionList"
+          resultType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO">
+    select
+    a.return_order_code returnOrderCode,
+    a.return_order_type returnOrderType,
+    a.order_code orderCode,
+    a.order_type orderType,
+    a.customer_name customerName,
+    a.transport_center_name transportCenterName,
+    a.warehouse_name warehouseName,
+    a.supplier_name supplierName,
+    a.order_status orderStatus,
+    a.create_date createDate,
+    a.product_num productNum,
+    a.product_total_amount productTotalAmount,
+    a.return_order_amount returnOrderAmount
+    from return_order_info a
+    left join return_order_info_item b
+    on a.return_order_code = b.return_order_code
+    where a.company_code = #{companyCode}
+    <if test="createDateStart != null">
+      and a.create_date &gt;=#{createDateStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createDateEnd != null">
+      and a.create_date &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
+    </if>
+    <if test="orderStatus != null and orderStatus != ''">
+      and a.order_status = #{orderStatus}
+    </if>
+    <if test="transportCenterCode != null and transportCenterCode != ''">
+      and a.transport_center_code = #{transportCenterCode}
+    </if>
+    <if test="warehouseCode != null and warehouseCode != ''">
+      and a.warehouse_code = #{warehouseCode}
+    </if>
+    <if test="customerCode != null and customerCode != ''">
+      and a.customer_code like concat('%',#{customerCode},'%')
+    </if>
+    <if test="orderCode != null and orderCode != ''">
+      and a.order_code = #{orderCode}
+    </if>
+    <if test="returnOrderCode != null and returnOrderCode != ''">
+      and a.return_order_code = #{returnOrderCode}
+    </if>
+  </select>
+  <resultMap id="selectInspectionDetail" type="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO">
+    <result column="areturn_order_code" jdbcType="VARCHAR" property="returnOrderCode" />
+    <result column="aorder_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="acreate_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="aorder_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="aorder_type_code" jdbcType="INTEGER" property="orderTypeCode" />
+    <result column="areturn_order_type" jdbcType="VARCHAR" property="returnOrderType" />
+    <result column="areturn_order_type_code" jdbcType="INTEGER" property="returnOrderTypeCode" />
+    <result column="apayment_status" jdbcType="INTEGER" property="paymentStatus" />
+    <result column="abe_lock" jdbcType="INTEGER" property="beLock" />
+    <result column="abe_delete" jdbcType="INTEGER" property="beDelete" />
+    <result column="atransport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="atransport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="awarehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="awarehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="asupplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="acustomer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="aconsignee" jdbcType="VARCHAR" property="consignee" />
+    <result column="aconsignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+    <result column="aaddress" jdbcType="VARCHAR" property="address" />
+    <result column="aprovince_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="acity_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="adistrict_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="adetail_address" jdbcType="VARCHAR" property="detailAddress" />
+    <result column="azip_code" jdbcType="VARCHAR" property="zipCode" />
+    <result column="adistribution_mode" jdbcType="VARCHAR" property="distributionMode" />
     <result column="aorder_status" jdbcType="BIGINT" property="orderStatus" />
     <result column="apayment_type" jdbcType="VARCHAR" property="paymentType" />
     <result column="adeliver_amount" jdbcType="BIGINT" property="deliverAmount" />
@@ -162,19 +262,245 @@
     <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
     <result column="atransport_company" jdbcType="VARCHAR" property="transportCompany" />
-    <result column="aTransport_number" jdbcType="VARCHAR" property="transportNumber" />
+    <result column="atransport_number" jdbcType="VARCHAR" property="transportNumber" />
     <result column="areturn_reason_content" jdbcType="VARCHAR" property="returnReasonContent" />
     <result column="aremake" jdbcType="VARCHAR" property="remake" />
-    <!--<collection property="itemList" ofType="">-->
-
-    <!--</collection>-->
-
+    <collection property="itemList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoForInspectionItemRespVO">
+      <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+      <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+      <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl" />
+      <result column="spec" jdbcType="VARCHAR" property="spec" />
+      <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+      <result column="model" jdbcType="VARCHAR" property="model" />
+      <result column="base_product_content" jdbcType="INTEGER" property="baseProductContent" />
+      <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+      <result column="zero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
+      <result column="give_promotion" jdbcType="INTEGER" property="givePromotion" />
+      <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
+      <result column="price" jdbcType="BIGINT" property="price" />
+      <result column="num" jdbcType="BIGINT" property="num" />
+      <result column="amount" jdbcType="BIGINT" property="amount" />
+      <result column="activity_code" jdbcType="VARCHAR" property="activityCode" />
+      <result column="product_line_num" jdbcType="BIGINT" property="productLineNum" />
+      <result column="promotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
+      <result column="product_status" jdbcType="INTEGER" property="productStatus" />
+    </collection>
   </resultMap>
-  <select id="selectReturnOrderDetail" resultMap="selectReturnOrderDetail">
-
-
-
-
+    <select id="selectInspectionDetail" resultMap="selectInspectionDetail">
+      select a.return_order_code areturn_order_code,
+             a.order_code aorder_code,
+             a.create_date acreate_date,
+             a.return_order_type areturn_order_type,
+             a.order_type aorder_type,
+             a.order_status aorder_status,
+             a.transport_center_name atransport_center_name,
+             a.transport_center_code atransport_center_code,
+             a.warehouse_name awarehouse_name,
+             a.warehouse_code awarehouse_code,
+             a.district_name adistrict_name,
+             a.customer_name acustomer_name,
+             a.consignee aconsignee,
+             a.consignee_phone aconsignee_phone,
+             a.province_name aprovince_name,
+             a.city_name acity_name,
+             a.district_name adistrict_name,
+             a.detail_address adetail_address,
+             a.zip_code azip_code,
+             a.product_num aproduct_num,
+             a.weight aweight,
+             a.delivery_time adelivery_time,
+             a.transport_company atransport_company,
+             a.transport_number atransport_number,
+             a.return_reason_content areturn_reason_content,
+             a.remake aremake,
+             b.sku_code bsku_code,
+             b.sku_name bsku_name,
+             b.picture_url bpicture_url,
+             b.spec bspec,
+             b.color_name bcolor_name,
+             b.model bmodel,
+             b.base_product_content bbase_product_content,
+             b.unit_name bunit_name,
+             b.zero_disassembly_coefficient bzero_disassembly_coefficient,
+             b.give_promotion bgive_promotion,
+             b.price bprice,
+             b.num bnum,
+             b.amount bamount,
+             b.activity_code bactivity_code,
+             b.product_line_num bproduct_line_num,
+             b.promotion_line_num bpromotion_line_num,
+             b.product_status bproduct_status
+      from return_order_info a
+               left join return_order_info_item b
+                         on a.return_order_code = b.return_order_code
+      where a.return_order_code = #{code}
+    </select>
+  <select id="selectInspectionItemList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoInspectionItemRespVO">
+        select a.id id,
+               a.return_order_code returnOrderCode,
+               a.sku_code skuCode,
+               a.sku_name skuName,
+               a.picture_url pictureUrl,
+               a.spec spec,
+               a.color_name colorName,
+               a.model model,
+               a.base_product_content baseProductContent,
+               a.unit_code unitCode,
+               a.unit_name unitName,
+               a.zero_disassembly_coefficient zeroDisassemblyCoefficient,
+               a.give_promotion givePromotion,
+               a.product_line_num originalLineNum,
+               a.product_status productStatus,
+               group_concat(b.batch_number) batchNumber
+        from return_order_info_item a
+                 left join order_info_item_product_batch b
+                           on a.sku_code = b.sku_code
+        where a.return_order_code = #{code} and order_code = #{orderCode}
+        group by a.id;
+  </select>
+  <resultMap id="selectInspectionView" type="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionViewRespVO">
+    <result column="areturn_order_code" jdbcType="VARCHAR" property="returnOrderCode" />
+    <result column="aorder_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="acreate_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="aorder_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="aorder_type_code" jdbcType="INTEGER" property="orderTypeCode" />
+    <result column="areturn_order_type" jdbcType="VARCHAR" property="returnOrderType" />
+    <result column="areturn_order_type_code" jdbcType="INTEGER" property="returnOrderTypeCode" />
+    <result column="apayment_status" jdbcType="INTEGER" property="paymentStatus" />
+    <result column="abe_lock" jdbcType="INTEGER" property="beLock" />
+    <result column="abe_delete" jdbcType="INTEGER" property="beDelete" />
+    <result column="atransport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="atransport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="awarehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="awarehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="asupplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="acustomer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="aconsignee" jdbcType="VARCHAR" property="consignee" />
+    <result column="aconsignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+    <result column="aaddress" jdbcType="VARCHAR" property="address" />
+    <result column="aprovince_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="acity_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="adistrict_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="adetail_address" jdbcType="VARCHAR" property="detailAddress" />
+    <result column="azip_code" jdbcType="VARCHAR" property="zipCode" />
+    <result column="adistribution_mode" jdbcType="VARCHAR" property="distributionMode" />
+    <result column="aorder_status" jdbcType="BIGINT" property="orderStatus" />
+    <result column="apayment_type" jdbcType="VARCHAR" property="paymentType" />
+    <result column="adeliver_amount" jdbcType="BIGINT" property="deliverAmount" />
+    <result column="aproduct_num" jdbcType="BIGINT" property="productNum" />
+    <result column="aproduct_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
+    <result column="areturn_order_amount" jdbcType="BIGINT" property="returnOrderAmount" />
+    <result column="aweight" jdbcType="BIGINT" property="weight" />
+    <result column="adelivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
+    <result column="areceiving_time" jdbcType="TIMESTAMP" property="receivingTime" />
+    <result column="aoperator" jdbcType="VARCHAR" property="operator" />
+    <result column="aoperator_time" jdbcType="TIMESTAMP" property="operatorTime" />
+    <result column="ainspection_remark" jdbcType="VARCHAR" property="inspectionRemark" />
+    <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="atransport_company" jdbcType="VARCHAR" property="transportCompany" />
+    <result column="atransport_number" jdbcType="VARCHAR" property="transportNumber" />
+    <result column="areturn_reason_content" jdbcType="VARCHAR" property="returnReasonContent" />
+    <result column="aremake" jdbcType="VARCHAR" property="remake" />
+    <collection property="itemList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoForInspectionItemRespVO">
+      <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
+      <result column="bsku_name" jdbcType="VARCHAR" property="skuName" />
+      <result column="bpicture_url" jdbcType="VARCHAR" property="pictureUrl" />
+      <result column="bspec" jdbcType="VARCHAR" property="spec" />
+      <result column="bcolor_name" jdbcType="VARCHAR" property="colorName" />
+      <result column="bmodel" jdbcType="VARCHAR" property="model" />
+      <result column="bbase_product_content" jdbcType="INTEGER" property="baseProductContent" />
+      <result column="bunit_name" jdbcType="VARCHAR" property="unitName" />
+      <result column="bzero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
+      <result column="bgive_promotion" jdbcType="INTEGER" property="givePromotion" />
+      <result column="bbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+      <result column="bprice" jdbcType="BIGINT" property="price" />
+      <result column="bnum" jdbcType="BIGINT" property="num" />
+      <result column="bamount" jdbcType="BIGINT" property="amount" />
+      <result column="bactivity_code" jdbcType="VARCHAR" property="activityCode" />
+      <result column="bproduct_line_num" jdbcType="BIGINT" property="productLineNum" />
+      <result column="bpromotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
+      <result column="bproduct_status" jdbcType="INTEGER" property="productStatus" />
+    </collection>
+    <collection property="inspectionItemList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoInspectionItemRespVO">
+      <result column="csku_code" jdbcType="VARCHAR" property="skuCode" />
+      <result column="csku_name" jdbcType="VARCHAR" property="skuName" />
+      <result column="cpicture_url" jdbcType="VARCHAR" property="pictureUrl" />
+      <result column="cspec" jdbcType="VARCHAR" property="spec" />
+      <result column="ccolor_name" jdbcType="VARCHAR" property="colorName" />
+      <result column="cmodel" jdbcType="VARCHAR" property="model" />
+      <result column="cbase_product_content" jdbcType="INTEGER" property="baseProductContent" />
+      <result column="cunit_code" jdbcType="VARCHAR" property="unitCode" />
+      <result column="cunit_name" jdbcType="VARCHAR" property="unitName" />
+      <result column="czero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
+      <result column="cgive_promotion" jdbcType="INTEGER" property="givePromotion" />
+      <result column="cbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+      <result column="cnum" jdbcType="BIGINT" property="num" />
+      <result column="cproduct_line_num" jdbcType="BIGINT" property="productLineNum" />
+      <result column="coriginal_line_num" jdbcType="INTEGER" property="originalLineNum" />
+      <result column="cproduct_status" jdbcType="INTEGER" property="productStatus" />
+      <result column="cwarehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+      <result column="cwarehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    </collection>
+  </resultMap>
+  <select id="selectInspectionView" resultMap="selectInspectionView">
+        select a.return_order_code areturn_order_code,
+               a.order_code aorder_code,
+               a.create_date acreate_date,
+               a.return_order_type areturn_order_type,
+               a.order_type aorder_type,
+               a.order_status aorder_status,
+               a.transport_center_name atransport_center_name,
+               a.transport_center_code atransport_center_code,
+               a.warehouse_name awarehouse_name,
+               a.warehouse_code awarehouse_code,
+               a.district_name adistrict_name,
+               a.customer_name acustomer_name,
+               a.consignee aconsignee,
+               a.consignee_phone aconsignee_phone,
+               a.province_name aprovince_name,
+               a.city_name acity_name,
+               a.district_name adistrict_name,
+               a.detail_address adetail_address,
+               a.zip_code azip_code,
+               a.product_num aproduct_num,
+               a.weight aweight,
+               a.delivery_time adelivery_time,
+               a.transport_company atransport_company,
+               a.transport_number atransport_number,
+               a.return_reason_content areturn_reason_content,
+               a.remake aremake,
+               b.sku_code bsku_code,
+               b.sku_name bsku_name,
+               b.picture_url bpicture_url,
+               b.spec bspec,
+               b.color_name bcolor_name,
+               b.model bmodel,
+               b.base_product_content bbase_product_content,
+               b.unit_name bunit_name,
+               b.zero_disassembly_coefficient bzero_disassembly_coefficient,
+               b.give_promotion bgive_promotion,
+               b.price bprice,
+               b.num bnum,
+               b.amount bamount,
+               b.activity_code bactivity_code,
+               b.product_line_num bproduct_line_num,
+               b.promotion_line_num bpromotion_line_num,
+               b.product_status bproduct_status,
+               c.sku_code csku_code,
+               c.sku_name csku_name,
+               c.picture_url cpicture_url,
+               c.spec cspec,
+               c.color_name ccolor_name,
+               c.model cmodel,
+               c.base_product_content cbase_product_content,
+               c.unit_name cunit_name,
+               c.num cnum,
+               c.product_status cproduct_status,
+               c.batch_number cbatch_number,
+               c.warehouse_name cwarehouse_name
+        from return_order_info a left join return_order_info_item b on a.return_order_code = b.return_order_code left join return_order_info_inspection_item c on c.return_order_code = a.return_order_code
+        where a.return_order_code = #{code}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from return_order_info
@@ -199,7 +525,7 @@
       receiving_time, operator, operator_code, 
       operator_time, inspection_remark, company_code, 
       company_name, transport_company_code, transport_company, 
-      Transport_number, return_reason_code, return_reason_content, 
+      transport_number, return_reason_code, return_reason_content,
       remake)
     values (#{id,jdbcType=BIGINT}, #{returnOrderCode,jdbcType=VARCHAR}, #{orderCode,jdbcType=VARCHAR}, 
       #{createDate,jdbcType=TIMESTAMP}, #{orderType,jdbcType=VARCHAR}, #{orderTypeCode,jdbcType=INTEGER}, 
@@ -213,7 +539,7 @@
       #{cityCode,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtCode,jdbcType=VARCHAR}, 
       #{districtName,jdbcType=VARCHAR}, #{detailAddress,jdbcType=VARCHAR}, #{zipCode,jdbcType=VARCHAR}, 
       #{distributionMode,jdbcType=VARCHAR}, #{distributionModeCode,jdbcType=VARCHAR}, 
-      #{orderStatus,jdbcType=BIGINT}, #{paymentType,jdbcType=VARCHAR}, #{paymentTypeCode,jdbcType=VARCHAR}, 
+      #{orderStatus,jdbcType=INTEGER}, #{paymentType,jdbcType=VARCHAR}, #{paymentTypeCode,jdbcType=VARCHAR},
       #{deliverAmount,jdbcType=BIGINT}, #{productNum,jdbcType=BIGINT}, #{productTotalAmount,jdbcType=BIGINT}, 
       #{returnOrderAmount,jdbcType=BIGINT}, #{weight,jdbcType=BIGINT}, #{deliveryTime,jdbcType=TIMESTAMP}, 
       #{receivingTime,jdbcType=TIMESTAMP}, #{operator,jdbcType=VARCHAR}, #{operatorCode,jdbcType=VARCHAR}, 
@@ -385,7 +711,7 @@
         transport_company,
       </if>
       <if test="transportNumber != null">
-        Transport_number,
+        transport_number,
       </if>
       <if test="returnReasonCode != null">
         return_reason_code,
@@ -504,7 +830,7 @@
         #{distributionModeCode,jdbcType=VARCHAR},
       </if>
       <if test="orderStatus != null">
-        #{orderStatus,jdbcType=BIGINT},
+        #{orderStatus,jdbcType=INTEGER},
       </if>
       <if test="paymentType != null">
         #{paymentType,jdbcType=VARCHAR},
@@ -590,7 +916,7 @@
       receiving_time, operator, operator_code,
       operator_time, inspection_remark, company_code,
       company_name, transport_company_code, transport_company,
-      Transport_number, return_reason_code, return_reason_content,
+      transport_number, return_reason_code, return_reason_content,
       remake)
     values
       <foreach collection="list"  item="item" separator="," close="" open="">
@@ -606,7 +932,7 @@
       #{item.cityCode,jdbcType=VARCHAR}, #{item.cityName,jdbcType=VARCHAR}, #{item.districtCode,jdbcType=VARCHAR},
       #{item.districtName,jdbcType=VARCHAR}, #{item.detailAddress,jdbcType=VARCHAR}, #{item.zipCode,jdbcType=VARCHAR},
       #{item.distributionMode,jdbcType=VARCHAR}, #{item.distributionModeCode,jdbcType=VARCHAR},
-      #{item.orderStatus,jdbcType=BIGINT}, #{item.paymentType,jdbcType=VARCHAR}, #{item.paymentTypeCode,jdbcType=VARCHAR},
+      #{item.orderStatus,jdbcType=INTEGER}, #{item.paymentType,jdbcType=VARCHAR}, #{item.paymentTypeCode,jdbcType=VARCHAR},
       #{item.deliverAmount,jdbcType=BIGINT}, #{item.productNum,jdbcType=BIGINT}, #{item.productTotalAmount,jdbcType=BIGINT},
       #{item.returnOrderAmount,jdbcType=BIGINT}, #{item.weight,jdbcType=BIGINT}, #{item.deliveryTime,jdbcType=TIMESTAMP},
       #{item.receivingTime,jdbcType=TIMESTAMP}, #{item.operator,jdbcType=VARCHAR}, #{item.operatorCode,jdbcType=VARCHAR},
@@ -722,7 +1048,7 @@
         distribution_mode_code = #{distributionModeCode,jdbcType=VARCHAR},
       </if>
       <if test="orderStatus != null">
-        order_status = #{orderStatus,jdbcType=BIGINT},
+        order_status = #{orderStatus,jdbcType=INTEGER},
       </if>
       <if test="paymentType != null">
         payment_type = #{paymentType,jdbcType=VARCHAR},
@@ -776,7 +1102,7 @@
         transport_company = #{transportCompany,jdbcType=VARCHAR},
       </if>
       <if test="transportNumber != null">
-        Transport_number = #{transportNumber,jdbcType=VARCHAR},
+        transport_number = #{transportNumber,jdbcType=VARCHAR},
       </if>
       <if test="returnReasonCode != null">
         return_reason_code = #{returnReasonCode,jdbcType=VARCHAR},
@@ -826,7 +1152,7 @@
       zip_code = #{zipCode,jdbcType=VARCHAR},
       distribution_mode = #{distributionMode,jdbcType=VARCHAR},
       distribution_mode_code = #{distributionModeCode,jdbcType=VARCHAR},
-      order_status = #{orderStatus,jdbcType=BIGINT},
+      order_status = #{orderStatus,jdbcType=INTEGER},
       payment_type = #{paymentType,jdbcType=VARCHAR},
       payment_type_code = #{paymentTypeCode,jdbcType=VARCHAR},
       deliver_amount = #{deliverAmount,jdbcType=BIGINT},
@@ -844,7 +1170,7 @@
       company_name = #{companyName,jdbcType=VARCHAR},
       transport_company_code = #{transportCompanyCode,jdbcType=VARCHAR},
       transport_company = #{transportCompany,jdbcType=VARCHAR},
-      Transport_number = #{transportNumber,jdbcType=VARCHAR},
+      transport_number = #{transportNumber,jdbcType=VARCHAR},
       return_reason_code = #{returnReasonCode,jdbcType=VARCHAR},
       return_reason_content = #{returnReasonContent,jdbcType=VARCHAR},
       remake = #{remake,jdbcType=VARCHAR}

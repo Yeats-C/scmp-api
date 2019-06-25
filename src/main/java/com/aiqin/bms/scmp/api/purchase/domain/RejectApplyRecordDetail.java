@@ -38,6 +38,10 @@ public class RejectApplyRecordDetail {
     @JsonProperty("apply_record_status")
     private Integer applyRecordStatus;
 
+    @ApiModelProperty(value="条形码")
+    @JsonProperty("barcode")
+    private String barcode;
+
     @ApiModelProperty(value = "")
     @JsonProperty("sku_code")
     private String skuCode;
@@ -69,6 +73,18 @@ public class RejectApplyRecordDetail {
     @ApiModelProperty(value = "商品类型 0赠品 1商品 2实物返回")
     @JsonProperty("product_type")
     private Integer productType;
+
+    @ApiModelProperty(value="颜色编码")
+    @JsonProperty("color_code")
+    private String colorCode;
+
+    @ApiModelProperty(value="颜色")
+    @JsonProperty("color_name")
+    private String colorName;
+
+    @ApiModelProperty(value="型号")
+    @JsonProperty("model_number")
+    private String modelNumber;
 
     @ApiModelProperty(value = "规格")
     @JsonProperty("product_spec")

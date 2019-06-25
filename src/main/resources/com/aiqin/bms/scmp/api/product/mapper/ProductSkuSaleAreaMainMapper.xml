@@ -227,7 +227,6 @@
              a.create_time acreate_time,
              a.update_by aupdate_by,
              a.update_time aupdate_time,
-             a.apply_type aapply_type,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
              b.be_disable bbe_disable,

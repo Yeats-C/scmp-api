@@ -29,7 +29,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
-@Api(value = "订单相关")
+@Api(description = "订单api")
 @RequestMapping("/order")
 public class OrderController {
 
@@ -91,7 +91,7 @@ public class OrderController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
-    @ApiOperation("5配货/11发货/97缺货终止")
+    @ApiOperation("5配货/97缺货终止")
     @GetMapping("/distribution")
     public HttpResponse<Boolean> distribution(@RequestParam String orderCode, @RequestParam Integer status){
         log.info("OrderController---distribution---param：[{}],[{}]", orderCode,status);
@@ -104,7 +104,19 @@ public class OrderController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
-
+    @ApiOperation("11发货")
+    @PostMapping("/delivery")
+    public HttpResponse<Boolean> delivery(@RequestBody List<DeliveryReqVO> reqVO,@RequestParam String orderCode){
+        log.info("OrderController---delivery---param：[{}],[{}]",JSONObject.toJSONString(reqVO),orderCode);
+        try {
+            return HttpResponse.success(orderService.delivery(reqVO,orderCode));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
     @ApiOperation("订单商品列表")
     @PostMapping("/orderProductList")
     public HttpResponse<BasePage<QueryOrderProductListRespVO>> orderProductList(@RequestBody QueryOrderProductListReqVO reqVO){

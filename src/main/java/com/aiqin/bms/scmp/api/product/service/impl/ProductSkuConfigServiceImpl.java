@@ -36,6 +36,7 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
@@ -287,19 +288,22 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
         //删除临时表备用仓库信息
         spareWarehouseDraftMapper.deleteByConfigCodes(reqVo.getSkuConfigs());
         //调用审批的接口
-        workFlow(formNo,code,currentAuthToken.getPersonName());
+        workFlow(formNo,code,currentAuthToken.getPersonName(),reqVo.getDirectSupervisorCode());
         return num;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void workFlow(String formNo, String applyCode, String userName) {
+    public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(formNo);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_GOODS_CONFIG.getNum());
         workFlowVO.setTitle(userName + "创建商品配置审批");
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("auditPersonId",directSupervisorCode);
+        workFlowVO.setVariables(jsonObject.toString());
         WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS_CONFIG);
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {

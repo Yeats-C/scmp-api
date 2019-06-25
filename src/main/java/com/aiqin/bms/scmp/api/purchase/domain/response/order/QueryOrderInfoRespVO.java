@@ -149,6 +149,9 @@ public class QueryOrderInfoRespVO {
     @ApiModelProperty("商品信息")
     private List<QueryOrderInfoItemRespVO> productList;
 
-    @ApiModelProperty("商品信息")
+    @ApiModelProperty("批次信息")
+    private List<QueryOrderInfoItemBatchRespVO> batchList;
+
+    @ApiModelProperty("日志信息")
     private List<QueryOrderInfoLogRespVO> logs;
 }

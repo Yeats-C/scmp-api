@@ -3,12 +3,14 @@ package com.aiqin.bms.scmp.api.purchase.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
+import com.aiqin.bms.scmp.api.purchase.service.impl.OrderServiceImpl;
 
 import java.util.List;
 
@@ -37,7 +39,25 @@ public interface OrderService {
      * @param orderItems
      * @return void
      */
-    void sendOrderToOutBound(List<OrderInfo> orders, List<OrderInfoItem> orderItems);
+    void sendOrderToOutBound(List<OrderInfo> orders, List<OrderInfoItem> orderItems,List<OrderInfoItemProductBatch> list);
+    /**
+     * 锁定批次库存
+     * @author NullPointException
+     * @date 2019/6/21
+     * @param orders
+     * @param orderItems
+     * @return void
+     */
+    void lockBatchStock(List<OrderInfo> orders, List<OrderInfoItem> orderItems, OrderServiceImpl service);
+    /**
+     * 保存锁定的信息
+     * @author NullPointException
+     * @date 2019/6/21
+     * @param list
+     * @return void
+     */
+    void saveLockBatch(List<OrderInfoItemProductBatch> list);
+
     /**
      * 保存日志
      * @author NullPointException
@@ -131,4 +151,12 @@ public interface OrderService {
      * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO>
      */
     BasePage<QueryProductUniqueCodeListRespVO> productUniqueCodeList(QueryProductUniqueCodeListReqVO reqVO);
+    /**
+     * 直送修改数量
+     * @author NullPointException
+     * @date 2019/6/24
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean delivery(List<DeliveryReqVO> reqVO,String orderCode);
 }

@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
@@ -200,6 +202,14 @@ public interface StockService {
     List<Stock> selectGroup();
 
     List<Stock> selectListByWareHouseCode(Stock stock);
+    /**
+     * TODO 订单锁库的方法
+     * @author NullPointException
+     * @date 2019/6/21
+     * @param vo
+     * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch>
+     */
+    List<OrderInfoItemProductBatch> lockBatchStock(List<LockOrderItemBatchReqVO> vo);
 
     /**
      * 批次库存

@@ -47,6 +47,10 @@ public class RejectApplyDetailResponse {
     @JsonProperty("purchase_group_name")
     private String purchaseGroupName;
 
+    @ApiModelProperty(value = "条形码")
+    @JsonProperty("barcode")
+    private String barcode;
+
     @ApiModelProperty(value = "")
     @JsonProperty("sku_code")
     private String skuCode;
@@ -186,6 +190,18 @@ public class RejectApplyDetailResponse {
     @ApiModelProperty(value="wms 传回来的实际金额")
     @JsonProperty("actual_amount")
     private Long actualAmount;
+
+    @ApiModelProperty(value="颜色编码")
+    @JsonProperty("color_code")
+    private String colorCode;
+
+    @ApiModelProperty(value="颜色")
+    @JsonProperty("color_name")
+    private String colorName;
+
+    @ApiModelProperty(value="型号")
+    @JsonProperty("model_number")
+    private String modelNumber;
 
 
 }

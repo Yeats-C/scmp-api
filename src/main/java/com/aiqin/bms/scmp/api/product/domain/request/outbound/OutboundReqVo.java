@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.outbound;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -146,4 +147,7 @@ public class OutboundReqVo {
 
     @ApiModelProperty("sku 列表")
     private List<OutboundProductReqVo> list;
+
+    @ApiModelProperty("sku 批次列表")
+    private List<OutboundBatch> outboundBatches;
 }

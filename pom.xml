@@ -140,13 +140,13 @@
                         <!--</goals>-->
                     <!--</execution>-->
                 <!--</executions>-->
-                <!--&lt;!&ndash;<dependencies>&ndash;&gt;-->
-                <!--&lt;!&ndash;<dependency>&ndash;&gt;-->
-                <!--&lt;!&ndash;<groupId>com.biz</groupId>&ndash;&gt;-->
-                <!--&lt;!&ndash;<artifactId>biz-support</artifactId>&ndash;&gt;-->
-                <!--&lt;!&ndash;<version>1.0-SNAPSHOT</version>&ndash;&gt;-->
-                <!--&lt;!&ndash;</dependency>&ndash;&gt;-->
-                <!--&lt;!&ndash;</dependencies>&ndash;&gt;-->
+                <!--<dependencies>-->
+                <!--<dependency>-->
+                <!--<groupId>com.biz</groupId>-->
+                <!--<artifactId>biz-support</artifactId>-->
+                <!--<version>1.0-SNAPSHOT</version>-->
+                <!--</dependency>-->
+                <!--</dependencies>-->
             <!--</plugin>-->
         <!--</plugins>-->
     </build>
