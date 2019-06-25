@@ -15,4 +15,6 @@ public interface OutboundBatchDao {
     Integer countOutboundBatchInfoByOutboundOderCode(String outboundOderCode);
 
     Integer insertInfo(@Param("list")List<OutboundBatch> outboundBatches);
+
+    List<OutboundBatch> selectByOutboundBatchOderCode(String outboundOderCode);
 }

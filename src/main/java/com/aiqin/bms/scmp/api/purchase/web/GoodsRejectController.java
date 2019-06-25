@@ -55,7 +55,7 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class GoodsRejectController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectController.class);
 
 
     @Resource

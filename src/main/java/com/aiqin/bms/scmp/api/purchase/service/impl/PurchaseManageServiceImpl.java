@@ -4,7 +4,8 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseFileDao;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseFile;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormProcuctResponse;
@@ -12,13 +13,14 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author: zhao shuai
@@ -27,10 +29,14 @@ import java.util.Set;
 @Service
 public class PurchaseManageServiceImpl implements PurchaseManageService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseManageServiceImpl.class);
+
     @Resource
     private PurchaseApplyDao purchaseApplyDao;
     @Resource
     private PurchaseApplyProductDao purchaseApplyProductDao;
+    @Resource
+    private PurchaseFileDao purchaseFileDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -132,6 +138,29 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             purchase.setPurchaseFormResponseList(forms);
         }
         return HttpResponse.success(purchase);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse deletePurchaseFile(PurchaseFile purchaseFile){
+        if(purchaseFile == null || StringUtils.isBlank(purchaseFile.getFileCode())){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        Integer count = purchaseFileDao.update(purchaseFile);
+        if(count == 0){
+            LOGGER.info("删除采购文件失败");
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+        }
+        return HttpResponse.success();
+    }
+
+    @Override
+    public HttpResponse purchaseFileList(String purchaseId){
+        if(StringUtils.isBlank(purchaseId)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        List<PurchaseFile> purchaseFiles = purchaseFileDao.fileList(purchaseId);
+        return HttpResponse.success(purchaseFiles);
     }
 
     @Override
