@@ -110,6 +110,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             //总退供金额
             Long sumAmount = 0L;
             RejectApplyRecord rejectApplyRecord = new RejectApplyRecord();
+            BeanUtils.copyProperties(rejectApplyQueryRequest,rejectApplyRecord);
             String rejectCode = "RAR" + encodingRule.getNumberingName();
             rejectApplyRecord.setRejectApplyRecordCode(rejectCode);
             //处理数据
