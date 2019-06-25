@@ -43,6 +43,9 @@
     <result column="rebate_clause" jdbcType="TINYINT" property="rebateClause" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
     <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName"/>
+    <result column="contract_type_code" jdbcType="VARCHAR" property="contractTypeCode"/>
+    <result column="contract_type_name" jdbcType="VARCHAR" property="contractTypeName"/>
+    <result column="checkout_date" jdbcType="VARCHAR" property="checkoutDate"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
@@ -52,7 +55,7 @@
     apply_type, auditor_by, auditor_time,form_no,company_code,company_name,
     purchasing_group_name,settlement_method_name,early_warn_num,
     pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,
-    direct_supervisor_code,direct_supervisor_name
+    direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date
   </sql>
 
   <select id="selectBySelectApplyContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.QueryApplyContractReqVo" resultMap="BaseResultMap">
@@ -108,7 +111,7 @@
       apply_contract_code, apply_status, apply_type, 
       auditor_by, auditor_time,form_no,company_code,company_name,
       purchasing_group_name,settlement_method_name,early_warn_num,
-      pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,direct_supervisor_code,direct_supervisor_name)
+      pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date)
     values ( #{year,jdbcType=VARCHAR}, #{yearName,jdbcType=VARCHAR},
       #{supplierName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{purchasingGroupCode,jdbcType=VARCHAR}, 
       #{settlementMethod,jdbcType=TINYINT}, #{paymentPeriod,jdbcType=INTEGER}, #{shippingFee,jdbcType=BIGINT}, 
@@ -122,7 +125,8 @@
       #{companyCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{purchasingGroupName,jdbcType=VARCHAR},#{settlementMethodName,jdbcType=VARCHAR},#{earlyWarnNum,jdbcType=INTEGER},
       #{prePaymentRatio,jdbcType=BIGINT},#{shipPaymentRatio,jdbcType=BIGINT},#{paymentOnDeliveryRatio,jdbcType=BIGINT},
-       #{rebateClause,jdbcType=TINYINT},#{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR}
+      #{rebateClause,jdbcType=TINYINT},#{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},
+      #{contractTypeCode,jdbcType=VARCHAR},#{contractTypeName,jdbcType=VARCHAR},#{checkoutDate,jdbcType=VARCHAR}
       )
   </insert>
 
@@ -250,6 +254,15 @@
       <if test="directSupervisorName != null">
         direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
       </if>
+      <if test="contractTypeCode != null">
+        contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractTypeName != null">
+        contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkoutDate != null">
+        checkout_date = #{checkoutDate,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -292,7 +305,10 @@
       payment_on_delivery_ratio = #{paymentOnDeliveryRatio,jdbcType=BIGINT},
       rebate_clause = #{rebateClause,jdbcType=TINYINT},
       direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
-      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR}
+      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
+      contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
+      checkout_date = #{checkoutDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByFormNO" parameterType="java.lang.String" resultMap="BaseResultMap">

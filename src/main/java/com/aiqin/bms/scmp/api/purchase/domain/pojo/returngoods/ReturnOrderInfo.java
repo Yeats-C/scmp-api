@@ -112,7 +112,7 @@ public class ReturnOrderInfo {
     private String distributionModeCode;
 
     @ApiModelProperty("订单状态(状态有点多，后面补)")
-    private Long orderStatus;
+    private Integer orderStatus;
 
     @ApiModelProperty("支付方式")
     private String paymentType;
@@ -457,11 +457,11 @@ public class ReturnOrderInfo {
         this.distributionModeCode = distributionModeCode == null ? null : distributionModeCode.trim();
     }
 
-    public Long getOrderStatus() {
+    public Integer getOrderStatus() {
         return orderStatus;
     }
 
-    public void setOrderStatus(Long orderStatus) {
+    public void setOrderStatus(Integer orderStatus) {
         this.orderStatus = orderStatus;
     }
 

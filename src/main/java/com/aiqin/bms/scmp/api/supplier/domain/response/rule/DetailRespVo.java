@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author knight.xie
  * @version 1.0
@@ -20,4 +22,10 @@ public class DetailRespVo {
 
     @ApiModelProperty("自动退货天数")
     private Integer autoReturnGoodsDay;
+
+    @ApiModelProperty("订单体积计算系数")
+    private BigDecimal orderVolumeCoefficient;
+
+    @ApiModelProperty("订单重量计算系数")
+    private BigDecimal orderWeightCoefficient;
 }

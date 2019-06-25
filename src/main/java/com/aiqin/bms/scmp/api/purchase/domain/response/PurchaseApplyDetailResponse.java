@@ -189,5 +189,17 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("new_purchase_price")
     private Integer newPurchasePrice;
 
+    @ApiModelProperty(value="结算方式编码")
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value="结算方式名称")
+    @JsonProperty("settlement_method_name")
+    private String settlementMethodName;
+
+    @ApiModelProperty(value="税率")
+    @JsonProperty("tax_rate")
+    private Integer taxRate;
+
 }
 

@@ -45,4 +45,10 @@ public class QueryPurchaseGroupResVo {
 
     @ApiModelProperty("关联人员")
     private String buyers;
+
+    @ApiModelProperty("负责人编号")
+    private String responsiblePersonCode;
+
+    @ApiModelProperty("负责人名称")
+    private String responsiblePersonName;
 }

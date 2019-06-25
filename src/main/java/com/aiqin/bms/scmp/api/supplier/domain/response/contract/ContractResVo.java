@@ -36,7 +36,7 @@ public class ContractResVo {
     @ApiModelProperty("供货单位编号")
     private String supplierCode;
 
-    @ApiModelProperty("采购组编号")
+    @ApiModelProperty(value = "采购组编号", hidden = true)
     private String purchasingGroupCode;
 
     @ApiModelProperty("结算方式")
@@ -116,7 +116,7 @@ public class ContractResVo {
     @ApiModelProperty("公司名称")
     private String companyName;
 
-    @ApiModelProperty("采购组名称")
+    @ApiModelProperty(value = "采购组名称",hidden = true)
     private String purchasingGroupName;
 
     @ApiModelProperty("付款方式名称")
@@ -151,4 +151,20 @@ public class ContractResVo {
 
     @ApiModelProperty("文件信息")
     private List<ContractFileResVo> fileResVos;
+
+    //新增字段
+
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
+
+    @ApiModelProperty("合同采购组")
+    private List<ContractPurchaseGroupResVo> purchaseGroupResVos;
+
+
 }

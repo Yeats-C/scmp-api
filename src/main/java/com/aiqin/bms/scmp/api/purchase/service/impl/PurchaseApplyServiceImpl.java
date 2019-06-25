@@ -4,10 +4,7 @@ import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.dao.ProductSkuPriceDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPrice;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
@@ -184,16 +181,18 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse insertPurchaseForm(List<PurchaseApplyProduct> purchaseApplyProduct){
+    public HttpResponse purchaseApplyForm(List<PurchaseApplyProduct> purchaseApplyProduct){
         if(CollectionUtils.isEmptyCollection(purchaseApplyProduct)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 生成采购申请单id
         String purchaseApplyId = IdUtil.purchaseId();
         // 保存采购申请选中商品
+        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
         for(PurchaseApplyProduct product:purchaseApplyProduct){
             product.setApplyProductId(IdUtil.purchaseId());
             product.setPurchaseApplyId(purchaseApplyId);
+            product.setPurchaseApplyCode("CGA" + String.valueOf(encodingRule.getNumberingValue()));
         }
         Integer productCount = purchaseApplyProductDao.insertAll(purchaseApplyProduct);
         if(productCount > 0){
@@ -201,7 +200,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             PurchaseApply purchaseApply = new PurchaseApply();
             purchaseApply.setPurchaseApplyId(purchaseApplyId);
             // 获取采购申请单编码
-            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
             purchaseApply.setPurchaseApplyCode("CGA" + String.valueOf(encodingRule.getNumberingValue()));
             purchaseApply.setApplyType(Global.PURCHASE_APPLY_TYPE_0);
             purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);

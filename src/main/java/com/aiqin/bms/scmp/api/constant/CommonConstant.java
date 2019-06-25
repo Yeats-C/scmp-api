@@ -49,4 +49,6 @@ public interface CommonConstant {
     //订单
     String SYSTEM_AUTO = "系统自动";
     String SYSTEM_AUTO_CODE = "-1";
+    Integer NEW_PRODUCT = 1;
+    Integer DEFECTIVE = 2;
 }

@@ -1,11 +1,11 @@
 package com.aiqin.bms.scmp.api.supplier.web.supplier;
 
+import com.aiqin.bms.scmp.api.supplier.service.ApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.DetailApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
-import com.aiqin.bms.scmp.api.supplier.service.ApplyServiceSupplier;
 import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,10 +28,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/apply")
 @Api(description = "改供应商申请管理")
-public class ApplyControllerSupplier extends SupplierBaseController {
+public class ApplyController extends SupplierBaseController {
 
     @Autowired
-    private ApplyServiceSupplier applyService;
+    private ApplyService applyService;
 
     @PostMapping("/list")
     @ApiOperation("查询供应商申请列表")

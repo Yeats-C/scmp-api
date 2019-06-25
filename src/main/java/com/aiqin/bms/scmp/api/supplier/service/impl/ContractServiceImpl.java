@@ -1,5 +1,8 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractPurchaseGroup;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.*;
+import com.aiqin.bms.scmp.api.supplier.mapper.ContractPurchaseGroupMapper;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractDao;
@@ -20,10 +23,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUser
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
-import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractFileResVo;
-import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseVolumeResVo;
-import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractResVo;
-import com.aiqin.bms.scmp.api.supplier.domain.response.contract.QueryContractResVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.ContractFileMapper;
 import com.aiqin.bms.scmp.api.supplier.service.ContractService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
@@ -57,6 +56,9 @@ public class ContractServiceImpl implements ContractService{
 
     @Autowired
     private ContractPurchaseVolumeDao contractPurchaseVolumeDao;
+
+    @Autowired
+    private ContractPurchaseGroupMapper contractPurchaseGroupMapper;
 
     @Autowired
     private OperationLogService operationLogService;
@@ -136,6 +138,7 @@ public class ContractServiceImpl implements ContractService{
             BeanCopyUtils.copy(entity,contractResVo);
             List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(contractResVo.getContractCode());
             List<ContractFile> contractFiles = contractFileMapper.selectByContractCode(contractResVo.getContractCode());
+            List<ContractPurchaseGroup> contractPurchaseGroups = contractPurchaseGroupMapper.selectByContractCode(contractResVo.getContractCode());
             try {
                 if(CollectionUtils.isNotEmptyCollection(purchaseVolume)){
                     List<ContractPurchaseVolumeResVo>  list =BeanCopyUtils.copyList(purchaseVolume,ContractPurchaseVolumeResVo.class);
@@ -144,6 +147,10 @@ public class ContractServiceImpl implements ContractService{
                if(CollectionUtils.isNotEmptyCollection(contractFiles)){
                    List<ContractFileResVo>  fileResVos = BeanCopyUtils.copyList(contractFiles, ContractFileResVo.class);
                    contractResVo.setFileResVos(fileResVos);
+               }
+               if(CollectionUtils.isNotEmptyCollection(contractPurchaseGroups)){
+                   List<ContractPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(contractPurchaseGroups, ContractPurchaseGroupResVo.class);
+                   contractResVo.setPurchaseGroupResVos(purchaseGroupResVos);
                }
                 if (null != contractResVo) {
                     //获取操作日志
