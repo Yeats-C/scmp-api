@@ -104,7 +104,7 @@ public class ReturnOrderInfoReqVO {
     private String distributionModeCode;
 
     @ApiModelProperty("退货订单状态")
-    private Long orderStatus;
+    private Integer orderStatus;
 
     @ApiModelProperty("支付方式")
     private String paymentType;
