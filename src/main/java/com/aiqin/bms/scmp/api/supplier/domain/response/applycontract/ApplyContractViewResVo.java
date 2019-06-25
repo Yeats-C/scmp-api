@@ -83,6 +83,14 @@ public class ApplyContractViewResVo {
     @ApiModelProperty("进货价格生效标准(下单日价格,收获日价格)")
     private Byte purchasePriceStandard;
 
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
 
 
     @ApiModelProperty("申通合同编号")
@@ -118,6 +126,8 @@ public class ApplyContractViewResVo {
 
     @ApiModelProperty("文件信息")
     private List<ApplyContractFileResVo> fileResVos;
+
+    private List<ApplyContractPurchaseGroupResVo> purchaseGroupResVos;
 
     @ApiModelProperty("操作日志列表")
     private List<LogData> logDataList;

@@ -27,12 +27,12 @@ public interface EncodingRuleType {
     /**
      * 申请合同编码类型
      */
-     String APPLY_CONTRACT_CODE = "APPLY_CONTRACT_CODE";
+     String APPLY_CONTRACT_CODE = "APPLY_CONTRACT_CODE_";
 
     /**
      *  合同编码类型
      */
-      String CONTRACT_CODE ="CONTRACT_CODE";
+      String CONTRACT_CODE ="CONTRACT_CODE_";
 
     /**
      * 制造商编码类型
@@ -117,4 +117,8 @@ public interface EncodingRuleType {
      * 退供申请单编码
      */
     String GOODS_REJECT_APPLY_CODE = "GOODS_REJECT_APPLY_CODE";
+    /**
+     * 采购申请单编码
+     */
+    String PURCHASE_APPLY_CODE = "PURCHASE_APPLY_CODE";
 }

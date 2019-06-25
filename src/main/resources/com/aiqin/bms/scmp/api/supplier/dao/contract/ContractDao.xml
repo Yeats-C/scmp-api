@@ -42,6 +42,9 @@
     <result column="rebate_clause" jdbcType="TINYINT" property="rebateClause" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
     <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName"/>
+    <result column="contract_type_code" jdbcType="VARCHAR" property="contractTypeCode"/>
+    <result column="contract_type_name" jdbcType="VARCHAR" property="contractTypeName"/>
+    <result column="checkout_date" jdbcType="VARCHAR" property="checkoutDate"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
@@ -51,7 +54,7 @@
     auditor_by, auditor_time, apply_status,company_code,company_name,
     purchasing_group_name,settlement_method_name,early_warn_num,
     pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,
-    direct_supervisor_code,direct_supervisor_name
+    direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date
   </sql>
 
   <select id="selectBySelectContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo" resultMap="BaseResultMap">
@@ -63,20 +66,39 @@
     <if test="contractCode != null and contractCode != '' ">
       AND contract_code  = #{contractCode}
     </if>
+    <if test="yearName != null and yearName != '' ">
+      and year_name LIKE  CONCAT('%',#{yearName},'%')
+    </if>
     <if test="supplierCode != null  and supplierCode != ''">
       AND supplier_code =  #{supplierCode}
     </if>
     <if test="supplierName != null and supplierName != ''">
       AND supplier_name LIKE  CONCAT('%',#{supplierName},'%')
     </if>
-    <if test="purchasingGroupCode != null and purchasingGroupCode != '' ">
-      AND purchasing_group_code = #{purchasingGroupCode}
+    <if test="enable != null and enable != '' ">
+      and del_flag = #{enable}
+    </if>
+    <if test="startTimeStart != null and startTimeStart != '' ">
+      and <![CDATA[ start_time >= #{startTimeStart} ]]>
+    </if>
+    <if test="startTimeEnd != null and startTimeEnd != '' ">
+      and <![CDATA[ start_time <= #{startTimeEnd} ]]>
+    </if>
+    <if test="endTimeStart != null and endTimeStart != '' ">
+      and <![CDATA[ end_time >= #{endTimeStart} ]]>
+    </if>
+    <if test="endTimeEnd != null and endTimeEnd != '' ">
+      and <![CDATA[ end_time <= #{endTimeEnd} ]]>
+    </if>
+    <if test="dueTime != null">
+      and  <![CDATA[ DATEDIFF(now(),end_time) <= #{dueTime}]]>
+      and  <![CDATA[ DATEDIFF(now(),end_time) >= 0]]>
     </if>
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
-    <if test="yearName != null and yearName != '' ">
-      and year_name LIKE  CONCAT('%',#{yearName},'%')
+    <if test="purchasingGroupCode != null and purchasingGroupCode != '' ">
+      and exists (select 1 from contract_purchase_group a where a.contract_code = contract_code and a.purchasing_group_code = #{purchasingGroupCode})
     </if>
     order by create_time desc
   </select>
@@ -217,6 +239,15 @@
       <if test="directSupervisorName != null">
         direct_supervisor_name,
       </if>
+      <if test="contractTypeCode != null">
+        contract_type_code,
+      </if>
+      <if test="contractTypeName != null">
+        contract_type_name,
+      </if>
+      <if test="checkoutDate != null">
+        checkout_date,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -339,6 +370,15 @@
       <if test="directSupervisorName != null">
         #{directSupervisorName,jdbcType=VARCHAR}
       </if>
+      <if test="contractTypeCode != null">
+        #{contractTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractTypeName != null">
+        #{contractTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkoutDate != null">
+        #{checkoutDate,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
 
@@ -456,6 +496,15 @@
       <if test="directSupervisorName != null">
         direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
       </if>
+      <if test="contractTypeCode != null">
+        contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractTypeName != null">
+        contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkoutDate != null">
+        checkout_date = #{checkoutDate,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -497,7 +546,10 @@
       payment_on_delivery_ratio = #{paymentOnDeliveryRatio,jdbcType=BIGINT},
       rebate_clause = #{rebateClause,jdbcType=TINYINT},
       direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
-      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR}
+      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
+      contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
+      checkout_date = #{checkoutDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 

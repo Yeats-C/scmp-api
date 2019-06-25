@@ -22,6 +22,14 @@ public class RejectRecord {
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
 
+    @ApiModelProperty(value = "商品 结算方式")
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value = "商品 结算方式")
+    @JsonProperty("settlement_method_name")
+    private String settlementMethodName;
+
     @ApiModelProperty(value = "负责人")
     @JsonProperty("duty_person")
     private String dutyPerson;
@@ -106,6 +114,10 @@ public class RejectRecord {
     @JsonProperty("transport_remark")
     private String transportRemark;
 
+    @ApiModelProperty(value = "运输单图片")
+    @JsonProperty("transport_url")
+    private String transportUrl;
+
     @ApiModelProperty(value = "")
     @JsonProperty("out_stock_time")
     private Date outStockTime;
@@ -173,4 +185,12 @@ public class RejectRecord {
     @ApiModelProperty(value = "库房名称")
     @JsonProperty("warehouse_name")
     private String warehouseName;
+
+    @ApiModelProperty("创建人公司编码")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty("创建人公司名称")
+    @JsonProperty("company_name")
+    private String companyName;
 }

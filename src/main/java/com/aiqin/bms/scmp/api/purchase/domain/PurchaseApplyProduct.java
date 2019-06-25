@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,6 +21,10 @@ public class PurchaseApplyProduct {
     @ApiModelProperty(value="采购申请id")
     @JsonProperty("purchase_apply_id")
     private String purchaseApplyId;
+
+    @ApiModelProperty(value="采购申请单")
+    @JsonProperty("purchase_apply_code")
+    private String purchaseApplyCode;
 
     @ApiModelProperty(value="sku编号")
     @JsonProperty("sku_code")
@@ -69,9 +74,13 @@ public class PurchaseApplyProduct {
     @JsonProperty("transport_center_name")
     private String transportCenterName;
 
-    @ApiModelProperty(value="商品属性 1.A 2.B 3.C 4.D")
-    @JsonProperty("product_nature")
-    private Integer productNature;
+    @ApiModelProperty(value="商品属性编码")
+    @JsonProperty("product_property_code")
+    private String productPropertyCode;
+
+    @ApiModelProperty(value="商品属性名称")
+    @JsonProperty("product_property_name")
+    private String productPropertyName;
 
     @ApiModelProperty(value="品牌id")
     @JsonProperty("brand_id")
@@ -89,17 +98,25 @@ public class PurchaseApplyProduct {
     @JsonProperty("category_name")
     private String categoryName;
 
-    @ApiModelProperty(value="类别  0.OEM 1.服纺  2.辅采")
-    @JsonProperty("product_category")
-    private Integer productCategory;
+    @ApiModelProperty(value="商品类别编码")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
 
-    @ApiModelProperty(value="商品类型 0赠品 1商品 2实物返回")
+    @ApiModelProperty(value="商品类别名称")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
+
+    @ApiModelProperty(value="商品类型 0商品 1赠品 2实物返")
     @JsonProperty("product_type")
     private Integer productType;
 
     @ApiModelProperty(value="含税采购价")
     @JsonProperty("product_purchase_amount")
     private Integer productPurchaseAmount;
+
+    @ApiModelProperty(value="最新采购价格")
+    @JsonProperty("new_purchase_price")
+    private Integer newPurchasePrice;
 
     @ApiModelProperty(value="采购件数（整数）")
     @JsonProperty("purchase_whole")
@@ -108,14 +125,6 @@ public class PurchaseApplyProduct {
     @ApiModelProperty(value="采购件数（零数）")
     @JsonProperty("purchase_single")
     private Integer purchaseSingle;
-
-    @ApiModelProperty(value="实物返数量（整数）")
-    @JsonProperty("return_whole")
-    private Integer returnWhole;
-
-    @ApiModelProperty(value="实物返数量（零数）")
-    @JsonProperty("return_single")
-    private Integer returnSingle;
 
     @ApiModelProperty(value="库存单位")
     @JsonProperty("stock_unit_name")
@@ -131,19 +140,20 @@ public class PurchaseApplyProduct {
 
     @ApiModelProperty(value="最后订货日期")
     @JsonProperty("last_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date lastTime;
 
     @ApiModelProperty(value="近90天销量")
     @JsonProperty("sales_volume")
     private Integer salesVolume;
 
-    @ApiModelProperty(value="采购包装数量")
-    @JsonProperty("pack_number")
-    private Integer packNumber;
+    @ApiModelProperty(value="基商品含量")
+    @JsonProperty("base_product_content")
+    private Integer baseProductContent;
 
-    @ApiModelProperty(value="采购包装单位")
-    @JsonProperty("pack_unit")
-    private String packUnit;
+    @ApiModelProperty(value="采购包装")
+    @JsonProperty("box_gauge")
+    private String boxGauge;
 
     @ApiModelProperty(value="预测采购件数")
     @JsonProperty("purchase_number")
@@ -151,6 +161,7 @@ public class PurchaseApplyProduct {
 
     @ApiModelProperty(value="预测到货时间")
     @JsonProperty("receipt_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date receiptTime;
 
     @ApiModelProperty(value="最高采购价")

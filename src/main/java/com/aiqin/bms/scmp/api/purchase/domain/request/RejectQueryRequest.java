@@ -1,10 +1,13 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
 import com.aiqin.bms.scmp.api.base.PagesRequest;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * <p>
@@ -66,5 +69,8 @@ public class RejectQueryRequest extends PagesRequest {
     @ApiModelProperty(value = "退供单状态: 0 待审核 1 审核中  2 待供应商确认 3 待出库  4 出库开始 5 已出库 6 已发运 7 完成 8 取消 9 审核不通过")
     @JsonProperty("reject_status")
     private Integer rejectStatus;
+
+    @ApiModelProperty()
+    private List<PurchaseGroupVo> groupList;
 
 }

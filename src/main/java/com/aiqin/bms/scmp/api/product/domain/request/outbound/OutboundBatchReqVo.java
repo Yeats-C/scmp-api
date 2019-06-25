@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.outbound;
 
+import com.aiqin.bms.scmp.api.base.PagesRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -7,15 +8,17 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * Description:
- *
- * @author: NullPointException
- * @date: 2019-06-25
- * @time: 14:41
+ * Created by 爱亲 on 2019/6/20.
  */
+@ApiModel("出库单sku批次请求保存实体")
 @Data
-@ApiModel("出库批次信息")
-public class OutboundBatchReqVo {
+public class OutboundBatchReqVo extends PagesRequest{
+
+    @ApiModelProperty("主键")
+    private Long id;
+
+    @ApiModelProperty("出库单号")
+    private String outboundOderCode;
 
     @ApiModelProperty("sku编号")
     private String skuCode;
@@ -53,4 +56,12 @@ public class OutboundBatchReqVo {
     @ApiModelProperty("行号")
     private Long linenum;
 
+    public OutboundBatchReqVo(String outboundOderCode, Integer pageSize, Integer pageNo) {
+        this.outboundOderCode = outboundOderCode;
+        this.setPageSize(pageSize);
+        this.setPageNo(pageNo);
+    }
+
+    public OutboundBatchReqVo() {
+    }
 }

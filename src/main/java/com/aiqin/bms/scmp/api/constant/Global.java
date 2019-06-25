@@ -80,4 +80,19 @@ public interface Global {
 
     String DEFAULT_DEPART_CODE = "3";
     String DEFAULT_DEPART_NAME = "仓储中心";
+
+    /**
+     * 商品类型  0商品 1赠品 2实物返
+     */
+    Integer PRODUCT_TYPE_0 = 0;
+    Integer PRODUCT_TYPE_1 = 1;
+    Integer PRODUCT_TYPE_2 = 2;
+
+    /**
+     * 采购申请单类型 0 手动 1自动 , 0  已完成 1 待提交
+     */
+    Integer PURCHASE_APPLY_TYPE_0 = 0;
+    Integer PURCHASE_APPLY_TYPE_1 = 1;
+    Integer PURCHASE_APPLY_STATUS_0 = 0;
+    Integer PURCHASE_APPLY_STATUS_1 = 1;
 }

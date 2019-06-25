@@ -17,11 +17,13 @@
         <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+        <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     </resultMap>
     <sql id="Base_Column_List">
     id, reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name, 
     apply_record_status, sum_sku, sum_count, sum_amount, create_by_id, create_by_name, 
-    update_by_id, update_by_name, create_time, update_time
+    update_by_id, update_by_name, create_time, update_time, company_name,company_code
   </sql>
     <resultMap id="queryResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -37,6 +39,10 @@
     </resultMap>
     <sql id="LIST_QUERY">
         <where>
+            purchase_group_code in
+            <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+                #{item.purchaseGroupCode,jdbcType=VARCHAR}
+            </foreach>
             <if test="rejectApplyRecordCode!=null and rejectApplyRecordCode!=''">
                 and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
             </if>
@@ -63,6 +69,13 @@
         <include refid="LIST_QUERY"/>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
+    <select id="selectByRejectId" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+         <include refid="Base_Column_List"></include>
+        from reject_apply_record
+        where
+         reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    </select>
     <select id="listCount" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest" resultType="java.lang.Integer">
         select
         count(1)
@@ -72,13 +85,13 @@
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
     insert into reject_apply_record (id, reject_apply_record_code, apply_type, 
       purchase_group_code, purchase_group_name, apply_record_status, 
-      sum_sku, sum_count, sum_amount, 
+      sum_sku, sum_count, sum_amount,  company_name,company_code,
       create_by_id, create_by_name, update_by_id, 
       update_by_name, create_time, update_time
       )
     values (#{id,jdbcType=BIGINT}, #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{applyType,jdbcType=BIT}, 
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{applyRecordStatus,jdbcType=BIT}, 
-      #{sumSku,jdbcType=INTEGER}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT}, 
+      #{sumSku,jdbcType=INTEGER}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT},  #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR},
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
       #{updateByName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
@@ -180,52 +193,16 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
+    <update id="updateByRejectCode" >
         update reject_apply_record
         <set>
-            <if test="rejectApplyRecordCode != null">
-                reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR},
-            </if>
-            <if test="applyType != null">
-                apply_type = #{applyType,jdbcType=BIT},
-            </if>
-            <if test="purchaseGroupCode != null">
-                purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
-            </if>
-            <if test="purchaseGroupName != null">
-                purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
-            </if>
-            <if test="applyRecordStatus != null">
-                apply_record_status = #{applyRecordStatus,jdbcType=BIT},
-            </if>
-            <if test="sumSku != null">
                 sum_sku = #{sumSku,jdbcType=INTEGER},
-            </if>
-            <if test="sumCount != null">
                 sum_count = #{sumCount,jdbcType=INTEGER},
-            </if>
-            <if test="sumAmount != null">
                 sum_amount = #{sumAmount,jdbcType=BIGINT},
-            </if>
-            <if test="createById != null">
-                create_by_id = #{createById,jdbcType=VARCHAR},
-            </if>
-            <if test="createByName != null">
-                create_by_name = #{createByName,jdbcType=VARCHAR},
-            </if>
-            <if test="updateById != null">
                 update_by_id = #{updateById,jdbcType=VARCHAR},
-            </if>
-            <if test="updateByName != null">
                 update_by_name = #{updateByName,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
+                update_time = now()
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where  reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
     </update>
 </mapper>

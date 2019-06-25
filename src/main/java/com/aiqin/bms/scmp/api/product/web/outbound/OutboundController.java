@@ -62,7 +62,6 @@ public class OutboundController {
         return HttpResponse.success(outboundService.selectOutBoundInfoByBoundSearch(boundRequest));
     }
 
-
     @ApiOperation("通过id获取出库单")
     @GetMapping("/view")
     public HttpResponse<OutboundResVo> view(@RequestParam @ApiParam(value = "主键id",required = true) Long id){
@@ -72,13 +71,13 @@ public class OutboundController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
-  @ApiOperation("保存出库单")
-  @PostMapping("/save")
-  public HttpResponse<Integer>save(@RequestBody OutboundReqVo stockReqVO){
 
-          return HttpResponse.success(outboundService.saveOutBoundInfo(stockReqVO));
+    @ApiOperation("保存出库单")
+    @PostMapping("/save")
+    public HttpResponse<Integer>save(@RequestBody OutboundReqVo stockReqVO){
+        return HttpResponse.success(outboundService.saveOutBoundInfo(stockReqVO));
 
-  }
+    }
 
     @ApiOperation("查询出库类型")
     @GetMapping("/getOutboundType")

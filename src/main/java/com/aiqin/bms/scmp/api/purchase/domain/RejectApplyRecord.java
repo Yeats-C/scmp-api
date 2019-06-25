@@ -68,6 +68,30 @@ public class RejectApplyRecord {
     @JsonProperty("update_time")
     private Date updateTime;
 
+    @ApiModelProperty("创建人公司编码")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty("创建人公司名称")
+    @JsonProperty("company_name")
+    private String companyName;
+
+    public String getCompanyCode() {
+        return companyCode;
+    }
+
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
     public Long getId() {
         return id;
     }

@@ -42,6 +42,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -359,13 +360,16 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(String formNo, String applyCode, String userName) {
+    public void workFlow(String formNo, String applyCode, String userName, String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setFormUrl(workFlowBaseUrl.applySaleArea + "?code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(formNo);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_SALE_AREA.getNum());
         workFlowVO.setTitle(userName + "创建销售区域审批");
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("auditPersonId",directSupervisorCode);
+        workFlowVO.setVariables(jsonObject.toString());
         WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_SALE_AREA);
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {

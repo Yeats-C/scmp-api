@@ -1,12 +1,15 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
 import com.aiqin.bms.scmp.api.base.PagesRequest;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -61,6 +64,9 @@ public class RejectApplyQueryRequest extends PagesRequest {
     @ApiModelProperty(value="结束时间")
     @JsonProperty("finish_time")
     private String finishTime;
+
+    @ApiModelProperty(value="不需要传的参数")
+    private List<PurchaseGroupVo> groupList;
 
     public RejectApplyQueryRequest(String rejectApplyRecordCode, Integer applyType, String purchaseGroupCode, Integer applyRecordStatus, String beginTime, String finishTime) {
         this.rejectApplyRecordCode = rejectApplyRecordCode;

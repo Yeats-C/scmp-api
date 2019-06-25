@@ -30,7 +30,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/supplier/company/account")
 @Api(description = "供应商账户管理")
-public class SupplyComAcctControllerSupplier extends SupplierBaseController {
+public class SupplyComAcctController extends SupplierBaseController {
     @Autowired
     private ApplySupplyComAcctService applySupplyComAcctService;
 

@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.domain.response.applycontract;
 
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractFileResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseGroupResVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -107,6 +109,22 @@ public class ApplyContractUpdateResVo {
 
     @ApiModelProperty("进货额")
     private List<ApplyContractPurchaseVolumeResVo> purchaseList;
+
+
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
+
+    @ApiModelProperty("合同采购组")
+    private List<ContractPurchaseGroupResVo> purchaseGroupResVos;
+
+    @ApiModelProperty("文件信息")
+    private List<ContractFileResVo> fileResVos;
 
 
 }

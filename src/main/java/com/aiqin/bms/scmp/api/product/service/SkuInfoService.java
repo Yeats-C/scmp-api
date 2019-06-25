@@ -14,7 +14,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespV
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
-import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
@@ -110,7 +109,7 @@ public interface SkuInfoService{
     int cancelApply(ApplyProductSku applyProductSku);
 
 
-    void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus);
+    void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus,String directSupervisorCode);
 
     String skuWorkFlowCallback(WorkFlowCallbackVO vo1);
 

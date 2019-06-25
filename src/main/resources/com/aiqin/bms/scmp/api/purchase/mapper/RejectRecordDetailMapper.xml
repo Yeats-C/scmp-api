@@ -4,7 +4,9 @@
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="reject_record_id" jdbcType="VARCHAR" property="rejectRecordId" />
+    <result column="reject_record_detail_id" jdbcType="VARCHAR" property="rejectRecordDetailId" />
     <result column="reject_record_code" jdbcType="VARCHAR" property="rejectRecordCode" />
+    <result column="barcode" jdbcType="VARCHAR" property="barcode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="product_id" jdbcType="VARCHAR" property="productId" />
@@ -13,8 +15,10 @@
     <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
     <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
     <result column="product_type" jdbcType="BIT" property="productType" />
+    <result column="product_count" jdbcType="BIT" property="productCount" />
     <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
-    <result column="product_unit" jdbcType="VARCHAR" property="productUnit" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unit_code" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unit_name" />
     <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
     <result column="product_amount" jdbcType="BIGINT" property="productAmount" />
     <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
@@ -27,15 +31,18 @@
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
     <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, reject_record_id, reject_record_code, sku_code, sku_name, product_id, category_id, 
-    category_name, brand_id, brand_name, product_type, product_spec, product_unit, tax_rate, 
+    id, reject_record_id,reject_record_detail_id, reject_record_code,barcode, sku_code, sku_name, product_id, category_id,
+    category_name, brand_id, brand_name, product_count,product_type, product_spec, unit_code, unit_name, tax_rate,
     product_amount, product_total_amount, actual_count, actual_amount, batch_no, batch_remark, 
     batch_create_time, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
-    update_time
+    update_time,color_code,color_name,model_number
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -48,11 +55,11 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insertAll"  >
-    insert into reject_record_detail ( reject_record_id, reject_record_code,
-      sku_code, sku_name, product_id, 
+    insert into reject_record_detail ( reject_record_detail_id,reject_record_id, reject_record_code,
+      barcode,sku_code, sku_name, product_id,
       category_id, category_name, brand_id, 
-      brand_name, product_type, product_spec, 
-      product_unit, tax_rate, product_amount, 
+      brand_name, product_type,product_count, product_spec,
+      unit_code,unit_name, tax_rate, product_amount,
       product_total_amount, actual_count, actual_amount, 
       batch_no, batch_remark, batch_create_time, 
       create_by_id, create_by_name,  create_time, update_time
@@ -60,8 +67,10 @@
     values
     <foreach collection="list" separator="," item="item">
     (
+      #{item.rejectRecordDetailId,jdbcType=VARCHAR},
       #{rejectRecordId,jdbcType=VARCHAR},
       #{rejectRecordCode,jdbcType=VARCHAR},
+      #{item.barcode,jdbcType=VARCHAR},
       #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR},
       #{item.productId,jdbcType=VARCHAR},
@@ -70,8 +79,10 @@
       #{item.brandId,jdbcType=VARCHAR},
       #{item.brandName,jdbcType=VARCHAR},
       #{item.productType,jdbcType=BIT},
+      #{item.productCount,jdbcType=BIT},
       #{item.productSpec,jdbcType=VARCHAR},
-      #{item.productUnit,jdbcType=VARCHAR},
+      #{item.unitCode,jdbcType=VARCHAR},
+      #{item.unitName,jdbcType=VARCHAR},
       #{item.taxRate,jdbcType=INTEGER},
       #{item.productAmount,jdbcType=BIGINT},
       #{item.productTotalAmount,jdbcType=BIGINT},
@@ -125,8 +136,8 @@
       <if test="productSpec != null">
         product_spec,
       </if>
-      <if test="productUnit != null">
-        product_unit,
+      <if test="unitCode != null">
+        unit_code,
       </if>
       <if test="taxRate != null">
         tax_rate,
@@ -208,8 +219,8 @@
       <if test="productSpec != null">
         #{productSpec,jdbcType=VARCHAR},
       </if>
-      <if test="productUnit != null">
-        #{productUnit,jdbcType=VARCHAR},
+      <if test="unitCode != null">
+        #{unitCode,jdbcType=VARCHAR},
       </if>
       <if test="taxRate != null">
         #{taxRate,jdbcType=INTEGER},
@@ -291,8 +302,8 @@
       <if test="productSpec != null">
         product_spec = #{productSpec,jdbcType=VARCHAR},
       </if>
-      <if test="productUnit != null">
-        product_unit = #{productUnit,jdbcType=VARCHAR},
+      <if test="unitCode != null">
+        unit_code = #{unitCode,jdbcType=VARCHAR},
       </if>
       <if test="taxRate != null">
         tax_rate = #{taxRate,jdbcType=INTEGER},
@@ -352,7 +363,7 @@
       brand_name = #{brandName,jdbcType=VARCHAR},
       product_type = #{productType,jdbcType=BIT},
       product_spec = #{productSpec,jdbcType=VARCHAR},
-      product_unit = #{productUnit,jdbcType=VARCHAR},
+      unit_code = #{unitCode,jdbcType=VARCHAR},
       tax_rate = #{taxRate,jdbcType=INTEGER},
       product_amount = #{productAmount,jdbcType=BIGINT},
       product_total_amount = #{productTotalAmount,jdbcType=BIGINT},
@@ -369,4 +380,20 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateByDetailId" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest">
+    UPDATE reject_record_detail
+    SET
+      actual_count = #{actualCount,jdbcType=INTEGER},
+      actual_amount = #{actualAmount,jdbcType=BIGINT},
+      update_time = now()
+    WHERE  reject_record_detail_id = #{rejectRecordDetailId,jdbcType=VARCHAR}
+  </update>
+  <select id="selectProductByRejectId" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectRecordDetailResponse" >
+    SELECT sum(product_count) as productCount , sku_code as skuCode,sku_name as skuName,brand_name as brandName,category_name as categoryName,
+      product_spec as productSpec,unit_name as unitName,tax_rate as taxRate,product_amount as productAmount,sum(product_total_amount) as product_total_amount
+    FROM reject_record_detail
+    WHERE  reject_record_detail_id = #{rejectRecordDetailId,jdbcType=VARCHAR}
+    GROUP BY sku_code,product_type
+
+  </select>
 </mapper>

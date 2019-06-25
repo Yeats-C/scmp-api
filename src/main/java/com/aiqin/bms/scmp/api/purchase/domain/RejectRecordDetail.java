@@ -3,9 +3,12 @@ package com.aiqin.bms.scmp.api.purchase.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.util.Date;
 
 @ApiModel
+@Data
 public class RejectRecordDetail {
     @ApiModelProperty(value="")
     @JsonProperty("id")
@@ -16,8 +19,16 @@ public class RejectRecordDetail {
     private String rejectRecordId;
 
     @ApiModelProperty(value="")
+    @JsonProperty("reject_record_detail_id")
+    private String rejectRecordDetailId;
+
+    @ApiModelProperty(value="")
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
+
+    @ApiModelProperty(value="条形码")
+    @JsonProperty("barcode")
+    private String barcode;
 
     @ApiModelProperty(value="")
     @JsonProperty("sku_code")
@@ -55,13 +66,33 @@ public class RejectRecordDetail {
     @JsonProperty("product_spec")
     private String productSpec;
 
+    @ApiModelProperty(value="颜色编码")
+    @JsonProperty("color_code")
+    private String colorCode;
+
+    @ApiModelProperty(value="颜色")
+    @JsonProperty("color_name")
+    private String colorName;
+
+    @ApiModelProperty(value="型号")
+    @JsonProperty("model_number")
+    private String modelNumber;
+
     @ApiModelProperty(value="单位")
-    @JsonProperty("product_unit")
-    private String productUnit;
+    @JsonProperty("unit_code")
+    private String unitCode;
+
+    @ApiModelProperty(value="单位")
+    @JsonProperty("unit_name")
+    private String unitName;
 
     @ApiModelProperty(value="税率")
     @JsonProperty("tax_rate")
     private Integer taxRate;
+
+    @ApiModelProperty(value="商品数量")
+    @JsonProperty("product_count")
+    private Long productCount;
 
     @ApiModelProperty(value="含税单价")
     @JsonProperty("product_amount")
@@ -211,12 +242,20 @@ public class RejectRecordDetail {
         this.productSpec = productSpec;
     }
 
-    public String getProductUnit() {
-        return productUnit;
+    public String getUnitCode() {
+        return unitCode;
     }
 
-    public void setProductUnit(String productUnit) {
-        this.productUnit = productUnit;
+    public void setUnitCode(String unitCode) {
+        this.unitCode = unitCode;
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 
     public Integer getTaxRate() {

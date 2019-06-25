@@ -190,7 +190,7 @@ public class OutboundServiceImpl implements OutboundService {
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public Integer saveOutBoundInfo(OutboundReqVo stockReqVO) {
-        int i = 0;
+        int flag = 0;
         String outboundOderCode = null;
         try {
             //编码生成
@@ -200,14 +200,15 @@ public class OutboundServiceImpl implements OutboundService {
             outboundOderCode = String.valueOf(numberingType.getNumberingValue());
             outbound.setOutboundOderCode(outboundOderCode);
 
-
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(),OutboundProduct.class);
             outboundProducts.stream().forEach(outboundProduct ->outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
-            i = outboundDao.insertSelective(outbound);
+            int i = outboundDao.insertSelective(outbound);
 
-
+            List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(),OutboundBatch.class);
+            outboundBatches.stream().forEach(outboundBatch ->outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
 
             int j = outboundProductDao.insertBatch(outboundProducts);
+            int m = outboundBatchDao.insertInfo(outboundBatches);
             //更新编码
             encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
 
@@ -218,13 +219,13 @@ public class OutboundServiceImpl implements OutboundService {
             OutboundServiceImpl inboundService = (OutboundServiceImpl) AopContext.currentProxy();
             inboundService.pushWms(outbound.getOutboundOderCode(),inboundService);
             // 跟新数据库状态
-
-            return j;
-
-
+            if(i > 0 && j > 0 && m > 0){
+                flag = 1;
+            }
+            return flag;
         } catch (Exception e) {
             e.printStackTrace();
-            throw new GroundRuntimeException("保存入库单失败");
+            throw new GroundRuntimeException("保存出库单失败");
         }
     }
 
@@ -245,14 +246,19 @@ public class OutboundServiceImpl implements OutboundService {
             outboundOderCode = String.valueOf(numberingType.getNumberingValue());
             outbound.setOutboundOderCode(outboundOderCode);
 
+            List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
+            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()));
+            int i = outboundDao.insertSelective(outbound);
+            log.info("插入出库单主表返回结果", i);
 
-            List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(),OutboundProduct.class);
-            outboundProducts.stream().forEach(outboundProduct ->outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
-             int i = outboundDao.insertSelective(outbound);
-
-
-
+            List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(), OutboundBatch.class);
+            outboundBatches.stream().forEach(outboundBatch ->outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
             int j = outboundProductDao.insertBatch(outboundProducts);
+            log.info("插入出库单商品表返回结果", j);
+
+            int m = outboundBatchDao.insertInfo(outboundBatches);
+            log.info("插入出库单商品批次表返回结果", m);
+
             //更新编码
             encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
             // 保存日志
@@ -261,12 +267,12 @@ public class OutboundServiceImpl implements OutboundService {
             //  调用推送接口
             OutboundServiceImpl inboundService = (OutboundServiceImpl) AopContext.currentProxy();
             inboundService.pushWms(outbound.getOutboundOderCode(),inboundService);
-            return outboundOderCode;
 
+            return outboundOderCode;
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new GroundRuntimeException("保存入库单失败");
+            throw new GroundRuntimeException("保存出库单失败");
         }
     }
 
@@ -396,7 +402,7 @@ public class OutboundServiceImpl implements OutboundService {
      * @return
      */
     @Override
-   @Async("taskProductExecutor")
+    @Async("taskProductExecutor")
     @Transactional(rollbackFor = Exception.class)
     public void pushWms(String  code,OutboundServiceImpl inboundService){
         log.error("异步推送给wms");
@@ -420,7 +426,6 @@ public class OutboundServiceImpl implements OutboundService {
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
             if("0".equals(orderDto.getCode())){
-
 
                 // 设置wms编号
                 outbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
@@ -551,7 +556,7 @@ public class OutboundServiceImpl implements OutboundService {
             // 解锁并且减库存
            HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
-
+               log.info("减并解锁库存成功，库存详情为:{}", stockChangeRequest);
            }else{
                log.error(httpResponse.getMessage());
                throw  new GroundRuntimeException("库存操作失败");

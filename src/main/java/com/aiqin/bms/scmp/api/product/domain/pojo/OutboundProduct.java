@@ -21,6 +21,9 @@ public class OutboundProduct {
     @ApiModelProperty("sku名称")
     private String skuName;
 
+    @ApiModelProperty("条形码")
+    private String barCode;
+
     @ApiModelProperty("图片地址")
     private String pictureUrl;
 

@@ -18,8 +18,8 @@
     <result column="product_type" jdbcType="INTEGER" property="productType" />
     <result column="purchase_whole" jdbcType="INTEGER" property="purchaseWhole" />
     <result column="purchase_single" jdbcType="INTEGER" property="purchaseSingle" />
-    <result column="pack_number" jdbcType="INTEGER" property="packNumber" />
-    <result column="pack_unit" jdbcType="VARCHAR" property="packUnit" />
+    <result column="base_product_content" jdbcType="INTEGER" property="baseProductContent" />
+    <result column="box_gauge" jdbcType="VARCHAR" property="boxGauge" />
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
     <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
     <result column="product_amount" jdbcType="INTEGER" property="productAmount" />
@@ -37,7 +37,7 @@
   <sql id="Base_Column_List">
     id, order_product_id, order_id, order_code, sku_code, sku_name, brand_id, brand_name, 
     category_id, category_name, product_spec, color_name, model_number, product_type, 
-    purchase_whole, purchase_single, pack_number, pack_unit, single_count, tax_rate, 
+    purchase_whole, purchase_single, base_product_content, box_gauge, single_count, tax_rate,
     product_amount, product_total_amount, actual_single_count, actual_total_amount, stock_count, 
     is_purchase, settlement, create_time, update_time, create_by, update_by
   </sql>
@@ -47,7 +47,7 @@
       brand_id, brand_name, category_id, 
       category_name, product_spec, color_name, 
       model_number, product_type, purchase_whole, 
-      purchase_single, pack_number, pack_unit, 
+      purchase_single, base_product_content, box_gauge,
       single_count, tax_rate, product_amount, 
       product_total_amount, actual_single_count, 
       actual_total_amount, stock_count, is_purchase, 
@@ -58,7 +58,7 @@
       #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, 
       #{categoryName,jdbcType=VARCHAR}, #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, 
       #{modelNumber,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER}, #{purchaseWhole,jdbcType=INTEGER}, 
-      #{purchaseSingle,jdbcType=INTEGER}, #{packNumber,jdbcType=INTEGER}, #{packUnit,jdbcType=VARCHAR}, 
+      #{purchaseSingle,jdbcType=INTEGER}, #{packNumber,jdbcType=INTEGER}, #{baseProductContent,jdbcType=VARCHAR},  #{boxGauge,jdbcType=VARCHAR},
       #{singleCount,jdbcType=INTEGER}, #{taxRate,jdbcType=INTEGER}, #{productAmount,jdbcType=INTEGER}, 
       #{productTotalAmount,jdbcType=INTEGER}, #{actualSingleCount,jdbcType=INTEGER}, 
       #{actualTotalAmount,jdbcType=INTEGER}, #{stockCount,jdbcType=INTEGER}, #{isPurchase,jdbcType=INTEGER}, 
@@ -113,11 +113,11 @@
       <if test="purchaseSingle != null">
         purchase_single = #{purchaseSingle,jdbcType=INTEGER},
       </if>
-      <if test="packNumber != null">
-        pack_number = #{packNumber,jdbcType=INTEGER},
+      <if test="baseProductContent != null">
+        base_product_content = #{baseProductContent,jdbcType=INTEGER},
       </if>
-      <if test="packUnit != null">
-        pack_unit = #{packUnit,jdbcType=VARCHAR},
+      <if test="boxGauge != null">
+        box_gauge = #{boxGauge,jdbcType=VARCHAR},
       </if>
       <if test="singleCount != null">
         single_count = #{singleCount,jdbcType=INTEGER},

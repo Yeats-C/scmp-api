@@ -41,7 +41,7 @@ public class UpdateApplyContractReqVo {
     @NotEmpty(message = "供货单位编号不能为空")
     private String supplierCode;
 
-    @ApiModelProperty("采购组编号")
+    @ApiModelProperty(value = "采购组编号",hidden = true)
     @NotEmpty(message = "采购组编号不能为空")
     private String purchasingGroupCode;
 
@@ -96,7 +96,7 @@ public class UpdateApplyContractReqVo {
     @ApiModelProperty("申通合同编号")
     private String applyContractCode;
 
-    @ApiModelProperty("采购组名称")
+    @ApiModelProperty(value = "采购组名称",hidden = true)
     private String purchasingGroupName;
 
     @ApiModelProperty("付款方式名称")
@@ -122,7 +122,19 @@ public class UpdateApplyContractReqVo {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
-    
+
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
+
+    @ApiModelProperty("采购组")
+    private List<ApplyContractPurchaseGroupReqVo> purchaseGroupReqVos;
+
     @ApiModelProperty("进货额")
     @NotNull(message = "进货额不能为空")
     private List<UpdateApplyContractPurchaseVolumeReqVo> purchaseVolumeReqVos;

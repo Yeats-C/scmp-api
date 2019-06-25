@@ -127,4 +127,13 @@ public class ApplyContractDTO extends CommonBean {
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
 
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
+
 }
