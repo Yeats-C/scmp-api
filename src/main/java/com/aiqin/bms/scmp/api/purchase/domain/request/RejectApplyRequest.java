@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
+import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -35,7 +37,39 @@ import java.util.List;
 @Data
 public class RejectApplyRequest {
 
-    @ApiModelProperty(value = "退货申请单号集合")
+    @ApiModelProperty(value = "退货申请单号")
+    @JsonProperty("reject_apply_record_code")
+    private String rejectApplyRecordCode;
+
+    @ApiModelProperty(value = "创建人id")
+    @JsonProperty("create_by_id")
+    private String createById;
+
+    @ApiModelProperty(value = "创建人名称")
+    @JsonProperty("create_by_name")
+    private String createByName;
+
+    @ApiModelProperty(value = "修改人id")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value = "修改人名称")
+    @JsonProperty("update_by_name")
+    private String updateByName;
+
+    @ApiModelProperty(value="采购组 code")
+    @JsonProperty("purchase_group_code")
+    private String purchaseGroupCode;
+
+    @ApiModelProperty(value="申请单类型:0手动 1自动")
+    @JsonProperty("apply_type")
+    private String applyType;
+
+    @ApiModelProperty(value = "商品列表")
+    @JsonProperty("detail_list")
+    private List<RejectApplyRecordDetail> detailList;
+
+    @ApiModelProperty(value = "退货申请单号集合(生成退供单使用)")
     @JsonProperty("reject_apply_record_codes")
     private List<String> rejectApplyRecordCodes;
 

@@ -8,6 +8,8 @@ import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStock
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -81,4 +83,8 @@ public interface StockDao {
     List<Stock> selectGroup();
 
     List<Stock> selectListByWareHouseCode(Stock stock);
+
+    List<PurchaseApplyDetailResponse> purchaseProductList(PurchaseApplyRequest purchases);
+
+    Integer purchaseProductCount(PurchaseApplyRequest purchases);
 }

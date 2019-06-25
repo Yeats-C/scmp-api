@@ -38,6 +38,10 @@ public class RejectApplyRecordDetail {
     @JsonProperty("apply_record_status")
     private Integer applyRecordStatus;
 
+    @ApiModelProperty(value="条形码")
+    @JsonProperty("barcode")
+    private String barcode;
+
     @ApiModelProperty(value = "")
     @JsonProperty("sku_code")
     private String skuCode;
@@ -70,13 +74,29 @@ public class RejectApplyRecordDetail {
     @JsonProperty("product_type")
     private Integer productType;
 
+    @ApiModelProperty(value="颜色编码")
+    @JsonProperty("color_code")
+    private String colorCode;
+
+    @ApiModelProperty(value="颜色")
+    @JsonProperty("color_name")
+    private String colorName;
+
+    @ApiModelProperty(value="型号")
+    @JsonProperty("model_number")
+    private String modelNumber;
+
     @ApiModelProperty(value = "规格")
     @JsonProperty("product_spec")
     private String productSpec;
 
-    @ApiModelProperty(value = "单位")
-    @JsonProperty("product_unit")
-    private String productUnit;
+    @ApiModelProperty(value="单位")
+    @JsonProperty("unit_code")
+    private String unitCode;
+
+    @ApiModelProperty(value="单位")
+    @JsonProperty("unit_name")
+    private String unitName;
 
     @ApiModelProperty(value = "库存数量")
     @JsonProperty("stock_count")
@@ -131,8 +151,12 @@ public class RejectApplyRecordDetail {
     private Date batchCreateTime;
 
     @ApiModelProperty(value = "商品 结算方式")
-    @JsonProperty("settlement_method")
-    private String settlementMethod;
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value = "商品 结算方式")
+    @JsonProperty("settlement_method_name")
+    private String settlementMethodName;
 
     @ApiModelProperty(value = "供应商code")
     @JsonProperty("supplier_code")

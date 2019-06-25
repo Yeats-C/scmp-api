@@ -74,9 +74,9 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("category_id")
     private String categoryId;
 
-    @ApiModelProperty(value="商品属性 1.A 2.B 3.C 4.D")
-    @JsonProperty("product_nature")
-    private Integer productNature;
+    @ApiModelProperty(value="商品属性编码")
+    @JsonProperty("product_property_code")
+    private String productPropertyCode;
 
     @ApiModelProperty(value="14大A品建议补货传值类型是否有值：0.是 1.否")
     @JsonProperty("a_replenish_type")
@@ -110,6 +110,10 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("product_shortage")
     private List<String> productShortage;
 
+    @ApiModelProperty(value="有效采购组")
+    @JsonProperty("group_code")
+    private List<String> groupCode;
+
     public PurchaseApplyRequest() {
     }
 
@@ -123,7 +127,7 @@ public class PurchaseApplyRequest extends PagesRequest {
     }
 
     public PurchaseApplyRequest(String purchaseApplyId, String purchaseGroupCode, String skuCode, String skuName, String spuCode, String productName,
-                                String supplierCode, String transportCenterCode, String brandId, String categoryId, Integer productNature,
+                                String supplierCode, String transportCenterCode, String brandId, String categoryId, String productPropertyCode,
                                 Integer aReplenishType, Integer productReplenishType, Integer aShortageType, Integer productShortageType) {
         this.purchaseApplyId = purchaseApplyId;
         this.purchaseGroupCode = purchaseGroupCode;
@@ -135,7 +139,7 @@ public class PurchaseApplyRequest extends PagesRequest {
         this.transportCenterCode = transportCenterCode;
         this.brandId = brandId;
         this.categoryId = categoryId;
-        this.productNature = productNature;
+        this.productPropertyCode = productPropertyCode;
         this.aReplenishType = aReplenishType;
         this.productReplenishType = productReplenishType;
         this.aShortageType = aShortageType;

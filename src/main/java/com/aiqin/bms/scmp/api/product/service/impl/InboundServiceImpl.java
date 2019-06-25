@@ -205,33 +205,46 @@ public class InboundServiceImpl implements InboundService {
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public String saveInbound(InboundReqSave reqVo) {
+        int flag = 0;
         try {
             // 入库单转化主体保存实体
             Inbound inbound = new Inbound();
-            BeanCopyUtils.copy(reqVo,inbound);
+            BeanCopyUtils.copy(reqVo, inbound);
             // 获取编码 尺度
             EncodingRule rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
             inbound.setInboundOderCode(rule.getNumberingValue().toString());
             //插入入库单主表
             int insert = inboundDao.insert(inbound);
-            //  转化入库单sku实体
-            List<InboundProduct> list =BeanCopyUtils.copyList(reqVo.getList(),InboundProduct.class);
+            log.info("插入入库单主表返回结果", insert);
 
-            list.stream().forEach(inboundItemReqVo ->inboundItemReqVo.setInboundOderCode(rule.getNumberingValue().toString()) );
+            //  转化入库单sku实体
+            List<InboundProduct> list =BeanCopyUtils.copyList(reqVo.getList(), InboundProduct.class);
+            list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
             //插入入库单商品表
-            int inserts=inboundProductDao.insertBatch(list);
+            int insertProducts=inboundProductDao.insertBatch(list);
+            log.info("插入入库单商品表返回结果", insertProducts);
+
+            //  转化入库单sku批次实体
+            List<InboundBatch> inboundBatches =BeanCopyUtils.copyList(reqVo.getInboundBatchReqVos(),InboundBatch.class);
+            inboundBatches.stream().forEach(inboundBatch -> inboundBatch.setInboundOderCode(rule.getNumberingValue().toString()) );
+            inboundBatches.stream().forEach(inboundBatch -> inboundBatch.setInboundBatchCode(rule.getNumberingValue().toString())
+            );
+            //插入入库单商品表
+
+            int insertBatchs=inboundBatchDao.insertInfo(inboundBatches);
+            log.info("转化入库单sku批次实体表返回结果", insertBatchs);
+
             //更新编码表
             encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
 
             // 保存日志
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),reqVo,HandleTypeCoce.ADD_INBOUND_ODER.getName(),new Date(),reqVo.getCreateBy());
             InboundServiceImpl inboundService = (InboundServiceImpl) AopContext.currentProxy();
-            inboundService.pushWms(inbound.getInboundOderCode(),inboundService);
+            inboundService.pushWms(inbound.getInboundOderCode(), inboundService);
                // 跟新数据库状态
-
-            log.error("保存接口");
             return inbound.getInboundOderCode();
         } catch (Exception e) {
+            log.error("保存入库单接口错误");
             throw  new GroundRuntimeException("添加入库单失败");
         }
     }
@@ -268,7 +281,7 @@ public class InboundServiceImpl implements InboundService {
         //转换
         InboundReqSave convert = new SupplyReturnOrderMainReqVO2InboundSaveConverter(skuService).convert(reqVo);
         //保存
-        return  saveInbound(convert);
+        return saveInbound(convert);
     }
 
 

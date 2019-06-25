@@ -1,5 +1,8 @@
 package com.aiqin.bms.scmp.api.product.domain.request.returnsupply;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,8 +21,9 @@ import java.util.List;
 public class ReturnSupplyToOutBoundReqVo {
 
     @ApiModelProperty("主表数据")
-    ReturnSupply returnSupply;
+    RejectRecord rejectRecord;
 
     @ApiModelProperty("商品数据")
-    List<ReturnSupplyItem> returnSupplyItems;
+    List<RejectRecordDetail> rejectRecordDetails;
+
 }
