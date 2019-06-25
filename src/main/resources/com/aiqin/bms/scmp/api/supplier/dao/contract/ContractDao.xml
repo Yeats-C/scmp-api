@@ -60,9 +60,9 @@
   <select id="selectBySelectContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from contract
+    from contract b
     WHERE
-    del_flag = 0
+    1=1
     <if test="contractCode != null and contractCode != '' ">
       AND contract_code  = #{contractCode}
     </if>
@@ -98,7 +98,7 @@
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
     <if test="purchasingGroupCode != null and purchasingGroupCode != '' ">
-      and exists (select 1 from contract_purchase_group a where a.contract_code = contract_code and a.purchasing_group_code = #{purchasingGroupCode})
+      and exists (select 1 from contract_purchase_group a where a.contract_code = b.contract_code and a.purchasing_group_code = #{purchasingGroupCode})
     </if>
     order by create_time desc
   </select>
