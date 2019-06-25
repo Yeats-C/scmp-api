@@ -46,6 +46,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -617,6 +618,9 @@ public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements
             workFlowVO.setFormNo("HT"+new IdSequenceUtils().nextId());
             workFlowVO.setTitle(applyContractDTO.getYear()+"年度-"+applyContractDTO.getYearName()+"合同名称"+"-"+WorkFlow.APPLY_CONTRACT.getTitle());
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+WorkFlow.APPLY_CONTRACT.getNum());
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("auditPersonId",applyContractDTO.getDirectSupervisorCode());
+            workFlowVO.setVariables(jsonObject.toString());
             WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_CONTRACT);
             if(workFlowRespVO.getSuccess()){
                 ApplyContractDTO applyContractDTO1 = new ApplyContractDTO();
