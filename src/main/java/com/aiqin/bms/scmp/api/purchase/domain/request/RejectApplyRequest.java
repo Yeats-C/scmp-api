@@ -61,6 +61,18 @@ public class RejectApplyRequest {
     @JsonProperty("purchase_group_code")
     private String purchaseGroupCode;
 
+    @ApiModelProperty(value="采购组 ")
+    @JsonProperty("purchase_group_name")
+    private String purchaseGroupName;
+
+    @ApiModelProperty("创建人公司编码")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty("创建人公司名称")
+    @JsonProperty("company_name")
+    private String companyName;
+
     @ApiModelProperty(value="申请单类型:0手动 1自动")
     @JsonProperty("apply_type")
     private String applyType;

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseFile;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -35,10 +36,22 @@ public class PurchaseManageController {
         return purchaseManageService.purchaseProductList(purchaseFormRequest);
     }
 
-//    @PostMapping("/purchase/form")
-//    @ApiOperation("生成采购单")
-//    public HttpResponse purchaseForm(@RequestBody List<String> applyIds) {
-//        return purchaseManageService.purchaseForm(applyIds);
-//    }
+    @DeleteMapping("/purchase/file")
+    @ApiOperation("删除文件")
+    public HttpResponse deletePurchaseFile(@RequestBody PurchaseFile purchaseFile) {
+        return purchaseManageService.deletePurchaseFile(purchaseFile);
+    }
+
+    @GetMapping("/purchase/file")
+    @ApiOperation("查询文件列表")
+    public HttpResponse purchaseFileList(@RequestParam("purchase_id") String purchaseId) {
+        return purchaseManageService.purchaseFileList(purchaseId);
+    }
+
+    @PostMapping("/purchase/order")
+    @ApiOperation("提交采购单")
+    public HttpResponse purchaseOrder() {
+        return purchaseManageService.purchaseOrder();
+    }
 
 }
