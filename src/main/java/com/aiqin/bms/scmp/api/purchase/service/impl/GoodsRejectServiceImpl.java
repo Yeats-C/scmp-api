@@ -111,7 +111,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             Long sumAmount = 0L;
             RejectApplyRecord rejectApplyRecord = new RejectApplyRecord();
             BeanUtils.copyProperties(rejectApplyQueryRequest,rejectApplyRecord);
-            String rejectCode = "RAR" + encodingRule.getNumberingName();
+            String rejectCode = "RAR" + encodingRule.getNumberingValue();
             rejectApplyRecord.setRejectApplyRecordCode(rejectCode);
             //处理数据
             this.rejectApplyData(rejectApplyQueryRequest, sumCount, sumAmount, rejectCode);

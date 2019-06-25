@@ -34,6 +34,10 @@ public class RejectRecord {
     @JsonProperty("duty_person")
     private String dutyPerson;
 
+    @ApiModelProperty(value = "申请单类型 0手动 1自动")
+    @JsonProperty("apply_type")
+    private Integer applyType;
+
     @ApiModelProperty(value = "联系人")
     @JsonProperty("contacts_person")
     private String contactsPerson;
