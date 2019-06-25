@@ -165,11 +165,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse purchaseForm(List<String> applyIds){
-        if(CollectionUtils.isEmptyCollection(applyIds)){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
-
+    public HttpResponse purchaseOrder(){
 
         return HttpResponse.success();
     }
