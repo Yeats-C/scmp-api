@@ -35,5 +35,11 @@ public class PurchaseGroupDTO extends CommonBean {
     @ApiModelProperty("公司名称")
     private String companyName;
 
+    @ApiModelProperty("负责人编号")
+    private String responsiblePersonCode;
+
+    @ApiModelProperty("负责人名称")
+    private String responsiblePersonName;
+
 
 }

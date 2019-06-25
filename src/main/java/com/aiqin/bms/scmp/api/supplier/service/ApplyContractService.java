@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractFile;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPurchaseGroup;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.dto.ApplyContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.dto.ApplyContractPurchaseVolumeDTO;
@@ -84,11 +85,18 @@ public interface ApplyContractService{
 
 
      /**
-      * 批量保存进货额
+      * 批量保存文件信息
       * @param files
       * @return
       */
      int saveFileList(List<ApplyContractFile> files);
+
+     /**
+      * 批量保存采购组
+      * @param contractPurchaseGroups
+      * @return
+      */
+     int savePurchaseGroupList(List<ApplyContractPurchaseGroup> contractPurchaseGroups);
 
     /**
      * 跟新申请合同主体
@@ -112,6 +120,13 @@ public interface ApplyContractService{
       * @return
       */
      int deleteFiles(String applyContractCode);
+
+    /**
+     * 根据关联编码删除采购组
+     * @param applyContractCode
+     * @return
+     */
+    int deletePurchaseGroups(String applyContractCode);
 
    /**
     * 审批流接口

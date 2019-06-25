@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("1")
 @WorkFlowAnnotation(WorkFlow.APPLY_COMPANY_ACC)
-public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceImpl implements ApplySupplyComAcctService, WorkFlowHelper {
+public class ApplySupplyComAcctServiceImpl extends SupplierBaseServiceImpl implements ApplySupplyComAcctService, WorkFlowHelper {
     @Autowired
     private ApplySupplyCompanyAccountMapper applySupplyCompanyAccountMapper;
     @Autowired
@@ -83,7 +83,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public Long saveApply(ApplySupplyCompanyAcctReqVO applySupplyCompanyAcctReqVO) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-saveApply-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReqVO));
+        log.info("ApplySupplyComAcctServiceImpl-saveApply-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReqVO));
         Long resultNum;
         try {
             //复制对象
@@ -110,7 +110,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
 
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public Long insertApplyAndLog(ApplySupplyCompanyAcctReqDTO applySupplyCompanyAcctReqDTO) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-insertApplyAndLog-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReqDTO));
+        log.info("ApplySupplyComAcctServiceImpl-insertApplyAndLog-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReqDTO));
         //供货单位账户申请编码
         EncodingRule rule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_ACCT_CODE);
         applySupplyCompanyAcctReqDTO.setApplyCode(String.valueOf(rule.getNumberingValue() + 1));
@@ -126,7 +126,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Transactional(rollbackFor = GroundRuntimeException.class)
     @Save
     public Long insert(ApplySupplyCompanyAcctReqDTO applySupplyCompanyAcctReqDTO) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-insert-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReqDTO));
+        log.info("ApplySupplyComAcctServiceImpl-insert-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReqDTO));
         Long resultNum;
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
@@ -155,7 +155,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
 //    @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
     public void workFlow(ApplySupplyCompanyAcctReqDTO applySupplyCompanyAcctReqDTO) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-workFlow-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReqDTO));
+        log.info("ApplySupplyComAcctServiceImpl-workFlow-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReqDTO));
         try {
             WorkFlowVO workFlowVO = new WorkFlowVO();
 
@@ -193,7 +193,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int update(ApplySupplyCompanyAcctReqVO applySupplyCompanyAcctReq) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-update-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReq));
+        log.info("ApplySupplyComAcctServiceImpl-update-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReq));
         if (Objects.isNull(applySupplyCompanyAcctReq.getId())) {
             throw new GroundRuntimeException("查询条件异常");
         }
@@ -247,7 +247,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Transactional(rollbackFor = Exception.class)
     @Update
     public int updateApplyData(ApplySupplyCompanyAcctReqDTO s) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-updateApplyData-传入参数是：[{}]", JSON.toJSONString(s));
+        log.info("ApplySupplyComAcctServiceImpl-updateApplyData-传入参数是：[{}]", JSON.toJSONString(s));
         int temp;
         try {
             ApplySupplyCompanyAccount t = new ApplySupplyCompanyAccount();
@@ -273,7 +273,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateSupplyStatus(SupplyCompanyAccountDTO s) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-updateSupplyStatus-传入参数是：[{}]", JSON.toJSONString(s));
+        log.info("ApplySupplyComAcctServiceImpl-updateSupplyStatus-传入参数是：[{}]", JSON.toJSONString(s));
         int temp;
         try {
             SupplyCompanyAccount t = new SupplyCompanyAccount();
@@ -294,7 +294,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Transactional(rollbackFor = Exception.class)
     @Update
     public int updateSupplyData(SupplyCompanyAccountDTO s) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-updateSupplyData-传入参数是：[{}]", JSON.toJSONString(s));
+        log.info("ApplySupplyComAcctServiceImpl-updateSupplyData-传入参数是：[{}]", JSON.toJSONString(s));
         int temp;
         try {
             SupplyCompanyAccount t = new SupplyCompanyAccount();
@@ -317,7 +317,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Transactional(rollbackFor = Exception.class)
     @Update
     public int deleteSupplyData(ApplySupplyCompanyAcctReqDTO s) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-deleteSupplyData-传入参数是：[{}]", JSON.toJSONString(s));
+        log.info("ApplySupplyComAcctServiceImpl-deleteSupplyData-传入参数是：[{}]", JSON.toJSONString(s));
         int temp;
         try {
             SupplyCompanyAccount t = new SupplyCompanyAccount();
@@ -339,7 +339,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
 
     @Override
     public BasePage<QueryApplySupplierComAcctRespVo> selectApplyListByQueryVO(QueryApplySupplierComAcctReqVo vo) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-selectApplyListByQueryVO-传入参数是：[{}]", JSON.toJSONString(vo));
+        log.info("ApplySupplyComAcctServiceImpl-selectApplyListByQueryVO-传入参数是：[{}]", JSON.toJSONString(vo));
         try {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
@@ -358,7 +358,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
 
     @Override
     public BasePage<QuerySupplierComAcctRespVo> selectSupplyListByQueryVO(QuerySupplierComAcctReqVo vo) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-selectSupplyListByQueryVO-传入参数是：[{}]", JSON.toJSONString(vo));
+        log.info("ApplySupplyComAcctServiceImpl-selectSupplyListByQueryVO-传入参数是：[{}]", JSON.toJSONString(vo));
         try {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
@@ -377,7 +377,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
 
     @Override
     public ApplySupplyComAcctInfo2RespVO getApplySupplyCompanyAccountById(Long id) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-getApplySupplyCompanyAccountById-传入参数是：[{}]", id);
+        log.info("ApplySupplyComAcctServiceImpl-getApplySupplyCompanyAccountById-传入参数是：[{}]", id);
         if (Objects.isNull(id)) {
             throw new GroundRuntimeException("id不能为空!");
         }
@@ -415,7 +415,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
 
     @Override
     public SupplyComAcctMainRespVO getSupplyCompanyAccountById(Long id) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-getSupplyCompanyAccountById-传入参数是：[{}]", id);
+        log.info("ApplySupplyComAcctServiceImpl-getSupplyCompanyAccountById-传入参数是：[{}]", id);
         if (Objects.isNull(id)) {
             throw new GroundRuntimeException("id不能为空!");
         }
@@ -456,7 +456,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int cancelById(Long id) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-cancelById-传入参数是：[{}]", id);
+        log.info("ApplySupplyComAcctServiceImpl-cancelById-传入参数是：[{}]", id);
         if (Objects.isNull(id)) {
             throw new GroundRuntimeException("id不能为空!");
         }
@@ -504,7 +504,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Transactional(rollbackFor = Exception.class)
     @Update
     public int cancelApplyData(ApplySupplyCompanyAcctReqDTO s) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-cancelApplyData-传入参数是：[{}]", JSON.toJSONString(s));
+        log.info("ApplySupplyComAcctServiceImpl-cancelApplyData-传入参数是：[{}]", JSON.toJSONString(s));
         int temp;
         try {
             ApplySupplyCompanyAccount t = new ApplySupplyCompanyAccount();
@@ -527,7 +527,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Transactional(rollbackFor = Exception.class)
     @Update
     public int cancelSupplyData(SupplyCompanyAccountDTO s1) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-cancelSupplyData-传入参数是：[{}]", JSON.toJSONString(s1));
+        log.info("ApplySupplyComAcctServiceImpl-cancelSupplyData-传入参数是：[{}]", JSON.toJSONString(s1));
         int temp;
         try {
             SupplyCompanyAccount t1 = new SupplyCompanyAccount();
@@ -550,7 +550,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
 
     @Override
     public List<SupplyCompanyAccount> getSupplyCompanyAccountByCompanyCode(List<String> codes) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-getSupplyCompanyAccountByCompanyCode-传入参数是：[{}]", JSON.toJSONString(codes));
+        log.info("ApplySupplyComAcctServiceImpl-getSupplyCompanyAccountByCompanyCode-传入参数是：[{}]", JSON.toJSONString(codes));
         return supplyCompanyAccountMapper.selectByCode(codes);
     }
 
@@ -633,7 +633,7 @@ public class ApplySupplyComAcctServiceImplSupplier extends SupplierBaseServiceIm
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String workFlowCallback(WorkFlowCallbackVO vo1) {
-        log.info("ApplySupplyComAcctServiceImplSupplier-workFlowCallback-传入参数是：[{}]", JSON.toJSONString(vo1));
+        log.info("ApplySupplyComAcctServiceImpl-workFlowCallback-传入参数是：[{}]", JSON.toJSONString(vo1));
         //通过编码查询实体
         WorkFlowCallbackVO vo = updateSupStatus(vo1);
         ApplySupplyCompanyAccount account = applySupplyCompanyAccountMapper.selectByFormNO(vo.getFormNo());

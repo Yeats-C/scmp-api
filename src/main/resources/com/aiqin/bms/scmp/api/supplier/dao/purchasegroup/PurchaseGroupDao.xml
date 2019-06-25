@@ -11,10 +11,12 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="responsible_person_code" jdbcType="VARCHAR" property="responsiblePersonCode" />
+    <result column="responsible_person_name" jdbcType="VARCHAR" property="responsiblePersonName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, purchase_group_code, purchase_group_name, enable, del_flag, create_by, create_time, 
-    update_by, update_time
+    update_by, update_time, responsible_person_code, responsible_person_name
   </sql>
 
   <select id="selectByPurchaseGroup" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.QueryPurchaseGroupReqVo" resultMap="BaseResultMap">
@@ -93,6 +95,12 @@
       <if test="companyName != null">
         company_name,
       </if>
+      <if test="responsiblePersonCode != null">
+        responsible_person_code,
+      </if>
+      <if test="responsiblePersonName != null">
+        responsible_person_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -128,6 +136,12 @@
       <if test="companyName != null">
         #{companyName,jdbcType=VARCHAR},
       </if>
+      <if test="responsiblePersonCode != null">
+        #{responsiblePersonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="responsiblePersonName != null">
+        #{responsiblePersonName,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO">
@@ -157,6 +171,12 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="responsiblePersonCode != null">
+        responsible_person_code = #{responsiblePersonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="responsiblePersonName != null">
+        responsible_person_name = #{responsiblePersonName,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -176,13 +196,15 @@
   <select id="getPurchaseGroup" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo">
     select
       a.id,
-      a.purchase_group_code,
-      a.purchase_group_name,
-      a.create_time,
-      a.create_by,
-      a.update_time,
-      a.update_by,
-      a.del_flag
+      a.purchase_group_code as purchaseGroupCode,
+      a.purchase_group_name as purchaseGroupName,
+      a.create_time as createTime,
+      a.create_by as createBy,
+      a.update_time as updateTime,
+      a.update_by as updateBy,
+      a.del_flag as delFlag,
+      a.responsible_person_code as responsiblePersonCode,
+      a.responsible_person_name as responsiblePersonName
     from purchase_group a
     LEFT JOIN purchase_group_buyer b
     ON a.purchase_group_code = b.purchase_group_code

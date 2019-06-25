@@ -165,6 +165,7 @@
     <result column="aremake" jdbcType="VARCHAR" property="remake" />
     <result column="alogistics_remission_ratio" jdbcType="INTEGER" property="logisticsRemissionRatio" />
     <collection property="productList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
+      <id column="bid" property="id"/>
       <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
       <result column="bsku_name" jdbcType="VARCHAR" property="skuName" />
       <result column="bpicture_url" jdbcType="VARCHAR" property="pictureUrl" />
@@ -194,6 +195,15 @@
       <result column="coperator" jdbcType="VARCHAR" property="operator" />
       <result column="coperator_time" jdbcType="TIMESTAMP" property="operatorTime" />
     </collection>
+      <collection property="batchList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemBatchRespVO">
+          <result column="dsku_code" jdbcType="VARCHAR" property="skuCode" />
+          <result column="dsku_name" jdbcType="VARCHAR" property="skuName" />
+          <result column="dnum" jdbcType="BIGINT" property="num" />
+          <result column="dproduct_time" jdbcType="TIMESTAMP" property="productTime" />
+          <result column="dbatch_remark" jdbcType="VARCHAR" property="batchRemark" />
+          <result column="dbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+          <result column="dlock_type" jdbcType="INTEGER" property="lockType" />
+      </collection>
   </resultMap>
   <select id="selectByOrderCode" resultMap="selectByOrderCode">
         select a.order_code aorder_code,
@@ -230,6 +240,7 @@
              a.order_original aorder_original,
              a.remake aremake,
              a.logistics_remission_ratio alogistics_remission_ratio,
+             b.id bid,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
              b.picture_url bpicture_url,
@@ -255,10 +266,18 @@
              c.content ccontent,
              c.remark cremark,
              c.operator coperator,
-             c.operator_time coperator_time
+             c.operator_time coperator_time,
+             d.sku_code dsku_code,
+             d.sku_name dsku_name,
+             d.num dnum,
+             d.product_time dproduct_time,
+             d.batch_remark dbatch_remark,
+             d.batch_number dbatch_number,
+             d.lock_type dlock_type
       from order_info a
       left join order_info_item b on a.order_code = b.order_code
       left join order_info_log c on c.order_code = a.order_code
+      left join order_info_item_product_batch d on d.order_code = a.order_code
       where a.order_code = #{orderCode}
   </select>
     <select id="selectByOrderCode2" resultMap="BaseResultMap">
@@ -1009,6 +1028,6 @@
       transport_status = #{transportStatus,jdbcType=INTEGER},
       company_name = #{companyName,jdbcType=VARCHAR},
       company_code = #{companyCode,jdbcType=VARCHAR}
-    where order_code = #{order_code,jdbcType=BIGINT}
+    where order_code = #{orderCode,jdbcType=BIGINT}
   </update>
 </mapper>
