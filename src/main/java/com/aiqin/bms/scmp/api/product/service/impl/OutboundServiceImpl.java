@@ -26,6 +26,9 @@ import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
+import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -47,9 +50,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 描述:
@@ -108,6 +113,10 @@ public class OutboundServiceImpl implements OutboundService {
 
     @Autowired
     private OutboundBatchDao outboundBatchDao;
+
+//    @Autowired
+//    private GoodsRejectService goodsRejectService;
+
     /**
      * 分页查询以及搜索
      * @param vo
@@ -590,9 +599,8 @@ public class OutboundServiceImpl implements OutboundService {
             e.printStackTrace();
         }
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
-        List<OutboundProduct>list = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
+        List<OutboundBatch> list = outboundBatchDao.selectByOutboundBatchOderCode(outbound.getOutboundOderCode());
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy());
-
 
         //如果是订单
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode() )){
@@ -617,17 +625,18 @@ public class OutboundServiceImpl implements OutboundService {
         }//如果是退供
         else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode() )){
             try {
-                ReturnStorageResultReqVo supplyOrderInfoReqVO = new ReturnStorageResultReqVo();
-                supplyOrderInfoReqVO.setReturnSupplyCode(outbound.getSourceOderCode());
-                supplyOrderInfoReqVO.setUserName("张昀童");
-                supplyOrderInfoReqVO.setActualAmount(outbound.getPraTaxAmount());
-                supplyOrderInfoReqVO.setActualNum(outbound.getPraOutboundNum());
-                supplyOrderInfoReqVO.setSaleUnitActualNum(outbound.getPraMainUnitNum());
-                supplyOrderInfoReqVO.setNoTaxActualAmount(outbound.getPraAmount());
-                List<ReturnStorageResultItemReqVo> orderItems = BeanCopyUtils.copyList(list,ReturnStorageResultItemReqVo.class);
-                supplyOrderInfoReqVO.setItemReqVos(orderItems);
+                RejectStockRequest rejectStockRequest = new RejectStockRequest();
+                RejectDetailStockRequest rejectDetailStockRequest = new RejectDetailStockRequest();
+                List<RejectDetailStockRequest> rejectDetailStockRequests = new ArrayList<>();
+                rejectStockRequest.setRejectRecordCode(outbound.getSourceOderCode());
+                rejectStockRequest.setOutStockTime(new Date());
+                for(OutboundBatch outboundBatch : list){
+                    rejectDetailStockRequest.setActualCount(Integer.parseInt(outboundBatch.getPraQty().toString()) );
+                    rejectDetailStockRequests.add(rejectDetailStockRequest);
+                }
+                rejectStockRequest.setDetailList(rejectDetailStockRequests);
                 // 回传给退供
-                returnStorageResult(supplyOrderInfoReqVO);
+                returnStorageResult(rejectStockRequest);
 
                 outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
@@ -721,20 +730,19 @@ public class OutboundServiceImpl implements OutboundService {
      */
     @Override
     @Async("taskProductExecutor")
-    public void returnStorageResult(ReturnStorageResultReqVo reqVO) {
-
-//        String url = urlConfig.PURCHASE_URL+"/returnsupply/returnStorageResult";
-//        try {
-//            HttpClient client = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(reqVO));
-//            HttpResponse  result = client.action().result(HttpResponse.class);
-//            if(!Objects.equals(result.getCode(), MsgStatus.SUCCESS)){
-//                log.error("退供单回传：[{}]",reqVO);
-//                throw  new GroundRuntimeException("调用采购服务失败");
-//            }
-//        } catch (GroundRuntimeException e) {
-//            e.printStackTrace();
-//            log.error("出库单回传订单失败：[{}]",reqVO);
-//        }
+    public void returnStorageResult(RejectStockRequest reqVO) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            log.error("出库单回传退供参数为：[{}]", reqVO);
+        }
+        try {
+//            goodsRejectService.finishStock(reqVO);
+        } catch (GroundRuntimeException e) {
+            e.printStackTrace();
+            log.error("出库单回传退供失败：[{}]",e);
+        }
 
     }
 
