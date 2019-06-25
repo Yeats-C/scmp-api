@@ -2,11 +2,13 @@ package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnOrderManagementRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 
 import java.util.List;
 
@@ -51,4 +53,44 @@ public interface ReturnGoodsService {
      * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO
      */
     ReturnOrderDetailRespVO returnOrderDetail(String code);
+    /**
+     * 退货验货
+     * @author NullPointException
+     * @date 2019/6/20
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO>
+     */
+    BasePage<QueryReturnInspectionRespVO> returnInspection(QueryReturnInspectionReqVO reqVO);
+    /**
+     * 验货详情
+     * @author NullPointException
+     * @date 2019/6/20
+     * @param code
+     * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO
+     */
+    InspectionDetailRespVO inspectionDetail(String code);
+    /**
+     * 验货信息保存
+     * @author NullPointException
+     * @date 2019/6/24
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean saveReturnInspection(List<ReturnInspectionReq> reqVO);
+    /**
+     * 调用库房入库接口生成入库单
+     * @author NullPointException
+     * @date 2019/6/24
+     * @param items
+     * @return void
+     */
+    void sendToOutBound(List<ReturnOrderInfoInspectionItem> items);
+    /**
+     * 验货查看
+     * @author NullPointException
+     * @date 2019/6/24
+     * @param code
+     * @return InspectionViewRespVO
+     */
+    InspectionViewRespVO inspectionView(String code);
 }

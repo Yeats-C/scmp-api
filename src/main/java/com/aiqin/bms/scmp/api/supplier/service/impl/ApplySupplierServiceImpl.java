@@ -41,7 +41,7 @@ import java.util.*;
  */
 @Service
 @WorkFlowAnnotation(WorkFlow.APPLY_SUPPLIER)
-public class ApplySupplierServiceImplSupplier extends SupplierBaseServiceImpl implements ApplySupplierService, WorkFlowHelper {
+public class ApplySupplierServiceImpl extends SupplierBaseServiceImpl implements ApplySupplierService, WorkFlowHelper {
     @Autowired
     private EncodingRuleService encodingRuleService;
     @Autowired

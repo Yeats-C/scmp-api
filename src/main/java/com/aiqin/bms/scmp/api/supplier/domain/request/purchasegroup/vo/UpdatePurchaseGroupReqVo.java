@@ -34,4 +34,10 @@ public class UpdatePurchaseGroupReqVo {
 
     @ApiModelProperty("采购管理组人员")
     private List<UpdatePurchaseGroupBuyerReqVo> groupBuyerReqVoList;
+
+    @ApiModelProperty("负责人编号")
+    private String responsiblePersonCode;
+
+    @ApiModelProperty("负责人名称")
+    private String responsiblePersonName;
 }

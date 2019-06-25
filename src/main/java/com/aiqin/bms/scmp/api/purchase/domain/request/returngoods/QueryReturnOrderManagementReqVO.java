@@ -46,7 +46,7 @@ public class QueryReturnOrderManagementReqVO extends PageReq {
     private String customerCode;
 
     @ApiModelProperty("订单状态")
-    private Long orderStatus;
+    private Integer orderStatus;
 
     @ApiModelProperty("公司编码")
     private String companyCode;

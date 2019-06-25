@@ -92,8 +92,8 @@ public class ReturnOrderDetailRespVO {
     @ApiModelProperty("订单状态(状态有点多，后面补)")
     private String orderStatus;
 
-    public void setOrderStatus(Long orderStatus) {
-        this.orderStatus = ReturnOrderStatus.getAllStatus().get(orderStatus.intValue()).getBackgroundOrderStatus();
+    public void setOrderStatus(Integer orderStatus) {
+        this.orderStatus = ReturnOrderStatus.getAllStatus().get(orderStatus).getBackgroundOrderStatus();
     }
     @ApiModelProperty("支付方式")
     private String paymentType;

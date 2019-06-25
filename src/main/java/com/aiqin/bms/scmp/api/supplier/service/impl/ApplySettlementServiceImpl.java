@@ -37,7 +37,7 @@ import java.util.Objects;
  * @date: 2018/12/4 0004 10:06
  */
 @Service
-public class ApplySettlementServiceImplSupplier extends SupplierBaseServiceImpl implements ApplySettlementService {
+public class ApplySettlementServiceImpl extends SupplierBaseServiceImpl implements ApplySettlementService {
     @Autowired
     private ApplySettlementInfoDao applySettlementInfoDao;
     @Autowired
