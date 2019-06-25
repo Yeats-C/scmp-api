@@ -87,7 +87,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 //原始单号
                 outbound.setSourceOderCode(reqVo.getCode());
                 //出库时间
-//                outbound.setOutboundTime(reqVo.getOutboundTime());
+//                order.setOutboundTime(reqVo.getOutboundTime());
                 //预计出库数量
                 outbound.setPreOutboundNum(reqVo.getTotalNum());
                 //预计主出库数量
@@ -97,7 +97,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 //预计无税总金额
                 outbound.setPreAmount(reqVo.getTotalAmount());
                 //预计税额
-//                outbound.setPreTax(reqVo.getTotalAmount()-reqVo.getTotalAmount());
+//                order.setPreTax(reqVo.getTotalAmount()-reqVo.getTotalAmount());
                 outbound.setCreateBy(reqVo.getCreateBy());
                 outbound.setUpdateBy(reqVo.getUpdateBy());
                 outbound.setCreateTime(new Date());

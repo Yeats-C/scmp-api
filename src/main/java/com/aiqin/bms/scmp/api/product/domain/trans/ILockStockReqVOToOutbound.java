@@ -20,46 +20,46 @@ package com.aiqin.bms.scmp.api.product.domain.trans;//package com.aiqin.mgs.prod
 //    @Override
 //    public Outbound apply(@Nullable ILockStockReqVO stockReqVO) {
 //        if(null != stockReqVO){
-//            Outbound outbound = new Outbound();
+//            Outbound order = new Outbound();
 //            //公司
-//            outbound.setCompanyCode(stockReqVO.getCompanyCode());
-//            outbound.setCompanyName(stockReqVO.getCompanyName());
+//            order.setCompanyCode(stockReqVO.getCompanyCode());
+//            order.setCompanyName(stockReqVO.getCompanyName());
 //            //物流中心
-//            outbound.setLogisticsCenterCode(stockReqVO.getTransportCenterCode());
-//            outbound.setLogisticsCenterName(stockReqVO.getTransportCenterName());
+//            order.setLogisticsCenterCode(stockReqVO.getTransportCenterCode());
+//            order.setLogisticsCenterName(stockReqVO.getTransportCenterName());
 //            //库房
-//            outbound.setWarehouseCode(stockReqVO.getWarehouseCode());
-//            outbound.setWarehouseName(stockReqVO.getWarehouseName());
+//            order.setWarehouseCode(stockReqVO.getWarehouseCode());
+//            order.setWarehouseName(stockReqVO.getWarehouseName());
 //            //供应单位
-//            outbound.setSupplierCode(stockReqVO.getSupplyCode());
-//            outbound.setSupplierName(stockReqVO.getSupplyName());
+//            order.setSupplierCode(stockReqVO.getSupplyCode());
+//            order.setSupplierName(stockReqVO.getSupplyName());
 //            //状态
-//            outbound.setOutboundStatusCode(stockReqVO.getStockStatusCode().getCode());
-//            outbound.setOutboundStatusName(stockReqVO.getStockStatusCode().getName());
+//            order.setOutboundStatusCode(stockReqVO.getStockStatusCode().getCode());
+//            order.setOutboundStatusName(stockReqVO.getStockStatusCode().getName());
 //            //类型
-//            outbound.setOutboundTypeCode(stockReqVO.getOutboundTypeCode().getCode());
-//            outbound.setOutboundTypeName(stockReqVO.getOutboundTypeCode().getName());
+//            order.setOutboundTypeCode(stockReqVO.getOutboundTypeCode().getCode());
+//            order.setOutboundTypeName(stockReqVO.getOutboundTypeCode().getName());
 //            //原始单号
-//            outbound.setSourceOderCode(stockReqVO.getSourceOderCode());
+//            order.setSourceOderCode(stockReqVO.getSourceOderCode());
 //            //出库时间
-//            outbound.setOutboundTime(stockReqVO.getOutboundTime());
+//            order.setOutboundTime(stockReqVO.getOutboundTime());
 //            //预计出库数量
-//            outbound.setPreOutboundNum(stockReqVO.getPreOutboundNum());
+//            order.setPreOutboundNum(stockReqVO.getPreOutboundNum());
 //            //预计主出库数量
-//            outbound.setPreMainUnitNum(stockReqVO.getPreMainUnitNum());
+//            order.setPreMainUnitNum(stockReqVO.getPreMainUnitNum());
 //            //预计含税总金额
-//            outbound.setPreTaxAmount(stockReqVO.getPreTaxAmount());
+//            order.setPreTaxAmount(stockReqVO.getPreTaxAmount());
 //            //预计无税总金额
-//            outbound.setPreAmount(stockReqVO.getPreAmount());
+//            order.setPreAmount(stockReqVO.getPreAmount());
 //            //预计税额
-//            outbound.setPreTax((null == stockReqVO.getPreTaxAmount() ? 0L : stockReqVO.getPreTaxAmount())  - (null ==  stockReqVO.getPreAmount() ? 0L : stockReqVO.getPreAmount()));
-//            outbound.setCreateBy(stockReqVO.getOperator());
-//            outbound.setUpdateBy(stockReqVO.getOperator());
-//            outbound.setCreateTime(new Date());
-//            outbound.setUpdateTime(new Date());
+//            order.setPreTax((null == stockReqVO.getPreTaxAmount() ? 0L : stockReqVO.getPreTaxAmount())  - (null ==  stockReqVO.getPreAmount() ? 0L : stockReqVO.getPreAmount()));
+//            order.setCreateBy(stockReqVO.getOperator());
+//            order.setUpdateBy(stockReqVO.getOperator());
+//            order.setCreateTime(new Date());
+//            order.setUpdateTime(new Date());
 //
 //
-//            return outbound;
+//            return order;
 //        }
 //
 //        return null;

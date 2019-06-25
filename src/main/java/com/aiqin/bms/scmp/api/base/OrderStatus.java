@@ -63,7 +63,9 @@ public enum OrderStatus {
     PENDING_PAYMENT_CONFIRMATION_PAYMENT(92,null,"“待支付”订单人工确认变成“已支付”",null,"您的订单已支付，请等待系统确认","0","2",null),
     CANCELLATION_OF_ORDER_CONFIRMATION_PAYMENT(93,null,"“已取消”订单人工确认变成“已支付”",null,"您的订单已支付，请等待系统确认","0","2",null),
     APPLY_TO_TERMINATE_THE_TRANSACTION_FAIL(94,null,"申请终止交易不通过",null,"您的订单申请终止交易未通过，继续发货","0",null,null),
-    RECEIVING_EXTENSION(95,null,"收货延期",null,"您的订单收货延期","0",null,null);
+    RECEIVING_EXTENSION(95,null,"收货延期",null,"您的订单收货延期","0",null,null),
+    WAITING_FOR_PICKING_FAILED(-6,"等待生成出库单","等待生成出库单","配送订单拆分完成,生成出库单失败！","生成出库单失败","1",null,null);
+
 
     private Integer statusCode;
     private String frontOrderStatus;

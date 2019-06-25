@@ -146,4 +146,7 @@ public class OutboundReqVo {
 
     @ApiModelProperty("sku 列表")
     private List<OutboundProductReqVo> list;
+
+    @ApiModelProperty("批次列表")
+    private List<OutboundBatchReqVo> outboundBatchList;
 }
