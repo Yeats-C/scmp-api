@@ -368,7 +368,7 @@
         #{directSupervisorCode,jdbcType=VARCHAR},
       </if>
       <if test="directSupervisorName != null">
-        #{directSupervisorName,jdbcType=VARCHAR}
+        #{directSupervisorName,jdbcType=VARCHAR},
       </if>
       <if test="contractTypeCode != null">
         #{contractTypeCode,jdbcType=VARCHAR},
