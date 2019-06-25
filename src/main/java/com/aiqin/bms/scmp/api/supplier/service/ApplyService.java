@@ -9,11 +9,11 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 /**
  * @author knight.xie
  * @version 1.0
- * @className ApplyServiceSupplier
+ * @className ApplyService
  * @date 2019/4/8 09:34
  * @description TODO
  */
-public interface ApplyServiceSupplier extends SupplierBaseService {
+public interface ApplyService extends SupplierBaseService {
 
 
     /**

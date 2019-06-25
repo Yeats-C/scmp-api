@@ -24,12 +24,12 @@ import java.util.List;
 /**
  * @author knight.xie
  * @version 1.0
- * @className ApplyServiceImplSupplier
+ * @className ApplyServiceImpl
  * @date 2019/4/8 09:35
  * @description TODO
  */
 @Service
-public class ApplyServiceImplSupplier extends SupplierBaseServiceImpl implements ApplyServiceSupplier {
+public class ApplyServiceImpl extends SupplierBaseServiceImpl implements ApplyService {
 
     @Autowired
     private ApplySupplyComServcie applySupplyComServcie;
