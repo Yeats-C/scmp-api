@@ -33,8 +33,35 @@ import java.util.List;
  * 思维方式*热情*能力
  */
 @Data
-public class RejectApplyResponse {
+public class  RejectApplyResponse {
 
+    @ApiModelProperty(value = "收货区域 :省")
+    @JsonProperty("province_id")
+    private String provinceId;
+
+    @ApiModelProperty(value = "")
+    @JsonProperty("province_name")
+    private String provinceName;
+
+    @ApiModelProperty(value = "市")
+    @JsonProperty("city_id")
+    private String cityId;
+
+    @ApiModelProperty(value = "")
+    @JsonProperty("city_name")
+    private String cityName;
+
+    @ApiModelProperty(value = "县")
+    @JsonProperty("district_id")
+    private String districtId;
+
+    @ApiModelProperty(value = "")
+    @JsonProperty("district_name")
+    private String districtName;
+
+    @ApiModelProperty(value = "收货地址")
+    @JsonProperty("address")
+    private String address;
 
     @ApiModelProperty(value = "商品 结算方式")
     @JsonProperty("settlement_method_code")

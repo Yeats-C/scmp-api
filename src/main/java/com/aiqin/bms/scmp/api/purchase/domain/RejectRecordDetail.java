@@ -78,6 +78,10 @@ public class RejectRecordDetail {
     @JsonProperty("model_number")
     private String modelNumber;
 
+    @ApiModelProperty(value = "单品数量")
+    @JsonProperty("single_count")
+    private Integer singleCount;
+
     @ApiModelProperty(value="单位")
     @JsonProperty("unit_code")
     private String unitCode;

@@ -79,9 +79,11 @@ public class OutboundCallBackReqVo {
     @ApiModelProperty("实际税额")
     private Long praTax;
 
-
     @ApiModelProperty("回调sku列表")
     private List<OutboundProductCallBackReqVo> list;
+
+    @ApiModelProperty("回调sku批次列表")
+    private List<OutboundBatchCallBackReqVo> outboundBatchCallBackReqVos;
 
 
 }

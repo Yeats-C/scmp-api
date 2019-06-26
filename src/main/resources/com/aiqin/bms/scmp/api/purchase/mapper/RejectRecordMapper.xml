@@ -31,7 +31,6 @@
         <result column="sum_count" jdbcType="INTEGER" property="sumCount"/>
         <result column="sum_amount" jdbcType="BIGINT" property="sumAmount"/>
         <result column="single_count" jdbcType="INTEGER" property="singleCount"/>
-        <result column="apply_type" jdbcType="INTEGER" property="applyType"/>
         <result column="single_amount" jdbcType="BIGINT" property="singleAmount"/>
         <result column="return_count" jdbcType="INTEGER" property="returnCount"/>
         <result column="return_amount" jdbcType="BIGINT" property="returnAmount"/>
@@ -58,7 +57,7 @@
     out_stock_time, sum_count, sum_amount, single_count, single_amount, return_count, 
     return_amount, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
     update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name,
-    company_name,company_code,apply_type
+    company_name,company_code
   </sql>
     <sql id="LIST_QUERY">
         <where>
@@ -114,7 +113,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
-    insert into reject_record (reject_record_id, reject_record_code,apply_type,
+    insert into reject_record (reject_record_id, reject_record_code,
       duty_person, contacts_person, contacts_person_phone, 
       province_id, province_name, city_id, 
       city_name, district_id, district_name, 
@@ -127,7 +126,7 @@
       return_amount, create_by_id, create_by_name, transport_center_code,
       transport_center_name, warehouse_code, warehouse_name,company_name,company_code,
       settlement_method_code,settlement_method_name,  create_time,  update_time)
-    values ( #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR},#{applyType,jdbcType=INTEGER},
+    values ( #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR},
       #{dutyPerson,jdbcType=VARCHAR}, #{contactsPerson,jdbcType=VARCHAR}, #{contactsPersonPhone,jdbcType=VARCHAR}, 
       #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=VARCHAR}, 
       #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, #{districtName,jdbcType=VARCHAR}, 
@@ -496,4 +495,12 @@
 
 
     </update>
+    <select id="selectByRejectId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        reject_record
+        where
+           reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

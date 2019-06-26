@@ -35,6 +35,10 @@ import java.util.Date;
 @Data
 public class RejectApplyDetailResponse {
 
+    @ApiModelProperty(value = "单品数量")
+    @JsonProperty("single_count")
+    private Integer singleCount;
+
     @ApiModelProperty(value = "业务id")
     @JsonProperty("reject_apply_record_detail_id")
     private String rejectApplyRecordDetailId;
@@ -139,7 +143,7 @@ public class RejectApplyDetailResponse {
     @JsonProperty("batch_remark")
     private String batchRemark;
 
-    @ApiModelProperty(value = "批次备注")
+    @ApiModelProperty(value = "批次日期")
     @JsonProperty("batch_create_time")
     private Date batchCreateTime;
 
@@ -190,18 +194,6 @@ public class RejectApplyDetailResponse {
     @ApiModelProperty(value="wms 传回来的实际金额")
     @JsonProperty("actual_amount")
     private Long actualAmount;
-
-    @ApiModelProperty(value="颜色编码")
-    @JsonProperty("color_code")
-    private String colorCode;
-
-    @ApiModelProperty(value="颜色")
-    @JsonProperty("color_name")
-    private String colorName;
-
-    @ApiModelProperty(value="型号")
-    @JsonProperty("model_number")
-    private String modelNumber;
 
 
 }
