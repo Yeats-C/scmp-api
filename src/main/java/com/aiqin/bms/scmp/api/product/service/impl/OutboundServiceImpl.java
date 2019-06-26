@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
@@ -61,7 +62,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class OutboundServiceImpl implements OutboundService {
+public class OutboundServiceImpl extends BaseServiceImpl implements OutboundService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OutboundServiceImpl.class);
 
@@ -865,6 +866,10 @@ public class OutboundServiceImpl implements OutboundService {
 
     @Override
     public Boolean saveList(List<OutboundReqVo> outboundReqVoList) {
+        if(CollectionUtils.isEmpty(outboundReqVoList)){
+            throw new BizException(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
+        }
+
         return null;
     }
 }

@@ -194,7 +194,8 @@ public interface ResultCode {
     MessageId LOG_SAVE_ERROR = MessageId.create(Project.PURCHASE_API,99,"订单日志保存失败");
     MessageId SAVE_LOCK_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,99,"保存批次锁库失败");
     MessageId CHANGE_ACTUAL_DELIVERY_NUM_FAILED = MessageId.create(Project.PURCHASE_API,99,"修改实发数量失败");
-
+    //出库
+    MessageId OUTBOUND_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.PURCHASE_API,75,"出库单信息不能为空");
 
     // 采购
     MessageId NOT_PURCHASE_GROUP = MessageId.create(Project.SCMP_API,201,"未获取到有效的采购组");
