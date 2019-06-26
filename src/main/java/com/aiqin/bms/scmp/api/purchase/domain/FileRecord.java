@@ -7,15 +7,15 @@ import lombok.Data;
 
 import java.util.Date;
 
-@Data
 @ApiModel
-public class PurchaseFile {
+@Data
+public class FileRecord {
     @JsonProperty("id")
     private Long id;
 
     @ApiModelProperty(value="关联文件id")
-    @JsonProperty("purchase_id")
-    private String purchaseId;
+    @JsonProperty("file_id")
+    private String fileId;
 
     @ApiModelProperty(value="文件编号")
     @JsonProperty("file_code")
@@ -27,7 +27,7 @@ public class PurchaseFile {
 
     @ApiModelProperty(value="0. 禁用  1.启用")
     @JsonProperty("file_status")
-    private Boolean fileStatus;
+    private Integer fileStatus;
 
     @ApiModelProperty(value="上传时间")
     @JsonProperty("create_time")

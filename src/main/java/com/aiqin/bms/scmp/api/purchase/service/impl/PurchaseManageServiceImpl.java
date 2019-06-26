@@ -1,19 +1,23 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseFileDao;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseFile;
+import com.aiqin.bms.scmp.api.purchase.dao.*;
+import com.aiqin.bms.scmp.api.purchase.domain.FileRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderDetails;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormProcuctResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -36,7 +40,13 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     @Resource
     private PurchaseApplyProductDao purchaseApplyProductDao;
     @Resource
-    private PurchaseFileDao purchaseFileDao;
+    private PurchaseOrderDao purchaseOrderDao;
+    @Resource
+    private PurchaseOrderProductDao purchaseOrderProductDao;
+    @Resource
+    private PurchaseOrderDetailsDao purchaseOrderDetailsDao;
+    @Resource
+    private EncodingRuleDao encodingRuleDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -87,25 +97,9 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     }
 
     @Override
-    public HttpResponse purchaseProductList(PurchaseFormRequest purchaseFormRequest){
+    public HttpResponse purchaseApplyList(PurchaseFormRequest purchaseFormRequest){
         if(purchaseFormRequest == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
-        PurchaseFormProcuctResponse purchase = new PurchaseFormProcuctResponse();
-        List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(purchaseFormRequest);
-        // 提交采购单页面商品列表
-        if(CollectionUtils.isNotEmptyCollection(details)){
-            for(PurchaseApplyDetailResponse detail:details){
-                // 计算单品数量， 含税总价
-                Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
-                Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
-                Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                Integer amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
-                Integer number = purchaseWhole * packNumber + purchaseSingle;
-                detail.setSingleCount(number);
-                detail.setProductPurchaseSum(number * amount);
-            }
-            purchase.setProductList(details);
         }
         // 查询采购申请单商品列表
         List<PurchaseFormResponse> forms = purchaseApplyProductDao.applyByProduct(purchaseFormRequest);
@@ -135,38 +129,72 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 Integer count = purchaseApplyProductDao.formSkuCount(purchaseFormRequest);
                 form.setSkuCount(count);
             }
-            purchase.setPurchaseFormResponseList(forms);
         }
-        return HttpResponse.success(purchase);
+        return HttpResponse.success(forms);
     }
+
+    @Override
+    public HttpResponse purchaseProductList(PurchaseFormRequest purchaseFormRequest){
+        if(purchaseFormRequest == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        PageResData pageResData = new PageResData();
+        List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormList(purchaseFormRequest);
+        // 提交采购单页面商品列表
+        if(CollectionUtils.isNotEmptyCollection(details)){
+            for(PurchaseApplyDetailResponse detail:details){
+                // 计算单品数量， 含税总价
+                Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
+                Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
+                Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
+                Integer amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                Integer number = purchaseWhole * packNumber + purchaseSingle;
+                detail.setSingleCount(number);
+                detail.setProductPurchaseSum(number * amount);
+            }
+        }
+        pageResData.setDataList(details);
+        Integer count = purchaseApplyProductDao.purchaseFormCount(purchaseFormRequest);
+        pageResData.setTotalCount(count);
+        return HttpResponse.success(pageResData);
+    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse deletePurchaseFile(PurchaseFile purchaseFile){
-        if(purchaseFile == null || StringUtils.isBlank(purchaseFile.getFileCode())){
+    public HttpResponse purchaseOrder(PurchaseOrderRequest purchaseOrderRequest){
+        if(purchaseOrderRequest == null || purchaseOrderRequest.getPurchaseOrder() == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        Integer count = purchaseFileDao.update(purchaseFile);
-        if(count == 0){
-            LOGGER.info("删除采购文件失败");
-            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+        // 获取采购单编码
+        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
+        // 采购申请单id
+        String purchaseId = IdUtil.purchaseId();
+        PurchaseOrder purchaseOrder = purchaseOrderRequest.getPurchaseOrder();
+        purchaseOrder.setPurchaseOrderId(purchaseId);
+        String purchaseProductCode = "CG" + String.valueOf(encodingRule.getNumberingValue());
+        purchaseOrder.setPurchaseOrderId(purchaseProductCode);
+        purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_1);
+        purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
+        // 添加采购单
+        Integer orderCount = purchaseOrderDao.insert(purchaseOrder);
+        if(orderCount > 0){
+            // 添加采购单详情
+            PurchaseOrderDetails details = purchaseOrderRequest.getOrderDetails();
+            details.setPurchaseDetailsId(IdUtil.purchaseId());
+            details.setPurchaseOrderId(purchaseId);
+            details.setPurchaseOrderCode(purchaseProductCode);
+            details.setDetailsStatus(Global.USER_ON);
+            details.setOrderType("配送");
+            purchaseOrderDetailsDao.insert(details);
+            // 添加商品列表
+
+            // 添加文件信息
+            List<FileRecord> fileList = purchaseOrderRequest.getFileList();
+            if(CollectionUtils.isNotEmptyCollection(fileList)){
+
+            }
         }
-        return HttpResponse.success();
-    }
-
-    @Override
-    public HttpResponse purchaseFileList(String purchaseId){
-        if(StringUtils.isBlank(purchaseId)){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
-        List<PurchaseFile> purchaseFiles = purchaseFileDao.fileList(purchaseId);
-        return HttpResponse.success(purchaseFiles);
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public HttpResponse purchaseOrder(){
-
         return HttpResponse.success();
     }
 

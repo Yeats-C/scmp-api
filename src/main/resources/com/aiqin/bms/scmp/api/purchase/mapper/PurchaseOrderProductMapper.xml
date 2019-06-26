@@ -4,8 +4,8 @@
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="order_product_id" jdbcType="VARCHAR" property="orderProductId" />
-    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
-    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="purchase_order_id" jdbcType="VARCHAR" property="purchaseOrderId" />
+    <result column="purchase_order_code" jdbcType="VARCHAR" property="purchaseOrderCode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
@@ -24,46 +24,36 @@
     <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
     <result column="product_amount" jdbcType="INTEGER" property="productAmount" />
     <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
-    <result column="actual_single_count" jdbcType="INTEGER" property="actualSingleCount" />
-    <result column="actual_total_amount" jdbcType="INTEGER" property="actualTotalAmount" />
     <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
-    <result column="is_purchase" jdbcType="INTEGER" property="isPurchase" />
-    <result column="settlement" jdbcType="INTEGER" property="settlement" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_product_id, order_id, order_code, sku_code, sku_name, brand_id, brand_name, 
-    category_id, category_name, product_spec, color_name, model_number, product_type, 
-    purchase_whole, purchase_single, base_product_content, box_gauge, single_count, tax_rate,
-    product_amount, product_total_amount, actual_single_count, actual_total_amount, stock_count, 
-    is_purchase, settlement, create_time, update_time, create_by, update_by
+    order_product_id, purchase_order_id, purchase_order_code, sku_code, sku_name,
+    brand_id, brand_name, category_id, category_name, product_spec, color_name, model_number, 
+    product_type, purchase_whole, purchase_single, base_product_content, box_gauge, single_count, 
+    tax_rate, product_amount, product_total_amount, stock_count, create_time, update_time, 
+    create_by
   </sql>
   <insert id="insert">
-    insert into purchase_order_product (id, order_product_id, order_id, 
-      order_code, sku_code, sku_name, 
+    insert into purchase_order_product (order_product_id, purchase_order_id,
+      purchase_order_code, sku_code, sku_name, 
       brand_id, brand_name, category_id, 
       category_name, product_spec, color_name, 
       model_number, product_type, purchase_whole, 
-      purchase_single, base_product_content, box_gauge,
+      purchase_single, base_product_content, box_gauge, 
       single_count, tax_rate, product_amount, 
-      product_total_amount, actual_single_count, 
-      actual_total_amount, stock_count, is_purchase, 
-      settlement, create_time, update_time, 
-      create_by, update_by)
-    values (#{id,jdbcType=BIGINT}, #{orderProductId,jdbcType=VARCHAR}, #{orderId,jdbcType=VARCHAR}, 
-      #{orderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
+      product_total_amount, stock_count, create_time, create_by)
+    values (#{orderProductId,jdbcType=VARCHAR}, #{purchaseOrderId,jdbcType=VARCHAR},
+      #{purchaseOrderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
       #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, 
       #{categoryName,jdbcType=VARCHAR}, #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, 
       #{modelNumber,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER}, #{purchaseWhole,jdbcType=INTEGER}, 
-      #{purchaseSingle,jdbcType=INTEGER}, #{packNumber,jdbcType=INTEGER}, #{baseProductContent,jdbcType=VARCHAR},  #{boxGauge,jdbcType=VARCHAR},
+      #{purchaseSingle,jdbcType=INTEGER}, #{baseProductContent,jdbcType=INTEGER}, #{boxGauge,jdbcType=VARCHAR}, 
       #{singleCount,jdbcType=INTEGER}, #{taxRate,jdbcType=INTEGER}, #{productAmount,jdbcType=INTEGER}, 
-      #{productTotalAmount,jdbcType=INTEGER}, #{actualSingleCount,jdbcType=INTEGER}, 
-      #{actualTotalAmount,jdbcType=INTEGER}, #{stockCount,jdbcType=INTEGER}, #{isPurchase,jdbcType=INTEGER}, 
-      #{settlement,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR})
+      #{productTotalAmount,jdbcType=INTEGER}, #{stockCount,jdbcType=INTEGER}, now(), #{createBy,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_order_product
@@ -71,11 +61,11 @@
       <if test="orderProductId != null">
         order_product_id = #{orderProductId,jdbcType=VARCHAR},
       </if>
-      <if test="orderId != null">
-        order_id = #{orderId,jdbcType=VARCHAR},
+      <if test="purchaseOrderId != null">
+        purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR},
       </if>
-      <if test="orderCode != null">
-        order_code = #{orderCode,jdbcType=VARCHAR},
+      <if test="purchaseOrderCode != null">
+        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
       </if>
       <if test="skuCode != null">
         sku_code = #{skuCode,jdbcType=VARCHAR},
@@ -131,20 +121,8 @@
       <if test="productTotalAmount != null">
         product_total_amount = #{productTotalAmount,jdbcType=INTEGER},
       </if>
-      <if test="actualSingleCount != null">
-        actual_single_count = #{actualSingleCount,jdbcType=INTEGER},
-      </if>
-      <if test="actualTotalAmount != null">
-        actual_total_amount = #{actualTotalAmount,jdbcType=INTEGER},
-      </if>
       <if test="stockCount != null">
         stock_count = #{stockCount,jdbcType=INTEGER},
-      </if>
-      <if test="isPurchase != null">
-        is_purchase = #{isPurchase,jdbcType=INTEGER},
-      </if>
-      <if test="settlement != null">
-        settlement = #{settlement,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},

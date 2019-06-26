@@ -35,4 +35,8 @@ public interface PurchaseApplyProductDao {
 
     List<PurchaseFormResponse> applyByProduct(PurchaseFormRequest apply);
 
+    List<PurchaseApplyDetailResponse> purchaseFormList(PurchaseFormRequest apply);
+
+    Integer purchaseFormCount(PurchaseFormRequest apply);
+
 }
