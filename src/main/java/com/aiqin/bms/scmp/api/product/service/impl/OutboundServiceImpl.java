@@ -18,7 +18,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
-import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementProductResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
@@ -46,15 +45,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 描述:
@@ -114,8 +112,9 @@ public class OutboundServiceImpl implements OutboundService {
     @Autowired
     private OutboundBatchDao outboundBatchDao;
 
-//    @Autowired
-//    private GoodsRejectService goodsRejectService;
+    @Autowired
+    @Lazy(true)
+    private GoodsRejectService goodsRejectService;
 
     /**
      * 分页查询以及搜索
@@ -210,7 +209,7 @@ public class OutboundServiceImpl implements OutboundService {
             outbound.setOutboundOderCode(outboundOderCode);
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(),OutboundProduct.class);
-            outboundProducts.stream().forEach(outboundProduct ->outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
+            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
             int i = outboundDao.insertSelective(outbound);
 
             List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(),OutboundBatch.class);
@@ -261,7 +260,7 @@ public class OutboundServiceImpl implements OutboundService {
             log.info("插入出库单主表返回结果", i);
 
             List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(), OutboundBatch.class);
-            outboundBatches.stream().forEach(outboundBatch ->outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
+            outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
             int j = outboundProductDao.insertBatch(outboundProducts);
             log.info("插入出库单商品表返回结果", j);
 
@@ -421,11 +420,14 @@ public class OutboundServiceImpl implements OutboundService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        OutboundWmsReqVO outboundWmsReqVO = new OutboundWmsReqVO();
+        OutboundWmsResVO outboundWmsReqVO = new OutboundWmsResVO();
         Outbound outbound = outboundDao.selectByCode(code);
         BeanCopyUtils.copy(outbound,outboundWmsReqVO);
-        List<InboundProductWmsReqVO> inboundProductWmsReqVOS =  outboundProductDao.selectMmsReqByOutboundOderCode(outbound.getOutboundOderCode());
-        outboundWmsReqVO.setList(inboundProductWmsReqVOS);
+        List<OutboundProductWmsResVO> outboundProductWmsReqVOs =  outboundProductDao.selectMmsReqByOutboundOderCode(outbound.getOutboundOderCode());
+
+        List<OutboundBatchWmsResVO> outboundBatchWmsResVOs = outboundBatchDao.selectOutboundBatchWmsResponse(outbound.getOutboundOderCode());
+        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
+        outboundWmsReqVO.setOutboundBatchWmsResVOs(outboundBatchWmsResVOs);
         try{
             String url =urlConfig.WMS_API_URL+"/deppon/save/outbound";
             HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO));
@@ -448,14 +450,23 @@ public class OutboundServiceImpl implements OutboundService {
                 outboundCallBackReqVo.setOutboundOderCode(outbound.getOutboundOderCode());
 
                 List<OutboundProductCallBackReqVo> list = new ArrayList<>();
-                for (InboundProductWmsReqVO inboundProductWmsReqVO : inboundProductWmsReqVOS) {
+                List<OutboundBatchCallBackReqVo> outboundBatchCallBackReqVos = new ArrayList<>();
+                for (OutboundProductWmsResVO outboundProductWmsReqVO : outboundProductWmsReqVOs) {
                     OutboundProductCallBackReqVo outboundProductCallBackReqVo = new OutboundProductCallBackReqVo();
-                    outboundProductCallBackReqVo.setLinenum(inboundProductWmsReqVO.getLinenum());
-                    outboundProductCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
-                    outboundProductCallBackReqVo.setPraOutboundMainNum(inboundProductWmsReqVO.getPreInboundMainNum());
+                    outboundProductCallBackReqVo.setLinenum(outboundProductWmsReqVO.getLinenum());
+                    outboundProductCallBackReqVo.setSkuCode(outboundProductWmsReqVO.getSkuCode());
+                    outboundProductCallBackReqVo.setPraOutboundMainNum(outboundProductWmsReqVO.getPreInboundMainNum());
                     list.add(outboundProductCallBackReqVo);
+
+                    //TODO 等wms回传批次的格式
+                    OutboundBatchCallBackReqVo outboundBatchCallBackReqVo = new OutboundBatchCallBackReqVo();
+//                    outboundBatchCallBackReqVo.setLinenum(inboundProductWmsReqVO.getLinenum());
+//                    outboundBatchCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
+//                    outboundBatchCallBackReqVo.setPraQty(inboundProductWmsReqVO.getPreInboundMainNum());
+                    outboundBatchCallBackReqVos.add(outboundBatchCallBackReqVo);
                 }
                 outboundCallBackReqVo.setList(list);
+                outboundCallBackReqVo.setOutboundBatchCallBackReqVos(outboundBatchCallBackReqVos);
                 //保存日志
                 productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy());
 
@@ -562,6 +573,22 @@ public class OutboundServiceImpl implements OutboundService {
             }
             stockChangeRequest.setStockVoRequests(stockVoRequestList);
 
+            //TODO 等wms回传批次的格式 同时调用库存接口 减并解锁sku库存与批次库存
+            for(OutboundBatchCallBackReqVo outboundBatchCallBackReqVo : reqVo.getOutboundBatchCallBackReqVos()){
+                // 查询旧的sku，以及销项，进项税率
+                ReturnOutboundBatch returnOutboundBatch = outboundBatchDao.selectBatchInfoByLinenum(outbound.getOutboundOderCode(), outboundBatchCallBackReqVo.getSkuCode(), outboundBatchCallBackReqVo.getLinenum());
+                OutboundBatch outboundBatch = new OutboundBatch();
+                //copy 实体
+                BeanCopyUtils.copy(returnOutboundBatch, outboundBatch);
+
+                //设置实际数量
+                outboundBatch.setPraQty(outboundBatchCallBackReqVo.getPraQty());
+
+                // 修改单条 批次
+                int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
+
+                //TODO 设置修改减少库存sku批次实体
+            }
             // 解锁并且减库存
            HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
@@ -738,7 +765,7 @@ public class OutboundServiceImpl implements OutboundService {
             log.error("出库单回传退供参数为：[{}]", reqVO);
         }
         try {
-//            goodsRejectService.finishStock(reqVO);
+            goodsRejectService.finishStock(reqVO);
         } catch (GroundRuntimeException e) {
             e.printStackTrace();
             log.error("出库单回传退供失败：[{}]",e);
