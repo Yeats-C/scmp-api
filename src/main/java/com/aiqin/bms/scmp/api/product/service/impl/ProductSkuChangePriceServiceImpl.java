@@ -98,8 +98,10 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         String formNo = "CP" + new IdSequenceUtils().nextId();
         reqVO.setFormNo(formNo);
         //获取编码
-        String code = getCode("CP", EncodingRuleType.CHANGE_PRICE_CODE);
-        reqVO.setCode(code);
+        synchronized (ProductSkuChangePriceServiceImpl.class){
+            String code = getCode("CP", EncodingRuleType.CHANGE_PRICE_CODE);
+            reqVO.setCode(code);
+        }
         saveData(reqVO);
         if (CommonConstant.SUBMIT.equals(reqVO.getOperation())) {
             callWorkflow(reqVO);

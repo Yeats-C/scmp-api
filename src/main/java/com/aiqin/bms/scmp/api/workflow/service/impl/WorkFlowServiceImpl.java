@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class WorkFlowServiceImpl implements WorkFlowService {
     @Override
-    public String WorkFlowCallBack(WorkFlow workFlow, WorkFlowCallbackVO vo) {
-        return WorkFlowCallBackFactory.createBehavior(workFlow).workFlowCallback(vo);
+    public String workFlowCallBack(WorkFlow workFlow, WorkFlowCallbackVO vo) {
+        return WorkFlowCallBackFactory.createWorkFlow(workFlow).workFlowCallback(vo);
     }
 }
