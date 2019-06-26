@@ -15,10 +15,11 @@
     <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
     <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
     <result column="product_type" jdbcType="BIT" property="productType" />
+    <result column="single_count" jdbcType="INTEGER" property="singleCount" />
     <result column="product_count" jdbcType="BIT" property="productCount" />
     <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
-    <result column="unit_code" jdbcType="VARCHAR" property="unit_code" />
-    <result column="unit_name" jdbcType="VARCHAR" property="unit_name" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
     <result column="product_amount" jdbcType="BIGINT" property="productAmount" />
     <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
@@ -42,7 +43,7 @@
     category_name, brand_id, brand_name, product_count,product_type, product_spec, unit_code, unit_name, tax_rate,
     product_amount, product_total_amount, actual_count, actual_amount, batch_no, batch_remark, 
     batch_create_time, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
-    update_time,color_code,color_name,model_number
+    update_time,color_code,color_name,model_number,single_count
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -56,7 +57,7 @@
   </delete>
   <insert id="insertAll"  >
     insert into reject_record_detail ( reject_record_detail_id,reject_record_id, reject_record_code,
-      barcode,sku_code, sku_name, product_id,
+      barcode,sku_code, sku_name, product_id,single_count,
       category_id, category_name, brand_id, 
       brand_name, product_type,product_count, product_spec,
       unit_code,unit_name, tax_rate, product_amount,
@@ -74,6 +75,7 @@
       #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR},
       #{item.productId,jdbcType=VARCHAR},
+      #{item.singleCount,jdbcType=VARCHAR},
       #{item.categoryId,jdbcType=VARCHAR},
       #{item.categoryName,jdbcType=VARCHAR},
       #{item.brandId,jdbcType=VARCHAR},
@@ -395,5 +397,13 @@
     WHERE  reject_record_detail_id = #{rejectRecordDetailId,jdbcType=VARCHAR}
     GROUP BY sku_code,product_type
 
+  </select>
+  <select id="selectByRejectId" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    reject_record
+    where
+    reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
   </select>
 </mapper>

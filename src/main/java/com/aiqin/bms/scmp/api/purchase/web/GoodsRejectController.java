@@ -120,9 +120,16 @@ public class GoodsRejectController {
 
     @PostMapping("/apply/info")
     @ApiOperation(value = "查询退供申请单信息去生成退供单")
-    public HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+    public HttpResponse<RejectApplyResponse> rejectApplyInfo(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
         LOGGER.info("查询退供申请单信息去生成退供单请求,rejectRecord:{}", rejectApplyQueryRequest.toString());
         return goodsRejectService.rejectApplyInfo(rejectApplyQueryRequest);
+    }
+
+    @PostMapping("/apply/info/detail")
+    @ApiOperation(value = "查询退供申请单详情信息去生成退供单")
+    public HttpResponse<RejectApplyResponse> rejectApplyDetailInfo(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+        LOGGER.info("查询退供申请单详情信息去生成退供单,rejectApplyQueryRequest:{}", rejectApplyQueryRequest.toString());
+        return goodsRejectService.rejectApplyDetailInfo(rejectApplyQueryRequest);
     }
 
     @PostMapping("/record")

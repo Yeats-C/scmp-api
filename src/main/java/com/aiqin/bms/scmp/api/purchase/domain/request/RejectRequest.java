@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
+import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -38,9 +39,18 @@ import java.util.List;
 @Data
 @ApiModel("退供单请求类")
 public class RejectRequest {
+
+    @ApiModelProperty(value = "退货申请单号集合(生成退供单使用)")
+    @JsonProperty("reject_apply_record_codes")
+    private List<String> rejectApplyRecordCodes;
+
     @ApiModelProperty(value = "商品 结算方式")
-    @JsonProperty("settlement_method")
-    private String settlementMethod;
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value = "商品 结算方式")
+    @JsonProperty("settlement_method_name")
+    private String settlementMethodName;
 
     @ApiModelProperty(value = "供应商code")
     @JsonProperty("supplier_code")
@@ -140,11 +150,11 @@ public class RejectRequest {
 
     @ApiModelProperty(value = "预计配送时间")
     @JsonProperty("expect_time")
-    private Date expectTime;
+    private String expectTime;
 
     @ApiModelProperty(value = "有效期")
     @JsonProperty("valid_day")
-    private Date validDay;
+    private String validDay;
 
     @ApiModelProperty(value = "直属上级id (取字典表数据)")
     @JsonProperty("dictionary_id")
@@ -160,7 +170,7 @@ public class RejectRequest {
 
     @ApiModelProperty(value = "商品批次列表")
     @JsonProperty("detail_list")
-    private List<RejectApplyDetailResponse> detailList;
+    private List<RejectApplyRecordDetail> detailList;
 
     @ApiModelProperty(value = "")
     @JsonProperty("create_by_id")

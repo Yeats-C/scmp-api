@@ -59,12 +59,13 @@ public class RejectTest extends SpringBootTestContext {
         rejectApplyQueryRequest.setPurchaseGroupCode("1044");
         rejectApplyQueryRequest.setPurchaseGroupName("奶粉组");
         rejectApplyQueryRequest.setCompanyName("爱亲");
+        rejectApplyQueryRequest.setApplyType(1);
         rejectApplyQueryRequest.setCompanyCode("01");
         List<RejectApplyRecordDetail> detailList = new ArrayList<>();
         RejectApplyRecordDetail detail = new RejectApplyRecordDetail();
-        detail.setApplyType(1);
         detail.setPurchaseGroupCode("1044");
         detail.setPurchaseGroupName("奶粉组");
+        detail.setApplyType(1);
         detail.setApplyRecordStatus(1);
         detail.setBarcode("112");
         detail.setSkuCode("001");
@@ -82,6 +83,7 @@ public class RejectTest extends SpringBootTestContext {
         detail.setUnitCode("u1");
         detail.setUnitName("单位");
         detail.setStockCount(10);
+        detail.setSingleCount(5);
         detail.setProductCount(5);
         detail.setTaxRate(10);
         detail.setTransportCenterCode("ck1");
@@ -96,8 +98,8 @@ public class RejectTest extends SpringBootTestContext {
         detail.setBatchRemark("batch备注");
         detail.setSettlementMethodCode("s1");
         detail.setSettlementMethodName("结算方式");
-        detail.setSupplierCode("supplier1");
-        detail.setSupplierName("供应商");
+        detail.setSupplierCode("10000045");
+        detail.setSupplierName("供应商1");
         detailList.add(detail);
         rejectApplyQueryRequest.setDetailList(detailList);
         goodsRejectService.rejectApply(rejectApplyQueryRequest);

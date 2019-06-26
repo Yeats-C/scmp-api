@@ -1,7 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailResponse;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -41,6 +40,7 @@ public class RejectApplyRequest {
     @JsonProperty("reject_apply_record_code")
     private String rejectApplyRecordCode;
 
+
     @ApiModelProperty(value = "创建人id")
     @JsonProperty("create_by_id")
     private String createById;
@@ -57,11 +57,27 @@ public class RejectApplyRequest {
     @JsonProperty("update_by_name")
     private String updateByName;
 
-    @ApiModelProperty(value="采购组 code")
+    @ApiModelProperty(value = "商品 结算方式")
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value = "供应商code")
+    @JsonProperty("supplier_code")
+    private String supplierCode;
+
+    @ApiModelProperty(value = "仓编码(物流中心编码)")
+    @JsonProperty("transport_center_code")
+    private String transportCenterCode;
+
+    @ApiModelProperty(value = "库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty(value = "采购组 code")
     @JsonProperty("purchase_group_code")
     private String purchaseGroupCode;
 
-    @ApiModelProperty(value="采购组 ")
+    @ApiModelProperty(value = "采购组 ")
     @JsonProperty("purchase_group_name")
     private String purchaseGroupName;
 
@@ -73,9 +89,9 @@ public class RejectApplyRequest {
     @JsonProperty("company_name")
     private String companyName;
 
-    @ApiModelProperty(value="申请单类型:0手动 1自动")
+    @ApiModelProperty(value = "申请单类型:0手动 1自动")
     @JsonProperty("apply_type")
-    private String applyType;
+    private Integer applyType;
 
     @ApiModelProperty(value = "商品列表")
     @JsonProperty("detail_list")
