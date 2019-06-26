@@ -141,7 +141,7 @@ public class GoodsRejectController {
 
     @PutMapping("/record")
     @ApiOperation(value = "修改退供单记录")
-    public HttpResponse<List<RejectApplyRequest>> updateReject(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+    public HttpResponse<RejectApplyRequest> updateReject(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
         LOGGER.info("修改退供单记录请求,rejectRecord:{}", rejectApplyQueryRequest.toString());
         return goodsRejectService.updateReject(rejectApplyQueryRequest);
     }

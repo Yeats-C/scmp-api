@@ -126,7 +126,7 @@ public class RejectRecord {
     @JsonProperty("sum_count")
     private Integer sumCount;
 
-    @ApiModelProperty(value = "退供总金额")
+    @ApiModelProperty(value = "退供总金额(含税金额)")
     @JsonProperty("sum_amount")
     private Long sumAmount;
 
@@ -134,9 +134,9 @@ public class RejectRecord {
     @JsonProperty("single_count")
     private Integer singleCount;
 
-    @ApiModelProperty(value = "")
-    @JsonProperty("single_amount")
-    private Long singleAmount;
+    @ApiModelProperty(value = "未税金额")
+    @JsonProperty("untaxed_amount")
+    private Long untaxedAmount;
 
     @ApiModelProperty(value = "实物返回数量")
     @JsonProperty("return_count")

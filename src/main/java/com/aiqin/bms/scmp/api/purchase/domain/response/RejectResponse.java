@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.purchase.domain.response;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -35,8 +37,16 @@ import java.util.List;
 @Data
 public class RejectResponse extends RejectRecord {
 
+    @ApiModelProperty("批次商品列表")
+    @JsonProperty("batch_list")
     private List<RejectRecordDetail> batchList;
 
+    @ApiModelProperty("商品列表")
+    @JsonProperty("product_list")
     private List<RejectRecordDetailResponse> productList;
+
+//    @ApiModelProperty("文件列表")
+//    @JsonProperty("file_list")
+//    private List<RejectFile> fileList;
 
 }

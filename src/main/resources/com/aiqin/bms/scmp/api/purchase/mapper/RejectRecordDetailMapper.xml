@@ -391,7 +391,7 @@
     WHERE  reject_record_detail_id = #{rejectRecordDetailId,jdbcType=VARCHAR}
   </update>
   <select id="selectProductByRejectId" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectRecordDetailResponse" >
-    SELECT sum(product_count) as productCount , sku_code as skuCode,sku_name as skuName,brand_name as brandName,category_name as categoryName,
+    SELECT sum(product_count) as productCount , sku_code as skuCode,sku_name as skuName,brand_name as brandName,category_name as categoryName,single_count as singleCount,
       product_spec as productSpec,unit_name as unitName,tax_rate as taxRate,product_amount as productAmount,sum(product_total_amount) as product_total_amount
     FROM reject_record_detail
     WHERE  reject_record_detail_id = #{rejectRecordDetailId,jdbcType=VARCHAR}

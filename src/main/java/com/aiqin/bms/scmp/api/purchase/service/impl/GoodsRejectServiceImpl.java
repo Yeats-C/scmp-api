@@ -36,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -267,13 +268,10 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     @Override
     public HttpResponse addReject(RejectRequest request) {
-        if (CollectionUtils.isEmpty(request.getDetailList())) {
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_APPLY_CODE);
         RejectRecord rejectRecord = new RejectRecord();
         BeanUtils.copyProperties(request, rejectRecord);
-        String rejectCode = "RR" + encodingRule.getNumberingName();
+        String rejectCode = "RR" + encodingRule.getNumberingValue();
         String rejectId = IdUtil.rejectRecordId();
         rejectRecord.setRejectRecordCode(rejectCode);
         rejectRecord.setRejectRecordId(rejectId);
@@ -281,32 +279,38 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         rejectRecord.setValidDay(new DateTime(request.getValidDay()).toDate());
         //总退供数量
         Integer sumCount = 0;
-        //总退供金额
+        //含税金额
         Long sumAmount = 0L;
         //总单品数量
         Integer sumSingleCount = 0;
-        //总单品金额
-        Long sumSingleAmount = 0L;
+        //未税退供金额
+        Long untaxedAmount = 0L;
         //总实物返回数量
         Integer returnCount = 0;
         //总实物返回金额
         Long returnAmount = 0L;
         List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByCondition(request.getSupplierCode(), request.getPurchaseGroupCode(), request.getSettlementMethodCode(),
                 request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
+        List<RejectRecordDetail> list = new ArrayList<>();
+        RejectRecordDetail rejectRecordDetail;
         for (RejectApplyRecordDetail detailResponse : detailList) {
             //计算总数
             sumCount += detailResponse.getProductCount();
             sumSingleCount += detailResponse.getProductCount();
             sumAmount += detailResponse.getProductTotalAmount();
-            sumSingleAmount += detailResponse.getProductTotalAmount();
+            untaxedAmount += detailResponse.getProductTotalAmount();
             if (detailResponse.getProductType().equals(2)) {
                 returnCount += detailResponse.getProductCount();
                 returnAmount += detailResponse.getProductTotalAmount();
             }
+            rejectRecordDetail = new RejectRecordDetail();
+            BeanUtils.copyProperties(detailResponse,rejectRecordDetail);
+            rejectRecordDetail.setRejectRecordDetailId(IdUtil.uuid());
+            list.add(rejectRecordDetail);
         }
         rejectRecord.setSumAmount(sumAmount);
         rejectRecord.setSumCount(sumCount);
-        rejectRecord.setSingleAmount(sumSingleAmount);
+        rejectRecord.setUntaxedAmount(untaxedAmount);
         rejectRecord.setSingleCount(sumSingleCount);
         rejectRecord.setReturnAmount(returnAmount);
         rejectRecord.setReturnCount(returnCount);
@@ -314,7 +318,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         Integer count = rejectRecordDao.insert(rejectRecord);
         LOGGER.info("添加退供影响条数:{}", count);
         //添加退供单详情
-        Integer detailCount = rejectRecordDetailDao.insertAll(request.getDetailList(), rejectId, rejectCode, request.getCreateById(), request.getCreateByName());
+        Integer detailCount = rejectRecordDetailDao.insertAll(list, rejectId, rejectCode, request.getCreateById(), request.getCreateByName());
         LOGGER.info("添加退供详情影响条数:{}", detailCount);
         //更改退供申请详情部分记录(reject_apply_record_detail)更改为已提交
         List<String> detailIds = detailList.stream().map(RejectApplyRecordDetail::getRejectApplyRecordDetailId).collect(Collectors.toList());

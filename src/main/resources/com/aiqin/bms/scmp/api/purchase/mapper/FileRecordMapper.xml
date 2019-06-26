@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseFileDao">
-  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseFile">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.FileRecordDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.FileRecord">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="purchase_id" jdbcType="VARCHAR" property="purchaseId" />
+    <result column="file_id" jdbcType="VARCHAR" property="fileId" />
     <result column="file_code" jdbcType="VARCHAR" property="fileCode" />
     <result column="file_name" jdbcType="VARCHAR" property="fileName" />
     <result column="file_status" jdbcType="INTEGER" property="fileStatus" />
@@ -13,18 +13,18 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
   </resultMap>
   <sql id="Base_Column_List">
-    purchase_id as purchaseId, file_code as fileCode, file_name as fileName,
-    file_status as fileStatus, create_time as createTime, create_by as createBy
+    file_id as fileId, file_code as fileCode, file_name as fileName, file_status as fileStatus,
+    create_time as createTime, create_by as createBy
   </sql>
   <insert id="insert">
-    insert into purchase_file (purchase_id, file_code,
+    insert into file_record (file_id, file_code,
       file_name, file_status, create_time, create_by)
-    values (#{purchaseId,jdbcType=VARCHAR}, #{fileCode,jdbcType=VARCHAR},
+    values (#{fileId,jdbcType=VARCHAR}, #{fileCode,jdbcType=VARCHAR},
       #{fileName,jdbcType=VARCHAR}, #{fileStatus,jdbcType=INTEGER}, now(),
       #{createBy,jdbcType=VARCHAR})
   </insert>
   <update id="update">
-    update purchase_file
+    update file_record
     <set>
       <if test="fileName != null">
         file_name = #{fileName,jdbcType=VARCHAR},
@@ -32,22 +32,16 @@
       <if test="fileStatus != null">
         file_status = #{fileStatus,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
       update_time = now(),
       <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=VARCHAR}
+        update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
     </set>
-    where file_code = #{fileCode,jdbcType=VARCHAR}
+    where file_id = #{fileId,jdbcType=VARCHAR}
   </update>
-  <select id="fileList" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseFile">
+  <select id="fileList" resultType="com.aiqin.bms.scmp.api.purchase.domain.FileRecord">
     select <include refid="Base_Column_List"></include>
-    from purchase_file
-    where purchase_id = #{purchaseId,jdbcType=VARCHAR}
+    from file_record
+    where file_id = #{fileId,jdbcType=VARCHAR}
   </select>
 </mapper>

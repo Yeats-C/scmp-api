@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -122,7 +123,8 @@ public class RejectRecordDetail {
     @JsonProperty("batch_remark")
     private String batchRemark;
 
-    @ApiModelProperty(value="批次备注")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value="批次生产日期")
     @JsonProperty("batch_create_time")
     private Date batchCreateTime;
 

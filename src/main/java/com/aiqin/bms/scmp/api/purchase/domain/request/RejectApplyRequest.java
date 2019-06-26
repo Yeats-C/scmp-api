@@ -40,7 +40,6 @@ public class RejectApplyRequest {
     @JsonProperty("reject_apply_record_code")
     private String rejectApplyRecordCode;
 
-
     @ApiModelProperty(value = "创建人id")
     @JsonProperty("create_by_id")
     private String createById;

@@ -86,9 +86,9 @@ public class RejectTest extends SpringBootTestContext {
         detail.setSingleCount(5);
         detail.setProductCount(5);
         detail.setTaxRate(10);
-        detail.setTransportCenterCode("ck1");
+        detail.setTransportCenterCode("ck14");
         detail.setTransportCenterName("仓库");
-        detail.setWarehouseCode("kf1");
+        detail.setWarehouseCode("kf142");
         detail.setWarehouseName("库房");
         detail.setProductAmount(10L);
         detail.setProductTotalAmount(50L);
