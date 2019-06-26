@@ -22,7 +22,7 @@ public interface RejectRecordDetailDao {
 
     int updateByPrimaryKey(RejectRecordDetail record);
 
-    Integer insertAll(@Param("list") List<RejectApplyRecordDetail> detailList, @Param("rejectRecordId") String rejectId, @Param("rejectRecordCode") String rejectCode, @Param("createById") String createId, @Param("createByName") String createName);
+    Integer insertAll(@Param("list") List<RejectRecordDetail> detailList, @Param("rejectRecordId") String rejectId, @Param("rejectRecordCode") String rejectCode, @Param("createById") String createId, @Param("createByName") String createName);
 
     List<RejectRecordDetail> selectByRejectId(@Param("rejectRecordId") String rejectRecordId);
 
