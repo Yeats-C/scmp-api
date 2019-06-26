@@ -866,10 +866,26 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
     @Override
     public Boolean saveList(List<OutboundReqVo> outboundReqVoList) {
-        if(CollectionUtils.isEmpty(outboundReqVoList)){
-            throw new BizException(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
-        }
+        //数据处理
+        outboundReqVoList = dealData(outboundReqVoList);
+
 
         return null;
+    }
+    /**
+     * 补充出库单数据
+     * @author NullPointException
+     * @date 2019/6/26
+     * @param outboundReqVoList
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo>
+     */
+    private List<OutboundReqVo> dealData(List<OutboundReqVo> outboundReqVoList) {
+        for (OutboundReqVo outboundReqVo : outboundReqVoList) {
+            String ck = getCode("ck", EncodingRuleType.OUT_BOUND_CODE);
+            outboundReqVo.setOutboundOderCode(ck);
+            outboundReqVo.getList().forEach(o->o.setOutboundOderCode(ck));
+            outboundReqVo.getOutboundBatches().forEach(o->o.setOutboundOderCode(ck));
+        }
+        return outboundReqVoList;
     }
 }
