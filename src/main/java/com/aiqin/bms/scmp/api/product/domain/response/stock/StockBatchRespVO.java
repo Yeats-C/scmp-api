@@ -65,9 +65,13 @@ public class StockBatchRespVO {
     @JsonProperty(value = "batch_remark")
     private String batchRemark;
 
-    @ApiModelProperty("品类")
-    @JsonProperty(value = "category_type")
-    private String categoryType;
+    @ApiModelProperty("品类编码")
+    @JsonProperty(value = "category_type_code")
+    private String categoryTypeCode;
+
+    @ApiModelProperty("品类名称")
+    @JsonProperty(value = "category_type_name")
+    private String categoryTypeName;
 
     @ApiModelProperty("规格")
     @JsonProperty(value = "spec")
@@ -210,30 +214,6 @@ public class StockBatchRespVO {
     @JsonProperty(value = "after_lock_num")
     private Integer afterLockNum;
 
-    @ApiModelProperty("修改前采购在途数")
-    @JsonProperty(value = "before_purchase_way_num")
-    private Integer beforePurchaseWayNum;
-
-    @ApiModelProperty("修改后采购在途数")
-    @JsonProperty(value = "after_purchase_way_num")
-    private Integer afterPurchaseWayNum;
-
-    @ApiModelProperty("修改前调拨在途数")
-    @JsonProperty(value = "before_allocation_way_num")
-    private Integer beforeAllocationWayNum;
-
-    @ApiModelProperty("修改后调拨在途数")
-    @JsonProperty(value = "after_allocation_way_num")
-    private Integer afterAllocationWayNum;
-
-    @ApiModelProperty("修改前总在途数")
-    @JsonProperty(value = "before_total_way_num")
-    private Integer beforeTotalWayNum;
-
-    @ApiModelProperty("修改后总在途数")
-    @JsonProperty(value = "after_total_way_num")
-    private Integer afterTotalWayNum;
-
     @ApiModelProperty("操作类型")
     @JsonProperty(value = "operation_type")
     private String operationType;
@@ -350,12 +330,20 @@ public class StockBatchRespVO {
         this.batchRemark = batchRemark;
     }
 
-    public String getCategoryType() {
-        return categoryType;
+    public String getCategoryTypeCode() {
+        return categoryTypeCode;
     }
 
-    public void setCategoryType(String categoryType) {
-        this.categoryType = categoryType;
+    public void setCategoryTypeCode(String categoryTypeCode) {
+        this.categoryTypeCode = categoryTypeCode;
+    }
+
+    public String getCategoryTypeName() {
+        return categoryTypeName;
+    }
+
+    public void setCategoryTypeName(String categoryTypeName) {
+        this.categoryTypeName = categoryTypeName;
     }
 
     public String getSpec() {
@@ -636,54 +624,6 @@ public class StockBatchRespVO {
 
     public void setAfterLockNum(Integer afterLockNum) {
         this.afterLockNum = afterLockNum;
-    }
-
-    public Integer getBeforePurchaseWayNum() {
-        return beforePurchaseWayNum;
-    }
-
-    public void setBeforePurchaseWayNum(Integer beforePurchaseWayNum) {
-        this.beforePurchaseWayNum = beforePurchaseWayNum;
-    }
-
-    public Integer getAfterPurchaseWayNum() {
-        return afterPurchaseWayNum;
-    }
-
-    public void setAfterPurchaseWayNum(Integer afterPurchaseWayNum) {
-        this.afterPurchaseWayNum = afterPurchaseWayNum;
-    }
-
-    public Integer getBeforeAllocationWayNum() {
-        return beforeAllocationWayNum;
-    }
-
-    public void setBeforeAllocationWayNum(Integer beforeAllocationWayNum) {
-        this.beforeAllocationWayNum = beforeAllocationWayNum;
-    }
-
-    public Integer getAfterAllocationWayNum() {
-        return afterAllocationWayNum;
-    }
-
-    public void setAfterAllocationWayNum(Integer afterAllocationWayNum) {
-        this.afterAllocationWayNum = afterAllocationWayNum;
-    }
-
-    public Integer getBeforeTotalWayNum() {
-        return beforeTotalWayNum;
-    }
-
-    public void setBeforeTotalWayNum(Integer beforeTotalWayNum) {
-        this.beforeTotalWayNum = beforeTotalWayNum;
-    }
-
-    public Integer getAfterTotalWayNum() {
-        return afterTotalWayNum;
-    }
-
-    public void setAfterTotalWayNum(Integer afterTotalWayNum) {
-        this.afterTotalWayNum = afterTotalWayNum;
     }
 
     public String getOperationType() {

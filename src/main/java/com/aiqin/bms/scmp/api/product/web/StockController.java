@@ -174,8 +174,6 @@ public class StockController {
     @PostMapping("/search/batch/page")
     @ApiOperation(value = "批次库存管理列表查询")
     public HttpResponse<PageResData<StockBatchRespVO>> selectStockBatchInfoByPage(@RequestBody StockBatchRequest stockBatchRequest) {
-        //数据不全，暂时不传 TODO
-       // stockBatchRequest.setCompanyCode(null);
         return HttpResponse.success(stockService.selectStockBatchInfoByPage(stockBatchRequest));
     }
 

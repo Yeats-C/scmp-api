@@ -225,4 +225,6 @@ public interface StockService {
      * @return
      */
     StockBatchRespVO selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
+
+    Integer insertStockBatch(StockChangeRequest stockChangeRequest);
 }

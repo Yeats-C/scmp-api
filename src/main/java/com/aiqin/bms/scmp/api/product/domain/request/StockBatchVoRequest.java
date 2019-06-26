@@ -1,24 +1,13 @@
-package com.aiqin.bms.scmp.api.product.domain.pojo;
+package com.aiqin.bms.scmp.api.product.domain.request;
 
-import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
-
-@ApiModel("批次库存实体Model")
+@ApiModel("批次库存修改model")
 @Data
-public class StockBatch extends PagesRequest {
-
-    @ApiModelProperty("主键")
-    @JsonProperty("id")
-    private Long id;
-
-    @ApiModelProperty("批次库存编码")
-    @JsonProperty(value = "stock_batch_code")
-    private String stockBatchCode;
+public class StockBatchVoRequest {
 
     @ApiModelProperty("公司编码")
     @JsonProperty(value = "company_code")
@@ -28,21 +17,21 @@ public class StockBatch extends PagesRequest {
     @JsonProperty(value = "company_name")
     private String companyName;
 
-    @ApiModelProperty("仓编码(物流中心编码)")
+    @ApiModelProperty("物流中心编码")
     @JsonProperty(value = "transport_center_code")
     private String transportCenterCode;
 
-    @ApiModelProperty("仓名称(物流中心名称)")
+    @ApiModelProperty("物流中心名称")
     @JsonProperty(value = "transport_center_name")
     private String transportCenterName;
 
-    @ApiModelProperty("库房编码")
-    @JsonProperty(value = "warehouse_name")
-    private String warehouseName;
-
-    @ApiModelProperty("库房名称")
+    @ApiModelProperty("库房code")
     @JsonProperty(value = "warehouse_code")
     private String warehouseCode;
+
+    @ApiModelProperty("库房名称")
+    @JsonProperty(value = "warehouse_name")
+    private String warehouseName;
 
     @ApiModelProperty("库房类型")
     @JsonProperty(value = "warehouse_type")
@@ -68,58 +57,6 @@ public class StockBatch extends PagesRequest {
     @JsonProperty(value = "batch_remark")
     private String batchRemark;
 
-    @ApiModelProperty("品类编码")
-    @JsonProperty(value = "category_type_code")
-    private String categoryTypeCode;
-
-    @ApiModelProperty("品类名称")
-    @JsonProperty(value = "category_type_name")
-    private String categoryTypeName;
-
-    @ApiModelProperty("规格")
-    @JsonProperty(value = "spec")
-    private String spec;
-
-    @ApiModelProperty("颜色code")
-    @JsonProperty(value = "color_code")
-    private String colorCode;
-
-    @ApiModelProperty("颜色名称")
-    @JsonProperty(value = "color_name")
-    private String colorName;
-
-    @ApiModelProperty("型号")
-    @JsonProperty(value = "model_number")
-    private String modelNumber;
-
-    @ApiModelProperty("单位编码")
-    @JsonProperty(value = "unit_code")
-    private String unitCode;
-
-    @ApiModelProperty("单位名称")
-    @JsonProperty(value = "unit_name")
-    private String unitName;
-
-    @ApiModelProperty("包装")
-    @JsonProperty(value = "pack")
-    private String pack;
-
-    @ApiModelProperty("状态(进货销售的)")
-    @JsonProperty(value = "config_status")
-    private Long configStatus;
-
-    @ApiModelProperty("总库存数")
-    @JsonProperty(value = "inventory_num")
-    private Long inventoryNum;
-
-    @ApiModelProperty("可用库存数")
-    @JsonProperty(value = "available_num")
-    private Long availableNum;
-
-    @ApiModelProperty("锁定库存数")
-    @JsonProperty(value = "lock_num")
-    private Long lockNum;
-
     @ApiModelProperty("供应商code")
     @JsonProperty(value = "supplier_code")
     private String supplierCode;
@@ -136,25 +73,10 @@ public class StockBatch extends PagesRequest {
     @JsonProperty(value = "new_delivery_name")
     private String newDeliveryName;
 
-    @ApiModelProperty("采购价")
+    @ApiModelProperty("批次采购价")
     @JsonProperty(value = "purchase_price")
     private Long purchasePrice;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getStockBatchCode() {
-        return stockBatchCode;
-    }
-
-    public void setStockBatchCode(String stockBatchCode) {
-        this.stockBatchCode = stockBatchCode;
-    }
 
     public String getCompanyCode() {
         return companyCode;
@@ -188,20 +110,20 @@ public class StockBatch extends PagesRequest {
         this.transportCenterName = transportCenterName;
     }
 
-    public String getWarehouseName() {
-        return warehouseName;
-    }
-
-    public void setWarehouseName(String warehouseName) {
-        this.warehouseName = warehouseName;
-    }
-
     public String getWarehouseCode() {
         return warehouseCode;
     }
 
     public void setWarehouseCode(String warehouseCode) {
         this.warehouseCode = warehouseCode;
+    }
+
+    public String getWarehouseName() {
+        return warehouseName;
+    }
+
+    public void setWarehouseName(String warehouseName) {
+        this.warehouseName = warehouseName;
     }
 
     public String getWarehouseType() {
@@ -250,110 +172,6 @@ public class StockBatch extends PagesRequest {
 
     public void setBatchRemark(String batchRemark) {
         this.batchRemark = batchRemark;
-    }
-
-    public String getCategoryTypeCode() {
-        return categoryTypeCode;
-    }
-
-    public void setCategoryTypeCode(String categoryTypeCode) {
-        this.categoryTypeCode = categoryTypeCode;
-    }
-
-    public String getCategoryTypeName() {
-        return categoryTypeName;
-    }
-
-    public void setCategoryTypeName(String categoryTypeName) {
-        this.categoryTypeName = categoryTypeName;
-    }
-
-    public String getSpec() {
-        return spec;
-    }
-
-    public void setSpec(String spec) {
-        this.spec = spec;
-    }
-
-    public String getColorCode() {
-        return colorCode;
-    }
-
-    public void setColorCode(String colorCode) {
-        this.colorCode = colorCode;
-    }
-
-    public String getColorName() {
-        return colorName;
-    }
-
-    public void setColorName(String colorName) {
-        this.colorName = colorName;
-    }
-
-    public String getModelNumber() {
-        return modelNumber;
-    }
-
-    public void setModelNumber(String modelNumber) {
-        this.modelNumber = modelNumber;
-    }
-
-    public String getUnitCode() {
-        return unitCode;
-    }
-
-    public void setUnitCode(String unitCode) {
-        this.unitCode = unitCode;
-    }
-
-    public String getUnitName() {
-        return unitName;
-    }
-
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
-    }
-
-    public String getPack() {
-        return pack;
-    }
-
-    public void setPack(String pack) {
-        this.pack = pack;
-    }
-
-    public Long getConfigStatus() {
-        return configStatus;
-    }
-
-    public void setConfigStatus(Long configStatus) {
-        this.configStatus = configStatus;
-    }
-
-    public Long getInventoryNum() {
-        return inventoryNum;
-    }
-
-    public void setInventoryNum(Long inventoryNum) {
-        this.inventoryNum = inventoryNum;
-    }
-
-    public Long getAvailableNum() {
-        return availableNum;
-    }
-
-    public void setAvailableNum(Long availableNum) {
-        this.availableNum = availableNum;
-    }
-
-    public Long getLockNum() {
-        return lockNum;
-    }
-
-    public void setLockNum(Long lockNum) {
-        this.lockNum = lockNum;
     }
 
     public String getSupplierCode() {

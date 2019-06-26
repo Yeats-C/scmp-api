@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.dao;
 
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
@@ -93,6 +94,12 @@ public interface StockDao {
     List<StockBatchRespVO> selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
 
     Integer countStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
+
+    /**
+     * 批量插入数据
+     */
+    List<StockBatchRespVO> selectStockBatchDistinct();
+    Integer insertStockBatch(@Param("list") List<StockBatch> stockBatches);
 
     /**
      * 根据stockBatchId查询单个库存信息

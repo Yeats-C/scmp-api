@@ -113,7 +113,8 @@
         <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
         <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>
         <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark"/>
-        <result column="category_type" jdbcType="VARCHAR" property="categoryType"/>
+        <result column="category_type_code" jdbcType="VARCHAR" property="categoryTypeCode"/>
+        <result column="category_type_name" jdbcType="VARCHAR" property="categoryTypeName"/>
         <result column="spec" jdbcType="VARCHAR" property="spec"/>
         <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
         <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
@@ -149,12 +150,6 @@
         <result column="after_available_num" jdbcType="BIGINT" property="afterAvailableNum"/>
         <result column="before_lock_num" jdbcType="BIGINT" property="beforeLockNum"/>
         <result column="after_lock_num" jdbcType="BIGINT" property="afterLockNum"/>
-        <result column="before_purchase_way_num" jdbcType="BIGINT" property="beforePurchaseWayNum"/>
-        <result column="after_purchase_way_num" jdbcType="BIGINT" property="afterPurchaseWayNum"/>
-        <result column="before_allocation_way_num" jdbcType="BIGINT" property="beforeAllocationWayNum"/>
-        <result column="after_allocation_way_num" jdbcType="BIGINT" property="afterAllocationWayNum"/>
-        <result column="before_total_way_num" jdbcType="BIGINT" property="beforeTotalWayNum"/>
-        <result column="after_total_way_num" jdbcType="BIGINT" property="afterTotalWayNum"/>
         <result column="operation_type" jdbcType="VARCHAR" property="operationType"/>
     </resultMap>
     <resultMap id="QueryStockSkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo">
@@ -245,17 +240,16 @@
     <sql id="Query_Stock_Batch_Sku_List">
         sb.id,sb.stock_batch_code,sb.company_code,sb.company_name,sb.transport_center_code,sb.transport_center_name,
         sb.warehouse_code,sb.warehouse_name,sb.warehouse_type,sb.sku_code,sb.sku_name,sb.batch_code,sb.production_date,
-        sb.batch_remark,sb.category_type,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,
-        sb.pack,sb.config_status,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,
-        sum(st.lock_num) as lock_num,sb.supplier_code,sb.supplier_name,sb.new_delivery,sb.new_delivery_name,sb.purchase_price
+        sb.batch_remark,sb.category_type_code,sb.category_type_name,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,
+        sb.pack,sb.config_status,sum(sb.inventory_num) as inventory_num,sum(sb.available_num) as available_num,
+        sum(sb.lock_num) as lock_num,sb.supplier_code,sb.supplier_name,sb.new_delivery,sb.new_delivery_name,sb.purchase_price
     </sql>
 
     <sql id="Query_Stock_Batch_Id">
-        sbf.id,sbf.stock_batch_code,sbf.flow_batch_code,sbf.order_code,sbf.order_type,sbf.order_source,sbf.sku_code,sbf.sku_name,
+        sbf.id,sbf.stock_batch_code,sbf.flow_batch_code,sbf.batch_code,sbf.order_code,sbf.order_type,sbf.order_source,sbf.sku_code,sbf.sku_name,
         sbf.lock_status,sbf.document_type,sbf.document_num,sbf.source_document_type,sbf.source_document_num,sbf.operating_time,
         sbf.operating_by,sbf.remark,sbf.before_inventory_num,sbf.after_inventory_num,sbf.before_available_num,sbf.after_available_num,
-        sbf.before_lock_num,sbf.after_lock_num,sbf.before_purchase_way_num,sbf.after_purchase_way_num,sbf.before_allocation_way_num,
-        sbf.after_allocation_way_num,sbf.before_total_way_num,sbf.after_total_way_num,sbf.change_num,sbf.operation_type
+        sbf.before_lock_num,sbf.after_lock_num,sbf.change_num,sbf.operation_type
     </sql>
 
     <select id="selectWarehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
@@ -1238,16 +1232,40 @@
     <select id="selectListByWareHouseCode" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include> from stock where warehouse_code=#{warehouseCode}
     </select>
+    <!-- 啊啊啊啊啊 -->
+    <insert id="insertStockBatch" parameterType="java.util.List">
+        INSERT INTO stock_batch(
+        stock_batch_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_name,warehouse_code,warehouse_type,
+        sku_code,sku_name,batch_code,production_date,batch_remark,category_type_code,category_type_name,spec,color_code,color_name,model_number,
+        unit_code,unit_name,pack,config_status,inventory_num,available_num,lock_num,supplier_code,supplier_name,new_delivery,new_delivery_name,purchase_price
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.stock_batch_code},#{item.company_code},#{item.company_name},#{item.transport_center_code},
+            #{item.transport_center_name},#{item.warehouse_name},#{item.warehouse_code},#{item.warehouse_type},
+            #{item.sku_code},#{item.sku_name},#{item.batch_code},#{item.production_date},#{item.batch_remark},
+            #{item.category_type_code},#{item.category_type_name},#{item.spec},#{item.color_code},#{item.color_name},
+            #{item.model_number},#{item.unit_code},#{item.unit_name},#{item.pack},#{item.config_status},
+            #{item.inventory_num},#{item.available_num},#{item.lock_num},#{item.supplier_code},
+            #{item.supplier_name},#{item.new_delivery},#{item.new_delivery_name},#{item.purchase_price}
+            )
+        </foreach>
+    </insert>
     <select id="selectStockBatchInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockBatchRequest"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO" resultMap="StockBatchRespMap">
         select
         <include refid="Query_Stock_Batch_Sku_List"/>
         from stock_batch as sb
-        LEFT JOIN stock as st ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = sb.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
         left join product_sku_box_packing as psbp on sb.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
         where 1=1
+        <if test="companyCode!=null and companyCode!=''">
+            and sb.company_code like concat('%',#{companyCode},'%')
+        </if>
+        <if test="companyName!=null and companyName!=''">
+            and sb.company_name like concat('%',#{companyName},'%')
+        </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
             and sb.transport_center_code like concat('%',#{transportCenterText},'%')
         </if>
@@ -1276,16 +1294,16 @@
             and ps.product_category_code like concat('%',#{productCategoryText},'%')
         </if>
         <if test="inventoryBeginNum!=null">
-            and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+            and sb.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
         </if>
         <if test="inventoryFinishNum!=null">
-            and st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+            and sb.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
         </if>
         <if test="availableBeginNum!=null">
-            and st.available_num <![CDATA[>=]]> #{availableBeginNum}
+            and sb.available_num <![CDATA[>=]]> #{availableBeginNum}
         </if>
         <if test="availableFinishNum!=null">
-            and st.available_num <![CDATA[<=]]> #{availableFinishNum}
+            and sb.available_num <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="batchCode!=null and batchCode!=''">
             and sb.batch_code=#{batchCode}
@@ -1300,9 +1318,8 @@
             resultType="java.lang.Integer">
         select count(1) from (
         select
-        st.sku_code
+        sb.sku_code
         from stock_batch as sb
-        LEFT JOIN stock as st ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = sb.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
         left join product_sku_box_packing as psbp on sb.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
@@ -1335,16 +1352,16 @@
             and ps.product_category_code like concat('%',#{productCategoryText},'%')
         </if>
         <if test="inventoryBeginNum!=null">
-            and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+            and sb.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
         </if>
         <if test="inventoryFinishNum!=null">
-            and st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+            and sb.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
         </if>
         <if test="availableBeginNum!=null">
-            and st.available_num <![CDATA[>=]]> #{availableBeginNum}
+            and sb.available_num <![CDATA[>=]]> #{availableBeginNum}
         </if>
         <if test="availableFinishNum!=null">
-            and st.available_num <![CDATA[<=]]> #{availableFinishNum}
+            and sb.available_num <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="batchCode!=null and batchCode!=''">
             and sb.batch_code=#{batchCode}
@@ -1352,7 +1369,7 @@
         <if test="productionDate!=null and productionDate!=''">
             and sb.production_date=#{productionDate}
         </if>
-        group by st.sku_code,st.warehouse_code
+        group by sb.sku_code,sb.warehouse_code
         ) as tmp
     </select>
     <select id="selectOneStockBatchInfoByStockBatchId" parameterType="java.lang.Long"
@@ -1360,7 +1377,7 @@
         select
         <include refid="Query_Stock_Batch_Id"/>
         from stock_batch_flow as sbf
-        where sbf.stock_batch_code = #{stockBatchId, jdbcType=VARCHAR}
+        where sbf.id = #{stockBatchId, jdbcType=VARCHAR}
     </select>
     <select id="purchaseProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
         select s.stock_code as stockCode,s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
