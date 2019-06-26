@@ -12,7 +12,7 @@ public interface PurchaseManageService {
 
     HttpResponse purchaseProductList(PurchaseFormRequest purchaseFormRequest);
 
-    HttpResponse purchaseForm(List<String> applyIds);
+    HttpResponse purchaseOrder();
 
     HttpResponse deletePurchaseFile(PurchaseFile purchaseFile);
 
