@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
@@ -58,6 +59,10 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
 
     @Autowired
     private WarehouseService warehouseService;
+
+    @Autowired
+    private InboundService inboundService;
+
     @Autowired
     private ReturnOrderInfoInspectionItemMapper returnOrderInfoInspectionItemMapper;
 
@@ -179,14 +184,15 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
         }
         //调用异步方法传入库单信息
         ReturnGoodsServiceImpl returnGoodsService =  (ReturnGoodsServiceImpl)AopContext.currentProxy();
-        returnGoodsService.sendToOutBound(items);
+        returnGoodsService.sendToInBound(items);
         return Boolean.TRUE;
     }
     @Override
     @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
-    public void sendToOutBound(List<ReturnOrderInfoInspectionItem> items) {
-        //TODO 调用库存接口锁库
+    public void sendToInBound(List<ReturnOrderInfoInspectionItem> items) {
+        //TODO 调用入库接口
+//        inboundService.saveList()
         throw new RuntimeException("调用入库接口异常");
     }
 
