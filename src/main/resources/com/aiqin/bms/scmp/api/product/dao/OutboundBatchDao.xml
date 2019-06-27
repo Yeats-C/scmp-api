@@ -36,7 +36,7 @@
   </select>
 
   <insert id="insertInfo" parameterType="java.util.List">
-    insert outbound_batch(outbound_oder_code, sku_code, sku_name, outbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
+    insert outbound_batch(outbound_oder_code, sku_code, sku_name, outbound_batch_code, manufacture_time, batch_remark, pre_qty, store_house_code,
     create_by, create_time, update_by, update_time,line_num)
     values
     <foreach collection="list" index="index" item="item" separator=",">
