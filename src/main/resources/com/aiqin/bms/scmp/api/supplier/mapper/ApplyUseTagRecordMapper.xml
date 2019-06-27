@@ -33,6 +33,16 @@
     from apply_use_tag_record
     where apply_use_object_code =#{appUseObjectCode,jdbcType=VARCHAR}
   </select>
+  <select id="getApplyUseTagRecordByAppUseObjectCodes"
+            parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_use_tag_record
+    where apply_use_object_code in
+    <foreach collection="list" item="item" separator="," open="(" close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_use_tag_record
     where id = #{id,jdbcType=BIGINT}
@@ -221,7 +231,7 @@
   <update id="updateBatch" parameterType="java.util.List">
     <foreach collection="list" item="item" separator=";">
       update apply_use_tag_record
-      set use_object_code = #{item.useObjectCode,jdbcType=VARCHAR}
+      set apply_use_object_code = #{item.applyUseObjectCode,jdbcType=VARCHAR}
       where id = #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>

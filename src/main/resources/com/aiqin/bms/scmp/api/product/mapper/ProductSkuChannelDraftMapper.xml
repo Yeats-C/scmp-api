@@ -41,6 +41,15 @@
       from product_sku_channel_draft
       where sku_code = #{skuCode,jdbcType=VARCHAR}
     </select>
+    <select id="getDrafts" parameterType="java.util.List" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List"/>
+      from product_sku_channel_draft
+      where sku_code in
+      <foreach collection="list" item="skuCode" separator="," open="(" close=")">
+        #{skuCode,jdbcType=VARCHAR}
+      </foreach>
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_channel_draft
     where id = #{id,jdbcType=BIGINT}
