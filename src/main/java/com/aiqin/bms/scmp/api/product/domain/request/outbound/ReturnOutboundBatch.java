@@ -62,4 +62,10 @@ public class ReturnOutboundBatch {
     @ApiModelProperty("行号")
     private Long linenum;
 
+    @ApiModelProperty("销项税率")
+    private Long outputTaxRate;
+
+    @ApiModelProperty("进项税率")
+    private Long inputTaxRate;
+
 }

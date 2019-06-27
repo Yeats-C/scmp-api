@@ -32,6 +32,13 @@ public interface ApplyUseTagRecordMapper {
     int delete(String appUseObjectCode);
 
     /**
+     * 批量删除
+     * @param appUseObjectCodes
+     * @return
+     */
+    int deletes(List<String> appUseObjectCodes);
+
+    /**
      * 批量修改
      * @param applyUseTagRecords
      * @return

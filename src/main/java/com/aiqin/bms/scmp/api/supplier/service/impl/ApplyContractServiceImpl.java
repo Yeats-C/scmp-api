@@ -148,7 +148,7 @@ public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements
         BeanCopyUtils.copy(applyContractReqVo,applyContractDTO);
         //生成合同申请编号
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_CONTRACT_CODE+applyContractReqVo.getContractTypeCode());
-        String code = applyContractReqVo.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+String.valueOf(encodingRule.getNumberingValue());
+        String code = applyContractReqVo.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(encodingRule.getNumberingValue());
         applyContractDTO.setApplyContractCode(code);
         //申请状态
         applyContractDTO.setApplyStatus(ApplyStatus.PENDING.getNumber());
@@ -674,8 +674,8 @@ public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements
                     BeanCopyUtils.copy(account,contractDTO);
                     //设置编码规则
                     EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.CONTRACT_CODE+account.getContractTypeCode());
-                    String code = account.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+String.valueOf(encodingRule.getNumberingValue());
-                    contractDTO.setContractCode(String.valueOf(encodingRule.getNumberingValue()));
+                    String code = account.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(encodingRule.getNumberingValue());
+                    contractDTO.setContractCode(code);
                     contractDTO.setId(null);
                     contractDTO.setApplyContractCode(account.getApplyContractCode());
                     contractDTO.setAuditorBy(vo.getApprovalUserName());
@@ -857,6 +857,16 @@ public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements
         }
         return applyContractDao.queryApplyList(querySupplierReqVO);
 
+    }
+
+    private String fillZero(Long code){
+        if (code >=0 && code <10) {
+            return "00"+code;
+        } else if (code >= 10 && code < 100) {
+            return "0"+code;
+        } else {
+            return code+"";
+        }
     }
 }
 

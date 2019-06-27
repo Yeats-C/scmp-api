@@ -1,24 +1,24 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.product.mapper.NewProductMapper;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct;
-import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductSaveReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdateReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.QueryNewProductReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewSkuDetailsResponseVO;
+import com.aiqin.bms.scmp.api.product.mapper.NewProductMapper;
 import com.aiqin.bms.scmp.api.product.service.NewProductService;
+import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -31,7 +31,7 @@ import java.util.List;
 
 @Service
 @Slf4j
-public class NewProductServiceImpl implements NewProductService {
+public class NewProductServiceImpl extends BaseServiceImpl implements NewProductService {
     @Autowired
     private NewProductMapper newProductMapper;
     @Autowired
@@ -46,7 +46,7 @@ public class NewProductServiceImpl implements NewProductService {
         int flg = 0;
         EncodingRule encodingRule = encodingRuleDao.getNumberingType("PRODUCT_CODE");
         long code = encodingRule.getNumberingValue();
-        encodingRuleDao.updateNumberValue(code, HandlingExceptionCode.PRODUCT_CODE);
+        encodingRuleDao.updateNumberValue(code, encodingRule.getId());
         NewProduct newProduct = new NewProduct();
         newProduct.setProductCode(Long.toString(code));
         BeanCopyUtils.copy(newProductSaveReqVO, newProduct);
@@ -63,7 +63,7 @@ public class NewProductServiceImpl implements NewProductService {
         NewProduct newProduct = newProductMapper.getProductCode(productCode);
         BeanCopyUtils.copy(newProductUpdateReqVO, newProduct);
         //设置审批状态为审批中
-        newProduct.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
+       //newProduct.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
         int flg = ((NewProductService) AopContext.currentProxy()).update(newProduct);
         productCommonService.getInstance(newProduct.getProductCode(), HandleTypeCoce.UPDATE_PRODUCT.getStatus(), ObjectTypeCode.PRODUCT_MANAGEMENT.getStatus(), newProduct, HandleTypeCoce.UPDATE_PRODUCT.getName());
         return flg;
@@ -73,6 +73,8 @@ public class NewProductServiceImpl implements NewProductService {
     @Transactional(rollbackFor = Exception.class)
     @Save
     public int save(NewProduct newProduct) {
+        newProduct.setCompanyCode(getUser().getCompanyCode());
+        newProduct.setCompanyName(getUser().getCompanyName());
         int k = newProductMapper.insertSelective(newProduct);
         if (k > 0) {
             return k;
@@ -115,7 +117,7 @@ public class NewProductServiceImpl implements NewProductService {
 
     @Override
     public void ExceptionId(String productCode) {
-        if (StringUtils.isNotBlank(productCode)) {
+        if (StringUtils.isBlank(productCode)) {
             log.error(HandlingExceptionCode.PRODUCT_PRODUCTCODE);
             throw new GroundRuntimeException(HandlingExceptionCode.PRODUCT_PRODUCTCODE);
         }

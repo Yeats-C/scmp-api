@@ -7,6 +7,11 @@ import com.aiqin.bms.scmp.api.base.ReturnOrderStatus;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConverter;
+import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
+import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
+import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
@@ -100,9 +105,50 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Async("myTaskAsyncPool")
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void sendOrderToOutBound(List<OrderInfo> orders, List<OrderInfoItem> orderItems,List<OrderInfoItemProductBatch> list) {
+    public void sendOrderToOutBound(List< OrderInfoDTO> dtos) {
         //TODO 调用库房接口传入库单
-//        outboundService.save();
+        Date date = new Date();
+        List<OutboundReqVo> outboundReqVoList = new OrderToOutBoundConverter().convert(dtos);
+        Boolean b = outboundService.saveList(outboundReqVoList);
+        //根据返回结果得到对应的状态
+        Integer status = b?OrderStatus.WAITING_FOR_PICKING.getStatusCode():OrderStatus.WAITING_FOR_PICKING_FAILED.getStatusCode();
+        List<OrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
+        //修改订单状态
+        dtos.forEach(dto -> {
+            ChangeOrderStatusReqVO changeOrderStatusReqVO = new ChangeOrderStatusReqVO();
+            changeOrderStatusReqVO.setOrderStatus(status);
+            changeOrderStatusReqVO.setOrderCode(dto.getOrderCode());
+            changeOrderStatusReqVO.setOperator(CommonConstant.SYSTEM_AUTO);
+            changeOrderStatusReqVO.setOperatorCode(CommonConstant.SYSTEM_AUTO_CODE);
+            changeStatus(changeOrderStatusReqVO);
+            OrderInfoLog log = new OrderInfoLog(null, dto.getOrderCode(), status, OrderStatus.getAllStatus().get(status).getBackgroundOrderStatus(), OrderStatus.getAllStatus().get(status).getStandardDescription(), b ? null : CommonConstant.CREATE_OUTBOUND_FAILED, changeOrderStatusReqVO.getOperator(), date, dto.getCompanyCode(), dto.getCompanyName());
+            logs.add(log);
+        });
+        //存日志
+        saveLog(logs);
+    }
+    /**
+     * 数据处理
+     * @author NullPointException
+     * @date 2019/6/25
+     * @param orders
+     * @param orderItems
+     * @param list
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO>
+     */
+    private List<OrderInfoDTO> dealToOutBoundData(List<OrderInfo> orders, List<OrderInfoItem> orderItems, List<OrderInfoItemProductBatch> list) {
+        List<OrderInfoDTO> dtos = Lists.newArrayList();
+        orders.forEach(
+                o -> {
+                    OrderInfoDTO copy = BeanCopyUtils.copy(o, OrderInfoDTO.class);
+                    List<OrderInfoItemProductBatchDTO> dtoList = BeanCopyUtils.copyList(list, OrderInfoItemProductBatchDTO.class);
+                    List<OrderInfoItemDTO> itemDTOList = BeanCopyUtils.copyList(list, OrderInfoItemDTO.class);
+                    copy.setBatchList(dtoList.stream().filter(i -> i.getOrderCode().equals(o.getOrderCode())).collect(Collectors.toList()));
+                    copy.setItemList(itemDTOList.stream().filter(i -> i.getOrderCode().equals(o.getOrderCode())).collect(Collectors.toList()));
+                    dtos.add(copy);
+                }
+        );
+        return dtos;
     }
 
     @Override
@@ -113,7 +159,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<LockOrderItemBatchReqVO> vo = dealData(orders,orderItems);
         List<OrderInfoItemProductBatch> list = stockService.lockBatchStock(vo);
         saveLockBatch(list);
-        service.sendOrderToOutBound(orders,orderItems,list);
+        List<OrderInfoDTO> orderInfoDTOS = dealToOutBoundData(orders, orderItems, list);
+        service.sendOrderToOutBound(orderInfoDTOS);
     }
 
     @Override

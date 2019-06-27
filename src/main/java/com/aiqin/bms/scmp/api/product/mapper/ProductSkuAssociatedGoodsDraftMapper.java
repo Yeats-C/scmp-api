@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuAssociatedGoodsDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuAssociatedGoodsRespVo;
 
@@ -24,4 +25,9 @@ public interface ProductSkuAssociatedGoodsDraftMapper {
     List<ProductSkuAssociatedGoodsRespVo> getList(String skuCode);
 
     Integer delete(List<String> skuCodes);
+
+
+    List<ProductSkuAssociatedGoodsDraft> getDrafts( List<ApplyProductSku> productSkus);
+
+    int deleteDrafts(List<ApplyProductSku> productSkus);
 }

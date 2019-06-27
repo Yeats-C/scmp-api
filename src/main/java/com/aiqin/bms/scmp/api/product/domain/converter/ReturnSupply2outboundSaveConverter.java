@@ -89,7 +89,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 //原始单号
                 outbound.setSourceOderCode(reqVo.getRejectRecordCode());
                 //出库时间
-//                outbound.setOutboundTime(reqVo.getOutboundTime());
+//                order.setOutboundTime(reqVo.getOutboundTime());
                 //预计出库数量
                 outbound.setPreOutboundNum(Long.parseLong(reqVo.getSumCount().toString()));
                 //预计主出库数量

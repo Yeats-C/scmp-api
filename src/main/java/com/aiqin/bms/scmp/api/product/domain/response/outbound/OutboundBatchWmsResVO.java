@@ -17,6 +17,14 @@ import lombok.Data;
 @ApiModel("WMS传入出库单sku批次实体")
 public class OutboundBatchWmsResVO {
 
+    @ApiModelProperty("出库单号")
+    @JsonProperty("outboundOderCode")
+    private String outboundOderCode;
+
+    @ApiModelProperty("条形码")
+    @JsonProperty("goodsCode")
+    private String goodsCode;
+
     @ApiModelProperty("sku编号")
     @JsonProperty("goodsId")
     private String skuCode;

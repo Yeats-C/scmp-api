@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
@@ -39,6 +40,7 @@ import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -53,6 +55,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 描述:
@@ -64,7 +67,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class OutboundServiceImpl implements OutboundService {
+public class OutboundServiceImpl extends BaseServiceImpl implements OutboundService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OutboundServiceImpl.class);
 
@@ -896,5 +899,63 @@ public class OutboundServiceImpl implements OutboundService {
             log.error("根据出库单号查询出库商品批次详情失败", e);
             throw new GroundRuntimeException("根据出库单号查询出库商品批次详情失败");
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean saveList(List<OutboundReqVo> outboundReqVoList) {
+        //数据处理
+        outboundReqVoList = dealData(outboundReqVoList);
+        //保存数据
+        List<Outbound> outbounds = BeanCopyUtils.copyList(outboundReqVoList, Outbound.class);
+        List<OutboundProduct> productList = Lists.newArrayList();
+        List<OutboundBatch> batchList = Lists.newArrayList();
+        for (OutboundReqVo outboundReqVo : outboundReqVoList) {
+            productList.addAll(BeanCopyUtils.copyList(outboundReqVo.getList(), OutboundProduct.class));
+            batchList.addAll(BeanCopyUtils.copyList(outboundReqVo.getOutboundBatches(), OutboundBatch.class));
+        }
+        saveData(outbounds,productList,batchList);
+        //TODo 保存日志
+        //推送订单到wms
+
+        return Boolean.TRUE;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveData(List<Outbound> list, List<OutboundProduct> productList, List<OutboundBatch> batchList) {
+        int i = outboundDao.insertBatch(list);
+        if(i!=list.size()){
+            throw new BizException(ResultCode.SAVE_OUT_BOUND_FAILED);
+        }
+        int i1 = outboundProductDao.insertBatch(productList);
+        if(i1!=productList.size()){
+            throw new BizException(ResultCode.SAVE_OUT_BOUND_FAILED);
+        }
+        Integer integer = outboundBatchDao.insertInfo(batchList);
+        if(Objects.isNull(integer)||integer!=batchList.size()){
+            throw new BizException(ResultCode.SAVE_OUT_BOUND_FAILED);
+        }
+    }
+    /**
+     * 补充出库单数据
+     * @author NullPointException
+     * @date 2019/6/26
+     * @param outboundReqVoList
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo>
+     */
+    private List<OutboundReqVo> dealData(List<OutboundReqVo> outboundReqVoList) {
+        if(CollectionUtils.isEmpty(outboundReqVoList)){
+            throw new BizException(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
+        }
+        synchronized (OutboundServiceImpl.class) {
+            for (OutboundReqVo outboundReqVo : outboundReqVoList) {
+                String ck = getCode("ck", EncodingRuleType.OUT_BOUND_CODE);
+                outboundReqVo.setOutboundOderCode(ck);
+                outboundReqVo.getList().forEach(o -> o.setOutboundOderCode(ck));
+                outboundReqVo.getOutboundBatches().forEach(o -> o.setOutboundOderCode(ck));
+            }
+        }
+        return outboundReqVoList;
     }
 }

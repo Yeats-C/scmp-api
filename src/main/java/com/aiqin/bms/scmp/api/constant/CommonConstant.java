@@ -51,4 +51,5 @@ public interface CommonConstant {
     String SYSTEM_AUTO_CODE = "-1";
     Integer NEW_PRODUCT = 1;
     Integer DEFECTIVE = 2;
+    String CREATE_OUTBOUND_FAILED = "生成出库单失败，请重试";
 }

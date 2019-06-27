@@ -34,7 +34,7 @@
   </delete>
   <delete id="deleteByApplyCode" parameterType="java.lang.String">
     delete from apply_contract_purchase_group
-    where where apply_contract_code = #{applyContractCode,jdbcType=VARCHAR}
+    where apply_contract_code = #{applyContractCode,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPurchaseGroup">
     insert into apply_contract_purchase_group (id, apply_contract_code, purchasing_group_code, 

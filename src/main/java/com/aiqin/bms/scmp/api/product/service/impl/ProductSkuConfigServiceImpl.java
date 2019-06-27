@@ -223,6 +223,24 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
         return num;
     }
 
+    /**
+     * 根据SkuCodes批量删除
+     *
+     * @param skuCodes
+     * @return
+     */
+    @Override
+    public Integer deleteDraftBySkuCodes(List<String> skuCodes) {
+        int num = 0;
+        List<ProductSkuConfigDraft> draftMapperListBySkuCodes = draftMapper.getListBySkuCodes(skuCodes);
+        if(CollectionUtils.isNotEmpty(draftMapperListBySkuCodes)){
+            List<String> configCodes = draftMapperListBySkuCodes.stream().map(ProductSkuConfigDraft::getConfigCode).collect(Collectors.toList());
+            num = draftMapper.deleteBySkuCodes(skuCodes);
+            //删除备用仓库信息
+            spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
+        }
+        return num;
+    }
 
     /**
      * 保存申请信息
@@ -471,10 +489,6 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
     @Override
     public SkuConfigDetailRepsVo detail(String skuCode) {
         SkuConfigDetailRepsVo repsVo = mapper.detail(skuCode);
-//        QuerySkuConfigReqVo reqVo = new QuerySkuConfigReqVo();
-//        reqVo.setSkuCode(skuCode);
-//        List<SkuConfigsRepsVo> list = mapper.getList(reqVo);
-//        repsVo.setConfigs(list);
         return repsVo;
     }
 

@@ -288,7 +288,7 @@ public class InboundServiceImpl implements InboundService {
      * @return
      */
     @Override
-   @Async("taskProductExecutor")
+   @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
     public void pushWms(String code  ,InboundServiceImpl inboundService){
 
@@ -353,7 +353,7 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void workFlowCallBack(InboundCallBackReqVo reqVo) {
 
         try {
@@ -473,7 +473,7 @@ public class InboundServiceImpl implements InboundService {
      * @param id
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void returnSource(Long id) {
         try {
             Thread.sleep(2000);
@@ -557,7 +557,7 @@ public class InboundServiceImpl implements InboundService {
      * @param storageResultItemReqVo
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void returnPurchase(StorageResultReqVo storageResultItemReqVo) {
         log.error("异步回调采购接口");
         log.error("调用采购回调接口:[{}]",JSON.toJSONString(storageResultItemReqVo));
@@ -580,7 +580,7 @@ public class InboundServiceImpl implements InboundService {
      * @param allocationCode
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void inBoundReturn(String allocationCode) {
 
         try {
@@ -602,7 +602,7 @@ public class InboundServiceImpl implements InboundService {
      * @param storageResultItemReqVo
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void returnOder(SupplyReturnOrderMainReqVOReturn storageResultItemReqVo) {
         log.error("异步回调采购接口");
         log.error("调用采购回调接口:[{}]",JSON.toJSONString(storageResultItemReqVo));
@@ -626,7 +626,7 @@ public class InboundServiceImpl implements InboundService {
      * @param allocationCode
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void inBoundReturnMovement(String allocationCode) {
 
         try {

@@ -79,10 +79,10 @@
      select
         apply_type as applyType,
         apply_type_name as applyTypeName,
-        'SKU' as applySort,
-        'SKU' as applySortName,
         sku_code as code,
         sku_name as name,
+        procurement_section_code as purchaseGroupCode,
+        procurement_section_name as purchaseGroupName,
         product_brand_code as productBrandCode,
         product_brand_name as productBrandName,
         product_category_code as productCategoryCode,
@@ -126,7 +126,7 @@
       procurement_section_code, procurement_section_name,
       seasonal_goods,structural_goods,warehouse_type_code,
       warehouse_type_name,company_code,company_name,remark,
-      apply_type,apply_type_name
+      apply_type,apply_type_name,inventory_model,use_time,unique_code
       )
     values (#{id,jdbcType=BIGINT}, #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, 
       #{productCategoryCode,jdbcType=VARCHAR}, #{productCategoryName,jdbcType=VARCHAR}, 
@@ -151,7 +151,8 @@
       #{seasonalGoods,jdbcType=TINYINT},#{structuralGoods,jdbcType=TINYINT},
       #{warehouseTypeCode,jdbcType=VARCHAR}, #{warehouseTypeName,jdbcType=VARCHAR},
       #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},
-      #{applyType,jdbcType=TINYINT},#{applyTypeName,jdbcType=VARCHAR}
+      #{applyType,jdbcType=TINYINT},#{applyTypeName,jdbcType=VARCHAR},#{inventoryModel,jdbcType=TINYINT},
+      #{useTime,jdbcType=INTEGER},#{uniqueCode,jdbcType=TINYINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft">
