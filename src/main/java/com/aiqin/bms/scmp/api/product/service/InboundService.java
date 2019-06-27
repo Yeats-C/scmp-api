@@ -121,4 +121,12 @@ public interface InboundService {
     void inBoundReturnMovement(String allocationCode);
 
     HttpResponse selectInboundBatchInfoByInboundOderCode(InboundBatch inboundBatch);
+    /**
+     * 批量保存入库单
+     * @author NullPointException
+     * @date 2019/6/27
+     * @param list
+     * @return java.lang.Boolean
+     */
+    Boolean saveList(List<InboundReqSave> list);
 }
