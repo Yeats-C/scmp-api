@@ -314,7 +314,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     }
 
 
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void workFlow(Long id,String formNo) {
         Allocation allocation1 = allocationMapper.selectByPrimaryKey(id);
         try {

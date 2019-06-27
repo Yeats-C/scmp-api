@@ -36,14 +36,14 @@
     update_by, update_time, del_flag,
     sku_code, sku_name, output_tax_rate,
     Input_tax_rate, Integral_coefficient, apply_code,
-    rebate)
+    rebate,logistics_fee_award_ratio)
       values
       <foreach collection="applyProductSkuCheckouts" item="item" index="index" separator=",">
         ( #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
         #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.delFlag,jdbcType=TINYINT},
         #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.outputTaxRate,jdbcType=BIGINT},
         #{item.inputTaxRate,jdbcType=BIGINT}, #{item.integralCoefficient,jdbcType=BIGINT}, #{item.applyCode,jdbcType=VARCHAR},
-        #{item.rebate,jdbcType=BIGINT})
+        #{item.rebate,jdbcType=BIGINT},  #{item.logisticsFeeAwardRatio,jdbcType=DECIMAL})
       </foreach>
   </insert>
   <insert id="insertCheckOuts" parameterType="java.util.List" >

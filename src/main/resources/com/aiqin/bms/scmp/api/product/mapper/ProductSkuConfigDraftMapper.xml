@@ -103,13 +103,31 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </select>
+  <select id="getListBySkuCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_config_draft
+    where del_flag = 0
+    and apply_show = 1
+    and sku_code in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_config_draft
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByConfigCodes">
+  <delete id="deleteByConfigCodes" parameterType="java.util.List">
      delete from product_sku_config_draft
-     where config_code in
+     where apply_show = 0 and config_code in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  <delete id="deleteBySkuCodes">
+    delete from product_sku_config_draft
+    where apply_show = 1 and sku_code in
     <foreach collection="list" open="(" close=")" separator="," item="item">
       #{item,jdbcType=VARCHAR}
     </foreach>

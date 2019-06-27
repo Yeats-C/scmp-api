@@ -19,5 +19,5 @@ public interface WorkFlowService {
      * @param vo 审批传入的值
      * @return java.lang.String
      */
-    String WorkFlowCallBack(WorkFlow workFlow, WorkFlowCallbackVO vo);
+    String workFlowCallBack(WorkFlow workFlow, WorkFlowCallbackVO vo);
 }

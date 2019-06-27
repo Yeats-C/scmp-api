@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 @ApiModel("结算信息")
 @Data
@@ -35,5 +37,8 @@ public class ProductSkuCheckoutDraft extends CommonBean {
 
     @ApiModelProperty(value = "返点", hidden = true)
     private Long rebate;
+
+    @ApiModelProperty("物流费奖励比例")
+    private BigDecimal logisticsFeeAwardRatio;
 
 }

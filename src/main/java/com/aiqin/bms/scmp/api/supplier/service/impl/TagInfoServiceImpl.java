@@ -36,13 +36,13 @@ import java.util.stream.Collectors;
 /**
  * @author knight.xie
  * @version 1.0
- * @className TagInfoServieImpl
+ * @className TagInfoServiceImpl
  * @date 2019/4/29 14:59
  * @description TODO
  */
 @Service
 @Slf4j
-public class TagInfoServieImpl implements TagInfoService {
+public class TagInfoServiceImpl implements TagInfoService {
 
     @Autowired
     private TagInfoMapper tagInfoMapper;

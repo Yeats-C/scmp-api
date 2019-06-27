@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.util;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author knight.xie
@@ -20,5 +22,11 @@ public class DateUtils {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
         return LocalDateTime.now().format(formatter);
     }
-
+    public static Date addDay(Integer day){
+        Date date = new Date();
+        Calendar instance = Calendar.getInstance();
+        instance.setTime(date);
+        instance.add(Calendar.DATE,day);
+        return instance.getTime();
+    }
 }

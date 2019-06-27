@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuStockInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuStockInfoDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 
@@ -34,4 +36,18 @@ public interface ProductSkuStockInfoService {
      * @return
      */
     Integer deleteDrafts(List<String> skuCodes);
+
+    /**
+     * 批量新增申请
+     * @param applyProductSkus
+     * @return
+     */
+    int saveApplyList(List<ApplyProductSku> applyProductSkus);
+
+    /**
+     * 批量新增申请(保存到数据库)
+     * @param applyProductSkuPurchaseInfos
+     * @return
+     */
+    int insertApplyList(List<ApplyProductSkuStockInfo> applyProductSkuPurchaseInfos);
 }

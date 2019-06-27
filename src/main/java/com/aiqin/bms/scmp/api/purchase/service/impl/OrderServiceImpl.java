@@ -9,6 +9,8 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
+import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
+import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
@@ -139,8 +141,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         orders.forEach(
                 o -> {
                     OrderInfoDTO copy = BeanCopyUtils.copy(o, OrderInfoDTO.class);
-                    copy.setBatchList(list.stream().filter(i -> i.getOrderCode().equals(o.getOrderCode())).collect(Collectors.toList()));
-                    copy.setItemList(orderItems.stream().filter(i -> i.getOrderCode().equals(o.getOrderCode())).collect(Collectors.toList()));
+                    List<OrderInfoItemProductBatchDTO> dtoList = BeanCopyUtils.copyList(list, OrderInfoItemProductBatchDTO.class);
+                    List<OrderInfoItemDTO> itemDTOList = BeanCopyUtils.copyList(list, OrderInfoItemDTO.class);
+                    copy.setBatchList(dtoList.stream().filter(i -> i.getOrderCode().equals(o.getOrderCode())).collect(Collectors.toList()));
+                    copy.setItemList(itemDTOList.stream().filter(i -> i.getOrderCode().equals(o.getOrderCode())).collect(Collectors.toList()));
                     dtos.add(copy);
                 }
         );
