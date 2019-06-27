@@ -125,6 +125,9 @@ public class ApplyContractReqVo{
     @ApiModelProperty("结账日")
     private String checkoutDate;
 
+    @ApiModelProperty("最低起订金额")
+    private Long minAmount;
+
     @ApiModelProperty("采购组")
     private List<ApplyContractPurchaseGroupReqVo> purchaseGroupReqVos;
 

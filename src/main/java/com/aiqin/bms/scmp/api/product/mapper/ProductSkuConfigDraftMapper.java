@@ -24,6 +24,10 @@ public interface ProductSkuConfigDraftMapper {
 
     int deleteByConfigCodes(List<String> codes);
 
+    List<ProductSkuConfigDraft> getListBySkuCodes(List<String> skuCodes);
+    int deleteBySkuCodes(List<String> skuCodes);
+
+
     /**
      * 批量添加
      * @param records

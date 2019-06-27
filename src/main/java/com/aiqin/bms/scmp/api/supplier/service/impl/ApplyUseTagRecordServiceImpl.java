@@ -47,6 +47,17 @@ public class ApplyUseTagRecordServiceImpl implements ApplyUseTagRecordService {
     }
 
     /**
+     * 批量删除
+     *
+     * @param appUseObjectCodes
+     * @return
+     */
+    @Override
+    public int deletes(List<String> appUseObjectCodes) {
+        return applyUseTagRecordMapper.deletes(appUseObjectCodes);
+    }
+
+    /**
      * 批量修改
      *
      * @param applyUseTagRecords

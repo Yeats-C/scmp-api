@@ -415,8 +415,7 @@ public class ApplySupplyComServcieImpl extends SupplierBaseServiceImpl implement
             applySupplyComDetailRespVO.setApplySupplierFileList(applySupplierFiles);
             //根据供应商申请编码获取发货/退后申请信息
             List<ApplyDeliveryInformation> applyDeliveryInfo = applyDeliveryInfoDao.getApplyDeliveryInfo(applyCode);
-            List<ApplyDeliveryInfoRespVO> applyDeliveryInfoRespVO = Lists.newArrayList();
-            applyDeliveryInfoRespVO = BeanCopyUtils.copyList(applyDeliveryInfo,ApplyDeliveryInfoRespVO.class);
+            List<ApplyDeliveryInfoRespVO> applyDeliveryInfoRespVO =  BeanCopyUtils.copyList(applyDeliveryInfo,ApplyDeliveryInfoRespVO.class);
             applySupplyComDetailRespVO.setApplyDeliveryInfoRespVO(applyDeliveryInfoRespVO);
             //获取标签信息
 //            List<ApplyUseTagRecord> applyUseTagRecordList = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(applyCode);

@@ -16,7 +16,7 @@ public class ProductEventListener {
     private ProductDictionaryInfoDao productDictionaryInfoDao;
 
     @EventListener
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void handleOrderEvent(ProductEvent event) {
         switch (event.getType()) {
             case PRODUCT_DICTIONARY:
