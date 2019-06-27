@@ -109,20 +109,5 @@ public class StockBatchFlow extends CommonBean {
     @JsonProperty(value = "operation_type")
     private Integer operationType;
 
-    @ApiModelProperty("创建时间")
-    @JsonProperty(value = "create_time")
-    private String createTime;
-
-    @ApiModelProperty("创建人")
-    @JsonProperty(value = "create_by")
-    private String createBy;
-
-    @ApiModelProperty("更新时间")
-    @JsonProperty(value = "update_time")
-    private String updateTime;
-
-    @ApiModelProperty("更新人")
-    @JsonProperty(value = "update_by")
-    private String updateBy;
 
     }
