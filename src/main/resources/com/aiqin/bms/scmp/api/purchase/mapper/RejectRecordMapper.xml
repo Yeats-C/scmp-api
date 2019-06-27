@@ -483,6 +483,12 @@
         <if test="outStockTime != null">
             out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
         </if>
+        <if test="updateById != null">
+            update_by_id = #{updateById,jdbcType=VARCHAR},
+        </if>
+        <if test="updateByName != null">
+            update_by_name = #{updateByName,jdbcType=VARCHAR},
+        </if>
         update_time =now()
         <where>
             <if test="rejectRecordId!=null">
