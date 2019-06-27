@@ -95,4 +95,21 @@ public interface Global {
     Integer PURCHASE_APPLY_TYPE_1 = 1;
     Integer PURCHASE_APPLY_STATUS_0 = 0;
     Integer PURCHASE_APPLY_STATUS_1 = 1;
+
+    /**
+     *  采购单状态 0.待审核 1.审核中 2.审核通过  3.备货确认 4.发货确认  5.入库开始 6.入库中 7.已入库  8.完成 9.取消 10.审核不通过
+     */
+    Integer PURCHASE_ORDER_0 = 0;
+    Integer PURCHASE_ORDER_1 = 1;
+    Integer PURCHASE_ORDER_2 = 2;
+    Integer PURCHASE_ORDER_3 = 3;
+    Integer PURCHASE_ORDER_4 = 4;
+    Integer PURCHASE_ORDER_5 = 5;
+    Integer PURCHASE_ORDER_6 = 6;
+    Integer PURCHASE_ORDER_7 = 7;
+    Integer PURCHASE_ORDER_8 = 8;
+    Integer PURCHASE_ORDER_9 = 9;
+    Integer PURCHASE_ORDER_10 = 10;
+
+
 }

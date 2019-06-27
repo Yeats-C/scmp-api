@@ -562,6 +562,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //渠道
             productSkuChannelService.saveApplyList(applyProductSkus);
             //标签
+            List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCodes(saveSkuApplyInfoReqVO.getSkuCodes());
+            applyUseTagRecords.forEach(item->{
+                item.setApplyUseObjectCode(String.valueOf(code));
+            });
+            applyUseTagRecordService.updateBatch(applyUseTagRecords);
             //包装
             productSkuBoxPackingService.saveApplyList(applyProductSkus);
             //进销存信息
@@ -578,12 +583,17 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //价格
             List<ProductSkuPriceInfoDraft> productSkuPriceInfoDrafts =
                     productSkuPriceInfoService.getSkuPriceListDraftBySkuCodes(saveSkuApplyInfoReqVO.getSkuCodes());
-
-//            productSkuPriceInfoService.saveSkuPriceApply(applyProductSkuPriceInfoList);
-//            productSkuPriceInfoService.deleteSkuPriceDraft(saveSkuApplyInfoReqVO.getSkuCodes());
-
+            if(CollectionUtils.isNotEmpty(productSkuPriceInfoDrafts)){
+                List<ApplyProductSkuPriceInfo> applyList = BeanCopyUtils.copyList(productSkuPriceInfoDrafts,ApplyProductSkuPriceInfo.class);
+                applyList.forEach(item->{
+                    item.setApplyCode(String.valueOf(code));
+                });
+                productSkuPriceInfoService.saveSkuPriceApply(applyList);
+                productSkuPriceInfoService.deleteSkuPriceDraft(saveSkuApplyInfoReqVO.getSkuCodes());
+            }
             productSkuPicDescService.saveApplyList(applyProductSkus);
             //配置
+            productSkuConfigService.outInsertApplyList(applyProductSkus);
             //关联商品
             productSkuAssociatedGoodsService.saveApplyList(applyProductSkus);
             //生产厂家
@@ -785,11 +795,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     String startTime = null;
                     String endTime = null;
                     if(null != applyDetailSkuListResps.get(0).getSelectionEffectiveStartTime()){
-                        //endTime = format.format(applyDetailSkuListResps.get(0).getSelectionEffectiveStartTime());
                         endTime = applyDetailSkuListResps.get(0).getSelectionEffectiveStartTime();
                     }
                     if(null != applyDetailSkuListResps.get(0).getSelectionEffectiveEndTime()){
-                        //startTime = format.format(applyDetailSkuListResps.get(0).getSelectionEffectiveStartTime());
                         startTime = applyDetailSkuListResps.get(0).getSelectionEffectiveStartTime();
                     }
                     applySkuDetailResp.setSelectionEffectiveEndTime(endTime);

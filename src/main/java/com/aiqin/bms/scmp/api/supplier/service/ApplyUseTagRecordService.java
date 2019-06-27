@@ -47,4 +47,11 @@ public interface ApplyUseTagRecordService {
      * @return
      */
     List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(String appUseObjectCode);
+
+    /**
+     * 根据申请使用者编号List查询
+     * @param appUseObjectCodes
+     * @return
+     */
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodes(List<String> appUseObjectCodes);
 }

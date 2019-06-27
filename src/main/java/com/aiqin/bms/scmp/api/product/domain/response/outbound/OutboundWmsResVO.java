@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.domain.response.outbound;
 
-import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,7 +16,7 @@ import java.util.List;
  * @Since 1.0
  */
 @Data
-public class OutboundWmsReqVO {
+public class OutboundWmsResVO {
     @ApiModelProperty("公司编码")
     private String companyCode;
 
@@ -67,7 +66,10 @@ public class OutboundWmsReqVO {
     private String addorupdate ="1";
 
     @ApiModelProperty(value = "明细信息 必填")
-    private List<InboundProductWmsReqVO> list;
+    private List<OutboundProductWmsResVO> list;
+
+    @ApiModelProperty(value = "sku批次明细信息 必填")
+    private List<OutboundBatchWmsResVO> outboundBatchWmsResVOs;
 
     @ApiModelProperty(value = "业务模式 必填 1、自提出库；2、运输出库")
     private String businessType ="2";

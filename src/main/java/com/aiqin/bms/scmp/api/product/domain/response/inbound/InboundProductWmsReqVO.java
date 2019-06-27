@@ -36,7 +36,6 @@ public class InboundProductWmsReqVO {
     @JsonProperty("packageName")
     private String unitName;
 
-
     @ApiModelProperty("行号")
     @JsonProperty("linenum")
     private Long linenum;

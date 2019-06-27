@@ -192,7 +192,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         for(PurchaseApplyProduct product:purchaseApplyProduct){
             product.setApplyProductId(IdUtil.purchaseId());
             product.setPurchaseApplyId(purchaseApplyId);
-            product.setPurchaseApplyCode("CGA" + String.valueOf(encodingRule.getNumberingValue()));
+            product.setPurchaseApplyCode("CS" + String.valueOf(encodingRule.getNumberingValue()));
         }
         Integer productCount = purchaseApplyProductDao.insertAll(purchaseApplyProduct);
         if(productCount > 0){
@@ -200,7 +200,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             PurchaseApply purchaseApply = new PurchaseApply();
             purchaseApply.setPurchaseApplyId(purchaseApplyId);
             // 获取采购申请单编码
-            purchaseApply.setPurchaseApplyCode("CGA" + String.valueOf(encodingRule.getNumberingValue()));
+            purchaseApply.setPurchaseApplyCode("CS" + String.valueOf(encodingRule.getNumberingValue()));
             purchaseApply.setApplyType(Global.PURCHASE_APPLY_TYPE_0);
             purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
             purchaseApply.setPurchaseGroupCode(purchaseApplyProduct.get(0).getPurchaseGroupCode());

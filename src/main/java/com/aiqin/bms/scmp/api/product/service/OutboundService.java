@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.outbound.QueryOutboundReqVo
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.service.impl.OutboundServiceImpl;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
@@ -136,7 +137,7 @@ public interface OutboundService {
      * 退供会传接口
      * @param reqVO
      */
-    void returnStorageResult(ReturnStorageResultReqVo reqVO);
+    void returnStorageResult(RejectStockRequest reqVO);
 
 
     /**

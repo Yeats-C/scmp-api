@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -78,6 +79,10 @@ public class RejectRecordDetail {
     @JsonProperty("model_number")
     private String modelNumber;
 
+    @ApiModelProperty(value = "单品数量")
+    @JsonProperty("single_count")
+    private Integer singleCount;
+
     @ApiModelProperty(value="单位")
     @JsonProperty("unit_code")
     private String unitCode;
@@ -118,7 +123,8 @@ public class RejectRecordDetail {
     @JsonProperty("batch_remark")
     private String batchRemark;
 
-    @ApiModelProperty(value="批次备注")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value="批次生产日期")
     @JsonProperty("batch_create_time")
     private Date batchCreateTime;
 
