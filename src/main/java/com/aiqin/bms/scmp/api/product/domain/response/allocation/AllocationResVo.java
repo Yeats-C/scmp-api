@@ -27,19 +27,19 @@ public class AllocationResVo {
     @ApiModelProperty("调拨单编号")
     private String allocationCode;
 
-    @ApiModelProperty("调出物流中心编号")
-    private String calloutLogisticsCenterCode;
+    @ApiModelProperty("调出仓库(物流中心)编号")
+    private String callOutLogisticsCenterCode;
 
-    @ApiModelProperty("调出物流中心名称")
-    private String calloutLogisticsCenterName;
+    @ApiModelProperty("调出仓库(物流中心)名称")
+    private String callOutLogisticsCenterName;
 
     @ApiModelProperty("调出仓库编码")
-    private String calloutWarehouseCode;
+    private String callOutWarehouseCode;
 
-    @ApiModelProperty("调出仓库名称")
-    private String calloutWarehouseName;
+    @ApiModelProperty("调出库房名称")
+    private String callOutWarehouseName;
 
-    @ApiModelProperty("仓库类型编码")
+    @ApiModelProperty("仓库库房编码")
     private String inventoryAttributesCode;
 
     @ApiModelProperty("仓库类型名称")
@@ -51,17 +51,17 @@ public class AllocationResVo {
     @ApiModelProperty("采购组名称")
     private String purchaseGroupName;
 
-    @ApiModelProperty("调入物流中心编码")
-    private String callinLogisticsCenterCode;
+    @ApiModelProperty("调入仓库(物流中心)编码")
+    private String callInLogisticsCenterCode;
 
-    @ApiModelProperty("调入物流中心名称")
-    private String callinLogisticsCenterName;
+    @ApiModelProperty("调入仓库(物流中心)名称")
+    private String callInLogisticsCenterName;
 
-    @ApiModelProperty("调入仓库编码")
-    private String callinWarehouseCode;
+    @ApiModelProperty("调入库房编码")
+    private String callInWarehouseCode;
 
-    @ApiModelProperty("调入仓库名称")
-    private String callinWarehouseName;
+    @ApiModelProperty("调入库房名称")
+    private String callInWarehouseName;
 
     @ApiModelProperty("调拨类型编码")
     private Byte allocationTypeCode;

@@ -915,7 +915,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         List<OutboundBatch> batchList = Lists.newArrayList();
         for (OutboundReqVo outboundReqVo : outboundReqVoList) {
             productList.addAll(BeanCopyUtils.copyList(outboundReqVo.getList(), OutboundProduct.class));
-            batchList.addAll(BeanCopyUtils.copyList(outboundReqVo.getOutboundBatches(), OutboundBatch.class));
+            batchList.addAll(outboundReqVo.getOutboundBatches());
         }
         saveData(outbounds,productList,batchList);
         //TODo 保存日志

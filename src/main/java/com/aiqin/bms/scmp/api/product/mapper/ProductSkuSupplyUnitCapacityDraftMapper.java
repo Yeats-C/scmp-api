@@ -23,6 +23,7 @@ public interface ProductSkuSupplyUnitCapacityDraftMapper {
 
     List<ProductSkuSupplyUnitCapacityRespVo> getDraftList(Map map);
 
+    List<ProductSkuSupplyUnitCapacityDraft> getDrafts(List<String> skuCodes);
 
     Integer delete(List<String> skuCodes);
 }

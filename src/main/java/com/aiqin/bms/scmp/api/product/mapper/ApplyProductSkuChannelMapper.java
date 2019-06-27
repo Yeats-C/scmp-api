@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuChannel;
 
+import java.util.List;
+
 public interface ApplyProductSkuChannelMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,6 @@ public interface ApplyProductSkuChannelMapper {
     int updateByPrimaryKeySelective(ApplyProductSkuChannel record);
 
     int updateByPrimaryKey(ApplyProductSkuChannel record);
+
+    int insertBartch(List<ApplyProductSkuChannel> list);
 }

@@ -78,6 +78,12 @@ public interface ProductSkuConfigService {
     Integer insertApplyList(ApplySkuConfigReqVo reqVo);
 
     /**
+     * 外部调用保存到申请列表,不进入审批流
+     * @param applyProductSkus
+     * @return
+     */
+    Integer outInsertApplyList( List<ApplyProductSku> applyProductSkus);
+    /**
      * 审批流调入
      * @param formNo
      * @param applyCode
