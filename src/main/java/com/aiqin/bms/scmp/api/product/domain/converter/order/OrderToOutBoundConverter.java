@@ -5,7 +5,12 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.Calculate;
+import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -56,14 +61,17 @@ public class OrderToOutBoundConverter extends BaseServiceImpl implements Convert
             outbound.setCreateBy(Optional.ofNullable(getUser().getPersonName()).orElse(CommonConstant.SYSTEM_AUTO));
             outbound.setCreateTime(date);
             //预计到货时间是当前时间加5天
-//            outbound.setPreArrivalTime();
+            outbound.setPreArrivalTime(DateUtils.addDay(5));
             outbound.setPreOutboundNum(dto.getProductNum());
             outbound.setPreMainUnitNum(dto.getProductNum());
-//            outbound.setPreTaxAmount();
-//            outbound.setPreAmount();
-//            outbound.setPreTax();
-//            outbound.setList();
-//            outbound.setOutboundBatchList();
+            outbound.setPreTaxAmount(dto.getProductTotalAmount());
+            outbound.setPreAmount(Calculate.computeNoTaxPrice(dto.getProductTotalAmount(), Long.valueOf(101)));
+            outbound.setPreTax(outbound.getPreTaxAmount()-outbound.getPraAmount());
+            List<OutboundProductReqVo> reqVos = BeanCopyUtils.copyList(dto.getItemList(), OutboundProductReqVo.class);
+            outbound.setList(reqVos);
+            List<OutboundBatch> batches = BeanCopyUtils.copyList(dto.getBatchList(), OutboundBatch.class);
+            outbound.setOutboundBatches(batches);
+            //TODO 个别字段需要单独set，这里暂时不做处理
             list.add(outbound);
         }
         return list;

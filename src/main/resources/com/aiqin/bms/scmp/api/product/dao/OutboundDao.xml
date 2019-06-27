@@ -394,8 +394,42 @@
       </if>
     </trim>
   </insert>
-
-  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
+    <insert id="insertBatch" parameterType="java.util.List">
+            insert into outbound (id, company_code, company_name,
+      outbound_status_code, outbound_status_name,
+      outbound_oder_code, outbound_type_code, outbound_type_name,
+      source_oder_code, outbound_time, logistics_center_code,
+      logistics_center_name, warehouse_code, warehouse_name,
+      supplier_code, supplier_name, pre_arrival_time,
+      wms_document_code, pre_outbound_num, pre_main_unit_num,
+      pre_tax_amount, pre_amount, pre_tax,
+      pra_outbound_num, pra_main_unit_num, pra_tax_amount,
+      pra_amount, pra_tax, consignee,
+      consignee_number, consignee_rate, province_code,
+      province_name, city_code, city_name,
+      county_code, county_name, detailed_address,
+      create_by, create_time, update_by,
+      update_time)
+    values
+    <foreach collection="list" item="item" separator="," close="" open="">
+    (#{item.id,jdbcType=BIGINT}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
+      #{item.outboundStatusCode,jdbcType=TINYINT}, #{item.outboundStatusName,jdbcType=VARCHAR},
+      #{item.outboundOderCode,jdbcType=VARCHAR}, #{item.outboundTypeCode,jdbcType=TINYINT}, #{item.outboundTypeName,jdbcType=VARCHAR},
+      #{item.sourceOderCode,jdbcType=VARCHAR}, #{item.outboundTime,jdbcType=TIMESTAMP}, #{item.logisticsCenterCode,jdbcType=VARCHAR},
+      #{item.logisticsCenterName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, #{item.preArrivalTime,jdbcType=TIMESTAMP},
+      #{item.wmsDocumentCode,jdbcType=VARCHAR}, #{item.preOutboundNum,jdbcType=BIGINT}, #{item.preMainUnitNum,jdbcType=BIGINT},
+      #{item.preTaxAmount,jdbcType=BIGINT}, #{item.preAmount,jdbcType=BIGINT}, #{item.preTax,jdbcType=BIGINT},
+      #{item.praOutboundNum,jdbcType=BIGINT}, #{item.praMainUnitNum,jdbcType=BIGINT}, #{item.praTaxAmount,jdbcType=BIGINT},
+      #{item.praAmount,jdbcType=BIGINT}, #{item.praTax,jdbcType=BIGINT}, #{item.consignee,jdbcType=VARCHAR},
+      #{item.consigneeNumber,jdbcType=VARCHAR}, #{item.consigneeRate,jdbcType=VARCHAR}, #{item.provinceCode,jdbcType=VARCHAR},
+      #{item.provinceName,jdbcType=VARCHAR}, #{item.cityCode,jdbcType=VARCHAR}, #{item.cityName,jdbcType=VARCHAR},
+      #{item.countyCode,jdbcType=VARCHAR}, #{item.countyName,jdbcType=VARCHAR}, #{item.detailedAddress,jdbcType=VARCHAR},
+      #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP});
+    </foreach>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
     update outbound
     <set>
       <if test="companyCode != null">

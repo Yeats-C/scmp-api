@@ -196,15 +196,21 @@ public interface ResultCode {
     MessageId LOG_SAVE_ERROR = MessageId.create(Project.PURCHASE_API,99,"订单日志保存失败");
     MessageId SAVE_LOCK_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,99,"保存批次锁库失败");
     MessageId CHANGE_ACTUAL_DELIVERY_NUM_FAILED = MessageId.create(Project.PURCHASE_API,99,"修改实发数量失败");
-
-
-    // 采购
-    MessageId NOT_PURCHASE_GROUP = MessageId.create(Project.SCMP_API,201,"未获取到有效的采购组");
-    MessageId NOT_PURCHASE_GROUP_PERSON = MessageId.create(Project.SCMP_API,202,"此采购组该人员无相关数据");
-
+    //退货
     MessageId SAVE_RETURN_ORDER_ITEM_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单附表保存失败");
     MessageId SAVE_RETURN_ORDER_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单主表保存失败");
     MessageId GET_RETURN_GOODS_DETAIL_FAILED = MessageId.create(Project.PURCHASE_API,100,"获取订单详情失败");
     MessageId QUERY_INSPECTION_DETAIL_ERROR = MessageId.create(Project.PURCHASE_API,100,"查询验货信息失败");
     MessageId SAVE_INSPECTION_DATA_FAILED = MessageId.create(Project.PURCHASE_API,100,"保存验货信息失败");
+    //出库
+    MessageId OUTBOUND_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.PURCHASE_API,75,"出库单信息不能为空");
+    MessageId SAVE_OUT_BOUND_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库主表数据失败");
+    MessageId SAVE_OUT_BOUND_PRODUCT_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库商品数据失败");
+    MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库批次数据失败");
+
+    // 采购
+    MessageId NOT_PURCHASE_GROUP = MessageId.create(Project.SCMP_API,201,"未获取到有效的采购组");
+    MessageId NOT_PURCHASE_GROUP_PERSON = MessageId.create(Project.SCMP_API,202,"此采购组该人员无相关数据");
+
+
 }

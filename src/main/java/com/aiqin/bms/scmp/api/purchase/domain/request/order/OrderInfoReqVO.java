@@ -143,6 +143,12 @@ public class OrderInfoReqVO {
     @ApiModelProperty("备注")
     private String remake;
 
+    @ApiModelProperty("门店类型")
+    private String storeType;
+
+    @ApiModelProperty("门店类型编码")
+    private String storeTypeCode;
+
     @ApiModelProperty("减免比例")
     private Integer logisticsRemissionRatio;
 

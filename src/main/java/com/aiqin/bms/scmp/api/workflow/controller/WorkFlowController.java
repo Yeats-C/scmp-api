@@ -37,7 +37,7 @@ public class WorkFlowController {
             if (Objects.isNull(WorkFlow.getAll().get(type))) {
                 return WorkFlowReturn.FALSE;
             }
-            return workFlowService.WorkFlowCallBack(WorkFlow.getAll().get(type), vo);
+            return workFlowService.workFlowCallBack(WorkFlow.getAll().get(type), vo);
         } catch (Exception e) {
             log.error(e.getMessage(),e);
             return WorkFlowReturn.FALSE;

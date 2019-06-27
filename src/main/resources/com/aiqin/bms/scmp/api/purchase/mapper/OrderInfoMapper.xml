@@ -56,6 +56,8 @@
     <result column="master_order_code" jdbcType="VARCHAR" property="masterOrderCode" />
     <result column="order_original" jdbcType="VARCHAR" property="orderOriginal" />
     <result column="remake" jdbcType="VARCHAR" property="remake" />
+    <result column="store_type_code" jdbcType="VARCHAR" property="storeTypeCode" />
+    <result column="store_type" jdbcType="VARCHAR" property="storeType" />
     <result column="logistics_remission_ratio" jdbcType="INTEGER" property="logisticsRemissionRatio" />
     <result column="transport_status" jdbcType="INTEGER" property="transportStatus" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
@@ -71,7 +73,7 @@
     discount_amount, order_amount, product_num, payment_time, delivery_time, receiving_time, 
     invoice_type, invoice_type_code, invoice_title, operator, operator_code, operator_time, 
     activity_discount, weight, be_master_order, master_order_code, order_original, remake, 
-    logistics_remission_ratio, transport_status, company_name, company_code
+    logistics_remission_ratio, transport_status, company_name, company_code,store_type_code，store_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -163,6 +165,8 @@
     <result column="amaster_order_code" jdbcType="VARCHAR" property="masterOrderCode" />
     <result column="aorder_original" jdbcType="VARCHAR" property="orderOriginal" />
     <result column="aremake" jdbcType="VARCHAR" property="remake" />
+    <result column="astore_type_code" jdbcType="VARCHAR" property="storeTypeCode" />
+    <result column="astore_type" jdbcType="VARCHAR" property="storeType" />
     <result column="alogistics_remission_ratio" jdbcType="INTEGER" property="logisticsRemissionRatio" />
     <collection property="productList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
       <id column="bid" property="id"/>
@@ -239,6 +243,8 @@
              a.master_order_code amaster_order_code,
              a.order_original aorder_original,
              a.remake aremake,
+             a.store_type astore_type,
+             a.store_type_code astore_type_code,
              a.logistics_remission_ratio alogistics_remission_ratio,
              b.id bid,
              b.sku_code bsku_code,
@@ -308,7 +314,7 @@
       invoice_type, invoice_type_code, invoice_title, 
       operator, operator_code, operator_time, 
       activity_discount, weight, be_master_order, 
-      master_order_code, order_original, remake, 
+      master_order_code, order_original, remake, store_type,store_type_code,
       logistics_remission_ratio, transport_status, 
       company_name, company_code)
     values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR}, 
@@ -328,7 +334,7 @@
       #{invoiceType,jdbcType=VARCHAR}, #{invoiceTypeCode,jdbcType=VARCHAR}, #{invoiceTitle,jdbcType=VARCHAR}, 
       #{operator,jdbcType=VARCHAR}, #{operatorCode,jdbcType=VARCHAR}, #{operatorTime,jdbcType=TIMESTAMP}, 
       #{activityDiscount,jdbcType=BIGINT}, #{weight,jdbcType=BIGINT}, #{beMasterOrder,jdbcType=INTEGER}, 
-      #{masterOrderCode,jdbcType=VARCHAR}, #{orderOriginal,jdbcType=VARCHAR}, #{remake,jdbcType=VARCHAR}, 
+      #{masterOrderCode,jdbcType=VARCHAR}, #{orderOriginal,jdbcType=VARCHAR}, #{remake,jdbcType=VARCHAR}, #{storeType,jdbcType=VARCHAR}, #{storeTypeCode,jdbcType=VARCHAR},
       #{logisticsRemissionRatio,jdbcType=INTEGER}, #{transportStatus,jdbcType=INTEGER}, 
       #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR})
   </insert>
@@ -496,6 +502,12 @@
       </if>
       <if test="remake != null">
         remake,
+      </if>
+        <if test="remake != null">
+        store_type,
+      </if>
+        <if test="remake != null">
+        store_type_code,
       </if>
       <if test="logisticsRemissionRatio != null">
         logistics_remission_ratio,
@@ -673,6 +685,12 @@
       <if test="remake != null">
         #{remake,jdbcType=VARCHAR},
       </if>
+      <if test="storeType != null">
+        #{storeType,jdbcType=VARCHAR},
+      </if>
+      <if test="storeTypeCode != null">
+        #{storeTypeCode,jdbcType=VARCHAR},
+      </if>
       <if test="logisticsRemissionRatio != null">
         #{logisticsRemissionRatio,jdbcType=INTEGER},
       </if>
@@ -705,7 +723,7 @@
       invoice_type, invoice_type_code, invoice_title,
       operator, operator_code, operator_time,
       activity_discount, weight, be_master_order,
-      master_order_code, order_original, remake,
+      master_order_code, order_original, remake,store_type,store_type_code,
       logistics_remission_ratio, transport_status,
       company_name, company_code)
     values
@@ -727,7 +745,7 @@
       #{item.invoiceType,jdbcType=VARCHAR}, #{item.invoiceTypeCode,jdbcType=VARCHAR}, #{item.invoiceTitle,jdbcType=VARCHAR},
       #{item.operator,jdbcType=VARCHAR}, #{item.operatorCode,jdbcType=VARCHAR}, #{item.operatorTime,jdbcType=TIMESTAMP},
       #{item.activityDiscount,jdbcType=BIGINT}, #{item.weight,jdbcType=BIGINT}, #{item.beMasterOrder,jdbcType=INTEGER},
-      #{item.masterOrderCode,jdbcType=VARCHAR}, #{item.orderOriginal,jdbcType=VARCHAR}, #{item.remake,jdbcType=VARCHAR},
+      #{item.masterOrderCode,jdbcType=VARCHAR}, #{item.orderOriginal,jdbcType=VARCHAR}, #{item.remake,jdbcType=VARCHAR},#{item.storeType,jdbcType=VARCHAR},#{item.storeTypeCode,jdbcType=VARCHAR},
       #{item.logisticsRemissionRatio,jdbcType=INTEGER}, #{item.transportStatus,jdbcType=INTEGER},
       #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR})
     </foreach>
@@ -894,6 +912,12 @@
       <if test="remake != null">
         remake = #{remake,jdbcType=VARCHAR},
       </if>
+      <if test="storeType != null">
+          store_type = #{storeType,jdbcType=VARCHAR},
+      </if>
+      <if test="storeTypeCode != null">
+          store_type_code = #{storeTypeCode,jdbcType=VARCHAR},
+      </if>
       <if test="logisticsRemissionRatio != null">
         logistics_remission_ratio = #{logisticsRemissionRatio,jdbcType=INTEGER},
       </if>
@@ -964,6 +988,8 @@
       master_order_code = #{masterOrderCode,jdbcType=VARCHAR},
       order_original = #{orderOriginal,jdbcType=VARCHAR},
       remake = #{remake,jdbcType=VARCHAR},
+      store_type = #{storeType,jdbcType=VARCHAR},
+      store_type_code = #{storeTypeCode,jdbcType=VARCHAR},
       logistics_remission_ratio = #{logisticsRemissionRatio,jdbcType=INTEGER},
       transport_status = #{transportStatus,jdbcType=INTEGER},
       company_name = #{companyName,jdbcType=VARCHAR},
@@ -1024,6 +1050,8 @@
       master_order_code = #{masterOrderCode,jdbcType=VARCHAR},
       order_original = #{orderOriginal,jdbcType=VARCHAR},
       remake = #{remake,jdbcType=VARCHAR},
+      store_type = #{storeType,jdbcType=VARCHAR},
+      store_type_code = #{storeTypeCode,jdbcType=VARCHAR},
       logistics_remission_ratio = #{logisticsRemissionRatio,jdbcType=INTEGER},
       transport_status = #{transportStatus,jdbcType=INTEGER},
       company_name = #{companyName,jdbcType=VARCHAR},
