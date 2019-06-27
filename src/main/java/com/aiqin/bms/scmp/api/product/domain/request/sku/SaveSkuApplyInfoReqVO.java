@@ -17,8 +17,6 @@ import java.util.List;
 @Data
 @ApiModel("sku新增申请请求")
 public class SaveSkuApplyInfoReqVO {
-    @ApiModelProperty("商品编码集合")
-    private List<String> productCodes;
 
     @ApiModelProperty("sku编码集合")
     private List<String> skuCodes;

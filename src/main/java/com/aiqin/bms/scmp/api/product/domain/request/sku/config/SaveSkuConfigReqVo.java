@@ -17,16 +17,16 @@ import java.util.List;
 @Data
 public class SaveSkuConfigReqVo {
 
-    @ApiModelProperty("商品名称")
+    @ApiModelProperty(value = "商品名称",hidden = true)
     private String productCode;
 
-    @ApiModelProperty("商品编码")
+    @ApiModelProperty(value = "商品编码",hidden = true)
     private String productName;
 
-    @ApiModelProperty("sku编码")
+    @ApiModelProperty(value = "sku编码",hidden = true)
     private String skuCode;
 
-    @ApiModelProperty("sku名称")
+    @ApiModelProperty(value = "sku名称",hidden = true)
     private String skuName;
 
     @ApiModelProperty("物流中心(仓库)编码")

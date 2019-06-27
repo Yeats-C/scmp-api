@@ -36,6 +36,12 @@ public interface PriceProjectService  {
 
 
     /**
+     * 获取采购价格项目
+     * @return
+     */
+    QueryPriceProjectRespVo getPurchasePriceProject();
+
+    /**
      * 获取价格项目列表信息,按照价格类型分组
      * @return
      */

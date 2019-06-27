@@ -1,14 +1,21 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsDraftMapper;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.SaveList;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuAssociatedGoods;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuAssociatedGoodsDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuAssociatedGoodsRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuAssociatedGoodsMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuAssociatedGoodsService;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,8 +27,12 @@ import java.util.List;
  */
 @Service
 public class ProductSkuAssociatedGoodsServiceImpl implements ProductSkuAssociatedGoodsService {
+
     @Autowired
     private ProductSkuAssociatedGoodsDraftMapper draftMapper;
+
+    @Autowired
+    private ApplyProductSkuAssociatedGoodsMapper applyMapper;
 
     /**
      * 保存临时表数据
@@ -56,6 +67,49 @@ public class ProductSkuAssociatedGoodsServiceImpl implements ProductSkuAssociate
     @Override
     public Integer deleteDrafts(List<String> skuCodes) {
         return draftMapper.delete(skuCodes);
+    }
+
+    /**
+     * 保存申请
+     *
+     * @param applyProductSkus
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int saveApplyList(List<ApplyProductSku> applyProductSkus) {
+        try {
+            List<ApplyProductSkuAssociatedGoods> applyProductSkuAssociatedGoodList = new ArrayList<>();
+            List<ProductSkuAssociatedGoodsDraft> productSkuAssociatedGoodsDrafts = draftMapper.getDrafts(applyProductSkus);
+            if (productSkuAssociatedGoodsDrafts != null && productSkuAssociatedGoodsDrafts.size() > 0){
+                for (int i=0;i<productSkuAssociatedGoodsDrafts.size();i++){
+                    ApplyProductSkuAssociatedGoods applyProductSkuAssociatedGoods = new ApplyProductSkuAssociatedGoods();
+                    BeanCopyUtils.copy(productSkuAssociatedGoodsDrafts.get(i),applyProductSkuAssociatedGoods);
+                    applyProductSkuAssociatedGoods.setApplyCode(applyProductSkus.get(0).getApplyCode());
+                    applyProductSkuAssociatedGoodList.add(applyProductSkuAssociatedGoods);
+                }
+                //批量新增申请
+                ((ProductSkuAssociatedGoodsService) AopContext.currentProxy()).insertApplyList(applyProductSkuAssociatedGoodList);
+                //批量删除草稿
+                draftMapper.deleteDrafts(applyProductSkus);
+            }
+            return 1;
+        } catch (BizException e){
+            throw new BizException(e.getMessage());
+        }
+    }
+
+    /**
+     * 批量插入申请表
+     *
+     * @param applyProductSkuAssociatedGoods
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public int insertApplyList(List<ApplyProductSkuAssociatedGoods> applyProductSkuAssociatedGoods) {
+        return applyMapper.insertBatch(applyProductSkuAssociatedGoods);
     }
 }
 

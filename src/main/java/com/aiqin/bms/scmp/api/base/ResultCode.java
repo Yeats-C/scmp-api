@@ -173,6 +173,8 @@ public interface ResultCode {
     MessageId SUBMIT_ERROR = MessageId.create(Project.PRODUCT_API, 74, "获取数据异常，提交失败");
 
     MessageId SKU_CONFIG_SUBMIT_ERROR =  MessageId.create(Project.PRODUCT_API, 74, "申请SKU配置数据保存异常！");
+    MessageId SKU_PURCHASE_PRICE_IS_EMPTY =  MessageId.create(Project.PRODUCT_API, 74, "未找到价格项目为采购类的,请先添加价格项目");
+
     //价格
     MessageId SAVE_PRICE_FAILED =MessageId.create(Project.PRODUCT_API, 96, "价格数据保存失败");
     MessageId DELETE_SKU_PRICE_DRAFT_FAILED =MessageId.create(Project.PRODUCT_API, 96, "删除价格临时表数据失败") ;

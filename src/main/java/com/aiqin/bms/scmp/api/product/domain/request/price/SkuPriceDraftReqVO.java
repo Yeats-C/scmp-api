@@ -17,16 +17,16 @@ import java.util.Date;
 @Data
 public class SkuPriceDraftReqVO {
 
-    @ApiModelProperty("sku编码")
+    @ApiModelProperty(value = "sku编码",hidden = true)
     private String skuCode;
 
-    @ApiModelProperty("sku名称")
+    @ApiModelProperty(value = "sku名称",hidden = true)
     private String skuName;
 
-    @ApiModelProperty("采购组编码")
+    @ApiModelProperty(value = "采购组编码",hidden = true)
     private String purchaseGroupCode;
 
-    @ApiModelProperty("采购组名称")
+    @ApiModelProperty(value = "采购组名称",hidden = true)
     private String purchaseGroupName;
 
     @ApiModelProperty("价格项目编码")
@@ -50,39 +50,39 @@ public class SkuPriceDraftReqVO {
     @ApiModelProperty("含税金额")
     private Long priceTax;
 
-    @ApiModelProperty("未税金额")
+    @ApiModelProperty(value = "未税金额",hidden = true)
     private Long priceNoTax;
 
-    @ApiModelProperty("税率")
+    @ApiModelProperty(value = "税率",hidden = true)
     private Long tax;
 
     @ApiModelProperty("开始生效时间")
     private Date effectiveTimeStart;
 
-    @ApiModelProperty("供应商编码")
+    @ApiModelProperty(value = "供应商编码",hidden = true)
     private String supplierCode;
 
-    @ApiModelProperty("供应商名称")
+    @ApiModelProperty(value = "供应商名称",hidden = true)
     private String supplierName;
 
-    @ApiModelProperty("是否默认(0否1是)")
+    @ApiModelProperty(value = "是否默认(0否1是)",hidden = true)
     private Integer beDefault;
 
-    @ApiModelProperty("创建人")
+    @ApiModelProperty(value = "创建人",hidden = true)
     private String createBy;
 
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty(value = "创建时间",hidden =true)
     private Date createTime;
 
-    @ApiModelProperty("修改人")
+    @ApiModelProperty(value = "修改人",hidden = true)
     private String updateBy;
 
-    @ApiModelProperty("修改时间")
+    @ApiModelProperty(value = "修改时间",hidden = true)
     private Date updateTime;
 
-    @ApiModelProperty("公司名称")
+    @ApiModelProperty(value = "公司名称",hidden = true)
     private String companyCode;
 
-    @ApiModelProperty("公司编码")
+    @ApiModelProperty(value = "公司编码",hidden = true)
     private String companyName;
 }

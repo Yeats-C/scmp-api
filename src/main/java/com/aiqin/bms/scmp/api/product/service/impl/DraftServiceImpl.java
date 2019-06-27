@@ -1,14 +1,9 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.ApprovalTypeEnum;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductDraft;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.DetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.SaveReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.ApplySaleAreaReqVO;
@@ -20,16 +15,15 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsV
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -78,9 +72,7 @@ public class DraftServiceImpl implements DraftService {
         HttpResponse httpResponse = null;
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
             log.info("获取商品信息");
-            List<ProductSkuDraftRespVo> productSkuDraftRespVos = Lists.newArrayList();
-            productSkuDraftRespVos.addAll(applyProductDraftService.getProductListDraftByCompanyCode(companyCode));
-            productSkuDraftRespVos.addAll(skuInfoService.getProductSkuDraftsByCompanyCode(companyCode));
+            List<ProductSkuDraftRespVo> productSkuDraftRespVos = skuInfoService.getProductSkuDraftsByCompanyCode(companyCode);
             log.info("获取商品信息,结果{}", JSON.toJSON(productSkuDraftRespVos));
             httpResponse = HttpResponse.success(productSkuDraftRespVos);
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
@@ -111,11 +103,7 @@ public class DraftServiceImpl implements DraftService {
         }
         HttpResponse httpResponse = null;
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
-            if(Objects.equals(Global.SKU,reqVo.getApplySort())){
-                httpResponse = HttpResponse.success(skuInfoService.getSkuDraftInfo(reqVo.getCode()));
-            } else if (Objects.equals(Global.SPU,reqVo.getApplySort())) {
-                httpResponse = HttpResponse.success(applyProductDraftService.getDraftByProductCode(reqVo.getCode()));
-            }
+            httpResponse = HttpResponse.success(skuInfoService.getSkuDraftInfo(reqVo.getCode()));
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
 
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
@@ -138,26 +126,9 @@ public class DraftServiceImpl implements DraftService {
             throw new BizException(ResultCode.OBJECT_NOT_FOUND);
         }
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
-            if(Objects.equals(Global.SKU,reqVo.getApplySort())){
-                List<String> skuCodes = Lists.newArrayList();
-                skuCodes.add(reqVo.getCode());
-                skuInfoService.deleteProductSkuDraft(skuCodes);
-            } else if (Objects.equals(Global.SPU,reqVo.getApplySort())) {
-                //先判断SPU是新增还是修改
-                ApplyProductDraft applyProductDraft = applyProductDraftService.getDraftByProductCode(reqVo.getCode());
-                //如果是新增,则需要删除商品下SKU信息
-                if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applyProductDraft.getApplyType())){
-                    //再判断删除商品下是否存在SKU
-                    List<ProductSkuDraft> skuDraftList = skuInfoService.getProductSkuDraftsByProductCode(reqVo.getCode());
-                    if (CollectionUtils.isNotEmpty(skuDraftList)) {
-                        List<String> skuCodes = skuDraftList.stream().map(item -> item.getSkuCode()).collect(Collectors.toList());
-                        skuInfoService.deleteProductSkuDraft(skuCodes);
-                    }
-                }
-                List<String> productCodes = Lists.newArrayList();
-                productCodes.add(reqVo.getCode());
-                applyProductDraftService.deleteCode(productCodes);
-            }
+            List<String> skuCodes = Lists.newArrayList();
+            skuCodes.add(reqVo.getCode());
+            skuInfoService.deleteProductSkuDraft(skuCodes);
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
             productSkuConfigService.deleteDraftById(reqVo.getId());
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
@@ -181,9 +152,8 @@ public class DraftServiceImpl implements DraftService {
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
             SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO = new SaveSkuApplyInfoReqVO();
             BeanCopyUtils.copy(reqVo,saveSkuApplyInfoReqVO);
-            Map<String,List<String>> dataMap = (Map<String, List<String>>) reqVo.getData();
-            saveSkuApplyInfoReqVO.setProductCodes(dataMap.get(Global.PRODUCT_CODE));
-            saveSkuApplyInfoReqVO.setSkuCodes(dataMap.get(Global.SKU_CODE));
+            List<String> skuCodes = (List<String>) reqVo.getData();
+            saveSkuApplyInfoReqVO.setSkuCodes(skuCodes);
             skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO);
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
             ApplySkuConfigReqVo applySkuConfigReqVo = new ApplySkuConfigReqVo();

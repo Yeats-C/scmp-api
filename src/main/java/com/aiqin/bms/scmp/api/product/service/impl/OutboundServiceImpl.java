@@ -402,7 +402,7 @@ public class OutboundServiceImpl implements OutboundService {
      * @return
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
     public void pushWms(String  code,OutboundServiceImpl inboundService){
         log.error("异步推送给wms");
@@ -464,7 +464,7 @@ public class OutboundServiceImpl implements OutboundService {
      * @return
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public int workFlowCallBack(OutboundCallBackReqVo reqVo) {
 
         try {
@@ -582,7 +582,7 @@ public class OutboundServiceImpl implements OutboundService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void returnSource(Long id){
         try {
             Thread.sleep(2000);
@@ -694,7 +694,7 @@ public class OutboundServiceImpl implements OutboundService {
      * @param reqVO
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void returnOder(SupplyOrderInfoReqVO reqVO) {
         try {
             Thread.sleep(2000);
@@ -720,7 +720,7 @@ public class OutboundServiceImpl implements OutboundService {
      * @param reqVO
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void returnStorageResult(ReturnStorageResultReqVo reqVO) {
 
 //        String url = urlConfig.PURCHASE_URL+"/returnsupply/returnStorageResult";

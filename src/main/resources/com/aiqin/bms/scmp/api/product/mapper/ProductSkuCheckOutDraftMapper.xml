@@ -33,13 +33,13 @@
     insert into product_sku_checkout_draft (id, create_by, create_time, 
       update_by, update_time, del_flag, 
       sku_code, sku_name, output_tax_rate, 
-      Input_tax_rate, Integral_coefficient, rebate,settlement_method_code,settlement_method_name
+      Input_tax_rate, Integral_coefficient, rebate,settlement_method_code,settlement_method_name,logistics_fee_award_ratio
       )
     values (#{id,jdbcType=BIGINT}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=TINYINT}, 
       #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{outputTaxRate,jdbcType=BIGINT}, 
       #{inputTaxRate,jdbcType=BIGINT}, #{integralCoefficient,jdbcType=BIGINT}, #{rebate,jdbcType=BIGINT},
-      #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR}
+      #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR}, #{logisticsFeeAwardRatio,jdbcType=DECIMAL}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckoutDraft">

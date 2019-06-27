@@ -1,9 +1,8 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.bms.scmp.api.common.Save;
+import com.aiqin.bms.scmp.api.common.Update;
 import com.aiqin.bms.scmp.api.product.dao.ProductOperationLogDao;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductOperationLog;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogBean;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
@@ -11,6 +10,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.service.ProductOperationLogService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class ProductOperationLogServiceImpl implements ProductOperationLogServic
     private ProductOperationLogDao productOperationLogDao;
 
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public Long saveLog(OperationLogBean operationLogBean) {
         ProductOperationLog supplierOperationLog = new ProductOperationLog();
         try {
@@ -70,7 +70,7 @@ public class ProductOperationLogServiceImpl implements ProductOperationLogServic
     }
 
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public Integer saveList(Collection<ProductOperationLog> users) {
         Integer k = productOperationLogDao.insertList(users);
         if (k!=null) {
