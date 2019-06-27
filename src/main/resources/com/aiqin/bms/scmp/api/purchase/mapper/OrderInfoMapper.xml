@@ -73,7 +73,7 @@
     discount_amount, order_amount, product_num, payment_time, delivery_time, receiving_time, 
     invoice_type, invoice_type_code, invoice_title, operator, operator_code, operator_time, 
     activity_discount, weight, be_master_order, master_order_code, order_original, remake, 
-    logistics_remission_ratio, transport_status, company_name, company_code,store_type_code，store_type
+    logistics_remission_ratio, transport_status, company_name, company_code,store_type_code,store_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

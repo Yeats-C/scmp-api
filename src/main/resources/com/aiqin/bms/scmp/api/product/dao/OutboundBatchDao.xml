@@ -9,20 +9,20 @@
     <result column="outbound_batch_code" jdbcType="VARCHAR" property="outboundBatchCode" />
     <result column="manufacture_time" jdbcType="TIMESTAMP" property="manufactureTime" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
-    <result column="qty" jdbcType="BIGINT" property="qty" />
+    <result column="pre_qty" jdbcType="BIGINT" property="preQty" />
+    <result column="pra_qty" jdbcType="BIGINT" property="praQty" />
     <result column="store_house_code" jdbcType="VARCHAR" property="storeHouseCode" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="line_num" jdbcType="BIGINT" property="linenum" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="line_num" jdbcType="BIGINT" property="lineNum" />
   </resultMap>
-
   <sql id="Base_Column_List">
-    id, outbound_oder_code, sku_code, sku_name, outbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
-    create_by, create_time, update_by, update_time, line_num
+    id, outbound_oder_code, sku_code, sku_name, outbound_batch_code, manufacture_time, 
+    batch_remark, pre_qty, pra_qty, store_house_code, create_time, update_time, create_by, 
+    update_by, line_num
   </sql>
-
   <select id="selectOutboundBatchInfoByOutboundOderCode" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -36,24 +36,207 @@
   </select>
 
   <insert id="insertInfo" parameterType="java.util.List">
-    insert outbound_batch(outbound_oder_code, sku_code, sku_name, outbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
-    create_by, create_time, update_by, update_time,line_num)
+    insert into outbound_batch (id, outbound_oder_code, sku_code,
+    sku_name, outbound_batch_code, manufacture_time,
+    batch_remark, pre_qty, pra_qty,
+    store_house_code, create_time, update_time,
+    create_by, update_by, line_num
+    )
     values
     <foreach collection="list" index="index" item="item" separator=",">
-      (#{item.outboundOderCode,jdbcType=VARCHAR},
-      #{item.skuCode,jdbcType=VARCHAR},
-      #{item.skuName,jdbcType=VARCHAR},
-      #{item.outboundBatchCode,jdbcType=VARCHAR},
-      #{item.manufactureTime,jdbcType=VARCHAR},
-      #{item.batchRemark,jdbcType=VARCHAR},
-      #{item.qty,jdbcType=BIGINT},
-      #{item.storeHouseCode,jdbcType=VARCHAR},
-      #{item.createBy,jdbcType=VARCHAR},
-      #{item.createTime,jdbcType=TIMESTAMP},
-      #{item.updateBy,jdbcType=VARCHAR},
-      #{item.updateTime,jdbcType=TIMESTAMP},
-      #{item.linenum,jdbcType=BIGINT}
-      )
+    (#{item.id,jdbcType=BIGINT}, #{item.outboundOderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
+    #{item.skuName,jdbcType=VARCHAR}, #{item.outboundBatchCode,jdbcType=VARCHAR}, #{item.manufactureTime,jdbcType=TIMESTAMP},
+    #{item.batchRemark,jdbcType=VARCHAR}, #{item.preQty,jdbcType=BIGINT}, #{item.praQty,jdbcType=BIGINT},
+    #{item.storeHouseCode,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP},
+    #{item.createBy,jdbcType=VARCHAR}, #{item.updateBy,jdbcType=VARCHAR}, #{item.lineNum,jdbcType=BIGINT}
+    )
     </foreach>
   </insert>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from outbound_batch
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from outbound_batch
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch">
+    insert into outbound_batch (id, outbound_oder_code, sku_code, 
+      sku_name, outbound_batch_code, manufacture_time, 
+      batch_remark, pre_qty, pra_qty, 
+      store_house_code, create_time, update_time, 
+      create_by, update_by, line_num
+      )
+    values (#{id,jdbcType=BIGINT}, #{outboundOderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
+      #{skuName,jdbcType=VARCHAR}, #{outboundBatchCode,jdbcType=VARCHAR}, #{manufactureTime,jdbcType=TIMESTAMP}, 
+      #{batchRemark,jdbcType=VARCHAR}, #{preQty,jdbcType=BIGINT}, #{praQty,jdbcType=BIGINT}, 
+      #{storeHouseCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR}, #{lineNum,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch">
+    insert into outbound_batch
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="outboundOderCode != null">
+        outbound_oder_code,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="skuName != null">
+        sku_name,
+      </if>
+      <if test="outboundBatchCode != null">
+        outbound_batch_code,
+      </if>
+      <if test="manufactureTime != null">
+        manufacture_time,
+      </if>
+      <if test="batchRemark != null">
+        batch_remark,
+      </if>
+      <if test="preQty != null">
+        pre_qty,
+      </if>
+      <if test="praQty != null">
+        pra_qty,
+      </if>
+      <if test="storeHouseCode != null">
+        store_house_code,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="lineNum != null">
+        line_num,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="outboundOderCode != null">
+        #{outboundOderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="outboundBatchCode != null">
+        #{outboundBatchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="manufactureTime != null">
+        #{manufactureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="batchRemark != null">
+        #{batchRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="preQty != null">
+        #{preQty,jdbcType=BIGINT},
+      </if>
+      <if test="praQty != null">
+        #{praQty,jdbcType=BIGINT},
+      </if>
+      <if test="storeHouseCode != null">
+        #{storeHouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lineNum != null">
+        #{lineNum,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch">
+    update outbound_batch
+    <set>
+      <if test="outboundOderCode != null">
+        outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="outboundBatchCode != null">
+        outbound_batch_code = #{outboundBatchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="manufactureTime != null">
+        manufacture_time = #{manufactureTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="batchRemark != null">
+        batch_remark = #{batchRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="preQty != null">
+        pre_qty = #{preQty,jdbcType=BIGINT},
+      </if>
+      <if test="praQty != null">
+        pra_qty = #{praQty,jdbcType=BIGINT},
+      </if>
+      <if test="storeHouseCode != null">
+        store_house_code = #{storeHouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="lineNum != null">
+        line_num = #{lineNum,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch">
+    update outbound_batch
+    set outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      sku_name = #{skuName,jdbcType=VARCHAR},
+      outbound_batch_code = #{outboundBatchCode,jdbcType=VARCHAR},
+      manufacture_time = #{manufactureTime,jdbcType=TIMESTAMP},
+      batch_remark = #{batchRemark,jdbcType=VARCHAR},
+      pre_qty = #{preQty,jdbcType=BIGINT},
+      pra_qty = #{praQty,jdbcType=BIGINT},
+      store_house_code = #{storeHouseCode,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      line_num = #{lineNum,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
 </mapper>
