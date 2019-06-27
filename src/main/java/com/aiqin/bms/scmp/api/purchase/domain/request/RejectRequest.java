@@ -1,12 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.FileRecord;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,9 +37,18 @@ import java.util.List;
 @Data
 @ApiModel("退供单请求类")
 public class RejectRequest {
+
+    @ApiModelProperty(value = "退货申请单号集合(生成退供单使用)  --")
+    @JsonProperty("reject_apply_record_codes")
+    private List<String> rejectApplyRecordCodes;
+
     @ApiModelProperty(value = "商品 结算方式")
-    @JsonProperty("settlement_method")
-    private String settlementMethod;
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value = "商品 结算方式")
+    @JsonProperty("settlement_method_name")
+    private String settlementMethodName;
 
     @ApiModelProperty(value = "供应商code")
     @JsonProperty("supplier_code")
@@ -74,27 +82,27 @@ public class RejectRequest {
     @JsonProperty("purchase_group_name")
     private String purchaseGroupName;
 
-    @ApiModelProperty(value = "数量")
+    @ApiModelProperty(value = "数量 --")
     @JsonProperty("sum_count")
     private Integer sumCount;
 
-    @ApiModelProperty(value = "退供总金额")
+    @ApiModelProperty(value = "退供总金额 --")
     @JsonProperty("sum_amount")
     private Long sumAmount;
 
-    @ApiModelProperty(value = "单品数量")
+    @ApiModelProperty(value = "单品数量 --")
     @JsonProperty("single_count")
     private Integer singleCount;
 
-    @ApiModelProperty(value = "单品金额")
-    @JsonProperty("single_amount")
-    private Long singleAmount;
+    @ApiModelProperty(value = "单品金额 --")
+    @JsonProperty("untaxed_amount")
+    private Long untaxedAmount;
 
-    @ApiModelProperty(value = "实物返回数量")
+    @ApiModelProperty(value = "实物返回数量 --")
     @JsonProperty("return_count")
     private Integer returnCount;
 
-    @ApiModelProperty(value = "实物返回金额")
+    @ApiModelProperty(value = "实物返回金额 --")
     @JsonProperty("return_amount")
     private Long returnAmount;
 
@@ -140,11 +148,11 @@ public class RejectRequest {
 
     @ApiModelProperty(value = "预计配送时间")
     @JsonProperty("expect_time")
-    private Date expectTime;
+    private String expectTime;
 
     @ApiModelProperty(value = "有效期")
     @JsonProperty("valid_day")
-    private Date validDay;
+    private String validDay;
 
     @ApiModelProperty(value = "直属上级id (取字典表数据)")
     @JsonProperty("dictionary_id")
@@ -158,10 +166,6 @@ public class RejectRequest {
     @JsonProperty("remark")
     private String remark;
 
-    @ApiModelProperty(value = "商品批次列表")
-    @JsonProperty("detail_list")
-    private List<RejectApplyDetailResponse> detailList;
-
     @ApiModelProperty(value = "")
     @JsonProperty("create_by_id")
     private String createById;
@@ -170,6 +174,9 @@ public class RejectRequest {
     @JsonProperty("create_by_name")
     private String createByName;
 
+    @ApiModelProperty(value="文件list")
+    @JsonProperty("file_list")
+    List<FileRecord> fileList;
 
 }
 

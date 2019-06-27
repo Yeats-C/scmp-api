@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -59,4 +60,6 @@ public interface GoodsRejectService {
     HttpResponse rejectTransportFinish(String reject_record_id);
 
     void finishStock(RejectStockRequest request);
+
+    HttpResponse rejectApplyDetailInfo(RejectApplyRequest rejectApplyQueryRequest);
 }

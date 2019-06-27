@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectRecordDetailResponse;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,7 +20,7 @@ public interface RejectRecordDetailDao {
 
     int updateByPrimaryKey(RejectRecordDetail record);
 
-    Integer insertAll(@Param("list") List<RejectApplyDetailResponse> detailList, @Param("rejectRecordId") String rejectId, @Param("rejectRecordCode") String rejectCode, @Param("createById") String createId, @Param("createByName") String createName);
+    Integer insertAll(@Param("list") List<RejectRecordDetail> detailList, @Param("rejectRecordId") String rejectId, @Param("rejectRecordCode") String rejectCode, @Param("createById") String createId, @Param("createByName") String createName);
 
     List<RejectRecordDetail> selectByRejectId(@Param("rejectRecordId") String rejectRecordId);
 

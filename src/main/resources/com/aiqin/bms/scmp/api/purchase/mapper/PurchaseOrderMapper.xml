@@ -5,7 +5,6 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="purchase_order_id" jdbcType="VARCHAR" property="purchaseOrderId" />
     <result column="purchase_order_code" jdbcType="VARCHAR" property="purchaseOrderCode" />
-    <result column="purchase_apply_id" jdbcType="VARCHAR" property="purchaseApplyId" />
     <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
     <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
@@ -17,37 +16,37 @@
     <result column="info_status" jdbcType="INTEGER" property="infoStatus" />
     <result column="purchase_order_status" jdbcType="INTEGER" property="purchaseOrderStatus" />
     <result column="storage_status" jdbcType="INTEGER" property="storageStatus" />
-    <result column="expect_receipt_time" jdbcType="TIMESTAMP" property="expectReceiptTime" />
-    <result column="term_validity" jdbcType="INTEGER" property="termValidity" />
+    <result column="single_count" jdbcType="INTEGER" property="singleCount" />
+    <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
+    <result column="return_amount" jdbcType="INTEGER" property="returnAmount" />
+    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
+    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, purchase_order_id, purchase_order_code, purchase_apply_id, transport_center_code, 
-    transport_center_name, purchase_group_code, purchase_group_name, warehouse_code, 
-    warehouse_name, supplier_code, supplier_name, info_status, purchase_order_status, 
-    storage_status, expect_receipt_time, term_validity, create_time, update_time, create_by, 
-    update_by
+    id, purchase_order_id, purchase_order_code, transport_center_code, transport_center_name, 
+    purchase_group_code, purchase_group_name, warehouse_code, warehouse_name, supplier_code, 
+    supplier_name, info_status, purchase_order_status, storage_status, single_count, 
+    product_total_amount, return_amount, settlement_method_code, settlement_method_name, 
+    create_time, update_time, create_by, update_by
   </sql>
   <insert id="insert">
-    insert into purchase_order (id, purchase_order_id, purchase_order_code, 
-      purchase_apply_id, transport_center_code, transport_center_name, 
-      purchase_group_code, purchase_group_name, warehouse_code, 
-      warehouse_name, supplier_code, supplier_name, 
-      info_status, purchase_order_status, storage_status, 
-      expect_receipt_time, term_validity, create_time, 
-      update_time, create_by, update_by
-      )
-    values (#{id,jdbcType=BIGINT}, #{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR}, 
-      #{purchaseApplyId,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
+    insert into purchase_order (purchase_order_id, purchase_order_code,
+      transport_center_code, transport_center_name, purchase_group_code, purchase_group_name, warehouse_code,
+      warehouse_name, supplier_code, supplier_name, info_status, purchase_order_status, storage_status,
+      single_count, product_total_amount, return_amount, settlement_method_code, settlement_method_name,
+      create_time, create_by)
+    values (#{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR},
+      #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, 
       #{warehouseName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, 
       #{infoStatus,jdbcType=INTEGER}, #{purchaseOrderStatus,jdbcType=INTEGER}, #{storageStatus,jdbcType=INTEGER}, 
-      #{expectReceiptTime,jdbcType=TIMESTAMP}, #{termValidity,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR}
-      )
+      #{singleCount,jdbcType=INTEGER}, #{productTotalAmount,jdbcType=INTEGER}, #{returnAmount,jdbcType=INTEGER}, 
+      #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR}, 
+      now(), #{createBy,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_order
@@ -57,9 +56,6 @@
       </if>
       <if test="purchaseOrderCode != null">
         purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseApplyId != null">
-        purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR},
       </if>
       <if test="transportCenterCode != null">
         transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
@@ -94,11 +90,20 @@
       <if test="storageStatus != null">
         storage_status = #{storageStatus,jdbcType=INTEGER},
       </if>
-      <if test="expectReceiptTime != null">
-        expect_receipt_time = #{expectReceiptTime,jdbcType=TIMESTAMP},
+      <if test="singleCount != null">
+        single_count = #{singleCount,jdbcType=INTEGER},
       </if>
-      <if test="termValidity != null">
-        term_validity = #{termValidity,jdbcType=INTEGER},
+      <if test="productTotalAmount != null">
+        product_total_amount = #{productTotalAmount,jdbcType=INTEGER},
+      </if>
+      <if test="returnAmount != null">
+        return_amount = #{returnAmount,jdbcType=INTEGER},
+      </if>
+      <if test="settlementMethodCode != null">
+        settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodName != null">
+        settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},

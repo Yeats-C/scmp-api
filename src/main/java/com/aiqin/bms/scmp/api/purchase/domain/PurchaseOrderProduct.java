@@ -17,13 +17,13 @@ public class PurchaseOrderProduct {
     @JsonProperty("order_product_id")
     private String orderProductId;
 
-    @ApiModelProperty(value="采购单/入库单id")
-    @JsonProperty("order_id")
-    private String orderId;
+    @ApiModelProperty(value="采购单id")
+    @JsonProperty("purchase_order_id")
+    private String purchaseOrderId;
 
-    @ApiModelProperty(value="采购单/入库单编码")
-    @JsonProperty("order_code")
-    private String orderCode;
+    @ApiModelProperty(value="采购单编码")
+    @JsonProperty("purchase_order_code")
+    private String purchaseOrderCode;
 
     @ApiModelProperty(value="sku编号")
     @JsonProperty("sku_code")
@@ -97,25 +97,9 @@ public class PurchaseOrderProduct {
     @JsonProperty("product_total_amount")
     private Integer productTotalAmount;
 
-    @ApiModelProperty(value="实际单品数量")
-    @JsonProperty("actual_single_count")
-    private Integer actualSingleCount;
-
-    @ApiModelProperty(value="实际含税总价")
-    @JsonProperty("actual_total_amount")
-    private Integer actualTotalAmount;
-
     @ApiModelProperty(value="库存数量")
     @JsonProperty("stock_count")
     private Integer stockCount;
-
-    @ApiModelProperty(value="0.采购单  1.入库单")
-    @JsonProperty("is_purchase")
-    private Integer isPurchase;
-
-    @ApiModelProperty(value="结算方式")
-    @JsonProperty("settlement")
-    private Integer settlement;
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
@@ -132,4 +116,5 @@ public class PurchaseOrderProduct {
     @ApiModelProperty(value="修改人")
     @JsonProperty("update_by")
     private String updateBy;
+
 }

@@ -83,13 +83,13 @@
         <include refid="LIST_QUERY"/>
     </select>
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
-    insert into reject_apply_record (id, reject_apply_record_code, apply_type, 
+    insert into reject_apply_record ( reject_apply_record_code, apply_type,
       purchase_group_code, purchase_group_name, apply_record_status, 
       sum_sku, sum_count, sum_amount,  company_name,company_code,
       create_by_id, create_by_name, update_by_id, 
       update_by_name, create_time, update_time
       )
-    values (#{id,jdbcType=BIGINT}, #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{applyType,jdbcType=BIT}, 
+    values ( #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{applyType,jdbcType=BIT},
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{applyRecordStatus,jdbcType=BIT}, 
       #{sumSku,jdbcType=INTEGER}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT},  #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR},
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 

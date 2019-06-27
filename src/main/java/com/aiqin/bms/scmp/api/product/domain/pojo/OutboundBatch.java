@@ -57,7 +57,7 @@ public class OutboundBatch extends PagesRequest {
     private Date updateTime;
 
     @ApiModelProperty("行号")
-    private Long lineNum;
+    private Long linenum;
 
     public OutboundBatch(String outboundOderCode, Integer pageSize, Integer pageNo) {
         this.outboundOderCode = outboundOderCode;

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.FileRecordDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.FileRecord">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="file_id" jdbcType="VARCHAR" property="fileId" />
+    <result column="file_code" jdbcType="VARCHAR" property="fileCode" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_status" jdbcType="INTEGER" property="fileStatus" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    file_id as fileId, file_code as fileCode, file_name as fileName, file_status as fileStatus,file_path as filePath,
+    create_time as createTime, create_by_id as createById,create_by_name as createByName,update_by_id as updateById,update_by_name as updateByName
+  </sql>
+  <insert id="insert">
+    insert into file_record (file_id, file_code,
+      file_name, file_status, create_time, create_by_id,create_by_name,file_path)
+    values (#{fileId,jdbcType=VARCHAR}, #{fileCode,jdbcType=VARCHAR},
+      #{fileName,jdbcType=VARCHAR}, #{fileStatus,jdbcType=INTEGER}, now(),
+      #{createById,jdbcType=VARCHAR},#{createByName,jdbcType=VARCHAR},#{filePath,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertAll">
+    insert into file_record (file_id, file_code,file_path,
+      file_name,  create_time,  create_by_id,create_by_name)
+    values
+    <foreach collection="list" separator="," item="item">
+      (
+      #{fileId,jdbcType=VARCHAR},
+      #{item.fileCode,jdbcType=VARCHAR},
+      #{item.filePath,jdbcType=VARCHAR},
+      #{item.fileName,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=VARCHAR},
+      #{item.createById,jdbcType=VARCHAR},
+      #{item.createByName,jdbcType=VARCHAR}
+      )
+    </foreach>
+
+  </insert>
+  <update id="update">
+    update file_record
+    <set>
+      <if test="fileName != null">
+        file_name = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="fileStatus != null">
+        file_status = #{fileStatus,jdbcType=INTEGER},
+      </if>
+      update_time = now(),
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where file_id = #{fileId,jdbcType=VARCHAR}
+  </update>
+  <select id="fileList" resultType="com.aiqin.bms.scmp.api.purchase.domain.FileRecord">
+    select <include refid="Base_Column_List"></include>
+    from file_record
+    where file_id = #{fileId,jdbcType=VARCHAR}
+  </select>
+</mapper>

@@ -13,9 +13,7 @@ import com.aiqin.bms.scmp.api.product.dao.StockFlowDao;
 import com.aiqin.bms.scmp.api.product.domain.converter.InboundReqVo2InboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.PurchaseToStockConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockConverter;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
@@ -24,13 +22,16 @@ import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockI
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.VerifyReturnSupplyErrorRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
+import com.aiqin.bms.scmp.api.product.domain.request.StockBatchVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
@@ -1247,6 +1248,158 @@ public class StockServiceImpl implements StockService {
             list.add(copy);
         }
         return list;
+    }
+
+    /**
+     * 批次库存管理查询
+     * @param stockBatchRequest
+     * @return
+     */
+    @Override
+    public PageResData selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest) {
+        try {
+            LOGGER.info("批次库存管理列表条件查询");
+            List<StockBatchRespVO> stockList = stockDao.selectStockBatchInfoByPage(stockBatchRequest);
+            Integer total = stockDao.countStockBatchInfoByPage(stockBatchRequest);
+            return new PageResData<>(total, stockList);
+        } catch (Exception e) {
+            LOGGER.error("批次库存管理列表条件查询失败", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
+    }
+
+    /**
+     * 根据stockBatchId查询单个库存信息
+     *
+     * @param stockBatchId
+     * @return
+     */
+    @Override
+    public StockBatchRespVO selectOneStockBatchInfoByStockBatchId(Long stockBatchId) {
+        try {
+            LOGGER.info("根据stockBatchId查询单个stockBatch信息");
+            return stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId);
+        } catch (Exception e) {
+            LOGGER.error("根据stockBatchId查询单个stockBatch信息失败", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer  insertStockBatch(StockChangeRequest stockChangeRequest) {
+        return null;
+    }
+
+    /**
+     * 参数转换成库存数据
+     *
+     * @param stockbatch          库存实体
+     * @param stockVoRequest 请求改变实体
+     * @param operationType  操作类型
+     * @return
+     */
+    /*
+    private StockBatch stockBatchVoRequestToStock(StockBatch stockBatch, StockVoRequest stockVoRequest, Integer operationType) {
+        if (null==stockBatch.getId()){
+            BeanCopyUtils.copy(stockVoRequest,stockBatch);
+            stockBatch.setLockNum(0L);
+            stockBatch.setInventoryNum(0L);
+            stockBatch.setAvailableNum(0L);
+            stockBatch.setPurchaseWayNum(0L);
+            stockBatch.setAllocationWayNum(0L);
+            stockBatch.setTotalWayNum(0L);
+            stockBatch.setStockCode("ST"+ new IdSequenceUtils().nextId());
+        }
+        stockBatch.setNewPurchasePrice(stockVoRequest.getNewPurchasePrice());
+        stockBatch.setTaxPrice(stockVoRequest.getNewPurchasePrice());
+        stockBatch.setTaxRate(stockVoRequest.getTaxRate());
+        stockBatch.setNewDelivery(stockVoRequest.getNewDelivery());
+        stockBatch.setNewDeliveryName(stockVoRequest.getNewDeliveryName());
+        switch (operationType) {
+            //锁定库存数
+            case 1:
+                stockBatch.setLockNum(stockBatch.getLockNum() + stockVoRequest.getChangeNum());
+                stockBatch.setAvailableNum(stockBatch.getAvailableNum() - stockVoRequest.getChangeNum());
+                break;
+            //减少库存并解锁
+            case 2:
+                stockBatch.setInventoryNum(stockBatch.getInventoryNum() - stockVoRequest.getChangeNum());
+                stockBatch.setLockNum(stockBatch.getLockNum() - stockVoRequest.getChangeNum());
+                break;
+            //解锁锁定库存
+            case 3:
+                stockBatch.setAvailableNum(stockBatch.getAvailableNum() + stockVoRequest.getChangeNum());
+                stockBatch.setLockNum(stockBatch.getLockNum() - stockVoRequest.getChangeNum());
+                break;
+            //无锁定直接减库存 总库存减可用库存减
+            case 4:
+                stockBatch.setAvailableNum(stockBatch.getAvailableNum() - stockVoRequest.getChangeNum());
+                stockBatch.setInventoryNum(stockBatch.getInventoryNum() - stockVoRequest.getChangeNum());
+                break;
+            //加库存并锁定库存
+            case 5:
+                stockBatch.setInventoryNum(stockBatch.getInventoryNum() + stockVoRequest.getChangeNum());
+                stockBatch.setLockNum(stockBatch.getLockNum() + stockVoRequest.getChangeNum());
+                break;
+            //只改变采购在途数和在途总数
+            case 6:
+                stockBatch.setPurchaseWayNum(stockBatch.getPurchaseWayNum() + stockVoRequest.getChangeNum());
+                stockBatch.setTotalWayNum(stockBatch.getTotalWayNum() + stockVoRequest.getChangeNum());
+                break;
+            //只改变调拨在途和在途总数
+            case 7:
+                stockBatch.setAllocationWayNum(stockBatch.getAllocationWayNum() + stockVoRequest.getChangeNum());
+                stockBatch.setTotalWayNum(stockBatch.getAllocationWayNum() + stockVoRequest.getChangeNum());
+                break;
+            //调拨在途变成可用及库存数
+            case 8:
+                stockBatch.setAllocationWayNum(stockBatch.getAllocationWayNum()-stockVoRequest.getChangeNum());
+                stockBatch.setTotalWayNum(stockBatch.getPurchaseWayNum()+stockBatch.getAllocationWayNum());
+                stockBatch.setInventoryNum(stockBatch.getInventoryNum()+stockVoRequest.getChangeNum());
+                stockBatch.setAvailableNum(stockBatch.getAvailableNum()+stockVoRequest.getChangeNum());
+                break;
+            //采购在途变成可用及库存数
+            case 9:
+                stockBatch.setPurchaseWayNum(stockBatch.getPurchaseWayNum()-stockVoRequest.getChangeNum());
+                stockBatch.setTotalWayNum(stockBatch.getPurchaseWayNum()+stockBatch.getAllocationWayNum());
+                stockBatch.setInventoryNum(stockBatch.getInventoryNum()+stockVoRequest.getChangeNum());
+                stockBatch.setAvailableNum(stockBatch.getAvailableNum()+stockVoRequest.getChangeNum());
+                break;
+            //直接加库存
+            case 10:
+                stockBatch.setInventoryNum(stockBatch.getInventoryNum()+stockVoRequest.getChangeNum());
+                stockBatch.setAvailableNum(stockBatch.getAvailableNum()+stockVoRequest.getChangeNum());
+                break;
+            default:
+                return null;
+        }
+        //库存不管是锁定数还是可以数还是库存数都不能为负
+        if (stockBatch.getLockNum() < 0 || stockBatch.getInventoryNum() < 0 || stockBatch.getAvailableNum() < 0 || stockBatch.getAllocationWayNum() < 0 || stockBatch.getTotalWayNum() < 0) {
+            return null;
+        }
+        return stockBatch;
+    }
+*/
+    /**
+     * 功能描述: 查询批次库存商品(采购退供使用)
+     *
+     * @param reqVO
+     * @paramreqVO
+     * @returnPageInfo
+     * @date 2019/6/26 17:47
+     */
+    @Override
+    public PageInfo<QueryStockBatchSkuRespVo> selectStockBatchSkuPage(QueryStockBatchSkuReqVo reqVO) {
+        try {
+            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+            List<QueryStockBatchSkuRespVo> queryStockBatchSkuRespVos = stockDao.selectStockBatchSkuInfoByPage(reqVO);
+            return new PageInfo<QueryStockBatchSkuRespVo>(queryStockBatchSkuRespVos);
+        } catch (Exception ex) {
+            log.error("查询批次库存商失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
     }
 
 }
