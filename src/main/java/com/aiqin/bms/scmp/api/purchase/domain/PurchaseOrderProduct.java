@@ -109,12 +109,20 @@ public class PurchaseOrderProduct {
     @JsonProperty("update_time")
     private Date updateTime;
 
-    @ApiModelProperty(value="创建人")
-    @JsonProperty("create_by")
-    private String createBy;
+    @ApiModelProperty(value="创建者id")
+    @JsonProperty("create_by_id")
+    private String createById;
 
-    @ApiModelProperty(value="修改人")
-    @JsonProperty("update_by")
-    private String updateBy;
+    @ApiModelProperty(value="修改者id")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="创建者")
+    @JsonProperty("create_by_name")
+    private String createByName;
+
+    @ApiModelProperty(value="修改者")
+    @JsonProperty("update_by_name")
+    private String updateByName;
 
 }

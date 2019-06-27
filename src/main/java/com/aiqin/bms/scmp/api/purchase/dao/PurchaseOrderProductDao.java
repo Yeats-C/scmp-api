@@ -7,4 +7,6 @@ public interface PurchaseOrderProductDao {
     Integer insert(PurchaseOrderProduct record);
 
     Integer update(PurchaseOrderProduct record);
+
+    Integer insertAll(PurchaseOrderProduct orderProduct);
 }

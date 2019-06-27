@@ -52,8 +52,10 @@
     <result column="apply_product_status" jdbcType="INTEGER" property="applyProductStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
   </resultMap>
   <sql id="Base_Column_List">
     apply_product_id as applyProductId, purchase_apply_id as purchaseApplyId, sku_code as skuCode, sku_name as skuName, 
@@ -78,7 +80,7 @@
       product_sort_name, product_type, product_purchase_amount, new_purchase_price, purchase_whole, purchase_single,
       stock_unit_name, stock_count, total_way_num, last_time, sales_volume, box_gauge, base_product_content,
       purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
-      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, create_time, create_by)
+      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, create_time, create_by_id, create_by_name)
     values ( #{applyProductId,jdbcType=VARCHAR}, #{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR},
       #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{spuCode,jdbcType=VARCHAR}, 
       #{productName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehousName,jdbcType=VARCHAR},
@@ -94,7 +96,7 @@
       #{purchaseMax,jdbcType=INTEGER}, #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, 
       #{modelNumber,jdbcType=VARCHAR}, #{shortageNumber,jdbcType=INTEGER}, #{shortageDay,jdbcType=INTEGER}, 
       #{stockTurnover,jdbcType=INTEGER}, #{receiptTurnover,jdbcType=INTEGER}, #{errorInfo,jdbcType=VARCHAR}, 
-      #{applyProductStatus,jdbcType=INTEGER}, now(), #{createBy,jdbcType=VARCHAR})
+      #{applyProductStatus,jdbcType=INTEGER}, now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_apply_product
@@ -235,8 +237,11 @@
         apply_product_status = #{applyProductStatus,jdbcType=INTEGER},
       </if>
       update_time = now(),
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=VARCHAR},
+      <if test="createById != null">
+        create_by_id = #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
     where apply_product_id = #{applyProductId,jdbcType=VARCHAR}
@@ -397,7 +402,7 @@
       product_sort_name, product_type, product_purchase_amount, new_purchase_price, purchase_whole, purchase_single,
       stock_unit_name, stock_count, total_way_num, last_time, sales_volume, box_gauge, base_product_content,
       purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
-      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, create_time, create_by)
+      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, create_time, create_by_id, create_by_name)
     values
      <foreach collection="list" item="item" index="" separator=",">
       (#{item.applyProductId,jdbcType=VARCHAR},
@@ -424,7 +429,7 @@
        #{item.shortageNumber,jdbcType=INTEGER}, #{item.shortageDay,jdbcType=INTEGER},
        #{item.stockTurnover,jdbcType=INTEGER}, #{item.receiptTurnover,jdbcType=INTEGER},
        #{item.errorInfo,jdbcType=VARCHAR}, #{item.applyProductStatus,jdbcType=INTEGER}, now(),
-       #{item.createBy,jdbcType=VARCHAR})
+       #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
      </foreach>
   </insert>
   <select id="selectPurchaseForm" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse">
