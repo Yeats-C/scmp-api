@@ -279,8 +279,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy());
 
             //  调用推送接口
-            OutboundServiceImpl inboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            inboundService.pushWms(outbound.getOutboundOderCode(),inboundService);
+            OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
+            outboundService.pushWms(outbound.getOutboundOderCode(),outboundService);
 
             return outboundOderCode;
 
@@ -915,7 +915,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         List<OutboundBatch> batchList = Lists.newArrayList();
         for (OutboundReqVo outboundReqVo : outboundReqVoList) {
             productList.addAll(BeanCopyUtils.copyList(outboundReqVo.getList(), OutboundProduct.class));
-            batchList.addAll(outboundReqVo.getOutboundBatches());
+            batchList.addAll(BeanCopyUtils.copyList(outboundReqVo.getOutboundBatches(), OutboundBatch.class));
         }
         saveData(outbounds,productList,batchList);
         //TODo 保存日志

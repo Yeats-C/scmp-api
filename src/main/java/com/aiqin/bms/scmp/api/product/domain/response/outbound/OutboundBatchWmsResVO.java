@@ -47,6 +47,6 @@ public class OutboundBatchWmsResVO {
 
     @ApiModelProperty("批次号")
     @JsonProperty("outbound_batch_code")
-    private Long outboundBatchCode;
+    private String outboundBatchCode;
 
 }

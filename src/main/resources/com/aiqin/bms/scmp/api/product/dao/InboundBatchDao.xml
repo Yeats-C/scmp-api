@@ -36,7 +36,7 @@
   </sql>
 
   <sql id="Batch_Wms_Response_List">
-    a.sku_code, sku_name, a.outbound_batch_code, a.pre_qty, a.pra_qty, a.line_num, b.bar_code
+    a.sku_code, a.sku_name, a.inbound_batch_code, a.pre_qty, a.pra_qty, a.line_num, b.bar_code
   </sql>
 
   <select id="selectInboundBatchInfoByInboundOderCode" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch" resultMap="BaseResultMap">
@@ -74,7 +74,7 @@
     </foreach>
   </insert>
 
-  <select id="selectWmsStockByInboundOderCode" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundBatchWmsReqVO">
+  <select id="selectWmsStockByInboundOderCode" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundBatchWmsReqVO" resultMap="WmsReq">
     select
     <include refid="Batch_Wms_Response_List" />
     from inbound_batch a left join product_sku b on a.sku_code = b.sku_code

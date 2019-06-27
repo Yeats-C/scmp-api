@@ -58,7 +58,7 @@
   </sql>
 
   <sql id="Batch_Wms_Response_List">
-    a.sku_code, sku_name, a.outbound_batch_code, a.pre_qty, a.pra_qty, a.line_num, b.bar_code
+    a.sku_code, a.sku_name, a.outbound_batch_code, a.pre_qty, a.pra_qty, a.line_num, b.bar_code
   </sql>
 
   <sql id="Base_Column_ReturnOutboundBatch">
