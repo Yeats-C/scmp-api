@@ -140,7 +140,7 @@ public class RejectApplyRecordDetail {
     @JsonProperty("product_total_amount")
     private Long productTotalAmount;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "含税成本")
     @JsonProperty("product_cost")
     private Long productCost;
 

@@ -28,6 +28,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -108,18 +109,14 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     public HttpResponse rejectApply(RejectApplyRequest rejectApplyQueryRequest) {
         try {
             EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_APPLY_CODE);
-            //总退供数量
-            Integer sumCount = 0;
-            //总退供金额
-            Long sumAmount = 0L;
+
             RejectApplyRecord rejectApplyRecord = new RejectApplyRecord();
             BeanUtils.copyProperties(rejectApplyQueryRequest,rejectApplyRecord);
             String rejectCode = "RAR" + encodingRule.getNumberingValue();
             rejectApplyRecord.setRejectApplyRecordCode(rejectCode);
             //处理数据
-            this.rejectApplyData(rejectApplyQueryRequest, sumCount, sumAmount, rejectCode);
-            rejectApplyRecord.setSumAmount(sumAmount);
-            rejectApplyRecord.setSumCount(sumCount);
+            this.rejectApplyData(rejectApplyQueryRequest, rejectApplyRecord, rejectCode);
+
             rejectApplyRecord.setApplyRecordStatus(1);
             //sku数量等于商品列表条数
             rejectApplyRecord.setSumSku(rejectApplyQueryRequest.getDetailList().size());
@@ -140,7 +137,11 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     /**
      * 处理退供申请单数据
      */
-    private void rejectApplyData(RejectApplyRequest rejectApplyQueryRequest, Integer sumCount, Long sumAmount, String rejectCode) {
+    private void rejectApplyData(RejectApplyRequest rejectApplyQueryRequest, RejectApplyRecord rejectApplyRecord, String rejectCode) {
+        //总退供数量
+        Integer sumCount = 0;
+        //总退供金额
+        Long sumAmount = 0L;
         for (RejectApplyRecordDetail detail : rejectApplyQueryRequest.getDetailList()) {
             //详情的id
             detail.setRejectApplyRecordDetailId(IdUtil.uuid());
@@ -150,6 +151,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             detail.setCreateById(rejectApplyQueryRequest.getCreateById());
             detail.setCreateByName(rejectApplyQueryRequest.getCreateByName());
         }
+        rejectApplyRecord.setSumAmount(sumAmount);
+        rejectApplyRecord.setSumCount(sumCount);
         //添加详情
         Integer detailCount = rejectApplyRecordDetailDao.insertAll(rejectApplyQueryRequest.getDetailList());
         LOGGER.info("添加退供申请详情影响条数:{}", detailCount);
@@ -163,16 +166,9 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                 LOGGER.error("未查询到退供申请单信息:{}", rejectApplyRequest.getRejectApplyRecordCode());
                 return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_APPLY_RECORD);
             }
-            //总退供数量
-            Integer sumCount = 0;
-            //总退供金额
-            Long sumAmount = 0L;
-            //删除原申请单详情信息
             rejectApplyRecordDetailDao.deleteAll(rejectApplyRecord.getRejectApplyRecordCode());
             //处理数据
-            this.rejectApplyData(rejectApplyRequest, sumCount, sumAmount, rejectApplyRecord.getRejectApplyRecordCode());
-            rejectApplyRecord.setSumAmount(sumAmount);
-            rejectApplyRecord.setSumCount(sumCount);
+            this.rejectApplyData(rejectApplyRequest,rejectApplyRecord, rejectApplyRecord.getRejectApplyRecordCode());
             //sku数量等于商品列表条数
             rejectApplyRecord.setSumSku(rejectApplyRequest.getDetailList().size());
             //更新退供申请单信息
@@ -226,13 +222,15 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     }
     @Override
     public HttpResponse rejectApplyDetailInfo(RejectApplyRequest response) {
-        List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByCondition(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
-                response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes());
+        List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByConditionPage(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
+                response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes(),response.getPageSize(),response.getBeginIndex());
         for (RejectApplyRecordDetail detailResponse : detailList) {
             //todo 根据sku查询实际库存
 
         }
-        return HttpResponse.success(detailList);
+        Integer listCount = rejectApplyRecordDetailDao.listByConditionPageCount(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
+                response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes());
+        return HttpResponse.success(new PageResData(listCount,detailList));
     }
 
     @Override
@@ -266,71 +264,78 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         return HttpResponse.success(list);
     }
 
-    @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse addReject(RejectRequest request) {
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_APPLY_CODE);
-        RejectRecord rejectRecord = new RejectRecord();
-        BeanUtils.copyProperties(request, rejectRecord);
-        String rejectCode = "RR" + encodingRule.getNumberingValue();
-        String rejectId = IdUtil.rejectRecordId();
-        rejectRecord.setRejectRecordCode(rejectCode);
-        rejectRecord.setRejectRecordId(rejectId);
-        rejectRecord.setExpectTime(new DateTime(request.getExpectTime()).toDate());
-        rejectRecord.setValidDay(new DateTime(request.getValidDay()).toDate());
-        //总退供数量
-        Integer sumCount = 0;
-        //含税金额
-        Long sumAmount = 0L;
-        //总单品数量
-        Integer sumSingleCount = 0;
-        //未税退供金额
-        Long untaxedAmount = 0L;
-        //总实物返回数量
-        Integer returnCount = 0;
-        //总实物返回金额
-        Long returnAmount = 0L;
-        List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByCondition(request.getSupplierCode(), request.getPurchaseGroupCode(), request.getSettlementMethodCode(),
-                request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
-        List<RejectRecordDetail> list = new ArrayList<>();
-        RejectRecordDetail rejectRecordDetail;
-        //todo 更新主表的状态 当详情表的状态都为已提交
+        try {
+            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_APPLY_CODE);
+            RejectRecord rejectRecord = new RejectRecord();
+            BeanUtils.copyProperties(request, rejectRecord);
+            String rejectCode = "RR" + encodingRule.getNumberingValue();
+            String rejectId = IdUtil.rejectRecordId();
+            rejectRecord.setRejectRecordCode(rejectCode);
+            rejectRecord.setRejectRecordId(rejectId);
+            rejectRecord.setExpectTime(new DateTime(request.getExpectTime()).toDate());
+            rejectRecord.setValidDay(new DateTime(request.getValidDay()).toDate());
+            //总退供数量
+            Integer sumCount = 0;
+            //含税金额
+            Long sumAmount = 0L;
+            //总单品数量
+            Integer sumSingleCount = 0;
+            //未税退供金额
+            Long untaxedAmount = 0L;
+            //总实物返回数量
+            Integer returnCount = 0;
+            //总实物返回金额
+            Long returnAmount = 0L;
+            List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByCondition(request.getSupplierCode(), request.getPurchaseGroupCode(), request.getSettlementMethodCode(),
+                    request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
+            List<RejectRecordDetail> list = new ArrayList<>();
+            RejectRecordDetail rejectRecordDetail;
+            //todo 更新主表的状态 当详情表的状态都为已提交
 
-        for (RejectApplyRecordDetail detailResponse : detailList) {
-            //计算总数
-            sumCount += detailResponse.getProductCount();
-            sumSingleCount += detailResponse.getProductCount();
-            sumAmount += detailResponse.getProductTotalAmount();
-            untaxedAmount += detailResponse.getProductTotalAmount();
-            if (detailResponse.getProductType().equals(2)) {
-                returnCount += detailResponse.getProductCount();
-                returnAmount += detailResponse.getProductTotalAmount();
+            for (RejectApplyRecordDetail detailResponse : detailList) {
+                //计算总数
+                sumCount += detailResponse.getProductCount();
+                sumSingleCount += detailResponse.getProductCount();
+                sumAmount += detailResponse.getProductTotalAmount();
+                untaxedAmount += detailResponse.getProductTotalAmount();
+                if (detailResponse.getProductType().equals(2)) {
+                    returnCount += detailResponse.getProductCount();
+                    returnAmount += detailResponse.getProductTotalAmount();
+                }
+                rejectRecordDetail = new RejectRecordDetail();
+                BeanUtils.copyProperties(detailResponse,rejectRecordDetail);
+                rejectRecordDetail.setProductCount(Long.valueOf(detailResponse.getProductCount()));
+                rejectRecordDetail.setRejectRecordDetailId(IdUtil.uuid());
+                list.add(rejectRecordDetail);
+
             }
-            rejectRecordDetail = new RejectRecordDetail();
-            BeanUtils.copyProperties(detailResponse,rejectRecordDetail);
-            rejectRecordDetail.setRejectRecordDetailId(IdUtil.uuid());
-            list.add(rejectRecordDetail);
-        }
-        rejectRecord.setSumAmount(sumAmount);
-        rejectRecord.setSumCount(sumCount);
-        rejectRecord.setUntaxedAmount(untaxedAmount);
-        rejectRecord.setSingleCount(sumSingleCount);
-        rejectRecord.setReturnAmount(returnAmount);
-        rejectRecord.setReturnCount(returnCount);
-        //添加退供单记录
-        Integer count = rejectRecordDao.insert(rejectRecord);
-        LOGGER.info("添加退供影响条数:{}", count);
-        //添加退供单详情
-        Integer detailCount = rejectRecordDetailDao.insertAll(list, rejectId, rejectCode, request.getCreateById(), request.getCreateByName());
-        LOGGER.info("添加退供详情影响条数:{}", detailCount);
-        //更改退供申请详情部分记录(reject_apply_record_detail)更改为已提交
-        List<String> detailIds = detailList.stream().map(RejectApplyRecordDetail::getRejectApplyRecordDetailId).collect(Collectors.toList());
-        Integer updateCount = rejectApplyRecordDetailDao.updateByDetailIds(detailIds);
-        LOGGER.info("更改退供申请详情影响条数:{}", updateCount);
-        //更新编码
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
-        if(CollectionUtils.isNotEmpty(request.getFileList())){
-            Integer fileCount = fileRecordDao.insertAll(rejectId,request.getFileList());
-            LOGGER.info("上传文件条数:{}",fileCount);
+            rejectRecord.setSumAmount(sumAmount);
+            rejectRecord.setSumCount(sumCount);
+            rejectRecord.setUntaxedAmount(untaxedAmount);
+            rejectRecord.setSingleCount(sumSingleCount);
+            rejectRecord.setReturnAmount(returnAmount);
+            rejectRecord.setReturnCount(returnCount);
+            //添加退供单记录
+            Integer count = rejectRecordDao.insert(rejectRecord);
+            LOGGER.info("添加退供影响条数:{}", count);
+            //添加退供单详情
+            Integer detailCount = rejectRecordDetailDao.insertAll(list, rejectId, rejectCode, request.getCreateById(), request.getCreateByName());
+            LOGGER.info("添加退供详情影响条数:{}", detailCount);
+            //更改退供申请详情部分记录(reject_apply_record_detail)更改为已提交
+            List<String> detailIds = detailList.stream().map(RejectApplyRecordDetail::getRejectApplyRecordDetailId).collect(Collectors.toList());
+            Integer updateCount = rejectApplyRecordDetailDao.updateByDetailIds(detailIds);
+            LOGGER.info("更改退供申请详情影响条数:{}", updateCount);
+            //更新编码
+            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+            if(CollectionUtils.isNotEmpty(request.getFileList())){
+                Integer fileCount = fileRecordDao.insertAll(rejectId,request.getFileList());
+                LOGGER.info("上传文件条数:{}",fileCount);
+            }
+        } catch (BeansException e) {
+            LOGGER.error("新增退供单异常:{}", e.getMessage());
+            throw new RuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
         }
         return HttpResponse.success();
     }
