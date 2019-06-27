@@ -226,10 +226,7 @@ public class InboundServiceImpl implements InboundService {
             //  转化入库单sku批次实体
             List<InboundBatch> inboundBatches =BeanCopyUtils.copyList(reqVo.getInboundBatchReqVos(),InboundBatch.class);
             inboundBatches.stream().forEach(inboundBatch -> inboundBatch.setInboundOderCode(rule.getNumberingValue().toString()) );
-            inboundBatches.stream().forEach(inboundBatch -> inboundBatch.setInboundBatchCode(rule.getNumberingValue().toString())
-            );
             //插入入库单商品表
-
             int insertBatchs=inboundBatchDao.insertInfo(inboundBatches);
             log.info("转化入库单sku批次实体表返回结果", insertBatchs);
 

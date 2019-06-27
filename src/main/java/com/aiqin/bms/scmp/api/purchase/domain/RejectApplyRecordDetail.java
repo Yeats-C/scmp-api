@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -106,6 +108,10 @@ public class RejectApplyRecordDetail {
     @JsonProperty("product_count")
     private Integer productCount;
 
+    @ApiModelProperty(value = "单品数量")
+    @JsonProperty("single_count")
+    private Integer singleCount;
+
     @ApiModelProperty(value = "税率")
     @JsonProperty("tax_rate")
     private Integer taxRate;
@@ -146,6 +152,7 @@ public class RejectApplyRecordDetail {
     @JsonProperty("batch_remark")
     private String batchRemark;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "批次备注")
     @JsonProperty("batch_create_time")
     private Date batchCreateTime;
@@ -165,34 +172,6 @@ public class RejectApplyRecordDetail {
     @ApiModelProperty(value = "")
     @JsonProperty("supplier_name")
     private String supplierName;
-
-    @ApiModelProperty(value = "收货区域 :省")
-    @JsonProperty("province_id")
-    private String provinceId;
-
-    @ApiModelProperty(value = "")
-    @JsonProperty("province_name")
-    private String provinceName;
-
-    @ApiModelProperty(value = "市")
-    @JsonProperty("city_id")
-    private String cityId;
-
-    @ApiModelProperty(value = "")
-    @JsonProperty("city_name")
-    private String cityName;
-
-    @ApiModelProperty(value = "县")
-    @JsonProperty("district_id")
-    private String districtId;
-
-    @ApiModelProperty(value = "")
-    @JsonProperty("district_name")
-    private String districtName;
-
-    @ApiModelProperty(value = "收货地址")
-    @JsonProperty("address")
-    private String address;
 
     @ApiModelProperty(value = "")
     @JsonProperty("create_by_id")

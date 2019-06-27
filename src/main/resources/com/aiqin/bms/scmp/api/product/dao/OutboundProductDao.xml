@@ -288,7 +288,6 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundProduct">
     update outbound_product
     <set>
-
       <if test="skuCode != null">
         sku_code = #{skuCode,jdbcType=VARCHAR},
       </if>
@@ -489,7 +488,7 @@
     </foreach>
   </update>
 
-  <select id="selectMmsReqByOutboundOderCode" parameterType="java.lang.String" resultMap="MmsReq"  resultType="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO">
+  <select id="selectMmsReqByOutboundOderCode" parameterType="java.lang.String" resultMap="MmsReq"  resultType="com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundProductWmsResVO">
     select
     <include refid="Base_Column_MmsReq" />
     from outbound_product a left join product_sku b on a.sku_code = b.sku_code

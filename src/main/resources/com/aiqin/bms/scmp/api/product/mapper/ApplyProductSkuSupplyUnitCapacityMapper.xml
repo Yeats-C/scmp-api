@@ -42,6 +42,21 @@
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR})
   </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+     insert into apply_product_sku_supply_unit_capacity (supply_unit_code, supply_unit_name,
+      product_sku_code, product_sku_name, out_put,
+      need_days, apply_code, del_flag,
+      create_time, create_by, update_time,
+      update_by)
+    values
+    <foreach collection="list" item="item" open="" close="" separator=",">
+      (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
+      #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR}, #{item.outPut,jdbcType=BIGINT},
+      #{item.needDays,jdbcType=BIGINT}, #{item.applyCode,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnitCapacity">
     insert into apply_product_sku_supply_unit_capacity
     <trim prefix="(" suffix=")" suffixOverrides=",">

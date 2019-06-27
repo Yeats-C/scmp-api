@@ -18,9 +18,24 @@
     <result column="line_num" jdbcType="BIGINT" property="linenum" />
   </resultMap>
 
+  <resultMap id="BatchWmsResponse" type="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundBatchWmsReqVO">
+    <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="inbound_batch_code" jdbcType="VARCHAR" property="inboundBatchCode" />
+    <result column="pre_qty" jdbcType="BIGINT" property="preQty" />
+    <result column="pra_qty" jdbcType="BIGINT" property="praQty" />
+    <result column="line_num" jdbcType="BIGINT" property="linenum" />
+    <result column="bar_code" jdbcType="VARCHAR" property="goodsCode" />
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, inbound_oder_code, sku_code, sku_name, inbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
     create_by, create_time, update_by, update_time,line_num
+  </sql>
+
+  <sql id="Batch_Wms_Response_List">
+    a.sku_code, sku_name, a.outbound_batch_code, a.pre_qty, a.pra_qty, a.line_num, b.bar_code
   </sql>
 
   <select id="selectInboundBatchInfoByInboundOderCode" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch" resultMap="BaseResultMap">
@@ -36,7 +51,7 @@
   </select>
 
   <insert id="insertInfo" parameterType="java.util.List">
-    insert inbound_batch(inbound_oder_code, sku_code, sku_name, inbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
+    insert into inbound_batch(inbound_oder_code, sku_code, sku_name, inbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
     create_by, create_time, update_by, update_time,line_num)
     values
     <foreach collection="list" index="index" item="item" separator=",">
@@ -56,4 +71,11 @@
       )
     </foreach>
   </insert>
+
+  <select id="selectWmsStockByInboundOderCode" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundBatchWmsReqVO">
+    select
+    <include refid="Batch_Wms_Response_List" />
+    from inbound_batch a left join product_sku b on a.sku_code = b.sku_code
+    where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

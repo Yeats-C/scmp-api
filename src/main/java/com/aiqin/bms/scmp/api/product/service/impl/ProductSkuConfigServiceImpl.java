@@ -125,6 +125,10 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
             throw new BizException(ResultCode.UPDATE_ERROR);
         }
         String configCode = configReqVos.get(0).getConfigCode();
+        ProductSkuConfig productSkuConfig = mapper.selectByConfigCode(configCode);
+        if(Objects.equals(productSkuConfig.getApplyStatus(),ApplyStatus.APPROVAL.getNumber())) {
+            throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
+        }
         Integer num = 0;
         List<ProductSkuConfigDraft> drafts;
         List<SpareWarehouseReqVo> spareWarehouseReqVos = Lists.newArrayList();
@@ -141,12 +145,14 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
             item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
         });
         //插入临时表
-        ProductSkuConfig productSkuConfig = mapper.selectByConfigCode(configCode);
         num =  ((ProductSkuConfigService)AopContext.currentProxy()).insertDraftBatch(drafts);
         //更新正式表申请状态
         mapper.updateApplyStatusByApplyCode(ApplyStatus.APPROVAL.getNumber(),productSkuConfig.getApplyCode());
         List<ProductSkuConfigSpareWarehouseDraft> draftList = null;
         try {
+            spareWarehouseReqVos.forEach(item->{
+                item.setConfigCode(configCode);
+            });
             draftList = BeanCopyUtils.copyList(spareWarehouseReqVos,ProductSkuConfigSpareWarehouseDraft.class);
         } catch (Exception e) {
             throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
@@ -308,6 +314,43 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
         //调用审批的接口
         workFlow(formNo,code,currentAuthToken.getPersonName(),reqVo.getDirectSupervisorCode());
         return num;
+    }
+
+    /**
+     * 外部调用保存到申请列表,不进入审批流
+     *
+     * @param applyProductSkus
+     * @return
+     */
+    @Override
+    public Integer outInsertApplyList(List<ApplyProductSku> applyProductSkus) {
+        List<String> skuCodes = applyProductSkus.stream().map(ApplyProductSku::getSkuCode).distinct().collect(Collectors.toList());
+        String code = applyProductSkus.get(0).getApplyCode();
+        String formNo = applyProductSkus.get(0).getFormNo();
+        //根据skuCodes查询出临时表信息
+        List<ProductSkuConfigDraft> drafts = draftMapper.getListBySkuCodes(skuCodes);
+        List<String> configCodes = drafts.stream().map(ProductSkuConfigDraft::getConfigCode).distinct().collect(Collectors.toList());
+        List<ApplyProductSkuConfig> applyProductSkuConfigs  = BeanCopyUtils.copyList(drafts,ApplyProductSkuConfig.class);
+        //通过编码查询出备用仓库信息
+        List<ProductSkuConfigSpareWarehouseDraft> spareWarehouseDrafts = spareWarehouseDraftMapper.
+                getListByConfigCodes(configCodes);
+        List<ApplyProductSkuConfigSpareWarehouse>  applyProductSkuConfigSpareWarehouses =
+                BeanCopyUtils.copyList(spareWarehouseDrafts,ApplyProductSkuConfigSpareWarehouse.class);
+        Date currentDate = new Date();
+        applyProductSkuConfigs.stream().forEach(item->{
+            item.setId(null);
+            item.setApplyCode(code);
+            item.setFormNo(formNo);
+            item.setCreateTime(currentDate);
+        });
+        Integer num = applyMapper.insertBatch(applyProductSkuConfigs);
+        //批量保存备用仓库
+        applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
+        //删除临时表配置信息
+        draftMapper.deleteByConfigCodes(configCodes);
+        //删除临时表备用仓库信息
+        spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
+        return null;
     }
 
     @Transactional(rollbackFor = Exception.class)

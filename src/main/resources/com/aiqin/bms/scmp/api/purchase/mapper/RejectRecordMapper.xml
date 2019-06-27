@@ -31,7 +31,7 @@
         <result column="sum_count" jdbcType="INTEGER" property="sumCount"/>
         <result column="sum_amount" jdbcType="BIGINT" property="sumAmount"/>
         <result column="single_count" jdbcType="INTEGER" property="singleCount"/>
-        <result column="single_amount" jdbcType="BIGINT" property="singleAmount"/>
+        <result column="untaxed_amount" jdbcType="BIGINT" property="untaxedAmount"/>
         <result column="return_count" jdbcType="INTEGER" property="returnCount"/>
         <result column="return_amount" jdbcType="BIGINT" property="returnAmount"/>
         <result column="create_by_id" jdbcType="VARCHAR" property="createById"/>
@@ -54,7 +54,7 @@
     province_id, province_name, city_id, city_name, district_id, district_name, address, 
     expect_time, valid_day, dictionary_id, dictionary_name, supplier_code, supplier_name, 
     purchase_group_code, purchase_group_name, reject_status, remark, transport_remark, transport_url,
-    out_stock_time, sum_count, sum_amount, single_count, single_amount, return_count, 
+    out_stock_time, sum_count, sum_amount, single_count, untaxed_amount, return_count, 
     return_amount, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
     update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name,
     company_name,company_code
@@ -120,9 +120,9 @@
       address, expect_time, valid_day, 
       dictionary_id, dictionary_name, supplier_code, 
       supplier_name, purchase_group_code, purchase_group_name, 
-      reject_status, remark, transport_remark, 
+      remark, transport_remark,
       out_stock_time, sum_count, sum_amount, 
-      single_count, single_amount, return_count, 
+      single_count, untaxed_amount, return_count, 
       return_amount, create_by_id, create_by_name, transport_center_code,
       transport_center_name, warehouse_code, warehouse_name,company_name,company_code,
       settlement_method_code,settlement_method_name,  create_time,  update_time)
@@ -133,9 +133,9 @@
       #{address,jdbcType=VARCHAR}, #{expectTime,jdbcType=TIMESTAMP}, #{validDay,jdbcType=TIMESTAMP}, 
       #{dictionaryId,jdbcType=VARCHAR}, #{dictionaryName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
       #{supplierName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
-      #{rejectStatus,jdbcType=BIT}, #{remark,jdbcType=VARCHAR}, #{transportRemark,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{transportRemark,jdbcType=VARCHAR},
       #{outStockTime,jdbcType=TIMESTAMP}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT}, 
-      #{singleCount,jdbcType=INTEGER}, #{singleAmount,jdbcType=BIGINT}, #{returnCount,jdbcType=INTEGER}, 
+      #{singleCount,jdbcType=INTEGER}, #{untaxedAmount,jdbcType=BIGINT}, #{returnCount,jdbcType=INTEGER}, 
       #{returnAmount,jdbcType=BIGINT}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
       #{transportCenterCode,jdbcType=VARCHAR},#{transportCenterName,jdbcType=VARCHAR},
       #{warehouseCode,jdbcType=VARCHAR},#{warehouseName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR},
@@ -226,8 +226,8 @@
             <if test="singleCount != null">
                 single_count,
             </if>
-            <if test="singleAmount != null">
-                single_amount,
+            <if test="untaxedAmount != null">
+                untaxed_amount,
             </if>
             <if test="returnCount != null">
                 return_count,
@@ -332,8 +332,8 @@
             <if test="singleCount != null">
                 #{singleCount,jdbcType=INTEGER},
             </if>
-            <if test="singleAmount != null">
-                #{singleAmount,jdbcType=BIGINT},
+            <if test="untaxedAmount != null">
+                #{untaxedAmount,jdbcType=BIGINT},
             </if>
             <if test="returnCount != null">
                 #{returnCount,jdbcType=INTEGER},
@@ -440,8 +440,8 @@
             <if test="singleCount != null">
                 single_count = #{singleCount,jdbcType=INTEGER},
             </if>
-            <if test="singleAmount != null">
-                single_amount = #{singleAmount,jdbcType=BIGINT},
+            <if test="untaxedAmount != null">
+                untaxed_amount = #{untaxedAmount,jdbcType=BIGINT},
             </if>
             <if test="returnCount != null">
                 return_count = #{returnCount,jdbcType=INTEGER},
@@ -495,4 +495,12 @@
 
 
     </update>
+    <select id="selectByRejectId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        reject_record
+        where
+           reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

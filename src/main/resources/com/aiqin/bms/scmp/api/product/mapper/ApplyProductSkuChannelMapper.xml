@@ -38,6 +38,19 @@
       #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
   </insert>
+  <insert id="insertBartch" parameterType="java.util.List">
+    insert into apply_product_sku_channel (sku_code, sku_name,
+      price_channel_code, price_channel_name, apply_code,
+      del_flag, create_time, create_by,
+      update_time, update_by)
+    values
+    <foreach collection="list" item="item" open="" close="" separator=",">
+      (#{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.priceChannelCode,jdbcType=VARCHAR}, #{item.priceChannelName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR},
+      #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuChannel">
     insert into apply_product_sku_channel
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -111,6 +124,7 @@
       </if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuChannel">
     update apply_product_sku_channel
     <set>

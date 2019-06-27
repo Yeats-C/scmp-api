@@ -23,5 +23,7 @@ public interface ProductSkuChannelDraftMapper {
 
     List<ProductSkuChannelRespVo> getList(String skuCode);
 
+    List<ProductSkuChannelDraft> getDrafts(List<String> skuCodes);
+
     int delete(List<String> skuCodes);
 }

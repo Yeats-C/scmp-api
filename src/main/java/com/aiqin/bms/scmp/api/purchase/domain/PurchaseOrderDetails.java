@@ -26,12 +26,12 @@ public class PurchaseOrderDetails {
     private String purchaseOrderCode;
 
     @ApiModelProperty(value="账户编码")
-    @JsonProperty("supplier_code")
-    private String supplierCode;
+    @JsonProperty("account_code")
+    private String accountCode;
 
-    @ApiModelProperty(value="账户名称（供应商名称）")
-    @JsonProperty("supplier_name")
-    private String supplierName;
+    @ApiModelProperty(value="账户名称")
+    @JsonProperty("account_name")
+    private String accountName;
 
     @ApiModelProperty(value="合同编码")
     @JsonProperty("contract_code")
@@ -87,11 +87,11 @@ public class PurchaseOrderDetails {
 
     @ApiModelProperty(value="到付付款期")
     @JsonProperty("payable_time")
-    private Date payableTime;
+    private Integer payableTime;
 
     @ApiModelProperty(value="月结付款期")
     @JsonProperty("month_time")
-    private Date monthTime;
+    private Integer monthTime;
 
     @ApiModelProperty(value="收货地(仓库)")
     @JsonProperty("receipt")
@@ -109,13 +109,29 @@ public class PurchaseOrderDetails {
     @JsonProperty("delivery_address")
     private String deliveryAddress;
 
+    @ApiModelProperty(value="供应商发货时间")
+    @JsonProperty("delivery_time")
+    private Date deliveryTime;
+
+    @ApiModelProperty(value="入库完成时间")
+    @JsonProperty("warehouse_time")
+    private Date warehouseTime;
+
     @ApiModelProperty(value="备注")
     @JsonProperty("remark")
     private String remark;
 
-    @ApiModelProperty(value="0 禁用  1.启用")
+    @ApiModelProperty(value="0. 禁用   1.启用")
     @JsonProperty("details_status")
     private Integer detailsStatus;
+
+    @ApiModelProperty(value="关联订单号")
+    @JsonProperty("order_code")
+    private String orderCode;
+
+    @ApiModelProperty(value="采购方式名称")
+    @JsonProperty("order_type")
+    private String orderType;
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
@@ -129,7 +145,8 @@ public class PurchaseOrderDetails {
     @JsonProperty("create_by")
     private String createBy;
 
-    @ApiModelProperty(value="修改人2")
+    @ApiModelProperty(value="修改人")
     @JsonProperty("update_by")
     private String updateBy;
+
 }

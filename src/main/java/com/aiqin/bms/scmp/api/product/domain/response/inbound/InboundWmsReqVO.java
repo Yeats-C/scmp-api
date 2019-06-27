@@ -71,6 +71,9 @@ public class InboundWmsReqVO {
     @ApiModelProperty(value = "明细信息 必填")
     private List<InboundProductWmsReqVO>  list;
 
+    @ApiModelProperty(value = "sku批次 ")
+    private List<InboundBatchWmsReqVO> inboundBatchWmsReqVOs;
+
     @ApiModelProperty(value = "业务模式 必填 1、自提出库；2、运输出库")
     private String businessType ="2";
 }

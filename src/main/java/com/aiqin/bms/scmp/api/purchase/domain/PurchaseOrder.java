@@ -21,10 +21,6 @@ public class PurchaseOrder {
     @JsonProperty("purchase_order_code")
     private String purchaseOrderCode;
 
-    @ApiModelProperty(value="采购申请id")
-    @JsonProperty("purchase_apply_id")
-    private String purchaseApplyId;
-
     @ApiModelProperty(value="仓库编码")
     @JsonProperty("transport_center_code")
     private String transportCenterCode;
@@ -57,12 +53,11 @@ public class PurchaseOrder {
     @JsonProperty("supplier_name")
     private String supplierName;
 
-    @ApiModelProperty(value="采购信息完善状态 0.未完善  1.已完善  2.已提交")
+    @ApiModelProperty(value="采购信息完善状态 0.未提交  1.已提交")
     @JsonProperty("info_status")
     private Integer infoStatus;
 
-    @ApiModelProperty(value="采购单状态 0.待审核 1.审核中 2.审核通过  3.备货确认 " +
-            "4.发货确认 5.入库开始 6.入库中 7.已入库  8.完成 9.取消 10.审核不通过")
+    @ApiModelProperty(value="采购单状态 0.待审核 1.审核中 2.审核通过  3.备货确认 4.发货确认  5.入库开始 6.入库中 7.已入库  8.完成 9.取消 10.审核不通过")
     @JsonProperty("purchase_order_status")
     private Integer purchaseOrderStatus;
 
@@ -70,13 +65,25 @@ public class PurchaseOrder {
     @JsonProperty("storage_status")
     private Integer storageStatus;
 
-    @ApiModelProperty(value="预计到货时间")
-    @JsonProperty("expect_receipt_time")
-    private Date expectReceiptTime;
+    @ApiModelProperty(value="单品数量")
+    @JsonProperty("single_count")
+    private Integer singleCount;
 
-    @ApiModelProperty(value="有效期")
-    @JsonProperty("term_validity")
-    private Integer termValidity;
+    @ApiModelProperty(value="含税采购金额")
+    @JsonProperty("product_total_amount")
+    private Integer productTotalAmount;
+
+    @ApiModelProperty(value="实物返金额")
+    @JsonProperty("return_amount")
+    private Integer returnAmount;
+
+    @ApiModelProperty(value="结算方式编码")
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value="结算方式名称")
+    @JsonProperty("settlement_method_name")
+    private String settlementMethodName;
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
@@ -86,11 +93,11 @@ public class PurchaseOrder {
     @JsonProperty("update_time")
     private Date updateTime;
 
-    @ApiModelProperty(value="创建者")
+    @ApiModelProperty(value="创建人")
     @JsonProperty("create_by")
     private String createBy;
 
-    @ApiModelProperty(value="修改者")
+    @ApiModelProperty(value="修改人")
     @JsonProperty("update_by")
     private String updateBy;
 
