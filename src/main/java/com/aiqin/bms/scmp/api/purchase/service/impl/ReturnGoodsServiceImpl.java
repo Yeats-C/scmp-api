@@ -4,6 +4,9 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.product.domain.converter.returnorder.ReturnOrderToInboundConverter;
+import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
@@ -192,8 +195,31 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
     @Transactional(rollbackFor = Exception.class)
     public void sendToInBound(List<ReturnOrderInfoInspectionItem> items) {
         //TODO 调用入库接口
-//        inboundService.saveList()
-        throw new RuntimeException("调用入库接口异常");
+        //这里会有多个入库单的信息
+        List<InboundReqSave> list = dealData(items);
+        Boolean b = inboundService.saveList(list);
+        if(b){
+            //TODO 存日志
+            //该状态
+        }
+    }
+    /**
+     * 补充数据
+     * @author NullPointException
+     * @date 2019/6/27
+     * @param items
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave>
+     */
+    private List<InboundReqSave> dealData(List<ReturnOrderInfoInspectionItem> items) {
+        if (CollectionUtils.isEmptyCollection(items)) {
+            throw new BizException(ResultCode.CAN_NOT_FIND_RETURN_ORDER);
+        }
+        //查数据
+        ReturnOrderInfoDTO dto = returnOrderInfoMapper.selectByCode(items.get(0).getReturnOrderCode());
+        if(Objects.isNull(dto)){
+            throw new BizException(ResultCode.CAN_NOT_FIND_RETURN_ORDER);
+        }
+        return new ReturnOrderToInboundConverter().convert(dto);
     }
 
     @Override
