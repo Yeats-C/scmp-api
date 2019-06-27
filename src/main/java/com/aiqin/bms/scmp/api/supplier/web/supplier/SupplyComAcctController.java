@@ -121,10 +121,20 @@ public class SupplyComAcctController extends SupplierBaseController {
      */
     @PostMapping("/supplyList")
     @ApiOperation("供应商账户列表")
-    public HttpResponse<QuerySupplierComAcctRespVo> supplyList(@RequestBody QuerySupplierComAcctReqVo vo){
+    public HttpResponse<BasePage<QuerySupplierComAcctRespVo>> supplyList(@RequestBody QuerySupplierComAcctReqVo vo){
         try {
             BasePage<QuerySupplierComAcctRespVo> s = applySupplyComAcctService.selectSupplyListByQueryVO(vo);
             return HttpResponse.success(s);
+        } catch (Exception e) {
+            return HttpResponse.failure(MessageId.create(Project.MARKET_API, -1, e.getMessage()));
+        }
+    }
+
+    @GetMapping("/list/supplierCode")
+    @ApiOperation("根据供应商编码查询")
+    public HttpResponse<List<QuerySupplierComAcctRespVo>> selectSupplierComAcctBySupplierCode(String supplierCode){
+        try {
+            return HttpResponse.success(applySupplyComAcctService.selectSupplierComAcctBySupplierCode(supplierCode));
         } catch (Exception e) {
             return HttpResponse.failure(MessageId.create(Project.MARKET_API, -1, e.getMessage()));
         }

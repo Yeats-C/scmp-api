@@ -31,7 +31,6 @@ import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
-import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -654,6 +653,12 @@ public class InboundServiceImpl implements InboundService {
             log.error("根据入库单号查询入库商品批次详情失败", e);
             throw new GroundRuntimeException("根据入库单号查询入库商品批次详情失败");
         }
+    }
+
+    @Override
+    public Boolean saveList(List<InboundReqSave> list) {
+        //todo
+        return null;
     }
 
 }

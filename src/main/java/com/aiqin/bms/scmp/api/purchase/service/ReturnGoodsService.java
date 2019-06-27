@@ -84,7 +84,7 @@ public interface ReturnGoodsService {
      * @param items
      * @return void
      */
-    void sendToOutBound(List<ReturnOrderInfoInspectionItem> items);
+    void sendToInBound(List<ReturnOrderInfoInspectionItem> items);
     /**
      * 验货查看
      * @author NullPointException

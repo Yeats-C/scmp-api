@@ -198,6 +198,7 @@ public interface ResultCode {
     MessageId CHANGE_ACTUAL_DELIVERY_NUM_FAILED = MessageId.create(Project.PURCHASE_API,99,"修改实发数量失败");
     //退货
     MessageId SAVE_RETURN_ORDER_ITEM_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单附表保存失败");
+    MessageId CAN_NOT_FIND_RETURN_ORDER = MessageId.create(Project.PURCHASE_API,100,"退货订单数据查询失败");
     MessageId SAVE_RETURN_ORDER_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单主表保存失败");
     MessageId GET_RETURN_GOODS_DETAIL_FAILED = MessageId.create(Project.PURCHASE_API,100,"获取订单详情失败");
     MessageId QUERY_INSPECTION_DETAIL_ERROR = MessageId.create(Project.PURCHASE_API,100,"查询验货信息失败");
@@ -213,7 +214,8 @@ public interface ResultCode {
     MessageId NOT_PURCHASE_GROUP_PERSON = MessageId.create(Project.SCMP_API,202,"此采购组该人员无相关数据");
 
     //审批中
-    ;MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");
+    MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");
+    MessageId SUPPLIER_CODE_EMPTY = MessageId.create(Project.SCMP_API,201,"供应商编码不能为空");
 
 
 }

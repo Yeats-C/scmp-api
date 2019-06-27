@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
+import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
@@ -77,4 +78,12 @@ public interface ReturnOrderInfoMapper {
      * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionViewRespVO
      */
     InspectionViewRespVO selectInspectionView(String code);
+    /**
+     * 根据编码查询
+     * @author NullPointException
+     * @date 2019/6/27
+     * @param returnOrderCode
+     * @return com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO
+     */
+    ReturnOrderInfoDTO selectByCode(String returnOrderCode);
 }
