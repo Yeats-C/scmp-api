@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -209,4 +210,21 @@ public interface StockService {
      * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch>
      */
     List<OrderInfoItemProductBatch> lockBatchStock(List<LockOrderItemBatchReqVO> vo);
+
+    /**
+     * 批次库存
+     * @param stockBatchRequest
+     * @return
+     */
+    PageResData selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
+
+    /**
+     * 根据stockBatchId查询单个stockBatch信息
+     *
+     * @param stockBatchId
+     * @return
+     */
+    StockBatchRespVO selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
+
+    Integer insertStockBatch(StockChangeRequest stockChangeRequest);
 }
