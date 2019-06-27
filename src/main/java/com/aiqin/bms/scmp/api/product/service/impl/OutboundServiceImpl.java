@@ -211,15 +211,18 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outboundOderCode = String.valueOf(numberingType.getNumberingValue());
             outbound.setOutboundOderCode(outboundOderCode);
 
-            List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(),OutboundProduct.class);
+            List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
             outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
             int i = outboundDao.insertSelective(outbound);
+            log.info("出库主表保存结果:{}", i);
 
             List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(),OutboundBatch.class);
             outboundBatches.stream().forEach(outboundBatch ->outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
 
             int j = outboundProductDao.insertBatch(outboundProducts);
+            log.info("出库商品保存结果:{}", j);
             int m = outboundBatchDao.insertInfo(outboundBatches);
+            log.info("出库商品批次保存结果:{}", m);
             //更新编码
             encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
 
@@ -227,8 +230,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy());
 
             //  调用推送接口
-            OutboundServiceImpl inboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            inboundService.pushWms(outbound.getOutboundOderCode(),inboundService);
+            OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
+            outboundService.pushWms(outbound.getOutboundOderCode(),outboundService);
             // 跟新数据库状态
             if(i > 0 && j > 0 && m > 0){
                 flag = 1;
@@ -276,8 +279,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy());
 
             //  调用推送接口
-            OutboundServiceImpl inboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            inboundService.pushWms(outbound.getOutboundOderCode(),inboundService);
+            OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
+            outboundService.pushWms(outbound.getOutboundOderCode(),outboundService);
 
             return outboundOderCode;
 
@@ -413,7 +416,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      * @return
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
     public void pushWms(String  code,OutboundServiceImpl inboundService){
         log.error("异步推送给wms");
@@ -487,7 +490,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      * @return
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public int workFlowCallBack(OutboundCallBackReqVo reqVo) {
 
         try {
@@ -621,7 +624,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void returnSource(Long id){
         try {
             Thread.sleep(2000);
@@ -733,7 +736,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      * @param reqVO
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void returnOder(SupplyOrderInfoReqVO reqVO) {
         try {
             Thread.sleep(2000);
@@ -759,7 +762,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      * @param reqVO
      */
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void returnStorageResult(RejectStockRequest reqVO) {
         try {
             Thread.sleep(1000);

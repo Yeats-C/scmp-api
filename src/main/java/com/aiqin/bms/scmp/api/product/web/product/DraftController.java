@@ -29,7 +29,7 @@ public class DraftController {
     @Autowired
     private DraftService draftService;
 
-    @PostMapping("/list")
+    @GetMapping("/list")
     @ApiOperation("根据审批类型获取审批单数据")
     public HttpResponse getApplyList(
             @ApiParam(value = "审批类型,1:商品,2:商品配置,3:销售区域",

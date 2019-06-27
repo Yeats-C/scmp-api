@@ -60,7 +60,7 @@ public class ReturnOutboundBatch {
     private Date updateTime;
 
     @ApiModelProperty("行号")
-    private Long linenum;
+    private Long lineNum;
 
     @ApiModelProperty("销项税率")
     private Long outputTaxRate;
