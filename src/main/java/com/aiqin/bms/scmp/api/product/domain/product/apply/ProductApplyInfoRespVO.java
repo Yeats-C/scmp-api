@@ -35,6 +35,7 @@ public class ProductApplyInfoRespVO<T> {
     private String auditorBy;
 
     @ApiModelProperty("审核时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date auditorTime;
 
     @ApiModelProperty("商品数量")
