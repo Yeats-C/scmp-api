@@ -13,7 +13,7 @@ public class ProductEventTriggeringServieImpl implements ProductEventTriggeringS
     @Autowired
     private ApplicationContext context;
     @Override
-    @Async("taskProductExecutor")
+    @Async("myTaskAsyncPool")
     public void pushSuplier(DataBaseType type, String code, String name) {
         context.publishEvent(ProductEvent.builder().type(type).code(code).name(name).build());
     }

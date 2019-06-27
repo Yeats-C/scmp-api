@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuAssociatedGoods;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuAssociatedGoodsDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuAssociatedGoodsRespVo;
 
@@ -34,4 +36,19 @@ public interface ProductSkuAssociatedGoodsService {
      * @return
      */
     Integer deleteDrafts(List<String> skuCodes);
+
+    /**
+     * 保存申请
+     * @param applyProductSkus
+     * @return
+     */
+    int saveApplyList(List<ApplyProductSku> applyProductSkus);
+
+    /**
+     * 批量插入申请表
+     * @param applyProductSkuAssociatedGoods
+     * @return
+     */
+    int insertApplyList(List<ApplyProductSkuAssociatedGoods> applyProductSkuAssociatedGoods);
+
 }

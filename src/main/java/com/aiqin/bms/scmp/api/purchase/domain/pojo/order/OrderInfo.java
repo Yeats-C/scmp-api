@@ -177,6 +177,12 @@ public class OrderInfo {
     @ApiModelProperty("发运状态")
     private Integer transportStatus = 0;
 
+    @ApiModelProperty("门店类型")
+    private String storeType;
+
+    @ApiModelProperty("门店类型编码")
+    private String storeTypeCode;
+
     @ApiModelProperty("公司名称")
     private String companyName;
 

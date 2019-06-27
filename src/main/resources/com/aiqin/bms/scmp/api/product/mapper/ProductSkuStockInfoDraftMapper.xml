@@ -56,7 +56,16 @@
       from product_sku_stock_info_draft
       where product_sku_code = #{skuCode,jdbcType=VARCHAR}
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <select id="getDrafts" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_stock_info_draft
+    where  del_flag=0 AND product_sku_code IN
+    <foreach collection="list" item="item" open="(" separator="," close=")">
+      #{item.skuCode,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_stock_info_draft
     where id = #{id,jdbcType=BIGINT}
   </delete>
@@ -65,6 +74,12 @@
     delete from product_sku_stock_info_draft where product_sku_code in
     <foreach collection="list" item="skuCode" separator="," open="(" close=")">
       #{skuCode,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  <delete id="deleteDrafts" parameterType="java.util.List">
+    delete from product_sku_stock_info_draft where product_sku_code in
+    <foreach collection="list" item="item" separator="," open="(" close=")">
+      #{item.skuCode,jdbcType=VARCHAR}
     </foreach>
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuStockInfoDraft">

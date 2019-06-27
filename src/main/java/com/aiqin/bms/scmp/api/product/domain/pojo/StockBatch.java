@@ -140,6 +140,10 @@ public class StockBatch extends PagesRequest {
     @JsonProperty(value = "purchase_price")
     private Long purchasePrice;
 
+    @ApiModelProperty("税率")
+    @JsonProperty(value = "tax_rate")
+    private Long taxRate;
+
     public Long getId() {
         return id;
     }
@@ -394,5 +398,13 @@ public class StockBatch extends PagesRequest {
 
     public void setPurchasePrice(Long purchasePrice) {
         this.purchasePrice = purchasePrice;
+    }
+
+    public Long getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(Long taxRate) {
+        this.taxRate = taxRate;
     }
 }

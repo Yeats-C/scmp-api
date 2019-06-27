@@ -22,6 +22,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockI
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.VerifyReturnSupplyErrorRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
@@ -1380,4 +1381,25 @@ public class StockServiceImpl implements StockService {
         return stockBatch;
     }
 */
+    /**
+     * 功能描述: 查询批次库存商品(采购退供使用)
+     *
+     * @param reqVO
+     * @paramreqVO
+     * @returnPageInfo
+     * @date 2019/6/26 17:47
+     */
+    @Override
+    public PageInfo<QueryStockBatchSkuRespVo> selectStockBatchSkuPage(QueryStockBatchSkuReqVo reqVO) {
+        try {
+            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+            List<QueryStockBatchSkuRespVo> queryStockBatchSkuRespVos = stockDao.selectStockBatchSkuInfoByPage(reqVO);
+            return new PageInfo<QueryStockBatchSkuRespVo>(queryStockBatchSkuRespVos);
+        } catch (Exception ex) {
+            log.error("查询批次库存商失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
 }

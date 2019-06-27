@@ -37,7 +37,7 @@ public class ApplyContractReqVo{
     private String supplierCode;
 
     @ApiModelProperty(value = "采购组编号",hidden = true)
-    @NotEmpty(message = "采购组编号不能为空")
+
     private String purchasingGroupCode;
 
     @ApiModelProperty("结算方式")
@@ -124,6 +124,9 @@ public class ApplyContractReqVo{
 
     @ApiModelProperty("结账日")
     private String checkoutDate;
+
+    @ApiModelProperty("最低起订金额")
+    private Long minAmount;
 
     @ApiModelProperty("采购组")
     private List<ApplyContractPurchaseGroupReqVo> purchaseGroupReqVos;

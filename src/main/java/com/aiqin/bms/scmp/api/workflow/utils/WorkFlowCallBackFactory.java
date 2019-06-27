@@ -23,7 +23,7 @@ public class WorkFlowCallBackFactory {
     @Autowired
     private SpringContextUtil springContextUtil;
 
-    public static Map<WorkFlow, WorkFlowHelper> behaviors = Maps.newConcurrentMap();
+    public static Map<WorkFlow, WorkFlowHelper> beanContent = Maps.newConcurrentMap();
 
     //工厂将 Spring 装配的相关的 Bean 用 Map 保存起来
     @PostConstruct
@@ -31,10 +31,10 @@ public class WorkFlowCallBackFactory {
         Map<String, Object> beanMap = springContextUtil.getContext().getBeansWithAnnotation(WorkFlowAnnotation.class);
         for (Object workFlow : beanMap.values()) {
             WorkFlowAnnotation annotation = workFlow.getClass().getAnnotation(WorkFlowAnnotation.class);
-            behaviors.put(annotation.value(), (WorkFlowHelper)workFlow);
+            beanContent.put(annotation.value(), (WorkFlowHelper)workFlow);
         }
     }
-    public static WorkFlowHelper createBehavior(WorkFlow workFlow) {
-        return behaviors.get(workFlow);
+    public static WorkFlowHelper createWorkFlow(WorkFlow workFlow) {
+        return beanContent.get(workFlow);
     }
 }

@@ -954,7 +954,7 @@
     auditor_by, auditor_time, is_main_push,
     new_product, manufacturer_guide_price, zero_removal_coefficient,
     procurement_section_code, procurement_section_name,
-    form_no)
+    form_no,inventory_model,use_time,unique_code)
     VALUES
     <foreach collection="applyProductSkus" item="item" index="index" separator="," >
       (#{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
@@ -976,7 +976,7 @@
       #{item.auditorBy,jdbcType=VARCHAR}, #{item.auditorTime,jdbcType=TIMESTAMP}, #{item.isMainPush,jdbcType=TINYINT},
       #{item.newProduct,jdbcType=TINYINT}, #{item.manufacturerGuidePrice,jdbcType=BIGINT}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT},
       #{item.procurementSectionCode,jdbcType=VARCHAR}, #{item.procurementSectionName,jdbcType=VARCHAR},
-      #{item.formNo,jdbcType=VARCHAR})
+      #{item.formNo,jdbcType=VARCHAR}, #{item.inventoryModel,jdbcType=TINYINT}, #{item.useTime,jdbcType=INTEGER}, #{item.uniqueCode,jdbcType=TINYINT})
     </foreach>
   </insert>
   <insert id="insertSkuList" parameterType="java.util.List">

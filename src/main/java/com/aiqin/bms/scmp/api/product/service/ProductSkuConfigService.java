@@ -62,6 +62,14 @@ public interface ProductSkuConfigService {
      */
     Integer deleteDraftById(Long id);
 
+
+    /**
+     * 根据SkuCodes批量删除
+     * @param skuCodes
+     * @return
+     */
+    Integer deleteDraftBySkuCodes(List<String> skuCodes);
+
     /**
      * 保存申请信息
      * @param reqVo

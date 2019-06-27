@@ -177,7 +177,41 @@
         <result column="tax_price" jdbcType="BIGINT" property="price"/>
         <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient"/>
     </resultMap>
-
+    <resultMap id="QueryStockBatchSkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo">
+        <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode"/>
+        <result column="procurement_section_name" jdbcType="VARCHAR" property="procurementSectionName"/>
+        <result column="bar_code" jdbcType="VARCHAR" property="barCode"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
+        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
+        <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode"/>
+        <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
+        <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode"/>
+        <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName"/>
+        <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
+        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
+        <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
+        <result column="spec" jdbcType="VARCHAR" property="spec"/>
+        <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
+        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
+        <result column="Input_tax_rate" jdbcType="BIGINT" property="InputTaxRate"/>
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
+        <result column="purchase_price" jdbcType="BIGINT" property="purchasePrice"/>
+        <result column="product_cost" jdbcType="BIGINT" property="productCost"/>
+        <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
+        <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>
+        <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark"/>
+        <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode"/>
+        <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName"/>
+        <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode"/>
+        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
+    </resultMap>
     <resultMap id="StockFlowMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <id column="stock_code" jdbcType="VARCHAR" property="stockCode"/>
@@ -1520,5 +1554,56 @@
                 </foreach>
             </if>
         </where>
+    </select>
+    <select id="selectStockBatchSkuInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryStockBatchSkuReqVo"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo"
+            resultMap="QueryStockBatchSkuResultMap">
+        select
+        ps.procurement_section_code,ps.procurement_section_name,pssi.bar_code,sb.sku_code,sb.sku_name,ps.product_code,
+        ps.product_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
+        ps.product_sort_code,ps.product_sort_name,ps.color_code,ps.color_name,ps.model_number,pssi.spec,pssi.unit_code,
+        pssi.unit_name,psc.Input_tax_rate,sb.transport_center_code,sb.transport_center_name,sb.warehouse_code,
+        sb.warehouse_name,sb.purchase_price,s.tax_cost,sb.batch_code,sb.production_date,sb.batch_remark,
+        psc.settlement_method_code,psc.settlement_method_name,sb.supplier_code,sb.supplier_name
+        from stock_batch sb
+        left join stock s on sb.sku_code = s.sku_code
+        left join product_sku ps on sb.sku_code = ps.sku_code
+        left join product_sku_checkout psc on sb.sku_code = psc.sku_code
+        left join product_sku_stock_info pssi on sb.sku_code = pssi.product_sku_code
+        <where>
+            1 = 1
+            <if test="supplierCode != null and supplierCode != ''">
+                and sb.supplier_code  = #{supplierCode, jdbcType=VARCHAR}
+            </if>
+            <if test="supplierName != null and supplierName != ''">
+                and sb.supplier_name  = #{supplierName, jdbcType=VARCHAR}
+            </if>
+            <if test="transportCenterCode != null and transportCenterCode != ''">
+                and sb.transport_center_code  = #{transportCenterCode, jdbcType=VARCHAR}
+            </if>
+            <if test="warehouseCode != null and warehouseCode != ''">
+                and sb.warehouse_code  = #{warehouseCode, jdbcType=VARCHAR}
+            </if>
+            <if test="procurementSectionCode != null and procurementSectionCode != ''">
+                and ps.procurement_section_code = #{procurementSectionCode, jdbcType=VARCHAR}
+            </if>
+            <if test="skuCode != null and skuCode != ''">
+                and sb.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="skuName != null and skuName != ''">
+                and sb.sku_name like concat('%', #{skuName, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productPropertyName != null and productPropertyName != ''">
+                and ps.product_property_name like concat('%', #{productPropertyName, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productCategoryName != null and productCategoryName != ''">
+                and ps.product_category_name like concat('%', #{productCategoryName, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productBrandName != null and productBrandName != ''">
+                and ps.product_brand_name like concat('%', #{productBrandName, jdbcType=VARCHAR} ,'%')
+            </if>
+            and sb.available_num > 0
+        </where>
+        order by sb.sku_code asc
     </select>
 </mapper>

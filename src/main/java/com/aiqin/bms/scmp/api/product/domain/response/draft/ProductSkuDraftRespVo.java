@@ -24,17 +24,17 @@ public class ProductSkuDraftRespVo {
     @ApiModelProperty(value = "申请类型名称")
     private String applyTypeName;
 
-    @ApiModelProperty(value = "申请类别 此字段用与查看商品和SKU详情使用")
-    private String applySort;
-
-    @ApiModelProperty(value = "申请类别名称 此字段做展示")
-    private String applySortName;
-
     @ApiModelProperty(value = "编号")
     private String code;
 
     @ApiModelProperty(value = "名称")
     private String name;
+
+    @ApiModelProperty("采购组编码")
+    private String purchaseGroupCode;
+
+    @ApiModelProperty("采购组名称")
+    private String purchaseGroupName;
 
     @ApiModelProperty("商品品牌code")
     private String productBrandCode;
@@ -47,9 +47,6 @@ public class ProductSkuDraftRespVo {
 
     @ApiModelProperty("商品品类名称")
     private String productCategoryName;
-
-    @ApiModelProperty("商品SKU数量")
-    private Long productSkuCount;
 
     @ApiModelProperty("所属商品编码")
     private String productCode;

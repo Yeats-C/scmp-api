@@ -41,6 +41,13 @@
     delete from apply_use_tag_record
     where apply_use_object_code =#{appUseObjectCode,jdbcType=VARCHAR}
   </delete>
+  <delete id="deletes" parameterType="java.util.List">
+    delete from apply_use_tag_record
+    where apply_use_object_code  in
+    <foreach collection="list" item="appUseObjectCode" separator="," open="(" close=")">
+      #{appUseObjectCode,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord">
     insert into apply_use_tag_record (id, tag_code, tag_name, 
       apply_use_object_code, use_object_code, use_object_name, 

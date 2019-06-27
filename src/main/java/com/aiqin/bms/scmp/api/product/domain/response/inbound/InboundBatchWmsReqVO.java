@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.product.domain.response.outbound;
+package com.aiqin.bms.scmp.api.product.domain.response.inbound;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -14,16 +14,8 @@ import lombok.Data;
  * @Since 1.0
  */
 @Data
-@ApiModel("WMS传入出库单sku批次实体")
-public class OutboundBatchWmsResVO {
-
-    @ApiModelProperty("出库单号")
-    @JsonProperty("outboundOderCode")
-    private String outboundOderCode;
-
-    @ApiModelProperty("条形码")
-    @JsonProperty("goodsCode")
-    private String goodsCode;
+@ApiModel("WMS传入入库单sku批次实体")
+public class InboundBatchWmsReqVO {
 
     @ApiModelProperty("sku编号")
     @JsonProperty("goodsId")
@@ -33,11 +25,11 @@ public class OutboundBatchWmsResVO {
     @JsonProperty("goodsName")
     private String skuName;
 
-    @ApiModelProperty("预计出库数量")
+    @ApiModelProperty("预计数量")
     @JsonProperty("pre_qty")
     private Long preQty;
 
-    @ApiModelProperty("实际出库数量")
+    @ApiModelProperty("实际数量")
     @JsonProperty("pra_qty")
     private Long praQty;
 
@@ -46,7 +38,7 @@ public class OutboundBatchWmsResVO {
     private Long linenum;
 
     @ApiModelProperty("批次号")
-    @JsonProperty("outbound_batch_code")
-    private Long outboundBatchCode;
+    @JsonProperty("inbound_batch_code")
+    private Long inboundBatchCode;
 
 }

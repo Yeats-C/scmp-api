@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuChannel;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuChannelDraftMapper;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChannelDraft;
@@ -56,5 +58,27 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
     @Override
     public Integer deleteDrafts(List<String> skuCodes) {
         return draftMapper.delete(skuCodes);
+    }
+
+    /**
+     * 批量保存申请数据
+     *
+     * @param applyProductSkus
+     * @return
+     */
+    @Override
+    public int saveApplyList(List<ApplyProductSku> applyProductSkus) {
+        return 0;
+    }
+
+    /**
+     * 批量插入申请数据到数据库
+     *
+     * @param applyProductSkuChannels
+     * @return
+     */
+    @Override
+    public int insertApplyList(List<ApplyProductSkuChannel> applyProductSkuChannels) {
+        return 0;
     }
 }

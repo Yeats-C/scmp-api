@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.common.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("")
@@ -46,6 +47,9 @@ public class ApplyProductSkuCheckout extends CommonBean {
 
     @ApiModelProperty("返点")
     private Long rebate;
+
+    @ApiModelProperty("物流费奖励比例")
+    private BigDecimal logisticsFeeAwardRatio;
 
     public Long getId() {
         return id;
@@ -149,5 +153,13 @@ public class ApplyProductSkuCheckout extends CommonBean {
 
     public void setRebate(Long rebate) {
         this.rebate = rebate;
+    }
+
+    public BigDecimal getLogisticsFeeAwardRatio() {
+        return logisticsFeeAwardRatio;
+    }
+
+    public void setLogisticsFeeAwardRatio(BigDecimal logisticsFeeAwardRatio) {
+        this.logisticsFeeAwardRatio = logisticsFeeAwardRatio;
     }
 }

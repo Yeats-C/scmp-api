@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
@@ -112,4 +113,15 @@ public interface StockDao {
     List<PurchaseApplyDetailResponse> purchaseProductList(PurchaseApplyRequest purchases);
 
     Integer purchaseProductCount(PurchaseApplyRequest purchases);
+
+    /**
+     *
+     * 功能描述: 批次查询库存商品(采购退供使用) list
+     *
+     * @param vo
+     * @return List<QueryStockBatchSkuRespVo>
+     * @date 2019/6/26 16:10
+     */
+    List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
+
 }

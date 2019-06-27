@@ -1,15 +1,10 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.product.mapper.PriceProjectMapper;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.PriceProject;
 import com.aiqin.bms.scmp.api.product.domain.request.basicprice.AddPriceProjectReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.basicprice.QueryPriceProjectReqVo;
@@ -17,10 +12,15 @@ import com.aiqin.bms.scmp.api.product.domain.request.basicprice.UpdatePriceProje
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.PriceProjectRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.PriceProjetGroupType;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProjectRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.PriceProjectMapper;
 import com.aiqin.bms.scmp.api.product.service.PriceProjectService;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -81,6 +81,28 @@ public class PriceProjectServiceImpl implements PriceProjectService {
         }
         reqVo.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
         return priceProjectMapper.getList(reqVo);
+    }
+
+    /**
+     * 获取采购价格项目
+     *
+     * @return
+     */
+    @Override
+    public QueryPriceProjectRespVo getPurchasePriceProject() {
+        QueryPriceProjectReqVo reqVo = new QueryPriceProjectReqVo();
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            reqVo.setCompanyCode(authToken.getCompanyCode());
+        }
+        reqVo.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
+        reqVo.setPriceType(PriceTypeEnum.PURCHASE.getTypeCode());
+        reqVo.setPriceCategory(PriceTypeEnum.PURCHASE.getAttrCodes());
+        List<QueryPriceProjectRespVo> list = priceProjectMapper.getList(reqVo);
+        if(CollectionUtils.isEmpty(list)){
+            return null;
+        }
+        return list.get(0);
     }
 
     /**

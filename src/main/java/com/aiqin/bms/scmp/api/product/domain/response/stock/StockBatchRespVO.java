@@ -156,11 +156,11 @@ public class StockBatchRespVO {
 
     @ApiModelProperty("状态(锁状态-后补)")
     @JsonProperty(value = "lock_status")
-    private Integer lockStatus;
+    private Long lockStatus;
 
     @ApiModelProperty("变动数(修改数)")
     @JsonProperty(value = "change_num")
-    private Integer changeNum;
+    private Long changeNum;
 
     @ApiModelProperty("单据类型")
     @JsonProperty(value = "document_type")
@@ -168,7 +168,7 @@ public class StockBatchRespVO {
 
     @ApiModelProperty("单据号")
     @JsonProperty(value = "document_num")
-    private Integer documentNum;
+    private Long documentNum;
 
     @ApiModelProperty("来源单据类型")
     @JsonProperty(value = "source_document_type")
@@ -176,7 +176,7 @@ public class StockBatchRespVO {
 
     @ApiModelProperty("来源单据号")
     @JsonProperty(value = "source_document_num")
-    private Integer sourceDocumentNum;
+    private Long sourceDocumentNum;
 
     @ApiModelProperty("操作时间")
     @JsonProperty(value = "operating_time")
@@ -192,31 +192,31 @@ public class StockBatchRespVO {
 
     @ApiModelProperty("修改前总库存数")
     @JsonProperty(value = "before_inventory_num")
-    private Integer beforeInventoryNum;
+    private Long beforeInventoryNum;
 
     @ApiModelProperty("修改后总库存数")
     @JsonProperty(value = "after_inventory_num")
-    private Integer afterInventoryNum;
+    private Long afterInventoryNum;
 
     @ApiModelProperty("修改前可用库存数")
     @JsonProperty(value = "before_available_num")
-    private Integer beforeAvailableNum;
+    private Long beforeAvailableNum;
 
     @ApiModelProperty("修改后可用库存数")
     @JsonProperty(value = "after_available_num")
-    private Integer afterAvailableNum;
+    private Long afterAvailableNum;
 
     @ApiModelProperty("修改前锁定库存数")
     @JsonProperty(value = "before_lock_num")
-    private Integer beforeLockNum;
+    private Long beforeLockNum;
 
     @ApiModelProperty("修改后锁定库存数")
     @JsonProperty(value = "after_lock_num")
-    private Integer afterLockNum;
+    private Long afterLockNum;
 
     @ApiModelProperty("操作类型")
     @JsonProperty(value = "operation_type")
-    private String operationType;
+    private Integer operationType;
 
     public Long getId() {
         return id;
@@ -506,19 +506,19 @@ public class StockBatchRespVO {
         this.orderSource = orderSource;
     }
 
-    public Integer getLockStatus() {
+    public Long getLockStatus() {
         return lockStatus;
     }
 
-    public void setLockStatus(Integer lockStatus) {
+    public void setLockStatus(Long lockStatus) {
         this.lockStatus = lockStatus;
     }
 
-    public Integer getChangeNum() {
+    public Long getChangeNum() {
         return changeNum;
     }
 
-    public void setChangeNum(Integer changeNum) {
+    public void setChangeNum(Long changeNum) {
         this.changeNum = changeNum;
     }
 
@@ -530,11 +530,11 @@ public class StockBatchRespVO {
         this.documentType = documentType;
     }
 
-    public Integer getDocumentNum() {
+    public Long getDocumentNum() {
         return documentNum;
     }
 
-    public void setDocumentNum(Integer documentNum) {
+    public void setDocumentNum(Long documentNum) {
         this.documentNum = documentNum;
     }
 
@@ -546,11 +546,11 @@ public class StockBatchRespVO {
         this.sourceDocumentType = sourceDocumentType;
     }
 
-    public Integer getSourceDocumentNum() {
+    public Long getSourceDocumentNum() {
         return sourceDocumentNum;
     }
 
-    public void setSourceDocumentNum(Integer sourceDocumentNum) {
+    public void setSourceDocumentNum(Long sourceDocumentNum) {
         this.sourceDocumentNum = sourceDocumentNum;
     }
 
@@ -578,59 +578,59 @@ public class StockBatchRespVO {
         this.remark = remark;
     }
 
-    public Integer getBeforeInventoryNum() {
+    public Long getBeforeInventoryNum() {
         return beforeInventoryNum;
     }
 
-    public void setBeforeInventoryNum(Integer beforeInventoryNum) {
+    public void setBeforeInventoryNum(Long beforeInventoryNum) {
         this.beforeInventoryNum = beforeInventoryNum;
     }
 
-    public Integer getAfterInventoryNum() {
+    public Long getAfterInventoryNum() {
         return afterInventoryNum;
     }
 
-    public void setAfterInventoryNum(Integer afterInventoryNum) {
+    public void setAfterInventoryNum(Long afterInventoryNum) {
         this.afterInventoryNum = afterInventoryNum;
     }
 
-    public Integer getBeforeAvailableNum() {
+    public Long getBeforeAvailableNum() {
         return beforeAvailableNum;
     }
 
-    public void setBeforeAvailableNum(Integer beforeAvailableNum) {
+    public void setBeforeAvailableNum(Long beforeAvailableNum) {
         this.beforeAvailableNum = beforeAvailableNum;
     }
 
-    public Integer getAfterAvailableNum() {
+    public Long getAfterAvailableNum() {
         return afterAvailableNum;
     }
 
-    public void setAfterAvailableNum(Integer afterAvailableNum) {
+    public void setAfterAvailableNum(Long afterAvailableNum) {
         this.afterAvailableNum = afterAvailableNum;
     }
 
-    public Integer getBeforeLockNum() {
+    public Long getBeforeLockNum() {
         return beforeLockNum;
     }
 
-    public void setBeforeLockNum(Integer beforeLockNum) {
+    public void setBeforeLockNum(Long beforeLockNum) {
         this.beforeLockNum = beforeLockNum;
     }
 
-    public Integer getAfterLockNum() {
+    public Long getAfterLockNum() {
         return afterLockNum;
     }
 
-    public void setAfterLockNum(Integer afterLockNum) {
+    public void setAfterLockNum(Long afterLockNum) {
         this.afterLockNum = afterLockNum;
     }
 
-    public String getOperationType() {
+    public Integer getOperationType() {
         return operationType;
     }
 
-    public void setOperationType(String operationType) {
+    public void setOperationType(Integer operationType) {
         this.operationType = operationType;
     }
 }
