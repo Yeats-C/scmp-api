@@ -9,7 +9,8 @@
     <result column="inbound_batch_code" jdbcType="VARCHAR" property="inboundBatchCode" />
     <result column="manufacture_time" jdbcType="TIMESTAMP" property="manufactureTime" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
-    <result column="qty" jdbcType="BIGINT" property="qty" />
+    <result column="pre_qty" jdbcType="BIGINT" property="preQty" />
+    <result column="pra_qty" jdbcType="BIGINT" property="praQty" />
     <result column="store_house_code" jdbcType="VARCHAR" property="storeHouseCode" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -18,7 +19,7 @@
     <result column="line_num" jdbcType="BIGINT" property="linenum" />
   </resultMap>
 
-  <resultMap id="BatchWmsResponse" type="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundBatchWmsReqVO">
+  <resultMap id="WmsReq" type="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundBatchWmsReqVO">
     <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
@@ -30,7 +31,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, inbound_oder_code, sku_code, sku_name, inbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
+    id, inbound_oder_code, sku_code, sku_name, inbound_batch_code, manufacture_time, batch_remark, pre_qty, pra_qty, store_house_code,
     create_by, create_time, update_by, update_time,line_num
   </sql>
 
@@ -51,7 +52,7 @@
   </select>
 
   <insert id="insertInfo" parameterType="java.util.List">
-    insert into inbound_batch(inbound_oder_code, sku_code, sku_name, inbound_batch_code, manufacture_time, batch_remark, qty, store_house_code,
+    insert into inbound_batch(inbound_oder_code, sku_code, sku_name, inbound_batch_code, manufacture_time, batch_remark, pre_qty, pra_qty, store_house_code,
     create_by, create_time, update_by, update_time,line_num)
     values
     <foreach collection="list" index="index" item="item" separator=",">
@@ -61,7 +62,8 @@
       #{item.inboundBatchCode,jdbcType=VARCHAR},
       #{item.manufactureTime,jdbcType=VARCHAR},
       #{item.batchRemark,jdbcType=VARCHAR},
-      #{item.qty,jdbcType=BIGINT},
+      #{item.preQty,jdbcType=BIGINT},
+      #{item.praQty,jdbcType=BIGINT},
       #{item.storeHouseCode,jdbcType=VARCHAR},
       #{item.createBy,jdbcType=VARCHAR},
       #{item.createTime,jdbcType=TIMESTAMP},

@@ -16,7 +16,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="line_num" jdbcType="BIGINT" property="linenum" />
+    <result column="line_num" jdbcType="BIGINT" property="lineNum" />
   </resultMap>
 
   <resultMap id="BatchWmsResponse" type="com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundBatchWmsResVO">
@@ -26,7 +26,7 @@
     <result column="outbound_batch_code" jdbcType="VARCHAR" property="outboundBatchCode" />
     <result column="pre_qty" jdbcType="BIGINT" property="preQty" />
     <result column="pra_qty" jdbcType="BIGINT" property="praQty" />
-    <result column="line_num" jdbcType="BIGINT" property="linenum" />
+    <result column="line_num" jdbcType="BIGINT" property="lineNum" />
     <result column="bar_code" jdbcType="VARCHAR" property="goodsCode" />
   </resultMap>
 
@@ -47,7 +47,7 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="line_num" jdbcType="BIGINT" property="lineNum" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="line_num" jdbcType="BIGINT" property="linenum" />
+    <result column="line_num" jdbcType="BIGINT" property="lineNum" />
     <result column="output_tax_rate" jdbcType="BIGINT" property="outputTaxRate" />
     <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
   </resultMap>
