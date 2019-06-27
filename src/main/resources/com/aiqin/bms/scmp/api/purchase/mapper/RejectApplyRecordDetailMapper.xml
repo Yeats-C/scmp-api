@@ -329,6 +329,6 @@
     from
       supply_company
     where
-      supply_code = #{supplierCode,jdbcType=VARCHAR}
+      supplier_code = #{supplierCode,jdbcType=VARCHAR}
   </select>
 </mapper>

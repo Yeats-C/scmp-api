@@ -8,10 +8,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupply;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
@@ -36,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.annotation.processing.Filer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -90,6 +88,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     private OutboundService outboundService;
     @Resource
     private PurchaseGroupService purchaseGroupService;
+    @Resource
+    private FileRecordDao fileRecordDao;
 
 
     @Override
@@ -293,6 +293,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                 request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
         List<RejectRecordDetail> list = new ArrayList<>();
         RejectRecordDetail rejectRecordDetail;
+        //todo 更新主表的状态 当详情表的状态都为已提交
+
         for (RejectApplyRecordDetail detailResponse : detailList) {
             //计算总数
             sumCount += detailResponse.getProductCount();
@@ -326,8 +328,10 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         LOGGER.info("更改退供申请详情影响条数:{}", updateCount);
         //更新编码
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
-        //TODO 调用上传文件
-
+        if(CollectionUtils.isNotEmpty(request.getFileList())){
+            Integer fileCount = fileRecordDao.insertAll(rejectId,request.getFileList());
+            LOGGER.info("上传文件条数:{}",fileCount);
+        }
         return HttpResponse.success();
     }
 
@@ -409,8 +413,10 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         BeanUtils.copyProperties(rejectRecord, rejectResponse);
         List<RejectRecordDetail> batchList = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
         List<RejectRecordDetailResponse> productList = rejectRecordDetailDao.selectProductByRejectId(rejectRecordId);
+        List<FileRecord> fileList = fileRecordDao.fileList(rejectRecordId);
         rejectResponse.setBatchList(batchList);
         rejectResponse.setProductList(productList);
+        rejectResponse.setFileList(fileList);
         return HttpResponse.success(rejectResponse);
     }
 

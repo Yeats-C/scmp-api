@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
+import com.aiqin.bms.scmp.api.purchase.domain.FileRecord;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -173,9 +174,9 @@ public class RejectRequest {
     @JsonProperty("create_by_name")
     private String createByName;
 
-//    @ApiModelProperty(value="文件list")
-//    @JsonProperty("file_list")
-//    List<RejectFile> fileList;
+    @ApiModelProperty(value="文件list")
+    @JsonProperty("file_list")
+    List<FileRecord> fileList;
 
 }
 

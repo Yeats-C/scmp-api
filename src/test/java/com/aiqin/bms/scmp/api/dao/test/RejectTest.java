@@ -88,7 +88,7 @@ public class RejectTest extends SpringBootTestContext {
         detail.setTaxRate(10);
         detail.setTransportCenterCode("ck14");
         detail.setTransportCenterName("仓库");
-        detail.setWarehouseCode("kf142");
+        detail.setWarehouseCode("kf1421");
         detail.setWarehouseName("库房");
         detail.setProductAmount(10L);
         detail.setProductTotalAmount(50L);
@@ -98,7 +98,7 @@ public class RejectTest extends SpringBootTestContext {
         detail.setBatchRemark("batch备注");
         detail.setSettlementMethodCode("s1");
         detail.setSettlementMethodName("结算方式");
-        detail.setSupplierCode("10000045");
+        detail.setSupplierCode("1000027");
         detail.setSupplierName("供应商1");
         detailList.add(detail);
         rejectApplyQueryRequest.setDetailList(detailList);

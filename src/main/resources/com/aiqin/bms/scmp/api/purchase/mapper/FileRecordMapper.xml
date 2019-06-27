@@ -7,21 +7,41 @@
     <result column="file_code" jdbcType="VARCHAR" property="fileCode" />
     <result column="file_name" jdbcType="VARCHAR" property="fileName" />
     <result column="file_status" jdbcType="INTEGER" property="fileStatus" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
   </resultMap>
   <sql id="Base_Column_List">
-    file_id as fileId, file_code as fileCode, file_name as fileName, file_status as fileStatus,
-    create_time as createTime, create_by as createBy
+    file_id as fileId, file_code as fileCode, file_name as fileName, file_status as fileStatus,file_path as filePath,
+    create_time as createTime, create_by_id as createById,create_by_name as createByName,update_by_id as updateById,update_by_name as updateByName
   </sql>
   <insert id="insert">
     insert into file_record (file_id, file_code,
-      file_name, file_status, create_time, create_by)
+      file_name, file_status, create_time, create_by_id,create_by_name,file_path)
     values (#{fileId,jdbcType=VARCHAR}, #{fileCode,jdbcType=VARCHAR},
       #{fileName,jdbcType=VARCHAR}, #{fileStatus,jdbcType=INTEGER}, now(),
-      #{createBy,jdbcType=VARCHAR})
+      #{createById,jdbcType=VARCHAR},#{createByName,jdbcType=VARCHAR},#{filePath,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertAll">
+    insert into file_record (file_id, file_code,file_path,
+      file_name,  create_time,  create_by_id,create_by_name)
+    values
+    <foreach collection="list" separator="," item="item">
+      (
+      #{fileId,jdbcType=VARCHAR},
+      #{item.fileCode,jdbcType=VARCHAR},
+      #{item.filePath,jdbcType=VARCHAR},
+      #{item.fileName,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=VARCHAR},
+      #{item.createById,jdbcType=VARCHAR},
+      #{item.createByName,jdbcType=VARCHAR}
+      )
+    </foreach>
+
   </insert>
   <update id="update">
     update file_record

@@ -9,7 +9,6 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
-import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectServiceImpl;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

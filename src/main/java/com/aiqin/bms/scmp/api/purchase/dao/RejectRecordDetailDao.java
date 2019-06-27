@@ -1,9 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectRecordDetailResponse;
 import org.apache.ibatis.annotations.Param;
 

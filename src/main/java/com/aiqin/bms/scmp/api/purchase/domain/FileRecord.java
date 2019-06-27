@@ -25,6 +25,10 @@ public class FileRecord {
     @JsonProperty("file_name")
     private String fileName;
 
+    @ApiModelProperty(value="文件连接")
+    @JsonProperty("file_path")
+    private String filePath;
+
     @ApiModelProperty(value="0. 禁用  1.启用")
     @JsonProperty("file_status")
     private Integer fileStatus;
@@ -34,14 +38,22 @@ public class FileRecord {
     private Date createTime;
 
     @ApiModelProperty(value="创建人")
-    @JsonProperty("create_by")
-    private String createBy;
+    @JsonProperty("create_by_id")
+    private String createById;
+
+    @ApiModelProperty(value="创建人")
+    @JsonProperty("create_by_name")
+    private String createByName;
 
     @ApiModelProperty(value="修改时间")
     @JsonProperty("update_time")
     private Date updateTime;
 
     @ApiModelProperty(value="修改人")
-    @JsonProperty("update_by")
-    private String updateBy;
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="修改人")
+    @JsonProperty("update_by_name")
+    private String updateByName;
 }
