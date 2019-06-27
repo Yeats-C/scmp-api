@@ -77,6 +77,10 @@ public class StockBatchVoRequest {
     @JsonProperty(value = "purchase_price")
     private Long purchasePrice;
 
+    @ApiModelProperty("税率")
+    @JsonProperty(value = "tax_rate")
+    private Long taxRate;
+
 
     public String getCompanyCode() {
         return companyCode;
@@ -212,5 +216,13 @@ public class StockBatchVoRequest {
 
     public void setPurchasePrice(Long purchasePrice) {
         this.purchasePrice = purchasePrice;
+    }
+
+    public Long getTaxRate() {
+        return taxRate;
+    }
+
+    public void setTaxRate(Long taxRate) {
+        this.taxRate = taxRate;
     }
 }

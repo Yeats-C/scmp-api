@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
@@ -181,6 +182,13 @@ public class StockController {
     @ApiOperation(value = "根据stockBatchId查询单个stockBatch信息")
     public HttpResponse<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(@RequestParam(value = "stock_batch_id") Long stockBatchId) {
         return HttpResponse.success(stockService.selectOneStockBatchInfoByStockBatchId(stockBatchId));
+    }
+
+    @PostMapping("/search/batch/sku/page")
+    @ApiOperation(value = "查询批次库存商品(分页)")
+    public HttpResponse<PageInfo<QueryStockBatchSkuRespVo>> selectStockBatchSkuByPage(@RequestBody QueryStockBatchSkuReqVo reqVO) {
+        PageInfo<QueryStockBatchSkuRespVo> queryStockBatchSkuRespVoPageInfo = stockService.selectStockBatchSkuPage(reqVO);
+        return HttpResponse.success(queryStockBatchSkuRespVoPageInfo);
     }
 
 }
