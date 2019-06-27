@@ -3,7 +3,6 @@ package com.aiqin.bms.scmp.api.product.domain.converter.order;
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
-import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Description:
@@ -58,7 +56,7 @@ public class OrderToOutBoundConverter extends BaseServiceImpl implements Convert
             outbound.setCountyCode(dto.getDistrictCode());
             outbound.setCountyName(dto.getDistrictName());
             outbound.setDetailedAddress(dto.getDetailAddress());
-            outbound.setCreateBy(Optional.ofNullable(getUser().getPersonName()).orElse(CommonConstant.SYSTEM_AUTO));
+            outbound.setCreateBy(dto.getOperator());
             outbound.setCreateTime(date);
             //预计到货时间是当前时间加5天
             outbound.setPreArrivalTime(DateUtils.addDay(5));
@@ -66,7 +64,7 @@ public class OrderToOutBoundConverter extends BaseServiceImpl implements Convert
             outbound.setPreMainUnitNum(dto.getProductNum());
             outbound.setPreTaxAmount(dto.getProductTotalAmount());
             outbound.setPreAmount(Calculate.computeNoTaxPrice(dto.getProductTotalAmount(), Long.valueOf(101)));
-            outbound.setPreTax(outbound.getPreTaxAmount()-outbound.getPraAmount());
+            outbound.setPreTax(outbound.getPreTaxAmount()-outbound.getPreAmount());
             List<OutboundProductReqVo> reqVos = BeanCopyUtils.copyList(dto.getItemList(), OutboundProductReqVo.class);
             outbound.setList(reqVos);
             List<OutboundBatch> batches = BeanCopyUtils.copyList(dto.getBatchList(), OutboundBatch.class);

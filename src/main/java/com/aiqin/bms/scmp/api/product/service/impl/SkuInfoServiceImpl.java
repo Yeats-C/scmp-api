@@ -560,7 +560,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuDao.deleteSkuDraftByCodes(saveSkuApplyInfoReqVO.getSkuCodes());
             }
             //渠道
-            //productSkuChannelService.a
+            productSkuChannelService.saveApplyList(applyProductSkus);
             //标签
             //包装
             productSkuBoxPackingService.saveApplyList(applyProductSkus);
@@ -574,7 +574,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //供应商
             productSkuSupplyUnitService.saveApplyList(applyProductSkus);
             //供应商产能
-           // productSkuSupplyUnitCapacityService.
+            productSkuSupplyUnitCapacityService.saveApplyList(applyProductSkus);
             //价格
             List<ProductSkuPriceInfoDraft> productSkuPriceInfoDrafts =
                     productSkuPriceInfoService.getSkuPriceListDraftBySkuCodes(saveSkuApplyInfoReqVO.getSkuCodes());
