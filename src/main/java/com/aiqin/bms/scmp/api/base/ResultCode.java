@@ -216,6 +216,9 @@ public interface ResultCode {
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");
     MessageId SUPPLIER_CODE_EMPTY = MessageId.create(Project.SCMP_API,201,"供应商编码不能为空");
+    MessageId INBOUND_ORDER_CODE_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "入库单编号不能为空");
+    MessageId PURCHSAE_ORDER_CODE_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "采购单编号不能为空");
+
 
 
 }
