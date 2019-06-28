@@ -159,4 +159,12 @@ public interface OrderService {
      * @return java.lang.Boolean
      */
     Boolean delivery(List<DeliveryReqVO> reqVO,String orderCode);
+    /**
+     * 编码查询订单
+     * @author NullPointException
+     * @date 2019/6/28
+     * @param orderCode
+     * @return com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo
+     */
+    OrderInfo selectByOrderCode(String orderCode);
 }

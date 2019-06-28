@@ -2,7 +2,8 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 <generatorConfiguration>
-    <classPathEntry location="D:\yun_maven\mysql\mysql-connector-java\5.1.45\mysql-connector-java-5.1.45.jar"/>
+    <classPathEntry location="E:\repository\mysql\mysql-connector-java\5.1.45\mysql-connector-java-5.1.45.jar"/>
+<!--    <classPathEntry location="D:\yun_maven\mysql\mysql-connector-java\5.1.45\mysql-connector-java-5.1.45.jar"/>-->
     <context id="testTables" targetRuntime="MyBatis3" defaultModelType="flat">
         <property name="javaFileEncoding" value="UTF-8" />
         <!--<plugin type="com.eeparking.ttx.config.LombokPlugin">-->
@@ -12,6 +13,9 @@
         <!--<plugin type="com.biz.bean.GeneratorPlug">-->
         <!--<property name="enabledSwagger" value="true"/>-->
         <!--</plugin>-->
+        <plugin type="com.biz.bean.GeneratorPlug">
+            <property name="enabledSwagger" value="true"/>
+        </plugin>
         <commentGenerator>
             <!-- 是否去除自动生成的所有注释 true：是 ： false:否 -->
             <property name="suppressAllComments" value="true"/>
@@ -31,8 +35,8 @@
         </javaTypeResolver>
 
         <!-- targetProject:生成PO类的位置 -->
-        <javaModelGenerator targetPackage="com.aiqin.bms.scmp.api.supplier.domain.pojo"
-                            targetProject="D:\mybatis_generator\java">
+        <javaModelGenerator targetPackage="com.aiqin.bms.scmp.api.product.domain.pojo"
+                            targetProject="C:\Users\21100\Desktop">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="true"/>
             <!-- 从数据库返回的值被清理前后的空格 -->
@@ -42,24 +46,20 @@
            如果maven工程只是单独的一个工程，targetProject="src/main/java"
            若果maven工程是分模块的工程，targetProject="所属模块的名称"，例如：
            targetProject="ecps-manager-mapper"，下同-->
-        <sqlMapGenerator targetPackage="com.aiqin.bms.scmp.api.supplier.mapper"
-                         targetProject="D:\mybatis_generator\resources">
+        <sqlMapGenerator targetPackage="com.aiqin.bms.scmp.api.product.mapper"
+                         targetProject="C:\Users\21100\Desktop">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="true"/>
         </sqlMapGenerator>
         <!-- targetPackage：mapper接口生成的位置 -->
         <javaClientGenerator type="XMLMAPPER"
-                             targetPackage="com.aiqin.bms.scmp.api.supplier.mapper"
-                             targetProject="D:\mybatis_generator\java">
+                             targetPackage="com.aiqin.bms.scmp.api.product.mapper"
+                             targetProject="C:\Users\21100\Desktop">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false"/>
         </javaClientGenerator>
 
-        <table tableName="apply_contract_purchase_group" domainObjectName="ApplyContractPurchaseGroup" enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false"
-               selectByExampleQueryId="false">
-        </table>
-        <table tableName="contract_purchase_group" domainObjectName="ContractPurchaseGroup" enableCountByExample="false" enableUpdateByExample="false"
+        <table tableName="outbound_batch" domainObjectName="OutboundBatch" enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false">
         </table>

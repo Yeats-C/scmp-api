@@ -486,13 +486,13 @@
       ext_field_5, ext_field_6)
     values
       <foreach collection="items" item="item" open="" close="" separator=",">
-      (#{items.id,jdbcType=BIGINT}, #{items.code,jdbcType=VARCHAR}, #{items.name,jdbcType=VARCHAR},
-      #{items.beDisable,jdbcType=INTEGER}, #{items.createBy,jdbcType=VARCHAR}, #{items.createTime,jdbcType=TIMESTAMP},
-      #{items.updateBy,jdbcType=VARCHAR}, #{items.updateTime,jdbcType=TIMESTAMP}, #{items.applyCode,jdbcType=VARCHAR},
-      #{items.beEffective,jdbcType=INTEGER}, #{items.selectionEffectiveTime,jdbcType=TINYINT}, #{items.selectionEffectiveStartTime,jdbcType=TIMESTAMP},
-      #{items.companyCode,jdbcType=VARCHAR}, #{items.companyName,jdbcType=VARCHAR}, #{items.extField1,jdbcType=VARCHAR},
-      #{items.extField2,jdbcType=VARCHAR}, #{items.extField3,jdbcType=VARCHAR}, #{items.extField4,jdbcType=TIMESTAMP},
-      #{items.extField5,jdbcType=INTEGER}, #{items.extField6,jdbcType=BIGINT})
+      (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.name,jdbcType=VARCHAR},
+      #{item.beDisable,jdbcType=INTEGER}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
+      #{item.beEffective,jdbcType=INTEGER}, #{item.selectionEffectiveTime,jdbcType=TINYINT}, #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP},
+      #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR}, #{item.extField1,jdbcType=VARCHAR},
+      #{item.extField2,jdbcType=VARCHAR}, #{item.extField3,jdbcType=VARCHAR}, #{item.extField4,jdbcType=TIMESTAMP},
+      #{item.extField5,jdbcType=INTEGER}, #{item.extField6,jdbcType=BIGINT})
       </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMain">
