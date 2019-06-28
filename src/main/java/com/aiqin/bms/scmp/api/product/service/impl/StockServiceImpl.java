@@ -29,6 +29,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStock
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.StockBatchVoRequest;
@@ -1288,7 +1289,39 @@ public class StockServiceImpl implements StockService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer  insertStockBatch(StockChangeRequest stockChangeRequest) {
-        return null;
+        try {
+            LOGGER.info("查stock和inbound表给stockBatch中插入数据");
+            // 查询商品表数据
+            List<StockBatchProductSkuRespVO> stockBatchRespVO = stockDao.selectProductSku();
+            // 创建批次库存实体类
+            StockBatch stockBatch = new StockBatch();
+            // 插入数据集合
+            ArrayList stockBatchs = new ArrayList();
+            // 创建批次库存流水表实体类
+            StockBatchFlow stockBatchFlow = new StockBatchFlow();
+            // 插入流水集合
+            ArrayList flows = new ArrayList();
+            // 批次表中拿批次号和入库批次号进行比对，不同直接入库，相同判断库类型，更新数据。
+            List<StockBatchRespVO> stockBatchCodes = stockDao.selectStockBatchDistinct();
+            // 取出批次号
+            for (StockBatchRespVO stockBatchCode:stockBatchCodes){
+                // 入库批次号
+                for (StockBatchVoRequest stockBatchVoRequest : stockChangeRequest.getStockBatchVoRequest()){
+                    // 不同
+                    if (!stockBatchVoRequest.getBatchCode().equals(stockBatchCode.getBatchCode())){
+                        // 判断商品skuCode和入库的商品Sku
+                    }else{
+                        // 相同
+                    }
+                }
+            }
+            // 批次表插入数据
+            // stockDao.insertStockBatch(stockBatchs);
+            return Integer.valueOf(1);
+        } catch (Exception e) {
+            LOGGER.error("查stock和inbound表给stockBatch中插入数据失败", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
     }
 
     /**

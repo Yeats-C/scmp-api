@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
@@ -23,6 +24,8 @@ import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -184,11 +187,61 @@ public class StockController {
         return HttpResponse.success(stockService.selectOneStockBatchInfoByStockBatchId(stockBatchId));
     }
 
-    @PostMapping("/search/batch/sku/page")
+    @GetMapping("/search/batch/sku/page")
     @ApiOperation(value = "查询批次库存商品(分页)")
-    public HttpResponse<PageInfo<QueryStockBatchSkuRespVo>> selectStockBatchSkuByPage(@RequestBody QueryStockBatchSkuReqVo reqVO) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
+            @ApiImplicitParam(name = "transport_center_code", value = "物流中心", type = "String"),
+            @ApiImplicitParam(name = "warehouse_code", value = "库房", type = "String"),
+            @ApiImplicitParam(name = "procurement_section_code", value = "采购组", type = "String"),
+            @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
+            @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
+            @ApiImplicitParam(name = "product_category_name", value = "sku品类名称", type = "String"),
+            @ApiImplicitParam(name = "product_brand_name", value = "sku品牌名称", type = "String"),
+            @ApiImplicitParam(name = "product_property_name", value = "商品属性名称", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<List<QueryStockBatchSkuRespVo>> selectStockBatchSkuByPage(@RequestParam(value = "supplier_code", required = false) String supplierCode,
+                                                                                      @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
+                                                                                      @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
+                                                                                      @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
+                                                                                      @RequestParam(value = "sku_code", required = false) String skuCode,
+                                                                                      @RequestParam(value = "sku_name", required = false) String skuName,
+                                                                                      @RequestParam(value = "product_category_name", required = false) String productCategoryName,
+                                                                                      @RequestParam(value = "product_brand_name", required = false) String productBrandName,
+                                                                                      @RequestParam(value = "product_property_name", required = false) String productPropertyName,
+                                                                                      @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                                      @RequestParam(value = "page_size", required = false) Integer page_size) {
+        QueryStockBatchSkuReqVo reqVO = new QueryStockBatchSkuReqVo(supplierCode,transportCenterCode,warehouseCode,procurementSectionCode,skuCode,skuName,productCategoryName,productBrandName,productPropertyName);
+        reqVO.setPageNo(page_no);
+        reqVO.setPageSize(page_size);
         PageInfo<QueryStockBatchSkuRespVo> queryStockBatchSkuRespVoPageInfo = stockService.selectStockBatchSkuPage(reqVO);
         return HttpResponse.success(queryStockBatchSkuRespVoPageInfo);
     }
+
+    /**
+     *  库房管理新增调拨,移库,报废列表查询
+     * @param supplierCode
+     * @param supplierName
+     * @param page_no
+     * @param page_size
+     * @return
+     */
+    /*@GetMapping("/search/batch/sku/page")
+    @ApiOperation(value = "查询库房商品(分页)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
+    })
+    public HttpResponse<List<QueryStockSkuListRespVo>> selectStockSkuList(@RequestParam(value = "supplier_code", required = false) String supplierCode,
+                                                                          @RequestParam(value = "supplier_name", required = false) String supplierName,
+                                                                          @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                          @RequestParam(value = "page_size", required = false) Integer page_size) {
+        QueryStockSkuListReqVo reqVO = new QueryStockSkuListReqVo();
+        reqVO.setPageNo(page_no);
+        reqVO.setPageSize(page_size);
+     //   PageInfo<QueryStockSkuListRespVo> queryStockBatchSkuRespVoPageInfo = stockService.selectStockBatchSkuPage();
+        return HttpResponse.success();
+    }*/
 
 }

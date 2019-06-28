@@ -42,7 +42,6 @@ public class PurchaseManageController {
         return purchaseManageService.purchaseProductList(purchaseFormRequest);
     }
 
-
     @PostMapping("/purchase/order")
     @ApiOperation("提交采购单")
     public HttpResponse purchaseOrder(PurchaseOrderRequest purchaseOrderRequest) {
