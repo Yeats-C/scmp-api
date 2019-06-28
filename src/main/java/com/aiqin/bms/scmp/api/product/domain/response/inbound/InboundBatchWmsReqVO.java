@@ -39,6 +39,10 @@ public class InboundBatchWmsReqVO {
 
     @ApiModelProperty("批次号")
     @JsonProperty("inbound_batch_code")
-    private Long inboundBatchCode;
+    private String inboundBatchCode;
+
+    @ApiModelProperty("条形码")
+    @JsonProperty("goodsCode")
+    private String goodsCode;
 
 }

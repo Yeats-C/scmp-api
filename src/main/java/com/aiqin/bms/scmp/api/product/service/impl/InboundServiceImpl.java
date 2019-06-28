@@ -1,10 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
-import com.aiqin.bms.scmp.api.common.AllocationEnum;
-import com.aiqin.bms.scmp.api.common.HandleTypeCoce;
-import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
-import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
+import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
@@ -34,6 +31,7 @@ import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
@@ -214,21 +212,21 @@ public class InboundServiceImpl implements InboundService {
             inbound.setInboundOderCode(rule.getNumberingValue().toString());
             //插入入库单主表
             int insert = inboundDao.insert(inbound);
-            log.info("插入入库单主表返回结果", insert);
+            log.info("插入入库单主表返回结果:{}", insert);
 
             //  转化入库单sku实体
             List<InboundProduct> list =BeanCopyUtils.copyList(reqVo.getList(), InboundProduct.class);
             list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
             //插入入库单商品表
             int insertProducts=inboundProductDao.insertBatch(list);
-            log.info("插入入库单商品表返回结果", insertProducts);
+            log.info("插入入库单商品表返回结果:{}", insertProducts);
 
             //  转化入库单sku批次实体
             List<InboundBatch> inboundBatches =BeanCopyUtils.copyList(reqVo.getInboundBatchReqVos(),InboundBatch.class);
             inboundBatches.stream().forEach(inboundBatch -> inboundBatch.setInboundOderCode(rule.getNumberingValue().toString()) );
             //插入入库单商品表
             int insertBatchs=inboundBatchDao.insertInfo(inboundBatches);
-            log.info("转化入库单sku批次实体表返回结果", insertBatchs);
+            log.info("转化入库单sku批次实体表返回结果:{}", insertBatchs);
 
             //更新编码表
             encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
@@ -287,7 +285,7 @@ public class InboundServiceImpl implements InboundService {
      * @return
      */
     @Override
-   @Async("myTaskAsyncPool")
+    @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
     public void pushWms(String code  ,InboundServiceImpl inboundService){
 
@@ -300,54 +298,57 @@ public class InboundServiceImpl implements InboundService {
         }
         Inbound  inbound = inboundDao.selectByCode(code);
         InboundWmsReqVO inboundWmsReqVO = new InboundWmsReqVO();
-        BeanCopyUtils.copy(inbound,inboundWmsReqVO);
+        BeanCopyUtils.copy(inbound, inboundWmsReqVO);
         List<InboundProductWmsReqVO> inboundProductWmsReqVOS =  inboundProductDao.selectMmsReqByInboundOderCode(inbound.getInboundOderCode());
         inboundWmsReqVO.setList(inboundProductWmsReqVOS);
-     try{
-        String url =urlConfig.WMS_API_URL+"/deppon/save/inbound";
-        HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(inboundWmsReqVO));
 
-        HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-         String hello= JSON.toJSONString(orderDto.getData());
-         com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-         ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
-         if("0".equals(orderDto.getCode())){
+        List<InboundBatchWmsReqVO> inboundBatchWmsReqVOs = inboundBatchDao.selectWmsStockByInboundOderCode(inbound.getInboundOderCode());
+        inboundWmsReqVO.setInboundBatchWmsReqVOs(inboundBatchWmsReqVOs);
+        try{
+            String url =urlConfig.WMS_API_URL+"/deppon/save/inbound";
+            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(inboundWmsReqVO));
 
-             // 设置wms编号
-             inbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
-             //设置入库状态
-             inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-             inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
-             // 跟新数据库
+            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+             String hello= JSON.toJSONString(orderDto.getData());
+             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+             ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
+             if("0".equals(orderDto.getCode())){
 
-             InboundCallBackReqVo inboundCallBackReqVo = new InboundCallBackReqVo();
-             inboundCallBackReqVo.setInboundOderCode(inbound.getInboundOderCode());
-             inboundCallBackReqVo.setInboundTime(new Date());
-             List<InboundProductCallBackReqVo> list = new ArrayList<>();
-             for (InboundProductWmsReqVO inboundProductWmsReqVO : inboundProductWmsReqVOS) {
-                 InboundProductCallBackReqVo inboundProductCallBackReqVo = new InboundProductCallBackReqVo();
-                 inboundProductCallBackReqVo.setLinenum(inboundProductWmsReqVO.getLinenum());
-                 inboundProductCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
-                 inboundProductCallBackReqVo.setPraInboundMainNum(inboundProductWmsReqVO.getPreInboundMainNum());
-                 list.add(inboundProductCallBackReqVo);
-             }
-             inboundCallBackReqVo.setList(list);
-             int s = inboundDao.updateByPrimaryKeySelective(inbound);
-             //保存日志
-             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.PULL_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),code,HandleTypeCoce.PULL_INBOUND_ODER.getName(),new Date(),inbound.getCreateBy());
+                 // 设置wms编号
+                 inbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
+                 //设置入库状态
+                 inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+                 inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
+                 // 跟新数据库
 
-             //调用回调接口
-             inboundService.workFlowCallBack(inboundCallBackReqVo);
+                 InboundCallBackReqVo inboundCallBackReqVo = new InboundCallBackReqVo();
+                 inboundCallBackReqVo.setInboundOderCode(inbound.getInboundOderCode());
+                 inboundCallBackReqVo.setInboundTime(new Date());
+                 List<InboundProductCallBackReqVo> list = new ArrayList<>();
+                 for (InboundProductWmsReqVO inboundProductWmsReqVO : inboundProductWmsReqVOS) {
+                     InboundProductCallBackReqVo inboundProductCallBackReqVo = new InboundProductCallBackReqVo();
+                     inboundProductCallBackReqVo.setLinenum(inboundProductWmsReqVO.getLinenum());
+                     inboundProductCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
+                     inboundProductCallBackReqVo.setPraInboundMainNum(inboundProductWmsReqVO.getPreInboundMainNum());
+                     list.add(inboundProductCallBackReqVo);
+                 }
+                 inboundCallBackReqVo.setList(list);
+                 int s = inboundDao.updateByPrimaryKeySelective(inbound);
+                 //保存日志
+                 productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.PULL_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),code,HandleTypeCoce.PULL_INBOUND_ODER.getName(),new Date(),inbound.getCreateBy());
 
-             log.error("推送保存日志修改状态,应该在回调接口前面执行");
-             return ;
-         }else{ 
-             throw new RuntimeException("入库单传入wms失败");}
-     }catch (Exception e){
-         e.printStackTrace();
-         log.error(e.getMessage());
-         throw new RuntimeException("入库单传入wms失败");
-     }
+                 //调用回调接口
+                 inboundService.workFlowCallBack(inboundCallBackReqVo);
+
+                 log.error("推送保存日志修改状态,应该在回调接口前面执行");
+                 return ;
+             }else{
+                 throw new RuntimeException("入库单传入wms失败");}
+        }catch (Exception e){
+             e.printStackTrace();
+             log.error(e.getMessage());
+             throw new RuntimeException("入库单传入wms失败");
+        }
 
     }
 
@@ -656,9 +657,36 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean saveList(List<InboundReqSave> list) {
-        //todo
-        return null;
+        //批量保存
+        List<Inbound> inboundList = BeanCopyUtils.copyList(list,Inbound.class);
+        List<InboundProduct> productList = Lists.newArrayList();
+        List<InboundBatch> batchList = Lists.newArrayList();
+        for (InboundReqSave save : list) {
+            productList.addAll(BeanCopyUtils.copyList(save.getList(), InboundProduct.class));
+            batchList.addAll(BeanCopyUtils.copyList(save.getInboundBatchReqVos(), InboundBatch.class));
+        }
+        saveData(inboundList,productList,batchList);
+        //存日志 todo
+        //推送到wms
+        return Boolean.TRUE;
+    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveData(List<Inbound> inboundList, List<InboundProduct> productList, List<InboundBatch> batchList) {
+        int i = inboundDao.insertBatch(inboundList);
+        if(i!=inboundList.size()){
+            throw new BizException(ResultCode.SAVE_IN_BOUND_FAILED);
+        }
+        int i1 = inboundProductDao.insertBatch(productList);
+        if(i1!=productList.size()){
+            throw new BizException(ResultCode.SAVE_IN_BOUND_PRODUCT_FAILED);
+        }
+        Integer integer = inboundBatchDao.insertInfo(batchList);
+        if(Objects.isNull(integer)||integer!=batchList.size()){
+            throw new BizException(ResultCode.SAVE_IN_BOUND_BATCH_FAILED);
+        }
     }
 
 }

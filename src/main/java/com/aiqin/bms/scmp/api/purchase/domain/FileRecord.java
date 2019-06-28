@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -35,7 +36,7 @@ public class FileRecord {
 
     @ApiModelProperty(value="上传时间")
     @JsonProperty("create_time")
-    private Date createTime;
+    private String createTime;
 
     @ApiModelProperty(value="创建人")
     @JsonProperty("create_by_id")

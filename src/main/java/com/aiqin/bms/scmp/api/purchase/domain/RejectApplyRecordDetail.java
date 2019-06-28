@@ -140,7 +140,7 @@ public class RejectApplyRecordDetail {
     @JsonProperty("product_total_amount")
     private Long productTotalAmount;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "含税成本")
     @JsonProperty("product_cost")
     private Long productCost;
 
@@ -153,7 +153,7 @@ public class RejectApplyRecordDetail {
     private String batchRemark;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value = "批次备注")
+    @ApiModelProperty(value = "批次创建时间")
     @JsonProperty("batch_create_time")
     private Date batchCreateTime;
 

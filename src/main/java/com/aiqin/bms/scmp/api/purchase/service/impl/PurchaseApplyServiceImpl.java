@@ -205,7 +205,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
             purchaseApply.setPurchaseGroupCode(purchaseApplyProduct.get(0).getPurchaseGroupCode());
             purchaseApply.setPurchaseGroupName(purchaseApplyProduct.get(0).getPurchaseGroupName());
-            purchaseApply.setCreateBy(purchaseApplyProduct.get(0).getCreateBy());
+            purchaseApply.setCreateById(purchaseApplyProduct.get(0).getCreateById());
+            purchaseApply.setCreateByName(purchaseApplyProduct.get(0).getCreateByName());
             Integer count = purchaseApplyDao.insert(purchaseApply);
             if(count > 0){
                 encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());

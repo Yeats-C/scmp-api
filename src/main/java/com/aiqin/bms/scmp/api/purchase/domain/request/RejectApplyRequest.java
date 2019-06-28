@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
+import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,7 +35,7 @@ import java.util.List;
  * 思维方式*热情*能力
  */
 @Data
-public class RejectApplyRequest {
+public class RejectApplyRequest extends PagesRequest {
 
     @ApiModelProperty(value = "退货申请单号")
     @JsonProperty("reject_apply_record_code")

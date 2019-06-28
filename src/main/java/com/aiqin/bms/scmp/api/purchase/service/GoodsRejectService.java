@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,7 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface GoodsRejectService {
     HttpResponse rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest);
 
-    HttpResponse rejectApply(RejectApplyRequest rejectApplyQueryRequest);
+    HttpResponse rejectApply(RejectApplyHandleRequest rejectApplyQueryRequest);
 
     HttpResponse rejectApplyInfo(RejectApplyRequest rejectApplyQueryRequest);
 
@@ -51,7 +50,7 @@ public interface GoodsRejectService {
 
     HttpResponse rejectApplyImport(MultipartFile file, String purchaseGroupCode);
 
-    HttpResponse updateRejectApply(RejectApplyRequest rejectApplyQueryRequest);
+    HttpResponse updateRejectApply(RejectApplyHandleRequest rejectApplyQueryRequest);
 
     HttpResponse selectRejectApply(String rejectApplyQueryRequest);
 

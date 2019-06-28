@@ -333,4 +333,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         return Boolean.TRUE;
     }
 
+    @Override
+    public OrderInfo selectByOrderCode(String orderCode) {
+        return orderInfoMapper.selectByOrderCode2(orderCode);
+    }
+
 }

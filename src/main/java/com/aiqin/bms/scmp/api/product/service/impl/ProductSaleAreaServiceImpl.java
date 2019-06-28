@@ -145,7 +145,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             }
         });
         if (StringUtils.isNotBlank(sb2.toString())) {
-            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, sb.toString()));
+            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, sb2.toString()));
         }
         //保存数据
         return saveDraft(request);
@@ -414,7 +414,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             try {
                 saveOfficial(newVO, list);
             } catch (Exception e) {
-                log.error(e.getMessage());
+                log.error(e.getMessage(),e);
                 return WorkFlowReturn.FALSE;
             }
             return WorkFlowReturn.SUCCESS;

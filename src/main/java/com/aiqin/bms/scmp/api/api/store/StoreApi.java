@@ -4,7 +4,6 @@ import com.aiqin.bms.scmp.api.base.MsgStatus;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryStoreReqVO;
-import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -35,7 +34,8 @@ public class StoreApi extends BaseServiceImpl {
      */
     public HttpResponse storeList(QueryStoreReqVO req) {
         String url = getStoreApiUrl("/operate/store/info");
-        HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.get(url));
+//        HttpClient httpClient = HttpClientHelper.getCurrentClient();
+        HttpClient httpClient = HttpClient.get(url);
         httpClient.addParameter("condition",req.getCondition());
         httpClient.addParameter("page_no",req.getPageNo().toString());
         httpClient.addParameter("page_size",req.getPageSize().toString());

@@ -21,14 +21,12 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.VerifyReturnSupplyErrorRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.*;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.StockBatchVoRequest;
@@ -59,6 +57,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1288,7 +1287,39 @@ public class StockServiceImpl implements StockService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer  insertStockBatch(StockChangeRequest stockChangeRequest) {
-        return null;
+        try {
+            LOGGER.info("查stock和inbound表给stockBatch中插入数据");
+            // 查询商品表数据
+            List<StockBatchProductSkuRespVO> stockBatchRespVO = stockDao.selectProductSku();
+            // 创建批次库存实体类
+            StockBatch stockBatch = new StockBatch();
+            // 插入数据集合
+            ArrayList stockBatchs = new ArrayList();
+            // 创建批次库存流水表实体类
+            StockBatchFlow stockBatchFlow = new StockBatchFlow();
+            // 插入流水集合
+            ArrayList flows = new ArrayList();
+            // 批次表中拿批次号和入库批次号进行比对，不同直接入库，相同判断库类型，更新数据。
+            List<StockBatchRespVO> stockBatchCodes = stockDao.selectStockBatchDistinct();
+            // 取出批次号
+            for (StockBatchRespVO stockBatchCode:stockBatchCodes){
+                // 入库批次号
+                for (StockBatchVoRequest stockBatchVoRequest : stockChangeRequest.getStockBatchVoRequest()){
+                    // 不同
+                    if (!stockBatchVoRequest.getBatchCode().equals(stockBatchCode.getBatchCode())){
+                        // 判断商品skuCode和入库的商品Sku
+                    }else{
+                        // 相同
+                    }
+                }
+            }
+            // 批次表插入数据
+            // stockDao.insertStockBatch(stockBatchs);
+            return Integer.valueOf(1);
+        } catch (Exception e) {
+            LOGGER.error("查stock和inbound表给stockBatch中插入数据失败", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
     }
 
     /**
@@ -1394,7 +1425,29 @@ public class StockServiceImpl implements StockService {
         try {
             PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
             List<QueryStockBatchSkuRespVo> queryStockBatchSkuRespVos = stockDao.selectStockBatchSkuInfoByPage(reqVO);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (QueryStockBatchSkuRespVo queryStockBatchSkuRespVo : queryStockBatchSkuRespVos) {
+                String format = sdf.format(sdf.parse(queryStockBatchSkuRespVo.getProductionDate()));
+                queryStockBatchSkuRespVo.setProductionDate(format);
+            }
             return new PageInfo<QueryStockBatchSkuRespVo>(queryStockBatchSkuRespVos);
+        } catch (Exception ex) {
+            log.error("查询批次库存商失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     * 库房管理新增调拨,移库,报废列表查询
+     * @param reqVO
+     * @return
+     */
+    @Override
+    public PageInfo<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO) {
+        try {
+            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+            return new PageInfo<QueryStockSkuListRespVo>(stockDao.selectStockSkuList(reqVO));
         } catch (Exception ex) {
             log.error("查询批次库存商失败");
             ex.printStackTrace();
