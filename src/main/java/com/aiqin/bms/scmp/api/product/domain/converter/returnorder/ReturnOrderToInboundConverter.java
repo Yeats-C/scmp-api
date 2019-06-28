@@ -74,6 +74,7 @@ public class ReturnOrderToInboundConverter implements Converter<ReturnOrderInfoD
             //todo 有些值需要单独设置
             save.setList(BeanCopyUtils.copyList(source.getItemList(), InboundProductReqVo.class));
             save.setInboundBatchReqVos(BeanCopyUtils.copyList(v, InboundBatchReqVo.class));
+            list.add(save);
         });
         return list;
     }

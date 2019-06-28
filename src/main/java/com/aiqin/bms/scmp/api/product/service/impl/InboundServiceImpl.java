@@ -1,10 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
-import com.aiqin.bms.scmp.api.common.AllocationEnum;
-import com.aiqin.bms.scmp.api.common.HandleTypeCoce;
-import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
-import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
+import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
@@ -34,6 +31,7 @@ import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
@@ -656,10 +654,36 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean saveList(List<InboundReqSave> list) {
-        //todo
-
-        return null;
+        //批量保存
+        List<Inbound> inboundList = BeanCopyUtils.copyList(list,Inbound.class);
+        List<InboundProduct> productList = Lists.newArrayList();
+        List<InboundBatch> batchList = Lists.newArrayList();
+        for (InboundReqSave save : list) {
+            productList.addAll(BeanCopyUtils.copyList(save.getList(), InboundProduct.class));
+            batchList.addAll(BeanCopyUtils.copyList(save.getInboundBatchReqVos(), InboundBatch.class));
+        }
+        saveData(inboundList,productList,batchList);
+        //存日志 todo
+        //推送到wms
+        return Boolean.TRUE;
+    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveData(List<Inbound> inboundList, List<InboundProduct> productList, List<InboundBatch> batchList) {
+        int i = inboundDao.insertBatch(inboundList);
+        if(i!=inboundList.size()){
+            throw new BizException(ResultCode.SAVE_IN_BOUND_FAILED);
+        }
+        int i1 = inboundProductDao.insertBatch(productList);
+        if(i1!=productList.size()){
+            throw new BizException(ResultCode.SAVE_IN_BOUND_PRODUCT_FAILED);
+        }
+        Integer integer = inboundBatchDao.insertInfo(batchList);
+        if(Objects.isNull(integer)||integer!=batchList.size()){
+            throw new BizException(ResultCode.SAVE_IN_BOUND_BATCH_FAILED);
+        }
     }
 
 }
