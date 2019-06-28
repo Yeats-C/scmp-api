@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.request.profitloss.QueryProfitLossVo;
 import com.aiqin.bms.scmp.api.product.domain.response.profitloss.DetailProfitLossRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.profitloss.QueryProfitLossRespVo;
@@ -46,7 +47,10 @@ public class ProfitLossController {
     public HttpResponse<DetailProfitLossRespVo> view(@RequestParam("id") Long id){
         try {
             return HttpResponse.success(profitLossService.view(id));
-        } catch (Exception e) {
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
