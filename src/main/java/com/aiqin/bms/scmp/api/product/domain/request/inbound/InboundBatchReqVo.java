@@ -35,8 +35,11 @@ public class InboundBatchReqVo extends PagesRequest{
     @ApiModelProperty("批次备注")
     private String batchRemark;
 
-    @ApiModelProperty("数量")
-    private Long qty;
+    @ApiModelProperty("预计数量")
+    private Long preQty;
+
+    @ApiModelProperty("实际数量")
+    private Long praQty;
 
     @ApiModelProperty("库位号")
     private String storeHouseCode;

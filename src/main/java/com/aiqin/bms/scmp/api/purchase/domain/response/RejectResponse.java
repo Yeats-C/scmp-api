@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response;
 
 import com.aiqin.bms.scmp.api.purchase.domain.FileRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -49,5 +50,9 @@ public class RejectResponse extends RejectRecord {
     @ApiModelProperty("文件列表")
     @JsonProperty("file_list")
     private List<FileRecord> fileList;
+
+    @ApiModelProperty("日志记录")
+    @JsonProperty("log_list")
+    private List<OperationLog> logList;
 
 }

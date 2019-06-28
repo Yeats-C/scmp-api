@@ -8,4 +8,6 @@ public interface FileRecordService {
     HttpResponse deleteFile(FileRecord fileRecord);
 
     HttpResponse fileList(String fileId);
+
+    HttpResponse downloadFile(String id, String fileId, String createById, String createByName,String fileName);
 }

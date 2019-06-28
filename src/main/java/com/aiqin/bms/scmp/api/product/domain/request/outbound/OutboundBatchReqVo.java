@@ -35,8 +35,11 @@ public class OutboundBatchReqVo extends PagesRequest{
     @ApiModelProperty("批次备注")
     private String batchRemark;
 
-    @ApiModelProperty("数量")
-    private Long qty;
+    @ApiModelProperty("预计数量")
+    private Long preQty;
+
+    @ApiModelProperty("实际数量")
+    private Long praQty;
 
     @ApiModelProperty("库位号")
     private String storeHouseCode;
@@ -54,7 +57,7 @@ public class OutboundBatchReqVo extends PagesRequest{
     private Date updateTime;
 
     @ApiModelProperty("行号")
-    private Long linenum;
+    private Long lineNum;
 
     public OutboundBatchReqVo(String outboundOderCode, Integer pageSize, Integer pageNo) {
         this.outboundOderCode = outboundOderCode;

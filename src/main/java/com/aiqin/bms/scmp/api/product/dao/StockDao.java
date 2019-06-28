@@ -7,8 +7,10 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
@@ -100,6 +102,7 @@ public interface StockDao {
      * 批量插入数据
      */
     List<StockBatchRespVO> selectStockBatchDistinct();
+    List<StockBatchProductSkuRespVO> selectProductSku();
     Integer insertStockBatch(@Param("list") List<StockBatch> stockBatches);
 
     /**
@@ -123,5 +126,15 @@ public interface StockDao {
      * @date 2019/6/26 16:10
      */
     List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
+
+    List<QueryStockBatchSkuRespVo> selectSkuBatchCodeList();
+
+    /**
+     * 库房管理新增调拨,移库,报废列表查询
+     * @param reqVO
+     * @return
+     */
+    List<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
+
 
 }

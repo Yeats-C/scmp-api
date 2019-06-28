@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
@@ -23,5 +24,5 @@ public interface RejectApplyRecordDao {
 
     RejectApplyRecord selectByRejectCode(@Param("rejectApplyCode") String rejectApplyCode);
 
-    Integer updateByRejectCode(RejectApplyRequest rejectApplyRequest);
+    Integer updateByRejectCode(RejectApplyHandleRequest rejectApplyRequest);
 }

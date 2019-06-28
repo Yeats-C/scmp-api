@@ -23,22 +23,24 @@
     <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, purchase_order_id, purchase_order_code, transport_center_code, transport_center_name, 
     purchase_group_code, purchase_group_name, warehouse_code, warehouse_name, supplier_code, 
     supplier_name, info_status, purchase_order_status, storage_status, single_count, 
     product_total_amount, return_amount, settlement_method_code, settlement_method_name, 
-    create_time, update_time, create_by, update_by
+    create_time, create_by_id, create_by_name
   </sql>
   <insert id="insert">
     insert into purchase_order (purchase_order_id, purchase_order_code,
       transport_center_code, transport_center_name, purchase_group_code, purchase_group_name, warehouse_code,
       warehouse_name, supplier_code, supplier_name, info_status, purchase_order_status, storage_status,
       single_count, product_total_amount, return_amount, settlement_method_code, settlement_method_name,
-      create_time, create_by)
+      create_time, create_by_id, create_by_name)
     values (#{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR},
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, 
@@ -46,7 +48,7 @@
       #{infoStatus,jdbcType=INTEGER}, #{purchaseOrderStatus,jdbcType=INTEGER}, #{storageStatus,jdbcType=INTEGER}, 
       #{singleCount,jdbcType=INTEGER}, #{productTotalAmount,jdbcType=INTEGER}, #{returnAmount,jdbcType=INTEGER}, 
       #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR}, 
-      now(), #{createBy,jdbcType=VARCHAR})
+      now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_order
@@ -105,17 +107,12 @@
       <if test="settlementMethodName != null">
         settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now(),
+      <if test="createById != null">
+        create_by_id = #{createById,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=VARCHAR},
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

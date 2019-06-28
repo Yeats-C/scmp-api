@@ -85,6 +85,7 @@
       transport_center_name,
       purchase_group_code ,
       purchase_group_name ,
+      sku_code,
       sum(product_count) as sum_count,
       sum(product_count) as single_count,
       sum(product_total_amount) as sum_amount,
@@ -95,7 +96,7 @@
       <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
         #{item}
       </foreach>
-    GROUP BY settlement_method_code,settlement_method_name,supplier_code,warehouse_code,transport_center_code,purchase_group_code
+    GROUP BY settlement_method_code,settlement_method_name,supplier_code,warehouse_code,transport_center_code,purchase_group_code,sku_code
   </select>
   <select id="selectByRejectCode"   resultMap="BaseResultMap">
     select
@@ -125,6 +126,40 @@
       #{item}
     </foreach>
   </select>
+  <select id="listByConditionPage"   resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from reject_apply_record_detail
+    where
+        apply_record_status =  1
+    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    and reject_apply_record_code in
+    <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
+      #{item}
+    </foreach>
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="listByConditionPageCount"   resultType="java.lang.Integer">
+    select
+     count(1)
+    from reject_apply_record_detail
+    where
+        apply_record_status =  1
+    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    and reject_apply_record_code in
+    <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
+      #{item}
+    </foreach>
+  </select>
+
   <insert id="insertAll" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
     insert into reject_apply_record_detail ( reject_apply_record_detail_id, reject_apply_record_code, apply_type,
       purchase_group_code, purchase_group_name, apply_record_status,

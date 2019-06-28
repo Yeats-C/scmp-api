@@ -83,6 +83,12 @@ public class RejectRecordDetailResponse {
     @JsonProperty("product_total_amount")
     private Long productTotalAmount;
 
+    @ApiModelProperty(value="wms 传回来的实际数量")
+    @JsonProperty("actual_count")
+    private Integer actualCount;
 
+    @ApiModelProperty(value="wms 传回来的实际金额")
+    @JsonProperty("actual_amount")
+    private Long actualAmount;
 
 }
