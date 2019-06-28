@@ -1769,13 +1769,13 @@ select a.sku_code              as skuCode,
                a.model_number,
                d.unit_name,
                group_concat(b.price_channel_name) priceChannelName,
-               c.supply_unit_name directDeliverySupplierCode,
-               c.supply_unit_code directDeliverySupplierName
+               c.supply_unit_name directDeliverySupplierName,
+               c.supply_unit_code directDeliverySupplierCode
         from product_sku a
                left join product_sku_channel b
                          on a.sku_code = b.sku_code
                left join product_sku_supply_unit c
-                         on a.sku_code = c.product_sku_code and c.categories_supply_channels_code = 1
+                         on a.sku_code = c.product_sku_code and c.categories_supply_channels_code = 2
                left join product_sku_purchase_info d
                          on a.sku_code = d.product_sku_code
          where a.company_code = #{companyCode}

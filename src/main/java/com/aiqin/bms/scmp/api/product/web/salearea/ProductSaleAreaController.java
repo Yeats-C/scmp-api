@@ -92,7 +92,7 @@ public class ProductSaleAreaController {
     }
 
     @GetMapping("/edit/info")
-    @ApiOperation("销售区域正式表详情")
+    @ApiOperation("销售区域正式表详情(编辑)")
     public HttpResponse<ProductSaleAreaForOfficialMainRespVO> editView(@RequestParam String code) {
         log.info("ProductSaleAreaController--editView--入参: [{}]", code);
         try {

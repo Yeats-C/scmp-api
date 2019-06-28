@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.mapper.TransportOrdersMapper">
+    <resultMap id="TransportOrdersMap" type="com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportOrders">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <id column="transport_code" jdbcType="VARCHAR" property="transportCode" />
+        <id column="order_code" jdbcType="VARCHAR" property="orderCode" />
+        <id column="commodity_amount" jdbcType="BIGINT" property="commodityAmount" />
+        <id column="order_amount" jdbcType="BIGINT" property="orderAmount" />
+        <id column="status" jdbcType="INTEGER" property="status" />
+        <id column="type" jdbcType="INTEGER" property="type" />
+        <id column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+        <id column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+        <id column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+        <id column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+        <id column="deliver_time" jdbcType="DATE" property="deliverTime" />
+        <id column="product_num" jdbcType="BIGINT" property="productNum" />
+        <id column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <id column="create_time" jdbcType="DATE" property="createTime" />
+        <id column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <id column="update_time" jdbcType="DATE" property="updateTime" />
+
+    </resultMap>
+    <sql id="Transport_Orders_sql">
+        id,transport_code,order_code,commodity_amount,order_amount,status,type,transport_center_code,transport_center_name,warehouse_code,warehouse_name,deliver_time,create_by,create_time,update_by,update_time
+    </sql>
+    <insert id="insertBatch">
+        <foreach collection="transportOrders" item="item" separator=";">
+            insert into transport_orders (
+            transport_code,order_code,commodity_amount,order_amount,status,type,
+            transport_center_code,transport_center_name,warehouse_code,warehouse_name,product_num,
+            deliver_time,create_by,create_time,update_by,update_time
+            ) values (
+            #{item.transportCode},#{item.orderCode},#{item.commodityAmount},#{item.orderAmount},#{item.status},#{item.type},
+            #{item.transportCenterCode},#{item.transportCenterName},#{item.warehouseCode},#{item.warehouseName},#{item.productNum},
+            #{item.deliverTime},#{item.createBy},#{item.createTime},#{item.updateBy},#{item.updateTime}
+            )
+        </foreach>
+    </insert>
+</mapper>

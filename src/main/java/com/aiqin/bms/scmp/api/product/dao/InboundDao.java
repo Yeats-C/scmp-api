@@ -31,4 +31,12 @@ public interface InboundDao {
     List<Inbound> selectInboundInfoByBoundSearch(BoundRequest boundRequest);
 
     Inbound selectByCode(String inboundOderCode);
+    /**
+     * 批量保存入库信息
+     * @author NullPointException
+     * @date 2019/6/28
+     * @param inboundList
+     * @return int
+     */
+    int insertBatch(List<Inbound> inboundList);
 }

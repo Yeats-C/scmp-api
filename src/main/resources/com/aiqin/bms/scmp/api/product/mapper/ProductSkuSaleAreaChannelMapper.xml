@@ -135,10 +135,10 @@
       )
       values
       <foreach collection="items" item="item" open="" close="" separator=",">
-      (#{items.id,jdbcType=BIGINT}, #{items.code,jdbcType=VARCHAR}, #{items.priceChannelCode,jdbcType=VARCHAR},
-      #{items.priceChannelName,jdbcType=VARCHAR}, #{items.companyCode,jdbcType=VARCHAR}, #{items.companyName,jdbcType=VARCHAR},
-      #{items.extField1,jdbcType=VARCHAR}, #{items.extField2,jdbcType=VARCHAR}, #{items.extField3,jdbcType=VARCHAR},
-      #{items.extField4,jdbcType=TIMESTAMP}, #{items.extField5,jdbcType=INTEGER}, #{items.extField6,jdbcType=BIGINT}
+      (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.priceChannelCode,jdbcType=VARCHAR},
+      #{item.priceChannelName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
+      #{item.extField1,jdbcType=VARCHAR}, #{item.extField2,jdbcType=VARCHAR}, #{item.extField3,jdbcType=VARCHAR},
+      #{item.extField4,jdbcType=TIMESTAMP}, #{item.extField5,jdbcType=INTEGER}, #{item.extField6,jdbcType=BIGINT}
       )
       </foreach>
     </insert>
