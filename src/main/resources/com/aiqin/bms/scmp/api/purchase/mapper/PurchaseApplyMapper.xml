@@ -11,20 +11,22 @@
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
   </resultMap>
   <sql id="Base_Column_List">
     purchase_apply_id as purchaseApplyId, purchase_apply_code as purchaseApplyCode, apply_type as applyType,
     apply_status as applyStatus, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
-    create_time as createTime, create_by as createBy
+    create_time as createTime, create_by_id as createById, create_by_name as createByName
   </sql>
   <insert id="insert">
     insert into purchase_apply (purchase_apply_id, purchase_apply_code, apply_type,
-      apply_status, purchase_group_code, purchase_group_name, create_time, create_by)
+      apply_status, purchase_group_code, purchase_group_name, create_time, create_by_id, create_by_name)
     values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR},
       #{applyType,jdbcType=INTEGER}, #{applyStatus,jdbcType=INTEGER}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
-      #{purchaseGroupName,jdbcType=VARCHAR}, now(), #{createBy,jdbcType=VARCHAR})
+      #{purchaseGroupName,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_apply
@@ -47,17 +49,12 @@
       <if test="purchaseGroupName != null">
         purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now(),
+      <if test="createById != null">
+        create_by_id = #{createById,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=VARCHAR},
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

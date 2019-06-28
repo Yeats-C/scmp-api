@@ -81,6 +81,38 @@ public class StockBatchVoRequest {
     @JsonProperty(value = "tax_rate")
     private Long taxRate;
 
+    @ApiModelProperty("单据类型")
+    @JsonProperty(value = "document_type")
+    private String documentType;
+
+    @ApiModelProperty("单据号")
+    @JsonProperty(value = "document_num")
+    private Long documentNum;
+
+    @ApiModelProperty("来源单据类型")
+    @JsonProperty(value = "source_document_type")
+    private String sourceDocumentType;
+
+    @ApiModelProperty("来源单据号")
+    @JsonProperty(value = "source_document_num")
+    private Long sourceDocumentNum;
+
+    @ApiModelProperty("操作时间")
+    @JsonProperty(value = "operating_time")
+    private String operatingTime;
+
+    @ApiModelProperty("操作人")
+    @JsonProperty(value = "operating_by")
+    private String operatingBy;
+
+    @ApiModelProperty("商品备注")
+    @JsonProperty(value = "remark")
+    private String remark;
+
+    @ApiModelProperty("修改数")
+    @JsonProperty(value = "change_num")
+    private Long changeNum;
+
 
     public String getCompanyCode() {
         return companyCode;

@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.supplier.domain.response;
+package com.aiqin.bms.scmp.api.purchase.domain.response.transport;
 
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.TransportOrders;
 import com.fasterxml.jackson.annotation.JsonProperty;

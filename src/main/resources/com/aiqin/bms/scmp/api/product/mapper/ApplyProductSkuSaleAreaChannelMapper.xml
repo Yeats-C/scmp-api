@@ -120,14 +120,14 @@
       </if>
     </trim>
   </insert>
-    <insert id="insertBatch">
+    <insert id="insertBatch" parameterType="java.util.List">
           insert into apply_product_sku_sale_area_channel (id, code, price_channel_code,
       price_channel_name, company_code, company_name,
       ext_field_1, ext_field_2, ext_field_3,
       ext_field_4, ext_field_5, ext_field_6
       )
     values
-      <foreach collection="items" separator="," close="" open="" item="item">
+      <foreach collection="list" separator="," close="" open="" item="item">
       (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.priceChannelCode,jdbcType=VARCHAR},
       #{item.priceChannelName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
       #{item.extField1,jdbcType=VARCHAR}, #{item.extField2,jdbcType=VARCHAR}, #{item.extField3,jdbcType=VARCHAR},

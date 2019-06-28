@@ -1,10 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectQueryRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
@@ -89,7 +86,7 @@ public class GoodsRejectController {
 
     @PostMapping("/apply")
     @ApiOperation(value = "退供申请单增加")
-    public HttpResponse<List<RejectApplyRequest>> rejectApply(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+    public HttpResponse<List<RejectApplyRequest>> rejectApply(@RequestBody RejectApplyHandleRequest rejectApplyQueryRequest) {
         LOGGER.info("退供申请单增加请求:{}", rejectApplyQueryRequest.toString());
         return goodsRejectService.rejectApply(rejectApplyQueryRequest);
     }
@@ -97,7 +94,7 @@ public class GoodsRejectController {
     @PutMapping("/apply/{reject_apply_record_code}")
     @ApiOperation(value = "退供申请单修改")
     @ApiImplicitParam(name = "reject_apply_record_code", value = "退货申请单号", type = "String")
-    public HttpResponse<RejectApplyRequest> updateRejectApply(@PathVariable String reject_apply_record_code, @RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+    public HttpResponse<RejectApplyRequest> updateRejectApply(@PathVariable String reject_apply_record_code, @RequestBody RejectApplyHandleRequest rejectApplyQueryRequest) {
         rejectApplyQueryRequest.setRejectApplyRecordCode(reject_apply_record_code);
         LOGGER.info("退供申请单修改请求:{}", rejectApplyQueryRequest.toString());
         return goodsRejectService.updateRejectApply(rejectApplyQueryRequest);

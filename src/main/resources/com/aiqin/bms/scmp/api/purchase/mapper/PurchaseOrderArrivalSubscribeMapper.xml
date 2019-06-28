@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.mapper.PurchaseOrderArrivalSubscribeMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.pojo.PurchaseOrderArrivalSubscribe">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="purchase_order_code" jdbcType="VARCHAR" property="purchaseOrderCode" />
+    <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+    <result column="arrival_subscribe_time" jdbcType="TIMESTAMP" property="arrivalSubscribeTime" />
+    <result column="license_plate" jdbcType="VARCHAR" property="licensePlate" />
+    <result column="driver_name" jdbcType="VARCHAR" property="driverName" />
+    <result column="phone_mobile" jdbcType="VARCHAR" property="phoneMobile" />
+    <result column="arrival_subscribe_status" jdbcType="TINYINT" property="arrivalSubscribeStatus" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <resultMap id="PageResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.purchase.QueryPurchaseOrderArrivalSubscribeRespVo">
+    <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode"/>
+    <result column="purchase_order_code" jdbcType="VARCHAR" property="purchaseOrderCode" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="logistics_center_code" jdbcType="VARCHAR" property="logisticsCenterCode" />
+    <result column="logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="arrival_subscribe_status" jdbcType="TINYINT" property="arrivalSubscribeStatus" />
+    <result column="arrival_subscribe_status_name" jdbcType="VARCHAR" property="arrivalSubscribeStatusName" />
+    <result column="license_plate" jdbcType="VARCHAR" property="licensePlate" />
+    <result column="arrival_subscribe_time" jdbcType="TIMESTAMP" property="arrivalSubscribeTime" />
+    <result column="driver_name" jdbcType="VARCHAR" property="driverName" />
+    <result column="phone_mobile" jdbcType="VARCHAR" property="phoneMobile" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="expect_arrival_time" jdbcType="TIMESTAMP" property="expectArrivalTime" />
+    <result column="valid_time" jdbcType="INTEGER" property="validTime" />
+    <result column="pre_inbound_num" jdbcType="BIGINT" property="num" />
+    <result column="pre_tax_amount" jdbcType="BIGINT" property="taxAmount" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, purchase_order_code, inbound_oder_code, arrival_subscribe_time, license_plate, 
+    driver_name, phone_mobile, arrival_subscribe_status, remark, del_flag, create_time, 
+    create_by, update_time, update_by
+  </sql>
+  <sql id="Page_Column_list">
+    c.inbound_oder_code,a.purchase_order_code,c.supplier_code,c.supplier_name,
+	c.logistics_center_code,c.logistics_center_name,c.warehouse_code,
+	c.warehouse_name,ifnull(d.arrival_subscribe_status,0) arrival_subscribe_status,
+	CASE WHEN ifnull(d.arrival_subscribe_status,0)=0 THEN '未预约' when d.arrival_subscribe_status = 1 THEN '已预约'else '已确认' END as arrival_subscribe_status_name,
+    d.license_plate,d.arrival_subscribe_time,d.driver_name,d.phone_mobile,
+    d.remark,b.expect_arrival_time,b.valid_time,c.pre_inbound_num,
+    c.pre_tax_amount,a.purchase_group_code,a.purchase_group_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from purchase_order_arrival_subscribe
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByInboundAndPurchaseOrderCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from purchase_order_arrival_subscribe
+    where del_flag = 0
+    and inbound_oder_code = #{inboundOrderCode,jdbcType=VARCHAR}
+    and purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getList"
+          parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.purchase.QueryPurchaseOrderArrivalSubscribeVo"
+          resultMap="PageResultMap">
+    select
+    <include refid="Page_Column_list"/>
+    FROM purchase_order a
+    LEFT JOIN purchase_order_details b ON a.purchase_order_code = b.purchase_order_code
+    LEFT JOIN inbound c ON a.purchase_order_code = c.source_oder_code
+    AND c.inbound_type_code = '1'
+    LEFT JOIN purchase_order_arrival_subscribe d ON c.inbound_oder_code = d.inbound_oder_code
+    WHERE c.inbound_status_code IN (1, 2)
+    AND a.purchase_order_status IN (3, 4, 5, 6)
+    <if test="arrivalSubscribeTimeStart != null">
+      and  <![CDATA[b.expect_arrival_time >= #{arrivalSubscribeTimeStart,jdbcType="TIMESTAMP"}]]>
+    </if>
+    <if test="arrivalSubscribeTimeEnd != null">
+      and  <![CDATA[b.expect_arrival_time <= #{arrivalSubscribeTimeEnd,jdbcType="TIMESTAMP"}]]>
+    </if>
+    <if test="logisticsCenterCode != null and logisticsCenterCode != '' ">
+      and c.logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
+    </if>
+    <if test="logisticsCenterName != null and logisticsCenterName != '' ">
+      and c.logistics_center_name like concat('%',#{logisticsCenterName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="warehouseCode != null and warehouseCode != '' ">
+      and c.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </if>
+    <if test="warehouseName != null and warehouseName != '' ">
+      and c.warehouse_name like concat('%',#{warehouseName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="supplierCode != null and supplierCode != '' ">
+      and c.supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </if>
+    <if test="supplierName != null and supplierName != '' ">
+      and c.supplier_name like concat('%',#{supplierName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != '' ">
+      and a.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != '' ">
+      and a.purchase_group_name like concat('%',#{purchaseGroupName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="arrivalSubscribeStatus != null ">
+      and d.arrival_subscribe_status = #{arrivalSubscribeStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseOrderCode != null and purchaseOrderCode != '' ">
+      and a.purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+    </if>
+    <if test="licensePlate != null and licensePlate != '' ">
+      and d.license_plate like concat('%',#{licensePlate,jdbcType=VARCHAR},'%')
+    </if>
+    order by d.arrival_subscribe_time desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from purchase_order_arrival_subscribe
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.PurchaseOrderArrivalSubscribe">
+    insert into purchase_order_arrival_subscribe (id, purchase_order_code, inbound_oder_code, 
+      arrival_subscribe_time, license_plate, driver_name, 
+      phone_mobile, arrival_subscribe_status, remark, 
+      del_flag, create_time, create_by, 
+      update_time, update_by)
+    values (#{id,jdbcType=BIGINT}, #{purchaseOrderCode,jdbcType=VARCHAR}, #{inboundOderCode,jdbcType=VARCHAR}, 
+      #{arrivalSubscribeTime,jdbcType=TIMESTAMP}, #{licensePlate,jdbcType=VARCHAR}, #{driverName,jdbcType=VARCHAR}, 
+      #{phoneMobile,jdbcType=VARCHAR}, #{arrivalSubscribeStatus,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.PurchaseOrderArrivalSubscribe">
+    insert into purchase_order_arrival_subscribe
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="purchaseOrderCode != null">
+        purchase_order_code,
+      </if>
+      <if test="inboundOderCode != null">
+        inbound_oder_code,
+      </if>
+      <if test="arrivalSubscribeTime != null">
+        arrival_subscribe_time,
+      </if>
+      <if test="licensePlate != null">
+        license_plate,
+      </if>
+      <if test="driverName != null">
+        driver_name,
+      </if>
+      <if test="phoneMobile != null">
+        phone_mobile,
+      </if>
+      <if test="arrivalSubscribeStatus != null">
+        arrival_subscribe_status,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="purchaseOrderCode != null">
+        #{purchaseOrderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="inboundOderCode != null">
+        #{inboundOderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="arrivalSubscribeTime != null">
+        #{arrivalSubscribeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="licensePlate != null">
+        #{licensePlate,jdbcType=VARCHAR},
+      </if>
+      <if test="driverName != null">
+        #{driverName,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneMobile != null">
+        #{phoneMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="arrivalSubscribeStatus != null">
+        #{arrivalSubscribeStatus,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.PurchaseOrderArrivalSubscribe">
+    update purchase_order_arrival_subscribe
+    <set>
+      <if test="purchaseOrderCode != null">
+        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="inboundOderCode != null">
+        inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="arrivalSubscribeTime != null">
+        arrival_subscribe_time = #{arrivalSubscribeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="licensePlate != null">
+        license_plate = #{licensePlate,jdbcType=VARCHAR},
+      </if>
+      <if test="driverName != null">
+        driver_name = #{driverName,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneMobile != null">
+        phone_mobile = #{phoneMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="arrivalSubscribeStatus != null">
+        arrival_subscribe_status = #{arrivalSubscribeStatus,jdbcType=TINYINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.PurchaseOrderArrivalSubscribe">
+    update purchase_order_arrival_subscribe
+    set purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
+      inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR},
+      arrival_subscribe_time = #{arrivalSubscribeTime,jdbcType=TIMESTAMP},
+      license_plate = #{licensePlate,jdbcType=VARCHAR},
+      driver_name = #{driverName,jdbcType=VARCHAR},
+      phone_mobile = #{phoneMobile,jdbcType=VARCHAR},
+      arrival_subscribe_status = #{arrivalSubscribeStatus,jdbcType=TINYINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

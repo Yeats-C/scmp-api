@@ -62,13 +62,9 @@ public class QueryStockBatchSkuRespVo implements Serializable {
     @JsonProperty("product_brand_name")
     private String productBrandName;
 
-    @ApiModelProperty("商品类型code")
-    @JsonProperty("product_sort_code")
-    private String productSortCode;
-
-    @ApiModelProperty("商品类型名称")
-    @JsonProperty("product_sort_name")
-    private String productSortName;
+    @ApiModelProperty("商品类型")
+    @JsonProperty("goods_gifts")
+    private Integer goodsGifts;
 
     @ApiModelProperty("商品颜色code")
     @JsonProperty("color_code")
@@ -126,11 +122,11 @@ public class QueryStockBatchSkuRespVo implements Serializable {
     @JsonProperty("batch_code")
     private String batchCode;
 
-    @ApiModelProperty("批次备注")
+    @ApiModelProperty("批次创建时间")
     @JsonProperty("production_date")
     private String productionDate;
 
-    @ApiModelProperty("批次创建时间")
+    @ApiModelProperty("批次备注")
     @JsonProperty("batch_remark")
     private String batchRemark;
 
@@ -149,5 +145,9 @@ public class QueryStockBatchSkuRespVo implements Serializable {
     @ApiModelProperty("供应商名称")
     @JsonProperty("supplier_name")
     private String supplierName;
+
+    @ApiModelProperty("可用库存数")
+    @JsonProperty("available_num")
+    private Long availableNum;
 
 }

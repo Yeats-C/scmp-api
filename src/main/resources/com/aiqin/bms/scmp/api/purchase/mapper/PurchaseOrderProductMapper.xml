@@ -27,15 +27,17 @@
     <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
   </resultMap>
   <sql id="Base_Column_List">
     order_product_id, purchase_order_id, purchase_order_code, sku_code, sku_name,
     brand_id, brand_name, category_id, category_name, product_spec, color_name, model_number, 
     product_type, purchase_whole, purchase_single, base_product_content, box_gauge, single_count, 
     tax_rate, product_amount, product_total_amount, stock_count, create_time, update_time, 
-    create_by
+    create_by_id, create_by_name
   </sql>
   <insert id="insert">
     insert into purchase_order_product (order_product_id, purchase_order_id,
@@ -45,7 +47,7 @@
       model_number, product_type, purchase_whole, 
       purchase_single, base_product_content, box_gauge, 
       single_count, tax_rate, product_amount, 
-      product_total_amount, stock_count, create_time, create_by)
+      product_total_amount, stock_count, create_time, create_by_id, create_by_name)
     values (#{orderProductId,jdbcType=VARCHAR}, #{purchaseOrderId,jdbcType=VARCHAR},
       #{purchaseOrderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
       #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, 
@@ -53,7 +55,8 @@
       #{modelNumber,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER}, #{purchaseWhole,jdbcType=INTEGER}, 
       #{purchaseSingle,jdbcType=INTEGER}, #{baseProductContent,jdbcType=INTEGER}, #{boxGauge,jdbcType=VARCHAR}, 
       #{singleCount,jdbcType=INTEGER}, #{taxRate,jdbcType=INTEGER}, #{productAmount,jdbcType=INTEGER}, 
-      #{productTotalAmount,jdbcType=INTEGER}, #{stockCount,jdbcType=INTEGER}, now(), #{createBy,jdbcType=VARCHAR})
+      #{productTotalAmount,jdbcType=INTEGER}, #{stockCount,jdbcType=INTEGER}, now(), #{createById,jdbcType=VARCHAR},
+       #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_order_product
@@ -124,17 +127,12 @@
       <if test="stockCount != null">
         stock_count = #{stockCount,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = now(),
+      <if test="createById != null">
+        create_by_id = #{createById,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=VARCHAR},
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

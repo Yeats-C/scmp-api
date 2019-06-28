@@ -25,11 +25,19 @@ public class PurchaseOrderRequest {
     @JsonProperty("order_details")
     private PurchaseOrderDetails orderDetails;
 
-    @ApiModelProperty(value="商品列表")
-    @JsonProperty("product_list")
-    private List<PurchaseOrderProduct> productList;
+    @ApiModelProperty(value="采购申请单ids")
+    @JsonProperty("apply_ids")
+    private List<String> applyIds;
 
     @ApiModelProperty(value="文件信息")
     @JsonProperty("file_list")
     private List<FileRecord> fileList;
+
+    @ApiModelProperty(value="人员编码")
+    @JsonProperty("person_id")
+    private String personId;
+
+    @ApiModelProperty(value="人员名称")
+    @JsonProperty("person_name")
+    private String personName;
 }

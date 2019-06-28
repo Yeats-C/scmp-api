@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.supplier.domain.request;
+package com.aiqin.bms.scmp.api.purchase.domain.request.transport;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
 import com.fasterxml.jackson.annotation.JsonProperty;

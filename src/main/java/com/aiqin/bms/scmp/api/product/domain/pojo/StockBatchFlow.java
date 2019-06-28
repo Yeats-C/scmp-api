@@ -21,6 +21,10 @@ public class StockBatchFlow extends CommonBean {
     @JsonProperty(value = "flow_batch_code")
     private String flowBatchCode;
 
+    @ApiModelProperty("批次号")
+    @JsonProperty(value = "batch_code")
+    private String batchCode;
+
     @ApiModelProperty("订单编号")
     @JsonProperty(value = "order_code")
     private String orderCode;
@@ -43,7 +47,7 @@ public class StockBatchFlow extends CommonBean {
 
     @ApiModelProperty("状态(锁状态-后补)")
     @JsonProperty(value = "lock_status")
-    private String lockStatus;
+    private Long lockStatus;
 
     @ApiModelProperty("单据类型")
     @JsonProperty(value = "document_type")
@@ -51,7 +55,7 @@ public class StockBatchFlow extends CommonBean {
 
     @ApiModelProperty("单据号")
     @JsonProperty(value = "document_num")
-    private String documentNum;
+    private Long documentNum;
 
     @ApiModelProperty("来源单据类型")
     @JsonProperty(value = "source_document_type")
@@ -59,7 +63,7 @@ public class StockBatchFlow extends CommonBean {
 
     @ApiModelProperty("来源单据号")
     @JsonProperty(value = "source_document_num")
-    private String sourceDocumentNum;
+    private Long sourceDocumentNum;
 
     @ApiModelProperty("操作时间")
     @JsonProperty(value = "operating_time")
@@ -69,7 +73,7 @@ public class StockBatchFlow extends CommonBean {
     @JsonProperty(value = "operating_by")
     private String operatingBy;
 
-    @ApiModelProperty("批次单商品备注")
+    @ApiModelProperty("商品备注")
     @JsonProperty(value = "remark")
     private String remark;
 
@@ -103,7 +107,7 @@ public class StockBatchFlow extends CommonBean {
 
     @ApiModelProperty("操作类型")
     @JsonProperty(value = "operation_type")
-    private Long operationType;
+    private Integer operationType;
 
 
     }
