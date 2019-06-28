@@ -216,6 +216,9 @@ public interface ResultCode {
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");
     MessageId SUPPLIER_CODE_EMPTY = MessageId.create(Project.SCMP_API,201,"供应商编码不能为空");
+    MessageId INBOUND_ORDER_CODE_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "入库单编号不能为空");
+    MessageId PURCHSAE_ORDER_CODE_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "采购单编号不能为空");
+
     //发运
     MessageId TRANSPORT_DELIVERY_ERROR = MessageId.create(Project.PURCHASE_API, 1005, "发运单已签收或不存在");
     MessageId TRANSPORT_SIGN_ERROR = MessageId.create(Project.PURCHASE_API, 1005, "发运单未发运或已签收");
@@ -223,4 +226,6 @@ public interface ResultCode {
     MessageId SAVE_IN_BOUND_FAILED = MessageId.create(Project.PURCHASE_API,76,"保存入库批次数据失败");
     MessageId SAVE_IN_BOUND_PRODUCT_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库商品数据失败");
     MessageId SAVE_IN_BOUND_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库批次数据失败");
+
+
 }
