@@ -29,6 +29,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStock
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.StockBatchVoRequest;
@@ -1291,7 +1292,7 @@ public class StockServiceImpl implements StockService {
         try {
             LOGGER.info("查stock和inbound表给stockBatch中插入数据");
             // 查询商品表数据
-            // List<StockBatchProductSkuRespVO> stockBatchRespVO = stockDao.selectProductSku();
+            List<StockBatchProductSkuRespVO> stockBatchRespVO = stockDao.selectProductSku();
             // 创建批次库存实体类
             StockBatch stockBatch = new StockBatch();
             // 插入数据集合
@@ -1308,7 +1309,7 @@ public class StockServiceImpl implements StockService {
                 for (StockBatchVoRequest stockBatchVoRequest : stockChangeRequest.getStockBatchVoRequest()){
                     // 不同
                     if (!stockBatchVoRequest.getBatchCode().equals(stockBatchCode.getBatchCode())){
-
+                        // 判断商品skuCode和入库的商品Sku
                     }else{
                         // 相同
                     }

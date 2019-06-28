@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
@@ -190,7 +191,6 @@ public class StockController {
     @ApiOperation(value = "查询批次库存商品(分页)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
-            @ApiImplicitParam(name = "supplier_name", value = "供应商名称", type = "String"),
             @ApiImplicitParam(name = "transport_center_code", value = "物流中心", type = "String"),
             @ApiImplicitParam(name = "warehouse_code", value = "库房", type = "String"),
             @ApiImplicitParam(name = "procurement_section_code", value = "采购组", type = "String"),
@@ -203,7 +203,6 @@ public class StockController {
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
     public HttpResponse<List<QueryStockBatchSkuRespVo>> selectStockBatchSkuByPage(@RequestParam(value = "supplier_code", required = false) String supplierCode,
-                                                                                      @RequestParam(value = "supplier_name", required = false) String supplierName,
                                                                                       @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
                                                                                       @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
                                                                                       @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
@@ -214,11 +213,35 @@ public class StockController {
                                                                                       @RequestParam(value = "product_property_name", required = false) String productPropertyName,
                                                                                       @RequestParam(value = "page_no", required = false) Integer page_no,
                                                                                       @RequestParam(value = "page_size", required = false) Integer page_size) {
-        QueryStockBatchSkuReqVo reqVO = new QueryStockBatchSkuReqVo(supplierCode,supplierName,transportCenterCode,warehouseCode,procurementSectionCode,skuCode,skuName,productCategoryName,productBrandName,productPropertyName);
+        QueryStockBatchSkuReqVo reqVO = new QueryStockBatchSkuReqVo(supplierCode,transportCenterCode,warehouseCode,procurementSectionCode,skuCode,skuName,productCategoryName,productBrandName,productPropertyName);
         reqVO.setPageNo(page_no);
         reqVO.setPageSize(page_size);
         PageInfo<QueryStockBatchSkuRespVo> queryStockBatchSkuRespVoPageInfo = stockService.selectStockBatchSkuPage(reqVO);
         return HttpResponse.success(queryStockBatchSkuRespVoPageInfo);
     }
+
+    /**
+     *  库房管理新增调拨,移库,报废列表查询
+     * @param supplierCode
+     * @param supplierName
+     * @param page_no
+     * @param page_size
+     * @return
+     */
+    /*@GetMapping("/search/batch/sku/page")
+    @ApiOperation(value = "查询库房商品(分页)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
+    })
+    public HttpResponse<List<QueryStockSkuListRespVo>> selectStockSkuList(@RequestParam(value = "supplier_code", required = false) String supplierCode,
+                                                                          @RequestParam(value = "supplier_name", required = false) String supplierName,
+                                                                          @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                          @RequestParam(value = "page_size", required = false) Integer page_size) {
+        QueryStockSkuListReqVo reqVO = new QueryStockSkuListReqVo();
+        reqVO.setPageNo(page_no);
+        reqVO.setPageSize(page_size);
+     //   PageInfo<QueryStockSkuListRespVo> queryStockBatchSkuRespVoPageInfo = stockService.selectStockBatchSkuPage();
+        return HttpResponse.success();
+    }*/
 
 }

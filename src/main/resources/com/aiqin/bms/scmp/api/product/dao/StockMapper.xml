@@ -189,8 +189,7 @@
         <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
         <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode"/>
         <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
-        <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode"/>
-        <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName"/>
+        <result column="goods_gifts" jdbcType="BIGINT" property="goodsGifts"/>
         <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
         <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
         <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
@@ -211,6 +210,7 @@
         <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName"/>
         <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode"/>
         <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
+        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
     </resultMap>
     <resultMap id="StockFlowMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -1563,11 +1563,11 @@
             resultMap="QueryStockBatchSkuResultMap">
         select
         ps.procurement_section_code,ps.procurement_section_name,pssi.bar_code,sb.sku_code,sb.sku_name,ps.product_code,
-        ps.product_name,sb.category_type_code as product_category_code,sb.category_type_name as product_category_name,ps.product_brand_code,ps.product_brand_name,
-        ps.product_sort_code,ps.product_sort_name,sb.color_code,sb.color_name,sb.model_number,sb.spec,sb.unit_code,
+        ps.product_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
+        ps.goods_gifts,sb.color_code,sb.color_name,sb.model_number,sb.spec,sb.unit_code,
         sb.unit_name,psc.Input_tax_rate,sb.transport_center_code,sb.transport_center_name,sb.warehouse_code,
         sb.warehouse_name,sb.purchase_price,s.tax_cost,sb.batch_code,sb.production_date,sb.batch_remark,
-        psc.settlement_method_code,psc.settlement_method_name,sb.supplier_code,sb.supplier_name
+        psc.settlement_method_code,psc.settlement_method_name,sb.supplier_code,sb.supplier_name,sb.available_num
         from stock_batch sb
         left join stock s on sb.sku_code = s.sku_code
         left join product_sku ps on sb.sku_code = ps.sku_code
@@ -1577,9 +1577,6 @@
             1 = 1
             <if test="supplierCode != null and supplierCode != ''">
                 and sb.supplier_code  = #{supplierCode, jdbcType=VARCHAR}
-            </if>
-            <if test="supplierName != null and supplierName != ''">
-                and sb.supplier_name  = #{supplierName, jdbcType=VARCHAR}
             </if>
             <if test="transportCenterCode != null and transportCenterCode != ''">
                 and sb.transport_center_code  = #{transportCenterCode, jdbcType=VARCHAR}

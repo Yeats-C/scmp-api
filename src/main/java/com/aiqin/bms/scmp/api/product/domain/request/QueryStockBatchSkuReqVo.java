@@ -24,10 +24,6 @@ public class QueryStockBatchSkuReqVo extends PageReq implements Serializable {
     @JsonProperty("supplier_code")
     private String supplierCode;
 
-    @ApiModelProperty("供应商名称")
-    @JsonProperty("supplier_name")
-    private String supplierName;
-
     @ApiModelProperty("物流中心")
     @NotEmpty(message = "物流中心不能为空")
     @JsonProperty("transport_center_code")
@@ -63,9 +59,8 @@ public class QueryStockBatchSkuReqVo extends PageReq implements Serializable {
     @JsonProperty("product_property_name")
     private String productPropertyName;
 
-    public QueryStockBatchSkuReqVo(String supplierCode, String supplierName, @NotEmpty(message = "物流中心不能为空") String transportCenterCode, @NotEmpty(message = "库房不能为空") String warehouseCode, @NotEmpty(message = "采购组不能为空") String procurementSectionCode, String skuCode, String skuName, String productCategoryName, String productBrandName, String productPropertyName) {
+    public QueryStockBatchSkuReqVo(String supplierCode, @NotEmpty(message = "物流中心不能为空") String transportCenterCode, @NotEmpty(message = "库房不能为空") String warehouseCode, @NotEmpty(message = "采购组不能为空") String procurementSectionCode, String skuCode, String skuName, String productCategoryName, String productBrandName, String productPropertyName) {
         this.supplierCode = supplierCode;
-        this.supplierName = supplierName;
         this.transportCenterCode = transportCenterCode;
         this.warehouseCode = warehouseCode;
         this.procurementSectionCode = procurementSectionCode;
