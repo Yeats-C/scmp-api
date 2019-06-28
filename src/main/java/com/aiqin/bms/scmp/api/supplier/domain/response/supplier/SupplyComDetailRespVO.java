@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.supplier.domain.response.supplier;
 
+import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierFileReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
-import com.aiqin.bms.scmp.api.supplier.domain.response.sku.QueryProductSkuListResp;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

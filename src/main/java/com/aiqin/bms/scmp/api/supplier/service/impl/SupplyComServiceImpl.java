@@ -1,15 +1,14 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
+import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierFileDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyAccountDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierFile;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
@@ -18,15 +17,20 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierC
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierFileReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
-import com.aiqin.bms.scmp.api.supplier.domain.response.sku.QueryProductSkuListResp;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper;
-import com.aiqin.bms.scmp.api.supplier.service.*;
+import com.aiqin.bms.scmp.api.supplier.service.DeliveryInfoService;
+import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
+import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
@@ -57,8 +61,8 @@ public class SupplyComServiceImpl implements SupplyComService {
     private SupplierFileDao supplierFileDao;
     @Autowired
     private SupplyCompanyAccountDao supplyCompanyAccountDao;
-//    @Autowired
-//    private SkuInfoService skuInfoService;
+    @Autowired
+    private SkuInfoService skuInfoService;
     @Autowired
     private DeliveryInfoService deliveryInfoService;
     @Autowired
@@ -190,12 +194,7 @@ public class SupplyComServiceImpl implements SupplyComService {
                     List<QuerySupplierComAcctRespVo> querySupplierComAcctRespVos = supplyCompanyAccountDao.selectListByQueryVO(vo);
                     supplyComDetailRespVO.setSupplierComAcctRespVos(querySupplierComAcctRespVos);
                     List<QueryProductSkuListResp> queryProductSkuListResps = null;
-                    try {
-                        //queryProductSkuListResps = skuInfoService.querySkuListBySupplyUnitCode(supplyComDetailRespVO.getApplySupplyCode());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        log.info("查询SKU信息失败,失败原因[{}]",e.getMessage());
-                    }
+                    queryProductSkuListResps = skuInfoService.querySkuListBySupplyUnitCode(supplyComDetailRespVO.getApplySupplyCode());
                     supplyComDetailRespVO.setSkuListRespVos(queryProductSkuListResps);
                 }
             } else {

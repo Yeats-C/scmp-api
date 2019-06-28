@@ -108,6 +108,13 @@ public interface ApplySupplyComAcctService{
      * @return java.util.Map<java.lang.String,java.lang.Object>
      */
     BasePage<QuerySupplierComAcctRespVo> selectSupplyListByQueryVO(QuerySupplierComAcctReqVo vo);
+
+    /**
+     * 根据供应商名称查询账户信息
+     * @param supplierCode
+     * @return
+     */
+    List<QuerySupplierComAcctRespVo> selectSupplierComAcctBySupplierCode(String supplierCode);
     /**
      * 通过id查找申请供货单位账户详情
      * @author zth
