@@ -1267,6 +1267,9 @@
         select <include refid="Base_Column_List"></include> from stock where warehouse_code=#{warehouseCode}
     </select>
     <!-- 啊啊啊啊啊 -->
+    <select id="selectStockBatchDistinct" resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
+        select DISTINCT batch_code FROM stock_batch where batch_code ORDER BY production_date ASC;
+    </select>
     <insert id="insertStockBatch" parameterType="java.util.List">
         INSERT INTO stock_batch(
         stock_batch_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_name,warehouse_code,warehouse_type,
@@ -1560,9 +1563,9 @@
             resultMap="QueryStockBatchSkuResultMap">
         select
         ps.procurement_section_code,ps.procurement_section_name,pssi.bar_code,sb.sku_code,sb.sku_name,ps.product_code,
-        ps.product_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
-        ps.product_sort_code,ps.product_sort_name,ps.color_code,ps.color_name,ps.model_number,pssi.spec,pssi.unit_code,
-        pssi.unit_name,psc.Input_tax_rate,sb.transport_center_code,sb.transport_center_name,sb.warehouse_code,
+        ps.product_name,sb.category_type_code as product_category_code,sb.category_type_name as product_category_name,ps.product_brand_code,ps.product_brand_name,
+        ps.product_sort_code,ps.product_sort_name,sb.color_code,sb.color_name,sb.model_number,sb.spec,sb.unit_code,
+        sb.unit_name,psc.Input_tax_rate,sb.transport_center_code,sb.transport_center_name,sb.warehouse_code,
         sb.warehouse_name,sb.purchase_price,s.tax_cost,sb.batch_code,sb.production_date,sb.batch_remark,
         psc.settlement_method_code,psc.settlement_method_name,sb.supplier_code,sb.supplier_name
         from stock_batch sb
@@ -1604,6 +1607,13 @@
             </if>
             and sb.available_num > 0
         </where>
+        order by sb.sku_code asc
+    </select>
+    <select id="selectSkuBatchCodeList"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo"
+            resultMap="QueryStockBatchSkuResultMap">
+        select sb.sku_code,sb.sku_name,sb.batch_code
+        from stock_batch sb
         order by sb.sku_code asc
     </select>
 </mapper>
