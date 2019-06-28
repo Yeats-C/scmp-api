@@ -1,20 +1,42 @@
-package com.aiqin.bms.scmp.api.purchase.domain;
+package com.aiqin.bms.scmp.api.purchase.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
-@ApiModel
+/**
+ * <p>
+ * ━━━━━━神兽出没━━━━━━
+ * 　　┏┓　　　┏┓+ +
+ * 　┏┛┻━━━┛┻┓ + +
+ * 　┃　　　　　　　┃
+ * 　┃　　　━　　　┃ ++ + + +
+ * ████━████ ┃+
+ * 　┃　　　　　　　┃ +
+ * 　┃　　　┻　　　┃
+ * 　┃　　　　　　　┃
+ * 　┗━┓　　　┏━┛
+ * 　　　┃　　　┃                  神兽保佑, 永无BUG!
+ * 　　　┃　　　┃
+ * 　　　┃　　　┃     Code is far away from bug with the animal protecting
+ * 　　　┃　 　　┗━━━┓
+ * 　　　┃ 　　　　　　　┣┓
+ * 　　　┃ 　　　　　　　┏┛
+ * 　　　┗┓┓┏━┳┓┏┛
+ * 　　　　┃┫┫　┃┫┫
+ * 　　　　┗┻┛　┗┻┛
+ * ━━━━━━感觉萌萌哒━━━━━━
+ * <p>
+ * <p>
+ * 思维方式*热情*能力
+ */
+@ApiModel("接受从库存查询出来的数据")
 @Data
-public class RejectApplyRecordDetail {
-    @ApiModelProperty(value = "")
-    @JsonProperty("id")
-    private Long id;
+public class RejectApplyDetailHandleRequest {
 
     @ApiModelProperty(value = "业务id")
     @JsonProperty("reject_apply_record_detail_id")
@@ -29,11 +51,11 @@ public class RejectApplyRecordDetail {
     private Integer applyType;
 
     @ApiModelProperty(value = "采购组 code")
-    @JsonProperty("purchase_group_code")
+    @JsonProperty("procurement_section_code")
     private String purchaseGroupCode;
 
     @ApiModelProperty(value = "")
-    @JsonProperty("purchase_group_name")
+    @JsonProperty("procurement_section_name")
     private String purchaseGroupName;
 
     @ApiModelProperty(value = "退供申请单状态: 0  已完成 1 待提交")
@@ -57,19 +79,19 @@ public class RejectApplyRecordDetail {
     private String productId;
 
     @ApiModelProperty(value = "品类id")
-    @JsonProperty("category_id")
+    @JsonProperty("product_category_code")
     private String categoryId;
 
     @ApiModelProperty(value = "")
-    @JsonProperty("category_name")
+    @JsonProperty("product_category_name")
     private String categoryName;
 
     @ApiModelProperty(value = "品牌id")
-    @JsonProperty("brand_id")
+    @JsonProperty("product_brand_code")
     private String brandId;
 
     @ApiModelProperty(value = "")
-    @JsonProperty("brand_name")
+    @JsonProperty("product_brand_name")
     private String brandName;
 
     @ApiModelProperty(value = "商品类型 0赠品 1商品 2实物返回")
@@ -89,7 +111,7 @@ public class RejectApplyRecordDetail {
     private String modelNumber;
 
     @ApiModelProperty(value = "规格")
-    @JsonProperty("product_spec")
+    @JsonProperty("spec")
     private String productSpec;
 
     @ApiModelProperty(value="单位")
@@ -133,7 +155,7 @@ public class RejectApplyRecordDetail {
     private String warehouseName;
 
     @ApiModelProperty(value = "含税单价")
-    @JsonProperty("product_amount")
+    @JsonProperty("purchase_price")
     private Long productAmount;
 
     @ApiModelProperty(value = "含税总价")
@@ -141,11 +163,11 @@ public class RejectApplyRecordDetail {
     private Long productTotalAmount;
 
     @ApiModelProperty(value = "含税成本")
-    @JsonProperty("product_cost")
+    @JsonProperty("tax_cost")
     private Long productCost;
 
     @ApiModelProperty(value = "商品批次号")
-    @JsonProperty("batch_no")
+    @JsonProperty("batch_code")
     private String batchNo;
 
     @ApiModelProperty(value = "批次备注")
@@ -154,8 +176,8 @@ public class RejectApplyRecordDetail {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "批次创建时间")
-    @JsonProperty("batch_create_time")
-    private Date batchCreateTime;
+    @JsonProperty("production_date")
+    private String batchCreateTime;
 
     @ApiModelProperty(value = "商品 结算方式")
     @JsonProperty("settlement_method_code")

@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.dao.test;
 
 import com.aiqin.bms.scmp.api.SpringBootTestContext;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
@@ -53,7 +55,7 @@ public class RejectTest extends SpringBootTestContext {
     }
     @Test
     public void rejectApply(){
-        RejectApplyRequest rejectApplyQueryRequest = new RejectApplyRequest();
+        RejectApplyHandleRequest rejectApplyQueryRequest = new RejectApplyHandleRequest();
         rejectApplyQueryRequest.setCreateById("10001");
         rejectApplyQueryRequest.setCreateByName("小明");
         rejectApplyQueryRequest.setPurchaseGroupCode("1044");
@@ -61,8 +63,8 @@ public class RejectTest extends SpringBootTestContext {
         rejectApplyQueryRequest.setCompanyName("爱亲");
         rejectApplyQueryRequest.setApplyType(1);
         rejectApplyQueryRequest.setCompanyCode("01");
-        List<RejectApplyRecordDetail> detailList = new ArrayList<>();
-        RejectApplyRecordDetail detail = new RejectApplyRecordDetail();
+        List<RejectApplyDetailHandleRequest> detailList = new ArrayList<>();
+        RejectApplyDetailHandleRequest detail = new RejectApplyDetailHandleRequest();
         detail.setPurchaseGroupCode("1044");
         detail.setPurchaseGroupName("奶粉组");
         detail.setApplyType(1);
@@ -91,10 +93,9 @@ public class RejectTest extends SpringBootTestContext {
         detail.setWarehouseCode("kf1");
         detail.setWarehouseName("库房1");
         detail.setProductAmount(10L);
-        detail.setProductTotalAmount(50L);
         detail.setProductCost(10L);
         detail.setBatchNo("batch01");
-        detail.setBatchCreateTime(new Date());
+        detail.setBatchCreateTime("2019-06-28");
         detail.setBatchRemark("batch备注");
         detail.setSettlementMethodCode("s11");
         detail.setSettlementMethodName("结算方式1");

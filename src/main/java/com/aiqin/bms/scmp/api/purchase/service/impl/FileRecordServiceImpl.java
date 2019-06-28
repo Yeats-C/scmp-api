@@ -2,7 +2,9 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.purchase.dao.FileRecordDao;
+import com.aiqin.bms.scmp.api.purchase.dao.OperationLogDao;
 import com.aiqin.bms.scmp.api.purchase.domain.FileRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.service.FileRecordService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.commons.lang.StringUtils;
@@ -25,7 +27,8 @@ public class FileRecordServiceImpl implements FileRecordService {
 
     @Resource
     private FileRecordDao fileRecordDao;
-
+    @Resource
+    private OperationLogDao operationLogDao;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse deleteFile(FileRecord fileRecord){
@@ -47,5 +50,12 @@ public class FileRecordServiceImpl implements FileRecordService {
         }
         List<FileRecord> files = fileRecordDao.fileList(fileId);
         return HttpResponse.success(files);
+    }
+
+    @Override
+    public HttpResponse downloadFile(String id, String fileId, String createById, String createByName,String fileName) {
+        //增加操作记录 操作状态  : 0 新增 1 修改 2 下载
+        operationLogDao.insert(new OperationLog(id, 2, String.format("下载文件,文件名:{%s},文件编码:{%s}",fileName,fileId),"", createById, createByName));
+        return HttpResponse.success();
     }
 }
