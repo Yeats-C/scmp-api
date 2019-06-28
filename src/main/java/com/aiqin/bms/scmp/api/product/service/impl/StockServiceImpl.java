@@ -21,10 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.VerifyReturnSupplyErrorRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.*;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
@@ -60,6 +57,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1427,7 +1425,29 @@ public class StockServiceImpl implements StockService {
         try {
             PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
             List<QueryStockBatchSkuRespVo> queryStockBatchSkuRespVos = stockDao.selectStockBatchSkuInfoByPage(reqVO);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (QueryStockBatchSkuRespVo queryStockBatchSkuRespVo : queryStockBatchSkuRespVos) {
+                String format = sdf.format(sdf.parse(queryStockBatchSkuRespVo.getProductionDate()));
+                queryStockBatchSkuRespVo.setProductionDate(format);
+            }
             return new PageInfo<QueryStockBatchSkuRespVo>(queryStockBatchSkuRespVos);
+        } catch (Exception ex) {
+            log.error("查询批次库存商失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     * 库房管理新增调拨,移库,报废列表查询
+     * @param reqVO
+     * @return
+     */
+    @Override
+    public PageInfo<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO) {
+        try {
+            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+            return new PageInfo<QueryStockSkuListRespVo>(stockDao.selectStockSkuList(reqVO));
         } catch (Exception ex) {
             log.error("查询批次库存商失败");
             ex.printStackTrace();
