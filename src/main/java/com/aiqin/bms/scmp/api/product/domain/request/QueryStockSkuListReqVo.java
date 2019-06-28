@@ -65,13 +65,21 @@ public class QueryStockSkuListReqVo extends PageReq implements Serializable {
     @JsonProperty("product_property_code")
     private String productPropertyCode;
 
-    @ApiModelProperty("所属仓库")
-    @NotEmpty(message = "所属仓库不能为空")
-    @JsonProperty("transport_center_code")
-    private String transportCenterCode;
+    public QueryStockSkuListReqVo(@NotEmpty(message = "调出仓库不能为空") String outTransportCenterCode, @NotEmpty(message = "调出库房不能为空") String outWarehouseCode, @NotEmpty(message = "采购组不能为空") String procurementSectionCode, @NotEmpty(message = "调入仓库不能为空") String inTransportCenterCode, @NotEmpty(message = "调入库房不能为空") String inWarehouseCode, String skuCode, String skuName, String productBrandCode, String productCategoryCode, String productPropertyCode) {
+        this.outTransportCenterCode = outTransportCenterCode;
+        this.outWarehouseCode = outWarehouseCode;
+        this.procurementSectionCode = procurementSectionCode;
+        this.inTransportCenterCode = inTransportCenterCode;
+        this.inWarehouseCode = inWarehouseCode;
+        this.skuCode = skuCode;
+        this.skuName = skuName;
+        this.productBrandCode = productBrandCode;
+        this.productCategoryCode = productCategoryCode;
+        this.productPropertyCode = productPropertyCode;
+    }
 
-    @ApiModelProperty("库房")
-    @NotEmpty(message = "库房不能为空")
-    @JsonProperty("warehouse_code")
-    private String warehouseCode;
+    public QueryStockSkuListReqVo() {
+    }
+
+
 }

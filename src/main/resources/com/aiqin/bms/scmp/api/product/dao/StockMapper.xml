@@ -212,6 +212,22 @@
         <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
         <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
     </resultMap>
+    <resultMap id="QueryStockSkuListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo">
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
+        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
+        <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode"/>
+        <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
+        <result column="goods_gifts" jdbcType="BIGINT" property="goodsGifts"/>
+        <result column="spec" jdbcType="VARCHAR" property="spec"/>
+        <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
+        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
+        <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
+        <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
+        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
+        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
+    </resultMap>
     <resultMap id="StockFlowMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <id column="stock_code" jdbcType="VARCHAR" property="stockCode"/>
@@ -1564,10 +1580,9 @@
         select
         ps.procurement_section_code,ps.procurement_section_name,pssi.bar_code,sb.sku_code,sb.sku_name,ps.product_code,
         ps.product_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
-        ps.goods_gifts,sb.color_code,sb.color_name,sb.model_number,sb.spec,sb.unit_code,
-        sb.unit_name,psc.Input_tax_rate,sb.transport_center_code,sb.transport_center_name,sb.warehouse_code,
-        sb.warehouse_name,sb.purchase_price,s.tax_cost,sb.batch_code,sb.production_date,sb.batch_remark,
-        psc.settlement_method_code,psc.settlement_method_name,sb.supplier_code,sb.supplier_name,sb.available_num
+        ps.goods_gifts,sb.color_code,sb.color_name,sb.model_number,sb.spec,sb.unit_code,sb.unit_name,psc.Input_tax_rate,
+        sb.transport_center_code,sb.transport_center_name,sb.warehouse_code,sb.warehouse_name,sb.purchase_price,s.tax_cost,sb.batch_code,sb.production_date,
+        sb.batch_remark,psc.settlement_method_code,psc.settlement_method_name,sb.supplier_code,sb.supplier_name,sb.available_num
         from stock_batch sb
         left join stock s on sb.sku_code = s.sku_code
         left join product_sku ps on sb.sku_code = ps.sku_code
@@ -1613,4 +1628,50 @@
         from stock_batch sb
         order by sb.sku_code asc
     </select>
+    <select id="selectStockSkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuListReqVo"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo"
+            resultMap="QueryStockSkuListResultMap">
+        select
+        s.sku_code,s.sku_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
+        ps.goods_gifts,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,s.available_num
+        from stock s
+        left join product_sku ps on s.sku_code = ps.sku_code
+        left join product_sku_checkout psc on s.sku_code = psc.sku_code
+        left join product_sku_stock_info pssi on s.sku_code = pssi.product_sku_code
+        <where>
+            1 = 1
+            <if test="outTransportCenterCode != null and outTransportCenterCode != ''">
+                and s.transport_center_code  = #{outTransportCenterCode, jdbcType=VARCHAR}
+            </if>
+            <if test="outWarehouseCode != null and outWarehouseCode != ''">
+                and s.warehouse_code  = #{outWarehouseCode, jdbcType=VARCHAR}
+            </if>
+            <if test="procurementSectionCode != null and procurementSectionCode != ''">
+                and ps.procurement_section_code  = #{procurementSectionCode, jdbcType=VARCHAR}
+            </if>
+            <if test="inTransportCenterCode != null and inTransportCenterCode != ''">
+                and s.transport_center_code = #{inTransportCenterCode, jdbcType=VARCHAR}
+            </if>
+            <if test="inWarehouseCode != null and inWarehouseCode != ''">
+                and s.warehouse_code  = #{inWarehouseCode, jdbcType=VARCHAR}
+            </if>
+            <if test="skuCode != null and skuCode != ''">
+                and s.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="skuName != null and skuName != ''">
+                and s.sku_name like concat('%', #{skuName, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productBrandCode != null and productBrandCode != ''">
+                and ps.product_brand_code like concat('%', #{productBrandCode, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productCategoryCode != null and productCategoryCode != ''">
+                and ps.product_category_code like concat('%', #{productCategoryCode, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productPropertyCode != null and productPropertyCode != ''">
+                and ps.product_property_code like concat('%', #{productPropertyCode, jdbcType=VARCHAR} ,'%')
+            </if>
+        </where>
+        order by s.sku_code asc
+    </select>
+
 </mapper>
