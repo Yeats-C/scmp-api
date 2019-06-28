@@ -507,6 +507,6 @@
         from
         reject_record
         where
-           reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+           reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
     </select>
 </mapper>

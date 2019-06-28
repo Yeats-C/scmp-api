@@ -418,6 +418,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         List<RejectRecordDetail> batchList = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
         List<RejectRecordDetailResponse> productList = rejectRecordDetailDao.selectProductByRejectId(rejectRecordId);
         List<FileRecord> fileList = fileRecordDao.fileList(rejectRecordId);
+        List<OperationLog> operationLogList = operationLogDao.list(rejectRecordId);
+        rejectResponse.setLogList(operationLogList);
         rejectResponse.setBatchList(batchList);
         rejectResponse.setProductList(productList);
         rejectResponse.setFileList(fileList);

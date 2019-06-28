@@ -395,7 +395,7 @@
       product_spec as productSpec,unit_name as unitName,tax_rate as taxRate,product_amount as productAmount,sum(product_total_amount) as product_total_amount,
       sum(actual_count) as actualCount,sum(actual_amount) as actualAmount
     FROM reject_record_detail
-    WHERE  reject_record_detail_id = #{rejectRecordDetailId,jdbcType=VARCHAR}
+    WHERE      reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
     GROUP BY sku_code,product_type
 
   </select>
@@ -403,8 +403,8 @@
     select
     <include refid="Base_Column_List"/>
     from
-    reject_record
+    reject_record_detail
     where
-    reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+    reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
   </select>
 </mapper>
