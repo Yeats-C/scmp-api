@@ -86,8 +86,11 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             info.setOperator(CommonConstant.SYSTEM_AUTO);
             info.setOperatorCode(CommonConstant.SYSTEM_AUTO_CODE);
             info.setOperatorTime(date);
+//            info.setWeight();
+//            info.setVolume();
             orders.add(info);
             List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(o.getProductList(), OrderInfoItem.class);
+
             orderItems.addAll(orderItem);
             //拼装日志信息
             OrderInfoLog log = new OrderInfoLog(null,info.getOrderCode(),info.getOrderStatus(), OrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(),null,info.getOperator(),date,info.getCompanyCode(),info.getCompanyName());
