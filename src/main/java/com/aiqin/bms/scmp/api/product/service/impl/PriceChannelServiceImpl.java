@@ -220,6 +220,11 @@ public class PriceChannelServiceImpl implements PriceChannelService {
         return priceChannelItemMapper.insertBach(items);
     }
 
+    @Override
+    public List<PriceChannelItem> selectByChannelCodes(List<String> codes) {
+        return priceChannelItemMapper.selectByChannelCodes(codes,2);
+    }
+
     private void itemTransFormChannelResp(PriceChannelRespVo respVo){
         if(Objects.isNull(respVo)){
             throw new BizException(ResultCode.OBJECT_EMPTY);
@@ -319,4 +324,6 @@ public class PriceChannelServiceImpl implements PriceChannelService {
         items.add(item);
         return items;
     }
+
+
 }

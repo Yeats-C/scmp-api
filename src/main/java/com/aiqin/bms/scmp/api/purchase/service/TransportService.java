@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
 
+import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportLog;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportOrders;
@@ -9,14 +10,13 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportLogsReq
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportOrdersResquest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportRequest;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.github.pagehelper.PageInfo;
 
 public interface TransportService {
-    PageInfo<Transport> selectPage(TransportRequest transportRequest);
+    BasePage<Transport> selectPage(TransportRequest transportRequest);
 
-    PageInfo<TransportOrders> selectTransportOrdersPage(TransportOrdersResquest transportOrdersResquest);
+    BasePage<TransportOrders> selectTransportOrdersPage(TransportOrdersResquest transportOrdersResquest);
 
-    PageInfo<TransportOrders> selectDeliverOrdersPage(TransportOrdersResquest transportOrdersResquest);
+    BasePage<TransportOrders> selectDeliverOrdersPage(TransportOrdersResquest transportOrdersResquest);
 
     HttpResponse saveTransport(TransportAddRequest transportAddRequest);
 
@@ -24,5 +24,5 @@ public interface TransportService {
 
     HttpResponse sign(String transportCode);
 
-    PageInfo<TransportLog> transportLogs(TransportLogsRequest transportLogsRequest);
+    BasePage<TransportLog> transportLogs(TransportLogsRequest transportLogsRequest);
 }
