@@ -21,6 +21,15 @@
         #{transportCode},#{type},#{content},#{remark},#{createBy},#{createTime},#{updateBy},#{updateTime}
         )
     </insert>
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into transport_log (transport_code,type,content,remark,create_by,create_time,update_by,update_time)
+        values
+        <foreach collection="list" item="item" separator="," close="" open="">
+            (
+            #{item.transportCode},#{item.type},#{item.content},#{item.remark},#{item.createBy},#{item.createTime},#{item.updateBy},#{item.updateTime}
+            )
+        </foreach>
+    </insert>
     <select id="selectList" resultMap="BaseResultMap">
         select <include refid="Base_Column_sql"></include> from transport_log where transport_code=#{transportCode}
     </select>
