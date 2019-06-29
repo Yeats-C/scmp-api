@@ -231,5 +231,6 @@ public interface ResultCode {
     MessageId SAVE_IN_BOUND_PRODUCT_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库商品数据失败");
     MessageId SAVE_IN_BOUND_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库批次数据失败");
 
+    MessageId SUPERVISORY_WAREHOUSE_NOT_EXISTS = MessageId.create(Project.PURCHASE_API,75,"监管仓不存在,请先添加");
 
 }

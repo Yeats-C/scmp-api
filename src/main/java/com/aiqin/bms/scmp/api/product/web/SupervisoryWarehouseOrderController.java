@@ -1,9 +1,15 @@
 package com.aiqin.bms.scmp.api.product.web;
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.request.supervisory.SaveSupervisoryWarehouseOrderReqVo;
+import com.aiqin.bms.scmp.api.product.service.SupervisoryWarehouseOrderService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author knight.xie
@@ -18,19 +24,32 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/supervisory/warehouse")
 @Slf4j
 public class SupervisoryWarehouseOrderController {
-//    @Autowired
-//    private BaseService baseService;
-//
-//    @GetMapping("/getCurrentUserName")
-//    @ApiOperation(value = "获取当前用户")
-//    public HttpResponse<String> getCurrentUserName(){
-//        try {
-//            return HttpResponse.success(baseService.getUser().getPersonName());
-//        } catch (BizException e) {
-//            return HttpResponse.failure(e.getMessageId());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-//        }
-//    }
+    @Autowired
+    private SupervisoryWarehouseOrderService supervisoryWarehouseOrderService;
+
+    @GetMapping("/getCurrentUserName")
+    @ApiOperation(value = "获取当前用户")
+    public HttpResponse<String> getCurrentUserName(){
+        try {
+            return HttpResponse.success(supervisoryWarehouseOrderService.getUser().getPersonName());
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/save")
+    @ApiOperation(value = "保存")
+    public HttpResponse<Integer> save(@RequestBody SaveSupervisoryWarehouseOrderReqVo reqVo){
+        try {
+            return HttpResponse.success(supervisoryWarehouseOrderService.save(reqVo));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 }
