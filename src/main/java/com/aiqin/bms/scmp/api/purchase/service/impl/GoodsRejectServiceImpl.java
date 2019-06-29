@@ -1,9 +1,13 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
-import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
+import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockBatchSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
@@ -16,8 +20,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
-import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
-import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -91,9 +93,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     @Resource
     private FileRecordDao fileRecordDao;
     @Resource
-    private WorkFlowBaseUrl workFlowBaseUrl;
-    @Resource
-    private UrlConfig urlConfig;
+    private StockDao stockDao;
 
 
     @Override
@@ -117,8 +117,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             String rejectCode = "RAR" + encodingRule.getNumberingValue();
             rejectApplyRecord.setRejectApplyRecordCode(rejectCode);
             //处理数据
-            Integer count = this.rejectApplyData(rejectApplyQueryRequest, rejectApplyRecord, rejectCode);
             rejectApplyRecord.setApplyRecordStatus(1);
+            Integer count = this.rejectApplyData(rejectApplyQueryRequest, rejectApplyRecord, rejectCode);
             //sku数量等于商品列表条数
             rejectApplyRecord.setSumSku(count);
             Integer counts = rejectApplyRecordDao.insert(rejectApplyRecord);
@@ -126,7 +126,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             //更新编码
             encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         } catch (Exception e) {
-            LOGGER.error("添加退供申请单异常:{}", e.getMessage());
+            LOGGER.error("添加退供申请单异常:{}", e);
             throw new RuntimeException(String.format("添加退供申请单异常:{}", e.getMessage()));
         }
         return HttpResponse.success();
@@ -144,6 +144,9 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             //详情的id
             detail.setRejectApplyRecordDetailId(IdUtil.uuid());
             detail.setRejectApplyRecordCode(rejectCode);
+            detail.setApplyRecordStatus(rejectApplyRecord.getApplyRecordStatus());
+            //单品数量等于数量
+            detail.setSingleCount(detail.getProductCount());
             detail.setCreateById(rejectApplyQueryRequest.getCreateById());
             detail.setCreateByName(rejectApplyQueryRequest.getCreateByName());
             detail.setProductTotalAmount(detail.getProductAmount() * detail.getProductCount());
@@ -203,26 +206,34 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         }
         try {
             String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
-
+            List<RejectImportResponse> list = new ArrayList<>();
+            Integer errorCount = 0;
             if (result != null) {
                 String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
                 if (StringUtils.isNotBlank(validResult)) {
                     return HttpResponse.failure(MessageId.create(Project.SCMP_API, 88888, validResult));
                 }
                 String[] record;
-                List<RejectImportResponse> responses = new ArrayList<>();
-                QueryStockBatchSkuReqVo reqVO;
                 RejectImportResponse response;
+                QueryStockBatchSkuRespVo queryStockBatchSkuRespVo;
                 for (int i = 3; i <= result.length - 1; i++) {
                     record = result[i];
-                    //todo 通过sku查询商品的品类,品牌,规格,供应商 ,税率,库存数量,总价,仓库,库房 ,批次信息 ,结算方式
-                    reqVO = new QueryStockBatchSkuReqVo();
                     response = new RejectImportResponse();
-
-
+                    queryStockBatchSkuRespVo = stockDao.selectSkuBatchCode(purchaseGroupCode,record[3], record[4], record[0], record[5]);
+                    if(queryStockBatchSkuRespVo!=null){
+                        BeanUtils.copyProperties(queryStockBatchSkuRespVo,response);
+                        if(queryStockBatchSkuRespVo.getAvailableNum()<Integer.valueOf(record[7])){
+                            response.setErrorReason("可用库存数量小于销售数量");
+                            errorCount++;
+                        }
+                    }else{
+                        response.setErrorReason("未查询到对应的商品");
+                        errorCount++;
+                    }
+                    list.add(response);
                 }
             }
-            return HttpResponse.success();
+            return HttpResponse.success(new PageResData(errorCount,list));
         } catch (Exception e) {
             LOGGER.error("退供申请单导入异常:{}", e.getMessage());
             return HttpResponse.failure(ResultCode.IMPORT_REJECT_APPLY_ERROR);
