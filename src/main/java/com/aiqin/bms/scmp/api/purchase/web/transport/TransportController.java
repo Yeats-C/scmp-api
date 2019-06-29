@@ -15,10 +15,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -106,8 +103,8 @@ public class TransportController {
     }
 
     @ApiOperation("发运单详细")
-    @PostMapping("/detail")
-    public HttpResponse<Transport> detail(String transportCode){
+    @GetMapping("/detail")
+    public HttpResponse<Transport> detail(@RequestParam String transportCode){
         try {
             return transportService.detail(transportCode);
         } catch (GroundRuntimeException ge){
