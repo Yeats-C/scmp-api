@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 
+import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport;
@@ -17,9 +18,9 @@ import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.TransportService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
+import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,24 +41,24 @@ public class TransportServiceImpl implements TransportService {
     private OrderService orderService;
 
     @Override
-    public PageInfo<Transport> selectPage(TransportRequest transportRequest) {
+    public BasePage<Transport> selectPage(TransportRequest transportRequest) {
         PageHelper.startPage(transportRequest.getPageNo(), transportRequest.getPageSize());
         List<Transport> page = transportMapper.selectList(transportRequest);
-        return new PageInfo<Transport>(page);
+        return PageUtil.getPageList(transportRequest.getPageNo(),page);
     }
 
     @Override
-    public PageInfo<TransportOrders> selectTransportOrdersPage(TransportOrdersResquest transportOrdersResquest) {
+    public BasePage<TransportOrders> selectTransportOrdersPage(TransportOrdersResquest transportOrdersResquest) {
         PageHelper.startPage(transportOrdersResquest.getPageNo(), transportOrdersResquest.getPageSize());
         List<TransportOrders> page = transportMapper.selectTransportOrdersWithOutCodeList(transportOrdersResquest);
-        return new PageInfo<TransportOrders>(page);
+        return PageUtil.getPageList(transportOrdersResquest.getPageNo(),page);
     }
 
     @Override
-    public PageInfo<TransportOrders> selectDeliverOrdersPage(TransportOrdersResquest transportOrdersResquest) {
+    public BasePage<TransportOrders> selectDeliverOrdersPage(TransportOrdersResquest transportOrdersResquest) {
         PageHelper.startPage(transportOrdersResquest.getPageNo(), transportOrdersResquest.getPageSize());
         List<TransportOrders> page = transportMapper.selectDeliverOrdersWithOutCodeList(transportOrdersResquest);
-        return new PageInfo<TransportOrders>(page);
+        return PageUtil.getPageList(transportOrdersResquest.getPageNo(),page);
     }
 
     @Override
@@ -139,9 +140,9 @@ public class TransportServiceImpl implements TransportService {
     }
 
     @Override
-    public PageInfo<TransportLog> transportLogs(TransportLogsRequest transportLogsRequest) {
+    public BasePage<TransportLog> transportLogs(TransportLogsRequest transportLogsRequest) {
         PageHelper.startPage(transportLogsRequest.getPageNo(), transportLogsRequest.getPageSize());
         List<TransportLog> page=transportLogMapper.selectList(transportLogsRequest);
-        return new PageInfo<TransportLog>(page);
+        return PageUtil.getPageList(transportLogsRequest.getPageNo(),page);
     }
 }
