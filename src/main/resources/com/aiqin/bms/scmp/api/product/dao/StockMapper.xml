@@ -77,6 +77,7 @@
         <result column="tax_price" jdbcType="BIGINT" property="taxPrice"/>
         <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
         <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
+        <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
         <result column="spec" jdbcType="VARCHAR" property="spec"/>
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
         <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
@@ -291,7 +292,7 @@
         sb.id,sb.stock_batch_code,sb.company_code,sb.company_name,sb.transport_center_code,sb.transport_center_name,
         sb.warehouse_code,sb.warehouse_name,sb.warehouse_type,sb.sku_code,sb.sku_name,sb.batch_code,sb.production_date,
         sb.batch_remark,sb.category_type_code,sb.category_type_name,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,
-        sb.pack,sb.config_status,sum(sb.inventory_num) as inventory_num,sum(sb.available_num) as available_num,
+        sb.pack,sb.config_status,ps.product_brand_name,sum(sb.inventory_num) as inventory_num,sum(sb.available_num) as available_num,
         sum(sb.lock_num) as lock_num,sb.supplier_code,sb.supplier_name,sb.new_delivery,sb.new_delivery_name,sb.purchase_price
     </sql>
 

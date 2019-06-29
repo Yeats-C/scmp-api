@@ -105,6 +105,10 @@ public class StockBatchRespVO {
     @JsonProperty(value = "config_status")
     private Integer configStatus;
 
+    @ApiModelProperty("品牌名称")
+    @JsonProperty(value = "product_brand_name")
+    private String productBrandName;
+
     @ApiModelProperty("库存数")
     @JsonProperty(value = "inventory_num")
     private Long inventoryNum;
@@ -408,6 +412,14 @@ public class StockBatchRespVO {
 
     public void setConfigStatus(Integer configStatus) {
         this.configStatus = configStatus;
+    }
+
+    public String getProductBrandName() {
+        return productBrandName;
+    }
+
+    public void setProductBrandName(String productBrandName) {
+        this.productBrandName = productBrandName;
     }
 
     public Long getInventoryNum() {
