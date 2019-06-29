@@ -16,7 +16,7 @@ public class TransportLog extends CommonBean {
     private String type;
 
     @ApiModelProperty("运输单号")
-    @JsonProperty("transport_code")
+//    @JsonProperty("transport_code")
     private String transportCode;
 
     @ApiModelProperty("内容")
