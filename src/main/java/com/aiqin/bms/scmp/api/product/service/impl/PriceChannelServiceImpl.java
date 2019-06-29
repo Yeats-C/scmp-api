@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.bms.scmp.api.base.BasePage;
@@ -222,6 +223,9 @@ public class PriceChannelServiceImpl implements PriceChannelService {
 
     @Override
     public List<PriceChannelItem> selectByChannelCodes(List<String> codes) {
+        if(CollectionUtils.isEmptyCollection(codes)){
+            return Lists.newArrayList();
+        }
         return priceChannelItemMapper.selectByChannelCodes(codes,2);
     }
 
