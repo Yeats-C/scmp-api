@@ -39,6 +39,7 @@
     <result column="pre_tax_amount" jdbcType="BIGINT" property="taxAmount" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, purchase_order_code, inbound_oder_code, arrival_subscribe_time, license_plate, 
@@ -49,10 +50,10 @@
     c.inbound_oder_code,a.purchase_order_code,c.supplier_code,c.supplier_name,
 	c.logistics_center_code,c.logistics_center_name,c.warehouse_code,
 	c.warehouse_name,ifnull(d.arrival_subscribe_status,0) arrival_subscribe_status,
-	CASE WHEN ifnull(d.arrival_subscribe_status,0)=0 THEN '未预约' when d.arrival_subscribe_status = 1 THEN '已预约'else '已确认' END as arrival_subscribe_status_name,
+	CASE WHEN ifnull(d.arrival_subscribe_status,0)=0 THEN '未预约' when d.arrival_subscribe_status = 1 THEN '已预约'else '未预约待确认' END as arrival_subscribe_status_name,
     d.license_plate,d.arrival_subscribe_time,d.driver_name,d.phone_mobile,
     d.remark,b.expect_arrival_time,b.valid_time,c.pre_inbound_num,
-    c.pre_tax_amount,a.purchase_group_code,a.purchase_group_name
+    c.pre_tax_amount,a.purchase_group_code,a.purchase_group_name,d.create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

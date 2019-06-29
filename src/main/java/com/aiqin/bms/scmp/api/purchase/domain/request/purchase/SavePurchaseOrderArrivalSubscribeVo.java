@@ -24,18 +24,21 @@ public class SavePurchaseOrderArrivalSubscribeVo {
     @ApiModelProperty("入库单号,必填字段")
     private String inboundOderCode;
 
-    @ApiModelProperty("到货预约时间,预约填写")
+    @ApiModelProperty("到货预约时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date arrivalSubscribeTime;
 
-    @ApiModelProperty("车牌号,预约填写")
+    @ApiModelProperty("车牌号")
     private String licensePlate;
 
-    @ApiModelProperty("司机姓名,预约填写")
+    @ApiModelProperty("司机姓名")
     private String driverName;
 
-    @ApiModelProperty("手机号,预约填写")
+    @ApiModelProperty("手机号")
     private String phoneMobile;
+
+    @ApiModelProperty("'到货预约状态(0:未预约 1:已预约 2:未预约待确认 3:驳回")
+    private Byte arrivalSubscribeStatus;
 
     @ApiModelProperty("备注,确认填写")
     private String remark;

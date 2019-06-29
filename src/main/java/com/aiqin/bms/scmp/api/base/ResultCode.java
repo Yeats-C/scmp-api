@@ -218,6 +218,7 @@ public interface ResultCode {
     MessageId SUPPLIER_CODE_EMPTY = MessageId.create(Project.SCMP_API,201,"供应商编码不能为空");
     MessageId INBOUND_ORDER_CODE_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "入库单编号不能为空");
     MessageId PURCHSAE_ORDER_CODE_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "采购单编号不能为空");
+    MessageId ARRIVAL_SUBSCRIBE_STATUS_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "预约状态不能为空");
 
     //发运
     MessageId TRANSPORT_DELIVERY_ERROR = MessageId.create(Project.PURCHASE_API, 1005, "发运单已签收或不存在");
