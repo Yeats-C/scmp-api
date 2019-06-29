@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -127,7 +128,7 @@ public interface StockDao {
      */
     List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
 
-    QueryStockBatchSkuRespVo selectSkuBatchCode(String transportCenterCode,String warehouseCode,String skuCode,String batchCode);
+    QueryStockBatchSkuRespVo selectSkuBatchCode(String procurementSectionCode,String transportCenterCode,String warehouseCode,String skuCode,String batchCode);
 
     /**
      * 库房管理新增调拨,移库,报废列表查询

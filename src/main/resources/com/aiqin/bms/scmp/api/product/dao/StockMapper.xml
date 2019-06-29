@@ -196,7 +196,7 @@
         <result column="spec" jdbcType="VARCHAR" property="spec"/>
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
         <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
-        <result column="Input_tax_rate" jdbcType="BIGINT" property="InputTaxRate"/>
+        <result column="input_tax_rate" jdbcType="BIGINT" property="inputTaxRate"/>
         <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
         <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
         <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
@@ -1647,13 +1647,16 @@
                 and sb.transport_center_code  = #{transportCenterCode, jdbcType=VARCHAR}
             </if>
             <if test="warehouseCode != null and warehouseCode != ''">
-                and sb.warehouseCode  = #{warehouseCode, jdbcType=VARCHAR}
+                and sb.warehouse_code  = #{warehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="skuCode != null and skuCode != ''">
                 and sb.sku_code  = #{skuCode, jdbcType=VARCHAR}
             </if>
             <if test="batchCode != null and batchCode != ''">
                 and sb.batch_code  = #{batchCode, jdbcType=VARCHAR}
+            </if>
+            <if test="procurementSectionCode != null and procurementSectionCode != ''">
+                and ps.procurement_section_code  = #{procurementSectionCode, jdbcType=VARCHAR}
             </if>
             and sb.available_num > 0
         </where>
