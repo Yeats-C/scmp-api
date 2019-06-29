@@ -60,6 +60,9 @@ public class PurchaseOrderArrivalSubscribeServieImpl implements PurchaseOrderArr
         if(Objects.isNull(reqVo.getPurchaseOrderCode())){
             throw new BizException(ResultCode.PURCHSAE_ORDER_CODE_EMPTY);
         }
+        if(Objects.isNull(reqVo.getArrivalSubscribeStatus())){
+            throw new BizException(ResultCode.ARRIVAL_SUBSCRIBE_STATUS_EMPTY);
+        }
         int num = 0;
         //根据入库单号和采购单号查找数据
         PurchaseOrderArrivalSubscribe purchaseOrderArrivalSubscribe =
@@ -67,11 +70,14 @@ public class PurchaseOrderArrivalSubscribeServieImpl implements PurchaseOrderArr
         if(null == purchaseOrderArrivalSubscribe){
             purchaseOrderArrivalSubscribe = new PurchaseOrderArrivalSubscribe();
             BeanCopyUtils.copy(reqVo,purchaseOrderArrivalSubscribe);
-            purchaseOrderArrivalSubscribe.setArrivalSubscribeStatus(Byte.valueOf("1"));
             num = ((PurchaseOrderArrivalSubscribeService) AopContext.currentProxy()).insertSelective(purchaseOrderArrivalSubscribe);
         } else {
-            purchaseOrderArrivalSubscribe.setArrivalSubscribeStatus(Byte.valueOf("2"));
+            purchaseOrderArrivalSubscribe.setArrivalSubscribeStatus(Objects.equals(reqVo.getArrivalSubscribeStatus(),Byte.parseByte("3")) ? Byte.parseByte("1") : reqVo.getArrivalSubscribeStatus());
             purchaseOrderArrivalSubscribe.setRemark(reqVo.getRemark());
+            purchaseOrderArrivalSubscribe.setArrivalSubscribeTime(reqVo.getArrivalSubscribeTime());
+            purchaseOrderArrivalSubscribe.setDriverName(reqVo.getDriverName());
+            purchaseOrderArrivalSubscribe.setLicensePlate(reqVo.getLicensePlate());
+            purchaseOrderArrivalSubscribe.setPhoneMobile(reqVo.getPhoneMobile());
             num = ((PurchaseOrderArrivalSubscribeService) AopContext.currentProxy()).updateByPrimaryKeySelective(purchaseOrderArrivalSubscribe);
         }
         return num;

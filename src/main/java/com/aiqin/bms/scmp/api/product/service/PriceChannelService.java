@@ -68,4 +68,12 @@ public interface PriceChannelService {
     Integer updateByPrimaryKeySelective(PriceChannel priceChannel);
 
     Integer insertBatchItem(List<PriceChannelItem> items);
+    /**
+     * 通过渠道编码集合查询关联的价格项目
+     * @author NullPointException
+     * @date 2019/6/29
+     * @param codes
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem>
+     */
+    List<PriceChannelItem> selectByChannelCodes(List<String> codes);
 }

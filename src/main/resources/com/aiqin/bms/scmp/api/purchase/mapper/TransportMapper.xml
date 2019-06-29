@@ -3,64 +3,66 @@
 <mapper namespace="com.aiqin.bms.scmp.api.purchase.mapper.TransportMapper">
     <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport">
         <id column="id" jdbcType="BIGINT" property="id" />
-        <id column="transport_code" jdbcType="VARCHAR" property="transportCode" />
-        <id column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
-        <id column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
-        <id column="customer_code" jdbcType="VARCHAR" property="customerCode" />
-        <id column="customer_name" jdbcType="VARCHAR" property="customerName" />
-        <id column="transport_amount" jdbcType="BIGINT" property="transportAmount" />
-        <id column="packing_num" jdbcType="BIGINT" property="packingNum" />
-        <id column="order_commodity_num" jdbcType="BIGINT" property="orderCommodityNum" />
-        <id column="status" jdbcType="BIGINT" property="status" />
-        <id column="logistics_company" jdbcType="BIGINT" property="logisticsCompany" />
-        <id column="logistics_company_name" jdbcType="VARCHAR" property="logisticsCompanyName" />
-        <id column="logistics_number" jdbcType="VARCHAR" property="logisticsNumber" />
-        <id column="logistics_fee" jdbcType="BIGINT" property="logisticsFee" />
-        <id column="standard_logistics_fee" jdbcType="BIGINT" property="standardLogisticsFee" />
-        <id column="additional_logistics_fee" jdbcType="BIGINT" property="additionalLogisticsFee" />
-        <id column="total_volume" jdbcType="DECIMAL" property="totalVolume" />
-        <id column="total_weight" jdbcType="DECIMAL" property="totalWeight" />
-        <id column="deliver_to" jdbcType="VARCHAR" property="deliverTo" />
-        <id column="transport_time" jdbcType="DATE" property="transportTime" />
-        <id column="sign_time" jdbcType="DATE" property="signTime" />
-        <id column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
-        <id column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
-        <id column="consignee_address" jdbcType="VARCHAR" property="consigneeAddress" />
-        <id column="detailed_address" jdbcType="VARCHAR" property="detailedAddress" />
-        <id column="zip" jdbcType="VARCHAR" property="zip" />
-        <id column="remark" jdbcType="VARCHAR" property="remark" />
-        <id column="create_by" jdbcType="VARCHAR" property="createBy" />
-        <id column="create_time" jdbcType="DATE" property="createTime" />
-        <id column="update_by" jdbcType="VARCHAR" property="updateBy" />
-        <id column="update_time" jdbcType="DATE" property="updateTime" />
+        <result column="transport_code" jdbcType="VARCHAR" property="transportCode" />
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+        <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
+        <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+        <result column="transport_amount" jdbcType="BIGINT" property="transportAmount" />
+        <result column="packing_num" jdbcType="BIGINT" property="packingNum" />
+        <result column="order_commodity_num" jdbcType="BIGINT" property="orderCommodityNum" />
+        <result column="status" jdbcType="BIGINT" property="status" />
+        <result column="logistics_company" jdbcType="BIGINT" property="logisticsCompany" />
+        <result column="logistics_company_name" jdbcType="VARCHAR" property="logisticsCompanyName" />
+        <result column="logistics_number" jdbcType="VARCHAR" property="logisticsNumber" />
+        <result column="logistics_fee" jdbcType="BIGINT" property="logisticsFee" />
+        <result column="standard_logistics_fee" jdbcType="BIGINT" property="standardLogisticsFee" />
+        <result column="additional_logistics_fee" jdbcType="BIGINT" property="additionalLogisticsFee" />
+        <result column="total_volume" jdbcType="DECIMAL" property="totalVolume" />
+        <result column="total_weight" jdbcType="DECIMAL" property="totalWeight" />
+        <result column="deliver_to" jdbcType="VARCHAR" property="deliverTo" />
+        <result column="transport_time" jdbcType="DATE" property="transportTime" />
+        <result column="sign_time" jdbcType="DATE" property="signTime" />
+        <result column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
+        <result column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+        <result column="consignee_address" jdbcType="VARCHAR" property="consigneeAddress" />
+        <result column="detailed_address" jdbcType="VARCHAR" property="detailedAddress" />
+        <result column="zip" jdbcType="VARCHAR" property="zip" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="DATE" property="createTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="update_time" jdbcType="DATE" property="updateTime" />
     </resultMap>
 
     <resultMap id="TransportOrdersMap" type="com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportOrders">
         <id column="id" jdbcType="BIGINT" property="id" />
-        <id column="transport_code" jdbcType="VARCHAR" property="transportCode" />
-        <id column="order_code" jdbcType="VARCHAR" property="orderCode" />
-        <id column="commodity_amount" jdbcType="BIGINT" property="commodityAmount" />
-        <id column="order_amount" jdbcType="BIGINT" property="orderAmount" />
-        <id column="status" jdbcType="INTEGER" property="status" />
-        <id column="type" jdbcType="INTEGER" property="type" />
-        <id column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
-        <id column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
-        <id column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
-        <id column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
-        <id column="deliver_time" jdbcType="DATE" property="deliverTime" />
-        <id column="product_num" jdbcType="BIGINT" property="productNum" />
-        <id column="create_by" jdbcType="VARCHAR" property="createBy" />
-        <id column="create_time" jdbcType="DATE" property="createTime" />
-        <id column="update_by" jdbcType="VARCHAR" property="updateBy" />
-        <id column="update_time" jdbcType="DATE" property="updateTime" />
-
+        <result column="transport_code" jdbcType="VARCHAR" property="transportCode" />
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+        <result column="commodity_amount" jdbcType="BIGINT" property="commodityAmount" />
+        <result column="order_amount" jdbcType="BIGINT" property="orderAmount" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+        <result column="deliver_time" jdbcType="DATE" property="deliverTime" />
+        <result column="product_num" jdbcType="BIGINT" property="productNum" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="DATE" property="createTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="update_time" jdbcType="DATE" property="updateTime" />
+        <result column="customer_code"  property="customerCode"/>
+        <result column="customer_name"  property="customerName"/>
     </resultMap>
     <sql id="Transport_Orders_sql">
         id,transport_code,order_code,commodity_amount,order_amount,status,type,transport_center_code,transport_center_name,warehouse_code,warehouse_name,deliver_time,create_by,create_time,update_by,update_time
     </sql>
     <sql id="Transport_orders_without_code">
-        id,order_code,product_total_amount as commodity_amount,order_amount,order_status as status,order_type as type,
-	transport_center_code,transport_center_name,warehouse_code,warehouse_name,delivery_time as deliver_time,create_date as createTime,product_num
+        id,order_code,product_total_amount as commodity_amount,order_amount,order_status as status,order_type_code as type,
+	transport_center_code,transport_center_name,warehouse_code,warehouse_name,delivery_time as deliver_time,create_date as createTime,product_num,
+	customer_code,customer_name
     </sql>
 
     <sql id="Base_clomn_sql">
@@ -116,7 +118,7 @@
     </select>
     <select id="selectTransportOrdersWithOutCodeList" resultMap="TransportOrdersMap">
           select <include refid="Transport_orders_without_code"></include>
-          from supply_order_info where order_status=11 and transport_status=0
+          from order_info where order_status=11 and transport_status=0
         <if test="customerName!=null and customerName!=''">
             and customer_name like concat('%',#{customerName},'%')
         </if>
@@ -133,12 +135,12 @@
             and warehouse_code=#{warehouseCode}
         </if>
         <if test="warehouseName!=null and warehouseName!=''">
-            and warehouse_name like concat('%',#{warehousename})
+            and warehouse_name like concat('%',#{warehouseName})
         </if>
     </select>
     <select id="selectDeliverOrdersWithOutCodeList" resultMap="TransportOrdersMap">
         select <include refid="Transport_orders_without_code"></include>
-        from supply_order_info where order_status in(3,4,5,6,7,8) and transport_status=0
+        from order_info where order_status in(3,4,5,6,7,8) and transport_status=0
         <if test="customerName!=null and customerName!=''">
             and customer_name like concat('%',#{customerName},'%')
         </if>
