@@ -1,13 +1,14 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem;
 import com.aiqin.bms.scmp.api.product.domain.request.basicprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.*;
 import com.aiqin.bms.scmp.api.product.service.PriceChannelService;
 import com.aiqin.bms.scmp.api.product.service.PriceProjectService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -167,7 +168,6 @@ public class PriceProjectController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
-
     @GetMapping("/channel/get")
     @ApiOperation(value = "获取渠道信息")
     public HttpResponse<PriceChannelRespVo> getChannel(@RequestParam @NotNull(message = "主键ID不能为空") Long id){
@@ -182,4 +182,17 @@ public class PriceProjectController {
         }
     }
 
+    @PostMapping("/channel/selectByChannelCodes")
+    @ApiOperation(value = "通过渠道编码集合查询价格项目")
+    public HttpResponse<List<PriceChannelItem>> selectByChannelCodes(@RequestBody List<String> codes){
+        log.info("PriceProjectController----selectByChannelCodes uri:{},参数信息:[{}]","/basic/price/channel/selectByChannelCodes",codes.toString());
+        try {
+            return HttpResponse.success(priceChannelService.selectByChannelCodes(codes));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 }
