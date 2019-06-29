@@ -1,9 +1,8 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.base.PageResData;
-import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
+import com.aiqin.bms.scmp.api.product.domain.request.QueryStockBatchSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
@@ -17,6 +16,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -89,6 +90,10 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     private PurchaseGroupService purchaseGroupService;
     @Resource
     private FileRecordDao fileRecordDao;
+    @Resource
+    private WorkFlowBaseUrl workFlowBaseUrl;
+    @Resource
+    private UrlConfig urlConfig;
 
 
     @Override
@@ -197,7 +202,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         try {
-            String[][] result = FileReaderUtil.readExcel(file, 50);
+            String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
 
             if (result != null) {
                 String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
@@ -205,9 +210,15 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                     return HttpResponse.failure(MessageId.create(Project.SCMP_API, 88888, validResult));
                 }
                 String[] record;
+                List<RejectImportResponse> responses = new ArrayList<>();
+                QueryStockBatchSkuReqVo reqVO;
+                RejectImportResponse response;
                 for (int i = 3; i <= result.length - 1; i++) {
                     record = result[i];
                     //todo 通过sku查询商品的品类,品牌,规格,供应商 ,税率,库存数量,总价,仓库,库房 ,批次信息 ,结算方式
+                    reqVO = new QueryStockBatchSkuReqVo();
+                    response = new RejectImportResponse();
+
 
                 }
             }
@@ -274,6 +285,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             rejectRecord.setRejectRecordId(rejectId);
             rejectRecord.setExpectTime(new DateTime(request.getExpectTime()).toDate());
             rejectRecord.setValidDay(new DateTime(request.getValidDay()).toDate());
+            //待审核状态
+            rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_AUDIT);
             //总退供数量
             Integer sumCount = 0;
             //含税金额
@@ -290,8 +303,6 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                     request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
             List<RejectRecordDetail> list = new ArrayList<>();
             RejectRecordDetail rejectRecordDetail;
-            //todo 更新主表的状态 当详情表的状态都为已提交
-
             for (RejectApplyRecordDetail detailResponse : detailList) {
                 //计算总数
                 sumCount += detailResponse.getProductCount();
@@ -324,8 +335,18 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             List<String> detailIds = detailList.stream().map(RejectApplyRecordDetail::getRejectApplyRecordDetailId).collect(Collectors.toList());
             Integer updateCount = rejectApplyRecordDetailDao.updateByDetailIds(detailIds);
             LOGGER.info("更改退供申请详情影响条数:{}", updateCount);
+            //更新主表的状态 当详情表的状态都为已提交
+            for (String id : request.getRejectApplyRecordCodes()) {
+                Integer statusCount = rejectApplyRecordDetailDao.countByRejectId(id);
+                LOGGER.info("申请单详情未提交的条数:{}", statusCount);
+                if (statusCount == 0) {
+                    LOGGER.info("更新申请表主表的状态");
+                    rejectApplyRecordDao.updateStatus(id);
+                }
+            }
             //更新编码
             encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+            //保存上传的文件
             if (CollectionUtils.isNotEmpty(request.getFileList())) {
                 Integer fileCount = fileRecordDao.insertAll(rejectId, request.getFileList());
                 LOGGER.info("上传文件条数:{}", fileCount);
@@ -408,7 +429,6 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         LOGGER.info("退供完成-更改退供申请详情影响条数:{}", count);
         return HttpResponse.success();
     }
-
 
     @Override
     public HttpResponse rejectInfo(String rejectRecordId) {

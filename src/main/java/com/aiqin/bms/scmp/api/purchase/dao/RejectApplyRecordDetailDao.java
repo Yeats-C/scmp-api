@@ -33,4 +33,6 @@ public interface RejectApplyRecordDetailDao {
     List<RejectApplyRecordDetail> listByConditionPage(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes,@Param("pageSize")Integer pageSize, @Param("beginIndex")Integer beginIndex);
 
     Integer listByConditionPageCount(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes);
+
+    Integer countByRejectId(@Param("reject_apply_record_code") String rejectApplyRecordCode);
 }

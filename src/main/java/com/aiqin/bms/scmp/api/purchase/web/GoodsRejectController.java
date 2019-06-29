@@ -86,7 +86,7 @@ public class GoodsRejectController {
 
     @PostMapping("/apply")
     @ApiOperation(value = "退供申请单增加")
-    public HttpResponse<List<RejectApplyRequest>> rejectApply(@RequestBody RejectApplyHandleRequest rejectApplyQueryRequest) {
+    public HttpResponse<RejectApplyRequest> rejectApply(@RequestBody RejectApplyHandleRequest rejectApplyQueryRequest) {
         LOGGER.info("退供申请单增加请求:{}", rejectApplyQueryRequest.toString());
         return goodsRejectService.rejectApply(rejectApplyQueryRequest);
     }

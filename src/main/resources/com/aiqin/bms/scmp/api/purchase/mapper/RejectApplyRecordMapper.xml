@@ -67,6 +67,7 @@
             create_by_name, create_time
         from reject_apply_record
         <include refid="LIST_QUERY"/>
+        order by create_time desc
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="selectByRejectId" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -204,5 +205,11 @@
                 update_time = now()
         </set>
         where  reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    </update>
+    <update id="updateStatus">
+         update reject_apply_record
+         set
+         apply_record_status = 1
+         where reject_apply_record_code = #{rejectApplyRecordId,jdbcType=VARCHAR}
     </update>
 </mapper>
