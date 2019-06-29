@@ -51,7 +51,7 @@ public class QueryPurchaseOrderArrivalSubscribeVo extends PageReq {
     @ApiModelProperty("采购组名称")
     private String purchaseGroupName;
 
-    @ApiModelProperty("'到货预约状态(0:未预约 1:已预约 2:已确认")
+    @ApiModelProperty("'到货预约状态(0:未预约 1:已预约 2:未预约待确认")
     private Byte arrivalSubscribeStatus;
 
     @ApiModelProperty("采购单号")
