@@ -15,19 +15,19 @@ public class TransportOrders extends CommonBean {
     private Long id;
 
     @ApiModelProperty("运输单号")
-    @JsonProperty("transport_code")
+//    @JsonProperty("transport_code")
     private String transportCode;
 
     @ApiModelProperty("订单号")
-    @JsonProperty("order_code")
+//    @JsonProperty("order_code")
     private String orderCode;
 
     @ApiModelProperty("商品金额")
-    @JsonProperty("commodity_amount")
+//    @JsonProperty("commodity_amount")
     private Long commodityAmount;
 
     @ApiModelProperty("订单金额")
-    @JsonProperty("order_amount")
+//    @JsonProperty("order_amount")
     private Long orderAmount;
 
     @ApiModelProperty("订单状态")
@@ -39,28 +39,28 @@ public class TransportOrders extends CommonBean {
     private Integer type;
 
     @ApiModelProperty("仓编码")
-    @JsonProperty("transport_center_code")
+//    @JsonProperty("transport_center_code")
     private String transportCenterCode;
 
     @ApiModelProperty("仓名称")
-    @JsonProperty("transport_center_name")
+//    @JsonProperty("transport_center_name")
     private String transportCenterName;
 
     @ApiModelProperty("库房编码")
-    @JsonProperty("warehouse_code")
+//    @JsonProperty("warehouse_code")
     private String warehouseCode;
 
     @ApiModelProperty("库房名称")
-    @JsonProperty("warehouse_name")
+//    @JsonProperty("warehouse_name")
     private String warehouseName;
 
     @ApiModelProperty("发货时间")
-    @JsonProperty("deliver_time")
+//    @JsonProperty("deliver_time")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deliverTime;
 
     @ApiModelProperty("商品件数")
-    @JsonProperty("product_num")
+//    @JsonProperty("product_num")
     private Integer productNum;
 
 

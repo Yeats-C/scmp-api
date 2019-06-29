@@ -220,7 +220,18 @@
     <select id="selectByTransportCode" resultMap="BaseResultMap">
         select <include refid="Base_clomn_sql"></include> from transport where transport_code=#{transportCode}
     </select>
+    <select id="selectByTransportCodes" resultMap="BaseResultMap" resultType="java.util.List">
+        select <include refid="Base_clomn_sql"></include> from transport where transport_code in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
     <update id="updateStatusByTransportCode">
         update transport set status=#{status} where transport_code=#{transportCode}
+    </update>
+    <update id="updateStatusByTransportCodes">
+        <foreach collection="items" open="" close="" separator=";" item="item">
+          update transport set status=#{status} where transport_code=#{item}
+        </foreach>
     </update>
 </mapper>

@@ -1,19 +1,23 @@
 package com.aiqin.bms.scmp.api.purchase.web.transport;
 
-import com.aiqin.bms.scmp.api.purchase.service.TransportService;
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportOrders;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportAddRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportLogsRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportOrdersResquest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportRequest;
+import com.aiqin.bms.scmp.api.purchase.service.TransportService;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 /**
@@ -68,7 +72,7 @@ public class TransportController {
     }
     @ApiOperation("发运操作")
     @PostMapping("/deliver")
-    public HttpResponse deliver(String transportCode){
+    public HttpResponse deliver(@RequestBody List<String> transportCode){
         try {
             return transportService.deliver(transportCode);
         } catch (Exception e) {
@@ -78,7 +82,7 @@ public class TransportController {
     }
     @ApiOperation("发运操作")
     @PostMapping("/sign")
-    public HttpResponse sign(String transportCode){
+    public HttpResponse sign(@RequestBody List<String> transportCode){
         try {
             return transportService.sign(transportCode);
         } catch (Exception e) {
@@ -98,5 +102,29 @@ public class TransportController {
         }
     }
 
+    @ApiOperation("发运单详细")
+    @GetMapping("/detail")
+    public HttpResponse<Transport> detail(@RequestParam String transportCode){
+        try {
+            return transportService.detail(transportCode);
+        } catch (GroundRuntimeException ge){
+            return HttpResponse.failure(MessageId.create(Project.PURCHASE_API, 500, ge.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @ApiOperation("发运单订单列表")
+    @PostMapping("/orders")
+    public HttpResponse<BasePage<TransportOrders>> orders(@RequestBody TransportRequest transportRequest){
+        try {
+            return HttpResponse.success(transportService.orders(transportRequest));
+        } catch (GroundRuntimeException ge){
+            return HttpResponse.failure(MessageId.create(Project.PURCHASE_API, 500, ge.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
 }

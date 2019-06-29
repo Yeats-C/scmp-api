@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportLog;
@@ -17,10 +18,12 @@ import com.aiqin.bms.scmp.api.purchase.mapper.TransportOrdersMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.TransportService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -85,7 +88,7 @@ public class TransportServiceImpl implements TransportService {
         transport.setCustomerName(orderInfo.getCustomerName());
         transport.setConsigneePhone(orderInfo.getConsigneePhone());
         transport.setDetailedAddress(orderInfo.getDetailAddress());
-        transport.setStatus(0);//设置未发运状态
+        transport.setStatus(1);//设置未发运状态
         transport.setTransportAmount(transportAmount+transport.getLogisticsFee());
         transport.setOrderCommodityNum(orderCommodityNum);
         transportMapper.insertOne(transport);
@@ -102,40 +105,77 @@ public class TransportServiceImpl implements TransportService {
 
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public HttpResponse deliver(String transportCode) {
+    public HttpResponse deliver(List<String> transportCode) {
 //        查询发运单
-        Transport transport=transportMapper.selectByTransportCode(transportCode);
-        if (null==transport||transport.getStatus()!=0){
-            return HttpResponse.failure(ResultCode.TRANSPORT_DELIVERY_ERROR);
-        }else {
-            transportMapper.updateStatusByTransportCode(transportCode,1);
-            TransportLog transportLog=new TransportLog();
+        List<Transport> transport = transportMapper.selectByTransportCodes(transportCode);
+        if (CollectionUtils.isEmptyCollection(transport)) {
+            return HttpResponse.failure(ResultCode.TRANSPORT_SIGN_ERROR);
+        }
+        List<TransportLog> logs = Lists.newArrayList();
+        for (Transport transport1 : transport) {
             //写入发运单创建日志
-            transportLog.setTransportCode(transport.getTransportCode());
+            if (transport1.getStatus() != 1) {
+                transportCode.remove(transport1.getTransportCode());
+                continue;
+            }
+            TransportLog transportLog = new TransportLog();
+            transportLog.setTransportCode(transport1.getTransportCode());
             transportLog.setType("发运");
             transportLog.setContent("发运单发运操作");
-            transportLog.setRemark(transport.getRemark());
-            transportLogMapper.insertOne(transportLog);
-            return HttpResponse.success();
+            transportLog.setRemark(transport1.getRemark());
+            logs.add(transportLog);
         }
+        updateStatus(transportCode, 2);
+        saveLog(logs);
+        return HttpResponse.success();
     }
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
-    public HttpResponse sign(String transportCode) {
+    public HttpResponse sign(List<String> transportCode) {
 //        查询发运单
-        Transport transport=transportMapper.selectByTransportCode(transportCode);
-        if (null==transport||transport.getStatus()!=1){
+        List<Transport> transport=transportMapper.selectByTransportCodes(transportCode);
+        if (CollectionUtils.isEmptyCollection(transport)){
             return HttpResponse.failure(ResultCode.TRANSPORT_SIGN_ERROR);
-        }else {
-            transportMapper.updateStatusByTransportCode(transportCode,2);
-            TransportLog transportLog=new TransportLog();
+        }
+        List<TransportLog> logs = Lists.newArrayList();
+        for (Transport transport1 : transport) {
             //写入发运单创建日志
-            transportLog.setTransportCode(transport.getTransportCode());
+            if(transport1.getStatus()!=2){
+                transportCode.remove(transport1.getTransportCode());
+                continue;
+            }
+            TransportLog transportLog=new TransportLog();
+            transportLog.setTransportCode(transport1.getTransportCode());
             transportLog.setType("签收");
             transportLog.setContent("发运单签收操作");
-            transportLog.setRemark(transport.getRemark());
-            transportLogMapper.insertOne(transportLog);
-            return HttpResponse.success();
+            transportLog.setRemark(transport1.getRemark());
+            logs.add(transportLog);
+        }
+        updateStatus(transportCode,3);
+        saveLog(logs);
+        return HttpResponse.success();
+    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateStatus(List<String> transportCode, Integer status) {
+        if(CollectionUtils.isEmptyCollection(transportCode)){
+            return;
+        }
+        int i = transportMapper.updateStatusByTransportCodes(transportCode,status);
+        if(i!=transportCode.size()){
+            throw new BizException(ResultCode.UPDATE_TRANSPORT_STATUS_FAILED);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveLog(List<TransportLog> logs) {
+        if(CollectionUtils.isEmptyCollection(logs)){
+            return;
+        }
+        int i1 = transportLogMapper.insertBatch(logs);
+        if(i1!=logs.size()){
+            throw new BizException(ResultCode.SAVE_TRANSPORT_LOG_FAILED);
         }
     }
 
@@ -145,4 +185,19 @@ public class TransportServiceImpl implements TransportService {
         List<TransportLog> page=transportLogMapper.selectList(transportLogsRequest);
         return PageUtil.getPageList(transportLogsRequest.getPageNo(),page);
     }
+
+    @Override
+    public HttpResponse<Transport> detail(String transportCode) {
+        Transport transport = transportMapper.selectByTransportCode(transportCode);
+        return HttpResponse.success(transport);
+    }
+    @Override
+    public BasePage<TransportOrders> orders(TransportRequest transportRequest) {
+        PageHelper.startPage(transportRequest.getPageNo(), transportRequest.getPageSize());
+        List<TransportOrders> orders = transportOrdersMapper.selectListByTransportCode(transportRequest);
+        return PageUtil.getPageList(transportRequest.getPageNo(),orders);
+    }
+
+//    @Override
+//    public TransportR
 }
