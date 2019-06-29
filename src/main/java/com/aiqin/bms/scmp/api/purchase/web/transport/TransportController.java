@@ -1,10 +1,15 @@
 package com.aiqin.bms.scmp.api.purchase.web.transport;
 
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportOrders;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportAddRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportLogsRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportOrdersResquest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportRequest;
 import com.aiqin.bms.scmp.api.purchase.service.TransportService;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -70,7 +75,7 @@ public class TransportController {
     }
     @ApiOperation("发运操作")
     @PostMapping("/deliver")
-    public HttpResponse deliver(List<String> transportCode){
+    public HttpResponse deliver(@RequestBody List<String> transportCode){
         try {
             return transportService.deliver(transportCode);
         } catch (Exception e) {
@@ -80,7 +85,7 @@ public class TransportController {
     }
     @ApiOperation("发运操作")
     @PostMapping("/sign")
-    public HttpResponse sign(List<String> transportCode){
+    public HttpResponse sign(@RequestBody List<String> transportCode){
         try {
             return transportService.sign(transportCode);
         } catch (Exception e) {
@@ -100,5 +105,29 @@ public class TransportController {
         }
     }
 
+    @ApiOperation("发运单详细")
+    @PostMapping("/detail")
+    public HttpResponse<Transport> detail(String transportCode){
+        try {
+            return transportService.detail(transportCode);
+        } catch (GroundRuntimeException ge){
+            return HttpResponse.failure(MessageId.create(Project.PURCHASE_API, 500, ge.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @ApiOperation("发运单订单列表")
+    @PostMapping("/orders")
+    public HttpResponse<BasePage<TransportOrders>> orders(@RequestBody TransportRequest transportRequest){
+        try {
+            return HttpResponse.success(transportService.orders(transportRequest));
+        } catch (GroundRuntimeException ge){
+            return HttpResponse.failure(MessageId.create(Project.PURCHASE_API, 500, ge.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
 }

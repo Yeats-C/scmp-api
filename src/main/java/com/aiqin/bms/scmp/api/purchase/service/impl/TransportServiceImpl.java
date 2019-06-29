@@ -88,7 +88,7 @@ public class TransportServiceImpl implements TransportService {
         transport.setCustomerName(orderInfo.getCustomerName());
         transport.setConsigneePhone(orderInfo.getConsigneePhone());
         transport.setDetailedAddress(orderInfo.getDetailAddress());
-        transport.setStatus(0);//设置未发运状态
+        transport.setStatus(1);//设置未发运状态
         transport.setTransportAmount(transportAmount+transport.getLogisticsFee());
         transport.setOrderCommodityNum(orderCommodityNum);
         transportMapper.insertOne(transport);
@@ -158,6 +158,9 @@ public class TransportServiceImpl implements TransportService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateStatus(List<String> transportCode, Integer status) {
+        if(CollectionUtils.isEmptyCollection(transportCode)){
+            return;
+        }
         int i = transportMapper.updateStatusByTransportCodes(transportCode,status);
         if(i!=transportCode.size()){
             throw new BizException(ResultCode.UPDATE_TRANSPORT_STATUS_FAILED);
@@ -167,6 +170,9 @@ public class TransportServiceImpl implements TransportService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveLog(List<TransportLog> logs) {
+        if(CollectionUtils.isEmptyCollection(logs)){
+            return;
+        }
         int i1 = transportLogMapper.insertBatch(logs);
         if(i1!=logs.size()){
             throw new BizException(ResultCode.SAVE_TRANSPORT_LOG_FAILED);
@@ -179,4 +185,19 @@ public class TransportServiceImpl implements TransportService {
         List<TransportLog> page=transportLogMapper.selectList(transportLogsRequest);
         return PageUtil.getPageList(transportLogsRequest.getPageNo(),page);
     }
+
+    @Override
+    public HttpResponse<Transport> detail(String transportCode) {
+        Transport transport = transportMapper.selectByTransportCode(transportCode);
+        return HttpResponse.success(transport);
+    }
+    @Override
+    public BasePage<TransportOrders> orders(TransportRequest transportRequest) {
+        PageHelper.startPage(transportRequest.getPageNo(), transportRequest.getPageSize());
+        List<TransportOrders> orders = transportOrdersMapper.selectListByTransportCode(transportRequest);
+        return PageUtil.getPageList(transportRequest.getPageNo(),orders);
+    }
+
+//    @Override
+//    public TransportR
 }

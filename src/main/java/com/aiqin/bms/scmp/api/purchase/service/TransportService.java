@@ -31,4 +31,8 @@ public interface TransportService {
     void saveLog(List<TransportLog> logs);
 
     BasePage<TransportLog> transportLogs(TransportLogsRequest transportLogsRequest);
+
+    HttpResponse<Transport> detail(String transportCode);
+
+    BasePage<TransportOrders> orders(TransportRequest transportRequest);
 }
