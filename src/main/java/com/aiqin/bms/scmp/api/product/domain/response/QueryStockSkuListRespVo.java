@@ -43,7 +43,7 @@ public class QueryStockSkuListRespVo implements Serializable {
 
     @ApiModelProperty("类型")
     @JsonProperty("goods_gifts")
-    private String goodsGifts;
+    private Integer goodsGifts;
 
     @ApiModelProperty("规格")
     @JsonProperty("spec")
@@ -71,6 +71,6 @@ public class QueryStockSkuListRespVo implements Serializable {
 
     @ApiModelProperty("库存(可用库存)")
     @JsonProperty("available_num")
-    private String availableNum;
+    private Long availableNum;
 
 }

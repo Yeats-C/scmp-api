@@ -22,7 +22,7 @@ public class StockBatchRespVO {
     private String companyCode;
 
     @ApiModelProperty("公司名称")
-    @JsonProperty(value = "company_code")
+    @JsonProperty(value = "company_name")
     private String companyName;
 
     @ApiModelProperty("仓编码(物流中心编码)")

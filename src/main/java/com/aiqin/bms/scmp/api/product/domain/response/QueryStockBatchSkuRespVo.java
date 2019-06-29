@@ -64,7 +64,7 @@ public class QueryStockBatchSkuRespVo implements Serializable {
 
     @ApiModelProperty("商品类型")
     @JsonProperty("goods_gifts")
-    private String goodsGifts;
+    private Integer goodsGifts;
 
     @ApiModelProperty("商品颜色code")
     @JsonProperty("color_code")

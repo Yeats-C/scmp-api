@@ -1,9 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.bms.scmp.api.base.ApplyStatus;
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -42,6 +39,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -377,6 +375,26 @@ public class ApplySupplyComAcctServiceImpl extends SupplierBaseServiceImpl imple
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
+    }
+
+    /**
+     * 根据供应商名称查询账户信息
+     *
+     * @param supplierCode
+     * @return
+     */
+    @Override
+    public List<QuerySupplierComAcctRespVo> selectSupplierComAcctBySupplierCode(String supplierCode) {
+        if(StringUtils.isBlank(supplierCode)){
+            throw new BizException(ResultCode.SUPPLIER_CODE_EMPTY);
+        }
+        QuerySupplierComAcctReqVo vo = new QuerySupplierComAcctReqVo();
+        vo.setSupplyCompanyCode(supplierCode);
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            vo.setCompanyCode(authToken.getCompanyCode());
+        }
+        return supplyCompanyAccountDao.selectListByQueryVO(vo);
     }
 
     @Override
