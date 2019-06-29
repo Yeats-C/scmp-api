@@ -159,6 +159,9 @@ public class OrderInfo {
     @ApiModelProperty("重量")
     private Long weight;
 
+    @ApiModelProperty("体积")
+    private Long volume;
+
     @ApiModelProperty("是否父订单(0不是1是)")
     private Integer beMasterOrder;
 
