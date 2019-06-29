@@ -127,7 +127,7 @@ public interface StockDao {
      */
     List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
 
-    List<QueryStockBatchSkuRespVo> selectSkuBatchCodeList();
+    QueryStockBatchSkuRespVo selectSkuBatchCode(String transportCenterCode,String warehouseCode,String skuCode,String batchCode);
 
     /**
      * 库房管理新增调拨,移库,报废列表查询

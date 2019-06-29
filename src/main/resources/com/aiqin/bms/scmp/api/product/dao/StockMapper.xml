@@ -1377,6 +1377,12 @@
         LEFT JOIN product_sku AS ps ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
         left join product_sku_box_packing as psbp on sb.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
         where 1=1
+        <if test="companyCode!=null and companyCode!=''">
+            and sb.company_code like concat('%',#{companyCode},'%')
+        </if>
+        <if test="companyName!=null and companyName!=''">
+            and sb.company_name like concat('%',#{companyName},'%')
+        </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
             and sb.transport_center_code like concat('%',#{transportCenterText},'%')
         </if>
@@ -1621,11 +1627,36 @@
         </where>
         order by sb.sku_code asc
     </select>
-    <select id="selectSkuBatchCodeList"
+    <select id="selectSkuBatchCode"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo"
             resultMap="QueryStockBatchSkuResultMap">
-        select sb.sku_code,sb.sku_name,sb.batch_code
+        select
+        ps.procurement_section_code,ps.procurement_section_name,pssi.bar_code,sb.sku_code,sb.sku_name,ps.product_code,
+        ps.product_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
+        ps.goods_gifts,sb.color_code,sb.color_name,sb.model_number,sb.spec,sb.unit_code,sb.unit_name,psc.Input_tax_rate,
+        sb.transport_center_code,sb.transport_center_name,sb.warehouse_code,sb.warehouse_name,sb.purchase_price,s.tax_cost,sb.batch_code,sb.production_date,
+        sb.batch_remark,psc.settlement_method_code,psc.settlement_method_name,sb.supplier_code,sb.supplier_name,sb.available_num
         from stock_batch sb
+        left join stock s on sb.sku_code = s.sku_code
+        left join product_sku ps on sb.sku_code = ps.sku_code
+        left join product_sku_checkout psc on sb.sku_code = psc.sku_code
+        left join product_sku_stock_info pssi on sb.sku_code = pssi.product_sku_code
+        <where>
+            1 = 1
+            <if test="transportCenterCode != null and transportCenterCode != ''">
+                and sb.transport_center_code  = #{transportCenterCode, jdbcType=VARCHAR}
+            </if>
+            <if test="warehouseCode != null and warehouseCode != ''">
+                and sb.warehouseCode  = #{warehouseCode, jdbcType=VARCHAR}
+            </if>
+            <if test="skuCode != null and skuCode != ''">
+                and sb.sku_code  = #{skuCode, jdbcType=VARCHAR}
+            </if>
+            <if test="batchCode != null and batchCode != ''">
+                and sb.batch_code  = #{batchCode, jdbcType=VARCHAR}
+            </if>
+            and sb.available_num > 0
+        </where>
         order by sb.sku_code asc
     </select>
     <select id="selectStockSkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuListReqVo"
