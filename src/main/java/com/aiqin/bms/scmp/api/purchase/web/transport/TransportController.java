@@ -1,10 +1,10 @@
 package com.aiqin.bms.scmp.api.purchase.web.transport;
 
-import com.aiqin.bms.scmp.api.purchase.service.TransportService;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportAddRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportLogsRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportOrdersResquest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportRequest;
+import com.aiqin.bms.scmp.api.purchase.service.TransportService;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 /**
@@ -68,7 +70,7 @@ public class TransportController {
     }
     @ApiOperation("发运操作")
     @PostMapping("/deliver")
-    public HttpResponse deliver(String transportCode){
+    public HttpResponse deliver(List<String> transportCode){
         try {
             return transportService.deliver(transportCode);
         } catch (Exception e) {
@@ -78,7 +80,7 @@ public class TransportController {
     }
     @ApiOperation("发运操作")
     @PostMapping("/sign")
-    public HttpResponse sign(String transportCode){
+    public HttpResponse sign(List<String> transportCode){
         try {
             return transportService.sign(transportCode);
         } catch (Exception e) {

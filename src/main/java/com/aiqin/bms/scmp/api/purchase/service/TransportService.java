@@ -11,6 +11,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportOrdersR
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportRequest;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
+import java.util.List;
+
 public interface TransportService {
     BasePage<Transport> selectPage(TransportRequest transportRequest);
 
@@ -20,9 +22,13 @@ public interface TransportService {
 
     HttpResponse saveTransport(TransportAddRequest transportAddRequest);
 
-    HttpResponse deliver(String transportCode);
+    HttpResponse deliver(List<String> transportCode);
 
-    HttpResponse sign(String transportCode);
+    HttpResponse sign(List<String> transportCode);
+
+    void updateStatus(List<String> transportCode, Integer status);
+
+    void saveLog(List<TransportLog> logs);
 
     BasePage<TransportLog> transportLogs(TransportLogsRequest transportLogsRequest);
 }
