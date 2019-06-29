@@ -1,25 +1,19 @@
-package com.aiqin.bms.scmp.api.product.domain.pojo;
+package com.aiqin.bms.scmp.api.product.domain.request.supervisory;
 
-import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("监管仓订单")
+/**
+ * @author knight.xie
+ * @version 1.0
+ * @className SupervisoryWarehouseOrderProductReqVo
+ * @date 2019/6/29 18:10
+ * @description TODO
+ */
 @Data
-public class SupervisoryWarehouseOrderProduct extends CommonBean {
-
-    @ApiModelProperty("主键Id")
-    private Long id;
-
-    @ApiModelProperty("订单编号")
-    private String orderCode;
-
-    @ApiModelProperty("订单类型(1:入库 2:出库)")
-    private Byte orderType;
-
-    @ApiModelProperty("订单类型名称")
-    private String orderTypeName;
+@ApiModel("监管仓订单")
+public class SupervisoryWarehouseOrderProductReqVo {
 
     @ApiModelProperty("sku编号")
     private String skuCode;
@@ -33,7 +27,7 @@ public class SupervisoryWarehouseOrderProduct extends CommonBean {
     @ApiModelProperty("基商品含量")
     private Integer baseProductContent;
 
-    @ApiModelProperty("单品数量")
+    @ApiModelProperty("单品数量(数量*基商品含量)")
     private Integer singleCount;
 
     @ApiModelProperty("生产日期")
@@ -48,7 +42,7 @@ public class SupervisoryWarehouseOrderProduct extends CommonBean {
     @ApiModelProperty("含税单价")
     private Integer productAmount;
 
-    @ApiModelProperty("含税总价")
+    @ApiModelProperty("含税总价(数量*含税单价)")
     private Integer productTotalAmount;
 
     @ApiModelProperty("品牌id")
@@ -78,14 +72,10 @@ public class SupervisoryWarehouseOrderProduct extends CommonBean {
     @ApiModelProperty("单位名称")
     private String unitName;
 
-    @ApiModelProperty("行号")
-    private Integer lineNum;
-
     @ApiModelProperty("毛重")
     private Long boxGrossWeight;
 
     @ApiModelProperty("净重")
     private Long netWeight;
-
 
 }

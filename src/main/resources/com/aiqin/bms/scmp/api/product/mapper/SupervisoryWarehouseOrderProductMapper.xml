@@ -28,12 +28,18 @@
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="line_num" jdbcType="INTEGER" property="lineNum" />
+    <result column="box_gross_weight" jdbcType="BIGINT" property="boxGrossWeight" />
+    <result column="net_weight" jdbcType="BIGINT" property="netWeight" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_code, order_type, order_type_name, sku_code, sku_name, num, base_product_content, 
     single_count, product_date, sku_batch_number, tax_rate, product_amount, product_total_amount, 
     brand_id, brand_name, category_id, category_name, product_spec, color_name, model_number, 
-    del_flag, create_time, create_by, update_time, update_by
+    del_flag, create_time, create_by, update_time, update_by, unit_code, unit_name, line_num, 
+    box_gross_weight, net_weight
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -54,7 +60,9 @@
       brand_name, category_id, category_name, 
       product_spec, color_name, model_number, 
       del_flag, create_time, create_by, 
-      update_time, update_by)
+      update_time, update_by, unit_code, 
+      unit_name, line_num, box_gross_weight, 
+      net_weight)
     values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=TINYINT}, 
       #{orderTypeName,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
       #{num,jdbcType=INTEGER}, #{baseProductContent,jdbcType=INTEGER}, #{singleCount,jdbcType=INTEGER}, 
@@ -63,7 +71,36 @@
       #{brandName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, 
       #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{modelNumber,jdbcType=VARCHAR}, 
       #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{lineNum,jdbcType=INTEGER}, #{boxGrossWeight,jdbcType=BIGINT}, 
+      #{netWeight,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+  insert into supervisory_warehouse_order_product (order_code, order_type,
+      order_type_name, sku_code, sku_name,
+      num, base_product_content, single_count,
+      product_date, sku_batch_number, tax_rate,
+      product_amount, product_total_amount, brand_id,
+      brand_name, category_id, category_name,
+      product_spec, color_name, model_number,
+      del_flag, create_time, create_by,
+      update_time, update_by, unit_code,
+      unit_name, line_num, box_gross_weight,
+      net_weight)
+    values
+    <foreach collection="list" item="item" open="" close="" index="idx" separator=",">
+      ( #{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=TINYINT},
+      #{item.orderTypeName,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.num,jdbcType=INTEGER}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.singleCount,jdbcType=INTEGER},
+      #{item.productDate,jdbcType=VARCHAR}, #{item.skuBatchNumber,jdbcType=VARCHAR}, #{item.taxRate,jdbcType=INTEGER},
+      #{item.productAmount,jdbcType=INTEGER}, #{item.productTotalAmount,jdbcType=INTEGER}, #{item.brandId,jdbcType=VARCHAR},
+      #{item.brandName,jdbcType=VARCHAR}, #{item.categoryId,jdbcType=VARCHAR}, #{item.categoryName,jdbcType=VARCHAR},
+      #{item.productSpec,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR},
+      #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.unitCode,jdbcType=VARCHAR},
+      #{item.unitName,jdbcType=VARCHAR}, #{idx}+1, #{item.boxGrossWeight,jdbcType=BIGINT},
+      #{item.netWeight,jdbcType=BIGINT})
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct">
     insert into supervisory_warehouse_order_product
@@ -146,6 +183,21 @@
       <if test="updateBy != null">
         update_by,
       </if>
+      <if test="unitCode != null">
+        unit_code,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="lineNum != null">
+        line_num,
+      </if>
+      <if test="boxGrossWeight != null">
+        box_gross_weight,
+      </if>
+      <if test="netWeight != null">
+        net_weight,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -225,6 +277,21 @@
       </if>
       <if test="updateBy != null">
         #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCode != null">
+        #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="lineNum != null">
+        #{lineNum,jdbcType=INTEGER},
+      </if>
+      <if test="boxGrossWeight != null">
+        #{boxGrossWeight,jdbcType=BIGINT},
+      </if>
+      <if test="netWeight != null">
+        #{netWeight,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -306,6 +373,21 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
+      <if test="unitCode != null">
+        unit_code = #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="lineNum != null">
+        line_num = #{lineNum,jdbcType=INTEGER},
+      </if>
+      <if test="boxGrossWeight != null">
+        box_gross_weight = #{boxGrossWeight,jdbcType=BIGINT},
+      </if>
+      <if test="netWeight != null">
+        net_weight = #{netWeight,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -335,7 +417,12 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=VARCHAR}
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      unit_code = #{unitCode,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      line_num = #{lineNum,jdbcType=INTEGER},
+      box_gross_weight = #{boxGrossWeight,jdbcType=BIGINT},
+      net_weight = #{netWeight,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

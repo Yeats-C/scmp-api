@@ -10,4 +10,12 @@ public interface TransportLogMapper {
     Integer insertOne(TransportLog transportLog);
 
     List<TransportLog> selectList(TransportLogsRequest transportLogsRequest);
+    /**
+     * 批量插入日志
+     * @author NullPointException
+     * @date 2019/6/29
+     * @param logs
+     * @return int
+     */
+    int insertBatch(List<TransportLog> logs);
 }

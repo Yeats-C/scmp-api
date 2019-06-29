@@ -24,4 +24,15 @@ public interface TransportMapper {
     Transport selectByTransportCode(String transportCode);
 
     Integer updateStatusByTransportCode(@Param("transportCode") String transportCode, @Param("status") int i);
+
+    List<Transport> selectByTransportCodes(List<String> transportCode);
+    /**
+     * 批量更新发运状态
+     * @author NullPointException
+     * @date 2019/6/29
+     * @param transportCode
+     * @param status
+     * @return int
+     */
+    int updateStatusByTransportCodes(@Param("items") List<String> transportCode, @Param("status") int status);
 }

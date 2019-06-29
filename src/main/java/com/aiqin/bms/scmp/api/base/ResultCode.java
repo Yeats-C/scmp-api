@@ -223,10 +223,14 @@ public interface ResultCode {
     //发运
     MessageId TRANSPORT_DELIVERY_ERROR = MessageId.create(Project.PURCHASE_API, 1005, "发运单已签收或不存在");
     MessageId TRANSPORT_SIGN_ERROR = MessageId.create(Project.PURCHASE_API, 1005, "发运单未发运或已签收");
+    MessageId UPDATE_TRANSPORT_STATUS_FAILED = MessageId.create(Project.PURCHASE_API, 1005, "更新发运状态失败！");
+    MessageId SAVE_TRANSPORT_LOG_FAILED = MessageId.create(Project.PURCHASE_API, 1005, "保存发运日志信息失败！");
+
     //入库
     MessageId SAVE_IN_BOUND_FAILED = MessageId.create(Project.PURCHASE_API,76,"保存入库批次数据失败");
     MessageId SAVE_IN_BOUND_PRODUCT_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库商品数据失败");
     MessageId SAVE_IN_BOUND_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库批次数据失败");
 
+    MessageId SUPERVISORY_WAREHOUSE_NOT_EXISTS = MessageId.create(Project.PURCHASE_API,75,"监管仓不存在,请先添加");
 
 }

@@ -37,4 +37,7 @@
             )
         </foreach>
     </insert>
+    <select id="selectListByTransportCode" resultMap="TransportOrdersMap">
+        select <include refid="Transport_Orders_sql"></include> from transport_orders where transport_code=#{transportCode}
+    </select>
 </mapper>
