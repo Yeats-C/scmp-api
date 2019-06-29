@@ -1807,4 +1807,34 @@ select a.sku_code              as skuCode,
             </foreach>
           </if>
     </select>
+  <select id="getSupervisoryWarehouseSku"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo">
+        SELECT
+          ps.sku_code skuCode,
+          ps.sku_name skuName,
+          ps.goods_gifts as skuType,
+          pspi.spec productSpec,
+          ps.product_category_name categoryName,
+          ps.product_category_code categoryId,
+          ps.product_brand_name brandName,
+          ps.product_brand_code brandId,
+          pspi.unit_code unitCode,
+          pspi.unit_name unitName,
+          ps.color_name colorName,
+          ps.model_number modelNumber,
+          IFNULL(pspi.base_product_content,1) as baseProductContent,
+          IFNULL(psc.output_tax_rate,0) as taxRate,
+          IFNULL(psbp.box_gross_weight,0) boxGrossWeight,
+          IFNULL(psbp.net_weight,0) netWeight
+        FROM product_sku ps
+        left join  product_sku_checkout psc on psc.sku_code = ps.sku_code
+        LEFT JOIN product_sku_purchase_info pspi on ps.sku_code = pspi.product_sku_code
+        LEFT JOIN product_sku_box_packing psbp on pspi.product_sku_code = psbp.product_sku_code and pspi.unit_code = psbp.unit_code
+        WHERE ps.del_flag=0 and ps.goods_gifts!=2
+        <if test="companyCode != null and companyCode != '' ">
+          and ps.company_code = #{companyCode}
+        </if>
+  </select>
+
+
 </mapper>
