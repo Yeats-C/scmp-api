@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.service.impl;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -31,6 +32,7 @@ import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:合同Service
@@ -46,7 +49,7 @@ import java.util.List;
  * @date: 2018/11/30
  */
 @Service
-public class ContractServiceImpl implements ContractService{
+public class ContractServiceImpl extends BaseServiceImpl implements ContractService{
 
     @Autowired
     private ContractDao contractDao;
@@ -389,5 +392,24 @@ public class ContractServiceImpl implements ContractService{
     @Transactional(rollbackFor = Exception.class)
     public void deletePlanTypeList(String contractCode) {
         int i = contractPlanTypeMapper.deletePlanTypeList(contractCode);
+    }
+
+
+    /**
+     * 功能描述: 限定采购组
+     *
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/1 20:16
+     */
+    @Override
+    public List<ContractPurchaseResVo> getContractByPurchaseGroup() {
+
+        Map<String,String> map = Maps.newHashMap();
+        AuthToken user = getUser();
+        map.put("companyCode",user.getCompanyCode());
+        map.put("personId",user.getPersonId());
+
+        return contractDao.getContractByMap(map);
     }
 }

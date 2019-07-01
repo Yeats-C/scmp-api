@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractPurch
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUsernameReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.QueryContractResVo;
 
@@ -103,4 +104,14 @@ public interface ContractService {
     * @return void
     */
    void deletePlanTypeList(String contractCode);
+
+    /**
+     *
+     * 功能描述: 限定采购组
+     *
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/1 20:16
+     */
+    List<ContractPurchaseResVo> getContractByPurchaseGroup();
 }
