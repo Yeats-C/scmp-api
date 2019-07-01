@@ -99,7 +99,8 @@
         <result column="bad_lock_num" jdbcType="BIGINT" property="badLockNum"/>
         <result column="bad_way_num" jdbcType="BIGINT" property="badWayNum"/>
         <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
-        <result column="stockupfinish_time" jdbcType="BIGINT" property="stockupfinishTime"/>
+        <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
+        <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
     </resultMap>
     <resultMap id="StockBatchRespMap" type="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
         <id column="id" jdbcType="BIGINT" property="id"/>
