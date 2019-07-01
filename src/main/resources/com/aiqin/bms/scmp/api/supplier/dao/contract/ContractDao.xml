@@ -45,6 +45,7 @@
     <result column="contract_type_code" jdbcType="VARCHAR" property="contractTypeCode"/>
     <result column="contract_type_name" jdbcType="VARCHAR" property="contractTypeName"/>
     <result column="checkout_date" jdbcType="VARCHAR" property="checkoutDate"/>
+    <result column="min_amount" jdbcType="BIGINT" property="minAmount"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
@@ -54,7 +55,7 @@
     auditor_by, auditor_time, apply_status,company_code,company_name,
     purchasing_group_name,settlement_method_name,early_warn_num,
     pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,
-    direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date
+    direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date,min_amount
   </sql>
 
   <select id="selectBySelectContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo" resultMap="BaseResultMap">
@@ -248,6 +249,9 @@
       <if test="checkoutDate != null">
         checkout_date,
       </if>
+      <if test="checkoutDate != null">
+        min_amount,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -379,6 +383,9 @@
       <if test="checkoutDate != null">
         #{checkoutDate,jdbcType=VARCHAR},
       </if>
+      <if test="minAmount != null">
+        #{minAmount,jdbcType=BIGINT},
+      </if>
     </trim>
   </insert>
 
@@ -505,6 +512,9 @@
       <if test="checkoutDate != null">
         checkout_date = #{checkoutDate,jdbcType=VARCHAR},
       </if>
+     <if test="minAmount != null">
+       min_amount = #{minAmount,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -549,7 +559,8 @@
       direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
       contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
       contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
-      checkout_date = #{checkoutDate,jdbcType=VARCHAR}
+      checkout_date = #{checkoutDate,jdbcType=VARCHAR},
+      min_amount = #{minAmount,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 

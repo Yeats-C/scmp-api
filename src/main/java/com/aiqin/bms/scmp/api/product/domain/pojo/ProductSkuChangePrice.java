@@ -2,10 +2,12 @@ package com.aiqin.bms.scmp.api.product.domain.pojo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
 @ApiModel("变价主表")
+@Data
 public class ProductSkuChangePrice {
     @ApiModelProperty("主键")
     private Long id;
@@ -79,10 +81,10 @@ public class ProductSkuChangePrice {
     @ApiModelProperty("来源(0变价1sku新增)")
     private Integer original;
 
-    @ApiModelProperty("扩展字段1")
+    @ApiModelProperty("调价原因编码")
     private String extField1;
 
-    @ApiModelProperty("扩展字段2")
+    @ApiModelProperty("调价原因描述")
     private String extField2;
 
     @ApiModelProperty("扩展字段3")
@@ -91,249 +93,9 @@ public class ProductSkuChangePrice {
     @ApiModelProperty("扩展字段4")
     private Date extField4;
 
-    @ApiModelProperty("扩展字段5")
+    @ApiModelProperty("是否含有区域")
     private Integer extField5;
 
     @ApiModelProperty("扩展字段6")
     private Long extField6;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code == null ? null : code.trim();
-    }
-
-    public String getChangePriceType() {
-        return changePriceType;
-    }
-
-    public void setChangePriceType(String changePriceType) {
-        this.changePriceType = changePriceType == null ? null : changePriceType.trim();
-    }
-
-    public String getChangePriceName() {
-        return changePriceName;
-    }
-
-    public void setChangePriceName(String changePriceName) {
-        this.changePriceName = changePriceName == null ? null : changePriceName.trim();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public String getPurchaseGroupCode() {
-        return purchaseGroupCode;
-    }
-
-    public void setPurchaseGroupCode(String purchaseGroupCode) {
-        this.purchaseGroupCode = purchaseGroupCode == null ? null : purchaseGroupCode.trim();
-    }
-
-    public String getPurchaseGroupName() {
-        return purchaseGroupName;
-    }
-
-    public void setPurchaseGroupName(String purchaseGroupName) {
-        this.purchaseGroupName = purchaseGroupName == null ? null : purchaseGroupName.trim();
-    }
-
-    public String getRemake() {
-        return remake;
-    }
-
-    public void setRemake(String remake) {
-        this.remake = remake == null ? null : remake.trim();
-    }
-
-    public String getDirectSupervisorCode() {
-        return directSupervisorCode;
-    }
-
-    public void setDirectSupervisorCode(String directSupervisorCode) {
-        this.directSupervisorCode = directSupervisorCode == null ? null : directSupervisorCode.trim();
-    }
-
-    public String getDirectSupervisorName() {
-        return directSupervisorName;
-    }
-
-    public void setDirectSupervisorName(String directSupervisorName) {
-        this.directSupervisorName = directSupervisorName == null ? null : directSupervisorName.trim();
-    }
-
-    public String getCostBearerCode() {
-        return costBearerCode;
-    }
-
-    public void setCostBearerCode(String costBearerCode) {
-        this.costBearerCode = costBearerCode == null ? null : costBearerCode.trim();
-    }
-
-    public String getCostBearerName() {
-        return costBearerName;
-    }
-
-    public void setCostBearerName(String costBearerName) {
-        this.costBearerName = costBearerName == null ? null : costBearerName.trim();
-    }
-
-    public Long getBudget() {
-        return budget;
-    }
-
-    public void setBudget(Long budget) {
-        this.budget = budget;
-    }
-
-    public String getCompanyCode() {
-        return companyCode;
-    }
-
-    public void setCompanyCode(String companyCode) {
-        this.companyCode = companyCode == null ? null : companyCode.trim();
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName == null ? null : companyName.trim();
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy == null ? null : createBy.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy == null ? null : updateBy.trim();
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getAuditorBy() {
-        return auditorBy;
-    }
-
-    public void setAuditorBy(String auditorBy) {
-        this.auditorBy = auditorBy == null ? null : auditorBy.trim();
-    }
-
-    public Integer getApplyStatus() {
-        return applyStatus;
-    }
-
-    public void setApplyStatus(Integer applyStatus) {
-        this.applyStatus = applyStatus;
-    }
-
-    public String getFormNo() {
-        return formNo;
-    }
-
-    public void setFormNo(String formNo) {
-        this.formNo = formNo == null ? null : formNo.trim();
-    }
-
-    public Date getAuditorTime() {
-        return auditorTime;
-    }
-
-    public void setAuditorTime(Date auditorTime) {
-        this.auditorTime = auditorTime;
-    }
-
-    public Integer getOriginal() {
-        return original;
-    }
-
-    public void setOriginal(Integer original) {
-        this.original = original;
-    }
-
-    public String getExtField1() {
-        return extField1;
-    }
-
-    public void setExtField1(String extField1) {
-        this.extField1 = extField1 == null ? null : extField1.trim();
-    }
-
-    public String getExtField2() {
-        return extField2;
-    }
-
-    public void setExtField2(String extField2) {
-        this.extField2 = extField2 == null ? null : extField2.trim();
-    }
-
-    public String getExtField3() {
-        return extField3;
-    }
-
-    public void setExtField3(String extField3) {
-        this.extField3 = extField3 == null ? null : extField3.trim();
-    }
-
-    public Date getExtField4() {
-        return extField4;
-    }
-
-    public void setExtField4(Date extField4) {
-        this.extField4 = extField4;
-    }
-
-    public Integer getExtField5() {
-        return extField5;
-    }
-
-    public void setExtField5(Integer extField5) {
-        this.extField5 = extField5;
-    }
-
-    public Long getExtField6() {
-        return extField6;
-    }
-
-    public void setExtField6(Long extField6) {
-        this.extField6 = extField6;
-    }
 }

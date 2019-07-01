@@ -234,6 +234,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     public void saveData(ProductSkuChangePriceReqVO reqVO) throws Exception {
         //主表数据
         ProductSkuChangePrice copy = BeanCopyUtils.copy(reqVO, ProductSkuChangePrice.class);
+        copy.setExtField1(reqVO.getChangePriceReasonCode());
+        copy.setExtField2(reqVO.getChangePriceReasonName());
         copy.setOriginal(0);
         if (CommonConstant.ADD.equals(reqVO.getOperation())) {
             copy.setApplyStatus(CommonConstant.PENDING_SUBMISSION);

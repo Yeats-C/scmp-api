@@ -103,8 +103,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
         AuthToken authToken = getUser();
         vo.setCompanyCode(authToken.getCompanyCode());
-        vo.setCompanyName(authToken.getCompanyName());
         PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
+
         List<QueryAllocationResVo> list = allocationMapper.getList(vo);
         BasePage<QueryAllocationResVo> basePage = PageUtil.getPageList(vo.getPageNo(),list);
         return basePage;

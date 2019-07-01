@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractPlanType;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractPurchaseVolumeDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUsernameReqVo;
@@ -33,7 +34,9 @@ public interface ContractService {
      */
     int saveContract(ContractReqVo contractReqVo);
 
-    /**
+ void savePlanTypeList(List<ContractPlanType> typeList);
+
+ /**
      * 查看合同详情
      * @param id
      * @return
@@ -92,5 +95,12 @@ public interface ContractService {
     * @return
     */
    List<ContractResVo>  getContractByUsername(ContractByUsernameReqVo reqVO);
-
+   /**
+    * 根据 编码删除
+    * @author NullPointException
+    * @date 2019/7/1
+    * @param contractCode
+    * @return void
+    */
+   void deletePlanTypeList(String contractCode);
 }

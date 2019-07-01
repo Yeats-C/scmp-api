@@ -126,4 +126,9 @@ public interface EncodingRuleType {
      * 采购单编码
      */
     String PURCHASE_ORDER_CODE = "PURCHASE_ORDER_CODE";
+
+    /**
+     * 监管库订单编号
+     */
+    String SUPERVISORY_WAREHOUSE_ORDER_CODE = "SUPERVISORY_WAREHOUSE_ORDER_CODE";
 }

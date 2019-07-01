@@ -26,6 +26,8 @@ public interface ResultCode {
     MessageId CANCEL_ERROR = MessageId.create(Project.ZERO, 16, "撤销失败");
 
     MessageId FILE_UPLOAD_ERROR = MessageId.create(Project.ZERO, 20, "文件上传失败");
+    //合同
+    MessageId SAVE_PLAN_TYPE_FAILED = MessageId.create(Project.SUPPLIER_API, 999, "保存目标返利失败");
 
     MessageId UPDATE_PRODUCT_ON_SALE_ERROR = MessageId.create(Project.PRODUCT_API, 10, "根据商品id将商品从微商城下架失败");
     MessageId SELECT_PRODUCT_BY_PRODUCTCODELIST_ERROR = MessageId.create(Project.PRODUCT_API, 11, "根据商品codeList查询商品信息失败");
@@ -196,6 +198,8 @@ public interface ResultCode {
     MessageId LOG_SAVE_ERROR = MessageId.create(Project.PURCHASE_API,99,"订单日志保存失败");
     MessageId SAVE_LOCK_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,99,"保存批次锁库失败");
     MessageId CHANGE_ACTUAL_DELIVERY_NUM_FAILED = MessageId.create(Project.PURCHASE_API,99,"修改实发数量失败");
+    MessageId LOCK_BATCH_STOCK_FAILED = MessageId.create(Project.PURCHASE_API,99,"锁定批次库存失败");
+
     //退货
     MessageId SAVE_RETURN_ORDER_ITEM_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单附表保存失败");
     MessageId CAN_NOT_FIND_RETURN_ORDER = MessageId.create(Project.PURCHASE_API,100,"退货订单数据查询失败");
@@ -203,6 +207,7 @@ public interface ResultCode {
     MessageId GET_RETURN_GOODS_DETAIL_FAILED = MessageId.create(Project.PURCHASE_API,100,"获取订单详情失败");
     MessageId QUERY_INSPECTION_DETAIL_ERROR = MessageId.create(Project.PURCHASE_API,100,"查询验货信息失败");
     MessageId SAVE_INSPECTION_DATA_FAILED = MessageId.create(Project.PURCHASE_API,100,"保存验货信息失败");
+    
     //出库
     MessageId OUTBOUND_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.SCMP_API,75,"出库单信息不能为空");
     MessageId SAVE_OUT_BOUND_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库主表数据失败");
@@ -215,6 +220,21 @@ public interface ResultCode {
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");
     MessageId SUPPLIER_CODE_EMPTY = MessageId.create(Project.SCMP_API,201,"供应商编码不能为空");
+    MessageId INBOUND_ORDER_CODE_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "入库单编号不能为空");
+    MessageId PURCHSAE_ORDER_CODE_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "采购单编号不能为空");
+    MessageId ARRIVAL_SUBSCRIBE_STATUS_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "预约状态不能为空");
 
+    //发运
+    MessageId TRANSPORT_DELIVERY_ERROR = MessageId.create(Project.PURCHASE_API, 1005, "发运单已签收或不存在");
+    MessageId TRANSPORT_SIGN_ERROR = MessageId.create(Project.PURCHASE_API, 1005, "发运单未发运或已签收");
+    MessageId UPDATE_TRANSPORT_STATUS_FAILED = MessageId.create(Project.PURCHASE_API, 1005, "更新发运状态失败！");
+    MessageId SAVE_TRANSPORT_LOG_FAILED = MessageId.create(Project.PURCHASE_API, 1005, "保存发运日志信息失败！");
+
+    //入库
+    MessageId SAVE_IN_BOUND_FAILED = MessageId.create(Project.PURCHASE_API,76,"保存入库批次数据失败");
+    MessageId SAVE_IN_BOUND_PRODUCT_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库商品数据失败");
+    MessageId SAVE_IN_BOUND_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库批次数据失败");
+
+    MessageId SUPERVISORY_WAREHOUSE_NOT_EXISTS = MessageId.create(Project.PURCHASE_API,75,"监管仓不存在,请先添加");
 
 }

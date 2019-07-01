@@ -77,9 +77,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         validateOrderData(reqVOs);
         Date date = new Date();
         //数据处理
-        List<OrderInfo> orders = Lists.newCopyOnWriteArrayList();
         List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
         List<OrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
+        List<OrderInfo> orders = Lists.newCopyOnWriteArrayList();
         reqVOs.parallelStream().forEach(o->{
             OrderInfo info = BeanCopyUtils.copy(o, OrderInfo.class);
             info.setCreateDate(date);
@@ -158,6 +158,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         //TODO 调用库存接口锁库
         List<LockOrderItemBatchReqVO> vo = dealData(orders,orderItems);
         List<OrderInfoItemProductBatch> list = stockService.lockBatchStock(vo);
+        if(CollectionUtils.isEmptyCollection(list)){
+            throw new BizException(ResultCode.LOCK_BATCH_STOCK_FAILED);
+        }
         saveLockBatch(list);
         List<OrderInfoDTO> orderInfoDTOS = dealToOutBoundData(orders, orderItems, list);
         service.sendOrderToOutBound(orderInfoDTOS);
@@ -331,6 +334,11 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             throw new BizException(ResultCode.CHANGE_ACTUAL_DELIVERY_NUM_FAILED);
         }
         return Boolean.TRUE;
+    }
+
+    @Override
+    public OrderInfo selectByOrderCode(String orderCode) {
+        return orderInfoMapper.selectByOrderCode2(orderCode);
     }
 
 }

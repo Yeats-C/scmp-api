@@ -110,6 +110,8 @@ public class ApplyContractUpdateResVo {
     @ApiModelProperty("进货额")
     private List<ApplyContractPurchaseVolumeResVo> purchaseList;
 
+    @ApiModelProperty("最小起订额")
+    private Long minAmount;
 
     @ApiModelProperty("合同类型编码")
     private String contractTypeCode;

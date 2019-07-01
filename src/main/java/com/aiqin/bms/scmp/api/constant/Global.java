@@ -111,5 +111,8 @@ public interface Global {
     Integer PURCHASE_ORDER_9 = 9;
     Integer PURCHASE_ORDER_10 = 10;
 
-
+    /**
+     *监管仓类型
+     */
+    Byte SUPERVISORY_WAREHOUSE_TYPE = Byte.valueOf("3");
 }

@@ -933,11 +933,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }
         int i1 = outboundProductDao.insertBatch(productList);
         if(i1!=productList.size()){
-            throw new BizException(ResultCode.SAVE_OUT_BOUND_FAILED);
+            throw new BizException(ResultCode.SAVE_OUT_BOUND_PRODUCT_FAILED);
         }
         Integer integer = outboundBatchDao.insertInfo(batchList);
         if(Objects.isNull(integer)||integer!=batchList.size()){
-            throw new BizException(ResultCode.SAVE_OUT_BOUND_FAILED);
+            throw new BizException(ResultCode.SAVE_OUT_BOUND_BATCH_FAILED);
         }
     }
     /**

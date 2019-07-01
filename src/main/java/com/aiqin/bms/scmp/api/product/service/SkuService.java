@@ -25,6 +25,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsProductSkuItemR
 import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.QueryOmsSkusPageResp;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.QuerySkuListResp;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.ProductItemStoreRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuDetailRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuItemRespVO;
@@ -137,4 +138,11 @@ public interface SkuService {
      * @param querySkuListReqVo
      */
     BasePage<QueryCenterSkuListRespVo> queryOcenterSkuList(QueryCenterSkuListReqVo querySkuListReqVo);
+
+
+    /**
+     * 监管仓入库SKU查询
+     * @return
+     */
+    BasePage<SupervisoryWarehouseSkuRespVo> getSupervisoryWarehouseSku(QuerySkuListReqVO querySkuListReqVO);
 }
