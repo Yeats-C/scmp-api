@@ -9,6 +9,13 @@ import lombok.Data;
 @Data
 public class StockBatchProductSkuRespVO {
 
+    @ApiModelProperty("sku编码")
+    @JsonProperty(value = "sku_code")
+    private String skuCode;
+
+    @ApiModelProperty("sku名称")
+    @JsonProperty(value = "sku_name")
+    private String skuName;
 
     @ApiModelProperty("品类编码")
     @JsonProperty(value = "product_category_code")

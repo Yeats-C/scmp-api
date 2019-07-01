@@ -443,12 +443,15 @@
         st.create_time,st.create_by,st.update_time,st.update_by,ps.spec,
         psc.config_status,
         ps.product_brand_name,
-        ps.unit_code,ps.product_category_code,ps.product_category_name,psbp.large_unit
+        ps.unit_code,ps.product_category_code,ps.product_category_name,psbp.large_unit,
+        pssi.spec,st.tax_cost
+
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
         AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
         left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        left join product_sku_stock_info as pssi on st.sku_code=CONVERT(pssi.product_sku_code USING utf8) COLLATE utf8_unicode_ci
 
         where st.id = #{stockId, jdbcType=VARCHAR}
     </select>

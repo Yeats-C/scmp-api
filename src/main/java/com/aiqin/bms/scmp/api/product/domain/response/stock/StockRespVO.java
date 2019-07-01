@@ -202,6 +202,10 @@ public class StockRespVO {
     @JsonProperty(value = "stockupfinish_time")
     private String stockupfinishTime;
 
+    @ApiModelProperty("昨天含税成本")
+    @JsonProperty(value = "tax_cost")
+    private String taxCost;
+
     public Long getId() {
         return id;
     }
@@ -592,5 +596,13 @@ public class StockRespVO {
 
     public void setStockupfinishTime(String stockupfinishTime) {
         this.stockupfinishTime = stockupfinishTime;
+    }
+
+    public String getTaxCost() {
+        return taxCost;
+    }
+
+    public void setTaxCost(String taxCost) {
+        this.taxCost = taxCost;
     }
 }
