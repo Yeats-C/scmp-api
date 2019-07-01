@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.web.sku;
 
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -188,7 +189,7 @@ public class ProductSkuController {
      */
     @PostMapping("/supervisoryWarehouse/skuList")
     @ApiOperation("监管仓入库SKU查询")
-    public HttpResponse getSupervisoryWarehouse(@RequestBody QuerySkuListReqVO querySkuListReqVO){
+    public HttpResponse<BasePage<SupervisoryWarehouseSkuRespVo>> getSupervisoryWarehouse(@RequestBody QuerySkuListReqVO querySkuListReqVO){
         try {
             return HttpResponse.success(skuService.getSupervisoryWarehouseSku(querySkuListReqVO));
         }  catch (Exception e) {
