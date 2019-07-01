@@ -137,5 +137,6 @@ public interface StockDao {
      */
     List<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
 
+    void updateStorehouseById(@Param("list") List<StockRespVO> stockRespVO);
 
 }

@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
@@ -32,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -257,5 +257,16 @@ public class StockController {
         reqVO.setPageSize(page_size);
         return HttpResponse.success(stockService.selectStockSkuList(reqVO));
     }
+
+    /**
+     * 库房库存数据保存
+     * @return
+     */
+    @PostMapping("/update/storehouse")
+    @ApiOperation(value = "库房管理列表数据保存")
+    public void updateStorehouseById(@RequestBody List<StockRespVO> stockRespVO){
+        stockService.updateStorehouseById(stockRespVO);
+    }
+
 
 }

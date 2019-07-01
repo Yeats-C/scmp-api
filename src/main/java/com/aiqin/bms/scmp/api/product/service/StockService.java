@@ -247,5 +247,6 @@ public interface StockService {
      */
     PageInfo<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
 
+    void updateStorehouseById(List<StockRespVO> stockRespVO);
 
 }
