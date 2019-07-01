@@ -23,7 +23,7 @@ public class ProductPriceJob {
      * 每天晚上零点统计产品成本价
      */
     @Scheduled(cron = "0 0 0 * * ?")
-//    @Scheduled(cron = "*/30 * * * * ?")
+//   @Scheduled(cron = "*/2 * * * * ?")
     public void productPrice() {
         //查询仓库数
         List<Stock> warehouse = stockService.selectGroup();
