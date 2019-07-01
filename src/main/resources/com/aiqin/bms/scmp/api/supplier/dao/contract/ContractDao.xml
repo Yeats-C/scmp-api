@@ -581,7 +581,21 @@
     </if>
     order by create_time desc
   </select>
-  <update id="updateByCode" >
+    <select id="getContractByMap" parameterType="map"
+            resultType="com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseResVo">
+      select
+      contract_code as contractCode,
+      year_name as contractName
+      from contract
+      where 1=1
+      <if test="companyCode != null and companyCode !='' ">
+        and company_code = #{companyCode}
+      </if>
+      <if test="personId != null and personId != '' ">
+
+      </if>
+    </select>
+    <update id="updateByCode" >
     update contract
     <set>
       <if test="applyStatus != null">
