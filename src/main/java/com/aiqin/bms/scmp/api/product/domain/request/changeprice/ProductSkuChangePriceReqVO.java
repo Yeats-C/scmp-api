@@ -77,6 +77,12 @@ public class ProductSkuChangePriceReqVO {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    @ApiModelProperty("调价原因编码")
+    private String changePriceReasonCode;
+
+    @ApiModelProperty("调价原因描述")
+    private String changePriceReasonName;
+
     @ApiModelProperty("审批表单号")
     private String formNo;
 

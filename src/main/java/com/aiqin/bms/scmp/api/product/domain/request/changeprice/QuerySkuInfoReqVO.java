@@ -45,6 +45,9 @@ public class QuerySkuInfoReqVO extends PageReq {
     @ApiModelProperty("spu编码")
     private String spuName;
 
+    @ApiModelProperty("供应商编码")
+    private String supplierCode;
+
     @ApiModelProperty("spu编码")
     private String spuCode;
 

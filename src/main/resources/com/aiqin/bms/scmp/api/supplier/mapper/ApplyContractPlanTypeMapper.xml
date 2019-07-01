@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.ApplyContractPlanTypeMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPlanType">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="apply_contract_code" jdbcType="VARCHAR" property="applyContractCode" />
+    <result column="plan_type" jdbcType="INTEGER" property="planType" />
+    <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, apply_contract_code, plan_type, start_time, end_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from apply_contract_plan_type
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByApplyContratCode"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_contract_plan_type
+    where apply_contract_code = #{applyContractCode}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from apply_contract_plan_type
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByContractCode">
+        delete from apply_contract_plan_type
+    where apply_contract_code = #{applyContractCode}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPlanType">
+    insert into apply_contract_plan_type (id, apply_contract_code, plan_type, 
+      start_time, end_time)
+    values (#{id,jdbcType=BIGINT}, #{applyContractCode,jdbcType=VARCHAR}, #{planType,jdbcType=INTEGER}, 
+      #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPlanType">
+    insert into apply_contract_plan_type
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="applyContractCode != null">
+        apply_contract_code,
+      </if>
+      <if test="planType != null">
+        plan_type,
+      </if>
+      <if test="startTime != null">
+        start_time,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="applyContractCode != null">
+        #{applyContractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="planType != null">
+        #{planType,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+      insert into apply_contract_plan_type (id, apply_contract_code, plan_type,
+      start_time, end_time)
+    values
+    <foreach collection="list" item="item" separator="," close="" open="">
+    (#{item.id,jdbcType=BIGINT}, #{item.applyContractCode,jdbcType=VARCHAR}, #{item.planType,jdbcType=INTEGER},
+      #{item.startTime,jdbcType=TIMESTAMP}, #{item.endTime,jdbcType=TIMESTAMP})
+    </foreach>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPlanType">
+    update apply_contract_plan_type
+    <set>
+      <if test="applyContractCode != null">
+        apply_contract_code = #{applyContractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="planType != null">
+        plan_type = #{planType,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null">
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPlanType">
+    update apply_contract_plan_type
+    set apply_contract_code = #{applyContractCode,jdbcType=VARCHAR},
+      plan_type = #{planType,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
