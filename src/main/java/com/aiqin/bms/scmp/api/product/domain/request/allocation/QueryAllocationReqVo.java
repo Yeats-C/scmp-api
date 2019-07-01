@@ -66,4 +66,7 @@ public class QueryAllocationReqVo extends PageReq {
     @ApiModelProperty(value = "公司编码", hidden = true)
     private String companyCode;
 
+    @ApiModelProperty(value = "调拨类型",hidden = true)
+    private Byte allocationType;
+
 }

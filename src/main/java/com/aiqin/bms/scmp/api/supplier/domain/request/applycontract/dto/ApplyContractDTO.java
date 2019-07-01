@@ -45,6 +45,9 @@ public class ApplyContractDTO extends CommonBean {
     @ApiModelProperty("配送费")
     private Long shippingFee;
 
+    @ApiModelProperty("最小起订金额")
+    private Long minAmount;
+
     @ApiModelProperty("送货费承担方(甲方,乙方承担)")
     private Byte deliveryCharges;
 

@@ -1,14 +1,15 @@
 package com.aiqin.bms.scmp.api.supplier.web.contract;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUsernameReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.QueryContractResVo;
 import com.aiqin.bms.scmp.api.supplier.service.ContractService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -109,6 +110,16 @@ public class ContractController {
     public  HttpResponse<List<ContractResVo>>  getContractByUsername(@RequestBody ContractByUsernameReqVo reqVO){
         try {
             return HttpResponse.success(contractService.getContractByUsername(reqVO));
+        }catch (Exception ex){
+            return HttpResponse.failure(ResultCode.SEARCH_ERROR);
+        }
+    }
+
+    @ApiOperation("查询当人所属公司和采购组的合同")
+    @PostMapping("/getContractByPurchaseGroup")
+    public  HttpResponse<List<ContractPurchaseResVo>> getContractByPurchaseGroup(){
+        try {
+            return HttpResponse.success(contractService.getContractByPurchaseGroup());
         }catch (Exception ex){
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
         }

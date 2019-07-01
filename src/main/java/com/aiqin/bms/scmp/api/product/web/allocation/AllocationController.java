@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.web.allocation;
 
+import com.aiqin.bms.scmp.api.common.AllocationTypeEnmu;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -42,6 +43,7 @@ public class AllocationController {
     @ApiOperation("调拨单列表详情")
     @PostMapping("/list")
     public HttpResponse<BasePage<QueryAllocationResVo>> getList(@RequestBody QueryAllocationReqVo vo) {
+        vo.setAllocationType(AllocationTypeEnmu.ALLOCATION.getType());
         return HttpResponse.success(allocationService.getList(vo));
     }
 

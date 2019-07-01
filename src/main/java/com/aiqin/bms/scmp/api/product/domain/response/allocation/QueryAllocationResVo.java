@@ -52,7 +52,7 @@ public class QueryAllocationResVo extends PageReq {
     @ApiModelProperty("数量")
     private Long quantity;
 
-    @ApiModelProperty("含税调拨金额")
+    @ApiModelProperty("含税调拨金额(含税库存成本),展示时需要除以100")
     private Long taxRefundAmount;
 
     @ApiModelProperty("出库单号")

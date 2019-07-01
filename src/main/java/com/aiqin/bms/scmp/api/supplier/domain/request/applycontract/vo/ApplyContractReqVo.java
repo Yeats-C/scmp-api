@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo;
 
+import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -71,8 +72,11 @@ public class ApplyContractReqVo{
     @ApiModelProperty("目标返利(门店,地区,大区,全国)")
     private Byte targetRebate;
 
+//    @ApiModelProperty("计划类型(月度,季度,半年,全年)")
+//    private Byte planType;
+
     @ApiModelProperty("计划类型(月度,季度,半年,全年)")
-    private Byte planType;
+    List<PlanTypeReqVO> planTypeList;
 
     @ApiModelProperty("起始日期")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
