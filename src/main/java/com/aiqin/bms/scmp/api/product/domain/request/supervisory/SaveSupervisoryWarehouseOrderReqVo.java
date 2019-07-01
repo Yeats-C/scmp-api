@@ -1,26 +1,26 @@
-package com.aiqin.bms.scmp.api.product.domain.pojo;
+package com.aiqin.bms.scmp.api.product.domain.request.supervisory;
 
-import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
-@ApiModel("监管仓订单")
+/**
+ * @author knight.xie
+ * @version 1.0
+ * @className SaveSupervisoryWarehouseOrderReqVo
+ * @date 2019/6/29 18:05
+ * @description TODO
+ */
+@ApiModel("保存监管仓出入库单据")
 @Data
-public class SupervisoryWarehouseOrder extends CommonBean {
-    @ApiModelProperty("主键ID")
-    private Long id;
-
-    @ApiModelProperty("订单编号")
-    private String orderCode;
+public class SaveSupervisoryWarehouseOrderReqVo {
 
     @ApiModelProperty("订单类型(1:入库 2:出库)")
     private Byte orderType;
-
-    @ApiModelProperty("订单类型名称")
-    private String orderTypeName;
 
     @ApiModelProperty("客户编码")
     private String customerCode;
@@ -32,6 +32,7 @@ public class SupervisoryWarehouseOrder extends CommonBean {
     private String customerOrderCode;
 
     @ApiModelProperty("订单日期")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date orderTime;
 
     @ApiModelProperty("仓编码(物流中心编码)")
@@ -40,12 +41,6 @@ public class SupervisoryWarehouseOrder extends CommonBean {
     @ApiModelProperty("仓名称(物流中心名称)")
     private String transportCenterName;
 
-    @ApiModelProperty("库房编码")
-    private String warehouseCode;
-
-    @ApiModelProperty("库房名称")
-    private String warehouseName;
-
     @ApiModelProperty("业务编号")
     private String businessCode;
 
@@ -53,22 +48,19 @@ public class SupervisoryWarehouseOrder extends CommonBean {
     private String businessName;
 
     @ApiModelProperty("预约时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date subscribeTime;
 
     @ApiModelProperty("有效期")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date validTime;
 
     @ApiModelProperty("备注")
     private String remark;
 
-    @ApiModelProperty("公司")
-    private String companyCode;
-
-    @ApiModelProperty("公司名称")
-    private String companyName;
-
     @ApiModelProperty("开单人")
     private String openOrderName;
 
-
+    @ApiModelProperty("商品列表")
+    List<SupervisoryWarehouseOrderProductReqVo> products;
 }
