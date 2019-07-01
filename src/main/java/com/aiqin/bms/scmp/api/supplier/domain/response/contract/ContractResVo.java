@@ -134,6 +134,9 @@ public class ContractResVo {
     @ApiModelProperty("到货付款比例")
     private Long paymentOnDeliveryRatio;
 
+    @ApiModelProperty("最小起订额")
+    private Long minAmount;
+
     @ApiModelProperty("返利条款 0:固定返利 1:目标返利")
     private Byte rebateClause;
 
