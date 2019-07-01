@@ -204,14 +204,13 @@ public interface ResultCode {
     MessageId QUERY_INSPECTION_DETAIL_ERROR = MessageId.create(Project.PURCHASE_API,100,"查询验货信息失败");
     MessageId SAVE_INSPECTION_DATA_FAILED = MessageId.create(Project.PURCHASE_API,100,"保存验货信息失败");
     //出库
-    MessageId OUTBOUND_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.PURCHASE_API,75,"出库单信息不能为空");
-    MessageId SAVE_OUT_BOUND_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库主表数据失败");
-    MessageId SAVE_OUT_BOUND_PRODUCT_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库商品数据失败");
-    MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库批次数据失败");
+    MessageId OUTBOUND_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.SCMP_API,75,"出库单信息不能为空");
+    MessageId SAVE_OUT_BOUND_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库主表数据失败");
+    MessageId SAVE_OUT_BOUND_PRODUCT_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库商品数据失败");
+    MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库批次数据失败");
 
     // 采购
-    MessageId NOT_PURCHASE_GROUP = MessageId.create(Project.SCMP_API,201,"未获取到有效的采购组");
-    MessageId NOT_PURCHASE_GROUP_PERSON = MessageId.create(Project.SCMP_API,202,"此采购组该人员无相关数据");
+    MessageId NOT_PURCHASE_GROUP_DATA = MessageId.create(Project.SCMP_API,202,"此采购组该人员无相关数据");
 
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");

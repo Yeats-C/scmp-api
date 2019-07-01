@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
@@ -18,7 +19,6 @@ import java.util.List;
  * @author: zhao shuai
  * @create: 2019-06-13
  **/
-
 @Api(tags = "采购申请")
 @RequestMapping("/apply")
 @RestController
@@ -32,7 +32,7 @@ public class PurchaseApplyController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "purchase_apply_code", value = "采购申请单号", type = "String"),
             @ApiImplicitParam(name = "apply_type", value = "采购申请单类型: 0 手动 1自动", type = "Integer"),
-            @ApiImplicitParam(name = "apply_status", value = "采购申请单状态: 0 已完成 1 待提交", type = "Integer"),
+            @ApiImplicitParam(name = "apply_status", value = "采购申请单状态: 0 待提交  1 已完成", type = "Integer"),
             @ApiImplicitParam(name = "purchase_group_code", value = "采购组 code", type = "String"),
             @ApiImplicitParam(name = "begin_time", value = "开始时间", type = "String"),
             @ApiImplicitParam(name = "finish_time", value = "结束时间", type = "String"),
@@ -101,15 +101,15 @@ public class PurchaseApplyController {
 
     @PostMapping("/purchase/form")
     @ApiOperation("生成采购申请单")
-    public HttpResponse purchaseApplyForm(@RequestBody List<PurchaseApplyProduct> purchaseApplyProduct) {
-        return purchaseApplyService.purchaseApplyForm(purchaseApplyProduct);
+    public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {
+        return purchaseApplyService.purchaseApplyForm(applyProductRequest);
     }
 
-    @GetMapping("/product")
-    @ApiOperation("查询/复制申请采购商品信息")
-    public HttpResponse searchApplyProduct(@RequestParam("apply_product_id") String applyProductId) {
-        return purchaseApplyService.searchApplyProduct(applyProductId);
-    }
+//    @GetMapping("/product")
+//    @ApiOperation("查询申请采购商品信息")
+//    public HttpResponse searchApplyProduct(@RequestParam("apply_product_id") String applyProductId) {
+//        return purchaseApplyService.searchApplyProduct(applyProductId);
+//    }
 
     @DeleteMapping("/product")
     @ApiOperation("删除申请采购商品信息")
@@ -117,16 +117,15 @@ public class PurchaseApplyController {
         return purchaseApplyService.deleteApplyProduct(applyProductId);
     }
 
-    @GetMapping("/product/basic")
-    @ApiOperation("查询采购申请-编辑采购申请-商品基本信息")
-    public HttpResponse applyProductBasic(@RequestParam("purchase_apply_id") String purchaseApplyId) {
-        return purchaseApplyService.applyProductBasic(purchaseApplyId);
-    }
+//    @GetMapping("/product/basic")
+//    @ApiOperation("查询采购申请-编辑采购申请-商品基本信息")
+//    public HttpResponse applyProductBasic(@RequestParam("purchase_apply_id") String purchaseApplyId) {
+//        return purchaseApplyService.applyProductBasic(purchaseApplyId);
+//    }
 
     @GetMapping("/selection/product")
     @ApiOperation("查询采购申请-编辑采购申请-选中商品列表")
     public HttpResponse applySelectionProduct(@RequestParam("purchase_apply_id") String purchaseApplyId) {
         return purchaseApplyService.applySelectionProduct(purchaseApplyId);
     }
-
 }

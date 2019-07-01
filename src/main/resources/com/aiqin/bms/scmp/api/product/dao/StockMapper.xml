@@ -1460,10 +1460,6 @@
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         <where>
             ps.del_flag = 0
-            and ps.procurement_section_code in
-            <foreach collection="groupCode" index="index" item="item" open="(" separator="," close=")">
-                #{item}
-            </foreach>
             <if test="supplierCode != null">
                 and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
             </if>
@@ -1527,10 +1523,6 @@
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         <where>
             ps.del_flag = 0
-            and ps.procurement_section_code in
-            <foreach collection="groupCode" index="index" item="item" open="(" separator="," close=")">
-                #{item}
-            </foreach>
             <if test="supplierCode != null">
                 and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
             </if>

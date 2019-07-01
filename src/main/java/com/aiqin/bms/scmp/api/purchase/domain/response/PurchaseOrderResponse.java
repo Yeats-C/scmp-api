@@ -1,17 +1,18 @@
-package com.aiqin.bms.scmp.api.purchase.domain;
+package com.aiqin.bms.scmp.api.purchase.domain.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
 
-@ApiModel
+/**
+ * @author: zhao shuai
+ * @create: 2019-06-28
+ **/
 @Data
-public class PurchaseOrder {
-    @JsonProperty("id")
-    private Long id;
+public class PurchaseOrderResponse {
 
     @ApiModelProperty(value="采购单id")
     @JsonProperty("purchase_order_id")
@@ -89,36 +90,33 @@ public class PurchaseOrder {
     @JsonProperty("settlement_method_name")
     private String settlementMethodName;
 
-    @ApiModelProperty(value="取消原因")
-    @JsonProperty("cancel_reason")
-    private String cancelReason;
-
-    @ApiModelProperty(value="取消备注")
-    @JsonProperty("cancel_remark")
-    private String cancelRemark;
-
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
-
-    @ApiModelProperty(value="修改时间")
-    @JsonProperty("update_time")
-    private Date updateTime;
-
-    @ApiModelProperty(value="创建者id")
-    @JsonProperty("create_by_id")
-    private String createById;
-
-    @ApiModelProperty(value="修改者id")
-    @JsonProperty("update_by_id")
-    private String updateById;
 
     @ApiModelProperty(value="创建者")
     @JsonProperty("create_by_name")
     private String createByName;
 
-    @ApiModelProperty(value="修改者")
-    @JsonProperty("update_by_name")
-    private String updateByName;
+    @ApiModelProperty(value="实际单品数量")
+    @JsonProperty("actual_single_count")
+    private Integer actualSingleCount;
 
+    @ApiModelProperty(value="实际含税采购金额")
+    @JsonProperty("actual_total_amount")
+    private Integer actualTotalAmount;
+
+    @ApiModelProperty(value="实际实物返金额")
+    @JsonProperty("actual_return_amount")
+    private Integer actualReturnAmount;
+
+    @ApiModelProperty(value="预计到货时间")
+    @JsonProperty("expect_arrival_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    private Date expectArrivalTime;
+
+    @ApiModelProperty(value="有效期")
+    @JsonProperty("valid_time")
+    private Integer validTime;
 }

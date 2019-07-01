@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -127,6 +128,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="预测到货时间")
     @JsonProperty("receipt_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date receiptTime;
 
     @ApiModelProperty(value="最高采购价")
@@ -171,6 +173,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="最后订货日期")
     @JsonProperty("last_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date lastTime;
 
     @ApiModelProperty(value="近90天销量")
@@ -200,6 +203,73 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="税率")
     @JsonProperty("tax_rate")
     private Integer taxRate;
+
+    @ApiModelProperty(value="库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty(value="库房名称")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
+
+    @ApiModelProperty(value="账户编码")
+    @JsonProperty("account_code")
+    private String accountCode;
+
+    @ApiModelProperty(value="账户名称")
+    @JsonProperty("account_name")
+    private String accountName;
+
+    @ApiModelProperty(value="合同编码")
+    @JsonProperty("contract_code")
+    private String contractCode;
+
+    @ApiModelProperty(value="合同名称")
+    @JsonProperty("contract_name")
+    private String contractName;
+
+    @ApiModelProperty(value="负责人")
+    @JsonProperty("charge_person")
+    private String chargePerson;
+
+    @ApiModelProperty(value="联系人")
+    @JsonProperty("contact_person")
+    private String contactPerson;
+
+    @ApiModelProperty(value="电话")
+    @JsonProperty("mobile")
+    private String mobile;
+
+    @ApiModelProperty(value="采购单状态 0.待审核 1.审核中 2.审核通过  3.备货确认 4.发货确认  5.入库开始 6.入库中 7.已入库  8.完成 9.取消 10.审核不通过")
+    @JsonProperty("purchase_order_status")
+    private Integer purchaseOrderStatus;
+
+    @ApiModelProperty(value="创建时间")
+    @JsonProperty("create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    @ApiModelProperty(value="修改时间")
+    @JsonProperty("update_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
+    @ApiModelProperty(value="预计到货时间")
+    @JsonProperty("expect_arrival_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    private Date expectArrivalTime;
+
+    @ApiModelProperty(value="有效期")
+    @JsonProperty("valid_time")
+    private Integer validTime;
+
+    @ApiModelProperty(value="关联订单号")
+    @JsonProperty("order_code")
+    private String orderCode;
+
+    @ApiModelProperty(value="采购方式名称")
+    @JsonProperty("order_type")
+    private String orderType;
 
 }
 

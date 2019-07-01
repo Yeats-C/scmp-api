@@ -11,7 +11,7 @@ public interface FileRecordDao {
 
     Integer update(FileRecord record);
 
-    List<FileRecord> fileList(String purchaseId);
+    List<FileRecord> fileList(String fileId);
 
     Integer insertAll(@Param("fileId") String fileId,@Param("list") List<FileRecord> list);
 
