@@ -583,16 +583,20 @@
   </select>
     <select id="getContractByMap" parameterType="map"
             resultType="com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseResVo">
-      select
-      contract_code as contractCode,
-      year_name as contractName
-      from contract
+      SELECT
+      DISTINCT
+      a.contract_code as contractCode,
+      a.year_name as contractName
+      FROM
+      contract a
+      LEFT JOIN contract_purchase_group b on a.contract_code = b.contract_code
+      LEFT JOIN purchase_group_buyer c on b.purchasing_group_code = c.purchase_group_code
       where 1=1
       <if test="companyCode != null and companyCode !='' ">
         and company_code = #{companyCode}
       </if>
       <if test="personId != null and personId != '' ">
-
+        and c.buyer_code = #{personId}
       </if>
     </select>
     <update id="updateByCode" >
