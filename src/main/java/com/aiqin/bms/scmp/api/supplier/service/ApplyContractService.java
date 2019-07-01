@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractFile;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPlanType;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPurchaseGroup;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.dto.ApplyContractDTO;
@@ -34,7 +35,10 @@ public interface ApplyContractService{
      * @return
      */
     int saveApplyContract(ApplyContractReqVo applyContractReqVo);
-    /**
+
+ void savePlanTypeList(List<ApplyContractPlanType> typeList);
+
+ /**
      * 查看合同申请详情（新增）
      * @param id
      * @return

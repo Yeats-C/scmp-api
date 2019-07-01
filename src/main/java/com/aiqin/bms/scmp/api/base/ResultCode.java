@@ -26,6 +26,8 @@ public interface ResultCode {
     MessageId CANCEL_ERROR = MessageId.create(Project.ZERO, 16, "撤销失败");
 
     MessageId FILE_UPLOAD_ERROR = MessageId.create(Project.ZERO, 20, "文件上传失败");
+    //合同
+    MessageId SAVE_PLAN_TYPE_FAILED = MessageId.create(Project.SUPPLIER_API, 999, "保存目标返利失败");
 
     MessageId UPDATE_PRODUCT_ON_SALE_ERROR = MessageId.create(Project.PRODUCT_API, 10, "根据商品id将商品从微商城下架失败");
     MessageId SELECT_PRODUCT_BY_PRODUCTCODELIST_ERROR = MessageId.create(Project.PRODUCT_API, 11, "根据商品codeList查询商品信息失败");
@@ -196,6 +198,8 @@ public interface ResultCode {
     MessageId LOG_SAVE_ERROR = MessageId.create(Project.PURCHASE_API,99,"订单日志保存失败");
     MessageId SAVE_LOCK_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,99,"保存批次锁库失败");
     MessageId CHANGE_ACTUAL_DELIVERY_NUM_FAILED = MessageId.create(Project.PURCHASE_API,99,"修改实发数量失败");
+    MessageId LOCK_BATCH_STOCK_FAILED = MessageId.create(Project.PURCHASE_API,99,"锁定批次库存失败");
+
     //退货
     MessageId SAVE_RETURN_ORDER_ITEM_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单附表保存失败");
     MessageId CAN_NOT_FIND_RETURN_ORDER = MessageId.create(Project.PURCHASE_API,100,"退货订单数据查询失败");

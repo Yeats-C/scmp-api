@@ -1,12 +1,12 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandReqDTO;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.QueryProductBrandReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductBrandRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryProductBrandRespVO;
-import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -91,7 +91,7 @@ public interface ProductBrandService {
      * @param reqVO
      * @return java.util.Map<java.lang.String,java.lang.Object>
      */
-    PageInfo<QueryProductBrandRespVO> selectBrandListByQueryVO(QueryProductBrandReqVO reqVO);
+    BasePage<QueryProductBrandRespVO> selectBrandListByQueryVO(QueryProductBrandReqVO reqVO);
     /**
      * 通过codes查询品牌集合
      * @author zth

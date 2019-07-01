@@ -1,20 +1,16 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractPurchaseGroup;
-import com.aiqin.bms.scmp.api.supplier.domain.response.contract.*;
-import com.aiqin.bms.scmp.api.supplier.mapper.ContractPurchaseGroupMapper;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractPurchaseVolumeDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
-import com.aiqin.bms.scmp.api.common.Save;
-import com.aiqin.bms.scmp.api.common.SaveList;
-import com.aiqin.bms.scmp.api.common.Update;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractFile;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractPlanType;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractPurchaseGroup;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
@@ -23,13 +19,17 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUser
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.*;
 import com.aiqin.bms.scmp.api.supplier.mapper.ContractFileMapper;
+import com.aiqin.bms.scmp.api.supplier.mapper.ContractPlanTypeMapper;
+import com.aiqin.bms.scmp.api.supplier.mapper.ContractPurchaseGroupMapper;
 import com.aiqin.bms.scmp.api.supplier.service.ContractService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
@@ -66,6 +66,9 @@ public class ContractServiceImpl implements ContractService{
     @Autowired
 
     private ContractFileMapper contractFileMapper;
+    @Autowired
+    private ContractPlanTypeMapper contractPlanTypeMapper;
+
     /**
      * 分页获取合同列表
      * @param vo
@@ -109,6 +112,11 @@ public class ContractServiceImpl implements ContractService{
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         if(k > 0){
             try {
+                if (contractDTO.getRebateClause().equals((byte)1)){
+                    List<ContractPlanType> typeList = BeanCopyUtils.copyList(contractReqVo.getPlanTypeList(),ContractPlanType.class);
+                    typeList.stream().forEach(planType -> planType.setContractCode(contractDTO.getContractCode()));
+                    savePlanTypeList(typeList);
+                }
                 List<ContractPurchaseVolumeDTO> list = BeanCopyUtils.copyList(contractReqVo.getPurchaseCount(),ContractPurchaseVolumeDTO.class);
                 list.stream().forEach(purchaselist -> purchaselist.setContractCode(contractDTO.getContractCode()));
                 int s = ((ContractService) AopContext.currentProxy()).saveList(list);
@@ -122,6 +130,16 @@ public class ContractServiceImpl implements ContractService{
             }
         }else {
             throw new GroundRuntimeException("合同保存失败");
+        }
+    }
+    @Override
+    public void savePlanTypeList(List<ContractPlanType> typeList) {
+        if(CollectionUtils.isEmptyCollection(typeList)){
+            return;
+        }
+        int i = contractPlanTypeMapper.insertBatch(typeList);
+        if(i!=typeList.size()){
+            throw new BizException(ResultCode.SAVE_PLAN_TYPE_FAILED);
         }
     }
 
@@ -365,5 +383,11 @@ public class ContractServiceImpl implements ContractService{
             throw new GroundRuntimeException("查询失败");
         }
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deletePlanTypeList(String contractCode) {
+        int i = contractPlanTypeMapper.deletePlanTypeList(contractCode);
     }
 }

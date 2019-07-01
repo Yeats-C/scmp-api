@@ -1,26 +1,27 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ContentTpye;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.product.dao.ProductBrandTypeDao;
+import com.aiqin.bms.scmp.api.common.Save;
+import com.aiqin.bms.scmp.api.common.Update;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.dao.ProductBrandTypeDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandReqDTO;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.QueryProductBrandReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductBrandRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryProductBrandRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductBrandService;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
+import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.bms.scmp.api.util.UploadFileUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
@@ -217,7 +218,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
     }
 
     @Override
-    public PageInfo<QueryProductBrandRespVO> selectBrandListByQueryVO(QueryProductBrandReqVO vo) {
+    public BasePage<QueryProductBrandRespVO> selectBrandListByQueryVO(QueryProductBrandReqVO vo) {
         try {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
@@ -225,7 +226,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
             }
             PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
             List<QueryProductBrandRespVO> userDetails = productBrandTypeDao.selectListByQueryVO(vo);
-            return new PageInfo<QueryProductBrandRespVO>(userDetails);
+            return PageUtil.getPageList(vo.getPageNo(),userDetails);
         } catch (Exception ex) {
             log.error("商品品牌位列表查询异常！");
             ex.printStackTrace();
