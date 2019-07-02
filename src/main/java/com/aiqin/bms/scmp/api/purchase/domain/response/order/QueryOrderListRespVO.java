@@ -41,7 +41,7 @@ public class QueryOrderListRespVO {
     private String orderStatus;
 
     @ApiModelProperty("创建时间")
-    @JsonFormat(timezone = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
     @ApiModelProperty("商品总金额")
