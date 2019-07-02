@@ -46,6 +46,7 @@ public interface StockDao {
 
     List<StockRespVO> selectOneStockInfoByStockId(Long stockId);
 
+    Long selectOneStockInfoByStockIdInfoByPage(Long stockId);
 
     /**
      *
@@ -114,6 +115,8 @@ public interface StockDao {
      */
     List<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
 
+    Long selectOneStockBatchInfoByStockBatchIdInfoByPage(Long stockBatchId);
+
     List<PurchaseApplyDetailResponse> purchaseProductList(PurchaseApplyRequest purchases);
 
     Integer purchaseProductCount(PurchaseApplyRequest purchases);
@@ -128,7 +131,7 @@ public interface StockDao {
      */
     List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
 
-    QueryStockBatchSkuRespVo selectSkuBatchCode(String procurementSectionCode,String transportCenterCode,String warehouseCode,String skuCode,String batchCode);
+    QueryStockBatchSkuRespVo selectSkuBatchCode(@Param("procurementSectionCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,String skuCode,@Param("batchCode") String batchCode);
 
     /**
      * 库房管理新增调拨,移库,报废列表查询

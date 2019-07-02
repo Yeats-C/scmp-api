@@ -75,7 +75,7 @@ public class StockController {
 
     @GetMapping("/search/one/info")
     @ApiOperation(value = "根据stockId查询单个stock信息")
-    public HttpResponse<StockRespVO> selectOneStockInfoByStockId(@RequestParam(value = "stock_id") Long stockId) {
+    public HttpResponse<PageResData<StockRespVO>> selectOneStockInfoByStockId(@RequestParam(value = "stock_id") Long stockId) {
         return HttpResponse.success(stockService.selectOneStockInfoByStockId(stockId));
     }
 
@@ -183,7 +183,7 @@ public class StockController {
 
     @GetMapping("/search/batch/one/info")
     @ApiOperation(value = "根据stockBatchId查询单个stockBatch信息")
-    public HttpResponse<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(@RequestParam(value = "stock_batch_id") Long stockBatchId) {
+    public HttpResponse<PageResData<StockBatchRespVO>> selectOneStockBatchInfoByStockBatchId(@RequestParam(value = "stock_batch_id") Long stockBatchId) {
         return HttpResponse.success(stockService.selectOneStockBatchInfoByStockBatchId(stockBatchId));
     }
 

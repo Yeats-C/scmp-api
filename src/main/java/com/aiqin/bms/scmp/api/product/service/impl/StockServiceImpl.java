@@ -209,10 +209,12 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public List<StockRespVO> selectOneStockInfoByStockId(Long stockId) {
+    public PageResData selectOneStockInfoByStockId(Long stockId) {
         try {
             LOGGER.info("根据stockId查询单个stock信息");
-            return stockDao.selectOneStockInfoByStockId(stockId);
+            List<StockRespVO> stockRespVOs = stockDao.selectOneStockInfoByStockId(stockId);
+            Long total = stockDao.selectOneStockInfoByStockIdInfoByPage(stockId);
+            return new PageResData<>(total.intValue(), stockRespVOs);
         } catch (Exception e) {
             LOGGER.error("根据stockId查询单个stock信息失败", e);
             throw new GroundRuntimeException(e.getMessage());
@@ -1280,10 +1282,12 @@ public class StockServiceImpl implements StockService {
      * @return
      */
     @Override
-    public List<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId) {
+    public PageResData selectOneStockBatchInfoByStockBatchId(Long stockBatchId) {
         try {
             LOGGER.info("根据stockBatchId查询单个stockBatch信息");
-            return stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId);
+            List<StockBatchRespVO> stockBatchRespVOs = stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId);
+            Long total = stockDao.selectOneStockBatchInfoByStockBatchIdInfoByPage(stockBatchId);
+            return  new PageResData<>(total.intValue(),stockBatchRespVOs);
         } catch (Exception e) {
             LOGGER.error("根据stockBatchId查询单个stockBatch信息失败", e);
             throw new GroundRuntimeException(e.getMessage());
@@ -1367,19 +1371,19 @@ public class StockServiceImpl implements StockService {
                                 stockBatchFlow.setOperatingTime(stockBatchVoRequest.getOperatingTime());
                                 stockBatchFlow.setOperatingBy(stockBatchVoRequest.getOperatingBy());
                                 stockBatchFlow.setRemark(stockBatchVoRequest.getRemark());
-                               /* stockBatchFlow.setBeforeInventoryNum();
-                                stockBatchFlow.setAfterInventoryNum();
-                                stockBatchFlow.setBeforeAvailableNum();
-                                stockBatchFlow.setAfterAvailableNum();
-                                stockBatchFlow.setBeforeLockNum();
-                                stockBatchFlow.setAfterLockNum();*/
+                                stockBatchFlow.setBeforeInventoryNum(stockBatchCode.getBeforeInventoryNum());
+                                stockBatchFlow.setAfterInventoryNum(stockBatch.getInventoryNum());
+                                stockBatchFlow.setBeforeAvailableNum(stockBatchCode.getBeforeAvailableNum());
+                                stockBatchFlow.setAfterAvailableNum(stockBatch.getAvailableNum());
+                                stockBatchFlow.setBeforeLockNum(stockBatchCode.getBeforeLockNum());
+                                stockBatchFlow.setAfterLockNum(stockBatch.getLockNum());
                                 stockBatchFlow.setChangeNum(stockBatchVoRequest.getChangeNum());
                                 stockBatchFlow.setOperationType(stockChangeRequest.getOperationType());
                                 flows.add(stockBatchFlow);
                             }
                         }
                         // 批次表插入数据
-                        // stockDao.insertStockBatch(stockBatchs);
+                        stockDao.insertStockBatch(stockBatchs);
                     } else {
                         // 相同
                     }
