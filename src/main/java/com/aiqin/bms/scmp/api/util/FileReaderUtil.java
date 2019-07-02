@@ -27,7 +27,7 @@ import java.util.List;
 public class FileReaderUtil {
     private static final String defaultPattern = "yyyy-MM-dd HH:mm:ss";
     private static Logger LOGGER = LoggerFactory.getLogger(FileReaderUtil.class);
-    private static DecimalFormat decimalFormat = new DecimalFormat("0.00");
+    private static DecimalFormat decimalFormat = new DecimalFormat("0");
 
     public static String[][] readExcel(MultipartFile mFile, int headSize) throws IOException {
         String[][] result = null;

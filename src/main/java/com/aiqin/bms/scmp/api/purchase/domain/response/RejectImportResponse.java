@@ -44,6 +44,10 @@ public class RejectImportResponse extends QueryStockBatchSkuRespVo {
     @JsonProperty("product_amount")
     private String productAmount;
 
+    @ApiModelProperty("退供含税总价")
+    @JsonProperty("product_total_amount")
+    private String productTotalAmount;
+
     @ApiModelProperty("退供含税数量")
     @JsonProperty("product_count")
     private String productCount;

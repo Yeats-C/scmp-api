@@ -229,11 +229,23 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                     queryStockBatchSkuRespVo = stockDao.selectSkuBatchCode(purchaseGroupCode,record[3], record[4], record[0], record[5]);
                     if(queryStockBatchSkuRespVo!=null){
                         BeanUtils.copyProperties(queryStockBatchSkuRespVo,response);
+                        response.setProductCount(record[7]);
+                        response.setProductAmount(record[8]);
+                        response.setProductTotalAmount(String.valueOf(Integer.valueOf(record[8])*Integer.valueOf(record[7])));
                         if(queryStockBatchSkuRespVo.getAvailableNum()<Integer.valueOf(record[7])){
                             response.setErrorReason("可用库存数量小于销售数量");
                             errorCount++;
                         }
                     }else{
+                        response.setSkuCode(record[0]);
+                        response.setSkuName(record[1]);
+                        response.setSupplierCode(record[2]);
+                        response.setTransportCenterCode(record[3]);
+                        response.setWarehouseCode(record[4]);
+                        response.setBatchCode(record[5]);
+                        response.setGoodsGifts(Integer.valueOf(record[6]));
+                        response.setProductCount(record[7]);
+                        response.setProductAmount(record[8]);
                         response.setErrorReason("未查询到对应的商品");
                         errorCount++;
                     }
@@ -251,9 +263,13 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     public HttpResponse rejectApplyDetailInfo(RejectApplyRequest response) {
         List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByConditionPage(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
                 response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes(), response.getPageSize(), response.getBeginIndex());
+        QueryStockBatchSkuRespVo queryStockBatchSkuRespVo;
         for (RejectApplyRecordDetail detailResponse : detailList) {
             //todo 根据sku查询实际库存
-
+            queryStockBatchSkuRespVo = stockDao.selectSkuBatchCode(detailResponse.getPurchaseGroupCode(),detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode(), detailResponse.getBarcode());
+            if(queryStockBatchSkuRespVo!=null){
+                detailResponse.setStockCount(new Long(queryStockBatchSkuRespVo.getAvailableNum()).intValue());
+            }
         }
         Integer listCount = rejectApplyRecordDetailDao.listByConditionPageCount(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
                 response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes());
