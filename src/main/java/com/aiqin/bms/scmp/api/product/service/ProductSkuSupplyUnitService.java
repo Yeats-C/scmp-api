@@ -37,4 +37,12 @@ public interface ProductSkuSupplyUnitService {
      * @return
      */
     Integer deleteDrafts(List<String> skuCodes);
+    /**
+     * 查询供应商
+     * @author NullPointException
+     * @date 2019/7/2
+     * @param skuCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo>
+     */
+    List<ProductSkuSupplyUnitRespVo> selectBySkuCode(String skuCode);
 }
