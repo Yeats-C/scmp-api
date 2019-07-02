@@ -92,6 +92,12 @@ public class AllocationReqVo {
     @ApiModelProperty("备注")
     private String remark;
 
+    @ApiModelProperty(value = "调拨类型(1:调拨 2:移库 3:报废)" ,hidden = true)
+    private Byte allocationType;
+
+    @ApiModelProperty(value = "调拨类型(1:调拨 2:移库 3:报废)", hidden = true)
+    private String allocationTypeName;
+
     @ApiModelProperty("sku列表")
     @Valid
     List<AllocationProductReqVo> list;

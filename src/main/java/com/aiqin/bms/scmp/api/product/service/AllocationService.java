@@ -10,7 +10,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
-import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
 
@@ -98,15 +97,6 @@ public interface AllocationService extends BaseService {
      * @return
      */
     int updateSubmit(Byte status, String formNo);
-
-    /**
-     * 审核回调接口
-     * @author zth
-     * @date 2019/1/15
-     * @param vo
-     * @return
-     */
-    String workFlowCallback(WorkFlowCallbackVO vo);
 
 
 }
