@@ -75,8 +75,10 @@ public class StockController {
 
     @GetMapping("/search/one/info")
     @ApiOperation(value = "根据stockId查询单个stock信息")
-    public HttpResponse<PageResData<StockRespVO>> selectOneStockInfoByStockId(@RequestParam(value = "stock_id") Long stockId) {
-        return HttpResponse.success(stockService.selectOneStockInfoByStockId(stockId));
+    public HttpResponse<List<StockRespVO>> selectOneStockInfoByStockId(@RequestParam(value = "stock_id") Long stockId,
+                                                                       @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                       @RequestParam(value = "page_size", required = false) Integer page_size) {
+        return HttpResponse.success(stockService.selectOneStockInfoByStockId(stockId,page_no,page_size));
     }
 
     @PostMapping("/search/sku/page")
@@ -183,8 +185,10 @@ public class StockController {
 
     @GetMapping("/search/batch/one/info")
     @ApiOperation(value = "根据stockBatchId查询单个stockBatch信息")
-    public HttpResponse<PageResData<StockBatchRespVO>> selectOneStockBatchInfoByStockBatchId(@RequestParam(value = "stock_batch_id") Long stockBatchId) {
-        return HttpResponse.success(stockService.selectOneStockBatchInfoByStockBatchId(stockBatchId));
+    public HttpResponse<List<StockBatchRespVO>> selectOneStockBatchInfoByStockBatchId(@RequestParam(value = "stock_batch_id") Long stockBatchId,
+                                                                                             @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                                             @RequestParam(value = "page_size", required = false) Integer page_size) {
+        return HttpResponse.success(stockService.selectOneStockBatchInfoByStockBatchId(stockBatchId,page_no,page_size));
     }
 
     @GetMapping("/search/batch/sku/page")

@@ -95,7 +95,7 @@ public interface StockService {
      * @param stockId
      * @return
      */
-    PageResData selectOneStockInfoByStockId(Long stockId);
+    PageInfo<StockRespVO> selectOneStockInfoByStockId(Long stockId,Integer page_no,Integer page_size);
 
 
     /**
@@ -226,7 +226,7 @@ public interface StockService {
      * @param stockBatchId
      * @return
      */
-    PageResData selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
+    PageInfo<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId,Integer page_no,Integer page_size);
 
     Integer insertStockBatch(StockChangeRequest stockChangeRequest);
 

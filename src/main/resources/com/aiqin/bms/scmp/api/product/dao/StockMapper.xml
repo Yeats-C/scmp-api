@@ -450,7 +450,7 @@
         st.total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,
         st.stock_unit_code,st.stock_unit_name,st.tax_price,st.tax_rate,
-        st.create_time,st.create_by,st.update_time,st.update_by,ps.spec,
+        st.create_time,st.create_by,st.update_time,st.update_by,
         psc.config_status,
         ps.product_brand_name,
         ps.unit_code,ps.product_category_code,ps.product_category_name,psbp.large_unit,

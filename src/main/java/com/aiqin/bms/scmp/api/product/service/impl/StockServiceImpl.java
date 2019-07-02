@@ -209,12 +209,14 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public PageResData selectOneStockInfoByStockId(Long stockId) {
+    public PageInfo<StockRespVO> selectOneStockInfoByStockId(Long stockId,Integer page_no,Integer page_size) {
         try {
             LOGGER.info("根据stockId查询单个stock信息");
-            List<StockRespVO> stockRespVOs = stockDao.selectOneStockInfoByStockId(stockId);
-            Long total = stockDao.selectOneStockInfoByStockIdInfoByPage(stockId);
-            return new PageResData<>(total.intValue(), stockRespVOs);
+            PageHelper.startPage(page_no, page_size);
+            // List<StockRespVO> stockRespVOs = stockDao.selectOneStockInfoByStockId(stockId);
+            // Long total = stockDao.selectOneStockInfoByStockIdInfoByPage(stockId);
+            // new PageResData<>(total.intValue(), stockRespVOs);
+            return new PageInfo<>(stockDao.selectOneStockInfoByStockId(stockId));
         } catch (Exception e) {
             LOGGER.error("根据stockId查询单个stock信息失败", e);
             throw new GroundRuntimeException(e.getMessage());
@@ -1282,12 +1284,14 @@ public class StockServiceImpl implements StockService {
      * @return
      */
     @Override
-    public PageResData selectOneStockBatchInfoByStockBatchId(Long stockBatchId) {
+    public PageInfo<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId,Integer page_no,Integer page_size) {
         try {
             LOGGER.info("根据stockBatchId查询单个stockBatch信息");
-            List<StockBatchRespVO> stockBatchRespVOs = stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId);
-            Long total = stockDao.selectOneStockBatchInfoByStockBatchIdInfoByPage(stockBatchId);
-            return  new PageResData<>(total.intValue(),stockBatchRespVOs);
+            PageHelper.startPage(page_no, page_size);
+           // List<StockBatchRespVO> stockBatchRespVOs = stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId);
+           // Long total = stockDao.selectOneStockBatchInfoByStockBatchIdInfoByPage(stockBatchId);
+           // new PageResData<>(total.intValue(),stockBatchRespVOs);
+            return  new PageInfo<StockBatchRespVO>(stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId));
         } catch (Exception e) {
             LOGGER.error("根据stockBatchId查询单个stockBatch信息失败", e);
             throw new GroundRuntimeException(e.getMessage());
@@ -1406,16 +1410,7 @@ public class StockServiceImpl implements StockService {
      */
     /*
     private StockBatch stockBatchVoRequestToStock(StockBatch stockBatch, StockVoRequest stockVoRequest, Integer operationType) {
-        if (null==stockBatch.getId()){
-            BeanCopyUtils.copy(stockVoRequest,stockBatch);
-            stockBatch.setLockNum(0L);
-            stockBatch.setInventoryNum(0L);
-            stockBatch.setAvailableNum(0L);
-            stockBatch.setPurchaseWayNum(0L);
-            stockBatch.setAllocationWayNum(0L);
-            stockBatch.setTotalWayNum(0L);
-            stockBatch.setStockCode("ST"+ new IdSequenceUtils().nextId());
-        }
+
         stockBatch.setNewPurchasePrice(stockVoRequest.getNewPurchasePrice());
         stockBatch.setTaxPrice(stockVoRequest.getNewPurchasePrice());
         stockBatch.setTaxRate(stockVoRequest.getTaxRate());
