@@ -44,4 +44,6 @@ public interface ProductSkuInspReportDao {
     int deleteList(String skuCode);
 
     int insertDraftList(@Param("productSkuInspReportDrafts") List<ProductSkuInspReportDraft> productSkuInspReportDrafts);
+
+    List<ProductSkuInspReportRespVo> getList(String skuCode);
 }

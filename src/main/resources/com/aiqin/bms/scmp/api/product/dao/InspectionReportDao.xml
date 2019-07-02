@@ -119,6 +119,10 @@
      SELECT <include refid="Base_Column_List"/> from product_sku_inspection_report_draft where del_flag=0 and sku_code =  #{skuCode,jdbcType=VARCHAR}
 
   </select>
+
+  <select id="getList" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/> from product_sku_inspection_report where del_flag=0 and sku_code =  #{skuCode,jdbcType=VARCHAR}
+  </select>
     <delete id="deleteDrafts" parameterType="java.util.List">
     DELETE FROM product_sku_inspection_report_draft WHERE sku_code IN
     <foreach collection="productSkus" item="item" open="(" separator="," close=")">

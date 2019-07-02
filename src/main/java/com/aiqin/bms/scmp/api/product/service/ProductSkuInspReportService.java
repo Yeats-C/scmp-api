@@ -34,4 +34,15 @@ public interface ProductSkuInspReportService {
      * @return
      */
     Integer deleteDrafts(List<String> skuCodes);
+
+    /**
+     *
+     * 功能描述: 获取正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/2 17:49
+     */
+    List<ProductSkuInspReportRespVo> getList(String skuCode);
 }
