@@ -1,7 +1,6 @@
-package com.aiqin.bms.scmp.api.product.domain.pojo;
+package com.aiqin.bms.scmp.api.product.domain.request.inbound;
 
 import com.aiqin.bms.scmp.api.base.PagesRequest;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,9 +10,9 @@ import java.util.Date;
 /**
  * Created by 爱亲 on 2019/6/20.
  */
-@ApiModel("入库批次详情表")
+@ApiModel("采购入库批次请求参数")
 @Data
-public class InboundBatch extends PagesRequest{
+public class InboundBatchPurchaseReq extends PagesRequest{
 
     @ApiModelProperty("主键")
     private Long id;
@@ -52,25 +51,27 @@ public class InboundBatch extends PagesRequest{
     private String createBy;
 
     @ApiModelProperty("创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     @ApiModelProperty("更新人")
     private String updateBy;
 
     @ApiModelProperty("更新时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     @ApiModelProperty("行号")
     private Long linenum;
 
-    public InboundBatch(String inboundOderCode, Integer pageSize, Integer pageNo) {
-        this.inboundOderCode = inboundOderCode;
-        super.setPageSize(pageSize);
-        super.setPageNo(pageNo);
+    @ApiModelProperty("来源单号")
+    private String sourceOderCode;
+
+    public InboundBatchPurchaseReq(String sourceOderCode, Integer purchaseNum, Integer pageSize, Integer pageNo) {
+        this.sourceOderCode = sourceOderCode;
+        this.purchaseNum = purchaseNum;
+        this.setPageSize(pageSize);
+        this.setPageNo(pageNo);
     }
 
-    public InboundBatch() {
+    public InboundBatchPurchaseReq() {
     }
 }

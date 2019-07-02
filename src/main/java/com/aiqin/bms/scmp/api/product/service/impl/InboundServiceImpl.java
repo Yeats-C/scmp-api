@@ -17,6 +17,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -31,6 +33,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -86,6 +89,9 @@ public class InboundServiceImpl implements InboundService {
 
     @Autowired
     private InboundBatchDao inboundBatchDao;
+
+    @Autowired
+    private PurchaseOrderDao purchaseOrderDao;
     /**
      * 分页查询以及列表搜索
      * @param vo
@@ -583,19 +589,16 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnPurchase(StorageResultReqVo storageResultItemReqVo) {
         log.error("异步回调采购接口");
-        log.error("调用采购回调接口:[{}]",JSON.toJSONString(storageResultItemReqVo));
-//        String url = urlConfig.PURCHASE_URL+"/purchase/returnStorageResult";
-//        try {
-//            HttpClient client = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(storageResultItemReqVo));
-//            HttpResponse result = client.action().result(HttpResponse.class);
-//            if(!Objects.equals(result.getCode(), MsgStatus.SUCCESS)){
-//             log.error("入库单回传给采购接口失败+回传实体为：[{}]",storageResultItemReqVo);
-//                throw  new GroundRuntimeException("调用采购服务失败");
-//            }
-//        } catch (GroundRuntimeException e) {
-//            e.printStackTrace();
-//            log.error("入库单回传给采购接口失败+回传实体为：[{}]",storageResultItemReqVo);
-//        }
+        log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultItemReqVo));
+        try {
+            PurchaseOrder purchaseOrder = new PurchaseOrder();
+            purchaseOrder.setPurchaseOrderId(storageResultItemReqVo.getPurchaseCode());
+            Integer i = purchaseOrderDao.update(purchaseOrder);
+            log.info("入库单回传给采购接口返回结果:{}", i);
+        } catch (GroundRuntimeException e) {
+            e.printStackTrace();
+            log.error("入库单回传给采购接口失败+回传实体为：[{}]",storageResultItemReqVo);
+        }
 
     }
     /**
@@ -709,6 +712,18 @@ public class InboundServiceImpl implements InboundService {
         Integer integer = inboundBatchDao.insertInfo(batchList);
         if(Objects.isNull(integer)||integer!=batchList.size()){
             throw new BizException(ResultCode.SAVE_IN_BOUND_BATCH_FAILED);
+        }
+    }
+
+    @Override
+    public HttpResponse selectPurchaseInfoByPurchaseNum(InboundBatchPurchaseReq inboundBatchPurchaseReq){
+        try{
+            List<InboundBatch> inboundBatchList = inboundBatchDao.selectPurchaseInfoByPurchaseNum(inboundBatchPurchaseReq);
+            Integer total = inboundBatchDao.countPurchaseInfoByPurchaseNum(inboundBatchPurchaseReq);
+            return HttpResponse.success(new PageResData<>(total, inboundBatchList));
+        }catch (Exception e){
+            log.error("采购查询批次详情失败:{}", e);
+            throw new GroundRuntimeException("采购查询批次详情失败");
         }
     }
 
