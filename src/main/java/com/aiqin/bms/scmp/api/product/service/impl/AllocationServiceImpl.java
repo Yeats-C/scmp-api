@@ -1,9 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.base.MsgStatus;
-import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
@@ -21,7 +18,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationToOutb
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
-import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
@@ -192,7 +189,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         if(workFlowRespVO.getSuccess().equals(true)){
             return 1;
         }else {
-            log.error("调拨单id为"+id+"撤销失败");
             throw  new GroundRuntimeException("撤销失败");
         }
 
@@ -207,25 +203,24 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     public AllocationResVo view(Long id) {
         AllocationResVo allocationResVo = new AllocationResVo();
         Allocation allocation = allocationMapper.selectByPrimaryKey(id);
-        BeanCopyUtils.copy(allocation,allocationResVo);
-        try {
-            allocationResVo.setSkuList(BeanCopyUtils.copyList(allocationProductMapper.selectByAllocationCode(allocationResVo.getAllocationCode()), AllocationProductResVo.class));
-            // 获取日志
-            if (null != allocationResVo) {
-                //获取操作日志
-                OperationLogVo operationLogVo = new OperationLogVo();
-                operationLogVo.setPageNo(1);
-                operationLogVo.setPageSize(100);
-                operationLogVo.setObjectType(ObjectTypeCode.ALLOCATION.getStatus());
-                operationLogVo.setObjectId(allocationResVo.getAllocationCode());
-                List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
-                allocationResVo.setLogDataList(pageList);
-            }
-            return  allocationResVo;
-        } catch (Exception e) {
-            log.error("调拨查看sku转化实体失败");
-            throw new GroundRuntimeException("调拨查看sku转化实体失败");
+        if(null == allocation){
+            throw new BizException(ResultCode.OBJECT_EMPTY);
         }
+        BeanCopyUtils.copy(allocation,allocationResVo);
+        allocationResVo.setSkuList(allocationProductMapper.selectByAllocationCode(allocationResVo.getAllocationCode()));
+        allocationResVo.setBatchSkuList(allocationProductBatchMapper.selectByAllocationCode(allocationResVo.getAllocationCode()));
+        // 获取日志
+        if (null != allocationResVo) {
+            //获取操作日志
+            OperationLogVo operationLogVo = new OperationLogVo();
+            operationLogVo.setPageNo(1);
+            operationLogVo.setPageSize(100);
+            operationLogVo.setObjectType(ObjectTypeCode.ALLOCATION.getStatus());
+            operationLogVo.setObjectId(allocationResVo.getAllocationCode());
+            List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
+            allocationResVo.setLogDataList(pageList);
+        }
+        return  allocationResVo;
 
     }
 
@@ -391,7 +386,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         Allocation oldAllocation = new Allocation();
         Allocation allocation  = allocationMapper.selectByFormNO(vo1.getFormNo());
         oldAllocation.setId(allocation.getId());
-        List<AllocationProductBatch> list =  allocationProductBatchMapper.selectByAllocationCode(allocation.getAllocationCode());
+        List<AllocationProductBatchResVo> list =  allocationProductBatchMapper.selectByAllocationCode(allocation.getAllocationCode());
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
 
             productCommonService.instanceThreeParty(allocation.getAllocationCode()+"", HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getName(),new Date(),vo.getApprovalUserName());
@@ -505,11 +500,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         }
     }
 
-    private List<StockVoRequest> allocationProductTransStock(Allocation allocation, List<AllocationProductBatch> products) {
+    private List<StockVoRequest> allocationProductTransStock(Allocation allocation, List<AllocationProductBatchResVo> products) {
         List<StockVoRequest> stockVoRequests = Lists.newArrayList();
         if(CollectionUtils.isNotEmptyCollection(products)){
             StockVoRequest stockVoRequest = null;
-            for (AllocationProductBatch allocationProduct : products) {
+            for (AllocationProductBatchResVo allocationProduct : products) {
                 stockVoRequest = new StockVoRequest();
                 // 设置公司名称编码
                 stockVoRequest.setCompanyCode(allocation.getCompanyCode());

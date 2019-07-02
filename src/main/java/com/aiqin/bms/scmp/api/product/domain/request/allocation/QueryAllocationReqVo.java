@@ -17,7 +17,7 @@ import java.util.Date;
  * @since 1.0
  */
 @Data
-@ApiModel("调拨列表展示请求实体")
+@ApiModel("列表展示请求实体")
 public class QueryAllocationReqVo extends PageReq {
 
     @ApiModelProperty("创建时间起始时间")

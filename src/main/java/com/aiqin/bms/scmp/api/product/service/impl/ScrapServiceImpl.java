@@ -9,30 +9,28 @@ import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
-import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
-import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
-import com.aiqin.bms.scmp.api.product.service.MovementService;
 import com.aiqin.bms.scmp.api.product.service.ProductOperationLogService;
+import com.aiqin.bms.scmp.api.product.service.ScrapService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 /**
- * @Classname: MovementServiceImplProduct
+ * @Classname: ScrapServiceImpl
  * 描述:
  * @Author: Kt.w
  * @Date: 2019/4/1
@@ -41,7 +39,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class MovementServiceImpl extends BaseServiceImpl implements MovementService {
+public class ScrapServiceImpl extends BaseServiceImpl implements ScrapService {
 
     @Autowired
     private AllocationService allocationService;
@@ -63,13 +61,13 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
      * @return  列表返回实体
      */
     @Override
-    public BasePage<QueryMovementResVo> getList(QueryMovementReqVo vo) {
-        vo.setAllocationType(AllocationTypeEnmu.MOVE.getType());
+    public BasePage<QueryScrapResVo> getList(QueryScrapReqVo vo) {
+        vo.setAllocationType(AllocationTypeEnmu.SCRAP.getType());
         AuthToken authToken = getUser();
         vo.setCompanyCode(authToken.getCompanyCode());
         PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
-        List<QueryMovementResVo> list = allocationMapper.getMoveList(vo);
-        BasePage<QueryMovementResVo> basePage = PageUtil.getPageList(vo.getPageNo(),list);
+        List<QueryScrapResVo> list = allocationMapper.getScrapList(vo);
+        BasePage<QueryScrapResVo> basePage = PageUtil.getPageList(vo.getPageNo(),list);
         return basePage;
     }
 
@@ -92,32 +90,34 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
      * @return
      */
     @Override
-    public MovementResVo view(Long id) {
-        MovementResVo movementResVo = new MovementResVo();
+    public ScrapResVo view(Long id) {
+        ScrapResVo scrapResVo = new ScrapResVo();
         Allocation allocation = allocationMapper.selectByPrimaryKey(id);
         if(null == allocation){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
-        BeanCopyUtils.copy(allocation,movementResVo);
-        movementResVo.setMovementCode(allocation.getAllocationCode());
-        movementResVo.setMovementStatusCode(allocation.getAllocationStatusCode());
-        movementResVo.setMovementStatusName(allocation.getAllocationStatusName());
-        movementResVo.setLogisticsCenterCode(allocation.getCallInLogisticsCenterCode());
-        movementResVo.setLogisticsCenterName(allocation.getCallInLogisticsCenterName());
-        movementResVo.setSkuList(allocationProductMapper.selectByAllocationCode(movementResVo.getMovementCode()));
-        movementResVo.setBatchSkuList(allocationProductBatchMapper.selectByAllocationCode(movementResVo.getMovementCode()));
+        BeanCopyUtils.copy(allocation,scrapResVo);
+        scrapResVo.setLogisticsCenterCode(allocation.getCallOutLogisticsCenterCode());
+        scrapResVo.setLogisticsCenterName(allocation.getCallOutLogisticsCenterName());
+        scrapResVo.setWarehouseCode(allocation.getCallOutWarehouseCode());
+        scrapResVo.setWarehouseName(allocation.getCallOutWarehouseName());
+        scrapResVo.setScrapCode(allocation.getAllocationCode());
+        scrapResVo.setScrapStatusCode(allocation.getAllocationStatusCode());
+        scrapResVo.setScrapStatusName(allocation.getAllocationStatusName());
+        scrapResVo.setSkuList(allocationProductMapper.selectByAllocationCode(scrapResVo.getScrapCode()));
+        scrapResVo.setBatchSkuList(allocationProductBatchMapper.selectByAllocationCode(scrapResVo.getScrapCode()));
         // 获取日志
-        if (null != movementResVo) {
+        if (null != scrapResVo) {
             //获取操作日志
             OperationLogVo operationLogVo = new OperationLogVo();
             operationLogVo.setPageNo(1);
             operationLogVo.setPageSize(100);
             operationLogVo.setObjectType(ObjectTypeCode.ALLOCATION.getStatus());
-            operationLogVo.setObjectId(movementResVo.getMovementCode());
+            operationLogVo.setObjectId(scrapResVo.getScrapCode());
             List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
-            movementResVo.setLogDataList(pageList);
+            scrapResVo.setLogDataList(pageList);
         }
-        return  movementResVo;
+        return  scrapResVo;
     }
 
     /**
@@ -127,8 +127,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
      * @return
      */
     @Override
-    @Transactional(rollbackFor = GroundRuntimeException.class)
     public int revocation(Long id) {
-        return allocationService.revocation(id);
+        return 0;
     }
+
 }

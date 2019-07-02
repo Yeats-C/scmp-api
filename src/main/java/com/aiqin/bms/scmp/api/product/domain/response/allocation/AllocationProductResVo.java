@@ -16,14 +16,8 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@ApiModel("订购单sku返回详情")
+@ApiModel("sku返回详情")
 public class AllocationProductResVo {
-
-    @ApiModelProperty("主键")
-    private Long id;
-
-    @ApiModelProperty("调拨单编码")
-    private String allocationCode;
 
     @ApiModelProperty("sku编号")
     private String skuCode;
@@ -93,5 +87,5 @@ public class AllocationProductResVo {
     private String pictureUrl;
 
     @ApiModelProperty("行号")
-    private Long linenum;
+    private Long lineNum;
 }

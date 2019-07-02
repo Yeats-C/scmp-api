@@ -1,6 +1,8 @@
-package com.aiqin.bms.scmp.api.product.domain.response.allocation;
+package com.aiqin.bms.scmp.api.product.domain.response.scrap;
 
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 描述:订购单返回详情
+ * 描述:返回详情
  *
  * @Author: Kt.w
  * @Date: 2019/1/10
@@ -18,50 +20,32 @@ import java.util.List;
  * @since 1.0
  */
 @Data
-@ApiModel("订购单返回详情")
-public class AllocationResVo {
+@ApiModel("返回详情")
+public class ScrapResVo {
 
     @ApiModelProperty("主键")
     private Long id;
 
     @ApiModelProperty("调拨单编号")
-    private String allocationCode;
+    private String scrapCode;
 
-    @ApiModelProperty("调出仓库(物流中心)编号")
-    private String callOutLogisticsCenterCode;
+    @ApiModelProperty("所属仓库(物流中心)编号")
+    private String logisticsCenterCode;
 
-    @ApiModelProperty("调出仓库(物流中心)名称")
-    private String callOutLogisticsCenterName;
+    @ApiModelProperty("所属仓库(物流中心)名称")
+    private String logisticsCenterName;
 
-    @ApiModelProperty("调出仓库编码")
-    private String callOutWarehouseCode;
+    @ApiModelProperty("所属库房编码")
+    private String warehouseCode;
 
-    @ApiModelProperty("调出库房名称")
-    private String callOutWarehouseName;
-
-    @ApiModelProperty("仓库库房编码")
-    private String inventoryAttributesCode;
-
-    @ApiModelProperty("仓库类型名称")
-    private String inventoryAttributesName;
+    @ApiModelProperty("所属库房名称")
+    private String warehouseName;
 
     @ApiModelProperty("采购组编码")
     private String purchaseGroupCode;
 
     @ApiModelProperty("采购组名称")
     private String purchaseGroupName;
-
-    @ApiModelProperty("调入仓库(物流中心)编码")
-    private String callInLogisticsCenterCode;
-
-    @ApiModelProperty("调入仓库(物流中心)名称")
-    private String callInLogisticsCenterName;
-
-    @ApiModelProperty("调入库房编码")
-    private String callInWarehouseCode;
-
-    @ApiModelProperty("调入库房名称")
-    private String callInWarehouseName;
 
     @ApiModelProperty("负责人")
     private String principal;
@@ -75,14 +59,11 @@ public class AllocationResVo {
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
 
-    @ApiModelProperty("入库单号")
-    private String inboundOderCode;
-
     @ApiModelProperty("状态编码")
-    private Byte allocationStatusCode;
+    private Byte scrapStatusCode;
 
     @ApiModelProperty("状态名称")
-    private String allocationStatusName;
+    private String scrapStatusName;
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @ApiModelProperty("创建时间")

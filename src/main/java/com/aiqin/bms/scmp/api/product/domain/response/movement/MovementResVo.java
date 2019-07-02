@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.product.domain.response.movement;
 
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -32,16 +34,16 @@ public class MovementResVo {
     private String logisticsCenterName;
 
     @ApiModelProperty("调出库房编码")
-    private String calloutWarehouseCode;
+    private String callOutWarehouseCode;
 
     @ApiModelProperty("调出库房名称")
-    private String calloutWarehouseName;
+    private String callOutWarehouseName;
 
     @ApiModelProperty("调入库房编码")
-    private String callinWarehouseCode;
+    private String callInWarehouseCode;
 
     @ApiModelProperty("调入库房名称")
-    private String callinWarehouseName;
+    private String callInWarehouseName;
 
     @ApiModelProperty("采购组编码")
     private String purchaseGroupCode;
@@ -56,7 +58,7 @@ public class MovementResVo {
     private Long quantity;
 
     @ApiModelProperty("含税库存成本")
-    private Long taxInventoryCost;
+    private Long totalCostRate;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
@@ -94,11 +96,14 @@ public class MovementResVo {
     @ApiModelProperty("公司名称")
     private String companyName;
 
-    @ApiModelProperty("sku列表")
-    private List<MovementProductResVo> list;
+    @ApiModelProperty("sku")
+    private List<AllocationProductResVo> skuList;
 
-    @ApiModelProperty("日志列表")
-    List<LogData> logDataList;
+    @ApiModelProperty("batchSku")
+    private List<AllocationProductBatchResVo> batchSkuList;
+
+    @ApiModelProperty("操作日志列表")
+    private List<LogData> logDataList;
 
 
 

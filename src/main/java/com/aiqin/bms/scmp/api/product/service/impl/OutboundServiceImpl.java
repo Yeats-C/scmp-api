@@ -6,7 +6,6 @@ import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2InboundReqVoConverter;
-import com.aiqin.bms.scmp.api.product.domain.converter.MovementResVo2InboundReqVoConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.OrderVo2OutBoundConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupply2outboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
@@ -19,8 +18,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
-import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementProductResVo;
-import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
@@ -839,57 +836,57 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      */
     @Override
     public void movementCreateInbound(Long id) {
-        try {
-            MovementResVo allocationResVo =  new MovementResVo();
-            Movement allocation = movementDao.selectByPrimaryKey(id);
-            BeanCopyUtils.copy(allocation,allocationResVo);
-            productCommonService.getInstance(allocation.getMovementCode()+"", HandleTypeCoce.INBOUND_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),id ,HandleTypeCoce.INBOUND_MOVEMENT.getName());
-
-            List<MovementProduct> list = movementProductDao.selectDetailByCode(allocation.getMovementCode());
-                allocationResVo.setList(BeanCopyUtils.copyList(list, MovementProductResVo.class));
-
-            // 转化成出库单
-            InboundReqSave convert =  new MovementResVo2InboundReqVoConverter(supplierApiService).convert(allocationResVo);
-            String inboundOderCode = inboundService.saveInbound(convert);
-            //更改调拨在途数
-
-            StockChangeRequest stockChangeRequest = new StockChangeRequest();
-            stockChangeRequest.setOperationType(7);
-            stockChangeRequest.setOrderCode(allocation.getMovementCode());
-            // stockChangeRequest.setOrderType();
-            List<StockVoRequest> list1 = new ArrayList<>();
-            for (MovementProductResVo allocationProduct : allocationResVo.getList()) {
-                StockVoRequest  stockVoRequest = new StockVoRequest();
-                stockVoRequest.setCompanyCode(allocation.getCompanyCode());
-                stockVoRequest.setCompanyName(allocation.getCompanyName());
-                stockVoRequest.setTransportCenterCode(allocation.getLogisticsCenterCode());
-                stockVoRequest.setTransportCenterName(allocation.getLogisticsCenterName());
-                stockVoRequest.setWarehouseCode(allocation.getCallinWarehouseCode());
-                stockVoRequest.setWarehouseName(allocation.getCallinWarehouseName());
-                stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
-                stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
-                stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
-                stockVoRequest.setSkuName(allocationProduct.getSkuName());
-                stockVoRequest.setChangeNum(allocationProduct.getQuantity());
-                list1.add(stockVoRequest);
-            }
-            stockChangeRequest.setStockVoRequests(list1);
-            // 调用锁定库存数
-            HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
-            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
-
-            }else{
-                log.error(httpResponse.getMessage());
-                throw  new GroundRuntimeException("库存操作失败");
-            }
-            allocation.setInboundOderCode(inboundOderCode);
-            allocation.setMovementStatusCode(AllocationEnum.ALLOCATION_TYPE_INBOUND.getStatus());
-            allocation.setMovementStatusName(AllocationEnum.ALLOCATION_TYPE_INBOUND.getName());
-            movementDao.updateByPrimaryKeySelective(allocation);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new GroundRuntimeException("保存出库单失败");
-        }
+//        try {
+//            MovementResVo allocationResVo =  new MovementResVo();
+//            Movement allocation = movementDao.selectByPrimaryKey(id);
+//            BeanCopyUtils.copy(allocation,allocationResVo);
+//            productCommonService.getInstance(allocation.getMovementCode()+"", HandleTypeCoce.INBOUND_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),id ,HandleTypeCoce.INBOUND_MOVEMENT.getName());
+//
+//            List<MovementProduct> list = movementProductDao.selectDetailByCode(allocation.getMovementCode());
+//                allocationResVo.setList(BeanCopyUtils.copyList(list, MovementProductResVo.class));
+//
+//            // 转化成出库单
+//            InboundReqSave convert =  new MovementResVo2InboundReqVoConverter(supplierApiService).convert(allocationResVo);
+//            String inboundOderCode = inboundService.saveInbound(convert);
+//            //更改调拨在途数
+//
+//            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+//            stockChangeRequest.setOperationType(7);
+//            stockChangeRequest.setOrderCode(allocation.getMovementCode());
+//            // stockChangeRequest.setOrderType();
+//            List<StockVoRequest> list1 = new ArrayList<>();
+//            for (MovementProductResVo allocationProduct : allocationResVo.getList()) {
+//                StockVoRequest  stockVoRequest = new StockVoRequest();
+//                stockVoRequest.setCompanyCode(allocation.getCompanyCode());
+//                stockVoRequest.setCompanyName(allocation.getCompanyName());
+//                stockVoRequest.setTransportCenterCode(allocation.getLogisticsCenterCode());
+//                stockVoRequest.setTransportCenterName(allocation.getLogisticsCenterName());
+//                stockVoRequest.setWarehouseCode(allocation.getCallinWarehouseCode());
+//                stockVoRequest.setWarehouseName(allocation.getCallinWarehouseName());
+//                stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
+//                stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
+//                stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
+//                stockVoRequest.setSkuName(allocationProduct.getSkuName());
+//                stockVoRequest.setChangeNum(allocationProduct.getQuantity());
+//                list1.add(stockVoRequest);
+//            }
+//            stockChangeRequest.setStockVoRequests(list1);
+//            // 调用锁定库存数
+//            HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
+//            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
+//
+//            }else{
+//                log.error(httpResponse.getMessage());
+//                throw  new GroundRuntimeException("库存操作失败");
+//            }
+//            allocation.setInboundOderCode(inboundOderCode);
+//            allocation.setMovementStatusCode(AllocationEnum.ALLOCATION_TYPE_INBOUND.getStatus());
+//            allocation.setMovementStatusName(AllocationEnum.ALLOCATION_TYPE_INBOUND.getName());
+//            movementDao.updateByPrimaryKeySelective(allocation);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw  new GroundRuntimeException("保存出库单失败");
+//        }
     }
     
     @Override
