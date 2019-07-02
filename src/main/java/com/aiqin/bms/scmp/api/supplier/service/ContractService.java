@@ -1,11 +1,13 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractPlanType;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractPurchaseVolumeDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUsernameReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.QueryContractResVo;
 
@@ -33,7 +35,9 @@ public interface ContractService {
      */
     int saveContract(ContractReqVo contractReqVo);
 
-    /**
+ void savePlanTypeList(List<ContractPlanType> typeList);
+
+ /**
      * 查看合同详情
      * @param id
      * @return
@@ -92,5 +96,22 @@ public interface ContractService {
     * @return
     */
    List<ContractResVo>  getContractByUsername(ContractByUsernameReqVo reqVO);
+   /**
+    * 根据 编码删除
+    * @author NullPointException
+    * @date 2019/7/1
+    * @param contractCode
+    * @return void
+    */
+   void deletePlanTypeList(String contractCode);
 
+    /**
+     *
+     * 功能描述: 限定采购组
+     *
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/1 20:16
+     */
+    List<ContractPurchaseResVo> getContractByPurchaseGroup();
 }

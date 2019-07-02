@@ -25,7 +25,7 @@ public class PurchaseApply {
     @JsonProperty("apply_type")
     private Integer applyType;
 
-    @ApiModelProperty(value="采购申请状态: 0 已完成 1 待提交")
+    @ApiModelProperty(value="采购申请状态: 0 待提交  1 已完成")
     @JsonProperty("apply_status")
     private Integer applyStatus;
 

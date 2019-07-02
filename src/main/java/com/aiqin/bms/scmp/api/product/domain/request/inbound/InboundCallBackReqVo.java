@@ -72,4 +72,7 @@ public class InboundCallBackReqVo {
     @ApiModelProperty("sku 列表")
     private List<InboundProductCallBackReqVo> list;
 
+    @ApiModelProperty("批次列表")
+    private List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVos;
+
 }

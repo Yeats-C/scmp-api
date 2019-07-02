@@ -50,6 +50,9 @@ public class QueryProductSkuPriceInfoReqVO extends PageReq {
     @ApiModelProperty("商品状态")
     private Integer productStatus;
 
+    @ApiModelProperty("批次号")
+    private String batchNumber;
+
     @ApiModelProperty("sku编码")
     private String skuCode;
 

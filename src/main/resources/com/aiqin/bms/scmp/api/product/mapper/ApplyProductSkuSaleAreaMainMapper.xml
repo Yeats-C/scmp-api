@@ -65,9 +65,6 @@
     <if test="code != null">
       and apply_code like CONCAT('%',#{code},'%')
     </if>
-    <if test="skuName != null">
-      and sku_name like CONCAT('%',#{skuName},'%')
-    </if>
   </select>
   <resultMap id="selectByApplyCode" type="com.aiqin.bms.scmp.api.product.domain.product.apply.ProductSaleAreaApplyVO">
     <result column="aapply_code" property="code"></result>

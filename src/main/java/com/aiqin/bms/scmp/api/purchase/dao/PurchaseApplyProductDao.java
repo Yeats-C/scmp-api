@@ -23,7 +23,7 @@ public interface PurchaseApplyProductDao {
 
     List<PurchaseApplyDetailResponse> productList(String purchaseApplyId);
 
-    Integer skuCount(String purchaseApplyId);
+    Integer skuCount(@Param("purchaseApplyId") String purchaseApplyId, @Param("infoStatus")Integer infoStatus);
 
     Integer insertAll(@Param("list") List<PurchaseApplyProduct> purchaseApplyProduct);
 
@@ -38,5 +38,7 @@ public interface PurchaseApplyProductDao {
     List<PurchaseApplyDetailResponse> purchaseFormList(PurchaseFormRequest apply);
 
     Integer purchaseFormCount(PurchaseFormRequest apply);
+
+    Integer delete(String purchaseApplyId);
 
 }

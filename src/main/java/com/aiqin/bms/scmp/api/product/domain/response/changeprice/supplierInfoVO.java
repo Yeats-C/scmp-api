@@ -20,4 +20,6 @@ public class supplierInfoVO {
     private String supplierName;
     @ApiModelProperty("原含税采购价")
     private Long purchasePriceOld;
+    @ApiModelProperty("是否缺省（0:否,1：是）")
+    private Boolean isDefault;
 }

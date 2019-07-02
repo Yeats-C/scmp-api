@@ -47,8 +47,8 @@ Workflow:
 #审批流的前缀url地址
 WorkFlowBaseUrl:
     #回调url
-    callBackBaseUrl: http://scmp.api.aiqin.com/scmp/workFlowCallBack/
-    #各个页面详情url
+    callBackBaseUrl: http://scmp.api.aiqin.com/workFlow/workFlowCallBack/
+  #各个页面详情url
     supplierUrl:
         #合同申请详情
         applyContract: http://scmp.bms.aiqin.com/#/Supplier/ContractAppDetails/

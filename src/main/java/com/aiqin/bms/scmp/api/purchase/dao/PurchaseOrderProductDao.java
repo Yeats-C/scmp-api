@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface PurchaseOrderProductDao {
 
@@ -9,4 +12,9 @@ public interface PurchaseOrderProductDao {
     Integer update(PurchaseOrderProduct record);
 
     Integer insertAll(PurchaseOrderProduct orderProduct);
+
+    List<PurchaseOrderProduct> purchaseOrderList(@Param("purchaseOrderId") String purchaseOrderId,
+                                                 @Param("isPage")Integer isPage,
+                                                 @Param("pageNo")Integer pageNo,
+                                                 @Param("pageSize")Integer pageSize);
 }

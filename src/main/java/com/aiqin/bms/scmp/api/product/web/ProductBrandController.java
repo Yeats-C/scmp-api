@@ -1,9 +1,6 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandReqVO;
@@ -11,7 +8,10 @@ import com.aiqin.bms.scmp.api.product.domain.request.brand.QueryProductBrandReqV
 import com.aiqin.bms.scmp.api.product.domain.response.ProductBrandRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryProductBrandRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductBrandService;
-import com.github.pagehelper.PageInfo;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,9 +41,9 @@ public class ProductBrandController {
 
     @PostMapping("/list")
     @ApiOperation(value = "列表")
-    public HttpResponse<PageInfo<QueryProductBrandRespVO>> list(@RequestBody QueryProductBrandReqVO reqVO) {
+    public HttpResponse<BasePage<QueryProductBrandRespVO>> list(@RequestBody QueryProductBrandReqVO reqVO) {
         try {
-            PageInfo<QueryProductBrandRespVO> s = productBrandService.selectBrandListByQueryVO(reqVO);
+            BasePage<QueryProductBrandRespVO> s = productBrandService.selectBrandListByQueryVO(reqVO);
             return HttpResponse.success(s);
         }catch (Exception e){
             log.error(e.getMessage());

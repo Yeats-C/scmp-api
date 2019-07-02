@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -60,6 +61,7 @@ import javax.sql.DataSource;
 @EnableAspectJAutoProxy(proxyTargetClass = true,exposeProxy = true)
 @EnableAsync(proxyTargetClass = true)
 @EnableSwagger2
+@EnableScheduling
 public class ScmpApiBootApplication extends SpringBootServletInitializer {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ScmpApiBootApplication.class);

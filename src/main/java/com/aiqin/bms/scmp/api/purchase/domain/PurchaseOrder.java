@@ -77,6 +77,10 @@ public class PurchaseOrder {
     @JsonProperty("return_amount")
     private Integer returnAmount;
 
+    @ApiModelProperty(value="采购方式 0 配送  1.铺采直送")
+    @JsonProperty("purchase_mode")
+    private Integer purchaseMode;
+
     @ApiModelProperty(value="结算方式编码")
     @JsonProperty("settlement_method_code")
     private String settlementMethodCode;
@@ -84,6 +88,14 @@ public class PurchaseOrder {
     @ApiModelProperty(value="结算方式名称")
     @JsonProperty("settlement_method_name")
     private String settlementMethodName;
+
+    @ApiModelProperty(value="取消原因")
+    @JsonProperty("cancel_reason")
+    private String cancelReason;
+
+    @ApiModelProperty(value="取消备注")
+    @JsonProperty("cancel_remark")
+    private String cancelRemark;
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")

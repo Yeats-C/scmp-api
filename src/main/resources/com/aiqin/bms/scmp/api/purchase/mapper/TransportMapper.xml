@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.mapper.TransportMapper">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="transport_code" jdbcType="VARCHAR" property="transportCode" />
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+        <result column="customer_code" jdbcType="VARCHAR" property="customerCode" />
+        <result column="customer_name" jdbcType="VARCHAR" property="customerName" />
+        <result column="transport_amount" jdbcType="BIGINT" property="transportAmount" />
+        <result column="packing_num" jdbcType="BIGINT" property="packingNum" />
+        <result column="order_commodity_num" jdbcType="BIGINT" property="orderCommodityNum" />
+        <result column="status" jdbcType="BIGINT" property="status" />
+        <result column="logistics_company" jdbcType="BIGINT" property="logisticsCompany" />
+        <result column="logistics_company_name" jdbcType="VARCHAR" property="logisticsCompanyName" />
+        <result column="logistics_number" jdbcType="VARCHAR" property="logisticsNumber" />
+        <result column="logistics_fee" jdbcType="BIGINT" property="logisticsFee" />
+        <result column="standard_logistics_fee" jdbcType="BIGINT" property="standardLogisticsFee" />
+        <result column="additional_logistics_fee" jdbcType="BIGINT" property="additionalLogisticsFee" />
+        <result column="total_volume" jdbcType="DECIMAL" property="totalVolume" />
+        <result column="total_weight" jdbcType="DECIMAL" property="totalWeight" />
+        <result column="deliver_to" jdbcType="VARCHAR" property="deliverTo" />
+        <result column="transport_time" jdbcType="DATE" property="transportTime" />
+        <result column="sign_time" jdbcType="DATE" property="signTime" />
+        <result column="consignee_name" jdbcType="VARCHAR" property="consigneeName" />
+        <result column="consignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
+        <result column="consignee_address" jdbcType="VARCHAR" property="consigneeAddress" />
+        <result column="detailed_address" jdbcType="VARCHAR" property="detailedAddress" />
+        <result column="zip" jdbcType="VARCHAR" property="zip" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="DATE" property="createTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="update_time" jdbcType="DATE" property="updateTime" />
+    </resultMap>
+
+    <resultMap id="TransportOrdersMap" type="com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportOrders">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="transport_code" jdbcType="VARCHAR" property="transportCode" />
+        <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+        <result column="commodity_amount" jdbcType="BIGINT" property="commodityAmount" />
+        <result column="order_amount" jdbcType="BIGINT" property="orderAmount" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+        <result column="type" jdbcType="INTEGER" property="type" />
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+        <result column="deliver_time" jdbcType="DATE" property="deliverTime" />
+        <result column="product_num" jdbcType="BIGINT" property="productNum" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="DATE" property="createTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="update_time" jdbcType="DATE" property="updateTime" />
+        <result column="customer_code"  property="customerCode"/>
+        <result column="customer_name"  property="customerName"/>
+    </resultMap>
+    <sql id="Transport_Orders_sql">
+        id,transport_code,order_code,commodity_amount,order_amount,status,type,transport_center_code,transport_center_name,warehouse_code,warehouse_name,deliver_time,create_by,create_time,update_by,update_time
+    </sql>
+    <sql id="Transport_orders_without_code">
+        id,order_code,product_total_amount as commodity_amount,order_amount,order_status as status,order_type_code as type,
+	transport_center_code,transport_center_name,warehouse_code,warehouse_name,delivery_time as deliver_time,create_date as createTime,product_num,
+	customer_code,customer_name
+    </sql>
+
+    <sql id="Base_clomn_sql">
+        id,transport_code,transport_center_code,transport_center_name,customer_code,customer_name,packing_num,order_commodity_num,status,logistics_company,logistics_company_name,
+        logistics_number,logistics_fee,standard_logistics_fee,additional_logistics_fee,total_volume,total_weight,deliver_to,transport_time,
+        sign_time,consignee_name,consignee_phone,consignee_address,detailed_address,zip,remark,create_by,create_time,update_by,update_time
+    </sql>
+
+    <sql id="Base_Order_Info_Sql">
+    id, order_code, order_type, order_type_code, customer_name, customer_code, create_date,
+    order_status, be_lock, be_exception, exception_reason, be_delete, payment_status,
+    transport_center_name, transport_center_code, warehouse_name, warehouse_code, supplier_name,
+    supplier_code, distribution_mode, distribution_mode_code, consignee, consignee_phone,
+    province_code, province_name, city_code, city_name, district_code, district_name,
+    detail_address, zip_code, payment_type, payment_type_code, deliver_amount, product_total_amount,
+    discount_amount, order_amount, product_num, payment_time, delivery_time, receiving_time,
+    invoice_type, invoice_type_code, invoice_title, operator, operator_code, operator_time, activity_discount,
+    weight, be_father, father_order_code, order_original, remake, company_code, company_name,logistics_remission_ratio
+  </sql>
+
+    <select id="selectList" resultMap="BaseResultMap">
+      select <include refid="Base_clomn_sql"></include> from transport where 1=1
+        <if test="transportCode !=null and transportCode!=''">
+            and transport_code=#{transportCode}
+        </if>
+        <if test="transportCenterCode !=null and transportCenterCode !=''">
+            and transport_center_code=#{transportCenterCode}
+        </if>
+        <if test="transportCenterName !=null and transportCenterName !=''">
+            and transport_center_name like CONCAT('%',#{transportCenterCode},'%')
+        </if>
+        <if test="customerCode !=null and customerCode!=''">
+            and customer_code=#{customerCode}
+        </if>
+        <if test="customerName!=null and customerName!=''">
+            and customer_name like concat('%',#{customerName},'%')
+        </if>
+        <if test="beginCreateTime !=null">
+            and create_time <![CDATA[>=]]>#{beginCreateTime}
+        </if>
+        <if test="finishCreateTime!=null">
+            and create_time <![CDATA[<]]>#{finishCreateTime}
+        </if>
+        <if test="logisticsCompany!=null and logisticsCompany!=''">
+            and logistics_company=#{logisticsCompany}
+        </if>
+        <if test="logisticsCompanyName !=null and logisticsCompanyName!=''">
+            and logistics_company_name like concat('%',#{logisticsCompanyName},'%')
+        </if>
+        <if test="status!=null">
+            and status=#{status}
+        </if>
+    </select>
+    <select id="selectTransportOrdersWithOutCodeList" resultMap="TransportOrdersMap">
+          select <include refid="Transport_orders_without_code"></include>
+          from order_info where order_status=11 and transport_status=0
+        <if test="customerName!=null and customerName!=''">
+            and customer_name like concat('%',#{customerName},'%')
+        </if>
+        <if test="customerCode!=null and customerCode!=''">
+            and customer_code=#{customerCode}
+        </if>
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and transport_center_code=#{transportCenterCode}
+        </if>
+        <if test="transportCenterName!=null and transportCenterName!=''">
+            and transport_center_name like concat('%',#{transportCenterName},'%')
+        </if>
+        <if test="warehouseCode!=null and warehouseCode!=''">
+            and warehouse_code=#{warehouseCode}
+        </if>
+        <if test="warehouseName!=null and warehouseName!=''">
+            and warehouse_name like concat('%',#{warehouseName})
+        </if>
+    </select>
+    <select id="selectDeliverOrdersWithOutCodeList" resultMap="TransportOrdersMap">
+        select <include refid="Transport_orders_without_code"></include>
+        from order_info where order_status in(3,4,5,6,7,8) and transport_status=0
+        <if test="customerName!=null and customerName!=''">
+            and customer_name like concat('%',#{customerName},'%')
+        </if>
+        <if test="customerCode!=null and customerCode!=''">
+            and customer_code=#{customerCode}
+        </if>
+    </select>
+    <insert id="insertOne" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport">
+        insert into transport(
+        transport_code,
+        transport_center_code,
+        transport_center_name,
+        customer_code,
+        customer_name,
+        transport_amount,
+        packing_num,
+        order_commodity_num,
+        status,
+        logistics_company,
+        logistics_company_name,
+        logistics_number,
+        logistics_fee,
+        standard_logistics_fee,
+        additional_logistics_fee,
+        total_volume,
+        total_weight,
+        deliver_to,
+        transport_time,
+        sign_time,
+        consignee_name,
+        consignee_phone,
+        consignee_address,
+        detailed_address,
+        zip,
+        remark,
+        create_by,
+        create_time,
+        update_by,
+        update_time
+        ) values(
+        #{transportCode},
+        #{transportCenterCode},
+        #{transportCenterName},
+        #{customerCode},
+        #{customerName},
+        #{transportAmount},
+        #{packingNum},
+        #{orderCommodityNum},
+        #{status},
+        #{logisticsCompany},
+        #{logisticsCompanyName},
+        #{logisticsNumber},
+        #{logisticsFee},
+        #{standardLogisticsFee},
+        #{additionalLogisticsFee},
+        #{totalVolume},
+        #{totalWeight},
+        #{deliverTo},
+        #{transportTime},
+        #{signTime},
+        #{consigneeName},
+        #{consigneePhone},
+        #{consigneeAddress},
+        #{detailedAddress},
+        #{zip},
+        #{remark},
+        #{createBy},
+        #{createTime},
+        #{updateBy},
+        #{updateTime}
+        )
+    </insert>
+    <select id="selectOrderOneByOrderCode" resultType="com.aiqin.bms.scmp.api.product.domain.request.order.SupplyOrderInfo">
+        select <include refid="Base_Order_Info_Sql"></include> from order_info
+        where order_code=#{orderCode}
+    </select>
+    <select id="selectByTransportCode" resultMap="BaseResultMap">
+        select <include refid="Base_clomn_sql"></include> from transport where transport_code=#{transportCode}
+    </select>
+    <select id="selectByTransportCodes" resultMap="BaseResultMap" resultType="java.util.List">
+        select <include refid="Base_clomn_sql"></include> from transport where transport_code in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+    <update id="updateStatusByTransportCode">
+        update transport set status=#{status} where transport_code=#{transportCode}
+    </update>
+    <update id="updateStatusByTransportCodes">
+        <foreach collection="items" open="" close="" separator=";" item="item">
+          update transport set status=#{status} where transport_code=#{item}
+        </foreach>
+    </update>
+</mapper>

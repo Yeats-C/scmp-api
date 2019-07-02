@@ -89,7 +89,7 @@ public interface Global {
     Integer PRODUCT_TYPE_2 = 2;
 
     /**
-     * 采购申请单类型 0 手动 1自动 , 0  已完成 1 待提交
+     * 采购申请单类型 0 手动 1自动 , 0  待提交 1 已完成
      */
     Integer PURCHASE_APPLY_TYPE_0 = 0;
     Integer PURCHASE_APPLY_TYPE_1 = 1;
@@ -111,5 +111,8 @@ public interface Global {
     Integer PURCHASE_ORDER_9 = 9;
     Integer PURCHASE_ORDER_10 = 10;
 
-
+    /**
+     *监管仓类型
+     */
+    Byte SUPERVISORY_WAREHOUSE_TYPE = Byte.valueOf("3");
 }

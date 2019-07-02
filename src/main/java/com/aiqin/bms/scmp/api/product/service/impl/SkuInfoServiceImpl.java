@@ -196,6 +196,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     applyUseTagRecord.setUseObjectName(productSkuDraft.getSkuName());
                     applyUseTagRecord.setTagCode(TagTypeCode.SKU.getStatus());
                     applyUseTagRecord.setTagTypeName(TagTypeCode.SKU.getName());
+                    applyUseTagRecords.add(applyUseTagRecord);
                 });
                 applyUseTagRecordService.saveBatch(applyUseTagRecords);
             }

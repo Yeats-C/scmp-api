@@ -26,7 +26,7 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("apply_type")
     private Integer applyType;
 
-    @ApiModelProperty(value="采购申请状态: 0 已完成 1 待提交")
+    @ApiModelProperty(value="采购申请状态: 0 待提交  1 已完成")
     @JsonProperty("apply_status")
     private Integer applyStatus;
 
@@ -110,9 +110,25 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("product_shortage")
     private List<String> productShortage;
 
-    @ApiModelProperty(value="有效采购组")
-    @JsonProperty("group_code")
-    private List<String> groupCode;
+    @ApiModelProperty(value="采购单号")
+    @JsonProperty("purchase_order_code")
+    private String purchaseOrderCode;
+
+    @ApiModelProperty(value="库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty(value="采购单状态 0.待审核 1.审核中 2.审核通过  3.备货确认 4.发货确认  5.入库开始 6.入库中 7.已入库  8.完成 9.取消 10.审核不通过")
+    @JsonProperty("purchase_order_status")
+    private Integer purchaseOrderStatus;
+
+    @ApiModelProperty(value="仓储状态 0.未开始  1.确认中 2.完成")
+    @JsonProperty("storage_status")
+    private Integer storageStatus;
+
+    @ApiModelProperty(value="采购方式 0 配送  1.铺采直送")
+    @JsonProperty("purchase_mode")
+    private Integer purchaseMode;
 
     public PurchaseApplyRequest() {
     }
@@ -144,5 +160,20 @@ public class PurchaseApplyRequest extends PagesRequest {
         this.productReplenishType = productReplenishType;
         this.aShortageType = aShortageType;
         this.productShortageType = productShortageType;
+    }
+
+    public PurchaseApplyRequest(String purchaseGroupCode, String beginTime, String finishTime, String supplierCode,
+                                String transportCenterCode, String purchaseOrderCode, String warehouseCode,
+                                Integer purchaseOrderStatus, Integer storageStatus, Integer purchaseMode) {
+        this.purchaseGroupCode = purchaseGroupCode;
+        this.beginTime = beginTime;
+        this.finishTime = finishTime;
+        this.supplierCode = supplierCode;
+        this.transportCenterCode = transportCenterCode;
+        this.purchaseOrderCode = purchaseOrderCode;
+        this.warehouseCode = warehouseCode;
+        this.purchaseOrderStatus = purchaseOrderStatus;
+        this.storageStatus = storageStatus;
+        this.purchaseMode = purchaseMode;
     }
 }

@@ -219,6 +219,7 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
         if(Objects.isNull(dto)){
             throw new BizException(ResultCode.CAN_NOT_FIND_RETURN_ORDER);
         }
+        dto.setItems(items);
         return new ReturnOrderToInboundConverter().convert(dto);
     }
 

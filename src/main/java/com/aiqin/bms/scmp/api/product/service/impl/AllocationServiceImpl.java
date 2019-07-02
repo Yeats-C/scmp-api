@@ -103,8 +103,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
         AuthToken authToken = getUser();
         vo.setCompanyCode(authToken.getCompanyCode());
-        vo.setCompanyName(authToken.getCompanyName());
         PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
+
         List<QueryAllocationResVo> list = allocationMapper.getList(vo);
         BasePage<QueryAllocationResVo> basePage = PageUtil.getPageList(vo.getPageNo(),list);
         return basePage;
@@ -149,7 +149,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
              List<AllocationProduct> products = productbatchTransProduct(list);
              ((AllocationService) AopContext.currentProxy()).saveList(products);
              //TODO 库存锁定
-             StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            /* StockChangeRequest stockChangeRequest = new StockChangeRequest();
              stockChangeRequest.setOperationType(1);
              stockChangeRequest.setOrderCode(allocation.getAllocationCode());
              List<StockVoRequest> list1 = allocationProductTransStock(allocation,list);
@@ -161,7 +161,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
              }else{
                  log.error(httpResponse.getMessage());
                  throw  new GroundRuntimeException("库存操作失败");
-             }
+             }*/
              //调用审批流
              workFlow(k,form);
              return  k;

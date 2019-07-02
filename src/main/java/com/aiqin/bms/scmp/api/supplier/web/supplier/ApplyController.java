@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.web.supplier;
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
@@ -53,7 +54,7 @@ public class ApplyController extends SupplierBaseController {
             return HttpResponse.success("撤销成功");
         } catch (Exception e) {
             e.printStackTrace();
-            return HttpResponse.success("撤销失败");
+            return HttpResponse.failure(ResultCode.CANCEL_ERROR);
         }
     }
 }

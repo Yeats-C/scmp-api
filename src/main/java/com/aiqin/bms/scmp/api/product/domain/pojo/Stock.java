@@ -170,6 +170,14 @@ public class Stock extends CommonBean {
     @JsonProperty(value = "bad_way_num")
     private Long badWayNum;
 
+    @ApiModelProperty("备货数量")
+    @JsonProperty(value = "stockup_num")
+    private Integer stockupNum;
+
+    @ApiModelProperty("备货完成时间")
+    @JsonProperty(value = "stockupfinish_time")
+    private String stockupfinishTime;
+
     public Long getId() {
         return id;
     }
@@ -488,5 +496,21 @@ public class Stock extends CommonBean {
 
     public void setBadWayNum(Long badWayNum) {
         this.badWayNum = badWayNum;
+    }
+
+    public Integer getStockupNum() {
+        return stockupNum;
+    }
+
+    public void setStockupNum(Integer stockupNum) {
+        this.stockupNum = stockupNum;
+    }
+
+    public String getStockupfinishTime() {
+        return stockupfinishTime;
+    }
+
+    public void setStockupfinishTime(String stockupfinishTime) {
+        this.stockupfinishTime = stockupfinishTime;
     }
 }

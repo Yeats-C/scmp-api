@@ -75,7 +75,7 @@ public class ContractReqVo {
     private Byte targetRebate;
 
     @ApiModelProperty("计划类型(月度,季度,半年,全年)")
-    private Byte planType;
+    List<PlanTypeReqVO> planTypeList;
 
     @ApiModelProperty("起始日期")
     @NotNull(message = "起始日期不能为空")

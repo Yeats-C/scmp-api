@@ -69,7 +69,7 @@ public class AllocationReqVo {
     @NotNull(message = "数量不能为空")
     private Long quantity;
 
-    @ApiModelProperty("含税总成本")
+    @ApiModelProperty("含税总成本单位分(传入时需要乘以100)")
     @NotNull(message = "含税总成本")
     private Long totalCostRate;
 

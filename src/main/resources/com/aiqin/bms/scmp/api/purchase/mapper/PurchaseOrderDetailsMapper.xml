@@ -173,4 +173,22 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="purchaseOrderDetail" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+    select o.purchase_order_id as purchaseOrderId, o.purchase_order_code as purchaseOrderCode,
+    o.warehouse_code as warehouseCode, o.warehouse_name as warehouseName, o.transport_center_code as transportCenterCode,
+    o.transport_center_name as transportCenterName, o.purchase_order_status as purchaseOrderStatus,
+    d.expect_arrival_time as expectArrivalTime, d.valid_time as validTime, o.create_time as createTime,
+    o.purchase_group_code as purchaseGroupCode, o.purchase_group_name as purchaseGroupName, o.purchase_mode as purchaseMode,
+    d.charge_person as chargePerson, d.contract_code as contractCode, d.contract_name as contractName,
+    d.account_code as accountCode, d.account_name as accountName, o.settlement_method_code as settlementMethodCode,
+    o.settlement_method_name as settlementMethodName, d.contact_person as contactPerson, d.mobile,
+    d.delivery_time as deliveryTime, d.warehouse_time as warehouseTime, d.update_time as updateTime,
+    d.order_type as orderType, d.order_code as orderCode
+    from purchase_order o
+    inner join purchase_order_details d
+    on o.purchase_order_id = d.purchase_order_id
+    <where>
+      purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+    </where>
+  </select>
 </mapper>

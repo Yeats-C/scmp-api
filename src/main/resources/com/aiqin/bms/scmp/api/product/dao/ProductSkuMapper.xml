@@ -1597,6 +1597,7 @@
     <collection property="supplierInfoVOS" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO">
       <result column="supplierCode" property="supplierCode"></result>
       <result column="supplierName" property="supplierName"></result>
+      <result column="isDefault" property="isDefault"></result>
       <result column="purchasePriceOld" property="purchasePriceOld"></result>
     </collection>
   </resultMap>
@@ -1678,13 +1679,14 @@ select a.sku_code              as skuCode,
        f.price_category_name   as priceAttributeName,
        d.supply_unit_code as supplierCode,
        d.supply_unit_name as supplierName,
+       ifnull(d.is_default,0) as isDefault,
        e.price_tax as purchasePriceOld
       from product_sku a
        left join product b
                  on a.spu_code = b.product_code
        left join product_sku_purchase_info c
                  on a.sku_code = c.product_sku_code
-       left join product_sku_supply_unit_capacity d
+       left join product_sku_supply_unit d
                  on a.sku_code = d.product_sku_code
        left join product_sku_price_info e
                  on a.sku_code = e.sku_code and d.supply_unit_code = e.supplier_code
@@ -1705,6 +1707,9 @@ select a.sku_code              as skuCode,
     </if>
     <if test="productPropertyCode!=null and productPropertyCode!=''">
       AND a.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="supplierCode!=null and supplierCode!=''">
+      AND d.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
     </if>
     <if test="spuCode!=null and spuCode!=''">
       AND b.product_code = #{spuCode,jdbcType=VARCHAR}
@@ -1769,13 +1774,13 @@ select a.sku_code              as skuCode,
                a.model_number,
                d.unit_name,
                group_concat(b.price_channel_name) priceChannelName,
-               c.supply_unit_name directDeliverySupplierCode,
-               c.supply_unit_code directDeliverySupplierName
+               c.supply_unit_name directDeliverySupplierName,
+               c.supply_unit_code directDeliverySupplierCode
         from product_sku a
                left join product_sku_channel b
                          on a.sku_code = b.sku_code
                left join product_sku_supply_unit c
-                         on a.sku_code = c.product_sku_code and c.categories_supply_channels_code = 1
+                         on a.sku_code = c.product_sku_code and c.categories_supply_channels_code = 2
                left join product_sku_purchase_info d
                          on a.sku_code = d.product_sku_code
          where a.company_code = #{companyCode}
@@ -1807,4 +1812,34 @@ select a.sku_code              as skuCode,
             </foreach>
           </if>
     </select>
+  <select id="getSupervisoryWarehouseSku"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo">
+        SELECT
+          ps.sku_code skuCode,
+          ps.sku_name skuName,
+          ps.goods_gifts as skuType,
+          pspi.spec productSpec,
+          ps.product_category_name categoryName,
+          ps.product_category_code categoryId,
+          ps.product_brand_name brandName,
+          ps.product_brand_code brandId,
+          pspi.unit_code unitCode,
+          pspi.unit_name unitName,
+          ps.color_name colorName,
+          ps.model_number modelNumber,
+          IFNULL(pspi.base_product_content,1) as baseProductContent,
+          IFNULL(psc.output_tax_rate,0) as taxRate,
+          IFNULL(psbp.box_gross_weight,0) boxGrossWeight,
+          IFNULL(psbp.net_weight,0) netWeight
+        FROM product_sku ps
+        left join  product_sku_checkout psc on psc.sku_code = ps.sku_code
+        LEFT JOIN product_sku_purchase_info pspi on ps.sku_code = pspi.product_sku_code
+        LEFT JOIN product_sku_box_packing psbp on pspi.product_sku_code = psbp.product_sku_code and pspi.unit_code = psbp.unit_code
+        WHERE ps.del_flag=0 and ps.goods_gifts!=2
+        <if test="companyCode != null and companyCode != '' ">
+          and ps.company_code = #{companyCode}
+        </if>
+  </select>
+
+
 </mapper>

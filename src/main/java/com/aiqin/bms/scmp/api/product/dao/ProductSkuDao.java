@@ -15,7 +15,10 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.oms.SearchOmsSkuListReq
 import com.aiqin.bms.scmp.api.product.domain.request.sku.oms.SearchOrderReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.purchase.CheckPurchaseSkuReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.purchase.QueryPurchaseSkuReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.store.*;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryMerchantSkuListReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreProductListReqDTO;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkuListReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkusReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
@@ -24,6 +27,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.merchant.MerchantSkuIt
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ocenter.QueryCenterSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.*;
 import org.apache.ibatis.annotations.Param;
 
@@ -254,4 +258,6 @@ public interface ProductSkuDao {
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaForSkuRespVO>
      */
     List<QueryProductSaleAreaForSkuRespVO> selectSkuListForSaleArea(QueryProductSaleAreaForSkuReqVO reqVO);
+
+    List<SupervisoryWarehouseSkuRespVo> getSupervisoryWarehouseSku(QuerySkuListReqVO querySkuListReqVO);
 }
