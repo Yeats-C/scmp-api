@@ -32,7 +32,9 @@ import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -41,6 +43,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +67,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class AllocationServiceImpl extends BaseServiceImpl implements AllocationService  {
+@WorkFlowAnnotation(WorkFlow.APPLY_ALLOCATTION)
+public class AllocationServiceImpl extends BaseServiceImpl implements AllocationService, WorkFlowHelper {
 
 
     @Autowired
@@ -179,7 +183,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int revocation(Long id) {
-        try {
+
         Allocation allocation = allocationMapper.selectByPrimaryKey(id);
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setFormNo(allocation.getFormNo());
@@ -190,12 +194,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         }else {
             log.error("调拨单id为"+id+"撤销失败");
             throw  new GroundRuntimeException("撤销失败");
-        }
-
-    } catch ( Exception e){
-            e.printStackTrace();
-            log.error("撤销申请合同id为空");
-            throw new GroundRuntimeException("id 不能为空");
         }
 
     }
@@ -243,6 +241,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Save
     public Long insertSelective(Allocation record) {
        try{
+           record.setCompanyCode(getUser().getCompanyCode());
+           record.setCompanyName(getUser().getCompanyName());
             long k = allocationMapper.insertSelective(record);
             if(k>0){
                 return record.getId();
@@ -331,6 +331,9 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setTitle("申请从"+allocation1.getCallOutWarehouseName()+"到"+allocation1.getCallInWarehouseName()+"调拨");
             workFlowVO.setFormNo(formNo);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("auditPersonId",allocation1.getDirectSupervisorCode());
+            workFlowVO.setVariables(jsonObject.toString());
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_ALLOCATTION.getNum());
             WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_ALLOCATTION);
             if(workFlowRespVO.getSuccess()){

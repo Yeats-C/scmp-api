@@ -121,7 +121,7 @@
       #{t.callOutBatchNumber,jdbcType=VARCHAR},
       #{t.callInBatchNumber,jdbcType=VARCHAR},
       #{t.batchNumberRemark,jdbcType=VARCHAR},
-      #{t.productDate,jdbcType=VARCHAR},
+      #{t.productDate,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

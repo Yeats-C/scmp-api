@@ -57,6 +57,8 @@ public class AllocationController {
     @PostMapping("/save")
     public HttpResponse<Long> save(@RequestBody  AllocationReqVo vo){
         try {
+            vo.setAllocationType(AllocationTypeEnmu.ALLOCATION.getType());
+            vo.setAllocationTypeName(AllocationTypeEnmu.ALLOCATION.getTypeName());
             return HttpResponse.success(allocationService.save(vo));
         }catch (Exception ex){
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_ADD_ERROR);
