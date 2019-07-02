@@ -117,7 +117,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             String rejectCode = "RAR" + encodingRule.getNumberingValue();
             rejectApplyRecord.setRejectApplyRecordCode(rejectCode);
             //处理数据
-            rejectApplyRecord.setApplyRecordStatus(1);
+            rejectApplyRecord.setApplyRecordStatus(0);
             Integer count = this.rejectApplyData(rejectApplyQueryRequest, rejectApplyRecord, rejectCode);
             //sku数量等于商品列表条数
             rejectApplyRecord.setSumSku(count);
@@ -149,6 +149,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             detail.setSingleCount(detail.getProductCount());
             detail.setCreateById(rejectApplyQueryRequest.getCreateById());
             detail.setCreateByName(rejectApplyQueryRequest.getCreateByName());
+            detail.setUpdateById(rejectApplyRecord.getUpdateById());
+            detail.setUpdateByName(rejectApplyRecord.getUpdateByName());
             detail.setProductTotalAmount(detail.getProductAmount() * detail.getProductCount());
             detail.setApplyType(rejectApplyQueryRequest.getApplyType());
             sumAmount += detail.getProductTotalAmount();
@@ -175,8 +177,10 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             this.rejectApplyData(rejectApplyRequest, rejectApplyRecord, rejectApplyRecord.getRejectApplyRecordCode());
             //sku数量等于商品列表条数
             rejectApplyRecord.setSumSku(rejectApplyRequest.getDetailList().size());
+            rejectApplyRecord.setUpdateById(rejectApplyRecord.getUpdateById());
+            rejectApplyRecord.setUpdateByName(rejectApplyRecord.getUpdateByName());
             //更新退供申请单信息
-            Integer count = rejectApplyRecordDao.updateByRejectCode(rejectApplyRequest);
+            Integer count = rejectApplyRecordDao.updateByRejectCode(rejectApplyRecord);
             LOGGER.info("修改退供申请详情影响条数:{}", count);
         } catch (Exception e) {
             LOGGER.error("修改退供申请详情影响条数:{}", e.getMessage());
@@ -192,9 +196,9 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             LOGGER.error("未查询到退供申请单信息:{}", rejectApplyCode);
             return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_APPLY_RECORD);
         }
-        RejectApplyResponse response = new RejectApplyResponse();
+        RejectApplyHandleRequest response = new RejectApplyHandleRequest();
         BeanUtils.copyProperties(rejectApplyRecord, response);
-        List<RejectApplyDetailResponse> list = rejectApplyRecordDetailDao.selectByRejectCode(rejectApplyCode);
+        List<RejectApplyDetailHandleRequest> list = rejectApplyRecordDetailDao.selectHandleByRejectCode(rejectApplyCode);
         response.setDetailList(list);
         return HttpResponse.success(response);
     }
@@ -206,6 +210,9 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         }
         try {
             String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
+            if(result.length<2){
+                return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            }
             List<RejectImportResponse> list = new ArrayList<>();
             Integer errorCount = 0;
             if (result != null) {
@@ -216,7 +223,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                 String[] record;
                 RejectImportResponse response;
                 QueryStockBatchSkuRespVo queryStockBatchSkuRespVo;
-                for (int i = 3; i <= result.length - 1; i++) {
+                for (int i = 1; i <= result.length - 1; i++) {
                     record = result[i];
                     response = new RejectImportResponse();
                     queryStockBatchSkuRespVo = stockDao.selectSkuBatchCode(purchaseGroupCode,record[3], record[4], record[0], record[5]);
@@ -445,6 +452,9 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     public HttpResponse rejectInfo(String rejectRecordId) {
         RejectResponse rejectResponse = new RejectResponse();
         RejectRecord rejectRecord = rejectRecordDao.selectByRejectId(rejectRecordId);
+        if(rejectRecord==null){
+            return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_RECORD);
+        }
         BeanUtils.copyProperties(rejectRecord, rejectResponse);
         List<RejectRecordDetail> batchList = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
         List<RejectRecordDetailResponse> productList = rejectRecordDetailDao.selectProductByRejectId(rejectRecordId);

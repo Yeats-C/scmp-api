@@ -192,7 +192,7 @@ public class FileReaderUtil {
             return "空文件";
         }
         for (int i = 0; i < header.length; i++) {
-            if (!header[i].equals(result[1][i])) {
+            if (!header[i].equals(result[0][i])) {
                 String message = "导入模板标题不正确第" + (i + 1) + "列【" + result[1][i] + "】应为【" + header[i] + "】";
                 LOGGER.error(message, "");
                 return message;

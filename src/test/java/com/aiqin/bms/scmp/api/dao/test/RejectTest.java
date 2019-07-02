@@ -68,7 +68,6 @@ public class RejectTest extends SpringBootTestContext {
         detail.setPurchaseGroupCode("1044");
         detail.setPurchaseGroupName("奶粉组");
         detail.setApplyType(1);
-        detail.setApplyRecordStatus(1);
         detail.setBarcode("112");
         detail.setSkuCode("001");
         detail.setSkuName("商品1");
