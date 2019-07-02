@@ -180,6 +180,12 @@
       <if test="callInWarehouseName != null">
         callin_warehouse_name,
       </if>
+      <if test="allocationType != null">
+        allocation_type,
+      </if>
+      <if test="allocationTypeName != null">
+        allocation_type_name,
+      </if>
       <if test="principal != null">
         principal,
       </if>
@@ -260,12 +266,6 @@
       <if test="callOutWarehouseName != null">
         #{callOutWarehouseName,jdbcType=VARCHAR},
       </if>
-      <if test="inventoryAttributesCode != null">
-        #{inventoryAttributesCode,jdbcType=VARCHAR},
-      </if>
-      <if test="inventoryAttributesName != null">
-        #{inventoryAttributesName,jdbcType=VARCHAR},
-      </if>
       <if test="purchaseGroupCode != null">
         #{purchaseGroupCode,jdbcType=VARCHAR},
       </if>
@@ -284,8 +284,8 @@
       <if test="callInWarehouseName != null">
         #{callInWarehouseName,jdbcType=VARCHAR},
       </if>
-      <if test="allocationTypeCode != null">
-        #{allocationTypeCode,jdbcType=TINYINT},
+      <if test="allocationType != null">
+        #{allocationType,jdbcType=TINYINT},
       </if>
       <if test="allocationTypeName != null">
         #{allocationTypeName,jdbcType=VARCHAR},

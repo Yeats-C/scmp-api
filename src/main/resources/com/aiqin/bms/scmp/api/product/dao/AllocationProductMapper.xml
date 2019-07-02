@@ -46,8 +46,7 @@
     insert into allocation_product (id, allocation_code, sku_code, 
       sku_name, category, brand, 
       color, specification, model, 
-      unit, classes, type,
-      inventory_unit, inventory, tax, 
+      unit, classes, type, tax,
       tax_price, quantity, tax_amount, 
       del_flag, create_time, create_by, 
       update_time, update_by, picture_url, line_num)
