@@ -39,5 +39,12 @@ public interface ProductSkuSupplyUnitDao {
     List<ApplyProductSkuSupplyUnit> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     List<ApplyProductSkuSupplyUnit> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
-
+    /**
+     * 查询供应商
+     * @author NullPointException
+     * @date 2019/7/2
+     * @param skuCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo>
+     */
+    List<ProductSkuSupplyUnitRespVo> selectBySkuCode(String skuCode);
 }

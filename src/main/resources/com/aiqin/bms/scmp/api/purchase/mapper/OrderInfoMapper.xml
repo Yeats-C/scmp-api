@@ -94,7 +94,7 @@
              order_amount orderAmount,
              product_num productNum
       from order_info
-      where company_code = #{companyCode} and order_type = #{orderType}
+      where company_code = #{companyCode} and order_type_code = #{orderType}
       <if test="createDateStart != null">
         and create_date &gt;=#{createDateStart,jdbcType=TIMESTAMP}
       </if>
