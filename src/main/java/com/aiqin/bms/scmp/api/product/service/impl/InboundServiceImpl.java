@@ -9,10 +9,7 @@ import com.aiqin.bms.scmp.api.product.dao.MovementDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
-import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
-import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
@@ -380,6 +377,8 @@ public class InboundServiceImpl implements InboundService {
 
         //更新sku 数量
         List<InboundProductCallBackReqVo> list = reqVo.getList();
+        //批次
+        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVoList = reqVo.getInboundBatchCallBackReqVos();
 
         // 减在途数并且增加库存 实体
         StockChangeRequest  stockChangeRequest = new StockChangeRequest();
@@ -397,14 +396,15 @@ public class InboundServiceImpl implements InboundService {
             stockChangeRequest.setOperationType(9);
         }
 
-
         List<StockVoRequest> stockVoRequestList = new ArrayList<>();
+        List<StockBatchVoRequest> stockBatchVoRequestList = new ArrayList<>();
+
         for (InboundProductCallBackReqVo inboundProductCallBackReqVo : list) {
 
-            ReturnInboundProduct returnInboundProduct =   inboundProductDao.selectByLinenum(reqVo.getInboundOderCode(),inboundProductCallBackReqVo.getSkuCode() ,inboundProductCallBackReqVo.getLinenum());
+            ReturnInboundProduct returnInboundProduct = inboundProductDao.selectByLinenum(reqVo.getInboundOderCode(),inboundProductCallBackReqVo.getSkuCode() ,inboundProductCallBackReqVo.getLinenum());
             InboundProduct inboundProduct = new InboundProduct();
             // 复制旧的sku
-                    BeanCopyUtils.copy(returnInboundProduct,inboundProduct);
+            BeanCopyUtils.copy(returnInboundProduct,inboundProduct);
             inboundProduct.setPraInboundMainNum(inboundProductCallBackReqVo.getPraInboundMainNum());
             inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundMainNum()/Long.valueOf(inboundProduct.getInboundBaseContent()));
             inboundProduct.setPraTaxPurchaseAmount(inboundProduct.getPreTaxPurchaseAmount());
@@ -438,6 +438,29 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequestList.add(stockVoRequest);
         }
         stockChangeRequest.setStockVoRequests(stockVoRequestList);
+
+        for(InboundBatchCallBackReqVo inboundBatchCallBackReqVo : inboundBatchCallBackReqVoList){
+            ReturnInboundBatch returnInboundBatch = inboundBatchDao.selectByLinenum(reqVo.getInboundOderCode(),inboundBatchCallBackReqVo.getSkuCode() ,inboundBatchCallBackReqVo.getLinenum());
+            InboundBatch inboundBatch = new InboundBatch();
+
+            // 复制旧的sku
+            BeanCopyUtils.copy(returnInboundBatch, inboundBatch);
+            // 实际数量
+            inboundBatch.setPraQty(inboundBatchCallBackReqVo.getPraQty());
+
+            //更新对应批次的实际数量
+            Integer i = inboundBatchDao.updateBatchInfoByInboundOderCodeAndLineNum(inboundBatch);
+            log.info("更新对应批次的实际数量返回结果:{}", i);
+            //  设置修改在途数加库存的单条sku的实体
+            StockBatchVoRequest stockBatchVoRequest = new StockBatchVoRequest();
+            //设置sku编码名称
+            stockBatchVoRequest.setSkuCode(inboundBatch.getSkuCode());
+            stockBatchVoRequest.setSkuName(inboundBatch.getSkuName());
+            //设置更改数量
+            stockBatchVoRequest.setChangeNum(inboundBatch.getPraQty());
+            stockBatchVoRequestList.add(stockBatchVoRequest);
+        }
+        stockChangeRequest.setStockBatchVoRequest(stockBatchVoRequestList);
         //保存日志
         productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.RETURN_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),reqVo,HandleTypeCoce.RETURN_INBOUND_ODER.getName(),new Date(),inbound.getCreateBy());
 
