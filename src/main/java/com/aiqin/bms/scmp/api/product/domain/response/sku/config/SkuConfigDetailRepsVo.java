@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku.config;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.StatusTypeCode;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -57,6 +58,9 @@ public class SkuConfigDetailRepsVo {
 
     @ApiModelProperty("SKU配置列表信息")
     private List<SkuConfigsRepsVo> configs;
+
+    @ApiModelProperty("供应商列表")
+    private List<ProductSkuSupplyUnitRespVo> supplyUnitList;
 
     public String getSkuTypeName() {
        if (Objects.equals(StatusTypeCode.GOOD.getStatus(),skuType)) {

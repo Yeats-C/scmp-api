@@ -1,16 +1,18 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuSupplyUnitDao;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.google.common.collect.Lists;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -120,5 +122,14 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
     @Override
     public Integer deleteDrafts(List<String> skuCodes) {
         return draftMapper.delete(skuCodes);
+    }
+
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> selectBySkuCode(String skuCode) {
+        List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitDao.selectBySkuCode(skuCode);
+        if(CollectionUtils.isEmptyCollection(list)){
+            return Lists.newArrayList();
+        }
+        return list;
     }
 }

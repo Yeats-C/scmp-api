@@ -36,7 +36,11 @@
   </select>
     <select id="selectByChannelCodes" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem">
       select distinct b.price_project_code priceProjectCode,
-             b.price_channel_name priceProjectName
+             b.price_project_name priceProjectName,
+             b.price_category_code priceCategoryCode,
+             b.price_category_name priceCategoryName,
+             b.price_type_code priceTypeCode,
+             b.price_type_name priceTypeName
         from price_channel a
         left join  price_channel_item b
         on a.price_channel_code = b.price_channel_code
