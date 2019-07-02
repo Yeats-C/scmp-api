@@ -44,7 +44,7 @@ public interface StockDao {
 
     Integer countStockSumInfoByPage(StockRequest stockRequest);
 
-    StockRespVO selectOneStockInfoByStockId(Long stockId);
+    List<StockRespVO> selectOneStockInfoByStockId(Long stockId);
 
 
     /**
@@ -112,7 +112,7 @@ public interface StockDao {
      * @param stockBatchId
      * @return
      */
-    StockBatchRespVO selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
+    List<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
 
     List<PurchaseApplyDetailResponse> purchaseProductList(PurchaseApplyRequest purchases);
 

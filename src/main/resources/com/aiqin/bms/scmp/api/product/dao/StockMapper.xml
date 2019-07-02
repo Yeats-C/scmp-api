@@ -101,6 +101,15 @@
         <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
         <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
         <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
+        <result column="lock_status" jdbcType="VARCHAR" property="lockStatus"/>
+        <result column="document_type" jdbcType="VARCHAR" property="documentType"/>
+        <result column="document_num" jdbcType="VARCHAR" property="documentNum"/>
+        <result column="source_document_type" jdbcType="VARCHAR" property="sourceDocumentType"/>
+        <result column="source_document_num" jdbcType="VARCHAR" property="sourceDocumentNum"/>
+        <result column="operating_time" jdbcType="VARCHAR" property="operatingTime"/>
+        <result column="operating_by" jdbcType="VARCHAR" property="operatingBy"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="change_num" jdbcType="VARCHAR" property="changeNum"/>
     </resultMap>
     <resultMap id="StockBatchRespMap" type="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -445,14 +454,17 @@
         psc.config_status,
         ps.product_brand_name,
         ps.unit_code,ps.product_category_code,ps.product_category_name,psbp.large_unit,
-        pssi.spec,st.tax_cost
-
+        pssi.spec,st.tax_cost,
+        sf.lock_status,sf.document_type,sf.document_num,sf.source_document_type,
+        sf.source_document_num,sf.operating_time,sf.operating_by,sf.remark,sf.change_num
         from stock as st
+
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
         AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
         left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
         left join product_sku_stock_info as pssi on st.sku_code=CONVERT(pssi.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        left join stock_flow as sf on st.sku_code=CONVERT(sf.sku_code USING utf8) COLLATE utf8_unicode_ci
 
         where st.id = #{stockId, jdbcType=VARCHAR}
     </select>
@@ -1443,8 +1455,9 @@
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO" resultMap="StockBatchRespMap">
         select
         <include refid="Query_Stock_Batch_Id"/>
-        from stock_batch_flow as sbf
-        where sbf.id = #{stockBatchId, jdbcType=VARCHAR}
+        from stock_batch sb
+        LEFT JOIN stock_batch_flow AS sbf ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = sbf.sku_code
+        where sb.id = #{stockBatchId, jdbcType=VARCHAR}
     </select>
     <select id="purchaseProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
         select s.stock_code as stockCode,s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,

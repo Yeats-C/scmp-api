@@ -61,17 +61,4 @@ public class StockBatchProductSkuRespVO {
     @JsonProperty(value = "config_status")
     private Long configStatus;
 
-    @ApiModelProperty("库存数")
-    @JsonProperty(value = "inventory_num")
-    private Long inventoryNum;
-
-    @ApiModelProperty("可用库存数")
-    @JsonProperty(value = "available_num")
-    private Long availableNum;
-
-    @ApiModelProperty("锁定库存数")
-    @JsonProperty(value = "lock_num")
-    private Long lockNum;
-
-
 }

@@ -206,6 +206,44 @@ public class StockRespVO {
     @JsonProperty(value = "tax_cost")
     private Long taxCost;
 
+    // 库房详情
+    @ApiModelProperty("状态(锁状态-后补)")
+    @JsonProperty(value = "lock_status")
+    private Long lockStatus;
+
+    @ApiModelProperty("变动数(修改数)")
+    @JsonProperty(value = "change_num")
+    private Long changeNum;
+
+    @ApiModelProperty("单据类型")
+    @JsonProperty(value = "document_type")
+    private String documentType;
+
+    @ApiModelProperty("单据号")
+    @JsonProperty(value = "document_num")
+    private Long documentNum;
+
+    @ApiModelProperty("来源单据类型")
+    @JsonProperty(value = "source_document_type")
+    private String sourceDocumentType;
+
+    @ApiModelProperty("来源单据号")
+    @JsonProperty(value = "source_document_num")
+    private Long sourceDocumentNum;
+
+    @ApiModelProperty("操作时间")
+    @JsonProperty(value = "operating_time")
+    private String operatingTime;
+
+    @ApiModelProperty("操作人")
+    @JsonProperty(value = "operating_by")
+    private String operatingBy;
+
+    @ApiModelProperty("商品备注")
+    @JsonProperty(value = "remark")
+    private String remark;
+
+
     public Long getId() {
         return id;
     }

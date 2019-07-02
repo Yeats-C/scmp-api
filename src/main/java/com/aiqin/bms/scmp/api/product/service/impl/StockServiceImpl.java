@@ -209,7 +209,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public StockRespVO selectOneStockInfoByStockId(Long stockId) {
+    public List<StockRespVO> selectOneStockInfoByStockId(Long stockId) {
         try {
             LOGGER.info("根据stockId查询单个stock信息");
             return stockDao.selectOneStockInfoByStockId(stockId);
@@ -1280,7 +1280,7 @@ public class StockServiceImpl implements StockService {
      * @return
      */
     @Override
-    public StockBatchRespVO selectOneStockBatchInfoByStockBatchId(Long stockBatchId) {
+    public List<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId) {
         try {
             LOGGER.info("根据stockBatchId查询单个stockBatch信息");
             return stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId);
