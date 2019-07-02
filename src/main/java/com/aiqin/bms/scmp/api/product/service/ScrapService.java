@@ -2,46 +2,45 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
-import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
+import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo;
 
 /**
- * @Classname: MovementService
+ * @Classname: ScrapService
  * 描述:
  * @Author: Kt.w
  * @Date: 2019/4/1
  * @Version 1.0
  * @Since 1.0
  */
-public interface MovementService {
+public interface ScrapService {
     /**
-     * 移库列表搜索
+     * 报废列表搜索
      * @param vo 列表搜索实体
      * @return  列表返回实体
      */
-    BasePage<QueryMovementResVo> getList(QueryMovementReqVo vo);
+    BasePage<QueryScrapResVo> getList(QueryScrapReqVo vo);
 
 
     /**
-     * 新增移库单转化实体
+     * 新增报废单转化实体
      * @param vo
      * @return
      */
     int save(MovementReqVo vo);
 
     /**
-     * 查询移库单详情
+     * 查询报废单详情
      * @param id
      * @return
      */
-    MovementResVo view(Long id);
+    ScrapResVo view(Long id);
 
     /**
-     * 撤销移库单
+     * 撤销报废单
      * @param id
      * @return
      */
      int  revocation(Long id);
-
 }

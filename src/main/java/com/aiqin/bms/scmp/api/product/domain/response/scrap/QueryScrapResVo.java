@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.product.domain.response.movement;
+package com.aiqin.bms.scmp.api.product.domain.response.scrap;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * @Classname: QueryMovementResVo
+ * @Classname: QueryScrapResVo
  * 描述:
  * @Author: Kt.w
  * @Date: 2019/4/1
@@ -16,13 +16,13 @@ import java.util.Date;
  * @Since 1.0
  */
 @Data
-@ApiModel("调拨单列表展示返回实体")
-public class QueryMovementResVo {
+@ApiModel("报废单列表展示返回实体")
+public class QueryScrapResVo {
     @ApiModelProperty("主键")
     private Long id;
 
-    @ApiModelProperty("移库编码")
-    private String movementCode;
+    @ApiModelProperty("报废编码")
+    private String scrapCode;
 
     @ApiModelProperty("所属仓库编码")
     private String logisticsCenterCode;
@@ -30,17 +30,11 @@ public class QueryMovementResVo {
     @ApiModelProperty("所属仓库名称")
     private String logisticsCenterName;
 
-    @ApiModelProperty("调出库房编码")
-    private String callOutWarehouseCode;
+    @ApiModelProperty("所属库房编码")
+    private String warehouseCode;
 
-    @ApiModelProperty("调出库房名称")
-    private String callOutWarehouseName;
-
-    @ApiModelProperty("调入库房编码")
-    private String callInWarehouseCode;
-
-    @ApiModelProperty("调入库房名称")
-    private String callInWarehouseName;
+    @ApiModelProperty("所属库房名称")
+    private String warehouseName;
 
     @ApiModelProperty("采购组编码")
     private String purchaseGroupCode;
@@ -60,14 +54,11 @@ public class QueryMovementResVo {
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
 
-    @ApiModelProperty("入库单号")
-    private String inboundOderCode;
+    @ApiModelProperty("报废状态编码")
+    private Byte scrapStatusCode;
 
-    @ApiModelProperty("移库状态编码")
-    private Byte movementStatusCode;
-
-    @ApiModelProperty("移库状态名称")
-    private String movementStatusName;
+    @ApiModelProperty("报废状态名称")
+    private String scrapStatusName;
 
     @ApiModelProperty("删除标记，0未删除 1已删除")
     private Byte delFlag;

@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.domain.response.allocation;
 
-import com.aiqin.bms.scmp.api.base.PageReq;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,7 +16,7 @@ import java.util.Date;
  */
 @Data
 @ApiModel("调拨列表展示返回实体")
-public class QueryAllocationResVo extends PageReq {
+public class QueryAllocationResVo {
 
     @ApiModelProperty("主键")
     private Long id;
@@ -51,6 +50,12 @@ public class QueryAllocationResVo extends PageReq {
 
     @ApiModelProperty("数量")
     private Long quantity;
+
+    @ApiModelProperty("采购组编码")
+    private String purchaseGroupCode;
+
+    @ApiModelProperty("采购组名称")
+    private String purchaseGroupName;
 
     @ApiModelProperty("含税调拨金额(含税库存成本),展示时需要除以100")
     private Long taxRefundAmount;
@@ -87,4 +92,10 @@ public class QueryAllocationResVo extends PageReq {
 
     @ApiModelProperty("公司名称")
     private String companyName;
+
+    @ApiModelProperty("负责人")
+    private String principal;
+
+    @ApiModelProperty("审批流水编号")
+    private String formNo;
 }

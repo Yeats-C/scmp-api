@@ -3,7 +3,11 @@ package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo;
 
 import java.util.List;
 
@@ -64,4 +68,27 @@ public interface AllocationMapper {
      * @return
      */
     Allocation selectByCode(String allocationCode);
+
+
+    /**
+     *
+     * 功能描述: 移库列表查询
+     *
+     * @param vo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/2 21:50
+     */
+    List<QueryMovementResVo> getMoveList(QueryMovementReqVo vo);
+
+    /**
+     *
+     * 功能描述: 报废列表查询
+     *
+     * @param vo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/2 22:27
+     */
+    List<QueryScrapResVo> getScrapList(QueryScrapReqVo vo);
 }
