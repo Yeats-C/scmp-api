@@ -309,7 +309,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //更新编码
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         //调用审批的接口
-//        workFlow(formNo, code, currentAuthToken.getPersonName());
+        workFlow(formNo, code, currentAuthToken.getPersonName(),reqVO.getDirectSupervisorCode());
         return true;
     }
     @Override

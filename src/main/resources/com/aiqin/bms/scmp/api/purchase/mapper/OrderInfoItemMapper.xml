@@ -28,6 +28,8 @@
     <result column="product_line_num" jdbcType="BIGINT" property="productLineNum" />
     <result column="promotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
     <result column="return_num" jdbcType="BIGINT" property="returnNum" />
+    <result column="channel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
+    <result column="total_channel_price" jdbcType="BIGINT" property="totalChannelPrice" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
   </resultMap>
@@ -35,7 +37,7 @@
     id, order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name, color_code, 
     model, model_code, unit_code, unit_name, zero_disassembly_coefficient, give_promotion, 
     batch_number, price, num, amount, activity_apportionment, preferential_allocation, 
-    actual_deliver_num, activity_code, product_line_num, promotion_line_num, return_num, 
+    actual_deliver_num, activity_code, product_line_num, promotion_line_num, return_num, channel_unit_price,total_channel_price,
     company_name, company_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -160,7 +162,7 @@
       batch_number, price, num, 
       amount, activity_apportionment, preferential_allocation, 
       actual_deliver_num, activity_code, product_line_num, 
-      promotion_line_num, return_num, company_name, 
+      promotion_line_num, return_num, channel_unit_price,total_channel_price,company_name,
       company_code)
     values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{pictureUrl,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, 
@@ -170,7 +172,7 @@
       #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=BIGINT}, #{num,jdbcType=BIGINT}, 
       #{amount,jdbcType=BIGINT}, #{activityApportionment,jdbcType=BIGINT}, #{preferentialAllocation,jdbcType=BIGINT}, 
       #{actualDeliverNum,jdbcType=BIGINT}, #{activityCode,jdbcType=VARCHAR}, #{productLineNum,jdbcType=BIGINT}, 
-      #{promotionLineNum,jdbcType=BIGINT}, #{returnNum,jdbcType=BIGINT}, #{companyName,jdbcType=VARCHAR}, 
+      #{promotionLineNum,jdbcType=BIGINT}, #{returnNum,jdbcType=BIGINT},#{channelUnitPrice,jdbcType=BIGINT},#{totalChannelPrice,jdbcType=BIGINT}, #{companyName,jdbcType=VARCHAR},
       #{companyCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
@@ -253,6 +255,12 @@
       </if>
       <if test="returnNum != null">
         return_num,
+      </if>
+      <if test="channelUnitPrice != null">
+        channel_unit_price,
+      </if>
+      <if test="totalChannelPrice != null">
+        total_channel_price,
       </if>
       <if test="companyName != null">
         company_name,
@@ -340,6 +348,12 @@
       <if test="returnNum != null">
         #{returnNum,jdbcType=BIGINT},
       </if>
+      <if test="channelUnitPrice != null">
+        #{channelUnitPrice,jdbcType=BIGINT},
+      </if>
+      <if test="totalChannelPrice != null">
+        #{totalChannelPrice,jdbcType=BIGINT},
+      </if>
       <if test="companyName != null">
         #{companyName,jdbcType=VARCHAR},
       </if>
@@ -357,7 +371,7 @@
       batch_number, price, num,
       amount, activity_apportionment, preferential_allocation,
       actual_deliver_num, activity_code, product_line_num,
-      promotion_line_num, return_num, company_name,
+      promotion_line_num, return_num,channel_unit_price,total_channel_price, company_name,
       company_code)
     values
     <foreach collection="list" item="item" separator="," close="" open="">
@@ -369,7 +383,7 @@
       #{item.batchNumber,jdbcType=VARCHAR}, #{item.price,jdbcType=BIGINT}, #{item.num,jdbcType=BIGINT},
       #{item.amount,jdbcType=BIGINT}, #{item.activityApportionment,jdbcType=BIGINT}, #{item.preferentialAllocation,jdbcType=BIGINT},
       #{item.actualDeliverNum,jdbcType=BIGINT}, #{item.activityCode,jdbcType=VARCHAR}, #{item.productLineNum,jdbcType=BIGINT},
-      #{item.promotionLineNum,jdbcType=BIGINT}, #{item.returnNum,jdbcType=BIGINT}, #{item.companyName,jdbcType=VARCHAR},
+      #{item.promotionLineNum,jdbcType=BIGINT}, #{item.returnNum,jdbcType=BIGINT},#{channelUnitPrice,jdbcType=BIGINT},#{totalChannelPrice,jdbcType=BIGINT},  #{item.companyName,jdbcType=VARCHAR},
       #{item.companyCode,jdbcType=VARCHAR})
     </foreach>
   </insert>
@@ -451,6 +465,12 @@
       <if test="returnNum != null">
         return_num = #{returnNum,jdbcType=BIGINT},
       </if>
+      <if test="channelUnitPrice != null">
+        channel_unit_price =  #{channelUnitPrice,jdbcType=BIGINT},
+      </if>
+      <if test="totalChannelPrice != null">
+        total_channel_price = #{totalChannelPrice,jdbcType=BIGINT},
+      </if>
       <if test="companyName != null">
         company_name = #{companyName,jdbcType=VARCHAR},
       </if>
@@ -487,6 +507,8 @@
       product_line_num = #{productLineNum,jdbcType=BIGINT},
       promotion_line_num = #{promotionLineNum,jdbcType=BIGINT},
       return_num = #{returnNum,jdbcType=BIGINT},
+      channel_unit_price =  #{channelUnitPrice,jdbcType=BIGINT},
+      total_channel_price = #{totalChannelPrice,jdbcType=BIGINT},
       company_name = #{companyName,jdbcType=VARCHAR},
       company_code = #{companyCode,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
