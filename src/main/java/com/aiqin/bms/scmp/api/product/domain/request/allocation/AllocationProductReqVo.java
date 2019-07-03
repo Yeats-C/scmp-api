@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
  * @since 1.0
  */
 @Data
-@ApiModel("调拨sku接受实体")
+@ApiModel("sku接受实体")
 public class AllocationProductReqVo {
 
     @ApiModelProperty("sku编号")

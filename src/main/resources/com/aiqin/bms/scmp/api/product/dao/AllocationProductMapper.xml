@@ -31,8 +31,30 @@
     unit, classes, `type`, tax, tax_price, quantity, tax_amount,
     del_flag, create_time, create_by, update_time, update_by, picture_url, line_num
   </sql>
-
-  <select id="selectByAllocationCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <resultMap id="ListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo">
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="specification" jdbcType="VARCHAR" property="specification" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="classes" jdbcType="VARCHAR" property="classes" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="tax" jdbcType="BIGINT" property="tax" />
+    <result column="tax_price" jdbcType="BIGINT" property="taxPrice" />
+    <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="tax_amount" jdbcType="BIGINT" property="taxAmount" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl" />
+    <result column="line_num" jdbcType="BIGINT" property="lineNum" />
+  </resultMap>
+  <select id="selectByAllocationCode" parameterType="java.lang.String" resultMap="ListResultMap">
     select 
     <include refid="Base_Column_List" />
     from allocation_product

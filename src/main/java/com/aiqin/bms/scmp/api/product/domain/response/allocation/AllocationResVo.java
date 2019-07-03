@@ -63,26 +63,26 @@ public class AllocationResVo {
     @ApiModelProperty("调入库房名称")
     private String callInWarehouseName;
 
-    @ApiModelProperty("调拨类型编码")
-    private Byte allocationTypeCode;
-
-    @ApiModelProperty("调拨类型名称")
-    private String allocationTypeName;
-
     @ApiModelProperty("负责人")
     private String principal;
 
     @ApiModelProperty("数量")
     private Long quantity;
 
-    @ApiModelProperty("含税调拨金额")
-    private Long taxRefundAmount;
+    @ApiModelProperty("含税总成本")
+    private Long totalCostRate;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
 
+    @ApiModelProperty("出库单状态")
+    private String outboundOderStatus;
+
     @ApiModelProperty("入库单号")
     private String inboundOderCode;
+
+    @ApiModelProperty("入库单状态")
+    private String inboundOderStatus;
 
     @ApiModelProperty("状态编码")
     private Byte allocationStatusCode;
@@ -104,13 +104,6 @@ public class AllocationResVo {
     @ApiModelProperty("修改人")
     private String updateBy;
 
-    @ApiModelProperty("sku")
-    private List<AllocationProductResVo> skuList;
-
-
-    @ApiModelProperty("操作日志列表")
-    private List<LogData> logDataList;
-
     @ApiModelProperty("审批流程id")
     private String formNo;
 
@@ -119,4 +112,17 @@ public class AllocationResVo {
 
     @ApiModelProperty("公司名称")
     private String companyName;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+    @ApiModelProperty("sku")
+    private List<AllocationProductResVo> skuList;
+
+    @ApiModelProperty("batchSku")
+    private List<AllocationProductBatchResVo> batchSkuList;
+
+    @ApiModelProperty("操作日志列表")
+    private List<LogData> logDataList;
 }
+

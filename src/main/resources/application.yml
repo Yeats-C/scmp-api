@@ -53,7 +53,7 @@ WorkFlowBaseUrl:
         #合同申请详情
         applyContract: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
         #供应商申请详情
-        applySupplier: http://scmp.bms.aiqin.com/#//detailSupplierApprovalProcess
+        applySupplier: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
         #供应商集团申请详情
         applySupplierGroup: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
         #供应商账户申请详情
