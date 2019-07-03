@@ -74,12 +74,8 @@ public enum WorkFlow {
     /**
      * 商品销售区域申请工作流
      */
-    APPLY_SALE_AREA(14,"商品销售区域申请工作流","APPLY_SALE_AREA"),
+    APPLY_SALE_AREA(14,"商品销售区域申请工作流","APPLY_SALE_AREA");
 
-    /**
-     * 退供单审批流
-     */
-    REJECT_RECORD(15,"退供单审批流","REJECT_RECORD");
     /**
      * 编号
      */

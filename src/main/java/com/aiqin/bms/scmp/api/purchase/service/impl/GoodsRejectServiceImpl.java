@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
+import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -94,6 +95,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     private FileRecordDao fileRecordDao;
     @Resource
     private StockDao stockDao;
+    @Resource
+    private GoodsRejectApprovalServiceImpl goodsRejectApprovalService;
 
 
     @Override
@@ -387,6 +390,9 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             }
             //增加操作记录 操作状态  : 0 新增 1 修改 2 下载
             operationLogDao.insert(new OperationLog(rejectId, 0, "新增退供单", "", request.getCreateById(), request.getCreateByName()));
+            String code = encodingRule.getNumberingValue().toString();
+            //提交退供审批
+            goodsRejectApprovalService.workFlow(rejectCode,code,request.getCreateById(),request.getDictionaryId());
         } catch (BeansException e) {
             LOGGER.error("新增退供单异常:{}", e.getMessage());
             throw new RuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));

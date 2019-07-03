@@ -4,7 +4,9 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectApprovalService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
@@ -17,6 +19,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang.StringUtils;
@@ -27,10 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * <p>
@@ -59,7 +59,7 @@ import java.util.UUID;
  * 思维方式*热情*能力
  */
 @Service
-@WorkFlowAnnotation(WorkFlow.REJECT_RECORD)
+@WorkFlowAnnotation(WorkFlow.APPLY_REFUND)
 public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalService ,WorkFlowHelper  {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
@@ -78,32 +78,40 @@ public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalServic
      */
     @Override
     public String workFlowCallback(WorkFlowCallbackVO vo) {
-
-        return null;
+        //审批驳回
+        if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
+            return WorkFlowReturn.SUCCESS;
+        }else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
+            //撤销
+            return WorkFlowReturn.SUCCESS;
+        }else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+            //审批通过
+            return WorkFlowReturn.SUCCESS;
+        }
+        return WorkFlowReturn.FALSE;
     }
     @Transactional(rollbackFor = Exception.class)
     public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
-        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.REJECT_RECORD.getNum());
+        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_REFUND.getNum());
         workFlowVO.setFormNo(formNo);
         workFlowVO.setTitle(userName + "创建退供申请单审批");
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId",directSupervisorCode);
         workFlowVO.setVariables(jsonObject.toString());
-        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.REJECT_RECORD);
+        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_REFUND);
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {
-            //TODO 这里暂时没有任何操作
         } else {
-            throw new BizException(ResultCode.SKU_CONFIG_SUBMIT_ERROR);
+            throw new BizException(ResultCode.REJECT_RECORD_ERROR);
         }
     }
 
     public WorkFlowRespVO callWorkFlowApi(WorkFlowVO vo, WorkFlow workFlow) {
         vo.setKey(workFlow.getKey());
-        LOGGER.info("SupplierBaseServiceImpl-callWorkFlowApi-工作流vo是：[{}],枚举是：[{}]", JSON.toJSONString(vo),JSON.toJSONString(workFlow));
+        LOGGER.info("GoodsRejectApprovalServiceImpl-callWorkFlowApi-工作流vo是：[{}],枚举是：[{}]", JSON.toJSONString(vo),JSON.toJSONString(workFlow));
         if(StringUtils.isEmpty(vo.getTitle())){
             vo.setTitle(workFlow.getTitle());
         }
