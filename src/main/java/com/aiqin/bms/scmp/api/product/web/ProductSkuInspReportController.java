@@ -46,7 +46,7 @@ public class ProductSkuInspReportController {
 
     @PostMapping("/get")
     @ApiOperation(value = "通过SKU查询质检报告")
-    public HttpResponse<List<ProductSkuInspReportRespVo>> getList(QueryProductSkuInspReportReqVo reportReqVo){
+    public HttpResponse<List<ProductSkuInspReportRespVo>> getList(@RequestBody QueryProductSkuInspReportReqVo reportReqVo){
         try {
             return HttpResponse.success(productSkuInspReportService.getList(reportReqVo));
         } catch (Exception e) {
