@@ -858,19 +858,40 @@
       product_sku
       WHERE del_flag=0
       <if test="skuCode!=null and skuCode!=''">
-        AND sku_code LIKE CONCAT('%',#{skuCode,jdbcType=VARCHAR},'%')
+        AND sku_code =#{skuCode,jdbcType=VARCHAR}
       </if>
       <if test="skuName!=null and skuName!=''">
         AND sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
       </if>
+      <if test="productCode!=null and productCode!=''">
+        AND product_code = #{productCode,jdbcType=VARCHAR}
+      </if>
       <if test="productName!=null and productName!=''">
-        AND product_name=#{productName,jdbcType=VARCHAR}
+        AND product_name like CONCAT('%',#{productName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="productPropertyCode!=null and productPropertyCode!=''">
+        AND product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
       </if>
       <if test="productPropertyName!=null and productPropertyName!=''">
-        AND product_property_name =#{productPropertyName,jdbcType=VARCHAR}
+        AND product_property_name like CONCAT('%',#{productPropertyName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="productCategoryCode!=null and productCategoryCode!=''">
+        AND product_category_code = #{productCategoryCode,jdbcType=VARCHAR}
       </if>
       <if test="productCategoryName!=null and productCategoryName!=''">
-        AND product_category_name =#{productCategoryName,jdbcType=VARCHAR}
+        AND product_category_name like CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="productBrandCode!=null and productBrandCode!=''">
+        AND product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productBrandName!=null and productBrandName!=''">
+        AND product_brand_name like CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+      </if>
+      <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+        AND procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupName!=null and purchaseGroupName!=''">
+        AND procurement_section_name like CONCAT('%',#{purchaseGroupName,jdbcType=VARCHAR},'%')
       </if>
       <if test="companyCode != null and companyCode != '' ">
         and company_code = #{companyCode,jdbcType=VARCHAR}
