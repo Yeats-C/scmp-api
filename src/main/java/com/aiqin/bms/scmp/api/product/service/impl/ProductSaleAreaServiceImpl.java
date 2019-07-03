@@ -493,9 +493,15 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             newMain.setBeEffective(1);
             newMain.setCode(oldMain.getCode());
             main.add(newMain);
-            skuList.addAll(BeanCopyUtils.copyList(areaDTO.getSkuList(),ProductSkuSaleArea.class));
-            channelList.addAll(BeanCopyUtils.copyList(areaDTO.getChannelList(),ProductSkuSaleAreaChannel.class));
-            areaList.addAll(BeanCopyUtils.copyList(areaDTO.getAreaList(),ProductSkuSaleAreaInfo.class));
+            List<ProductSkuSaleArea> saleAreas = BeanCopyUtils.copyList(areaDTO.getSkuList(), ProductSkuSaleArea.class);
+            saleAreas.forEach(o->o.setCode(oldMain.getCode()));
+            skuList.addAll(saleAreas);
+            List<ProductSkuSaleAreaChannel> areaChannels = BeanCopyUtils.copyList(areaDTO.getChannelList(), ProductSkuSaleAreaChannel.class);
+            areaChannels.forEach(o->o.setCode(oldMain.getCode()));
+            channelList.addAll(areaChannels);
+            List<ProductSkuSaleAreaInfo> areaInfos = BeanCopyUtils.copyList(areaDTO.getAreaList(), ProductSkuSaleAreaInfo.class);
+            areaInfos.forEach(o->o.setMainCode(oldMain.getCode()));
+            areaList.addAll(areaInfos);
             oldAreaList.addAll(oldMain.getAreaList());
             oldSkuList.addAll(oldMain.getSkuList());
             oldChannelList.addAll(oldMain.getChannelList());

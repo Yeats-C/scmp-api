@@ -30,6 +30,12 @@
     update_by, update_time, company_code, company_name, ext_field_1, ext_field_2, ext_field_3, 
     ext_field_4, ext_field_5, ext_field_6
   </sql>
+  <sql id="Base_Column_List1">
+    a.id, a.code, a.sku_code, a.sku_name, a.be_disable, a.categories_supply_channels_code, a.categories_supply_channels_name,
+    a.direct_delivery_supplier_code, a.direct_delivery_supplier_name, a.create_by, a.create_time,
+    a.update_by, a.update_time, a.company_code, a.company_name, a.ext_field_1, a.ext_field_2, a.ext_field_3,
+    a.ext_field_4, a.ext_field_5, a.ext_field_6
+  </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -38,9 +44,11 @@
   </select>
   <select id="selectBySkuCodes" parameterType="java.util.List" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from apply_product_sku_sale_area
-    where sku_code in
+    <include refid="Base_Column_List1" />
+    from apply_product_sku_sale_area a
+    left join apply_product_sku_sale_area_main b
+    on a.code = b.code
+    where b.apply_status = 1 and sku_code in
     <foreach collection="items" item="item" open="(" close=")" separator=",">
        #{item}
     </foreach>
