@@ -59,6 +59,9 @@ public class ScrapResVo {
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
 
+    @ApiModelProperty("出库单状态")
+    private String outboundOderStatus;
+
     @ApiModelProperty("状态编码")
     private Byte scrapStatusCode;
 
@@ -87,6 +90,9 @@ public class ScrapResVo {
 
     @ApiModelProperty("公司名称")
     private String companyName;
+
+    @ApiModelProperty("备注")
+    private String remark;
 
     @ApiModelProperty("sku")
     private List<AllocationProductResVo> skuList;

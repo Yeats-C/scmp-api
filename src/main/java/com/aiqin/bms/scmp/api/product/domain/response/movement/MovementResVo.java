@@ -63,8 +63,14 @@ public class MovementResVo {
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
 
+    @ApiModelProperty("出库单状态")
+    private String outboundOderStatus;
+
     @ApiModelProperty("入库单号")
     private String inboundOderCode;
+
+    @ApiModelProperty("入库单状态")
+    private String inboundOderStatus;
 
     @ApiModelProperty("移库状态编码")
     private Byte movementStatusCode;
@@ -95,6 +101,9 @@ public class MovementResVo {
 
     @ApiModelProperty("公司名称")
     private String companyName;
+
+    @ApiModelProperty("备注")
+    private String remark;
 
     @ApiModelProperty("sku")
     private List<AllocationProductResVo> skuList;
