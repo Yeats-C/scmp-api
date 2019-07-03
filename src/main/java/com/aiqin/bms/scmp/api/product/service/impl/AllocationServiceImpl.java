@@ -3,21 +3,18 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
-import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
-import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductToOutboundVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationToOutboundVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
@@ -28,6 +25,7 @@ import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -36,22 +34,22 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -558,6 +556,87 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             return "success";
         } else {
             return "false";
+        }
+    }
+
+    /**
+     * 添加是导入sku
+     *
+     * @param reqVo
+     * @return
+     */
+    @Override
+    public List<AllocationItemRespVo> importAllocationSku(AllocationImportSkuReqVo reqVo) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        reqVo.setCompanyCode(currentAuthToken.getCompanyCode());
+        try {
+            List<AllocationItemRespVo> list = Lists.newArrayList();
+            List<Object[]> excel = ExcelUtil.getExcelAll(reqVo.getFile());
+            if(excel.size()<=1){
+                return list;
+            }
+            List<String> codes = excel.stream().map(p -> {
+                return String.valueOf(p[0]);
+            }).collect(Collectors.toList());
+            if(CollectionUtils.isEmptyCollection(codes)){
+                return Lists.newArrayList();
+            }
+            //移除表头数据
+            codes.remove(0);
+            //调用接口获取sku的详细数据
+            QueryStockSkuReqVo copy = BeanCopyUtils.copy(reqVo, QueryStockSkuReqVo.class);
+            copy.setSkuList(codes);
+            List<QueryStockSkuRespVo> queryStockSkuRespVos = stockService.selectStockSkus(copy);
+            List<AllocationItemRespVo> data =JSON.parseArray(JsonUtil.toJson(queryStockSkuRespVos),AllocationItemRespVo.class);
+            //key为sku编码
+            Map<String, AllocationItemRespVo> map = data.stream().collect(Collectors.toMap(AllocationItemRespVo::getSkuCode, Function.identity()));
+            //错误信息
+            for(int i=1;i<excel.size();i++){
+                Object[] objects = excel.get(i);
+                String skuCode =String.valueOf(objects[0]);
+                String skuName = ExcelUtil.convertNumToString(objects[1]);
+                Long num=0L;
+                try {
+                    String s = ExcelUtil.convertNumToString(objects[2]);
+                    if(StringUtils.isNotBlank(s)){
+                        num = Long.valueOf(s);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    list.add(new AllocationItemRespVo(skuCode,skuName, "数量数据格式错误"));
+                    continue;
+                }
+                //验证是否重复导入
+                if(null!=skuCode){
+                    List<String> skus =list.stream().map(AllocationItemRespVo::getSkuCode).collect(Collectors.toList());
+                    if(skus.contains(skuCode)==true){
+                        {
+                            list.add(new AllocationItemRespVo(skuCode, skuName,"导入重复"));
+                            continue;
+                        }
+                    }
+                }
+                //验证该编码是否存在
+                if(Objects.isNull(map.get(skuCode))){
+                    list.add(new AllocationItemRespVo(skuCode, skuName,"当前sku编码不存在或者已被禁用"));
+                    continue;
+                }
+                AllocationItemRespVo allocationItemRespVo = map.get(skuCode);
+                if(num !=null&&num>allocationItemRespVo.getStockNum()){
+                    list.add(new AllocationItemRespVo(skuCode, skuName,"数量超出库存范围"));
+                    continue;
+                }
+                if(num !=null&&num<=allocationItemRespVo.getStockNum()){
+                    allocationItemRespVo.setNumber(num);
+                    allocationItemRespVo.setTotalPrice(allocationItemRespVo.getPrice()*num);
+                }
+                list.add(allocationItemRespVo);
+            }
+
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new GroundRuntimeException("导入异常");
         }
     }
 }

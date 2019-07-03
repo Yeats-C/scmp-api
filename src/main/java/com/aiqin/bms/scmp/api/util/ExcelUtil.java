@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -9,12 +10,12 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by hechao on 2018/1/8.
@@ -231,4 +232,42 @@ public class ExcelUtil {
 		}
 		return list;
 	}
+
+	public static <T> List<T> validValue( List<Object[]> data, String title, Class<T> clz) throws Exception{
+		if(Objects.isNull(data)){
+			return null;
+		}
+		//验证表头是否正确
+		if(validHeader(data.get(0),title)){
+		    //移除第一个元素
+            data.remove(0);
+            Class<?>[] cz = null;
+            Constructor<?>[] cons = clz.getConstructors();
+            for(Constructor<?> ct : cons) {
+                Class<?>[] clazz = ct.getParameterTypes();
+                if(data.get(0).length == clazz.length) {
+                    cz = clazz;
+                    break;
+                }
+            }
+            List<T> list = new ArrayList<T>();
+            for(Object[] obj : data) {
+                Constructor<T> cr = clz.getConstructor(cz);
+                list.add(cr.newInstance(obj));
+            }
+            return list;
+        } else {
+            return null;
+        }
+
+	}
+
+	private static Boolean validHeader(Object[] data, String title){
+        String headerStr = StringUtils.join(data, ",");
+        if(Objects.equals(headerStr,title)){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
