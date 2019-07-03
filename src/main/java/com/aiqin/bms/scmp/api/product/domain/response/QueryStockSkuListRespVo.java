@@ -17,6 +17,10 @@ import java.io.Serializable;
 @Data
 public class QueryStockSkuListRespVo implements Serializable {
 
+    @ApiModelProperty("唯一id")
+    @JsonProperty("id")
+    private Long id;
+
     @ApiModelProperty("sku编码")
     @JsonProperty("sku_code")
     private String skuCode;

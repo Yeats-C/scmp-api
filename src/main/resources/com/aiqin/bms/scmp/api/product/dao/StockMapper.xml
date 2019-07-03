@@ -226,6 +226,7 @@
         <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
     </resultMap>
     <resultMap id="QueryStockSkuListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo">
+        <result column="id" jdbcType="BIGINT" property="id"/>
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
         <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
@@ -267,6 +268,23 @@
         <id column="operation_type" jdbcType="BIGINT" property="operationType"/>
 
     </resultMap>
+    <resultMap id="StockBatchProductSkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO">
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
+        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
+        <result column="spec" jdbcType="VARCHAR" property="spec"/>
+        <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
+        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
+        <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
+        <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
+        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
+        <result column="base_product_content" jdbcType="VARCHAR" property="baseProductContent"/>
+        <result column="pack" jdbcType="VARCHAR" property="pack"/>
+        <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
+    </resultMap>
+
+
     <sql id="Stock_flow_Column">
         id,stock_code,flow_code,order_code,order_type,order_source,sku_code,sku_name,before_inventory_num,after_inventory_num,
         before_available_num,after_available_num,before_lock_num,after_lock_num,before_purchase_way_num,after_purchase_way_num,
@@ -1709,7 +1727,7 @@
             resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo"
             resultMap="QueryStockSkuListResultMap">
         select
-        s.sku_code,s.sku_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
+        s.id,s.sku_code,s.sku_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
         ps.goods_gifts,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,s.available_num
         from stock s
         left join product_sku ps on s.sku_code = ps.sku_code
@@ -1764,4 +1782,15 @@
         </foreach>
     </update>
 
+    <select id="selectProductSku"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO"
+            resultMap="StockBatchProductSkuResultMap">
+        select
+        ps.product_category_code,ps.product_category_name,pssi.spec,ps.color_code,ps.color_name,
+        ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,psc.config_status
+        from product_sku ps
+        left join product_sku_config as psc on ps.sku_code = psc.sku_code
+        left join product_sku_stock_info as pssi on ps.sku_code = pssi.product_sku_code
+        order by ps.sku_code asc
+    </select>
 </mapper>
