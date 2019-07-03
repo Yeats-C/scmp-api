@@ -751,7 +751,7 @@
         set
             be_effective = 1
         where code in
-        <foreach collection="items" separator="," close="(" open=")" item="item">
+        <foreach collection="items" separator="," close=")" open="(" item="item">
           #{item}
         </foreach>
     </update>

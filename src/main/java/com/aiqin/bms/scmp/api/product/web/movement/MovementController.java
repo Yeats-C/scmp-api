@@ -50,8 +50,15 @@ public class MovementController {
      */
     @ApiOperation("移库添加")
     @PostMapping("/save")
-    public HttpResponse<Integer> save(@RequestBody MovementReqVo vo) {
-        return HttpResponse.success(movementService.save(vo));
+    public HttpResponse<Long> save(@RequestBody MovementReqVo vo) {
+        try {
+            return HttpResponse.success(movementService.save(vo));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
     /**
@@ -65,7 +72,7 @@ public class MovementController {
             return HttpResponse.success(movementService.view(id));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }

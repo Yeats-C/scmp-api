@@ -235,7 +235,7 @@ from product_sku_sale_area_main_draft a
        left join product_sku_sale_area_channel_draft b
                  on a.code = b.code
        left join product_sku_sale_area_draft c
-                 on a.code = b.code
+                 on a.code = c.code
        left join product_sku_sale_area_info_draft d
                  on a.code = d.main_code
 where a.code in

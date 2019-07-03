@@ -3,11 +3,12 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
-import com.aiqin.bms.scmp.api.common.AllocationTypeEnmu;
+import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
@@ -22,6 +23,10 @@ import com.aiqin.bms.scmp.api.product.service.ProductOperationLogService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +46,8 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class MovementServiceImpl extends BaseServiceImpl implements MovementService {
+@WorkFlowAnnotation(WorkFlow.MOVEMENT_ODER)
+public class MovementServiceImpl extends BaseServiceImpl implements MovementService, WorkFlowHelper {
 
     @Autowired
     private AllocationService allocationService;
@@ -64,7 +70,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
      */
     @Override
     public BasePage<QueryMovementResVo> getList(QueryMovementReqVo vo) {
-        vo.setAllocationType(AllocationTypeEnmu.MOVE.getType());
+        vo.setAllocationType(AllocationTypeEnum.MOVE.getType());
         AuthToken authToken = getUser();
         vo.setCompanyCode(authToken.getCompanyCode());
         PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
@@ -81,8 +87,17 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
      * @return
      */
     @Override
-    public int save(MovementReqVo vo) {
-        return 0;
+    @Transactional(rollbackFor = Exception.class)
+    public Long save(MovementReqVo vo) {
+        AllocationReqVo reqVo = new AllocationReqVo();
+        BeanCopyUtils.copy(vo,reqVo);
+        reqVo.setCallOutLogisticsCenterCode(vo.getLogisticsCenterCode());
+        reqVo.setCallOutLogisticsCenterName(vo.getLogisticsCenterName());
+        reqVo.setCallInLogisticsCenterCode(vo.getLogisticsCenterCode());
+        reqVo.setCallInLogisticsCenterName(vo.getLogisticsCenterName());
+        reqVo.setAllocationType(AllocationTypeEnum.MOVE.getType());
+        reqVo.setAllocationTypeName(AllocationTypeEnum.MOVE.getTypeName());
+        return allocationService.save(reqVo);
     }
 
     /**
@@ -130,5 +145,19 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int revocation(Long id) {
         return allocationService.revocation(id);
+    }
+
+    /**
+     * 审核回调接口
+     *
+     * @param vo
+     * @return
+     * @author zth
+     * @date 2019/1/15
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String workFlowCallback(WorkFlowCallbackVO vo) {
+        return allocationService.nativeWorkFlowCallback(vo);
     }
 }

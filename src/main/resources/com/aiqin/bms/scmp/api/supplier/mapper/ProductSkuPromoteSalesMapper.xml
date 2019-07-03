@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.ProductSkuPromoteSalesMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.ProductSkuPromoteSales">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sku_code, sku_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku_promote_sales
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_promote_sales
+    where 1= 1
+    <if test="skuCode != null and skuCode != '' ">
+      and sku_code =  #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName != null and skuName != '' ">
+      and sku_name like CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+    </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_sku_promote_sales
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteAll">
+    delete from product_sku_promote_sales
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ProductSkuPromoteSales">
+    insert into product_sku_promote_sales (id, sku_code, sku_name
+      )
+    values (#{id,jdbcType=BIGINT}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into product_sku_promote_sales (sku_code, sku_name)
+    values
+    <foreach collection="list" open="" close="" separator="," index="" item="item">
+      (#{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ProductSkuPromoteSales">
+    insert into product_sku_promote_sales
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="skuName != null">
+        sku_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        #{skuName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ProductSkuPromoteSales">
+    update product_sku_promote_sales
+    <set>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ProductSkuPromoteSales">
+    update product_sku_promote_sales
+    set sku_code = #{skuCode,jdbcType=VARCHAR},
+      sku_name = #{skuName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

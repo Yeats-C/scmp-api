@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -16,15 +15,13 @@ import javax.validation.constraints.NotNull;
  * @since 1.0
  */
 @Data
-@ApiModel("sku接受实体")
-public class AllocationProductReqVo {
+@ApiModel("文件上传返回的实体")
+public class UploadProductRespVo {
 
     @ApiModelProperty("sku编号")
-    @NotEmpty(message = "sku 编号不能为空")
     private String skuCode;
 
     @ApiModelProperty("sku名称")
-    @NotEmpty(message = "sku 名称不能为空")
     private String skuName;
 
     @ApiModelProperty("品类")

@@ -86,5 +86,5 @@ public interface ApplyProductSkuSaleAreaMainMapper {
      * @param applyStatus
      * @return com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSaleAreaMain
      */
-    ApplyProductSkuSaleAreaMain selectByOfficialCode(Integer applyStatus,String officialCode);
+    ApplyProductSkuSaleAreaMain selectByOfficialCode(@Param("applyStatus") Integer applyStatus, @Param("officialCode") String officialCode);
 }

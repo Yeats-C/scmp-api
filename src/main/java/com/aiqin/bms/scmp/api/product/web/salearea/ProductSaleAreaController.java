@@ -35,7 +35,7 @@ public class ProductSaleAreaController {
     @PostMapping("/add/draft")
     @ApiOperation("新增销售区域草稿")
     public HttpResponse<Boolean> addSaleAreaDraft(@RequestBody ProductSkuSaleAreaMainReqVO request) {
-        log.info("ProductSaleAreaController--ProductSaleAreaController--入参: [{}]", request);
+        log.info("ProductSaleAreaController--addSaleAreaDraft--入参: [{}]", request);
         try {
            return HttpResponse.success(productSaleAreaService.addSaleAreaDraft(request));
         } catch (BizException e) {
