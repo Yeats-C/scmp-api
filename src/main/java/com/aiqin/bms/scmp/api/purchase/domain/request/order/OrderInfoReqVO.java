@@ -155,6 +155,12 @@ public class OrderInfoReqVO {
     @ApiModelProperty("门店类型编码")
     private String storeTypeCode;
 
+    @ApiModelProperty("订单类别名称")
+    private String orderCategory;
+
+    @ApiModelProperty("订单类别编码")
+    private String orderCategoryCode;
+
     @ApiModelProperty("减免比例")
     private Integer logisticsRemissionRatio;
 
