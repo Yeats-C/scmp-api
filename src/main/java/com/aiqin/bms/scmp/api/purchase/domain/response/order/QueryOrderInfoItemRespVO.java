@@ -48,13 +48,19 @@ public class QueryOrderInfoItemRespVO {
     @ApiModelProperty("批次号")
     private String batchNumber;
 
-    @ApiModelProperty("单价")
+    @ApiModelProperty("分销单价")
     private Long price;
+
+    @ApiModelProperty("渠道单价")
+    private Long channelUnitPrice;
+
+    @ApiModelProperty("渠道总价")
+    private Long totalChannelPrice;
 
     @ApiModelProperty("数量")
     private Long num;
 
-    @ApiModelProperty("总价")
+    @ApiModelProperty("分销总价")
     private Long amount;
 
     @ApiModelProperty("活动分摊")

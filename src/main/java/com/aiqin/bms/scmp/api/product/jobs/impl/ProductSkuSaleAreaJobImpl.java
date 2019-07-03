@@ -1,14 +1,14 @@
 package com.aiqin.bms.scmp.api.product.jobs.impl;
 
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSaleAreaMainMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSaleAreaMainMapper;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMain;
 import com.aiqin.bms.scmp.api.product.jobs.ProductSkuSaleAreaJob;
+import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSaleAreaMainMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSaleAreaMainMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSaleAreaService;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,7 @@ public class ProductSkuSaleAreaJobImpl implements ProductSkuSaleAreaJob {
 
     @Override
     @Scheduled(cron = "0 0 1 1/1 * ?")
+//    @Scheduled(cron = "* * * * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void updateSaleAreaStatus() {
         List<ProductSkuSaleAreaMain> list = productSkuSaleAreaMainMapper.selectListByStatusAndDate();
@@ -58,6 +59,7 @@ public class ProductSkuSaleAreaJobImpl implements ProductSkuSaleAreaJob {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @Scheduled(cron = "0 0 1 1/1 * ?")
+//    @Scheduled(cron = "* * * * * ?")
     public void updateSaleAreaData() throws Exception {
         List<ApplyProductSkuSaleAreaMainDTO> list = applyProductSkuSaleAreaMainMapper.selectListByStatusAndDate();
         if (CollectionUtils.isEmpty(list)) {

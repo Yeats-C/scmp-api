@@ -88,8 +88,11 @@ public class QueryOrderInfoRespVO {
     @ApiModelProperty("运费")
     private Long deliverAmount;
 
-    @ApiModelProperty("商品总金额")
+    @ApiModelProperty("商品分销价总金额")
     private Long productTotalAmount;
+
+    @ApiModelProperty("商品渠道价总金额")
+    private Long productChannelTotalAmount;
 
     @ApiModelProperty("优惠额度")
     private Long discountAmount;
