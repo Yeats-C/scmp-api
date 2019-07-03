@@ -1268,9 +1268,14 @@ public class StockServiceImpl implements StockService {
     public PageResData selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest) {
         try {
             LOGGER.info("批次库存管理列表条件查询");
-            List<StockBatchRespVO> stockList = stockDao.selectStockBatchInfoByPage(stockBatchRequest);
+            List<StockBatchRespVO> stockLists = stockDao.selectStockBatchInfoByPage(stockBatchRequest);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (StockBatchRespVO stockList : stockLists) {
+                String format = sdf.format(sdf.parse(stockList.getProductionDate()));
+                stockList.setProductionDate(format);
+            }
             Integer total = stockDao.countStockBatchInfoByPage(stockBatchRequest);
-            return new PageResData<>(total, stockList);
+            return new PageResData<>(total, stockLists);
         } catch (Exception e) {
             LOGGER.error("批次库存管理列表条件查询失败", e);
             throw new GroundRuntimeException(e.getMessage());
@@ -1530,8 +1535,9 @@ public class StockServiceImpl implements StockService {
      * @return
      */
    @Override
-    public void updateStorehouseById(List<StockRespVO> stockRespVO){
-        stockDao.updateStorehouseById(stockRespVO);
+    public HttpResponse updateStorehouseById(List<StockRespVO> stockRespVO){
+       stockDao.updateStorehouseById(stockRespVO);
+       return HttpResponse.success();
     }
 
 }

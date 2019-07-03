@@ -268,8 +268,9 @@ public class StockController {
      */
     @PostMapping("/update/storehouse")
     @ApiOperation(value = "库房管理列表数据保存")
-    public void updateStorehouseById(@RequestBody List<StockRespVO> stockRespVO){
+    public HttpResponse updateStorehouseById(@RequestBody List<StockRespVO> stockRespVO){
         stockService.updateStorehouseById(stockRespVO);
+        return  HttpResponse.success();
     }
 
 
