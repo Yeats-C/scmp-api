@@ -283,7 +283,7 @@
 
     <sql id="Query_Stock_Sku_List">
         a.sku_code,a.sku_name,c.product_category_code,c.product_category_name,c.product_brand_code,c.product_brand_name,c.spec,
-        c.color_code,c.color_name,c.model_number, c.unit_code,c.unit_name,c.goods_gifts,c.product_sort_code,c.product_sort_name,a.stock_unit_code,a.stock_unit_name,b.Input_tax_rate,a.tax_price,
+        c.color_code,c.color_name,c.model_number, c.unit_code,c.unit_name,c.goods_gifts,c.product_sort_code,c.product_sort_name,a.stock_unit_code,a.stock_unit_name,b.Input_tax_rate,a.tax_cost as tax_price,
         c.product_code,c.product_name,a.available_num, 1 as zero_removal_coefficient
     </sql>
 
@@ -609,7 +609,6 @@
     </sql>
 
     <select id="selectStockSkuInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo"
             resultMap="QueryStockSkuResultMap">
         select
         <include refid="Query_Stock_Sku_List"/>
