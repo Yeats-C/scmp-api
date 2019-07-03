@@ -35,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -224,13 +225,6 @@ public class InboundServiceImpl implements InboundService {
             int insertProducts=inboundProductDao.insertBatch(list);
             log.info("插入入库单商品表返回结果:{}", insertProducts);
 
-            //  转化入库单sku批次实体
-            List<InboundBatch> inboundBatches =BeanCopyUtils.copyList(reqVo.getInboundBatchReqVos(),InboundBatch.class);
-            inboundBatches.stream().forEach(inboundBatch -> inboundBatch.setInboundOderCode(rule.getNumberingValue().toString()) );
-            //插入入库单商品表
-            int insertBatchs=inboundBatchDao.insertInfo(inboundBatches);
-            log.info("转化入库单sku批次实体表返回结果:{}", insertBatchs);
-
             //更新编码表
             encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
 
@@ -305,8 +299,7 @@ public class InboundServiceImpl implements InboundService {
         List<InboundProductWmsReqVO> inboundProductWmsReqVOS =  inboundProductDao.selectMmsReqByInboundOderCode(inbound.getInboundOderCode());
         inboundWmsReqVO.setList(inboundProductWmsReqVOS);
 
-        List<InboundBatchWmsReqVO> inboundBatchWmsReqVOs = inboundBatchDao.selectWmsStockByInboundOderCode(inbound.getInboundOderCode());
-        inboundWmsReqVO.setInboundBatchWmsReqVOs(inboundBatchWmsReqVOs);
+        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVos = new ArrayList<>();
         try{
             String url =urlConfig.WMS_API_URL+"/deppon/save/inbound";
             HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(inboundWmsReqVO));
@@ -336,9 +329,21 @@ public class InboundServiceImpl implements InboundService {
                      list.add(inboundProductCallBackReqVo);
                  }
                  inboundCallBackReqVo.setList(list);
+                 //TODO wms回传批次信息
+                 List<InboundBatch> inboundBatches = new ArrayList<>();
+                 //插入入库单商品表
+                 int insertBatchs=inboundBatchDao.insertInfo(inboundBatches);
+                 log.info("转化入库单sku批次实体表返回结果:{}", insertBatchs);
+                 for(InboundBatch inboundBatch : inboundBatches){
+                     InboundBatchCallBackReqVo inboundBatchCallBackReqVo = new InboundBatchCallBackReqVo();
+                     BeanUtils.copyProperties(inboundBatch, inboundBatchCallBackReqVo);
+                     inboundBatchCallBackReqVos.add(inboundBatchCallBackReqVo);
+                 }
+                 inboundCallBackReqVo.setInboundBatchCallBackReqVos(inboundBatchCallBackReqVos);
+
                  int s = inboundDao.updateByPrimaryKeySelective(inbound);
                  //保存日志
-                 productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.PULL_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),code,HandleTypeCoce.PULL_INBOUND_ODER.getName(),new Date(),inbound.getCreateBy());
+                 productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.PULL_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), code, HandleTypeCoce.PULL_INBOUND_ODER.getName(), new Date(), inbound.getCreateBy());
 
                  //调用回调接口
                  inboundService.workFlowCallBack(inboundCallBackReqVo);
