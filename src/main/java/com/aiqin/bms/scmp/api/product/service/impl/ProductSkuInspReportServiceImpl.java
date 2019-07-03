@@ -7,6 +7,8 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReportDraft;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInspReportDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuInspReportService;
@@ -127,13 +129,35 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     /**
      * 功能描述: 获取正式表数据
      *
-     * @param skuCode
+     * @param reportReqVo
      * @return
      * @auther knight.xie
      * @date 2019/7/2 17:49
      */
     @Override
-    public List<ProductSkuInspReportRespVo> getList(String skuCode) {
-        return productSkuInspReportDao.getList(skuCode);
+    public List<ProductSkuInspReportRespVo> getList(QueryProductSkuInspReportReqVo reportReqVo) {
+        return productSkuInspReportDao.getListBySkuCodeAndProductDate(reportReqVo);
+    }
+
+    /**
+     * 功能描述: 质检报告保存接口
+     *
+     * @param reportReqVo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/3 17:43
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int saveProductSkuInspReport(SaveProductSkuInspReportReqVo reportReqVo) {
+        //删除以前
+        productSkuInspReportDao.deleteList(reportReqVo.getSkuCode());
+        List<ProductSkuInspReport> productSkuInspReports =
+                BeanCopyUtils.copyList(reportReqVo.getItemList(),ProductSkuInspReport.class);
+        productSkuInspReports.forEach(item->{
+            item.setSkuCode(reportReqVo.getSkuCode());
+            item.setSkuName(reportReqVo.getSkuName());
+        });
+        return ((ProductSkuInspReportService)AopContext.currentProxy()).insertList(productSkuInspReports);
     }
 }
