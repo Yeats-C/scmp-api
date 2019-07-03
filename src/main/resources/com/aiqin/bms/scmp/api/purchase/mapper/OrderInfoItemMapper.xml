@@ -383,7 +383,7 @@
       #{item.batchNumber,jdbcType=VARCHAR}, #{item.price,jdbcType=BIGINT}, #{item.num,jdbcType=BIGINT},
       #{item.amount,jdbcType=BIGINT}, #{item.activityApportionment,jdbcType=BIGINT}, #{item.preferentialAllocation,jdbcType=BIGINT},
       #{item.actualDeliverNum,jdbcType=BIGINT}, #{item.activityCode,jdbcType=VARCHAR}, #{item.productLineNum,jdbcType=BIGINT},
-      #{item.promotionLineNum,jdbcType=BIGINT}, #{item.returnNum,jdbcType=BIGINT},#{channelUnitPrice,jdbcType=BIGINT},#{totalChannelPrice,jdbcType=BIGINT},  #{item.companyName,jdbcType=VARCHAR},
+      #{item.promotionLineNum,jdbcType=BIGINT}, #{item.returnNum,jdbcType=BIGINT},#{item.channelUnitPrice,jdbcType=BIGINT},#{item.totalChannelPrice,jdbcType=BIGINT},  #{item.companyName,jdbcType=VARCHAR},
       #{item.companyCode,jdbcType=VARCHAR})
     </foreach>
   </insert>
