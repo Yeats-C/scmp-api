@@ -53,6 +53,16 @@ public interface ReturnGoodsService {
      * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO
      */
     ReturnOrderDetailRespVO returnOrderDetail(String code);
+
+    /**
+     *
+     * @author NullPointException
+     * @date 2019/7/3
+     * @param code
+     * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoApplyInboundRespVO>
+     */
+    List<ReturnOrderInfoApplyInboundRespVO> inboundInfo(String code);
+
     /**
      * 退货验货
      * @author NullPointException
@@ -93,4 +103,20 @@ public interface ReturnGoodsService {
      * @return InspectionViewRespVO
      */
     InspectionViewRespVO inspectionView(String code);
+    /**
+     * 直送订单管理
+     * @author NullPointException
+     * @date 2019/7/3
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnOrderManagementRespVO>
+     */
+    BasePage<QueryReturnOrderManagementRespVO> directReturnOrderManagement(QueryReturnOrderManagementReqVO reqVO);
+    /**
+     * 直送退后详情
+     * @author NullPointException
+     * @date 2019/7/3
+     * @param code
+     * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO
+     */
+    ReturnOrderDetailRespVO directReturnOrderDetail(String code);
 }

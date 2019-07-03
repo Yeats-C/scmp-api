@@ -122,6 +122,12 @@
     <if test="returnOrderCode != null and returnOrderCode != ''">
       and a.return_order_code = #{returnOrderCode}
     </if>
+      <if test="orderTypeCode != null and orderTypeCode.size > 0">
+      and a.order_type_code in
+      <foreach collection="orderTypeCode" open="(" close=")" separator="," item="item">
+       #{item}
+      </foreach>
+    </if>
   </select>
   <resultMap id="selectReturnOrderDetail" type="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO">
     <result column="areturn_order_code" jdbcType="VARCHAR" property="returnOrderCode" />
@@ -165,16 +171,117 @@
     <result column="atransport_number" jdbcType="VARCHAR" property="transportNumber" />
     <result column="areturn_reason_content" jdbcType="VARCHAR" property="returnReasonContent" />
     <result column="aremake" jdbcType="VARCHAR" property="remake" />
-    <!--<collection property="itemList" ofType="">-->
-
-    <!--</collection>-->
-
+    <collection property="itemList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoItemRespVO">
+        <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
+        <result column="bsku_name" jdbcType="VARCHAR" property="skuName" />
+        <result column="bpicture_url" jdbcType="VARCHAR" property="pictureUrl" />
+        <result column="bspec" jdbcType="VARCHAR" property="spec" />
+        <result column="bcolor_name" jdbcType="VARCHAR" property="colorName" />
+        <result column="bmodel" jdbcType="VARCHAR" property="model" />
+        <result column="bbase_product_content" jdbcType="INTEGER" property="baseProductContent" />
+        <result column="bunit_name" jdbcType="VARCHAR" property="unitName" />
+        <result column="bzero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
+        <result column="bgive_promotion" jdbcType="INTEGER" property="givePromotion" />
+        <result column="bbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+        <result column="bprice" jdbcType="BIGINT" property="price" />
+        <result column="bnum" jdbcType="BIGINT" property="num" />
+        <result column="bamount" jdbcType="BIGINT" property="amount" />
+        <result column="bactivity_code" jdbcType="VARCHAR" property="activityCode" />
+        <result column="bproduct_line_num" jdbcType="BIGINT" property="productLineNum" />
+        <result column="bpromotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
+        <result column="bproduct_status" jdbcType="INTEGER" property="productStatus" />
+        <result column="bactual_inbound_num" jdbcType="INTEGER" property="actualInboundNum" />
+    </collection>
   </resultMap>
   <select id="selectReturnOrderDetail" resultMap="selectReturnOrderDetail">
-
-
-
-
+        select
+               a.return_order_code areturn_order_code,
+               a.order_code aorder_code,
+               a.create_date acreate_date,
+               a.order_type aorder_type,
+               a.order_type_code aorder_type_code,
+               a.return_order_type areturn_order_type,
+               a.return_order_type_code areturn_order_type_code,
+               a.payment_status apayment_status,
+               a.be_lock abe_lock,
+               a.lock_reason alock_reason,
+               a.be_exception abe_exception,
+               a.exception_reason aexception_reason,
+               a.be_delete abe_delete,
+               a.transport_center_name atransport_center_name,
+               a.transport_center_code atransport_center_code,
+               a.warehouse_name awarehouse_name,
+               a.warehouse_code awarehouse_code,
+               a.supplier_name asupplier_name,
+               a.supplier_code asupplier_code,
+               a.customer_name acustomer_name,
+               a.customer_code acustomer_code,
+               a.consignee aconsignee,
+               a.consignee_phone aconsignee_phone,
+               a.address aaddress,
+               a.province_code aprovince_code,
+               a.province_name aprovince_name,
+               a.city_code acity_code,
+               a.city_name acity_name,
+               a.district_code adistrict_code,
+               a.district_name adistrict_name,
+               a.detail_address adetail_address,
+               a.zip_code azip_code,
+               a.distribution_mode adistribution_mode,
+               a.distribution_mode_code adistribution_mode_code,
+               a.order_status aorder_status,
+               a.payment_type apayment_type,
+               a.payment_type_code apayment_type_code,
+               a.deliver_amount adeliver_amount,
+               a.product_num aproduct_num,
+               a.product_total_amount aproduct_total_amount,
+               a.return_order_amount areturn_order_amount,
+               a.weight aweight,
+               a.delivery_time adelivery_time,
+               a.receiving_time areceiving_time,
+               a.operator aoperator,
+               a.operator_code aoperator_code,
+               a.operator_time aoperator_time,
+               a.inspection_remark ainspection_remark,
+               a.company_code acompany_code,
+               a.company_name acompany_name,
+               a.transport_company_code atransport_company_code,
+               a.transport_company atransport_company,
+               a.transport_number atransport_number,
+               a.return_reason_code areturn_reason_code,
+               a.return_reason_content areturn_reason_content,
+               a.remake aremake,
+               a.treatment_method atreatment_method,
+               b.return_order_code breturn_order_code,
+               b.sku_code bsku_code,
+               b.sku_name bsku_name,
+               b.picture_url bpicture_url,
+               b.spec bspec,
+               b.spec_code bspec_code,
+               b.color_name bcolor_name,
+               b.color_code bcolor_code,
+               b.model bmodel,
+               b.model_code bmodel_code,
+               b.base_product_content bbase_product_content,
+               b.unit_code bunit_code,
+               b.unit_name bunit_name,
+               b.zero_disassembly_coefficient bzero_disassembly_coefficient,
+               b.give_promotion bgive_promotion,
+               b.batch_number bbatch_number,
+               b.price bprice,
+               b.num bnum,
+               b.amount bamount,
+               b.activity_code bactivity_code,
+               b.product_line_num bproduct_line_num,
+               b.promotion_line_num bpromotion_line_num,
+               b.product_status bproduct_status,
+               b.actual_inbound_num bactual_inbound_num,
+               b.company_name bcompany_name,
+               b.company_code bcompany_code,
+        from return_order_info a
+                 left join return_order_info_item b
+                           on a.return_order_code = b.return_order_code
+        where a.return_order_code = #{code}
   </select>
   <select id="selectreturnInspectionList"
           resultType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO">
@@ -678,6 +785,43 @@
             from return_order_info a
                      left join return_order_info_item b on a.return_order_code = b.return_order_code
             where a.return_order_code = #{code}
+    </select>
+    <resultMap id="selectInbound" type="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoApplyInboundRespVO">
+        <result column="acode" property="code"/>
+        <result column="ainboundTime" property="inboundTime"/>
+        <result column="astatus" property="status"/>
+        <result column="awarehouseName" property="warehouseName"/>
+        <collection property="detailList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoApplyInboundDetailRespVO">
+            <result column="bskuCode" property="skuCode"/>
+            <result column="bskuName" property="skuName"/>
+            <result column="bpictureUrl" property="pictureUrl"/>
+            <result column="bspec" property="spec"/>
+            <result column="bcolorName" property="colorName"/>
+            <result column="bmodel" property="model"/>
+            <result column="bbaseProductContent" property="baseProductContent"/>
+            <result column="bunitName" property="unitName"/>
+            <result column="bzeroDisassemblyCoefficient" property="zeroDisassemblyCoefficient"/>
+            <result column="bbatchNumber" property="batchNumber"/>
+            <result column="bprice" property="price"/>
+            <result column="bnum" property="num"/>
+            <result column="bamount" property="amount"/>
+            <result column="bproductStatus" property="productStatus"/>
+        </collection>
+    </resultMap>
+    <select id="selectInbound" resultMap="selectInbound">
+            select
+                   a.inbound_oder_code acode,
+                   a.inbound_status_name astatus,
+                   a.inbound_time ainboundTime,
+                   a.warehouse_name awarehouseName,
+                   b.sku_code bskuCode,
+                   b.sku_name bskuName,
+                   b.inbound_batch_code bbatchNumber,
+                   b.pre_qty bnum
+              from inbound a
+                     left join inbound_batch b
+                               on a.inbound_oder_code = b.inbound_oder_code
+                where a.source_oder_code = #{code}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from return_order_info

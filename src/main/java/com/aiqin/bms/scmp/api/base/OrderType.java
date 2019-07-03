@@ -18,11 +18,12 @@ import java.util.stream.Collectors;
 public enum OrderType {
 
     //1:配送补货、2:直送补货、3:首单、4:首单赠送
-
-    DISTRIBUTION(1,"配送补货"),
-    DIRECT_DELIVERY(2,"直送补货"),
-    FIRST_ORDER(3,"首单"),
-    FIRST_GIFT(4,"首单赠送");
+    //变更 2019年7月3日20:19:18 1直送，2配送，3辅采直送
+    DIRECT_DELIVERY(1,"直送补货"),
+    DISTRIBUTION(2,"配送补货"),
+    DIRECT_DELIVERY_FUCAI(3,"3辅采直送");
+//    FIRST_ORDER(3,"首单"),
+//    FIRST_GIFT(4,"首单赠送");
     private Integer num;
     private String info;
 

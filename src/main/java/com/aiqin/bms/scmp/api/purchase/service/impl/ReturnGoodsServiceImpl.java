@@ -1,7 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.OrderType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.converter.returnorder.ReturnOrderToInboundConverter;
@@ -49,7 +51,7 @@ import java.util.stream.Collectors;
  * @time: 17:35
  */
 @Service
-public class ReturnGoodsServiceImpl implements ReturnGoodsService {
+public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoodsService {
 
     @Autowired
     private ReturnOrderInfoMapper returnOrderInfoMapper;
@@ -119,20 +121,24 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
     @Override
     public BasePage<QueryReturnOrderManagementRespVO> returnOrderManagement(QueryReturnOrderManagementReqVO reqVO) {
         PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+        reqVO.setCompanyCode(getUser().getCompanyCode());
         List<QueryReturnOrderManagementReqVO> list = returnOrderInfoMapper.selectReturnOrderManagementList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(), list);
     }
 
     @Override
     public ReturnOrderDetailRespVO returnOrderDetail(String code) {
-        //todo 实体已完成，查询还没做，因为入库单的表还没有。这里需要查询入库的信息 sql未写
         ReturnOrderDetailRespVO respVO =  returnOrderInfoMapper.selectReturnOrderDetail(code);
         if(Objects.isNull(respVO)){
             throw new BizException(ResultCode.GET_RETURN_GOODS_DETAIL_FAILED);
         }
+        respVO.setInboundList(inboundInfo(code));
         return respVO;
     }
-
+    @Override
+    public List<ReturnOrderInfoApplyInboundRespVO> inboundInfo(String code) {
+       return returnOrderInfoMapper.selectInbound(code);
+    }
     @Override
     public BasePage<QueryReturnInspectionRespVO> returnInspection(QueryReturnInspectionReqVO reqVO) {
         PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
@@ -226,6 +232,27 @@ public class ReturnGoodsServiceImpl implements ReturnGoodsService {
     @Override
     public InspectionViewRespVO inspectionView(String code) {
         return returnOrderInfoMapper.selectInspectionView(code);
+    }
+
+    @Override
+    public BasePage<QueryReturnOrderManagementRespVO> directReturnOrderManagement(QueryReturnOrderManagementReqVO reqVO) {
+        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+        List<Integer> orderTypes = Lists.newArrayList();
+        orderTypes.add(OrderType.DIRECT_DELIVERY.getNum());
+        orderTypes.add(OrderType.DIRECT_DELIVERY_FUCAI.getNum());
+        reqVO.setOrderTypeCode(orderTypes);
+        reqVO.setCompanyCode(getUser().getCompanyCode());
+        List<QueryReturnOrderManagementReqVO> list = returnOrderInfoMapper.selectReturnOrderManagementList(reqVO);
+        return PageUtil.getPageList(reqVO.getPageNo(), list);
+    }
+
+    @Override
+    public ReturnOrderDetailRespVO directReturnOrderDetail(String code) {
+        ReturnOrderDetailRespVO respVO =  returnOrderInfoMapper.selectReturnOrderDetail(code);
+        if(Objects.isNull(respVO)){
+            throw new BizException(ResultCode.GET_RETURN_GOODS_DETAIL_FAILED);
+        }
+        return respVO;
     }
 
     /**

@@ -66,6 +66,9 @@ public class ReturnOrderInfoItemRespVO {
     @ApiModelProperty("赠品行号")
     private Long promotionLineNum;
 
+    @ApiModelProperty("实际入库数")
+    private Long actualInboundNum;
+
     @ApiModelProperty("商品状态1新品2残品")
     private Integer productStatus;
 }

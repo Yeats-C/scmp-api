@@ -63,8 +63,22 @@ public class ReturnGoodsController {
         }
     }
 
+    @ApiOperation("直供退货单管理")
+    @PostMapping("/directReturnOrderManagement")
+    public HttpResponse<BasePage<QueryReturnOrderManagementRespVO>> directReturnOrderManagement(@RequestBody QueryReturnOrderManagementReqVO reqVO){
+        log.info("ReturnGoodsController---returnOrderManagement---param：[{}]", JSONObject.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(returnGoodsService.directReturnOrderManagement(reqVO));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @ApiOperation("退货详情")
-    @PostMapping("/returnOrderDetail")
+    @GetMapping("/returnOrderDetail")
     public HttpResponse<ReturnOrderDetailRespVO> returnOrderDetail(@RequestParam String code){
         log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
         try {
@@ -76,6 +90,34 @@ public class ReturnGoodsController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @ApiOperation("直送退货详情")
+    @GetMapping("/directReturnOrderDetail")
+    public HttpResponse<ReturnOrderDetailRespVO> directReturnOrderDetail(@RequestParam String code){
+        log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
+        try {
+            return HttpResponse.success(returnGoodsService.directReturnOrderDetail(code));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+//    @ApiOperation("退货收货")
+//    @PostMapping("/returnReceipt")
+//    public HttpResponse<Boolean> returnReceipt(@RequestBody returnReceipt){
+//        log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
+//        try {
+//            return HttpResponse.success(returnGoodsService.directReturnOrderDetail(code));
+//        } catch (BizException e){
+//            return HttpResponse.failure(e.getMessageId());
+//        }catch (Exception e) {
+//            log.error(e.getMessage(),e);
+//            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+//        }
+//    }
 
     @ApiOperation("退货验货")
     @PostMapping("/returnInspection")
