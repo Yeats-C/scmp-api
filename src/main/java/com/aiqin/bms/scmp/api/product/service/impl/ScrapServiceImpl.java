@@ -3,13 +3,14 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
-import com.aiqin.bms.scmp.api.common.AllocationTypeEnmu;
+import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
-import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.scrap.ScrapReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo;
@@ -22,10 +23,15 @@ import com.aiqin.bms.scmp.api.product.service.ScrapService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -39,7 +45,8 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class ScrapServiceImpl extends BaseServiceImpl implements ScrapService {
+@WorkFlowAnnotation(WorkFlow.SCRAP)
+public class ScrapServiceImpl extends BaseServiceImpl implements ScrapService, WorkFlowHelper {
 
     @Autowired
     private AllocationService allocationService;
@@ -62,7 +69,7 @@ public class ScrapServiceImpl extends BaseServiceImpl implements ScrapService {
      */
     @Override
     public BasePage<QueryScrapResVo> getList(QueryScrapReqVo vo) {
-        vo.setAllocationType(AllocationTypeEnmu.SCRAP.getType());
+        vo.setAllocationType(AllocationTypeEnum.SCRAP.getType());
         AuthToken authToken = getUser();
         vo.setCompanyCode(authToken.getCompanyCode());
         PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
@@ -79,8 +86,21 @@ public class ScrapServiceImpl extends BaseServiceImpl implements ScrapService {
      * @return
      */
     @Override
-    public int save(MovementReqVo vo) {
-        return 0;
+    @Transactional(rollbackFor = Exception.class)
+    public Long save(ScrapReqVo vo) {
+        AllocationReqVo reqVo = new AllocationReqVo();
+        BeanCopyUtils.copy(vo,reqVo);
+        reqVo.setCallOutLogisticsCenterCode(vo.getLogisticsCenterCode());
+        reqVo.setCallOutLogisticsCenterName(vo.getLogisticsCenterName());
+        reqVo.setCallInLogisticsCenterCode(vo.getLogisticsCenterCode());
+        reqVo.setCallInLogisticsCenterName(vo.getLogisticsCenterName());
+        reqVo.setCallOutWarehouseCode(vo.getWarehouseCode());
+        reqVo.setCallOutWarehouseName(vo.getWarehouseName());
+        reqVo.setCallInWarehouseCode(vo.getWarehouseCode());
+        reqVo.setCallInWarehouseName(vo.getWarehouseName());
+        reqVo.setAllocationType(AllocationTypeEnum.SCRAP.getType());
+        reqVo.setAllocationTypeName(AllocationTypeEnum.SCRAP.getTypeName());
+        return allocationService.save(reqVo);
     }
 
     /**
@@ -131,4 +151,18 @@ public class ScrapServiceImpl extends BaseServiceImpl implements ScrapService {
         return 0;
     }
 
+
+    /**
+     * 审核回调接口
+     *
+     * @param vo
+     * @return
+     * @author zth
+     * @date 2019/1/15
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String workFlowCallback(WorkFlowCallbackVO vo) {
+        return allocationService.nativeWorkFlowCallback(vo);
+    }
 }

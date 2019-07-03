@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.scrap.ScrapReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo;
 
@@ -28,7 +28,7 @@ public interface ScrapService {
      * @param vo
      * @return
      */
-    int save(MovementReqVo vo);
+    Long save(ScrapReqVo vo);
 
     /**
      * 查询报废单详情

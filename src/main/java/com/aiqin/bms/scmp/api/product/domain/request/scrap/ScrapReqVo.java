@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.product.domain.request.movement;
+package com.aiqin.bms.scmp.api.product.domain.request.scrap;
 
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductReqVo;
 import io.swagger.annotations.ApiModel;
@@ -11,45 +11,47 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * @Classname: MovementReqVo
- * 描述:移库单请求保存实体
+ * 描述:调拨单请求添加实体
+ *
  * @Author: Kt.w
- * @Date: 2019/4/1
+ * @Date: 2019/1/9
  * @Version 1.0
- * @Since 1.0
+ * @since 1.0
  */
-@ApiModel("移库单请求保存实体")
 @Data
-public class MovementReqVo {
+@ApiModel("报废单请求添加实体")
+public class ScrapReqVo {
 
-    @ApiModelProperty("所属仓库编码")
+    @ApiModelProperty("仓库(物流中心)编号")
+    @NotEmpty(message = "仓库(物流中心)编号不能为空")
     private String logisticsCenterCode;
 
-    @ApiModelProperty("所属仓库名称")
+    @ApiModelProperty("仓库(物流中心)名称")
+    @NotEmpty(message = "仓库(物流中心)名称不能为空")
     private String logisticsCenterName;
 
-    @ApiModelProperty("调出库房编码")
-    private String callOutWarehouseCode;
+    @ApiModelProperty("库房编码")
+    @NotEmpty(message = "库房编码不能为空")
+    private String warehouseCode;
 
-    @ApiModelProperty("调出库房名称")
-    private String callOutWarehouseName;
-
-    @ApiModelProperty("调入库房编码")
-    private String callInWarehouseCode;
-
-    @ApiModelProperty("调入库房名称")
-    private String callInWarehouseName;
+    @ApiModelProperty("库房名称")
+    @NotEmpty(message = "库房名称不能为空")
+    private String warehouseName;
 
     @ApiModelProperty("采购组编码")
+    @NotEmpty(message = "采购组编号不能为空")
     private String purchaseGroupCode;
 
     @ApiModelProperty("采购组名称")
+    @NotEmpty(message = "采购组名称不能为空")
     private String purchaseGroupName;
 
     @ApiModelProperty("负责人")
+    @NotEmpty(message = "负责人不能为空")
     private String principal;
 
     @ApiModelProperty("数量")
+    @NotNull(message = "数量不能为空")
     private Long quantity;
 
     @ApiModelProperty("含税总成本单位分(传入时需要乘以100)")
@@ -75,7 +77,14 @@ public class MovementReqVo {
     @ApiModelProperty("备注")
     private String remark;
 
+    @ApiModelProperty(value = "调拨类型(1:调拨 2:移库 3:报废)" ,hidden = true)
+    private Byte allocationType;
+
+    @ApiModelProperty(value = "调拨类型(1:调拨 2:移库 3:报废)", hidden = true)
+    private String allocationTypeName;
+
     @ApiModelProperty("sku列表")
     @Valid
     List<AllocationProductReqVo> list;
+
 }

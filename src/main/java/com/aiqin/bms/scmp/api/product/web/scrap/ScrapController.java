@@ -3,8 +3,8 @@ package com.aiqin.bms.scmp.api.product.web.scrap;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.scrap.ScrapReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo;
 import com.aiqin.bms.scmp.api.product.service.ScrapService;
@@ -50,8 +50,15 @@ public class ScrapController {
      */
     @ApiOperation("报废添加")
     @PostMapping("/save")
-    public HttpResponse<Integer> save(@RequestBody MovementReqVo vo) {
-        return null;
+    public HttpResponse<Long> save(@RequestBody ScrapReqVo vo) {
+        try {
+            return HttpResponse.success(ScrapService.save(vo));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
     /**

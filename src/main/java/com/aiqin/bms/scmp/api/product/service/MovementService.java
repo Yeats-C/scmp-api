@@ -28,7 +28,7 @@ public interface MovementService {
      * @param vo
      * @return
      */
-    int save(MovementReqVo vo);
+    Long save(MovementReqVo vo);
 
     /**
      * 查询移库单详情
