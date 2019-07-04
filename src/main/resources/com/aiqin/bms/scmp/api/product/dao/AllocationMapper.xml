@@ -50,59 +50,6 @@
       undertaking_unit_code,undertaking_unit_name,remark
   </sql>
 
-  <select id="getList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List"/>
-    FROM allocation
-    where
-    1=1
-    <if test="createStartTime != null ">
-      AND create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
-    </if>
-    <if test="createEndTime != null">
-      AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
-    </if>
-    <if test="allocationCode != null and allocationCode != '' ">
-      AND allocation_code  LIKE  CONCAT(CONCAT('%',#{allocationCode},'%'))
-    </if>
-    <if test="allocationStatusCode != null">
-      AND allocation_status_code = #{allocationStatusCode}
-    </if>
-    <if test="callOutLogisticsCenterName != null and callOutLogisticsCenterName != ''">
-      AND callout_logistics_center_name LIKE CONCAT('%',#{callOutLogisticsCenterName},'%')
-    </if>
-    <if test="callOutLogisticsCenterCode != null and callOutLogisticsCenterCode != ''">
-      AND callout_logistics_center_code = #{callOutLogisticsCenterCode}
-    </if>
-    <if test="callOutWarehouseName != null and callOutWarehouseName != '' ">
-      AND callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
-    </if>
-    <if test="callOutWarehouseCode != null and callOutWarehouseCode != '' ">
-      AND callout_warehouse_code = #{callOutWarehouseCode}
-    </if>
-    <if test="outboundOderCode != null and outboundOderCode != ''">
-      AND outbound_oder_code LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
-    </if>
-    <if test="callInLogisticsCenterName != null and callInLogisticsCenterName != ''">
-      AND callin_logistics_center_name LIKE  CONCAT('%',#{callInLogisticsCenterName},'%')
-    </if>
-    <if test="callInLogisticsCenterCode != null and callInLogisticsCenterCode != ''">
-      AND callin_logistics_center_code =  #{callInLogisticsCenterCode}
-    </if>
-    <if test="callInWarehouseName != null and callInWarehouseName != '' ">
-      AND callin_warehouse_name LIKE  CONCAT(CONCAT('%',#{callInWarehouseName},'%'))
-    </if>
-    <if test="callInWarehouseCode != null and callInWarehouseCode != '' ">
-      AND callin_warehouse_code =  #{callInWarehouseCode}
-    </if>
-    <if test="inboundOderCode != null and inboundOderCode != ''">
-      AND inbound_oder_code LIKE  CONCAT(CONCAT('%',#{inboundOderCode},'%'))
-    </if>
-    <if test="companyCode != null and companyCode != ''">
-      AND company_code = #{companyCode}
-    </if>
-    order by create_time desc
-  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -179,6 +126,12 @@
       </if>
       <if test="callInWarehouseName != null">
         callin_warehouse_name,
+      </if>
+      <if test="allocationType != null">
+        allocation_type,
+      </if>
+      <if test="allocationTypeName != null">
+        allocation_type_name,
       </if>
       <if test="principal != null">
         principal,
@@ -260,12 +213,6 @@
       <if test="callOutWarehouseName != null">
         #{callOutWarehouseName,jdbcType=VARCHAR},
       </if>
-      <if test="inventoryAttributesCode != null">
-        #{inventoryAttributesCode,jdbcType=VARCHAR},
-      </if>
-      <if test="inventoryAttributesName != null">
-        #{inventoryAttributesName,jdbcType=VARCHAR},
-      </if>
       <if test="purchaseGroupCode != null">
         #{purchaseGroupCode,jdbcType=VARCHAR},
       </if>
@@ -284,8 +231,8 @@
       <if test="callInWarehouseName != null">
         #{callInWarehouseName,jdbcType=VARCHAR},
       </if>
-      <if test="allocationTypeCode != null">
-        #{allocationTypeCode,jdbcType=TINYINT},
+      <if test="allocationType != null">
+        #{allocationType,jdbcType=TINYINT},
       </if>
       <if test="allocationTypeName != null">
         #{allocationTypeName,jdbcType=VARCHAR},
@@ -505,5 +452,250 @@
     <include refid="Base_Column_List" />
     from allocation
     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
+  </select>
+  <resultMap id="AllocationResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="allocation_code" jdbcType="VARCHAR" property="allocationCode" />
+    <result column="callout_logistics_center_code" jdbcType="VARCHAR" property="callOutLogisticsCenterCode" />
+    <result column="callout_logistics_center_name" jdbcType="VARCHAR" property="callOutLogisticsCenterName" />
+    <result column="callout_warehouse_code" jdbcType="VARCHAR" property="callOutWarehouseCode" />
+    <result column="callout_warehouse_name" jdbcType="VARCHAR" property="callOutWarehouseName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="callin_warehouse_code" jdbcType="VARCHAR" property="callInWarehouseCode" />
+    <result column="callin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="total_cost_rate" jdbcType="BIGINT" property="taxRefundAmount" />
+    <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
+    <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+    <result column="allocation_status_code" jdbcType="TINYINT" property="allocationStatusCode" />
+    <result column="allocation_status_name" jdbcType="VARCHAR" property="allocationStatusName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="form_no"  jdbcType="VARCHAR" property="formNo"/>
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+  </resultMap>
+  <select id="getList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo" resultMap="AllocationResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    FROM allocation
+    where
+    1=1
+    <if test="createStartTime != null ">
+      AND create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createEndTime != null">
+      AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="allocationCode != null and allocationCode != '' ">
+      AND allocation_code =#{allocationCode}
+    </if>
+    <if test="allocationStatusCode != null">
+      AND allocation_status_code = #{allocationStatusCode}
+    </if>
+    <if test="callOutLogisticsCenterName != null and callOutLogisticsCenterName != ''">
+      AND callout_logistics_center_name LIKE CONCAT('%',#{callOutLogisticsCenterName},'%')
+    </if>
+    <if test="callOutLogisticsCenterCode != null and callOutLogisticsCenterCode != ''">
+      AND callout_logistics_center_code = #{callOutLogisticsCenterCode}
+    </if>
+    <if test="callOutWarehouseName != null and callOutWarehouseName != '' ">
+      AND callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
+    </if>
+    <if test="callOutWarehouseCode != null and callOutWarehouseCode != '' ">
+      AND callout_warehouse_code = #{callOutWarehouseCode}
+    </if>
+    <if test="outboundOderCode != null and outboundOderCode != ''">
+      AND outbound_oder_code LIKE  CONCAT('%',#{outboundOderCode},'%')
+    </if>
+    <if test="callInLogisticsCenterName != null and callInLogisticsCenterName != ''">
+      AND callin_logistics_center_name LIKE  CONCAT('%',#{callInLogisticsCenterName},'%')
+    </if>
+    <if test="callInLogisticsCenterCode != null and callInLogisticsCenterCode != ''">
+      AND callin_logistics_center_code =  #{callInLogisticsCenterCode}
+    </if>
+    <if test="callInWarehouseName != null and callInWarehouseName != '' ">
+      AND callin_warehouse_name LIKE  CONCAT('%',#{callInWarehouseName},'%')
+    </if>
+    <if test="callInWarehouseCode != null and callInWarehouseCode != '' ">
+      AND callin_warehouse_code =  #{callInWarehouseCode}
+    </if>
+    <if test="inboundOderCode != null and inboundOderCode != ''">
+      AND inbound_oder_code LIKE  CONCAT('%',#{inboundOderCode},'%')
+    </if>
+    <if test="companyCode != null and companyCode != ''">
+      AND company_code = #{companyCode}
+    </if>
+    <if test="allocationType != null">
+      and allocation_type = #{allocationType}
+    </if>
+    order by create_time desc
+  </select>
+
+  <resultMap id="MoveResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="allocation_code" jdbcType="VARCHAR" property="movementCode" />
+    <result column="callout_logistics_center_code" jdbcType="VARCHAR" property="logisticsCenterCode" />
+    <result column="callout_logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
+    <result column="callout_warehouse_code" jdbcType="VARCHAR" property="callOutWarehouseCode" />
+    <result column="callout_warehouse_name" jdbcType="VARCHAR" property="callOutWarehouseName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="callin_warehouse_code" jdbcType="VARCHAR" property="callInWarehouseCode" />
+    <result column="callin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="total_cost_rate" jdbcType="BIGINT" property="taxInventoryCost" />
+    <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
+    <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+    <result column="allocation_status_code" jdbcType="TINYINT" property="movementStatusCode" />
+    <result column="allocation_status_name" jdbcType="VARCHAR" property="movementStatusName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="form_no"  jdbcType="VARCHAR" property="formNo"/>
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+  </resultMap>
+  <select id="getMoveList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo" resultMap="MoveResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    FROM allocation
+    where
+    1=1
+    <if test="createStartTime != null ">
+      AND create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createEndTime != null">
+      AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="movementCode != null and movementCode != '' ">
+      AND allocation_code = #{movementCode}
+    </if>
+    <if test="movementStatusCode != null">
+      AND allocation_status_code = #{movementStatusCode}
+    </if>
+    <if test="logisticsCenterName != null and logisticsCenterName != ''">
+      AND callout_logistics_center_name LIKE CONCAT('%',#{logisticsCenterName},'%')
+    </if>
+    <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
+      AND callout_logistics_center_code = #{logisticsCenterCode}
+    </if>
+    <if test="callOutWarehouseName != null and callOutWarehouseName != '' ">
+      AND callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
+    </if>
+    <if test="callOutWarehouseCode != null and callOutWarehouseCode != '' ">
+      AND callout_warehouse_code = #{callOutWarehouseCode}
+    </if>
+    <if test="outboundOderCode != null and outboundOderCode != ''">
+      AND outbound_oder_code LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
+    </if>
+    <if test="logisticsCenterName != null and logisticsCenterName != ''">
+      AND callin_logistics_center_name LIKE  CONCAT('%',#{logisticsCenterName},'%')
+    </if>
+    <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
+      AND callin_logistics_center_code =  #{logisticsCenterCode}
+    </if>
+    <if test="callInWarehouseName != null and callInWarehouseName != '' ">
+      AND callin_warehouse_name LIKE  CONCAT('%',#{callInWarehouseName},'%')
+    </if>
+    <if test="callInWarehouseCode != null and callInWarehouseCode != '' ">
+      AND callin_warehouse_code =  #{callInWarehouseCode}
+    </if>
+    <if test="inboundOderCode != null and inboundOderCode != ''">
+      AND inbound_oder_code LIKE  CONCAT('%',#{inboundOderCode},'%')
+    </if>
+    <if test="companyCode != null and companyCode != ''">
+      AND company_code = #{companyCode}
+    </if>
+    <if test="allocationType != null">
+      and allocation_type = #{allocationType}
+    </if>
+    order by create_time desc
+  </select>
+
+  <resultMap id="ScrapResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="allocation_code" jdbcType="VARCHAR" property="scrapCode" />
+    <result column="callout_logistics_center_code" jdbcType="VARCHAR" property="logisticsCenterCode" />
+    <result column="callout_logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
+    <result column="callout_warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="callout_warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="total_cost_rate" jdbcType="BIGINT" property="taxInventoryCost" />
+    <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
+    <result column="allocation_status_code" jdbcType="TINYINT" property="scrapStatusCode" />
+    <result column="allocation_status_name" jdbcType="VARCHAR" property="scrapStatusName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="form_no"  jdbcType="VARCHAR" property="formNo"/>
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+  </resultMap>
+  <select id="getScrapList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo" resultMap="ScrapResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    FROM allocation
+    where
+    1=1
+    <if test="createStartTime != null ">
+      AND create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createEndTime != null">
+      AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="scrapCode != null and scrapCode != '' ">
+      AND allocation_code = #{movementCode}
+    </if>
+    <if test="scrapStatusCode != null">
+      AND allocation_status_code = #{scrapStatusCode}
+    </if>
+    <if test="logisticsCenterName != null and logisticsCenterName != ''">
+      AND callout_logistics_center_name LIKE CONCAT('%',#{logisticsCenterName},'%')
+    </if>
+    <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
+      AND callout_logistics_center_code = #{logisticsCenterCode}
+    </if>
+    <if test="warehouseName != null and warehouseName != '' ">
+      AND callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
+    </if>
+    <if test="warehouseCode != null and warehouseCode != '' ">
+      AND callout_warehouse_code = #{warehouseCode}
+    </if>
+    <if test="outboundOderCode != null and outboundOderCode != ''">
+      AND outbound_oder_code LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
+    </if>
+    <if test="logisticsCenterName != null and logisticsCenterName != ''">
+      AND callin_logistics_center_name LIKE  CONCAT('%',#{logisticsCenterName},'%')
+    </if>
+    <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
+      AND callin_logistics_center_code =  #{logisticsCenterCode}
+    </if>
+    <if test="warehouseName != null and warehouseName != '' ">
+      AND callin_warehouse_name LIKE  CONCAT('%',#{warehouseName},'%')
+    </if>
+    <if test="warehouseCode != null and warehouseCode != '' ">
+      AND callin_warehouse_code =  #{warehouseCode}
+    </if>
+    <if test="companyCode != null and companyCode != ''">
+      AND company_code = #{companyCode}
+    </if>
+    <if test="allocationType != null">
+      and allocation_type = #{allocationType}
+    </if>
+    order by create_time desc
   </select>
 </mapper>

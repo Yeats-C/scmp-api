@@ -167,7 +167,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productCategoryCode = split[split.length-1];
                 productSkuDraft.setProductCategoryCode(productCategoryCode);
             }
-            if (null != productSkuDraft.getSkuCode()){
+            if (StringUtils.isNotBlank(productSkuDraft.getSkuCode())){
                 productSkuDraft.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
                 productSkuDraft.setApplyTypeName(StatusTypeCode.UPDATE_APPLY.getName());
                 ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
@@ -228,6 +228,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuStockInfoDraft.setProductSkuName(productSkuDraft.getSkuName());
                 productSkuStockInfoDraft.setProductCode(productSkuDraft.getProductCode());
                 productSkuStockInfoDraft.setProductName(productSkuDraft.getProductName());
+                productSkuStockInfoDraft.setBaseProductContent(1);
+                productSkuStockInfoDraft.setZeroRemovalCoefficient(1L);
                 productSkuStockInfoService.insertDraft(productSkuStockInfoDraft);
             } catch (Exception e) {
                 e.printStackTrace();

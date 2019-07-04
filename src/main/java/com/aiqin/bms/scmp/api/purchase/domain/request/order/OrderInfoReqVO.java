@@ -101,8 +101,11 @@ public class OrderInfoReqVO {
     @ApiModelProperty("运费")
     private Long deliverAmount;
 
-    @ApiModelProperty("商品总金额")
+    @ApiModelProperty("商品分销价总金额")
     private Long productTotalAmount;
+
+    @ApiModelProperty("商品渠道价总金额")
+    private Long productChannelTotalAmount;
 
     @ApiModelProperty("优惠额度")
     private Long discountAmount;
@@ -121,6 +124,9 @@ public class OrderInfoReqVO {
 
     @ApiModelProperty("发票类型编码")
     private String invoiceTypeCode;
+
+    @ApiModelProperty("支付日期")
+    private Date transportTime;
 
     @ApiModelProperty("发票抬头")
     private String invoiceTitle;
@@ -148,6 +154,12 @@ public class OrderInfoReqVO {
 
     @ApiModelProperty("门店类型编码")
     private String storeTypeCode;
+
+    @ApiModelProperty("订单类别名称")
+    private String orderCategory;
+
+    @ApiModelProperty("订单类别编码")
+    private String orderCategoryCode;
 
     @ApiModelProperty("减免比例")
     private Integer logisticsRemissionRatio;

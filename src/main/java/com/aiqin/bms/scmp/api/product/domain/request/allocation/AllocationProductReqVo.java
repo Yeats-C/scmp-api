@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
  * @since 1.0
  */
 @Data
-@ApiModel("调拨sku接受实体")
+@ApiModel("sku接受实体")
 public class AllocationProductReqVo {
 
     @ApiModelProperty("sku编号")
@@ -51,10 +51,10 @@ public class AllocationProductReqVo {
     @ApiModelProperty("类型")
     private String type;
 
-    @ApiModelProperty("库存单位")
+    @ApiModelProperty(value = "库存单位",hidden = true)
     private String inventoryUnit;
 
-    @ApiModelProperty("库存")
+    @ApiModelProperty(value = "库存",hidden = true)
     @NotNull(message = "库存不能为空")
     private Long inventory;
 
@@ -74,7 +74,7 @@ public class AllocationProductReqVo {
     @NotNull(message = "含税总成本不能为空")
     private Long taxAmount;
 
-    @ApiModelProperty("图片地址")
+    @ApiModelProperty(value = "图片地址",hidden = true)
     private String pictureUrl;
 
     @ApiModelProperty("行号")

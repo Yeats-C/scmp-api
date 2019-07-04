@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.mapper;
 
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface AllocationProductMapper {
      * @param allocationCode
      * @return
      */
-   List<AllocationProduct>  selectByAllocationCode(String allocationCode);
+   List<AllocationProductResVo>  selectByAllocationCode(String allocationCode);
 
 
     int updateByPrimaryKeySelective(AllocationProduct record);

@@ -31,7 +31,6 @@
     <result column="callin_batch_number" jdbcType="VARCHAR" property="callInBatchNumber" />
     <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
-
   </resultMap>
   <resultMap id="BaseResultOutboundSkuMap" type="com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductToOutboundVo">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -71,7 +70,25 @@
    a.unit, classes, a.type, a.inventory_unit, a.inventory, a.tax, a.tax_price, a.quantity, a.tax_amount,
     a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by, b.product_picture_path, a.line_num
   </sql>
-  <select id="selectByAllocationCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+
+
+  <resultMap id="ListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo">
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="category" jdbcType="VARCHAR" property="category" />
+    <result column="brand" jdbcType="VARCHAR" property="brand" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="specification" jdbcType="VARCHAR" property="specification" />
+    <result column="model" jdbcType="VARCHAR" property="model" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="callin_batch_number" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+
+  </resultMap>
+  <select id="selectByAllocationCode" parameterType="java.lang.String" resultMap="ListResultMap">
     select 
     <include refid="Base_Column_List" />
     from allocation_product_batch
@@ -121,7 +138,7 @@
       #{t.callOutBatchNumber,jdbcType=VARCHAR},
       #{t.callInBatchNumber,jdbcType=VARCHAR},
       #{t.batchNumberRemark,jdbcType=VARCHAR},
-      #{t.productDate,jdbcType=VARCHAR},
+      #{t.productDate,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

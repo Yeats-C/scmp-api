@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.dao;
 
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryInspectionReportReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.InspectionReportRespVO;
@@ -44,4 +45,7 @@ public interface ProductSkuInspReportDao {
     int deleteList(String skuCode);
 
     int insertDraftList(@Param("productSkuInspReportDrafts") List<ProductSkuInspReportDraft> productSkuInspReportDrafts);
+
+    List<ProductSkuInspReportRespVo> getList(String skuCode);
+    List<ProductSkuInspReportRespVo> getListBySkuCodeAndProductDate(QueryProductSkuInspReportReqVo reportReqVo);
 }

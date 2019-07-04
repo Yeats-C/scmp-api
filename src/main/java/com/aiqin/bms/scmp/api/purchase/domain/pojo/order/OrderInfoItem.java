@@ -85,6 +85,12 @@ public class OrderInfoItem {
     @ApiModelProperty("退货数量")
     private Long returnNum;
 
+    @ApiModelProperty("渠道单价")
+    private Long channelUnitPrice;
+
+    @ApiModelProperty("渠道总价")
+    private Long totalChannelPrice;
+
     @ApiModelProperty("公司名称")
     private String companyName;
 

@@ -29,11 +29,14 @@ public class QueryOrderInfoRespVO {
     @ApiModelProperty("客户名称")
     private String customerName;
 
+    @ApiModelProperty("客户编码")
+    private String customerCode;
+
     @ApiModelProperty("创建时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
-    @ApiModelProperty("订单状态(状态有点多，后面补)")
+    @ApiModelProperty("订单状态")
     private String orderStatus;
 
     public void setOrderStatus(Integer orderStatus) {
@@ -88,8 +91,11 @@ public class QueryOrderInfoRespVO {
     @ApiModelProperty("运费")
     private Long deliverAmount;
 
-    @ApiModelProperty("商品总金额")
+    @ApiModelProperty("商品分销价总金额")
     private Long productTotalAmount;
+
+    @ApiModelProperty("商品渠道价总金额")
+    private Long productChannelTotalAmount;
 
     @ApiModelProperty("优惠额度")
     private Long discountAmount;
@@ -107,6 +113,10 @@ public class QueryOrderInfoRespVO {
     @ApiModelProperty("发货时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deliveryTime;
+
+    @ApiModelProperty("发运时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date transportTime;
 
     @ApiModelProperty("收货时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
@@ -131,6 +141,9 @@ public class QueryOrderInfoRespVO {
     @ApiModelProperty("重量")
     private Long weight;
 
+    @ApiModelProperty("体积")
+    private Long volume;
+
     @ApiModelProperty("是否父订单(0不是1是)")
     private Integer beMasterOrder;
 
@@ -148,6 +161,12 @@ public class QueryOrderInfoRespVO {
 
     @ApiModelProperty("门店类型")
     private String storeType;
+
+    @ApiModelProperty("订单类别名称")
+    private String orderCategory;
+
+    @ApiModelProperty("订单类别编码")
+    private String orderCategoryCode;
 
     @ApiModelProperty("减免比例")
     private Integer logisticsRemissionRatio;

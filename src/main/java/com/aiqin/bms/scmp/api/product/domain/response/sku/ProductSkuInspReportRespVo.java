@@ -28,7 +28,7 @@ public class ProductSkuInspReportRespVo extends CommonBean {
     private String skuName;
 
     @ApiModelProperty("生产日期")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date productionDate;
 
     @ApiModelProperty("质检报告文件路径")

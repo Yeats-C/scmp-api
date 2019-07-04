@@ -13,10 +13,12 @@ import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
+import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
@@ -77,6 +79,8 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
     private ApplyProductSkuConfigSpareWarehouseMapper applySpareWarehouseMapper;
     @Autowired
     private ProductSkuConfigSpareWarehouseMapper spareWarehouseMapper;
+    @Autowired
+    private ProductSkuSupplyUnitService productSkuSupplyUnitService;
 
     /**
      * 批量保存临时配置信息
@@ -532,6 +536,8 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
     @Override
     public SkuConfigDetailRepsVo detail(String skuCode) {
         SkuConfigDetailRepsVo repsVo = mapper.detail(skuCode);
+        List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitService.selectBySkuCode(skuCode);
+        repsVo.setSupplyUnitList(list);
         return repsVo;
     }
 
