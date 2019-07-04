@@ -77,4 +77,13 @@ public class QueryStockSkuListRespVo implements Serializable {
     @JsonProperty("available_num")
     private Long availableNum;
 
+    @ApiModelProperty("税率")
+    @JsonProperty("tax_rate")
+    private Long taxRate;
+
+    @ApiModelProperty("昨天含税成本")
+    @JsonProperty("tax_cost")
+    private Long taxCost;
+
+
 }

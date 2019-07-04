@@ -228,7 +228,7 @@ public interface StockService {
      */
     PageInfo<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId,Integer page_no,Integer page_size);
 
-    Integer insertStockBatch(StockChangeRequest stockChangeRequest);
+    HttpResponse operationStockBatch(StockChangeRequest stockChangeRequest);
 
     /**
      *
