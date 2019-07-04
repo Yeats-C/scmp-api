@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
@@ -10,10 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -33,9 +31,20 @@ public class ProductSkuInspReportController {
     @Autowired
     private ProductSkuInspReportService productSkuInspReportService;
 
+    @PostMapping("/saveBatch")
+    @ApiOperation(value = "批量保存质检报告")
+    public HttpResponse<Integer> saveProductSkuInspReports(@RequestBody SaveProductSkuInspReportReqVo reportReqVo){
+        try {
+            return HttpResponse.success(productSkuInspReportService.saveProductSkuInspReports(reportReqVo));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @PostMapping("/save")
     @ApiOperation(value = "保存质检报告")
-    public HttpResponse<Integer> saveProductSkuInspReport(@RequestBody SaveProductSkuInspReportReqVo reportReqVo){
+    public HttpResponse<Integer> saveProductSkuInspReport(@RequestBody ProductSkuInspReport reportReqVo){
         try {
             return HttpResponse.success(productSkuInspReportService.saveProductSkuInspReport(reportReqVo));
         } catch (Exception e) {
@@ -55,5 +64,25 @@ public class ProductSkuInspReportController {
         }
     }
 
+    @PutMapping("/delete/id")
+    @ApiOperation(value = "通过Id单个删除质检报告")
+    public HttpResponse<Integer> deleteById(@RequestParam("id") Long id){
+        try {
+            return HttpResponse.success(productSkuInspReportService.deleteById(id));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @PutMapping("/delete/skuCode")
+    @ApiOperation(value = "通过SkuCode批量删除质检报告")
+    public HttpResponse<Integer> deleteBySkuCode(@RequestParam("skuCode") String skuCode){
+        try {
+            return HttpResponse.success(productSkuInspReportService.deleteBySkuCode(skuCode));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
 }

@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
@@ -18,6 +19,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetail
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
+import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitCapacityService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
@@ -60,7 +62,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 @WorkFlowAnnotation(WorkFlow.APPLY_GOODS_CONFIG)
-public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implements ProductSkuConfigService , WorkFlowHelper {
+public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements ProductSkuConfigService , WorkFlowHelper {
 
 
     @Autowired
@@ -81,6 +83,9 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
     private ProductSkuConfigSpareWarehouseMapper spareWarehouseMapper;
     @Autowired
     private ProductSkuSupplyUnitService productSkuSupplyUnitService;
+
+    @Autowired
+    private ProductSkuSupplyUnitCapacityService productSkuSupplyUnitCapacityService;
 
     /**
      * 批量保存临时配置信息
@@ -119,12 +124,16 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
     /**
      * 批量修改临时配置信息
      *
-     * @param configReqVos
+     * @param reqVo
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Integer updateDraftList(List<UpdateSkuConfigReqVo> configReqVos) {
+    public Integer updateDraftList(UpdateSkuConfigSupplierReqVo reqVo) {
+        //获取公司
+        AuthToken authToken = getUser();
+        //商品配置更新
+        List<UpdateSkuConfigReqVo> configReqVos = reqVo.getConfigs();
         if(CollectionUtils.isEmpty(configReqVos)){
             throw new BizException(ResultCode.UPDATE_ERROR);
         }
@@ -137,6 +146,9 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
         List<ProductSkuConfigDraft> drafts;
         List<SpareWarehouseReqVo> spareWarehouseReqVos = Lists.newArrayList();
         configReqVos.forEach(item->{
+            item.getSpareWarehouses().forEach(item1->{
+                item1.setConfigCode(item.getConfigCode());
+            });
             spareWarehouseReqVos.addAll(item.getSpareWarehouses());
         });
         try {
@@ -147,6 +159,12 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
         drafts.forEach(item->{
             item.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
             item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+            item.setCompanyCode(authToken.getCompanyCode());
+            item.setCompanyName(authToken.getCompanyName());
+            item.setProductCode(reqVo.getProductCode());
+            item.setProductName(reqVo.getProductName());
+            item.setSkuCode(reqVo.getSkuCode());
+            item.setSkuName(reqVo.getSkuName());
         });
         //插入临时表
         num =  ((ProductSkuConfigService)AopContext.currentProxy()).insertDraftBatch(drafts);
@@ -154,17 +172,36 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
         mapper.updateApplyStatusByApplyCode(ApplyStatus.APPROVAL.getNumber(),productSkuConfig.getApplyCode());
         List<ProductSkuConfigSpareWarehouseDraft> draftList = null;
         try {
-            spareWarehouseReqVos.forEach(item->{
-                item.setConfigCode(configCode);
-            });
             draftList = BeanCopyUtils.copyList(spareWarehouseReqVos,ProductSkuConfigSpareWarehouseDraft.class);
         } catch (Exception e) {
             throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
         }
         //插入临时表
         ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseDraftList(draftList);
-
-
+        //供应商更新
+        if(CollectionUtils.isNotEmpty(reqVo.getUpdateProductSkuSupplyUnitReqVos())) {
+            List<UpdateProductSkuSupplyUnitReqVo> supplyUnitReqVos = reqVo.getUpdateProductSkuSupplyUnitReqVos();
+            List<ProductSkuSupplyUnitDraft> skuSupplyUnitDrafts = BeanCopyUtils.copyList(supplyUnitReqVos, ProductSkuSupplyUnitDraft.class);
+            List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts = Lists.newArrayList();
+            skuSupplyUnitDrafts.forEach(item -> {
+                item.setProductSkuCode(reqVo.getProductCode());
+                item.setProductSkuName(reqVo.getProductName());
+                if (CollectionUtils.isNotEmpty(item.getProductSkuSupplyUnitCapacityDrafts())) {
+                    item.getProductSkuSupplyUnitCapacityDrafts().forEach(item2 -> {
+                        item2.setProductSkuCode(item.getProductSkuCode());
+                        item2.setProductSkuName(item.getProductSkuName());
+                        item2.setSupplyUnitCode(item.getSupplyUnitCode());
+                        item2.setSupplyUnitName(item.getSupplyUnitName());
+                    });
+                    productSkuSupplyUnitCapacityDrafts.addAll(item.getProductSkuSupplyUnitCapacityDrafts());
+                }
+            });
+            productSkuSupplyUnitService.insertDraftList(skuSupplyUnitDrafts);
+            //供应商产能
+            if (CollectionUtils.isNotEmpty(productSkuSupplyUnitCapacityDrafts)) {
+                productSkuSupplyUnitCapacityService.insertDraftList(productSkuSupplyUnitCapacityDrafts);
+            }
+        }
         return num;
     }
 
@@ -315,6 +352,33 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
         draftMapper.deleteByConfigCodes(reqVo.getSkuConfigs());
         //删除临时表备用仓库信息
         spareWarehouseDraftMapper.deleteByConfigCodes(reqVo.getSkuConfigs());
+
+        //供应商信息保存
+        //根据供应商信息ID查询供应商信息
+        List<Long> supplierId = reqVo.getSupplierId();
+        List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = productSkuSupplyUnitService.getDraftByIds(supplierId);
+        if(CollectionUtils.isNotEmpty(productSkuSupplyUnitDrafts)){
+            List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = BeanCopyUtils.copyList(productSkuSupplyUnitDrafts,ApplyProductSkuSupplyUnit.class);
+            applyProductSkuSupplyUnits.forEach(item->{
+                item.setApplyCode(code);
+            });
+            productSkuSupplyUnitService.insertApplyList(applyProductSkuSupplyUnits);
+            productSkuSupplyUnitService.deleteDraftByIds(supplierId);
+            //供应商产能信息
+            List<ProductSkuSupplyUnitCapacityDraft> supplyUnitCapacityDrafts =
+                    productSkuSupplyUnitCapacityService.getDraftsBySupplyUnitDrafts(productSkuSupplyUnitDrafts);
+            if (CollectionUtils.isNotEmpty(supplyUnitCapacityDrafts)) {
+                List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities = BeanCopyUtils.copyList(supplyUnitCapacityDrafts,ApplyProductSkuSupplyUnitCapacity.class);
+                applyProductSkuSupplyUnitCapacities.forEach(item->{
+                    item.setApplyCode(code);
+                });
+                List<Long> ids = supplyUnitCapacityDrafts.stream().map(ProductSkuSupplyUnitCapacityDraft::getId).distinct().collect(Collectors.toList());
+                //批量新增申请
+                productSkuSupplyUnitCapacityService.insertApplyList(applyProductSkuSupplyUnitCapacities);
+                //批量删除草稿
+                productSkuSupplyUnitCapacityService.deleteDraftByIds(ids);
+            }
+        }
         //调用审批的接口
         workFlow(formNo,code,currentAuthToken.getPersonName(),reqVo.getDirectSupervisorCode());
         return num;
@@ -537,7 +601,7 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
     public SkuConfigDetailRepsVo detail(String skuCode) {
         SkuConfigDetailRepsVo repsVo = mapper.detail(skuCode);
         List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitService.selectBySkuCode(skuCode);
-        repsVo.setSupplyUnitList(list);
+        repsVo.setSupplierList(list);
         return repsVo;
     }
 

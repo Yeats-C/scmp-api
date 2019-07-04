@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Description:
@@ -50,5 +51,8 @@ public class QueryReturnOrderManagementReqVO extends PageReq {
 
     @ApiModelProperty("公司编码")
     private String companyCode;
+
+    @ApiModelProperty(value = "订单类型",hidden = true)
+    private List<Integer> orderTypeCode;
 
 }

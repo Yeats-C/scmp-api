@@ -18,4 +18,8 @@ public interface ProductSkuSupplyUnitDraftMapper {
     int updateByPrimaryKey(ProductSkuSupplyUnitDraft record);
 
     Integer delete(List<String> skuCodes);
+
+    List<ProductSkuSupplyUnitDraft> selectByIds(List<Long> ids);
+
+    int deleteDraftByIds(List<Long> ids);
 }

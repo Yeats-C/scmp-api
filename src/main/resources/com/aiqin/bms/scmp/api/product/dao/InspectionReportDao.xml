@@ -131,8 +131,8 @@
     <if test="skuCode != null and skuCode != '' ">
       and sku_code =  #{skuCode,jdbcType=VARCHAR}
     </if>
-    <if test="productDate != null">
-      and production_date,'%Y-%m-%d' =  #{productDate,jdbcType=TIMESTAMP}
+    <if test="productionDate != null">
+      and production_date =  #{productionDate,jdbcType=TIMESTAMP}
     </if>
   </select>
   <delete id="deleteDrafts" parameterType="java.util.List">
@@ -143,5 +143,9 @@
   </delete>
   <delete id="deleteList" parameterType="java.lang.String">
     DELETE FROM  product_sku_inspection_report WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteById">
+    DELETE FROM  product_sku_inspection_report
+    where id = #{id,jdbcType=BIGINT}
   </delete>
 </mapper>

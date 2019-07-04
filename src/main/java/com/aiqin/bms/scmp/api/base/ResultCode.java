@@ -210,7 +210,9 @@ public interface ResultCode {
     MessageId GET_RETURN_GOODS_DETAIL_FAILED = MessageId.create(Project.PURCHASE_API,100,"获取订单详情失败");
     MessageId QUERY_INSPECTION_DETAIL_ERROR = MessageId.create(Project.PURCHASE_API,100,"查询验货信息失败");
     MessageId SAVE_INSPECTION_DATA_FAILED = MessageId.create(Project.PURCHASE_API,100,"保存验货信息失败");
-    
+
+    MessageId SAVE_RETURN_RECEIPT_FAILED = MessageId.create(Project.PURCHASE_API,100,"保存退货收货失败");
+
     //出库
     MessageId OUTBOUND_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.SCMP_API,75,"出库单信息不能为空");
     MessageId SAVE_OUT_BOUND_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库主表数据失败");

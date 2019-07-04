@@ -28,10 +28,10 @@ public interface ProductSkuConfigService {
 
     /**
      * 批量修改临时配置信息
-     * @param configReqVos
+     * @param reqVo
      * @return
      */
-    Integer updateDraftList(List<UpdateSkuConfigReqVo> configReqVos);
+    Integer updateDraftList(UpdateSkuConfigSupplierReqVo reqVo);
 
     /**
      * 批量插入临时配置信息(数据库)
