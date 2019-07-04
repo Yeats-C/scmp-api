@@ -1,10 +1,8 @@
 package com.aiqin.bms.scmp.api.dao.test;
 
 import com.aiqin.bms.scmp.api.SpringBootTestContext;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyHandleRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import org.junit.Test;
@@ -68,7 +66,6 @@ public class RejectTest extends SpringBootTestContext {
         detail.setPurchaseGroupCode("1044");
         detail.setPurchaseGroupName("奶粉组");
         detail.setApplyType(1);
-        detail.setApplyRecordStatus(1);
         detail.setBarcode("112");
         detail.setSkuCode("001");
         detail.setSkuName("商品1");
@@ -88,8 +85,8 @@ public class RejectTest extends SpringBootTestContext {
         detail.setSingleCount(5);
         detail.setProductCount(5);
         detail.setTaxRate(10);
-        detail.setTransportCenterCode("ck2");
-        detail.setTransportCenterName("仓库1");
+        detail.setTransportCenterCode("ck22");
+        detail.setTransportCenterName("仓库21");
         detail.setWarehouseCode("kf1");
         detail.setWarehouseName("库房1");
         detail.setProductAmount(10L);

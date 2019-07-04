@@ -537,7 +537,7 @@ public class ProductSkuConfigServiceImpl extends ProductBaseServiceImpl implemen
     public SkuConfigDetailRepsVo detail(String skuCode) {
         SkuConfigDetailRepsVo repsVo = mapper.detail(skuCode);
         List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitService.selectBySkuCode(skuCode);
-        repsVo.setSupplyUnitList(list);
+        repsVo.setSupplierList(list);
         return repsVo;
     }
 

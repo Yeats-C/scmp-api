@@ -19,8 +19,11 @@
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
     <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
     <result column="return_amount" jdbcType="INTEGER" property="returnAmount" />
+    <result column="purchase_mode" jdbcType="INTEGER" property="purchaseMode" />
     <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
     <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+    <result column="cancel_reason" jdbcType="VARCHAR" property="cancelReason" />
+    <result column="cancel_remark" jdbcType="VARCHAR" property="cancelRemark" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
@@ -32,14 +35,14 @@
     id, purchase_order_id, purchase_order_code, transport_center_code, transport_center_name, 
     purchase_group_code, purchase_group_name, warehouse_code, warehouse_name, supplier_code, 
     supplier_name, info_status, purchase_order_status, storage_status, single_count, 
-    product_total_amount, return_amount, settlement_method_code, settlement_method_name, 
-    create_time, create_by_id, create_by_name
+    product_total_amount, return_amount, purchase_mode, settlement_method_code, settlement_method_name,
+    cancel_reason, cancel_remark, create_time, create_by_id, create_by_name
   </sql>
   <insert id="insert">
     insert into purchase_order (purchase_order_id, purchase_order_code,
       transport_center_code, transport_center_name, purchase_group_code, purchase_group_name, warehouse_code,
       warehouse_name, supplier_code, supplier_name, info_status, purchase_order_status, storage_status,
-      single_count, product_total_amount, return_amount, settlement_method_code, settlement_method_name,
+      single_count, product_total_amount, return_amount, purchase_mode, settlement_method_code, settlement_method_name,
       create_time, create_by_id, create_by_name)
     values (#{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR},
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
@@ -47,18 +50,12 @@
       #{warehouseName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, 
       #{infoStatus,jdbcType=INTEGER}, #{purchaseOrderStatus,jdbcType=INTEGER}, #{storageStatus,jdbcType=INTEGER}, 
       #{singleCount,jdbcType=INTEGER}, #{productTotalAmount,jdbcType=INTEGER}, #{returnAmount,jdbcType=INTEGER}, 
-      #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR}, 
+      #{purchaseMode,jdbcType=INTEGER}, #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR},
       now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_order
     <set>
-      <if test="purchaseOrderId != null">
-        purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderCode != null">
-        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
-      </if>
       <if test="transportCenterCode != null">
         transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
       </if>
@@ -107,6 +104,12 @@
       <if test="settlementMethodName != null">
         settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
       </if>
+      <if test="cancelReason != null">
+        cancel_reason = #{cancelReason,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelRemark != null">
+        cancel_remark = #{cancelRemark,jdbcType=VARCHAR},
+      </if>
       update_time = now(),
       <if test="createById != null">
         create_by_id = #{createById,jdbcType=VARCHAR},
@@ -115,6 +118,89 @@
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
   </update>
+  <select id="purchaseOrderList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse">
+    select o.purchase_order_id as purchaseOrderId, o.purchase_order_code as purchaseOrderCode,
+    o.warehouse_code as warehouseCode, o.warehouse_name as warehouseName, o.transport_center_code as transportCenterCode,
+    o.transport_center_name as transportCenterName, o.purchase_order_status as purchaseOrderStatus, o.storage_status as storageStatus,
+    o.single_count as singleCount, o.product_total_amount as productTotalAmount, o.return_amount as returnAmount,
+    d.expect_arrival_time as expectArrivalTime, d.valid_time as validTime, o.create_time as createTime,
+    o.purchase_group_code as purchaseGroupCode, o.purchase_group_name as purchaseGroupName, o.purchase_mode as purchaseMode
+    from purchase_order o
+    inner join purchase_order_details d
+    on o.purchase_order_id = d.purchase_order_id
+    <where>
+      <if test="beginTime != null">
+        and o.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and o.create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderCode != null">
+        and o.purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupCode != null">
+        and o.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierCode != null">
+        and o.supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and o.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null">
+        and o.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderStatus != null">
+        and o.purchase_order_status = #{purchaseOrderStatus,jdbcType=INTEGER}
+      </if>
+      <if test="storageStatus != null">
+        and o.storage_status = #{storageStatus,jdbcType=INTEGER}
+      </if>
+      <if test="purchase_mode != null">
+        and o.purchase_mode = #{purchaseMode,jdbcType=INTEGER}
+      </if>
+    </where>
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="purchaseOrderCount" resultType="java.lang.Integer">
+    select count(1)
+    from purchase_order o
+    inner join purchase_order_details d
+    on o.purchase_order_id = d.purchase_order_id
+    <where>
+      <if test="beginTime != null">
+        and o.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and o.create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderCode != null">
+        and o.purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupCode != null">
+        and o.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierCode != null">
+        and o.supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and o.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null">
+        and o.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderStatus != null">
+        and o.purchase_order_status = #{purchaseOrderStatus,jdbcType=INTEGER}
+      </if>
+      <if test="storageStatus != null">
+        and o.storage_status = #{storageStatus,jdbcType=INTEGER}
+      </if>
+      <if test="purchase_mode != null">
+        and o.purchase_mode = #{purchaseMode,jdbcType=INTEGER}
+      </if>
+    </where>
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
 </mapper>

@@ -24,5 +24,7 @@ public interface RejectApplyRecordDao {
 
     RejectApplyRecord selectByRejectCode(@Param("rejectApplyCode") String rejectApplyCode);
 
-    Integer updateByRejectCode(RejectApplyHandleRequest rejectApplyRequest);
+    Integer updateByRejectCode(RejectApplyRecord rejectApplyRequest);
+
+    void updateStatus(String rejectApplyRecordId);
 }

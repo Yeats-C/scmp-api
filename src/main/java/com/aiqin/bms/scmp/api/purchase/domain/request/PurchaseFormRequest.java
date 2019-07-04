@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
+import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -11,7 +12,7 @@ import java.util.List;
  * @create: 2019-06-24
  **/
 @Data
-public class PurchaseFormRequest {
+public class PurchaseFormRequest extends PagesRequest {
 
     @ApiModelProperty(value="采购申请单ids")
     @JsonProperty("apply_ids")
@@ -36,4 +37,6 @@ public class PurchaseFormRequest {
     @ApiModelProperty(value="结算方式编码")
     @JsonProperty("settlement_method_code")
     private String settlementMethodCode;
+
+
 }

@@ -17,6 +17,10 @@ import java.io.Serializable;
 @Data
 public class QueryStockSkuListRespVo implements Serializable {
 
+    @ApiModelProperty("唯一id")
+    @JsonProperty("id")
+    private Long id;
+
     @ApiModelProperty("sku编码")
     @JsonProperty("sku_code")
     private String skuCode;
@@ -72,5 +76,14 @@ public class QueryStockSkuListRespVo implements Serializable {
     @ApiModelProperty("库存(可用库存)")
     @JsonProperty("available_num")
     private Long availableNum;
+
+    @ApiModelProperty("税率")
+    @JsonProperty("tax_rate")
+    private Long taxRate;
+
+    @ApiModelProperty("昨天含税成本")
+    @JsonProperty("tax_cost")
+    private Long taxCost;
+
 
 }

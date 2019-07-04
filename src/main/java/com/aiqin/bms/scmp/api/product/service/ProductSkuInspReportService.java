@@ -51,12 +51,46 @@ public interface ProductSkuInspReportService {
 
     /**
      *
-     * 功能描述: 质检报告保存接口
+     * 功能描述: 批量保存 质检报告保存接口 (只增加不减少)
      *
      * @param reportReqVo
      * @return
      * @auther knight.xie
      * @date 2019/7/3 17:43
      */
-    int saveProductSkuInspReport(SaveProductSkuInspReportReqVo reportReqVo);
+    int saveProductSkuInspReports(SaveProductSkuInspReportReqVo reportReqVo);
+
+    /**
+     *
+     * 功能描述: 根据Id删除正式表数据
+     *
+     * @param id
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 10:25
+     */
+    int deleteById(Long id);
+
+    /**
+     *
+     * 功能描述: 根据SkuCode删除正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 10:28
+     */
+    int deleteBySkuCode(String skuCode);
+
+
+    /**
+     *
+     * 功能描述: 单个保存质检报告
+     *
+     * @param reportReqVo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 10:29
+     */
+    int saveProductSkuInspReport(ProductSkuInspReport reportReqVo);
 }

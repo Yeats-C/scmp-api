@@ -5,28 +5,36 @@ import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectImportResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -40,6 +48,9 @@ import java.util.List;
 public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseApplyServiceImpl.class);
+    private static final String[] importRejectApplyHeaders = new String[]{
+            "SKU编号", "SKU名称", "供应商", "仓库", "采购数量", "实物返数量", "含税单价",
+    };
 
     @Resource
     private PurchaseApplyDao purchaseApplyDao;
@@ -63,7 +74,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 // 计算sku数量 / 单品数量/ 采购含税金额 / 实物返金额
                 PurchaseApplyProductInfoResponse info = this.applyProductCount(apply.getPurchaseApplyId());
                 // 计算sku数量
-                Integer skuCount = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId());
+                Integer skuCount = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId(), null);
                 apply.setSkuCount(skuCount);
                 apply.setSingleCount(info.getSingleSum());
                 apply.setProductTotalAmount(info.getTaxSum());
@@ -78,6 +89,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     @Override
     public HttpResponse applyProductList(PurchaseApplyRequest purchases){
+        if(StringUtils.isBlank(purchases.getPurchaseGroupCode())){
+            return HttpResponse.failure(ResultCode.NOT_PURCHASE_GROUP_DATA);
+        }
         this.fourProduct(purchases);
         // 新增时的商品信息
         PageResData pageResData = new PageResData();
@@ -119,42 +133,23 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     // 查询新增采购申请单时候的库存商品信息
-    private HttpResponse stockProductInfo(PurchaseApplyRequest purchases, PageResData pageResData){
-        // 查询该人员未禁止的采购组
-        List<PurchaseGroupVo> purchaseGroup = purchaseGroupService.getPurchaseGroup();
-        if(CollectionUtils.isEmptyCollection(purchaseGroup) || purchaseGroup.size() == 0
-                || StringUtils.isBlank(purchaseGroup.get(0).getPurchaseGroupCode())){
-            LOGGER.info("未获取到有效的采购组");
-            return HttpResponse.failure(ResultCode.NOT_PURCHASE_GROUP);
-        }else {
-            List<String> groupCode = new ArrayList<>();
-            for(PurchaseGroupVo group:purchaseGroup){
-                groupCode.add(group.getPurchaseGroupCode());
-            }
-            if(StringUtils.isNotBlank(purchases.getPurchaseGroupCode())){
-                if(!groupCode.contains(purchases.getPurchaseGroupCode())){
-                    LOGGER.info("此采购组该人员无相关数据...");
-                    return HttpResponse.failure(ResultCode.NOT_PURCHASE_GROUP_PERSON);
+    private HttpResponse stockProductInfo(PurchaseApplyRequest purchases, PageResData pageResData) {
+        // 查询库存，商品， 供应商等信息
+        List<PurchaseApplyDetailResponse> detail = stockDao.purchaseProductList(purchases);
+        if (CollectionUtils.isNotEmptyCollection(detail)) {
+            for (PurchaseApplyDetailResponse product : detail) {
+                // 获取最高采购价(价格管理中供应商的含税价格)
+                if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
+                    Long priceTax = productSkuPriceInfoMapper.selectPriceTax(product.getSkuCode(), product.getSupplierCode());
+                    product.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                 }
+                // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
+                // TODO
             }
-            purchases.setGroupCode(groupCode);
-            // 查询库存，商品， 供应商等信息
-            List<PurchaseApplyDetailResponse> detail = stockDao.purchaseProductList(purchases);
-            if(CollectionUtils.isNotEmptyCollection(detail)){
-                for(PurchaseApplyDetailResponse product:detail){
-                    // 获取最高采购价(价格管理中供应商的含税价格)
-                    if(StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())){
-                        Long priceTax = productSkuPriceInfoMapper.selectPriceTax(product.getSkuCode(), product.getSupplierCode());
-                        product.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
-                    }
-                    // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
-                    // TODO
-                }
-            }
-            Integer count = stockDao.purchaseProductCount(purchases);
-            pageResData.setDataList(detail);
-            pageResData.setTotalCount(count);
         }
+        Integer count = stockDao.purchaseProductCount(purchases);
+        pageResData.setDataList(detail);
+        pageResData.setTotalCount(count);
         return HttpResponse.success(pageResData);
     }
 
@@ -181,20 +176,28 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse purchaseApplyForm(List<PurchaseApplyProduct> purchaseApplyProduct){
-        if(CollectionUtils.isEmptyCollection(purchaseApplyProduct)){
+    public HttpResponse purchaseApplyForm(PurchaseApplyProductRequest applyProductRequest){
+        List<PurchaseApplyProduct> applyProducts = applyProductRequest.getApplyProducts();
+        if(CollectionUtils.isEmptyCollection(applyProducts)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        // 生成采购申请单id
-        String purchaseApplyId = IdUtil.purchaseId();
+        // 判断此采购申请单的商品之前是否已生成
+        String purchaseApplyId = null;
+        if(StringUtils.isNotBlank(applyProductRequest.getPurchaseApplyId())){
+            purchaseApplyId = applyProductRequest.getPurchaseApplyId();
+            purchaseApplyProductDao.delete(purchaseApplyId);
+        }else {
+            // 生成采购申请单id
+            purchaseApplyId = IdUtil.purchaseId();
+        }
         // 保存采购申请选中商品
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
-        for(PurchaseApplyProduct product:purchaseApplyProduct){
+        for(PurchaseApplyProduct product:applyProducts){
             product.setApplyProductId(IdUtil.purchaseId());
             product.setPurchaseApplyId(purchaseApplyId);
             product.setPurchaseApplyCode("CS" + String.valueOf(encodingRule.getNumberingValue()));
         }
-        Integer productCount = purchaseApplyProductDao.insertAll(purchaseApplyProduct);
+        Integer productCount = purchaseApplyProductDao.insertAll(applyProducts);
         if(productCount > 0){
             // 生成采购申请单
             PurchaseApply purchaseApply = new PurchaseApply();
@@ -203,10 +206,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             purchaseApply.setPurchaseApplyCode("CS" + String.valueOf(encodingRule.getNumberingValue()));
             purchaseApply.setApplyType(Global.PURCHASE_APPLY_TYPE_0);
             purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
-            purchaseApply.setPurchaseGroupCode(purchaseApplyProduct.get(0).getPurchaseGroupCode());
-            purchaseApply.setPurchaseGroupName(purchaseApplyProduct.get(0).getPurchaseGroupName());
-            purchaseApply.setCreateById(purchaseApplyProduct.get(0).getCreateById());
-            purchaseApply.setCreateByName(purchaseApplyProduct.get(0).getCreateByName());
+            purchaseApply.setPurchaseGroupCode(applyProducts.get(0).getPurchaseGroupCode());
+            purchaseApply.setPurchaseGroupName(applyProducts.get(0).getPurchaseGroupName());
+            purchaseApply.setCreateById(applyProducts.get(0).getCreateById());
+            purchaseApply.setCreateByName(applyProducts.get(0).getCreateByName());
             Integer count = purchaseApplyDao.insert(purchaseApply);
             if(count > 0){
                 encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
@@ -224,7 +227,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         product.setApplyProductId(applyProductId);
         PurchaseApplyProduct purchaseApplyProduct = purchaseApplyProductDao.applyProduct(product);
         if(purchaseApplyProduct == null){
-            LOGGER.info("查询/复制采购申请商品的信息失败...{}:" +applyProductId);
+            LOGGER.info("查询采购申请商品的信息失败...{}:" +applyProductId);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
         }
         return HttpResponse.success(purchaseApplyProduct);
@@ -329,5 +332,58 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
         }
         return HttpResponse.success(products);
+    }
+
+    @Override
+    public HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode){
+        if (file == null) {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        try {
+            String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
+            if(result.length<2){
+                return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            }
+            List<PurchaseApplyProduct> list = new ArrayList<>();
+            Integer errorCount = 0;
+            if (result != null) {
+                String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
+                if (StringUtils.isNotBlank(validResult)) {
+                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 88888, validResult));
+                }
+                String[] record;
+                PurchaseApplyProduct applyProduct;
+                for (int i = 1; i <= result.length - 1; i++) {
+                    record = result[i];
+                    applyProduct = stockDao.purchaseBySkuStock(purchaseGroupCode,record[0], record[2], record[3]);
+                    if(applyProduct != null){
+//                        response.setProductCount(record[7]);
+//                        response.setProductAmount(record[8]);
+//                        response.setProductTotalAmount(String.valueOf(Integer.valueOf(record[8])*Integer.valueOf(record[7])));
+//                        if(queryStockBatchSkuRespVo.getAvailableNum()<Integer.valueOf(record[7])){
+//                            response.setErrorReason("可用库存数量小于销售数量");
+//                            errorCount++;
+                        //}
+                    }else{
+//                        applyProduct.setSkuCode(record[0]);
+//                        applyProduct.setSkuName(record[1]);
+//                        response.setSupplierCode(record[2]);
+//                        response.setTransportCenterCode(record[3]);
+//                        response.setWarehouseCode(record[4]);
+//                        response.setBatchCode(record[5]);
+//                        response.setGoodsGifts(Integer.valueOf(record[6]));
+//                        response.setProductCount(record[7]);
+//                        response.setProductAmount(record[8]);
+//                        response.setErrorReason("未查询到对应的商品");
+//                        errorCount++;
+                    }
+                    list.add(applyProduct);
+                }
+            }
+            return HttpResponse.success(new PageResData(errorCount,list));
+        } catch (Exception e) {
+            LOGGER.error("采购申请单导入异常:{}", e.getMessage());
+            return HttpResponse.failure(ResultCode.IMPORT_PURCHASE_APPLY_ERROR);
+        }
     }
 }
