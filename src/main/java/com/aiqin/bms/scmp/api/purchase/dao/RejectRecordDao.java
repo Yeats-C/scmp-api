@@ -27,4 +27,6 @@ public interface RejectRecordDao {
     Integer updateStatus(RejectRecord rejectRecord);
 
     RejectRecord selectByRejectId(String rejectRecordId);
+
+    RejectRecord selectByRejectCode(String rejectRecordCode);
 }

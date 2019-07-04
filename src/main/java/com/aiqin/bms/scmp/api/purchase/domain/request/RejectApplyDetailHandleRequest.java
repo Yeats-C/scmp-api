@@ -211,10 +211,12 @@ public class RejectApplyDetailHandleRequest {
     @JsonProperty("update_by_name")
     private String updateByName;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "")
     @JsonProperty("create_time")
     private Date createTime;
-
+    
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "")
     @JsonProperty("update_time")
     private Date updateTime;

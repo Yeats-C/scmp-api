@@ -133,6 +133,9 @@ public class InboundReqSave {
     @ApiModelProperty("详细地址")
     private String detailedAddress;
 
+    @ApiModelProperty("采购调用次数")
+    private Integer purchaseNum;
+
     @ApiModelProperty("创建人")
     private String createBy;
 

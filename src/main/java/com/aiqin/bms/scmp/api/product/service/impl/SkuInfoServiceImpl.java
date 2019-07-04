@@ -839,7 +839,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 applyProductSkuDetailResp.setApplyProductSkuDisInfo(applyProductSkuDisInfo);
                 ApplyProductSkuBoxPacking applyProductSkuBoxPacking = productSkuBoxPackingDao.getApply(skuCode,applyCode);
                 applyProductSkuDetailResp.setProductSkuBoxPacking(applyProductSkuBoxPacking);
-                List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = productSkuSupplyUnitDao.getApply(skuCode,applyCode);
+                List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = productSkuSupplyUnitDao.getApply(applyCode);
                 applyProductSkuDetailResp.setApplyProductSkuSupplyUnits(applyProductSkuSupplyUnits);
                 List<ApplyProductSkuManufacturer> applyProductSkuManufacturers = productSkuManufacturerDao.getApply(skuCode,applyCode);
                 applyProductSkuDetailResp.setApplyProductSkuManufacturers(applyProductSkuManufacturers);
@@ -936,7 +936,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
         }
         if(null != applyProductSkus && applyProductSkus.size() > 0){
-            //productSkuConfigService.saveList(applyProductSkus.get(0).getApplyCode());
             for (int i =0 ; i < applyProductSkus.size();i++){
                 String skuCode = applyProductSkus.get(i).getSkuCode();
                 String applyCode = applyProductSkus.get(i).getApplyCode();
@@ -946,7 +945,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuPicDescService.saveList(skuCode,applyCode);
                 productSkuPicturesService.saveList(skuCode,applyCode);
                 productSkuPurchaseInfoService.saveList(skuCode,applyCode);
-                productSkuSupplyUnitService.saveList(skuCode,applyCode);
+                productSkuSupplyUnitService.saveList(applyCode);
+                productSkuSupplyUnitCapacityService.saveList(applyCode);
                 productSkuPriceService.saveList(skuCode,applyCode);
                 productSkuManufacturerService.saveList(skuCode,applyCode);
                 productSkuInspReportService.saveList(skuCode,applyCode);

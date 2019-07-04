@@ -186,12 +186,14 @@ public interface ResultCode {
     //变价
     MessageId DATA_ERROR =  MessageId.create(Project.PRODUCT_API, 98, "数据异常");
     MessageId DATA_NOT_COMPLETE = MessageId.create(Project.PRODUCT_API,98,"数据不完成！请检查并补充数据！");
+    MessageId CAN_NOT_FIND_CHANGE_PRICE_INFO = MessageId.create(Project.PRODUCT_API,98,"无法获取变价数据信息！");
 
 
     MessageId IMPORT_REJECT_APPLY_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入退供申请单异常");
     MessageId NOT_HAVE_REJECT_APPLY_RECORD = MessageId.create(Project.SCMP_API, 1001, "未查询到对应的退供申请单记录");
     MessageId NOT_HAVE_REJECT_RECORD = MessageId.create(Project.SCMP_API, 1002, "未查询到对应的退供单记录");
     MessageId REJECT_RECORD_ERROR =  MessageId.create(Project.PRODUCT_API, 1003, "申请退供单审批数据保存异常！");
+    MessageId JURISDICTION_ERROR =  MessageId.create(Project.PRODUCT_API, 1004, "所查询的记录没有权限！");
 
     //订单
     MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");

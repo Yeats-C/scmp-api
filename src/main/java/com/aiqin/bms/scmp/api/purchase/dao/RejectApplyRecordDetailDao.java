@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
@@ -34,7 +35,7 @@ public interface RejectApplyRecordDetailDao {
 
     Integer listByConditionPageCount(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes);
 
-    Integer countByRejectId(@Param("rejectApplyRecordCode") String rejectApplyRecordCode);
+    Integer countByRejectId(@Param("rejectApplyRecordCode") String rejectApplyRecordCode,@Param("applyRecordStatus")Integer status);
 
-    List<RejectApplyDetailHandleRequest> selectHandleByRejectCode(String rejectApplyCode);
+    List<RejectApplyDetailHandleResponse> selectHandleByRejectCode(String rejectApplyCode);
 }

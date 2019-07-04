@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -36,7 +37,8 @@ public class FileRecord {
 
     @ApiModelProperty(value="上传时间")
     @JsonProperty("create_time")
-    private String createTime;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 
     @ApiModelProperty(value="创建人")
     @JsonProperty("create_by_id")

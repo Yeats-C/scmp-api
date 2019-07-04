@@ -26,6 +26,12 @@
     from apply_product_sku_supply_unit_capacity
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByApplyCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_product_sku_supply_unit_capacity
+    where apply_code = #{applyCode,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_supply_unit_capacity
     where id = #{id,jdbcType=BIGINT}

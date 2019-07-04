@@ -51,19 +51,12 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int saveList(String skuCode,String applyCode) {
-        List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = productSkuSupplyUnitDao.getApply(skuCode,applyCode);
+    public int saveList(String applyCode) {
+        //通过申请编码查询供应商信息
+        List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = productSkuSupplyUnitDao.getApply(applyCode);
         if (null != applyProductSkuSupplyUnits && applyProductSkuSupplyUnits.size() > 0){
-            List<ProductSkuSupplyUnit> productSkuSupplyUnits = new ArrayList<>();
-            List<ProductSkuSupplyUnit> oldInfo = productSkuSupplyUnitDao.getInfo(skuCode);
-            applyProductSkuSupplyUnits.forEach(item->{
-                ProductSkuSupplyUnit productSkuSupplyUnit = new ProductSkuSupplyUnit();
-                BeanCopyUtils.copy(item,productSkuSupplyUnit);
-                productSkuSupplyUnits.add(productSkuSupplyUnit);
-            });
-            if (null != oldInfo && oldInfo.size() > 0){
-                productSkuSupplyUnitDao.deleteList(skuCode);
-            }
+            List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(applyProductSkuSupplyUnits,ProductSkuSupplyUnit.class);
+            productSkuSupplyUnitDao.deleteList(applyCode);
             return ((ProductSkuSupplyUnitService)AopContext.currentProxy()).insertList(productSkuSupplyUnits);
         } else {
             return 0;

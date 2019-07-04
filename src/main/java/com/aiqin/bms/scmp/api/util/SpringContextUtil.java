@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.workflow.utils;
+package com.aiqin.bms.scmp.api.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

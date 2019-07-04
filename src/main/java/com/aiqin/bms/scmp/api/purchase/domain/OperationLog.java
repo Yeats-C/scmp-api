@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -38,6 +39,7 @@ public class OperationLog {
     @JsonProperty("create_by_name")
     private String createByName;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value="")
     @JsonProperty("create_time")
     private Date createTime;

@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductA
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
@@ -169,7 +170,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         //插入临时表
         num =  ((ProductSkuConfigService)AopContext.currentProxy()).insertDraftBatch(drafts);
         //更新正式表申请状态
-        mapper.updateApplyStatusByApplyCode(ApplyStatus.APPROVAL.getNumber(),productSkuConfig.getApplyCode());
+        ApplyProductSkuConfigReqVo req = new ApplyProductSkuConfigReqVo();
+        req.setApplyCode(productSkuConfig.getApplyCode());
+        req.setAuditorStatus(ApplyStatus.APPROVAL.getNumber());
+        mapper.updateApplyStatusByApplyCode(req);
         List<ProductSkuConfigSpareWarehouseDraft> draftList = null;
         try {
             draftList = BeanCopyUtils.copyList(spareWarehouseReqVos,ProductSkuConfigSpareWarehouseDraft.class);
@@ -184,8 +188,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             List<ProductSkuSupplyUnitDraft> skuSupplyUnitDrafts = BeanCopyUtils.copyList(supplyUnitReqVos, ProductSkuSupplyUnitDraft.class);
             List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts = Lists.newArrayList();
             skuSupplyUnitDrafts.forEach(item -> {
-                item.setProductSkuCode(reqVo.getProductCode());
-                item.setProductSkuName(reqVo.getProductName());
+                item.setProductSkuCode(reqVo.getSkuCode());
+                item.setProductSkuName(reqVo.getSkuCode());
+                item.setUsageStatus(StatusTypeCode.USE.getStatus());
                 if (CollectionUtils.isNotEmpty(item.getProductSkuSupplyUnitCapacityDrafts())) {
                     item.getProductSkuSupplyUnitCapacityDrafts().forEach(item2 -> {
                         item2.setProductSkuCode(item.getProductSkuCode());
@@ -248,8 +253,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
      * @return
      */
     @Override
-    public List<SkuConfigsRepsVo> findDraftList(String companyCode) {
-        return draftMapper.getList(companyCode);
+    public DetailConfigSupplierRespVo findDraftList(String companyCode) {
+        DetailConfigSupplierRespVo respVo = new DetailConfigSupplierRespVo();
+        List<SkuConfigsRepsVo> list = draftMapper.getList(companyCode);
+        respVo.setConfigs(list);
+        respVo.setSuppliers(productSkuSupplyUnitService.getDraftList(list.get(0).getSkuCode()));
+        return respVo;
     }
 
     /**
@@ -425,7 +434,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Override
     public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?code=" + applyCode + "&" + workFlowBaseUrl.authority);
+        workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(formNo);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_GOODS_CONFIG.getNum());
@@ -468,23 +477,24 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if(!list.get(0).getAuditorStatus().equals(ApplyStatus.APPROVAL.getNumber())){
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "数据异常，不是在审批中的数据！"));
         }
+        String applyCode = list.get(0).getApplyCode();
         //审批驳回
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
-            updateApplyInfoByVO(newVO);
+            updateApplyInfoByVO(newVO,applyCode);
             return WorkFlowReturn.SUCCESS;
         }
         //撤销
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
-            updateApplyInfoByVO(newVO);
+            updateApplyInfoByVO(newVO,applyCode);
             return WorkFlowReturn.SUCCESS;
         }
         //审批通过
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             try {
-                updateApplyInfoByVO(newVO);
-                //通过formNo查询备用仓库
+                updateApplyInfoByVO(newVO,applyCode);
+                //通过applyCode查询备用仓库
                 List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
-                        selectByApplyCode(list.get(0).getApplyCode());
+                        selectByApplyCode(applyCode);
                 //获取配置编号
                 List<String> configCodes = applySpareWarehouses.stream().map(item -> item.getConfigCode()).distinct().
                         collect(Collectors.toList());
@@ -495,6 +505,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
                         ProductSkuConfigSpareWarehouse.class);
                 ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
+                //供应商信息
+                productSkuSupplyUnitService.saveList(applyCode);
+                //供应商产能信息
+                productSkuSupplyUnitCapacityService.saveList(applyCode);
                 //保存商品配置正式数据
                 saveOfficial(newVO, list);
                 return WorkFlowReturn.SUCCESS;
@@ -508,11 +522,13 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateApplyInfoByVO(WorkFlowCallbackVO newVO) {
+    public void updateApplyInfoByVO(WorkFlowCallbackVO newVO,String applyCode) {
         //处理数据
         ApplyProductSkuConfigReqVo req = dealData(newVO);
+        req.setApplyCode(applyCode);
         //批量更新数据
         updateApplyInfoByVO(req);
+        updateInfoByVo(req);
     }
 
     @Override
@@ -572,6 +588,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Transactional(rollbackFor = Exception.class)
     public Integer updateApplyInfoByVO(ApplyProductSkuConfigReqVo req) {
         return applyMapper.updateApplyInfo(req);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer updateInfoByVo(ApplyProductSkuConfigReqVo req) {
+        return mapper.updateApplyStatusByApplyCode(req);
     }
 
     /**

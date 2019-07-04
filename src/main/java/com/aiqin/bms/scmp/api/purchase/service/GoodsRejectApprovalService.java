@@ -27,4 +27,6 @@ package com.aiqin.bms.scmp.api.purchase.service;
  * 思维方式*热情*能力
  */
 public interface GoodsRejectApprovalService {
+    void workFlow(String formNo,  String userName, String directSupervisorCode);
+
 }

@@ -632,7 +632,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 }
                 list.add(allocationItemRespVo);
             }
-
             return list;
         } catch (Exception e) {
             e.printStackTrace();
