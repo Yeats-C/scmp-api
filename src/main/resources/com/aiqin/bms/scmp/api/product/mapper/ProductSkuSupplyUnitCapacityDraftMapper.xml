@@ -41,7 +41,6 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="getDraftList" parameterType="java.util.Map" resultMap="RespResultMap">
-
     select
       <include refid="Base_Column_List"/>
     from product_sku_supply_unit_capacity_draft
@@ -59,6 +58,19 @@
       #{skuCode,jdbcType=VARCHAR}
     </foreach>
   </select>
+  <select id="getDraftsBySupplyUnitDrafts" parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_supply_unit_capacity_draft
+    where product_sku_code in
+    <foreach collection="list" item="item" separator="," open="(" close=")">
+      #{item.productSkuCode, jdbcType=VARCHAR}
+    </foreach>
+    and supply_unit_code in
+    <foreach collection="list" item="item" separator="," open="(" close=")">
+      #{item.supplyUnitCode, jdbcType=VARCHAR}
+    </foreach>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_supply_unit_capacity_draft
     where id = #{id,jdbcType=BIGINT}
@@ -68,6 +80,13 @@
     delete from product_sku_supply_unit_capacity_draft where product_sku_code in
     <foreach collection="list" item="skuCode" separator="," open="(" close=")">
       #{skuCode,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from product_sku_supply_unit_capacity_draft
+    where id in
+    <foreach collection="list" item="id" separator="," open="(" close=")">
+      #{id,jdbcType=BIGINT}
     </foreach>
   </delete>
 

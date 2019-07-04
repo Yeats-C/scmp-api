@@ -53,6 +53,12 @@
     from supplier_score
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByCode"  parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from supplier_score
+    where score_code = #{code,jdbcType=VARCHAR}
+  </select>
   <select id="getList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.score.QueryScoreReqVo" resultMap="ListResultMap">
     select
     <include refid="List_Column"/>

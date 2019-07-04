@@ -41,5 +41,5 @@ public class ApplySkuConfigReqVo {
 
     @ApiModelProperty("需要提交申请的编码集合")
     @NotEmpty(message = "编码不能为空！")
-    List<String> skuCodes;
+    List<Long> supplierId;
 }
