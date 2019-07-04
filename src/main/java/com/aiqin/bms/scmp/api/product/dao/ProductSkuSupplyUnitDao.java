@@ -34,9 +34,9 @@ public interface ProductSkuSupplyUnitDao {
 
     int deleteDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);
 
-    int deleteList(String skuCode);
+    int deleteList(String applyCode);
 
-    List<ApplyProductSkuSupplyUnit> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+    List<ApplyProductSkuSupplyUnit> getApply(String applyCode);
 
     List<ApplyProductSkuSupplyUnit> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
     /**

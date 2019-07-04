@@ -70,6 +70,7 @@ public class AllocationController {
             vo.setAllocationTypeName(AllocationTypeEnum.ALLOCATION.getTypeName());
             return HttpResponse.success(allocationService.save(vo));
         }catch (Exception ex){
+            ex.printStackTrace();
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_ADD_ERROR);
         }
     }

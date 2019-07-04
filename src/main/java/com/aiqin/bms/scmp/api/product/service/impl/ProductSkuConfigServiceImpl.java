@@ -425,7 +425,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Override
     public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?code=" + applyCode + "&" + workFlowBaseUrl.authority);
+        workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(formNo);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_GOODS_CONFIG.getNum());
@@ -482,9 +482,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             try {
                 updateApplyInfoByVO(newVO);
-                //通过formNo查询备用仓库
+                String applyCode = list.get(0).getApplyCode();
+                String skuCode = list.get(0).getSkuCode();
+                //通过applyCode查询备用仓库
                 List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
-                        selectByApplyCode(list.get(0).getApplyCode());
+                        selectByApplyCode(applyCode);
                 //获取配置编号
                 List<String> configCodes = applySpareWarehouses.stream().map(item -> item.getConfigCode()).distinct().
                         collect(Collectors.toList());
@@ -495,6 +497,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
                         ProductSkuConfigSpareWarehouse.class);
                 ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
+                //供应商信息
+                productSkuSupplyUnitService.saveList(applyCode);
+                //供应商产能信息
+                productSkuSupplyUnitCapacityService.saveList(applyCode);
                 //保存商品配置正式数据
                 saveOfficial(newVO, list);
                 return WorkFlowReturn.SUCCESS;

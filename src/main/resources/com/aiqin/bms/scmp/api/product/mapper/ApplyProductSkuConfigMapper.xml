@@ -106,7 +106,7 @@
     where a.apply_code = #{applyCode,jdbcType=VARCHAR}
   </select>
   <select id="findFormNoByCode" resultType="java.lang.String">
-    select form_no from apply_product_sku_config where apply_code = #{applyCode,jdbcType=VARCHAR}
+    select distinct form_no from apply_product_sku_config where apply_code = #{applyCode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_config

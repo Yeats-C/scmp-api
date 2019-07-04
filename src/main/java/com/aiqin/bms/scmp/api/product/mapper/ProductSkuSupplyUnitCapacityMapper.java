@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity;
 
+import java.util.List;
+
 public interface ProductSkuSupplyUnitCapacityMapper {
     int deleteByPrimaryKey(Long id);
 
@@ -14,4 +16,8 @@ public interface ProductSkuSupplyUnitCapacityMapper {
     int updateByPrimaryKeySelective(ProductSkuSupplyUnitCapacity record);
 
     int updateByPrimaryKey(ProductSkuSupplyUnitCapacity record);
+
+    int deleteByApplyCode(String applyCode);
+
+    int insertBatch(List<ProductSkuSupplyUnitCapacity> capacities);
 }
