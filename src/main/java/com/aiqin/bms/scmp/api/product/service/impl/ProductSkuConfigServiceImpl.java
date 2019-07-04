@@ -354,7 +354,31 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         spareWarehouseDraftMapper.deleteByConfigCodes(reqVo.getSkuConfigs());
 
         //供应商信息保存
-        //根据skuCode查询供应商信息
+        //根据供应商信息ID查询供应商信息
+        List<Long> supplierId = reqVo.getSupplierId();
+        List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = productSkuSupplyUnitService.getDraftByIds(supplierId);
+        if(CollectionUtils.isNotEmpty(productSkuSupplyUnitDrafts)){
+            List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = BeanCopyUtils.copyList(productSkuSupplyUnitDrafts,ApplyProductSkuSupplyUnit.class);
+            applyProductSkuSupplyUnits.forEach(item->{
+                item.setApplyCode(code);
+            });
+            productSkuSupplyUnitService.insertApplyList(applyProductSkuSupplyUnits);
+            productSkuSupplyUnitService.deleteDraftByIds(supplierId);
+            //供应商产能信息
+            List<ProductSkuSupplyUnitCapacityDraft> supplyUnitCapacityDrafts =
+                    productSkuSupplyUnitCapacityService.getDraftsBySupplyUnitDrafts(productSkuSupplyUnitDrafts);
+            if (CollectionUtils.isNotEmpty(supplyUnitCapacityDrafts)) {
+                List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities = BeanCopyUtils.copyList(supplyUnitCapacityDrafts,ApplyProductSkuSupplyUnitCapacity.class);
+                applyProductSkuSupplyUnitCapacities.forEach(item->{
+                    item.setApplyCode(code);
+                });
+                List<Long> ids = supplyUnitCapacityDrafts.stream().map(ProductSkuSupplyUnitCapacityDraft::getId).distinct().collect(Collectors.toList());
+                //批量新增申请
+                productSkuSupplyUnitCapacityService.insertApplyList(applyProductSkuSupplyUnitCapacities);
+                //批量删除草稿
+                productSkuSupplyUnitCapacityService.deleteDraftByIds(ids);
+            }
+        }
         //调用审批的接口
         workFlow(formNo,code,currentAuthToken.getPersonName(),reqVo.getDirectSupervisorCode());
         return num;

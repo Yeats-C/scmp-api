@@ -53,6 +53,9 @@ public class ProductSkuConfig extends CommonBean {
     @ApiModelProperty("大效期预警天数")
     private Integer bigEffectPeriodWarnDay;
 
+    @ApiModelProperty("到货后周转期")
+    private Integer turnoverPeriodAfterArrival;
+
     @ApiModelProperty("申请编号")
     private String applyCode;
 
