@@ -121,7 +121,8 @@ public class RejectRecord {
     @JsonProperty("transport_url")
     private String transportUrl;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "出库时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("out_stock_time")
     private Date outStockTime;
 
