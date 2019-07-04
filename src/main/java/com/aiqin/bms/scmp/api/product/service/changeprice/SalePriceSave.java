@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.changeprice;
 
+import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.service.SaveChangePrice;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class SalePriceSave implements SaveChangePrice {
     @Override
-    public Boolean save() {
+    public Boolean save(ProductSkuChangePriceDTO dto) {
         return null;
     }
 }

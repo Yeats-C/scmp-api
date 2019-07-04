@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
+
 /**
  * Description:
  *
@@ -15,5 +17,5 @@ public interface SaveChangePrice {
      * @param
      * @return java.lang.Boolean
      */
-    Boolean save();
+    Boolean save(ProductSkuChangePriceDTO dto);
 }
