@@ -1,10 +1,8 @@
 package com.aiqin.bms.scmp.api.dao.test;
 
 import com.aiqin.bms.scmp.api.SpringBootTestContext;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyHandleRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectApprovalServiceImpl;

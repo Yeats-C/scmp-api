@@ -132,4 +132,31 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
         }
         return list;
     }
+
+    /**
+     * 功能描述: 根据Id批量查询临时表细腻些
+     *
+     * @param ids
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 16:09
+     */
+    @Override
+    public List<ProductSkuSupplyUnitDraft> getDraftByIds(List<Long> ids) {
+        return draftMapper.selectByIds(ids);
+    }
+
+    /**
+     * 功能描述: 根据Id批量删除临时表信息
+     *
+     * @param ids
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 16:19
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteDraftByIds(List<Long> ids) {
+        return draftMapper.deleteDraftByIds(ids);
+    }
 }

@@ -642,4 +642,8 @@
     from inbound
     where  inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectMaxPurchaseNumBySourceOderCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select max(purchase_num) from inbound where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

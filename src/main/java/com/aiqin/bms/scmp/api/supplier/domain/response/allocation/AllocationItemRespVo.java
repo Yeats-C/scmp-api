@@ -17,97 +17,98 @@ import lombok.Data;
 @ApiModel("调拨单sku导入返回实体")
 public class AllocationItemRespVo {
     @ApiModelProperty("sku编号")
+    @JsonProperty("sku_code")
     private String skuCode;
 
     @ApiModelProperty("sku名称")
+    @JsonProperty("sku_name")
     private String skuName;
 
     @ApiModelProperty("规格")
     private String spec;
 
     @ApiModelProperty("商品code")
+    @JsonProperty("spu_code")
     private String productCode;
 
     @ApiModelProperty("商品名称")
+    @JsonProperty("spu_name")
     private String productName;
 
     @ApiModelProperty("商品类别code")
+    @JsonProperty("product_category_code")
     private String productCategoryCode;
 
     @ApiModelProperty("商品类别名称")
+    @JsonProperty("product_category_name")
     private String productCategoryName;
 
     @ApiModelProperty("商品类型名称")
+    @JsonProperty("goods_gifts_name")
     private String productTypeName;
 
     @ApiModelProperty("商品类型编码")
+    @JsonProperty("goods_gifts")
     private String productTypeCode;
 
     @ApiModelProperty("商品品牌编码")
+    @JsonProperty("product_brand_code")
     private String productBrandCode;
 
     @ApiModelProperty("商品品牌名称")
+    @JsonProperty("product_brand_name")
     private String productBrandName;
 
     @ApiModelProperty("单位编码")
+    @JsonProperty("unit_code")
     private String unitCode;
 
     @ApiModelProperty("单位名称")
+    @JsonProperty("unit_name")
     private String unitName;
 
     @ApiModelProperty("颜色编码")
+    @JsonProperty("color_code")
     private String colorCode;
 
     @ApiModelProperty("颜色名称")
+    @JsonProperty("color_name")
     private String colorName;
 
     @ApiModelProperty("商品类别编码")
+    @JsonProperty("product_sort_code")
     private String productSortCode;
 
     @ApiModelProperty("商品类别名字")
+    @JsonProperty("product_sort_name")
     private String productSortName;
 
     @ApiModelProperty("税率")
+    @JsonProperty("tax_rate")
     private Long taxRate;
 
-    @ApiModelProperty("含税单价")
+    @ApiModelProperty("昨天含税成本")
+    @JsonProperty("tax_cost")
     private Long price;
 
     @ApiModelProperty("库存")
+    @JsonProperty("available_num")
     private Long stockNum;
 
     @ApiModelProperty("数量")
     @JsonProperty("quantity")
     private Long number;
-    @ApiModelProperty("采购含税总价")
-    @JsonProperty("taxAmount")
+
+    @ApiModelProperty("含税总成本")
+    @JsonProperty("total_tax_cost")
     private Long totalPrice;
 
-    @ApiModelProperty("实际到货数量")
-    private Long actualNum;
-
-    @ApiModelProperty("实际到货含税总价")
-    private Long actualTotalPrice;
-
-    @ApiModelProperty("规格编码")
-    private String specCode;
-
     @ApiModelProperty("型号")
+    @JsonProperty("model_number")
     private String modelNumber;
 
-    @ApiModelProperty("销售单位编码")
-    private String saleUnitCode;
-
-    @ApiModelProperty("销售单位名称")
-    private String saleUnitName;
-
-    @ApiModelProperty("不含税单价")
-    private Long noTaxPrice;
-
-    @ApiModelProperty("不含税总价")
-    private Long noTaxTotalPrice;
-
     @ApiModelProperty("错误原因")
+    @JsonProperty("error_reason")
     private String errorReason;
 
      public AllocationItemRespVo(){}

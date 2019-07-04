@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.web.order;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
@@ -63,12 +64,68 @@ public class ReturnGoodsController {
         }
     }
 
+    @ApiOperation("直供退货单管理")
+    @PostMapping("/directReturnOrderManagement")
+    public HttpResponse<BasePage<QueryReturnOrderManagementRespVO>> directReturnOrderManagement(@RequestBody QueryReturnOrderManagementReqVO reqVO){
+        log.info("ReturnGoodsController---returnOrderManagement---param：[{}]", JSONObject.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(returnGoodsService.directReturnOrderManagement(reqVO));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @ApiOperation("退货详情")
-    @PostMapping("/returnOrderDetail")
+    @GetMapping("/returnOrderDetail")
     public HttpResponse<ReturnOrderDetailRespVO> returnOrderDetail(@RequestParam String code){
         log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
         try {
             return HttpResponse.success(returnGoodsService.returnOrderDetail(code));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("退货详情")
+    @GetMapping("/changeOrderStatus")
+    public HttpResponse<Boolean> changeOrderStatus(@RequestParam(name = "退货单订单编码") String code,@RequestParam("需要修改为订单的状态编码") Integer status){
+        log.info("ReturnGoodsController---changeOrderStatus---param：[{}] param：[{}]", code,status);
+        try {
+            return HttpResponse.success(returnGoodsService.changeOrderStatus(code,status));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("直送退货详情")
+    @GetMapping("/directReturnOrderDetail")
+    public HttpResponse<ReturnOrderDetailRespVO> directReturnOrderDetail(@RequestParam String code){
+        log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
+        try {
+            return HttpResponse.success(returnGoodsService.directReturnOrderDetail(code));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("退货收货")
+    @PostMapping("/returnReceipt")
+    public HttpResponse<Boolean> returnReceipt(@RequestBody List<ReturnReceiptReqVO> reqVO, @RequestParam String code){
+        log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
+        try {
+            return HttpResponse.success(returnGoodsService.returnReceipt(reqVO,code));
         } catch (BizException e){
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {

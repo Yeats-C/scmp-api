@@ -20,4 +20,6 @@ public interface SupplierScoreMapper {
     int updateByPrimaryKey(SupplierScore record);
 
     List<ScoreListRespVo> getList(QueryScoreReqVo reqVo);
+
+    SupplierScore selectByCode(String code);
 }

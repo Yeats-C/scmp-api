@@ -30,7 +30,7 @@ public interface SupplierScoreService {
      * @param reqVo
      * @return
      */
-    Integer save(SaveScoreReqVo reqVo);
+    String save(SaveScoreReqVo reqVo);
 
     /**
      * 数据插入
@@ -52,12 +52,19 @@ public interface SupplierScoreService {
      * @param reqVo
      * @return
      */
-    Integer saveByReject(SaveRejectScoreReqVo reqVo);
+    String saveByReject(SaveRejectScoreReqVo reqVo);
 
     /**
      * 采购评分保存
      * @param reqVo
      * @return
      */
-    Integer saveByPurchase(SavePurchaseScoreReqVo reqVo);
+    String saveByPurchase(SavePurchaseScoreReqVo reqVo);
+
+    /**
+     * 详情查看
+     * @param code
+     * @return
+     */
+    DetailScoreRespVo detailByCode(String code);
 }

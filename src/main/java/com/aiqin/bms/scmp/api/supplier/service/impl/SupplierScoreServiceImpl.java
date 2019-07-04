@@ -87,13 +87,14 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Integer save(SaveScoreReqVo reqVo) {
+    public String save(SaveScoreReqVo reqVo) {
         SupplierScore score = new SupplierScore();
         BeanCopyUtils.copy(reqVo,score);
         //设置默认值
         //设置编码
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.SUPPLIER_SCORE_CODE);
-        score.setScoreCode(String.valueOf(encodingRule.getNumberingValue()));
+        String code = String.valueOf(encodingRule.getNumberingValue());
+        score.setScoreCode(code);
         // 更新编码
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         score.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus());
@@ -125,7 +126,7 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
             //保存标签记录
             tagInfoService.saveRecordListRepeat(useTagRecordReqVos);
         }
-        return num;
+        return code;
     }
 
     /**
@@ -136,7 +137,7 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Integer saveByReject(SaveRejectScoreReqVo reqVo) {
+    public String saveByReject(SaveRejectScoreReqVo reqVo) {
         SaveScoreReqVo saveScoreReqVo = dealData(reqVo);
         return this.save(saveScoreReqVo);
     }
@@ -149,7 +150,7 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Integer saveByPurchase(SavePurchaseScoreReqVo reqVo) {
+    public String saveByPurchase(SavePurchaseScoreReqVo reqVo) {
         SaveScoreReqVo saveScoreReqVo = dealData(reqVo);
         return this.save(saveScoreReqVo);
     }
@@ -200,6 +201,28 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
         if(Objects.isNull(score)){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
+        return entityTransRespVo(score);
+    }
+
+    /**
+     * 详情查看
+     *
+     * @param code
+     * @return
+     */
+    @Override
+    public DetailScoreRespVo detailByCode(String code) {
+        if(Objects.isNull(code)) {
+            throw new BizException(ResultCode.ID_EMPTY);
+        }
+        SupplierScore score = scoreMapper.selectByCode(code);
+        if(Objects.isNull(score)){
+            throw new BizException(ResultCode.OBJECT_EMPTY);
+        }
+        return entityTransRespVo(score);
+    }
+
+    private DetailScoreRespVo entityTransRespVo(SupplierScore score){
         DetailScoreRespVo respVo = new DetailScoreRespVo();
         BeanCopyUtils.copy(score,respVo);
         //获取标签使用记录

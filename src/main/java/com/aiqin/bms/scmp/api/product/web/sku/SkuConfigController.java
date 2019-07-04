@@ -5,7 +5,8 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateSkuConfigReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateSkuConfigSupplierReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -46,9 +47,9 @@ public class SkuConfigController {
 
     @PostMapping("/update")
     @ApiOperation("修改SKU配置信息")
-    public HttpResponse<Integer> update(@RequestBody List<UpdateSkuConfigReqVo> configReqVos) {
+    public HttpResponse<Integer> update(@RequestBody UpdateSkuConfigSupplierReqVo reqVo) {
         try {
-            return HttpResponse.success(productSkuConfigService.updateDraftList(configReqVos));
+            return HttpResponse.success(productSkuConfigService.updateDraftList(reqVo));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
@@ -72,11 +73,9 @@ public class SkuConfigController {
 
     @GetMapping("/view")
     @ApiOperation(("sku配置信息详情"))
-    public HttpResponse view (@RequestParam("skuCode") String skuCode) {
+    public HttpResponse<SkuConfigDetailRepsVo> view (@RequestParam("skuCode") String skuCode) {
         try {
             return HttpResponse.success(productSkuConfigService.detail(skuCode));
-        } catch (BizException e) {
-            return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);

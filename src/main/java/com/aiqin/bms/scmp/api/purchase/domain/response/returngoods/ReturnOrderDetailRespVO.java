@@ -149,6 +149,9 @@ public class ReturnOrderDetailRespVO {
     @ApiModelProperty("备注")
     private String remake;
 
+    @ApiModelProperty("处理办法（1退货退款，2仅退货")
+    private String treatmentMethod;
+
     @ApiModelProperty("退货订单商品")
     private List<ReturnOrderInfoItemRespVO> itemList;
 
