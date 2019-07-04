@@ -64,4 +64,6 @@ public class UpdateSkuConfigReqVo {
 
     @ApiModelProperty("备用仓库")
     private List<SpareWarehouseReqVo> spareWarehouses;
+
+
 }
