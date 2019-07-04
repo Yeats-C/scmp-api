@@ -12,7 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveSkuApplyInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplySkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaMainRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -78,9 +78,9 @@ public class DraftServiceImpl implements DraftService {
             httpResponse = HttpResponse.success(productSkuDraftRespVos);
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
             log.info("获取商品配置信息数据");
-            List<SkuConfigsRepsVo> configsRepsVos = productSkuConfigService.findDraftList(companyCode);
-            log.info("获取商品配置信息,结果{}", JSON.toJSON(configsRepsVos));
-            httpResponse = HttpResponse.success(configsRepsVos);
+            DetailConfigSupplierRespVo configsRepsVo = productSkuConfigService.findDraftList(companyCode);
+            log.info("获取商品配置信息,结果{}", JSON.toJSON(configsRepsVo));
+            httpResponse = HttpResponse.success(configsRepsVo);
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
             log.info("获取销售区域信息数据");
             List<QueryProductSaleAreaMainRespVO> saleAreaRespVOS = productSaleAreaService.queryListForDraft(companyCode);

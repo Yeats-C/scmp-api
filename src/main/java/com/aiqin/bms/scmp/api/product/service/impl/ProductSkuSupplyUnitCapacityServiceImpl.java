@@ -141,7 +141,7 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
         //根据申请编码查询供应商产能
         List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities =
                 applyMapper.selectByApplyCode(applyCode);
-        if(CollectionUtils.isEmptyCollection(applyProductSkuSupplyUnitCapacities)){
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuSupplyUnitCapacities)){
             List<ProductSkuSupplyUnitCapacity> productSkuSupplyUnitCapacities = BeanCopyUtils.copyList(applyProductSkuSupplyUnitCapacities,ProductSkuSupplyUnitCapacity.class);
             mapper.deleteByApplyCode(applyCode);
             return ((ProductSkuSupplyUnitCapacityService)AopContext.currentProxy()).insertList(productSkuSupplyUnitCapacities);
@@ -159,6 +159,7 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
+    @SaveList
     public int insertList(List<ProductSkuSupplyUnitCapacity> capacities) {
         return mapper.insertBatch(capacities);
     }

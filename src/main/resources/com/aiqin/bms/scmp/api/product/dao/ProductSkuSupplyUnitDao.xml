@@ -59,7 +59,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <collection property="productSkuSupplyUnitCapacities" column="{supplyUnitCode = supply_unit_code,productSkuCode = product_sku_code}"
-                javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo" select="com.aiqin.mgs.product.api.dao.mapper.ProductSkuSupplyUnitCapacityDraftMapper.getDraftList"/>
+                javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo" select="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitCapacityDraftMapper.getDraftList"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, supply_unit_code, supply_unit_name, no_tax_purchase_price, tax_included_price,

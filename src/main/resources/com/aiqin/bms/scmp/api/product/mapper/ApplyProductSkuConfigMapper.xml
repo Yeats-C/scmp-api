@@ -64,7 +64,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
     <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
-    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="auditor_status" jdbcType="INTEGER" property="applyStatus" />
     <result column="approval_type" jdbcType="INTEGER" property="approvalType"/>
   </resultMap>
   <select id="queryApplyList" parameterType="com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO"
