@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
@@ -32,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -75,8 +75,10 @@ public class StockController {
 
     @GetMapping("/search/one/info")
     @ApiOperation(value = "根据stockId查询单个stock信息")
-    public HttpResponse<StockRespVO> selectOneStockInfoByStockId(@RequestParam(value = "stock_id") Long stockId) {
-        return HttpResponse.success(stockService.selectOneStockInfoByStockId(stockId));
+    public HttpResponse<List<StockRespVO>> selectOneStockInfoByStockId(@RequestParam(value = "stock_id") Long stockId,
+                                                                       @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                       @RequestParam(value = "page_size", required = false) Integer page_size) {
+        return HttpResponse.success(stockService.selectOneStockInfoByStockId(stockId,page_no,page_size));
     }
 
     @PostMapping("/search/sku/page")
@@ -183,8 +185,10 @@ public class StockController {
 
     @GetMapping("/search/batch/one/info")
     @ApiOperation(value = "根据stockBatchId查询单个stockBatch信息")
-    public HttpResponse<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(@RequestParam(value = "stock_batch_id") Long stockBatchId) {
-        return HttpResponse.success(stockService.selectOneStockBatchInfoByStockBatchId(stockBatchId));
+    public HttpResponse<List<StockBatchRespVO>> selectOneStockBatchInfoByStockBatchId(@RequestParam(value = "stock_batch_id") Long stockBatchId,
+                                                                                             @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                                             @RequestParam(value = "page_size", required = false) Integer page_size) {
+        return HttpResponse.success(stockService.selectOneStockBatchInfoByStockBatchId(stockBatchId,page_no,page_size));
     }
 
     @GetMapping("/search/batch/sku/page")
@@ -257,5 +261,17 @@ public class StockController {
         reqVO.setPageSize(page_size);
         return HttpResponse.success(stockService.selectStockSkuList(reqVO));
     }
+
+    /**
+     * 库房库存数据保存
+     * @return
+     */
+    @PostMapping("/update/storehouse")
+    @ApiOperation(value = "库房管理列表数据保存")
+    public HttpResponse updateStorehouseById(@RequestBody List<StockRespVO> stockRespVO){
+        stockService.updateStorehouseById(stockRespVO);
+        return  HttpResponse.success();
+    }
+
 
 }

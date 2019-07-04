@@ -198,7 +198,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public Integer saveOutBoundInfo(OutboundReqVo stockReqVO) {
-        int flag = 0;
         String outboundOderCode = null;
         try {
             //编码生成
@@ -230,10 +229,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
             outboundService.pushWms(outbound.getOutboundOderCode(),outboundService);
             // 跟新数据库状态
-            if(i > 0 && j > 0 && m > 0){
-                flag = 1;
-            }
-            return flag;
+            return j;
         } catch (Exception e) {
             e.printStackTrace();
             throw new GroundRuntimeException("保存出库单失败");
@@ -524,6 +520,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             stockChangeRequest.setOperationType(2);
 
             List<StockVoRequest> stockVoRequestList = new ArrayList<>();
+            List<StockBatchVoRequest> stockBatchVoRequestList = new ArrayList<>();
 
             for (OutboundProductCallBackReqVo outboundProductCallBackReqVo : reqVo.getList()) {
                 // 查询旧的sku，以及销项，进项税率
@@ -591,7 +588,17 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
 
                 //TODO 设置修改减少库存sku批次实体
+                //  设置修改减少库存sku实体
+                StockBatchVoRequest stockBatchVoRequest = new StockBatchVoRequest();
+                //设置sku编码名称 批次号
+                stockBatchVoRequest.setSkuCode(outboundBatch.getSkuCode());
+                stockBatchVoRequest.setSkuName(outboundBatch.getSkuName());
+                stockBatchVoRequest.setBatchCode(outboundBatch.getOutboundBatchCode());
+                //设置更改数量
+                stockBatchVoRequest.setChangeNum(outboundBatch.getPraQty());
+                stockBatchVoRequestList.add(stockBatchVoRequest);
             }
+            stockChangeRequest.setStockBatchVoRequest(stockBatchVoRequestList);
             // 解锁并且减库存
            HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){

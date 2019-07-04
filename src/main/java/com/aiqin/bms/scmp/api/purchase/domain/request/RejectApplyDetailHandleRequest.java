@@ -95,7 +95,7 @@ public class RejectApplyDetailHandleRequest {
     private String brandName;
 
     @ApiModelProperty(value = "商品类型 0赠品 1商品 2实物返回")
-    @JsonProperty("product_type")
+    @JsonProperty("goods_gifts")
     private Integer productType;
 
     @ApiModelProperty(value="颜色编码")
@@ -122,8 +122,8 @@ public class RejectApplyDetailHandleRequest {
     @JsonProperty("unit_name")
     private String unitName;
 
-    @ApiModelProperty(value = "库存数量")
-    @JsonProperty("stock_count")
+    @ApiModelProperty(value = "可用库存数")
+    @JsonProperty("available_num")
     private Integer stockCount;
 
     @ApiModelProperty(value = "数量")
@@ -135,7 +135,7 @@ public class RejectApplyDetailHandleRequest {
     private Integer singleCount;
 
     @ApiModelProperty(value = "税率")
-    @JsonProperty("tax_rate")
+    @JsonProperty("input_tax_rate")
     private Integer taxRate;
 
     @ApiModelProperty(value = "仓编码(物流中心编码)")
@@ -155,7 +155,7 @@ public class RejectApplyDetailHandleRequest {
     private String warehouseName;
 
     @ApiModelProperty(value = "含税单价")
-    @JsonProperty("purchase_price")
+    @JsonProperty("product_amount")
     private Long productAmount;
 
     @ApiModelProperty(value = "含税总价")

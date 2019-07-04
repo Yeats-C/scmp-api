@@ -35,4 +35,8 @@ public class OutboundBatchCallBackReqVo {
 
     @ApiModelProperty("行号")
     private Long linenum;
+
+    @ApiModelProperty("批次号")
+    private String outboundBatchCode;
+
 }

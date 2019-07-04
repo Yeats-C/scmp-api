@@ -1,7 +1,5 @@
-package com.aiqin.bms.scmp.api.product.domain.pojo;
+package com.aiqin.bms.scmp.api.product.domain.request.inbound;
 
-import com.aiqin.bms.scmp.api.base.PagesRequest;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -9,12 +7,16 @@ import lombok.Data;
 import java.util.Date;
 
 /**
- * Created by 爱亲 on 2019/6/20.
+ * @Classname: ReturnInboundProduct
+ * 描述:  回调查询进项税率
+ * @Author: Kt.w
+ * @Date: 2019/3/26
+ * @Version 1.0
+ * @Since 1.0
  */
-@ApiModel("入库批次详情表")
 @Data
-public class InboundBatch extends PagesRequest{
-
+@ApiModel("回调查询进项税率")
+public class ReturnInboundBatch {
     @ApiModelProperty("主键")
     private Long id;
 
@@ -30,12 +32,6 @@ public class InboundBatch extends PagesRequest{
     @ApiModelProperty("批次号")
     private String inboundBatchCode;
 
-    @ApiModelProperty("生产日期")
-    private Date manufactureTime;
-
-    @ApiModelProperty("批次备注")
-    private String batchRemark;
-
     @ApiModelProperty("预计数量")
     private Long preQty;
 
@@ -45,32 +41,27 @@ public class InboundBatch extends PagesRequest{
     @ApiModelProperty("库位号")
     private String storeHouseCode;
 
-    @ApiModelProperty("采购调用次数")
-    private Integer purchaseNum;
+    @ApiModelProperty("生产日期")
+    private Date manufactureTime;
+
+    @ApiModelProperty("批次备注")
+    private String batchRemark;
 
     @ApiModelProperty("创建人")
     private String createBy;
 
     @ApiModelProperty("创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     @ApiModelProperty("更新人")
     private String updateBy;
 
     @ApiModelProperty("更新时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     @ApiModelProperty("行号")
     private Long linenum;
 
-    public InboundBatch(String inboundOderCode, Integer pageSize, Integer pageNo) {
-        this.inboundOderCode = inboundOderCode;
-        super.setPageSize(pageSize);
-        super.setPageNo(pageNo);
-    }
-
-    public InboundBatch() {
-    }
+    @ApiModelProperty("进项税率")
+    private Long tax;
 }

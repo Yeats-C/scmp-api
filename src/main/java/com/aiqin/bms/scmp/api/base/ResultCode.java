@@ -191,6 +191,8 @@ public interface ResultCode {
     MessageId IMPORT_REJECT_APPLY_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入退供申请单异常");
     MessageId NOT_HAVE_REJECT_APPLY_RECORD = MessageId.create(Project.SCMP_API, 1001, "未查询到对应的退供申请单记录");
     MessageId NOT_HAVE_REJECT_RECORD = MessageId.create(Project.SCMP_API, 1002, "未查询到对应的退供单记录");
+    MessageId REJECT_RECORD_ERROR =  MessageId.create(Project.PRODUCT_API, 1003, "申请退供单审批数据保存异常！");
+
     //订单
     MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");
     MessageId CAN_NOT_FIND_ORDER = MessageId.create(Project.PURCHASE_API,99,"订单数据查询失败");
@@ -207,15 +209,16 @@ public interface ResultCode {
     MessageId GET_RETURN_GOODS_DETAIL_FAILED = MessageId.create(Project.PURCHASE_API,100,"获取订单详情失败");
     MessageId QUERY_INSPECTION_DETAIL_ERROR = MessageId.create(Project.PURCHASE_API,100,"查询验货信息失败");
     MessageId SAVE_INSPECTION_DATA_FAILED = MessageId.create(Project.PURCHASE_API,100,"保存验货信息失败");
+    
     //出库
-    MessageId OUTBOUND_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.PURCHASE_API,75,"出库单信息不能为空");
-    MessageId SAVE_OUT_BOUND_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存出库主表数据失败");
-    MessageId SAVE_OUT_BOUND_PRODUCT_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存出库商品数据失败");
-    MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存出库批次数据失败");
+    MessageId OUTBOUND_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.SCMP_API,75,"出库单信息不能为空");
+    MessageId SAVE_OUT_BOUND_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库主表数据失败");
+    MessageId SAVE_OUT_BOUND_PRODUCT_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库商品数据失败");
+    MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库批次数据失败");
 
     // 采购
-    MessageId NOT_PURCHASE_GROUP = MessageId.create(Project.SCMP_API,201,"未获取到有效的采购组");
-    MessageId NOT_PURCHASE_GROUP_PERSON = MessageId.create(Project.SCMP_API,202,"此采购组该人员无相关数据");
+    MessageId NOT_PURCHASE_GROUP_DATA = MessageId.create(Project.SCMP_API,201,"此采购组该人员无相关数据");
+    MessageId IMPORT_PURCHASE_APPLY_ERROR = MessageId.create(Project.SCMP_API, 202, "导入采购申请单异常");
 
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");

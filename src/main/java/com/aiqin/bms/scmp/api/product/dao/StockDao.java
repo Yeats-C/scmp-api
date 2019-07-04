@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.dao;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatchFlow;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
@@ -13,8 +14,10 @@ import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStoc
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -43,8 +46,9 @@ public interface StockDao {
 
     Integer countStockSumInfoByPage(StockRequest stockRequest);
 
-    StockRespVO selectOneStockInfoByStockId(Long stockId);
+    List<StockRespVO> selectOneStockInfoByStockId(Long stockId);
 
+    Long selectOneStockInfoByStockIdInfoByPage(Long stockId);
 
     /**
      *
@@ -102,8 +106,14 @@ public interface StockDao {
      * 批量插入数据
      */
     List<StockBatchRespVO> selectStockBatchDistinct();
+
     List<StockBatchProductSkuRespVO> selectProductSku();
+
     Integer insertStockBatch(@Param("list") List<StockBatch> stockBatches);
+
+    Integer updateStockBatch(@Param("list") List<StockBatch> stockBatches);
+
+    Integer insertStockBatchFlow(@Param("list") List<StockBatchFlow> flows);
 
     /**
      * 根据stockBatchId查询单个库存信息
@@ -111,7 +121,9 @@ public interface StockDao {
      * @param stockBatchId
      * @return
      */
-    StockBatchRespVO selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
+    List<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
+
+    Long selectOneStockBatchInfoByStockBatchIdInfoByPage(Long stockBatchId);
 
     List<PurchaseApplyDetailResponse> purchaseProductList(PurchaseApplyRequest purchases);
 
@@ -127,7 +139,7 @@ public interface StockDao {
      */
     List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
 
-    List<QueryStockBatchSkuRespVo> selectSkuBatchCodeList();
+    QueryStockBatchSkuRespVo selectSkuBatchCode(@Param("procurementSectionCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode,@Param("batchCode") String batchCode);
 
     /**
      * 库房管理新增调拨,移库,报废列表查询
@@ -136,5 +148,9 @@ public interface StockDao {
      */
     List<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
 
+    void updateStorehouseById(@Param("list") List<StockRespVO> stockRespVO);
+
+    PurchaseApplyProduct purchaseBySkuStock(@Param("purchaseGroupCode")String purchaseGroupCode, @Param("skuCode")String skuCode,
+                                            @Param("supplierName")String supplierName, @Param("transportCenterName")String transportCenterName);
 
 }

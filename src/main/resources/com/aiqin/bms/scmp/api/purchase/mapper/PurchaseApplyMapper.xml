@@ -10,7 +10,7 @@
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
     <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
@@ -31,12 +31,6 @@
   <update id="update">
     update purchase_apply
     <set>
-      <if test="purchaseApplyId != null">
-        purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseApplyCode != null">
-        purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR},
-      </if>
       <if test="applyType != null">
         apply_type = #{applyType,jdbcType=INTEGER},
       </if>
@@ -57,7 +51,7 @@
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </update>
   <select id="applyList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse">
     select <include refid="Base_Column_List"></include> from purchase_apply

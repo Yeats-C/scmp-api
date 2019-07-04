@@ -133,4 +133,6 @@ public interface InboundService {
     Boolean saveList(List<InboundReqSave> list);
 
     void saveData(List<Inbound> inboundList, List<InboundProduct> productList, List<InboundBatch> batchList);
+
+    HttpResponse selectPurchaseInfoByPurchaseNum(InboundBatchPurchaseReq inboundBatchPurchaseReq);
 }
