@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
@@ -53,6 +55,16 @@ public interface ReturnGoodsService {
      * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO
      */
     ReturnOrderDetailRespVO returnOrderDetail(String code);
+
+    /**
+     *
+     * @author NullPointException
+     * @date 2019/7/3
+     * @param code
+     * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoApplyInboundRespVO>
+     */
+    List<ReturnOrderInfoApplyInboundRespVO> inboundInfo(String code);
+
     /**
      * 退货验货
      * @author NullPointException
@@ -93,4 +105,55 @@ public interface ReturnGoodsService {
      * @return InspectionViewRespVO
      */
     InspectionViewRespVO inspectionView(String code);
+    /**
+     * 直送订单管理
+     * @author NullPointException
+     * @date 2019/7/3
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnOrderManagementRespVO>
+     */
+    BasePage<QueryReturnOrderManagementRespVO> directReturnOrderManagement(QueryReturnOrderManagementReqVO reqVO);
+    /**
+     * 直送退后详情
+     * @author NullPointException
+     * @date 2019/7/3
+     * @param code
+     * @return com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO
+     */
+    ReturnOrderDetailRespVO directReturnOrderDetail(String code);
+    /**
+     * 退货直送订单保存入库数量
+     * @author NullPointException
+     * @date 2019/7/4
+     * @param reqVO
+     * @param code
+     * @return java.lang.Boolean
+     */
+    Boolean returnReceipt(List<ReturnReceiptReqVO> reqVO, String code);
+    /**
+     * 修改订单状态
+     * @author NullPointException
+     * @date 2019/7/4
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean changeStatus(ChangeOrderStatusReqVO reqVO);
+
+    /**
+     * 保存退货收货信息
+     * @author NullPointException
+     * @date 2019/7/4
+     * @param reqVO
+     * @return int
+     */
+    void saveReturnReceipt(List<ReturnReceiptReqVO> reqVO);
+    /**
+     * 修改订单状态
+     * @author NullPointException
+     * @date 2019/7/4
+     * @param code
+     * @param status
+     * @return java.lang.Boolean
+     */
+    Boolean changeOrderStatus(String code, Integer status);
 }

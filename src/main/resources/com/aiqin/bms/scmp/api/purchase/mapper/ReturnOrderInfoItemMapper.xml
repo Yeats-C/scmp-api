@@ -376,4 +376,12 @@
       company_code = #{companyCode,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+    <update id="updateActualInboundNumByIdAndReturnOrderCode">
+        <foreach collection="list" open="" close="" separator=";" item="item">
+       update return_order_info_item
+            set
+              actual_inbound_num = #{item.actualInboundNum,jdbcType=INTEGER},
+            where id = #{item.id,jdbcType=BIGINT}
+        </foreach>
+    </update>
 </mapper>

@@ -86,4 +86,28 @@ public interface ReturnOrderInfoMapper {
      * @return com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO
      */
     ReturnOrderInfoDTO selectByCode(String returnOrderCode);
+    /**
+     * 查入库信息
+     * @author NullPointException
+     * @date 2019/7/3
+     * @param code
+     * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoApplyInboundRespVO>
+     */
+    List<ReturnOrderInfoApplyInboundRespVO> selectInbound(String code);
+    /**
+     * 根据编码查
+     * @author NullPointException
+     * @date 2019/7/4
+     * @param orderCode
+     * @return com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo
+     */
+    ReturnOrderInfo selectByCode1(String orderCode);
+    /**
+     * 通过编码全量更新
+     * @author NullPointException
+     * @date 2019/7/4
+     * @param order
+     * @return int
+     */
+    int updateByOrderCode(ReturnOrderInfo order);
 }

@@ -14,6 +14,8 @@ import lombok.Data;
 @Data
 @ApiModel("商品信息")
 public class ReturnOrderInfoItemRespVO {
+    @ApiModelProperty("id")
+    private Long id;
 
     @ApiModelProperty("sku编号")
     private String skuCode;
@@ -65,6 +67,9 @@ public class ReturnOrderInfoItemRespVO {
 
     @ApiModelProperty("赠品行号")
     private Long promotionLineNum;
+
+    @ApiModelProperty("实际入库数")
+    private Long actualInboundNum;
 
     @ApiModelProperty("商品状态1新品2残品")
     private Integer productStatus;
