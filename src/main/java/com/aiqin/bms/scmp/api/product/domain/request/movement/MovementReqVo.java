@@ -1,11 +1,13 @@
 package com.aiqin.bms.scmp.api.product.domain.request.movement;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductReqVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -20,9 +22,6 @@ import java.util.List;
 @Data
 public class MovementReqVo {
 
-    @ApiModelProperty("移库编码")
-    private String movementCode;
-
     @ApiModelProperty("所属仓库编码")
     private String logisticsCenterCode;
 
@@ -30,16 +29,16 @@ public class MovementReqVo {
     private String logisticsCenterName;
 
     @ApiModelProperty("调出库房编码")
-    private String calloutWarehouseCode;
+    private String callOutWarehouseCode;
 
     @ApiModelProperty("调出库房名称")
-    private String calloutWarehouseName;
+    private String callOutWarehouseName;
 
     @ApiModelProperty("调入库房编码")
-    private String callinWarehouseCode;
+    private String callInWarehouseCode;
 
     @ApiModelProperty("调入库房名称")
-    private String callinWarehouseName;
+    private String callInWarehouseName;
 
     @ApiModelProperty("采购组编码")
     private String purchaseGroupCode;
@@ -53,46 +52,30 @@ public class MovementReqVo {
     @ApiModelProperty("数量")
     private Long quantity;
 
-    @ApiModelProperty("含税库存成本")
-    @JsonProperty("taxRefundAmount")
-    private Long taxInventoryCost;
+    @ApiModelProperty("含税总成本单位分(传入时需要乘以100)")
+    @NotNull(message = "含税总成本")
+    private Long totalCostRate;
 
-    @ApiModelProperty("出库单号")
-    private String outboundOderCode;
+    @ApiModelProperty("直属上级编码")
+    @NotEmpty(message = "直属上级编码不能为空！")
+    private String directSupervisorCode;
 
-    @ApiModelProperty("入库单号")
-    private String inboundOderCode;
+    @ApiModelProperty("直属上级名称")
+    @NotEmpty(message = "直属上级名称不能为空！")
+    private String directSupervisorName;
 
-    @ApiModelProperty("移库状态编码")
-    private Byte movementStatusCode;
+    @ApiModelProperty("承担单位编码")
+    @NotEmpty(message = "承担单位编码不能为空！")
+    private String undertakingUnitCode;
 
-    @ApiModelProperty("移库状态名称")
-    private String movementStatusName;
+    @ApiModelProperty("承担单位名称")
+    @NotEmpty(message = "承担单位名称不能为空！")
+    private String undertakingUnitName;
 
-    @ApiModelProperty("删除标记，0未删除 1已删除")
-    private Byte delFlag;
-
-    @ApiModelProperty("创建时间")
-    private Date createTime;
-
-    @ApiModelProperty("创建人")
-    private String createBy;
-
-    @ApiModelProperty("修改时间")
-    private Date updateTime;
-
-    @ApiModelProperty("修改人")
-    private String updateBy;
-
-    @ApiModelProperty("审批流水编号")
-    private String formNo;
-
-    @ApiModelProperty("公司编码")
-    private String companyCode;
-
-    @ApiModelProperty("公司名称")
-    private String companyName;
+    @ApiModelProperty("备注")
+    private String remark;
 
     @ApiModelProperty("sku列表")
-    private List<MovementProductReqVo> list;
+    @Valid
+    List<AllocationProductReqVo> list;
 }

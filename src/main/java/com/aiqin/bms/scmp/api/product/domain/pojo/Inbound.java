@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
+import com.aiqin.bms.scmp.api.base.PagesRequest;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -8,7 +9,7 @@ import java.util.Date;
 
 @ApiModel("库房入库主表")
 @Data
-public class Inbound {
+public class Inbound extends PagesRequest{
     @ApiModelProperty("主键")
     private Long id;
 
@@ -123,6 +124,9 @@ public class Inbound {
     @ApiModelProperty("详细地址")
     private String detailedAddress;
 
+    @ApiModelProperty("采购调用次数")
+    private Integer purchaseNum;
+
     @ApiModelProperty("创建人")
     private String createBy;
 
@@ -134,4 +138,14 @@ public class Inbound {
 
     @ApiModelProperty("更新时间")
     private Date updateTime;
+
+    public Inbound(String sourceOderCode, Integer purchaseNum, Integer pageSize, Integer pageNo) {
+        this.sourceOderCode = sourceOderCode;
+        this.purchaseNum = purchaseNum;
+        this.setPageSize(pageSize);
+        this.setPageNo(pageNo);
+    }
+
+    public Inbound() {
+    }
 }

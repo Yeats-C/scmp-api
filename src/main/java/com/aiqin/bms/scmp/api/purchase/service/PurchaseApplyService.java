@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductReques
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface PurchaseApplyService {
     HttpResponse applyProductBasic(String purchaseApplyId);
 
     HttpResponse applySelectionProduct(String purchaseApplyId);
+
+    HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode);
 }

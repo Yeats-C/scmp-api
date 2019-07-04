@@ -218,7 +218,8 @@ public interface ResultCode {
     MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库批次数据失败");
 
     // 采购
-    MessageId NOT_PURCHASE_GROUP_DATA = MessageId.create(Project.SCMP_API,202,"此采购组该人员无相关数据");
+    MessageId NOT_PURCHASE_GROUP_DATA = MessageId.create(Project.SCMP_API,201,"此采购组该人员无相关数据");
+    MessageId IMPORT_PURCHASE_APPLY_ERROR = MessageId.create(Project.SCMP_API, 202, "导入采购申请单异常");
 
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");
@@ -239,5 +240,8 @@ public interface ResultCode {
     MessageId SAVE_IN_BOUND_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库批次数据失败");
 
     MessageId SUPERVISORY_WAREHOUSE_NOT_EXISTS = MessageId.create(Project.PURCHASE_API,75,"监管仓不存在,请先添加");
+
+    MessageId IMPORT_DATA_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入数据异常");
+    MessageId IMPORT_DATA_EMPTY= MessageId.create(Project.SCMP_API, 1000, "导入数据为空");
 
 }

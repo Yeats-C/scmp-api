@@ -1,5 +1,7 @@
 server:
     port: 80
+    tomcat:
+      basedir: /tmp/dir
 spring:
     profiles:
         active: ${profile.name}
@@ -51,14 +53,15 @@ WorkFlowBaseUrl:
   #各个页面详情url
     supplierUrl:
         #合同申请详情
-        applyContract: http://scmp.bms.aiqin.com/#/Supplier/ContractAppDetails/
+        applyContract: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
         #供应商申请详情
-        applySupplier: http://scmp.bms.aiqin.com/#/Supplier/SupplierDetails/
+        applySupplier: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
         #供应商集团申请详情
-        applySupplierGroup: http://scmp.bms.aiqin.com/#/Supplier/SupplierGroupDetails/
-
+        applySupplierGroup: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
         #供应商账户申请详情
-        applySupplierAccount: http://scmp.bms.aiqin.com/#/Supplier/SupplierAccountDetails/
+        applySupplierAccount: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
+
+
         #制造商申请详情
         applyManu: http://scmp.bms.aiqin.com/#/Supplier/ManuApplieDetail/
         #采购申请详情

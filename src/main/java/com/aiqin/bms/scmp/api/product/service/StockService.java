@@ -228,7 +228,7 @@ public interface StockService {
      */
     PageInfo<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId,Integer page_no,Integer page_size);
 
-    Integer insertStockBatch(StockChangeRequest stockChangeRequest);
+    HttpResponse operationStockBatch(StockChangeRequest stockChangeRequest);
 
     /**
      *
@@ -248,5 +248,19 @@ public interface StockService {
     PageInfo<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
 
     HttpResponse updateStorehouseById(List<StockRespVO> stockRespVO);
+
+    /**
+     * 退供锁定批次库存
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean returnSupplyLockStockBatch(ILockStockBatchReqVO reqVO);
+    /**
+     * 退供解锁批次库存
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean returnSupplyUnLockStockBatch(ILockStockBatchReqVO reqVO);
+
 
 }

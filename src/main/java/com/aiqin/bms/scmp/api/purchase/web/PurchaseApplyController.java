@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -105,11 +106,11 @@ public class PurchaseApplyController {
         return purchaseApplyService.purchaseApplyForm(applyProductRequest);
     }
 
-//    @GetMapping("/product")
-//    @ApiOperation("查询申请采购商品信息")
-//    public HttpResponse searchApplyProduct(@RequestParam("apply_product_id") String applyProductId) {
-//        return purchaseApplyService.searchApplyProduct(applyProductId);
-//    }
+    @GetMapping("/product")
+    @ApiOperation("查询申请采购商品信息")
+    public HttpResponse searchApplyProduct(@RequestParam("apply_product_id") String applyProductId) {
+        return purchaseApplyService.searchApplyProduct(applyProductId);
+    }
 
     @DeleteMapping("/product")
     @ApiOperation("删除申请采购商品信息")
@@ -127,5 +128,11 @@ public class PurchaseApplyController {
     @ApiOperation("查询采购申请-编辑采购申请-选中商品列表")
     public HttpResponse applySelectionProduct(@RequestParam("purchase_apply_id") String purchaseApplyId) {
         return purchaseApplyService.applySelectionProduct(purchaseApplyId);
+    }
+
+    @PostMapping("/apply/import")
+    @ApiOperation(value = "批量导入退供申请单")
+    public HttpResponse purchaseApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
+        return purchaseApplyService.purchaseApplyImport(file, purchaseGroupCode);
     }
 }

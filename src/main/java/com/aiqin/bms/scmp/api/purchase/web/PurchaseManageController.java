@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -87,8 +88,8 @@ public class PurchaseManageController {
         return purchaseManageService.purchaseOrderList(purchaseApplyRequest);
     }
 
-    @PutMapping("/order/cancel")
-    @ApiOperation("取消采购单")
+    @PutMapping("/order/status")
+    @ApiOperation("变更采购单状态")
     public HttpResponse cancelPurchaseOrder(@RequestBody PurchaseOrder purchaseOrder) {
         return purchaseManageService.cancelPurchaseOrder(purchaseOrder);
     }
@@ -122,7 +123,14 @@ public class PurchaseManageController {
 
     @GetMapping("/order/amount")
     @ApiOperation("查询采购单-采购数量金额")
-    public HttpResponse purchaseOrderLAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
-        return purchaseManageService.purchaseOrderLAmount(purchaseOrderId);
+    public HttpResponse purchaseOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
+        return purchaseManageService.purchaseOrderAmount(purchaseOrderId);
     }
+
+    @PostMapping("/order/stock")
+    @ApiOperation("采购单-开始备货")
+    public HttpResponse purchaseOrderStock(@RequestParam("purchase_order_id") String purchaseOrderId) {
+        return purchaseManageService.purchaseOrderStock(purchaseOrderId);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.web.movement;
 
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -35,7 +36,12 @@ public class MovementController {
     @ApiOperation("移库列表详情")
     @PostMapping("/list")
     public HttpResponse<BasePage<QueryMovementResVo>> getList(@RequestBody QueryMovementReqVo vo) {
-        return HttpResponse.success(movementService.getList(vo));
+        try {
+            return HttpResponse.success(movementService.getList(vo));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
     /**
@@ -44,8 +50,15 @@ public class MovementController {
      */
     @ApiOperation("移库添加")
     @PostMapping("/save")
-    public HttpResponse<Integer> save(@RequestBody MovementReqVo vo) {
-        return HttpResponse.success(movementService.save(vo));
+    public HttpResponse<Long> save(@RequestBody MovementReqVo vo) {
+        try {
+            return HttpResponse.success(movementService.save(vo));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
     /**
@@ -55,7 +68,14 @@ public class MovementController {
     @ApiOperation("移库列表详情")
     @GetMapping("/view")
     public HttpResponse<MovementResVo> view(Long id) {
-        return HttpResponse.success(movementService.view(id));
+        try {
+            return HttpResponse.success(movementService.view(id));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
 

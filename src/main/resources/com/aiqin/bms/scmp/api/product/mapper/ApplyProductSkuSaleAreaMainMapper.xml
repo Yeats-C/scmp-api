@@ -44,8 +44,9 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="queryApplyList" resultType="com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO">
-      select distinct code as code,
+      select distinct apply_code as code,
              apply_type as applyType,
+             3 as approvalType,
              create_by as createBy,
              create_time as createTime,
              auditor_by as auditorBy,
@@ -65,9 +66,11 @@
     <if test="code != null">
       and apply_code like CONCAT('%',#{code},'%')
     </if>
+    order by create_time desc
   </select>
   <resultMap id="selectByApplyCode" type="com.aiqin.bms.scmp.api.product.domain.product.apply.ProductSaleAreaApplyVO">
     <result column="aapply_code" property="code"></result>
+    <result column="aname" property="name"></result>
     <result column="abe_disable" property="beDisable"></result>
     <result column="aapply_type" property="applyType"></result>
     <result column="aapply_status" property="applyStatus"></result>
@@ -751,7 +754,7 @@
         set
             be_effective = 1
         where code in
-        <foreach collection="items" separator="," close="(" open=")" item="item">
+        <foreach collection="items" separator="," close=")" open="(" item="item">
           #{item}
         </foreach>
     </update>

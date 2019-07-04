@@ -227,6 +227,7 @@
     </resultMap>
     <resultMap id="QueryStockSkuListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo">
         <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
         <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
@@ -241,6 +242,8 @@
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
         <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
         <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
+        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
     </resultMap>
     <resultMap id="StockFlowMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -314,7 +317,7 @@
 
     <sql id="Query_Stock_Sku_List">
         a.sku_code,a.sku_name,c.product_category_code,c.product_category_name,c.product_brand_code,c.product_brand_name,c.spec,
-        c.color_code,c.color_name,c.model_number, c.unit_code,c.unit_name,c.goods_gifts,c.product_sort_code,c.product_sort_name,a.stock_unit_code,a.stock_unit_name,b.Input_tax_rate,a.tax_price,
+        c.color_code,c.color_name,c.model_number, c.unit_code,c.unit_name,c.goods_gifts,c.product_sort_code,c.product_sort_name,a.stock_unit_code,a.stock_unit_name,b.Input_tax_rate,a.tax_cost as tax_price,
         c.product_code,c.product_name,a.available_num, 1 as zero_removal_coefficient
     </sql>
 
@@ -663,7 +666,6 @@
     </sql>
 
     <select id="selectStockSkuInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo"
             resultMap="QueryStockSkuResultMap">
         select
         <include refid="Query_Stock_Sku_List"/>
@@ -1338,25 +1340,43 @@
     </select>
     <!-- 啊啊啊啊啊 -->
     <select id="selectStockBatchDistinct" resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
-        select  batch_code,inventory_num,available_num,lock_num
+        select  stock_batch_code,batch_code,inventory_num,available_num,lock_num
         FROM stock_batch
         where batch_code group by batch_code ORDER BY production_date ASC;
     </select>
     <insert id="insertStockBatch" parameterType="java.util.List">
         INSERT INTO stock_batch(
-        stock_batch_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_name,warehouse_code,warehouse_type,
+        stock_batch_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,warehouse_type,
         sku_code,sku_name,batch_code,production_date,batch_remark,category_type_code,category_type_name,spec,color_code,color_name,model_number,
-        unit_code,unit_name,pack,config_status,inventory_num,available_num,lock_num,supplier_code,supplier_name,new_delivery,new_delivery_name,purchase_price
+        unit_code,unit_name,pack,config_status,inventory_num,available_num,lock_num,supplier_code,supplier_name,new_delivery,new_delivery_name,purchase_price,tax_rate
         )
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (#{item.stock_batch_code},#{item.company_code},#{item.company_name},#{item.transport_center_code},
-            #{item.transport_center_name},#{item.warehouse_name},#{item.warehouse_code},#{item.warehouse_type},
+            #{item.transport_center_name},#{item.warehouse_code},#{item.warehouse_name},#{item.warehouse_type},
             #{item.sku_code},#{item.sku_name},#{item.batch_code},#{item.production_date},#{item.batch_remark},
             #{item.category_type_code},#{item.category_type_name},#{item.spec},#{item.color_code},#{item.color_name},
             #{item.model_number},#{item.unit_code},#{item.unit_name},#{item.pack},#{item.config_status},
             #{item.inventory_num},#{item.available_num},#{item.lock_num},#{item.supplier_code},
-            #{item.supplier_name},#{item.new_delivery},#{item.new_delivery_name},#{item.purchase_price}
+            #{item.supplier_name},#{item.new_delivery},#{item.new_delivery_name},#{item.purchase_price},#{item.tax_rate}
+            )
+        </foreach>
+    </insert>
+    <insert id="insertStockBatchFlow" parameterType="java.util.List">
+        INSERT INTO stock_batch_flow(
+        stock_batch_code,flow_batch_code,batch_code,order_code,order_type,order_source,sku_code,sku_name,
+        lock_status,document_type,document_num,source_document_type,source_document_num,operating_time,
+        operating_by,remark,before_inventory_num,after_inventory_num,before_available_num,after_available_num,
+        before_lock_num,after_lock_num,change_num,operation_type
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.stock_batch_code},#{item.flow_batch_code},#{item.batch_code},#{item.order_code},
+            #{item.order_type},#{item.order_source},#{item.sku_code},#{item.sku_name},#{item.lock_status},
+            #{item.document_type},#{item.document_num},#{item.source_document_type},#{item.source_document_num},
+            #{item.operating_time},#{item.operating_by},#{item.remark},#{item.before_inventory_num},
+            #{item.after_inventory_num},#{item.before_available_num},#{item.after_available_num},
+            #{item.before_lock_num},#{item.after_lock_num},#{item.change_num},#{item.operation_type}
             )
         </foreach>
     </insert>
@@ -1727,34 +1747,34 @@
             resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo"
             resultMap="QueryStockSkuListResultMap">
         select
-        s.id,s.sku_code,s.sku_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
-        ps.goods_gifts,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,s.available_num
-        from stock s
-        left join product_sku ps on s.sku_code = ps.sku_code
-        left join product_sku_checkout psc on s.sku_code = psc.sku_code
-        left join product_sku_stock_info pssi on s.sku_code = pssi.product_sku_code
+        sb.id,sb.warehouse_code,sb.sku_code,sb.sku_name,ps.product_category_code,ps.product_category_code,ps.product_brand_code,ps.product_brand_name,
+        ps.goods_gifts,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,sb.available_num,
+        s.tax_rate,s.tax_cost
+        from stock_batch sb
+        left join stock s on sb.sku_code = s.sku_code
+        left join product_sku ps on sb.sku_code = ps.sku_code
         <where>
             1 = 1
             <if test="outTransportCenterCode != null and outTransportCenterCode != ''">
-                and s.transport_center_code  = #{outTransportCenterCode, jdbcType=VARCHAR}
+                and sb.transport_center_code  = #{outTransportCenterCode, jdbcType=VARCHAR}
             </if>
             <if test="outWarehouseCode != null and outWarehouseCode != ''">
-                and s.warehouse_code  = #{outWarehouseCode, jdbcType=VARCHAR}
+                and sb.warehouse_code  = #{outWarehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="procurementSectionCode != null and procurementSectionCode != ''">
                 and ps.procurement_section_code  = #{procurementSectionCode, jdbcType=VARCHAR}
             </if>
             <if test="inTransportCenterCode != null and inTransportCenterCode != ''">
-                and s.transport_center_code = #{inTransportCenterCode, jdbcType=VARCHAR}
+                and sb.transport_center_code = #{inTransportCenterCode, jdbcType=VARCHAR}
             </if>
             <if test="inWarehouseCode != null and inWarehouseCode != ''">
-                and s.warehouse_code  = #{inWarehouseCode, jdbcType=VARCHAR}
+                and sb.warehouse_code  = #{inWarehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="skuCode != null and skuCode != ''">
-                and s.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR} ,'%')
+                and sb.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR} ,'%')
             </if>
             <if test="skuName != null and skuName != ''">
-                and s.sku_name like concat('%', #{skuName, jdbcType=VARCHAR} ,'%')
+                and sb.sku_name like concat('%', #{skuName, jdbcType=VARCHAR} ,'%')
             </if>
             <if test="productBrandCode != null and productBrandCode != ''">
                 and ps.product_brand_code like concat('%', #{productBrandCode, jdbcType=VARCHAR} ,'%')
@@ -1793,4 +1813,17 @@
         left join product_sku_stock_info as pssi on ps.sku_code = pssi.product_sku_code
         order by ps.sku_code asc
     </select>
+    <select id="selectSkuCodeByQueryBatchCodeList" parameterType="String" resultType="String">
+        SELECT
+        sb.batch_code as batchCodeList
+        FROM stock_batch sb
+        where 1=1
+        <if test="warehouseCode!=null and warehouseCode!=''">
+            and sb.warehouse_code=#{warehouseCode}
+        </if>
+        <if test="skuCode!=null and skuCode!=''">
+            and sb.sku_code=#{skuCode}
+        </if>
+    </select>
+
 </mapper>

@@ -1,14 +1,14 @@
 package com.aiqin.bms.scmp.api.product.web.sku;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

@@ -118,5 +118,6 @@ public class PurchaseOrderResponse {
 
     @ApiModelProperty(value="有效期")
     @JsonProperty("valid_time")
-    private Integer validTime;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    private Data validTime;
 }

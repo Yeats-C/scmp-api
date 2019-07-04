@@ -641,7 +641,7 @@ public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements
          ApplyContractDTO applyContractDTO = applyContractDao.selectByPrimaryKey(id);
         try {
             WorkFlowVO workFlowVO = new WorkFlowVO();
-            workFlowVO.setFormUrl(workFlowBaseUrl.applyContractUrl+"?id="+id+"&"+workFlowBaseUrl.authority);
+            workFlowVO.setFormUrl(workFlowBaseUrl.applyContractUrl+"?applyType="+applyContractDTO.getApplyType()+"&applyCode="+applyContractDTO.getApplyContractCode()+"&id="+applyContractDTO.getId()+"&itemCode=4"+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setFormNo("HT"+new IdSequenceUtils().nextId());
             workFlowVO.setTitle(applyContractDTO.getYear()+"年度-"+applyContractDTO.getYearName()+"合同名称"+"-"+WorkFlow.APPLY_CONTRACT.getTitle());

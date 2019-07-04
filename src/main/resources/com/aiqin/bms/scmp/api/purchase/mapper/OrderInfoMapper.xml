@@ -38,11 +38,13 @@
     <result column="payment_type_code" jdbcType="VARCHAR" property="paymentTypeCode" />
     <result column="deliver_amount" jdbcType="BIGINT" property="deliverAmount" />
     <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
+    <result column="product_channel_total_amount" jdbcType="BIGINT" property="productChannelTotalAmount" />
     <result column="discount_amount" jdbcType="BIGINT" property="discountAmount" />
     <result column="order_amount" jdbcType="BIGINT" property="orderAmount" />
     <result column="product_num" jdbcType="BIGINT" property="productNum" />
     <result column="payment_time" jdbcType="TIMESTAMP" property="paymentTime" />
     <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
+    <result column="transport_time" jdbcType="TIMESTAMP" property="transportTime" />
     <result column="receiving_time" jdbcType="TIMESTAMP" property="receivingTime" />
     <result column="invoice_type" jdbcType="VARCHAR" property="invoiceType" />
     <result column="invoice_type_code" jdbcType="VARCHAR" property="invoiceTypeCode" />
@@ -52,6 +54,7 @@
     <result column="operator_time" jdbcType="TIMESTAMP" property="operatorTime" />
     <result column="activity_discount" jdbcType="BIGINT" property="activityDiscount" />
     <result column="weight" jdbcType="BIGINT" property="weight" />
+    <result column="volume" jdbcType="BIGINT" property="volume" />
     <result column="be_master_order" jdbcType="INTEGER" property="beMasterOrder" />
     <result column="master_order_code" jdbcType="VARCHAR" property="masterOrderCode" />
     <result column="order_original" jdbcType="VARCHAR" property="orderOriginal" />
@@ -60,6 +63,8 @@
     <result column="store_type" jdbcType="VARCHAR" property="storeType" />
     <result column="logistics_remission_ratio" jdbcType="INTEGER" property="logisticsRemissionRatio" />
     <result column="transport_status" jdbcType="INTEGER" property="transportStatus" />
+    <result column="order_category_code" jdbcType="VARCHAR" property="orderCategoryCode" />
+    <result column="order_category" jdbcType="VARCHAR" property="orderCategory" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
   </resultMap>
@@ -73,7 +78,7 @@
     discount_amount, order_amount, product_num, payment_time, delivery_time, receiving_time, 
     invoice_type, invoice_type_code, invoice_title, operator, operator_code, operator_time, 
     activity_discount, weight, be_master_order, master_order_code, order_original, remake, 
-    logistics_remission_ratio, transport_status, company_name, company_code,store_type_code,store_type
+    logistics_remission_ratio, transport_status, company_name, company_code,store_type_code,store_type,product_channel_total_amount,volume,transport_time,order_category,order_category_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -94,7 +99,7 @@
              order_amount orderAmount,
              product_num productNum
       from order_info
-      where company_code = #{companyCode} and order_type = #{orderType}
+      where company_code = #{companyCode} and order_type_code = #{orderType}
       <if test="createDateStart != null">
         and create_date &gt;=#{createDateStart,jdbcType=TIMESTAMP}
       </if>
@@ -130,6 +135,7 @@
     <result column="aorder_code" jdbcType="VARCHAR" property="orderCode" />
     <result column="aorder_type" jdbcType="VARCHAR" property="orderType" />
     <result column="acustomer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="acustomer_code" jdbcType="VARCHAR" property="customerCode" />
     <result column="acreate_date" jdbcType="TIMESTAMP" property="createDate" />
     <result column="aorder_status" jdbcType="INTEGER" property="orderStatus" />
     <result column="abe_lock" jdbcType="INTEGER" property="beLock" />
@@ -149,11 +155,13 @@
     <result column="apayment_type" jdbcType="VARCHAR" property="paymentType" />
     <result column="adeliver_amount" jdbcType="BIGINT" property="deliverAmount" />
     <result column="aproduct_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
+    <result column="aproduct_channel_total_amount" jdbcType="BIGINT" property="productChannelTotalAmount" />
     <result column="adiscount_amount" jdbcType="BIGINT" property="discountAmount" />
     <result column="aorder_amount" jdbcType="BIGINT" property="orderAmount" />
     <result column="aproduct_num" jdbcType="BIGINT" property="productNum" />
     <result column="apayment_time" jdbcType="TIMESTAMP" property="paymentTime" />
     <result column="adelivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
+    <result column="atransport_time" jdbcType="TIMESTAMP" property="transportTime" />
     <result column="areceiving_time" jdbcType="TIMESTAMP" property="receivingTime" />
     <result column="ainvoice_type" jdbcType="VARCHAR" property="invoiceType" />
     <result column="ainvoice_title" jdbcType="VARCHAR" property="invoiceTitle" />
@@ -161,12 +169,14 @@
     <result column="aoperator_time" jdbcType="TIMESTAMP" property="operatorTime" />
     <result column="aactivity_discount" jdbcType="BIGINT" property="activityDiscount" />
     <result column="aweight" jdbcType="BIGINT" property="weight" />
+    <result column="avolume" jdbcType="BIGINT" property="volume" />
     <result column="abe_master_order" jdbcType="INTEGER" property="beMasterOrder" />
     <result column="amaster_order_code" jdbcType="VARCHAR" property="masterOrderCode" />
     <result column="aorder_original" jdbcType="VARCHAR" property="orderOriginal" />
     <result column="aremake" jdbcType="VARCHAR" property="remake" />
     <result column="astore_type_code" jdbcType="VARCHAR" property="storeTypeCode" />
     <result column="astore_type" jdbcType="VARCHAR" property="storeType" />
+    <result column="aorder_category" jdbcType="VARCHAR" property="orderCategory" />
     <result column="alogistics_remission_ratio" jdbcType="INTEGER" property="logisticsRemissionRatio" />
     <collection property="productList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
       <id column="bid" property="id"/>
@@ -181,8 +191,10 @@
       <result column="bgive_promotion" jdbcType="INTEGER" property="givePromotion" />
       <result column="bbatch_number" jdbcType="VARCHAR" property="batchNumber" />
       <result column="bprice" jdbcType="BIGINT" property="price" />
+      <result column="bchannel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
       <result column="bnum" jdbcType="BIGINT" property="num" />
       <result column="bamount" jdbcType="BIGINT" property="amount" />
+      <result column="btotal_channel_price" jdbcType="BIGINT" property="totalChannelPrice" />
       <result column="bactivity_apportionment" jdbcType="BIGINT" property="activityApportionment" />
       <result column="bpreferential_allocation" jdbcType="BIGINT" property="preferentialAllocation" />
       <result column="bactual_deliver_num" jdbcType="BIGINT" property="actualDeliverNum" />
@@ -213,6 +225,7 @@
         select a.order_code aorder_code,
              a.order_type aorder_type,
              a.customer_name acustomer_name,
+             a.customer_code acustomer_code,
              a.create_date acreate_date,
              a.order_status aorder_status,
              a.be_lock abe_lock,
@@ -232,6 +245,9 @@
              a.product_num aproduct_num,
              a.payment_time apayment_time,
              a.delivery_time adelivery_time,
+             a.transport_time atransport_time,
+             a.product_channel_total_amount aproduct_channel_total_amount,
+             a.product_total_amount aproduct_total_amount,
              a.receiving_time areceiving_time,
              a.invoice_type ainvoice_type,
              a.invoice_title ainvoice_title,
@@ -239,12 +255,14 @@
              a.operator_time aoperator_time,
              a.activity_discount aactivity_discount,
              a.weight aweight,
+             a.volume avolume,
              a.be_master_order abe_master_order,
              a.master_order_code amaster_order_code,
              a.order_original aorder_original,
              a.remake aremake,
              a.store_type astore_type,
              a.store_type_code astore_type_code,
+             a.order_category aorder_category,
              a.logistics_remission_ratio alogistics_remission_ratio,
              b.id bid,
              b.sku_code bsku_code,
@@ -258,6 +276,8 @@
              b.give_promotion bgive_promotion,
              b.batch_number bbatch_number,
              b.price bprice,
+             b.channel_unit_price bchannel_unit_price,
+             b.total_channel_price btotal_channel_price,
              b.num bnum,
              b.amount bamount,
              b.activity_apportionment bactivity_apportionment,
@@ -315,7 +335,7 @@
       operator, operator_code, operator_time, 
       activity_discount, weight, be_master_order, 
       master_order_code, order_original, remake, store_type,store_type_code,
-      logistics_remission_ratio, transport_status, 
+      logistics_remission_ratio, transport_status, transport_time,product_channel_total_amount,volume,order_category,order_category_code,
       company_name, company_code)
     values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR}, 
       #{orderTypeCode,jdbcType=INTEGER}, #{customerName,jdbcType=VARCHAR}, #{customerCode,jdbcType=VARCHAR}, 
@@ -335,8 +355,8 @@
       #{operator,jdbcType=VARCHAR}, #{operatorCode,jdbcType=VARCHAR}, #{operatorTime,jdbcType=TIMESTAMP}, 
       #{activityDiscount,jdbcType=BIGINT}, #{weight,jdbcType=BIGINT}, #{beMasterOrder,jdbcType=INTEGER}, 
       #{masterOrderCode,jdbcType=VARCHAR}, #{orderOriginal,jdbcType=VARCHAR}, #{remake,jdbcType=VARCHAR}, #{storeType,jdbcType=VARCHAR}, #{storeTypeCode,jdbcType=VARCHAR},
-      #{logisticsRemissionRatio,jdbcType=INTEGER}, #{transportStatus,jdbcType=INTEGER}, 
-      #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR})
+      #{logisticsRemissionRatio,jdbcType=INTEGER}, #{transportStatus,jdbcType=INTEGER}, #{transportTime,jdbcType=TIMESTAMP}, #{productChannelTotalAmount,jdbcType=BIGINT}, #{volume,jdbcType=BIGINT},
+      #{companyName,jdbcType=VARCHAR},#{orderCategory,jdbcType=VARCHAR},#{orderCategoryCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo">
     insert into order_info
@@ -514,6 +534,21 @@
       </if>
       <if test="transportStatus != null">
         transport_status,
+      </if>
+      <if test="transportTime != null">
+          transport_time,
+      </if>
+      <if test="productChannelTotalAmount != null">
+          product_channel_total_amount,
+      </if>
+      <if test="volume != null">
+          volume,
+      </if>
+      <if test="orderCategory != null">
+          order_category,
+      </if>
+      <if test="orderCategoryCode != null">
+          order_category_code,
       </if>
       <if test="companyName != null">
         company_name,
@@ -697,6 +732,21 @@
       <if test="transportStatus != null">
         #{transportStatus,jdbcType=INTEGER},
       </if>
+       <if test="transportTime != null">
+        #{transportTime,jdbcType=TIMESTAMP},
+      </if>
+       <if test="productChannelTotalAmount != null">
+        #{productChannelTotalAmount,jdbcType=BIGINT},
+      </if>
+       <if test="volume != null">
+        #{volume,jdbcType=BIGINT},
+      </if>
+        <if test="orderCategory != null">
+            #{order_category,jdbcType=VARCHAR},
+        </if>
+        <if test="orderCategoryCode != null">
+            #{order_category_code,jdbcType=VARCHAR},
+        </if>
       <if test="companyName != null">
         #{companyName,jdbcType=VARCHAR},
       </if>
@@ -724,7 +774,7 @@
       operator, operator_code, operator_time,
       activity_discount, weight, be_master_order,
       master_order_code, order_original, remake,store_type,store_type_code,
-      logistics_remission_ratio, transport_status,
+      logistics_remission_ratio, transport_status, transport_time,product_channel_total_amount,volume,order_category,order_category_code,
       company_name, company_code)
     values
       <foreach collection="list" item="item" separator="," close="" open="">
@@ -746,8 +796,8 @@
       #{item.operator,jdbcType=VARCHAR}, #{item.operatorCode,jdbcType=VARCHAR}, #{item.operatorTime,jdbcType=TIMESTAMP},
       #{item.activityDiscount,jdbcType=BIGINT}, #{item.weight,jdbcType=BIGINT}, #{item.beMasterOrder,jdbcType=INTEGER},
       #{item.masterOrderCode,jdbcType=VARCHAR}, #{item.orderOriginal,jdbcType=VARCHAR}, #{item.remake,jdbcType=VARCHAR},#{item.storeType,jdbcType=VARCHAR},#{item.storeTypeCode,jdbcType=VARCHAR},
-      #{item.logisticsRemissionRatio,jdbcType=INTEGER}, #{item.transportStatus,jdbcType=INTEGER},
-      #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR})
+      #{item.logisticsRemissionRatio,jdbcType=INTEGER}, #{item.transportStatus,jdbcType=INTEGER},#{item.transportTime,jdbcType=TIMESTAMP}, #{item.productChannelTotalAmount,jdbcType=BIGINT}, #{item.volume,jdbcType=BIGINT},
+      #{item.companyName,jdbcType=VARCHAR},#{item.orderCategory,jdbcType=VARCHAR},#{item.orderCategoryCode,,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR})
     </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo">
@@ -924,6 +974,21 @@
       <if test="transportStatus != null">
         transport_status = #{transportStatus,jdbcType=INTEGER},
       </if>
+      <if test="transportTime != null">
+          transport_time = #{transportTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productChannelTotalAmount != null">
+          product_channel_total_amount = #{productChannelTotalAmount,jdbcType=BIGINT},
+      </if>
+      <if test="volume != null">
+          volume = #{volume,jdbcType=BIGINT},
+      </if>
+       <if test="orderCategory != null">
+           order_category = #{orderCategory,jdbcType=VARCHAR},
+      </if>
+       <if test="orderCategoryCode != null">
+           order_category_code = #{orderCategoryCode,jdbcType=VARCHAR},
+      </if>
       <if test="companyName != null">
         company_name = #{companyName,jdbcType=VARCHAR},
       </if>
@@ -992,6 +1057,11 @@
       store_type_code = #{storeTypeCode,jdbcType=VARCHAR},
       logistics_remission_ratio = #{logisticsRemissionRatio,jdbcType=INTEGER},
       transport_status = #{transportStatus,jdbcType=INTEGER},
+      transport_time = #{transportTime,jdbcType=TIMESTAMP},
+      product_channel_total_amount = #{productChannelTotalAmount,jdbcType=BIGINT},
+      volume = #{volume,jdbcType=BIGINT},
+      order_category = #{orderCategory,jdbcType=VARCHAR},
+      order_category_code = #{orderCategoryCode,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},
       company_code = #{companyCode,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
@@ -1054,7 +1124,12 @@
       store_type_code = #{storeTypeCode,jdbcType=VARCHAR},
       logistics_remission_ratio = #{logisticsRemissionRatio,jdbcType=INTEGER},
       transport_status = #{transportStatus,jdbcType=INTEGER},
+      transport_time = #{transportTime,jdbcType=TIMESTAMP},
+      product_channel_total_amount = #{productChannelTotalAmount,jdbcType=BIGINT},
+      volume = #{volume,jdbcType=BIGINT},
       company_name = #{companyName,jdbcType=VARCHAR},
+      order_category = #{orderCategory,jdbcType=VARCHAR},
+      order_category_code = #{orderCategoryCode,jdbcType=VARCHAR},
       company_code = #{companyCode,jdbcType=VARCHAR}
     where order_code = #{orderCode,jdbcType=BIGINT}
   </update>

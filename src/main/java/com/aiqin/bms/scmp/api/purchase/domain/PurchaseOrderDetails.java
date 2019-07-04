@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -54,12 +55,14 @@ public class PurchaseOrderDetails {
     private String mobile;
 
     @ApiModelProperty(value="预计到货时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @JsonProperty("expect_arrival_time")
     private Date expectArrivalTime;
 
     @ApiModelProperty(value="有效期")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @JsonProperty("valid_time")
-    private Integer validTime;
+    private Date validTime;
 
     @ApiModelProperty(value="直属上级编码")
     @JsonProperty("direct_supervisor_code")

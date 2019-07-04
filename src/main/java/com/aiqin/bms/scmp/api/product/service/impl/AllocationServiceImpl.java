@@ -1,27 +1,21 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.base.MsgStatus;
-import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
-import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
-import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductToOutboundVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationToOutboundVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
-import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
@@ -31,27 +25,31 @@ import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -64,7 +62,8 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class AllocationServiceImpl extends BaseServiceImpl implements AllocationService  {
+@WorkFlowAnnotation(WorkFlow.APPLY_ALLOCATTION)
+public class AllocationServiceImpl extends BaseServiceImpl implements AllocationService, WorkFlowHelper {
 
 
     @Autowired
@@ -118,10 +117,12 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
      * @return
      */
     @Override
-    @Transactional(rollbackFor = GroundRuntimeException.class)
+    @Transactional(rollbackFor = Exception.class)
     public Long save(AllocationReqVo vo) {
+
         Allocation  allocation = new Allocation();
         BeanCopyUtils.copy(vo,allocation);
+        AllocationTypeEnum allocationTypeEnum = AllocationTypeEnum.getAllocationTypeEnumByType(vo.getAllocationType());
         // 获取编码
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.ALLOCATION_CODE);
         allocation.setAllocationCode(encodingRule.getNumberingValue()+"");
@@ -133,7 +134,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TOCHECK.getStatus());
         allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TOCHECK.getName());
         //获取FormNo
-        String form = "DB" + new IdSequenceUtils().nextId();
+        String form = allocationTypeEnum.getGenerateCode() + new IdSequenceUtils().nextId();
         allocation.setFormNo(form);
         Long k  = ((AllocationService) AopContext.currentProxy()).insertSelective(allocation);
         if(k <= 0){
@@ -179,7 +180,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int revocation(Long id) {
-        try {
+
         Allocation allocation = allocationMapper.selectByPrimaryKey(id);
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setFormNo(allocation.getFormNo());
@@ -188,14 +189,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         if(workFlowRespVO.getSuccess().equals(true)){
             return 1;
         }else {
-            log.error("调拨单id为"+id+"撤销失败");
             throw  new GroundRuntimeException("撤销失败");
-        }
-
-    } catch ( Exception e){
-            e.printStackTrace();
-            log.error("撤销申请合同id为空");
-            throw new GroundRuntimeException("id 不能为空");
         }
 
     }
@@ -209,25 +203,24 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     public AllocationResVo view(Long id) {
         AllocationResVo allocationResVo = new AllocationResVo();
         Allocation allocation = allocationMapper.selectByPrimaryKey(id);
-        BeanCopyUtils.copy(allocation,allocationResVo);
-        try {
-            allocationResVo.setSkuList(BeanCopyUtils.copyList(allocationProductMapper.selectByAllocationCode(allocationResVo.getAllocationCode()), AllocationProductResVo.class));
-            // 获取日志
-            if (null != allocationResVo) {
-                //获取操作日志
-                OperationLogVo operationLogVo = new OperationLogVo();
-                operationLogVo.setPageNo(1);
-                operationLogVo.setPageSize(100);
-                operationLogVo.setObjectType(ObjectTypeCode.ALLOCATION.getStatus());
-                operationLogVo.setObjectId(allocationResVo.getAllocationCode());
-                List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
-                allocationResVo.setLogDataList(pageList);
-            }
-            return  allocationResVo;
-        } catch (Exception e) {
-            log.error("调拨查看sku转化实体失败");
-            throw new GroundRuntimeException("调拨查看sku转化实体失败");
+        if(null == allocation){
+            throw new BizException(ResultCode.OBJECT_EMPTY);
         }
+        BeanCopyUtils.copy(allocation,allocationResVo);
+        allocationResVo.setSkuList(allocationProductMapper.selectByAllocationCode(allocationResVo.getAllocationCode()));
+        allocationResVo.setBatchSkuList(allocationProductBatchMapper.selectByAllocationCode(allocationResVo.getAllocationCode()));
+        // 获取日志
+        if (null != allocationResVo) {
+            //获取操作日志
+            OperationLogVo operationLogVo = new OperationLogVo();
+            operationLogVo.setPageNo(1);
+            operationLogVo.setPageSize(100);
+            operationLogVo.setObjectType(ObjectTypeCode.ALLOCATION.getStatus());
+            operationLogVo.setObjectId(allocationResVo.getAllocationCode());
+            List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
+            allocationResVo.setLogDataList(pageList);
+        }
+        return  allocationResVo;
 
     }
 
@@ -243,6 +236,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Save
     public Long insertSelective(Allocation record) {
        try{
+           record.setCompanyCode(getUser().getCompanyCode());
+           record.setCompanyName(getUser().getCompanyName());
             long k = allocationMapper.insertSelective(record);
             if(k>0){
                 return record.getId();
@@ -324,15 +319,19 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         }
         log.info("AllocationServiceImplProduct-workFlow-传入参数是：[{}]", JSON.toJSONString(id));
         try {
+            AllocationTypeEnum allocationTypeEnum = AllocationTypeEnum.getAllocationTypeEnumByType(allocation1.getAllocationType());
             WorkFlowVO workFlowVO = new WorkFlowVO();
             productCommonService.getInstance(allocation1.getAllocationCode()+"", HandleTypeCoce.FLOW_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), id,HandleTypeCoce.FLOW_ALLOCATION.getName());
-
+            //TODO 替换详情页面
             workFlowVO.setFormUrl(workFlowBaseUrl.applyAllocattion +"?id="+id+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
-            workFlowVO.setTitle("申请从"+allocation1.getCallOutWarehouseName()+"到"+allocation1.getCallInWarehouseName()+"调拨");
+            workFlowVO.setTitle(allocation1.getCreateBy()+"创建"+allocationTypeEnum.getTypeName()+"单");
             workFlowVO.setFormNo(formNo);
-            workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_ALLOCATTION.getNum());
-            WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_ALLOCATTION);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("auditPersonId",allocation1.getDirectSupervisorCode());
+            workFlowVO.setVariables(jsonObject.toString());
+            workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ allocationTypeEnum.getWorkFlow().getNum());
+            WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, allocationTypeEnum.getWorkFlow());
             if(workFlowRespVO.getSuccess()){
                  // 更新调拨单审核状态
                   Allocation allocation = new Allocation();
@@ -371,6 +370,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateSubmit(Byte status, String formNo) {
         Allocation allocation = new Allocation();
         Long id  = allocationMapper.findIdByFormNo(formNo);
@@ -381,18 +381,98 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String workFlowCallback(WorkFlowCallbackVO vo1) {
+        return nativeWorkFlowCallback(vo1);
+    }
+
+    /**
+     *  调拨单生成出库单
+     * @param id  调拨单id
+     * @return   出库单编码
+     */
+    public String createOutbound(Long  id){
+        try {
+            AllocationToOutboundVo allocationResVo =  new AllocationToOutboundVo();
+            Allocation allocation = allocationMapper.selectByPrimaryKey(id);
+            BeanCopyUtils.copy(allocation,allocationResVo);
+
+            List<AllocationProductToOutboundVo> list = allocationProductBatchMapper.selectByPictureUrlAllocationCode(allocation.getAllocationCode());
+            allocationResVo.setSkuList(list);
+            // 转化成出库单
+            OutboundReqVo convert =  new AllocationResVo2OutboundReqVoConverter(supplierApiService).convert(allocationResVo);
+
+              return  outboundService.save(convert);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new GroundRuntimeException("保存出库单失败");
+        }
+    }
+
+    private List<StockVoRequest> allocationProductTransStock(Allocation allocation, List<AllocationProductBatchResVo> products) {
+        List<StockVoRequest> stockVoRequests = Lists.newArrayList();
+        if(CollectionUtils.isNotEmptyCollection(products)){
+            StockVoRequest stockVoRequest = null;
+            for (AllocationProductBatchResVo allocationProduct : products) {
+                stockVoRequest = new StockVoRequest();
+                // 设置公司名称编码
+                stockVoRequest.setCompanyCode(allocation.getCompanyCode());
+                stockVoRequest.setCompanyName(allocation.getCompanyName());
+                // 设置物流中心名称编码
+                stockVoRequest.setTransportCenterCode(allocation.getCallOutLogisticsCenterCode());
+                stockVoRequest.setTransportCenterName(allocation.getCallOutLogisticsCenterName());
+                //设置库房名称编码
+                stockVoRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
+                stockVoRequest.setWarehouseName(allocation.getCallOutWarehouseName());
+                //设置采购组编码名称
+                stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
+                stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
+                //设置sku编号名称
+                stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
+                stockVoRequest.setSkuName(allocationProduct.getSkuName());
+                stockVoRequest.setChangeNum(allocationProduct.getQuantity());
+                stockVoRequests.add(stockVoRequest);
+            }
+        }
+        return stockVoRequests;
+    }
+
+    public List<AllocationProduct> productbatchTransProduct(List<AllocationProductBatch> batches){
+        Map<String, List<AllocationProductBatch>> batchMap = batches.stream().collect(Collectors.groupingBy(AllocationProductBatch::getSkuCode));
+        List<AllocationProduct> products = Lists.newArrayList();
+        batchMap.forEach((k,v)->{
+            AllocationProduct product = BeanCopyUtils.copy(v.get(0),AllocationProduct.class);
+            //合并数量
+            Long totalNum = v.stream().mapToLong(AllocationProductBatch::getQuantity).sum();
+            product.setQuantity(totalNum);
+            //合并含税总成本
+            Long totalTaxAmount = v.stream().mapToLong(AllocationProductBatch::getTaxAmount).sum();
+            product.setTaxAmount(totalTaxAmount);
+            products.add(product);
+        });
+
+        return products;
+    }
+
+    /**
+     * 审核回调接口
+     *
+     * @param vo1
+     * @return
+     * @author zth
+     * @date 2019/1/15
+     */
+    @Override
+    public String nativeWorkFlowCallback(WorkFlowCallbackVO vo1) {
         //通过编码查询实体
         WorkFlowCallbackVO vo = updateSupStatus(vo1);
         // 通过流水编码查询调拨单实体
         Allocation oldAllocation = new Allocation();
         Allocation allocation  = allocationMapper.selectByFormNO(vo1.getFormNo());
         oldAllocation.setId(allocation.getId());
-        List<AllocationProductBatch> list =  allocationProductBatchMapper.selectByAllocationCode(allocation.getAllocationCode());
+        List<AllocationProductBatchResVo> list =  allocationProductBatchMapper.selectByAllocationCode(allocation.getAllocationCode());
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-
             productCommonService.instanceThreeParty(allocation.getAllocationCode()+"", HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getName(),new Date(),vo.getApprovalUserName());
-
             //审批成功
             //生成出库单并且返回出库单编码
             String outboundOderCode = createOutbound(allocation.getId());
@@ -471,79 +551,92 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 throw  new GroundRuntimeException("库存操作失败");
             }
             return "success";
-            }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
+        } else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
             //审批中
             return "success";
-        }else {
+        } else {
             return "false";
         }
     }
 
     /**
-     *  调拨单生成出库单
-     * @param id  调拨单id
-     * @return   出库单编码
+     * 添加是导入sku
+     *
+     * @param reqVo
+     * @return
      */
-    public String createOutbound(Long  id ){
+    @Override
+    public List<AllocationItemRespVo> importAllocationSku(AllocationImportSkuReqVo reqVo) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        reqVo.setCompanyCode(currentAuthToken.getCompanyCode());
         try {
-            AllocationToOutboundVo allocationResVo =  new AllocationToOutboundVo();
-            Allocation allocation = allocationMapper.selectByPrimaryKey(id);
-            BeanCopyUtils.copy(allocation,allocationResVo);
+            List<AllocationItemRespVo> list = Lists.newArrayList();
+            List<Object[]> excel = ExcelUtil.getExcelAll(reqVo.getFile());
+            if(excel.size()<=1){
+                return list;
+            }
+            List<String> codes = excel.stream().map(p -> {
+                return String.valueOf(p[0]);
+            }).collect(Collectors.toList());
+            if(CollectionUtils.isEmptyCollection(codes)){
+                return Lists.newArrayList();
+            }
+            //移除表头数据
+            codes.remove(0);
+            //调用接口获取sku的详细数据
+            QueryStockSkuReqVo copy = BeanCopyUtils.copy(reqVo, QueryStockSkuReqVo.class);
+            copy.setSkuList(codes);
+            List<QueryStockSkuRespVo> queryStockSkuRespVos = stockService.selectStockSkus(copy);
+            List<AllocationItemRespVo> data =JSON.parseArray(JsonUtil.toJson(queryStockSkuRespVos),AllocationItemRespVo.class);
+            //key为sku编码
+            Map<String, AllocationItemRespVo> map = data.stream().collect(Collectors.toMap(AllocationItemRespVo::getSkuCode, Function.identity()));
+            //错误信息
+            for(int i=1;i<excel.size();i++){
+                Object[] objects = excel.get(i);
+                String skuCode =String.valueOf(objects[0]);
+                String skuName = ExcelUtil.convertNumToString(objects[1]);
+                Long num=0L;
+                try {
+                    String s = ExcelUtil.convertNumToString(objects[2]);
+                    if(StringUtils.isNotBlank(s)){
+                        num = Long.valueOf(s);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    list.add(new AllocationItemRespVo(skuCode,skuName, "数量数据格式错误"));
+                    continue;
+                }
+                //验证是否重复导入
+                if(null!=skuCode){
+                    List<String> skus =list.stream().map(AllocationItemRespVo::getSkuCode).collect(Collectors.toList());
+                    if(skus.contains(skuCode)==true){
+                        {
+                            list.add(new AllocationItemRespVo(skuCode, skuName,"导入重复"));
+                            continue;
+                        }
+                    }
+                }
+                //验证该编码是否存在
+                if(Objects.isNull(map.get(skuCode))){
+                    list.add(new AllocationItemRespVo(skuCode, skuName,"当前sku编码不存在或者已被禁用"));
+                    continue;
+                }
+                AllocationItemRespVo allocationItemRespVo = map.get(skuCode);
+                if(num !=null&&num>allocationItemRespVo.getStockNum()){
+                    list.add(new AllocationItemRespVo(skuCode, skuName,"数量超出库存范围"));
+                    continue;
+                }
+                if(num !=null&&num<=allocationItemRespVo.getStockNum()){
+                    allocationItemRespVo.setNumber(num);
+                    allocationItemRespVo.setTotalPrice(allocationItemRespVo.getPrice()*num);
+                }
+                list.add(allocationItemRespVo);
+            }
 
-            List<AllocationProductToOutboundVo> list = allocationProductBatchMapper.selectByPictureUrlAllocationCode(allocation.getAllocationCode());
-            allocationResVo.setSkuList(list);
-            // 转化成出库单
-            OutboundReqVo convert =  new AllocationResVo2OutboundReqVoConverter(supplierApiService).convert(allocationResVo);
-
-              return  outboundService.save(convert);
+            return list;
         } catch (Exception e) {
             e.printStackTrace();
-            throw  new GroundRuntimeException("保存出库单失败");
+            throw new GroundRuntimeException("导入异常");
         }
-    }
-
-    private List<StockVoRequest> allocationProductTransStock(Allocation allocation, List<AllocationProductBatch> products) {
-        List<StockVoRequest> stockVoRequests = Lists.newArrayList();
-        if(CollectionUtils.isNotEmptyCollection(products)){
-            StockVoRequest stockVoRequest = null;
-            for (AllocationProductBatch allocationProduct : products) {
-                stockVoRequest = new StockVoRequest();
-                // 设置公司名称编码
-                stockVoRequest.setCompanyCode(allocation.getCompanyCode());
-                stockVoRequest.setCompanyName(allocation.getCompanyName());
-                // 设置物流中心名称编码
-                stockVoRequest.setTransportCenterCode(allocation.getCallOutLogisticsCenterCode());
-                stockVoRequest.setTransportCenterName(allocation.getCallOutLogisticsCenterName());
-                //设置库房名称编码
-                stockVoRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
-                stockVoRequest.setWarehouseName(allocation.getCallOutWarehouseName());
-                //设置采购组编码名称
-                stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
-                stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
-                //设置sku编号名称
-                stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
-                stockVoRequest.setSkuName(allocationProduct.getSkuName());
-                stockVoRequest.setChangeNum(allocationProduct.getQuantity());
-                stockVoRequests.add(stockVoRequest);
-            }
-        }
-        return stockVoRequests;
-    }
-
-    public List<AllocationProduct> productbatchTransProduct(List<AllocationProductBatch> batches){
-        Map<String, List<AllocationProductBatch>> batchMap = batches.stream().collect(Collectors.groupingBy(AllocationProductBatch::getSkuCode));
-        List<AllocationProduct> products = Lists.newArrayList();
-        batchMap.forEach((k,v)->{
-            AllocationProduct product = BeanCopyUtils.copy(v.get(0),AllocationProduct.class);
-            //合并数量
-            Long totalNum = v.stream().mapToLong(AllocationProductBatch::getQuantity).sum();
-            product.setQuantity(totalNum);
-            //合并含税总成本
-            Long totalTaxAmount = v.stream().mapToLong(AllocationProductBatch::getTaxAmount).sum();
-            product.setTaxAmount(totalTaxAmount);
-            products.add(product);
-        });
-
-        return products;
     }
 }

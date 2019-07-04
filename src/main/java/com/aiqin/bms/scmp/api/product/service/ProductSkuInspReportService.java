@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
 
 import java.util.List;
@@ -34,4 +36,27 @@ public interface ProductSkuInspReportService {
      * @return
      */
     Integer deleteDrafts(List<String> skuCodes);
+
+    /**
+     *
+     * 功能描述: 获取正式表数据
+     *
+     * @param reportReqVo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/2 17:49
+     */
+    List<ProductSkuInspReportRespVo> getList(QueryProductSkuInspReportReqVo reportReqVo);
+
+
+    /**
+     *
+     * 功能描述: 质检报告保存接口
+     *
+     * @param reportReqVo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/3 17:43
+     */
+    int saveProductSkuInspReport(SaveProductSkuInspReportReqVo reportReqVo);
 }

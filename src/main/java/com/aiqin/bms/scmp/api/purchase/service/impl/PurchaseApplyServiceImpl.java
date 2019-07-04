@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
@@ -15,19 +16,25 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectImportResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -41,6 +48,9 @@ import java.util.List;
 public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseApplyServiceImpl.class);
+    private static final String[] importRejectApplyHeaders = new String[]{
+            "SKU编号", "SKU名称", "供应商", "仓库", "采购数量", "实物返数量", "含税单价",
+    };
 
     @Resource
     private PurchaseApplyDao purchaseApplyDao;
@@ -217,7 +227,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         product.setApplyProductId(applyProductId);
         PurchaseApplyProduct purchaseApplyProduct = purchaseApplyProductDao.applyProduct(product);
         if(purchaseApplyProduct == null){
-            LOGGER.info("查询/复制采购申请商品的信息失败...{}:" +applyProductId);
+            LOGGER.info("查询采购申请商品的信息失败...{}:" +applyProductId);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
         }
         return HttpResponse.success(purchaseApplyProduct);
@@ -322,5 +332,58 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
         }
         return HttpResponse.success(products);
+    }
+
+    @Override
+    public HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode){
+        if (file == null) {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        try {
+            String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
+            if(result.length<2){
+                return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            }
+            List<PurchaseApplyProduct> list = new ArrayList<>();
+            Integer errorCount = 0;
+            if (result != null) {
+                String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
+                if (StringUtils.isNotBlank(validResult)) {
+                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 88888, validResult));
+                }
+                String[] record;
+                PurchaseApplyProduct applyProduct;
+                for (int i = 1; i <= result.length - 1; i++) {
+                    record = result[i];
+                    applyProduct = stockDao.purchaseBySkuStock(purchaseGroupCode,record[0], record[2], record[3]);
+                    if(applyProduct != null){
+//                        response.setProductCount(record[7]);
+//                        response.setProductAmount(record[8]);
+//                        response.setProductTotalAmount(String.valueOf(Integer.valueOf(record[8])*Integer.valueOf(record[7])));
+//                        if(queryStockBatchSkuRespVo.getAvailableNum()<Integer.valueOf(record[7])){
+//                            response.setErrorReason("可用库存数量小于销售数量");
+//                            errorCount++;
+                        //}
+                    }else{
+//                        applyProduct.setSkuCode(record[0]);
+//                        applyProduct.setSkuName(record[1]);
+//                        response.setSupplierCode(record[2]);
+//                        response.setTransportCenterCode(record[3]);
+//                        response.setWarehouseCode(record[4]);
+//                        response.setBatchCode(record[5]);
+//                        response.setGoodsGifts(Integer.valueOf(record[6]));
+//                        response.setProductCount(record[7]);
+//                        response.setProductAmount(record[8]);
+//                        response.setErrorReason("未查询到对应的商品");
+//                        errorCount++;
+                    }
+                    list.add(applyProduct);
+                }
+            }
+            return HttpResponse.success(new PageResData(errorCount,list));
+        } catch (Exception e) {
+            LOGGER.error("采购申请单导入异常:{}", e.getMessage());
+            return HttpResponse.failure(ResultCode.IMPORT_PURCHASE_APPLY_ERROR);
+        }
     }
 }
