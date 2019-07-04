@@ -4,6 +4,8 @@ import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
@@ -12,6 +14,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
@@ -292,7 +295,6 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         if(purchaseOrder == null || StringUtils.isBlank(purchaseOrder.getPurchaseOrderId())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_9);
         Integer count = purchaseOrderDao.update(purchaseOrder);
         if(count == 0){
             LOGGER.error("取消采购单失败");
@@ -337,10 +339,55 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     }
 
     @Override
-    public HttpResponse purchaseOrderLAmount(String purchaseOrderId){
+    public HttpResponse purchaseOrderAmount(String purchaseOrderId){
         if(StringUtils.isBlank(purchaseOrderId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        // 计算采购单的数量与金额
+        PurchaseCountAmountResponse amountResponse = new PurchaseCountAmountResponse();
+        Integer productCount = 0, singleCount = 0, matterSingleSum = 0;
+        Integer notTaxSum = 0, productTaxSum = 0, matterTaxSum = 0;
+        List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.purchaseOrderList(purchaseOrderId, 0, null, null);
+        if(CollectionUtils.isNotEmptyCollection(orderProducts)){
+            for(PurchaseOrderProduct order:orderProducts){
+                // 商品采购件数量
+                Integer purchaseWhole = order.getPurchaseWhole() == null ? 0 : order.getPurchaseWhole();
+                Integer purchaseSingle = order.getPurchaseSingle() == null ? 0 : order.getPurchaseSingle();
+                // 包装数量
+                Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
+                Integer amount = order.getProductTotalAmount() == null ? 0 : order.getProductTotalAmount();
+                productCount += purchaseWhole;
+                Integer number = purchaseWhole * packNumber + purchaseSingle;
+                singleCount += number;
+                productTaxSum += amount;
+                notTaxSum += productTaxSum/(1 + order.getTaxRate());
+                if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                    matterSingleSum += number;
+                    matterTaxSum += amount;
+                }
+            }
+            amountResponse.setProductCount(productCount);
+            amountResponse.setSingleCount(singleCount);
+            amountResponse.setMatterSingleSum(matterSingleSum);
+            amountResponse.setMatterTaxSum(matterTaxSum);
+            amountResponse.setNotTaxSum(notTaxSum);
+            amountResponse.setProductTaxSum(productTaxSum);
+        }
+        return HttpResponse.success(amountResponse);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse purchaseOrderStock(String purchaseOrderId){
+        if(StringUtils.isBlank(purchaseOrderId)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        InboundReqSave save = new InboundReqSave();
+        // 入库sku
+        List<InboundProductReqVo> list = save.getList();
+        // 查询是否有商品入库
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(purchaseOrderId, 0, null, null);
+
         return HttpResponse.success();
     }
 }

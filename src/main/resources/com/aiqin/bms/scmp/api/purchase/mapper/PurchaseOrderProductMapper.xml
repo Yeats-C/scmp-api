@@ -25,6 +25,7 @@
     <result column="product_amount" jdbcType="INTEGER" property="productAmount" />
     <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
     <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
+    <result column="actual_single_count" jdbcType="INTEGER" property="actualSingleCount" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
@@ -39,7 +40,7 @@
     product_type as productType, purchase_whole as purchaseWhole, purchase_single as purchaseSingle,
     base_product_content as baseProductContent, box_gauge as boxGauge, single_count as singleCount,
     tax_rate as taxRate, product_amount as productAmount, product_total_amount as productTotalAmount,
-    stock_count as stockCount, create_time as createTime, update_time as updateTime,
+    stock_count as stockCount, actual_single_count as actualSingleCount, create_time as createTime, update_time as updateTime,
     create_by_id as createById, create_by_name as createByName
   </sql>
   <insert id="insert">
@@ -64,15 +65,6 @@
   <update id="update">
     update purchase_order_product
     <set>
-      <if test="orderProductId != null">
-        order_product_id = #{orderProductId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderId != null">
-        purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderCode != null">
-        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
-      </if>
       <if test="skuCode != null">
         sku_code = #{skuCode,jdbcType=VARCHAR},
       </if>
@@ -130,6 +122,9 @@
       <if test="stockCount != null">
         stock_count = #{stockCount,jdbcType=INTEGER},
       </if>
+      <if test="actualSingleCount != null">
+        actual_single_count = #{actualSingleCount,jdbcType=INTEGER},
+      </if>
       update_time = now(),
       <if test="createById != null">
         create_by_id = #{createById,jdbcType=VARCHAR},
@@ -138,7 +133,17 @@
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    <where>
+      <if test="orderProductId != null">
+        order_product_id = #{orderProductId,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderId != null">
+        and purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderCode != null">
+        and purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+      </if>
+    </where>
   </update>
   <select id="purchaseOrderList" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
     select <include refid="Base_Column_List"></include>

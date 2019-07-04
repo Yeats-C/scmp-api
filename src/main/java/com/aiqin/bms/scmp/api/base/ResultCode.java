@@ -217,7 +217,8 @@ public interface ResultCode {
     MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库批次数据失败");
 
     // 采购
-    MessageId NOT_PURCHASE_GROUP_DATA = MessageId.create(Project.SCMP_API,202,"此采购组该人员无相关数据");
+    MessageId NOT_PURCHASE_GROUP_DATA = MessageId.create(Project.SCMP_API,201,"此采购组该人员无相关数据");
+    MessageId IMPORT_PURCHASE_APPLY_ERROR = MessageId.create(Project.SCMP_API, 202, "导入采购申请单异常");
 
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");

@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStoc
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -148,5 +149,8 @@ public interface StockDao {
     List<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
 
     void updateStorehouseById(@Param("list") List<StockRespVO> stockRespVO);
+
+    PurchaseApplyProduct purchaseBySkuStock(@Param("purchaseGroupCode")String purchaseGroupCode, @Param("skuCode")String skuCode,
+                                            @Param("supplierName")String supplierName, @Param("transportCenterName")String transportCenterName);
 
 }

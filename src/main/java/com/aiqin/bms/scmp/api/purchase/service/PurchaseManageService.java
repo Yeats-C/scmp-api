@@ -30,5 +30,7 @@ public interface PurchaseManageService {
 
     HttpResponse purchaseOrderLog(String purchaseOrderId);
 
-    HttpResponse purchaseOrderLAmount(String purchaseOrderId);
+    HttpResponse purchaseOrderAmount(String purchaseOrderId);
+
+    HttpResponse purchaseOrderStock(String purchaseOrderId);
 }
