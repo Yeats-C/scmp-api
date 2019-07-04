@@ -60,7 +60,7 @@ public class SkuConfigDetailRepsVo {
     private List<SkuConfigsRepsVo> configs;
 
     @ApiModelProperty("供应商列表")
-    private List<ProductSkuSupplyUnitRespVo> supplyUnitList;
+    private List<ProductSkuSupplyUnitRespVo> supplierList;
 
     public String getSkuTypeName() {
        if (Objects.equals(StatusTypeCode.GOOD.getStatus(),skuType)) {
