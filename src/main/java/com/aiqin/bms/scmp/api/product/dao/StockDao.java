@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.ibatis.annotations.Param;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.util.List;
 
@@ -147,6 +148,8 @@ public interface StockDao {
      * @return
      */
     List<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
+
+    List<String> selectSkuCodeByQueryBatchCodeList(@Param("warehouseCode") String warehouseCode,@Param("skuCode")  String skuCode);
 
     void updateStorehouseById(@Param("list") List<StockRespVO> stockRespVO);
 
