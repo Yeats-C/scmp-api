@@ -56,6 +56,12 @@ public class ProductSkuChangePriceInfoReqVO {
     @ApiModelProperty("新含税价")
     private Long newPrice;
 
+    @ApiModelProperty("原毛利率")
+    private Long oldGrossProfitMargin;
+
+    @ApiModelProperty("现毛利率")
+    private Long newGrossProfitMargin;
+
     @ApiModelProperty("仓库批次号编码")
     private String warehouseBatchNumber;
 

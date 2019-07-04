@@ -32,4 +32,13 @@ public class PriceChannelForChangePrice {
 
     @ApiModelProperty("价格数据名称")
     private String priceAttributeName;
+
+    @ApiModelProperty("原含税价")
+    private Long oldPrice;
+
+    @ApiModelProperty("原含税采购价")
+    private Long purchasePriceOld;
+
+    @ApiModelProperty("最新采购价")
+    private Long purchasePriceNewest;
 }

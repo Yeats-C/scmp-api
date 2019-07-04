@@ -169,79 +169,12 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         }
     }
 
-    /**
-     * 验证数据重复性
-     *
-     * @param reqVO
-     * @return java.util.List<com.aiqin.mgs.product.api.domain.response.changeprice.QueryChangePriceRepeatRespVO>
-     * @author NullPointException
-     * @date 2019/5/22
-     */
-//    private StringBuffer checkDataRepeat(ProductSkuChangePriceReqVO reqVO) throws Exception {
-//        List<ProductSkuChangePriceInfoReqVO> infoLists = reqVO.getInfoLists();
-//        List<ProductSkuChangePriceAreaInfoReqVO> areaList = reqVO.getAreaList();
-//        List<String> skuCode = Lists.newArrayList();
-//        List<String> supplierCode = Lists.newArrayList();
-//        List<String> transportCenterCode = Lists.newArrayList();
-//        List<String> warehouseBatchNumber = Lists.newArrayList();
-//        List<String> warehouseCode = Lists.newArrayList();
-//        List<String> code = Lists.newArrayList();
-//        List<String> priceItemCode = Lists.newArrayList();
-//        infoLists.forEach(o -> {
-//            skuCode.add(o.getSkuCode());
-//            supplierCode.add(o.getSupplierCode());
-//            transportCenterCode.add(o.getTransportCenterCode());
-//            warehouseBatchNumber.add(o.getWarehouseBatchNumber());
-//            warehouseCode.add(o.getWarehouseCode());
-//            priceItemCode.add(o.getPriceItemCode());
-//        });
-//        if (CollectionUtils.isNotEmpty(areaList)) {
-//            for (ProductSkuChangePriceAreaInfoReqVO o : areaList) {
-//                code.add(o.getCode());
-//            }
-//        }
-//        QueryChangePriceRepeatVO vo = new QueryChangePriceRepeatVO(reqVO.getChangePriceType(), reqVO.getCompanyCode(), skuCode, supplierCode, warehouseBatchNumber, transportCenterCode, warehouseCode, code, priceItemCode);
-//        List<QueryChangePriceRepeatRespVO> repeats = productSkuChangePriceMapper.checkRepeat(vo);
-//        //拼装重复信息
-//        //TODO 需要重新写验重逻辑
-//        if (CollectionUtils.isNotEmpty(repeats)) {
-//            StringBuffer sb = new StringBuffer();
-//            for (QueryChangePriceRepeatRespVO repeat : repeats) {
-//                sb.append(repeat.getChangePriceName()).append("下")
-//                        .append(repeat.getSkuCode())
-//                        .append(" ")
-//                        .append(Optional.ofNullable(repeat.getSupplierName()).orElse(""))
-//                        .append(" ")
-//                        .append(Optional.ofNullable(repeat.getPriceItemName()).orElse(""))
-//                        .append(" ")
-//                        .append(Optional.ofNullable(repeat.getTransportCenterName()).orElse(""))
-//                        .append("-")
-//                        .append(Optional.ofNullable(repeat.getWarehouseName()).orElse(""))
-//                        .append("-")
-//                        .append(Optional.ofNullable(repeat.getWarehouseBatchNumber()).orElse(""))
-//                        .append(" ")
-//                        .append(Optional.ofNullable(repeat.getName()).orElse(""))
-//                        .append("重复").append(" ");
-//            }
-//            sb.append("请检查数据后提交");
-//            return sb;
-//        }
-//        return null;
-//    }
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveData(ProductSkuChangePriceReqVO reqVO) throws Exception {
         //主表数据
         ProductSkuChangePrice copy = BeanCopyUtils.copy(reqVO, ProductSkuChangePrice.class);
-        copy.setExtField1(reqVO.getChangePriceReasonCode());
-        copy.setExtField2(reqVO.getChangePriceReasonName());
-        copy.setOriginal(0);
-        if (CommonConstant.ADD.equals(reqVO.getOperation())) {
-            copy.setApplyStatus(CommonConstant.PENDING_SUBMISSION);
-        } else {
-            copy.setApplyStatus(CommonConstant.UNDER_REVIEW);
-        }
+        copy.setApplyStatus(CommonConstant.UNDER_REVIEW);
         //保存
         int insert = productSkuChangePriceMapper.insert(copy);
         if (insert < 1) {
@@ -295,12 +228,19 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Override
     public ProductSkuChangePriceRespVO view(String code) {
-        return productSkuChangePriceMapper.selectInfoByCode(code);
+        ProductSkuChangePriceRespVO respVO = productSkuChangePriceMapper.selectInfoByCode(code);
+        if (Objects.isNull(respVO)) {
+            throw new BizException(ResultCode.CAN_NOT_FIND_CHANGE_PRICE_INFO);
+        }
+        return respVO;
     }
 
     @Override
     public ProductSkuChangePriceRespVO editView(String code) {
         ProductSkuChangePriceRespVO respVO = this.view(code);
+        if (Objects.isNull(respVO)) {
+            throw new BizException(ResultCode.CAN_NOT_FIND_CHANGE_PRICE_INFO);
+        }
         QuerySkuInfoReqVO vo =  new QuerySkuInfoReqVO();
         vo.setCompanyCode(respVO.getCompanyCode());
         vo.setPurchaseGroupCode(respVO.getPurchaseGroupCode());
@@ -432,20 +372,28 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //判断类型
         switch (dto.getChangePriceType()) {
             case CommonConstant.PURCHASE_CHANGE_PRICE:
-                savePurchaseChangePrice(newVO, dto);
+                 savePurchaseChangePrice(newVO, dto);
                 break;
             case CommonConstant.SALE_CHANGE_PRICE:
-                saveSaleChangePrice(newVO, dto);
+                if(dto.getExtField5() == 0) {
+                    saveSaleChangePrice(newVO, dto);
+                }else {
+                    saveSaleAreaChangePrice(newVO, dto);
+                }
                 break;
             case CommonConstant.TEMPORARY_CHANGE_PRICE:
-                saveTemporaryChangePrice(newVO, dto);
+                if(dto.getExtField5() == 0) {
+                    saveTemporaryChangePrice(newVO, dto);
+                }else {
+                    saveTemporaryAreaChangePrice(newVO, dto);
+                }
                 break;
-            case CommonConstant.SALE_AREA_CHANGE_PRICE:
-                saveSaleAreaChangePrice(newVO, dto);
-                break;
-            case CommonConstant.TEMPORARY_AREA_CHANGE_PRICE:
-                saveTemporaryAreaChangePrice(newVO, dto);
-                break;
+//            case CommonConstant.SALE_AREA_CHANGE_PRICE:
+//                saveSaleAreaChangePrice(newVO, dto);
+//                break;
+//            case CommonConstant.TEMPORARY_AREA_CHANGE_PRICE:
+//                saveTemporaryAreaChangePrice(newVO, dto);
+//                break;
             default:
                 throw new BizException(ResultCode.NOT_HAVE_PARAM);
         }

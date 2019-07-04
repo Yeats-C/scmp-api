@@ -186,6 +186,7 @@ public interface ResultCode {
     //变价
     MessageId DATA_ERROR =  MessageId.create(Project.PRODUCT_API, 98, "数据异常");
     MessageId DATA_NOT_COMPLETE = MessageId.create(Project.PRODUCT_API,98,"数据不完成！请检查并补充数据！");
+    MessageId CAN_NOT_FIND_CHANGE_PRICE_INFO = MessageId.create(Project.PRODUCT_API,98,"无法获取变价数据信息！");
 
 
     MessageId IMPORT_REJECT_APPLY_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入退供申请单异常");
