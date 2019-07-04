@@ -18,7 +18,7 @@ public interface ProductSkuSupplyUnitService {
 
     int insertList(List<ProductSkuSupplyUnit> productSkuSupplyUnits);
 
-    int saveList(String skuCode, String applyCode);
+    int saveList(String applyCode);
 
     int insertApplyList(List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits);
 
@@ -45,4 +45,26 @@ public interface ProductSkuSupplyUnitService {
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo>
      */
     List<ProductSkuSupplyUnitRespVo> selectBySkuCode(String skuCode);
+    
+    /**
+     *
+     * 功能描述: 根据Id批量查询临时表信息
+     *
+     * @param ids
+     * @return 
+     * @auther knight.xie
+     * @date 2019/7/4 16:09
+     */
+    List<ProductSkuSupplyUnitDraft> getDraftByIds(List<Long> ids);
+
+    /**
+     *
+     * 功能描述: 根据Id批量删除临时表信息
+     *
+     * @param ids
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 16:19
+     */
+    int deleteDraftByIds(List<Long> ids);
 }

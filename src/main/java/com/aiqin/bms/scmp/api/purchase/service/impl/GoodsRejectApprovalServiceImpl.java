@@ -6,7 +6,10 @@ import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
+import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectApprovalService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
@@ -29,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -64,12 +68,14 @@ public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalServic
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
-    @Autowired
+    @Resource
     private UrlConfig urlConfig;
 
-    @Autowired
+    @Resource
     private WorkFlowBaseUrl workFlowBaseUrl;
-    
+    @Resource
+    private RejectRecordDao rejectRecordDao;
+
     /**
      * 审核回调接口
      *
@@ -79,21 +85,35 @@ public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalServic
     @Override
     public String workFlowCallback(WorkFlowCallbackVO vo) {
         //审批驳回
+        RejectRecord rejectRecord = new RejectRecord();
+        rejectRecord.setRejectRecordId(vo.getFormNo());
         if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
+            RejectRecord record = rejectRecordDao.selectByRejectId(vo.getFormNo());
+            if (record == null) {
+                return WorkFlowReturn.FALSE;
+            }
+            rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_NO);
+            Integer count = rejectRecordDao.updateStatus(rejectRecord);
             return WorkFlowReturn.SUCCESS;
         }else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
             //撤销
             return WorkFlowReturn.SUCCESS;
         }else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-            //审批通过
+            //审批通过 状态为待供应商确认
+            rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
+            Integer count = rejectRecordDao.updateStatus(rejectRecord);
             return WorkFlowReturn.SUCCESS;
         }
         return WorkFlowReturn.FALSE;
     }
+
+
+
+
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode) {
+    public void workFlow(String formNo, String userName,String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?code=" + applyCode + "&" + workFlowBaseUrl.authority);
+        workFlowVO.setFormUrl(workFlowBaseUrl.applyRefund + "?id=" + formNo + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_REFUND.getNum());
         workFlowVO.setFormNo(formNo);

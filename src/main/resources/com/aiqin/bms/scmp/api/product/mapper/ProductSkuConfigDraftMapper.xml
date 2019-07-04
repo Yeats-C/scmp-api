@@ -22,6 +22,7 @@
     <result column="basic_inventory_day" jdbcType="INTEGER" property="basicInventoryDay" />
     <result column="large_inventory_warn_day" jdbcType="INTEGER" property="largeInventoryWarnDay" />
     <result column="big_effect_period_warn_day" jdbcType="INTEGER" property="bigEffectPeriodWarnDay" />
+    <result column="turnover_period_after_arrival" jdbcType="INTEGER" property="turnoverPeriodAfterArrival" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="apply_type" jdbcType="TINYINT" property="applyType" />
@@ -46,6 +47,7 @@
     <result column="basic_inventory_day" jdbcType="INTEGER" property="basicInventoryDay" />
     <result column="large_inventory_warn_day" jdbcType="INTEGER" property="largeInventoryWarnDay" />
     <result column="big_effect_period_warn_day" jdbcType="INTEGER" property="bigEffectPeriodWarnDay" />
+    <result column="turnover_period_after_arrival" jdbcType="INTEGER" property="turnoverPeriodAfterArrival" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="procurement_section_code" jdbcType="VARCHAR" property="purchasingGroupCode"/>
@@ -63,14 +65,14 @@
     id, apply_show, create_by, create_time, update_by, update_time, del_flag, config_code, 
     product_code, product_name, sku_code, sku_name, transport_center_code, transport_center_name, 
     config_status, arrival_cycle, order_cycle, basic_inventory_day, large_inventory_warn_day, 
-    big_effect_period_warn_day, company_code, company_name,apply_type
+    big_effect_period_warn_day, turnover_period_after_arrival, company_code, company_name,apply_type
   </sql>
 
   <sql id="List_Column">
     a.id, a.create_by, a.create_time, a.update_by, a.update_time, a.config_code,
     a.product_code, a.product_name, a.sku_code, a.sku_name, a.transport_center_code, a.transport_center_name,
     a.config_status, a.arrival_cycle, a.order_cycle, a.basic_inventory_day, a.large_inventory_warn_day,
-    a.big_effect_period_warn_day,a.company_code,a.company_name, b.config_code as b_config_code,
+    a.big_effect_period_warn_day, a.turnover_period_after_arrival, a.company_code,a.company_name, b.config_code as b_config_code,
     b.transport_center_code as b_transport_center_code, b.transport_center_name as b_transport_center_name,
     b.use_order as b_use_order,c.procurement_section_code,c.procurement_section_name
   </sql>
@@ -140,7 +142,8 @@
       transport_center_code, transport_center_name, 
       config_status, arrival_cycle, order_cycle, 
       basic_inventory_day, large_inventory_warn_day, 
-      big_effect_period_warn_day, company_code, company_name,apply_type
+      big_effect_period_warn_day, turnover_period_after_arrival,
+      company_code, company_name,apply_type
       )
     values (#{id,jdbcType=BIGINT}, #{applyShow,jdbcType=TINYINT}, #{createBy,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
@@ -149,7 +152,7 @@
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{configStatus,jdbcType=TINYINT}, #{arrivalCycle,jdbcType=INTEGER}, #{orderCycle,jdbcType=INTEGER}, 
       #{basicInventoryDay,jdbcType=INTEGER}, #{largeInventoryWarnDay,jdbcType=INTEGER}, 
-      #{bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
+      #{bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{turnoverPeriodAfterArrival,jdbcType=INTEGER}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{applyType,jdbcType=TINYINT}
       )
   </insert>
@@ -215,6 +218,9 @@
       </if>
       <if test="bigEffectPeriodWarnDay != null">
         big_effect_period_warn_day,
+      </if>
+      <if test="turnoverPeriodAfterArrival != null">
+        turnover_period_after_arrival,
       </if>
       <if test="companyCode != null">
         company_code,
@@ -287,6 +293,9 @@
       <if test="bigEffectPeriodWarnDay != null">
         #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
       </if>
+      <if test="turnoverPeriodAfterArrival != null">
+        #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      </if>
       <if test="companyCode != null">
         #{companyCode,jdbcType=VARCHAR},
       </if>
@@ -306,7 +315,8 @@
       transport_center_code, transport_center_name,
       config_status, arrival_cycle, order_cycle,
       basic_inventory_day, large_inventory_warn_day,
-      big_effect_period_warn_day, company_code, company_name,apply_type
+      big_effect_period_warn_day, turnover_period_after_arrival,
+    company_code, company_name,apply_type
       )
     values
     <foreach collection="list" item="item" open="" close="" separator=",">
@@ -317,7 +327,8 @@
       #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
       #{item.configStatus,jdbcType=TINYINT}, #{item.arrivalCycle,jdbcType=INTEGER}, #{item.orderCycle,jdbcType=INTEGER},
       #{item.basicInventoryDay,jdbcType=INTEGER}, #{item.largeInventoryWarnDay,jdbcType=INTEGER},
-      #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
+      #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{item.turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
       #{item.applyType,jdbcType=TINYINT}
       )
     </foreach>
@@ -379,6 +390,9 @@
       <if test="bigEffectPeriodWarnDay != null">
         big_effect_period_warn_day = #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
       </if>
+      <if test="turnoverPeriodAfterArrival != null">
+        turnover_period_after_arrival = #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      </if>
       <if test="companyCode != null">
         company_code = #{companyCode,jdbcType=VARCHAR},
       </if>
@@ -412,6 +426,7 @@
       basic_inventory_day = #{basicInventoryDay,jdbcType=INTEGER},
       large_inventory_warn_day = #{largeInventoryWarnDay,jdbcType=INTEGER},
       big_effect_period_warn_day = #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
+      turnover_period_after_arrival = #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
       company_code = #{companyCode,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},
       apply_type = #{applyType,jdbcType=TINYINT},

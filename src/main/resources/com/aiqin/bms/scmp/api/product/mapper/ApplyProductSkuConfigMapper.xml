@@ -26,6 +26,7 @@
     <result column="basic_inventory_day" jdbcType="INTEGER" property="basicInventoryDay" />
     <result column="large_inventory_warn_day" jdbcType="INTEGER" property="largeInventoryWarnDay" />
     <result column="big_effect_period_warn_day" jdbcType="INTEGER" property="bigEffectPeriodWarnDay" />
+    <result column="turnover_period_after_arrival" jdbcType="INTEGER" property="turnoverPeriodAfterArrival" />
     <result column="apply_show" jdbcType="TINYINT" property="applyShow" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
@@ -40,7 +41,8 @@
     id, create_by, create_time, update_by, update_time, del_flag, apply_code, auditor_by, 
     auditor_time, auditor_status, form_no, config_code, product_code, product_name, sku_code, 
     sku_name, transport_center_code, transport_center_name, config_status, arrival_cycle, 
-    order_cycle, basic_inventory_day, large_inventory_warn_day, big_effect_period_warn_day, 
+    order_cycle, basic_inventory_day, large_inventory_warn_day, big_effect_period_warn_day,
+    turnover_period_after_arrival,
     apply_show, company_code, company_name, be_effective, selection_effective_time, selection_effective_start_time, 
     direct_supervisor_code, direct_supervisor_name,apply_type
   </sql>
@@ -104,7 +106,7 @@
     where a.apply_code = #{applyCode,jdbcType=VARCHAR}
   </select>
   <select id="findFormNoByCode" resultType="java.lang.String">
-    select form_no from apply_product_sku_config where apply_code = #{applyCode,jdbcType=VARCHAR}
+    select distinct form_no from apply_product_sku_config where apply_code = #{applyCode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_config
@@ -119,7 +121,8 @@
       sku_name, transport_center_code, transport_center_name, 
       config_status, arrival_cycle, order_cycle, 
       basic_inventory_day, large_inventory_warn_day, 
-      big_effect_period_warn_day, apply_show, company_code, 
+      big_effect_period_warn_day, turnover_period_after_arrival,
+      apply_show, company_code,
       company_name, be_effective, selection_effective_time, 
       selection_effective_start_time, direct_supervisor_code, 
       direct_supervisor_name,apply_type)
@@ -131,7 +134,8 @@
       #{skuName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{configStatus,jdbcType=TINYINT}, #{arrivalCycle,jdbcType=INTEGER}, #{orderCycle,jdbcType=INTEGER}, 
       #{basicInventoryDay,jdbcType=INTEGER}, #{largeInventoryWarnDay,jdbcType=INTEGER}, 
-      #{bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{applyShow,jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, 
+      #{bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      #{applyShow,jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR},
       #{companyName,jdbcType=VARCHAR}, #{beEffective,jdbcType=INTEGER}, #{selectionEffectiveTime,jdbcType=TINYINT}, 
       #{selectionEffectiveStartTime,jdbcType=TIMESTAMP}, #{directSupervisorCode,jdbcType=VARCHAR}, 
       #{directSupervisorName,jdbcType=VARCHAR}, #{applyType,jdbcType=TINYINT})
@@ -210,6 +214,9 @@
       </if>
       <if test="bigEffectPeriodWarnDay != null">
         big_effect_period_warn_day,
+      </if>
+      <if test="turnoverPeriodAfterArrival != null">
+        turnover_period_after_arrival,
       </if>
       <if test="applyShow != null">
         apply_show,
@@ -312,6 +319,9 @@
       <if test="bigEffectPeriodWarnDay != null">
         #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
       </if>
+      <if test="turnoverPeriodAfterArrival != null">
+        #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      </if>
       <if test="applyShow != null">
         #{applyShow,jdbcType=TINYINT},
       </if>
@@ -350,7 +360,8 @@
       sku_name, transport_center_code, transport_center_name,
       config_status, arrival_cycle, order_cycle,
       basic_inventory_day, large_inventory_warn_day,
-      big_effect_period_warn_day, apply_show, company_code,
+      big_effect_period_warn_day, turnover_period_after_arrival,
+      apply_show, company_code,
       company_name, be_effective, selection_effective_time,
       selection_effective_start_time, direct_supervisor_code,
       direct_supervisor_name,apply_type)
@@ -364,7 +375,8 @@
       #{item.skuName,jdbcType=VARCHAR}, #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
       #{item.configStatus,jdbcType=TINYINT}, #{item.arrivalCycle,jdbcType=INTEGER}, #{item.orderCycle,jdbcType=INTEGER},
       #{item.basicInventoryDay,jdbcType=INTEGER}, #{item.largeInventoryWarnDay,jdbcType=INTEGER},
-      #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{item.applyShow,jdbcType=TINYINT}, #{item.companyCode,jdbcType=VARCHAR},
+      #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{item.turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      #{item.applyShow,jdbcType=TINYINT}, #{item.companyCode,jdbcType=VARCHAR},
       #{item.companyName,jdbcType=VARCHAR}, #{item.beEffective,jdbcType=INTEGER}, #{item.selectionEffectiveTime,jdbcType=TINYINT},
       #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP}, #{item.directSupervisorCode,jdbcType=VARCHAR},
       #{item.directSupervisorName,jdbcType=VARCHAR}, #{item.applyType,jdbcType=TINYINT})
@@ -442,6 +454,9 @@
       <if test="bigEffectPeriodWarnDay != null">
         big_effect_period_warn_day = #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
       </if>
+      <if test="turnoverPeriodAfterArrival != null">
+        turnover_period_after_arrival = #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      </if>
       <if test="applyShow != null">
         apply_show = #{applyShow,jdbcType=TINYINT},
       </if>
@@ -498,6 +513,7 @@
       basic_inventory_day = #{basicInventoryDay,jdbcType=INTEGER},
       large_inventory_warn_day = #{largeInventoryWarnDay,jdbcType=INTEGER},
       big_effect_period_warn_day = #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
+      turnover_period_after_arrival = #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
       apply_show = #{applyShow,jdbcType=TINYINT},
       company_code = #{companyCode,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},

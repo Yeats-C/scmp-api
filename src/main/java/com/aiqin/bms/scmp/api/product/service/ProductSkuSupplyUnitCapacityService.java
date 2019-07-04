@@ -1,8 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnitCapacity;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 
 import java.util.List;
 
@@ -45,5 +43,49 @@ public interface ProductSkuSupplyUnitCapacityService {
      */
     int insertApplyList(List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities);
 
+
+    /**
+     *
+     * 功能描述: 根据供应商信息查询
+     *
+     * @param skuSupplyUnitDrafts
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 16:46
+     */
+    List<ProductSkuSupplyUnitCapacityDraft> getDraftsBySupplyUnitDrafts(List<ProductSkuSupplyUnitDraft> skuSupplyUnitDrafts);
+
+    /**
+     *
+     * 功能描述: 根据Ids批量删除
+     *
+     * @param ids
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 16:53
+     */
+    int deleteDraftByIds(List<Long> ids);
+
+    /**
+     *
+     * 功能描述: 根据申请编码保存正式数据
+     *
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 20:30
+     */
+    int saveList(String applyCode);
+
+    /**
+     *
+     * 功能描述: 批量插入数据库
+     *
+     * @param capacities
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 20:52
+     */
+    int insertList( List<ProductSkuSupplyUnitCapacity> capacities);
 
 }

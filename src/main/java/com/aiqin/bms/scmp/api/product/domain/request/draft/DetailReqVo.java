@@ -15,6 +15,9 @@ import lombok.Data;
 @Data
 public class DetailReqVo {
 
+    public static final Integer DEL_CONFIG = 0;
+    public static final Integer DEL_SUPPLIER = 1;
+
     @ApiModelProperty("审批类型,1:商品,2:商品配置,3:销售区域")
     private Integer approvalType;
 
@@ -23,6 +26,9 @@ public class DetailReqVo {
 
     @ApiModelProperty(value = "主键Id")
     private Long id;
+
+    @ApiModelProperty(value = "用于商品配置 0:删除配置 1:删除供应商")
+    private Integer configType;
 
 
 }

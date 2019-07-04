@@ -249,4 +249,18 @@ public interface StockService {
 
     HttpResponse updateStorehouseById(List<StockRespVO> stockRespVO);
 
+    /**
+     * 退供锁定批次库存
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean returnSupplyLockStockBatch(ILockStockBatchReqVO reqVO);
+    /**
+     * 退供解锁批次库存
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean returnSupplyUnLockStockBatch(ILockStockBatchReqVO reqVO);
+
+
 }

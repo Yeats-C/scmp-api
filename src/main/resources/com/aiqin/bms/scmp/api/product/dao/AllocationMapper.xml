@@ -34,6 +34,8 @@
     <result column="undertaking_unit_code" jdbcType="VARCHAR" property="undertakingUnitCode" />
     <result column="undertaking_unit_name" jdbcType="VARCHAR" property="undertakingUnitName" />
     <result column="remark" jdbcType="CLOB" property="remark" />
+    <result column="allocation_type" jdbcType="TINYINT" property="allocationType" />
+    <result column="allocation_type_name" jdbcType="VARCHAR" property="allocationTypeName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, allocation_code, callout_logistics_center_code,
@@ -47,7 +49,8 @@
       del_flag, create_time, create_by,
       update_time, update_by ,form_no,company_code,company_name,
       direct_supervisor_code,direct_supervisor_name,
-      undertaking_unit_code,undertaking_unit_name,remark
+      undertaking_unit_code,undertaking_unit_name,remark,allocation_type,
+      allocation_type_name
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

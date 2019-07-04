@@ -1,7 +1,8 @@
 package com.aiqin.bms.scmp.api.product.web.inbound;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchPurchaseReq;
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -122,10 +123,10 @@ public class InboundController {
 
 //    @ApiOperation("采购查询批次详情")
 //    @GetMapping("/getInfoByPurChase")
-//    public HttpResponse<InboundBatch> selectPurchaseInfoByPurchaseNum(@RequestParam(value = "source_oder_code")String sourceOderCode,
+//    public HttpResponse<InboundProduct> selectPurchaseInfoByPurchaseNum(@RequestParam(value = "source_oder_code")String sourceOderCode,
 //                                                                      @RequestParam(value = "purchase_num")Integer purchaseNum,
 //                                                                      @RequestParam(value = "page_size", required = false)Integer pageSize,
 //                                                                      @RequestParam(value = "page_no", required = false)Integer pageNo){
-//        return inboundService.selectPurchaseInfoByPurchaseNum(new InboundBatchPurchaseReq(sourceOderCode, purchaseNum, pageSize, pageNo));
+//        return inboundService.selectPurchaseInfoByPurchaseNum(new Inbound(sourceOderCode, purchaseNum, pageSize, pageNo));
 //    }
 }

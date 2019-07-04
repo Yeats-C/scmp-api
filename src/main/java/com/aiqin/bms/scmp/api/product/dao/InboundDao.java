@@ -39,4 +39,6 @@ public interface InboundDao {
      * @return int
      */
     int insertBatch(List<Inbound> inboundList);
+
+    Integer selectMaxPurchaseNumBySourceOderCode(String sourceOderCode);
 }

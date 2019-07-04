@@ -134,5 +134,5 @@ public interface InboundService {
 
     void saveData(List<Inbound> inboundList, List<InboundProduct> productList, List<InboundBatch> batchList);
 
-    HttpResponse selectPurchaseInfoByPurchaseNum(InboundBatchPurchaseReq inboundBatchPurchaseReq);
+    HttpResponse selectPurchaseInfoByPurchaseNum(Inbound inbound);
 }

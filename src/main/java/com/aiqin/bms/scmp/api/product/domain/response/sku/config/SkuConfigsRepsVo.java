@@ -63,6 +63,9 @@ public class SkuConfigsRepsVo {
     @ApiModelProperty("大效期预警天数")
     private Integer bigEffectPeriodWarnDay;
 
+    @ApiModelProperty("到货后周转期")
+    private Integer turnoverPeriodAfterArrival;
+
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     private Date createTime;

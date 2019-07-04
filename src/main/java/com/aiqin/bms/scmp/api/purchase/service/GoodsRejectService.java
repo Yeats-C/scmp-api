@@ -61,4 +61,6 @@ public interface GoodsRejectService {
     void finishStock(RejectStockRequest request);
 
     HttpResponse rejectApplyDetailInfo(RejectApplyRequest rejectApplyQueryRequest);
+
+    HttpResponse rejectCancel(String reject_record_id);
 }

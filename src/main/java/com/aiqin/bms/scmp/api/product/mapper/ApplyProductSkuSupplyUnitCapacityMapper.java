@@ -18,4 +18,6 @@ public interface ApplyProductSkuSupplyUnitCapacityMapper {
     int updateByPrimaryKey(ApplyProductSkuSupplyUnitCapacity record);
 
     int insertBatch(List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities);
+
+    List<ApplyProductSkuSupplyUnitCapacity> selectByApplyCode(String applyCode);
 }

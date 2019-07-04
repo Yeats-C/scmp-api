@@ -721,13 +721,13 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    public HttpResponse selectPurchaseInfoByPurchaseNum(InboundBatchPurchaseReq inboundBatchPurchaseReq){
+    public HttpResponse selectPurchaseInfoByPurchaseNum(Inbound inbound){
         try{
-            List<InboundBatch> inboundBatchList = inboundBatchDao.selectPurchaseInfoByPurchaseNum(inboundBatchPurchaseReq);
-            Integer total = inboundBatchDao.countPurchaseInfoByPurchaseNum(inboundBatchPurchaseReq);
+            List<InboundProduct> inboundBatchList = inboundProductDao.selectPurchaseInfoByPurchaseNum(inbound);
+            Integer total = inboundProductDao.countPurchaseInfoByPurchaseNum(inbound);
             return HttpResponse.success(new PageResData<>(total, inboundBatchList));
         }catch (Exception e){
-            log.error("采购查询批次详情失败:{}", e);
+            log.error("采购查询sku详情失败:{}", e);
             throw new GroundRuntimeException("采购查询批次详情失败");
         }
     }

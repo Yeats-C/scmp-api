@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @className QueryStockSkuRespVo
@@ -20,6 +21,10 @@ public class QueryStockSkuListRespVo implements Serializable {
     @ApiModelProperty("唯一id")
     @JsonProperty("id")
     private Long id;
+
+    @ApiModelProperty("库房")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
 
     @ApiModelProperty("sku编码")
     @JsonProperty("sku_code")
@@ -85,5 +90,8 @@ public class QueryStockSkuListRespVo implements Serializable {
     @JsonProperty("tax_cost")
     private Long taxCost;
 
+    @ApiModelProperty("批次号集合")
+    @JsonProperty(value = "batch_code")
+    private List<String> batchCodeList;
 
 }

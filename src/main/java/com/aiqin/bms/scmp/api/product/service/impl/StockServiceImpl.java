@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.dao.StockFlowDao;
 import com.aiqin.bms.scmp.api.product.domain.converter.InboundReqVo2InboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.PurchaseToStockConverter;
+import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockBatchConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
@@ -1568,7 +1569,12 @@ public class StockServiceImpl implements StockService {
     public PageInfo<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO) {
         try {
             PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
-            return new PageInfo<QueryStockSkuListRespVo>(stockDao.selectStockSkuList(reqVO));
+            List<QueryStockSkuListRespVo> queryStockSkuListRespVos = stockDao.selectStockSkuList(reqVO);
+            for (QueryStockSkuListRespVo queryStockSkuListRespVo: queryStockSkuListRespVos) {
+                List<String> batchCodeLists = stockDao.selectSkuCodeByQueryBatchCodeList(queryStockSkuListRespVo.getWarehouseCode(), queryStockSkuListRespVo.getSkuCode());
+                queryStockSkuListRespVo.setBatchCodeList(batchCodeLists);
+            }
+            return new PageInfo<QueryStockSkuListRespVo>(queryStockSkuListRespVos);
         } catch (Exception ex) {
             log.error("查询批次库存商失败");
             ex.printStackTrace();
@@ -1577,7 +1583,7 @@ public class StockServiceImpl implements StockService {
     }
 
     /**
-     * 库房管理新增调拨,移库,报废列表查询
+     * 库房库存数据保存
      * @return
      */
    @Override
@@ -1585,5 +1591,63 @@ public class StockServiceImpl implements StockService {
        stockDao.updateStorehouseById(stockRespVO);
        return HttpResponse.success();
     }
+
+
+    /**
+     * 退供锁定批次库存
+     * @param reqVO
+     * @return
+     */
+    @Override
+    public Boolean returnSupplyLockStockBatch(ILockStockBatchReqVO reqVO) {
+        try {
+            //生成库存数据
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            //操作类型
+            Integer integer1 = 2;
+            stockChangeRequest.setOperationType(integer1);
+            //sku信息
+            List<StockBatchVoRequest> convert = new ReturnSupplyToStockBatchConverter().convert(reqVO);
+            stockChangeRequest.setStockBatchVoRequest(convert);
+            //采购编码
+            stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
+            HttpResponse httpResponse = changeStock(stockChangeRequest);
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 退供解锁批次库存
+     * @param reqVO
+     * @return
+     */
+    @Override
+    public Boolean returnSupplyUnLockStockBatch(ILockStockBatchReqVO reqVO) {
+        try {
+            //生成库存数据
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            //操作类型
+            Integer integer1 = 3;
+            stockChangeRequest.setOperationType(integer1);
+            //sku信息
+            List<StockBatchVoRequest> convert = new ReturnSupplyToStockBatchConverter().convert(reqVO);
+            stockChangeRequest.setStockBatchVoRequest(convert);
+            //采购编码
+            stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
+            HttpResponse httpResponse = changeStock(stockChangeRequest);
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
 }

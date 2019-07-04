@@ -28,6 +28,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
@@ -100,6 +101,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
     @Autowired
     private AllocationProductBatchMapper allocationProductBatchMapper;
+
     @Autowired
     private SupplierApiService supplierApiService;
 
@@ -115,6 +117,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Autowired
     @Lazy(true)
     private GoodsRejectService goodsRejectService;
+
+    @Autowired
+    private SupplyComService supplyComService;
 
     /**
      * 分页查询以及搜索
@@ -396,7 +401,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Override
     public Integer returnSupplySave(ReturnSupplyToOutBoundReqVo req) {
         //转换
-        OutboundReqVo convert = new ReturnSupply2outboundSaveConverter(skuService).convert(req);
+        OutboundReqVo convert = new ReturnSupply2outboundSaveConverter(skuService, supplyComService).convert(req);
         //保存
         return saveOutBoundInfo(convert);
     }
