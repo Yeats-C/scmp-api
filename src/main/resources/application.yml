@@ -64,7 +64,7 @@ WorkFlowBaseUrl:
         #采购申请详情
         applyPurchase: http://scmp.bms.aiqin.com/#/Supplier/PurchaseDetails/
         #退供申请详情
-        applyRefund: http://scmp.bms.aiqin.com/#/Supplier/RefundDetails/
+        applyRefund: http://scmp.bms.aiqin.com/#/purchase/returnDetail
         #调拨申请详情
         applyAllocattion: http://scmp.bms.aiqin.com/#/Supplier/AllocattionDetail/
         #商品申请详情

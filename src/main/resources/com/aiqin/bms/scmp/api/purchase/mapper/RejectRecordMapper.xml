@@ -103,7 +103,7 @@
         order by create_time desc
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
-    <select id="listCount" resultMap="BaseResultMap">
+    <select id="listCount" resultType="java.lang.Integer">
         select
         count(1)
         from reject_record
@@ -509,5 +509,13 @@
         reject_record
         where
            reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByRejectCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        reject_record
+        where
+        reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
     </select>
 </mapper>

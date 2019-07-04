@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.purchase.domain.request;
+package com.aiqin.bms.scmp.api.purchase.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -36,7 +36,7 @@ import java.util.Date;
  */
 @ApiModel("接受从库存查询出来的数据")
 @Data
-public class RejectApplyDetailHandleRequest {
+public class RejectApplyDetailHandleResponse {
 
     @ApiModelProperty(value = "业务id")
     @JsonProperty("reject_apply_record_detail_id")
@@ -177,7 +177,7 @@ public class RejectApplyDetailHandleRequest {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "批次创建时间")
     @JsonProperty("production_date")
-    private String batchCreateTime;
+    private Date batchCreateTime;
 
     @ApiModelProperty(value = "商品 结算方式")
     @JsonProperty("settlement_method_code")

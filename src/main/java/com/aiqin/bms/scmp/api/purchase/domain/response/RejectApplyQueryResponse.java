@@ -78,4 +78,8 @@ public class RejectApplyQueryResponse {
     @JsonProperty("detail_list")
     private List<RejectApplyDetailResponse> detailList;
 
+    @ApiModelProperty(value="是否可编辑,根据是否有提交过的商品  0否  1是")
+    @JsonProperty("update_status")
+    private Integer updateStatus;
+
 }

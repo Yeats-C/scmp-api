@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -70,10 +71,12 @@ public class RejectRecord {
     @JsonProperty("address")
     private String address;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "预计配送时间")
     @JsonProperty("expect_time")
     private Date expectTime;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "有效期")
     @JsonProperty("valid_day")
     private Date validDay;
@@ -162,10 +165,12 @@ public class RejectRecord {
     @JsonProperty("update_by_name")
     private String updateByName;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "")
     @JsonProperty("create_time")
     private Date createTime;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value = "")
     @JsonProperty("update_time")
     private Date updateTime;
