@@ -23,8 +23,4 @@ public interface InboundBatchDao {
 
     Integer updateBatchInfoByInboundOderCodeAndLineNum(InboundBatch inboundBatch);
 
-    List<InboundBatch> selectPurchaseInfoByPurchaseNum(InboundBatchPurchaseReq inboundBatchPurchaseReq);
-
-    Integer countPurchaseInfoByPurchaseNum(InboundBatchPurchaseReq inboundBatchPurchaseReq);
-
 }

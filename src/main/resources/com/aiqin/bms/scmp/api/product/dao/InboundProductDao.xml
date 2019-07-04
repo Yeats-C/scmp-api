@@ -466,4 +466,31 @@
     and a.linenum = #{linenum,jdbcType=BIGINT}
     </if>
   </select>
+
+  <select id="selectPurchaseInfoByPurchaseNum" resultMap="BaseResultMap" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Inbound">
+    select a.*
+    from inbound_product a left join inbound b on a.inbound_oder_code = b.inbound_oder_code
+    <where> 1=1
+      <if test="sourceOderCode != null">
+        and b.source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseNum != null">
+        and b.purchase_num = #{purchaseNum,jdbcType=VARCHAR}
+      </if>
+    </where>
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+
+  <select id="countPurchaseInfoByPurchaseNum" resultType="java.lang.Integer" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Inbound">
+    select count(1)
+    from inbound_product a left join inbound b on a.inbound_oder_code = b.inbound_oder_code
+    <where> 1=1
+      <if test="sourceOderCode != null">
+        and b.source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseNum != null">
+        and b.purchase_num = #{purchaseNum,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
 </mapper>
