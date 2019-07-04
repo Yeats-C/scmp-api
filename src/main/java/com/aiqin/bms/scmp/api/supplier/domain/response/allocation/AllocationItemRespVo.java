@@ -108,6 +108,7 @@ public class AllocationItemRespVo {
     private String modelNumber;
 
     @ApiModelProperty("错误原因")
+    @JsonProperty("error_reason")
     private String errorReason;
 
      public AllocationItemRespVo(){}
