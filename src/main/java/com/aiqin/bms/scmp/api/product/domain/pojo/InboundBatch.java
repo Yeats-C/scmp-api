@@ -45,9 +45,6 @@ public class InboundBatch extends PagesRequest{
     @ApiModelProperty("库位号")
     private String storeHouseCode;
 
-    @ApiModelProperty("采购调用次数")
-    private Integer purchaseNum;
-
     @ApiModelProperty("创建人")
     private String createBy;
 

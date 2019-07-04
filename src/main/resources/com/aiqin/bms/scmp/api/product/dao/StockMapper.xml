@@ -227,6 +227,7 @@
     </resultMap>
     <resultMap id="QueryStockSkuListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo">
         <result column="id" jdbcType="BIGINT" property="id"/>
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
         <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
@@ -1746,35 +1747,34 @@
             resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo"
             resultMap="QueryStockSkuListResultMap">
         select
-        s.id,s.sku_code,s.sku_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
-        ps.goods_gifts,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,s.available_num,
+        sb.id,sb.warehouse_code,sb.sku_code,sb.sku_name,ps.product_category_code,ps.product_category_code,ps.product_brand_code,ps.product_brand_name,
+        ps.goods_gifts,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,sb.available_num,
         s.tax_rate,s.tax_cost
-        from stock s
-        left join product_sku ps on s.sku_code = ps.sku_code
-        left join product_sku_checkout psc on s.sku_code = psc.sku_code
-        left join product_sku_stock_info pssi on s.sku_code = pssi.product_sku_code
+        from stock_batch sb
+        left join stock s on sb.sku_code = s.sku_code
+        left join product_sku ps on sb.sku_code = ps.sku_code
         <where>
             1 = 1
             <if test="outTransportCenterCode != null and outTransportCenterCode != ''">
-                and s.transport_center_code  = #{outTransportCenterCode, jdbcType=VARCHAR}
+                and sb.transport_center_code  = #{outTransportCenterCode, jdbcType=VARCHAR}
             </if>
             <if test="outWarehouseCode != null and outWarehouseCode != ''">
-                and s.warehouse_code  = #{outWarehouseCode, jdbcType=VARCHAR}
+                and sb.warehouse_code  = #{outWarehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="procurementSectionCode != null and procurementSectionCode != ''">
                 and ps.procurement_section_code  = #{procurementSectionCode, jdbcType=VARCHAR}
             </if>
             <if test="inTransportCenterCode != null and inTransportCenterCode != ''">
-                and s.transport_center_code = #{inTransportCenterCode, jdbcType=VARCHAR}
+                and sb.transport_center_code = #{inTransportCenterCode, jdbcType=VARCHAR}
             </if>
             <if test="inWarehouseCode != null and inWarehouseCode != ''">
-                and s.warehouse_code  = #{inWarehouseCode, jdbcType=VARCHAR}
+                and sb.warehouse_code  = #{inWarehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="skuCode != null and skuCode != ''">
-                and s.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR} ,'%')
+                and sb.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR} ,'%')
             </if>
             <if test="skuName != null and skuName != ''">
-                and s.sku_name like concat('%', #{skuName, jdbcType=VARCHAR} ,'%')
+                and sb.sku_name like concat('%', #{skuName, jdbcType=VARCHAR} ,'%')
             </if>
             <if test="productBrandCode != null and productBrandCode != ''">
                 and ps.product_brand_code like concat('%', #{productBrandCode, jdbcType=VARCHAR} ,'%')
@@ -1813,4 +1813,17 @@
         left join product_sku_stock_info as pssi on ps.sku_code = pssi.product_sku_code
         order by ps.sku_code asc
     </select>
+    <select id="selectSkuCodeByQueryBatchCodeList" parameterType="String" resultType="String">
+        SELECT
+        sb.batch_code as batchCodeList
+        FROM stock_batch sb
+        where 1=1
+        <if test="warehouseCode!=null and warehouseCode!=''">
+            and sb.warehouse_code=#{warehouseCode}
+        </if>
+        <if test="skuCode!=null and skuCode!=''">
+            and sb.sku_code=#{skuCode}
+        </if>
+    </select>
+
 </mapper>

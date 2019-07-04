@@ -1,21 +1,22 @@
 package com.aiqin.bms.scmp.api.product.domain.converter;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundBatchReqVo;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
+import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailByCodeRespVO;
+import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.bms.scmp.api.base.InOutStatus;
-import com.aiqin.bms.scmp.api.product.domain.SupplyComDetailRespVO;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupply;
-import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyItem;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.util.Calculate;
+import com.alibaba.druid.util.StringUtils;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -41,9 +42,13 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
 //    }
     private SkuService skuService;
 
-    public ReturnSupply2outboundSaveConverter(SkuService skuService) {
-        this.skuService=skuService;
+    private SupplyComService supplyComService;
+
+    public ReturnSupply2outboundSaveConverter(SkuService skuService, SupplyComService supplyComService) {
+        this.skuService = skuService;
+        this.supplyComService = supplyComService;
     }
+
     @Override
     public OutboundReqVo convert(ReturnSupplyToOutBoundReqVo reqMainVo) {
         try {
@@ -51,23 +56,23 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
             if(CollectionUtils.isEmpty(reqMainVo.getRejectRecordDetails())){
                 throw new BizException("出库单保存请求vo的商品项集合不能为空");
             }
-            SupplyComDetailRespVO supplyComDetailRespVO = skuService.detailByCode(reqVo.getSupplierCode());
-            if(Objects.isNull(supplyComDetailRespVO)){
+            SupplyComDetailByCodeRespVO supplyComDetailByCodeRespVO = supplyComService.detailByCode(reqVo.getSupplierCode());
+            if(Objects.isNull(supplyComDetailByCodeRespVO)){
                 throw new GroundRuntimeException("获取供货单位信息失败");
             }
 
             if(null != reqVo){
                 OutboundReqVo outbound = new OutboundReqVo();
-                outbound.setProvinceCode(supplyComDetailRespVO.getProvinceId());
-                outbound.setProvinceName(supplyComDetailRespVO.getProvinceName());
-                outbound.setCityCode(supplyComDetailRespVO.getCityId());
-                outbound.setCityName(supplyComDetailRespVO.getCityName());
-                outbound.setCountyCode(supplyComDetailRespVO.getDistrictId());
-                outbound.setCountyName(supplyComDetailRespVO.getDistrictName());
-                outbound.setConsignee(supplyComDetailRespVO.getContactName());
-                outbound.setConsigneeNumber(supplyComDetailRespVO.getMobilePhone());
-                outbound.setConsigneeRate(supplyComDetailRespVO.getZipCode());
-                outbound.setDetailedAddress(supplyComDetailRespVO.getAddress());
+                outbound.setProvinceCode(supplyComDetailByCodeRespVO.getProvinceId());
+                outbound.setProvinceName(supplyComDetailByCodeRespVO.getProvinceName());
+                outbound.setCityCode(supplyComDetailByCodeRespVO.getCityId());
+                outbound.setCityName(supplyComDetailByCodeRespVO.getCityName());
+                outbound.setCountyCode(supplyComDetailByCodeRespVO.getDistrictId());
+                outbound.setCountyName(supplyComDetailByCodeRespVO.getDistrictName());
+                outbound.setConsignee(supplyComDetailByCodeRespVO.getContactName());
+                outbound.setConsigneeNumber(supplyComDetailByCodeRespVO.getMobilePhone());
+                outbound.setConsigneeRate(supplyComDetailByCodeRespVO.getZipCode());
+                outbound.setDetailedAddress(supplyComDetailByCodeRespVO.getAddress());
                 //公司
                 outbound.setCompanyCode(reqVo.getCompanyCode());
                 outbound.setCompanyName(reqVo.getCompanyName());
@@ -111,6 +116,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 Map<String, PurchaseItemRespVo> map2 = skuService.getSalesSkuList(skuCodes).stream().collect(Collectors.toMap(PurchaseItemRespVo::getSkuCode, Function.identity(),(k1, k2)->k2));
                 List<RejectRecordDetail> items = reqMainVo.getRejectRecordDetails();
                 List<OutboundProductReqVo> parts =Lists.newArrayList();
+                List<OutboundBatch> batchReqVos = Lists.newArrayList();
                 long noTaxTotalAmount = 0;
                 for (RejectRecordDetail item : items) {
                     OutboundProductReqVo outboundProduct = new OutboundProductReqVo();
@@ -149,10 +155,27 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     long noTaxTotalPrice = noTaxPrice * item.getProductCount();
                     noTaxTotalAmount = noTaxTotalPrice;
                     parts.add(outboundProduct);
+
+                    if(!StringUtils.isEmpty(item.getBatchNo())){
+                        OutboundBatch outboundBatch = new OutboundBatch();
+                        //sku
+                        outboundBatch.setSkuCode(item.getSkuCode());
+                        outboundBatch.setSkuName(item.getSkuName());
+                        outboundBatch.setOutboundBatchCode(item.getBatchNo());
+                        outboundBatch.setManufactureTime(item.getBatchCreateTime());
+                        outboundBatch.setBatchRemark(item.getBatchRemark());
+                        outboundBatch.setPraQty(item.getProductCount());
+                        outboundProduct.setCreateBy(outbound.getCreateBy());
+                        outboundProduct.setUpdateBy(outbound.getUpdateBy());
+                        outboundBatch.setCreateTime(new Date());
+                        outboundBatch.setUpdateTime(new Date());
+                        batchReqVos.add(outboundBatch);
+                    }
                 }
                 outbound.setPreAmount(noTaxTotalAmount);
                 outbound.setPreTax(reqVo.getSumAmount() - noTaxTotalAmount);
                 outbound.setList(parts);
+                outbound.setOutboundBatches(batchReqVos);
                 return outbound;
             }
         } catch (Exception e) {

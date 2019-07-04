@@ -92,7 +92,8 @@
       sum(product_total_amount) as single_amount
     from reject_apply_record_detail
     where
-      reject_apply_record_code in
+      apply_record_status = '0'
+     and reject_apply_record_code in
       <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
         #{item}
       </foreach>
@@ -372,10 +373,10 @@
     from
     reject_apply_record_detail
     where
-    apply_record_status =  0
+    apply_record_status =  #{applyRecordStatus,jdbcType=VARCHAR}
     and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </select>
-  <resultMap id="BaseMap" type="com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest">
+  <resultMap id="BaseMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
     <result column="apply_type" jdbcType="BIT" property="applyType" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />

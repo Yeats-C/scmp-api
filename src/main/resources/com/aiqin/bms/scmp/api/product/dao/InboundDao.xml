@@ -40,6 +40,7 @@
     <result column="county_code" jdbcType="VARCHAR" property="countyCode" />
     <result column="county_name" jdbcType="VARCHAR" property="countyName" />
     <result column="detailed_address" jdbcType="VARCHAR" property="detailedAddress" />
+    <result column="purchase_num" jdbcType="VARCHAR" property="purchaseNum" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
@@ -53,7 +54,7 @@
     pre_arrival_time, wms_document_code, pre_inbound_num, pre_main_unit_num, pre_tax_amount, 
     pre_amount, pre_tax, pra_inbound_num, pra_main_unit_num, pra_tax_amount, pra_amount, 
     pra_tax, shipper, shipper_number, shipper_rate, province_code, province_name, city_code, 
-    city_name, county_code, county_name, detailed_address, create_by, create_time, update_by, 
+    city_name, county_code, county_name, detailed_address, purchase_num, create_by, create_time, update_by,
     update_time
   </sql>
 
@@ -118,7 +119,7 @@
       pra_tax, shipper, shipper_number, 
       shipper_rate, province_code, province_name, 
       city_code, city_name, county_code, 
-      county_name, detailed_address, create_by, 
+      county_name, detailed_address, purchase_num, create_by,
       create_time, update_by, update_time
       )
     values (#{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
@@ -133,8 +134,9 @@
       #{praTax,jdbcType=BIGINT}, #{shipper,jdbcType=VARCHAR}, #{shipperNumber,jdbcType=VARCHAR}, 
       #{shipperRate,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityCode,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{countyCode,jdbcType=VARCHAR}, 
-      #{countyName,jdbcType=VARCHAR}, #{detailedAddress,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+      #{countyName,jdbcType=VARCHAR}, #{detailedAddress,jdbcType=VARCHAR}, #{purchaseNum,jdbcType=INTEGER},
+      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
+      #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Inbound">
@@ -253,6 +255,9 @@
       </if>
       <if test="detailedAddress != null">
         detailed_address,
+      </if>
+      <if test="purchaseNum != null">
+        purchase_num,
       </if>
       <if test="createBy != null">
         create_by,
@@ -382,6 +387,9 @@
       <if test="detailedAddress != null">
         #{detailedAddress,jdbcType=VARCHAR},
       </if>
+      <if test="purchaseNum != null">
+        #{purchaseNum,jdbcType=INTEGER},
+      </if>
       <if test="createBy != null">
         #{createBy,jdbcType=VARCHAR},
       </if>
@@ -409,7 +417,7 @@
       pra_tax, shipper, shipper_number,
       shipper_rate, province_code, province_name,
       city_code, city_name, county_code,
-      county_name, detailed_address, create_by,
+      county_name, detailed_address, purchase_num, create_by,
       create_time, update_by, update_time
       )
     values
@@ -426,8 +434,9 @@
       #{item.praTax,jdbcType=BIGINT}, #{item.shipper,jdbcType=VARCHAR}, #{item.shipperNumber,jdbcType=VARCHAR},
       #{item.shipperRate,jdbcType=VARCHAR}, #{item.provinceCode,jdbcType=VARCHAR}, #{item.provinceName,jdbcType=VARCHAR},
       #{item.cityCode,jdbcType=VARCHAR}, #{item.cityName,jdbcType=VARCHAR}, #{item.countyCode,jdbcType=VARCHAR},
-      #{item.countyName,jdbcType=VARCHAR}, #{item.detailedAddress,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR},
-      #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}
+      #{item.countyName,jdbcType=VARCHAR}, #{item.detailedAddress,jdbcType=VARCHAR}, #{item.purchaseNum,jdbcType=INTEGER},
+      #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP}
       )
     </foreach>
     </insert>
@@ -545,6 +554,9 @@
       <if test="detailedAddress != null">
         detailed_address = #{detailedAddress,jdbcType=VARCHAR},
       </if>
+      <if test="purchaseNum != null">
+        purchase_num = #{purchaseNum,jdbcType=INTEGER},
+      </if>
       <if test="createBy != null">
         create_by = #{createBy,jdbcType=VARCHAR},
       </if>
@@ -599,6 +611,7 @@
       county_code = #{countyCode,jdbcType=VARCHAR},
       county_name = #{countyName,jdbcType=VARCHAR},
       detailed_address = #{detailedAddress,jdbcType=VARCHAR},
+      purchase_num = #{purchaseNum,jdbcType=INTEGER},
       create_by = #{createBy,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
@@ -628,5 +641,9 @@
     <include refid="Base_Column_List" />
     from inbound
     where  inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectMaxPurchaseNumBySourceOderCode" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select max(purchase_num) from inbound where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
   </select>
 </mapper>
