@@ -204,6 +204,10 @@ public class PurchaseApplyProduct {
     @JsonProperty("apply_product_status")
     private Integer applyProductStatus;
 
+    @ApiModelProperty(value="采购申请状态  0.未提交  1.已提交")
+    @JsonProperty("info_status")
+    private Integer infoStatus;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

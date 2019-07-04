@@ -101,6 +101,10 @@ public class PurchaseOrderProduct {
     @JsonProperty("stock_count")
     private Integer stockCount;
 
+    @ApiModelProperty(value="实际单品数量")
+    @JsonProperty("actual_single_count")
+    private Integer actualSingleCount;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

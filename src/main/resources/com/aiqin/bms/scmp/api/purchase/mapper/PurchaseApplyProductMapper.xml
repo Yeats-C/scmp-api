@@ -50,6 +50,7 @@
     <result column="receipt_turnover" jdbcType="INTEGER" property="receiptTurnover" />
     <result column="error_info" jdbcType="VARCHAR" property="errorInfo" />
     <result column="apply_product_status" jdbcType="INTEGER" property="applyProductStatus" />
+    <result column="info_status" jdbcType="INTEGER" property="infoStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
@@ -393,6 +394,9 @@
     select count(DISTINCT(sku_code)) from purchase_apply_product
     where apply_product_status = 1
     and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+    <if test="infoStatus != null">
+      and info_status = #{infoStatus,jdbcType=INTEGER}
+    </if>
   </select>
   <insert id="insertAll">
      insert into purchase_apply_product (apply_product_id, purchase_apply_id, purchase_apply_code,
@@ -441,7 +445,8 @@
     from purchase_apply_product a inner join
     product_sku_checkout s on
     a.sku_code = s.sku_code
-    WHERE a.apply_product_status = 1 and a.purchase_apply_id in
+    WHERE a.apply_product_status = 1 and a.info_status = 0
+    and a.purchase_apply_id in
     <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
       #{item}
     </foreach>
@@ -461,7 +466,7 @@
     product_sku_checkout s on
     a.sku_code = s.sku_code
     <where>
-      a.apply_product_status = 1
+      a.apply_product_status = 1 and  a.info_status = 0
       <if test="supplierCode != null">
         and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
@@ -488,7 +493,7 @@
     product_sku_checkout s on
     a.sku_code = s.sku_code
     <where>
-      a.apply_product_status = 1
+      a.apply_product_status = 1 and a.info_status = 0
       <if test="supplierCode != null">
         and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
@@ -518,7 +523,7 @@
     inner join purchase_apply p
     on a.purchase_apply_id = p.purchase_apply_id
     <where>
-      a.apply_product_status = 1
+      a.apply_product_status = 1 and a.info_status = 0
       <if test="supplierCode != null">
         and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
@@ -553,7 +558,7 @@
       product_sku_checkout s on
       a.sku_code = s.sku_code
       <where>
-        a.apply_product_status = 1
+        a.apply_product_status = 1 and a.info_status = 0
         <if test="supplierCode != null">
            and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
         </if>
@@ -575,13 +580,13 @@
       </where>
       LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
-  <select id="purchaseFormCount" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+  <select id="purchaseFormCount" resultType="java.lang.Integer">
      select COUNT(1)
      from purchase_apply_product a inner join
       product_sku_checkout s on
       a.sku_code = s.sku_code
      <where>
-      a.apply_product_status = 1
+      a.apply_product_status = 1 and a.info_status = 0
       <if test="supplierCode != null">
          and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
@@ -602,4 +607,7 @@
       </if>
      </where>
   </select>
+  <delete id="delete">
+    delete from purchase_apply_product where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

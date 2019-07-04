@@ -100,6 +100,7 @@
         <include refid="Base_Column_List"/>
         from reject_record
         <include refid="LIST_QUERY"/>
+        order by create_time desc
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="listCount" resultMap="BaseResultMap">

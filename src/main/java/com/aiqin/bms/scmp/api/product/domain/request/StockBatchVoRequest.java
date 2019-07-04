@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 @ApiModel("批次库存修改model")
 @Data
 public class StockBatchVoRequest {
@@ -112,6 +114,10 @@ public class StockBatchVoRequest {
     @ApiModelProperty("修改数")
     @JsonProperty(value = "change_num")
     private Long changeNum;
+
+    @ApiModelProperty("批次号集合")
+    @JsonProperty(value = "batch_code")
+    private List<String> batchCodeList;
 
 
     public String getCompanyCode() {
@@ -256,5 +262,77 @@ public class StockBatchVoRequest {
 
     public void setTaxRate(Long taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public String getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType;
+    }
+
+    public Long getDocumentNum() {
+        return documentNum;
+    }
+
+    public void setDocumentNum(Long documentNum) {
+        this.documentNum = documentNum;
+    }
+
+    public String getSourceDocumentType() {
+        return sourceDocumentType;
+    }
+
+    public void setSourceDocumentType(String sourceDocumentType) {
+        this.sourceDocumentType = sourceDocumentType;
+    }
+
+    public Long getSourceDocumentNum() {
+        return sourceDocumentNum;
+    }
+
+    public void setSourceDocumentNum(Long sourceDocumentNum) {
+        this.sourceDocumentNum = sourceDocumentNum;
+    }
+
+    public String getOperatingTime() {
+        return operatingTime;
+    }
+
+    public void setOperatingTime(String operatingTime) {
+        this.operatingTime = operatingTime;
+    }
+
+    public String getOperatingBy() {
+        return operatingBy;
+    }
+
+    public void setOperatingBy(String operatingBy) {
+        this.operatingBy = operatingBy;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public Long getChangeNum() {
+        return changeNum;
+    }
+
+    public void setChangeNum(Long changeNum) {
+        this.changeNum = changeNum;
+    }
+
+    public List<String> getBatchCodeList() {
+        return batchCodeList;
+    }
+
+    public void setBatchCodeList(List<String> batchCodeList) {
+        this.batchCodeList = batchCodeList;
     }
 }

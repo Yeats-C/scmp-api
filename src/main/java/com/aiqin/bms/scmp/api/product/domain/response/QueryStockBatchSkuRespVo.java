@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -91,8 +92,8 @@ public class QueryStockBatchSkuRespVo implements Serializable {
     private String unitName;
 
     @ApiModelProperty("税率")
-    @JsonProperty("Input_tax_rate")
-    private Integer InputTaxRate;
+    @JsonProperty("input_tax_rate")
+    private Integer inputTaxRate;
 
     @ApiModelProperty("仓库编码")
     @JsonProperty("transport_center_code")
@@ -124,6 +125,7 @@ public class QueryStockBatchSkuRespVo implements Serializable {
 
     @ApiModelProperty("批次创建时间")
     @JsonProperty("production_date")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private String productionDate;
 
     @ApiModelProperty("批次备注")

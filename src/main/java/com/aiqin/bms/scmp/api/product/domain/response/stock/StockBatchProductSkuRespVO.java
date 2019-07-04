@@ -9,6 +9,13 @@ import lombok.Data;
 @Data
 public class StockBatchProductSkuRespVO {
 
+    @ApiModelProperty("sku编码")
+    @JsonProperty(value = "sku_code")
+    private String skuCode;
+
+    @ApiModelProperty("sku名称")
+    @JsonProperty(value = "sku_name")
+    private String skuName;
 
     @ApiModelProperty("品类编码")
     @JsonProperty(value = "product_category_code")
@@ -53,18 +60,5 @@ public class StockBatchProductSkuRespVO {
     @ApiModelProperty("配置状态(进货销售的)")
     @JsonProperty(value = "config_status")
     private Long configStatus;
-
-    @ApiModelProperty("库存数")
-    @JsonProperty(value = "inventory_num")
-    private Long inventoryNum;
-
-    @ApiModelProperty("可用库存数")
-    @JsonProperty(value = "available_num")
-    private Long availableNum;
-
-    @ApiModelProperty("锁定库存数")
-    @JsonProperty(value = "lock_num")
-    private Long lockNum;
-
 
 }

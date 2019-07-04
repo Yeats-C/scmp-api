@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -68,6 +69,7 @@ public class RejectApplyQueryResponse {
     @JsonProperty("create_by_name")
     private String createByName;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;
