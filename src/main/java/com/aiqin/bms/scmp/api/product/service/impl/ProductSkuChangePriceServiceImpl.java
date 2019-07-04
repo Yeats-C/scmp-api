@@ -295,12 +295,19 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Override
     public ProductSkuChangePriceRespVO view(String code) {
-        return productSkuChangePriceMapper.selectInfoByCode(code);
+        ProductSkuChangePriceRespVO respVO = productSkuChangePriceMapper.selectInfoByCode(code);
+        if (Objects.isNull(respVO)) {
+            throw new BizException(ResultCode.CAN_NOT_FIND_CHANGE_PRICE_INFO);
+        }
+        return respVO;
     }
 
     @Override
     public ProductSkuChangePriceRespVO editView(String code) {
         ProductSkuChangePriceRespVO respVO = this.view(code);
+        if (Objects.isNull(respVO)) {
+            throw new BizException(ResultCode.CAN_NOT_FIND_CHANGE_PRICE_INFO);
+        }
         QuerySkuInfoReqVO vo =  new QuerySkuInfoReqVO();
         vo.setCompanyCode(respVO.getCompanyCode());
         vo.setPurchaseGroupCode(respVO.getPurchaseGroupCode());

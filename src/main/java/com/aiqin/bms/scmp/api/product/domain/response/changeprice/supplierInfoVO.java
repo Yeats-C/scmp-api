@@ -22,6 +22,8 @@ public class supplierInfoVO {
     private Long purchasePriceOld;
     @ApiModelProperty("最新采购价")
     private Long purchasePriceNewest;
+    @ApiModelProperty("原含税价")
+    private Long oldPrice;
     @ApiModelProperty("是否缺省（0:否,1：是）")
     private Boolean isDefault;
 }
