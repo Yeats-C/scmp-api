@@ -52,7 +52,7 @@ public class RejectTest extends SpringBootTestContext {
     @Test
     public void finishStock(){
         RejectStockRequest request = new RejectStockRequest();
-        request.setRejectRecordCode("1");
+        request.setRejectRecordCode("RR100059");
         request.setOutStockTime(new Date());
         goodsRejectService.finishStock(request);
 
