@@ -14,6 +14,8 @@ import lombok.Data;
 @Data
 @ApiModel("商品信息")
 public class ReturnOrderInfoItemRespVO {
+    @ApiModelProperty("id")
+    private Long id;
 
     @ApiModelProperty("sku编号")
     private String skuCode;

@@ -3,17 +3,19 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.OrderType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.ReturnOrderStatus;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.converter.returnorder.ReturnOrderToInboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
+import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
-import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
@@ -58,9 +60,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
     @Autowired
     private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
-
-    @Autowired
-    private StockService stockService;
 
     @Autowired
     private WarehouseService warehouseService;
@@ -253,6 +252,74 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             throw new BizException(ResultCode.GET_RETURN_GOODS_DETAIL_FAILED);
         }
         return respVO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean returnReceipt(List<ReturnReceiptReqVO> reqVO, String code) {
+        //更新状态
+        ChangeOrderStatusReqVO vo = new ChangeOrderStatusReqVO();
+        vo.setOperatorCode(getUser().getPersonName());
+        vo.setOperatorCode(getUser().getPersonId());
+        vo.setOrderCode(code);
+        vo.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+        changeStatus(vo);
+        //更新数量
+        saveReturnReceipt(reqVO);
+        return Boolean.TRUE;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean changeStatus(ChangeOrderStatusReqVO reqVO) {
+        Date date = new Date();
+        //先查后改
+        ReturnOrderInfo order = returnOrderInfoMapper.selectByCode1(reqVO.getOrderCode());
+        if (Objects.isNull(order)) {
+            throw new BizException(ResultCode.CAN_NOT_FIND_ORDER);
+        }
+        //校验 TODO
+        order.setOrderStatus(reqVO.getOrderStatus());
+        order.setOperator(reqVO.getOperator());
+        order.setOperatorCode(reqVO.getOperatorCode());
+        order.setOperatorTime(date);
+        order.setRemake(reqVO.getRemark());
+        //更新
+        updateByOrderCode(order);
+        //存日志
+//        OrderInfoLog log = new OrderInfoLog(null,reqVO.getOrderCode(),reqVO.getOrderStatus(), OrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getStandardDescription(),null,reqVO.getOperator(),date,order.getCompanyCode(),order.getCompanyName());
+//        List<OrderInfoLog> logs = Lists.newArrayList();
+//        logs.add(log);
+//        saveLog(logs);
+        return Boolean.TRUE;
+    }
+
+    public void updateByOrderCode(ReturnOrderInfo order) {
+       int i =  returnOrderInfoMapper.updateByOrderCode(order);
+        if(i<1){
+            throw new BizException(ResultCode.UPDATE_ORDER_STATUS_FAILED);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveReturnReceipt(List<ReturnReceiptReqVO> reqVO) {
+        int i = returnOrderInfoItemMapper.updateActualInboundNumByIdAndReturnOrderCode(reqVO);
+        if (i!=reqVO.size()) {
+            throw new BizException(ResultCode.SAVE_RETURN_RECEIPT_FAILED);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean changeOrderStatus(String code, Integer status) {
+        ChangeOrderStatusReqVO vo = new ChangeOrderStatusReqVO();
+        vo.setOperatorCode(getUser().getPersonName());
+        vo.setOperatorCode(getUser().getPersonId());
+        vo.setOrderCode(code);
+        vo.setOrderStatus(status);
+        changeStatus(vo);
+        return Boolean.TRUE;
     }
 
     /**
