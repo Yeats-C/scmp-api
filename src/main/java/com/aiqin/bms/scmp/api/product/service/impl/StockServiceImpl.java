@@ -1604,7 +1604,7 @@ public class StockServiceImpl implements StockService {
             //生成库存数据
             StockChangeRequest stockChangeRequest = new StockChangeRequest();
             //操作类型
-            Integer integer1 = 1;
+            Integer integer1 = 2;
             stockChangeRequest.setOperationType(integer1);
             //sku信息
             List<StockBatchVoRequest> convert = new ReturnSupplyToStockBatchConverter().convert(reqVO);
