@@ -1639,10 +1639,13 @@
       f.price_type_name       as priceTypeName,
       f.price_category_code   as priceAttributeCode,
       f.price_category_name   as priceAttributeName,
-      ifnull(g.price_tax,0) as oldPrice
+      ifnull(g.price_tax,0) as oldPrice,
+      ifnull(h.tax_cost,0) as taxCost
       from price_project f
        left join product_sku_price_info g
       on #{skuCode} = g.sku_code and g.price_item_code = f.price_project_code and g.ext_field_5 = 0
+       left join stock h
+       on h.sku_code = g.sku_code
       where  f.company_code = #{companyCode} and f.price_category_code = #{changePriceType}
   </select>
   <select id="selectSkuListForSalePrice"

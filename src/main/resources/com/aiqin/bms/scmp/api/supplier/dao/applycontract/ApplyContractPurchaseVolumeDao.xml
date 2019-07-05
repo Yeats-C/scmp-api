@@ -21,7 +21,7 @@
 
   <insert id="insertApplyContractPurchaseVolume" parameterType="java.util.List">
     INSERT  INTO  apply_contract_purchase_volume
-    (apply_contract_code,tax,amount_money,proportion,or_amount_money,create_time,create_by ,update_time, update_by)
+    (apply_contract_code,tax,amount_money,proportion,or_amount_money,create_time,create_by ,update_time, update_by,plan_type)
     VALUES
     <foreach collection="list" item="t" index= "index" separator =",">
       (
@@ -33,7 +33,8 @@
       #{t.createTime},
       #{t.createBy},
       #{t.updateTime},
-      #{t.updateBy}
+      #{t.updateBy},
+      #{t.planType}
       )
     </foreach>
   </insert>

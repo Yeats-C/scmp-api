@@ -26,4 +26,12 @@ public interface ContractPlanTypeMapper {
     int insertBatch(List<ContractPlanType> typeList);
 
     int deletePlanTypeList(String contractCode);
+    /**
+     * 查数据
+     * @author NullPointException
+     * @date 2019/7/5
+     * @param contractCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO>
+     */
+    List<ContractPlanType> selectByCode(String contractCode);
 }

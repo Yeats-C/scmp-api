@@ -12,7 +12,7 @@ import lombok.Data;
  * @time: 16:39
  */
 @Data
-@ApiModel("商品信息")
+@ApiModel("订单详情商品列表信息")
 public class QueryOrderInfoItemRespVO {
 
     @ApiModelProperty("主键")

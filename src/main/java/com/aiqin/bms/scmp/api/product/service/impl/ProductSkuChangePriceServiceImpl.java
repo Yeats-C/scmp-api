@@ -102,6 +102,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             String code = getCode("CP", EncodingRuleType.CHANGE_PRICE_CODE);
             reqVO.setCode(code);
         }
+        //判断是否含有区域0否1是
+        reqVO.setExtField5(CollectionUtils.isEmpty(reqVO.getAreaList())?0:1);
         saveData(reqVO);
         if (CommonConstant.SUBMIT.equals(reqVO.getOperation())) {
             callWorkflow(reqVO);

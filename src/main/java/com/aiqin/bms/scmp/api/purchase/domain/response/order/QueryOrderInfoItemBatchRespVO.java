@@ -26,6 +26,9 @@ public class QueryOrderInfoItemBatchRespVO {
     @ApiModelProperty("数量")
     private Long num;
 
+    @ApiModelProperty("实发数量")
+    private Long actualDeliverNum;
+
     @ApiModelProperty("生产日期")
     private Date productTime;
 

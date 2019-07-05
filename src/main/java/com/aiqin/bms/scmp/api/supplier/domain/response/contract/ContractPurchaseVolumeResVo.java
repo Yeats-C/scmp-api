@@ -49,4 +49,7 @@ public class ContractPurchaseVolumeResVo {
 
     @ApiModelProperty("修改人")
     private String updateBy;
+
+    @ApiModelProperty("计划类型(月度,季度,半年,全年)")
+    private Byte planType;
 }
