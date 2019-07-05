@@ -14,10 +14,14 @@
     <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
     <result column="Integral_coefficient" jdbcType="BIGINT" property="integralCoefficient" />
     <result column="rebate" jdbcType="BIGINT" property="rebate" />
+    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
+    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+    <result column="logistics_fee_award_ratio" jdbcType="DECIMAL" property="logisticsFeeAwardRatio" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_by, create_time, update_by, update_time, del_flag, sku_code, sku_name, 
-    output_tax_rate, Input_tax_rate, Integral_coefficient, rebate
+    output_tax_rate, Input_tax_rate, Integral_coefficient, rebate,
+    settlement_method_code,settlement_method_name,logistics_fee_award_ratio
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

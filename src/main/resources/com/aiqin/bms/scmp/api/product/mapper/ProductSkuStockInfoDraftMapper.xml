@@ -37,6 +37,7 @@
     <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
     <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
     <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
+    <result column="max_order_num" jdbcType="BIGINT" property="maxOrderNum" />
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, spec, product_name, unit_code, unit_name, bar_code, base_product_content, 

@@ -1561,6 +1561,9 @@
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="use_time" jdbcType="INTEGER" property="useTime" />
+    <result column="unique_code" jdbcType="TINYINT" property="uniqueCode" />
+    <result column="inventory_model" jdbcType="TINYINT" property="inventoryModel" />
   </resultMap>
   <sql id="Product_Sku_Resp_Column">
   id,product_code,product_name,sku_code,sku_name,sku_abbreviation,product_brand_code,product_brand_name,product_category_code,
@@ -1569,7 +1572,7 @@
   quality_assurance_management,quality_number,quality_date,categories_supply_channels_code,categories_supply_channels_name,
   mnemonic_code,manufacturer_guide_price,applicable_month_age,seasonal_goods,warehouse_type_code,warehouse_type_name,
   structural_goods,is_main_push,new_product,remark,company_code,company_name,
-  del_flag,create_time,create_by,update_time,update_by
+  del_flag,create_time,create_by,update_time,update_by,use_time,unique_code,inventory_model
   </sql>
   <select id="getProductSkuInfos"  parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuReqVO" resultMap="Product_Sku_Resp_Map">
     select

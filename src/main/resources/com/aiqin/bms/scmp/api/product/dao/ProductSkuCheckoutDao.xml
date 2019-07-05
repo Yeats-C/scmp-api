@@ -15,6 +15,9 @@
     <result column="output_tax_rate" jdbcType="BIGINT" property="outputTaxRate" />
     <result column="input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
     <result column="integral_coefficient" jdbcType="BIGINT" property="integralCoefficient" />
+    <result column="logistics_fee_award_ratio" jdbcType="DECIMAL" property="logisticsFeeAwardRatio" />
+
+
   </resultMap>
   <sql id="Base_Column_List">
     id, create_by, create_time, update_by, update_time, del_flag, sku_code, sku_name,
@@ -36,14 +39,15 @@
     update_by, update_time, del_flag,
     sku_code, sku_name, output_tax_rate,
     Input_tax_rate, Integral_coefficient, apply_code,
-    rebate,logistics_fee_award_ratio)
+    rebate,logistics_fee_award_ratio,settlement_method_code,settlement_method_name)
       values
       <foreach collection="applyProductSkuCheckouts" item="item" index="index" separator=",">
         ( #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
         #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.delFlag,jdbcType=TINYINT},
         #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.outputTaxRate,jdbcType=BIGINT},
         #{item.inputTaxRate,jdbcType=BIGINT}, #{item.integralCoefficient,jdbcType=BIGINT}, #{item.applyCode,jdbcType=VARCHAR},
-        #{item.rebate,jdbcType=BIGINT},  #{item.logisticsFeeAwardRatio,jdbcType=DECIMAL})
+        #{item.rebate,jdbcType=BIGINT},  #{item.logisticsFeeAwardRatio,jdbcType=DECIMAL},
+        #{item.settlementMethodCode,jdbcType=VARCHAR}, #{item.settlementMethodName,jdbcType=VARCHAR})
       </foreach>
   </insert>
   <insert id="insertCheckOuts" parameterType="java.util.List" >

@@ -109,7 +109,7 @@
     point, is_default, del_flag,
     create_time, create_by, update_time,
     update_by, product_sku_code, usage_status,
-    product_sku_name, apply_code)
+    product_sku_name, apply_code,categories_supply_channels_code,categories_supply_channels_name)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
@@ -117,7 +117,8 @@
       #{item.point,jdbcType=BIGINT}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT},
-      #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR})
+      #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR},
+      #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR}, #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <select id="getDraft" parameterType="java.lang.String" resultMap="BaseResultMap">

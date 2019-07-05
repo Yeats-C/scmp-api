@@ -569,10 +569,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuChannelService.saveApplyList(applyProductSkus);
             //标签
             List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCodes(saveSkuApplyInfoReqVO.getSkuCodes());
-            applyUseTagRecords.forEach(item->{
-                item.setApplyUseObjectCode(String.valueOf(code));
-            });
-            applyUseTagRecordService.updateBatch(applyUseTagRecords);
+            if(CollectionUtils.isNotEmpty(applyUseTagRecords)){
+                applyUseTagRecords.forEach(item->{
+                    item.setApplyUseObjectCode(String.valueOf(code));
+                });
+                applyUseTagRecordService.updateBatch(applyUseTagRecords);
+            }
             //包装
             productSkuBoxPackingService.saveApplyList(applyProductSkus);
             //进销存信息
