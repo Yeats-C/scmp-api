@@ -1617,6 +1617,7 @@
     <result column="spuName" property="spuName"/>
     <result column="spuCode" property="spuCode"/>
     <collection property="priceChannelList" ofType="java.util.List" column="changePriceType = changePriceType,companyCode = companyCode,skuCode = skuCode" select="getSaleChannelList" />
+    <collection property="batchList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo" column="companyCode = companyCode,skuCode = skuCode" select="com.aiqin.bms.scmp.api.product.dao.StockDao.getBatch" />
     <collection property="supplierInfoVOS" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO">
       <result column="supplierCode" property="supplierCode"/>
       <result column="supplierName" property="supplierName"/>

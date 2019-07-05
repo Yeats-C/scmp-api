@@ -16,6 +16,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRe
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -79,6 +80,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Autowired
     private SkuInfoService skuInfoService;
+
+    @Autowired
+    private StockService stockService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -804,5 +808,12 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
         return skuInfoService.getSkuListByQueryVO(reqVO);
+    }
+
+    @Override
+    public BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
+        return stockService.querySkuBatchList(reqVO);
     }
 }

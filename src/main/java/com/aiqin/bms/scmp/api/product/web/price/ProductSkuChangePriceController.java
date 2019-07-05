@@ -115,6 +115,18 @@ public class ProductSkuChangePriceController {
         }
     }
 
+    @PostMapping("/querySkuBatchList")
+    @ApiOperation("根据条件查询sku批次列表")
+    public HttpResponse<BasePage<QuerySkuInfoRespVO>> querySkuBatchList(@RequestBody @Valid QuerySkuInfoReqVO reqVO){
+        log.info("ProductSkuChangePriceController---querySkuBatchList---入参：[{}]", JSON.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(productSkuChangePriceService.querySkuBatchList(reqVO));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
+        }
+    }
+
     @GetMapping("/cancel")
     @ApiOperation("撤销")
     public HttpResponse<Boolean> cancel(@RequestParam String code) {
