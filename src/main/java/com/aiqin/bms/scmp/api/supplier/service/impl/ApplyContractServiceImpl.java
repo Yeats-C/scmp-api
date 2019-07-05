@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractPurchaseVolumeDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractPurchaseVolumeReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.*;
@@ -290,11 +291,16 @@ public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements
                 List<ApplyContractPurchaseVolumeDTO> purchaseVolume = applyContractPurchaseVolumeMapperDao.selectByApplyContractPurchaseVolume(entity.getApplyContractCode());
                 List<ApplyContractFile> applyContractFiles = applyContractFileMapper.selectByApplyContractCode(entity.getApplyContractCode());
                 List<ApplyContractPurchaseGroup> applyContractPurchaseGroups = applyContractPurchaseGroupMapper.selectByApplyContractCode(entity.getApplyContractCode());
+                List<ApplyContractPlanType> planTypeList = applyContractPlanTypeMapper.selectByApplyContratCode(entity.getApplyContractCode());
                 try {
                     // 转化成返回申请合同进货额list
                     if(CollectionUtils.isNotEmptyCollection(purchaseVolume)){
                         List<ApplyContractPurchaseVolumeResVo> list = BeanCopyUtils.copyList(purchaseVolume, ApplyContractPurchaseVolumeResVo.class);
                         applyContractResVo.setPurchaseList(list);
+                    }
+                    if(CollectionUtils.isNotEmptyCollection(planTypeList)){
+                        List<PlanTypeReqVO> list = BeanCopyUtils.copyList(planTypeList, PlanTypeReqVO.class);
+                        applyContractResVo.setPlanTypeList(list);
                     }
                     if(CollectionUtils.isNotEmptyCollection(applyContractFiles)){
                         List<ApplyContractFileResVo> fileResVos = BeanCopyUtils.copyList(applyContractFiles, ApplyContractFileResVo.class);

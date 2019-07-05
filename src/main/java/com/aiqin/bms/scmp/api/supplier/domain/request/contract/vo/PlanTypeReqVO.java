@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,8 +21,10 @@ public class PlanTypeReqVO {
     private Byte planType;
 
     @ApiModelProperty("开始时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date startTime;
 
     @ApiModelProperty("结束时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date endTime;
 }
