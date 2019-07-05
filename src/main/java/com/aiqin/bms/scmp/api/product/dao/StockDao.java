@@ -164,4 +164,14 @@ public interface StockDao {
 
     Integer insertBatchStockAdd(@Param("stockBatches") List<StockBatch> stockBatches);
 
+    List<String> importStockSkuList();
+
+    List<String> selectSkuCodeByQueryBatchCode(@Param("skuCode")String skuCode);
+
+    Long selectSkuCodeByQueryAvailableNum(@Param("skuCode")String skuCode);
+
+    List<String> selectSkuCodeByQueryProductionDateList(@Param("skuCode")String skuCode);
+
+    List<QueryStockSkuListRespVo> queryStockBatch(QueryImportStockSkuListReqVo reqVO);
+
 }

@@ -1836,4 +1836,32 @@ public class StockServiceImpl implements StockService {
         return stockBatch;
     }
 
+    /**
+     * 库房管理新增调拨,移库,报废列表查询导入操作
+     * @return
+     */
+    public PageInfo<QueryStockSkuListRespVo> importStockSkuList(QueryImportStockSkuListReqVo reqVO){
+        try {
+            /*List<String> skuCodes = stockDao.importStockSkuList();
+            ArrayList<QueryStockSkuListRespVo> list = new ArrayList();
+            for (String skuCode: skuCodes) {
+                QueryStockSkuListRespVo queryStockSkuListRespVo = new QueryStockSkuListRespVo();
+                    queryStockSkuListRespVo.setSkuCode(skuCode);
+                    Long availableNum = stockDao.selectSkuCodeByQueryAvailableNum(skuCode);
+                    List<String> batchCodeLists = stockDao.selectSkuCodeByQueryBatchCode(skuCode);
+                    List<String> productionDateList = stockDao.selectSkuCodeByQueryProductionDateList(skuCode);
+                    queryStockSkuListRespVo.setAvailableNum(availableNum);
+                    queryStockSkuListRespVo.setBatchCodeList(batchCodeLists);
+                    queryStockSkuListRespVo.setProductionDateList(productionDateList);
+                list.add(queryStockSkuListRespVo);
+            }*/
+
+            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+            return new PageInfo<QueryStockSkuListRespVo>(stockDao.queryStockBatch(reqVO));
+        } catch (Exception ex) {
+            log.error("查询批次库存商失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
 }
