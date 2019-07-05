@@ -37,6 +37,9 @@ public class QueryProductSkuChangePriceRespVO {
     @ApiModelProperty("与之前相同")
     private Integer applyStatus;
 
+    @ApiModelProperty("是否含有区域0否1是")
+    private Integer beContainArea;
+
     @ApiModelProperty("操作人")
     private String operateBy;
 

@@ -37,8 +37,22 @@ public class PriceChannelForChangePrice {
     private Long oldPrice;
 
     @ApiModelProperty("原含税采购价")
-    private Long purchasePriceOld;
+    private Long purchasePriceOld = 0L;
 
     @ApiModelProperty("最新采购价")
-    private Long purchasePriceNewest;
+    private Long purchasePriceNewest = 0L;
+
+    @ApiModelProperty("原毛利率")
+    private Long oldGrossProfitMargin;
+
+    @ApiModelProperty("成本")
+    private Long taxCost;
+
+//    public void setTaxCost(Long taxCost) {
+//        if (this.oldPrice == 0L) {
+//            this.oldGrossProfitMargin = 0L;
+//            return;
+//        }
+//        this.oldGrossProfitMargin =(this.oldPrice-taxCost)/this.oldPrice;
+//    }
 }

@@ -36,6 +36,6 @@ public class ApplyContractPurchaseVolumeDTO extends CommonBean {
     private Long orAmountMoney;
 
     @ApiModelProperty("返利类型1月2季3半年4年")
-    private Integer rebateType;
+    private Byte planType;
 
 }
