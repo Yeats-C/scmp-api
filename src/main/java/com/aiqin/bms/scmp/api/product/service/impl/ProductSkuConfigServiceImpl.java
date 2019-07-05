@@ -257,7 +257,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         DetailConfigSupplierRespVo respVo = new DetailConfigSupplierRespVo();
         List<SkuConfigsRepsVo> list = draftMapper.getList(companyCode);
         respVo.setConfigs(list);
-        respVo.setSuppliers(productSkuSupplyUnitService.getDraftList(list.get(0).getSkuCode()));
+        List<ProductSkuSupplyUnitRespVo> skuSupplyUnitRespVos = Lists.newArrayList();
+        if(CollectionUtils.isNotEmpty(list)){
+            skuSupplyUnitRespVos = productSkuSupplyUnitService.getDraftList(list.get(0).getSkuCode());
+        }
+        respVo.setSuppliers(skuSupplyUnitRespVos);
         return respVo;
     }
 
@@ -424,7 +428,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         //批量保存备用仓库
         applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
         //删除临时表配置信息
-        draftMapper.deleteByConfigCodes(configCodes);
+        draftMapper.deleteOutByConfigCodes(configCodes);
         //删除临时表备用仓库信息
         spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
         return null;

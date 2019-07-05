@@ -127,13 +127,13 @@ public class DraftServiceImpl implements DraftService {
             throw new BizException(ResultCode.OBJECT_NOT_FOUND);
         }
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
-            if(Objects.isNull(reqVo.getCode())){
+            if(Objects.nonNull(reqVo.getCode())){
                 List<String> skuCodes = Lists.newArrayList();
                 skuCodes.add(reqVo.getCode());
                 skuInfoService.deleteProductSkuDraft(skuCodes);
             }
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
-            if(Objects.isNull(reqVo.getId())){
+            if(Objects.nonNull(reqVo.getId())){
                 if(Objects.equals(reqVo.getConfigType(),DetailReqVo.DEL_CONFIG)){
                     productSkuConfigService.deleteDraftById(reqVo.getId());
                 } else if (Objects.equals(reqVo.getConfigType(),DetailReqVo.DEL_CONFIG)) {
@@ -141,7 +141,7 @@ public class DraftServiceImpl implements DraftService {
                 }
             }
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
-            if(Objects.isNull(reqVo.getCode())){
+            if(Objects.nonNull(reqVo.getCode())){
                 productSaleAreaService.deleteDraft(reqVo.getCode());
             }
         }

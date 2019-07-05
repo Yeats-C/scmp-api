@@ -96,6 +96,44 @@
         #{item}
       </foreach>
     </select>
+
+  <resultMap id="QueryApplyList" type="com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO">
+    <result column="apply_code" jdbcType="VARCHAR" property="code"/>
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="approval_type" jdbcType="INTEGER" property="approvalType"/>
+  </resultMap>
+    <select id="queryApplyList" parameterType="com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO"
+            resultMap="QueryApplyList">
+      select
+      distinct apply_code,
+      create_by,
+      create_time,
+      apply_status,
+      auditor_by,
+      auditor_time,
+      1 as approval_type
+      from apply_product_sku
+      where company_code = #{companyCode}
+      <if test="createTimeStart != null">
+        and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTimeEnd != null">
+        and create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+      </if>
+      <if test="applyStatus != null">
+        and apply_status = #{applyStatus}
+      </if>
+      <if test="code != null and  code != '' ">
+        and apply_code = #{code}
+      </if>
+      <if test="skuName != null and skuName!= '' ">
+        and sku_name like CONCAT('%',#{skuName},'%')
+      </if>
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku
     where id = #{id,jdbcType=BIGINT}

@@ -175,4 +175,10 @@
       rebate = #{rebate,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <delete id="delete" parameterType="java.util.List">
+    delete from product_sku_checkout_draft where sku_code in
+    <foreach collection="list" item="skuCode" separator="," open="(" close=")">
+      #{skuCode,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
 </mapper>

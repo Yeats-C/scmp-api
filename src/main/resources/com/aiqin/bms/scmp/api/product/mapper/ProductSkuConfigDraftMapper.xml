@@ -127,6 +127,15 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </delete>
+
+  <delete id="deleteOutByConfigCodes" parameterType="java.util.List">
+    delete from product_sku_config_draft
+    where apply_show = 1 and config_code in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+
   <delete id="deleteBySkuCodes">
     delete from product_sku_config_draft
     where apply_show = 1 and sku_code in

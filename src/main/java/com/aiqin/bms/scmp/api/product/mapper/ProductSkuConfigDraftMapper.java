@@ -23,6 +23,7 @@ public interface ProductSkuConfigDraftMapper {
     List<ProductSkuConfigDraft> selectByCodes(List<String> codes);
 
     int deleteByConfigCodes(List<String> codes);
+    int deleteOutByConfigCodes(List<String> codes);
 
     List<ProductSkuConfigDraft> getListBySkuCodes(List<String> skuCodes);
     int deleteBySkuCodes(List<String> skuCodes);
