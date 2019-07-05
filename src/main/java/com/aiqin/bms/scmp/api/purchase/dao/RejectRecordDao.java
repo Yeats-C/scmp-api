@@ -22,8 +22,6 @@ public interface RejectRecordDao {
 
     Integer listCount(RejectQueryRequest rejectApplyQueryRequest);
 
-    Integer updateStatus(String rejectApplyQueryRequest, Integer s);
-
     Integer updateStatus(RejectRecord rejectRecord);
 
     RejectRecord selectByRejectId(String rejectRecordId);

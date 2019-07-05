@@ -272,6 +272,48 @@ public class StockController {
         stockService.updateStorehouseById(stockRespVO);
         return  HttpResponse.success();
     }
+    @PostMapping("change/stock/batch")
+    @ApiOperation(value = "批次库存修改")
+    public HttpResponse changeStockBatch(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
+        return stockService.changeStockBatch(stockChangeRequest);
+    }
 
-
+    /**
+     *  库房管理新增调拨,移库,报废列表导入操作
+     */
+    @GetMapping("/search/stock/sku/import")
+    @ApiOperation(value = "库房管理新增列表查询导入操作")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "out_transport_center_code", value = "调出仓库", type = "String"),
+            @ApiImplicitParam(name = "out_warehouse_code", value = "调出库房", type = "String"),
+            @ApiImplicitParam(name = "procurement_section_code", value = "采购组", type = "String"),
+            @ApiImplicitParam(name = "in_transport_center_code", value = "调入仓库", type = "String"),
+            @ApiImplicitParam(name = "in_warehouse_code", value = "调入库房", type = "String"),
+            @ApiImplicitParam(name = "sku_code", value = "sku编号", type = "String"),
+            @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
+            @ApiImplicitParam(name = "product_brand_code", value = "品牌", type = "String"),
+            @ApiImplicitParam(name = "product_category_code", value = "品类", type = "String"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性", paramType = "query"),
+            @ApiImplicitParam(name = "sku_list", value = "sku编码集合", type = "List<String>"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<List<QueryStockSkuListRespVo>> importStockSkuList(@RequestParam(value = "out_transport_center_code", required = false) String outTransportCenterCode,
+                                                                          @RequestParam(value = "out_warehouse_code", required = false) String outWarehouseCode,
+                                                                          @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
+                                                                          @RequestParam(value = "in_transport_center_code", required = false) String inTransportCenterCode,
+                                                                          @RequestParam(value = "in_warehouse_code", required = false) String inWarehouseCode,
+                                                                          @RequestParam(value = "sku_code", required = false) String skuCode,
+                                                                          @RequestParam(value = "sku_name", required = false) String skuName,
+                                                                          @RequestParam(value = "product_brand_code", required = false) String productBrandCode,
+                                                                          @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
+                                                                          @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+                                                                          @RequestParam(value = "sku_list", required = false) List<String> skuList,
+                                                                          @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                          @RequestParam(value = "page_size", required = false) Integer page_size) {
+        QueryImportStockSkuListReqVo reqVO = new QueryImportStockSkuListReqVo(outTransportCenterCode,outWarehouseCode,procurementSectionCode,inTransportCenterCode,inWarehouseCode,skuCode,skuName,productBrandCode,productCategoryCode,productPropertyCode,skuList);
+        reqVO.setPageNo(page_no);
+        reqVO.setPageSize(page_size);
+        return HttpResponse.success(stockService.importStockSkuList(reqVO));
+    }
 }

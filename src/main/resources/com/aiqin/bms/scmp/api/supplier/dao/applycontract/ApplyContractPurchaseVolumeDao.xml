@@ -13,10 +13,11 @@
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="plan_type" jdbcType="BIGINT" property="planType" />
   </resultMap>
   <sql id="Base_Column_List">
     id, apply_contract_code, tax, amount_money, proportion, or_amount_money, del_flag, 
-    create_time, create_by, update_time, update_by
+    create_time, create_by, update_time, update_by,plan_type
   </sql>
 
   <insert id="insertApplyContractPurchaseVolume" parameterType="java.util.List">

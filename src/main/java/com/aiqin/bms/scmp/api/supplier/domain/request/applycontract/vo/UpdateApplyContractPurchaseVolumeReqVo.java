@@ -44,4 +44,7 @@ public class UpdateApplyContractPurchaseVolumeReqVo {
     @ApiModelProperty("创建人")
     private String createBy;
 
+    @ApiModelProperty("类型")
+    private Byte planType;
+
 }

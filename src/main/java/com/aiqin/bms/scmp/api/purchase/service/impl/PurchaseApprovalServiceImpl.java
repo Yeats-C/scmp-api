@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectApprovalService;
+import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.MD5Utils;
@@ -21,6 +22,7 @@ import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.alibaba.fastjson.JSON;
 import com.google.gson.JsonObject;
@@ -31,9 +33,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * <p>
@@ -62,17 +63,16 @@ import java.util.UUID;
  * 思维方式*热情*能力
  */
 @Service
-@WorkFlowAnnotation(WorkFlow.APPLY_REFUND)
-public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalService, WorkFlowHelper {
+@WorkFlowAnnotation(WorkFlow.APPLY_PURCHASE)
+public class PurchaseApprovalServiceImpl implements PurchaseApprovalService,WorkFlowHelper  {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectApprovalServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
     @Resource
     private UrlConfig urlConfig;
+
     @Resource
     private WorkFlowBaseUrl workFlowBaseUrl;
-    @Resource
-    private RejectRecordDao rejectRecordDao;
 
     /**
      * 审核回调接口
@@ -82,66 +82,51 @@ public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalServic
      */
     @Override
     public String workFlowCallback(WorkFlowCallbackVO vo) {
-        try {
-            //审批驳回
-            RejectRecord rejectRecord = new RejectRecord();
-            rejectRecord.setRejectRecordCode(vo.getFormNo());
-            RejectRecord record = rejectRecordDao.selectByRejectCode(vo.getFormNo());
-            if (record == null) {
-                //未查询到退供单信息
-                return WorkFlowReturn.FALSE;
-            } else if (record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_CANCEL)) {
-                //退供单是取消状态,不进行操作
-                return WorkFlowReturn.SUCCESS;
-            }
-            if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
-                //审批中状态
-                rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_AUDITTING);
-                Integer count = rejectRecordDao.updateStatus(rejectRecord);
-            } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())||Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
-                //审批失败或者撤销
-                rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_NO);
-                Integer count = rejectRecordDao.updateStatus(rejectRecord);
-            }else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-                //审批通过 状态为待供应商确认
-                rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
-                Integer count = rejectRecordDao.updateStatus(rejectRecord);
-            }
+        //审批驳回
+        RejectRecord rejectRecord = new RejectRecord();
+        rejectRecord.setRejectRecordId(vo.getFormNo());
+        if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
             return WorkFlowReturn.SUCCESS;
-        } catch (Exception e) {
-            LOGGER.error("审批回调异常:{}", e.getMessage());
+        }else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
+            //撤销
+            return WorkFlowReturn.SUCCESS;
+        }else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+            //审批
             return WorkFlowReturn.SUCCESS;
         }
+        return WorkFlowReturn.FALSE;
     }
 
+
+
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(String formNo, String userName, String directSupervisorCode) {
+    public void workFlow(String formNo, String userName,String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         //在审批中看到的页面
-        workFlowVO.setFormUrl(workFlowBaseUrl.applyRefund + "?code=" + formNo + "&" + workFlowBaseUrl.authority);
+        workFlowVO.setFormUrl(workFlowBaseUrl.applyPurchase + "?code=" + formNo + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
-        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_REFUND.getNum());
+        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_PURCHASE.getNum());
         workFlowVO.setFormNo(formNo);
         workFlowVO.setTitle(userName + "创建退供申请单审批");
         JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("auditPersonId", directSupervisorCode);
+        jsonObject.addProperty("auditPersonId",directSupervisorCode);
         workFlowVO.setVariables(jsonObject.toString());
-        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_REFUND);
+        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_PURCHASE);
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {
         } else {
-            throw new BizException(ResultCode.REJECT_RECORD_ERROR);
+            throw new BizException(ResultCode.PURCHASE_ERROR);
         }
     }
 
     public WorkFlowRespVO callWorkFlowApi(WorkFlowVO vo, WorkFlow workFlow) {
         vo.setKey(workFlow.getKey());
-        LOGGER.info("GoodsRejectApprovalServiceImpl-callWorkFlowApi-工作流vo是：[{}],枚举是：[{}]", JSON.toJSONString(vo), JSON.toJSONString(workFlow));
-        if (StringUtils.isEmpty(vo.getTitle())) {
+        LOGGER.info("GoodsRejectApprovalServiceImpl-callWorkFlowApi-工作流vo是：[{}],枚举是：[{}]", JSON.toJSONString(vo),JSON.toJSONString(workFlow));
+        if(StringUtils.isEmpty(vo.getTitle())){
             vo.setTitle(workFlow.getTitle());
         }
-        vo.setTimeStamp(System.currentTimeMillis() + "");
         vo.setTicket(UUID.randomUUID().toString());
+        vo.setTimeStamp(System.currentTimeMillis()+"");
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         vo.setUsername(currentAuthToken.getPersonId());
         vo.setCurrentPositionCode(currentAuthToken.getPositionCode());
@@ -153,13 +138,13 @@ public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalServic
             HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.get(urlConfig.WORKFLOW_URL));
             httpClient.addParameter("s", JSON.toJSONString(vo));
             String result1 = httpClient.action().result();
-            LOGGER.info("调用审批流传入的参数是:[{}]", s);
-            LOGGER.info("审批流返回数据:{}", result1);
-            if (result1.startsWith("{")) {
-                return JSON.parseObject(result1, WorkFlowRespVO.class);
-            } else {
-                LOGGER.info("审批接口数据返回错误，数据是：{}", result1);
+            LOGGER.info("调用审批流传入的参数是:[{}]",s);
+            LOGGER.info("审批流返回数据:{}",result1);
+            if(result1.startsWith("{")){
+                return JSON.parseObject(result1,WorkFlowRespVO.class);
+            }else {
                 WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
+                LOGGER.info("审批接口数据返回错误，数据是：{}", result1);
                 workFlowRespVO.setSuccess(false);
                 workFlowRespVO.setMsg("审批接口数据返回错误");
                 return workFlowRespVO;

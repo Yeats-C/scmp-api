@@ -13,7 +13,7 @@ public class ContractPlanType {
     private String contractCode;
 
     @ApiModelProperty("时间范围1月2季3半年4年")
-    private Integer planType;
+    private Byte planType;
 
     @ApiModelProperty("开始时间")
     private Date startTime;
@@ -37,11 +37,11 @@ public class ContractPlanType {
         this.contractCode = contractCode == null ? null : contractCode.trim();
     }
 
-    public Integer getPlanType() {
+    public Byte getPlanType() {
         return planType;
     }
 
-    public void setPlanType(Integer planType) {
+    public void setPlanType(Byte planType) {
         this.planType = planType;
     }
 
