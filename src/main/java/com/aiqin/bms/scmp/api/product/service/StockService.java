@@ -262,5 +262,5 @@ public interface StockService {
      */
     Boolean returnSupplyUnLockStockBatch(ILockStockBatchReqVO reqVO);
 
-
+    HttpResponse changeStockBatch(StockChangeRequest stockChangeRequest);
 }

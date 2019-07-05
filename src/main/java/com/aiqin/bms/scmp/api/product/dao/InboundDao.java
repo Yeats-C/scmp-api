@@ -4,6 +4,7 @@ package com.aiqin.bms.scmp.api.product.dao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.QueryInboundReqVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -41,4 +42,6 @@ public interface InboundDao {
     int insertBatch(List<Inbound> inboundList);
 
     Integer selectMaxPurchaseNumBySourceOderCode(String sourceOderCode);
+
+    Inbound selectTimeAndSatusBySourchAndNum(@Param("sourceOderCode")String sourceOderCode, @Param("purchaseNum")Integer purchaseNum);
 }
