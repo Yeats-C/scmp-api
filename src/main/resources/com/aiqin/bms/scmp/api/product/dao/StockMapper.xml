@@ -48,6 +48,45 @@
         <result column="bad_lock_num" jdbcType="BIGINT" property="badLockNum"/>
         <result column="bad_way_num" jdbcType="BIGINT" property="badWayNum"/>
     </resultMap>
+    <resultMap id="BaseBatchResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="stock_batch_code" jdbcType="VARCHAR" property="stockBatchCode"/>
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
+        <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
+        <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
+        <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
+        <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>
+        <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark"/>
+        <result column="category_type_code" jdbcType="VARCHAR" property="categoryTypeCode"/>
+        <result column="category_type_name" jdbcType="VARCHAR" property="categoryTypeName"/>
+        <result column="spec" jdbcType="VARCHAR" property="spec"/>
+        <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
+        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
+        <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
+        <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
+        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
+        <result column="pack" jdbcType="VARCHAR" property="pack"/>
+        <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
+        <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum"/>
+        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
+        <result column="lock_num" jdbcType="BIGINT" property="lockNum"/>
+        <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode"/>
+        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
+        <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
+        <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
+        <result column="purchase_price" jdbcType="BIGINT" property="purchasePrice"/>
+        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+    </resultMap>
 
     <resultMap id="StockRespMap" type="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -299,6 +338,12 @@
         new_purchase_price,purchase_group_code,purchase_group_name,stock_unit_code,stock_unit_name,tax_price,tax_rate,create_time,create_by,update_time,update_by,
         sale_num,sale_lock_num,sale_way_num,sale_purchase_way_num,gift_num,gift_lock_num,gift_way_num,gift_purchase_way_num,special_sale_num,special_sale_lock_num,special_sale_way_num,
         bad_num,bad_lock_num,bad_way_num,purchase_way_num,allocation_way_num,total_way_num
+    </sql>
+    <sql id="Base_Batch_Column_List">
+        id,stock_batch_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,warehouse_type,
+        sku_code,sku_name,batch_code,production_date,batch_remark,category_type_code,category_type_name,spec,color_code,color_name,model_number,
+        unit_code,unit_name,pack,config_status,inventory_num,available_num,lock_num,supplier_code,supplier_name,new_delivery,new_delivery_name,purchase_price,
+        tax_rate,create_time,create_by,update_time,update_by
     </sql>
 
     <sql id="Sum_Column_List">
@@ -1825,5 +1870,225 @@
             and sb.sku_code=#{skuCode}
         </if>
     </select>
-
+    <select id="selectListByCodesAndSkuCodeBatch" resultMap="BaseBatchResultMap">
+        select <include refid="Base_Batch_Column_List"></include> from stock_batch
+        where company_code in
+        <foreach collection="stockBatchVoRequest" item="item" open="(" close=")" index="index" separator=",">
+            #{item.companyCode}
+        </foreach>
+        and transport_center_code in
+        <foreach collection="stockBatchVoRequest" item="item" open="(" close=")" index="index" separator=",">
+            #{item.transportCenterCode}
+        </foreach>
+        and warehouse_code in
+        <foreach collection="stockBatchVoRequest" item="item" open="(" close=")" index="index" separator=",">
+            #{item.warehouseCode}
+        </foreach>
+        and sku_code in
+        <foreach collection="stockBatchVoRequest" item="item" open="(" close=")" index="index" separator=",">
+            #{item.skuCode}
+        </foreach>
+    </select>
+    <insert id="insertStockBatchFlows">
+        insert into stock_batch_flow
+        (
+        stock_batch_code,
+        flow_batch_code,
+        batch_code,
+        order_code,
+        order_type,
+        order_source,
+        sku_code,
+        sku_name,
+        lock_status,
+        document_type,
+        document_num,
+        source_document_type,
+        source_document_num,
+        operating_time,
+        operating_by,
+        remark,
+        before_inventory_num,
+        after_inventory_num,
+        before_available_num,
+        after_available_num,
+        before_lock_num,
+        after_lock_num,
+        change_num,
+        operation_type,
+        create_time,
+        create_by,
+        update_time,
+        update_by
+        )
+        values
+        <foreach collection="stockBatchFlows" item="item" index="index" separator=",">
+            (
+            #{item.stockBatchCode},
+            #{item.flowBatchCode},
+            #{item.batchCode},
+            #{item.orderCode},
+            #{item.orderType},
+            #{item.orderSource},
+            #{item.skuCode},
+            #{item.skuName},
+            #{item.lockStatus},
+            #{item.documentType},
+            #{item.documentTum},
+            #{item.sourceDocumentType},
+            #{item.sourceDocumentNum},
+            #{item.operatingTime},
+            #{item.operatingBy},
+            #{item.remark},
+            #{item.beforeInventoryNum},
+            #{item.afterInventoryNum},
+            #{item.beforeAvailableNum},
+            #{item.afterAvailableNum},
+            #{item.beforeLockNum},
+            #{item.afterLockNum},
+            #{item.changeNum},
+            #{item.operationType},
+            #{item.createTime},
+            #{item.createBy},
+            #{item.updateTime},
+            #{item.updateBy}
+            )
+        </foreach>
+    </insert>
+    <update id="updateBatchStocks">
+        <foreach collection="stockBatches" item="item" separator=";">
+            update stock_batch
+            <set>
+                <if test="item.stockBatchCode!=null and item.stockBatchCode!=''">
+                    stock_batch_code=#{item.stockBatchCode},
+                </if>
+                <if test="item.companyCode!=null and item.companyCode!=''">
+                    company_code=#{item.companyCode},
+                </if>
+                <if test="item.companyName!=null and item.companyName!=''">
+                    company_name=#{item.companyName},
+                </if>
+                <if test="item.transportCenterCode!=null and item.transportCenterCode!=''">
+                    transport_center_code=#{item.transportCenterCode},
+                </if>
+                <if test="item.transportCenterName!=null and item.transportCenterName!=''">
+                    transport_center_name=#{item.transportCenterName},
+                </if>
+                <if test="item.warehouseCode!=null and item.warehouseCode!=''">
+                    warehouse_code=#{item.warehouseCode},
+                </if>
+                <if test="item.warehouseName!=null and item.warehouseName!=''">
+                    warehouse_name=#{item.warehouseName},
+                </if>
+                <if test="item.warehouseType!=null and item.warehouseType!=''">
+                    warehouse_type=#{item.warehouseType},
+                </if>
+                <if test="item.skuCode!=null and item.skuCode!=''">
+                    sku_code=#{item.skuCode},
+                </if>
+                <if test="item.skuName!=null and item.skuName!=''">
+                    sku_name=#{item.skuName},
+                </if>
+                <if test="item.batchCode!=null and item.batchCode!=''">
+                    batch_code=#{item.batchCode},
+                </if>
+                <if test="item.productionDate!=null and item.productionDate!=''">
+                    production_date=#{item.productionDate},
+                </if>
+                <if test="item.batchRemark!=null and item.batchRemark!=''">
+                    batch_remark=#{item.batchRemark},
+                </if>
+                <if test="item.categoryTypeCode!=null and item.categoryTypeCode!=''">
+                    category_type_code=#{item.categoryTypeCode},
+                </if>
+                <if test="item.categoryTypeName!=null and item.categoryTypeName!=''">
+                    category_type_name=#{item.categoryTypeName},
+                </if>
+                <if test="item.spec!=null and item.spec!=''">
+                    spec=#{item.spec},
+                </if>
+                <if test="item.colorCode!=null and item.colorCode!=''">
+                    color_code=#{item.colorCode},
+                </if>
+                <if test="item.colorName!=null and item.colorName!=''">
+                    color_name=#{item.colorName},
+                </if>
+                <if test="item.modelNumber!=null and item.modelNumber!=''">
+                    model_number=#{item.modelNumber},
+                </if>
+                <if test="item.unitCode!=null and item.unitCode!=''">
+                    unit_code=#{item.unitCode},
+                </if>
+                <if test="item.unitName!=null and item.unitName!=''">
+                    unit_name=#{item.unitName},
+                </if>
+                <if test="item.configStatus!=null and item.configStatus!=''">
+                    pack=#{item.configStatus},
+                </if>
+                <if test="item.unitName!=null and item.unitName!=''">
+                    config_status=#{item.unitName},
+                </if>
+                <if test="item.inventoryNum!=null">
+                    inventory_num=#{item.inventoryNum},
+                </if>
+                <if test="item.availableNum!=null">
+                    available_num=#{item.availableNum},
+                </if>
+                <if test="item.lockNum!=null">
+                    lock_num=#{item.lockNum},
+                </if>
+                <if test="item.supplierCode!=null and item.supplierCode!=''">
+                    supplier_code=#{item.supplierCode},
+                </if>
+                <if test="item.supplierName!=null and item.supplierName!=''">
+                    supplier_name=#{item.supplierName},
+                </if>
+                <if test="item.newDelivery!=null and item.newDelivery!=''">
+                    new_delivery=#{item.newDelivery},
+                </if>
+                <if test="item.newDeliveryName!=null and item.newDeliveryName!=''">
+                    new_delivery_name=#{item.newDeliveryName},
+                </if>
+                <if test="item.purchasePrice!=null">
+                    purchase_price=#{item.purchasePrice},
+                </if>
+                <if test="item.taxRate!=null">
+                    tax_rate=#{item.tax_Rate},
+                </if>
+                <if test="item.createTime!=null">
+                    create_time=#{item.createTime},
+                </if>
+                <if test="item.createBy!=null and item.createBy!=''">
+                    create_by=#{item.createBy},
+                </if>
+                <if test="item.updateTime!=null">
+                    update_time=#{item.updateTime},
+                </if>
+                <if test="item.updateBy!=null and item.updateBy!=''">
+                    update_by=#{item.updateBy},
+                </if>
+            </set>
+            where id=#{item.id}
+        </foreach>
+    </update>
+    <insert id="insertBatchStockAdd" parameterType="java.util.List">
+        INSERT INTO stock_batch(
+        stock_batch_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,warehouse_type,
+        sku_code,sku_name,batch_code,production_date,batch_remark,category_type_code,category_type_name,spec,color_code,color_name,model_number,
+        unit_code,unit_name,pack,config_status,inventory_num,available_num,lock_num,supplier_code,supplier_name,new_delivery,new_delivery_name,
+        purchase_price,tax_rate,create_time,create_by,update_time,update_by
+        )
+        VALUES
+        <foreach collection="stockBatches" item="item" index="index" separator=",">
+            (#{item.stock_batch_code},#{item.company_code},#{item.company_name},#{item.transport_center_code},
+            #{item.transport_center_name},#{item.warehouse_code},#{item.warehouse_name},#{item.warehouse_type},
+            #{item.sku_code},#{item.sku_name},#{item.batch_code},#{item.production_date},#{item.batch_remark},
+            #{item.category_type_code},#{item.category_type_name},#{item.spec},#{item.color_code},#{item.color_name},
+            #{item.model_number},#{item.unit_code},#{item.unit_name},#{item.pack},#{item.config_status},
+            #{item.inventory_num},#{item.available_num},#{item.lock_num},#{item.supplier_code},
+            #{item.supplier_name},#{item.new_delivery},#{item.new_delivery_name},#{item.purchase_price},#{item.tax_rate},
+            #{item.createTime},#{item.createBy},#{item.updateTime},#{item.updateBy}
+            )
+        </foreach>
+    </insert>
 </mapper>
