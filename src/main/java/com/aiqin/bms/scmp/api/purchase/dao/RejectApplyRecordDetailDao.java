@@ -40,4 +40,6 @@ public interface RejectApplyRecordDetailDao {
     List<RejectApplyDetailHandleResponse> selectHandleByRejectCode(String rejectApplyCode);
 
     void updateStatus(String rejectApplyCode);
+
+    Long selectReturnAmount(@Param("rejectApplyRecordCodes") List<String> rejectApplyRecordCodes,@Param("supplierCode") String supplierCode,@Param("warehouseCode") String warehouseCode,@Param("transportCenterCode") String transportCenterCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethodCode);
 }

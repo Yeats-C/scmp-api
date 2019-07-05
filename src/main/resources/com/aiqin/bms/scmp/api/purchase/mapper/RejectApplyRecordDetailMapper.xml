@@ -66,6 +66,8 @@
     <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="sum_count" jdbcType="INTEGER" property="sumCount" />
+    <result column="sum_amount" jdbcType="INTEGER" property="sumAmount" />
+    <result column="single_amount" jdbcType="INTEGER" property="singleAmount" />
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
     <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
     <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
@@ -88,8 +90,8 @@
       sku_code,
       sum(product_count) as sum_count,
       sum(product_count) as single_count,
-      sum(product_total_amount) as sum_amount,
-      sum(product_total_amount) as single_amount
+      sum(product_amount*product_count) as sum_amount,
+      sum(product_amount*product_count) as single_amount
     from reject_apply_record_detail
     where
       apply_record_status = '0'
@@ -435,4 +437,22 @@
          apply_record_status = 1
          where reject_apply_record_code = #{rejectApplyRecordId,jdbcType=VARCHAR}
   </update>
+  <select id="selectReturnAmount" resultType="java.lang.Long">
+    select
+      ifnull(sum(product_amount*product_count),'0 ')
+    from
+      reject_apply_record_detail
+    where
+      apply_record_status = 0
+    and product_type = 2
+    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    and reject_apply_record_code in
+    <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
+      #{item}
+    </foreach>
+  </select>
 </mapper>

@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.supplier.dao.warehouse;
 
 
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
@@ -80,4 +82,9 @@ public interface WarehouseDao {
    List<WarehouseDTO>  getWarehouseApi(WarehouseListReqVo warehouseListReqVo);
 
    WarehouseDTO getWarehouseTypeByLogisticsCenterCode(@Param("logisticsCenterCode") String logisticsCenterCode, @Param("warehouseTypeCode") Byte warehouseTypeCode);
+
+   /**
+    * 根据库房名称查询库房信息 (退供导入使用)
+    */
+   Warehouse selectByWarehouseName(String s);
 }

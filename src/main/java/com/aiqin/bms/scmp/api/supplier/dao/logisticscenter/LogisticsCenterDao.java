@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.dao.logisticscenter;
 
 
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.vo.QueryLogisticsCenterReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
@@ -60,4 +61,9 @@ public interface LogisticsCenterDao {
      * @return
      */
     List<LogisticsCenterDTO> getLogisticsCenterListByArea(WarehouseListReqVo warehouseListReqVo);
+
+    /**
+     * 根据仓库名称查询仓库信息 (退供导入使用)
+     */
+    LogisticsCenter selectByCenterName(String logisticsCenterName);
 }

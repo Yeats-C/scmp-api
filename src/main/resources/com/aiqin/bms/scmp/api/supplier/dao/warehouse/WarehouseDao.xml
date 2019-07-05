@@ -391,5 +391,12 @@
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
   </select>
+  <select id="selectByWarehouseName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from warehouse
+    where
+   warehouse_name = #{warehouseName,jdbcType=VARCHAR}
 
+  </select>
 </mapper>

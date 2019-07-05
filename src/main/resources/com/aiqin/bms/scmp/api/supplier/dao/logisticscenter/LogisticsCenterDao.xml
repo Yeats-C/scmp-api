@@ -225,4 +225,12 @@
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
   </select>
+  <select id="selectByCenterName" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from
+    logistics_center
+    where
+    logistics_center_name = #{logisticsCenterName,jdbcType=VARCHAR}
+  </select>
 </mapper>

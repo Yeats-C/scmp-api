@@ -65,7 +65,7 @@ public class RejectRecordDetailResponse {
 
     @ApiModelProperty(value="单品数量")
     @JsonProperty("single_count")
-    private String single_count;
+    private String singleCount;
 
     @ApiModelProperty(value="单位")
     @JsonProperty("unit_name")
