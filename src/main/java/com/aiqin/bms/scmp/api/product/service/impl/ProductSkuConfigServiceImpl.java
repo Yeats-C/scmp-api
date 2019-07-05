@@ -704,6 +704,20 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         return spareWarehouseMapper.insertBatch(skuConfigSpareWarehouses);
     }
 
+
+    /**
+     * 功能描述: 获取临时表数据根据SkuCode
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/5 20:10
+     */
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> draftDetail(String skuCode) {
+        return draftMapper.getListBySkuCode(skuCode);
+    }
+
     /**
      * 数据转化为审批流更新申请数据状态
      * @param newVO

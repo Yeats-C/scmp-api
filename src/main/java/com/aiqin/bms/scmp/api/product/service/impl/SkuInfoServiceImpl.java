@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProje
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductDetailsResponseVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
@@ -568,7 +569,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //渠道
             productSkuChannelService.saveApplyList(applyProductSkus);
             //标签
-            List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCodes(saveSkuApplyInfoReqVO.getSkuCodes());
+            List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCodes(saveSkuApplyInfoReqVO.getSkuCodes(),TagTypeCode.SKU.getStatus());
             if(CollectionUtils.isNotEmpty(applyUseTagRecords)){
                 applyUseTagRecords.forEach(item->{
                     item.setApplyUseObjectCode(String.valueOf(code));
@@ -633,6 +634,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
         }
         detailResp.setProductSkuInfo(skuRespVo);
+        List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuRespVo.getSkuCode(),TagTypeCode.SKU.getStatus());
+        detailResp.setTagInfoList(applyUseTagRecords);
         //SKU渠道信息
         List<ProductSkuChannelRespVo> skuChannelRespVos = productSkuChannelService.getList(skuCode);
         detailResp.setProductSkuChannels(skuChannelRespVos);
@@ -665,6 +668,20 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         detailResp.setProductSkuFiles(productSkuFileService.getDraftList(skuCode));
         //sku质检信息
         detailResp.setProductSkuInspReports(productSkuInspReportService.getDraftList(skuCode));
+        //价格信息
+        List<String> skuCodes = Lists.newArrayList();
+        skuCodes.add(skuCode);
+        List<ProductSkuPriceInfoDraft> skuPriceListDrafts =
+                productSkuPriceInfoService.getSkuPriceListDraftBySkuCodes(skuCodes);
+        List<ProductSkuPriceDraftRespVo> draftTemps =
+                BeanCopyUtils.copyList(skuPriceListDrafts,ProductSkuPriceDraftRespVo.class);
+        List<ProductSkuPriceDraftRespVo> priceDraftRespVos =
+                draftTemps.stream().filter(item ->
+                        !Objects.equals(item.getPriceTypeCode(), PriceTypeEnum.PURCHASE.getTypeCode())).
+                        collect(Collectors.toList());
+        detailResp.setProductSkuPriceDrafts(priceDraftRespVos);
+        //配置信息
+        detailResp.setProductSkuConfigDrafts(productSkuConfigService.draftDetail(skuCode));
         return detailResp;
     }
 

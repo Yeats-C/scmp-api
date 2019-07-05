@@ -21,7 +21,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, create_by, create_time, update_by, update_time, del_flag, sku_code, sku_name,
-    output_tax_rate, input_tax_rate, integral_coefficient,settlement_method_name,settlement_method_code
+    output_tax_rate, input_tax_rate, integral_coefficient,
+    settlement_method_name,settlement_method_code,logistics_fee_award_ratio
   </sql>
 
   <select id="getDraftInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
