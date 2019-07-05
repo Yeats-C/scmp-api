@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.web.sku;
 
+import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -100,7 +101,7 @@ public class SkuInfoController {
 
     @GetMapping("/apply/detail")
     @ApiOperation("商品申请详情")
-    public HttpResponse<ApplySkuDetailResp> getApplyDetail(String applyCode){
+    public HttpResponse<ProductApplyInfoRespVO<ProductSkuApplyVo>> getApplyDetail(String applyCode){
         return HttpResponse.success(skuInfoService.getSkuApplyDetail(applyCode));
     }
 
