@@ -265,7 +265,7 @@
         checkout_date = #{checkoutDate,jdbcType=VARCHAR},
       </if>
       <if test="minAmount != null">
-        min_amount = #{minAmount,jdbcType=VARCHAR},
+        min_amount = #{minAmount,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

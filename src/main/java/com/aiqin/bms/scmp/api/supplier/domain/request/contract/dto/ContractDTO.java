@@ -133,5 +133,5 @@ public class ContractDTO extends CommonBean {
     private String checkoutDate;
 
     @ApiModelProperty("最小起订金额")
-    private String minAmount;
+    private Long minAmount;
 }
