@@ -2166,4 +2166,93 @@
             </if>
         </where>
     </select>
+    <resultMap id="SkuListForSalePriceMap" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO">
+    <result column="skuCode" property="skuCode"/>
+    <result column="skuName" property="skuName"/>
+    <result column="productCategoryName" property="productBrandName"/>
+    <result column="productBrandName" property="productBrandName"/>
+    <result column="spec" property="spec"/>
+    <result column="colorName" property="colorName"/>
+    <result column="modelNumber" property="modelNumber"/>
+    <result column="unitName" property="unitName"/>
+    <result column="productSortName" property="productSortName"/>
+    <result column="goodsGifts" property="goodsGifts"/>
+    <result column="productPropertyName" property="productPropertyName"/>
+    <result column="spuName" property="spuName"/>
+    <result column="spuCode" property="spuCode"/>
+    <result column="warehouseBatchNumber" property="warehouseBatchNumber"/>
+    <result column="transportCenterCode" property="transportCenterCode"/>
+    <result column="transportCenterName" property="transportCenterName"/>
+    <result column="warehouseCode" property="warehouseCode"/>
+    <result column="warehouseName" property="warehouseName"/>
+    <result column="batchRemark" property="batchRemark"/>
+    <result column="productTime" property="productTime"/>
+    <collection property="batchList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo" column="companyCode = companyCode,skuCode = skuCode" select="getBatch" />
+    <collection property="priceChannelList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice" column="changePriceType = changePriceType,companyCode = companyCode,skuCode = skuCode" select="com.aiqin.bms.scmp.api.product.dao.ProductSkuDao.getSaleChannelList" />
+    </resultMap>
+    <select id="getSkuBatch" resultMap="SkuListForSalePriceMap">
+         select a.sku_code              as skuCode,
+      a.sku_name              as skuName,
+      b.product_category_name as productCategoryName,
+      b.product_brand_name    as productBrandName,
+      d.spec                  as spec,
+      b.color_name            as colorName,
+      b.model_number          as modelNumber,
+      d.unit_name             as unitName,
+      b.product_sort_name     as productSortName,
+      b.goods_gifts           as goodsGifts,
+      b.product_property_name as productPropertyName,
+      b.product_name          as spuName,
+      b.product_code          as spuCode,
+      a.stock_batch_code      as warehouseBatchNumber,
+      a.transport_center_code as transport_center_code,
+      a.transport_center_name as transportCenterName,
+      a.warehouse_code        as warehouseCode,
+      a.warehouse_name        as warehouseName,
+      a.batch_remark          as batchRemark,
+      a.production_date       as productTime,
+      #{changePriceType}      as changePriceType,
+      #{companyCode}          as companyCode
+      from stock_batch a
+      left join product_sku b
+      on a.sku_code = b.sku_code
+      left join product c
+      on b.spu_code = c.product_code
+      left join product_sku_purchase_info d
+      on a.sku_code = d.product_sku_code
+      where b.procurement_section_code = #{purchaseGroupCode}  and b.company_code = #{companyCode}
+        <if test="skuCode!=null and skuCode!=''">
+            AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            AND a.sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productCategoryName!=null and productCategoryName!=''">
+            AND b.product_category_name LIKE CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productBrandName!=null and productBrandName!=''">
+            AND b.product_brand_name LIKE CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productPropertyCode!=null and productPropertyCode!=''">
+            AND b.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+        </if>
+        <if test="spuCode!=null and spuCode!=''">
+            AND c.product_code = #{spuCode,jdbcType=VARCHAR}
+        </if>
+        <if test="spuName!=null and spuName!=''">
+            AND c.product_name LIKE CONCAT('%',#{spuName,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+    <select id="getBatch" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo">
+       select
+          a.stock_batch_code      as warehouseBatchNumber,
+          a.transport_center_code as transport_center_code,
+          a.transport_center_name as transportCenterName,
+          a.warehouse_code        as warehouseCode,
+          a.warehouse_name        as warehouseName,
+          a.batch_remark          as batchRemark,
+          a.production_date       as productTime
+       from stock_batch a
+       where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
+    </select>
 </mapper>

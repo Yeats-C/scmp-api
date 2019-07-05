@@ -1,9 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.base.MsgStatus;
-import com.aiqin.bms.scmp.api.base.PageResData;
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.WarehouseTypeCode;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.StockStatusEnum;
@@ -16,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockBatchC
 import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
@@ -23,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockI
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.*;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
@@ -42,6 +41,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchRe
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
+import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
@@ -1863,5 +1863,10 @@ public class StockServiceImpl implements StockService {
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
+    }
+
+    @Override
+    public BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO) {
+        return PageUtil.getPageList(reqVO.getPageNo(), stockDao.getSkuBatch(reqVO));
     }
 }
