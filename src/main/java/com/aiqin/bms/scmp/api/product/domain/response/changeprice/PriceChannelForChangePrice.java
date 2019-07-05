@@ -36,6 +36,9 @@ public class PriceChannelForChangePrice {
     @ApiModelProperty("原含税价")
     private Long oldPrice;
 
+    @ApiModelProperty("新含税价")
+    private Long newPrice = 0L;
+
     @ApiModelProperty("原含税采购价")
     private Long purchasePriceOld = 0L;
 

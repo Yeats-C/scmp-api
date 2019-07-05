@@ -2190,8 +2190,9 @@
     <collection property="batchList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo" column="companyCode = companyCode,skuCode = skuCode" select="getBatch" />
     <collection property="priceChannelList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice" column="changePriceType = changePriceType,companyCode = companyCode,skuCode = skuCode" select="com.aiqin.bms.scmp.api.product.dao.ProductSkuDao.getSaleChannelList" />
     </resultMap>
-    <select id="getSkuBatch" resultMap="SkuListForSalePriceMap">
-         select a.sku_code              as skuCode,
+    <select id="getSkuBatchForChangePrice" resultMap="SkuListForSalePriceMap">
+         select
+      a.sku_code              as skuCode,
       a.sku_name              as skuName,
       b.product_category_name as productCategoryName,
       b.product_brand_name    as productBrandName,
@@ -2254,5 +2255,41 @@
           a.production_date       as productTime
        from stock_batch a
        where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
+    </select>
+    <resultMap id="queryStockBatchForAllo" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO">
+        <result column="skuCode" property="skuCode"/>
+        <result column="skuName" property="skuName"/>
+        <result column="warehouseBatchNumber" property="warehouseBatchNumber"/>
+        <result column="transportCenterCode" property="transportCenterCode"/>
+        <result column="transportCenterName" property="transportCenterName"/>
+        <result column="warehouseCode" property="warehouseCode"/>
+        <result column="warehouseName" property="warehouseName"/>
+        <result column="batchRemark" property="batchRemark"/>
+        <result column="productTime" property="productTime"/>
+        <collection property="batchList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo" column="companyCode = companyCode,skuCode = skuCode" select="getBatch" />
+    </resultMap>
+    <select id="queryStockBatchForAllo" resultMap="queryStockBatchForAllo">
+        select
+        a.stock_batch_code      as warehouseBatchNumber,
+      a.transport_center_code as transport_center_code,
+      a.transport_center_name as transportCenterName,
+      a.warehouse_code        as warehouseCode,
+      a.warehouse_name        as warehouseName,
+      a.batch_remark          as batchRemark,
+      a.production_date       as productTime
+      from stock_batch a
+      where 1=1
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            AND a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+        </if>
+         <if test="warehouseCode!=null and warehouseCode!=''">
+            AND a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+        </if>
+        <if test="skuCodes != null and skuCodes.size>0">
+            AND a.sku_code in
+            <foreach collection="skuCodes" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
     </select>
 </mapper>
