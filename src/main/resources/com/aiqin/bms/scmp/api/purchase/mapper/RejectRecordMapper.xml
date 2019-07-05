@@ -495,7 +495,7 @@
             <if test="rejectRecordId!=null">
                and reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
             </if>
-            <if test="rejectRecordCode=null">
+            <if test="rejectRecordCode!=null">
                 and reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
             </if>
         </where>

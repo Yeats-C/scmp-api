@@ -50,7 +50,7 @@ public class RejectTest extends SpringBootTestContext {
     @Test
     public void finishStock(){
         RejectStockRequest request = new RejectStockRequest();
-        request.setRejectRecordCode("1");
+        request.setRejectRecordCode("RR100059");
         request.setOutStockTime(new Date());
         goodsRejectService.finishStock(request);
 
@@ -100,7 +100,7 @@ public class RejectTest extends SpringBootTestContext {
         detail.setBatchRemark("第二次入库");
         detail.setSettlementMethodCode("s11");
         detail.setSettlementMethodName("结算方式1");
-        detail.setSupplierCode("002");
+        detail.setSupplierCode("10000042");
         detail.setSupplierName("B供应商");
         detailList.add(detail);
 
@@ -138,7 +138,7 @@ public class RejectTest extends SpringBootTestContext {
         detail1.setBatchRemark("第二次入库");
         detail1.setSettlementMethodCode("S55");
         detail1.setSettlementMethodName("结算方式1");
-        detail1.setSupplierCode("002");
+        detail1.setSupplierCode("10000042");
         detail1.setSupplierName("B供应商");
         detailList.add(detail1);
 

@@ -10,7 +10,6 @@ import java.util.List;
 /**
  * Description:
  *
- * @author: zth
  * @date: 2019-03-26
  * @time: 10:23
  */
@@ -30,24 +29,25 @@ public class ReturnSupplyToStockBatchConverter implements Converter<ILockStockBa
 //        String supplierName = source.getSupplierName();
         List<? extends ILockStockBatchItemReqVo> itemReqVos = source.getItemReqVos();
         for (ILockStockBatchItemReqVo itemReqVo : itemReqVos) {
-            StockBatchVoRequest stockVoRequest = new StockBatchVoRequest();
-            stockVoRequest.setCompanyCode(companyCode);
-//            stockVoRequest.setCompanyName(companyName);
-            stockVoRequest.setTransportCenterCode(transportCenterCode);
-//            stockVoRequest.setTransportCenterName(transportCenterName);
-            stockVoRequest.setWarehouseCode(warehouseCode);
-//            stockVoRequest.setWarehouseName(warehouseName);
-//            stockVoRequest.setPurchaseGroupCode(purchaseGroupCode);
-//            stockVoRequest.setPurchaseGroupName(purchaseGroupName);
-//            stockVoRequest.setNewDelivery(supplierCode);
-//            stockVoRequest.setNewDeliveryName(supplierName);
+            StockBatchVoRequest stockBatchVoRequest = new StockBatchVoRequest();
+            stockBatchVoRequest.setCompanyCode(companyCode);
+//            stockBatchVoRequest.setCompanyName(companyName);
+            stockBatchVoRequest.setTransportCenterCode(transportCenterCode);
+//            stockBatchVoRequest.setTransportCenterName(transportCenterName);
+            stockBatchVoRequest.setWarehouseCode(warehouseCode);
+//            stockBatchVoRequest.setWarehouseName(warehouseName);
+//            stockBatchVoRequest.setPurchaseGroupCode(purchaseGroupCode);
+//            stockBatchVoRequest.setPurchaseGroupName(purchaseGroupName);
+//            stockBatchVoRequest.setNewDelivery(supplierCode);
+//            stockBatchVoRequest.setNewDeliveryName(supplierName);
             //库存是主单位数量 退供基商品含量默认是2
-            stockVoRequest.setChangeNum(itemReqVo.getNum());
-//            stockVoRequest.setNewPurchasePrice(itemReqVo.getPrice());
-            stockVoRequest.setSkuCode(itemReqVo.getSkuCode());
-            stockVoRequest.setSkuName(itemReqVo.getSkuName());
-//            stockVoRequest.setTaxRate(itemReqVo.getTaxRate());
-            list.add(stockVoRequest);
+            stockBatchVoRequest.setChangeNum(itemReqVo.getNum());
+//            stockBatchVoRequest.setNewPurchasePrice(itemReqVo.getPrice());
+            stockBatchVoRequest.setSkuCode(itemReqVo.getSkuCode());
+            stockBatchVoRequest.setSkuName(itemReqVo.getSkuName());
+            stockBatchVoRequest.setSkuCode(itemReqVo.getBatchCode());
+//            stockBatchVoRequest.setTaxRate(itemReqVo.getTaxRate());
+            list.add(stockBatchVoRequest);
         }
         return list;
     }

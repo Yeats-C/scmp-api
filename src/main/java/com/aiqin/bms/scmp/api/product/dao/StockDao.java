@@ -156,4 +156,22 @@ public interface StockDao {
     PurchaseApplyProduct purchaseBySkuStock(@Param("purchaseGroupCode")String purchaseGroupCode, @Param("skuCode")String skuCode,
                                             @Param("supplierName")String supplierName, @Param("transportCenterName")String transportCenterName);
 
+    List<StockBatch> selectListByCodesAndSkuCodeBatch(@Param("stockBatchVoRequest") List<StockBatchVoRequest> stockBatchVoRequest);
+
+    void insertStockBatchFlows(@Param("stockBatchFlows") List<StockBatchFlow> stockBatchFlows);
+
+    void updateBatchStocks(@Param("stockBatches") List<StockBatch> stockBatches);
+
+    Integer insertBatchStockAdd(@Param("stockBatches") List<StockBatch> stockBatches);
+
+    List<String> importStockSkuList();
+
+    List<String> selectSkuCodeByQueryBatchCode(@Param("skuCode")String skuCode);
+
+    Long selectSkuCodeByQueryAvailableNum(@Param("skuCode")String skuCode);
+
+    List<String> selectSkuCodeByQueryProductionDateList(@Param("skuCode")String skuCode);
+
+    List<QueryStockSkuListRespVo> queryStockBatch(QueryImportStockSkuListReqVo reqVO);
+
 }
