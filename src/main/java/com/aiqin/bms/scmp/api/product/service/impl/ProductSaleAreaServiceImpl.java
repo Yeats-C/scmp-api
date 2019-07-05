@@ -663,7 +663,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         if(productSaleAreaApplyVOS.get(0).getApplyStatus().equals(CommonConstant.CANCEL)){
             return true;
         }
-        if(productSaleAreaApplyVOS.get(0).equals(CommonConstant.UNDER_REVIEW)){
+        if(productSaleAreaApplyVOS.get(0).getApplyStatus().equals(CommonConstant.UNDER_REVIEW)){
             WorkFlowVO workFlowVO = new WorkFlowVO();
             workFlowVO.setFormNo(productSaleAreaApplyVOS.get(0).getFormNo());
             WorkFlowRespVO workFlowRespVO = cancelWorkFlow(workFlowVO);

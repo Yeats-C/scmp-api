@@ -63,8 +63,8 @@ public class ContractDTO extends CommonBean {
     @ApiModelProperty("目标返利(门店,地区,大区,全国)")
     private Byte targetRebate;
 
-    @ApiModelProperty("计划类型(月度,季度,半年,全年)")
-    private Byte planType;
+//    @ApiModelProperty("计划类型(月度,季度,半年,全年)")
+//    private Byte planType;
 
     @ApiModelProperty("起始日期")
     private Date startTime;

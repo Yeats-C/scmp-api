@@ -17,7 +17,7 @@
     <result column="fixed_rebate_type" jdbcType="TINYINT" property="fixedRebateType" />
     <result column="return_rate" jdbcType="BIGINT" property="returnRate" />
     <result column="target_rebate" jdbcType="TINYINT" property="targetRebate" />
-    <result column="plan_type" jdbcType="TINYINT" property="planType" />
+<!--    <result column="plan_type" jdbcType="TINYINT" property="planType" />-->
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="purchase_price_standard" jdbcType="TINYINT" property="purchasePriceStandard" />
@@ -50,7 +50,7 @@
   <sql id="Base_Column_List">
     id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
     payment_period, shipping_fee, delivery_charges, unloading_fee, other_conventions, 
-    fixed_rebate_type, return_rate, target_rebate, plan_type, start_time, end_time, purchase_price_standard, 
+    fixed_rebate_type, return_rate, target_rebate, start_time, end_time, purchase_price_standard,
     del_flag, create_time, create_by, update_time, update_by, contract_code, apply_contract_code, 
     auditor_by, auditor_time, apply_status,company_code,company_name,
     purchasing_group_name,settlement_method_name,early_warn_num,
@@ -165,9 +165,9 @@
       <if test="targetRebate != null">
         target_rebate,
       </if>
-      <if test="planType != null">
-        plan_type,
-      </if>
+<!--      <if test="planType != null">-->
+<!--        plan_type,-->
+<!--      </if>-->
       <if test="startTime != null">
         start_time,
       </if>
@@ -249,7 +249,7 @@
       <if test="checkoutDate != null">
         checkout_date,
       </if>
-      <if test="checkoutDate != null">
+      <if test="minAmount != null">
         min_amount,
       </if>
     </trim>
@@ -299,9 +299,9 @@
       <if test="targetRebate != null">
         #{targetRebate,jdbcType=TINYINT},
       </if>
-      <if test="planType != null">
-        #{planType,jdbcType=TINYINT},
-      </if>
+<!--      <if test="planType != null">-->
+<!--        #{planType,jdbcType=TINYINT},-->
+<!--      </if>-->
       <if test="startTime != null">
         #{startTime,jdbcType=TIMESTAMP},
       </if>
@@ -434,9 +434,9 @@
       <if test="targetRebate != null">
         target_rebate = #{targetRebate,jdbcType=TINYINT},
       </if>
-      <if test="planType != null">
-        plan_type = #{planType,jdbcType=TINYINT},
-      </if>
+<!--      <if test="planType != null">-->
+<!--        plan_type = #{planType,jdbcType=TINYINT},-->
+<!--      </if>-->
       <if test="startTime != null">
         start_time = #{startTime,jdbcType=TIMESTAMP},
       </if>
@@ -534,7 +534,7 @@
       fixed_rebate_type = #{fixedRebateType,jdbcType=TINYINT},
       return_rate = #{returnRate,jdbcType=BIGINT},
       target_rebate = #{targetRebate,jdbcType=TINYINT},
-      plan_type = #{planType,jdbcType=TINYINT},
+--       plan_type = #{planType,jdbcType=TINYINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       purchase_price_standard = #{purchasePriceStandard,jdbcType=TINYINT},
@@ -599,6 +599,7 @@
         and c.buyer_code = #{personId}
       </if>
     </select>
+
     <update id="updateByCode" >
     update contract
     <set>

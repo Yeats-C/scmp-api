@@ -23,7 +23,9 @@ public class supplierInfoVO {
     @ApiModelProperty("最新采购价")
     private Long purchasePriceNewest;
     @ApiModelProperty("原含税价")
-    private Long oldPrice;
+    private Long oldPrice = 0L;
     @ApiModelProperty("是否缺省（0:否,1：是）")
     private Boolean isDefault;
+    @ApiModelProperty("原毛利率")
+    private Long oldGrossProfitMargin = 0L;
 }

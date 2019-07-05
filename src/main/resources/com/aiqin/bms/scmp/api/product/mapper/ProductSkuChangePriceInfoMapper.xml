@@ -60,6 +60,7 @@
            a.name                               as name,
            a.create_time                        as createTime,
            a.change_price_name                  as changePriceName,
+           a.ext_field_5                        as beContainArea,
            a.purchase_group_name                as purchaseGroupName,
            a.apply_status                       as applyStatus,
            IFNULL(a.update_by,a.create_by)     as operateBy,
