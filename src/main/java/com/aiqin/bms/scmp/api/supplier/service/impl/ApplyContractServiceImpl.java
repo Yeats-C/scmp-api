@@ -401,7 +401,7 @@ public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements
 
         supplierCommonService.getInstance(updateApplyContractReqVo.getApplyContractCode()+"", HandleTypeCoce.APPLY_UPDATE_CONTRACT.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(),updateApplyContractReqVo ,HandleTypeCoce.APPLY_UPDATE_CONTRACT.getName());
         if(oldApplyContractDTO.getRebateClause().equals(((byte)1))){
-            int i = applyContractPlanTypeMapper.deleteByContractCode(applyContractDTO.getApplyContractCode());
+            int i = applyContractPlanTypeMapper.deleteByContractCode(updateApplyContractReqVo.getApplyContractCode());
         }
         if (applyContractDTO.getRebateClause().equals((byte)1)){
             List<ApplyContractPlanType> typeList = BeanCopyUtils.copyList(updateApplyContractReqVo.getPlanTypeList(),ApplyContractPlanType.class);

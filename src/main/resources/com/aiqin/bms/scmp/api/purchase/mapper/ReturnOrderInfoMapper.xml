@@ -279,7 +279,7 @@
                b.product_status bproduct_status,
                b.actual_inbound_num bactual_inbound_num,
                b.company_name bcompany_name,
-               b.company_code bcompany_code,
+               b.company_code bcompany_code
         from return_order_info a
                  left join return_order_info_item b
                            on a.return_order_code = b.return_order_code
