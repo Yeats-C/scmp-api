@@ -10,6 +10,7 @@
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode" />
     <result column="base_product_content" jdbcType="INTEGER" property="baseProductContent" />
+    <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
@@ -20,7 +21,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, spec, product_name, unit_code, unit_name, purchase_code, base_product_content, 
-    del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name
+    del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,
+    zero_removal_coefficient
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

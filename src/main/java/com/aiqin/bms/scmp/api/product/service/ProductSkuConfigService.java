@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespV
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
@@ -190,4 +191,16 @@ public interface ProductSkuConfigService {
      * @return
      */
     Integer insertSpareWarehouseList(List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses);
+
+
+   /**
+    *
+    * 功能描述: 获取临时表数据根据SkuCode
+    *
+    * @param skuCode
+    * @return
+    * @auther knight.xie
+    * @date 2019/7/5 20:10
+    */
+    List<ProductSkuSupplyUnitRespVo> draftDetail(String skuCode);
 }

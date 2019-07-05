@@ -3,10 +3,12 @@ package com.aiqin.bms.scmp.api.product.domain.pojo;
 import com.aiqin.bms.scmp.api.common.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
 @ApiModel("")
+@Data
 public class ApplyProductSkuSalesInfo extends CommonBean {
     @ApiModelProperty("主键id")
     private Long id;
@@ -26,14 +28,20 @@ public class ApplyProductSkuSalesInfo extends CommonBean {
     @ApiModelProperty("规格")
     private String spec;
 
-    @ApiModelProperty("计量单位")
+    @ApiModelProperty("单位名称")
     private String smallUnit;
+
+    @ApiModelProperty("单位编码")
+    private String unitCode;
 
     @ApiModelProperty("销售码")
     private String salesCode;
 
     @ApiModelProperty("基商品含量")
-    private String baseProductContent;
+    private Integer baseProductContent;
+
+    @ApiModelProperty("拆零系数")
+    private Long zeroRemovalCoefficient;
 
     @ApiModelProperty("宽")
     private Long productWidth;
@@ -71,171 +79,4 @@ public class ApplyProductSkuSalesInfo extends CommonBean {
     @ApiModelProperty("申请编码")
     private String applyCode;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getProductCode() {
-        return productCode;
-    }
-
-    public void setProductCode(String productCode) {
-        this.productCode = productCode == null ? null : productCode.trim();
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName == null ? null : productName.trim();
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
-    }
-
-    public Byte getUsageStatus() {
-        return usageStatus;
-    }
-
-    public void setUsageStatus(Byte usageStatus) {
-        this.usageStatus = usageStatus;
-    }
-
-    public String getSpec() {
-        return spec;
-    }
-
-    public void setSpec(String spec) {
-        this.spec = spec == null ? null : spec.trim();
-    }
-
-    public String getSmallUnit() {
-        return smallUnit;
-    }
-
-    public void setSmallUnit(String smallUnit) {
-        this.smallUnit = smallUnit == null ? null : smallUnit.trim();
-    }
-
-    public String getSalesCode() {
-        return salesCode;
-    }
-
-    public void setSalesCode(String salesCode) {
-        this.salesCode = salesCode == null ? null : salesCode.trim();
-    }
-
-    public String getBaseProductContent() {
-        return baseProductContent;
-    }
-
-    public void setBaseProductContent(String baseProductContent) {
-        this.baseProductContent = baseProductContent == null ? null : baseProductContent.trim();
-    }
-
-    public Long getProductWidth() {
-        return productWidth;
-    }
-
-    public void setProductWidth(Long productWidth) {
-        this.productWidth = productWidth;
-    }
-
-    public Long getProductLength() {
-        return productLength;
-    }
-
-    public void setProductLength(Long productLength) {
-        this.productLength = productLength;
-    }
-
-    public Long getProductHeight() {
-        return productHeight;
-    }
-
-    public void setProductHeight(Long productHeight) {
-        this.productHeight = productHeight;
-    }
-
-    public Byte getIsDefault() {
-        return isDefault;
-    }
-
-    public void setIsDefault(Byte isDefault) {
-        this.isDefault = isDefault;
-    }
-
-    public Byte getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(Byte delFlag) {
-        this.delFlag = delFlag;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy == null ? null : createBy.trim();
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy == null ? null : updateBy.trim();
-    }
-
-    public String getProductSkuCode() {
-        return productSkuCode;
-    }
-
-    public void setProductSkuCode(String productSkuCode) {
-        this.productSkuCode = productSkuCode == null ? null : productSkuCode.trim();
-    }
-
-    public String getProductSkuName() {
-        return productSkuName;
-    }
-
-    public void setProductSkuName(String productSkuName) {
-        this.productSkuName = productSkuName == null ? null : productSkuName.trim();
-    }
-
-    public String getApplyCode() {
-        return applyCode;
-    }
-
-    public void setApplyCode(String applyCode) {
-        this.applyCode = applyCode == null ? null : applyCode.trim();
-    }
 }

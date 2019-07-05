@@ -76,8 +76,8 @@ public class ApplyUseTagRecordServiceImpl implements ApplyUseTagRecordService {
      * @return
      */
     @Override
-    public List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(String appUseObjectCode) {
-        return applyUseTagRecordMapper.getApplyUseTagRecordByAppUseObjectCode(appUseObjectCode);
+    public List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(String appUseObjectCode,String tagTypeCode) {
+        return applyUseTagRecordMapper.getApplyUseTagRecordByAppUseObjectCode(appUseObjectCode,tagTypeCode);
     }
 
     /**
@@ -86,7 +86,7 @@ public class ApplyUseTagRecordServiceImpl implements ApplyUseTagRecordService {
      * @return
      */
     @Override
-    public List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodes(List<String> appUseObjectCodes) {
-        return applyUseTagRecordMapper.getApplyUseTagRecordByAppUseObjectCodes(appUseObjectCodes);
+    public List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodes(List<String> appUseObjectCodes,String tagTypeCode) {
+        return applyUseTagRecordMapper.getApplyUseTagRecordByAppUseObjectCodes(appUseObjectCodes,tagTypeCode);
     }
 }

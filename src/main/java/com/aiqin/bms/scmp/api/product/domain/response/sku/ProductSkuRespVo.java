@@ -118,11 +118,20 @@ public class ProductSkuRespVo extends CommonBean {
     @ApiModelProperty("是否结构性商品(0:是 1:否)")
     private Byte structuralGoods;
 
-    @ApiModelProperty("是否爱亲主推(0:否，1:是)")
+    @ApiModelProperty(value = "是否爱亲主推(0:否，1:是)",hidden = true)
     private Byte isMainPush;
 
-    @ApiModelProperty("是否新品(0:否，1:是)")
+    @ApiModelProperty(value = "是否新品(0:否，1:是)",hidden = true)
     private Byte newProduct;
+
+    @ApiModelProperty("库存模式(0:有库存销售 1:无库存销售)")
+    private Byte inventoryModel;
+
+    @ApiModelProperty("使用时长")
+    private Integer useTime;
+
+    @ApiModelProperty("唯一码管理(0:是 1:否)")
+    private Byte uniqueCode;
 
     @ApiModelProperty("备注")
     private String remark;

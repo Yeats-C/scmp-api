@@ -138,6 +138,6 @@ public class ProductSkuCheckoutServiceImpl implements ProductSkuCheckoutService 
      */
     @Override
     public Integer deleteDrafts(List<String> skuCodes) {
-        return productSkuCheckoutMapper.delete(skuCodes);
+        return productSkuCheckoutDraftMapper.delete(skuCodes);
     }
 }

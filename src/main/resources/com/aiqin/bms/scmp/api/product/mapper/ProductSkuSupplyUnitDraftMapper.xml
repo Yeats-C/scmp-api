@@ -18,6 +18,8 @@
     <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
     <result column="usage_status" jdbcType="TINYINT" property="usageStatus" />
     <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
+    <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+    <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, supply_unit_code, supply_unit_name, no_tax_purchase_price, tax_included_price, 
@@ -61,7 +63,7 @@
       no_tax_purchase_price, tax_included_price, joint_franchise_rate, 
       point, is_default, del_flag, 
       create_time, create_by, update_time, 
-      update_by, product_sku_code, usage_status, 
+      update_by, product_sku_code, usage_status,
       product_sku_name)
     values (#{id,jdbcType=BIGINT}, #{supplyUnitCode,jdbcType=VARCHAR}, #{supplyUnitName,jdbcType=VARCHAR}, 
       #{noTaxPurchasePrice,jdbcType=BIGINT}, #{taxIncludedPrice,jdbcType=BIGINT}, #{jointFranchiseRate,jdbcType=BIGINT}, 

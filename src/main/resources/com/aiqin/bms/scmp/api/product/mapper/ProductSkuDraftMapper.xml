@@ -37,8 +37,8 @@
     <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
     <result column="mnemonic_code" jdbcType="VARCHAR" property="mnemonicCode" />
     <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime" />
-    <result column="selection_effective_start_time" jdbcType="VARCHAR" property="selectionEffectiveStartTime" />
-    <result column="selection_effective_end_time" jdbcType="VARCHAR" property="selectionEffectiveEndTime" />
+    <result column="selection_effective_start_time" jdbcType="TIMESTAMP" property="selectionEffectiveStartTime" />
+    <result column="selection_effective_end_time" jdbcType="TIMESTAMP" property="selectionEffectiveEndTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -55,6 +55,18 @@
     <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
     <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode" />
     <result column="procurement_section_name" jdbcType="VARCHAR" property="procurementSectionName" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="seasonal_goods" jdbcType="TINYINT" property="seasonalGoods" />
+    <result column="warehouse_type_code" jdbcType="VARCHAR" property="warehouseTypeCode" />
+    <result column="warehouse_type_name" jdbcType="VARCHAR" property="warehouseTypeName" />
+    <result column="structural_goods" jdbcType="TINYINT" property="structuralGoods" />
+    <result column="apply_type" jdbcType="TINYINT" property="applyType" />
+    <result column="apply_type_name" jdbcType="VARCHAR" property="applyTypeName" />
+    <result column="use_time" jdbcType="INTEGER" property="useTime" />
+    <result column="unique_code" jdbcType="TINYINT" property="uniqueCode" />
+    <result column="inventory_model" jdbcType="TINYINT" property="inventoryModel" />
+
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, product_name, product_category_code, product_category_name, sku_code, 
@@ -66,7 +78,9 @@
     bar_code, mnemonic_code, selection_effective_time, selection_effective_start_time, 
     selection_effective_end_time, create_time, create_by, update_time, update_by, goods_gifts, 
     spu_code, logo, images, itro_images, sku_name, is_main_push, new_product, manufacturer_guide_price, 
-    zero_removal_coefficient, procurement_section_code, procurement_section_name
+    zero_removal_coefficient, procurement_section_code, procurement_section_name,company_code,
+    seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
+    apply_type,apply_type_name,use_time,unique_code,inventory_model
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

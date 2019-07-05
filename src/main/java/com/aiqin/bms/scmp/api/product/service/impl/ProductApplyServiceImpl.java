@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -36,6 +37,9 @@ public class ProductApplyServiceImpl implements ProductApplyService {
     @Autowired
     private ProductSkuConfigService productSkuConfigService;
 
+    @Autowired
+    private SkuInfoService skuInfoService;
+
     @Override
     public BasePage<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo) {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
@@ -45,6 +49,7 @@ public class ProductApplyServiceImpl implements ProductApplyService {
         List<QueryProductApplyRespVO> list = Lists.newArrayList();
         switch (reqVo.getApprovalType()){
             case 1:
+                list = skuInfoService.queryApplyList(reqVo);
                 break;
             case 2:
                 list = productSkuConfigService.queryApplyList(reqVo);

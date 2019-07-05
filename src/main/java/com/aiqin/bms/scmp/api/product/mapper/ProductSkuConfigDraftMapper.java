@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigDraft;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 
 import java.util.List;
@@ -23,8 +24,14 @@ public interface ProductSkuConfigDraftMapper {
     List<ProductSkuConfigDraft> selectByCodes(List<String> codes);
 
     int deleteByConfigCodes(List<String> codes);
+    int deleteOutByConfigCodes(List<String> codes);
 
     List<ProductSkuConfigDraft> getListBySkuCodes(List<String> skuCodes);
+
+
+    List<ProductSkuSupplyUnitRespVo> getListBySkuCode(String skuCode);
+
+
     int deleteBySkuCodes(List<String> skuCodes);
 
 

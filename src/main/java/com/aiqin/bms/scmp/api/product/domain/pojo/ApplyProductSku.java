@@ -128,10 +128,10 @@ public class ApplyProductSku extends CommonBean {
     private Byte selectionEffectiveTime;
 
     @ApiModelProperty("生效起始时间")
-    private String selectionEffectiveStartTime;
+    private Date selectionEffectiveStartTime;
 
     @ApiModelProperty("生效结束时间")
-    private String selectionEffectiveEndTime;
+    private Date selectionEffectiveEndTime;
 
     @ApiModelProperty("商品/赠品(0:商品，1:赠品)")
     private Byte goodsGifts;
@@ -177,5 +177,35 @@ public class ApplyProductSku extends CommonBean {
 
     @ApiModelProperty("唯一码管理(0:是 1:否)")
     private Byte uniqueCode;
+
+    @ApiModelProperty(value = "公司编码",hidden = true)
+    private String companyCode;
+
+    @ApiModelProperty(value = "公司名称",hidden = true)
+    private String companyName;
+
+    @ApiModelProperty(value = "申请类型", hidden = true)
+    private Byte applyType;
+
+    @ApiModelProperty(value = "申请类型名称", hidden = true)
+    private String applyTypeName;
+
+
+
+
+    @ApiModelProperty("是否季节性商品(0:是 1:否)")
+    private Byte seasonalGoods;
+
+    @ApiModelProperty("仓位类型编码--商品数据字典")
+    private String warehouseTypeCode;
+
+    @ApiModelProperty("仓位类型名称--商品数据字典")
+    private String warehouseTypeName;
+
+    @ApiModelProperty("是否结构性商品(0:是 1:否)")
+    private Byte structuralGoods;
+
+    @ApiModelProperty("备注")
+    private String remark;
 
 }
