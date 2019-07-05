@@ -40,7 +40,7 @@ public interface GoodsRejectService {
 
     HttpResponse addReject(RejectRequest request);
 
-    HttpResponse updateReject(RejectApplyRequest rejectApplyQueryRequest);
+    HttpResponse updateReject(String rejectApplyQueryRequest);
 
     HttpResponse rejectList(RejectQueryRequest rejectApplyQueryRequest);
 

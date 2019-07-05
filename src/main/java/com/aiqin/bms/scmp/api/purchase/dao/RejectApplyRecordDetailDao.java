@@ -38,4 +38,6 @@ public interface RejectApplyRecordDetailDao {
     Integer countByRejectId(@Param("rejectApplyRecordCode") String rejectApplyRecordCode,@Param("applyRecordStatus")Integer status);
 
     List<RejectApplyDetailHandleResponse> selectHandleByRejectCode(String rejectApplyCode);
+
+    void updateStatus(String rejectApplyCode);
 }

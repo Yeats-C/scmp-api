@@ -91,11 +91,12 @@ public class GoodsRejectController {
         return goodsRejectService.rejectApply(rejectApplyQueryRequest);
     }
 
-    @PutMapping("/apply")
+    @PutMapping("/apply/finish/{reject_apply_record_code}")
     @ApiOperation(value = "更改退供申请单为完成状态")
-    public HttpResponse<RejectApplyRequest> updateApplyReject(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
-        LOGGER.info("更改退供申请单为完成状态,rejectRecord:{}", rejectApplyQueryRequest.toString());
-        return goodsRejectService.updateReject(rejectApplyQueryRequest);
+    @ApiImplicitParam(name = "reject_apply_record_code", value = "退货申请单号", type = "String")
+    public HttpResponse<RejectApplyRequest> updateApplyReject(@PathVariable String reject_apply_record_code ) {
+        LOGGER.info("更改退供申请单为完成状态,rejectRecord:{}", reject_apply_record_code);
+        return goodsRejectService.updateReject(reject_apply_record_code);
     }
 
     @PutMapping("/apply/{reject_apply_record_code}")

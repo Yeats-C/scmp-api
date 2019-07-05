@@ -6,10 +6,12 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
-import com.aiqin.bms.scmp.api.product.domain.request.QueryStockBatchSkuReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
+import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
@@ -21,7 +23,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
-import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -98,6 +99,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     private StockDao stockDao;
     @Resource
     private GoodsRejectApprovalServiceImpl goodsRejectApprovalService;
+    @Resource
+    private StockService stockService;
 
 
     @Override
@@ -277,7 +280,6 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                 response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes(), response.getPageSize(), response.getBeginIndex());
         QueryStockBatchSkuRespVo queryStockBatchSkuRespVo;
         for (RejectApplyRecordDetail detailResponse : detailList) {
-            //todo 根据sku查询实际库存
             queryStockBatchSkuRespVo = stockDao.selectSkuBatchCode(detailResponse.getPurchaseGroupCode(),detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode(), detailResponse.getBarcode());
             if(queryStockBatchSkuRespVo!=null){
                 detailResponse.setStockCount(new Long(queryStockBatchSkuRespVo.getAvailableNum()).intValue());
@@ -401,6 +403,9 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             operationLogDao.insert(new OperationLog(rejectId, 0, "新增退供单", "", request.getCreateById(), request.getCreateByName()));
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode,request.getCreateByName(),request.getDictionaryId());
+            //锁定库存 todo
+//            ILockStockBatchReqVOs iLockStockBatchReqVO = new ILockStockBatchReqVOs();
+//            stockService.returnSupplyLockStockBatch(iLockStockBatchReqVO);
         } catch (BeansException e) {
             LOGGER.error("新增退供单异常:{}", e.getMessage());
             throw new RuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
@@ -409,10 +414,15 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     }
 
     @Override
-    public HttpResponse updateReject(RejectApplyRequest rejectApplyQueryRequest) {
-
-
-        return null;
+    public HttpResponse updateReject(String rejectApplyCode) {
+        RejectApplyRecord rejectApplyRecord = rejectApplyRecordDao.selectByRejectCode(rejectApplyCode);
+        if(rejectApplyRecord==null){
+            LOGGER.error("未查询到退供申请单信息:{}", rejectApplyCode);
+            return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_APPLY_RECORD);
+        }
+        rejectApplyRecordDao.updateStatus(rejectApplyCode);
+        rejectApplyRecordDetailDao.updateStatus(rejectApplyCode);
+        return HttpResponse.success();
     }
 
     @Override
@@ -541,9 +551,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_CANCEL);
         Integer count = rejectRecordDao.updateStatus(rejectRecord);
         LOGGER.info("取消-更改退供申请详情影响条数:{}", count);
-        //todo 解锁库存
-
-
+        //解锁库存 todo
+//        stockService.returnSupplyUnLockStockBatch(stockChangeRequest);
         return HttpResponse.success();
     }
 

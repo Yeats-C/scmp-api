@@ -429,4 +429,10 @@
     where
     reject_apply_record_code = #{rejectApplyCode,jdbcType=VARCHAR}
   </select>
+  <update id="updateStatus">
+         update reject_apply_record_detail
+         set
+         apply_record_status = 1
+         where reject_apply_record_code = #{rejectApplyRecordId,jdbcType=VARCHAR}
+  </update>
 </mapper>

@@ -178,5 +178,13 @@ public class RejectRequest {
     @JsonProperty("file_list")
     List<FileRecord> fileList;
 
+    @ApiModelProperty("创建人公司编码")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty("创建人公司名称")
+    @JsonProperty("company_name")
+    private String companyName;
+
 }
 

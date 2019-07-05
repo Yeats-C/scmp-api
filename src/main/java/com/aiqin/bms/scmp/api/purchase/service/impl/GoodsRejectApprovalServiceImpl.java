@@ -65,7 +65,7 @@ import java.util.UUID;
 @WorkFlowAnnotation(WorkFlow.APPLY_REFUND)
 public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalService, WorkFlowHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectApprovalServiceImpl.class);
 
     @Resource
     private UrlConfig urlConfig;
@@ -82,29 +82,37 @@ public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalServic
      */
     @Override
     public String workFlowCallback(WorkFlowCallbackVO vo) {
-        //审批驳回
-        RejectRecord rejectRecord = new RejectRecord();
-        rejectRecord.setRejectRecordId(vo.getFormNo());
-        if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
-            RejectRecord record = rejectRecordDao.selectByRejectId(vo.getFormNo());
+        try {
+            //审批驳回
+            RejectRecord rejectRecord = new RejectRecord();
+            rejectRecord.setRejectRecordCode(vo.getFormNo());
+            RejectRecord record = rejectRecordDao.selectByRejectCode(vo.getFormNo());
             if (record == null) {
+                //未查询到退供单信息
                 return WorkFlowReturn.FALSE;
+            } else if (record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_CANCEL)) {
+                //退供单是取消状态,不进行操作
+                return WorkFlowReturn.SUCCESS;
             }
-            rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_NO);
-            Integer count = rejectRecordDao.updateStatus(rejectRecord);
+            if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
+                //审批中状态
+                rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_AUDITTING);
+                Integer count = rejectRecordDao.updateStatus(rejectRecord);
+            } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())||Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
+                //审批失败或者撤销
+                rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_NO);
+                Integer count = rejectRecordDao.updateStatus(rejectRecord);
+            }else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+                //审批通过 状态为待供应商确认
+                rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
+                Integer count = rejectRecordDao.updateStatus(rejectRecord);
+            }
             return WorkFlowReturn.SUCCESS;
-        } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
-            //撤销
-            return WorkFlowReturn.SUCCESS;
-        } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-            //审批通过 状态为待供应商确认
-            rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
-            Integer count = rejectRecordDao.updateStatus(rejectRecord);
+        } catch (Exception e) {
+            LOGGER.error("审批回调异常:{}", e.getMessage());
             return WorkFlowReturn.SUCCESS;
         }
-        return WorkFlowReturn.FALSE;
     }
-
 
     @Transactional(rollbackFor = Exception.class)
     public void workFlow(String formNo, String userName, String directSupervisorCode) {
