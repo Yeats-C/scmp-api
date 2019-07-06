@@ -63,4 +63,15 @@ public interface ProductSkuCheckoutService {
      */
     Integer deleteDrafts(List<String> skuCodes);
 
+    /**
+     *
+     * 功能描述: 根据skuCode编码查询正式结算信息
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 17:00
+     */
+    ProductSkuCheckoutRespVo getBySkuCode(String skuCode);
+
 }

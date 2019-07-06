@@ -133,7 +133,7 @@ public class ApplyProductSku extends CommonBean {
     @ApiModelProperty("生效结束时间")
     private Date selectionEffectiveEndTime;
 
-    @ApiModelProperty("商品/赠品(0:商品，1:赠品)")
+    @ApiModelProperty("商品/赠品(0:商品，1:赠品 2:组合商品)")
     private Byte goodsGifts;
 
     @ApiModelProperty("sku名称")
@@ -190,9 +190,6 @@ public class ApplyProductSku extends CommonBean {
     @ApiModelProperty(value = "申请类型名称", hidden = true)
     private String applyTypeName;
 
-
-
-
     @ApiModelProperty("是否季节性商品(0:是 1:否)")
     private Byte seasonalGoods;
 
@@ -207,5 +204,11 @@ public class ApplyProductSku extends CommonBean {
 
     @ApiModelProperty("备注")
     private String remark;
+
+    @ApiModelProperty(" 库存分配-组合独有(0:共享)")
+    private Byte inventoryAllocation;
+
+    @ApiModelProperty("价格模式-组合独有(0:人工设置)")
+    private Byte priceModel;
 
 }

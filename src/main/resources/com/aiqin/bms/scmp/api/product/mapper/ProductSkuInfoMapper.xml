@@ -57,6 +57,18 @@
     <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
     <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode" />
     <result column="procurement_section_name" jdbcType="VARCHAR" property="procurementSectionName" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="seasonal_goods" jdbcType="TINYINT" property="seasonalGoods" />
+    <result column="warehouse_type_code" jdbcType="VARCHAR" property="warehouseTypeCode" />
+    <result column="warehouse_type_name" jdbcType="VARCHAR" property="warehouseTypeName" />
+    <result column="structural_goods" jdbcType="TINYINT" property="structuralGoods" />
+    <result column="apply_type_name" jdbcType="VARCHAR" property="applyTypeName" />
+    <result column="use_time" jdbcType="INTEGER" property="useTime" />
+    <result column="unique_code" jdbcType="TINYINT" property="uniqueCode" />
+    <result column="inventory_model" jdbcType="TINYINT" property="inventoryModel" />
+    <result column="inventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
+    <result column="price_model" jdbcType="TINYINT" property="priceModel" />
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, product_name, product_category_code, product_category_name, sku_code, 
@@ -68,7 +80,10 @@
     bar_code, mnemonic_code, selection_effective_time, selection_effective_start_time, 
     selection_effective_end_time, apply_code, create_time, create_by, update_time, update_by, 
     goods_gifts, spu_code, logo, images, itro_images, is_main_push, new_product, remark, 
-    manufacturer_guide_price, zero_removal_coefficient, procurement_section_code, procurement_section_name
+    manufacturer_guide_price, zero_removal_coefficient, procurement_section_code,
+    procurement_section_name,company_code,
+    seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
+    use_time,unique_code,inventory_model,price_model,inventory_allocation
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -100,7 +115,11 @@
       spu_code, logo, images, 
       itro_images, is_main_push, new_product, 
       remark, manufacturer_guide_price, zero_removal_coefficient, 
-      procurement_section_code, procurement_section_name
+      procurement_section_code, procurement_section_name,
+      seasonal_goods,structural_goods,warehouse_type_code,
+      warehouse_type_name,company_code,company_name,remark,
+      inventory_model,use_time,unique_code,
+      inventory_allocation,price_model
       )
     values (#{id,jdbcType=BIGINT}, #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, 
       #{productCategoryCode,jdbcType=VARCHAR}, #{productCategoryName,jdbcType=VARCHAR}, 
@@ -121,7 +140,13 @@
       #{spuCode,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{images,jdbcType=VARCHAR}, 
       #{itroImages,jdbcType=VARCHAR}, #{isMainPush,jdbcType=TINYINT}, #{newProduct,jdbcType=TINYINT}, 
       #{remark,jdbcType=VARCHAR}, #{manufacturerGuidePrice,jdbcType=BIGINT}, #{zeroRemovalCoefficient,jdbcType=BIGINT}, 
-      #{procurementSectionCode,jdbcType=VARCHAR}, #{procurementSectionName,jdbcType=VARCHAR}
+      #{procurementSectionCode,jdbcType=VARCHAR}, #{procurementSectionName,jdbcType=VARCHAR},
+       #{seasonalGoods,jdbcType=TINYINT},#{structuralGoods,jdbcType=TINYINT},
+      #{warehouseTypeCode,jdbcType=VARCHAR}, #{warehouseTypeName,jdbcType=VARCHAR},
+      #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},
+      #{inventoryModel,jdbcType=TINYINT},
+      #{useTime,jdbcType=INTEGER},#{uniqueCode,jdbcType=TINYINT},#{inventoryAllocation,jdbcType=TINYINT},
+      #{priceModel,jdbcType=TINYINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">

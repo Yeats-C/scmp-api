@@ -66,7 +66,8 @@
     <result column="use_time" jdbcType="INTEGER" property="useTime" />
     <result column="unique_code" jdbcType="TINYINT" property="uniqueCode" />
     <result column="inventory_model" jdbcType="TINYINT" property="inventoryModel" />
-
+    <result column="inventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
+    <result column="price_model" jdbcType="TINYINT" property="priceModel" />
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, product_name, product_category_code, product_category_name, sku_code, 
@@ -80,7 +81,7 @@
     spu_code, logo, images, itro_images, sku_name, is_main_push, new_product, manufacturer_guide_price, 
     zero_removal_coefficient, procurement_section_code, procurement_section_name,company_code,
     seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
-    apply_type,apply_type_name,use_time,unique_code,inventory_model
+    apply_type,apply_type_name,use_time,unique_code,inventory_model,price_model,inventory_allocation
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -140,7 +141,8 @@
       procurement_section_code, procurement_section_name,
       seasonal_goods,structural_goods,warehouse_type_code,
       warehouse_type_name,company_code,company_name,remark,
-      apply_type,apply_type_name,inventory_model,use_time,unique_code
+      apply_type,apply_type_name,inventory_model,use_time,unique_code,
+      inventory_allocation,price_model
       )
     values (#{id,jdbcType=BIGINT}, #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, 
       #{productCategoryCode,jdbcType=VARCHAR}, #{productCategoryName,jdbcType=VARCHAR}, 
@@ -166,7 +168,8 @@
       #{warehouseTypeCode,jdbcType=VARCHAR}, #{warehouseTypeName,jdbcType=VARCHAR},
       #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},
       #{applyType,jdbcType=TINYINT},#{applyTypeName,jdbcType=VARCHAR},#{inventoryModel,jdbcType=TINYINT},
-      #{useTime,jdbcType=INTEGER},#{uniqueCode,jdbcType=TINYINT}
+      #{useTime,jdbcType=INTEGER},#{uniqueCode,jdbcType=TINYINT},#{inventoryAllocation,jdbcType=TINYINT},
+      #{priceModel,jdbcType=TINYINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft">
@@ -331,6 +334,12 @@
       <if test="procurementSectionName != null">
         procurement_section_name,
       </if>
+      <if test="inventoryAllocation != null">
+        inventory_allocation,
+      </if>
+      <if test="priceModel != null">
+        price_model,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -491,6 +500,12 @@
       </if>
       <if test="procurementSectionName != null">
         #{procurementSectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="inventoryAllocation != null">
+        #{inventoryAllocation,jdbcType=TINYINT},
+      </if>
+      <if test="priceModel != null">
+        #{priceModel,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -653,6 +668,12 @@
       <if test="procurementSectionName != null">
         procurement_section_name = #{procurementSectionName,jdbcType=VARCHAR},
       </if>
+      <if test="inventoryAllocation != null">
+        inventory_allocation = #{inventoryAllocation,jdbcType=TINYINT},
+      </if>
+      <if test="priceModel != null">
+        price_model = #{priceModel,jdbcType=TINYINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -709,7 +730,9 @@
       manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=BIGINT},
       zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT},
       procurement_section_code = #{procurementSectionCode,jdbcType=VARCHAR},
-      procurement_section_name = #{procurementSectionName,jdbcType=VARCHAR}
+      procurement_section_name = #{procurementSectionName,jdbcType=VARCHAR},
+      inventory_allocation = #{inventoryAllocation,jdbcType=TINYINT},
+      price_model = #{priceModel,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

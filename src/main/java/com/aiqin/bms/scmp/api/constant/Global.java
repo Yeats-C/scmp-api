@@ -115,4 +115,9 @@ public interface Global {
      *监管仓类型
      */
     Byte SUPERVISORY_WAREHOUSE_TYPE = Byte.valueOf("3");
+
+    /**
+     * 主商品
+     */
+    Byte MIAN_PRODUCT = Byte.valueOf("1");
 }

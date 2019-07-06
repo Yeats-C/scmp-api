@@ -31,6 +31,10 @@ public class AddSkuInfoReqVO {
     @JsonProperty("productSkuChannels")
     private List<ProductSkuChannelDraft> productSkuChannelDrafts;
 
+    @ApiModelProperty("组合商品-子商品列表")
+    @JsonProperty("productSkuSubs")
+    private List<ProductSkuSubDraft> productSkuSubs;
+
     @ApiModelProperty(value = "进销存信息",name = "purchaseSaleStocks",position = 3)
     @JsonProperty("purchaseSaleStocks")
     private List<PurchaseSaleStockReqVo> purchaseSaleStockReqVos;

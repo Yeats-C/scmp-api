@@ -63,4 +63,7 @@ public class ProductSkuDetailResp {
 
     @ApiModelProperty(value = "sku质检信息", position = 15)
     private List<ProductSkuInspReportRespVo> productSkuInspReports;
+
+    @ApiModelProperty(value = "组合商品子SKU列表",position = 10)
+    private List<ProductSkuSubRespVo> productSkuSubRespVos;
 }

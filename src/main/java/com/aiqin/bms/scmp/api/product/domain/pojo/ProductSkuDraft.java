@@ -40,7 +40,7 @@ public class ProductSkuDraft extends CommonBean {
     @ApiModelProperty("商品品类名称")
     private String productCategoryName;
 
-    @ApiModelProperty("商品/赠品(0:商品，1:赠品)")
+    @ApiModelProperty("商品/赠品(0:商品，1:赠品 2:组合商品)")
     private Byte goodsGifts;
 
     @ApiModelProperty("商品属性code")
@@ -142,6 +142,11 @@ public class ProductSkuDraft extends CommonBean {
     @ApiModelProperty(value = "申请类型名称", hidden = true)
     private String applyTypeName;
 
+    @ApiModelProperty(" 库存分配-组合独有(0:共享)")
+    private Byte inventoryAllocation;
+
+    @ApiModelProperty("价格模式-组合独有(0:人工设置)")
+    private Byte priceModel;
 
 
     @ApiModelProperty(value = "规格", hidden = true)
@@ -191,6 +196,8 @@ public class ProductSkuDraft extends CommonBean {
 
     @ApiModelProperty(value = "拆零系数",hidden = true)
     private Long zeroRemovalCoefficient;
+
+
 
 
 }

@@ -32,6 +32,12 @@
     WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
 
+  <select id="getBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM product_sku_checkout
+    WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
+  </select>
   <select id="getInfo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutMapper.BaseResultMap">
     SELECT * FROM product_sku_checkout WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>

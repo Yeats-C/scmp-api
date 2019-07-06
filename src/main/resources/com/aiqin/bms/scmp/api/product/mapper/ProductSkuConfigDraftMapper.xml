@@ -156,24 +156,25 @@
     </foreach>
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigDraft">
-    insert into product_sku_config_draft (id, apply_show, create_by, 
-      create_time, update_by, update_time, 
-      del_flag, config_code, product_code, 
-      product_name, sku_code, sku_name, 
-      transport_center_code, transport_center_name, 
-      config_status, arrival_cycle, order_cycle, 
-      basic_inventory_day, large_inventory_warn_day, 
+    insert into product_sku_config_draft (id, apply_show, create_by,
+      create_time, update_by, update_time,
+      del_flag, config_code, product_code,
+      product_name, sku_code, sku_name,
+      transport_center_code, transport_center_name,
+      config_status, arrival_cycle, order_cycle,
+      basic_inventory_day, large_inventory_warn_day,
       big_effect_period_warn_day, turnover_period_after_arrival,
       company_code, company_name,apply_type
       )
-    values (#{id,jdbcType=BIGINT}, #{applyShow,jdbcType=TINYINT}, #{createBy,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{delFlag,jdbcType=TINYINT}, #{configCode,jdbcType=VARCHAR}, #{productCode,jdbcType=VARCHAR}, 
-      #{productName,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
-      #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
-      #{configStatus,jdbcType=TINYINT}, #{arrivalCycle,jdbcType=INTEGER}, #{orderCycle,jdbcType=INTEGER}, 
-      #{basicInventoryDay,jdbcType=INTEGER}, #{largeInventoryWarnDay,jdbcType=INTEGER}, 
-      #{bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{turnoverPeriodAfterArrival,jdbcType=INTEGER}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
+    values (#{id,jdbcType=BIGINT}, #{applyShow,jdbcType=TINYINT}, #{createBy,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+      #{delFlag,jdbcType=TINYINT}, #{configCode,jdbcType=VARCHAR}, #{productCode,jdbcType=VARCHAR},
+      #{productName,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR},
+      #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR},
+      #{configStatus,jdbcType=TINYINT}, #{arrivalCycle,jdbcType=INTEGER}, #{orderCycle,jdbcType=INTEGER},
+      #{basicInventoryDay,jdbcType=INTEGER}, #{largeInventoryWarnDay,jdbcType=INTEGER},
+      #{bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{applyType,jdbcType=TINYINT}
       )
   </insert>
@@ -337,7 +338,7 @@
       config_status, arrival_cycle, order_cycle,
       basic_inventory_day, large_inventory_warn_day,
       big_effect_period_warn_day, turnover_period_after_arrival,
-    company_code, company_name,apply_type
+     company_code, company_name,apply_type
       )
     values
     <foreach collection="list" item="item" open="" close="" separator=",">

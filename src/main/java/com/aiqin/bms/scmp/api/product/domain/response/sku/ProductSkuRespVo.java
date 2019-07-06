@@ -147,4 +147,10 @@ public class ProductSkuRespVo extends CommonBean {
 
     @ApiModelProperty(value = "申请类型名称", hidden = true)
     private String applyTypeName;
+
+    @ApiModelProperty(" 库存分配-组合独有(0:共享)")
+    private Byte inventoryAllocation;
+
+    @ApiModelProperty("价格模式-组合独有(0:人工设置)")
+    private Byte priceModel;
 }

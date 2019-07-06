@@ -17,6 +17,8 @@ import java.util.List;
 public interface ProductSkuCheckoutDao {
     ProductSkuCheckoutRespVo getDraftInfo(String skuCode);
 
+    ProductSkuCheckoutRespVo getBySkuCode(String skuCode);
+
     ProductSkuCheckout getInfo(String skuCode);
 
     int insertApply(@Param("applyProductSkuCheckouts") List<ApplyProductSkuCheckout> applyProductSkuCheckouts);

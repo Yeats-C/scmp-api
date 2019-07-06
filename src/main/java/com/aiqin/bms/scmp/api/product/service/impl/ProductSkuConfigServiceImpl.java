@@ -406,30 +406,34 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         List<String> skuCodes = applyProductSkus.stream().map(ApplyProductSku::getSkuCode).distinct().collect(Collectors.toList());
         String code = applyProductSkus.get(0).getApplyCode();
         String formNo = applyProductSkus.get(0).getFormNo();
+        Integer num = 0;
         //根据skuCodes查询出临时表信息
         List<ProductSkuConfigDraft> drafts = draftMapper.getListBySkuCodes(skuCodes);
-        List<String> configCodes = drafts.stream().map(ProductSkuConfigDraft::getConfigCode).distinct().collect(Collectors.toList());
-        List<ApplyProductSkuConfig> applyProductSkuConfigs  = BeanCopyUtils.copyList(drafts,ApplyProductSkuConfig.class);
-        //通过编码查询出备用仓库信息
-        List<ProductSkuConfigSpareWarehouseDraft> spareWarehouseDrafts = spareWarehouseDraftMapper.
-                getListByConfigCodes(configCodes);
-        List<ApplyProductSkuConfigSpareWarehouse>  applyProductSkuConfigSpareWarehouses =
-                BeanCopyUtils.copyList(spareWarehouseDrafts,ApplyProductSkuConfigSpareWarehouse.class);
-        Date currentDate = new Date();
-        applyProductSkuConfigs.stream().forEach(item->{
-            item.setId(null);
-            item.setApplyCode(code);
-            item.setFormNo(formNo);
-            item.setCreateTime(currentDate);
-        });
-        Integer num = applyMapper.insertBatch(applyProductSkuConfigs);
-        //批量保存备用仓库
-        applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
-        //删除临时表配置信息
-        draftMapper.deleteOutByConfigCodes(configCodes);
-        //删除临时表备用仓库信息
-        spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
-        return null;
+        if(CollectionUtils.isNotEmpty(drafts)){
+            List<String> configCodes = drafts.stream().map(ProductSkuConfigDraft::getConfigCode).distinct().collect(Collectors.toList());
+            List<ApplyProductSkuConfig> applyProductSkuConfigs  = BeanCopyUtils.copyList(drafts,ApplyProductSkuConfig.class);
+            //通过编码查询出备用仓库信息
+            List<ProductSkuConfigSpareWarehouseDraft> spareWarehouseDrafts = spareWarehouseDraftMapper.
+                    getListByConfigCodes(configCodes);
+            List<ApplyProductSkuConfigSpareWarehouse>  applyProductSkuConfigSpareWarehouses =
+                    BeanCopyUtils.copyList(spareWarehouseDrafts,ApplyProductSkuConfigSpareWarehouse.class);
+            Date currentDate = new Date();
+            applyProductSkuConfigs.stream().forEach(item->{
+                item.setId(null);
+                item.setApplyCode(code);
+                item.setFormNo(formNo);
+                item.setCreateTime(currentDate);
+            });
+            num = applyMapper.insertBatch(applyProductSkuConfigs);
+            //批量保存备用仓库
+            applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
+            //删除临时表配置信息
+            draftMapper.deleteOutByConfigCodes(configCodes);
+            //删除临时表备用仓库信息
+            spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
+        }
+
+        return num;
     }
 
     @Transactional(rollbackFor = Exception.class)
