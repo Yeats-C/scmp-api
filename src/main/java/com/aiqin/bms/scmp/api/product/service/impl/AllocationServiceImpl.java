@@ -18,6 +18,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
@@ -590,6 +591,12 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             List<AllocationItemRespVo> data =JSON.parseArray(JsonUtil.toJson(queryStockSkuRespVos),AllocationItemRespVo.class);
             //key为sku编码
             Map<String, AllocationItemRespVo> map = data.stream().collect(Collectors.toMap(AllocationItemRespVo::getSkuCode, Function.identity()));
+            SkuBatchReqVO skuBatchReqVO = new SkuBatchReqVO();
+            skuBatchReqVO.setSkuCodes(codes);
+            skuBatchReqVO.setTransportCenterCode(reqVo.getTransportCenterCode());
+            skuBatchReqVO.setWarehouseCode(reqVo.getWarehouseCode());
+            List<SkuBatchRespVO> skuBatchRespVOS = stockService.querySkuBatchList(skuBatchReqVO);
+            Map<String, List<SkuBatchRespVO>> skuBatchRespVOMap = skuBatchRespVOS.stream().collect(Collectors.groupingBy(SkuBatchRespVO::getSkuCode));
             //错误信息
             for(int i=1;i<excel.size();i++){
                 Object[] objects = excel.get(i);
@@ -618,7 +625,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 }
                 //验证该编码是否存在
                 if(Objects.isNull(map.get(skuCode))){
-                    list.add(new AllocationItemRespVo(skuCode, skuName,"当前sku编码不存在或者已被禁用"));
+                    list.add(new AllocationItemRespVo(skuCode, skuName,"sku编码不存在或者已被禁用"));
                     continue;
                 }
                 AllocationItemRespVo allocationItemRespVo = map.get(skuCode);
@@ -631,6 +638,14 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     allocationItemRespVo.setTotalPrice(allocationItemRespVo.getPrice()*num);
                 }
                 list.add(allocationItemRespVo);
+                //验证是否存在批次存库
+                if(skuBatchRespVOMap.containsKey(skuCode)){
+                    allocationItemRespVo.setSkuBatchRespVOS(skuBatchRespVOMap.get(skuCode));
+                } else {
+                    allocationItemRespVo.setErrorReason("sku在库房中不存在批次号");
+                }
+
+
             }
             return list;
         } catch (Exception e) {
