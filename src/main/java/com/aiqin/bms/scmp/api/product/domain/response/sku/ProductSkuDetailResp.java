@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku;
 
-import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceDraftRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -40,11 +41,11 @@ public class ProductSkuDetailResp {
 
     @ApiModelProperty(value = "sku价格管理",name = "productSkuPrices",position = 8)
     @JsonProperty("productSkuPrices")
-    private List<ProductSkuPriceDraftRespVo> productSkuPriceDrafts;
+    private List<ProductSkuPriceRespVo> productSkuPrices;
 
     @ApiModelProperty(value = "sku配置管理",name = "productSkuConfigs",position = 9)
     @JsonProperty("productSkuConfigs")
-    private  List<ProductSkuSupplyUnitRespVo> productSkuConfigDrafts;
+    private  List<SkuConfigsRepsVo> productSkuConfigs;
 
     @ApiModelProperty(value = "关联商品",position = 10)
     private List<ProductSkuAssociatedGoodsRespVo> productAssociatedGoods;

@@ -24,7 +24,14 @@
     from apply_product_sku_channel
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectBySkuAndApplyCode" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuChannelDraftMapper.Resp_Map">
+      select
+      <include refid="Base_Column_List"/>
+      from apply_product_sku_channel
+      where sku_code = #{skuCode,jdbcType=VARCHAR}
+      and apply_code = #{applyCode,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_channel
     where id = #{id,jdbcType=BIGINT}
   </delete>

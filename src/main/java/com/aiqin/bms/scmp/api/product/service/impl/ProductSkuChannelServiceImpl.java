@@ -53,7 +53,7 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
      * @return
      */
     @Override
-    public List<ProductSkuChannelRespVo> getList(String skuCode) {
+    public List<ProductSkuChannelRespVo> getDraftList(String skuCode) {
         return draftMapper.getList(skuCode);
     }
 
@@ -107,5 +107,17 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
     @SaveList
     public int insertApplyList(List<ApplyProductSkuChannel> applyProductSkuChannels) {
         return applyMapper.insertBartch(applyProductSkuChannels);
+    }
+
+    /**
+     * 通过SKU获取申请表渠道信息
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     */
+    @Override
+    public List<ProductSkuChannelRespVo> getApplyList(String skuCode, String applyCode) {
+        return applyMapper.selectBySkuAndApplyCode(skuCode,applyCode);
     }
 }

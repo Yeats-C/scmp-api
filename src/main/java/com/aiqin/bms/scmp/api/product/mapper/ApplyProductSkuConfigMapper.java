@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductA
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplyProductSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -30,6 +31,7 @@ public interface ApplyProductSkuConfigMapper {
     List<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo);
 
     List<SkuConfigsRepsVo> selectByApplyCode(String applyCode);
+    List<SkuConfigsRepsVo> selectBySkuAndApplyCode(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     String findFormNoByCode(String applyCode);
 }

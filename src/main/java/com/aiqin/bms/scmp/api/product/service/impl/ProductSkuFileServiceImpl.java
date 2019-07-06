@@ -1,14 +1,14 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuFileDao;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuFileDraftMapper;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuFile;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFile;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFileDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuFileRespVO;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuFileDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuFileService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import org.springframework.aop.framework.AopContext;
@@ -120,5 +120,19 @@ public class ProductSkuFileServiceImpl implements ProductSkuFileService {
     @Override
     public Integer deleteDrafts(List<String> skuCodes) {
         return draftMapper.delete(skuCodes);
+    }
+
+    /**
+     * 功能描述: 获取申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:19
+     */
+    @Override
+    public List<ProductSkuFileRespVO> getApply(String skuCode, String applyCode) {
+        return productSkuFileDao.getApplys(skuCode,applyCode);
     }
 }

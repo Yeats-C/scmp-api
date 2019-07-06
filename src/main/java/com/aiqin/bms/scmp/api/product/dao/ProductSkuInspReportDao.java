@@ -30,7 +30,7 @@ public interface ProductSkuInspReportDao {
 
     List<ApplyProductSkuInspReport> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuInspReport> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
+    List<ProductSkuInspReportRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     int insertApplyList(List<ApplyProductSkuInspReport> applyProductSkuInspReports);
 

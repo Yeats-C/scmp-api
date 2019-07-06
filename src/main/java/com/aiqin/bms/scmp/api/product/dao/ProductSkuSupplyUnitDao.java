@@ -38,7 +38,7 @@ public interface ProductSkuSupplyUnitDao {
 
     List<ApplyProductSkuSupplyUnit> getApply(String applyCode);
 
-    List<ApplyProductSkuSupplyUnit> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
+    List<ProductSkuSupplyUnitRespVo> getApplys(@Param("skuCode") String skuCode,@Param("applyCode") String applyCode);
     /**
      * 查询供应商
      * @author NullPointException

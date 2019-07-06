@@ -27,7 +27,7 @@ public interface ProductSkuChannelService {
      * @param skuCode
      * @return
      */
-    List<ProductSkuChannelRespVo> getList(String skuCode);
+    List<ProductSkuChannelRespVo> getDraftList(String skuCode);
 
     /**
      * 删除临时表数据
@@ -49,4 +49,12 @@ public interface ProductSkuChannelService {
      * @return
      */
     int insertApplyList(List<ApplyProductSkuChannel> applyProductSkuChannels);
+
+
+    /**
+     * 通过SKU获取申请表渠道信息
+     * @param skuCode
+     * @return
+     */
+    List<ProductSkuChannelRespVo> getApplyList(String skuCode,String applyCode);
 }

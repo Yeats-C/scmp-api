@@ -38,5 +38,5 @@ public interface ProductSkuManufacturerDao {
 
     List<ApplyProductSkuManufacturer> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuManufacturer> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
+    List<ProductSkuManufacturerRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 }

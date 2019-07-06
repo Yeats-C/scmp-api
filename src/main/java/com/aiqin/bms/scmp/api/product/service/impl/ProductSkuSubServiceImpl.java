@@ -102,4 +102,18 @@ public class ProductSkuSubServiceImpl implements ProductSkuSubService {
     public Integer insertApplyList(List<ApplyProductSkuSub> applyList) {
         return applyMapper.insertBatch(applyList);
     }
+
+    /**
+     * 功能描述: 查询申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:40
+     */
+    @Override
+    public List<ProductSkuSubRespVo> getApply(String skuCode, String applyCode) {
+        return applyMapper.getApplys(skuCode,applyCode);
+    }
 }

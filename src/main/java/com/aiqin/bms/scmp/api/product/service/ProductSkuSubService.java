@@ -59,4 +59,16 @@ public interface ProductSkuSubService {
      * @date 2019/7/6 18:43
      */
     Integer insertApplyList(List<ApplyProductSkuSub> applyList);
+
+    /**
+     *
+     * 功能描述: 查询申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:40
+     */
+    List<ProductSkuSubRespVo> getApply(String skuCode, String applyCode);
 }

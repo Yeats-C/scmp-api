@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.service;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuInspReport;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReportDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
@@ -93,4 +96,16 @@ public interface ProductSkuInspReportService {
      * @date 2019/7/4 10:29
      */
     int saveProductSkuInspReport(ProductSkuInspReport reportReqVo);
+
+    /**
+     *
+     * 功能描述: 获取申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:21
+     */
+    List<ProductSkuInspReportRespVo> getApply(String skuCode, String applyCode);
 }

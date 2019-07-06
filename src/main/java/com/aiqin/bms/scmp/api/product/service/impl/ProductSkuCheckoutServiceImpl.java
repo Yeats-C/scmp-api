@@ -153,4 +153,18 @@ public class ProductSkuCheckoutServiceImpl implements ProductSkuCheckoutService 
     public ProductSkuCheckoutRespVo getBySkuCode(String skuCode) {
         return productSkuCheckoutDao.getBySkuCode(skuCode);
     }
+
+    /**
+     * 功能描述: 获取申请结算信息
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 22:52
+     */
+    @Override
+    public ProductSkuCheckoutRespVo getApply(String skuCode, String applyCode) {
+        return productSkuCheckoutDao.getApplyInfo(skuCode,applyCode);
+    }
 }

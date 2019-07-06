@@ -33,7 +33,7 @@ public interface ProductSkuCheckoutDao {
 
     ApplyProductSkuCheckout getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuCheckout> getApplys(@Param("productSkus") List<ApplyProductSku> productSkus);
+    ProductSkuCheckoutRespVo getApplyInfo(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     int insertCheckOuts(@Param("productSkuCheckouts") List<ProductSkuCheckout> productSkuCheckouts);
 }

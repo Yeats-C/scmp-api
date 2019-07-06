@@ -113,4 +113,16 @@ public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoServic
         int num = applyMapper.insertBatch(applyProductSkuPurchaseInfos);
         return num;
     }
+
+    /**
+     * 获取SKU库存配置信息-临时表
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     */
+    @Override
+    public List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode) {
+        return applyMapper.getList(skuCode,applyCode);
+    }
 }

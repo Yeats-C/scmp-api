@@ -205,4 +205,18 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     public int saveProductSkuInspReport(ProductSkuInspReport reportReqVo) {
         return productSkuInspReportMapper.insertSelective(reportReqVo);
     }
+
+    /**
+     * 功能描述: 获取申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:21
+     */
+    @Override
+    public List<ProductSkuInspReportRespVo> getApply(String skuCode, String applyCode) {
+        return productSkuInspReportDao.getApplys(skuCode,applyCode);
+    }
 }

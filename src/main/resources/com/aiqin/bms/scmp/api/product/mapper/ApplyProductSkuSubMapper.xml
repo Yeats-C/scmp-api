@@ -26,6 +26,13 @@
     from apply_product_sku_sub
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getApplys" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSubDraftMapper.RespResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSubDraftMapper.Resp_Column_List" />
+    from apply_product_sku_sub
+    where main_sku_code = #{skuCode,jdbcType=VARCHAR}
+    and apply_code =  #{applyCode,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_sub
     where id = #{id,jdbcType=BIGINT}

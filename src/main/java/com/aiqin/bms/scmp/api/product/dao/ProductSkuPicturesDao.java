@@ -38,5 +38,5 @@ public interface ProductSkuPicturesDao {
 
     List<ApplyProductSkuPictures> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuPictures> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
+    List<ProductSkuPicturesRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode")String applyCode);
 }

@@ -50,4 +50,11 @@ public interface ProductSkuStockInfoService {
      * @return
      */
     int insertApplyList(List<ApplyProductSkuStockInfo> applyProductSkuPurchaseInfos);
+
+    /**
+     * 获取SKU库存配置信息-临时表
+     * @param skuCode
+     * @return
+     */
+    List<PurchaseSaleStockRespVo> getApplyList(String skuCode,String applyCode);
 }

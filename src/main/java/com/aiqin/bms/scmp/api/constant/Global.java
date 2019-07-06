@@ -119,5 +119,7 @@ public interface Global {
     /**
      * 主商品
      */
-    Byte MIAN_PRODUCT = Byte.valueOf("1");
+    Byte MAIN_PRODUCT = Byte.valueOf("1");
+
+    Byte BYTE_ZERO = Byte.valueOf("0");
 }

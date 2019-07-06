@@ -51,4 +51,15 @@ public interface ProductSkuAssociatedGoodsService {
      */
     int insertApplyList(List<ApplyProductSkuAssociatedGoods> applyProductSkuAssociatedGoods);
 
+    /**
+     *
+     * 功能描述: 申请详情
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:06
+     */
+    List<ProductSkuAssociatedGoodsRespVo> getApply(String skuCode, String applyCode);
 }

@@ -37,7 +37,7 @@ import java.util.List;
 
 public interface ProductSkuDao {
 
-    ApplyProductSku getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+    ProductSkuRespVo getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     List<ApplyProductSku> getSkuApplyList(String applyCode);
     /**

@@ -153,4 +153,11 @@ public class ProductSkuRespVo extends CommonBean {
 
     @ApiModelProperty("价格模式-组合独有(0:人工设置)")
     private Byte priceModel;
+
+    @ApiModelProperty("SKU状态(0:再用 1:停止进货 2:停止配送 3:停止销售)")
+    private Byte skuStatus;
+
+    @ApiModelProperty("销售状态(0:未进货 1:新品 2:正常 3:淘汰品)")
+    private Byte onSale;
+
 }

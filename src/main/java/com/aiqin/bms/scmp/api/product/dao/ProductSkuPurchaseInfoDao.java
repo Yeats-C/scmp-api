@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfoDraft;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -27,8 +28,9 @@ public interface ProductSkuPurchaseInfoDao {
 
     int insertList(@Param("productSkuPurchaseInfos") List<ProductSkuPurchaseInfo> productSkuPurchaseInfos);
 
-    ApplyProductSkuPurchaseInfo getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+    List<PurchaseSaleStockRespVo> getApplyList(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuPurchaseInfo> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
+
+    ApplyProductSkuPurchaseInfo getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
 }
