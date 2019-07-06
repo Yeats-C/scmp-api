@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProduct;
@@ -42,13 +43,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @WorkFlowAnnotation(WorkFlow.APPLY_GOODS)
-public class ApplyProductServiceImpl extends ProductBaseServiceImpl implements ApplyProductService, WorkFlowHelper {
+public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyProductService, WorkFlowHelper {
     @Autowired
     private ApplyProductMapper applyProductMapper;
     @Autowired

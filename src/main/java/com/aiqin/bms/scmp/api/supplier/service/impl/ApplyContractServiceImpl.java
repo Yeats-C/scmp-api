@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -64,7 +65,7 @@ import java.util.Objects;
 @Service
 @Slf4j
 @WorkFlowAnnotation(WorkFlow.APPLY_CONTRACT)
-public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements ApplyContractService, WorkFlowHelper {
+public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyContractService, WorkFlowHelper {
 
     @Autowired
     private ApplyContractDao applyContractDao;

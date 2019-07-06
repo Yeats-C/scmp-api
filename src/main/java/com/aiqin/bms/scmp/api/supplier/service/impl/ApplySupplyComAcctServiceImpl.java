@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -59,7 +60,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service("1")
 @WorkFlowAnnotation(WorkFlow.APPLY_COMPANY_ACC)
-public class ApplySupplyComAcctServiceImpl extends SupplierBaseServiceImpl implements ApplySupplyComAcctService, WorkFlowHelper {
+public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements ApplySupplyComAcctService, WorkFlowHelper {
     @Autowired
     private ApplySupplyCompanyAccountMapper applySupplyCompanyAccountMapper;
     @Autowired

@@ -331,8 +331,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 }
                 final BigDecimal finalInputTaxRate = inputTaxRate;
                 final Long finalInputTaxRateL = inputTaxRateL;
-                final BigDecimal finalOutputTaxRate = outputTaxRate;
-                final Long finalOutputTaxRateL = outputTaxRateL;
+
                 List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts = Lists.newArrayList();
                 productSkuSupplyUnitDrafts.forEach(item->{
                     item.setProductSkuCode(productSkuDraft.getSkuCode());
@@ -340,7 +339,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     //先把含税金额除以100兑换成元,含税金额/(1+税率) = 未税金额,最终结果*100转换成分,舍弃分以后的数字
                     Long taxNoPrice = new BigDecimal(item.getTaxIncludedPrice()).divide(new BigDecimal(100)).divide(BigDecimal.ONE.add(finalInputTaxRate),2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)).longValue();
                     item.setNoTaxPurchasePrice(taxNoPrice);
-                    item.setJointFranchiseRate(finalInputTaxRateL);
+                    item.setTaxRate(finalInputTaxRateL);
                     item.setUsageStatus(StatusTypeCode.USE.getStatus());
                     if(CollectionUtils.isNotEmpty(item.getProductSkuSupplyUnitCapacityDrafts())){
                         item.getProductSkuSupplyUnitCapacityDrafts().forEach(item2->{
@@ -369,10 +368,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     skuPriceDraftReqVO.setPriceAttributeCode(purchasePriceProject.getPriceCategoryCode());
                     skuPriceDraftReqVO.setPriceAttributeName(purchasePriceProject.getPriceCategoryName());
                     //税率
-                    skuPriceDraftReqVO.setTax(finalOutputTaxRateL);
+                    skuPriceDraftReqVO.setTax(finalInputTaxRateL);
                     //未税价
-                    Long priceNoTax = new BigDecimal(item.getTaxIncludedPrice()).divide(new BigDecimal(100)).divide(BigDecimal.ONE.add(finalOutputTaxRate),2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)).longValue();
-                    skuPriceDraftReqVO.setPriceNoTax(priceNoTax);
+                    skuPriceDraftReqVO.setPriceNoTax(taxNoPrice);
                     //含税价
                     skuPriceDraftReqVO.setPriceTax(item.getTaxIncludedPrice());
                     //生效时间

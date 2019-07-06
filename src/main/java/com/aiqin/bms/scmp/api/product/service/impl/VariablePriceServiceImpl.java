@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.CommonInterceptor;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPriceDao;
@@ -42,7 +43,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-public class VariablePriceServiceImpl extends ProductBaseServiceImpl implements VariablePriceService {
+public class VariablePriceServiceImpl extends BaseServiceImpl implements VariablePriceService {
     @Autowired
     private VariablePriceMapper variablePriceMapper;
     @Autowired

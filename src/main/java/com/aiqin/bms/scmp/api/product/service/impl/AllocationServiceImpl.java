@@ -22,10 +22,10 @@ import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
-import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
+import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -93,7 +93,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
 
     @Autowired
-    private SupplierApiService supplierApiService;
+    private WarehouseService supplierApiService;
 
 
     @Autowired
