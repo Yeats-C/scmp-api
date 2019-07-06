@@ -51,11 +51,10 @@ public class PriceChannelForChangePrice {
     @ApiModelProperty("成本")
     private Long taxCost;
 
-    public Long getOldGrossProfitMargin(Long taxCost) {
-        if (this.oldPrice == 0L) {
-            this.oldGrossProfitMargin = 0L;
-            return 0L;
-        }
-        return this.oldGrossProfitMargin =(this.oldPrice-taxCost)/this.oldPrice;
-    }
+//    public Long getOldGrossProfitMargin() {
+//        if (this.oldPrice == 0L) {
+//            return 0L;
+//        }
+//        return this.oldGrossProfitMargin =(this.oldPrice-taxCost)/this.oldPrice;
+//    }
 }

@@ -31,7 +31,7 @@ public class ProductSkuPriceInfoLog {
     private Date effectiveTimeEnd;
 
     @ApiModelProperty("状态0未生效1生效中2已失效")
-    private Integer status;
+    private Integer status=1;
 
     @ApiModelProperty("创建人")
     private String createBy;
