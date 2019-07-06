@@ -36,6 +36,8 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoDao;
 import com.aiqin.bms.scmp.api.product.service.ProductCategoryService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseApiResVo;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;

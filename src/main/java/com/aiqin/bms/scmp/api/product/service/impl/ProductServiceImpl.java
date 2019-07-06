@@ -1,20 +1,20 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.http.HttpClient;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.*;
-import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkusReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuItemRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductService;
-import com.aiqin.bms.scmp.api.product.service.api.OrderApiService;
 import com.aiqin.bms.scmp.api.util.UploadFileUtil;
+import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -63,6 +63,7 @@ public class ProductServiceImpl implements ProductService {
     private ProductSkuDao productSkuDao;
     @Resource
     private UploadFileUtil uploadFileUtil;
+
     @Value("${image.upload.path}")
     private String imageUploadPath;
     @Value("${marker.info.url}")
@@ -70,8 +71,7 @@ public class ProductServiceImpl implements ProductService {
     @Value("${order.info.url}")
     private String orderInfoUrl;
 
-    @Resource
-    private OrderApiService orderApiService;
+
 
     @Override
     public HttpResponse selectWeiShopSkuInfo(String distributorId) {
@@ -720,7 +720,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public PageResData<ProductDistributor> unsoldProductPage(UnsoldDistributorProductRequest request) {
-        List<String> skuCodes = orderApiService.getDisUnsoldProductSkuCodes(request.getDistributorId());
+        List<String> skuCodes = Lists.newArrayList();
         if (CollectionUtils.isNotEmpty(skuCodes)) {
             request.setSoldSkuCodes(skuCodes);
         }

@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
+import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaForSkuReqVO;
@@ -97,7 +98,7 @@ public interface SkuInfoService{
      * @param applyCode
      * @return
      */
-    ApplySkuDetailResp getSkuApplyDetail(String applyCode);
+    ProductApplyInfoRespVO<ProductSkuApplyVo> getSkuApplyDetail(String applyCode);
 
     /**
      * 单个sku申请详情

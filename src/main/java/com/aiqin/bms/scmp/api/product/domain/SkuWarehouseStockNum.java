@@ -1,7 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain;
 
-import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuItemRespVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
 import lombok.Data;
 
 import java.util.List;

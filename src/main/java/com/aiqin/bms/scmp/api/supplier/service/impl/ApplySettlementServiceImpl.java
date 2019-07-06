@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.ApplySettlementInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SettlementInfoDao;
@@ -37,7 +38,7 @@ import java.util.Objects;
  * @date: 2018/12/4 0004 10:06
  */
 @Service
-public class ApplySettlementServiceImpl extends SupplierBaseServiceImpl implements ApplySettlementService {
+public class ApplySettlementServiceImpl extends BaseServiceImpl implements ApplySettlementService {
     @Autowired
     private ApplySettlementInfoDao applySettlementInfoDao;
     @Autowired

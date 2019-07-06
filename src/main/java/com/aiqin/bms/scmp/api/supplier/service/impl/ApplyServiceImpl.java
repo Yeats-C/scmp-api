@@ -29,7 +29,7 @@ import java.util.List;
  * @description TODO
  */
 @Service
-public class ApplyServiceImpl extends SupplierBaseServiceImpl implements ApplyService {
+public class ApplyServiceImpl implements ApplyService {
 
     @Autowired
     private ApplySupplyComServcie applySupplyComServcie;

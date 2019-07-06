@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProduct;
@@ -45,12 +46,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 @WorkFlowAnnotation(WorkFlow.APPLY_GOODS)
-public class ApplyProductServiceImpl extends ProductBaseServiceImpl implements ApplyProductService, WorkFlowHelper {
+public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyProductService, WorkFlowHelper {
     @Autowired
     private ApplyProductMapper applyProductMapper;
     @Autowired
@@ -260,19 +262,14 @@ public class ApplyProductServiceImpl extends ProductBaseServiceImpl implements A
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public String workFlowCallback(WorkFlowCallbackVO vo) {
 
         WorkFlowCallbackVO workFlowCallbackVO = updateSupStatus(vo);
         //判断审核通过还是撤销，或者审核不通过
+        List<ApplyProductSku> applyProductSkus = applyProductSkuMapper.selectByFormNO(vo.getFormNo());
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
         //审批通过
-            List<ApplyProduct> applyProducts = applyProductMapper.selectByFormNO(vo.getFormNo());
-            List<ApplyProductSku> applyProductSkus = applyProductSkuMapper.selectByFormNO(vo.getFormNo());
-            if (applyProducts != null && applyProducts.size() > 0) {
-                 productFlow(applyProducts, workFlowCallbackVO);
-            }
-            log.info("ApplyProductServiceImplProduct-workFlow-参数是：[{}]", JSON.toJSONString(workFlowCallbackVO));
 
             if(CollectionUtils.isNotEmpty(applyProductSkus)){
                 skuInfoService.skuWorkFlowCallback(workFlowCallbackVO);
@@ -280,23 +277,11 @@ public class ApplyProductServiceImpl extends ProductBaseServiceImpl implements A
             return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
         }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
             //审批不通过
-            List<ApplyProduct> applyProducts = applyProductMapper.selectByFormNO(vo.getFormNo());
-            List<ApplyProductSku> applyProductSkus = applyProductSkuMapper.selectByFormNO(vo.getFormNo());
-            if (applyProducts != null && applyProducts.size() > 0) {
-            //批量更新商品审核不通过
-                try{
-                    int k = applyProductMapper.updateStatusByFormNo((byte)3,vo.getFormNo());
-                }catch (Exception e){
-                  // 修改审批中的商品失败
-                    return "false";
-                }
-            }
             log.info("ApplyProductServiceImplProduct-workFlow-参数是：[{}]", JSON.toJSONString(workFlowCallbackVO));
-
             if(CollectionUtils.isNotEmpty(applyProductSkus)){
                //批量更新审核不通过
                 try {
-                    int k = applyProductSkuMapper.updateStatusByFormNo((byte)3,vo.getFormNo());
+                    int k = applyProductSkuMapper.updateStatusByFormNo((byte)3,vo.getFormNo(),vo.getAuditorBy(),vo.getAuditorTime());
                 }catch (Exception e){
                     // 修改审批中的商品失败
                     return "false";
@@ -305,22 +290,12 @@ public class ApplyProductServiceImpl extends ProductBaseServiceImpl implements A
             return "success";
         } else if(vo.getApplyStatus().intValue()==ApplyStatus.REVOKED.getNumber()){
             //撤销
-            List<ApplyProduct> applyProducts = applyProductMapper.selectByFormNO(vo.getFormNo());
-            List<ApplyProductSku> applyProductSkus = applyProductSkuMapper.selectByFormNO(vo.getFormNo());
-            if (applyProducts != null && applyProducts.size() > 0) {
-                //批量更新商品审核不通过
-                try{
-                    int k = applyProductMapper.updateStatusByFormNo((byte)4,vo.getFormNo());
-                }catch (Exception e){
-                    // 修改审批中的商品失败
-                    return "false";
-                }
-            }
             log.info("ApplyProductServiceImplProduct-workFlow-参数是：[{}]", JSON.toJSONString(workFlowCallbackVO));
             if(CollectionUtils.isNotEmpty(applyProductSkus)){
                 //批量更新审核不通过
                 try {
-                    int k = applyProductSkuMapper.updateStatusByFormNo((byte)4,vo.getFormNo());
+                    String auditorBy = Objects.nonNull(vo.getAuditorBy()) ? vo.getAuditorBy() : applyProductSkus.get(0).getCreateBy();
+                    int k = applyProductSkuMapper.updateStatusByFormNo((byte)4,vo.getFormNo(),auditorBy,vo.getAuditorTime());
                 } catch (Exception e){
                     e.printStackTrace();
                     // 修改审批中的sku失败

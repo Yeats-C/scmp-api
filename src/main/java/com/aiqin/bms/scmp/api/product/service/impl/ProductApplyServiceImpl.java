@@ -67,6 +67,7 @@ public class ProductApplyServiceImpl implements ProductApplyService {
 
         switch (approvalType){
             case 1:
+                return skuInfoService.getSkuApplyDetail(code);
             case 2:
                 return productSkuConfigService.applyView(code);
             case 3:
@@ -86,6 +87,7 @@ public class ProductApplyServiceImpl implements ProductApplyService {
         Integer num = 0 ;
         switch (reqVO.getApprovalType()){
             case 1:
+                skuInfoService.cancelSkuApply(reqVO.getCode());
                 break;
             case 2:
                 num = productSkuConfigService.cancelApply(reqVO.getCode());
