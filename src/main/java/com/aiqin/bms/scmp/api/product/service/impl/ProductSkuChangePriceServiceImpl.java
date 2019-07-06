@@ -87,6 +87,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean save(ProductSkuChangePriceReqVO reqVO) throws Exception {
+        JSON.toJSONString(reqVO);
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
         reqVO.setCompanyName(currentAuthToken.getCompanyName());
@@ -360,6 +361,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //审批通过
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             //保存正式数据数据
+            dto.setApplyStatus(CommonConstant.EXAMINATION_PASSED);
             try {
                 saveOfficial(newVO, dto);
             } catch (Exception e) {
@@ -470,7 +472,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setExtField5(1);
             info.setOfficialCode(priceInfo.getCode());
             List<ProductSkuPriceAreaInfo> areaInfo = BeanCopyUtils.copyList(dto.getAreaInfos(), ProductSkuPriceAreaInfo.class);
-            ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,null,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
+            ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
             List<String> area = Lists.newArrayList();
             areaInfo.forEach(o->{
                 o.setCode(priceInfo.getCode());
@@ -513,7 +515,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setExtField5(0);
             info.setOfficialCode(priceInfo.getCode());
             priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getNewPrice(), 0L));
-            ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,null,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
+            ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
             if (info.getEffectiveTimeStart().after(new Date())) {
                 //未生效的
                 //TODO 这里在日志表中插入一条未生效的数据
@@ -562,7 +564,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInsertInfos.add(priceInfo);
                 info.setBeSynchronize(1);
                 info.setOfficialCode(priceInfo.getCode());
-                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,null,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
+                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                 //判断生效日期
                 if (info.getEffectiveTimeStart().after(new Date())) {
                     //未生效的
@@ -587,7 +589,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                 priceInfo.setUpdateTime(new Date());
                 priceInfo.setTax(0L); //TODO 需要从商品上取
-                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,null,priceInfo.getCreateBy(),new Date());
+                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,priceInfo.getCreateBy(),new Date());
                 //判断生效日期
                 if (productSkuChangePriceInfo.getEffectiveTimeStart().after(new Date())) {
                     //未生效的

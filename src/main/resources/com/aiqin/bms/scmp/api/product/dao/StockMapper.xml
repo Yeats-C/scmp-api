@@ -2206,7 +2206,7 @@
       b.product_name          as spuName,
       b.product_code          as spuCode,
       a.stock_batch_code      as warehouseBatchNumber,
-      a.transport_center_code as transport_center_code,
+      a.transport_center_code as transportCenterCode,
       a.transport_center_name as transportCenterName,
       a.warehouse_code        as warehouseCode,
       a.warehouse_name        as warehouseName,
@@ -2247,7 +2247,7 @@
     <select id="getBatch" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo">
        select
           a.stock_batch_code      as warehouseBatchNumber,
-          a.transport_center_code as transport_center_code,
+          a.transport_center_code as transportCenterCode,
           a.transport_center_name as transportCenterName,
           a.warehouse_code        as warehouseCode,
           a.warehouse_name        as warehouseName,

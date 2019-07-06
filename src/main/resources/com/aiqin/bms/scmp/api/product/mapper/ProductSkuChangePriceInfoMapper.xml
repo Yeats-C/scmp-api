@@ -88,6 +88,9 @@
     <if test="applyStatus != null and applyStatus !=''">
       and apply_status = #{applyStatus}
     </if>
+    <if test="beContainArea != null and beContainArea !=''">
+      and ext_field_5 = #{beContainArea}
+    </if>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_change_price_info
@@ -546,7 +549,7 @@
   <update id="updateBatch" parameterType="list">
     <foreach collection="items" separator=";" open="" close="" item="item">
       update product_sku_change_price_info
-      set code = #{item.code,jdbcType=VARCHAR},
+      set
       sku_code = #{item.skuCode,jdbcType=VARCHAR},
       sku_name = #{item.skuName,jdbcType=VARCHAR},
       purchase_price_newest = #{item.purchasePriceNewest,jdbcType=BIGINT},
@@ -582,7 +585,7 @@
       product_time = #{item.productTime,jdbcType=TIMESTAMP},
       be_synchronize = #{item.beSynchronize,jdbcType=INTEGER},
       ext_field_6 = #{item.extField6,jdbcType=BIGINT}
-      where id = #{item.id,jdbcType=BIGINT}
+      where code = #{item.code,jdbcType=VARCHAR}
     </foreach>
   </update>
 </mapper>

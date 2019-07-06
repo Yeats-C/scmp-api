@@ -1,10 +1,13 @@
 package com.aiqin.bms.scmp.api.product.domain.response.changeprice;
 
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -94,9 +97,20 @@ public class QuerySkuInfoRespVO {
     private List<supplierInfoVO> supplierInfoVOS;
 
     public String getWarehouseBatchName() {
-        return Optional.ofNullable(this.transportCenterName).orElse("")+
-                Optional.ofNullable(this.warehouseName).orElse("")+
-                Optional.ofNullable(this.warehouseBatchNumber).orElse("")+(
-                Objects.isNull(productTime)?"":this.productTime.toString());
+        if(Objects.isNull(transportCenterCode)){
+            return "";
+        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return Optional.ofNullable(this.transportCenterName).orElse("")+ "-"+
+                Optional.ofNullable(this.warehouseName).orElse("")+"-"+
+                Optional.ofNullable(this.warehouseBatchNumber).orElse("")+"-"+ (
+                Objects.isNull(productTime)?"":sdf.format(this.productTime));
+    }
+
+    public List<BatchInfo> getBatchList() {
+        if (CollectionUtils.isEmptyCollection(batchList)) {
+            return Lists.newArrayList();
+        }
+        return batchList;
     }
 }

@@ -1625,7 +1625,7 @@
     <collection property="supplierInfoVOS" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO">
       <result column="supplierCode" property="supplierCode"/>
       <result column="supplierName" property="supplierName"/>
-      <result column="isDefault" property="isDefault"/>
+      <result column="isDefault" property="beDefault"/>
       <result column="purchasePriceOld" property="purchasePriceOld"/>
       <result column="purchasePriceNewest" property="purchasePriceNewest"/>
     </collection>
@@ -1727,7 +1727,7 @@
     <collection property="supplierInfoVOS" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO">
       <result column="supplierCode" property="supplierCode"/>
       <result column="supplierName" property="supplierName"/>
-      <result column="isDefault" property="isDefault"/>
+      <result column="isDefault" property="beDefault"/>
       <result column="purchasePriceOld" property="purchasePriceOld"/>
       <result column="purchasePriceNewest" property="purchasePriceNewest"/>
     </collection>
