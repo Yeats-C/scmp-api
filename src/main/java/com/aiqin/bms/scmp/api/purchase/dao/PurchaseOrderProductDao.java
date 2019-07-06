@@ -11,7 +11,7 @@ public interface PurchaseOrderProductDao {
 
     Integer update(PurchaseOrderProduct record);
 
-    Integer insertAll(PurchaseOrderProduct orderProduct);
+    Integer insertAll(@Param("list")List<PurchaseOrderProduct> list);
 
     List<PurchaseOrderProduct> purchaseOrderList(@Param("purchaseOrderId") String purchaseOrderId,
                                                  @Param("isPage")Integer isPage,

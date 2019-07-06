@@ -1,9 +1,8 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author: zhao shuai
@@ -39,14 +37,14 @@ public class PurchaseApplyController {
             @ApiImplicitParam(name = "finish_time", value = "结束时间", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "每页条数", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "当前页", type = "Integer") })
-    public HttpResponse<List<PurchaseApplyResponse>> applyList(@RequestParam(value = "purchase_apply_code", required = false) String purchaseApplyCode,
-                                                               @RequestParam(value = "apply_type", required = false) Integer applyType,
-                                                               @RequestParam(value = "apply_status", required = false) Integer applyStatus,
-                                                               @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
-                                                               @RequestParam(value = "begin_time", required = false) String beginTime,
-                                                               @RequestParam(value = "finish_time", required = false) String finishTime,
-                                                               @RequestParam(value = "page_no", required = false) Integer pageNo,
-                                                               @RequestParam(value = "page_size", required = false) Integer pageSize) {
+    public HttpResponse applyList(@RequestParam(value = "purchase_apply_code", required = false) String purchaseApplyCode,
+                                   @RequestParam(value = "apply_type", required = false) Integer applyType,
+                                   @RequestParam(value = "apply_status", required = false) Integer applyStatus,
+                                   @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
+                                   @RequestParam(value = "begin_time", required = false) String beginTime,
+                                   @RequestParam(value = "finish_time", required = false) String finishTime,
+                                   @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                   @RequestParam(value = "page_size", required = false) Integer pageSize) {
             PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseApplyCode, applyType, applyStatus, purchaseGroupCode,
                     beginTime, finishTime);
             purchaseApplyRequest.setPageSize(pageSize);
@@ -83,7 +81,9 @@ public class PurchaseApplyController {
                                          @RequestParam(value = "sku_name", required = false) String skuName,
                                          @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
                                          @RequestParam(value = "category_id", required = false) String categoryId,
+                                         @RequestParam(value = "category_name", required = false) String categoryName,
                                          @RequestParam(value = "brand_id", required = false) String brandId,
+                                         @RequestParam(value = "brand_name", required = false) String brandName,
                                          @RequestParam(value = "spu_code", required = false) String spuCode,
                                          @RequestParam(value = "product_name", required = false) String productName,
                                          @RequestParam(value = "a_replenish_type", required = false) Integer aReplenishType,
@@ -93,8 +93,8 @@ public class PurchaseApplyController {
                                          @RequestParam(value = "page_no", required = false) Integer pageNo,
                                          @RequestParam(value = "page_size", required = false) Integer pageSize) {
         PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseApplyId, purchaseGroupCode, skuCode,
-                skuName, spuCode, productName, supplierCode, transportCenterCode, brandId, categoryId, productPropertyCode,
-                aReplenishType, productReplenishType, aShortageType, productShortageType);
+                skuName, spuCode, productName, supplierCode, transportCenterCode, brandId, brandName, categoryId, categoryName,
+                productPropertyCode, aReplenishType, productReplenishType, aShortageType, productShortageType);
         purchaseApplyRequest.setPageSize(pageSize);
         purchaseApplyRequest.setPageNo(pageNo);
         return purchaseApplyService.applyProductList(purchaseApplyRequest);
@@ -131,8 +131,14 @@ public class PurchaseApplyController {
     }
 
     @PostMapping("/apply/import")
-    @ApiOperation(value = "批量导入退供申请单")
+    @ApiOperation(value = "批量导入采购申请单")
     public HttpResponse purchaseApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
         return purchaseApplyService.purchaseApplyImport(file, purchaseGroupCode);
+    }
+
+    @PutMapping("/apply/status")
+    @ApiOperation(value = "修改采购申请单的状态")
+    public HttpResponse purchaseApplyStatus(@RequestBody PurchaseApply purchaseApply) {
+        return purchaseApplyService.purchaseApplyStatus(purchaseApply);
     }
 }

@@ -56,9 +56,6 @@
   <update id="update">
     update purchase_order
     <set>
-      <if test="transportCenterCode != null">
-        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
-      </if>
       <if test="transportCenterName != null">
         transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
       </if>
@@ -202,5 +199,9 @@
       </if>
     </where>
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="purchaseOrder"  resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_order where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
   </select>
 </mapper>

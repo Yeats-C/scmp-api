@@ -87,4 +87,8 @@ public class PurchaseFormResponse {
     @JsonProperty("return_amount")
     private Integer returnAmount;
 
+    @ApiModelProperty(value="条码")
+    @JsonProperty("bar_code")
+    private String barCode;
+
 }
