@@ -21,7 +21,7 @@ public interface PurchaseApplyProductDao {
 
     PurchaseApplyProduct applyProduct(PurchaseApplyProduct purchaseApplyProduct);
 
-    List<PurchaseApplyDetailResponse> productList(String purchaseApplyId);
+    List<PurchaseApplyDetailResponse> productListByDetail(@Param("purchaseApplyId") String purchaseApplyId);
 
     Integer skuCount(@Param("purchaseApplyId") String purchaseApplyId, @Param("infoStatus")Integer infoStatus);
 

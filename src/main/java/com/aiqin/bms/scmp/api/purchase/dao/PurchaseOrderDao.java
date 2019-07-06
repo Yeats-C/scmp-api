@@ -16,4 +16,6 @@ public interface PurchaseOrderDao {
 
     Integer purchaseOrderCount(PurchaseApplyRequest purchaseApplyRequest);
 
+    PurchaseOrder purchaseOrder(String purchaseOrderId);
+
 }

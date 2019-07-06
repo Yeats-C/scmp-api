@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
@@ -129,8 +130,15 @@ public class PurchaseManageController {
 
     @PostMapping("/order/stock")
     @ApiOperation("采购单-开始备货")
-    public HttpResponse purchaseOrderStock(@RequestParam("purchase_order_id") String purchaseOrderId) {
-        return purchaseManageService.purchaseOrderStock(purchaseOrderId);
+    public HttpResponse purchaseOrderStock(@RequestParam("purchase_order_id") String purchaseOrderId,
+                                           @RequestParam("create_by_id") String createById,
+                                           @RequestParam("create_by_name") String createByName) {
+        return purchaseManageService.purchaseOrderStock(purchaseOrderId, createById, createByName);
     }
 
+    @PostMapping("/warehousing")
+    @ApiOperation("入库")
+    public HttpResponse getWarehousing(@RequestParam List<PurchaseOrderProduct> list) {
+        return purchaseManageService.getWarehousing(list);
+    }
 }

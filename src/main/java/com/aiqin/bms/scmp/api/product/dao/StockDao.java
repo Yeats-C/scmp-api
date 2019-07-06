@@ -157,7 +157,7 @@ public interface StockDao {
     void updateStorehouseById(@Param("list") List<StockRespVO> stockRespVO);
 
     PurchaseApplyProduct purchaseBySkuStock(@Param("purchaseGroupCode")String purchaseGroupCode, @Param("skuCode")String skuCode,
-                                            @Param("supplierName")String supplierName, @Param("transportCenterName")String transportCenterName);
+                                            @Param("supplierCode")String supplierCode, @Param("transportCenterCode")String transportCenterCode);
 
     List<StockBatch> selectListByCodesAndSkuCodeBatch(@Param("stockBatchVoRequest") List<StockBatchVoRequest> stockBatchVoRequest);
 

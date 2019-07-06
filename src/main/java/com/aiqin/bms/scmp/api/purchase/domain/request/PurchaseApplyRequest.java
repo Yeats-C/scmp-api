@@ -74,6 +74,14 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("category_id")
     private String categoryId;
 
+    @ApiModelProperty(value="品牌名称")
+    @JsonProperty("brand_name")
+    private String brandName;
+
+    @ApiModelProperty(value="品类名称")
+    @JsonProperty("category_name")
+    private String categoryName;
+
     @ApiModelProperty(value="商品属性编码")
     @JsonProperty("product_property_code")
     private String productPropertyCode;
@@ -143,8 +151,8 @@ public class PurchaseApplyRequest extends PagesRequest {
     }
 
     public PurchaseApplyRequest(String purchaseApplyId, String purchaseGroupCode, String skuCode, String skuName, String spuCode, String productName,
-                                String supplierCode, String transportCenterCode, String brandId, String categoryId, String productPropertyCode,
-                                Integer aReplenishType, Integer productReplenishType, Integer aShortageType, Integer productShortageType) {
+                                String supplierCode, String transportCenterCode, String brandId, String brandName, String categoryId, String categoryName,
+                                String productPropertyCode, Integer aReplenishType, Integer productReplenishType, Integer aShortageType, Integer productShortageType) {
         this.purchaseApplyId = purchaseApplyId;
         this.purchaseGroupCode = purchaseGroupCode;
         this.skuCode = skuCode;
@@ -154,7 +162,9 @@ public class PurchaseApplyRequest extends PagesRequest {
         this.supplierCode = supplierCode;
         this.transportCenterCode = transportCenterCode;
         this.brandId = brandId;
+        this.brandName = brandName;
         this.categoryId = categoryId;
+        this.categoryName = categoryName;
         this.productPropertyCode = productPropertyCode;
         this.aReplenishType = aReplenishType;
         this.productReplenishType = productReplenishType;

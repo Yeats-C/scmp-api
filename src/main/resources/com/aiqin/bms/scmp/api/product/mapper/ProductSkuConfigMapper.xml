@@ -465,4 +465,10 @@
       apply_status = #{auditorStatus,jdbcType=TINYINT}
     where apply_code = #{applyCode,jdbcType=VARCHAR}
   </update>
+  <select id="4" parameterType="java.lang.String"  resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    product_sku_config
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and transport_center_code = #{item.transportCenterCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

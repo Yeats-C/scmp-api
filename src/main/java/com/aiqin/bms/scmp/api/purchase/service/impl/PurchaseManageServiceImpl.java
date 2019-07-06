@@ -3,9 +3,15 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
+import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.dao.InboundDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
+import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
@@ -28,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -53,6 +60,14 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     private EncodingRuleDao encodingRuleDao;
     @Resource
     private FileRecordDao fileRecordDao;
+    @Resource
+    private ProductSkuPurchaseInfoDao productSkuPurchaseInfoDao;
+    @Resource
+    private InboundService inboundService;
+    @Resource
+    private InboundDao inboundDao;
+    @Resource
+    private OperationLogDao operationLogDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -179,12 +194,14 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         PurchaseOrder purchaseOrder = purchaseOrderRequest.getPurchaseOrder();
         purchaseOrder.setPurchaseOrderId(purchaseId);
         String purchaseProductCode = "CG" + String.valueOf(encodingRule.getNumberingValue());
-        purchaseOrder.setPurchaseOrderId(purchaseProductCode);
+        purchaseOrder.setPurchaseOrderId(purchaseId);
+        purchaseOrder.setPurchaseOrderCode(purchaseProductCode);
         purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_1);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         // 添加采购单
         Integer orderCount = purchaseOrderDao.insert(purchaseOrder);
         if(orderCount > 0){
+            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             // 添加采购单详情
             PurchaseOrderDetails details = purchaseOrderRequest.getOrderDetails();
             details.setPurchaseDetailsId(IdUtil.purchaseId());
@@ -235,6 +252,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(form);
         // 提交采购单页面商品列表
         if (CollectionUtils.isNotEmptyCollection(details)) {
+            List<PurchaseOrderProduct> list = new ArrayList<>();
             PurchaseOrderProduct orderProduct = null;
             for (PurchaseApplyDetailResponse detail : details) {
                 orderProduct = new PurchaseOrderProduct();
@@ -268,8 +286,9 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 orderProduct.setStockCount(detail.getStockCount());
                 orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
                 orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
-                purchaseOrderProductDao.insertAll(orderProduct);
+                list.add(orderProduct);
             }
+            purchaseOrderProductDao.insertAll(list);
         }
     }
 
@@ -378,16 +397,159 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse purchaseOrderStock(String purchaseOrderId){
+    public HttpResponse purchaseOrderStock(String purchaseOrderId, String createById, String createByName){
         if(StringUtils.isBlank(purchaseOrderId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        // 查询采购单的详情
+        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrder(purchaseOrderId);
+        if(purchaseOrder == null){
+            LOGGER.info("未查询到采购单的信息" + purchaseOrderId);
+            return HttpResponse.failure(ResultCode.SEARCH_ERROR);
+        }
+        // 变更采购单的状态（开始备货）
+        if(!purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_2)) {
+            LOGGER.error("该采购单未审核通过， 不能开始备货");
+            return HttpResponse.failure(ResultCode.PURCHASE_ORDER_CHECK);
+        }
+        PurchaseOrder order = new PurchaseOrder();
+        order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_3);
+        order.setPurchaseOrderId(purchaseOrderId);
+        Integer count = purchaseOrderDao.update(order);
+        if(count == 0){
+            LOGGER.error("采购单开始备货状态修改失败");
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+        }
+        // 开始备货， 生成入库单
         InboundReqSave save = new InboundReqSave();
-        // 入库sku
+        save.setSourceOderCode(purchaseOrderId);
+        save.setInboundTypeCode(InboundTypeEnum.RETURN_SUPPLY.getCode());
+        save.setInboundTypeName(InboundTypeEnum.RETURN_SUPPLY.getName());
+        save.setWarehouseCode(purchaseOrder.getWarehouseCode());
+        save.setWarehouseName(purchaseOrder.getWarehouseName());
+        save.setPurchaseNum(1);
+        InboundProductReqVo inboundProductReqVo;
+        // 入库sku商品
         List<InboundProductReqVo> list = save.getList();
-        // 查询是否有商品入库
+        // 查询是否有商品可以入库
         List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(purchaseOrderId, 0, null, null);
-
+        if(CollectionUtils.isNotEmptyCollection(products)){
+            for(PurchaseOrderProduct product:products){
+                // 判断入库实际单品数量是否等于采购欧单品数量
+                inboundProductReqVo = new InboundProductReqVo();
+                inboundProductReqVo.setSkuCode(product.getSkuCode());
+                inboundProductReqVo.setSkuName(product.getSkuName());
+                Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
+                inboundProductReqVo.setPreInboundMainNum(singleCount.longValue());
+                inboundProductReqVo.setPreInboundNum(singleCount.longValue());
+                ProductSkuPurchaseInfo info = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
+                if(info != null){
+                    inboundProductReqVo.setUnitCode(info.getUnitCode());
+                    inboundProductReqVo.setUnitName(info.getUnitName());
+                }
+                inboundProductReqVo.setLinenum(product.getId());
+                list.add(inboundProductReqVo);
+            }
+        }
+        save.setList(list);
+        String s = inboundService.saveInbound(save);
+        if(StringUtils.isBlank(s)){
+            LOGGER.error("生成入库单失败....");
+            return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
+        }
+        String name = "入库申请单"+ s + "，入库完成";
+        log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
+                name , null);
         return HttpResponse.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse getWarehousing(List<PurchaseOrderProduct> list){
+        if(CollectionUtils.isEmptyCollection(list)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 变更采购的入库的实际单品数量
+        for(PurchaseOrderProduct product:list){
+            Integer count = purchaseOrderProductDao.update(product);
+            if(count == 0){
+                return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+            }
+        }
+        String purchaseOrderId = list.get(0).getPurchaseOrderId();
+        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrder(purchaseOrderId);
+        InboundReqSave save = new InboundReqSave();
+        save.setSourceOderCode(purchaseOrderId);
+        save.setInboundTypeCode(InboundTypeEnum.RETURN_SUPPLY.getCode());
+        save.setInboundTypeName(InboundTypeEnum.RETURN_SUPPLY.getName());
+        save.setWarehouseCode(purchaseOrder.getWarehouseCode());
+        save.setWarehouseName(purchaseOrder.getWarehouseName());
+        // 查询入库次数
+        Integer code = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseOrderId);
+        save.setPurchaseNum(code + 1);
+        InboundProductReqVo inboundProductReqVo;
+        // 入库sku商品
+        List<InboundProductReqVo> inboundList = save.getList();
+        // 查询是否有商品可以入库
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(purchaseOrderId, 0, null, null);
+        if(CollectionUtils.isNotEmptyCollection(products)) {
+            for (PurchaseOrderProduct product : products) {
+                if(product != null){
+                    Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
+                    Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
+                    // 判断入库实际单品数量是否小于采购欧单品数量
+                    if(actualSingleCount < singleCount){
+                        inboundProductReqVo = new InboundProductReqVo();
+                        inboundProductReqVo.setSkuCode(product.getSkuCode());
+                        inboundProductReqVo.setSkuName(product.getSkuName());
+                        inboundProductReqVo.setPreInboundMainNum(singleCount.longValue());
+                        inboundProductReqVo.setPreInboundNum(singleCount.longValue() - actualSingleCount.longValue());
+                        ProductSkuPurchaseInfo info = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
+                        if(info != null){
+                            inboundProductReqVo.setUnitCode(info.getUnitCode());
+                            inboundProductReqVo.setUnitName(info.getUnitName());
+                        }
+                        inboundProductReqVo.setLinenum(product.getId());
+                        inboundList.add(inboundProductReqVo);
+                    }
+                }
+            }
+        }
+        save.setList(inboundList);
+        // 是否入库完成
+        if(inboundList.size() <= 0){
+            PurchaseOrder order = new PurchaseOrder();
+            order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
+            order.setPurchaseOrderId(purchaseOrderId);
+            Integer count = purchaseOrderDao.update(order);
+            if(count == 0){
+                LOGGER.error("采购单入库状态修改失败");
+                return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+            }
+            // 添加日志
+            log(purchaseOrderId, list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , "自动");
+        }else {
+            String s = inboundService.saveInbound(save);
+            if(StringUtils.isBlank(s)){
+                LOGGER.error("生成入库单失败....");
+                return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
+            }
+            String name = "入库申请单"+ s + "，入库完成";
+            log(purchaseOrderId, list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
+                    name , null);
+        }
+        return HttpResponse.success();
+    }
+
+    private void log(String purchaseOrderId, String createById, String createByName, Integer code, String name, String remark){
+        OperationLog log = new OperationLog();
+        log.setOperationId(purchaseOrderId);
+        log.setCreateById(createById);
+        log.setCreateByName(createByName);
+        log.setOperationType(code);
+        log.setOperationContent(name);
+        log.setRemark(remark);
+        operationLogDao.insert(log);
     }
 }

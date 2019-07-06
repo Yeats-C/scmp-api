@@ -1,17 +1,14 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 public interface PurchaseApplyService {
 
-    HttpResponse<List<PurchaseApplyResponse>> applyList(PurchaseApplyRequest purchaseApplyRequest);
+    HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest);
 
     HttpResponse applyProductList(PurchaseApplyRequest purchaseApplyRequest);
 
@@ -26,4 +23,6 @@ public interface PurchaseApplyService {
     HttpResponse applySelectionProduct(String purchaseApplyId);
 
     HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode);
+
+    HttpResponse purchaseApplyStatus(PurchaseApply purchaseApply);
 }

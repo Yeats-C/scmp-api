@@ -54,7 +54,11 @@
     where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </update>
   <select id="applyList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse">
-    select <include refid="Base_Column_List"></include> from purchase_apply
+    select
+    purchase_apply_id as purchaseApplyId, purchase_apply_code as purchaseApplyCode, apply_type as applyType,
+    apply_status as applyStatus, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
+    create_time as createTime, create_by_id as createById, create_by_name as createByName
+    from purchase_apply
     <where>
       <if test="beginTime != null">
         and create_time &gt;= #{beginTime,jdbcType=VARCHAR}

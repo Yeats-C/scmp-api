@@ -43,9 +43,13 @@ public class PurchaseApplyResponse {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @ApiModelProperty(value="创建者id")
+    @JsonProperty("create_by_id")
+    private String createById;
+
     @ApiModelProperty(value="创建者")
-    @JsonProperty("create_by")
-    private String createBy;
+    @JsonProperty("create_by_name")
+    private String createByName;
 
     @ApiModelProperty(value="sku数量")
     @JsonProperty("sku_count")
