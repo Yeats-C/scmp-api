@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -41,6 +42,7 @@ public class BatchInfo {
     private Date productTime;
 
     public String getWarehouseBatchName() {
-        return this.transportCenterName +"-"+ this.warehouseName +"-"+ this.warehouseBatchNumber +"-"+ this.productTime;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        return this.transportCenterName +"-"+ this.warehouseName +"-"+ this.warehouseBatchNumber +"-"+ sdf.format(this.productTime);
     }
 }
