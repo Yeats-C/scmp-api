@@ -60,8 +60,8 @@ public interface Global {
     String SKU = "SKU";
     String SPU = "SPU";
 
-    String PRODUCT_CODE = "productCodes";
-    String SKU_CODE = "skuCodes";
+    String CONFIG_CODE = "configCodes";
+    String SUPPLIER_ID = "supplierIds";
 
     /**
      * 未生效/生效

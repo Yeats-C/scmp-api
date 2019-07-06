@@ -10,6 +10,8 @@
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="delivery_code" jdbcType="VARCHAR" property="deliveryCode" />
     <result column="base_product_content" jdbcType="INTEGER" property="baseProductContent" />
+    <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
+    <result column="max_order_num" jdbcType="INTEGER" property="maxOrderNum" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
@@ -20,7 +22,8 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, product_name, spec, unit_code, unit_name, delivery_code, base_product_content, 
-    del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name
+    del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,
+    zero_removal_coefficient,max_order_num
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -30,7 +33,7 @@
   </select>
   <select id="getList" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
       select
-       id, product_code, spec, product_name, unit_code, unit_name, delivery_code as bar_code, base_product_content,
+       id, product_code, spec, product_name, unit_code, unit_name, delivery_code as bar_code, base_product_content,max_order_num,
        del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,2 as `type`
       from product_sku_distribution_info_draft
       where product_sku_code = #{skuCode,jdbcType=VARCHAR}

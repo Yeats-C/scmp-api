@@ -1,9 +1,12 @@
 package com.aiqin.bms.scmp.api.supplier.domain.response.allocation;
 
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * 描述:调拨单sku导入返回实体
@@ -110,6 +113,10 @@ public class AllocationItemRespVo {
     @ApiModelProperty("错误原因")
     @JsonProperty("error_reason")
     private String errorReason;
+
+    @ApiModelProperty("批次列表")
+    @JsonProperty("sku_batch")
+    private List<SkuBatchRespVO> skuBatchRespVOS;
 
      public AllocationItemRespVo(){}
 

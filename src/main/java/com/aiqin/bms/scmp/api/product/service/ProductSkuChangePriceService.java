@@ -217,4 +217,12 @@ public interface ProductSkuChangePriceService {
      * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO>
      */
     BasePage<QuerySkuInfoRespVO> getSkuListByQueryVO(QuerySkuInfoReqVO reqVO);
+    /**
+     * 查批次sku
+     * @author NullPointException
+     * @date 2019/7/5
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO>
+     */
+    BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO);
 }

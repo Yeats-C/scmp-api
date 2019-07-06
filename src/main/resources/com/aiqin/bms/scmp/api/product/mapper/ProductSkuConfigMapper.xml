@@ -450,7 +450,7 @@
       basic_inventory_day = #{item.basicInventoryDay,jdbcType=INTEGER},
       large_inventory_warn_day = #{item.largeInventoryWarnDay,jdbcType=INTEGER},
       big_effect_period_warn_day = #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER},
-      turnover_period_after_arrival = #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      turnover_period_after_arrival = #{item.turnoverPeriodAfterArrival,jdbcType=INTEGER},
       apply_code = #{item.applyCode,jdbcType=VARCHAR},
       apply_status = #{item.applyStatus,jdbcType=TINYINT},
       auditor_by = #{item.auditorBy,jdbcType=VARCHAR},
@@ -460,7 +460,9 @@
   </update>
   <update id="updateApplyStatusByApplyCode">
     update product_sku_config
-    set apply_status = #{applyStatus,jdbcType=TINYINT}
+    set  auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      apply_status = #{auditorStatus,jdbcType=TINYINT}
     where apply_code = #{applyCode,jdbcType=VARCHAR}
   </update>
   <select id="4" parameterType="java.lang.String"  resultMap="BaseResultMap">

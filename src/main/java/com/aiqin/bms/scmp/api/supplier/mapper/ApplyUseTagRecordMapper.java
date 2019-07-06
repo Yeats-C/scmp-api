@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.mapper;
 
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -50,12 +51,12 @@ public interface ApplyUseTagRecordMapper {
      * @param appUseObjectCode
      * @return
      */
-    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(String appUseObjectCode);
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(@Param("appUseObjectCode") String appUseObjectCode, @Param("tagTypeCode") String tagTypeCode);
 
     /**
      * 根据申请使用者编号List查询
      * @param appUseObjectCode
      * @return
      */
-    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodes(List<String> appUseObjectCode);
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodes(@Param("list") List<String> appUseObjectCode,@Param("tagTypeCode")String tagTypeCode);
 }

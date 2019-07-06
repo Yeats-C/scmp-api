@@ -116,6 +116,18 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </select>
+  <select id="getListBySkuCode" resultMap="ListResultMap">
+    select
+    <include refid="List_Column"/>
+    from product_sku_config_draft a
+    left join product_sku_config_spare_warehouse_draft b
+    on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
+    where a.del_flag = 0
+    and a.apply_show = 1
+    and a.sku_code = #{skuCode}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_config_draft
     where id = #{id,jdbcType=BIGINT}
@@ -127,6 +139,15 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </delete>
+
+  <delete id="deleteOutByConfigCodes" parameterType="java.util.List">
+    delete from product_sku_config_draft
+    where apply_show = 1 and config_code in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+
   <delete id="deleteBySkuCodes">
     delete from product_sku_config_draft
     where apply_show = 1 and sku_code in

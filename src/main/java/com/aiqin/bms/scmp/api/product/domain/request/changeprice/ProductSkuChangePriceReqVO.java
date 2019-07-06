@@ -90,6 +90,9 @@ public class ProductSkuChangePriceReqVO {
     @NotNull(message = "操作类型不能为空")
     private Integer operation;
 
+    @ApiModelProperty("是否含有区域0否1是")
+    private Integer extField5;
+
     @ApiModelProperty("sku列表信息")
     @NotEmpty(message = "sku信息不能为空")
     private List<ProductSkuChangePriceInfoReqVO> infoLists;

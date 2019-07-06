@@ -10,16 +10,19 @@ import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaForSkuReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProjectRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductDetailsResponseVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceDraftRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
@@ -38,6 +41,9 @@ import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
@@ -49,7 +55,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -138,8 +143,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Autowired
     private ApplyProductSkuServiceProduct applyProductSkuService;
     @Autowired
-    private ProductCategoryService productCategoryService;
-    @Autowired
     private ProductSkuChannelService productSkuChannelService;
     @Autowired
     private ProductSkuSupplyUnitCapacityService productSkuSupplyUnitCapacityService;
@@ -194,7 +197,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     applyUseTagRecord.setTagName(item.getTagName());
                     applyUseTagRecord.setUseObjectCode(productSkuDraft.getSkuCode());
                     applyUseTagRecord.setUseObjectName(productSkuDraft.getSkuName());
-                    applyUseTagRecord.setTagCode(TagTypeCode.SKU.getStatus());
+                    applyUseTagRecord.setTagTypeCode(TagTypeCode.SKU.getStatus());
                     applyUseTagRecord.setTagTypeName(TagTypeCode.SKU.getName());
                     applyUseTagRecords.add(applyUseTagRecord);
                 });
@@ -328,8 +331,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 }
                 final BigDecimal finalInputTaxRate = inputTaxRate;
                 final Long finalInputTaxRateL = inputTaxRateL;
-                final BigDecimal finalOutputTaxRate = outputTaxRate;
-                final Long finalOutputTaxRateL = outputTaxRateL;
+
                 List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts = Lists.newArrayList();
                 productSkuSupplyUnitDrafts.forEach(item->{
                     item.setProductSkuCode(productSkuDraft.getSkuCode());
@@ -337,7 +339,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     //先把含税金额除以100兑换成元,含税金额/(1+税率) = 未税金额,最终结果*100转换成分,舍弃分以后的数字
                     Long taxNoPrice = new BigDecimal(item.getTaxIncludedPrice()).divide(new BigDecimal(100)).divide(BigDecimal.ONE.add(finalInputTaxRate),2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)).longValue();
                     item.setNoTaxPurchasePrice(taxNoPrice);
-                    item.setJointFranchiseRate(finalInputTaxRateL);
+                    item.setTaxRate(finalInputTaxRateL);
                     item.setUsageStatus(StatusTypeCode.USE.getStatus());
                     if(CollectionUtils.isNotEmpty(item.getProductSkuSupplyUnitCapacityDrafts())){
                         item.getProductSkuSupplyUnitCapacityDrafts().forEach(item2->{
@@ -366,10 +368,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     skuPriceDraftReqVO.setPriceAttributeCode(purchasePriceProject.getPriceCategoryCode());
                     skuPriceDraftReqVO.setPriceAttributeName(purchasePriceProject.getPriceCategoryName());
                     //税率
-                    skuPriceDraftReqVO.setTax(finalOutputTaxRateL);
+                    skuPriceDraftReqVO.setTax(finalInputTaxRateL);
                     //未税价
-                    Long priceNoTax = new BigDecimal(item.getTaxIncludedPrice()).divide(new BigDecimal(100)).divide(BigDecimal.ONE.add(finalOutputTaxRate),2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)).longValue();
-                    skuPriceDraftReqVO.setPriceNoTax(priceNoTax);
+                    skuPriceDraftReqVO.setPriceNoTax(taxNoPrice);
                     //含税价
                     skuPriceDraftReqVO.setPriceTax(item.getTaxIncludedPrice());
                     //生效时间
@@ -380,10 +381,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     //是否默认
                     skuPriceDraftReqVO.setBeDefault(item.getIsDefault().intValue());
                     //创建/修改时间/人
-                    item.setCreateBy(getUser().getPersonName());
-                    item.setCreateTime(new Date());
-                    item.setUpdateBy(getUser().getPersonName());
-                    item.setUpdateTime(new Date());
+                    skuPriceDraftReqVO.setCreateBy(getUser().getPersonName());
+                    skuPriceDraftReqVO.setCreateTime(new Date());
+                    skuPriceDraftReqVO.setUpdateBy(getUser().getPersonName());
+                    skuPriceDraftReqVO.setUpdateTime(new Date());
                     productSkuPrices.add(skuPriceDraftReqVO);
                 });
                 productSkuSupplyUnitService.insertDraftList(productSkuSupplyUnitDrafts);
@@ -545,6 +546,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             BeanCopyUtils.copy(productSkuDrafts.get(i),applyProductSku);
             applyProductSku.setApplyCode(String.valueOf(code));
             applyProductSku.setSelectionEffectiveTime(saveSkuApplyInfoReqVO.getSelectionEffectiveTime());
+            applyProductSku.setSelectionEffectiveStartTime(saveSkuApplyInfoReqVO.getSelectionEffectiveStartTime());
             applyProductSku.setApplyStatus((byte)1);
             applyProductSkus.add(applyProductSku);
         }
@@ -565,11 +567,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //渠道
             productSkuChannelService.saveApplyList(applyProductSkus);
             //标签
-            List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCodes(saveSkuApplyInfoReqVO.getSkuCodes());
-            applyUseTagRecords.forEach(item->{
-                item.setApplyUseObjectCode(String.valueOf(code));
-            });
-            applyUseTagRecordService.updateBatch(applyUseTagRecords);
+            List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCodes(saveSkuApplyInfoReqVO.getSkuCodes(),TagTypeCode.SKU.getStatus());
+            if(CollectionUtils.isNotEmpty(applyUseTagRecords)){
+                applyUseTagRecords.forEach(item->{
+                    item.setApplyUseObjectCode(String.valueOf(code));
+                });
+                applyUseTagRecordService.updateBatch(applyUseTagRecords);
+            }
             //包装
             productSkuBoxPackingService.saveApplyList(applyProductSkus);
             //进销存信息
@@ -628,6 +632,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
         }
         detailResp.setProductSkuInfo(skuRespVo);
+        List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuRespVo.getSkuCode(),TagTypeCode.SKU.getStatus());
+        detailResp.setTagInfoList(applyUseTagRecords);
         //SKU渠道信息
         List<ProductSkuChannelRespVo> skuChannelRespVos = productSkuChannelService.getList(skuCode);
         detailResp.setProductSkuChannels(skuChannelRespVos);
@@ -660,6 +666,20 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         detailResp.setProductSkuFiles(productSkuFileService.getDraftList(skuCode));
         //sku质检信息
         detailResp.setProductSkuInspReports(productSkuInspReportService.getDraftList(skuCode));
+        //价格信息
+        List<String> skuCodes = Lists.newArrayList();
+        skuCodes.add(skuCode);
+        List<ProductSkuPriceInfoDraft> skuPriceListDrafts =
+                productSkuPriceInfoService.getSkuPriceListDraftBySkuCodes(skuCodes);
+        List<ProductSkuPriceDraftRespVo> draftTemps =
+                BeanCopyUtils.copyList(skuPriceListDrafts,ProductSkuPriceDraftRespVo.class);
+        List<ProductSkuPriceDraftRespVo> priceDraftRespVos =
+                draftTemps.stream().filter(item ->
+                        !Objects.equals(item.getPriceTypeCode(), PriceTypeEnum.PURCHASE.getTypeCode())).
+                        collect(Collectors.toList());
+        detailResp.setProductSkuPriceDrafts(priceDraftRespVos);
+        //配置信息
+        detailResp.setProductSkuConfigDrafts(productSkuConfigService.draftDetail(skuCode));
         return detailResp;
     }
 
@@ -762,56 +782,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    public ApplySkuDetailResp getSkuApplyDetail(String applyCode) {
-        try {
-            ApplySkuDetailResp applySkuDetailResp = new ApplySkuDetailResp();
-            List<ApplyProductDetailsResponseVO> applyDetailProductListResps = applyProductService.getApplyProduct(applyCode);
-            List<ApplyDetailSkuListResp> applyDetailSkuListResps = productSkuDao.getApplySkuList(applyCode);
-            applySkuDetailResp.setApplyDetailProductListResps(applyDetailProductListResps);
-            applySkuDetailResp.setApplyDetailSkuListResps(applyDetailSkuListResps);
-            if (null != applyDetailProductListResps && applyDetailProductListResps.size() > 0){
-                applySkuDetailResp.setApplyCode(applyCode);
-                applySkuDetailResp.setFormNo(applyDetailProductListResps.get(0).getFormNo());
-                applySkuDetailResp.setCreateBy(applyDetailProductListResps.get(0).getCreateBy());
-                applySkuDetailResp.setCreateTime(applyDetailProductListResps.get(0).getCreateTime());
-                applySkuDetailResp.setSelectionEffectiveTime(applyDetailProductListResps.get(0).getSelectionEffectiveTime());
-                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String startTime = null;
-                String endTime = null;
-                if(null != applyDetailProductListResps.get(0).getSelectionEffectiveStartTime()){
-                    endTime = format.format(applyDetailProductListResps.get(0).getSelectionEffectiveStartTime());
-                }
-                if(null != applyDetailProductListResps.get(0).getSelectionEffectiveEndTime()){
-                    startTime = format.format(applyDetailProductListResps.get(0).getSelectionEffectiveStartTime());
-                }
-                applySkuDetailResp.setSelectionEffectiveEndTime(endTime);
-                applySkuDetailResp.setSelectionEffectiveStartTime(startTime);
-            }
-            if(StringUtils.isBlank(applySkuDetailResp.getApplyCode())){
-                if(CollectionUtils.isNotEmpty(applyDetailSkuListResps)){
-                    applySkuDetailResp.setApplyCode(applyCode);
-                    applySkuDetailResp.setCreateBy(applyDetailSkuListResps.get(0).getCreateBy());
-                    applySkuDetailResp.setFormNo(applyDetailSkuListResps.get(0).getFormNo());
-                    applySkuDetailResp.setCreateTime(applyDetailSkuListResps.get(0).getCreateTime());
-                    applySkuDetailResp.setSelectionEffectiveTime(applyDetailSkuListResps.get(0).getSelectionEffectiveTime());
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    String startTime = null;
-                    String endTime = null;
-                    if(null != applyDetailSkuListResps.get(0).getSelectionEffectiveStartTime()){
-                        endTime = applyDetailSkuListResps.get(0).getSelectionEffectiveStartTime();
-                    }
-                    if(null != applyDetailSkuListResps.get(0).getSelectionEffectiveEndTime()){
-                        startTime = applyDetailSkuListResps.get(0).getSelectionEffectiveStartTime();
-                    }
-                    applySkuDetailResp.setSelectionEffectiveEndTime(endTime);
-                    applySkuDetailResp.setSelectionEffectiveStartTime(startTime);
-                }
-
-            }
-            return applySkuDetailResp;
-        } catch (BizException e){
-            throw new BizException(e.getMessage());
+    public ProductApplyInfoRespVO<ProductSkuApplyVo> getSkuApplyDetail(String applyCode) {
+        List<ProductSkuApplyVo> list = applyProductSkuMapper.selectByApplyCode(applyCode);
+        if(CollectionUtils.isEmpty(list)){
+            throw new BizException(MessageId.create(Project.PRODUCT_API,98,"数据异常，无法查询到该数据"));
         }
+        return dealApplyViewData(list);
     }
 
     @Override
@@ -839,7 +815,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 applyProductSkuDetailResp.setApplyProductSkuDisInfo(applyProductSkuDisInfo);
                 ApplyProductSkuBoxPacking applyProductSkuBoxPacking = productSkuBoxPackingDao.getApply(skuCode,applyCode);
                 applyProductSkuDetailResp.setProductSkuBoxPacking(applyProductSkuBoxPacking);
-                List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = productSkuSupplyUnitDao.getApply(skuCode,applyCode);
+                List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = productSkuSupplyUnitDao.getApply(applyCode);
                 applyProductSkuDetailResp.setApplyProductSkuSupplyUnits(applyProductSkuSupplyUnits);
                 List<ApplyProductSkuManufacturer> applyProductSkuManufacturers = productSkuManufacturerDao.getApply(skuCode,applyCode);
                 applyProductSkuDetailResp.setApplyProductSkuManufacturers(applyProductSkuManufacturers);
@@ -859,15 +835,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     @Transactional(rollbackFor = BizException.class)
     public int cancelSkuApply(String applyCode) {
-        try {
-            List<ApplyProductSku> applyProductSkus = productSkuDao.getSkuApplyList(applyCode);
-            for (int i = 0 ;i < applyProductSkus.size(); i++){
-                applyProductSkus.get(i).setApplyStatus((byte)4);
-                ((SkuInfoService) AopContext.currentProxy()).cancelApply(applyProductSkus.get(i));
-            }
-            return 1;
-        } catch (BizException e){
-            throw new BizException(e.getMessage());
+        String formNo = applyProductSkuMapper.findFormNoByCode(applyCode);
+        WorkFlowVO workFlowVO = new WorkFlowVO();
+        workFlowVO.setFormNo(formNo);
+        // 调用审批流的撤销接口
+        WorkFlowRespVO workFlowRespVO = cancelWorkFlow(workFlowVO);
+        if(workFlowRespVO.getSuccess().equals(true)){
+            return 0;
+        }else {
+            throw  new GroundRuntimeException("撤销失败");
         }
     }
 
@@ -936,7 +912,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
         }
         if(null != applyProductSkus && applyProductSkus.size() > 0){
-            //productSkuConfigService.saveList(applyProductSkus.get(0).getApplyCode());
             for (int i =0 ; i < applyProductSkus.size();i++){
                 String skuCode = applyProductSkus.get(i).getSkuCode();
                 String applyCode = applyProductSkus.get(i).getApplyCode();
@@ -946,7 +921,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuPicDescService.saveList(skuCode,applyCode);
                 productSkuPicturesService.saveList(skuCode,applyCode);
                 productSkuPurchaseInfoService.saveList(skuCode,applyCode);
-                productSkuSupplyUnitService.saveList(skuCode,applyCode);
+                productSkuSupplyUnitService.saveList(applyCode);
+                productSkuSupplyUnitCapacityService.saveList(applyCode);
                 productSkuPriceService.saveList(skuCode,applyCode);
                 productSkuManufacturerService.saveList(skuCode,applyCode);
                 productSkuInspReportService.saveList(skuCode,applyCode);
@@ -1106,6 +1082,41 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
        List<QueryProductSaleAreaForSkuRespVO> list =  productSkuDao.selectSkuListForSaleArea(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
+    }
+
+    /**
+     * 查询申请审批列表信息
+     *
+     * @param reqVo
+     * @return
+     */
+    @Override
+    public List<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo) {
+        PageHelper.startPage(reqVo.getPageNo(),reqVo.getPageSize());
+        return applyProductSkuMapper.queryApplyList(reqVo);
+    }
+
+    private ProductApplyInfoRespVO<ProductSkuApplyVo> dealApplyViewData(List<ProductSkuApplyVo> list) {
+        ProductApplyInfoRespVO<ProductSkuApplyVo> resp = new ProductApplyInfoRespVO<>();
+        //数据相同默认取第一个
+        ProductSkuApplyVo applyVO = list.get(0);
+        resp.setApplyBy(applyVO.getCreateBy());
+        resp.setApplyTime(applyVO.getCreateTime());
+        resp.setApplyStatus(applyVO.getApplyStatus());
+        resp.setAuditorBy(applyVO.getAuditorBy());
+        resp.setAuditorTime(applyVO.getAuditorTime());
+        resp.setSelectionEffectiveStartTime(applyVO.getSelectionEffectiveStartTime());
+        resp.setSelectionEffectiveTime(applyVO.getSelectionEffectiveTime());
+        resp.setCode(applyVO.getApplyCode());
+        resp.setFormNo(applyVO.getFormNo());
+        //统计sku数量
+        List<String> skuCodes = list.stream().map(ProductSkuApplyVo::getCode).distinct().collect(Collectors.toList());
+        resp.setSkuNum(skuCodes.size());
+        //统计SPU数量吗
+        List<String> spuCodes = list.stream().map(ProductSkuApplyVo::getProductCode).distinct().collect(Collectors.toList());
+        resp.setSpuNum(spuCodes.size());
+        resp.setData(list);
+        return resp;
     }
 }
 

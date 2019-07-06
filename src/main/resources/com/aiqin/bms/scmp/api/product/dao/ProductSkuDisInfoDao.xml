@@ -9,7 +9,8 @@
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="delivery_code" jdbcType="VARCHAR" property="deliveryCode" />
-    <result column="base_product_content" jdbcType="VARCHAR" property="baseProductContent" />
+    <result column="base_product_content" jdbcType="BIGINT" property="baseProductContent" />
+    <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
@@ -42,15 +43,15 @@
       delivery_code, base_product_content, del_flag,
       create_time, create_by, update_time,
       update_by, product_sku_code, product_sku_name,
-      apply_code)
+      apply_code,zero_removal_coefficient,max_order_num)
     values
     <foreach collection="applyProductSkuDisInfos" item="item" index="index" separator="," >
       (#{item.productCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
       #{item.spec,jdbcType=VARCHAR}, #{item.unitCode,jdbcType=VARCHAR}, #{item.unitName,jdbcType=VARCHAR},
-      #{item.deliveryCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.deliveryCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=BIGINT}, #{item.delFlag,jdbcType=TINYINT},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR},
-      #{item.applyCode,jdbcType=VARCHAR})
+      #{item.applyCode,jdbcType=VARCHAR},#{item.zeroRemovalCoefficient,jdbcType=BIGINT},#{item.maxOrderNum,jdbcType=INTEGER})
     </foreach>
   </insert>
   <insert id="insertDisInfoList" parameterType="java.util.List">

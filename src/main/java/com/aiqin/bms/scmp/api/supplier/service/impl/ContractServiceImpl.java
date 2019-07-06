@@ -18,6 +18,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractPurchaseVolumeDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUsernameReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.*;
@@ -32,6 +33,7 @@ import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
@@ -160,10 +162,17 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
             List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(contractResVo.getContractCode());
             List<ContractFile> contractFiles = contractFileMapper.selectByContractCode(contractResVo.getContractCode());
             List<ContractPurchaseGroup> contractPurchaseGroups = contractPurchaseGroupMapper.selectByContractCode(contractResVo.getContractCode());
+            List<ContractPlanType> planTypeList = contractPlanTypeMapper.selectByCode(contractResVo.getContractCode());
             try {
                 if(CollectionUtils.isNotEmptyCollection(purchaseVolume)){
                     List<ContractPurchaseVolumeResVo>  list =BeanCopyUtils.copyList(purchaseVolume,ContractPurchaseVolumeResVo.class);
                     contractResVo.setPurchaseVolumeReqVos(list);
+                }
+                if(CollectionUtils.isNotEmptyCollection(planTypeList)){
+                    List<PlanTypeReqVO>  copyList =BeanCopyUtils.copyList(planTypeList, PlanTypeReqVO.class);
+                    contractResVo.setPlanTypeList(copyList);
+                }else {
+                    contractResVo.setPlanTypeList(Lists.newArrayList());
                 }
                if(CollectionUtils.isNotEmptyCollection(contractFiles)){
                    List<ContractFileResVo>  fileResVos = BeanCopyUtils.copyList(contractFiles, ContractFileResVo.class);

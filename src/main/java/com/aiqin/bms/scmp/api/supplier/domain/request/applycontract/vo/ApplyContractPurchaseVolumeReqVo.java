@@ -32,4 +32,7 @@ public class ApplyContractPurchaseVolumeReqVo {
     @ApiModelProperty("或者金额(以分为单位)")
     private Long orAmountMoney;
 
+    @ApiModelProperty("计划类型(月度,季度,半年,全年)")
+    private Byte planType;
+
 }

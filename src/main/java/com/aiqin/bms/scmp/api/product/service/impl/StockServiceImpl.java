@@ -1,9 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.base.MsgStatus;
-import com.aiqin.bms.scmp.api.base.PageResData;
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.WarehouseTypeCode;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.StockStatusEnum;
@@ -16,6 +13,8 @@ import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockBatchC
 import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
@@ -23,25 +22,28 @@ import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockI
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.*;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.store.WarehouseApiResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
-import com.aiqin.bms.scmp.api.product.domain.request.StockBatchVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
+import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
@@ -92,7 +94,7 @@ public class StockServiceImpl implements StockService {
     @Autowired
     private ProductSkuDao productSkuDao;
     @Autowired
-    private SupplierApiService supplierApiService;
+    private WarehouseService supplierApiService;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -1863,5 +1865,15 @@ public class StockServiceImpl implements StockService {
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
+    }
+
+    @Override
+    public BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO) {
+        return PageUtil.getPageList(reqVO.getPageNo(), stockDao.getSkuBatchForChangePrice(reqVO));
+    }
+
+    @Override
+    public List<SkuBatchRespVO> querySkuBatchList(SkuBatchReqVO reqVO) {
+        return  stockDao.queryStockBatchForAllo(reqVO);
     }
 }

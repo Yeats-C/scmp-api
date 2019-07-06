@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.transport;
 
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.TransportOrders;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportOrders;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

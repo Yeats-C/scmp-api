@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.ApprovalTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.DetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.SaveReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.ApplySaleAreaReqVO;
@@ -11,7 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveSkuApplyInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplySkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaMainRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -24,8 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @author knight.xie
@@ -77,9 +78,9 @@ public class DraftServiceImpl implements DraftService {
             httpResponse = HttpResponse.success(productSkuDraftRespVos);
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
             log.info("获取商品配置信息数据");
-            List<SkuConfigsRepsVo> configsRepsVos = productSkuConfigService.findDraftList(companyCode);
-            log.info("获取商品配置信息,结果{}", JSON.toJSON(configsRepsVos));
-            httpResponse = HttpResponse.success(configsRepsVos);
+            DetailConfigSupplierRespVo configsRepsVo = productSkuConfigService.findDraftList(companyCode);
+            log.info("获取商品配置信息,结果{}", JSON.toJSON(configsRepsVo));
+            httpResponse = HttpResponse.success(configsRepsVo);
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
             log.info("获取销售区域信息数据");
             List<QueryProductSaleAreaMainRespVO> saleAreaRespVOS = productSaleAreaService.queryListForDraft(companyCode);
@@ -126,13 +127,23 @@ public class DraftServiceImpl implements DraftService {
             throw new BizException(ResultCode.OBJECT_NOT_FOUND);
         }
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
-            List<String> skuCodes = Lists.newArrayList();
-            skuCodes.add(reqVo.getCode());
-            skuInfoService.deleteProductSkuDraft(skuCodes);
+            if(Objects.nonNull(reqVo.getCode())){
+                List<String> skuCodes = Lists.newArrayList();
+                skuCodes.add(reqVo.getCode());
+                skuInfoService.deleteProductSkuDraft(skuCodes);
+            }
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
-            productSkuConfigService.deleteDraftById(reqVo.getId());
+            if(Objects.nonNull(reqVo.getId())){
+                if(Objects.equals(reqVo.getConfigType(),DetailReqVo.DEL_CONFIG)){
+                    productSkuConfigService.deleteDraftById(reqVo.getId());
+                } else if (Objects.equals(reqVo.getConfigType(),DetailReqVo.DEL_CONFIG)) {
+                    productSkuConfigService.deleteDraftById(reqVo.getId());
+                }
+            }
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
-            productSaleAreaService.deleteDraft(reqVo.getCode());
+            if(Objects.nonNull(reqVo.getCode())){
+                productSaleAreaService.deleteDraft(reqVo.getCode());
+            }
         }
         return HttpResponse.success(1);
     }
@@ -158,9 +169,9 @@ public class DraftServiceImpl implements DraftService {
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
             ApplySkuConfigReqVo applySkuConfigReqVo = new ApplySkuConfigReqVo();
             BeanCopyUtils.copy(reqVo,applySkuConfigReqVo);
-            List<String> configCodes = (List<String>) reqVo.getData();
-            List<String> collect = configCodes.stream().distinct().collect(Collectors.toList());
-            applySkuConfigReqVo.setSkuConfigs(collect);
+            Map<String,Object> dataMap = (Map<String, Object>) reqVo.getData();
+            applySkuConfigReqVo.setSkuConfigs((List<String>)dataMap.get(Global.CONFIG_CODE));
+            applySkuConfigReqVo.setSupplierId((List<Long>)dataMap.get(Global.SUPPLIER_ID));
             productSkuConfigService.insertApplyList(applySkuConfigReqVo);
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
             ApplySaleAreaReqVO saleAreaReqVO = new ApplySaleAreaReqVO();

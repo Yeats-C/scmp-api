@@ -1,7 +1,12 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
@@ -266,4 +271,14 @@ public interface StockService {
 
 
     PageInfo<QueryStockSkuListRespVo> importStockSkuList(QueryImportStockSkuListReqVo reqVO);
+    /**
+     *
+     * @author NullPointException
+     * @date 2019/7/5
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO>
+     */
+    BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO);
+
+    List<SkuBatchRespVO> querySkuBatchList(SkuBatchReqVO reqVO);
 }

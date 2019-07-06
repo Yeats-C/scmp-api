@@ -27,4 +27,8 @@ public class ApplyProductSkuConfigReqVo {
 
     @ApiModelProperty("申请表单号")
     private String formNo;
+
+    @ApiModelProperty("申请表单号")
+    private String applyCode;
+
 }

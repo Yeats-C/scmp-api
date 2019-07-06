@@ -2,7 +2,7 @@ package com.aiqin.bms.scmp.api.product.domain.converter;
 
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
-import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
+import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 
@@ -17,9 +17,9 @@ import org.springframework.core.convert.converter.Converter;
 public class MovementResVo2InboundReqVoConverter  implements Converter<MovementResVo, InboundReqSave> {
 
     @Autowired
-    private SupplierApiService supplierApiService;
+    private WarehouseService supplierApiService;
 
-    public MovementResVo2InboundReqVoConverter (SupplierApiService supplierApiService) {
+    public MovementResVo2InboundReqVoConverter (WarehouseService supplierApiService) {
         this.supplierApiService = supplierApiService;
     }
 
