@@ -9,8 +9,10 @@ import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundR
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
-import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
+import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;

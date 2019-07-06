@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
@@ -9,7 +10,6 @@ import com.aiqin.bms.scmp.api.product.dao.ProductSkuPriceDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductOperationLog;
 import com.aiqin.bms.scmp.api.product.domain.pojo.VariablePrice;
 import com.aiqin.bms.scmp.api.product.domain.pojo.VariablePriceSku;
-import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.product.domain.request.variableprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
