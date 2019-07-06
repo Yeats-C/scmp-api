@@ -2266,17 +2266,20 @@
         <result column="warehouseName" property="warehouseName"/>
         <result column="batchRemark" property="batchRemark"/>
         <result column="productTime" property="productTime"/>
-        <collection property="batchList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo" column="companyCode = companyCode,skuCode = skuCode" select="getBatch" />
+        <result column="availableNum" property="availableNum"/>
     </resultMap>
     <select id="queryStockBatchForAllo" resultMap="queryStockBatchForAllo">
         select
+        a.sku_code              as skuCode,
+        a.sku_name              as skuName,
         a.stock_batch_code      as warehouseBatchNumber,
-      a.transport_center_code as transport_center_code,
-      a.transport_center_name as transportCenterName,
-      a.warehouse_code        as warehouseCode,
-      a.warehouse_name        as warehouseName,
-      a.batch_remark          as batchRemark,
-      a.production_date       as productTime
+        a.transport_center_code as transportCenterCode,
+        a.transport_center_name as transportCenterName,
+        a.warehouse_code        as warehouseCode,
+        a.warehouse_name        as warehouseName,
+        a.batch_remark          as batchRemark,
+        a.production_date       as productTime,
+        a.available_num         as availableNum
       from stock_batch a
       where 1=1
         <if test="transportCenterCode!=null and transportCenterCode!=''">
