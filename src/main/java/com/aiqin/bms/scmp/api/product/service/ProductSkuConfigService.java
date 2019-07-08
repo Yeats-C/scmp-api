@@ -168,7 +168,7 @@ public interface ProductSkuConfigService {
      * @param code
      * @return
      */
-    ProductApplyInfoRespVO<SkuConfigsRepsVo> applyView(String code);
+    ProductApplyInfoRespVO<SkuConfigDetailRepsVo> applyView(String code);
 
     /**
      * 申请取消

@@ -11,7 +11,6 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
@@ -38,7 +37,6 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.json.JsonUtil;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -478,55 +476,30 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             productCommonService.instanceThreeParty(allocation.getAllocationCode()+"", HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getName(),new Date(),vo.getApprovalUserName());
             //审批成功
             //生成出库单并且返回出库单编码
-            String outboundOderCode = createOutbound(allocation.getId());
+//            String outboundOderCode = createOutbound(allocation.getId());
+            String outboundOderCode = new IdSequenceUtils().nextId()+"";
             oldAllocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus());
             oldAllocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
             oldAllocation.setOutboundOderCode(outboundOderCode);
             //更新审核状态
             int  k = ((AllocationService)AopContext.currentProxy()).updateByPrimaryKeySelective(oldAllocation);
             productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.OUTBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.OUTBOUND_ALLOCATION.getName());
-
-            if (k > 0) {
-                return "success";
-            }else {
-                log.error("调拨单撤销失败");
-                throw new GroundRuntimeException("调拨单撤销失败");
-            }
+            return "success";
         }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
             productCommonService.instanceThreeParty(allocation.getAllocationCode()+"", HandleTypeCoce.FLOW_FALSE_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.FLOW_FALSE_ALLOCATION.getName(),new Date(),vo.getApprovalUserName());
             // 审核不通过
             //  通过编码查询sku
             // 解锁被锁的sku 编码
-            StockChangeRequest stockChangeRequest = new StockChangeRequest();
-            stockChangeRequest.setOperationType(3);
-            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
-            List<StockVoRequest> list1 = allocationProductTransStock(allocation,list);
-            stockChangeRequest.setStockVoRequests(list1);
-            // 调用锁定库存数
-            HttpResponse httpResponse= null;
-            try {
-                httpResponse = stockService.changeStock(stockChangeRequest);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw  new GroundRuntimeException("库存操作失败");
-            }
-            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
-
-            }else{
-                log.error(httpResponse.getMessage());
-                throw  new GroundRuntimeException("库存操作失败");
-            }
+//            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+//            stockChangeRequest.setOperationType(3);
+//            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
+//            List<StockVoRequest> list1 = allocationProductTransStock(allocation,list);
+//            stockChangeRequest.setStockVoRequests(list1);
             oldAllocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_REJECTED.getStatus());
             oldAllocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_REJECTED.getName());
             //更新状态
-            int  k = ((AllocationService)AopContext.currentProxy()).updateByPrimaryKeySelective(oldAllocation);
-            if (k > 0) {
-                return "success";
-            }else {
-                log.error("调拨单撤销失败");
-                throw new GroundRuntimeException("调拨单撤销失败");
-            }
+            ((AllocationService)AopContext.currentProxy()).updateByPrimaryKeySelective(oldAllocation);
+            return "success";
         } else if(vo.getApplyStatus().intValue()==ApplyStatus.REVOKED.getNumber()){
             oldAllocation .setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_CANCEL.getStatus());
             oldAllocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_CANCEL.getName());
@@ -534,25 +507,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             // 打印撤销的日志
             productCommonService.getInstance(oldAllocation.getAllocationCode()+"", HandleTypeCoce.REVOCATION_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),oldAllocation ,HandleTypeCoce.REVOCATION_ALLOCATION.getName());
 
-            StockChangeRequest stockChangeRequest = new StockChangeRequest();
-            stockChangeRequest.setOperationType(3);
-            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
-            List<StockVoRequest> list1 = allocationProductTransStock(allocation,list);
-            stockChangeRequest.setStockVoRequests(list1);
-            // 调用锁定库存数
-            HttpResponse httpResponse= null;
-            try {
-                httpResponse = stockService.changeStock(stockChangeRequest);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw  new GroundRuntimeException("库存操作失败");
-            }
-            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
-
-            }else{
-                log.error(httpResponse.getMessage());
-                throw  new GroundRuntimeException("库存操作失败");
-            }
+//            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+//            stockChangeRequest.setOperationType(3);
+//            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
+//            List<StockVoRequest> list1 = allocationProductTransStock(allocation,list);
+//            stockChangeRequest.setStockVoRequests(list1);
             return "success";
         } else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
             //审批中

@@ -32,13 +32,14 @@
     <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="product_date" property="productDate" />
   </resultMap>
   <sql id="Base_Column_List">
     id, return_order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name, 
     color_code, model, model_code, base_product_content, unit_code, unit_name, zero_disassembly_coefficient, 
     give_promotion, batch_number, num, activity_code, product_line_num, promotion_line_num, 
     original_line_num, product_status, actual_inbound_num, company_name, company_code, 
-    transport_center_name, transport_center_code, warehouse_name, warehouse_code
+    transport_center_name, transport_center_code, warehouse_name, warehouse_code,product_date
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -60,7 +61,7 @@
       activity_code, product_line_num, promotion_line_num, 
       original_line_num, product_status, actual_inbound_num, 
       company_name, company_code, transport_center_name, 
-      transport_center_code, warehouse_name, warehouse_code
+      transport_center_code, warehouse_name, warehouse_code,product_date
       )
     values (#{id,jdbcType=BIGINT}, #{returnOrderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{pictureUrl,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, 
@@ -71,7 +72,7 @@
       #{activityCode,jdbcType=VARCHAR}, #{productLineNum,jdbcType=BIGINT}, #{promotionLineNum,jdbcType=BIGINT}, 
       #{originalLineNum,jdbcType=INTEGER}, #{productStatus,jdbcType=INTEGER}, #{actualInboundNum,jdbcType=INTEGER}, 
       #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
-      #{transportCenterCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}
+      #{transportCenterCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR},#{productDate}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem">
@@ -167,6 +168,9 @@
       <if test="warehouseCode != null">
         warehouse_code,
       </if>
+    <if test="productDate != null">
+      product_date,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -259,6 +263,9 @@
       <if test="warehouseCode != null">
         #{warehouseCode,jdbcType=VARCHAR},
       </if>
+     <if test="productDate != null">
+        #{productDate},
+      </if>
     </trim>
   </insert>
     <insert id="insertBatch" parameterType="java.util.List">
@@ -271,7 +278,7 @@
       activity_code, product_line_num, promotion_line_num,
       original_line_num, product_status, actual_inbound_num,
       company_name, company_code, transport_center_name,
-      transport_center_code, warehouse_name, warehouse_code
+      transport_center_code, warehouse_name, warehouse_code,product_date
       )
     values
     <foreach collection="list" item="item" separator="," close="" open="" >
@@ -284,7 +291,7 @@
       #{item.activityCode,jdbcType=VARCHAR}, #{item.productLineNum,jdbcType=BIGINT}, #{item.promotionLineNum,jdbcType=BIGINT},
       #{item.originalLineNum,jdbcType=INTEGER}, #{item.productStatus,jdbcType=INTEGER}, #{item.actualInboundNum,jdbcType=INTEGER},
       #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
-      #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}
+      #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.productDate}
       )
     </foreach>
     </insert>
@@ -378,6 +385,9 @@
       <if test="warehouseCode != null">
         warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
       </if>
+     <if test="productDate != null">
+       product_date = #{productDate,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -411,7 +421,8 @@
       transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
       transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
       warehouse_name = #{warehouseName,jdbcType=VARCHAR},
-      warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      product_date = #{productDate}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
