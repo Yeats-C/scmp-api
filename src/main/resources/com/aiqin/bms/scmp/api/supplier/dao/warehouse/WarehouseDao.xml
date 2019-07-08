@@ -391,12 +391,13 @@
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
   </select>
-  <select id="selectByWarehouseName" resultMap="BaseResultMap">
+  <select id="selectByWarehouseName" resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse">
     select
-    <include refid="Base_Column_List" />
+      warehouse_code as warehouseCode, warehouse_name as warehouseName, logistics_center_code as logisticsCenterCode,
+      logistics_center_name as logisticsCenterName
     from warehouse
     where
-   warehouse_name = #{warehouseName,jdbcType=VARCHAR}
+    warehouse_name = #{warehouseName,jdbcType=VARCHAR}
 
   </select>
 </mapper>

@@ -6,6 +6,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectApprovalServiceImpl;
+import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -146,9 +150,17 @@ public class RejectTest extends SpringBootTestContext {
         goodsRejectService.rejectApply(rejectApplyQueryRequest);
     }
 
+    @Resource
+    private WarehouseDao warehouseDao;
+    @Resource
+    private LogisticsCenterDao logisticsCenterDao;
+
     @Test
     public void wolf(){
-//        goodsRejectApprovalService.workFlow("RJ11111","100059","啦啦啦","10007");
+        LogisticsCenter logisticsCenter = logisticsCenterDao.selectByCenterName("西南");
+        System.out.println(logisticsCenter);
+        Warehouse warehouse = warehouseDao.selectByWarehouseName("华北销售库");
+        System.out.println(warehouse);
     }
 
 }
