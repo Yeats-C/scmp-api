@@ -648,7 +648,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
      * @return
      */
     @Override
-    public ProductApplyInfoRespVO<SkuConfigsRepsVo> applyView(String code) {
+    public ProductApplyInfoRespVO<SkuConfigDetailRepsVo> applyView(String code) {
         List<SkuConfigsRepsVo> list = applyMapper.selectByApplyCode(code);
         if(CollectionUtils.isEmpty(list)){
             log.error("传入的编码是：[{}]",code);
@@ -791,9 +791,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
      * @param list
      * @return
      */
-    private ProductApplyInfoRespVO<SkuConfigsRepsVo> dealApplyViewData(List<SkuConfigsRepsVo> list) {
-        ProductApplyInfoRespVO<SkuConfigsRepsVo> resp = new ProductApplyInfoRespVO<>();
+    private ProductApplyInfoRespVO<SkuConfigDetailRepsVo> dealApplyViewData(List<SkuConfigsRepsVo> list) {
+        ProductApplyInfoRespVO<SkuConfigDetailRepsVo> resp = new ProductApplyInfoRespVO<>();
         //数据相同默认取第一个
+        SkuConfigDetailRepsVo repsVo = new SkuConfigDetailRepsVo();
         SkuConfigsRepsVo applyVO = list.get(0);
         ApplyProductSkuConfig applyProductSkuConfig = applyMapper.selectByPrimaryKey(applyVO.getId());
         resp.setApplyBy(applyProductSkuConfig.getCreateBy());
@@ -811,7 +812,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         //统计SPU数量吗
         List<String> spuCodes = list.stream().map(SkuConfigsRepsVo::getProductCode).distinct().collect(Collectors.toList());
         resp.setSpuNum(spuCodes.size());
-        resp.setData(list);
+        repsVo.setConfigs(list);
+        List<ProductSkuSupplyUnitRespVo> productSkuSupplyUnitRespVos = productSkuSupplyUnitService.getApply(applyVO.getSkuCode(), applyProductSkuConfig.getApplyCode());
+        repsVo.setSupplierList(productSkuSupplyUnitRespVos);
+        List<SkuConfigDetailRepsVo> repsVos = Lists.newArrayList();
+        repsVos.add(repsVo);
+        resp.setData(repsVos);
         return resp;
     }
 }

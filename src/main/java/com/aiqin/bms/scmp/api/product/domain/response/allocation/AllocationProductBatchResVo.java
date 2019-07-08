@@ -55,4 +55,8 @@ public class AllocationProductBatchResVo {
 
     @ApiModelProperty("生产日期")
     private String productDate;
+
+    @ApiModelProperty("调入批次号")
+    private String callInBatchNumber;
+
 }
