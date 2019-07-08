@@ -144,6 +144,22 @@ public class StockBatch extends PagesRequest {
     @JsonProperty(value = "tax_rate")
     private Long taxRate;
 
+    @ApiModelProperty("创建人")
+    @JsonProperty(value = "create_by")
+    private String createBy;
+
+    @ApiModelProperty("创建时间")
+    @JsonProperty(value = "create_time")
+    private Date createTime;
+
+    @ApiModelProperty("更新人")
+    @JsonProperty(value = "update_by")
+    private String updateBy;
+
+    @ApiModelProperty("更新时间")
+    @JsonProperty(value = "update_time")
+    private Date updateTime;
+
     public Long getId() {
         return id;
     }
@@ -406,5 +422,37 @@ public class StockBatch extends PagesRequest {
 
     public void setTaxRate(Long taxRate) {
         this.taxRate = taxRate;
+    }
+
+    public String getCreateBy() {
+        return createBy;
+    }
+
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }
