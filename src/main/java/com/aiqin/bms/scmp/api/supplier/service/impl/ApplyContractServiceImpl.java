@@ -513,11 +513,8 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
     @Save
     public Long  insertApplyContractDetails(ApplyContractDTO applyContractDTO) {
 
-        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if(null != authToken){
-            applyContractDTO.setCompanyCode(authToken.getCompanyCode());
-            applyContractDTO.setCompanyName(authToken.getCompanyName());
-        }
+        applyContractDTO.setCompanyCode(getUser().getCompanyCode());
+        applyContractDTO.setCompanyName(getUser().getCompanyName());
         Long k = applyContractDao.insert(applyContractDTO);
         if (k > 0) {
             return applyContractDTO.getId();

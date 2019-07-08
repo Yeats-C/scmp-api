@@ -71,7 +71,7 @@
         and tag_name like CONCAT('%', #{tagName,jdbcType=TINYINT}, '%')
       </if>
     </where>
-    order by tag_use_num desc
+    order by tag_use_num,create_time desc
   </select>
   <select id="checkName" resultType="java.lang.Integer">
     select
