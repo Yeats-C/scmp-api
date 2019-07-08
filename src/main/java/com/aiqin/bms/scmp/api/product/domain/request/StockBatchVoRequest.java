@@ -85,7 +85,7 @@ public class StockBatchVoRequest {
 
     @ApiModelProperty("单据类型")
     @JsonProperty(value = "document_type")
-    private String documentType;
+    private Integer documentType;
 
     @ApiModelProperty("单据号")
     @JsonProperty(value = "document_num")
@@ -93,7 +93,7 @@ public class StockBatchVoRequest {
 
     @ApiModelProperty("来源单据类型")
     @JsonProperty(value = "source_document_type")
-    private String sourceDocumentType;
+    private Integer sourceDocumentType;
 
     @ApiModelProperty("来源单据号")
     @JsonProperty(value = "source_document_num")
@@ -264,11 +264,11 @@ public class StockBatchVoRequest {
         this.taxRate = taxRate;
     }
 
-    public String getDocumentType() {
+    public Integer getDocumentType() {
         return documentType;
     }
 
-    public void setDocumentType(String documentType) {
+    public void setDocumentType(Integer documentType) {
         this.documentType = documentType;
     }
 
@@ -280,11 +280,11 @@ public class StockBatchVoRequest {
         this.documentNum = documentNum;
     }
 
-    public String getSourceDocumentType() {
+    public Integer getSourceDocumentType() {
         return sourceDocumentType;
     }
 
-    public void setSourceDocumentType(String sourceDocumentType) {
+    public void setSourceDocumentType(Integer sourceDocumentType) {
         this.sourceDocumentType = sourceDocumentType;
     }
 

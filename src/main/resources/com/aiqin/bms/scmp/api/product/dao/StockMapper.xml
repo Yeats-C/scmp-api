@@ -141,10 +141,10 @@
         <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
         <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
         <result column="lock_status" jdbcType="VARCHAR" property="lockStatus"/>
-        <result column="document_type" jdbcType="VARCHAR" property="documentType"/>
-        <result column="document_num" jdbcType="VARCHAR" property="documentNum"/>
-        <result column="source_document_type" jdbcType="VARCHAR" property="sourceDocumentType"/>
-        <result column="source_document_num" jdbcType="VARCHAR" property="sourceDocumentNum"/>
+        <result column="document_type" jdbcType="BIGINT" property="documentType"/>
+        <result column="document_num" jdbcType="BIGINT" property="documentNum"/>
+        <result column="source_document_type" jdbcType="BIGINT" property="sourceDocumentType"/>
+        <result column="source_document_num" jdbcType="BIGINT" property="sourceDocumentNum"/>
         <result column="operating_time" jdbcType="VARCHAR" property="operatingTime"/>
         <result column="operating_by" jdbcType="VARCHAR" property="operatingBy"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
@@ -189,9 +189,9 @@
         <result column="order_source" jdbcType="VARCHAR" property="orderSource"/>
         <result column="lock_status" jdbcType="BIGINT" property="lockStatus"/>
         <result column="change_num" jdbcType="BIGINT" property="changeNum"/>
-        <result column="document_type" jdbcType="VARCHAR" property="documentType"/>
+        <result column="document_type" jdbcType="BIGINT" property="documentType"/>
         <result column="document_num" jdbcType="BIGINT" property="documentNum"/>
-        <result column="source_document_type" jdbcType="VARCHAR" property="sourceDocumentType"/>
+        <result column="source_document_type" jdbcType="BIGINT" property="sourceDocumentType"/>
         <result column="source_document_num" jdbcType="BIGINT" property="sourceDocumentNum"/>
         <result column="operating_time" jdbcType="VARCHAR" property="operatingTime"/>
         <result column="operating_by" jdbcType="VARCHAR" property="operatingBy"/>
@@ -1941,7 +1941,7 @@
             #{item.documentNum},
             #{item.sourceDocumentType},
             #{item.sourceDocumentNum},
-            #{item.operatingTime},
+            NOW(),
             #{item.operatingBy},
             #{item.remark},
             #{item.beforeInventoryNum},

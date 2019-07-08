@@ -30,12 +30,10 @@ public class SupplyTest  extends SpringBootTestContext  {
         itemReqVo1.setSkuCode("295110");
         itemReqVo1.setSkuName("惠氏金装爱儿复无乳糖配");
         itemReqVo1.setBatchCode("123456786");
-        itemReqVo1.setDocumentType("退供");
-        itemReqVo1.setDocumentType("退供");
+        itemReqVo1.setDocumentType(2);
         itemReqVo1.setDocumentNum(111111111l);
-        itemReqVo1.setSourceDocumentType("退供上级");
+        itemReqVo1.setSourceDocumentType(3);
         itemReqVo1.setSourceDocumentNum(222222222l);
-        itemReqVo1.setOperatingTime("2018-07-08 13:32");
         itemReqVo1.setOperatingBy("ch");
         itemReqVo1.setRemark("退供生成单");
         itemReqVos.add(itemReqVo1);
@@ -45,11 +43,10 @@ public class SupplyTest  extends SpringBootTestContext  {
         itemReqVo11.setSkuCode("1002");
         itemReqVo11.setSkuName("惠氏金装爱儿复无乳糖配");
         itemReqVo11.setBatchCode("123456787");
-        itemReqVo11.setDocumentType("退供");
+        itemReqVo11.setDocumentType(2);
         itemReqVo11.setDocumentNum(111111111l);
-        itemReqVo11.setSourceDocumentType("退供上级");
+        itemReqVo11.setSourceDocumentType(3);
         itemReqVo11.setSourceDocumentNum(222222222l);
-        itemReqVo11.setOperatingTime("2018-07-08 13:32");
         itemReqVo11.setOperatingBy("ch");
         itemReqVo11.setRemark("退供生成单");
         itemReqVos.add(itemReqVo11);

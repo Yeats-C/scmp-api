@@ -51,7 +51,7 @@ public class StockBatchFlow extends CommonBean {
 
     @ApiModelProperty("单据类型")
     @JsonProperty(value = "document_type")
-    private String documentType;
+    private Integer documentType;
 
     @ApiModelProperty("单据号")
     @JsonProperty(value = "document_num")
@@ -59,7 +59,7 @@ public class StockBatchFlow extends CommonBean {
 
     @ApiModelProperty("来源单据类型")
     @JsonProperty(value = "source_document_type")
-    private String sourceDocumentType;
+    private Integer sourceDocumentType;
 
     @ApiModelProperty("来源单据号")
     @JsonProperty(value = "source_document_num")
