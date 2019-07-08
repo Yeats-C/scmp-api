@@ -92,7 +92,7 @@ public class ReturnGoodsController {
         }
     }
 
-    @ApiOperation("退货详情")
+    @ApiOperation("更改状态")
     @GetMapping("/changeOrderStatus")
     public HttpResponse<Boolean> changeOrderStatus(@RequestParam(name = "退货单订单编码") String code,@RequestParam("需要修改为订单的状态编码") Integer status){
         log.info("ReturnGoodsController---changeOrderStatus---param：[{}] param：[{}]", code,status);

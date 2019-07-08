@@ -28,6 +28,15 @@ public class UpdateProductSkuSupplyUnitReqVo {
     @ApiModelProperty("是否缺省（0:否,1：是）")
     private Byte isDefault;
 
+    @ApiModelProperty("联营扣率")
+    private Long jointFranchiseRate;
+
+    @ApiModelProperty("返点")
+    private Long point;
+
+    @ApiModelProperty("厂商SKU编码")
+    private String factorySkuCode;
+
     @ApiModelProperty(value ="供货渠道类别code")
     private String categoriesSupplyChannelsCode;
 

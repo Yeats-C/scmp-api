@@ -870,7 +870,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<String> skuCodes = Lists.newArrayList();
         skuCodes.add(skuCode);
         List<ApplyProductSkuPriceInfo> applyProductSkuPriceInfos =
-                productSkuPriceInfoService.getSkuPriceListApplyBySkuCodes(skuCodes);
+                productSkuPriceInfoService.getSkuPriceListApplyBySkuCodes(skuCodes,applyCode);
         List<ProductSkuPriceRespVo> draftTemps =
                 BeanCopyUtils.copyList(applyProductSkuPriceInfos, ProductSkuPriceRespVo.class);
         List<ProductSkuPriceRespVo> priceDraftRespVos =

@@ -87,11 +87,11 @@ public class ProductSkuPriceInfoServiceImpl implements ProductSkuPriceInfoServic
     }
 
     @Override
-    public List<ApplyProductSkuPriceInfo> getSkuPriceListApplyBySkuCodes(List<String> skuCode){
+    public List<ApplyProductSkuPriceInfo> getSkuPriceListApplyBySkuCodes(List<String> skuCode,String applyCode){
         if(CollectionUtils.isEmptyCollection(skuCode)){
             return Lists.newArrayList();
         }
-        return applyProductSkuPriceInfoMapper.selectBySkuCodes(skuCode);
+        return applyProductSkuPriceInfoMapper.selectBySkuCodes(skuCode,applyCode);
     }
 
     @Override
