@@ -45,7 +45,14 @@ public class ReturnSupplyToStockBatchConverter implements Converter<ILockStockBa
 //            stockBatchVoRequest.setNewPurchasePrice(itemReqVo.getPrice());
             stockBatchVoRequest.setSkuCode(itemReqVo.getSkuCode());
             stockBatchVoRequest.setSkuName(itemReqVo.getSkuName());
-            stockBatchVoRequest.setSkuCode(itemReqVo.getBatchCode());
+            stockBatchVoRequest.setBatchCode(itemReqVo.getBatchCode());
+            stockBatchVoRequest.setDocumentType(itemReqVo.getDocumentType());
+            stockBatchVoRequest.setDocumentNum(itemReqVo.getDocumentNum());
+            stockBatchVoRequest.setSourceDocumentType(itemReqVo.getSourceDocumentType());
+            stockBatchVoRequest.setSourceDocumentNum(itemReqVo.getSourceDocumentNum());
+            stockBatchVoRequest.setOperatingTime(itemReqVo.getOperatingTime());
+            stockBatchVoRequest.setOperatingBy(itemReqVo.getOperatingBy());
+            stockBatchVoRequest.setRemark(itemReqVo.getRemark());
 //            stockBatchVoRequest.setTaxRate(itemReqVo.getTaxRate());
             list.add(stockBatchVoRequest);
         }

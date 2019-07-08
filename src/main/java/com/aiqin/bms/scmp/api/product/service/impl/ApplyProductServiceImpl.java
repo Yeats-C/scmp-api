@@ -270,7 +270,6 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
         List<ApplyProductSku> applyProductSkus = applyProductSkuMapper.selectByFormNO(vo.getFormNo());
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
         //审批通过
-
             if(CollectionUtils.isNotEmpty(applyProductSkus)){
                 skuInfoService.skuWorkFlowCallback(workFlowCallbackVO);
             }
