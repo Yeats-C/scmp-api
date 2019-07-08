@@ -65,5 +65,5 @@ public interface LogisticsCenterDao {
     /**
      * 根据仓库名称查询仓库信息 (退供导入使用)
      */
-    LogisticsCenter selectByCenterName(String logisticsCenterName);
+    LogisticsCenter selectByCenterName(@Param("logisticsCenterName")String logisticsCenterName);
 }
