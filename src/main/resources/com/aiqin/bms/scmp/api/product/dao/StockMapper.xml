@@ -1584,9 +1584,10 @@
         ps.product_sort_name as productSortName, ps.color_name as colorName,ps.model_number as modelNumber,
         ps.product_code as spuCode, ps.product_name as spuName, ps.spec as productSpec, su.supply_unit_code as supplierCode,
         su.supply_unit_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
-        s.new_purchase_price as newPurchasePrice, s.update_time as lastTime
+        s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, pi.base_product_content as baseProductContent
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
+        inner join product_sku_purchase_info pi on s.sku_code = pi.product_sku_code
         <where>
             ps.del_flag = 0
             <if test="supplierCode != null">
@@ -1650,6 +1651,7 @@
         select count(1)
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
+        inner join product_sku_purchase_info pi on s.sku_code = pi.product_sku_code
         <where>
             ps.del_flag = 0
             <if test="supplierCode != null">
