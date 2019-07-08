@@ -19,4 +19,8 @@ public interface ProductSkuAssociatedGoodsMapper {
     int updateByPrimaryKey(ProductSkuAssociatedGoods record);
 
     List<ProductSkuAssociatedGoodsRespVo> getList(String skuCode);
+
+    int deleteBySkuCode(String skuCode);
+
+    int insertBatch(List<ProductSkuAssociatedGoods> list);
 }

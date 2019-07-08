@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuBoxPackingDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuBoxPackingMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuBoxPackingService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,21 +76,13 @@ public class ProductSkuBoxPackingServiceImpl implements ProductSkuBoxPackingServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveInfo(String skuCode,String applyCode) {
-        ApplyProductSkuBoxPacking applyProductSkuBoxPacking = productSkuBoxPackingDao.getApply(skuCode,applyCode);
-        if (null != applyProductSkuBoxPacking){
-            ProductSkuBoxPacking productSkuBoxPacking = new ProductSkuBoxPacking();
-            BeanCopyUtils.copy(applyProductSkuBoxPacking,productSkuBoxPacking);
-            ProductSkuBoxPacking oldBox = productSkuBoxPackingDao.getInfo(skuCode);
-            if (null != oldBox){
-                productSkuBoxPacking.setId(oldBox.getId());
-                return ((ProductSkuBoxPackingService)AopContext.currentProxy()).update(productSkuBoxPacking);
-            } else {
-                productSkuBoxPacking.setId(null);
-                return ((ProductSkuBoxPackingService)AopContext.currentProxy()).insert(productSkuBoxPacking);
-            }
-        } else {
-            return 0;
+        List<ApplyProductSkuBoxPacking> applyProductSkuBoxPackings = productSkuBoxPackingDao.getApply(skuCode,applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuBoxPackings)){
+            List<ProductSkuBoxPacking> productSkuBoxPackings = BeanCopyUtils.copyList(applyProductSkuBoxPackings,ProductSkuBoxPacking.class);
+            productSkuBoxPackingMapper.deleteBySkuCode(skuCode);
+            return ((ProductSkuBoxPackingService)AopContext.currentProxy()).insertList(productSkuBoxPackings);
         }
+       return 0;
     }
 
     @Override

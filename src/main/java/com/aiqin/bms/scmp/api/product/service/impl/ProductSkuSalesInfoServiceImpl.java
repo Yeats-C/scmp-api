@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespV
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSalesInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,17 +51,9 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
     @Transactional(rollbackFor = Exception.class)
     public int saveList(String skuCode,String applyCode) {
         List<ApplyProductSkuSalesInfo> applyProductSkuSalesInfos = productSkuSalesInfoDao.getApply(skuCode,applyCode);
-        if (null != applyProductSkuSalesInfos && applyProductSkuSalesInfos.size() > 0){
-            List<ProductSkuSalesInfo> productSkuSalesInfos = new ArrayList<>();
-            List<ProductSkuSalesInfo> oldInfo = productSkuSalesInfoDao.getInfo(skuCode);
-            applyProductSkuSalesInfos.forEach(item->{
-                ProductSkuSalesInfo productSkuSalesInfo = new ProductSkuSalesInfo();
-                BeanCopyUtils.copy(item,productSkuSalesInfo);
-                productSkuSalesInfos.add(productSkuSalesInfo);
-            });
-            if (null != oldInfo && oldInfo.size() > 0){
-                productSkuSalesInfoDao.deleteList(skuCode);
-            }
+        if (CollectionUtils.isNotEmptyCollection(applyProductSkuSalesInfos)){
+            List<ProductSkuSalesInfo> productSkuSalesInfos = BeanCopyUtils.copyList(applyProductSkuSalesInfos,ProductSkuSalesInfo.class);
+            productSkuSalesInfoDao.deleteList(skuCode);
             return ((ProductSkuSalesInfoService)AopContext.currentProxy()).insertList(productSkuSalesInfos);
         } else {
             return 0;

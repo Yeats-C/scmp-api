@@ -19,4 +19,10 @@ public interface ProductSkuSubMapper {
     int updateByPrimaryKey(ProductSkuSub record);
 
     List<ProductSkuSubRespVo> selectBySkuCode(String skuCode);
+
+    int deleteBySkuCode(String skuCode);
+
+    int insertBatch(List<ProductSkuSub> records);
+
+
 }

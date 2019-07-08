@@ -156,10 +156,14 @@
     </foreach>
   </delete>
   <delete id="deleteList">
-    DELETE FROM product_sku_supply_unit WHERE apply_code =#{applyCode,jdbcType=VARCHAR}
+    DELETE FROM product_sku_supply_unit WHERE product_sku_code =#{skuCode,jdbcType=VARCHAR}
   </delete>
-  <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSupplyUnitMapper.BaseResultMap">
-    SELECT * from apply_product_sku_supply_unit where apply_code=#{applyCode}
+  <select id="getApply"  resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSupplyUnitMapper.BaseResultMap">
+    SELECT
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSupplyUnitMapper.Base_Column_List"/>
+    from apply_product_sku_supply_unit
+    where apply_code=#{applyCode}
+      and product_sku_code = #{skuCode}
   </select>
   <select id="getApplys" resultMap="selectBySkuCode">
    select a.id aid,

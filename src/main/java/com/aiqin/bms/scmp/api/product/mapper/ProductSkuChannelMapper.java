@@ -19,4 +19,8 @@ public interface ProductSkuChannelMapper {
     int updateByPrimaryKey(ProductSkuChannel record);
 
     List<ProductSkuChannelRespVo> getList(String skuCode);
+
+    int deleteBySkuCode(String skuCode);
+
+    int insertBatch(List<ProductSkuChannel> list);
 }

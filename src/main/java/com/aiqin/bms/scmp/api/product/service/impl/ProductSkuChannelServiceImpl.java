@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuChannel;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChannel;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChannelDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuChannelRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuChannelMapper;
@@ -136,5 +137,41 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
     @Override
     public List<ProductSkuChannelRespVo> getList(String skuCode) {
         return mapper.getList(skuCode);
+    }
+
+    /**
+     * 功能描述: 保存正式数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 20:30
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int save(String skuCode, String applyCode) {
+        List<ApplyProductSkuChannel> applyProductSkuChannels = applyMapper.selectApplyProductSkuChannelBySkuAndApplyCode(skuCode, applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuChannels)){
+            List<ProductSkuChannel> productSkuChannels = BeanCopyUtils.copyList(applyProductSkuChannels,ProductSkuChannel.class);
+            mapper.deleteBySkuCode(skuCode);
+            return ((ProductSkuChannelService)AopContext.currentProxy()).insertBatch(productSkuChannels);
+        }
+        return 0;
+    }
+
+    /**
+     * 功能描述: 批量插入数据库
+     *
+     * @param list
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 20:38
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public int insertBatch(List<ProductSkuChannel> list) {
+        return mapper.insertBatch(list);
     }
 }

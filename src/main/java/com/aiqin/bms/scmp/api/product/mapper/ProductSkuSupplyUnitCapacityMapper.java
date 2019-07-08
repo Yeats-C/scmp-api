@@ -17,7 +17,7 @@ public interface ProductSkuSupplyUnitCapacityMapper {
 
     int updateByPrimaryKey(ProductSkuSupplyUnitCapacity record);
 
-    int deleteByApplyCode(String applyCode);
+    int deleteBySkuCode(String skuCode);
 
     int insertBatch(List<ProductSkuSupplyUnitCapacity> capacities);
 }

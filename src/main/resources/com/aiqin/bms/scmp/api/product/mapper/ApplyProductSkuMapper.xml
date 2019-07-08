@@ -55,6 +55,20 @@
     <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode" />
     <result column="procurement_section_name" jdbcType="VARCHAR" property="procurementSectionName" />
     <result column="form_no" jdbcType="VARCHAR" property="formNo" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyCode" />
+    <result column="warehouse_type_code" jdbcType="VARCHAR" property="warehouseTypeCode" />
+    <result column="warehouse_type_name" jdbcType="VARCHAR" property="warehouseTypeName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="apply_type" jdbcType="TINYINT" property="applyType" />
+    <result column="apply_type_name" jdbcType="VARCHAR" property="applyTypeName" />
+    <result column="use_time" jdbcType="INTEGER" property="useTime" />
+    <result column="unique_code" jdbcType="TINYINT" property="uniqueCode" />
+    <result column="inventory_model" jdbcType="TINYINT" property="inventoryModel" />
+    <result column="inventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
+    <result column="price_model" jdbcType="TINYINT" property="priceModel" />
+
+
   </resultMap>
   <sql id="Base_Column_List">
     id, create_time, create_by, update_time, update_by, apply_code, del_flag, product_code, 

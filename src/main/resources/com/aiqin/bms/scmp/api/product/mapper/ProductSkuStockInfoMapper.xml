@@ -31,6 +31,12 @@
     from product_sku_stock_info
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_stock_info
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
   <select id="getList" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
     select
     <include refid="Base_Column_List"/>,
@@ -61,9 +67,6 @@
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuStockInfo">
     insert into product_sku_stock_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="productCode != null">
         product_code,
       </if>
@@ -114,9 +117,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="productCode != null">
         #{productCode,jdbcType=VARCHAR},
       </if>

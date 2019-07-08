@@ -237,4 +237,18 @@ public interface ProductSkuConfigService {
      * @date 2019/7/8 17:39
      */
     List<SkuConfigsRepsVo> getList(String skuCode);
+
+
+    /**
+     *
+     * 功能描述: 保存到正式表
+     *
+     * @param skuCode
+     * @param applyCode
+     * @param workFlowCallbackVO
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 22:00
+     */
+    Integer saveList(WorkFlowCallbackVO workFlowCallbackVO, String skuCode, String applyCode);
 }

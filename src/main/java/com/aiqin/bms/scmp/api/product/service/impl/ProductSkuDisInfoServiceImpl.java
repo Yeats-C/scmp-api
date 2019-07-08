@@ -101,7 +101,7 @@ public class ProductSkuDisInfoServiceImpl implements ProductSkuDisInfoService {
 
     @Override
     public int insert(ProductSkuDistributionInfo productSkuDistributionInfo) {
-        int num = productSkuDistributionInfoMapper.insert(productSkuDistributionInfo);
+        int num = productSkuDistributionInfoMapper.insertSelective(productSkuDistributionInfo);
         return  num;
     }
 

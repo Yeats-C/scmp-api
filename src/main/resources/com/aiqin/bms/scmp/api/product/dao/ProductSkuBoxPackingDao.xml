@@ -66,7 +66,7 @@
       box_width, box_height, box_volume,
       box_gross_weight, del_flag, product_sku_code,
       product_sku_name, create_by, create_time,
-      update_by, update_time, apply_code
+      update_by, update_time, apply_code,net_weight, unit_code
       )
     values
     <foreach collection="applyProductSkuBoxPackings" item="item" index="index" separator=",">
@@ -74,7 +74,8 @@
       #{item.boxWidth,jdbcType=BIGINT}, #{item.boxHeight,jdbcType=BIGINT}, #{item.boxVolume,jdbcType=BIGINT},
       #{item.boxGrossWeight,jdbcType=BIGINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.productSkuCode,jdbcType=VARCHAR},
       #{item.productSkuName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
-      #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR}
+      #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
+      #{item.netWeight,jdbcType=BIGINT}, #{item.unitCode,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>
@@ -83,7 +84,7 @@
     box_width, box_height, box_volume,
     box_gross_weight, del_flag, product_sku_code,
     product_sku_name, create_by, create_time,
-    update_by, update_time, apply_code
+    update_by, update_time, apply_code,net_weight, unit_code
     )
     values
     <foreach collection="productSkuBoxPackings" item="item" index="index" separator=",">
@@ -91,12 +92,17 @@
       #{item.boxWidth,jdbcType=BIGINT}, #{item.boxHeight,jdbcType=BIGINT}, #{item.boxVolume,jdbcType=BIGINT},
       #{item.boxGrossWeight,jdbcType=BIGINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.productSkuCode,jdbcType=VARCHAR},
       #{item.productSkuName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
-      #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR}
+      #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
+      #{item.netWeight,jdbcType=BIGINT}, #{item.unitCode,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>
   <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuBoxPackingMapper.BaseResultMap">
-    SELECT * FROM apply_product_sku_box_packing WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR} and apply_code = #{applyCode}
+    SELECT
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuBoxPackingMapper.Base_Column_List"/>
+    FROM apply_product_sku_box_packing
+    WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
+    and apply_code = #{applyCode}
   </select>
   <select id="getApplys" parameterType="java.lang.String" resultMap="DraftMap">
     SELECT <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuBoxPackingDraftMapper.Base_Column_List"/>

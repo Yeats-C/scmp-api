@@ -25,6 +25,7 @@ public interface ApplyProductSkuConfigMapper {
     int insertBatch(List<ApplyProductSkuConfig> applys);
 
     List<ApplyProductSkuConfig> selectByFormNo(String formNo);
+    List<ApplyProductSkuConfig> selectBySkuCodeAndApplyCode(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     Integer updateApplyInfo(ApplyProductSkuConfigReqVo reqVo);
 

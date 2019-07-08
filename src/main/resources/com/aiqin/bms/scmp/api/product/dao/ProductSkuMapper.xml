@@ -995,7 +995,7 @@
     form_no,inventory_model,use_time,unique_code,
     company_code,company_name,remark,apply_type,apply_type_name,
     seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
-    price_model,inventory_allocation)
+    price_model,inventory_allocation,sku_status)
     VALUES
     <foreach collection="applyProductSkus" item="item" index="index" separator="," >
       (#{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
@@ -1021,54 +1021,7 @@
       #{item.companyCode,jdbcType=VARCHAR},#{item.companyName,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},
       #{item.applyType,jdbcType=TINYINT},#{item.applyTypeName,jdbcType=VARCHAR}, #{item.seasonalGoods,jdbcType=TINYINT},
       #{item.warehouseTypeCode,jdbcType=VARCHAR},#{item.warehouseTypeName,jdbcType=VARCHAR},#{item.structuralGoods,jdbcType=TINYINT},
-      #{item.inventoryAllocation,jdbcType=TINYINT},#{item.priceModel,jdbcType=TINYINT}
-      )
-    </foreach>
-  </insert>
-  <insert id="insertSkuList" parameterType="java.util.List">
-    insert into product_sku (product_code, product_name,
-      product_category_code, product_category_name,
-      sku_code, sku_name, spec,
-      unit_code, sku_status, del_flag,
-      product_property_code, product_property_name,
-      product_brand_code, product_brand_name, sku_abbreviation,
-      color_code, color_name, model_number,
-      unit_name, quality_assurance_management, product_sort_code,
-      product_sort_name, quality_number, quality_date,
-      management_style_code, management_style_name,
-      categories_supply_channels_code, on_sale, categories_supply_channels_name,
-      box_gauge, applicable_month_age, point,
-      bar_code, mnemonic_code, selection_effective_time,
-      selection_effective_start_time, selection_effective_end_time,
-      apply_code, create_time, create_by,
-      update_time, update_by, goods_gifts,
-      spu_code, logo, images,
-      itro_images, is_main_push, new_product,
-      remark, manufacturer_guide_price, zero_removal_coefficient,
-      procurement_section_code, procurement_section_name
-      )
-    values
-    <foreach collection="productSkuInfos" item="item" index="index" separator=",">
-      (#{item.productCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
-      #{item.productCategoryCode,jdbcType=VARCHAR}, #{item.productCategoryName,jdbcType=VARCHAR},
-      #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR},
-      #{item.unitCode,jdbcType=VARCHAR}, #{item.skuStatus,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
-      #{item.productPropertyCode,jdbcType=VARCHAR}, #{item.productPropertyName,jdbcType=VARCHAR},
-      #{item.productBrandCode,jdbcType=VARCHAR}, #{item.productBrandName,jdbcType=VARCHAR}, #{item.skuAbbreviation,jdbcType=VARCHAR},
-      #{item.colorCode,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR},
-      #{item.unitName,jdbcType=VARCHAR}, #{item.qualityAssuranceManagement,jdbcType=TINYINT}, #{item.productSortCode,jdbcType=VARCHAR},
-      #{item.productSortName,jdbcType=VARCHAR}, #{item.qualityNumber,jdbcType=VARCHAR}, #{item.qualityDate,jdbcType=VARCHAR},
-      #{item.managementStyleCode,jdbcType=VARCHAR}, #{item.managementStyleName,jdbcType=VARCHAR},
-      #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR}, #{item.onSale,jdbcType=TINYINT}, #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},
-      #{item.boxGauge,jdbcType=VARCHAR}, #{item.applicableMonthAge,jdbcType=VARCHAR}, #{item.point,jdbcType=VARCHAR},
-      #{item.barCode,jdbcType=VARCHAR}, #{item.mnemonicCode,jdbcType=VARCHAR}, #{item.selectionEffectiveTime,jdbcType=TINYINT},
-     #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP},#{item.selectionEffectiveEndTime,jdbcType=TIMESTAMP},
-      #{item.applyCode,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
-      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.goodsGifts,jdbcType=TINYINT},
-      #{item.spuCode,jdbcType=VARCHAR}, #{item.logo,jdbcType=VARCHAR}, #{item.images,jdbcType=VARCHAR},
-      #{item.itroImages,jdbcType=VARCHAR}, #{item.isMainPush,jdbcType=TINYINT}, #{item.newProduct,jdbcType=TINYINT},
-      #{item.remark,jdbcType=VARCHAR}, #{item.manufacturerGuidePrice,jdbcType=BIGINT}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT},
-      #{item.procurementSectionCode,jdbcType=VARCHAR}, #{item.procurementSectionName,jdbcType=VARCHAR}
+      #{item.inventoryAllocation,jdbcType=TINYINT},#{item.priceModel,jdbcType=TINYINT},#{item.skuStatus,jdbcType=TINYINT}
       )
     </foreach>
   </insert>
@@ -1432,10 +1385,18 @@
       </if>
   </select>
   <select id="getSkuApplyList" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.BaseResultMap">
-    SELECT  * from apply_product_sku where apply_code=#{applyCode,jdbcType=VARCHAR} and del_flag=0
+    SELECT
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.Base_Column_List"/>
+    from apply_product_sku
+    where apply_code=#{applyCode,jdbcType=VARCHAR}
+    and del_flag=0
   </select>
   <select id="getApplySkuByFormNo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.BaseResultMap">
-    SELECT * from apply_product_sku WHERE del_flag=0 and form_no=#{formNo,jdbcType=VARCHAR}
+    SELECT
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.Base_Column_List"/>
+     from apply_product_sku
+    WHERE del_flag=0
+    and form_no=#{formNo,jdbcType=VARCHAR}
   </select>
   <select id="queryOcenterSkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.ocenter.QueryCenterSkuListReqVo"
           resultType="com.aiqin.bms.scmp.api.product.domain.response.sku.ocenter.QueryCenterSkuListRespVo">

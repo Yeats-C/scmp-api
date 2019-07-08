@@ -32,6 +32,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyUseTagRecordService;
 import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
@@ -560,7 +561,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
         }
         if(StringUtils.isNotBlank(sb.toString())){
-            throw new BizException(sb.append("提交失败").toString());
+            throw new BizException(MessageId.create(Project.SCMP_API, 5001, sb.append("提交失败").toString()));
         }
         List<ProductSkuDraft> productSkuDrafts = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(saveSkuApplyInfoReqVO.getSkuCodes())){
@@ -570,11 +571,14 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
         long code = encodingRule.getNumberingValue();
         List<ApplyProductSku> applyProductSkus = BeanCopyUtils.copyList(productSkuDrafts, ApplyProductSku.class);
+        Date currentDate = new Date();
         applyProductSkus.forEach(item->{
             item.setApplyCode(String.valueOf(code));
             item.setSelectionEffectiveTime(saveSkuApplyInfoReqVO.getSelectionEffectiveTime());
             item.setSelectionEffectiveStartTime(saveSkuApplyInfoReqVO.getSelectionEffectiveStartTime());
             item.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
+            item.setCreateTime(currentDate);
+            item.setUpdateTime(currentDate);
             item.setFormNo(formNo);
         });
         if (CollectionUtils.isNotEmpty(applyProductSkus)){
@@ -618,7 +622,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuPriceInfoService.saveSkuPriceApply(applyList);
                 productSkuPriceInfoService.deleteSkuPriceDraft(saveSkuApplyInfoReqVO.getSkuCodes());
             }
-            productSkuPicDescService.saveApplyList(applyProductSkus);
             //配置
             productSkuConfigService.outInsertApplyList(applyProductSkus);
             //关联商品
@@ -956,68 +959,91 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         //通过编码查询实体
         WorkFlowCallbackVO vo = updateSupStatus(vo1);
         List<ApplyProductSku> applyProductSkus = productSkuDao.getApplySkuByFormNo(vo.getFormNo());
-        if(Objects.isNull(applyProductSkus) || applyProductSkus.size() < 1){
+        if(CollectionUtils.isEmpty(applyProductSkus)){
             return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
         }
-        if(null != applyProductSkus && applyProductSkus.size() > 0){
-            for (int i =0 ; i < applyProductSkus.size();i++){
-                String skuCode = applyProductSkus.get(i).getSkuCode();
-                String applyCode = applyProductSkus.get(i).getApplyCode();
-                productSkuCheckoutService.saveInfo(skuCode,applyCode);
-                productSkuBoxPackingService.saveInfo(skuCode,applyCode);
-                productSkuDisInfoService.saveInfo(skuCode,applyCode);
-                productSkuPicDescService.saveList(skuCode,applyCode);
-                productSkuPicturesService.saveList(skuCode,applyCode);
-                productSkuPurchaseInfoService.saveList(skuCode,applyCode);
-                productSkuSupplyUnitService.saveList(applyCode);
-                productSkuSupplyUnitCapacityService.saveList(applyCode);
-                productSkuPriceService.saveList(skuCode,applyCode);
-                productSkuManufacturerService.saveList(skuCode,applyCode);
-                productSkuInspReportService.saveList(skuCode,applyCode);
-                productSkuFileService.saveList(skuCode,applyCode);
-                productSkuSalesInfoService.saveList(skuCode,applyCode);
-                applyProductSkus.get(i).setAuditorBy(vo.getApprovalUserName());
-                applyProductSkus.get(i).setAuditorTime(new Date());
-                if(applyProductSkus.get(i).getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
-                    applyProductSkus.get(i).setApplyStatus(vo.getApplyStatus());
-                    if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())){
-                        //通过插入/更新正式数据
-                        ProductSkuInfo productSkuInfo = new ProductSkuInfo();
-                        BeanCopyUtils.copy(applyProductSkus.get(i),productSkuInfo);
-                        ProductSkuInfo oldSku = productSkuDao.getSkuInfo(productSkuInfo.getSkuCode());
-                        Byte handleTypeCoceStatus;
-                        String handleTypeCoceName;
-                        if (null != oldSku){
-                            productSkuInfo.setId(oldSku.getId());
-                            handleTypeCoceStatus = HandleTypeCoce.UPDATE_SKU.getStatus();
-                            handleTypeCoceName = HandleTypeCoce.UPDATE_SKU.getName();
-                            productSkuInfoMapper.updateByPrimaryKey(productSkuInfo);
-                        } else {
-                            productSkuInfo.setId(null);
-                            handleTypeCoceStatus = HandleTypeCoce.ADD_SKU.getStatus();
-                            handleTypeCoceName = HandleTypeCoce.ADD_SKU.getName();
-                            productSkuInfoMapper.insert(productSkuInfo);
-                        }
-                        productCommonService.getInstance(productSkuInfo.getSkuCode(),handleTypeCoceStatus,ObjectTypeCode.APPLY_SKU.getStatus(),productSkuInfo,handleTypeCoceName);
-                    } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
-                        //驳回, 设置状态
-                        applyProductSkus.get(i).setApplyStatus(vo.getApplyStatus());
-                    } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
-                        //传入的是审批中，继续该流程
-                    } else {
-                        return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
-                    }
-                }else{
-                    return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
-                }
-                applyProductSkuMapper.updateByPrimaryKey(applyProductSkus.get(i));
-                //判断审核状态，存日志信息
-                HandleTypeCoce s = applyProductSkus.get(i).getApplyStatus().intValue()==ApplyStatus.APPROVAL_SUCCESS.getNumber()?HandleTypeCoce.APPLY_APPROVAL_SUCCESS_SKU:HandleTypeCoce.APPLY_APPROVAL_FAIL_SKU;
-                productCommonService.getInstance(applyProductSkus.get(i).getSkuCode(),s.getStatus(),ObjectTypeCode.APPLY_SKU.getStatus(),applyProductSkus.get(i),s.getName());
+        String applyCode = applyProductSkus.get(0).getApplyCode();
+        Date auditorTime = new Date();
+        for (int i =0 ; i < applyProductSkus.size();i++){
+            Byte handleTypeCoceStatus;
+            String handleTypeCoceName;
+            String skuCode = applyProductSkus.get(i).getSkuCode();
+            String skuName =  applyProductSkus.get(i).getSkuName();
+            //sku基本信息
+            ProductSkuInfo oldSku = productSkuDao.getSkuInfo(skuCode);
+            ProductSkuInfo productSkuInfo = new ProductSkuInfo();
+            BeanCopyUtils.copyIgnoreNullValue(applyProductSkus.get(i),productSkuInfo);
+            productSkuInfo.setAuditorBy(vo.getApprovalUserName());
+            productSkuInfo.setAuditorTime(auditorTime);
+            productSkuInfo.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
+            if (null != oldSku) {
+                productSkuInfo.setId(oldSku.getId());
+                handleTypeCoceStatus = HandleTypeCoce.UPDATE_SKU.getStatus();
+                handleTypeCoceName = HandleTypeCoce.UPDATE_SKU.getName();
+                productSkuInfoMapper.updateByPrimaryKeySelective(productSkuInfo);
+            } else {
+                productSkuInfo.setId(null);
+                handleTypeCoceStatus = HandleTypeCoce.ADD_SKU.getStatus();
+                handleTypeCoceName = HandleTypeCoce.ADD_SKU.getName();
+                productSkuInfoMapper.insertSelective(productSkuInfo);
             }
-        } else{
-            return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
+            productCommonService.getInstance(productSkuInfo.getSkuCode(),handleTypeCoceStatus,ObjectTypeCode.APPLY_SKU.getStatus(),productSkuInfo,handleTypeCoceName);
+            //渠道
+            productSkuChannelService.save(skuCode,applyCode);
+            //标签
+            List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(applyCode,TagTypeCode.SKU.getStatus());
+            if(CollectionUtils.isNotEmpty(applyUseTagRecords)) {
+                List<SaveUseTagRecordReqVo> records = Lists.newArrayList();
+                SaveUseTagRecordReqVo saveUseTagRecordReqVo = new SaveUseTagRecordReqVo();
+                saveUseTagRecordReqVo.setUseObjectCode(skuCode);
+                saveUseTagRecordReqVo.setUseObjectName(skuName);
+                saveUseTagRecordReqVo.setTagTypeCode(TagTypeCode.SKU.getStatus());
+                saveUseTagRecordReqVo.setTagTypeName(TagTypeCode.SKU.getName());
+                saveUseTagRecordReqVo.setSourceCode(applyCode);
+                List<SaveUseTagRecordItemReqVo> tagRecordItemReqVos = BeanCopyUtils.copyList(applyUseTagRecords, SaveUseTagRecordItemReqVo.class);
+                saveUseTagRecordReqVo.setItemReqVos(tagRecordItemReqVos);
+                records.add(saveUseTagRecordReqVo);
+                tagInfoService.saveRecordList(records);
+            }
+            //包装
+            productSkuBoxPackingService.saveInfo(skuCode,applyCode);
+            //进销存信息
+            productSkuStockInfoService.saveInfo(skuCode,applyCode);
+            productSkuPurchaseInfoService.saveInfo(skuCode,applyCode);
+            productSkuDisInfoService.saveInfo(skuCode,applyCode);
+            productSkuSalesInfoService.saveList(skuCode,applyCode);
+            //结算
+            productSkuCheckoutService.saveInfo(skuCode,applyCode);
+            //供应商
+            productSkuSupplyUnitService.saveList(skuCode,applyCode);
+            //供应商产能
+            productSkuSupplyUnitCapacityService.saveList(skuCode,applyCode);
+            //配置
+            productSkuConfigService.saveList(vo,skuCode,applyCode);
+            //关联商品
+            productSkuAssociatedGoodsService.saveList(skuCode,applyCode);
+            //生产厂家
+            productSkuManufacturerService.saveList(skuCode,applyCode);
+            //图片及介绍
+            productSkuPicturesService.saveList(skuCode,applyCode);
+            //商品说明
+            productSkuPicDescService.saveList(skuCode,applyCode);
+            //文件
+            productSkuFileService.saveList(skuCode,applyCode);
+            //质检报告
+            productSkuInspReportService.saveList(skuCode,applyCode);
+            //组合商品子商品列表
+            productSkuSubService.saveList(skuCode,applyCode);
         }
+        //价格
+        List<String> skuCodes = applyProductSkus.stream().map(item -> item.getSkuCode()).distinct().collect(Collectors.toList());
+        List<ApplyProductSkuPriceInfo> skuPriceListApplyBySkuCode = productSkuPriceInfoService.getSkuPriceListApplyBySkuCodes(skuCodes, applyCode);
+        if(CollectionUtils.isNotEmpty(skuPriceListApplyBySkuCode)){
+            List<ProductSkuPriceInfo> productSkuPriceInfos = BeanCopyUtils.copyList(skuPriceListApplyBySkuCode,ProductSkuPriceInfo.class);
+            productSkuPriceInfoService.saveSkuPriceOfficial(productSkuPriceInfos);
+        }
+        //更新审批状态
+        applyProductSkuMapper.updateStatusByFormNo(ApplyStatus.APPROVAL_SUCCESS.getNumber(),vo.getFormNo(),vo.getApprovalUserName(),vo.getAuditorTime());
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
 

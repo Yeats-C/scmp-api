@@ -22,4 +22,7 @@ public interface ApplyProductSkuStockInfoMapper {
     int insertBatch(List<ApplyProductSkuStockInfo> list);
 
     List<PurchaseSaleStockRespVo> getList(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+
+
+    List<ApplyProductSkuStockInfo> getApplyProductSkuStockInfo(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 }

@@ -18,7 +18,7 @@ public interface ProductSkuSupplyUnitService {
 
     int insertList(List<ProductSkuSupplyUnit> productSkuSupplyUnits);
 
-    int saveList(String applyCode);
+    int saveList(String skuCode,String applyCode);
 
     int insertApplyList(List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits);
 

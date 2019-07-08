@@ -268,6 +268,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
         WorkFlowCallbackVO workFlowCallbackVO = updateSupStatus(vo);
         //判断审核通过还是撤销，或者审核不通过
         List<ApplyProductSku> applyProductSkus = applyProductSkuMapper.selectByFormNO(vo.getFormNo());
+        Date currentDate = new Date();
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
         //审批通过
             if(CollectionUtils.isNotEmpty(applyProductSkus)){
@@ -280,7 +281,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
             if(CollectionUtils.isNotEmpty(applyProductSkus)){
                //批量更新审核不通过
                 try {
-                    int k = applyProductSkuMapper.updateStatusByFormNo((byte)3,vo.getFormNo(),vo.getAuditorBy(),vo.getAuditorTime());
+                    int k = applyProductSkuMapper.updateStatusByFormNo((byte)3,vo.getFormNo(),vo.getApprovalUserName(),currentDate);
                 }catch (Exception e){
                     // 修改审批中的商品失败
                     return "false";
@@ -293,8 +294,8 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
             if(CollectionUtils.isNotEmpty(applyProductSkus)){
                 //批量更新审核不通过
                 try {
-                    String auditorBy = Objects.nonNull(vo.getAuditorBy()) ? vo.getAuditorBy() : applyProductSkus.get(0).getCreateBy();
-                    int k = applyProductSkuMapper.updateStatusByFormNo((byte)4,vo.getFormNo(),auditorBy,vo.getAuditorTime());
+                    String auditorBy = Objects.nonNull(vo.getApprovalUserName()) ? vo.getAuditorBy() : applyProductSkus.get(0).getCreateBy();
+                    int k = applyProductSkuMapper.updateStatusByFormNo((byte)4,vo.getFormNo(),auditorBy,currentDate);
                 } catch (Exception e){
                     e.printStackTrace();
                     // 修改审批中的sku失败

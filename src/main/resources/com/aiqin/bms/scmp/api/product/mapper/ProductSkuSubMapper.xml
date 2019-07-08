@@ -37,6 +37,10 @@
     delete from product_sku_sub
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteBySkuCode" parameterType="java.lang.Long">
+    delete from product_sku_sub
+    where main_sku_code = #{skuCode}
+  </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSub">
     insert into product_sku_sub (id, main_sku_code, main_sku_name, 
       sub_sku_code, sub_sku_name, sub_sku_num, 
@@ -48,6 +52,22 @@
       #{mainProduct,jdbcType=TINYINT}, #{applyCode,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into product_sku_sub (main_sku_code, main_sku_name,
+    sub_sku_code, sub_sku_name, sub_sku_num,
+    main_product, apply_code, del_flag,
+    create_time, create_by, update_time,
+    update_by)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.mainSkuCode,jdbcType=VARCHAR}, #{item.mainSkuName,jdbcType=VARCHAR},
+      #{item.subSkuCode,jdbcType=VARCHAR}, #{item.subSkuName,jdbcType=VARCHAR}, #{item.subSkuNum,jdbcType=INTEGER},
+      #{item.mainProduct,jdbcType=TINYINT}, #{item.applyCode,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR})
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSub">
     insert into product_sku_sub

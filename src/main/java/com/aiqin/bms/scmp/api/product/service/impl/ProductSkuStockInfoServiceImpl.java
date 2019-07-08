@@ -3,8 +3,10 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.SaveList;
+import com.aiqin.bms.scmp.api.common.Update;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuStockInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuStockInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuStockInfoDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuStockInfoMapper;
@@ -140,5 +142,60 @@ public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoServic
     @Override
     public List<PurchaseSaleStockRespVo> getList(String skuCode) {
         return mapper.getList(skuCode);
+    }
+
+    /**
+     * 功能描述: 正式保存
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 21:04
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int saveInfo(String skuCode, String applyCode) {
+        List<ApplyProductSkuStockInfo> applyProductSkuStockInfo = applyMapper.getApplyProductSkuStockInfo(skuCode, applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuStockInfo)){
+            ProductSkuStockInfo productSkuStockInfo = BeanCopyUtils.copy(applyProductSkuStockInfo.get(0),ProductSkuStockInfo.class);
+            //查询旧数据
+            ProductSkuStockInfo oldData = mapper.getBySkuCode(skuCode);
+            if(null != oldData){
+                productSkuStockInfo.setId(oldData.getId());
+                return ((ProductSkuStockInfoService)AopContext.currentProxy()).updateByPrimaryKeySelective(productSkuStockInfo);
+            } else {
+                return ((ProductSkuStockInfoService)AopContext.currentProxy()).insertSelective(productSkuStockInfo);
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 功能描述: 保存到数据库-正式表
+     *
+     * @param record
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 21:05
+     */
+    @Override
+    @Save
+    public int insertSelective(ProductSkuStockInfo record) {
+        return mapper.insertSelective(record);
+    }
+
+    /**
+     * 功能描述: 更新到数据库-正式表
+     *
+     * @param record
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 21:05
+     */
+    @Override
+    @Update
+    public int updateByPrimaryKeySelective(ProductSkuStockInfo record) {
+        return mapper.updateByPrimaryKeySelective(record);
     }
 }

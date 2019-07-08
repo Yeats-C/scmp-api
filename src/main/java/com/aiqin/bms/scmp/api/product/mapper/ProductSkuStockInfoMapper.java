@@ -19,4 +19,6 @@ public interface ProductSkuStockInfoMapper {
     int updateByPrimaryKey(ProductSkuStockInfo record);
 
     List<PurchaseSaleStockRespVo> getList(String skuCode);
+
+    ProductSkuStockInfo getBySkuCode(String skuCode);
 }

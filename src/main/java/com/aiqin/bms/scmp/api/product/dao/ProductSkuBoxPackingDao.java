@@ -26,7 +26,7 @@ public interface ProductSkuBoxPackingDao {
 
     int insertApplyList(@Param("applyProductSkuBoxPackings") List<ApplyProductSkuBoxPacking> applyProductSkuBoxPackings);
 
-    ApplyProductSkuBoxPacking getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+    List<ApplyProductSkuBoxPacking> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     List<ProductSkuBoxPackingRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 

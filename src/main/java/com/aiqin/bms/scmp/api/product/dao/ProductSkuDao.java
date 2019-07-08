@@ -191,8 +191,6 @@ public interface ProductSkuDao {
      */
     int insertApplySkuList(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
 
-    int insertSkuList(@Param("productSkuInfos") List<ProductSkuInfo> productSkuInfos);
-
     List<ApplyDetailProductListResp> getApplyProductList(String applyCode);
 
     List<ApplyDetailSkuListResp> getApplySkuList(String applyCode);

@@ -20,7 +20,7 @@ public interface ProductSkuPurchaseInfoService {
 
     int insertApplyList(List<ApplyProductSkuPurchaseInfo> applyProductSkuPurchaseInfos);
 
-    int saveList(String skuCode, String applyCode);
+    int saveInfo(String skuCode, String applyCode);
 
     int insertList(List<ProductSkuPurchaseInfo> productSkuPurchaseInfos);
 
