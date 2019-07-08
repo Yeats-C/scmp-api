@@ -2,7 +2,10 @@ package com.aiqin.bms.scmp.api.product.domain.request;
 
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.StockStatusEnum;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
@@ -15,49 +18,92 @@ import java.util.List;
  * @description 批次库存锁定请求Vo
  */
 @ApiModel("批次库存锁定请求Vo")
-public interface ILockStockBatchReqVO {
+@Data
+public class ILockStockBatchReqVO {
 
-    String getSourceOderCode();
+    @ApiModelProperty("来源oder编码")
+    @JsonProperty(value = "source_oder_code")
+    private String sourceOderCode;
 
-    OutboundTypeEnum getOutboundTypeCode();
+    @ApiModelProperty("出库类型编码")
+    @JsonProperty(value = "outbound_type_code")
+    private OutboundTypeEnum outboundTypeCode;
 
-    StockStatusEnum getStockStatusCode();
+    @ApiModelProperty("状态编码")
+    @JsonProperty(value = "stock_status_code")
+    private StockStatusEnum stockStatusCode;
 
-    String getCompanyCode();
+    @ApiModelProperty("公司编码")
+    @JsonProperty(value = "company_code")
+    private String companyCode;
 
-    String getCompanyName();
+    @ApiModelProperty("公司名称")
+    @JsonProperty(value = "company_name")
+    private String companyName;
 
-    String getSupplyCode();
+    @ApiModelProperty("供应商编码")
+    @JsonProperty(value = "supply_code")
+    private String supplyCode;
 
-    String getSupplyName();
+    @ApiModelProperty("供应商名称")
+    @JsonProperty(value = "supply_name")
+    private String supplyName;
 
-    String getTransportCenterCode();
+    @ApiModelProperty("仓库code")
+    @JsonProperty(value = "transport_center_code")
+    private String transportCenterCode;
 
-    String getTransportCenterName();
+    @ApiModelProperty("仓库名称")
+    @JsonProperty(value = "transport_center_name")
+    private String transportCenterName;
 
-    String getWarehouseCode();
+    @ApiModelProperty("库房code")
+    @JsonProperty(value = "warehouse_code")
+    private String warehouseCode;
 
-    String getWarehouseName();
+    @ApiModelProperty("库房名称")
+    @JsonProperty(value = "warehouse_name")
+    private String warehouseName;
 
-    String getPurchaseGroupCode();
+    @ApiModelProperty("采购组code")
+    @JsonProperty(value = "purchase_group_code")
+    private String purchaseGroupCode;
 
-    String getPurchaseGroupName();
+    @ApiModelProperty("采购组名称")
+    @JsonProperty(value = "purchase_group_name")
+    private String purchaseGroupName;
 
-    Date getOutboundTime();
+    @ApiModelProperty("出库时间")
+    @JsonProperty(value = "outbound_time")
+    private Date outboundTime;
 
-    Date getPreArrivalTime();
+    @ApiModelProperty("预到达时间")
+    @JsonProperty(value = "pre_arrival_time")
+    private Date preArrivalTime;
 
-    Long getPreOutboundNum();
+    @ApiModelProperty("预出库数量")
+    @JsonProperty(value = "pre_outbound_num")
+    private Long preOutboundNum;
 
-    Long getPreTaxAmount();
+    @ApiModelProperty("税前金额")
+    @JsonProperty(value = "pre_tax_amount")
+    private Long preTaxAmount;
 
-    String getOperator();
+    @ApiModelProperty("操作类型")
+    @JsonProperty(value = "operator")
+    private String operator;
 
-    Long getPreMainUnitNum();
+    @ApiModelProperty("前主单位数")
+    @JsonProperty(value = "pre_main_unit_num")
+    private Long preMainUnitNum;
 
-    Long getPreAmount();
+    @ApiModelProperty("预数量")
+    @JsonProperty(value = "pre_amount")
+    private Long preAmount;
 
-    List<? extends ILockStockBatchItemReqVo> getItemReqVos();
+    @ApiModelProperty("锁定库存批次请求")
+    @JsonProperty(value = "itemReqVos")
+    private List<ILockStockBatchItemReqVo> itemReqVos;
 
 
 }
