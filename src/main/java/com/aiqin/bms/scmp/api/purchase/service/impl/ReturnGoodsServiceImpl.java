@@ -179,9 +179,16 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean saveReturnInspection(List<ReturnInspectionReq> reqVO) {
+    public Boolean saveReturnInspection(List<ReturnInspectionReq> reqVO,String remark) {
         //首先保存传过来的数据
         List<ReturnOrderInfoInspectionItem> items = BeanCopyUtils.copyList(reqVO, ReturnOrderInfoInspectionItem.class);
+        ReturnOrderInfo info = new ReturnOrderInfo();
+        info.setReturnOrderCode(items.get(0).getReturnOrderCode());
+        info.setInspectionRemark(remark);
+        int i2 = returnOrderInfoMapper.updateByReturnOrderCodeSelective(info);
+        if (i2<0){
+            throw new BizException(ResultCode.UPDATE_RETURN_ORDER_INFO_FAILED);
+        }
         for (int i = 0; i < items.size(); i++) {
             ReturnOrderInfoInspectionItem item = items.get(i);
             item.setProductLineNum((long)i*10);

@@ -110,4 +110,12 @@ public interface ReturnOrderInfoMapper {
      * @return int
      */
     int updateByOrderCode(ReturnOrderInfo order);
+    /**
+     * 更新退货单
+     * @author NullPointException
+     * @date 2019/7/8
+     * @param returnOrderInfo
+     * @return int
+     */
+    int updateByReturnOrderCodeSelective(ReturnOrderInfo returnOrderInfo);
 }
