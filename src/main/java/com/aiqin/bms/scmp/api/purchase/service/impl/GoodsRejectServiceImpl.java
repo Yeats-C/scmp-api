@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
@@ -443,7 +444,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
             //锁定库存 todo
-//            stockService.returnSupplyLockStockBatch(iLockStockBatchReqVO);
+            ILockStockBatchReqVO iLockStockBatchReqVO = new ILockStockBatchReqVO();
+            stockService.returnSupplyLockStockBatch(iLockStockBatchReqVO);
         } catch (BeansException e) {
             LOGGER.error("新增退供单异常:{}", e.getMessage());
             throw new RuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
