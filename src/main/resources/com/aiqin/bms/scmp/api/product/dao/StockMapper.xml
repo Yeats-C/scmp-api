@@ -283,6 +283,8 @@
         <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
         <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
         <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
+        <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
+        <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>
     </resultMap>
     <resultMap id="StockFlowMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -1792,7 +1794,7 @@
             resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo"
             resultMap="QueryStockSkuListResultMap">
         select
-        sb.id,sb.warehouse_code,sb.sku_code,sb.sku_name,ps.product_category_code,ps.product_category_code,ps.product_brand_code,ps.product_brand_name,
+        sb.id,sb.warehouse_code,sb.sku_code,sb.sku_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
         ps.goods_gifts,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,sb.available_num,
         s.tax_rate,s.tax_cost
         from stock_batch sb
@@ -1831,7 +1833,7 @@
                 and ps.product_property_code like concat('%', #{productPropertyCode, jdbcType=VARCHAR} ,'%')
             </if>
         </where>
-        order by s.sku_code asc
+        group by sb.sku_code
     </select>
     <update id="updateStorehouseById" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
@@ -2091,4 +2093,231 @@
             )
         </foreach>
     </insert>
+    <select id="importStockSkuList" resultType="String">
+        SELECT
+        sb.sku_code
+        FROM stock_batch sb
+        group by sb.sku_code
+    </select>
+    <select id="selectSkuCodeByQueryBatchCode" parameterType="String" resultType="String">
+        SELECT
+        batch_code
+        FROM stock_batch
+        WHERE sku_code = #{skuCode}
+    </select>
+    <select id="selectSkuCodeByQueryAvailableNum" parameterType="String" resultType="Long">
+        SELECT
+        sum(available_num) as availableNum
+        FROM stock_batch
+        WHERE sku_code = #{skuCode}
+    </select>
+    <select id="selectSkuCodeByQueryProductionDateList" parameterType="String" resultType="String">
+        SELECT
+        date_format(production_date , '%Y-%m-%d %H:%i:%s') production_date
+        FROM stock_batch
+        WHERE sku_code = #{skuCode}
+    </select>
+    <select id="queryStockBatch" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryImportStockSkuListReqVo"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo" resultMap="QueryStockSkuListResultMap">
+        select
+        sb.id,sb.warehouse_code,sb.sku_code,sb.sku_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
+        ps.goods_gifts,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,sb.available_num,sb.batch_code,
+        date_format(sb.production_date , '%Y-%m-%d %H:%i:%s') production_date,s.tax_rate,s.tax_cost
+        from stock_batch sb
+        left join stock s on sb.sku_code = s.sku_code
+        left join product_sku ps on sb.sku_code = ps.sku_code
+        <where>
+            1 = 1
+            <if test="outTransportCenterCode != null and outTransportCenterCode != ''">
+                and sb.transport_center_code  = #{outTransportCenterCode, jdbcType=VARCHAR}
+            </if>
+            <if test="outWarehouseCode != null and outWarehouseCode != ''">
+                and sb.warehouse_code  = #{outWarehouseCode, jdbcType=VARCHAR}
+            </if>
+            <if test="procurementSectionCode != null and procurementSectionCode != ''">
+                and ps.procurement_section_code  = #{procurementSectionCode, jdbcType=VARCHAR}
+            </if>
+            <if test="inTransportCenterCode != null and inTransportCenterCode != ''">
+                and sb.transport_center_code = #{inTransportCenterCode, jdbcType=VARCHAR}
+            </if>
+            <if test="inWarehouseCode != null and inWarehouseCode != ''">
+                and sb.warehouse_code  = #{inWarehouseCode, jdbcType=VARCHAR}
+            </if>
+            <if test="skuCode != null and skuCode != ''">
+                and sb.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="skuName != null and skuName != ''">
+                and sb.sku_name like concat('%', #{skuName, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productBrandCode != null and productBrandCode != ''">
+                and ps.product_brand_code like concat('%', #{productBrandCode, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productCategoryCode != null and productCategoryCode != ''">
+                and ps.product_category_code like concat('%', #{productCategoryCode, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="productPropertyCode != null and productPropertyCode != ''">
+                and ps.product_property_code like concat('%', #{productPropertyCode, jdbcType=VARCHAR} ,'%')
+            </if>
+            <if test="skuList != null">
+                and sb.sku_code in
+                <foreach collection="skuList" item="id" index="index" open="(" close=")" separator=",">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
+    </select>
+    <resultMap id="SkuListForSalePriceMap" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO">
+    <result column="skuCode" property="skuCode"/>
+    <result column="skuName" property="skuName"/>
+    <result column="productCategoryName" property="productBrandName"/>
+    <result column="productBrandName" property="productBrandName"/>
+    <result column="spec" property="spec"/>
+    <result column="colorName" property="colorName"/>
+    <result column="modelNumber" property="modelNumber"/>
+    <result column="unitName" property="unitName"/>
+    <result column="productSortName" property="productSortName"/>
+    <result column="goodsGifts" property="goodsGifts"/>
+    <result column="productPropertyName" property="productPropertyName"/>
+    <result column="spuName" property="spuName"/>
+    <result column="spuCode" property="spuCode"/>
+    <result column="warehouseBatchNumber" property="warehouseBatchNumber"/>
+    <result column="transportCenterCode" property="transportCenterCode"/>
+    <result column="transportCenterName" property="transportCenterName"/>
+    <result column="warehouseCode" property="warehouseCode"/>
+    <result column="warehouseName" property="warehouseName"/>
+    <result column="batchRemark" property="batchRemark"/>
+    <result column="productTime" property="productTime"/>
+    <collection property="batchList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo" column="companyCode = companyCode,skuCode = skuCode" select="getBatch" />
+    <collection property="priceChannelList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice" column="changePriceType = changePriceType,companyCode = companyCode,skuCode = skuCode" select="com.aiqin.bms.scmp.api.product.dao.ProductSkuDao.getSaleChannelList" />
+    </resultMap>
+    <select id="getSkuBatchForChangePrice" resultMap="SkuListForSalePriceMap">
+         select
+      a.sku_code              as skuCode,
+      a.sku_name              as skuName,
+      b.product_category_name as productCategoryName,
+      b.product_brand_name    as productBrandName,
+      d.spec                  as spec,
+      b.color_name            as colorName,
+      b.model_number          as modelNumber,
+      d.unit_name             as unitName,
+      b.product_sort_name     as productSortName,
+      b.goods_gifts           as goodsGifts,
+      b.product_property_name as productPropertyName,
+      b.product_name          as spuName,
+      b.product_code          as spuCode,
+      a.stock_batch_code      as warehouseBatchNumber,
+      a.transport_center_code as transportCenterCode,
+      a.transport_center_name as transportCenterName,
+      a.warehouse_code        as warehouseCode,
+      a.warehouse_name        as warehouseName,
+      a.batch_remark          as batchRemark,
+      a.production_date       as productTime,
+      #{changePriceType}      as changePriceType,
+      #{companyCode}          as companyCode
+      from stock_batch a
+      left join product_sku b
+      on a.sku_code = b.sku_code
+      left join product c
+      on b.spu_code = c.product_code
+      left join product_sku_purchase_info d
+      on a.sku_code = d.product_sku_code
+      where b.procurement_section_code = #{purchaseGroupCode}  and b.company_code = #{companyCode}
+        <if test="skuCode!=null and skuCode!=''">
+            AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            AND a.sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productCategoryName!=null and productCategoryName!=''">
+            AND b.product_category_name LIKE CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productBrandName!=null and productBrandName!=''">
+            AND b.product_brand_name LIKE CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productPropertyCode!=null and productPropertyCode!=''">
+            AND b.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+        </if>
+        <if test="spuCode!=null and spuCode!=''">
+            AND c.product_code = #{spuCode,jdbcType=VARCHAR}
+        </if>
+        <if test="spuName!=null and spuName!=''">
+            AND c.product_name LIKE CONCAT('%',#{spuName,jdbcType=VARCHAR},'%')
+        </if>
+    </select>
+    <select id="getBatch" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo">
+       select
+          a.stock_batch_code      as warehouseBatchNumber,
+          a.transport_center_code as transportCenterCode,
+          a.transport_center_name as transportCenterName,
+          a.warehouse_code        as warehouseCode,
+          a.warehouse_name        as warehouseName,
+          a.batch_remark          as batchRemark,
+          a.production_date       as productTime
+       from stock_batch a
+       where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
+    </select>
+    <resultMap id="queryStockBatchForAllo" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO">
+        <result column="skuCode" property="skuCode"/>
+        <result column="skuName" property="skuName"/>
+        <result column="warehouseBatchNumber" property="warehouseBatchNumber"/>
+        <result column="transportCenterCode" property="transportCenterCode"/>
+        <result column="transportCenterName" property="transportCenterName"/>
+        <result column="warehouseCode" property="warehouseCode"/>
+        <result column="warehouseName" property="warehouseName"/>
+        <result column="batchRemark" property="batchRemark"/>
+        <result column="productTime" property="productTime"/>
+        <result column="availableNum" property="availableNum"/>
+    </resultMap>
+    <select id="queryStockBatchForAllo" resultMap="queryStockBatchForAllo">
+        select
+        a.sku_code              as skuCode,
+        a.sku_name              as skuName,
+        a.stock_batch_code      as warehouseBatchNumber,
+        a.transport_center_code as transportCenterCode,
+        a.transport_center_name as transportCenterName,
+        a.warehouse_code        as warehouseCode,
+        a.warehouse_name        as warehouseName,
+        a.batch_remark          as batchRemark,
+        a.production_date       as productTime,
+        a.available_num         as availableNum
+      from stock_batch a
+      where 1=1
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            AND a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+        </if>
+         <if test="warehouseCode!=null and warehouseCode!=''">
+            AND a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+        </if>
+        <if test="skuCodes != null and skuCodes.size>0">
+            AND a.sku_code in
+            <foreach collection="skuCodes" open="(" close=")" separator="," item="item">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+    <select id="purchaseBySkuStock" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct">
+    select
+    s.sku_code as skuCode, s.sku_name as skuName, su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName,
+    s.transport_center_code as transportCenterCode, s.transport_center_name as transportCenterName,
+    ps.box_gauge as boxGauge, s.stock_unit_code as stockUnitCode, s.stock_unit_name as stockUnitName,
+    s.inventory_num as stockCount, s.total_way_num as totalWayNum, ps.product_brand_code as brandId,
+    ps.product_brand_name as brandName, ps.product_category_code as categoryId, ps.product_category_name as categoryName,
+    ps.spec as productSpec, ps.color_code as colorCode, ps.color_name as colorName, ps.model_number as modelNumber,
+    ps.product_sort_code as productSortCode, ps.product_sort_name as productSortName,
+    s.purchase_group_code as purchaseGroupCode, s.purchase_group_name as purchaseGroupName,
+    pi.base_product_content as baseProductContent
+    from stock s
+    inner join product_sku_supply_unit su
+    on s.sku_code = su.product_sku_code
+    inner join product_sku_purchase_info pi
+    on s.sku_code = pi.product_sku_code
+    inner join product_sku ps
+    on s.sku_code = ps.sku_code
+    <where>
+        s.sku_code = #{skuCode, jdbcType=VARCHAR}
+        and s.transport_center_code = #{transportCenterCode, jdbcType=VARCHAR}
+        and su.supply_unit_code = #{supplierCode, jdbcType=VARCHAR}
+        and s.purchase_group_code = #{purchaseGroupCode, jdbcType=VARCHAR}
+    </where>
+    </select>
 </mapper>

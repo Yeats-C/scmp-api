@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.HandlingExceptionCode;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class ApplyProductSkuServiceImpl extends ProductBaseServiceImpl implements ApplyProductSkuServiceProduct {
+public class ApplyProductSkuServiceImpl extends BaseServiceImpl implements ApplyProductSkuServiceProduct {
 
     @Autowired
     private ApplyProductSkuMapper applyProductSkuMapper;

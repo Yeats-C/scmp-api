@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
@@ -32,5 +33,7 @@ public interface PurchaseManageService {
 
     HttpResponse purchaseOrderAmount(String purchaseOrderId);
 
-    HttpResponse purchaseOrderStock(String purchaseOrderId);
+    HttpResponse purchaseOrderStock(String purchaseOrderId, String createById, String createByName);
+
+    HttpResponse getWarehousing(List<PurchaseOrderProduct> list);
 }

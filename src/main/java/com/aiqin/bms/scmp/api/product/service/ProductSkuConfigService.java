@@ -6,6 +6,8 @@ import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespV
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
@@ -53,7 +55,7 @@ public interface ProductSkuConfigService {
      * @param companyCode
      * @return
      */
-    List<SkuConfigsRepsVo> findDraftList(String companyCode);
+    DetailConfigSupplierRespVo findDraftList(String companyCode);
 
     /**
      * 删除临时表配置信息
@@ -97,7 +99,7 @@ public interface ProductSkuConfigService {
      * 更新申请表审批状态
      * @param newVO
      */
-    void updateApplyInfoByVO(WorkFlowCallbackVO newVO);
+    void updateApplyInfoByVO(WorkFlowCallbackVO newVO,String applyCode);
 
     /**
      * 审批流-审批通过
@@ -127,6 +129,17 @@ public interface ProductSkuConfigService {
      * @return
      */
     Integer updateApplyInfoByVO(ApplyProductSkuConfigReqVo req);
+
+    /**
+     *
+     * 功能描述: 根据申请编码更新状态
+     *
+     * @param req
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 22:42
+     */
+    Integer updateInfoByVo(ApplyProductSkuConfigReqVo req);
 
     /**
      * 查询正式表信息
@@ -178,4 +191,16 @@ public interface ProductSkuConfigService {
      * @return
      */
     Integer insertSpareWarehouseList(List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses);
+
+
+   /**
+    *
+    * 功能描述: 获取临时表数据根据SkuCode
+    *
+    * @param skuCode
+    * @return
+    * @auther knight.xie
+    * @date 2019/7/5 20:10
+    */
+    List<ProductSkuSupplyUnitRespVo> draftDetail(String skuCode);
 }

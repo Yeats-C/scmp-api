@@ -96,7 +96,96 @@
         #{item}
       </foreach>
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+
+  <resultMap id="QueryApplyList" type="com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO">
+    <result column="apply_code" jdbcType="VARCHAR" property="code"/>
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="approval_type" jdbcType="INTEGER" property="approvalType"/>
+  </resultMap>
+    <select id="queryApplyList" parameterType="com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO"
+            resultMap="QueryApplyList">
+      select
+      distinct apply_code,
+      create_by,
+      create_time,
+      apply_status,
+      auditor_by,
+      auditor_time,
+      1 as approval_type
+      from apply_product_sku
+      where company_code = #{companyCode}
+      <if test="createTimeStart != null">
+        and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTimeEnd != null">
+        and create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+      </if>
+      <if test="applyStatus != null">
+        and apply_status = #{applyStatus}
+      </if>
+      <if test="code != null and  code != '' ">
+        and apply_code = #{code}
+      </if>
+      <if test="skuName != null and skuName!= '' ">
+        and sku_name like CONCAT('%',#{skuName},'%')
+      </if>
+    </select>
+  <select id="findFormNoByCode" resultType="java.lang.String">
+    select
+    distinct form_no
+    from apply_product_sku
+    where apply_code = #{applyCode}
+  </select>
+  <resultMap id="selectByApplyCode" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuApplyVo">
+    <result column="apply_type" jdbcType="TINYINT" property="applyType"/>
+    <result column="apply_type_name" jdbcType="VARCHAR" property="applyTypeName"/>
+    <result column="sku_code" jdbcType="VARCHAR" property="code"/>
+    <result column="sku_name" jdbcType="VARCHAR" property="name"/>
+    <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode"/>
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
+    <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+    <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode"/>
+    <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
+    <result column="apply_status" jdbcType="TINYINT" property="applyStatus"/>
+    <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy"/>
+    <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime"/>
+    <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime"/>
+    <result column="selection_effective_start_time" jdbcType="TIMESTAMP" property="selectionEffectiveStartTime"/>
+  </resultMap>
+  <select id="selectByApplyCode" resultMap="selectByApplyCode">
+    select
+    apply_type,
+    apply_type_name,
+    sku_code,
+    sku_name,
+    product_brand_code,
+    product_brand_name,
+    product_category_code,
+    product_category_name,
+    product_code,
+    product_name,
+    create_time,
+    create_by,
+    apply_code,
+    apply_status,
+    form_no,
+    auditor_by,
+    auditor_time,
+    selection_effective_time,
+    selection_effective_start_time
+    from apply_product_sku
+    where apply_code = #{applyCode}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku
     where id = #{id,jdbcType=BIGINT}
   </delete>
@@ -855,7 +944,9 @@
     update
     apply_product_sku
     set
-    apply_status = #{applyStatus,jdbcType=VARCHAR}
+    apply_status = #{applyStatus,jdbcType=VARCHAR},
+    auditor_by  =  #{auditorBy,jdbcType=VARCHAR},
+    auditor_time =  #{auditorTime,jdbcType=TIMESTAMP}
     where
     1=1
     <if test="formNo!=null and formNo!=''">

@@ -49,17 +49,18 @@
     product_width, product_length, product_height,
     is_default, del_flag, create_time,
     create_by, update_time, update_by,
-    product_sku_code, product_sku_name, apply_code
+    product_sku_code, product_sku_name, apply_code,zero_removal_coefficient,unit_code
     )
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.productCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
       #{item.description,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT}, #{item.spec,jdbcType=VARCHAR},
-      #{item.smallUnit,jdbcType=VARCHAR}, #{item.salesCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=VARCHAR},
+      #{item.smallUnit,jdbcType=VARCHAR}, #{item.salesCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=BIGINT},
       #{item.productWidth,jdbcType=BIGINT}, #{item.productLength,jdbcType=BIGINT}, #{item.productHeight,jdbcType=BIGINT},
       #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP},
       #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR},
-      #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR}
+      #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR},
+      #{item.zeroRemovalCoefficient,jdbcType=BIGINT}, #{item.unitCode,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

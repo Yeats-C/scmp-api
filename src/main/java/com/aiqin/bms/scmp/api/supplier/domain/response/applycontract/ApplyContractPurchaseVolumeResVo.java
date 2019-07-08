@@ -33,4 +33,7 @@ public class ApplyContractPurchaseVolumeResVo  extends CommonBean {
 
     @ApiModelProperty("或者金额(以分为单位)")
     private Long orAmountMoney;
+
+    @ApiModelProperty("类型")
+    private Byte planType;
 }

@@ -71,9 +71,9 @@ WorkFlowBaseUrl:
         #调拨申请详情
         applyAllocattion: http://scmp.bms.aiqin.com/#/Supplier/AllocattionDetail/
         #商品申请详情
-        applyGoods: http://scmp.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail/
+        applyGoods: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
         #商品配置申请详情
-        applyGoodsConfig: http://scmp.bms.aiqin.com/#/Supplier/DetailsAppConfiguration/
+        applyGoodsConfig: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
         #商品价格申请详情
         applyGoodsPrice:
     productUrl:
@@ -82,7 +82,7 @@ WorkFlowBaseUrl:
       applySku: http://scmp.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail
       applySkuConfig: http://scmp.bms.aiqin.com/#/Supplier/DetailsConfiguration
       #销售区域
-      applySaleArea: http://scmp.bms.aiqin.com/#/Supplier/DetailsConfiguration
+      applySaleArea: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
       #调拨申请详情
       applyAllocattion: http://scmp.bms.aiqin.com/#/Supplier/AllocattionDetail/
       #移库查看详情

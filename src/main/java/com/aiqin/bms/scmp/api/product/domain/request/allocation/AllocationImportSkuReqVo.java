@@ -19,7 +19,7 @@ public class AllocationImportSkuReqVo {
     @ApiModelProperty("需要导入的表格文件")
     private MultipartFile file;
 
-    @ApiModelProperty("供应单位编码")
+    @ApiModelProperty(value = "供应单位编码",hidden = true)
     private String supplyCode;
 
     @ApiModelProperty("物流中心编码")

@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -21,6 +22,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractPurchaseVolumeDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractPurchaseVolumeReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.*;
@@ -63,7 +65,7 @@ import java.util.Objects;
 @Service
 @Slf4j
 @WorkFlowAnnotation(WorkFlow.APPLY_CONTRACT)
-public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements ApplyContractService, WorkFlowHelper {
+public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyContractService, WorkFlowHelper {
 
     @Autowired
     private ApplyContractDao applyContractDao;
@@ -290,11 +292,16 @@ public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements
                 List<ApplyContractPurchaseVolumeDTO> purchaseVolume = applyContractPurchaseVolumeMapperDao.selectByApplyContractPurchaseVolume(entity.getApplyContractCode());
                 List<ApplyContractFile> applyContractFiles = applyContractFileMapper.selectByApplyContractCode(entity.getApplyContractCode());
                 List<ApplyContractPurchaseGroup> applyContractPurchaseGroups = applyContractPurchaseGroupMapper.selectByApplyContractCode(entity.getApplyContractCode());
+                List<ApplyContractPlanType> planTypeList = applyContractPlanTypeMapper.selectByApplyContratCode(entity.getApplyContractCode());
                 try {
                     // 转化成返回申请合同进货额list
                     if(CollectionUtils.isNotEmptyCollection(purchaseVolume)){
                         List<ApplyContractPurchaseVolumeResVo> list = BeanCopyUtils.copyList(purchaseVolume, ApplyContractPurchaseVolumeResVo.class);
                         applyContractResVo.setPurchaseList(list);
+                    }
+                    if(CollectionUtils.isNotEmptyCollection(planTypeList)){
+                        List<PlanTypeReqVO> list = BeanCopyUtils.copyList(planTypeList, PlanTypeReqVO.class);
+                        applyContractResVo.setPlanTypeList(list);
                     }
                     if(CollectionUtils.isNotEmptyCollection(applyContractFiles)){
                         List<ApplyContractFileResVo> fileResVos = BeanCopyUtils.copyList(applyContractFiles, ApplyContractFileResVo.class);
@@ -395,7 +402,7 @@ public class ApplyContractServiceImpl extends SupplierBaseServiceImpl implements
 
         supplierCommonService.getInstance(updateApplyContractReqVo.getApplyContractCode()+"", HandleTypeCoce.APPLY_UPDATE_CONTRACT.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(),updateApplyContractReqVo ,HandleTypeCoce.APPLY_UPDATE_CONTRACT.getName());
         if(oldApplyContractDTO.getRebateClause().equals(((byte)1))){
-            int i = applyContractPlanTypeMapper.deleteByContractCode(applyContractDTO.getApplyContractCode());
+            int i = applyContractPlanTypeMapper.deleteByContractCode(updateApplyContractReqVo.getApplyContractCode());
         }
         if (applyContractDTO.getRebateClause().equals((byte)1)){
             List<ApplyContractPlanType> typeList = BeanCopyUtils.copyList(updateApplyContractReqVo.getPlanTypeList(),ApplyContractPlanType.class);

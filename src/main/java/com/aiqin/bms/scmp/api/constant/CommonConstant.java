@@ -32,16 +32,14 @@ public interface CommonConstant {
     //----------审核状态-------------
     //待提交
     Integer PENDING_SUBMISSION = 0;
-    //待审核
-    Integer PENDING_REVIEW = 1;
     //审核中
-    Integer UNDER_REVIEW = 2;
+    Integer UNDER_REVIEW = 1;
     //审核通过
-    Integer EXAMINATION_PASSED = 3;
+    Integer EXAMINATION_PASSED = 2;
     //审核驳回
-    Integer REVIEWR_EJECTION = 4;
+    Integer REVIEWR_EJECTION = 3;
     //取消审核
-    Integer CANCEL = 5;
+    Integer CANCEL = 4;
     //供货渠道类型 配送
     Integer SUPPLY_CHANNEL_TYPE_DELIVERY = 1;
     //供货渠道类型 直送

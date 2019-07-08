@@ -13,15 +13,16 @@
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="plan_type" jdbcType="BIGINT" property="planType" />
   </resultMap>
   <sql id="Base_Column_List">
     id, apply_contract_code, tax, amount_money, proportion, or_amount_money, del_flag, 
-    create_time, create_by, update_time, update_by
+    create_time, create_by, update_time, update_by,plan_type
   </sql>
 
   <insert id="insertApplyContractPurchaseVolume" parameterType="java.util.List">
     INSERT  INTO  apply_contract_purchase_volume
-    (apply_contract_code,tax,amount_money,proportion,or_amount_money,create_time,create_by ,update_time, update_by)
+    (apply_contract_code,tax,amount_money,proportion,or_amount_money,create_time,create_by ,update_time, update_by,plan_type)
     VALUES
     <foreach collection="list" item="t" index= "index" separator =",">
       (
@@ -33,7 +34,8 @@
       #{t.createTime},
       #{t.createBy},
       #{t.updateTime},
-      #{t.updateBy}
+      #{t.updateBy},
+      #{t.planType}
       )
     </foreach>
   </insert>

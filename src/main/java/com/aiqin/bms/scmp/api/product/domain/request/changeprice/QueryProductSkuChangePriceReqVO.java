@@ -40,4 +40,7 @@ public class QueryProductSkuChangePriceReqVO extends PageReq {
 
     @ApiModelProperty("公司编码")
     private String companyCode;
+
+    @ApiModelProperty("是否含有区域0否1是")
+    private Integer beContainArea;
 }

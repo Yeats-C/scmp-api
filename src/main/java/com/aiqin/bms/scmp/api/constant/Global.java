@@ -60,8 +60,8 @@ public interface Global {
     String SKU = "SKU";
     String SPU = "SPU";
 
-    String PRODUCT_CODE = "productCodes";
-    String SKU_CODE = "skuCodes";
+    String CONFIG_CODE = "configCodes";
+    String SUPPLIER_ID = "supplierIds";
 
     /**
      * 未生效/生效
@@ -89,12 +89,13 @@ public interface Global {
     Integer PRODUCT_TYPE_2 = 2;
 
     /**
-     * 采购申请单类型 0 手动 1自动 , 0  待提交 1 已完成
+     * 采购申请单类型 0 手动 1自动 , 0  待提交 1 已完成 2 部分完成
      */
     Integer PURCHASE_APPLY_TYPE_0 = 0;
     Integer PURCHASE_APPLY_TYPE_1 = 1;
     Integer PURCHASE_APPLY_STATUS_0 = 0;
     Integer PURCHASE_APPLY_STATUS_1 = 1;
+    Integer PURCHASE_APPLY_STATUS_2 = 2;
 
     /**
      *  采购单状态 0.待审核 1.审核中 2.审核通过  3.备货确认 4.发货确认  5.入库开始 6.入库中 7.已入库  8.完成 9.取消 10.审核不通过

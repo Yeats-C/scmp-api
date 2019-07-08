@@ -5,7 +5,8 @@ import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
@@ -16,12 +17,14 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectImportResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseImportResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
-import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
-import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.id.IdUtil;
@@ -57,28 +60,40 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     @Resource
     private PurchaseApplyProductDao purchaseApplyProductDao;
     @Resource
-    private PurchaseGroupService purchaseGroupService;
-    @Resource
     private ProductSkuPriceInfoMapper productSkuPriceInfoMapper;
     @Resource
     private EncodingRuleDao encodingRuleDao;
     @Resource
     private StockDao stockDao;
+    @Resource
+    private LogisticsCenterDao logisticsCenterDao;
+    @Resource
+    private SupplierDao supplierDao;
+    @Resource
+    private ProductSkuConfigMapper productSkuConfigDao;
 
     @Override
-    public HttpResponse<List<PurchaseApplyResponse>> applyList(PurchaseApplyRequest purchaseApplyRequest){
+    public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
         PageResData pageResData = new PageResData();
         List<PurchaseApplyResponse> purchases = purchaseApplyDao.applyList(purchaseApplyRequest);
         if(CollectionUtils.isNotEmptyCollection(purchases)){
             for (PurchaseApplyResponse apply:purchases){
                 // 计算sku数量 / 单品数量/ 采购含税金额 / 实物返金额
-                PurchaseApplyProductInfoResponse info = this.applyProductCount(apply.getPurchaseApplyId());
+                PurchaseApplyProductInfoResponse info = this.applyProductReckon(apply.getPurchaseApplyId());
                 // 计算sku数量
                 Integer skuCount = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId(), null);
                 apply.setSkuCount(skuCount);
                 apply.setSingleCount(info.getSingleSum());
                 apply.setProductTotalAmount(info.getTaxSum());
                 apply.setReturnAmount(info.getMatterTaxSum());
+                Integer count = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId(), Global.PURCHASE_APPLY_STATUS_1);
+                if(count >= skuCount){
+                    apply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_1);
+                }else if(count > 0){
+                    apply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_2);
+                }else {
+                    apply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
+                }
             }
         }
         Integer count = purchaseApplyDao.applyCount(purchaseApplyRequest);
@@ -255,13 +270,13 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(StringUtils.isBlank(purchaseApplyId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        PurchaseApplyProductInfoResponse info = this.applyProductCount(purchaseApplyId);
+        PurchaseApplyProductInfoResponse info = this.applyProductReckon(purchaseApplyId);
         return HttpResponse.success(info);
     }
 
-    private PurchaseApplyProductInfoResponse applyProductCount(String purchaseApplyId){
+    private PurchaseApplyProductInfoResponse applyProductReckon(String purchaseApplyId){
         // 计算商品（实物返，赠品）采购件数 、 单品总数 、含税总金额
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productList(purchaseApplyId);
+        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(purchaseApplyId);
         PurchaseApplyProductInfoResponse info = new PurchaseApplyProductInfoResponse();
         Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
         Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0;
@@ -315,7 +330,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(StringUtils.isBlank(purchaseApplyId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productList(purchaseApplyId);
+        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(purchaseApplyId);
         if(CollectionUtils.isNotEmptyCollection(products)){
             for(PurchaseApplyDetailResponse product:products){
                 // 计算单品总数
@@ -344,7 +359,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             if(result.length<2){
                 return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
             }
-            List<PurchaseApplyProduct> list = new ArrayList<>();
+            List<PurchaseImportResponse> list = new ArrayList<>();
             Integer errorCount = 0;
             if (result != null) {
                 String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
@@ -352,32 +367,77 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     return HttpResponse.failure(MessageId.create(Project.SCMP_API, 88888, validResult));
                 }
                 String[] record;
+                Supplier supplier;
+                LogisticsCenter logisticsCenter;
+                PurchaseImportResponse response ;
                 PurchaseApplyProduct applyProduct;
                 for (int i = 1; i <= result.length - 1; i++) {
                     record = result[i];
-                    applyProduct = stockDao.purchaseBySkuStock(purchaseGroupCode,record[0], record[2], record[3]);
-                    if(applyProduct != null){
-//                        response.setProductCount(record[7]);
-//                        response.setProductAmount(record[8]);
-//                        response.setProductTotalAmount(String.valueOf(Integer.valueOf(record[8])*Integer.valueOf(record[7])));
-//                        if(queryStockBatchSkuRespVo.getAvailableNum()<Integer.valueOf(record[7])){
-//                            response.setErrorReason("可用库存数量小于销售数量");
-//                            errorCount++;
-                        //}
-                    }else{
-//                        applyProduct.setSkuCode(record[0]);
-//                        applyProduct.setSkuName(record[1]);
-//                        response.setSupplierCode(record[2]);
-//                        response.setTransportCenterCode(record[3]);
-//                        response.setWarehouseCode(record[4]);
-//                        response.setBatchCode(record[5]);
-//                        response.setGoodsGifts(Integer.valueOf(record[6]));
-//                        response.setProductCount(record[7]);
-//                        response.setProductAmount(record[8]);
-//                        response.setErrorReason("未查询到对应的商品");
-//                        errorCount++;
+                    response = new PurchaseImportResponse();
+                    if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) ||
+                            StringUtils.isBlank(record[3]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[5]) || StringUtils.isBlank(record[6])) {
+                        HandleResponse(response, record,"导入的数据不全");
+                        errorCount++;
+                        continue;
                     }
-                    list.add(applyProduct);
+                    supplier = supplierDao.selectBySupplierName(record[2]);
+                    if(supplier==null){
+                        HandleResponse(response, record,"未查询到供应商信息");
+                        errorCount++;
+                        continue;
+                    }
+//                    logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
+//                    if(logisticsCenter==null){
+//                        HandleResponse(response, record,"未查询到仓库信息");
+//                        errorCount++;
+//                        continue;
+//                    }
+                    applyProduct = stockDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplierCode(), "1028");
+                    if(applyProduct != null){
+                         // 报表取缺货影响的销售额， 缺货天数， 预测订货件数, 库存周转期
+                        // TODO
+                        // 获取到货后周转期
+                       // ProductSkuConfig cycleInfo = productSkuConfigDao.getCycleInfo(applyProduct.getSkuCode(), applyProduct.getTransportCenterCode());
+//                        if(cycleInfo != null){
+//                            applyProduct.setReceiptTurnover(cycleInfo.getTurnoverPeriodAfterArrival());
+//                        }
+                        // 获取最高采购价(价格管理中供应商的含税价格)
+                        if (StringUtils.isNotBlank(applyProduct.getSkuCode()) && StringUtils.isNotBlank(applyProduct.getSupplierCode())) {
+                            Long priceTax = productSkuPriceInfoMapper.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
+                            applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
+                        }
+                        Integer singCount = 0, productTotalAmount = 0;
+                        Integer content  = applyProduct.getBaseProductContent() == null ? 0 : applyProduct.getBaseProductContent();
+                         if(record[4] != null){
+                             int index = record[4].indexOf("零");
+                             int length = record[4].length();
+                             Integer whole = Integer.valueOf(record[4].substring(0, index));
+                             Integer single = Integer.valueOf(record[4].substring(index,length -1));
+                             // 计算单品数量  含税采购价
+                             singCount = whole * content + single;
+                             productTotalAmount = singCount * singCount;
+                             response.setSingleCount(singCount);
+                             response.setProductTotalAmount(productTotalAmount);
+                             BeanUtils.copyProperties(applyProduct, response);
+                             list.add(response);
+                         }
+                         if(record[5] != null){
+                             int index = record[5].indexOf("零");
+                             int length = record[5].length();
+                             Integer whole = Integer.valueOf(record[5].substring(0, index));
+                             Integer single = Integer.valueOf(record[5].substring(index,length -1));
+                             // 计算单品数量  含税采购价
+                             singCount = whole * content + single;
+                             productTotalAmount = singCount * singCount;
+                             response.setSingleCount(singCount);
+                             response.setProductTotalAmount(productTotalAmount);
+                             BeanUtils.copyProperties(applyProduct, response);
+                             list.add(response);
+                         }
+                    }else{
+                        HandleResponse(response, record,"未查询到对应的商品");
+                        errorCount++;
+                    }
                 }
             }
             return HttpResponse.success(new PageResData(errorCount,list));
@@ -385,5 +445,30 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             LOGGER.error("采购申请单导入异常:{}", e.getMessage());
             return HttpResponse.failure(ResultCode.IMPORT_PURCHASE_APPLY_ERROR);
         }
+    }
+
+    private void HandleResponse(PurchaseImportResponse response, String[] record,String errorReason) {
+        response.setSkuCode(record[0]);
+        response.setSkuName(record[1]);
+        response.setSupplierName(record[2]);
+        response.setTransportCenterName(record[3]);
+        response.setPurchaseCount(record[4]);
+        response.setReturnCount(record[5]);
+        response.setProductPurchaseAmount(Integer.valueOf(record[6]));
+        response.setErrorInfo(errorReason);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse purchaseApplyStatus(PurchaseApply purchaseApply){
+        if(purchaseApply == null || StringUtils.isBlank(purchaseApply.getPurchaseApplyId())){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        Integer count = purchaseApplyDao.update(purchaseApply);
+        if(count == 0){
+            LOGGER.error("修改采购申请单是状态信息失败");
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+        }
+        return HttpResponse.success();
     }
 }

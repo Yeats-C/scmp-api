@@ -22,13 +22,13 @@ import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
-import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
+import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
@@ -103,9 +103,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     private AllocationProductBatchMapper allocationProductBatchMapper;
 
     @Autowired
-    private SupplierApiService supplierApiService;
-
-    @Autowired
     private MovementDao movementDao;
 
     @Autowired
@@ -120,6 +117,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
     @Autowired
     private SupplyComService supplyComService;
+    @Autowired
+    private WarehouseService warehouseService;
 
     /**
      * 分页查询以及搜索
@@ -799,7 +798,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             List<AllocationProductToOutboundVo> list = allocationProductBatchMapper.selectByPictureUrlAllocationCode(allocation.getAllocationCode());
             allocationResVo.setSkuList(list);
             // 转化成出库单
-            InboundReqSave convert =  new AllocationResVo2InboundReqVoConverter(supplierApiService).convert(allocationResVo);
+            InboundReqSave convert =  new AllocationResVo2InboundReqVoConverter(warehouseService).convert(allocationResVo);
             String inboundOderCode = inboundService.saveInbound(convert);
             //更改调拨在途数
 
