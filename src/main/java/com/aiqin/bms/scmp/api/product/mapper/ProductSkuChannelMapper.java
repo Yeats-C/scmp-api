@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChannel;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuChannelRespVo;
+
+import java.util.List;
 
 public interface ProductSkuChannelMapper {
     int deleteByPrimaryKey(Long id);
@@ -14,4 +17,6 @@ public interface ProductSkuChannelMapper {
     int updateByPrimaryKeySelective(ProductSkuChannel record);
 
     int updateByPrimaryKey(ProductSkuChannel record);
+
+    List<ProductSkuChannelRespVo> getList(String skuCode);
 }

@@ -24,6 +24,12 @@
     from product_sku_associated_goods
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getList" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsDraftMapper.RespResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsDraftMapper.Resp_Column_List"/>
+    from product_sku_associated_goods a left join product_sku b on a.sub_sku_code = b.sku_code
+    where a.main_sku_code  = #{skuCode,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_associated_goods
     where id = #{id,jdbcType=BIGINT}

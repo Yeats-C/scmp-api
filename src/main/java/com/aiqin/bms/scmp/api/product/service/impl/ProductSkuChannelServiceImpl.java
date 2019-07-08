@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChannelDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuChannelRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuChannelMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuChannelDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuChannelMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChannelService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -33,6 +34,9 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
     private ProductSkuChannelDraftMapper draftMapper;
     @Autowired
     private ApplyProductSkuChannelMapper applyMapper;
+
+    @Autowired
+    private ProductSkuChannelMapper mapper;
     /**
      * 保存信息到临时表
      *
@@ -119,5 +123,18 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
     @Override
     public List<ProductSkuChannelRespVo> getApplyList(String skuCode, String applyCode) {
         return applyMapper.selectBySkuAndApplyCode(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 获取sku渠道
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 16:50
+     */
+    @Override
+    public List<ProductSkuChannelRespVo> getList(String skuCode) {
+        return mapper.getList(skuCode);
     }
 }

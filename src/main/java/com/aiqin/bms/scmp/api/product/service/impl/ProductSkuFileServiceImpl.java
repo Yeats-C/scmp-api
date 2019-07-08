@@ -135,4 +135,17 @@ public class ProductSkuFileServiceImpl implements ProductSkuFileService {
     public List<ProductSkuFileRespVO> getApply(String skuCode, String applyCode) {
         return productSkuFileDao.getApplys(skuCode,applyCode);
     }
+
+    /**
+     * 功能描述: 获取正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:35
+     */
+    @Override
+    public List<ProductSkuFileRespVO> getList(String skuCode) {
+        return productSkuFileDao.getRespVoBySkuCode(skuCode);
+    }
 }

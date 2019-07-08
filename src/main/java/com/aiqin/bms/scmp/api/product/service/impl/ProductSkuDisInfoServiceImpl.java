@@ -147,4 +147,16 @@ public class ProductSkuDisInfoServiceImpl implements ProductSkuDisInfoService {
     public List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode) {
         return productSkuDisInfoDao.getApplys(skuCode,applyCode);
     }
+
+    /**
+     * 功能描述:
+     *
+     * @param skuCode@return
+     * @auther knight.xie
+     * @date 2019/7/8 17:02
+     */
+    @Override
+    public List<PurchaseSaleStockRespVo> getList(String skuCode) {
+        return productSkuDistributionInfoMapper.getList(skuCode);
+    }
 }

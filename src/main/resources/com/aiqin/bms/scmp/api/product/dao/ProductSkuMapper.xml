@@ -831,9 +831,16 @@
   <select id="getSkuDraft" parameterType="java.lang.String" resultMap="Product_Sku_Resp_Map">
     SELECT
     <include refid="Product_Sku_Resp_Column"/>,
-    apply_type,
-    apply_type_name
-    from product_sku_draft where sku_code=#{skuCode,jdbcType=VARCHAR}
+      apply_type,
+      apply_type_name
+    from product_sku
+    where sku_code=#{skuCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getSkuInfoResp" parameterType="java.lang.String" resultMap="Product_Sku_Resp_Map">
+    SELECT
+    <include refid="Product_Sku_Resp_Column"/>
+    from product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
 
   <select id="getApply" parameterType="java.lang.String" resultMap="Product_Sku_Resp_Map">

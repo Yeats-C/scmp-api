@@ -134,4 +134,17 @@ public class ProductSkuPicDescServiceImpl implements ProductSkuPicDescService {
     public List<ProductSkuPicDescRespVo> getApply(String skuCode, String applyCode) {
         return productSkuPicDescDao.getApplys(skuCode,applyCode);
     }
+
+    /**
+     * 功能描述: 获取正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:32
+     */
+    @Override
+    public List<ProductSkuPicDescRespVo> getList(String skuCode) {
+        return productSkuPicDescDao.getRespVoBySkuCode(skuCode);
+    }
 }

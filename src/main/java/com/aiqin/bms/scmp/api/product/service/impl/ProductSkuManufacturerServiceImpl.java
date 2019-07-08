@@ -129,4 +129,17 @@ public class ProductSkuManufacturerServiceImpl implements ProductSkuManufacturer
     public List<ProductSkuManufacturerRespVo> getApply(String skuCode, String applyCode) {
         return productSkuManufacturerDao.getApplys(skuCode,applyCode);
     }
+
+    /**
+     * 功能描述: 正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:13
+     */
+    @Override
+    public List<ProductSkuManufacturerRespVo> getList(String skuCode) {
+        return productSkuManufacturerDao.getRespVo(skuCode);
+    }
 }

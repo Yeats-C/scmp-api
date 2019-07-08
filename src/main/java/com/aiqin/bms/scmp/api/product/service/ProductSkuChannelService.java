@@ -57,4 +57,15 @@ public interface ProductSkuChannelService {
      * @return
      */
     List<ProductSkuChannelRespVo> getApplyList(String skuCode,String applyCode);
+
+    /**
+     *
+     * 功能描述: 获取sku渠道
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 16:50
+     */
+    List<ProductSkuChannelRespVo> getList(String skuCode);
 }

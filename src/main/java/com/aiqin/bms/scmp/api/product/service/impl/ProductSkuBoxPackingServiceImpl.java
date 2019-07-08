@@ -154,4 +154,17 @@ public class ProductSkuBoxPackingServiceImpl implements ProductSkuBoxPackingServ
     public List<ProductSkuBoxPackingRespVo> getApply(String skuCode, String applyCode) {
         return productSkuBoxPackingDao.getApplys(skuCode,applyCode);
     }
+
+    /**
+     * 功能描述: 获取正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:03
+     */
+    @Override
+    public List<ProductSkuBoxPackingRespVo> getList(String skuCode) {
+        return productSkuBoxPackingDao.getList(skuCode);
+    }
 }

@@ -32,7 +32,9 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyUseTagRecordService;
+import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
@@ -146,6 +148,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private PriceProjectService priceProjectService;
     @Autowired
     private ApplyUseTagRecordService applyUseTagRecordService;
+    @Autowired
+    private TagInfoService tagInfoService;
     @Autowired
     private ProductSkuSubService productSkuSubService;
 
@@ -709,54 +713,57 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     public ProductSkuDetailResp getSkuDetail(String skuCode) {
-        try {
-            ProductSkuDetailResp productSkuDetailResp = new ProductSkuDetailResp();
-//            ProductSkuInfo productSkuInfo = productSkuDao.getSkuInfo(skuCode);
-//            if (null != productSkuInfo){
-//                String categoryId = productSkuInfo.getProductCategoryCode();
-//                List<ProductCategory> parentCategoryList = productCategoryService.getParentCategoryList(categoryId);
-//                String productCategoryCode = "";
-//                int length = parentCategoryList.size();
-//                for (int i = length; i > 0; i--) {
-//                    productCategoryCode+=parentCategoryList.get(i-1).getCategoryId()+",";
-//                }
-//                productCategoryCode+=categoryId;
-//                productSkuInfo.setProductCategoryCode(productCategoryCode);
-//                productSkuDetailResp.setProductSkuInfo(productSkuInfo);
-//                ProductSkuCheckout productSkuCheckout = productSkuCheckoutDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuCheckout(productSkuCheckout);
-//                List<ProductSkuPictures> productSkuPictures = productSkuPicturesDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuPictures(productSkuPictures);
-//                List<ProductSkuPrice> productSkuPrices = productSkuPriceDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuPrices(productSkuPrices);
-//                List<ProductSkuPicDesc> productSkuPicDescs = productSkuPicDescDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuPicDescs(productSkuPicDescs);
-//                ProductSkuPurchaseInfo productSkuPurchaseInfo = productSkuPurchaseInfoDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuPurchaseInfo(productSkuPurchaseInfo);
-//                ProductSkuDistributionInfo productSkuDistributionInfo = productSkuDisInfoDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuDistributionInfo(productSkuDistributionInfo);
-//                ProductSkuBoxPacking productSkuBoxPacking = productSkuBoxPackingDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuBoxPacking(productSkuBoxPacking);
-//                List<ProductSkuSalesInfo> productSkuSalesInfos = productSkuSalesInfoDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuSalesInfos(productSkuSalesInfos);
-//                List<ProductSkuSupplyUnit> productSkuSupplyUnits = productSkuSupplyUnitDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuSupplyUnits(productSkuSupplyUnits);
-//                List<ProductSkuManufacturer> productSkuManufacturers = productSkuManufacturerDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuManufacturers(productSkuManufacturers);
-//                List<ProductSkuFile> productSkuFiles = productSkuFileDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuFiles(productSkuFiles);
-//                List<ProductSkuConfig> productSkuConfigs = productSkuConfigDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuConfigs(productSkuConfigs);
-//                List<ProductSkuInspReport> productSkuInspReports = productSkuInspReportDao.getInfo(skuCode);
-//                productSkuDetailResp.setProductSkuInspReports(productSkuInspReports);
-//                return productSkuDetailResp;
-//            } else {
-//              return productSkuDetailResp;
-//            }
-        } catch (BizException e){
-            throw new BizException(e.getMessage());
+        ProductSkuDetailResp detailResp = new ProductSkuDetailResp();
+        //SKU基本信息
+        ProductSkuRespVo skuRespVo = productSkuDao.getSkuInfoResp(skuCode);
+        if (null == skuRespVo) {
+            throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
         }
-        return null;
+        detailResp.setProductSkuInfo(skuRespVo);
+        //标签信息
+        List<DetailTagUseRespVo> useTagRecordByUseObjectCode = tagInfoService.getUseTagRecordByUseObjectCode(skuRespVo.getSkuCode(), TagTypeCode.SKU.getStatus());
+        List<ApplyUseTagRecord> applyUseTagRecords = BeanCopyUtils.copyList(useTagRecordByUseObjectCode, ApplyUseTagRecord.class);
+        detailResp.setTagInfoList(applyUseTagRecords);
+        //SKU渠道信息
+        List<ProductSkuChannelRespVo> skuChannelRespVos = productSkuChannelService.getList(skuCode);
+        detailResp.setProductSkuChannels(skuChannelRespVos);
+        //SKU进销存信息
+        List<PurchaseSaleStockRespVo> purchaseSaleStocks = Lists.newArrayList();
+        SkuTypeEnum skuTypeEnum = SkuTypeEnum.getSkuTypeEnumByType(skuRespVo.getGoodsGifts());
+        if(!Objects.equals(skuTypeEnum,SkuTypeEnum.COMBINATION)){
+            //库存配置信息
+            purchaseSaleStocks.addAll(productSkuStockInfoService.getList(skuCode));
+            //采购配置信息
+            purchaseSaleStocks.addAll(productSkuPurchaseInfoService.getList(skuCode));
+            //门店销售
+            purchaseSaleStocks.addAll(productSkuDisInfoService.getList(skuCode));
+            //sku整箱商品包装信息
+            detailResp.setProductSkuBoxPackings(productSkuBoxPackingService.getList(skuCode));
+            //SKU结算信息
+            detailResp.setProductSkuCheckout(productSkuCheckoutService.getBySkuCode(skuCode));
+            //供应商信息
+            detailResp.setProductSkuSupplyUnits(productSkuSupplyUnitService.selectBySkuCode(skuCode));
+            //关联商品信息
+            detailResp.setProductAssociatedGoods(productSkuAssociatedGoodsService.getList(skuCode));
+            //sku生产厂家信息
+            detailResp.setProductSkuManufacturers(productSkuManufacturerService.getList(skuCode));
+            //sku质检信息
+            detailResp.setProductSkuInspReports(productSkuInspReportService.getListBySkuCode(skuCode));
+        }else{
+            detailResp.setProductSkuSubRespVos(productSkuSubService.getList(skuCode));
+        }
+        //销售
+        purchaseSaleStocks.addAll(productSkuSalesInfoService.getList(skuCode));
+        detailResp.setPurchaseSaleStocks(purchaseSaleStocks);
+        //sku图片及介绍
+        detailResp.setProductSkuPictures(productSkuPicturesService.getList(skuCode));
+        //sku商品说明
+        detailResp.setProductSkuPicDescs(productSkuPicDescService.getList(skuCode));
+        //sku文件管理
+        detailResp.setProductSkuFiles(productSkuFileService.getList(skuCode));
+        //配置信息
+        detailResp.setProductSkuConfigs(productSkuConfigService.getList(skuCode));
+        return detailResp;
     }
 
     @Override

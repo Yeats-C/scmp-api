@@ -38,4 +38,6 @@ public interface ProductSkuFileDao {
     List<ApplyProductSkuFile> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     List<ProductSkuFileRespVO> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+
+    List<ProductSkuFileRespVO> getRespVoBySkuCode(String skuCode);
 }

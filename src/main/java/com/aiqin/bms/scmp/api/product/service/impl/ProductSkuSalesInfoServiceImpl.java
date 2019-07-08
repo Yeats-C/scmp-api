@@ -134,4 +134,17 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
     public List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode) {
         return productSkuSalesInfoDao.getApplys(skuCode,applyCode);
     }
+
+    /**
+     * 功能描述: 获取正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:26
+     */
+    @Override
+    public List<PurchaseSaleStockRespVo> getList(String skuCode) {
+        return productSkuSalesInfoDao.getRespVoBySkuCode(skuCode);
+    }
 }

@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuAssociatedGoodsDraft
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuAssociatedGoodsRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuAssociatedGoodsMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuAssociatedGoodsService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import org.springframework.aop.framework.AopContext;
@@ -33,6 +34,9 @@ public class ProductSkuAssociatedGoodsServiceImpl implements ProductSkuAssociate
 
     @Autowired
     private ApplyProductSkuAssociatedGoodsMapper applyMapper;
+
+    @Autowired
+    private ProductSkuAssociatedGoodsMapper mapper;
 
     /**
      * 保存临时表数据
@@ -124,6 +128,19 @@ public class ProductSkuAssociatedGoodsServiceImpl implements ProductSkuAssociate
     @Override
     public List<ProductSkuAssociatedGoodsRespVo> getApply(String skuCode, String applyCode) {
         return applyMapper.getApplys(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 正式详情
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:10
+     */
+    @Override
+    public List<ProductSkuAssociatedGoodsRespVo> getList(String skuCode) {
+        return mapper.getList(skuCode);
     }
 }
 
