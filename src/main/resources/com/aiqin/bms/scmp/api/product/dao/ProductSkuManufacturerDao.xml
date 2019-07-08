@@ -106,6 +106,13 @@
     update_time, update_by, product_sku_code,
     product_sku_name FROM product_sku_manufacturer_draft where product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
+  <select id="getRespVo" parameterType="java.lang.String" resultMap="DraftMap">
+    SELECT id, manufacturer_name,
+    factory_product_number, is_default, address,
+    del_flag, create_time, create_by,
+    update_time, update_by, product_sku_code,
+    product_sku_name FROM product_sku_manufacturer where product_sku_code=#{skuCode,jdbcType=VARCHAR}
+  </select>
   <select id="getInfo" parameterType="java.lang.String" resultMap="SkuManufacturerMap">
     SELECT * FROM product_sku_manufacturer where product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>

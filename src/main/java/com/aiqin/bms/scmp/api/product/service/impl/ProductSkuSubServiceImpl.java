@@ -116,4 +116,17 @@ public class ProductSkuSubServiceImpl implements ProductSkuSubService {
     public List<ProductSkuSubRespVo> getApply(String skuCode, String applyCode) {
         return applyMapper.getApplys(skuCode,applyCode);
     }
+
+    /**
+     * 功能描述: 获取正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:24
+     */
+    @Override
+    public List<ProductSkuSubRespVo> getList(String skuCode) {
+        return mapper.selectBySkuCode(skuCode);
+    }
 }

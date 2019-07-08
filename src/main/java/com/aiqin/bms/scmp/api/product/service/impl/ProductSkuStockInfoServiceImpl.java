@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuStockInfoDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuStockInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -34,6 +35,8 @@ public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoServic
     private ProductSkuStockInfoDraftMapper draftMapper;
     @Autowired
     private ApplyProductSkuStockInfoMapper applyMapper;
+    @Autowired
+    private ProductSkuStockInfoMapper mapper;
 
     /**
      * 保存临时表数据
@@ -124,5 +127,18 @@ public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoServic
     @Override
     public List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode) {
         return applyMapper.getList(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 获取SKU库存配置信息
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 16:53
+     */
+    @Override
+    public List<PurchaseSaleStockRespVo> getList(String skuCode) {
+        return mapper.getList(skuCode);
     }
 }

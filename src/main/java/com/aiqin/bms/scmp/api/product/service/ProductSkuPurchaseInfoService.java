@@ -53,4 +53,15 @@ public interface ProductSkuPurchaseInfoService {
      * @date 2019/7/6 20:48
      */
     List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode);
+
+    /**
+     *
+     * 功能描述: 查询正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 16:56
+     */
+    List<PurchaseSaleStockRespVo> getList(String skuCode);
 }

@@ -219,4 +219,17 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     public List<ProductSkuInspReportRespVo> getApply(String skuCode, String applyCode) {
         return productSkuInspReportDao.getApplys(skuCode,applyCode);
     }
+
+    /**
+     * 功能描述: 获取正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:22
+     */
+    @Override
+    public List<ProductSkuInspReportRespVo> getListBySkuCode(String skuCode) {
+        return productSkuInspReportDao.getList(skuCode);
+    }
 }

@@ -739,7 +739,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             respVo.setSkuStatus(SkuStatusEnum.STOP_SALES.getStatus());
             respVo.setOnSale(SkuSaleStatusEnum.DIE_OUT.getStatus());
         }
-        return null;
+        return respVo;
     }
 
     /**
@@ -754,6 +754,19 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Override
     public List<SkuConfigsRepsVo> getApply(String skuCode, String applyCode) {
         return applyMapper.selectBySkuAndApplyCode(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 获取正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:39
+     */
+    @Override
+    public List<SkuConfigsRepsVo> getList(String skuCode) {
+        return mapper.getListBySkuCode(skuCode);
     }
 
     /**

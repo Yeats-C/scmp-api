@@ -471,4 +471,17 @@
     where sku_code = #{skuCode,jdbcType=VARCHAR}
     and transport_center_code = #{item.transportCenterCode,jdbcType=VARCHAR}
   </select>
+
+  <select id="getListBySkuCode" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
+    from product_sku_configt a
+    left join product_sku_config_spare_warehouse b
+    on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
+    where a.del_flag = 0
+    and a.apply_show = 1
+    and a.sku_code = #{skuCode}
+  </select>
 </mapper>

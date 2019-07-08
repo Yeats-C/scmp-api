@@ -126,6 +126,8 @@ public interface ProductSkuDao {
 
     ProductSkuRespVo getSkuDraft(String skuCode);
 
+    ProductSkuRespVo getSkuInfoResp(String skuCode);
+
     ProductSkuInfo getSkuInfo(String skuCode);
 
     /**

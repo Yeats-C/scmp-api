@@ -41,6 +41,11 @@
     FROM product_sku_box_packing_draft
     WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
+  <select id="getList" parameterType="java.lang.String" resultMap="DraftMap">
+    SELECT <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuBoxPackingDraftMapper.Base_Column_List"/>
+    FROM product_sku_box_packing
+    WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
+  </select>
   <select id="getInfo" parameterType="java.lang.String" resultMap="SkuBoxPackingMap" >
     SELECT * FROM product_sku_box_packing WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>

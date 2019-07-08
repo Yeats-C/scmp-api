@@ -57,4 +57,15 @@ public interface ProductSkuStockInfoService {
      * @return
      */
     List<PurchaseSaleStockRespVo> getApplyList(String skuCode,String applyCode);
+
+    /**
+     *
+     * 功能描述: 获取SKU库存配置信息
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 16:53
+     */
+    List<PurchaseSaleStockRespVo> getList(String skuCode);
 }
