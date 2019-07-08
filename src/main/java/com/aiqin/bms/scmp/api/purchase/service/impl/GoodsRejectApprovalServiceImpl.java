@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
@@ -63,7 +64,7 @@ import java.util.UUID;
  */
 @Service
 @WorkFlowAnnotation(WorkFlow.APPLY_REFUND)
-public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalService, WorkFlowHelper {
+public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements GoodsRejectApprovalService, WorkFlowHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectApprovalServiceImpl.class);
 
@@ -81,8 +82,9 @@ public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalServic
      * @return
      */
     @Override
-    public String workFlowCallback(WorkFlowCallbackVO vo) {
+    public String workFlowCallback(WorkFlowCallbackVO vo1) {
         try {
+            WorkFlowCallbackVO vo = updateSupStatus(vo1);
             //审批驳回
             RejectRecord rejectRecord = new RejectRecord();
             rejectRecord.setRejectRecordCode(vo.getFormNo());
@@ -115,6 +117,7 @@ public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalServic
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @Override
     public void workFlow(String formNo, String userName, String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         //在审批中看到的页面
@@ -131,44 +134,6 @@ public class GoodsRejectApprovalServiceImpl implements GoodsRejectApprovalServic
         if (workFlowRespVO.getSuccess()) {
         } else {
             throw new BizException(ResultCode.REJECT_RECORD_ERROR);
-        }
-    }
-
-    public WorkFlowRespVO callWorkFlowApi(WorkFlowVO vo, WorkFlow workFlow) {
-        vo.setKey(workFlow.getKey());
-        LOGGER.info("GoodsRejectApprovalServiceImpl-callWorkFlowApi-工作流vo是：[{}],枚举是：[{}]", JSON.toJSONString(vo), JSON.toJSONString(workFlow));
-        if (StringUtils.isEmpty(vo.getTitle())) {
-            vo.setTitle(workFlow.getTitle());
-        }
-        vo.setTimeStamp(System.currentTimeMillis() + "");
-        vo.setTicket(UUID.randomUUID().toString());
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        vo.setUsername(currentAuthToken.getPersonId());
-        vo.setCurrentPositionCode(currentAuthToken.getPositionCode());
-        //调用审批的接口
-        Map<String, Object> stringObjectMap = MapUtil.objectToMap(vo);
-        String s = stringObjectMap.toString() + urlConfig.ENCRYPTION_KEY;
-        vo.setSign(MD5Utils.getMD5(s).toUpperCase());
-        try {
-            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.get(urlConfig.WORKFLOW_URL));
-            httpClient.addParameter("s", JSON.toJSONString(vo));
-            String result1 = httpClient.action().result();
-            LOGGER.info("调用审批流传入的参数是:[{}]", s);
-            LOGGER.info("审批流返回数据:{}", result1);
-            if (result1.startsWith("{")) {
-                return JSON.parseObject(result1, WorkFlowRespVO.class);
-            } else {
-                LOGGER.info("审批接口数据返回错误，数据是：{}", result1);
-                WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
-                workFlowRespVO.setSuccess(false);
-                workFlowRespVO.setMsg("审批接口数据返回错误");
-                return workFlowRespVO;
-            }
-        } catch (Exception e) {
-            WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
-            workFlowRespVO.setSuccess(false);
-            workFlowRespVO.setMsg("调用审批接口失败");
-            return workFlowRespVO;
         }
     }
 

@@ -32,7 +32,7 @@ public class PurchaseOrderArrivalSubscribe extends CommonBean {
     @ApiModelProperty("手机号")
     private String phoneMobile;
 
-    @ApiModelProperty("'到货预约状态(0:未预约 1:已预约 2:已确认")
+    @ApiModelProperty("'到货预约状态(0:未预约 1:已预约 2:已预约未确认")
     private Byte arrivalSubscribeStatus;
 
     @ApiModelProperty("备注")

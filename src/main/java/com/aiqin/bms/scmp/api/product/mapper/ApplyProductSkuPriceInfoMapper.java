@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.mapper;
 
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPriceInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -30,7 +31,8 @@ public interface ApplyProductSkuPriceInfoMapper {
      * @author NullPointException
      * @date 2019/6/17
      * @param skuCode
+     * @param applyCode
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPriceInfo>
      */
-    List<ApplyProductSkuPriceInfo> selectBySkuCodes(List<String> skuCode);
+    List<ApplyProductSkuPriceInfo> selectBySkuCodes(@Param("list") List<String> skuCode, @Param("applyCode") String applyCode);
 }

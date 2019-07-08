@@ -28,6 +28,8 @@
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="enable" jdbcType="TINYINT" property="enable" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>

@@ -31,7 +31,6 @@ import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
@@ -675,7 +674,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if(workFlowRespVO.getSuccess().equals(true)){
             return 0;
         }else {
-            throw  new GroundRuntimeException("撤销失败");
+            throw  new BizException(ResultCode.CANCEL_ERROR);
         }
     }
 
