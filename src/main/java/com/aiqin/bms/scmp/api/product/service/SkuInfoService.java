@@ -105,7 +105,7 @@ public interface SkuInfoService{
      * @param skuCode
      * @return
      */
-    ApplyProductSkuDetailResp getProductSkuApplyDetail(String skuCode, String applyCode);
+    ProductSkuDetailResp getProductSkuApplyDetail(String skuCode, String applyCode);
 
     int cancelSkuApply(String applyCode);
 

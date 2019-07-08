@@ -111,5 +111,19 @@ public class ProductSkuAssociatedGoodsServiceImpl implements ProductSkuAssociate
     public int insertApplyList(List<ApplyProductSkuAssociatedGoods> applyProductSkuAssociatedGoods) {
         return applyMapper.insertBatch(applyProductSkuAssociatedGoods);
     }
+
+    /**
+     * 功能描述: 申请详情
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:06
+     */
+    @Override
+    public List<ProductSkuAssociatedGoodsRespVo> getApply(String skuCode, String applyCode) {
+        return applyMapper.getApplys(skuCode,applyCode);
+    }
 }
 

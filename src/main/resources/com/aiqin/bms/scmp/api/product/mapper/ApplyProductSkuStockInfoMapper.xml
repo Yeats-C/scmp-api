@@ -31,6 +31,14 @@
     from apply_product_sku_stock_info
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getList" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
+    select
+    <include refid="Base_Column_List" />,
+    0 as `type`
+    from apply_product_sku_stock_info
+    where product_sku_code = #{skuCode}
+    and apply_code = #{applyCode}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_stock_info
     where id = #{id,jdbcType=BIGINT}

@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuAssociatedGoods;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuAssociatedGoodsRespVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +20,6 @@ public interface ApplyProductSkuAssociatedGoodsMapper {
     int updateByPrimaryKey(ApplyProductSkuAssociatedGoods record);
 
     int insertBatch(List<ApplyProductSkuAssociatedGoods> list);
+
+    List<ProductSkuAssociatedGoodsRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 }

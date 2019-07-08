@@ -1,20 +1,17 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
-import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
@@ -138,7 +135,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         }
         String configCode = configReqVos.get(0).getConfigCode();
         ProductSkuConfig productSkuConfig = mapper.selectByConfigCode(configCode);
-        if(Objects.equals(productSkuConfig.getApplyStatus(),ApplyStatus.APPROVAL.getNumber())) {
+        if(Objects.equals(productSkuConfig.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
             throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
         }
         Integer num = 0;
@@ -406,30 +403,34 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         List<String> skuCodes = applyProductSkus.stream().map(ApplyProductSku::getSkuCode).distinct().collect(Collectors.toList());
         String code = applyProductSkus.get(0).getApplyCode();
         String formNo = applyProductSkus.get(0).getFormNo();
+        Integer num = 0;
         //根据skuCodes查询出临时表信息
         List<ProductSkuConfigDraft> drafts = draftMapper.getListBySkuCodes(skuCodes);
-        List<String> configCodes = drafts.stream().map(ProductSkuConfigDraft::getConfigCode).distinct().collect(Collectors.toList());
-        List<ApplyProductSkuConfig> applyProductSkuConfigs  = BeanCopyUtils.copyList(drafts,ApplyProductSkuConfig.class);
-        //通过编码查询出备用仓库信息
-        List<ProductSkuConfigSpareWarehouseDraft> spareWarehouseDrafts = spareWarehouseDraftMapper.
-                getListByConfigCodes(configCodes);
-        List<ApplyProductSkuConfigSpareWarehouse>  applyProductSkuConfigSpareWarehouses =
-                BeanCopyUtils.copyList(spareWarehouseDrafts,ApplyProductSkuConfigSpareWarehouse.class);
-        Date currentDate = new Date();
-        applyProductSkuConfigs.stream().forEach(item->{
-            item.setId(null);
-            item.setApplyCode(code);
-            item.setFormNo(formNo);
-            item.setCreateTime(currentDate);
-        });
-        Integer num = applyMapper.insertBatch(applyProductSkuConfigs);
-        //批量保存备用仓库
-        applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
-        //删除临时表配置信息
-        draftMapper.deleteOutByConfigCodes(configCodes);
-        //删除临时表备用仓库信息
-        spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
-        return null;
+        if(CollectionUtils.isNotEmpty(drafts)){
+            List<String> configCodes = drafts.stream().map(ProductSkuConfigDraft::getConfigCode).distinct().collect(Collectors.toList());
+            List<ApplyProductSkuConfig> applyProductSkuConfigs  = BeanCopyUtils.copyList(drafts,ApplyProductSkuConfig.class);
+            //通过编码查询出备用仓库信息
+            List<ProductSkuConfigSpareWarehouseDraft> spareWarehouseDrafts = spareWarehouseDraftMapper.
+                    getListByConfigCodes(configCodes);
+            List<ApplyProductSkuConfigSpareWarehouse>  applyProductSkuConfigSpareWarehouses =
+                    BeanCopyUtils.copyList(spareWarehouseDrafts,ApplyProductSkuConfigSpareWarehouse.class);
+            Date currentDate = new Date();
+            applyProductSkuConfigs.stream().forEach(item->{
+                item.setId(null);
+                item.setApplyCode(code);
+                item.setFormNo(formNo);
+                item.setCreateTime(currentDate);
+            });
+            num = applyMapper.insertBatch(applyProductSkuConfigs);
+            //批量保存备用仓库
+            applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
+            //删除临时表配置信息
+            draftMapper.deleteOutByConfigCodes(configCodes);
+            //删除临时表备用仓库信息
+            spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
+        }
+
+        return num;
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -712,8 +713,48 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
      * @date 2019/7/5 20:10
      */
     @Override
-    public List<ProductSkuSupplyUnitRespVo> draftDetail(String skuCode) {
+    public List<SkuConfigsRepsVo> draftDetail(String skuCode) {
         return draftMapper.getListBySkuCode(skuCode);
+    }
+
+    /**
+     * 功能描述: 根据配置信息计算SKU状态和销售状态
+     *
+     * @param skuConfigsRepsVo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 19:44
+     */
+    @Override
+    public SkuStatusRespVo calculationSkuStatus(List<SkuConfigsRepsVo> skuConfigsRepsVo) {
+        SkuStatusRespVo respVo = new SkuStatusRespVo();
+        List<Byte> configStatus = skuConfigsRepsVo.stream().map(item->item.getConfigStatus()).distinct().collect(Collectors.toList());
+        if (configStatus.contains(SkuStatusEnum.IN_USE.getStatus())){
+            respVo.setSkuStatus(SkuStatusEnum.IN_USE.getStatus());
+            respVo.setOnSale(SkuSaleStatusEnum.NOT_IN_STOCK.getStatus());
+        } else if(configStatus.contains(SkuStatusEnum.STOP_PURCHASE.getStatus())) {
+            respVo.setSkuStatus(SkuStatusEnum.STOP_PURCHASE.getStatus());
+        } else if(configStatus.contains(SkuStatusEnum.STOP_DISTRIBUTION.getStatus())) {
+            respVo.setSkuStatus(SkuStatusEnum.STOP_DISTRIBUTION.getStatus());
+        } else {
+            respVo.setSkuStatus(SkuStatusEnum.STOP_SALES.getStatus());
+            respVo.setOnSale(SkuSaleStatusEnum.DIE_OUT.getStatus());
+        }
+        return null;
+    }
+
+    /**
+     * 功能描述: 获取申请表数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:33
+     */
+    @Override
+    public List<SkuConfigsRepsVo> getApply(String skuCode, String applyCode) {
+        return applyMapper.selectBySkuAndApplyCode(skuCode,applyCode);
     }
 
     /**

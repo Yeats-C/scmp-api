@@ -42,4 +42,15 @@ public interface ProductSkuPurchaseInfoService {
      */
     Integer deleteDrafts(List<String> skuCodes);
 
+    /**
+     *
+     * 功能描述: 查询申请表数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 20:48
+     */
+    List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode);
 }

@@ -10,13 +10,13 @@ import java.util.Date;
 /**
  * @author knight.xie
  * @version 1.0
- * @className ProductSkuPriceDraftRespVo
+ * @className ProductSkuPriceRespVo
  * @date 2019/7/5 19:58
  * @description TODO
  */
 @ApiModel("临时表价格详情返回Vo")
 @Data
-public class ProductSkuPriceDraftRespVo {
+public class ProductSkuPriceRespVo {
     @ApiModelProperty(value = "sku编码",hidden = true)
     private String skuCode;
 

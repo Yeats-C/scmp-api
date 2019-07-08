@@ -152,4 +152,22 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
     public int deleteDraftByIds(List<Long> ids) {
         return draftMapper.deleteDraftByIds(ids);
     }
+
+    /**
+     * 功能描述: 获取申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 22:59
+     */
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> getApply(String skuCode, String applyCode) {
+        List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitDao.getApplys(skuCode,applyCode);
+        if(CollectionUtils.isEmptyCollection(list)){
+            return Lists.newArrayList();
+        }
+        return list;
+    }
 }

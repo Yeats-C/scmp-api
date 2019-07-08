@@ -835,6 +835,16 @@
     apply_type_name
     from product_sku_draft where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
+
+  <select id="getApply" parameterType="java.lang.String" resultMap="Product_Sku_Resp_Map">
+    SELECT
+    <include refid="Product_Sku_Resp_Column"/>,
+    apply_type,
+    apply_type_name
+    from apply_product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
+    and apply_code=#{applyCode,jdbcType=VARCHAR}
+    and del_flag=0
+  </select>
   <select id="getSkuInfo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.BaseResultMap">
     SELECT * FROM product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
@@ -977,7 +987,8 @@
     procurement_section_code, procurement_section_name,
     form_no,inventory_model,use_time,unique_code,
     company_code,company_name,remark,apply_type,apply_type_name,
-    seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods)
+    seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
+    price_model,inventory_allocation)
     VALUES
     <foreach collection="applyProductSkus" item="item" index="index" separator="," >
       (#{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
@@ -1002,7 +1013,8 @@
       #{item.formNo,jdbcType=VARCHAR}, #{item.inventoryModel,jdbcType=TINYINT}, #{item.useTime,jdbcType=INTEGER}, #{item.uniqueCode,jdbcType=TINYINT},
       #{item.companyCode,jdbcType=VARCHAR},#{item.companyName,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},
       #{item.applyType,jdbcType=TINYINT},#{item.applyTypeName,jdbcType=VARCHAR}, #{item.seasonalGoods,jdbcType=TINYINT},
-      #{item.warehouseTypeCode,jdbcType=VARCHAR},#{item.warehouseTypeName,jdbcType=VARCHAR},#{item.structuralGoods,jdbcType=TINYINT}
+      #{item.warehouseTypeCode,jdbcType=VARCHAR},#{item.warehouseTypeName,jdbcType=VARCHAR},#{item.structuralGoods,jdbcType=TINYINT},
+      #{item.inventoryAllocation,jdbcType=TINYINT},#{item.priceModel,jdbcType=TINYINT}
       )
     </foreach>
   </insert>
@@ -1412,11 +1424,6 @@
         </foreach>
       </if>
   </select>
-  <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.BaseResultMap">
-    SELECT  * from apply_product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
-    and apply_code=#{applyCode,jdbcType=VARCHAR}
-    and del_flag=0
-  </select>
   <select id="getSkuApplyList" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.BaseResultMap">
     SELECT  * from apply_product_sku where apply_code=#{applyCode,jdbcType=VARCHAR} and del_flag=0
   </select>
@@ -1564,6 +1571,10 @@
     <result column="use_time" jdbcType="INTEGER" property="useTime" />
     <result column="unique_code" jdbcType="TINYINT" property="uniqueCode" />
     <result column="inventory_model" jdbcType="TINYINT" property="inventoryModel" />
+    <result column="inventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
+    <result column="price_model" jdbcType="TINYINT" property="priceModel" />
+    <result column="sku_status" jdbcType="TINYINT" property="skuStatus" />
+    <result column="on_sale" jdbcType="TINYINT" property="onSale" />
   </resultMap>
   <sql id="Product_Sku_Resp_Column">
   id,product_code,product_name,sku_code,sku_name,sku_abbreviation,product_brand_code,product_brand_name,product_category_code,
@@ -1572,7 +1583,8 @@
   quality_assurance_management,quality_number,quality_date,categories_supply_channels_code,categories_supply_channels_name,
   mnemonic_code,manufacturer_guide_price,applicable_month_age,seasonal_goods,warehouse_type_code,warehouse_type_name,
   structural_goods,is_main_push,new_product,remark,company_code,company_name,
-  del_flag,create_time,create_by,update_time,update_by,use_time,unique_code,inventory_model
+  del_flag,create_time,create_by,update_time,update_by,use_time,unique_code,
+  inventory_model,price_model,inventory_allocation,sku_status,on_sale
   </sql>
   <select id="getProductSkuInfos"  parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuReqVO" resultMap="Product_Sku_Resp_Map">
     select

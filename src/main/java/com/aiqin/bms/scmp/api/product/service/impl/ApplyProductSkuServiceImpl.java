@@ -1,10 +1,10 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.HandlingExceptionCode;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
-import com.aiqin.bms.scmp.api.product.domain.request.ApplyStatus;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;

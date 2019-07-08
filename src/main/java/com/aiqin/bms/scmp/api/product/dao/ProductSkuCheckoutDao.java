@@ -17,6 +17,8 @@ import java.util.List;
 public interface ProductSkuCheckoutDao {
     ProductSkuCheckoutRespVo getDraftInfo(String skuCode);
 
+    ProductSkuCheckoutRespVo getBySkuCode(String skuCode);
+
     ProductSkuCheckout getInfo(String skuCode);
 
     int insertApply(@Param("applyProductSkuCheckouts") List<ApplyProductSkuCheckout> applyProductSkuCheckouts);
@@ -31,7 +33,7 @@ public interface ProductSkuCheckoutDao {
 
     ApplyProductSkuCheckout getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuCheckout> getApplys(@Param("productSkus") List<ApplyProductSku> productSkus);
+    ProductSkuCheckoutRespVo getApplyInfo(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     int insertCheckOuts(@Param("productSkuCheckouts") List<ProductSkuCheckout> productSkuCheckouts);
 }

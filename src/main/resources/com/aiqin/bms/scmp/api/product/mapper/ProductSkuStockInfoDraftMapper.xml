@@ -39,6 +39,7 @@
     <result column="description" jdbcType="VARCHAR" property="description" />
     <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
     <result column="max_order_num" jdbcType="BIGINT" property="maxOrderNum" />
+    <result column="type" jdbcType="TINYINT" property="type"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, spec, product_name, unit_code, unit_name, bar_code, base_product_content, 
@@ -54,7 +55,7 @@
     <select id="getList" parameterType="java.lang.String" resultMap="StockRespMap">
       select
       <include refid="Base_Column_List"/>,
-      0 as `Type`
+      0 as `type`
       from product_sku_stock_info_draft
       where product_sku_code = #{skuCode,jdbcType=VARCHAR}
     </select>

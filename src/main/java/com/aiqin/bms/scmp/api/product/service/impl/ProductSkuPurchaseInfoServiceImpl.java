@@ -1,17 +1,17 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.Save;
+import com.aiqin.bms.scmp.api.common.SaveList;
+import com.aiqin.bms.scmp.api.common.Update;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPurchaseInfoDraftMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPurchaseInfoMapper;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfoDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPurchaseInfoDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPurchaseInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPurchaseInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import org.springframework.aop.framework.AopContext;
@@ -139,5 +139,19 @@ public class ProductSkuPurchaseInfoServiceImpl implements ProductSkuPurchaseInfo
     @Override
     public Integer deleteDrafts(List<String> skuCodes) {
         return productSkuPurchaseInfoDraftMapper.delete(skuCodes);
+    }
+
+    /**
+     * 功能描述: 查询申请表数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 20:48
+     */
+    @Override
+    public List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode) {
+        return productSkuPurchaseInfoDao.getApplyList(skuCode,applyCode);
     }
 }

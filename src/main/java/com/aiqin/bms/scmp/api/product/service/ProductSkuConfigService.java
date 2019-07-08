@@ -6,7 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespV
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
@@ -202,5 +202,28 @@ public interface ProductSkuConfigService {
     * @auther knight.xie
     * @date 2019/7/5 20:10
     */
-    List<ProductSkuSupplyUnitRespVo> draftDetail(String skuCode);
+    List<SkuConfigsRepsVo> draftDetail(String skuCode);
+
+    /**
+     *
+     * 功能描述: 根据配置信息计算SKU状态和销售状态
+     *
+     * @param skuConfigsRepsVos
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 19:44
+     */
+    SkuStatusRespVo calculationSkuStatus(List<SkuConfigsRepsVo> skuConfigsRepsVos);
+
+    /**
+     *
+     * 功能描述: 获取申请表数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:33
+     */
+    List<SkuConfigsRepsVo> getApply(String skuCode, String applyCode);
 }

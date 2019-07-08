@@ -1,17 +1,17 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.Save;
+import com.aiqin.bms.scmp.api.common.SaveList;
+import com.aiqin.bms.scmp.api.common.Update;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutDraftMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutMapper;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckoutDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuCheckoutRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuCheckoutService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import org.springframework.aop.framework.AopContext;
@@ -139,5 +139,32 @@ public class ProductSkuCheckoutServiceImpl implements ProductSkuCheckoutService 
     @Override
     public Integer deleteDrafts(List<String> skuCodes) {
         return productSkuCheckoutDraftMapper.delete(skuCodes);
+    }
+
+    /**
+     * 功能描述: 根据skuCode编码查询正式结算信息
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 17:00
+     */
+    @Override
+    public ProductSkuCheckoutRespVo getBySkuCode(String skuCode) {
+        return productSkuCheckoutDao.getBySkuCode(skuCode);
+    }
+
+    /**
+     * 功能描述: 获取申请结算信息
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 22:52
+     */
+    @Override
+    public ProductSkuCheckoutRespVo getApply(String skuCode, String applyCode) {
+        return productSkuCheckoutDao.getApplyInfo(skuCode,applyCode);
     }
 }

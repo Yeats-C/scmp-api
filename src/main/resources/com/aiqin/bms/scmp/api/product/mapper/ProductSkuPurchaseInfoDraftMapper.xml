@@ -31,12 +31,12 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="getList" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
-      select
-       id, product_code, spec, product_name, unit_code, unit_name, purchase_code as bar_code, base_product_content,
-       del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,1 as `type`
-      from product_sku_purchase_info_draft
-      where product_sku_code = #{skuCode,jdbcType=VARCHAR}
-    </select>
+    select
+     id, product_code, spec, product_name, unit_code, unit_name, purchase_code as bar_code, base_product_content,
+     del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,1 as `type`
+    from product_sku_purchase_info_draft
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_purchase_info_draft
     where id = #{id,jdbcType=BIGINT}
