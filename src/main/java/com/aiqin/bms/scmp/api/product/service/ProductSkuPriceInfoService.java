@@ -56,9 +56,10 @@ public interface ProductSkuPriceInfoService {
      * @author NullPointException
      * @date 2019/6/17
      * @param skuCode
+     * @param applyCode
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft>
      */
-    List<ApplyProductSkuPriceInfo> getSkuPriceListApplyBySkuCodes(List<String> skuCode);
+    List<ApplyProductSkuPriceInfo> getSkuPriceListApplyBySkuCodes(List<String> skuCode,String applyCode);
     /**
      * 删除临时表
      * @author NullPointException
