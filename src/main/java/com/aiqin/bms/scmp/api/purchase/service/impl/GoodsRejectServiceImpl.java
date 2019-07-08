@@ -272,7 +272,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                         errorCount++;
                         continue;
                     }
-                    queryStockBatchSkuRespVo = stockDao.selectSkuBatchCode(purchaseGroupCode, record[3], record[4], record[0], record[5]);
+                    queryStockBatchSkuRespVo = stockDao.selectSkuBatchCode(purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0], record[5]);
                     if (queryStockBatchSkuRespVo != null) {
                         BeanUtils.copyProperties(queryStockBatchSkuRespVo, response);
                         response.setProductCount(record[7]);
@@ -443,7 +443,6 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
             //锁定库存 todo
-//            ILockStockBatchReqVOs iLockStockBatchReqVO = new ILockStockBatchReqVOs();
 //            stockService.returnSupplyLockStockBatch(iLockStockBatchReqVO);
         } catch (BeansException e) {
             LOGGER.error("新增退供单异常:{}", e.getMessage());
