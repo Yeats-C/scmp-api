@@ -1043,7 +1043,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuPriceInfoService.saveSkuPriceOfficial(productSkuPriceInfos);
         }
         //更新审批状态
-        applyProductSkuMapper.updateStatusByFormNo(ApplyStatus.APPROVAL_SUCCESS.getNumber(),vo.getFormNo(),vo.getApprovalUserName(),vo.getAuditorTime());
+        applyProductSkuMapper.updateStatusByFormNo(ApplyStatus.APPROVAL_SUCCESS.getNumber(),vo.getFormNo(),vo.getApprovalUserName(),auditorTime);
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
 
