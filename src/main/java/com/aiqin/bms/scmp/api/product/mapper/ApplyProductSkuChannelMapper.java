@@ -22,4 +22,5 @@ public interface ApplyProductSkuChannelMapper {
     int insertBartch(List<ApplyProductSkuChannel> list);
 
     List<ProductSkuChannelRespVo> selectBySkuAndApplyCode(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+    List<ApplyProductSkuChannel> selectApplyProductSkuChannelBySkuAndApplyCode(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 }

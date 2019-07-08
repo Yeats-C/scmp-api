@@ -30,9 +30,9 @@
     delete from product_sku_supply_unit_capacity
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByApplyCode">
+  <delete id="deleteBySkuCode">
     delete from product_sku_supply_unit_capacity
-    where apply_code = #{applyCode,jdbcType=VARCHAR}
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity">
     insert into product_sku_supply_unit_capacity (id, supply_unit_code, supply_unit_name, 

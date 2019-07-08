@@ -28,6 +28,8 @@ public interface ProductSkuPicturesDao {
 
     List<ProductSkuPicturesRespVo> getDraftInfo(String skuCode);
 
+    List<ProductSkuPicturesRespVo> getRespInfoBySkuCode(String skuCode);
+
     List<ProductSkuPictures> getInfo(String skuCode);
 
     List<ProductSkuPicturesDraft> getDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);

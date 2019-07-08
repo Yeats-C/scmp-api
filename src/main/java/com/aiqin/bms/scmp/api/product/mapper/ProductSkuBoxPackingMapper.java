@@ -14,4 +14,6 @@ public interface ProductSkuBoxPackingMapper {
     int updateByPrimaryKeySelective(ProductSkuBoxPacking record);
 
     int updateByPrimaryKey(ProductSkuBoxPacking record);
+
+    int deleteBySkuCode(String skuCode);
 }

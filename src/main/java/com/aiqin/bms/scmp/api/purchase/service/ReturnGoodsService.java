@@ -88,7 +88,7 @@ public interface ReturnGoodsService {
      * @param reqVO
      * @return java.lang.Boolean
      */
-    Boolean saveReturnInspection(List<ReturnInspectionReq> reqVO);
+    Boolean saveReturnInspection(List<ReturnInspectionReq> reqVO,String remark);
     /**
      * 调用库房入库接口生成入库单
      * @author NullPointException

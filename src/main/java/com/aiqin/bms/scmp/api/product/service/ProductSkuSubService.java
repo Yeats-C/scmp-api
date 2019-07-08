@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSub;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSub;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSubDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSubRespVo;
 
@@ -71,4 +72,38 @@ public interface ProductSkuSubService {
      * @date 2019/7/6 23:40
      */
     List<ProductSkuSubRespVo> getApply(String skuCode, String applyCode);
+
+    /**
+     *
+     * 功能描述: 获取正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:24
+     */
+    List<ProductSkuSubRespVo> getList(String skuCode);
+
+    /**
+     *
+     * 功能描述: 保存到正式
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 22:28
+     */
+    int saveList(String skuCode, String applyCode);
+
+    /**
+     *
+     * 功能描述: 批量插入到数据库
+     *
+     * @param list
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 22:29
+     */
+    int insertBatch(List<ProductSkuSub> list);
 }

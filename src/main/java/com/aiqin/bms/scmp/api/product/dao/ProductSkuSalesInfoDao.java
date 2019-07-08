@@ -30,6 +30,8 @@ public interface ProductSkuSalesInfoDao {
 
     List<ProductSkuSalesInfo> getInfo(String skuCode);
 
+    List<PurchaseSaleStockRespVo> getRespVoBySkuCode(String skuCode);
+
     List<ProductSkuSalesInfoDraft> getDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);
 
     int deleteDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);

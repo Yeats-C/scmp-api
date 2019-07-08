@@ -35,9 +35,6 @@ public class ApplyProductSkuBoxPacking extends CommonBean {
     @ApiModelProperty("净重")
     private Long netWeight;
 
-    @ApiModelProperty("删除标记(0:正常 1:删除)")
-    private Byte delFlag;
-
     @ApiModelProperty("商品sku code")
     private String productSkuCode;
 

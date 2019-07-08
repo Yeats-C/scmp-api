@@ -126,6 +126,8 @@ public interface ProductSkuDao {
 
     ProductSkuRespVo getSkuDraft(String skuCode);
 
+    ProductSkuRespVo getSkuInfoResp(String skuCode);
+
     ProductSkuInfo getSkuInfo(String skuCode);
 
     /**
@@ -188,8 +190,6 @@ public interface ProductSkuDao {
      * @return
      */
     int insertApplySkuList(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
-
-    int insertSkuList(@Param("productSkuInfos") List<ProductSkuInfo> productSkuInfos);
 
     List<ApplyDetailProductListResp> getApplyProductList(String applyCode);
 

@@ -90,12 +90,20 @@
     and apply_code=#{applyCode}
   </select>
 
-  <select id="getApplys" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
+  <select id="getApplys" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
     select
      id, product_code, spec, product_name, unit_code, small_unit as unit_name, sales_code as bar_code, base_product_content,description,
      del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,3 as `type`
     from apply_product_sku_sales_info
     where product_sku_code = #{skuCode,jdbcType=VARCHAR}
     and apply_code = #{applyCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getRespVoBySkuCode" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
+    select
+     id, product_code, spec, product_name, unit_code, small_unit as unit_name, sales_code as bar_code, base_product_content,description,
+     del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,3 as `type`
+    from product_sku_sales_info
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
 </mapper>

@@ -219,4 +219,7 @@ public class ProductSkuInfo extends CommonBean {
 
     @ApiModelProperty("唯一码管理(0:是 1:否)")
     private Byte uniqueCode;
+
+    @ApiModelProperty("申请类型名称")
+    private String applyTypeName;
 }

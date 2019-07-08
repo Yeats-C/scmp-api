@@ -11,14 +11,18 @@
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="output_tax_rate" jdbcType="BIGINT" property="outputTaxRate" />
-    <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
-    <result column="Integral_coefficient" jdbcType="BIGINT" property="integralCoefficient" />
+    <result column="input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
+    <result column="integral_coefficient" jdbcType="BIGINT" property="integralCoefficient" />
     <result column="rebate" jdbcType="BIGINT" property="rebate" />
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
+    <result column="logistics_fee_award_ratio" jdbcType="DECIMAL" property="logisticsFeeAwardRatio" />
   </resultMap>
   <sql id="Base_Column_List">
     id, create_by, create_time, update_by, update_time, del_flag, sku_code, sku_name, 
-    output_tax_rate, Input_tax_rate, Integral_coefficient, rebate, apply_code
+    output_tax_rate, Input_tax_rate, Integral_coefficient, rebate, apply_code,
+    logistics_fee_award_ratio,settlement_method_code,settlement_method_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -42,12 +46,13 @@
       update_by, update_time, del_flag, 
       sku_code, sku_name, output_tax_rate, 
       Input_tax_rate, Integral_coefficient, rebate, 
-      apply_code)
+      apply_code,logistics_fee_award_ratio,settlement_method_code,settlement_method_name)
     values (#{id,jdbcType=BIGINT}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=TINYINT}, 
       #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{outputTaxRate,jdbcType=BIGINT}, 
       #{inputTaxRate,jdbcType=BIGINT}, #{integralCoefficient,jdbcType=BIGINT}, #{rebate,jdbcType=BIGINT}, 
-      #{applyCode,jdbcType=VARCHAR})
+      #{applyCode,jdbcType=VARCHAR},#{logisticsFeeAwardRatio,jdbcType=DECIMAL},
+      #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout">
     insert into product_sku_checkout
@@ -91,6 +96,15 @@
       <if test="applyCode != null">
         apply_code,
       </if>
+      <if test="logisticsFeeAwardRatio != null">
+        logistics_fee_award_ratio,
+      </if>
+      <if test="settlementMethodCode != null">
+        settlement_method_code,
+      </if>
+      <if test="settlementMethodName != null">
+        settlement_method_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -131,6 +145,15 @@
       </if>
       <if test="applyCode != null">
         #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsFeeAwardRatio != null">
+        #{logisticsFeeAwardRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="settlementMethodCode != null">
+        #{settlementMethodCode,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodName != null">
+        #{settlementMethodName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -173,6 +196,15 @@
       <if test="applyCode != null">
         apply_code = #{applyCode,jdbcType=VARCHAR},
       </if>
+      <if test="logisticsFeeAwardRatio != null">
+        logistics_fee_award_ratio = #{logisticsFeeAwardRatio,jdbcType=DECIMAL},
+      </if>
+      <if test="settlementMethodCode != null">
+        settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodName != null">
+        settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -189,7 +221,10 @@
       Input_tax_rate = #{inputTaxRate,jdbcType=BIGINT},
       Integral_coefficient = #{integralCoefficient,jdbcType=BIGINT},
       rebate = #{rebate,jdbcType=BIGINT},
-      apply_code = #{applyCode,jdbcType=VARCHAR}
+      apply_code = #{applyCode,jdbcType=VARCHAR},
+      logistics_fee_award_ratio = #{logisticsFeeAwardRatio,jdbcType=DECIMAL},
+      settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
+      settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -7,13 +7,13 @@ import lombok.Data;
 
 import java.util.Date;
 
-@ApiModel("订单商品信息")
+@ApiModel("退货验货保存vo信息（参数有多要就传多少）")
 @Data
 public class ReturnOrderInfoInspectionItem {
     @ApiModelProperty("商品主键")
     private Long id;
 
-    @ApiModelProperty("订单主表编码")
+    @ApiModelProperty("退货订单主表编码")
     private String returnOrderCode;
 
     @ApiModelProperty("sku编号")
@@ -101,6 +101,6 @@ public class ReturnOrderInfoInspectionItem {
     private String warehouseCode;
 
     @ApiModelProperty("如果手动输入批次号，那么必须传入生产日期")
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date productDate;
 }
