@@ -15,10 +15,10 @@ import java.util.Date;
  * @time: 14:35
  */
 @Data
-@ApiModel("退货验货保存请求vo")
+@ApiModel("退货验货保存请求vo（能传多少传多少）")
 public class ReturnInspectionReq {
 
-    @ApiModelProperty("订单主表编码")
+    @ApiModelProperty("退货订单主表编码")
     private String returnOrderCode;
 
     @ApiModelProperty("sku编号")
