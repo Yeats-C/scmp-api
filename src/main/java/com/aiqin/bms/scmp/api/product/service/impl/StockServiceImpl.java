@@ -1006,7 +1006,7 @@ public class StockServiceImpl implements StockService {
 //                    stockFlow.setOrderSource();
                 stockFlow.setSkuCode(stock.getSkuCode());
                 stockFlow.setSkuName(stock.getSkuName());
-                stockFlow.setOperationType(stockChangeRequest.getOperationType().longValue());
+                stockFlow.setOperationType(stockChangeRequest.getOperationType());
                 stockFlow.setBeforeInventoryNum(stock.getInventoryNum());
                 stockFlow.setBeforeLockNum(stock.getLockNum());
                 stockFlow.setBeforeAvailableNum(stock.getAvailableNum());
@@ -1039,7 +1039,7 @@ public class StockServiceImpl implements StockService {
 //                    stockFlow.setOrderSource();
                 stockFlow.setSkuCode(stockVoRequest.getSkuCode());
                 stockFlow.setSkuName(stockVoRequest.getSkuName());
-                stockFlow.setOperationType(stockChangeRequest.getOperationType().longValue());
+                stockFlow.setOperationType(stockChangeRequest.getOperationType());
                 stockFlow.setChangeNum(stockVoRequest.getChangeNum());
                 stockFlow.setBeforeInventoryNum(0l);
                 stockFlow.setBeforeLockNum(0l);
@@ -1375,13 +1375,13 @@ public class StockServiceImpl implements StockService {
                                 // stockBatchFlow.setOrderSource();
                                 stockBatchFlow.setSkuCode(stockBatch.getSkuCode());
                                 stockBatchFlow.setSkuName(stockBatch.getSkuName());
-                                stockBatchFlow.setLockStatus(1L);
+                                stockBatchFlow.setLockStatus(1);
                                 stockBatchFlow.setDocumentType(stockBatchVoRequest.getDocumentType());
                                 stockBatchFlow.setDocumentNum(stockBatchVoRequest.getDocumentNum());
                                 stockBatchFlow.setSourceDocumentType(stockBatchVoRequest.getSourceDocumentType());
                                 stockBatchFlow.setSourceDocumentNum(stockBatchVoRequest.getSourceDocumentNum());
-                                stockBatchFlow.setOperatingTime(stockBatchVoRequest.getOperatingTime());
-                                stockBatchFlow.setOperatingBy(stockBatchVoRequest.getOperatingBy());
+                                stockBatchFlow.setUpdateByCode(stockBatchVoRequest.getUpdateByCode());
+                                stockBatchFlow.setUpdateByName(stockBatchVoRequest.getUpdateByName());
                                 stockBatchFlow.setRemark(stockBatchVoRequest.getRemark());
                                 stockBatchFlow.setBeforeInventoryNum(stockBatchCode.getInventoryNum());
                                 stockBatchFlow.setAfterInventoryNum(stockBatch.getInventoryNum());
@@ -1442,13 +1442,13 @@ public class StockServiceImpl implements StockService {
                                 stockBatchFlow.setOrderType(stockChangeRequest.getOrderType());
                                 stockBatchFlow.setSkuCode(stockBatch.getSkuCode());
                                 stockBatchFlow.setSkuName(stockBatch.getSkuName());
-                                stockBatchFlow.setLockStatus(stockChangeRequest.getOperationType().longValue());
+                                stockBatchFlow.setLockStatus(stockChangeRequest.getOperationType());
                                 stockBatchFlow.setDocumentType(stockBatchVoRequest.getDocumentType());
                                 stockBatchFlow.setDocumentNum(stockBatchVoRequest.getDocumentNum());
                                 stockBatchFlow.setSourceDocumentType(stockBatchVoRequest.getSourceDocumentType());
                                 stockBatchFlow.setSourceDocumentNum(stockBatchVoRequest.getSourceDocumentNum());
-                                stockBatchFlow.setOperatingTime(stockBatchVoRequest.getOperatingTime());
-                                stockBatchFlow.setOperatingBy(stockBatchVoRequest.getOperatingBy());
+                                stockBatchFlow.setUpdateByCode(stockBatchVoRequest.getUpdateByCode());
+                                stockBatchFlow.setUpdateByName(stockBatchVoRequest.getUpdateByName());
                                 stockBatchFlow.setRemark(stockBatchVoRequest.getRemark());
                                 stockBatchFlow.setBeforeInventoryNum(stockBatchCode.getInventoryNum());
                                 stockBatchFlow.setAfterInventoryNum(stockBatch.getInventoryNum());
@@ -1494,8 +1494,8 @@ public class StockServiceImpl implements StockService {
         switch (operationType) {
             //直接加库存
             case 1:
-                stockBatch.setInventoryNum(stockBatchVoRequest.getChangeNum());
-                stockBatch.setAvailableNum(stockBatchVoRequest.getChangeNum());
+                stockBatch.setInventoryNum(stockBatchVoRequest.getChangeNum().longValue());
+                stockBatch.setAvailableNum(stockBatchVoRequest.getChangeNum().longValue());
                 break;
             //锁定库存数
             case 2:
@@ -1694,13 +1694,13 @@ public class StockServiceImpl implements StockService {
                 }
                 //设置库存流水变化后值
                 stockBatchFlow.setBatchCode(stockBatch.getBatchCode());
-                stockBatchFlow.setLockStatus(stockChangeRequest.getOperationType().longValue());
+                stockBatchFlow.setLockStatus(stockChangeRequest.getOperationType());
                 stockBatchFlow.setDocumentType(stockBatchVoRequest.getDocumentType());
                 stockBatchFlow.setDocumentNum(stockBatchVoRequest.getDocumentNum());
                 stockBatchFlow.setSourceDocumentType(stockBatchVoRequest.getSourceDocumentType());
                 stockBatchFlow.setSourceDocumentNum(stockBatchVoRequest.getSourceDocumentNum());
-                stockBatchFlow.setOperatingTime(stockBatchVoRequest.getOperatingTime());
-                stockBatchFlow.setOperatingBy(stockBatchVoRequest.getOperatingBy());
+                stockBatchFlow.setUpdateByCode(stockBatchVoRequest.getUpdateByCode());
+                stockBatchFlow.setUpdateByName(stockBatchVoRequest.getUpdateByName());
                 stockBatchFlow.setRemark(stockBatchVoRequest.getRemark());
                 stockBatchFlow.setChangeNum(stockBatchVoRequest.getChangeNum());
                 stockBatchFlow.setAfterInventoryNum(stockBatch.getInventoryNum());
@@ -1739,13 +1739,13 @@ public class StockServiceImpl implements StockService {
                 }
                 //设置库存流水修改后的值
                 stockBatchFlow.setBatchCode(stockBatch.getBatchCode());
-                stockBatchFlow.setLockStatus(stockChangeRequest.getOperationType().longValue());
+                stockBatchFlow.setLockStatus(stockChangeRequest.getOperationType());
                 stockBatchFlow.setDocumentType(stockBatchVoRequest.getDocumentType());
                 stockBatchFlow.setDocumentNum(stockBatchVoRequest.getDocumentNum());
                 stockBatchFlow.setSourceDocumentType(stockBatchVoRequest.getSourceDocumentType());
                 stockBatchFlow.setSourceDocumentNum(stockBatchVoRequest.getSourceDocumentNum());
-                stockBatchFlow.setOperatingTime(stockBatchVoRequest.getOperatingTime());
-                stockBatchFlow.setOperatingBy(stockBatchVoRequest.getOperatingBy());
+                stockBatchFlow.setUpdateByCode(stockBatchVoRequest.getUpdateByCode());
+                stockBatchFlow.setUpdateByName(stockBatchVoRequest.getUpdateByCode());
                 stockBatchFlow.setRemark(stockBatchVoRequest.getRemark());
                 stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
                 stockBatchFlow.setAfterInventoryNum(stockBatch.getInventoryNum());
@@ -1797,8 +1797,8 @@ public class StockServiceImpl implements StockService {
         switch (operationType) {
             //直接加库存
             case 1:
-                stockBatch.setInventoryNum(stockBatchVoRequest.getChangeNum());
-                stockBatch.setAvailableNum(stockBatchVoRequest.getChangeNum());
+                stockBatch.setInventoryNum(stockBatchVoRequest.getChangeNum().longValue());
+                stockBatch.setAvailableNum(stockBatchVoRequest.getChangeNum().longValue());
                 break;
             //锁定库存数
             case 2:
