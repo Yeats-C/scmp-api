@@ -50,8 +50,8 @@ public class ReturnSupplyToStockBatchConverter implements Converter<ILockStockBa
             stockBatchVoRequest.setDocumentNum(itemReqVo.getDocumentNum());
             stockBatchVoRequest.setSourceDocumentType(itemReqVo.getSourceDocumentType());
             stockBatchVoRequest.setSourceDocumentNum(itemReqVo.getSourceDocumentNum());
-            stockBatchVoRequest.setOperatingTime(itemReqVo.getOperatingTime());
-            stockBatchVoRequest.setOperatingBy(itemReqVo.getOperatingBy());
+            stockBatchVoRequest.setUpdateByCode(itemReqVo.getUpdateByCode());
+            stockBatchVoRequest.setUpdateByName(itemReqVo.getUpdateByName());
             stockBatchVoRequest.setRemark(itemReqVo.getRemark());
 //            stockBatchVoRequest.setTaxRate(itemReqVo.getTaxRate());
             list.add(stockBatchVoRequest);

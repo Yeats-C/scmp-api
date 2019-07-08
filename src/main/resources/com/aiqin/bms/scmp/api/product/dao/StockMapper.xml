@@ -149,6 +149,8 @@
         <result column="operating_by" jdbcType="VARCHAR" property="operatingBy"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
         <result column="change_num" jdbcType="VARCHAR" property="changeNum"/>
+        <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
+        <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
     </resultMap>
     <resultMap id="StockBatchRespMap" type="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -954,7 +956,8 @@
         st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
         sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.unit_code,ps.product_category_code,ps.product_category_name
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.unit_code,ps.product_category_code,ps.product_category_name,
+        st.stockup_num,st.stockupfinish_time
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
@@ -1909,8 +1912,6 @@
         document_num,
         source_document_type,
         source_document_num,
-        operating_time,
-        operating_by,
         remark,
         before_inventory_num,
         after_inventory_num,
@@ -1921,9 +1922,11 @@
         change_num,
         operation_type,
         create_time,
-        create_by,
+        create_by_code,
+        create_by_name,
         update_time,
-        update_by
+        update_by_code,
+        update_by_name
         )
         values
         <foreach collection="stockBatchFlows" item="item" index="index" separator=",">
@@ -1941,8 +1944,6 @@
             #{item.documentNum},
             #{item.sourceDocumentType},
             #{item.sourceDocumentNum},
-            NOW(),
-            #{item.operatingBy},
             #{item.remark},
             #{item.beforeInventoryNum},
             #{item.afterInventoryNum},
@@ -1953,9 +1954,11 @@
             #{item.changeNum},
             #{item.operationType},
             #{item.createTime},
-            #{item.createBy},
-            #{item.updateTime},
-            #{item.updateBy}
+            #{item.createByCode},
+            #{item.createByName},
+            NOW(),
+            #{item.updateByCode},
+            #{item.updateByName}
             )
         </foreach>
     </insert>
