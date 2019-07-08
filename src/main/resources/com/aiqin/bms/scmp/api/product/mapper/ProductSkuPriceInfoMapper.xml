@@ -236,6 +236,7 @@
              a.price_item_name        aprice_item_name,
              a.price_type_name        aprice_type_name,
              a.price_tax              aprice_tax,
+             a.supplier_name         asupplier_name,
              a.warehouse_batch_number awarehouse_batch_number,
              a.transport_center_name  atransport_center_name,
              a.warehouse_name         awarehouse_name,
