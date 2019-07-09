@@ -75,8 +75,8 @@ public class RejectTest extends SpringBootTestContext {
         detail.setPurchaseGroupName("奶粉组");
         detail.setApplyType(1);
         detail.setBarcode("112");
-        detail.setSkuCode("0000108");
-        detail.setSkuName("商品1");
+        detail.setSkuCode("295110");
+        detail.setSkuName("爱亲贝贝外出服夏季卡通中性梭织九分裤9812203170584浅灰100");
         detail.setProductId("product11111");
         detail.setCategoryId("01050201");
         detail.setCategoryName("乳糖不耐受奶粉");
@@ -93,8 +93,8 @@ public class RejectTest extends SpringBootTestContext {
         detail.setSingleCount(5);
         detail.setProductCount(5);
         detail.setTaxRate(10);
-        detail.setTransportCenterCode("ck22");
-        detail.setTransportCenterName("仓库21");
+        detail.setTransportCenterCode("1025");
+        detail.setTransportCenterName("华北");
         detail.setWarehouseCode("1026");
         detail.setWarehouseName("华北销售库");
         detail.setProductAmount(10L);
@@ -113,8 +113,8 @@ public class RejectTest extends SpringBootTestContext {
         detail1.setPurchaseGroupName("奶粉组");
         detail1.setApplyType(1);
         detail1.setBarcode("112");
-        detail1.setSkuCode("0000108");
-        detail1.setSkuName("商品1");
+        detail1.setSkuCode("295110");
+        detail1.setSkuName("爱亲贝贝外出服夏季卡通中性梭织九分裤9812203170584浅灰100");
         detail1.setProductId("product11111");
         detail1.setCategoryId("01050201");
         detail1.setCategoryName("乳糖不耐受奶粉");
@@ -131,10 +131,10 @@ public class RejectTest extends SpringBootTestContext {
         detail1.setSingleCount(5);
         detail1.setProductCount(5);
         detail1.setTaxRate(10);
-        detail1.setTransportCenterCode("ck22");
-        detail1.setTransportCenterName("仓库21");
-        detail1.setWarehouseCode("1026");
-        detail1.setWarehouseName("华北销售库");
+        detail.setTransportCenterCode("1025");
+        detail.setTransportCenterName("华北");
+        detail.setWarehouseCode("1026");
+        detail.setWarehouseName("华北销售库");
         detail1.setProductAmount(10L);
         detail1.setProductCost(10L);
         detail1.setBatchNo("123456788");

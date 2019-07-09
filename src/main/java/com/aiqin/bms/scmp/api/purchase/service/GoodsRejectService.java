@@ -1,9 +1,13 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * <p>
@@ -63,4 +67,6 @@ public interface GoodsRejectService {
     HttpResponse rejectApplyDetailInfo(RejectApplyRequest rejectApplyQueryRequest);
 
     HttpResponse rejectCancel(String reject_record_id);
+
+    ILockStockBatchReqVO handleStockParam(List<RejectRecordDetail> detailList, RejectRecord rejectRecord);
 }
