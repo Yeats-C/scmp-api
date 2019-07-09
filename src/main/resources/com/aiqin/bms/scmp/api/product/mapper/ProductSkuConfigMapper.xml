@@ -465,10 +465,12 @@
       apply_status = #{auditorStatus,jdbcType=TINYINT}
     where apply_code = #{applyCode,jdbcType=VARCHAR}
   </update>
-  <select id="4" parameterType="java.lang.String"  resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"></include>
+  <select id="getCycleInfo" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig">
+    select
+    product_code as productCode, product_name as productName, sku_code as skuCode, sku_name as skuName,
+    turnover_period_after_arrival as turnoverPeriodAfterArrival from
     product_sku_config
     where sku_code = #{skuCode,jdbcType=VARCHAR}
-    and transport_center_code = #{item.transportCenterCode,jdbcType=VARCHAR}
+    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}1
   </select>
 </mapper>
