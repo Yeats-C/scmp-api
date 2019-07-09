@@ -132,7 +132,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse rejectApply(RejectApplyHandleRequest rejectApplyQueryRequest) {
-        if (rejectApplyQueryRequest != null && CollectionUtils.isEmpty(rejectApplyQueryRequest.getDetailList())) {
+        if (rejectApplyQueryRequest == null || CollectionUtils.isEmpty(rejectApplyQueryRequest.getDetailList())) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         try {
