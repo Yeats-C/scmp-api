@@ -47,4 +47,7 @@ public class ProductSkuPriceRespVo {
     @ApiModelProperty("开始生效时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date effectiveTimeStart;
+
+    @ApiModelProperty("供应商")
+    private String supplierName;
 }

@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProje
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
@@ -765,6 +766,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         //sku文件管理
         detailResp.setProductSkuFiles(productSkuFileService.getList(skuCode));
         //价格信息
+        List<ProductSkuPriceRespVo> applyProductSkuPriceInfos =
+                productSkuPriceInfoService.getSkuPriceBySkuCodeForOfficial(skuCode);
+        detailResp.setProductSkuPrices(applyProductSkuPriceInfos);
         //配置信息
         detailResp.setProductSkuConfigs(productSkuConfigService.getList(skuCode));
         return detailResp;
@@ -878,14 +882,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         //sku文件管理
         detailResp.setProductSkuFiles(productSkuFileService.getApply(skuCode,applyCode));
         //价格信息
-        List<String> skuCodes = Lists.newArrayList();
-        skuCodes.add(skuCode);
-        List<ApplyProductSkuPriceInfo> applyProductSkuPriceInfos =
-                productSkuPriceInfoService.getSkuPriceListApplyBySkuCodes(skuCodes,applyCode);
-        List<ProductSkuPriceRespVo> draftTemps =
-                BeanCopyUtils.copyList(applyProductSkuPriceInfos, ProductSkuPriceRespVo.class);
+        List<ProductSkuPriceRespVo> applyProductSkuPriceInfos =
+                productSkuPriceInfoService.getSkuPriceBySkuCodeForApply(skuCode,applyCode);
         List<ProductSkuPriceRespVo> priceDraftRespVos =
-                draftTemps.stream().filter(item ->
+                applyProductSkuPriceInfos.stream().filter(item ->
                         !Objects.equals(item.getPriceTypeCode(), PriceTypeEnum.PURCHASE.getTypeCode())).
                         collect(Collectors.toList());
         detailResp.setProductSkuPrices(priceDraftRespVos);
