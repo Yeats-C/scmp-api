@@ -155,7 +155,7 @@
       <if test="storageStatus != null">
         and o.storage_status = #{storageStatus,jdbcType=INTEGER}
       </if>
-      <if test="purchase_mode != null">
+      <if test="purchaseMode != null">
         and o.purchase_mode = #{purchaseMode,jdbcType=INTEGER}
       </if>
     </where>
@@ -194,7 +194,7 @@
       <if test="storageStatus != null">
         and o.storage_status = #{storageStatus,jdbcType=INTEGER}
       </if>
-      <if test="purchase_mode != null">
+      <if test="purchaseMode != null">
         and o.purchase_mode = #{purchaseMode,jdbcType=INTEGER}
       </if>
     </where>

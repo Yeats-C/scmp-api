@@ -95,7 +95,31 @@ public class StockFlow extends CommonBean {
 
     @ApiModelProperty("操作类型")
     @JsonProperty(value = "operation_type")
-    private Long operationType;
+    private Integer operationType;
+
+    @ApiModelProperty("状态(锁状态-1加库存2锁定库存3减库存并解锁4解锁库存5减库存6锁定库存转移7加并锁定库存)")
+    @JsonProperty(value = "lock_status")
+    private Integer lockStatus;
+
+    @ApiModelProperty("单据类型")
+    @JsonProperty(value = "document_type")
+    private Integer documentType;
+
+    @ApiModelProperty("单据号")
+    @JsonProperty(value = "document_num")
+    private String documentNum;
+
+    @ApiModelProperty("来源单据类型")
+    @JsonProperty(value = "source_document_type")
+    private Integer sourceDocumentType;
+
+    @ApiModelProperty("来源单据号")
+    @JsonProperty(value = "source_document_num")
+    private String sourceDocumentNum;
+
+    @ApiModelProperty("商品备注")
+    @JsonProperty(value = "remark")
+    private String remark;
 
 
-    }
+}

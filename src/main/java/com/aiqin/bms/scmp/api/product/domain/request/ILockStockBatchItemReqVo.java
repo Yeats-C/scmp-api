@@ -32,31 +32,31 @@ public class ILockStockBatchItemReqVo {
 
     @ApiModelProperty("单据类型")
     @JsonProperty(value = "document_type")
-    private String documentType;
+    private Integer documentType;
 
     @ApiModelProperty("单据号")
     @JsonProperty(value = "document_num")
-    private Long documentNum;
+    private String documentNum;
 
     @ApiModelProperty("来源单据类型")
     @JsonProperty(value = "source_document_type")
-    private String sourceDocumentType;
+    private Integer sourceDocumentType;
 
     @ApiModelProperty("来源单据号")
     @JsonProperty(value = "source_document_num")
-    private Long sourceDocumentNum;
-
-    @ApiModelProperty("操作时间")
-    @JsonProperty(value = "operating_time")
-    private String operatingTime;
-
-    @ApiModelProperty("操作人")
-    @JsonProperty(value = "operating_by")
-    private String operatingBy;
+    private String sourceDocumentNum;
 
     @ApiModelProperty("商品备注")
     @JsonProperty(value = "remark")
     private String remark;
+
+    @ApiModelProperty("更新人code")
+    @JsonProperty(value = "update_by_code")
+    private String updateByCode;
+
+    @ApiModelProperty("更新人名称")
+    @JsonProperty(value = "update_by_name")
+    private String updateByName;
 
     @ApiModelProperty("操作类型")
     @JsonProperty(value = "operator")

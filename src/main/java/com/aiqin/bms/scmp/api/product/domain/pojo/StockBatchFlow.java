@@ -8,7 +8,7 @@ import lombok.Data;
 
 @ApiModel("批次库存流水实体Model")
 @Data
-public class StockBatchFlow extends CommonBean {
+public class StockBatchFlow{
     @ApiModelProperty("主键")
     @JsonProperty("id")
     private Long id;
@@ -47,31 +47,23 @@ public class StockBatchFlow extends CommonBean {
 
     @ApiModelProperty("状态(锁状态-后补)")
     @JsonProperty(value = "lock_status")
-    private Long lockStatus;
+    private Integer lockStatus;
 
     @ApiModelProperty("单据类型")
     @JsonProperty(value = "document_type")
-    private String documentType;
+    private Integer documentType;
 
     @ApiModelProperty("单据号")
     @JsonProperty(value = "document_num")
-    private Long documentNum;
+    private String documentNum;
 
     @ApiModelProperty("来源单据类型")
     @JsonProperty(value = "source_document_type")
-    private String sourceDocumentType;
+    private Integer sourceDocumentType;
 
     @ApiModelProperty("来源单据号")
     @JsonProperty(value = "source_document_num")
-    private Long sourceDocumentNum;
-
-    @ApiModelProperty("操作时间")
-    @JsonProperty(value = "operating_time")
-    private String operatingTime;
-
-    @ApiModelProperty("操作人")
-    @JsonProperty(value = "operating_by")
-    private String operatingBy;
+    private String sourceDocumentNum;
 
     @ApiModelProperty("商品备注")
     @JsonProperty(value = "remark")
@@ -109,5 +101,28 @@ public class StockBatchFlow extends CommonBean {
     @JsonProperty(value = "operation_type")
     private Integer operationType;
 
+    @ApiModelProperty("创建时间")
+    @JsonProperty(value = "create_time")
+    private String createTime;
+
+    @ApiModelProperty("创建人code")
+    @JsonProperty(value = "create_by_code")
+    private String createByCode;
+
+    @ApiModelProperty("创建人名称")
+    @JsonProperty(value = "create_by_name")
+    private String createByName;
+
+    @ApiModelProperty("更新时间")
+    @JsonProperty(value = "update_time")
+    private String updateTime;
+
+    @ApiModelProperty("更新人code")
+    @JsonProperty(value = "update_by_code")
+    private String updateByCode;
+
+    @ApiModelProperty("更新人名称")
+    @JsonProperty(value = "update_by_name")
+    private String updateByName;
 
     }

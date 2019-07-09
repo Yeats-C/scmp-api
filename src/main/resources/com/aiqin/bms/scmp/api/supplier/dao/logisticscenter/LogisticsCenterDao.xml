@@ -258,9 +258,11 @@
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
   </select>
-  <select id="selectByCenterName" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="selectByCenterName" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter">
     select
-    <include refid="Base_Column_List"></include>
+    logistics_center_code as logisticsCenterCode, logistics_center_name as logisticsCenterName, enable,
+    del_flag as delFlag, create_by as createBy, create_time as createTime,
+    update_by as updateBy, update_time as updateTime
     from
     logistics_center
     where

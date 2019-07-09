@@ -38,5 +38,16 @@ public class PurchaseFormRequest extends PagesRequest {
     @JsonProperty("settlement_method_code")
     private String settlementMethodCode;
 
+    @ApiModelProperty(value="采购申请id")
+    @JsonProperty("purchase_apply_id")
+    private String purchaseApplyId;
+
+    @ApiModelProperty(value="修改者id")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="修改者")
+    @JsonProperty("update_by_name")
+    private String updateByName;
 
 }
