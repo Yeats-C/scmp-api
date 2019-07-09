@@ -56,9 +56,11 @@ public class QueryProductSkuPriceInfoRespVO {
     private String batchRemark;
 
     @ApiModelProperty("开始生效时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date effectiveTimeStart;
 
     @ApiModelProperty("结束生效时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date effectiveTimeEnd;
 
     @ApiModelProperty("供应商名称")
@@ -68,7 +70,7 @@ public class QueryProductSkuPriceInfoRespVO {
     private Integer beDefault;
 
     @ApiModelProperty("生产日期")
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date productTime;
 
     @ApiModelProperty("品类")

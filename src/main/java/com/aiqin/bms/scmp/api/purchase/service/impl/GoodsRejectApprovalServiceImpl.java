@@ -27,7 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+<<<<<<< HEAD
 import java.util.List;
+=======
+>>>>>>> dev
 import java.util.Objects;
 
 /**
@@ -76,7 +79,6 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
     /**
      * 审核回调接口
      *
-     * @param
      * @return
      */
     @Override

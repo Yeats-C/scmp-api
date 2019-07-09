@@ -178,7 +178,40 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="getEnableLogisticsCenterList" resultMap="BaseResultMap">
+    <update id="updateByCodeSelective">
+      update logistics_center
+      <set>
+        <if test="logisticsCenterName != null">
+          logistics_center_name = #{logisticsCenterName,jdbcType=VARCHAR},
+        </if>
+        <if test="enable != null">
+          enable = #{enable,jdbcType=TINYINT},
+        </if>
+        <if test="delFlag != null">
+          del_flag = #{delFlag,jdbcType=TINYINT},
+        </if>
+        <if test="createBy != null">
+          create_by = #{createBy,jdbcType=VARCHAR},
+        </if>
+        <if test="createTime != null">
+          create_time = #{createTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="updateBy != null">
+          update_by = #{updateBy,jdbcType=VARCHAR},
+        </if>
+        <if test="updateTime != null">
+          update_time = #{updateTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="companyCode != null">
+          company_code = #{companyCode,jdbcType=VARCHAR},
+        </if>
+        <if test="companyCode != null">
+          company_name = #{companyCode,jdbcType=VARCHAR},
+        </if>
+      </set>
+      where  logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR},
+    </update>
+    <select id="getEnableLogisticsCenterList" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from logistics_center

@@ -50,4 +50,15 @@ public interface ProductSkuFileService {
      * @date 2019/7/6 23:19
      */
     List<ProductSkuFileRespVO> getApply(String skuCode, String applyCode);
+
+    /**
+     *
+     * 功能描述: 获取正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:35
+     */
+    List<ProductSkuFileRespVO> getList(String skuCode);
 }

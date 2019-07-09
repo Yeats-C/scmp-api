@@ -75,7 +75,7 @@ public interface ProductSkuSupplyUnitCapacityService {
      * @auther knight.xie
      * @date 2019/7/4 20:30
      */
-    int saveList(String applyCode);
+    int saveList(String skuCode,String applyCode);
 
     /**
      *

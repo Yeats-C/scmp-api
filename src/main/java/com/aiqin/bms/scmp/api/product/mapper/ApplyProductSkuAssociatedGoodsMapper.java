@@ -22,4 +22,5 @@ public interface ApplyProductSkuAssociatedGoodsMapper {
     int insertBatch(List<ApplyProductSkuAssociatedGoods> list);
 
     List<ProductSkuAssociatedGoodsRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+    List<ApplyProductSkuAssociatedGoods> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 }

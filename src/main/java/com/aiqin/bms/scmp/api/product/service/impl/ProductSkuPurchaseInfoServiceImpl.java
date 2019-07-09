@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPurchaseInfoDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPurchaseInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPurchaseInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,9 +78,9 @@ public class ProductSkuPurchaseInfoServiceImpl implements ProductSkuPurchaseInfo
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int saveList(String skuCode,String applyCode) {
-        ApplyProductSkuPurchaseInfo applyProductSkuPurchaseInfo = productSkuPurchaseInfoDao.getApply(skuCode,applyCode);
-        if (null != applyProductSkuPurchaseInfo){
+    public int saveInfo(String skuCode,String applyCode) {
+        List<ApplyProductSkuPurchaseInfo> applyProductSkuPurchaseInfo = productSkuPurchaseInfoDao.getApply(skuCode,applyCode);
+        if (CollectionUtils.isNotEmptyCollection(applyProductSkuPurchaseInfo)){
             ProductSkuPurchaseInfo oldInfo = productSkuPurchaseInfoDao.getInfo(skuCode);
             ProductSkuPurchaseInfo productSkuPurchaseInfo = new ProductSkuPurchaseInfo();
             BeanCopyUtils.copy(applyProductSkuPurchaseInfo,productSkuPurchaseInfo);
@@ -115,7 +116,7 @@ public class ProductSkuPurchaseInfoServiceImpl implements ProductSkuPurchaseInfo
     @Save
     @Transactional(rollbackFor = BizException.class)
     public int insert(ProductSkuPurchaseInfo productSkuPurchaseInfo) {
-        int num = productSkuPurchaseInfoMapper.insert(productSkuPurchaseInfo);
+        int num = productSkuPurchaseInfoMapper.insertSelective(productSkuPurchaseInfo);
         return num;
     }
 
@@ -153,5 +154,18 @@ public class ProductSkuPurchaseInfoServiceImpl implements ProductSkuPurchaseInfo
     @Override
     public List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode) {
         return productSkuPurchaseInfoDao.getApplyList(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 查询正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 16:56
+     */
+    @Override
+    public List<PurchaseSaleStockRespVo> getList(String skuCode) {
+        return productSkuPurchaseInfoMapper.getList(skuCode);
     }
 }

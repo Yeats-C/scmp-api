@@ -119,7 +119,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft">
-    insert into product_sku_draft (id, product_code, product_name, 
+    insert into product_sku_draft ( product_code, product_name,
       product_category_code, product_category_name, 
       sku_code, spec, unit_code, 
       sku_status, del_flag, product_property_code, 
@@ -144,7 +144,7 @@
       apply_type,apply_type_name,inventory_model,use_time,unique_code,
       inventory_allocation,price_model
       )
-    values (#{id,jdbcType=BIGINT}, #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, 
+    values ( #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
       #{productCategoryCode,jdbcType=VARCHAR}, #{productCategoryName,jdbcType=VARCHAR}, 
       #{skuCode,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR}, 
       #{skuStatus,jdbcType=TINYINT}, #{delFlag,jdbcType=TINYINT}, #{productPropertyCode,jdbcType=VARCHAR}, 

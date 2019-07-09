@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPriceInfo;
@@ -11,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoDraftMapper;
@@ -36,7 +38,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class ProductSkuPriceInfoServiceImpl implements ProductSkuPriceInfoService {
+public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements ProductSkuPriceInfoService {
     @Autowired
     private ProductSkuPriceInfoMapper productSkuPriceInfoMapper;
 
@@ -150,5 +152,20 @@ public class ProductSkuPriceInfoServiceImpl implements ProductSkuPriceInfoServic
             throw new BizException(ResultCode.SAVE_PRICE_LOG_FAILED);
         }
         return Boolean.TRUE;
+    }
+
+    @Override
+    public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForOfficial(String skuCode) {
+        return productSkuPriceInfoMapper.selectBySkuCodeForOfficial(skuCode,getUser().getCompanyCode());
+    }
+
+    @Override
+    public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForApply(String skuCode, String applyCode) {
+        return productSkuPriceInfoMapper.selectBySkuCodeForApply(skuCode,applyCode,getUser().getCompanyCode());
+    }
+
+    @Override
+    public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForDraft(String skuCode, String applyCode) {
+        return productSkuPriceInfoMapper.selectBySkuCodeForDraft(skuCode,getUser().getCompanyCode());
     }
 }

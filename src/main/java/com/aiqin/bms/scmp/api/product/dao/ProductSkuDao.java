@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkuList
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkusReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaSupplierInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
@@ -126,6 +127,8 @@ public interface ProductSkuDao {
 
     ProductSkuRespVo getSkuDraft(String skuCode);
 
+    ProductSkuRespVo getSkuInfoResp(String skuCode);
+
     ProductSkuInfo getSkuInfo(String skuCode);
 
     /**
@@ -188,8 +191,6 @@ public interface ProductSkuDao {
      * @return
      */
     int insertApplySkuList(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
-
-    int insertSkuList(@Param("productSkuInfos") List<ProductSkuInfo> productSkuInfos);
 
     List<ApplyDetailProductListResp> getApplyProductList(String applyCode);
 
@@ -264,4 +265,6 @@ public interface ProductSkuDao {
     List<SupervisoryWarehouseSkuRespVo> getSupervisoryWarehouseSku(QuerySkuListReqVO querySkuListReqVO);
 
     List<PriceChannelForChangePrice>  getSaleChannelList();
+
+    List<ProductSaleAreaSupplierInfo> getSupplier();
 }

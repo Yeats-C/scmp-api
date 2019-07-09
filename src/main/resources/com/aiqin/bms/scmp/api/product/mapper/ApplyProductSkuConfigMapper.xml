@@ -58,6 +58,13 @@
     from apply_product_sku_config
     where form_no = #{formNo,jdbcType=VARCHAR}
   </select>
+  <select id="selectBySkuCodeAndApplyCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_product_sku_config
+    where apply_code = #{applyCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode}
+  </select>
   <resultMap id="QueryApplyList" type="com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO">
     <result column="apply_code" jdbcType="VARCHAR" property="code"/>
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />

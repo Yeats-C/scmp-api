@@ -3,10 +3,12 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuChannel;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChannel;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChannelDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuChannelRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuChannelMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuChannelDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuChannelMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChannelService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -33,6 +35,9 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
     private ProductSkuChannelDraftMapper draftMapper;
     @Autowired
     private ApplyProductSkuChannelMapper applyMapper;
+
+    @Autowired
+    private ProductSkuChannelMapper mapper;
     /**
      * 保存信息到临时表
      *
@@ -119,5 +124,54 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
     @Override
     public List<ProductSkuChannelRespVo> getApplyList(String skuCode, String applyCode) {
         return applyMapper.selectBySkuAndApplyCode(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 获取sku渠道
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 16:50
+     */
+    @Override
+    public List<ProductSkuChannelRespVo> getList(String skuCode) {
+        return mapper.getList(skuCode);
+    }
+
+    /**
+     * 功能描述: 保存正式数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 20:30
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int save(String skuCode, String applyCode) {
+        List<ApplyProductSkuChannel> applyProductSkuChannels = applyMapper.selectApplyProductSkuChannelBySkuAndApplyCode(skuCode, applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuChannels)){
+            List<ProductSkuChannel> productSkuChannels = BeanCopyUtils.copyList(applyProductSkuChannels,ProductSkuChannel.class);
+            mapper.deleteBySkuCode(skuCode);
+            return ((ProductSkuChannelService)AopContext.currentProxy()).insertBatch(productSkuChannels);
+        }
+        return 0;
+    }
+
+    /**
+     * 功能描述: 批量插入数据库
+     *
+     * @param list
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 20:38
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public int insertBatch(List<ProductSkuChannel> list) {
+        return mapper.insertBatch(list);
     }
 }
