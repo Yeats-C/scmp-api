@@ -471,7 +471,7 @@
     turnover_period_after_arrival as turnoverPeriodAfterArrival from
     product_sku_config
     where sku_code = #{skuCode,jdbcType=VARCHAR}
-    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}1
+    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
   </select>
 
   <select id="getListBySkuCode" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
