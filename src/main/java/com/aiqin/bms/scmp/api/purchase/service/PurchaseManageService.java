@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public interface PurchaseManageService {
 
     HttpResponse purchaseOrderLog(String purchaseOrderId);
 
-    HttpResponse purchaseOrderAmount(String purchaseOrderId);
+    HttpResponse<PurchaseCountAmountResponse> purchaseOrderAmount(String purchaseOrderId);
 
     HttpResponse purchaseOrderStock(String purchaseOrderId, String createById, String createByName);
 

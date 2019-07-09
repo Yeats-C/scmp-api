@@ -101,7 +101,7 @@ public class ProductSkuDisInfoServiceImpl implements ProductSkuDisInfoService {
 
     @Override
     public int insert(ProductSkuDistributionInfo productSkuDistributionInfo) {
-        int num = productSkuDistributionInfoMapper.insert(productSkuDistributionInfo);
+        int num = productSkuDistributionInfoMapper.insertSelective(productSkuDistributionInfo);
         return  num;
     }
 
@@ -146,5 +146,17 @@ public class ProductSkuDisInfoServiceImpl implements ProductSkuDisInfoService {
     @Override
     public List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode) {
         return productSkuDisInfoDao.getApplys(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述:
+     *
+     * @param skuCode@return
+     * @auther knight.xie
+     * @date 2019/7/8 17:02
+     */
+    @Override
+    public List<PurchaseSaleStockRespVo> getList(String skuCode) {
+        return productSkuDistributionInfoMapper.getList(skuCode);
     }
 }

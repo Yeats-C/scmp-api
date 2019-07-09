@@ -211,4 +211,7 @@ public class ApplyProductSku extends CommonBean {
     @ApiModelProperty("价格模式-组合独有(0:人工设置)")
     private Byte priceModel;
 
+    @ApiModelProperty(value = "sku状态")
+    private Byte skuStatus;
+
 }

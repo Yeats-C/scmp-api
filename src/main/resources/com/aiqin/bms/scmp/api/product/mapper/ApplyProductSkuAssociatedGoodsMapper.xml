@@ -24,10 +24,18 @@
     from apply_product_sku_associated_goods
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="getApplys" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsDraftMapper.RespResultMap">
+  <select id="getApplys" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsDraftMapper.RespResultMap">
     select
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsDraftMapper.Resp_Column_List"/>
     from apply_product_sku_associated_goods a left join product_sku b on a.sub_sku_code = b.sku_code
+    where a.main_sku_code  = #{skuCode,jdbcType=VARCHAR}
+    and a.apply_code = #{applyCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getApply" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from apply_product_sku_associated_goods a
     where a.main_sku_code  = #{skuCode,jdbcType=VARCHAR}
     and a.apply_code = #{applyCode,jdbcType=VARCHAR}
   </select>

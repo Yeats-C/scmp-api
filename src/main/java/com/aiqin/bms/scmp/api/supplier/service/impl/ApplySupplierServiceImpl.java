@@ -177,6 +177,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
             BeanCopyUtils.copy(applySupplierId,applySupplierReqDTO);
             applySupplierReqDTO.setApplySupplierCode(applySupplierId.getApplySupplierCode());
             applySupplierReqDTO.setFormNo(applySupplier.getFormNo());
+            applySupplierReqDTO.setDirectSupervisorCode(applySupplier.getDirectSupervisorCode());
             workFlow(applySupplierReqDTO);
         } catch (Exception e){
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
@@ -399,7 +400,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                 }
                 //赋值供应商编码
                 applySupplier.setSupplierCode(supplier.getSupplierCode());
-                supplierCommonService.getInstance(supplier.getSupplierCode(),handleTypeCoceStatus,ObjectTypeCode.SUPPLIER.getStatus(),supplier,handleTypeCoceName);
+                supplierCommonService.getInstance(supplier.getSupplierCode(),handleTypeCoceStatus,ObjectTypeCode.SUPPLIER.getStatus(),supplier,handleTypeCoceName,Optional.ofNullable(applySupplier.getUpdateBy()).orElse(applySupplier.getCreateBy()));
             }else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
                 //驳回, 设置状态
                 applySupplier.setApplyStatus(vo.getApplyStatus());
@@ -433,7 +434,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
         applySupplierMapper.updateByPrimaryKey(applySupplier);
         //判断审核状态，存日志信息
         HandleTypeCoce s = applySupplier.getApplyStatus().intValue()==ApplyStatus.APPROVAL_SUCCESS.getNumber()?HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUCCESS_SUPPLIER:HandleTypeCoce.APPLY_UPDATE_APPROVAL_FAIL_SUPPLIER;
-        supplierCommonService.getInstance(applySupplier.getApplySupplierCode(),s.getStatus(),ObjectTypeCode.APPLY_SUPPLIER.getStatus(),applySupplier,s.getName());
+        supplierCommonService.getInstance(applySupplier.getApplySupplierCode(),s.getStatus(),ObjectTypeCode.APPLY_SUPPLIER.getStatus(),applySupplier,s.getName(),vo.getApprovalUserName());
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
 

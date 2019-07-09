@@ -107,7 +107,7 @@ public class ProductSkuCheckoutServiceImpl implements ProductSkuCheckoutService 
     @Save
     @Transactional(rollbackFor = BizException.class)
     public int insert(ProductSkuCheckout productSkuCheckout) {
-        int num = productSkuCheckoutMapper.insert(productSkuCheckout);
+        int num = productSkuCheckoutMapper.insertSelective(productSkuCheckout);
         return num;
     }
 

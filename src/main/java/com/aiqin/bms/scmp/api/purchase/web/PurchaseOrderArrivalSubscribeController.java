@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.purchase.domain.request.purchase.QueryPurchaseOrderArrivalSubscribeVo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.purchase.SavePurchaseOrderArrivalSubscribeVo;
 import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.QueryPurchaseOrderArrivalSubscribeRespVo;
@@ -46,8 +45,6 @@ public class PurchaseOrderArrivalSubscribeController {
     public HttpResponse<Integer> save(@RequestBody SavePurchaseOrderArrivalSubscribeVo reqVo) {
         try {
             return HttpResponse.success(purchaseOrderArrivalSubscribeService.save(reqVo));
-        } catch (BizException e) {
-            return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);

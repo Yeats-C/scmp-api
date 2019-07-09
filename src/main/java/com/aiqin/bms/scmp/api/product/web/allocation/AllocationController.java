@@ -3,7 +3,6 @@ package com.aiqin.bms.scmp.api.product.web.allocation;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
-import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
@@ -102,9 +101,7 @@ public class AllocationController {
     public HttpResponse<AllocationResVo> view(@RequestParam @ApiParam(value = "传入id",required = true)Long id) {
         try {
             return HttpResponse.success(allocationService. view(id));
-        } catch (BizException e) {
-            return HttpResponse.failure(e.getMessageId());
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }

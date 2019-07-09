@@ -480,6 +480,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "数据异常，不是在审批中的数据！"));
         }
         String applyCode = list.get(0).getApplyCode();
+        String skuCode = list.get(0).getSkuCode();
         //审批驳回
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
             updateApplyInfoByVO(newVO,applyCode);
@@ -508,9 +509,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                         ProductSkuConfigSpareWarehouse.class);
                 ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
                 //供应商信息
-                productSkuSupplyUnitService.saveList(applyCode);
+                productSkuSupplyUnitService.saveList(skuCode,applyCode);
                 //供应商产能信息
-                productSkuSupplyUnitCapacityService.saveList(applyCode);
+                productSkuSupplyUnitCapacityService.saveList(skuCode,applyCode);
                 //保存商品配置正式数据
                 saveOfficial(newVO, list);
                 return WorkFlowReturn.SUCCESS;
@@ -648,7 +649,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
      * @return
      */
     @Override
-    public ProductApplyInfoRespVO<SkuConfigsRepsVo> applyView(String code) {
+    public ProductApplyInfoRespVO<SkuConfigDetailRepsVo> applyView(String code) {
         List<SkuConfigsRepsVo> list = applyMapper.selectByApplyCode(code);
         if(CollectionUtils.isEmpty(list)){
             log.error("传入的编码是：[{}]",code);
@@ -739,7 +740,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             respVo.setSkuStatus(SkuStatusEnum.STOP_SALES.getStatus());
             respVo.setOnSale(SkuSaleStatusEnum.DIE_OUT.getStatus());
         }
-        return null;
+        return respVo;
     }
 
     /**
@@ -754,6 +755,50 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Override
     public List<SkuConfigsRepsVo> getApply(String skuCode, String applyCode) {
         return applyMapper.selectBySkuAndApplyCode(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 获取正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:39
+     */
+    @Override
+    public List<SkuConfigsRepsVo> getList(String skuCode) {
+        return mapper.getListBySkuCode(skuCode);
+    }
+
+    /**
+     * 功能描述: 保存到正式表
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 22:00
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer saveList(WorkFlowCallbackVO workFlowCallbackVO, String skuCode, String applyCode) {
+        List<ApplyProductSkuConfig> applyProductSkuConfigs = applyMapper.selectBySkuCodeAndApplyCode(skuCode, applyCode);
+
+        //通过applyCode查询备用仓库
+        List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
+                selectByApplyCode(applyCode);
+        //获取配置编号
+        List<String> configCodes = applySpareWarehouses.stream().map(item -> item.getConfigCode()).distinct().
+                collect(Collectors.toList());
+        //保存正式备用仓库信息
+        //删除正式
+        spareWarehouseMapper.deleteByConfigCodes(configCodes);
+        //批量插入
+        List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
+                ProductSkuConfigSpareWarehouse.class);
+        ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
+        saveOfficial(workFlowCallbackVO,applyProductSkuConfigs);
+        return null;
     }
 
     /**
@@ -791,9 +836,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
      * @param list
      * @return
      */
-    private ProductApplyInfoRespVO<SkuConfigsRepsVo> dealApplyViewData(List<SkuConfigsRepsVo> list) {
-        ProductApplyInfoRespVO<SkuConfigsRepsVo> resp = new ProductApplyInfoRespVO<>();
+    private ProductApplyInfoRespVO<SkuConfigDetailRepsVo> dealApplyViewData(List<SkuConfigsRepsVo> list) {
+        ProductApplyInfoRespVO<SkuConfigDetailRepsVo> resp = new ProductApplyInfoRespVO<>();
         //数据相同默认取第一个
+        SkuConfigDetailRepsVo repsVo = new SkuConfigDetailRepsVo();
         SkuConfigsRepsVo applyVO = list.get(0);
         ApplyProductSkuConfig applyProductSkuConfig = applyMapper.selectByPrimaryKey(applyVO.getId());
         resp.setApplyBy(applyProductSkuConfig.getCreateBy());
@@ -811,7 +857,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         //统计SPU数量吗
         List<String> spuCodes = list.stream().map(SkuConfigsRepsVo::getProductCode).distinct().collect(Collectors.toList());
         resp.setSpuNum(spuCodes.size());
-        resp.setData(list);
+        repsVo.setConfigs(list);
+        List<ProductSkuSupplyUnitRespVo> productSkuSupplyUnitRespVos = productSkuSupplyUnitService.getApply(applyVO.getSkuCode(), applyProductSkuConfig.getApplyCode());
+        repsVo.setSupplierList(productSkuSupplyUnitRespVos);
+        List<SkuConfigDetailRepsVo> repsVos = Lists.newArrayList();
+        repsVos.add(repsVo);
+        resp.setData(repsVos);
         return resp;
     }
 }

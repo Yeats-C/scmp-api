@@ -405,7 +405,21 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             default:
                 throw new BizException(ResultCode.NOT_HAVE_PARAM);
         }
+        changeStatus(newVO, dto);
     }
+
+    public void changeStatus(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) {
+        ProductSkuChangePrice p = new ProductSkuChangePrice();
+        p.setApplyStatus(newVO.getApplyStatus().intValue());
+        p.setAuditorBy(newVO.getApprovalUserName());
+        p.setAuditorTime(new Date());
+        p.setId(dto.getId());
+        int update = productSkuChangePriceMapper.updateByPrimaryKeySelective(p);
+        if (update < 1) {
+            throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "状态变更异常！"));
+        }
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveTemporaryAreaChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) throws Exception {
@@ -766,29 +780,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void cancel(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) {
-        ProductSkuChangePrice p = new ProductSkuChangePrice();
-        p.setApplyStatus(CommonConstant.CANCEL);
-        p.setAuditorBy(newVO.getApprovalUserName());
-        p.setAuditorTime(new Date());
-        p.setId(dto.getId());
-        int update = productSkuChangePriceMapper.updateByPrimaryKeySelective(p);
-        if (update < 1) {
-            throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "状态变更异常！"));
-        }
+        changeStatus(newVO, dto);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void rejection(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) {
-        ProductSkuChangePrice p = new ProductSkuChangePrice();
-        p.setApplyStatus(CommonConstant.REVIEWR_EJECTION);
-        p.setAuditorBy(newVO.getApprovalUserName());
-        p.setId(dto.getId());
-        p.setAuditorTime(new Date());
-        int update = productSkuChangePriceMapper.updateByPrimaryKeySelective(p);
-        if (update < 1) {
-            throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "状态变更异常！"));
-        }
+       changeStatus(newVO,dto);
     }
 
     @Override
@@ -799,7 +797,10 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             workFlowVO.setFormNo(view.getFormNo());
             WorkFlowRespVO workFlowRespVO = cancelWorkFlow(workFlowVO);
             log.info(workFlowRespVO.getMsg());
-            return workFlowRespVO.getSuccess();
+            if(!workFlowRespVO.getSuccess()){
+                throw new BizException(MessageId.create(Project.PRODUCT_API,98,workFlowRespVO.getMsg()));
+            }
+            return  workFlowRespVO.getSuccess();
         }else{
             throw new BizException(ResultCode.DATA_ERROR);
         }

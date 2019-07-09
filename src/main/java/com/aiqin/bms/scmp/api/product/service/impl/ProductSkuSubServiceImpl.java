@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSub;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSub;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSubDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSubRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSubMapper;
@@ -115,5 +116,54 @@ public class ProductSkuSubServiceImpl implements ProductSkuSubService {
     @Override
     public List<ProductSkuSubRespVo> getApply(String skuCode, String applyCode) {
         return applyMapper.getApplys(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 获取正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:24
+     */
+    @Override
+    public List<ProductSkuSubRespVo> getList(String skuCode) {
+        return mapper.selectBySkuCode(skuCode);
+    }
+
+    /**
+     * 功能描述: 保存到正式
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 22:28
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int saveList(String skuCode, String applyCode) {
+        List<ApplyProductSkuSub> applyProductSkuSubList = applyMapper.getApply(skuCode, applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuSubList)){
+            List<ProductSkuSub> list = BeanCopyUtils.copyList(applyProductSkuSubList,ProductSkuSub.class);
+            mapper.selectBySkuCode(skuCode);
+            return ((ProductSkuSubService)AopContext.currentProxy()).insertBatch(list);
+        }
+        return 0;
+    }
+
+    /**
+     * 功能描述: 批量插入到数据库
+     *
+     * @param list
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 22:29
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public int insertBatch(List<ProductSkuSub> list) {
+        return mapper.insertBatch(list);
     }
 }

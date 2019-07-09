@@ -83,7 +83,8 @@
     <result column="unit" jdbcType="VARCHAR" property="unit" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
-    <result column="callin_batch_number" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="callout_batch_number" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="callin_batch_number" jdbcType="VARCHAR" property="callInBatchNumber" />
     <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
 

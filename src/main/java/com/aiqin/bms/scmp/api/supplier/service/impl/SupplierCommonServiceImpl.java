@@ -44,7 +44,25 @@ public class SupplierCommonServiceImpl implements SupplierCommonService {
         operationLogBean.setHandleName(handleName);
        return operationLogService.saveLog(operationLogBean);
     }
-
+    @Override
+    public Long getInstance(String code, Byte handleType, Byte objectType, Object josn, String handleName,String userName) {
+        OperationLogBean operationLogBean = new OperationLogBean();
+        Date date = new Date();
+        operationLogBean.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus());
+        operationLogBean.setCreateTime(date);
+        operationLogBean.setCreateBy(userName);
+        if (code != null) {
+            operationLogBean.setObjectId(code);
+        }
+        operationLogBean.setHandleType(handleType);
+        operationLogBean.setObjectType(objectType);
+        if(josn!=null) {
+            String contentJson = JsonMapper.toJsonString(josn);
+            operationLogBean.setContent(contentJson);
+        }
+        operationLogBean.setHandleName(handleName);
+        return operationLogService.saveLog(operationLogBean);
+    }
     @Override
     public int saveList(Collection<SupplierOperationLog> collection) {
         Map<String, String> map = commonInterceptor.getRequest();

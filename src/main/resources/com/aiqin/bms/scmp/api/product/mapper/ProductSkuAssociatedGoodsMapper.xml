@@ -24,9 +24,19 @@
     from product_sku_associated_goods
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getList" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsDraftMapper.RespResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuAssociatedGoodsDraftMapper.Resp_Column_List"/>
+    from product_sku_associated_goods a left join product_sku b on a.sub_sku_code = b.sku_code
+    where a.main_sku_code  = #{skuCode,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_associated_goods
     where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteBySkuCode" parameterType="java.lang.String">
+    delete from product_sku_associated_goods
+    where main_sku_code = #{skuCode,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuAssociatedGoods">
     insert into product_sku_associated_goods (id, main_sku_code, main_sku_name, 
@@ -37,6 +47,19 @@
       #{subSkuCode,jdbcType=VARCHAR}, #{subSkuName,jdbcType=VARCHAR}, #{applyCode,jdbcType=VARCHAR}, 
       #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into product_sku_associated_goods (main_sku_code, main_sku_name,
+      sub_sku_code, sub_sku_name, apply_code,
+      del_flag, create_time, create_by,
+      update_time, update_by)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.mainSkuCode,jdbcType=VARCHAR}, #{item.mainSkuName,jdbcType=VARCHAR},
+      #{item.subSkuCode,jdbcType=VARCHAR}, #{item.subSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR},
+      #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR})
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuAssociatedGoods">
     insert into product_sku_associated_goods

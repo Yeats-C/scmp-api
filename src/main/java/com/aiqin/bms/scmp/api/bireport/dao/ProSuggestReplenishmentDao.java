@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.bireport.dao;
 
+import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.ProReplenishmentOutStockRespVo;
+import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.ibatis.annotations.Param;
 
@@ -31,4 +33,10 @@ public interface ProSuggestReplenishmentDao {
      * @return
      */
     List<String> selectOutStockBySell(@Param("proStatus")  int proStatus, @Param("continuousDays")  int continuousDays);
+
+    /**
+     * 获取采购申请列表
+     * @return
+     */
+    List<PurchaseApplyRespVo> selectPurchaseApplySkuList(PurchaseApplyReqVo purchaseApplyReqVo);
 }

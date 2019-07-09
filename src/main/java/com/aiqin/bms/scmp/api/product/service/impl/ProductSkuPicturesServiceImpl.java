@@ -134,4 +134,19 @@ public class ProductSkuPicturesServiceImpl implements ProductSkuPicturesService 
     public List<ProductSkuPicturesRespVo> getApply(String skuCode, String applyCode) {
         return productSkuPicturesDao.getApplys(skuCode,applyCode);
     }
+
+    /**
+     * 功能描述: 获取正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:31
+     */
+    @Override
+    public List<ProductSkuPicturesRespVo> getList(String skuCode) {
+        return productSkuPicturesDao.getRespInfoBySkuCode(skuCode);
+    }
 }
+
+

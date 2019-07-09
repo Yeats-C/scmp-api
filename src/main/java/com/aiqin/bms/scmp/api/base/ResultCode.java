@@ -187,7 +187,7 @@ public interface ResultCode {
     MessageId DATA_ERROR =  MessageId.create(Project.PRODUCT_API, 98, "数据异常");
     MessageId DATA_NOT_COMPLETE = MessageId.create(Project.PRODUCT_API,98,"数据不完成！请检查并补充数据！");
     MessageId CAN_NOT_FIND_CHANGE_PRICE_INFO = MessageId.create(Project.PRODUCT_API,98,"无法获取变价数据信息！");
-
+    MessageId UPDATE_RETURN_ORDER_INFO_FAILED = MessageId.create(Project.PRODUCT_API,98,"更新退货单失败！");
 
     MessageId IMPORT_REJECT_APPLY_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入退供申请单异常");
     MessageId NOT_HAVE_REJECT_APPLY_RECORD = MessageId.create(Project.SCMP_API, 1001, "未查询到对应的退供申请单记录");
@@ -195,6 +195,7 @@ public interface ResultCode {
     MessageId REJECT_RECORD_ERROR =  MessageId.create(Project.PRODUCT_API, 1003, "申请退供单审批数据保存异常！");
     MessageId JURISDICTION_ERROR =  MessageId.create(Project.PRODUCT_API, 1004, "所查询的记录没有权限！");
     MessageId PURCHASE_ERROR =  MessageId.create(Project.PRODUCT_API, 1005, "申请采购单审批数据保存异常！");
+
 
     //订单
     MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");
@@ -250,5 +251,6 @@ public interface ResultCode {
     MessageId IMPORT_DATA_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入数据异常");
     MessageId IMPORT_DATA_EMPTY= MessageId.create(Project.SCMP_API, 1000, "导入数据为空");
     MessageId MAIN_PRODUCT_EMPTY= MessageId.create(Project.SCMP_API, 1000, "主商品为空,请选择主商品");
+
 
 }

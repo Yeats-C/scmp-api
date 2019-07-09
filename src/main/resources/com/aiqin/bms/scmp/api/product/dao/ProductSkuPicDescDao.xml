@@ -105,4 +105,11 @@
     WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
     and apply_code=#{applyCode,jdbcType=VARCHAR}
   </select>
+
+  <select id="getRespVoBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM product_sku_pic_desc
+    WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

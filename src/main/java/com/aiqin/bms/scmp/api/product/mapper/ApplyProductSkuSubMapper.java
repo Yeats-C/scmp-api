@@ -22,4 +22,7 @@ public interface ApplyProductSkuSubMapper {
     int insertBatch(List<ApplyProductSkuSub> applyList);
 
     List<ProductSkuSubRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+
+    List<ApplyProductSkuSub> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+
 }

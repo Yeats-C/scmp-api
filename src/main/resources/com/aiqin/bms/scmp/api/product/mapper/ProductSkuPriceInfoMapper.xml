@@ -236,6 +236,7 @@
              a.price_item_name        aprice_item_name,
              a.price_type_name        aprice_type_name,
              a.price_tax              aprice_tax,
+             a.supplier_name         asupplier_name,
              a.warehouse_batch_number awarehouse_batch_number,
              a.transport_center_name  atransport_center_name,
              a.warehouse_name         awarehouse_name,
@@ -983,5 +984,60 @@
   <select id="selectPriceTax" resultType="java.lang.Long">
     select price_tax from product_sku_price_info
     where sku_code = #{skuCode} and supplier_code = #{supplierCode}
+  </select>
+    <select id="selectBySkuCodeForOfficial"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo">
+        select
+            a.sku_code skuCode,
+            a.sku_name skuName,
+            a.price_item_name priceItemName,
+            a.price_item_code priceItemCode,
+            a.price_type_code priceTypeCode,
+            a.price_type_name priceTypeName,
+            a.price_attribute_code priceAttributeCode,
+            a.price_attribute_name priceAttributeName,
+            a.price_tax priceTax,
+            a.effective_time_start effectiveTimeStart,
+            a.supplier_name supplierName
+         from product_sku_price_info a
+        where a.sku_code = #{skuCode} and a.companyCode = #{companyCode}
+        and a.ext_field_5 = 0 and a.price_attribute_code in (1,2)
+      select
+    </select>
+  <select id="selectBySkuCodeForApply"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo">
+     select
+            a.sku_code skuCode,
+            a.sku_name skuName,
+            a.price_item_name priceItemName,
+            a.price_item_code priceItemCode,
+            a.price_type_code priceTypeCode,
+            a.price_type_name priceTypeName,
+            a.price_attribute_code priceAttributeCode,
+            a.price_attribute_name priceAttributeName,
+            a.price_tax priceTax,
+            a.effective_time_start effectiveTimeStart,
+            a.supplier_name supplierName
+         from apply_product_sku_price_info a
+        where a.sku_code = #{skuCode} and a.companyCode = #{companyCode}
+        and a.ext_field_5 = 0 and a.price_attribute_code in (1,2) and a.apply_code = #{applyCode}
+  </select>
+  <select id="selectBySkuCodeForDraft"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo">
+         select
+            a.sku_code skuCode,
+            a.sku_name skuName,
+            a.price_item_name priceItemName,
+            a.price_item_code priceItemCode,
+            a.price_type_code priceTypeCode,
+            a.price_type_name priceTypeName,
+            a.price_attribute_code priceAttributeCode,
+            a.price_attribute_name priceAttributeName,
+            a.price_tax priceTax,
+            a.effective_time_start effectiveTimeStart,
+            a.supplier_name supplierName
+         from product_sku_price_info_draft a
+        where a.sku_code = #{skuCode} and a.companyCode = #{companyCode}
+        and a.ext_field_5 = 0 and a.price_attribute_code in (1,2)
   </select>
 </mapper>

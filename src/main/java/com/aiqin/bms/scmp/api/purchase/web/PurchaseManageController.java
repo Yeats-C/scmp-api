@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -68,8 +69,8 @@ public class PurchaseManageController {
          "0.待审核 1.审核中 2.审核通过  3.备货确认 4.发货确认  5.入库开始 6.入库中 7.已入库  8.完成 9.取消 10.审核不通过", type = "Integer"),
                 @ApiImplicitParam(name = "storage_status", value = "仓储状态 0.未开始  1.确认中 2.完成", type = "Integer"),
                 @ApiImplicitParam(name = "purchase_mode", value = "采购方式 0 配送  1.铺采直送", type = "Integer"),
-                @ApiImplicitParam(name = "page_no", value = "每页条数", type = "Integer"),
-                @ApiImplicitParam(name = "page_size", value = "当前页", type = "Integer")})
+                @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+                @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer")})
     public HttpResponse applyProductList(@RequestParam(value = "purchase_order_code", required = false) String purchaseOrderCode,
                 @RequestParam(value = "begin_time", required = false) String beginTime,
                 @RequestParam(value = "finish_time", required = false) String finishTime,
@@ -124,7 +125,7 @@ public class PurchaseManageController {
 
     @GetMapping("/order/amount")
     @ApiOperation("查询采购单-采购数量金额")
-    public HttpResponse purchaseOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
+    public HttpResponse<PurchaseCountAmountResponse> purchaseOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
         return purchaseManageService.purchaseOrderAmount(purchaseOrderId);
     }
 

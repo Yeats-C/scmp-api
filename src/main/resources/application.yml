@@ -79,8 +79,8 @@ WorkFlowBaseUrl:
     productUrl:
       #/Supplier/IntendingDetails?variablePriceName=促销活动&priceTypeCode=1&variablePriceCode=10001
       variablePrice: http://scmp.bms.aiqin.com/#/Supplier/IntendingDetails
-      applySku: http://scmp.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail
-      applySkuConfig: http://scmp.bms.aiqin.com/#/Supplier/DetailsConfiguration
+      applySku: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
+      applySkuConfig: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
       #销售区域
       applySaleArea: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
       #调拨申请详情

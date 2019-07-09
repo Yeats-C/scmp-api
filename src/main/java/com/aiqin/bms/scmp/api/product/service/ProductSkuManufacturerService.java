@@ -44,4 +44,15 @@ public interface ProductSkuManufacturerService {
      * @date 2019/7/6 23:11
      */
     List<ProductSkuManufacturerRespVo> getApply(String skuCode, String applyCode);
+
+    /**
+     *
+     * 功能描述: 正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:13
+     */
+    List<ProductSkuManufacturerRespVo> getList(String skuCode);
 }
