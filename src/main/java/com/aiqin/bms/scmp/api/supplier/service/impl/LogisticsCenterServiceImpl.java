@@ -27,7 +27,9 @@ import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.mgs.control.component.service.AreaBasicService;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +62,9 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
     private LogisticsCenterAreaDao logisticsCenterAreaDao;
     @Resource
     private AreaBasicService areaBasicService;
+    @Autowired
+    private AreaBasicInfoServiceImpl areaBasicInfoService;
+
     /**
      *  列表展示以及搜索
      * @param vo
@@ -352,7 +357,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
      * @return
      */
     @Override
-    public HttpResponse getCityList(String provinceId) {
+    public HttpResponse<AreaBasic> getCityList(String provinceId) {
         try {
             AreaBasic areaBasic = new AreaBasic();
             HttpResponse result = areaBasicService.selectAreaList(provinceId);
@@ -402,5 +407,52 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         } catch (GroundRuntimeException e) {
             return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
         }
+    }
+
+    @Override
+    public HttpResponse<List<AreaBasic>> getAreaInfo() {
+        HttpResponse<List<AreaBasic>> treeList = areaBasicInfoService.getTreeList();
+        List<AreaBasic> tempData = treeList.getData();
+        String s = JSON.toJSONString(tempData);
+        List<AreaBasic> data = JSON.parseArray(s, AreaBasic.class);
+        data.forEach(o->{
+                AreaBasic area = new AreaBasic();
+                if("99".equals(o.getArea_id())){
+                    return;
+                }
+                if(Objects.nonNull(LogisticsCenterEnum.getAllStatus().get(o.getArea_id()))){
+                        area.setParent_id(o.getArea_id());
+                        area.setArea_id(LogisticsCenterEnum.getAllStatus().get(o.getArea_id()).getNextStatus());
+                        area.setArea_name(LogisticsCenterEnum.getAllStatus().get(o.getArea_id()).getNextName());
+                        o.getChildren().add(area);
+                    }else {
+                        area.setParent_id(o.getArea_id());
+                        area.setArea_id(LogisticsCenterEnum.PROVINCE.getStatus());
+                        area.setArea_name(LogisticsCenterEnum.PROVINCE.getName());
+                    if (Objects.isNull(o.getChildren())) {
+                        //台湾单独加一个全省
+                        List<AreaBasic> areaBasics = Lists.newArrayList();
+                        o.setChildren(areaBasics);
+                    }
+                    o.getChildren().add(area);
+                }
+            });
+        //增加全国
+        AreaBasic a = new AreaBasic();
+        a.setArea_id(LogisticsCenterEnum.CHINA.getStatus());
+        a.setArea_name(LogisticsCenterEnum.CHINA.getName());
+        a.setParent_id(LogisticsCenterEnum.CHINA.getStatus());
+        a.setParent_area_name(LogisticsCenterEnum.CHINA.getName());
+        List<AreaBasic> areaBasics = Lists.newArrayList();
+        AreaBasic a2 = new AreaBasic();
+        //全国下面的全省
+        a2.setArea_id(LogisticsCenterEnum.PROVINCE.getStatus());
+        a2.setArea_name(LogisticsCenterEnum.PROVINCE.getName());
+        a2.setParent_id(LogisticsCenterEnum.PROVINCE.getStatus());
+        a2.setParent_area_name(LogisticsCenterEnum.PROVINCE.getName());
+        areaBasics.add(a2);
+        a.setChildren(areaBasics);
+        data.add(a);
+        return HttpResponse.success(data);
     }
 }

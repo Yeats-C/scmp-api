@@ -122,4 +122,10 @@ public class LogisticsCenterController {
     public HttpResponse<List<AreaBasic>> getCityList(@RequestParam @ApiParam(value = "上级区域ID,必传")String parentId){
         return logisticsCenterService.getCityList(parentId);
     }
+
+    @PostMapping("/areaInfo")
+    @ApiOperation("仓库专用查询省市县")
+    public HttpResponse<List<AreaBasic>> getAreaInfo(){
+        return logisticsCenterService.getAreaInfo();
+    }
 }

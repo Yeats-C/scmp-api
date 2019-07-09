@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoLogMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPriceInfoService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
     public BasePage<QueryProductSkuPriceInfoRespVO> list(QueryProductSkuPriceInfoReqVO reqVO) {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
+        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         List<QueryProductSkuPriceInfoRespVO> list = productSkuPriceInfoMapper.selectListByQueryVO(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
     }
