@@ -76,8 +76,6 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
     /**
      * 审核回调接口
      *
-     * @param
-     * @return
      */
     @Override
     public String workFlowCallback(WorkFlowCallbackVO vo1) {
@@ -98,11 +96,12 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
                 //审批中状态
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_AUDITTING);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
-                LOGGER.info("");
+                LOGGER.info("影响条数:{}",count);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber()) || Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
                 //审批失败或者撤销
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_NO);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
+                LOGGER.info("影响条数:{}",count);
                 //解锁库存
                 List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecord.getRejectRecordId());
                 ILockStockBatchReqVO iLockStockBatchReqVO = goodsRejectService.handleStockParam(list, record);
@@ -115,6 +114,7 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
                 //审批通过 状态为待供应商确认
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
+                LOGGER.info("影响条数:{}",count);
             }
             return WorkFlowReturn.SUCCESS;
         } catch (Exception e) {
@@ -139,6 +139,7 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
         WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_REFUND);
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {
+            LOGGER.info("创建退供申请单审批成功:{}",workFlowRespVO.toString());
         } else {
             throw new BizException(ResultCode.REJECT_RECORD_ERROR);
         }
