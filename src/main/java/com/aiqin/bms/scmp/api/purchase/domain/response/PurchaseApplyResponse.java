@@ -66,4 +66,8 @@ public class PurchaseApplyResponse {
     @ApiModelProperty(value="实物返金额")
     @JsonProperty("return_amount")
     private Integer returnAmount;
+
+    @ApiModelProperty(value="是否可以部分提交  0.是 1.否")
+    @JsonProperty("submit_status")
+    private Integer submitStatus;
 }

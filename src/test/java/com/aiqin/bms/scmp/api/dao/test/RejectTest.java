@@ -6,6 +6,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectApprovalServiceImpl;
+import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -71,8 +75,8 @@ public class RejectTest extends SpringBootTestContext {
         detail.setPurchaseGroupName("奶粉组");
         detail.setApplyType(1);
         detail.setBarcode("112");
-        detail.setSkuCode("0000108");
-        detail.setSkuName("商品1");
+        detail.setSkuCode("295110");
+        detail.setSkuName("爱亲贝贝外出服夏季卡通中性梭织九分裤9812203170584浅灰100");
         detail.setProductId("product11111");
         detail.setCategoryId("01050201");
         detail.setCategoryName("乳糖不耐受奶粉");
@@ -89,8 +93,8 @@ public class RejectTest extends SpringBootTestContext {
         detail.setSingleCount(5);
         detail.setProductCount(5);
         detail.setTaxRate(10);
-        detail.setTransportCenterCode("ck22");
-        detail.setTransportCenterName("仓库21");
+        detail.setTransportCenterCode("1025");
+        detail.setTransportCenterName("华北");
         detail.setWarehouseCode("1026");
         detail.setWarehouseName("华北销售库");
         detail.setProductAmount(10L);
@@ -109,8 +113,8 @@ public class RejectTest extends SpringBootTestContext {
         detail1.setPurchaseGroupName("奶粉组");
         detail1.setApplyType(1);
         detail1.setBarcode("112");
-        detail1.setSkuCode("0000108");
-        detail1.setSkuName("商品1");
+        detail1.setSkuCode("295110");
+        detail1.setSkuName("爱亲贝贝外出服夏季卡通中性梭织九分裤9812203170584浅灰100");
         detail1.setProductId("product11111");
         detail1.setCategoryId("01050201");
         detail1.setCategoryName("乳糖不耐受奶粉");
@@ -127,10 +131,10 @@ public class RejectTest extends SpringBootTestContext {
         detail1.setSingleCount(5);
         detail1.setProductCount(5);
         detail1.setTaxRate(10);
-        detail1.setTransportCenterCode("ck22");
-        detail1.setTransportCenterName("仓库21");
-        detail1.setWarehouseCode("1026");
-        detail1.setWarehouseName("华北销售库");
+        detail.setTransportCenterCode("1025");
+        detail.setTransportCenterName("华北");
+        detail.setWarehouseCode("1026");
+        detail.setWarehouseName("华北销售库");
         detail1.setProductAmount(10L);
         detail1.setProductCost(10L);
         detail1.setBatchNo("123456788");
@@ -146,9 +150,17 @@ public class RejectTest extends SpringBootTestContext {
         goodsRejectService.rejectApply(rejectApplyQueryRequest);
     }
 
+    @Resource
+    private WarehouseDao warehouseDao;
+    @Resource
+    private LogisticsCenterDao logisticsCenterDao;
+
     @Test
     public void wolf(){
-//        goodsRejectApprovalService.workFlow("RJ11111","100059","啦啦啦","10007");
+        LogisticsCenter logisticsCenter = logisticsCenterDao.selectByCenterName("西南");
+        System.out.println(logisticsCenter);
+        Warehouse warehouse = warehouseDao.selectByWarehouseName("华北销售库");
+        System.out.println(warehouse);
     }
 
 }

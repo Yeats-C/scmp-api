@@ -633,4 +633,22 @@
   <delete id="delete">
     delete from purchase_apply_product where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </delete>
+  <update id="updateInfoStatus">
+    update purchase_apply_product
+    <set>
+      info_status = 1,
+      update_time = now(),
+      <if test="createById != null">
+        create_by_id = #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where purchase_apply_id = #{applyProductId,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+  </update>
 </mapper>

@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPriceInfo;
@@ -11,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoDraftMapper;
@@ -18,6 +20,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoLogMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPriceInfoService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +39,7 @@ import java.util.List;
  */
 @Service
 @Slf4j
-public class ProductSkuPriceInfoServiceImpl implements ProductSkuPriceInfoService {
+public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements ProductSkuPriceInfoService {
     @Autowired
     private ProductSkuPriceInfoMapper productSkuPriceInfoMapper;
 
@@ -51,6 +54,7 @@ public class ProductSkuPriceInfoServiceImpl implements ProductSkuPriceInfoServic
     public BasePage<QueryProductSkuPriceInfoRespVO> list(QueryProductSkuPriceInfoReqVO reqVO) {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
+        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         List<QueryProductSkuPriceInfoRespVO> list = productSkuPriceInfoMapper.selectListByQueryVO(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
     }
@@ -67,10 +71,10 @@ public class ProductSkuPriceInfoServiceImpl implements ProductSkuPriceInfoServic
             throw new BizException(ResultCode.PRICE_DATA_CAN_NOT_BE_NULL);
         }
         List<ProductSkuPriceInfoDraft> drafts = BeanCopyUtils.copyList(reqVOList, ProductSkuPriceInfoDraft.class);
-        drafts.forEach(o-> {
-            o.setCode("pp" + new IdSequenceUtils().nextId());
+        for (ProductSkuPriceInfoDraft o : drafts) {
+            o.setCode("pp"+UUIDUtils.getUUID());
             o.setExtField5(0);
-        });
+        }
         int i = productSkuPriceInfoDraftMapper.insertBatch(drafts);
         if(i!=reqVOList.size()){
             throw new BizException(ResultCode.SAVE_PRICE_FAILED);
@@ -150,5 +154,20 @@ public class ProductSkuPriceInfoServiceImpl implements ProductSkuPriceInfoServic
             throw new BizException(ResultCode.SAVE_PRICE_LOG_FAILED);
         }
         return Boolean.TRUE;
+    }
+
+    @Override
+    public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForOfficial(String skuCode) {
+        return productSkuPriceInfoMapper.selectBySkuCodeForOfficial(skuCode,getUser().getCompanyCode());
+    }
+
+    @Override
+    public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForApply(String skuCode, String applyCode) {
+        return productSkuPriceInfoMapper.selectBySkuCodeForApply(skuCode,applyCode,getUser().getCompanyCode());
+    }
+
+    @Override
+    public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForDraft(String skuCode, String applyCode) {
+        return productSkuPriceInfoMapper.selectBySkuCodeForDraft(skuCode,getUser().getCompanyCode());
     }
 }

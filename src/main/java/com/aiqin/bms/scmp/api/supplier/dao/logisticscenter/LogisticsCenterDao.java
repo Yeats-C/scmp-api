@@ -53,7 +53,7 @@ public interface LogisticsCenterDao {
      * @param id
      * @return
      */
-    Integer checkName(@Param("logisticsCenterName") String logisticsCenterName, @Param("id") Long id, @Param("companyCode") String companyCode);
+    Integer checkName(@Param("logisticsCenterName") String logisticsCenterName, @Param("code") String code, @Param("companyCode") String companyCode);
 
     /**
      * 根据省市编码，服务范围查询物流中心
@@ -65,5 +65,15 @@ public interface LogisticsCenterDao {
     /**
      * 根据仓库名称查询仓库信息 (退供导入使用)
      */
-    LogisticsCenter selectByCenterName(String logisticsCenterName);
+    LogisticsCenter selectByCenterName(@Param("logisticsCenterName")String logisticsCenterName);
+
+    /**
+     * 通过编码更新
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param record
+     * @return int
+     */
+    int updateByCodeSelective(LogisticsCenterDTO record);
+
 }

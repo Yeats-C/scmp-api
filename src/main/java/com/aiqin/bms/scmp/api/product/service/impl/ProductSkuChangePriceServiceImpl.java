@@ -434,7 +434,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setPurchaseGroupName(dto.getPurchaseGroupName());
             priceInfo.setPurchaseGroupCode(dto.getPurchaseGroupCode());
             priceInfo.setApplyCode(dto.getCode());
-            priceInfo.setCode("TPA" + new IdSequenceUtils().nextId());
+            priceInfo.setCode("TPA" + UUIDUtils.getUUID());
             priceInfo.setPriceTax(info.getTemporaryPrice());
             priceInfo.setTax(0L); //TODO 需要从商品上取
             priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getNewPrice(), 0L));
@@ -477,7 +477,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setPurchaseGroupName(dto.getPurchaseGroupName());
             priceInfo.setPurchaseGroupCode(dto.getPurchaseGroupCode());
             priceInfo.setApplyCode(dto.getCode());
-            priceInfo.setCode("SPA" + new IdSequenceUtils().nextId());
+            priceInfo.setCode("SPA" + UUIDUtils.getUUID());
             priceInfo.setCreateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
             priceInfo.setCreateTime(new Date());
             priceInfo.setPriceTax(info.getNewPrice());
@@ -523,7 +523,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setPurchaseGroupName(dto.getPurchaseGroupName());
             priceInfo.setApplyCode(dto.getCode());
             priceInfo.setPurchaseGroupCode(dto.getPurchaseGroupCode());
-            priceInfo.setCode("TP" + new IdSequenceUtils().nextId());
+            priceInfo.setCode("TP" + UUIDUtils.getUUID());
             priceInfo.setPriceTax(info.getTemporaryPrice());
             priceInfo.setTax(0L); //TODO 需要从商品上取
             priceInfo.setExtField5(0);
@@ -568,7 +568,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setPurchaseGroupCode(dto.getPurchaseGroupCode());
                 priceInfo.setPurchaseGroupName(dto.getPurchaseGroupName());
                 priceInfo.setApplyCode(dto.getCode());
-                priceInfo.setCode("SP" + new IdSequenceUtils().nextId());
+                priceInfo.setCode("SP" + UUIDUtils.getUUID());
                 priceInfo.setCreateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                 priceInfo.setCreateTime(new Date());
                 priceInfo.setPriceTax(info.getNewPrice());
@@ -648,7 +648,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setPurchaseGroupName(dto.getPurchaseGroupName());
                 priceInfo.setCreateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                 priceInfo.setCreateTime(new Date());
-                priceInfo.setCode("PP" + new IdSequenceUtils().nextId());
+                priceInfo.setCode("PP" + UUIDUtils.getUUID());
                 priceInfo.setPriceTax(info.getPurchasePriceNew());
                 priceInfo.setExtField5(0);
                 priceInfo.setTax(0L); //TODO 需要从商品上取
@@ -797,7 +797,10 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             workFlowVO.setFormNo(view.getFormNo());
             WorkFlowRespVO workFlowRespVO = cancelWorkFlow(workFlowVO);
             log.info(workFlowRespVO.getMsg());
-            return workFlowRespVO.getSuccess();
+            if(!workFlowRespVO.getSuccess()){
+                throw new BizException(MessageId.create(Project.PRODUCT_API,98,workFlowRespVO.getMsg()));
+            }
+            return  workFlowRespVO.getSuccess();
         }else{
             throw new BizException(ResultCode.DATA_ERROR);
         }

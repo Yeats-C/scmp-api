@@ -26,31 +26,31 @@ public class SupplyTest  extends SpringBootTestContext  {
         reqVO.setPurchaseGroupCode("1044");
         List<ILockStockBatchItemReqVo> itemReqVos = new ArrayList<>();
         ILockStockBatchItemReqVo itemReqVo1 = new ILockStockBatchItemReqVo();
-        itemReqVo1.setNum(10l);
+        itemReqVo1.setNum(10L);
         itemReqVo1.setSkuCode("295110");
         itemReqVo1.setSkuName("惠氏金装爱儿复无乳糖配");
         itemReqVo1.setBatchCode("123456786");
-        itemReqVo1.setDocumentType("退供");
-        itemReqVo1.setDocumentType("退供");
-        itemReqVo1.setDocumentNum(111111111l);
-        itemReqVo1.setSourceDocumentType("退供上级");
-        itemReqVo1.setSourceDocumentNum(222222222l);
-        itemReqVo1.setOperatingTime("2018-07-08 13:32");
-        itemReqVo1.setOperatingBy("ch");
+        itemReqVo1.setDocumentType(2);
+        itemReqVo1.setDocumentNum("111111111");
+        itemReqVo1.setSourceDocumentType(3);
+        itemReqVo1.setSourceDocumentNum("222222222");
+        itemReqVo1.setUpdateByCode("001");
+        itemReqVo1.setUpdateByName("AAA");
         itemReqVo1.setRemark("退供生成单");
+
         itemReqVos.add(itemReqVo1);
 
         ILockStockBatchItemReqVo itemReqVo11 = new ILockStockBatchItemReqVo();
-        itemReqVo11.setNum(10l);
+        itemReqVo11.setNum(10L);
         itemReqVo11.setSkuCode("1002");
         itemReqVo11.setSkuName("惠氏金装爱儿复无乳糖配");
         itemReqVo11.setBatchCode("123456787");
-        itemReqVo11.setDocumentType("退供");
-        itemReqVo11.setDocumentNum(111111111l);
-        itemReqVo11.setSourceDocumentType("退供上级");
-        itemReqVo11.setSourceDocumentNum(222222222l);
-        itemReqVo11.setOperatingTime("2018-07-08 13:32");
-        itemReqVo11.setOperatingBy("ch");
+        itemReqVo11.setDocumentType(2);
+        itemReqVo11.setDocumentNum("111111111");
+        itemReqVo11.setSourceDocumentType(3);
+        itemReqVo11.setSourceDocumentNum("222222222");
+        itemReqVo11.setUpdateByCode("002");
+        itemReqVo11.setUpdateByName("BBB");
         itemReqVo11.setRemark("退供生成单");
         itemReqVos.add(itemReqVo11);
 

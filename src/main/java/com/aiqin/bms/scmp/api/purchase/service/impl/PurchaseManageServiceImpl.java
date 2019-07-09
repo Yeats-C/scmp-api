@@ -196,7 +196,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         String purchaseProductCode = "CG" + String.valueOf(encodingRule.getNumberingValue());
         purchaseOrder.setPurchaseOrderId(purchaseId);
         purchaseOrder.setPurchaseOrderCode(purchaseProductCode);
-        purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_1);
+        purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         // 添加采购单
         Integer orderCount = purchaseOrderDao.insert(purchaseOrder);
@@ -241,8 +241,15 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                     // 申请单状态变为完成
                     purchaseApply.setPurchaseApplyId(apply);
                     purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_1);
+                    purchaseApply.setUpdateById(purchaseOrderRequest.getPersonId());
+                    purchaseApply.setUpdateByName(purchaseOrderRequest.getPersonName());
                     purchaseApplyDao.update(purchaseApply);
                 }
+                // 变更提交采购申请单的完成状态
+                form.setPurchaseApplyId(apply);
+                form.setUpdateById(purchaseOrderRequest.getPersonId());
+                form.setUpdateByName(purchaseOrderRequest.getPersonName());
+                purchaseApplyProductDao.updateInfoStatus(form);
             }
         }
         return HttpResponse.success();

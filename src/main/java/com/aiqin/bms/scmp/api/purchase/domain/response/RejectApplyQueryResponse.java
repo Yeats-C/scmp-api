@@ -69,7 +69,7 @@ public class RejectApplyQueryResponse {
     @JsonProperty("create_by_name")
     private String createByName;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

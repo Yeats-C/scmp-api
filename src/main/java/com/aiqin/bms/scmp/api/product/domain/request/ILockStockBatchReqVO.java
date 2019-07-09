@@ -102,7 +102,7 @@ public class ILockStockBatchReqVO {
     private Long preAmount;
 
     @ApiModelProperty("锁定库存批次请求")
-    @JsonProperty(value = "itemReqVos")
+    @JsonProperty(value = "item_req_vos")
     private List<ILockStockBatchItemReqVo> itemReqVos;
 
 

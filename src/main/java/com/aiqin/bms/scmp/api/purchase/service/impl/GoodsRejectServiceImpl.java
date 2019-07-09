@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
@@ -131,6 +132,9 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse rejectApply(RejectApplyHandleRequest rejectApplyQueryRequest) {
+        if (rejectApplyQueryRequest != null && CollectionUtils.isEmpty(rejectApplyQueryRequest.getDetailList())) {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
         try {
             EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_APPLY_CODE);
             RejectApplyRecord rejectApplyRecord = new RejectApplyRecord();
@@ -251,25 +255,25 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                     record = result[i];
                     response = new RejectImportResponse();
                     if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[5]) || StringUtils.isBlank(record[3])) {
-                        HandleResponse(response, record,"导入的数据不全");
+                        HandleResponse(response, record, "导入的数据不全");
                         errorCount++;
                         continue;
                     }
                     supplier = supplierDao.selectBySupplierName(record[2]);
-                    if(supplier==null){
-                        HandleResponse(response, record,"未查询到供应商信息");
+                    if (supplier == null) {
+                        HandleResponse(response, record, "未查询到供应商信息");
                         errorCount++;
                         continue;
                     }
                     logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
-                    if(logisticsCenter==null){
-                        HandleResponse(response, record,"未查询到仓库信息");
+                    if (logisticsCenter == null) {
+                        HandleResponse(response, record, "未查询到仓库信息");
                         errorCount++;
                         continue;
                     }
                     warehouse = warehouseDao.selectByWarehouseName(record[4]);
-                    if(warehouse==null){
-                        HandleResponse(response, record,"未查询到库房.信息");
+                    if (warehouse == null) {
+                        HandleResponse(response, record, "未查询到库房.信息");
                         errorCount++;
                         continue;
                     }
@@ -284,7 +288,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                             errorCount++;
                         }
                     } else {
-                        HandleResponse(response, record,"未查询到对应的商品");
+                        HandleResponse(response, record, "未查询到对应的商品");
                         errorCount++;
                     }
                     list.add(response);
@@ -297,7 +301,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         }
     }
 
-    private void HandleResponse(RejectImportResponse response, String[] record,String errorReason) {
+    private void HandleResponse(RejectImportResponse response, String[] record, String errorReason) {
         response.setSkuCode(record[0]);
         response.setSkuName(record[1]);
         response.setSupplierCode(record[2]);
@@ -441,16 +445,45 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             }
             //增加操作记录 操作状态  : 0 新增 1 修改 2 下载
             operationLogDao.insert(new OperationLog(rejectId, 0, "新增退供单", "", request.getCreateById(), request.getCreateByName()));
+            //锁定库存
+            ILockStockBatchReqVO iLockStockBatchReqVO = handleStockParam(list, rejectRecord);
+            Boolean stockStatus = stockService.returnSupplyLockStockBatch(iLockStockBatchReqVO);
+            if (!stockStatus) {
+                LOGGER.error("锁定库存异常:{}", rejectRecord.toString());
+                throw new RuntimeException(String.format("锁定库存异常:{%s}", rejectRecord.toString()));
+            }
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
-            //锁定库存 todo
-            ILockStockBatchReqVO iLockStockBatchReqVO = new ILockStockBatchReqVO();
-            stockService.returnSupplyLockStockBatch(iLockStockBatchReqVO);
         } catch (BeansException e) {
             LOGGER.error("新增退供单异常:{}", e.getMessage());
             throw new RuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
         }
         return HttpResponse.success();
+    }
+
+    public ILockStockBatchReqVO handleStockParam(List<RejectRecordDetail> detailList, RejectRecord rejectRecord) {
+        ILockStockBatchReqVO iLockStockBatchReqVO = new ILockStockBatchReqVO();
+        iLockStockBatchReqVO.setCompanyCode(rejectRecord.getCompanyCode());
+        iLockStockBatchReqVO.setTransportCenterCode(rejectRecord.getTransportCenterCode());
+        iLockStockBatchReqVO.setWarehouseCode(rejectRecord.getWarehouseCode());
+        iLockStockBatchReqVO.setPurchaseGroupCode(rejectRecord.getPurchaseGroupCode());
+        List<ILockStockBatchItemReqVo> list = new ArrayList<>();
+        ILockStockBatchItemReqVo itemReqVo;
+        for (RejectRecordDetail detail : detailList) {
+            itemReqVo = new ILockStockBatchItemReqVo();
+            itemReqVo.setNum(Long.valueOf(detail.getSingleCount()));
+            itemReqVo.setSkuCode(detail.getSkuCode());
+            itemReqVo.setSkuName(detail.getSkuName());
+            itemReqVo.setBatchCode(detail.getBatchNo());
+            itemReqVo.setDocumentType(2);
+            itemReqVo.setDocumentNum(detail.getRejectRecordCode());
+            itemReqVo.setRemark(rejectRecord.getRemark());
+            itemReqVo.setUpdateByName(rejectRecord.getCreateByName());
+            itemReqVo.setUpdateByCode(rejectRecord.getCreateById());
+            list.add(itemReqVo);
+        }
+        iLockStockBatchReqVO.setItemReqVos(list);
+        return iLockStockBatchReqVO;
     }
 
     @Override
@@ -582,18 +615,29 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     }
 
     public HttpResponse rejectCancel(String rejectRecordId) {
-        RejectRecord record = rejectRecordDao.selectByRejectId(rejectRecordId);
-        if (record == null) {
-            return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_RECORD);
+        try {
+            RejectRecord record = rejectRecordDao.selectByRejectId(rejectRecordId);
+            if (record == null) {
+                return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_RECORD);
+            }
+            RejectRecord rejectRecord = new RejectRecord();
+            rejectRecord.setRejectRecordId(rejectRecordId);
+            rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_CANCEL);
+            Integer count = rejectRecordDao.updateStatus(rejectRecord);
+            LOGGER.info("取消-更改退供申请详情影响条数:{}", count);
+            List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
+            //解锁库存
+            ILockStockBatchReqVO iLockStockBatchReqVO = handleStockParam(list, record);
+            Boolean stockStatus =stockService.returnSupplyUnLockStockBatch(iLockStockBatchReqVO);
+            if (!stockStatus) {
+                LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
+                throw new RuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
+            }
+            return HttpResponse.success();
+        } catch (RuntimeException e) {
+            LOGGER.error("取消-更改退供申请异常:{}", e.getMessage());
+            throw new RuntimeException(String.format("取消-更改退供申请异常:{%s}", e.getMessage()));
         }
-        RejectRecord rejectRecord = new RejectRecord();
-        rejectRecord.setRejectRecordId(rejectRecordId);
-        rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_CANCEL);
-        Integer count = rejectRecordDao.updateStatus(rejectRecord);
-        LOGGER.info("取消-更改退供申请详情影响条数:{}", count);
-        //解锁库存 todo
-//        stockService.returnSupplyUnLockStockBatch(stockChangeRequest);
-        return HttpResponse.success();
     }
 
 }

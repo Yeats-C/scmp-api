@@ -86,5 +86,5 @@ public interface WarehouseDao {
    /**
     * 根据库房名称查询库房信息 (退供导入使用)
     */
-   Warehouse selectByWarehouseName(String s);
+   Warehouse selectByWarehouseName(@Param("warehouseName") String warehouseName);
 }

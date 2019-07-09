@@ -2,14 +2,17 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
+import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
+import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDetailDao;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectApprovalService;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -24,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -59,16 +63,19 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectApprovalServiceImpl.class);
 
     @Resource
-    private UrlConfig urlConfig;
-    @Resource
     private WorkFlowBaseUrl workFlowBaseUrl;
     @Resource
     private RejectRecordDao rejectRecordDao;
+    @Resource
+    private StockService stockService;
+    @Resource
+    private GoodsRejectServiceImpl goodsRejectService;
+    @Resource
+    private RejectRecordDetailDao rejectRecordDetailDao;
 
     /**
      * 审核回调接口
      *
-     * @param vo1
      * @return
      */
     @Override
@@ -90,11 +97,20 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
                 //审批中状态
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_AUDITTING);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
-            } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())||Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
+                LOGGER.info("");
+            } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber()) || Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
                 //审批失败或者撤销
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_NO);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
-            }else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+                //解锁库存
+                List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecord.getRejectRecordId());
+                ILockStockBatchReqVO iLockStockBatchReqVO = goodsRejectService.handleStockParam(list, record);
+                Boolean stockStatus =stockService.returnSupplyUnLockStockBatch(iLockStockBatchReqVO);
+                if (!stockStatus) {
+                    LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
+                    throw new RuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
+                }
+            } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 //审批通过 状态为待供应商确认
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
