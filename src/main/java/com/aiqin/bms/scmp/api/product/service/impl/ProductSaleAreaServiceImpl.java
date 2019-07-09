@@ -362,7 +362,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     @Transactional(rollbackFor = Exception.class)
     public void workFlow(String formNo, String applyCode, String userName, String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setFormUrl(workFlowBaseUrl.applySaleArea + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
+        workFlowVO.setFormUrl(workFlowBaseUrl.applySaleArea + "?approvalType=3&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(formNo);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_SALE_AREA.getNum());
