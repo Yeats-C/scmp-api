@@ -112,7 +112,6 @@ public interface ProductSkuPriceInfoMapper {
      * @author NullPointException
      * @date 2019/7/9
      * @param skuCode
-     * @param applyCode
      * @param companyCode
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
      */
