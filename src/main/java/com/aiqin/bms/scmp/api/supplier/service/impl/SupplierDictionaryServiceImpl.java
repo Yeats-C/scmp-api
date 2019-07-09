@@ -250,7 +250,7 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
                 supplierDictionary1.setCreateTime(supplierDictionary.getCreateTime());
                 supplierDictionary1.setUpdateBy(supplierDictionary.getUpdateBy());
                 supplierDictionary1.setUpdateTime(supplierDictionary.getUpdateTime());
-                supplierDictionary1.setEnabled(supplierDictionary.getEnabled());
+                supplierDictionary1.setEnabled(listDTO.getEnabled());
                 ((SupplierDictionaryService) AopContext.currentProxy()).updateDictionary(supplierDictionary1);
                 supplierCommonService.getInstance(code, HandleTypeCoce.UPDATE_SUPPLIER_DICTIONARY.getStatus(), ObjectTypeCode.SUPPLIER_DICTIONARY.getStatus(), supplierDictionary1, HandleTypeCoce.UPDATE_SUPPLIER_DICTIONARY.getName());
                 String finalCode = code;

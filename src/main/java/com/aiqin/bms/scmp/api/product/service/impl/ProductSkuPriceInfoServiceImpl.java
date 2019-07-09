@@ -71,10 +71,10 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
             throw new BizException(ResultCode.PRICE_DATA_CAN_NOT_BE_NULL);
         }
         List<ProductSkuPriceInfoDraft> drafts = BeanCopyUtils.copyList(reqVOList, ProductSkuPriceInfoDraft.class);
-        drafts.forEach(o-> {
-            o.setCode("pp" + new IdSequenceUtils().nextId());
+        for (ProductSkuPriceInfoDraft o : drafts) {
+            o.setCode("pp"+UUIDUtils.getUUID());
             o.setExtField5(0);
-        });
+        }
         int i = productSkuPriceInfoDraftMapper.insertBatch(drafts);
         if(i!=reqVOList.size()){
             throw new BizException(ResultCode.SAVE_PRICE_FAILED);

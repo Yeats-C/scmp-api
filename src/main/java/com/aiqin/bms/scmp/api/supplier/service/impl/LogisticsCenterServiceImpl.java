@@ -417,14 +417,11 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         List<AreaBasic> data = JSON.parseArray(s, AreaBasic.class);
         data.forEach(o->{
                 AreaBasic area = new AreaBasic();
-                if("99".equals(o.getArea_id())){
-                    return;
-                }
                 if(Objects.nonNull(LogisticsCenterEnum.getAllStatus().get(o.getArea_id()))){
                         area.setParent_id(o.getArea_id());
                         area.setArea_id(LogisticsCenterEnum.getAllStatus().get(o.getArea_id()).getNextStatus());
                         area.setArea_name(LogisticsCenterEnum.getAllStatus().get(o.getArea_id()).getNextName());
-                        o.getChildren().add(area);
+                        o.getChildren().add(0,area);
                     }else {
                         area.setParent_id(o.getArea_id());
                         area.setArea_id(LogisticsCenterEnum.PROVINCE.getStatus());
@@ -434,7 +431,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
                         List<AreaBasic> areaBasics = Lists.newArrayList();
                         o.setChildren(areaBasics);
                     }
-                    o.getChildren().add(area);
+                    o.getChildren().add(0,area);
                 }
             });
         //增加全国
@@ -452,7 +449,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         a2.setParent_area_name(LogisticsCenterEnum.PROVINCE.getName());
         areaBasics.add(a2);
         a.setChildren(areaBasics);
-        data.add(a);
+        data.add(0,a);
         return HttpResponse.success(data);
     }
 }
