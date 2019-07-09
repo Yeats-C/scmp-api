@@ -764,6 +764,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         detailResp.setProductSkuPicDescs(productSkuPicDescService.getList(skuCode));
         //sku文件管理
         detailResp.setProductSkuFiles(productSkuFileService.getList(skuCode));
+        //价格信息
         //配置信息
         detailResp.setProductSkuConfigs(productSkuConfigService.getList(skuCode));
         return detailResp;
