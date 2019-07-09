@@ -31,7 +31,7 @@ public class BiSuggestReplenishment {
 
     @ApiModelProperty("商品状态")
     @JsonProperty("config_status")
-    private String configStatus;
+    private int configStatus;
 
     @ApiModelProperty("仓库")
     @JsonProperty("transport_center_name")
@@ -39,31 +39,31 @@ public class BiSuggestReplenishment {
 
     @ApiModelProperty("近三月平均日销量")
     @JsonProperty("average_amount")
-    private String averageAmount;
+    private Long averageAmount;
 
     @ApiModelProperty("库存数量")
     @JsonProperty("inventory_num")
-    private String inventoryNum;
+    private Long inventoryNum;
 
     @ApiModelProperty("库存金额")
     @JsonProperty("inventory_money")
-    private String inventoryMoney;
+    private Long inventoryMoney;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")
-    private String turnoverDays;
+    private Long turnoverDays;
 
     @ApiModelProperty("连续缺货天数")
     @JsonProperty("out_stock_continuous_days")
-    private String outStockContinuousDays;
+    private Long outStockContinuousDays;
 
     @ApiModelProperty("近一月内缺货天数")
     @JsonProperty("last_month_out_stock_days")
-    private String lastMonthOutStockDays;
+    private Long lastMonthOutStockDays;
 
     @ApiModelProperty("建议订货量")
     @JsonProperty("advice_orders")
-    private String adviceOrders;
+    private Long adviceOrders;
 
     @ApiModelProperty("品类")
     @JsonProperty("product_property_name")
@@ -71,10 +71,10 @@ public class BiSuggestReplenishment {
 
     @ApiModelProperty("是否A类")
     @JsonProperty("is_product_property_name")
-    private String isProductPropertyName;
+    private int isProductPropertyName;
 
     @ApiModelProperty("是否畅销品")
     @JsonProperty("is_sell")
-    private String isSell;
+    private int isSell;
 
 }
