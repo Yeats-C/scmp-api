@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceI
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO;
 
 import java.util.List;
 
@@ -84,4 +85,21 @@ public interface ProductSkuPriceInfoService {
      * @return java.lang.Boolean
      */
     Boolean saveSkuPriceOfficial(List<ProductSkuPriceInfo> list);
+    /**
+     * 正式查看价格
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param skuCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
+     */
+    List<SkuPriceRespVO> getSkuPriceBySkuCodeForOfficial(String skuCode);
+    /**
+     * 申请查看价格
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param skuCode
+     * @param applyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
+     */
+    List<SkuPriceRespVO> getSkuPriceBySkuCodeForApply(String skuCode, String applyCode);
 }
