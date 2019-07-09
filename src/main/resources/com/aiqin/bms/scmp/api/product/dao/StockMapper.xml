@@ -2310,7 +2310,7 @@
     ps.spec as productSpec, ps.color_code as colorCode, ps.color_name as colorName, ps.model_number as modelNumber,
     ps.product_sort_code as productSortCode, ps.product_sort_name as productSortName,
     s.purchase_group_code as purchaseGroupCode, s.purchase_group_name as purchaseGroupName,
-    pi.base_product_content as baseProductContent
+    pi.base_product_content as baseProductContent, s.tax_rate as taxRate
     from stock s
     inner join product_sku_supply_unit su
     on s.sku_code = su.product_sku_code

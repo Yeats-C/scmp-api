@@ -20,18 +20,18 @@ public class PurchaseCountAmountResponse {
     private Integer singleCount;
 
     @ApiModelProperty(value="实物返数量")
-    @JsonProperty("matter_single_sum")
-    private Integer matterSingleSum;
+    @JsonProperty("return_count")
+    private Integer returnCount;
 
     @ApiModelProperty(value="未税采购金额")
-    @JsonProperty("not_tax_sum")
-    private Integer notTaxSum;
+    @JsonProperty("not_tax_amount")
+    private Integer notTaxAmount;
 
     @ApiModelProperty(value="含税采购金额")
-    @JsonProperty("product_tax_sum")
-    private Integer productTaxSum;
+    @JsonProperty("tax_amount")
+    private Integer taxAmount;
 
     @ApiModelProperty(value="实物返金额")
-    @JsonProperty("matter_tax_sum")
-    private Integer matterTaxSum;
+    @JsonProperty("return_amount")
+    private Integer returnAmount;
 }

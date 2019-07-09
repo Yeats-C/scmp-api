@@ -365,14 +365,14 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     }
 
     @Override
-    public HttpResponse purchaseOrderAmount(String purchaseOrderId){
+    public HttpResponse<PurchaseCountAmountResponse> purchaseOrderAmount(String purchaseOrderId){
         if(StringUtils.isBlank(purchaseOrderId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 计算采购单的数量与金额
         PurchaseCountAmountResponse amountResponse = new PurchaseCountAmountResponse();
-        Integer productCount = 0, singleCount = 0, matterSingleSum = 0;
-        Integer notTaxSum = 0, productTaxSum = 0, matterTaxSum = 0;
+        Integer productCount = 0, singleCount = 0, returnCount = 0;
+        Integer taxAmount = 0, notTaxAmount = 0, returnAmount = 0;
         List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.purchaseOrderList(purchaseOrderId, 0, null, null);
         if(CollectionUtils.isNotEmptyCollection(orderProducts)){
             for(PurchaseOrderProduct order:orderProducts){
@@ -385,19 +385,19 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 productCount += purchaseWhole;
                 Integer number = purchaseWhole * packNumber + purchaseSingle;
                 singleCount += number;
-                productTaxSum += amount;
-                notTaxSum += productTaxSum/(1 + order.getTaxRate());
+                taxAmount += amount;
+                notTaxAmount += taxAmount/(1 + order.getTaxRate());
                 if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
-                    matterSingleSum += number;
-                    matterTaxSum += amount;
+                    returnCount += number;
+                    returnAmount += amount;
                 }
             }
             amountResponse.setProductCount(productCount);
             amountResponse.setSingleCount(singleCount);
-            amountResponse.setMatterSingleSum(matterSingleSum);
-            amountResponse.setMatterTaxSum(matterTaxSum);
-            amountResponse.setNotTaxSum(notTaxSum);
-            amountResponse.setProductTaxSum(productTaxSum);
+            amountResponse.setReturnCount(returnCount);
+            amountResponse.setTaxAmount(taxAmount);
+            amountResponse.setNotTaxAmount(notTaxAmount);
+            amountResponse.setReturnAmount(returnAmount);
         }
         return HttpResponse.success(amountResponse);
     }

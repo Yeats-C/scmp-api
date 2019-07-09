@@ -18,6 +18,10 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("apply_product_id")
     private String applyProductId;
 
+    @ApiModelProperty(value="采购单号")
+    @JsonProperty("purchase_order_code")
+    private String purchaseOrderCode;
+
     @ApiModelProperty(value = "采购申请id")
     @JsonProperty("purchase_apply_id")
     private String purchaseApplyId;
@@ -272,5 +276,14 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("order_type")
     private String orderType;
 
+    @ApiModelProperty(value="供应商发货时间")
+    @JsonProperty("delivery_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    private Date deliveryTime;
+
+    @ApiModelProperty(value="入库完成时间")
+    @JsonProperty("warehouse_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    private Date warehouseTime;
 }
 

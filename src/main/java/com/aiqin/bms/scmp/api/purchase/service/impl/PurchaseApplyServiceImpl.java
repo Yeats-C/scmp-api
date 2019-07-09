@@ -403,40 +403,30 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             Long priceTax = productSkuPriceInfoMapper.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
                             applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                         }
-                        Integer singCount = 0, productTotalAmount = 0;
-                        Integer content  = applyProduct.getBaseProductContent() == null ? 0 : applyProduct.getBaseProductContent();
                          if(record[4] != null){
-                             String index = record[4].replace("零", "/");
+                             String index = record[4].replace("零", "/").trim();
                              int index1 = index.indexOf("/");
                              int length = index.length();
-                             Integer whole = Integer.valueOf(record[4].substring(0, index1));
-                             Integer single = Integer.valueOf(record[4].substring(index1, length -1));
-                             // 计算单品数量  含税采购价
-                             singCount = whole * content + single;
-                             productTotalAmount = singCount * singCount;
-                             response.setSingleCount(singCount);
-                             response.setProductTotalAmount(productTotalAmount);
-                             BeanUtils.copyProperties(applyProduct, response);
-                             list.add(response);
+                             Integer whole = Integer.valueOf(index.substring(0, index1));
+                             Integer single = Integer.valueOf(index.substring(index1 + 1, length));
+                             applyProduct.setPurchaseWhole(whole);
+                             applyProduct.setPurchaseSingle(single);
                          }
                          if(record[5] != null){
-                             String index = record[5].replace("零", "/");
+                             String index = record[5].replace("零", "/").trim();
                              int index1 = index.indexOf("/");
                              int length = index.length();
-                             Integer whole = Integer.valueOf(record[5].substring(0, index1));
-                             Integer single = Integer.valueOf(record[5].substring(index1, length -1));
-                             // 计算单品数量  含税采购价
-                             singCount = whole * content + single;
-                             productTotalAmount = singCount * singCount;
-                             response.setSingleCount(singCount);
-                             response.setProductTotalAmount(productTotalAmount);
-                             BeanUtils.copyProperties(applyProduct, response);
-                             list.add(response);
+                             Integer whole = Integer.valueOf(index.substring(0, index1));
+                             Integer single = Integer.valueOf(index.substring(index1 + 1, length));
+                             response.setReturnWhole(whole);
+                             response.setReturnSingle(single);
                          }
+                        BeanUtils.copyProperties(applyProduct, response);
                     }else{
                         HandleResponse(response, record,"未查询到对应的商品");
                         errorCount++;
                     }
+                    list.add(response);
                 }
             }
             return HttpResponse.success(new PageResData(errorCount,list));
@@ -447,7 +437,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }
     }
 
-    private void HandleResponse(PurchaseImportResponse response, String[] record,String errorReason) {
+    private void HandleResponse(PurchaseImportResponse response, String[] record, String errorReason) {
         response.setSkuCode(record[0]);
         response.setSkuName(record[1]);
         response.setSupplierName(record[2]);

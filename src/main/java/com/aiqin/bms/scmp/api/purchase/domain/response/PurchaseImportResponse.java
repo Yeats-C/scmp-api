@@ -20,6 +20,14 @@ public class PurchaseImportResponse extends PurchaseApplyProduct {
     @JsonProperty("return_count")
     private String returnCount;
 
+    @ApiModelProperty(value="实物返件数（整数）")
+    @JsonProperty("return_whole")
+    private Integer returnWhole;
+
+    @ApiModelProperty(value="实物返件数（零数）")
+    @JsonProperty("return_single")
+    private Integer returnSingle;
+
     @ApiModelProperty(value="单品数量")
     @JsonProperty("single_count")
     private Integer singleCount;
@@ -28,4 +36,7 @@ public class PurchaseImportResponse extends PurchaseApplyProduct {
     @JsonProperty("product_total_amount")
     private Integer productTotalAmount;
 
+    @ApiModelProperty(value="税率")
+    @JsonProperty("tax_rate")
+    private Integer taxRate;
 }
