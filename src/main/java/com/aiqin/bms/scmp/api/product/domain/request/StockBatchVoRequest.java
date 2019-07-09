@@ -85,27 +85,19 @@ public class StockBatchVoRequest {
 
     @ApiModelProperty("单据类型")
     @JsonProperty(value = "document_type")
-    private String documentType;
+    private Integer documentType;
 
     @ApiModelProperty("单据号")
     @JsonProperty(value = "document_num")
-    private Long documentNum;
+    private String documentNum;
 
     @ApiModelProperty("来源单据类型")
     @JsonProperty(value = "source_document_type")
-    private String sourceDocumentType;
+    private Integer sourceDocumentType;
 
     @ApiModelProperty("来源单据号")
     @JsonProperty(value = "source_document_num")
-    private Long sourceDocumentNum;
-
-    @ApiModelProperty("操作时间")
-    @JsonProperty(value = "operating_time")
-    private String operatingTime;
-
-    @ApiModelProperty("操作人")
-    @JsonProperty(value = "operating_by")
-    private String operatingBy;
+    private String sourceDocumentNum;
 
     @ApiModelProperty("商品备注")
     @JsonProperty(value = "remark")
@@ -114,6 +106,30 @@ public class StockBatchVoRequest {
     @ApiModelProperty("修改数")
     @JsonProperty(value = "change_num")
     private Long changeNum;
+
+    @ApiModelProperty("创建时间")
+    @JsonProperty(value = "create_time")
+    private String createTime;
+
+    @ApiModelProperty("创建人code")
+    @JsonProperty(value = "create_by_code")
+    private String createByCode;
+
+    @ApiModelProperty("创建人名称")
+    @JsonProperty(value = "create_by_name")
+    private String createByName;
+
+    @ApiModelProperty("更新时间")
+    @JsonProperty(value = "update_time")
+    private String updateTime;
+
+    @ApiModelProperty("更新人code")
+    @JsonProperty(value = "update_by_code")
+    private String updateByCode;
+
+    @ApiModelProperty("更新人名称")
+    @JsonProperty(value = "update_by_name")
+    private String updateByName;
 
     @ApiModelProperty("批次号集合")
     @JsonProperty(value = "batch_code")
@@ -264,52 +280,36 @@ public class StockBatchVoRequest {
         this.taxRate = taxRate;
     }
 
-    public String getDocumentType() {
+    public Integer getDocumentType() {
         return documentType;
     }
 
-    public void setDocumentType(String documentType) {
+    public void setDocumentType(Integer documentType) {
         this.documentType = documentType;
     }
 
-    public Long getDocumentNum() {
+    public String getDocumentNum() {
         return documentNum;
     }
 
-    public void setDocumentNum(Long documentNum) {
+    public void setDocumentNum(String documentNum) {
         this.documentNum = documentNum;
     }
 
-    public String getSourceDocumentType() {
+    public Integer getSourceDocumentType() {
         return sourceDocumentType;
     }
 
-    public void setSourceDocumentType(String sourceDocumentType) {
+    public void setSourceDocumentType(Integer sourceDocumentType) {
         this.sourceDocumentType = sourceDocumentType;
     }
 
-    public Long getSourceDocumentNum() {
+    public String getSourceDocumentNum() {
         return sourceDocumentNum;
     }
 
-    public void setSourceDocumentNum(Long sourceDocumentNum) {
+    public void setSourceDocumentNum(String sourceDocumentNum) {
         this.sourceDocumentNum = sourceDocumentNum;
-    }
-
-    public String getOperatingTime() {
-        return operatingTime;
-    }
-
-    public void setOperatingTime(String operatingTime) {
-        this.operatingTime = operatingTime;
-    }
-
-    public String getOperatingBy() {
-        return operatingBy;
-    }
-
-    public void setOperatingBy(String operatingBy) {
-        this.operatingBy = operatingBy;
     }
 
     public String getRemark() {
@@ -320,12 +320,56 @@ public class StockBatchVoRequest {
         this.remark = remark;
     }
 
-    public Long getChangeNum() {
-        return changeNum;
-    }
-
     public void setChangeNum(Long changeNum) {
         this.changeNum = changeNum;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getCreateByCode() {
+        return createByCode;
+    }
+
+    public void setCreateByCode(String createByCode) {
+        this.createByCode = createByCode;
+    }
+
+    public String getCreateByName() {
+        return createByName;
+    }
+
+    public void setCreateByName(String createByName) {
+        this.createByName = createByName;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getUpdateByCode() {
+        return updateByCode;
+    }
+
+    public void setUpdateByCode(String updateByCode) {
+        this.updateByCode = updateByCode;
+    }
+
+    public String getUpdateByName() {
+        return updateByName;
+    }
+
+    public void setUpdateByName(String updateByName) {
+        this.updateByName = updateByName;
     }
 
     public List<String> getBatchCodeList() {

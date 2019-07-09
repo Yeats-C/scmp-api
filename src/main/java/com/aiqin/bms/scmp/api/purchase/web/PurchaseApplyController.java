@@ -35,8 +35,8 @@ public class PurchaseApplyController {
             @ApiImplicitParam(name = "purchase_group_code", value = "采购组 code", type = "String"),
             @ApiImplicitParam(name = "begin_time", value = "开始时间", type = "String"),
             @ApiImplicitParam(name = "finish_time", value = "结束时间", type = "String"),
-            @ApiImplicitParam(name = "page_no", value = "每页条数", type = "Integer"),
-            @ApiImplicitParam(name = "page_size", value = "当前页", type = "Integer") })
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer") })
     public HttpResponse applyList(@RequestParam(value = "purchase_apply_code", required = false) String purchaseApplyCode,
                                    @RequestParam(value = "apply_type", required = false) Integer applyType,
                                    @RequestParam(value = "apply_status", required = false) Integer applyStatus,
@@ -70,8 +70,8 @@ public class PurchaseApplyController {
             @ApiImplicitParam(name = "product_replenish_type", value = "畅销商品建议补货传值类型是否有值：0.是 1.否", type = "Integer"),
             @ApiImplicitParam(name = "a_shortage_type", value = "14大A品缺货传值类型是否有值：0.是 1.否", type = "Integer"),
             @ApiImplicitParam(name = "product_shortage_type", value = "畅销商品缺货传值类型是否有值：0.是 1.否", type = "Integer"),
-            @ApiImplicitParam(name = "page_no", value = "每页条数", type = "Integer"),
-            @ApiImplicitParam(name = "page_size", value = "当前页", type = "Integer")})
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer")})
     public HttpResponse applyProductList(
                                          @RequestParam(value = "purchase_apply_id", required = false) String purchaseApplyId,
                                          @RequestParam(value = "supplier_code", required = false) String supplierCode,

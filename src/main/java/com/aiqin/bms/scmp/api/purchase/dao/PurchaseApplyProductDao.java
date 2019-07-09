@@ -41,4 +41,6 @@ public interface PurchaseApplyProductDao {
 
     Integer delete(String purchaseApplyId);
 
+    Integer updateInfoStatus(PurchaseFormRequest form);
+
 }

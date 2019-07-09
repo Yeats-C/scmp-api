@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.bireport.dao.ProSuggestReplenishmentDao">
+   <!-- <resultMap id="ProReplenishmentOutStockResultMap" type="com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.ProReplenishmentOutStockRespVo">
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="skuCode" jdbcType="VARCHAR" property="skuCode" />
+    </resultMap>-->
+    <select id="selectSuggestReplenishmentByPro" parameterType="java.lang.Integer" resultType="String">
+      select sku_code
+      FROM bi_suggest_replenishment
+      where is_product_property_name = #{proStatus}
+    </select>
+    <select id="selectSuggestReplenishmentBySell" parameterType="java.lang.Integer" resultType="String">
+        select sku_code
+        FROM bi_suggest_replenishment
+        where is_product_property_name = #{proStatus}
+    </select>
+    <select id="selectOutStockByPro" parameterType="java.lang.Integer" resultType="String">
+        select sku_code
+        FROM bi_suggest_replenishment
+        where is_product_property_name = #{proStatus} AND out_stock_continuous_days <![CDATA[>]]> #{continuousDays}
+    </select>
+    <select id="selectOutStockBySell" parameterType="java.lang.Integer" resultType="String">
+        select sku_code
+        FROM bi_suggest_replenishment
+        where is_product_property_name = #{proStatus} AND out_stock_continuous_days <![CDATA[>]]> #{continuousDays}
+    </select>
+    <select id="selectPurchaseApplySkuList"
+            parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo">
+        select
+        bsr.advice_orders as adviceOrders,
+        bsr.average_amount as averageAmount,
+        bsr.out_stock_affect_money as outStockAffectMoney,
+        bsr.out_stock_continuous_days as outStockContinuousDays,
+        apsc.arrival_cycle as arrivalCycle,
+        pssuc.need_days as needDays
+        FROM bi_suggest_replenishment bsr
+        LEFT JOIN apply_product_sku_config AS apsc ON CONVERT(bsr.sku_code USING utf8) COLLATE utf8_unicode_ci  = apsc.sku_code AND CONVERT(bsr.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = apsc.transport_center_code
+        LEFT JOIN product_sku_supply_unit_capacity AS pssuc
+          ON CONVERT(bsr.sku_code USING utf8) COLLATE utf8_unicode_ci  = pssuc.product_sku_code
+            <if test="supplierCode!=null and supplierCode!=''">
+                AND CONVERT(#{supplierCode} USING utf8) COLLATE utf8_unicode_ci  = pssuc.supply_unit_code
+            </if>
+        where 1=1
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and bsr.transport_center_code=#{transportCenterCode}
+        </if>
+        <if test="skuCode!=null and skuCode!=''">
+            and bsr.sku_code=#{skuCode}
+        </if>
+    </select>
+</mapper>
