@@ -1,12 +1,16 @@
 package com.aiqin.bms.scmp.api.bireport.service.impl;
 
 import com.aiqin.bms.scmp.api.bireport.dao.ProSuggestReplenishmentDao;
+import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.ProReplenishmentOutStockRespVo;
+import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -67,5 +71,21 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
         ProReplenishmentOutStockRespVo proReplenishmentOutStockRespVo = new ProReplenishmentOutStockRespVo();
         proReplenishmentOutStockRespVo.setSkuCode(skuCodes);
         return proReplenishmentOutStockRespVo;
+    }
+
+    /**
+     * 获取采购申请列表
+     * @return
+     */
+    @Override
+    public List<PurchaseApplyRespVo> selectPurchaseApplySkuList(PurchaseApplyReqVo purchaseApplyReqVo){
+        List<PurchaseApplyRespVo> purchaseApplyRespVos = proSuggestReplenishmentDao.selectPurchaseApplySkuList(purchaseApplyReqVo);
+        for (PurchaseApplyRespVo purchaseApplyRespVo : purchaseApplyRespVos) {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue());
+            purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
+        }
+        return purchaseApplyRespVos;
     }
 }
