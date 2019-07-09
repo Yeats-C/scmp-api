@@ -1,18 +1,15 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.mgs.control.component.service.AreaBasicService;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterAreaDao;
-import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.supplier.domain.LogisticsCenterEnum;
 import com.aiqin.bms.scmp.api.base.AreaBasic;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterAreaDao;
+import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
+import com.aiqin.bms.scmp.api.supplier.domain.LogisticsCenterEnum;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterAreaDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
@@ -27,6 +24,9 @@ import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.mgs.control.component.service.AreaBasicService;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 描述:
@@ -193,40 +194,36 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         int k  = ((LogisticsCenterService)AopContext.currentProxy()).updateByPrimaryKeySelective(logisticsCenterDTO);
         if(k>0){
             //  服务区范围转化实体
-            try {
-                if(CollectionUtils.isNotEmptyCollection(updateLogisticsCenterReqVo.getLogisticsCenterAreaReqVoList())) {
-                    List<LogisticsCenterAreaDTO> logisticsCenterAreaDTOS = BeanCopyUtils.copyList(updateLogisticsCenterReqVo.getLogisticsCenterAreaReqVoList(), LogisticsCenterAreaDTO.class);
-                    // 分两种情况。有id的执行修改u，没有id的执行添加
-                    List<LogisticsCenterAreaDTO> addList = new ArrayList<>();
-                    List<LogisticsCenterAreaDTO> updateList = new ArrayList<>();
-                    for (LogisticsCenterAreaDTO logisticsCenterAreaDTO : logisticsCenterAreaDTOS) {
-                        if (logisticsCenterAreaDTO.getId() == null) {
-                            addList.add(logisticsCenterAreaDTO);
-                        } else {
-                            updateList.add(logisticsCenterAreaDTO);
-                        }
-                    }
-                    if (addList.size() > 0) {
-                        //设置关联编码
-                        addList.stream().forEach(purchase -> purchase.setLogisticsCenterCode(String.valueOf(logisticsCenterDTO.getLogisticsCenterCode())));
-                        //保存新增实体
-                        int kp = ((LogisticsCenterService) AopContext.currentProxy()).saveList(addList);
-                        if (kp < 1) {
-                            throw new GroundRuntimeException("保存新增的物流中心服务区范围失败");
-                        }
-                    }
-                    if (updateList.size() > 0) {
-                        //有id的批量更新
-                        int kp = ((LogisticsCenterService) AopContext.currentProxy()).updateList(updateList);
-                        if (kp < 1) {
-                            throw new GroundRuntimeException("修改的物流中心服务区范围失败");
-                        }
-                    }
+            //先查再删后增
+            List<LogisticsCenterAreaDTO> list =  logisticsCenterAreaDao.selectByCode(updateLogisticsCenterReqVo.getLogisticsCenterCode());
+            if(CollectionUtils.isNotEmptyCollection(list)){
+                int i = logisticsCenterAreaDao.deleteByCode(updateLogisticsCenterReqVo.getLogisticsCenterCode());
+                if (i != list.size()) {
+                    throw new GroundRuntimeException("修改失败");
                 }
-                return  HttpResponse.success(k);
-            } catch (Exception e) {
-                throw new GroundRuntimeException("转化实体出错");
             }
+            if(CollectionUtils.isNotEmptyCollection(updateLogisticsCenterReqVo.getLogisticsCenterAreaReqVoList())){
+                List<LogisticsCenterAreaDTO> list1 = BeanCopyUtils.copyList(updateLogisticsCenterReqVo.getLogisticsCenterAreaReqVoList(),LogisticsCenterAreaDTO.class);
+                boolean equals = Objects.equals(updateLogisticsCenterReqVo.getEnable(), 0);
+                //设置关联编码
+                list1.forEach(o->{
+                    o.setLogisticsCenterCode(updateLogisticsCenterReqVo.getLogisticsCenterCode());
+                    o.setDelFlag((byte)0);
+                    if (equals) {
+                        o.setEnable((byte)0);
+                    }
+                });
+                //批量插入
+                int kp = ((LogisticsCenterService)AopContext.currentProxy()).saveList(list1);
+                if(kp!=list1.size()){
+                    return HttpResponse.success(kp);
+                }else {
+                    throw new GroundRuntimeException("物流中心服务范围新增失败");
+                }
+            }else{
+                return HttpResponse.success(k);
+            }
+
         }
         throw new GroundRuntimeException("修改失败");
     }

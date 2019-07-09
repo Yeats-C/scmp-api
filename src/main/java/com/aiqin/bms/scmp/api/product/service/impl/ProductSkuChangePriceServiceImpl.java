@@ -797,7 +797,10 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             workFlowVO.setFormNo(view.getFormNo());
             WorkFlowRespVO workFlowRespVO = cancelWorkFlow(workFlowVO);
             log.info(workFlowRespVO.getMsg());
-            return workFlowRespVO.getSuccess();
+            if(!workFlowRespVO.getSuccess()){
+                throw new BizException(MessageId.create(Project.PRODUCT_API,98,workFlowRespVO.getMsg()));
+            }
+            return  workFlowRespVO.getSuccess();
         }else{
             throw new BizException(ResultCode.DATA_ERROR);
         }
