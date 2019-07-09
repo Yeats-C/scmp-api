@@ -7,8 +7,8 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO;
 
 import java.util.List;
 
@@ -92,7 +92,7 @@ public interface ProductSkuPriceInfoService {
      * @param skuCode
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
      */
-    List<SkuPriceRespVO> getSkuPriceBySkuCodeForOfficial(String skuCode);
+    List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForOfficial(String skuCode);
     /**
      * 申请查看价格
      * @author NullPointException
@@ -101,5 +101,14 @@ public interface ProductSkuPriceInfoService {
      * @param applyCode
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
      */
-    List<SkuPriceRespVO> getSkuPriceBySkuCodeForApply(String skuCode, String applyCode);
+    List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForApply(String skuCode, String applyCode);
+    /**
+     * 临时表
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param skuCode
+     * @param applyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo>
+     */
+    List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForDraft(String skuCode, String applyCode);
 }
