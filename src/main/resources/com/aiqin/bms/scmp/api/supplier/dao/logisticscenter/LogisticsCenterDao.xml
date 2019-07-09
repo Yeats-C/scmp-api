@@ -209,7 +209,7 @@
           company_name = #{companyCode,jdbcType=VARCHAR},
         </if>
       </set>
-      where  logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR},
+      where  logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
     </update>
     <select id="getEnableLogisticsCenterList" resultMap="BaseResultMap">
     select
@@ -233,8 +233,8 @@
     <if test="logisticsCenterName!=null and logisticsCenterName!=''">
       AND logistics_center_name = #{logisticsCenterName,jdbcType=VARCHAR}
     </if>
-    <if test="id!=null">
-      AND id!=#{id,jdbcType=BIGINT}
+    <if test="code!=null">
+      AND logistics_center_code!=#{code,jdbcType=BIGINT}
     </if>
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}

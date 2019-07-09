@@ -184,7 +184,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         if(null != authToken){
             companyCode = authToken.getCompanyCode();
         }
-        Integer integer = logisticsCenterDao.checkName(logisticsCenterName,updateLogisticsCenterReqVo.getId(),companyCode);
+        Integer integer = logisticsCenterDao.checkName(logisticsCenterName,updateLogisticsCenterReqVo.getLogisticsCenterCode(),companyCode);
         if(integer>0){
             throw new GroundRuntimeException("物流中心名称不能重复");
         }
@@ -216,10 +216,9 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
                 //批量插入
                 int kp = ((LogisticsCenterService)AopContext.currentProxy()).saveList(list1);
                 if(kp!=list1.size()){
-                    return HttpResponse.success(kp);
-                }else {
                     throw new GroundRuntimeException("物流中心服务范围新增失败");
                 }
+                return HttpResponse.success(kp);
             }else{
                 return HttpResponse.success(k);
             }
