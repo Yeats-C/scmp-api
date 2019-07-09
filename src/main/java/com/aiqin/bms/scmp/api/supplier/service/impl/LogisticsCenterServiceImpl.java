@@ -277,7 +277,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
     @Update
     public int updateByPrimaryKeySelective(LogisticsCenterDTO record) {
         try {
-         return logisticsCenterDao.updateByPrimaryKeySelective(record);
+         return logisticsCenterDao.updateByCodeSelective(record);
         }catch (Exception e){
             throw new GroundRuntimeException("物流中心修改失败");
         }

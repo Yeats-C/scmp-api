@@ -5,8 +5,8 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -96,7 +96,7 @@ public interface ProductSkuPriceInfoMapper {
      * @param companyCode
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
      */
-    List<SkuPriceRespVO> selectBySkuCodeForOfficial(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
+    List<ProductSkuPriceRespVo> selectBySkuCodeForOfficial(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
     /**
      * 申请详情查看
      * @author NullPointException
@@ -106,5 +106,15 @@ public interface ProductSkuPriceInfoMapper {
      * @param companyCode
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
      */
-    List<SkuPriceRespVO> selectBySkuCodeForApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode, @Param("companyCode") String companyCode);
+    List<ProductSkuPriceRespVo> selectBySkuCodeForApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode, @Param("companyCode") String companyCode);
+    /**
+     * 申请详情查看
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param skuCode
+     * @param applyCode
+     * @param companyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
+     */
+    List<ProductSkuPriceRespVo> selectBySkuCodeForDraft(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
 }

@@ -12,8 +12,8 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoLogMapper;
@@ -155,12 +155,17 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
     }
 
     @Override
-    public List<SkuPriceRespVO> getSkuPriceBySkuCodeForOfficial(String skuCode) {
+    public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForOfficial(String skuCode) {
         return productSkuPriceInfoMapper.selectBySkuCodeForOfficial(skuCode,getUser().getCompanyCode());
     }
 
     @Override
-    public List<SkuPriceRespVO> getSkuPriceBySkuCodeForApply(String skuCode,String applyCode) {
+    public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForApply(String skuCode, String applyCode) {
         return productSkuPriceInfoMapper.selectBySkuCodeForApply(skuCode,applyCode,getUser().getCompanyCode());
+    }
+
+    @Override
+    public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForDraft(String skuCode, String applyCode) {
+        return productSkuPriceInfoMapper.selectBySkuCodeForDraft(skuCode,getUser().getCompanyCode());
     }
 }
