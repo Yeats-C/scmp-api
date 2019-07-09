@@ -27,10 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-<<<<<<< HEAD
 import java.util.List;
-=======
->>>>>>> dev
 import java.util.Objects;
 
 /**
