@@ -118,6 +118,16 @@ public interface ProductSkuChangePriceService {
      */
     void saveOfficial(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) throws Exception;
     /**
+     * 更改状态
+     * @author NullPointException
+     * @date 2019/7/10
+     * @param newVO
+     * @param dto
+     * @return void
+     */
+    void changeStatus(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto);
+
+    /**
      * 临时区域变价
      * @author NullPointException
      * @date 2019/5/25

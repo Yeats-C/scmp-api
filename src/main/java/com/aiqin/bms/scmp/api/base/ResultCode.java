@@ -167,6 +167,7 @@ public interface ResultCode {
     MessageId BOX_PACKING_EMPTY = MessageId.create(Project.PRODUCT_API, 70, "包装信息为空");
 
     MessageId  OBJECT_CONVERSION_FAILED = MessageId.create(Project.PRODUCT_API, 71, "对象转化失败");
+    MessageId  DATE_CONVERSION_FAILED = MessageId.create(Project.PRODUCT_API, 71, "日期转换异常");
     MessageId OBJECT_NOT_FOUND = MessageId.create(Project.PRODUCT_API, 72, "没有找到对应的对象");
 
 

@@ -1,7 +1,7 @@
 server:
     port: 80
-#    tomcat:
-#      basedir: /tmp/dir
+    tomcat:
+      basedir: /tmp/dir
 spring:
     profiles:
         active: ${profile.name}
@@ -78,7 +78,7 @@ WorkFlowBaseUrl:
         applyGoodsPrice:
     productUrl:
       #/Supplier/IntendingDetails?variablePriceName=促销活动&priceTypeCode=1&variablePriceCode=10001
-      variablePrice: http://scmp.bms.aiqin.com/#/Supplier/IntendingDetails
+      variablePrice: http://scmp.bms.aiqin.com/#/price/detailIntending
       applySku: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
       applySkuConfig: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
       #销售区域

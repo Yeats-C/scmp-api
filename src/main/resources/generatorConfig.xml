@@ -30,6 +30,7 @@
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
 
+
         <!-- targetProject:生成PO类的位置 -->
         <javaModelGenerator targetPackage="com.aiqin.bms.scmp.api.supplier.domain.pojo"
                             targetProject="C:\Users\21100\Desktop">
