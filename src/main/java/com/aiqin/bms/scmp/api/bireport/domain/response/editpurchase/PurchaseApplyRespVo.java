@@ -35,6 +35,10 @@ public class PurchaseApplyRespVo {
     @JsonProperty(value = "arrival_cycle")
     private Long arrivalCycle;
 
+    @ApiModelProperty("生产量")
+    @JsonProperty(value = "out_put")
+    private Long outPuts;
+
     @ApiModelProperty("需要天数")
     @JsonProperty(value = "need_Days")
     private Long needDays;
