@@ -44,4 +44,6 @@ public interface InboundDao {
     Integer selectMaxPurchaseNumBySourceOderCode(String sourceOderCode);
 
     Inbound selectTimeAndSatusBySourchAndNum(@Param("sourceOderCode")String sourceOderCode, @Param("purchaseNum")Integer purchaseNum);
+
+    List<Integer> receiptNum(@Param("sourceOderCode")String purchaseOrderId);
 }

@@ -148,7 +148,17 @@
     <where>
       purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
     </where>
-    <if test="isPage == null">
+    <if test="isPage == 0">
+      LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="purchaseOrderCount" resultType="java.lang.Integer">
+    select count(1)
+    from purchase_order_product
+    <where>
+      purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+    </where>
+    <if test="isPage == 0">
       LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </if>
   </select>
@@ -171,4 +181,10 @@
        #{item.createByName,jdbcType=VARCHAR})
     </foreach>
   </insert>
+  <select id="orderBySku" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
+    select sku_code as skuCode, sku_name as skuName
+    from purchase_order_product
+    where  purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+    GROUP BY sku_code
+  </select>
 </mapper>

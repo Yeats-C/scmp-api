@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
@@ -108,7 +110,10 @@ public class PurchaseManageController {
                                              @RequestParam(value = "is_page", required = false) Integer isPage,
                                              @RequestParam(value = "page_no", required = false) Integer pageNo,
                                              @RequestParam(value = "page_size", required = false) Integer pageSize) {
-        return purchaseManageService.purchaseOrderProduct(purchaseOrderId, isPage, pageNo, pageSize);
+        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest(purchaseOrderId, isPage);
+        request.setPageSize(pageSize);
+        request.setPageNo(pageNo);
+        return purchaseManageService.purchaseOrderProduct(request);
     }
 
     @GetMapping("/order/file")
@@ -141,5 +146,24 @@ public class PurchaseManageController {
     @ApiOperation("入库")
     public HttpResponse getWarehousing(@RequestParam List<PurchaseOrderProduct> list) {
         return purchaseManageService.getWarehousing(list);
+    }
+
+    @GetMapping("/sku/info")
+    @ApiOperation("查询质检报告对应的sku")
+    public HttpResponse reportSku(@RequestParam("purchase_order_id") String purchaseOrderId) {
+        return purchaseManageService.reportSku(purchaseOrderId);
+    }
+
+    @GetMapping("/warehouse/receipt")
+    @ApiOperation("查询采购单对应的入库单")
+    public HttpResponse receipt(@RequestParam("purchase_order_id") String purchaseOrderId) {
+        return purchaseManageService.receipt(purchaseOrderId);
+    }
+
+    @GetMapping("/warehouse/receipt/info")
+    @ApiOperation("查询采购单对应的入库单的基本信息")
+    public HttpResponse<Inbound> receiptInfo(@RequestParam("purchase_order_id") String purchaseOrderId,
+                                             @RequestParam("purchase_num") Integer purchaseNum) {
+        return purchaseManageService.receiptInfo(purchaseOrderId, purchaseNum);
     }
 }

@@ -195,40 +195,42 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 判断此采购申请单的商品之前是否已生成
-        String purchaseApplyId = null;
+        String purchaseApplyId;
+        String purchaseApplyCode;
+        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
         if(StringUtils.isNotBlank(applyProductRequest.getPurchaseApplyId())){
             purchaseApplyId = applyProductRequest.getPurchaseApplyId();
+            PurchaseApply purchaseApply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
+            purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
+            purchaseApplyDao.update(purchaseApply);
+            purchaseApplyCode = purchaseApply.getPurchaseApplyCode();
             purchaseApplyProductDao.delete(purchaseApplyId);
         }else {
             // 生成采购申请单id
             purchaseApplyId = IdUtil.purchaseId();
-        }
-        // 保存采购申请选中商品
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
-        for(PurchaseApplyProduct product:applyProducts){
-            product.setApplyProductId(IdUtil.purchaseId());
-            product.setPurchaseApplyId(purchaseApplyId);
-            product.setPurchaseApplyCode("CS" + String.valueOf(encodingRule.getNumberingValue()));
-            product.setApplyProductStatus(Global.USER_ON);
-        }
-        Integer productCount = purchaseApplyProductDao.insertAll(applyProducts);
-        if(productCount > 0){
             // 生成采购申请单
             PurchaseApply purchaseApply = new PurchaseApply();
             purchaseApply.setPurchaseApplyId(purchaseApplyId);
             // 获取采购申请单编码
-            purchaseApply.setPurchaseApplyCode("CS" + String.valueOf(encodingRule.getNumberingValue()));
+            purchaseApplyCode = "CS" + String.valueOf(encodingRule.getNumberingValue());
+            purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
             purchaseApply.setApplyType(Global.PURCHASE_APPLY_TYPE_0);
             purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
             purchaseApply.setPurchaseGroupCode(applyProducts.get(0).getPurchaseGroupCode());
             purchaseApply.setPurchaseGroupName(applyProducts.get(0).getPurchaseGroupName());
             purchaseApply.setCreateById(applyProducts.get(0).getCreateById());
             purchaseApply.setCreateByName(applyProducts.get(0).getCreateByName());
-            Integer count = purchaseApplyDao.insert(purchaseApply);
-            if(count > 0){
-                encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
-            }
+            purchaseApplyDao.insert(purchaseApply);
+            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         }
+        // 保存采购申请选中商品
+        for(PurchaseApplyProduct product:applyProducts){
+            product.setApplyProductId(IdUtil.purchaseId());
+            product.setPurchaseApplyId(purchaseApplyId);
+            product.setPurchaseApplyCode(purchaseApplyCode);
+            product.setApplyProductStatus(Global.USER_ON);
+        }
+         purchaseApplyProductDao.insertAll(applyProducts);
         return HttpResponse.success();
     }
 

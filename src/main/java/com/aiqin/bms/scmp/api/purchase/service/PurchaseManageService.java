@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -26,7 +28,7 @@ public interface PurchaseManageService {
 
     HttpResponse purchaseOrderDetails(String purchaseOrderId);
 
-    HttpResponse purchaseOrderProduct(String purchaseOrderId, Integer isPage, Integer pageNo, Integer pageSize);
+    HttpResponse purchaseOrderProduct(PurchaseOrderProductRequest request);
 
     HttpResponse purchaseOrderFile(String purchaseOrderId);
 
@@ -37,4 +39,10 @@ public interface PurchaseManageService {
     HttpResponse purchaseOrderStock(String purchaseOrderId, String createById, String createByName);
 
     HttpResponse getWarehousing(List<PurchaseOrderProduct> list);
+
+    HttpResponse reportSku(String purchaseOrderId);
+
+    HttpResponse receipt(String purchaseOrderId);
+
+    HttpResponse<Inbound> receiptInfo(String purchaseOrderId, Integer purchaseNum);
 }
