@@ -58,7 +58,7 @@ public class SkuPriceDraftReqVO {
     private Long tax;
 
     @ApiModelProperty("开始生效时间")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date effectiveTimeStart;
 
     @ApiModelProperty(value = "供应商编码",hidden = true)
