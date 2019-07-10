@@ -57,9 +57,6 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
     @Resource
-    private UrlConfig urlConfig;
-
-    @Resource
     private WorkFlowBaseUrl workFlowBaseUrl;
 
     /**
@@ -69,11 +66,12 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
      * @return
      */
     @Override
-    public String workFlowCallback(WorkFlowCallbackVO vo) {
-        //审批驳回
+    public String workFlowCallback(WorkFlowCallbackVO vo1) {
+        WorkFlowCallbackVO vo = updateSupStatus(vo1);
         RejectRecord rejectRecord = new RejectRecord();
         rejectRecord.setRejectRecordId(vo.getFormNo());
         if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
+            //审批失败
             return WorkFlowReturn.SUCCESS;
         } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
             //撤销

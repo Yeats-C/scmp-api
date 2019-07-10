@@ -188,7 +188,7 @@
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id
     <where>
-      purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+      o.purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
     </where>
   </select>
 </mapper>

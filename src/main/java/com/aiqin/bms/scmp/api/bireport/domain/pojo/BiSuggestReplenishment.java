@@ -13,11 +13,19 @@ public class BiSuggestReplenishment {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("种类")
+    @ApiModelProperty("种类编码")
+    @JsonProperty("product_category_code")
+    private String productCategoryCode;
+
+    @ApiModelProperty("种类名称")
     @JsonProperty("product_category_name")
     private String productCategoryName;
 
-    @ApiModelProperty("品牌")
+    @ApiModelProperty("品牌编码")
+    @JsonProperty("product_brand_code")
+    private String productBrandCode;
+
+    @ApiModelProperty("品牌名称")
     @JsonProperty("product_brand_name")
     private String productBrandName;
 
@@ -29,11 +37,15 @@ public class BiSuggestReplenishment {
     @JsonProperty("sku_name")
     private String skuName;
 
-    @ApiModelProperty("商品状态")
+    @ApiModelProperty("商品状态(0:再用 1:停止进货 2:停止配送 3:停止销售)")
     @JsonProperty("config_status")
     private int configStatus;
 
-    @ApiModelProperty("仓库")
+    @ApiModelProperty("仓库编码")
+    @JsonProperty("transport_center_code")
+    private String transportCenterCode;
+
+    @ApiModelProperty("仓库名称")
     @JsonProperty("transport_center_name")
     private String transportCenterName;
 
@@ -57,6 +69,10 @@ public class BiSuggestReplenishment {
     @JsonProperty("out_stock_continuous_days")
     private Long outStockContinuousDays;
 
+    @ApiModelProperty("缺货影响金额")
+    @JsonProperty("out_stock_affect_money")
+    private Long outStockAffectMoney;
+
     @ApiModelProperty("近一月内缺货天数")
     @JsonProperty("last_month_out_stock_days")
     private Long lastMonthOutStockDays;
@@ -65,7 +81,11 @@ public class BiSuggestReplenishment {
     @JsonProperty("advice_orders")
     private Long adviceOrders;
 
-    @ApiModelProperty("品类")
+    @ApiModelProperty("品类编码")
+    @JsonProperty("product_property_code")
+    private String productPropertyCode;
+
+    @ApiModelProperty("品类名称")
     @JsonProperty("product_property_name")
     private String productPropertyName;
 

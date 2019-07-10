@@ -5,7 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplyProductSkuC
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
-import io.lettuce.core.dynamic.annotation.Param;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 

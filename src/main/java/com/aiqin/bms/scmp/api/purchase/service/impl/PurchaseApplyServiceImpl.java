@@ -195,40 +195,42 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 判断此采购申请单的商品之前是否已生成
-        String purchaseApplyId = null;
+        String purchaseApplyId;
+        String purchaseApplyCode;
+        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
         if(StringUtils.isNotBlank(applyProductRequest.getPurchaseApplyId())){
             purchaseApplyId = applyProductRequest.getPurchaseApplyId();
+            PurchaseApply purchaseApply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
+            purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
+            purchaseApplyDao.update(purchaseApply);
+            purchaseApplyCode = purchaseApply.getPurchaseApplyCode();
             purchaseApplyProductDao.delete(purchaseApplyId);
         }else {
             // 生成采购申请单id
             purchaseApplyId = IdUtil.purchaseId();
-        }
-        // 保存采购申请选中商品
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
-        for(PurchaseApplyProduct product:applyProducts){
-            product.setApplyProductId(IdUtil.purchaseId());
-            product.setPurchaseApplyId(purchaseApplyId);
-            product.setPurchaseApplyCode("CS" + String.valueOf(encodingRule.getNumberingValue()));
-            product.setApplyProductStatus(Global.USER_ON);
-        }
-        Integer productCount = purchaseApplyProductDao.insertAll(applyProducts);
-        if(productCount > 0){
             // 生成采购申请单
             PurchaseApply purchaseApply = new PurchaseApply();
             purchaseApply.setPurchaseApplyId(purchaseApplyId);
             // 获取采购申请单编码
-            purchaseApply.setPurchaseApplyCode("CS" + String.valueOf(encodingRule.getNumberingValue()));
+            purchaseApplyCode = "CS" + String.valueOf(encodingRule.getNumberingValue());
+            purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
             purchaseApply.setApplyType(Global.PURCHASE_APPLY_TYPE_0);
             purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
             purchaseApply.setPurchaseGroupCode(applyProducts.get(0).getPurchaseGroupCode());
             purchaseApply.setPurchaseGroupName(applyProducts.get(0).getPurchaseGroupName());
             purchaseApply.setCreateById(applyProducts.get(0).getCreateById());
             purchaseApply.setCreateByName(applyProducts.get(0).getCreateByName());
-            Integer count = purchaseApplyDao.insert(purchaseApply);
-            if(count > 0){
-                encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
-            }
+            purchaseApplyDao.insert(purchaseApply);
+            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         }
+        // 保存采购申请选中商品
+        for(PurchaseApplyProduct product:applyProducts){
+            product.setApplyProductId(IdUtil.purchaseId());
+            product.setPurchaseApplyId(purchaseApplyId);
+            product.setPurchaseApplyCode(purchaseApplyCode);
+            product.setApplyProductStatus(Global.USER_ON);
+        }
+         purchaseApplyProductDao.insertAll(applyProducts);
         return HttpResponse.success();
     }
 
@@ -403,40 +405,30 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             Long priceTax = productSkuPriceInfoMapper.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
                             applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                         }
-                        Integer singCount = 0, productTotalAmount = 0;
-                        Integer content  = applyProduct.getBaseProductContent() == null ? 0 : applyProduct.getBaseProductContent();
                          if(record[4] != null){
-                             String index = record[4].replace("零", "/");
+                             String index = record[4].replace("零", "/").trim();
                              int index1 = index.indexOf("/");
                              int length = index.length();
-                             Integer whole = Integer.valueOf(record[4].substring(0, index1));
-                             Integer single = Integer.valueOf(record[4].substring(index1, length -1));
-                             // 计算单品数量  含税采购价
-                             singCount = whole * content + single;
-                             productTotalAmount = singCount * singCount;
-                             response.setSingleCount(singCount);
-                             response.setProductTotalAmount(productTotalAmount);
-                             BeanUtils.copyProperties(applyProduct, response);
-                             list.add(response);
+                             Integer whole = Integer.valueOf(index.substring(0, index1));
+                             Integer single = Integer.valueOf(index.substring(index1 + 1, length));
+                             applyProduct.setPurchaseWhole(whole);
+                             applyProduct.setPurchaseSingle(single);
                          }
                          if(record[5] != null){
-                             String index = record[5].replace("零", "/");
+                             String index = record[5].replace("零", "/").trim();
                              int index1 = index.indexOf("/");
                              int length = index.length();
-                             Integer whole = Integer.valueOf(record[5].substring(0, index1));
-                             Integer single = Integer.valueOf(record[5].substring(index1, length -1));
-                             // 计算单品数量  含税采购价
-                             singCount = whole * content + single;
-                             productTotalAmount = singCount * singCount;
-                             response.setSingleCount(singCount);
-                             response.setProductTotalAmount(productTotalAmount);
-                             BeanUtils.copyProperties(applyProduct, response);
-                             list.add(response);
+                             Integer whole = Integer.valueOf(index.substring(0, index1));
+                             Integer single = Integer.valueOf(index.substring(index1 + 1, length));
+                             response.setReturnWhole(whole);
+                             response.setReturnSingle(single);
                          }
+                        BeanUtils.copyProperties(applyProduct, response);
                     }else{
                         HandleResponse(response, record,"未查询到对应的商品");
                         errorCount++;
                     }
+                    list.add(response);
                 }
             }
             return HttpResponse.success(new PageResData(errorCount,list));
@@ -447,7 +439,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }
     }
 
-    private void HandleResponse(PurchaseImportResponse response, String[] record,String errorReason) {
+    private void HandleResponse(PurchaseImportResponse response, String[] record, String errorReason) {
         response.setSkuCode(record[0]);
         response.setSkuName(record[1]);
         response.setSupplierName(record[2]);
