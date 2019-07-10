@@ -136,6 +136,8 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
             inboundReqSave.setUpdateTime(order.getUpdateTime());
             List<InboundProductReqVo> list = Lists.newArrayList();
             List<InboundBatchReqVo> inboundBatchReqVos = Lists.newArrayList();
+            inboundReqSave.setInboundBatchReqVos(inboundBatchReqVos);
+            inboundReqSave.setList(list);
             inboundService.saveInbound(inboundReqSave);
 
         } else {
