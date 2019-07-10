@@ -652,4 +652,10 @@
     from inbound where
     source_oder_code = #{sourceOderCode,jdbcType=VARCHAR} and purchase_num = #{purchaseNum,jdbcType=INTEGER}
   </select>
+
+  <select id="receiptNum" resultType="java.lang.Integer">
+    select purchase_num as purchaseNum
+    from inbound where
+    source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

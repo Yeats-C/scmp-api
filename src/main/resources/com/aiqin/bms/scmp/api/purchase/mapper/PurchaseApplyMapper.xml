@@ -105,4 +105,9 @@
       </if>
     </where>
   </select>
+  <select id="purchaseApplyInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply">
+    select <include refid="Base_Column_List"></include>
+    from purchase_apply
+    where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+  </select>
 </mapper>

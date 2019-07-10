@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
@@ -16,6 +17,7 @@ import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
@@ -323,9 +325,23 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         }
         Integer count = purchaseOrderDao.update(purchaseOrder);
         if(count == 0){
-            LOGGER.error("取消采购单失败");
+            LOGGER.error("变更采购单的状态失败......");
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
+        // 添加操作日志
+        String purchaseOrderId = purchaseOrder.getPurchaseOrderId();
+        String createById = purchaseOrder.getCreateById();
+        String createByName = purchaseOrder.getCreateByName();
+        if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_2)){
+            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STOCK_UP.getCode(),
+                    PurchaseOrderLogEnum.STOCK_UP.getName() , null);
+        }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_3)){
+            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.DELIVER_GOODS.getCode(),
+                    PurchaseOrderLogEnum.DELIVER_GOODS.getName() , null);
+        }else if(purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
+
+        }
+
         return HttpResponse.success();
     }
 
@@ -339,12 +355,16 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     }
 
     @Override
-    public HttpResponse purchaseOrderProduct(String purchaseOrderId, Integer isPage, Integer pageNo, Integer pageSize){
-        if(StringUtils.isBlank(purchaseOrderId)){
+    public HttpResponse purchaseOrderProduct(PurchaseOrderProductRequest request){
+        if(StringUtils.isBlank(request.getPurchaseOrderId())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.purchaseOrderList(purchaseOrderId, isPage, pageNo, pageSize);
-        return HttpResponse.success(orderProducts);
+        PageResData pageResData = new PageResData();
+        List<PurchaseOrderProduct> list = purchaseOrderProductDao.purchaseOrderList(request);
+        Integer count = purchaseOrderProductDao.purchaseOrderCount(request);
+        pageResData.setDataList(list);
+        pageResData.setTotalCount(count);
+        return HttpResponse.success(pageResData);
     }
 
     @Override
@@ -365,15 +385,18 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     }
 
     @Override
-    public HttpResponse purchaseOrderAmount(String purchaseOrderId){
+    public HttpResponse<PurchaseCountAmountResponse> purchaseOrderAmount(String purchaseOrderId){
         if(StringUtils.isBlank(purchaseOrderId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 计算采购单的数量与金额
         PurchaseCountAmountResponse amountResponse = new PurchaseCountAmountResponse();
-        Integer productCount = 0, singleCount = 0, matterSingleSum = 0;
-        Integer notTaxSum = 0, productTaxSum = 0, matterTaxSum = 0;
-        List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.purchaseOrderList(purchaseOrderId, 0, null, null);
+        Integer productCount = 0, singleCount = 0, returnCount = 0;
+        Integer taxAmount = 0, notTaxAmount = 0, returnAmount = 0;
+        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
+        request.setPurchaseOrderId(purchaseOrderId);
+        request.setIsPage(1);
+        List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.purchaseOrderList(request);
         if(CollectionUtils.isNotEmptyCollection(orderProducts)){
             for(PurchaseOrderProduct order:orderProducts){
                 // 商品采购件数量
@@ -385,19 +408,19 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 productCount += purchaseWhole;
                 Integer number = purchaseWhole * packNumber + purchaseSingle;
                 singleCount += number;
-                productTaxSum += amount;
-                notTaxSum += productTaxSum/(1 + order.getTaxRate());
+                taxAmount += amount;
+                notTaxAmount += taxAmount/(1 + order.getTaxRate());
                 if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
-                    matterSingleSum += number;
-                    matterTaxSum += amount;
+                    returnCount += number;
+                    returnAmount += amount;
                 }
             }
             amountResponse.setProductCount(productCount);
             amountResponse.setSingleCount(singleCount);
-            amountResponse.setMatterSingleSum(matterSingleSum);
-            amountResponse.setMatterTaxSum(matterTaxSum);
-            amountResponse.setNotTaxSum(notTaxSum);
-            amountResponse.setProductTaxSum(productTaxSum);
+            amountResponse.setReturnCount(returnCount);
+            amountResponse.setTaxAmount(taxAmount);
+            amountResponse.setNotTaxAmount(notTaxAmount);
+            amountResponse.setReturnAmount(returnAmount);
         }
         return HttpResponse.success(amountResponse);
     }
@@ -439,7 +462,10 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         // 入库sku商品
         List<InboundProductReqVo> list = save.getList();
         // 查询是否有商品可以入库
-        List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(purchaseOrderId, 0, null, null);
+        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
+        request.setPurchaseOrderId(purchaseOrderId);
+        request.setIsPage(1);
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(request);
         if(CollectionUtils.isNotEmptyCollection(products)){
             for(PurchaseOrderProduct product:products){
                 // 判断入库实际单品数量是否等于采购欧单品数量
@@ -498,7 +524,10 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         // 入库sku商品
         List<InboundProductReqVo> inboundList = save.getList();
         // 查询是否有商品可以入库
-        List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(purchaseOrderId, 0, null, null);
+        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
+        request.setPurchaseOrderId(purchaseOrderId);
+        request.setIsPage(1);
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(request);
         if(CollectionUtils.isNotEmptyCollection(products)) {
             for (PurchaseOrderProduct product : products) {
                 if(product != null){
@@ -558,5 +587,32 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         log.setOperationContent(name);
         log.setRemark(remark);
         operationLogDao.insert(log);
+    }
+
+    @Override
+    public HttpResponse reportSku(String purchaseOrderId){
+        if(StringUtils.isBlank(purchaseOrderId)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        List<PurchaseOrderProduct> list = purchaseOrderProductDao.orderBySku(purchaseOrderId);
+        return HttpResponse.success(list);
+    }
+
+    @Override
+    public HttpResponse receipt(String purchaseOrderId){
+        if(StringUtils.isBlank(purchaseOrderId)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        List<Integer> num = inboundDao.receiptNum(purchaseOrderId);
+        return HttpResponse.success(num);
+    }
+
+    @Override
+    public HttpResponse<Inbound> receiptInfo(String purchaseOrderId, Integer purchaseNum){
+        if(StringUtils.isBlank(purchaseOrderId) || purchaseNum == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        Inbound inbound = inboundDao.selectTimeAndSatusBySourchAndNum(purchaseOrderId, purchaseNum);
+        return HttpResponse.success(inbound);
     }
 }

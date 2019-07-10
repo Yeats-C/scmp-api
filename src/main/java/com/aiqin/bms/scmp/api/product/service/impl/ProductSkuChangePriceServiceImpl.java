@@ -407,14 +407,15 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         }
         changeStatus(newVO, dto);
     }
-
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void changeStatus(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) {
         ProductSkuChangePrice p = new ProductSkuChangePrice();
         p.setApplyStatus(newVO.getApplyStatus().intValue());
         p.setAuditorBy(newVO.getApprovalUserName());
         p.setAuditorTime(new Date());
-        p.setId(dto.getId());
-        int update = productSkuChangePriceMapper.updateByPrimaryKeySelective(p);
+        p.setCode(dto.getCode());
+        int update = productSkuChangePriceMapper.updateByCodeSelective(p);
         if (update < 1) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "状态变更异常！"));
         }

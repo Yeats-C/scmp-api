@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.bireport.dao.ReportDao">
+
+    <select id="selectSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
+        select
+        #{beginInboundTime}  as beginInboundTime,
+        #{finishInboundTime} as finishInboundTime,
+        bsar.supplier_code as supplierCode,
+        bsar.supplier_name as supplierName,
+        bsar.category_level_code as categoryLevelCode,
+        bsar.category_level_name as categoryLevelName,
+        bsar.logistics_center_code as transportCenterCode,
+        bsar.pre_inbound_num as preInboundNum,
+        bsar.pre_tax_amount as preTaxAmount,
+        bsar.pra_inbound_num as praInboundNum,
+        bsar.pra_tax_amount as praTaxAmount,
+        bsar.pra_tax_amount_rate as praTaxAmountRate,
+        bsar.responsible_person_name as responsiblePersonName
+        from bi_supplier_arrival_rate bsar
+        where 1=1
+        <if test="supplierCode!=null and supplierCode!=''">
+            and bsar.supplier_code=#{supplierCode}
+        </if>
+        <if test="supplierName!=null and supplierName!=''">
+            and bsar.supplier_name like concat('%', #{supplierName}, '%')
+        </if>
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and bsar.logistics_center_code=#{transportCenterCode}
+        </if>
+        <if test="categoryLevelCode!=null and categoryLevelCode!=''">
+            and bsar.category_level_code=#{categoryLevelCode}
+        </if>
+        <if test="categoryLevelName!=null and categoryLevelName!=''">
+            and bsar.category_level_name like concat('%', #{categoryLevelName}, '%')
+        </if>
+        <if test="beginInboundTime!=null and beginInboundTime!=''">
+            and bsar.inbound_time between #{beginInboundTime}
+        </if>
+        <if test="finishInboundTime!=null and finishInboundTime!=''">
+            and #{finishInboundTime}
+        </if>
+
+    </select>
+
+</mapper>

@@ -60,6 +60,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
@@ -1573,8 +1574,17 @@ public class StockServiceImpl implements StockService {
             PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
             List<QueryStockSkuListRespVo> queryStockSkuListRespVos = stockDao.selectStockSkuList(reqVO);
             for (QueryStockSkuListRespVo queryStockSkuListRespVo: queryStockSkuListRespVos) {
-                List<String> batchCodeLists = stockDao.selectSkuCodeByQueryBatchCodeList(queryStockSkuListRespVo.getWarehouseCode(), queryStockSkuListRespVo.getSkuCode());
-                queryStockSkuListRespVo.setBatchCodeList(batchCodeLists);
+                List<QueryStockSkuListRespVo> repsVos = stockDao.selectSkuCodeByQueryBatchCodeList(queryStockSkuListRespVo.getWarehouseCode(), queryStockSkuListRespVo.getSkuCode());
+                ArrayList<StockSkuListItemRespVo> list = new ArrayList();
+                for (QueryStockSkuListRespVo repsVo : repsVos) {
+                    StockSkuListItemRespVo respVo = new StockSkuListItemRespVo();
+                    respVo.setBatchCode(repsVo.getBatchCode());
+                    respVo.setProductionDate(repsVo.getProductionDate());
+                    respVo.setBatchRemark(repsVo.getBatchRemark());
+                    respVo.setAvailableNum(repsVo.getAvailableNum());
+                    list.add(respVo);
+                    queryStockSkuListRespVo.setItemRespVos(list);
+                }
             }
             return new PageInfo<QueryStockSkuListRespVo>(queryStockSkuListRespVos);
         } catch (Exception ex) {
