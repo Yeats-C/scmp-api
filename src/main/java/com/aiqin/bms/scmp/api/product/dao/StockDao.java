@@ -25,6 +25,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailRespon
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface StockDao {
 
@@ -152,7 +153,7 @@ public interface StockDao {
      */
     List<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
 
-    List<String> selectSkuCodeByQueryBatchCodeList(@Param("warehouseCode") String warehouseCode,@Param("skuCode")  String skuCode);
+    List<QueryStockSkuListRespVo> selectSkuCodeByQueryBatchCodeList(@Param("warehouseCode") String warehouseCode, @Param("skuCode")  String skuCode);
 
     void updateStorehouseById(@Param("list") List<StockRespVO> stockRespVO);
 

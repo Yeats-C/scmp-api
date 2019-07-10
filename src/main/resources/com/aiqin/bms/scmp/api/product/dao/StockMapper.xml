@@ -273,6 +273,8 @@
         <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
         <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
         <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
+        <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode"/>
+        <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName"/>
         <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode"/>
         <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
         <result column="goods_gifts" jdbcType="BIGINT" property="goodsGifts"/>
@@ -1799,9 +1801,9 @@
             resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo"
             resultMap="QueryStockSkuListResultMap">
         select
-        sb.id,sb.warehouse_code,sb.sku_code,sb.sku_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
-        ps.goods_gifts,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,sb.available_num,
-        s.tax_rate,s.tax_cost
+        sb.id,sb.warehouse_code,sb.sku_code,sb.sku_name,ps.product_category_code,ps.product_category_name,ps.product_sort_code,ps.product_sort_name,
+        ps.product_brand_code,ps.product_brand_name,ps.goods_gifts,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,
+        sum(sb.available_num) available_num,s.tax_rate,s.tax_cost
         from stock_batch sb
         left join stock s on sb.sku_code = s.sku_code
         left join product_sku ps on sb.sku_code = ps.sku_code
@@ -1865,9 +1867,12 @@
         left join product_sku_stock_info as pssi on ps.sku_code = pssi.product_sku_code
         order by ps.sku_code asc
     </select>
-    <select id="selectSkuCodeByQueryBatchCodeList" parameterType="String" resultType="String">
+    <select id="selectSkuCodeByQueryBatchCodeList" parameterType="String" resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo">
         SELECT
-        sb.batch_code as batchCodeList
+        sb.batch_code as batchCode,
+        date_format(sb.production_date , '%Y-%m-%d %H:%i:%s') as productionDate,
+        sb.batch_remark as batchRemark,
+        sb.available_num as availableNum
         FROM stock_batch sb
         where 1=1
         <if test="warehouseCode!=null and warehouseCode!=''">
