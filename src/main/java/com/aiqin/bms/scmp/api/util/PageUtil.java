@@ -35,4 +35,12 @@ public class PageUtil {
         basePage.setPages(pageInfo.getPages());
         return basePage;
     }
+    public static BasePage getPageList(int page,int pageSize,int total,List list){
+        BasePage basePage = new BasePage();
+        basePage.setTotalCount((long)total);
+        basePage.setDataList(list);
+        basePage.setPageNo(page);
+        basePage.setPageSize(pageSize);
+        return basePage;
+    }
 }

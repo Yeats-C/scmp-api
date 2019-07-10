@@ -246,9 +246,17 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     @Override
     public BasePage<QueryProductSaleAreaMainRespVO> queryListForOfficial(QueryProductSaleAreaMainReqVO request) {
         request.setCompanyCode(getUser().getCompanyCode());
-        PageHelper.startPage(request.getPageNo(),request.getPageSize());
-        List<QueryProductSaleAreaMainRespVO> respVos = productSkuSaleAreaMainMapper.selectListByQueryVo(request);
-        return PageUtil.getPageList(request.getPageNo(),respVos);
+//        PageHelper.startPage(request.getPageNo(),request.getPageSize());
+        List<Long> longs = productSkuSaleAreaMainMapper.selectListByQueryVoCount(request);
+        if(CollectionUtils.isEmpty(longs)){
+            return PageUtil.getPageList(request.getPageNo(), Lists.newArrayList());
+        }
+        int total = longs.size();
+        if (total > request.getPageSize()) {
+            longs = longs.subList((request.getPageNo() - 1) * request.getPageSize(), request.getPageNo() * request.getPageSize());
+        }
+        List<QueryProductSaleAreaMainRespVO> respVos = productSkuSaleAreaMainMapper.selectListByQueryVo(longs);
+        return PageUtil.getPageList(request.getPageNo(),request.getPageSize(),total,respVos);
     }
 
     @Override
