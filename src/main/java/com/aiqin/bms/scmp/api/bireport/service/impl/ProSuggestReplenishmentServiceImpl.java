@@ -78,14 +78,27 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
      * @return
      */
     @Override
-    public List<PurchaseApplyRespVo> selectPurchaseApplySkuList(PurchaseApplyReqVo purchaseApplyReqVo){
+    public PurchaseApplyRespVo selectPurchaseApplySkuList(PurchaseApplyReqVo purchaseApplyReqVo){
         List<PurchaseApplyRespVo> purchaseApplyRespVos = proSuggestReplenishmentDao.selectPurchaseApplySkuList(purchaseApplyReqVo);
+        PurchaseApplyRespVo purRespVo = new PurchaseApplyRespVo();
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+        Calendar calendar = Calendar.getInstance();
+        Boolean flag = true;
         for (PurchaseApplyRespVo purchaseApplyRespVo : purchaseApplyRespVos) {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
-            Calendar calendar = Calendar.getInstance();
-            calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue());
-            purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
+            if (!(purchaseApplyRespVo.getAdviceOrders() >= purchaseApplyRespVo.getOutPuts())) {
+                calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+9);
+                purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
+                purRespVo = purchaseApplyRespVo;
+                flag = false;
+                break;
+            }
         }
-        return purchaseApplyRespVos;
+        if (flag){
+            PurchaseApplyRespVo purchaseApplyRespVo = purchaseApplyRespVos.get(purchaseApplyRespVos.size() - 1);
+            calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+9);
+            purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
+            purRespVo = purchaseApplyRespVo;
+        }
+        return purRespVo;
     }
 }

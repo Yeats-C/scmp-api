@@ -34,6 +34,7 @@
         bsr.out_stock_affect_money as outStockAffectMoney,
         bsr.out_stock_continuous_days as outStockContinuousDays,
         apsc.arrival_cycle as arrivalCycle,
+        pssuc.out_put as outPuts,
         pssuc.need_days as needDays
         FROM bi_suggest_replenishment bsr
         LEFT JOIN apply_product_sku_config AS apsc ON CONVERT(bsr.sku_code USING utf8) COLLATE utf8_unicode_ci  = apsc.sku_code AND CONVERT(bsr.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = apsc.transport_center_code
@@ -49,5 +50,6 @@
         <if test="skuCode!=null and skuCode!=''">
             and bsr.sku_code=#{skuCode}
         </if>
+        order by pssuc.out_put asc
     </select>
 </mapper>

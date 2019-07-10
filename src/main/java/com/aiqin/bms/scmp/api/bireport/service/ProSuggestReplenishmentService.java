@@ -39,5 +39,5 @@ public interface ProSuggestReplenishmentService {
      * @param purchaseApplyReqVo
      * @return
      */
-    List<PurchaseApplyRespVo> selectPurchaseApplySkuList(PurchaseApplyReqVo purchaseApplyReqVo);
+    PurchaseApplyRespVo selectPurchaseApplySkuList(PurchaseApplyReqVo purchaseApplyReqVo);
 }
