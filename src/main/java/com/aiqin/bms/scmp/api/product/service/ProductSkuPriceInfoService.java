@@ -107,8 +107,7 @@ public interface ProductSkuPriceInfoService {
      * @author NullPointException
      * @date 2019/7/9
      * @param skuCode
-     * @param applyCode
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo>
      */
-    List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForDraft(String skuCode, String applyCode);
+    List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForDraft(String skuCode);
 }

@@ -698,12 +698,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         //sku文件管理
         detailResp.setProductSkuFiles(productSkuFileService.getDraftList(skuCode));
         //价格信息
-        List<String> skuCodes = Lists.newArrayList();
-        skuCodes.add(skuCode);
-        List<ProductSkuPriceInfoDraft> skuPriceListDrafts =
-                productSkuPriceInfoService.getSkuPriceListDraftBySkuCodes(skuCodes);
+
         List<ProductSkuPriceRespVo> draftTemps =
-                BeanCopyUtils.copyList(skuPriceListDrafts, ProductSkuPriceRespVo.class);
+                productSkuPriceInfoService.getSkuPriceBySkuCodeForDraft(skuCode);
         List<ProductSkuPriceRespVo> priceDraftRespVos =
                 draftTemps.stream().filter(item ->
                         !Objects.equals(item.getPriceTypeCode(), PriceTypeEnum.PURCHASE.getTypeCode())).
@@ -764,6 +761,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         detailResp.setProductSkuPicDescs(productSkuPicDescService.getList(skuCode));
         //sku文件管理
         detailResp.setProductSkuFiles(productSkuFileService.getList(skuCode));
+        //价格信息
+        List<ProductSkuPriceRespVo> applyProductSkuPriceInfos =
+                productSkuPriceInfoService.getSkuPriceBySkuCodeForOfficial(skuCode);
+        detailResp.setProductSkuPrices(applyProductSkuPriceInfos);
         //配置信息
         detailResp.setProductSkuConfigs(productSkuConfigService.getList(skuCode));
         return detailResp;
@@ -877,14 +878,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         //sku文件管理
         detailResp.setProductSkuFiles(productSkuFileService.getApply(skuCode,applyCode));
         //价格信息
-        List<String> skuCodes = Lists.newArrayList();
-        skuCodes.add(skuCode);
-        List<ApplyProductSkuPriceInfo> applyProductSkuPriceInfos =
-                productSkuPriceInfoService.getSkuPriceListApplyBySkuCodes(skuCodes,applyCode);
-        List<ProductSkuPriceRespVo> draftTemps =
-                BeanCopyUtils.copyList(applyProductSkuPriceInfos, ProductSkuPriceRespVo.class);
+        List<ProductSkuPriceRespVo> applyProductSkuPriceInfos =
+                productSkuPriceInfoService.getSkuPriceBySkuCodeForApply(skuCode,applyCode);
         List<ProductSkuPriceRespVo> priceDraftRespVos =
-                draftTemps.stream().filter(item ->
+                applyProductSkuPriceInfos.stream().filter(item ->
                         !Objects.equals(item.getPriceTypeCode(), PriceTypeEnum.PURCHASE.getTypeCode())).
                         collect(Collectors.toList());
         detailResp.setProductSkuPrices(priceDraftRespVos);
@@ -1153,9 +1150,16 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     public BasePage<QueryProductSaleAreaForSkuRespVO> selectSkuListForSaleArea(QueryProductSaleAreaForSkuReqVO reqVO) {
-        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
-       List<QueryProductSaleAreaForSkuRespVO> list =  productSkuDao.selectSkuListForSaleArea(reqVO);
-        return PageUtil.getPageList(reqVO.getPageNo(),list);
+        List<Long> longs = productSkuDao.selectSkuListForSaleAreaCount(reqVO);
+        if(CollectionUtils.isEmpty(longs)){
+            return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
+        }
+        int total = longs.size();
+        if (total > reqVO.getPageSize()*reqVO.getPageNo()) {
+            longs = longs.subList((reqVO.getPageNo() - 1) * reqVO.getPageSize(), reqVO.getPageNo() * reqVO.getPageSize());
+        }
+       List<QueryProductSaleAreaForSkuRespVO> list =  productSkuDao.selectSkuListForSaleArea(longs);
+        return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),total,list);
     }
 
     /**

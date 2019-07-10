@@ -257,10 +257,18 @@ public interface ProductSkuDao {
      * 销售区域查询sku信息
      * @author NullPointException
      * @date 2019/6/6
-     * @param reqVO
+     * @param ids
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaForSkuRespVO>
      */
-    List<QueryProductSaleAreaForSkuRespVO> selectSkuListForSaleArea(QueryProductSaleAreaForSkuReqVO reqVO);
+    List<QueryProductSaleAreaForSkuRespVO> selectSkuListForSaleArea(List<Long> ids);
+    /**
+     * 查数量
+     * @author NullPointException
+     * @date 2019/7/10
+     * @param reqVO
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO>
+     */
+    List<Long> selectSkuListForSaleAreaCount(QueryProductSaleAreaForSkuReqVO reqVO);
 
     List<SupervisoryWarehouseSkuRespVo> getSupervisoryWarehouseSku(QuerySkuListReqVO querySkuListReqVO);
 

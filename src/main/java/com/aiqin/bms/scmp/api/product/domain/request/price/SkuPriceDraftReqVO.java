@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.price;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -57,6 +58,7 @@ public class SkuPriceDraftReqVO {
     private Long tax;
 
     @ApiModelProperty("开始生效时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date effectiveTimeStart;
 
     @ApiModelProperty(value = "供应商编码",hidden = true)
@@ -72,12 +74,14 @@ public class SkuPriceDraftReqVO {
     private String createBy;
 
     @ApiModelProperty(value = "创建时间",hidden =true)
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty(value = "修改人",hidden = true)
     private String updateBy;
 
     @ApiModelProperty(value = "修改时间",hidden = true)
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @ApiModelProperty(value = "公司名称",hidden = true)

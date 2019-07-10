@@ -94,6 +94,13 @@ public class ScrapResVo {
     @ApiModelProperty("备注")
     private String remark;
 
+    @ApiModelProperty("承担单位编码")
+    private String undertakingUnitCode;
+
+    @ApiModelProperty("承担单位名称")
+    private String undertakingUnitName;
+
+
     @ApiModelProperty("sku")
     private List<AllocationProductResVo> skuList;
 

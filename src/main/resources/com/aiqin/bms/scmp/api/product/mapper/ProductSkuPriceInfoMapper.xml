@@ -1000,9 +1000,8 @@
             a.effective_time_start effectiveTimeStart,
             a.supplier_name supplierName
          from product_sku_price_info a
-        where a.sku_code = #{skuCode} and a.companyCode = #{companyCode}
+        where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
         and a.ext_field_5 = 0 and a.price_attribute_code in (1,2)
-      select
     </select>
   <select id="selectBySkuCodeForApply"
           resultType="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo">
@@ -1019,7 +1018,7 @@
             a.effective_time_start effectiveTimeStart,
             a.supplier_name supplierName
          from apply_product_sku_price_info a
-        where a.sku_code = #{skuCode} and a.companyCode = #{companyCode}
+        where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
         and a.ext_field_5 = 0 and a.price_attribute_code in (1,2) and a.apply_code = #{applyCode}
   </select>
   <select id="selectBySkuCodeForDraft"
@@ -1037,7 +1036,7 @@
             a.effective_time_start effectiveTimeStart,
             a.supplier_name supplierName
          from product_sku_price_info_draft a
-        where a.sku_code = #{skuCode} and a.companyCode = #{companyCode}
+        where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
         and a.ext_field_5 = 0 and a.price_attribute_code in (1,2)
   </select>
 </mapper>

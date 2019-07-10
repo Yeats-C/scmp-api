@@ -23,17 +23,17 @@ public enum SupervisoryWarehouseOrderTypeEnum {
         this.name = name;
     }
     /**
-     * 根据编码获取状态名称
+     * 根据编码获取
      * @param type
      * @return
      */
-    public static String  getName(Byte type)
+    public static SupervisoryWarehouseOrderTypeEnum  getName(Byte type)
     {
         for (SupervisoryWarehouseOrderTypeEnum typeEnum : SupervisoryWarehouseOrderTypeEnum.values())
         {
             if (Objects.equals(typeEnum.getType(),type))
             {
-                return typeEnum.getName();
+                return typeEnum;
             }
         }
         return null;

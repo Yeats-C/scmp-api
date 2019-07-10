@@ -169,7 +169,7 @@
     WHERE parent_id = #{categoryId,jdbcType=VARCHAR}
     AND category_level = (SELECT category_level
                           FROM product_category
-                          WHERE category_id = #{categoryId,jdbcType=VARCHAR}) + 1
+                          WHERE category_id = #{categoryId,jdbcType=VARCHAR} limit 1) + 1
   </select>
   <insert id="insertList" parameterType="java.util.List">
     INSERT  INTO  product_category

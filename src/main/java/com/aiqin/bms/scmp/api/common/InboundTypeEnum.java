@@ -14,7 +14,8 @@ public enum InboundTypeEnum {
     RETURN_SUPPLY((byte)1,"采购"),
     ALLOCATE((byte)2,"调拨"),
     ORDER((byte)3,"退货"),
-    MOVEMENT((byte)4,"移库");
+    MOVEMENT((byte)4,"移库"),
+    SUPERVISORY__WAREHOUSE_INBOUND((byte)5,"监管仓入库");
     private byte code;
     private String name;
     InboundTypeEnum(byte code, String name){

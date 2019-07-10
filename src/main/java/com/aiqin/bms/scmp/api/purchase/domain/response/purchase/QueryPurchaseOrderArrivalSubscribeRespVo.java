@@ -49,6 +49,7 @@ public class QueryPurchaseOrderArrivalSubscribeRespVo {
     private String arrivalSubscribeStatusName;
 
     @ApiModelProperty("到货预约时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date arrivalSubscribeTime;
 
     @ApiModelProperty("车牌号")

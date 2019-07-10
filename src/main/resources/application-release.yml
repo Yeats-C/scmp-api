@@ -1,3 +1,6 @@
+server:
+  tomcat:
+    basedir: /tmp/dir
 web:
   host-url: http://scmp.bms.aiqin.com
 center:

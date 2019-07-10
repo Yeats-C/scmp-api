@@ -53,7 +53,15 @@ public interface ProductSkuSaleAreaMainMapper {
      * @param request
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaMainRespVO>
      */
-    List<QueryProductSaleAreaMainRespVO> selectListByQueryVo(QueryProductSaleAreaMainReqVO request);
+    List<QueryProductSaleAreaMainRespVO> selectListByQueryVo(List<Long> ids);
+    /**
+     * 销售区域列表查询
+     * @author NullPointException
+     * @date 2019/6/5
+     * @param request
+     * @return java.util.List<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaMainRespVO>
+     */
+    List<Long> selectListByQueryVoCount(QueryProductSaleAreaMainReqVO request);
     /**
      * 编码查询详情
      * @author NullPointException
