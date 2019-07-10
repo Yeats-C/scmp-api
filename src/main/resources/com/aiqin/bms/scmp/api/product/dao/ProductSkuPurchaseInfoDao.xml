@@ -46,7 +46,7 @@
   <select id="getDrafts" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuPurchaseInfoDraftMapper.BaseResultMap">
     SELECT * FROM product_sku_purchase_info_draft WHERE del_flag=0 AND product_sku_code IN
     <foreach collection="productSkus" item="item" open="(" separator="," close=")">
-      #{item.skuCode,jdbcType=VARCHAR}
+      #{item.skuCode,jdbcType=VARCHAR} #{item.zeroRemovalCoefficient,jdbcType=BIGINT}
     </foreach>
   </select>
   <insert id="insertApplyList" parameterType="java.util.List">
@@ -72,7 +72,7 @@
     purchase_code, base_product_content, del_flag,
     create_time, create_by, update_time,
     update_by, product_sku_code, product_sku_name,
-    apply_code)
+    apply_code,zero_removal_coefficient)
     values
   <foreach collection="productSkuPurchaseInfos" item="item" index="index" separator=",">
     (#{item.productCode,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR},
@@ -80,7 +80,7 @@
     #{item.purchaseCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.delFlag,jdbcType=TINYINT},
     #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
     #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR},
-    #{item.applyCode,jdbcType=VARCHAR})
+    #{item.applyCode,jdbcType=VARCHAR}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT})
   </foreach>
   </insert>
   <delete id="deleteDrafts" parameterType="java.util.List">

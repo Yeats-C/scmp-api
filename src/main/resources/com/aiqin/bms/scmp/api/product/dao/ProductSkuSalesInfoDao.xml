@@ -28,17 +28,19 @@
     base_product_content, product_width, product_length,
     product_height, is_default, del_flag,
     create_time, create_by, update_time,
-    update_by, product_sku_code, product_sku_name
+    update_by, product_sku_code, product_sku_name,
+    unit_code,zero_removal_coefficient
     )
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.applyCode,jdbcType=VARCHAR}, #{item.productCode,jdbcType=VARCHAR},
       #{item.productName,jdbcType=VARCHAR}, #{item.description,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT},
       #{item.spec,jdbcType=VARCHAR}, #{item.smallUnit,jdbcType=VARCHAR}, #{item.salesCode,jdbcType=VARCHAR},
-      #{item.baseProductContent,jdbcType=VARCHAR}, #{item.productWidth,jdbcType=BIGINT}, #{item.productLength,jdbcType=BIGINT},
+      #{item.baseProductContent,jdbcType=INTEGER}, #{item.productWidth,jdbcType=BIGINT}, #{item.productLength,jdbcType=BIGINT},
       #{item.productHeight,jdbcType=BIGINT}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
-      #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR}
+      #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR},
+      #{item.unitCode,jdbcType=VARCHAR},#{item.zeroRemovalCoefficient,jdbcType=BIGINT})
       )
     </foreach>
   </insert>
@@ -93,7 +95,7 @@
   <select id="getApplys" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
     select
      id, product_code, spec, product_name, unit_code, small_unit as unit_name, sales_code as bar_code, base_product_content,description,
-     del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,3 as `type`
+     is_default,del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,3 as `type`
     from apply_product_sku_sales_info
     where product_sku_code = #{skuCode,jdbcType=VARCHAR}
     and apply_code = #{applyCode,jdbcType=VARCHAR}
@@ -102,7 +104,7 @@
   <select id="getRespVoBySkuCode" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
     select
      id, product_code, spec, product_name, unit_code, small_unit as unit_name, sales_code as bar_code, base_product_content,description,
-     del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,3 as `type`
+     is_default,del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,3 as `type`
     from product_sku_sales_info
     where product_sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>

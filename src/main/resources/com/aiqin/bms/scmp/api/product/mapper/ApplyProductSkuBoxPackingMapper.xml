@@ -17,11 +17,13 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="net_weight" jdbcType="BIGINT" property="netWeight" />
   </resultMap>
   <sql id="Base_Column_List">
     id, large_unit, box_length, box_width, box_height, box_volume, box_gross_weight, 
     del_flag, product_sku_code, product_sku_name, create_by, create_time, update_by, 
-    update_time, apply_code
+    update_time, apply_code,unit_code,net_weight
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -38,13 +40,14 @@
       box_width, box_height, box_volume, 
       box_gross_weight, del_flag, product_sku_code, 
       product_sku_name, create_by, create_time, 
-      update_by, update_time, apply_code
+      update_by, update_time, apply_code,unit_code,net_weight
       )
     values (#{id,jdbcType=BIGINT}, #{largeUnit,jdbcType=VARCHAR}, #{boxLength,jdbcType=BIGINT}, 
       #{boxWidth,jdbcType=BIGINT}, #{boxHeight,jdbcType=BIGINT}, #{boxVolume,jdbcType=BIGINT}, 
       #{boxGrossWeight,jdbcType=BIGINT}, #{delFlag,jdbcType=TINYINT}, #{productSkuCode,jdbcType=VARCHAR}, 
       #{productSkuName,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{applyCode,jdbcType=VARCHAR}
+      #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{applyCode,jdbcType=VARCHAR},
+      #{unitCode,jdbcType=VARCHAR},#{netWeight,jdbcType=BIGINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuBoxPacking">

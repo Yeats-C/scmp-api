@@ -9,8 +9,10 @@
     <result column="usage_status" jdbcType="TINYINT" property="usageStatus" />
     <result column="spec" jdbcType="VARCHAR" property="spec" />
     <result column="small_unit" jdbcType="VARCHAR" property="smallUnit" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="sales_code" jdbcType="VARCHAR" property="salesCode" />
-    <result column="base_product_content" jdbcType="VARCHAR" property="baseProductContent" />
+    <result column="base_product_content" jdbcType="BIGINT" property="baseProductContent" />
+    <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
     <result column="product_width" jdbcType="BIGINT" property="productWidth" />
     <result column="product_length" jdbcType="BIGINT" property="productLength" />
     <result column="product_height" jdbcType="BIGINT" property="productHeight" />

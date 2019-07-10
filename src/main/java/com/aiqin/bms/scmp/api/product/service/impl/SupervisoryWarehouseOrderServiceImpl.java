@@ -1,18 +1,21 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
-import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.common.Save;
-import com.aiqin.bms.scmp.api.common.SaveList;
-import com.aiqin.bms.scmp.api.common.SupervisoryWarehouseOrderTypeEnum;
+import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrder;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.supervisory.SaveSupervisoryWarehouseOrderReqVo;
 import com.aiqin.bms.scmp.api.product.mapper.SupervisoryWarehouseOrderMapper;
 import com.aiqin.bms.scmp.api.product.mapper.SupervisoryWarehouseOrderProductMapper;
+import com.aiqin.bms.scmp.api.product.service.InboundService;
+import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.SupervisoryWarehouseOrderService;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
@@ -20,7 +23,8 @@ import com.aiqin.bms.scmp.api.supplier.service.EncodingRuleService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import com.aiqin.bms.scmp.api.util.DateUtils;
+import com.google.common.collect.Lists;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,6 +55,12 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
     @Autowired
     private EncodingRuleService encodingRuleService;
 
+    @Autowired
+    private InboundService inboundService;
+
+    @Autowired
+    private OutboundService outboundService;
+
     /**
      * 功能描述: 保存
      * @param reqVo
@@ -79,23 +89,59 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
         order.setOrderCode(orderCode);
         encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         //获取订单类型名称
-        String typeName = SupervisoryWarehouseOrderTypeEnum.getName(order.getOrderType());
-        if(StringUtils.isBlank(typeName)){
+        SupervisoryWarehouseOrderTypeEnum typeName = SupervisoryWarehouseOrderTypeEnum.getName(order.getOrderType());
+        if(Objects.nonNull(typeName)){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
-        order.setOrderTypeName(typeName);
+        order.setOrderTypeName(typeName.getName());
         //保存订单信息
         int insert = ((SupervisoryWarehouseOrderService) AopContext.currentProxy()).insert(order);
         List<SupervisoryWarehouseOrderProduct> records = BeanCopyUtils.copyList(reqVo.getProducts(),SupervisoryWarehouseOrderProduct.class);
 
         records.forEach(item->{
             item.setOrderCode(orderCode);
-            item.setOrderTypeName(typeName);
+            item.setOrderTypeName(typeName.getName());
             item.setOrderType(order.getOrderType());
+            if(Objects.isNull(item.getProductTotalAmount())){
+                item.setProductTotalAmount(item.getProductAmount() * item.getNum());
+            }
         });
         //保存商品信息
         ((SupervisoryWarehouseOrderService)AopContext.currentProxy()).insertBatchProduct(records);
         //TODO 生成出入库单据
+        if (Objects.equals(SupervisoryWarehouseOrderTypeEnum.INBOUND, typeName)) {
+            InboundReqSave inboundReqSave = new InboundReqSave();
+            inboundReqSave.setCompanyCode(order.getCompanyCode());
+            inboundReqSave.setCompanyName(order.getCompanyName());
+            inboundReqSave.setInboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
+            inboundReqSave.setInboundStatusName(InOutStatus.CREATE_INOUT.getName());
+            inboundReqSave.setInboundTypeCode(InboundTypeEnum.SUPERVISORY__WAREHOUSE_INBOUND.getCode());
+            inboundReqSave.setInboundTypeName(InboundTypeEnum.SUPERVISORY__WAREHOUSE_INBOUND.getName());
+            inboundReqSave.setSourceOderCode(orderCode);
+            inboundReqSave.setLogisticsCenterCode(order.getTransportCenterCode());
+            inboundReqSave.setLogisticsCenterName(order.getTransportCenterName());
+            inboundReqSave.setWarehouseCode(order.getWarehouseCode());
+            inboundReqSave.setWarehouseName(order.getWarehouseName());
+            inboundReqSave.setSupplierCode(order.getCustomerCode());
+            inboundReqSave.setSupplierName(order.getCustomerName());
+            inboundReqSave.setPreArrivalTime(DateUtils.addDay(5));
+            //inboundReqSave.setPreInboundNum(order.get);
+            //inboundReqSave.setPreMainUnitNum();
+            //inboundReqSave.setPreTaxAmount();
+            //inboundReqSave.setPreAmount();
+            //inboundReqSave.setPreTax();
+            inboundReqSave.setCreateBy(order.getCreateBy());
+            inboundReqSave.setCreateTime(order.getCreateTime());
+            inboundReqSave.setUpdateBy(order.getUpdateBy());
+            inboundReqSave.setUpdateTime(order.getUpdateTime());
+            List<InboundProductReqVo> list = Lists.newArrayList();
+            List<InboundBatchReqVo> inboundBatchReqVos = Lists.newArrayList();
+            inboundService.saveInbound(inboundReqSave);
+
+        } else {
+
+        }
+
         return insert;
     }
 
