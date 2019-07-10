@@ -382,7 +382,7 @@
 
     <sql id="Query_Stock_Batch_Id">
         sbf.id,sbf.stock_batch_code,sbf.flow_batch_code,sbf.batch_code,sbf.order_code,sbf.order_type,sbf.order_source,sbf.sku_code,sbf.sku_name,
-        sbf.lock_status,sbf.document_type,sbf.document_num,sbf.source_document_type,sbf.source_document_num,sbf.operating_time,
+        sbf.lock_status,sbf.document_type,sbf.document_num,sbf.source_document_type,sbf.source_document_num,sbf.operating_type,
         sbf.operating_by,sbf.remark,sbf.before_inventory_num,sbf.after_inventory_num,sbf.before_available_num,sbf.after_available_num,
         sbf.before_lock_num,sbf.after_lock_num,sbf.change_num,sbf.operation_type
     </sql>
