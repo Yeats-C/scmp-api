@@ -218,7 +218,7 @@
       <result column="ccode"  property="code" />
     </collection>
   </resultMap>
-  <select id="selectListByQueryVo" resultMap="selectListByQueryVo">
+  <select id="selectListByQueryVo" resultMap="selectListByQueryVo" parameterType="java.util.List">
      select
              a.code acode,
              a.name aname,
@@ -243,34 +243,48 @@
                        on a.code = b.code
              left join product_sku_sale_area_info c
                        on a.code = c.main_code
-      where a.company_code = #{companyCode} and a.be_effective = 1
-      <if test="code != null and code != ''">
-        and a.code = #{code}
-      </if>
-      <if test="name != null and name != ''">
-        and a.name like concat('%',#{name},'%')
-      </if>
-      <if test="beDisable != null and beDisable != ''">
-        and a.be_disable = #{beDisable}
-      </if>
-      <if test="skuCode != null and skuCode != ''">
-        and b.sku_code = #{skuCode}
-      </if>
-      <if test="skuName != null and skuName != ''">
-        and b.sku_name like concat('%',#{name},'%')
-      </if>
-      <if test="allowArea != null and allowArea != ''">
-        and c.name like concat('%',#{allowArea},'%') and c.status = 1 and c.type = 1
-      </if>
-      <if test="forbiddenArea != null and forbiddenArea != ''">
-        and c.name like concat('%',#{forbiddenArea},'%') and c.status = 0 and c.type = 1
-      </if>
-      <if test="allowStore != null and allowStore != ''">
-        and c.name like concat('%',#{allowStore},'%') and c.status = 1 and c.type = 2
-      </if>
-      <if test="forbiddenStore != null and forbiddenStore != ''">
-        and c.name like concat('%',#{forbiddenStore},'%') and c.status = 0 and c.type = 2
-      </if>
+      where a.id in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+      </foreach>
+  </select>
+  <select id="selectListByQueryVoCount" resultType="java.lang.Long">
+    select
+    a.id
+    from product_sku_sale_area_main a
+    left join product_sku_sale_area b
+    on a.code = b.code
+    left join product_sku_sale_area_info c
+    on a.code = c.main_code
+    where a.company_code = #{companyCode} and a.be_effective = 1
+    <if test="code != null and code != ''">
+      and a.code = #{code}
+    </if>
+    <if test="name != null and name != ''">
+      and a.name like concat('%',#{name},'%')
+    </if>
+    <if test="beDisable != null">
+      and a.be_disable = #{beDisable}
+    </if>
+    <if test="skuCode != null and skuCode != ''">
+      and b.sku_code = #{skuCode}
+    </if>
+    <if test="skuName != null and skuName != ''">
+      and b.sku_name like concat('%',#{skuCode},'%')
+    </if>
+    <if test="allowArea != null and allowArea != ''">
+      and c.name like concat('%',#{allowArea},'%') and c.status = 1 and c.type = 1
+    </if>
+    <if test="forbiddenArea != null and forbiddenArea != ''">
+      and c.name like concat('%',#{forbiddenArea},'%') and c.status = 0 and c.type = 1
+    </if>
+    <if test="allowStore != null and allowStore != ''">
+      and c.name like concat('%',#{allowStore},'%') and c.status = 1 and c.type = 2
+    </if>
+    <if test="forbiddenStore != null and forbiddenStore != ''">
+      and c.name like concat('%',#{forbiddenStore},'%') and c.status = 0 and c.type = 2
+    </if>
+    group by a.id order by a.create_time desc
   </select>
   <resultMap id="selectDetailByCode" type="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaForOfficialMainRespVO">
     <result column="acode"  property="code" />

@@ -29,6 +29,9 @@ public class DictionaryUpdateReqDTO{
     @Min(0)
     private Byte delFlag;
 
+    @ApiModelProperty("0启用1禁用")
+    private Byte enabled;
+
     @NotNull
     private List<DictionaryUpdateInfoReqVO> listInfo;
 }

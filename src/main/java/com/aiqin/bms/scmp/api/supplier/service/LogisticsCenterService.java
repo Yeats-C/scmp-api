@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
+import com.aiqin.bms.scmp.api.base.AreaBasic;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterAreaDTO;
@@ -102,4 +103,12 @@ public interface LogisticsCenterService {
      * @return
      */
     HttpResponse getCityList(String provinceId);
+    /**
+     * 获取省市区
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param
+     * @return com.aiqin.ground.util.protocol.http.HttpResponse<java.util.List<com.aiqin.bms.scmp.api.base.AreaBasic>>
+     */
+    HttpResponse<List<AreaBasic>> getAreaInfo();
 }
