@@ -833,7 +833,7 @@
     <include refid="Product_Sku_Resp_Column"/>,
       apply_type,
       apply_type_name
-    from product_sku
+    from product_sku_draft
     where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
 
@@ -1543,6 +1543,8 @@
     <result column="price_model" jdbcType="TINYINT" property="priceModel" />
     <result column="sku_status" jdbcType="TINYINT" property="skuStatus" />
     <result column="on_sale" jdbcType="TINYINT" property="onSale" />
+    <result column="apply_type" jdbcType="TINYINT" property="applyType" />
+    <result column="apply_type_name" jdbcType="TINYINT" property="applyTypeName" />
   </resultMap>
   <sql id="Product_Sku_Resp_Column">
   id,product_code,product_name,sku_code,sku_name,sku_abbreviation,product_brand_code,product_brand_name,product_category_code,
