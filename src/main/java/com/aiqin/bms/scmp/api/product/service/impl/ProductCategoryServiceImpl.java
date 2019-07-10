@@ -1,11 +1,10 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
+import com.aiqin.bms.scmp.api.common.SaveList;
+import com.aiqin.bms.scmp.api.common.Update;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryAddReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryReqDTO;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryReqVO;
@@ -13,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductCategoryService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,17 +60,17 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 }
                 String finalCompanyCode = companyCode;
                 String finalCompanyName = companyName;
-                sameList.forEach(item -> {
+                Long categoryId1 = categoryId;
+                for (ProductCategoryReqVO item : sameList) {
                     ProductCategoryReqDTO productCategoryReqDTO = new ProductCategoryReqDTO();
-                    Long categoryId1 = categoryId;
                     categoryId1 = categoryId1 + 1;
                     item.setCategoryId(String.valueOf(categoryId1));
                     //复制对象属性值
-                    BeanCopyUtils.copy(item,productCategoryReqDTO);
+                    BeanCopyUtils.copy(item, productCategoryReqDTO);
                     productCategoryReqDTO.setCompanyCode(finalCompanyCode);
                     productCategoryReqDTO.setCompanyName(finalCompanyName);
                     productCategoryReqDTOS.add(productCategoryReqDTO);
-                });
+                }
             }
             if (productCategoryAddReqVO.getLowerLevelList().size() > 0){
                 //同级分类集合
@@ -84,17 +84,17 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 }
                 String finalCompanyCode = companyCode;
                 String finalCompanyName = companyName;
-                lowerLevelList.forEach(item->{
+                Long childCaIdLong = Long.valueOf(childCategoryId);
+                for (ProductCategoryReqVO item : lowerLevelList) {
                     ProductCategoryReqDTO productCategoryReqDTO = new ProductCategoryReqDTO();
-                    Long childCaIdLong= Long.valueOf(childCategoryId);
                     childCaIdLong = childCaIdLong + 1;
                     item.setCategoryId(String.valueOf(childCaIdLong));
                     //复制对象属性值
-                    BeanCopyUtils.copy(item,productCategoryReqDTO);
+                    BeanCopyUtils.copy(item, productCategoryReqDTO);
                     productCategoryReqDTO.setCompanyCode(finalCompanyCode);
                     productCategoryReqDTO.setCompanyName(finalCompanyName);
                     productCategoryReqDTOS.add(productCategoryReqDTO);
-                });
+                }
             }
             //调用批量新增
             num = ((ProductCategoryService) AopContext.currentProxy()).insertList(productCategoryReqDTOS);
