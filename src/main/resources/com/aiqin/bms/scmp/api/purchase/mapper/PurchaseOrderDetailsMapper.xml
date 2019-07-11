@@ -70,15 +70,6 @@
   <update id="update">
     update purchase_order_details
     <set>
-      <if test="purchaseDetailsId != null">
-        purchase_details_id = #{purchaseDetailsId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderId != null">
-        purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderCode != null">
-        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
-      </if>
       <if test="accountCode != null">
         account_code = #{accountCode,jdbcType=VARCHAR},
       </if>
@@ -171,7 +162,7 @@
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
   </update>
   <select id="purchaseOrderDetail" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select o.purchase_order_id as purchaseOrderId, o.purchase_order_code as purchaseOrderCode,
@@ -183,7 +174,7 @@
     d.account_code as accountCode, d.account_name as accountName, o.settlement_method_code as settlementMethodCode,
     o.settlement_method_name as settlementMethodName, d.contact_person as contactPerson, d.mobile,
     d.delivery_time as deliveryTime, d.warehouse_time as warehouseTime, d.update_time as updateTime,
-    d.order_type as orderType, d.order_code as orderCode
+    d.order_type as orderType, d.order_code as orderCode, o.cancel_reason as cancelReason, o.cancel_remark as cancelRemark
     from purchase_order o
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id

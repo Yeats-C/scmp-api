@@ -721,7 +721,7 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    public HttpResponse selectPurchaseInfoByPurchaseNum(Inbound inbound){
+    public HttpResponse<InboundProduct>  selectPurchaseInfoByPurchaseNum(Inbound inbound){
         try{
             List<InboundProduct> inboundBatchList = inboundProductDao.selectPurchaseInfoByPurchaseNum(inbound);
             Integer total = inboundProductDao.countPurchaseInfoByPurchaseNum(inbound);

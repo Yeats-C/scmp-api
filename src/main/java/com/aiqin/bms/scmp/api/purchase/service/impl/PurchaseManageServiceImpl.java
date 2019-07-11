@@ -9,16 +9,15 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
+import com.aiqin.bms.scmp.api.product.service.ProductSkuInspReportService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
@@ -26,6 +25,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmo
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierScoreService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -37,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -70,6 +71,10 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     private InboundDao inboundDao;
     @Resource
     private OperationLogDao operationLogDao;
+    @Resource
+    private SupplierScoreService scoreService;
+    @Resource
+    private ProductSkuInspReportService productSkuInspReportService;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -332,21 +337,34 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         String purchaseOrderId = purchaseOrder.getPurchaseOrderId();
         String createById = purchaseOrder.getCreateById();
         String createByName = purchaseOrder.getCreateByName();
+        PurchaseOrderDetails detail;
         if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_2)){
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STOCK_UP.getCode(),
                     PurchaseOrderLogEnum.STOCK_UP.getName() , null);
         }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_3)){
+            detail = new PurchaseOrderDetails();
+            detail.setPurchaseOrderId(purchaseOrderId);
+            detail.setDeliveryTime(Calendar.getInstance().getTime());
+            detail.setUpdateById(createById);
+            detail.setUpdateByName(createByName);
+            purchaseOrderDetailsDao.update(detail);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.DELIVER_GOODS.getCode(),
                     PurchaseOrderLogEnum.DELIVER_GOODS.getName() , null);
-        }else if(purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
-
+        }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
+            detail = new PurchaseOrderDetails();
+            detail.setPurchaseOrderId(purchaseOrderId);
+            detail.setWarehouseTime(Calendar.getInstance().getTime());
+            detail.setUpdateById(createById);
+            detail.setUpdateByName(createByName);
+            purchaseOrderDetailsDao.update(detail);
+            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
         }
-
         return HttpResponse.success();
     }
 
     @Override
-    public HttpResponse purchaseOrderDetails(String purchaseOrderId){
+    public HttpResponse<PurchaseApplyDetailResponse> purchaseOrderDetails(String purchaseOrderId){
         if(StringUtils.isBlank(purchaseOrderId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
@@ -599,20 +617,51 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     }
 
     @Override
-    public HttpResponse receipt(String purchaseOrderId){
+    public HttpResponse<List<Inbound>> receipt(String purchaseOrderId){
         if(StringUtils.isBlank(purchaseOrderId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<Integer> num = inboundDao.receiptNum(purchaseOrderId);
-        return HttpResponse.success(num);
+        List<Inbound> inbound = inboundDao.selectTimeAndSatusBySourchAndNum(purchaseOrderId);
+        return HttpResponse.success(inbound);
     }
 
     @Override
-    public HttpResponse<Inbound> receiptInfo(String purchaseOrderId, Integer purchaseNum){
+    public HttpResponse storageConfirm(PurchaseStorageRequest storageRequest){
+        if(StringUtils.isBlank(storageRequest.getPurchaseOrderId())){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        String purchaseOrderId = storageRequest.getPurchaseOrderId();
+        // 变更采购单的状态
+        PurchaseOrder purchaseOrder = new PurchaseOrder();
+        purchaseOrder.setPurchaseOrderId(purchaseOrderId);
+        purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_2);
+        purchaseOrder.setUpdateById(storageRequest.getCreateById());
+        purchaseOrder.setUpdateByName(storageRequest.getCreateByName());
+        Integer count = purchaseOrderDao.update(purchaseOrder);
+        if(count == 0){
+            LOGGER.error("变更采购单的仓储状态失败......");
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+        }
+        // 保存质检报告
+        productSkuInspReportService.saveProductSkuInspReport(storageRequest.getReportRequest());
+        // 保存供应商评分
+        scoreService.saveByPurchase(storageRequest.getScoreRequest());
+        // 新增操作日志
+        log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.STORAGE_FINISH.getCode(),
+                PurchaseOrderLogEnum.STORAGE_FINISH.getName() , null);
+        return HttpResponse.success();
+    }
+
+    @Override
+    public HttpResponse<InboundProduct> receiptProduct(String purchaseOrderId, Integer purchaseNum, Integer pageNo, Integer pageSize){
         if(StringUtils.isBlank(purchaseOrderId) || purchaseNum == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        Inbound inbound = inboundDao.selectTimeAndSatusBySourchAndNum(purchaseOrderId, purchaseNum);
-        return HttpResponse.success(inbound);
+        Inbound inbound = new Inbound();
+        inbound.setSourceOderCode(purchaseOrderId);
+        inbound.setPurchaseNum(purchaseNum);
+        inbound.setPageNo(pageNo);
+        inbound.setPageSize(pageSize);
+        return  inboundService.selectPurchaseInfoByPurchaseNum(inbound);
     }
 }
