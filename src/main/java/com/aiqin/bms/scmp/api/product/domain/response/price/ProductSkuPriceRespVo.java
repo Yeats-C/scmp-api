@@ -45,7 +45,7 @@ public class ProductSkuPriceRespVo {
     private Long priceTax;
 
     @ApiModelProperty("开始生效时间")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date effectiveTimeStart;
 
     @ApiModelProperty("供应商")
