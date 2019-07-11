@@ -833,7 +833,7 @@
     <include refid="Product_Sku_Resp_Column"/>,
       apply_type,
       apply_type_name
-    from product_sku
+    from product_sku_draft
     where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
 
@@ -1543,6 +1543,8 @@
     <result column="price_model" jdbcType="TINYINT" property="priceModel" />
     <result column="sku_status" jdbcType="TINYINT" property="skuStatus" />
     <result column="on_sale" jdbcType="TINYINT" property="onSale" />
+    <result column="apply_type" jdbcType="TINYINT" property="applyType" />
+    <result column="apply_type_name" jdbcType="TINYINT" property="applyTypeName" />
   </resultMap>
   <sql id="Product_Sku_Resp_Column">
   id,product_code,product_name,sku_code,sku_name,sku_abbreviation,product_brand_code,product_brand_name,product_category_code,
@@ -1910,6 +1912,24 @@ select a.sku_code              as skuCode,
         WHERE ps.del_flag=0 and ps.goods_gifts!=2
         <if test="companyCode != null and companyCode != '' ">
           and ps.company_code = #{companyCode}
+        </if>
+        <if test="skuCode!=null and skuCode!=''">
+          AND ps.sku_code = #{skuCode,jdbcType=VARCHAR}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+          AND ps.sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productCategoryName!=null and productCategoryName!=''">
+          AND ps.product_category_name LIKE CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productBrandName!=null and productBrandName!=''">
+          AND ps.product_brand_name LIKE CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productCode!=null and productCode!=''">
+          AND ps.product_code = #{productCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productName!=null and productName!=''">
+          AND ps.product_name LIKE CONCAT('%',#{productName,jdbcType=VARCHAR},'%')
         </if>
   </select>
 </mapper>

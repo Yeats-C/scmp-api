@@ -362,12 +362,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             //保存正式数据数据
             dto.setApplyStatus(CommonConstant.EXAMINATION_PASSED);
-            try {
-                saveOfficial(newVO, dto);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-               return WorkFlowReturn.FALSE;
-            }
+            saveOfficial(newVO, dto);
             return WorkFlowReturn.SUCCESS;
         }
         return WorkFlowReturn.FALSE;
@@ -375,7 +370,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveOfficial(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) throws Exception {
+    public void saveOfficial(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         //根据价格作不同的处理
         //判断类型
         switch (dto.getChangePriceType()) {
@@ -407,14 +402,15 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         }
         changeStatus(newVO, dto);
     }
-
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void changeStatus(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) {
         ProductSkuChangePrice p = new ProductSkuChangePrice();
         p.setApplyStatus(newVO.getApplyStatus().intValue());
         p.setAuditorBy(newVO.getApprovalUserName());
         p.setAuditorTime(new Date());
-        p.setId(dto.getId());
-        int update = productSkuChangePriceMapper.updateByPrimaryKeySelective(p);
+        p.setCode(dto.getCode());
+        int update = productSkuChangePriceMapper.updateByCodeSelective(p);
         if (update < 1) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "状态变更异常！"));
         }
@@ -422,7 +418,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveTemporaryAreaChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) throws Exception {
+    public void saveTemporaryAreaChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) {
         List<ProductSkuChangePriceInfo> infos = dto.getInfos();
         List<ProductSkuPriceInfo> list = Lists.newArrayList();
         List<ProductSkuPriceAreaInfo> areaInfos = Lists.newArrayList();
@@ -437,7 +433,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setCode("TPA" + UUIDUtils.getUUID());
             priceInfo.setPriceTax(info.getTemporaryPrice());
             priceInfo.setTax(0L); //TODO 需要从商品上取
-            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getNewPrice(), 0L));
+            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getTemporaryPrice(), 0L));
             priceInfo.setExtField5(1);
             info.setOfficialCode(priceInfo.getCode());
             List<ProductSkuPriceAreaInfo> areaInfo = BeanCopyUtils.copyList(dto.getAreaInfos(), ProductSkuPriceAreaInfo.class);
@@ -467,7 +463,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveSaleAreaChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) throws Exception {
+    public void saveSaleAreaChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         List<ProductSkuChangePriceInfo> infos = dto.getInfos();
         List<ProductSkuPriceInfo> list = Lists.newArrayList();
         List<ProductSkuPriceAreaInfo> areaInfos = Lists.newArrayList();
@@ -512,7 +508,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveTemporaryChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) throws Exception {
+    public void saveTemporaryChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         List<ProductSkuChangePriceInfo> infos = dto.getInfos();
         List<ProductSkuPriceInfo> list = Lists.newArrayList();
         List<ProductSkuPriceInfoLog> logList = Lists.newArrayList();
@@ -528,7 +524,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setTax(0L); //TODO 需要从商品上取
             priceInfo.setExtField5(0);
             info.setOfficialCode(priceInfo.getCode());
-            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getNewPrice(), 0L));
+            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getTemporaryPrice(), 0L));
             ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
             if (info.getEffectiveTimeStart().after(new Date())) {
                 //未生效的
@@ -546,7 +542,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     }
 
     @Override
-    public void saveSaleChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) throws Exception {
+    public void saveSaleChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) {
         //处理数据
         QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto);
         //验重
@@ -626,7 +622,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void savePurchaseChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) throws Exception {
+    public void savePurchaseChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         //处理数据
         QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto);
         //验重

@@ -83,6 +83,19 @@ public class PriceProjectServiceImpl implements PriceProjectService {
         return priceProjectMapper.getList(reqVo);
     }
 
+
+    @Override
+    public List<QueryPriceProjectRespVo> getByTypeCode(String type) {
+        QueryPriceProjectReqVo reqVo = new QueryPriceProjectReqVo();
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            reqVo.setCompanyCode(authToken.getCompanyCode());
+        }
+        reqVo.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
+        reqVo.setPriceCategory(type);
+        return priceProjectMapper.getList(reqVo);
+    }
+
     /**
      * 获取采购价格项目
      *

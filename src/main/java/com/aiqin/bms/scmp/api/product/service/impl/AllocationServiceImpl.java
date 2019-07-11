@@ -164,6 +164,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                  log.error(httpResponse.getMessage());
                  throw  new GroundRuntimeException("库存操作失败");
              }*/
+
              //调用审批流
              workFlow(k,form);
              return  k;
