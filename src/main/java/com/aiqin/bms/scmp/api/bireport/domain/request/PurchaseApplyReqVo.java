@@ -5,9 +5,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @ApiModel("编辑采购申请request")
 @Data
-public class PurchaseApplyReqVo {
+public class PurchaseApplyReqVo  implements Serializable {
 
     @ApiModelProperty("sku编码")
     @JsonProperty(value = "sku_code")

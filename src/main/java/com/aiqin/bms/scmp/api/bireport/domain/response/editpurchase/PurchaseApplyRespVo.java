@@ -5,11 +5,12 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @ApiModel("编辑采购申请返回respVo")
 @Data
-public class PurchaseApplyRespVo {
+public class PurchaseApplyRespVo  implements Serializable {
 
     @ApiModelProperty("建议订货量")
     @JsonProperty(value = "advice_orders")
