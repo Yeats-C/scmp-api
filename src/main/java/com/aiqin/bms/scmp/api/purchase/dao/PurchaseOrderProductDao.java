@@ -22,4 +22,6 @@ public interface PurchaseOrderProductDao {
     List<PurchaseOrderProduct> orderBySku(String purchaseOrderId);
 
     PurchaseApplyDetailResponse  warehousingInfo(@Param("purchaseOrderId")String purchaseOrderId,@Param("skuCode") String skuCode);
+
+    List<PurchaseOrderProduct> orderProductInfo(String purchaseOrderId);
 }

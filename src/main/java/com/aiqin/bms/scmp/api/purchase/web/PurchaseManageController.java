@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
@@ -172,5 +173,11 @@ public class PurchaseManageController {
                                                        @RequestParam(value = "page_no", required = false) Integer pageNo,
                                                        @RequestParam(value = "page_size", required = false) Integer pageSize) {
         return purchaseManageService.receiptProduct(purchaseOrderId, purchaseNum, pageNo, pageSize);
+    }
+
+    @PostMapping("/add/log")
+    @ApiOperation("添加采购单-操作日志")
+    public HttpResponse addLog(@RequestBody OperationLog operationLog) {
+        return purchaseManageService.addLog(operationLog);
     }
 }

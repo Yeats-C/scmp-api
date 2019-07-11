@@ -212,6 +212,11 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         // 添加采购单
         Integer orderCount = purchaseOrderDao.insert(purchaseOrder);
         if(orderCount > 0){
+            // 添加操作日志
+            log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
+                    PurchaseOrderLogEnum.INSERT_ORDER.getCode(), PurchaseOrderLogEnum.INSERT_ORDER.getName(), null);
+            log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
+                    PurchaseOrderLogEnum.CHECKOUT_STAY.getCode(), PurchaseOrderLogEnum.CHECKOUT_STAY.getName(), null);
             encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             // 添加采购单详情
             PurchaseOrderDetails details = purchaseOrderRequest.getOrderDetails();
@@ -317,7 +322,22 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         if(CollectionUtils.isNotEmptyCollection(list)){
             for(PurchaseOrderResponse order:list){
                 // 计算实际单品数量，实际含税采购金额， 实际实物返金额
-                // TODO
+                Integer actualSingleCount = 0, actualTotalAmount = 0, actualReturnAmount = 0;
+                List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
+                if(CollectionUtils.isNotEmptyCollection(orderProducts)){
+                    for(PurchaseOrderProduct product:orderProducts){
+                        Integer singleCount = product.getActualSingleCount() == null ? 0:product.getActualSingleCount();
+                        Integer productAmount = product.getProductAmount() == null ?0:product.getProductAmount();
+                        actualSingleCount += singleCount;
+                        actualTotalAmount += productAmount * singleCount;
+                        if(product.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                            actualReturnAmount += productAmount * singleCount;
+                        }
+                    }
+                }
+                order.setActualSingleCount(actualSingleCount);
+                order.setActualTotalAmount(actualTotalAmount);
+                order.setActualReturnAmount(actualReturnAmount);
             }
         }
         Integer count = purchaseOrderDao.purchaseOrderCount(purchaseApplyRequest);
@@ -332,6 +352,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         if(purchaseOrder == null || StringUtils.isBlank(purchaseOrder.getPurchaseOrderId())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        purchaseOrder.setUpdateByName(purchaseOrder.getCreateByName());
+        purchaseOrder.setUpdateById(purchaseOrder.getCreateById());
         Integer count = purchaseOrderDao.update(purchaseOrder);
         if(count == 0){
             LOGGER.error("变更采购单的状态失败......");
@@ -666,6 +688,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse storageConfirm(PurchaseStorageRequest storageRequest){
         if(StringUtils.isBlank(storageRequest.getPurchaseOrderId())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -683,7 +706,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
         // 保存质检报告
-        productSkuInspReportService.saveProductSkuInspReport(storageRequest.getReportRequest());
+        productSkuInspReportService.saveProductSkuInspReports(storageRequest.getReportReqVo());
         // 保存供应商评分
         String code = scoreService.saveByPurchase(storageRequest.getScoreRequest());
         if(StringUtils.isBlank(code)){
@@ -734,5 +757,15 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         }
         Integer count = inboundProductDao.countPurchaseInfoByPurchaseNum(inbound);
         return HttpResponse.success(new PageResData<>(count, list));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse addLog(OperationLog operationLog){
+        if(operationLog == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        operationLogDao.insert(operationLog);
+        return HttpResponse.success();
     }
 }

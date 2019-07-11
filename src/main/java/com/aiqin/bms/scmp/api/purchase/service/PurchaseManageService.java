@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
@@ -46,4 +47,6 @@ public interface PurchaseManageService {
     HttpResponse storageConfirm(PurchaseStorageRequest storageRequest);
 
     HttpResponse<InboundProduct> receiptProduct(String purchaseOrderId, Integer purchaseNum, Integer pageNo, Integer pageSize);
+
+    HttpResponse addLog(OperationLog operationLog);
 }

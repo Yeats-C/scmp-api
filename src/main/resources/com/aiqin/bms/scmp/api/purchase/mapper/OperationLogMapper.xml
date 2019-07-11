@@ -27,14 +27,12 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.OperationLog">
-    insert into operation_log (id, operation_id, operation_type, 
+    insert into operation_log (operation_id, operation_type,
       operation_content, remark, create_by_id, 
-      create_by_name, create_time
-      )
-    values (#{id,jdbcType=BIGINT}, #{operationId,jdbcType=VARCHAR}, #{operationType,jdbcType=BIT}, 
+      create_by_name, create_time)
+    values ( #{operationId,jdbcType=VARCHAR}, #{operationType,jdbcType=BIT},
       #{operationContent,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createById,jdbcType=VARCHAR}, 
-      #{createByName,jdbcType=VARCHAR},  now()
-      )
+      #{createByName,jdbcType=VARCHAR},  now())
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.OperationLog">
     insert into operation_log

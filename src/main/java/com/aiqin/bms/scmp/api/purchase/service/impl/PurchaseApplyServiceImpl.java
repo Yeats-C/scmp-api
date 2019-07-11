@@ -3,6 +3,9 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
+import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
+import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
@@ -26,6 +29,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -71,6 +75,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private SupplierDao supplierDao;
     @Resource
     private ProductSkuConfigMapper productSkuConfigDao;
+    @Resource
+    private ProSuggestReplenishmentService replenishmentService;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -150,14 +156,32 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         // 查询库存，商品， 供应商等信息
         List<PurchaseApplyDetailResponse> detail = stockDao.purchaseProductList(purchases);
         if (CollectionUtils.isNotEmptyCollection(detail)) {
+            PurchaseApplyReqVo applyReqVo;
             for (PurchaseApplyDetailResponse product : detail) {
                 // 获取最高采购价(价格管理中供应商的含税价格)
                 if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
                     Long priceTax = productSkuPriceInfoMapper.selectPriceTax(product.getSkuCode(), product.getSupplierCode());
                     product.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                 }
+                // 查询采购的到货后周转期
+                ProductSkuConfig cycleInfo = productSkuConfigDao.getCycleInfo(product.getSkuCode(), product.getTransportCenterCode());
+                if(cycleInfo != null){
+                    product.setReceiptTurnover(cycleInfo.getTurnoverPeriodAfterArrival());
+                }
                 // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
-                // TODO
+                applyReqVo = new PurchaseApplyReqVo();
+                applyReqVo.setSkuCode(product.getSkuCode());
+                applyReqVo.setSupplierCode(product.getSupplierCode());
+                applyReqVo.setTransportCenterCode(product.getTransportCenterCode());
+                PurchaseApplyRespVo vo = replenishmentService.selectPurchaseApplySkuList(applyReqVo);
+                if(vo != null){
+                    product.setPurchaseNumber(vo.getAdviceOrders().intValue());
+                    product.setReceiptTime(DateUtils.toDate(vo.getPredictedArrival()));
+                    product.setSalesVolume(vo.getAverageAmount().intValue());
+                    product.setShortageNumber(vo.getOutStockAffectMoney().intValue());
+                    product.setShortageDay(vo.getOutStockContinuousDays().intValue());
+                    product.setStockTurnover(vo.getArrivalCycle().intValue());
+                }
             }
         }
         Integer count = stockDao.purchaseProductCount(purchases);
@@ -169,20 +193,23 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private PurchaseApplyRequest fourProduct(PurchaseApplyRequest purchases){
         // 查询14大A品建议补货
         if(purchases.getAReplenishType() != null && purchases.getAReplenishType() == 0){
-            // TODO
-            //purchases.setAReplenish();
+            List<String> strings = replenishmentService.selectSuggestReplenishmentByPro();
+            purchases.setAReplenish(strings);
         }
         // 查询畅销商品建议补货
         if(purchases.getProductReplenishType() != null && purchases.getProductReplenishType() == 0){
-
+            List<String> strings = replenishmentService.selectSuggestReplenishmentBySell();
+            purchases.setProductReplenish(strings);
         }
         // 查询14大A品缺货
         if(purchases.getAShortageType() != null && purchases.getAShortageType() == 0){
-
+            List<String> strings = replenishmentService.selectOutStockByPro();
+            purchases.setAShortage(strings);
         }
         // 查询畅销商品缺货
         if(purchases.getProductShortageType() != null && purchases.getProductShortageType() == 0){
-
+            List<String> strings = replenishmentService.selectOutStockBySell();
+            purchases.setProductShortage(strings);
         }
         return purchases;
     }
