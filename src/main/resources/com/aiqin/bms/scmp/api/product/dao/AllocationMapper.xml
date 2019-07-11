@@ -701,4 +701,190 @@
     </if>
     order by create_time desc
   </select>
+  <resultMap id="selectByFormNO1" type="com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO">
+        <id column="aid" jdbcType="BIGINT" property="id" />
+        <result column="aallocation_code" jdbcType="VARCHAR" property="allocationCode" />
+        <result column="acallout_logistics_center_code" jdbcType="VARCHAR" property="callOutLogisticsCenterCode" />
+        <result column="acallout_logistics_center_name" jdbcType="VARCHAR" property="callOutLogisticsCenterName" />
+        <result column="acallout_warehouse_code" jdbcType="VARCHAR" property="callOutWarehouseCode" />
+        <result column="acallout_warehouse_name" jdbcType="VARCHAR" property="callOutWarehouseName" />
+        <result column="apurchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+        <result column="apurchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+        <result column="acallin_logistics_center_code" jdbcType="VARCHAR" property="callInLogisticsCenterCode" />
+        <result column="acallin_logistics_center_name" jdbcType="VARCHAR" property="callInLogisticsCenterName" />
+        <result column="acallin_warehouse_code" jdbcType="VARCHAR" property="callInWarehouseCode" />
+        <result column="acallin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
+        <result column="aprincipal" jdbcType="VARCHAR" property="principal" />
+        <result column="aquantity" jdbcType="BIGINT" property="quantity" />
+        <result column="atotal_cost_rate" jdbcType="BIGINT" property="totalCostRate" />
+        <result column="aoutbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
+        <result column="ainbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+        <result column="aallocation_status_code" jdbcType="TINYINT" property="allocationStatusCode" />
+        <result column="aallocation_status_name" jdbcType="VARCHAR" property="allocationStatusName" />
+        <result column="adel_flag" jdbcType="TINYINT" property="delFlag" />
+        <result column="acreate_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="acreate_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="aupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="aupdate_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="aform_no"  jdbcType="VARCHAR" property="formNo"/>
+        <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+        <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
+        <result column="adirect_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode" />
+        <result column="adirect_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
+        <result column="aundertaking_unit_code" jdbcType="VARCHAR" property="undertakingUnitCode" />
+        <result column="aundertaking_unit_name" jdbcType="VARCHAR" property="undertakingUnitName" />
+        <result column="aremark" jdbcType="CLOB" property="remark" />
+        <result column="aallocation_type" jdbcType="TINYINT" property="allocationType" />
+        <result column="aallocation_type_name" jdbcType="VARCHAR" property="allocationTypeName" />
+        <collection property="list" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch">
+          <id column="cid" jdbcType="BIGINT" property="id" />
+          <result column="callocation_code" jdbcType="VARCHAR" property="allocationCode" />
+          <result column="csku_code" jdbcType="VARCHAR" property="skuCode" />
+          <result column="csku_name" jdbcType="VARCHAR" property="skuName" />
+          <result column="ccategory" jdbcType="VARCHAR" property="category" />
+          <result column="cbrand" jdbcType="VARCHAR" property="brand" />
+          <result column="ccolor" jdbcType="VARCHAR" property="color" />
+          <result column="cspecification" jdbcType="VARCHAR" property="specification" />
+          <result column="cmodel" jdbcType="VARCHAR" property="model" />
+          <result column="cunit" jdbcType="VARCHAR" property="unit" />
+          <result column="cclasses" jdbcType="VARCHAR" property="classes" />
+          <result column="ctype" jdbcType="VARCHAR" property="type" />
+          <result column="cinventory_unit" jdbcType="VARCHAR" property="inventoryUnit" />
+          <result column="cinventory" jdbcType="BIGINT" property="inventory" />
+          <result column="ctax" jdbcType="BIGINT" property="tax" />
+          <result column="ctax_price" jdbcType="BIGINT" property="taxPrice" />
+          <result column="cquantity" jdbcType="BIGINT" property="quantity" />
+          <result column="ctax_amount" jdbcType="BIGINT" property="taxAmount" />
+          <result column="cdel_flag" jdbcType="TINYINT" property="delFlag" />
+          <result column="ccreate_time" jdbcType="TIMESTAMP" property="createTime" />
+          <result column="ccreate_by" jdbcType="VARCHAR" property="createBy" />
+          <result column="cupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+          <result column="cupdate_by" jdbcType="VARCHAR" property="updateBy" />
+          <result column="cpicture_url" jdbcType="VARCHAR" property="pictureUrl" />
+          <result column="cline_num" jdbcType="BIGINT" property="lineNum" />
+          <result column="ccallout_batch_number" jdbcType="VARCHAR" property="callOutBatchNumber" />
+          <result column="ccallin_batch_number" jdbcType="VARCHAR" property="callInBatchNumber" />
+          <result column="cbatch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
+          <result column="cproduct_date" jdbcType="VARCHAR" property="productDate" />
+        </collection>
+         <collection property="products" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct">
+           <id column="bid" jdbcType="BIGINT" property="id" />
+           <result column="ballocation_code" jdbcType="VARCHAR" property="allocationCode" />
+           <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
+           <result column="bsku_name" jdbcType="VARCHAR" property="skuName" />
+           <result column="bcategory" jdbcType="VARCHAR" property="category" />
+           <result column="bbrand" jdbcType="VARCHAR" property="brand" />
+           <result column="bcolor" jdbcType="VARCHAR" property="color" />
+           <result column="bspecification" jdbcType="VARCHAR" property="specification" />
+           <result column="bmodel" jdbcType="VARCHAR" property="model" />
+           <result column="bunit" jdbcType="VARCHAR" property="unit" />
+           <result column="bclasses" jdbcType="VARCHAR" property="classes" />
+           <result column="btype" jdbcType="VARCHAR" property="type" />
+           <result column="btax" jdbcType="BIGINT" property="tax" />
+           <result column="btax_price" jdbcType="BIGINT" property="taxPrice" />
+           <result column="bquantity" jdbcType="BIGINT" property="quantity" />
+           <result column="btax_amount" jdbcType="BIGINT" property="taxAmount" />
+           <result column="bdel_flag" jdbcType="TINYINT" property="delFlag" />
+           <result column="bcreate_time" jdbcType="TIMESTAMP" property="createTime" />
+           <result column="bcreate_by" jdbcType="VARCHAR" property="createBy" />
+           <result column="bupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+           <result column="bupdate_by" jdbcType="VARCHAR" property="updateBy" />
+           <result column="bpicture_url" jdbcType="VARCHAR" property="pictureUrl" />
+           <result column="bline_num" jdbcType="BIGINT" property="lineNum" />
+         </collection>
+  </resultMap>
+  <select id="selectByFormNO1" resultMap="selectByFormNO1">
+            select a.id aid,
+                   a.allocation_code aallocation_code,
+                   a.callout_logistics_center_code acallout_logistics_center_code,
+                   a.callout_logistics_center_name acallout_logistics_center_name,
+                   a.callout_warehouse_code acallout_warehouse_code,
+                   a.callout_warehouse_name acallout_warehouse_name,
+                   a.purchase_group_code apurchase_group_code,
+                   a.purchase_group_name apurchase_group_name,
+                   a.callin_logistics_center_code acallin_logistics_center_code,
+                   a.callin_logistics_center_name acallin_logistics_center_name,
+                   a.callin_warehouse_code acallin_warehouse_code,
+                   a.callin_warehouse_name acallin_warehouse_name,
+                   a.principal aprincipal,
+                   a.quantity aquantity,
+                   a.total_cost_rate atotal_cost_rate,
+                   a.outbound_oder_code aoutbound_oder_code,
+                   a.inbound_oder_code ainbound_oder_code,
+                   a.allocation_status_code aallocation_status_code,
+                   a.allocation_status_name aallocation_status_name,
+                   a.del_flag adel_flag,
+                   a.create_time acreate_time,
+                   a.create_by acreate_by,
+                   a.update_time aupdate_time,
+                   a.update_by aupdate_by,
+                   a.form_no aform_no,
+                   a.company_code acompany_code,
+                   a.company_name acompany_name,
+                   a.direct_supervisor_code adirect_supervisor_code,
+                   a.direct_supervisor_name adirect_supervisor_name,
+                   a.undertaking_unit_code aundertaking_unit_code,
+                   a.undertaking_unit_name aundertaking_unit_name,
+                   a.remark aremark,
+                   a.allocation_type aallocation_type,
+                   a.allocation_type_name aallocation_type_name,
+                   b.id bid,
+                   b.allocation_code ballocation_code,
+                   b.sku_code bsku_code,
+                   b.sku_name bsku_name,
+                   b.category bcategory,
+                   b.brand bbrand,
+                   b.color bcolor,
+                   b.specification bspecification,
+                   b.model bmodel,
+                   b.unit bunit,
+                   b.classes bclasses,
+                   b.type btype,
+                   b.tax btax,
+                   b.tax_price btax_price,
+                   b.quantity bquantity,
+                   b.tax_amount btax_amount,
+                   b.del_flag bdel_flag,
+                   b.create_time bcreate_time,
+                   b.create_by bcreate_by,
+                   b.update_time bupdate_time,
+                   b.update_by bupdate_by,
+                   b.picture_url bpicture_url,
+                   b.line_num bline_num,
+                   c.id cid,
+                   c.allocation_code callocation_code,
+                   c.sku_code csku_code,
+                   c.sku_name csku_name,
+                   c.category ccategory,
+                   c.brand cbrand,
+                   c.color ccolor,
+                   c.specification cspecification,
+                   c.model cmodel,
+                   c.unit cunit,
+                   c.classes cclasses,
+                   c.type ctype,
+                   c.inventory_unit cinventory_unit,
+                   c.inventory cinventory,
+                   c.tax ctax,
+                   c.tax_price ctax_price,
+                   c.quantity cquantity,
+                   c.tax_amount ctax_amount,
+                   c.del_flag cdel_flag,
+                   c.create_time ccreate_time,
+                   c.create_by ccreate_by,
+                   c.update_time cupdate_time,
+                   c.update_by cupdate_by,
+                   c.picture_url cpicture_url,
+                   c.callout_batch_number ccallout_batch_number,
+                   c.callin_batch_number ccallin_batch_number,
+                   c.batch_number_remark cbatch_number_remark,
+                   c.product_date cproduct_date,
+                   c.line_num cline_num
+            from allocation a
+                     left join allocation_product b
+                               on a.allocation_code = b.allocation_code
+                     left join allocation_product_batch c
+                               on a.allocation_code = c.allocation_code
+            where a.form_no = #{FormNo}
+  </select>
 </mapper>
