@@ -212,17 +212,20 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outbound.setOutboundOderCode(outboundOderCode);
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
-            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
+            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()));
             int i = outboundDao.insertSelective(outbound);
             log.info("出库主表保存结果:{}", i);
-
-            List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(),OutboundBatch.class);
-            outboundBatches.stream().forEach(outboundBatch ->outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
-
             int j = outboundProductDao.insertBatch(outboundProducts);
             log.info("出库商品保存结果:{}", j);
-            int m = outboundBatchDao.insertInfo(outboundBatches);
-            log.info("出库商品批次保存结果:{}", m);
+
+            if(CollectionUtils.isNotEmpty(stockReqVO.getOutboundBatches())){
+                List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(),OutboundBatch.class);
+                outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()));
+
+                int m = outboundBatchDao.insertInfo(outboundBatches);
+                log.info("出库商品批次保存结果:{}", m);
+            }
+
             //更新编码
             encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
 
@@ -262,13 +265,16 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             int i = outboundDao.insertSelective(outbound);
             log.info("插入出库单主表返回结果", i);
 
-            List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(), OutboundBatch.class);
-            outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()) );
             int j = outboundProductDao.insertBatch(outboundProducts);
             log.info("插入出库单商品表返回结果", j);
 
-            int m = outboundBatchDao.insertInfo(outboundBatches);
-            log.info("插入出库单商品批次表返回结果", m);
+            if(CollectionUtils.isNotEmpty(stockReqVO.getOutboundBatches())){
+                List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(), OutboundBatch.class);
+                outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()));
+
+                int m = outboundBatchDao.insertInfo(outboundBatches);
+                log.info("插入出库单商品批次表返回结果", m);
+            }
 
             //更新编码
             encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
