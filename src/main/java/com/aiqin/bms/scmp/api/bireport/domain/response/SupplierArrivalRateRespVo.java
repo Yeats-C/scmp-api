@@ -5,9 +5,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @ApiModel("供应商到货率respVo")
 @Data
-public class SupplierArrivalRateRespVo {
+public class SupplierArrivalRateRespVo implements Serializable {
 
     @ApiModelProperty("入库时间begin")
     @JsonProperty("begin_inbound_time")

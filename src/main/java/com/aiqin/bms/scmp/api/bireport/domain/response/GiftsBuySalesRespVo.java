@@ -1,13 +1,15 @@
-package com.aiqin.bms.scmp.api.bireport.domain.pojo;
+package com.aiqin.bms.scmp.api.bireport.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("赠品进销存实体Model")
+import java.io.Serializable;
+
+@ApiModel("赠品进销存respVo")
 @Data
-public class BiGiftsBuySales {
+public class GiftsBuySalesRespVo  implements Serializable {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
@@ -20,14 +22,6 @@ public class BiGiftsBuySales {
     @ApiModelProperty("sku名称")
     @JsonProperty("sku_name")
     private String skuName;
-
-    @ApiModelProperty("部门编码")
-    @JsonProperty("product_sort_code")
-    private String productSortCode;
-
-    @ApiModelProperty("所属部门")
-    @JsonProperty("product_sort_name")
-    private String productSortName;
 
     @ApiModelProperty("品类名称")
     @JsonProperty("category_name")
@@ -52,6 +46,14 @@ public class BiGiftsBuySales {
     @ApiModelProperty("四级品类")
     @JsonProperty("product_category_four")
     private String productCategoryFour;
+
+    @ApiModelProperty("部门编码")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty("所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
 
     @ApiModelProperty("品牌编码")
     @JsonProperty("product_brand_code")
@@ -89,9 +91,21 @@ public class BiGiftsBuySales {
     @JsonProperty("sales_num_one_month")
     private Integer salesNumOneMonth;
 
+    @ApiModelProperty("近一个月销售金额")
+    @JsonProperty("sales_money_one_month")
+    private Integer salesMoneyOneMonth;
+
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")
     private Integer turnoverDays;
+
+    @ApiModelProperty("入库开始时间")
+    @JsonProperty("create_time")
+    private String createTime;
+
+    @ApiModelProperty("已经入库天数")
+    @JsonProperty("inbound_days")
+    private Integer inboundDays;
 
     @ApiModelProperty("采购组负责人编码")
     @JsonProperty("responsible_person_code")
@@ -101,12 +115,5 @@ public class BiGiftsBuySales {
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
 
-    @ApiModelProperty("入库开始时间")
-    @JsonProperty("create_time")
-    private String createTime;
-
-    @ApiModelProperty("已经入库天数")
-    @JsonProperty("inbound_days")
-    private Integer inboundDays;
 
 }

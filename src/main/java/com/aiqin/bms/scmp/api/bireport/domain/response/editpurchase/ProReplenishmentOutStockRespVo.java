@@ -5,11 +5,12 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 @ApiModel("采购补货缺货返回Vo")
 @Data
-public class ProReplenishmentOutStockRespVo {
+public class ProReplenishmentOutStockRespVo  implements Serializable {
 
     @ApiModelProperty("sku号")
     @JsonProperty(value = "sku_code")

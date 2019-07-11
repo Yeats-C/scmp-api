@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.response.inbound;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -59,6 +60,7 @@ public class QueryInboundResVo extends PageReq {
     private String inboundStatusName;
 
     @ApiModelProperty("创建时间")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     @ApiModelProperty("预计入库数量")

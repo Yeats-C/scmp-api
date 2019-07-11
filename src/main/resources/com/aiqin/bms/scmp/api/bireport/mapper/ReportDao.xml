@@ -43,5 +43,198 @@
         </if>
 
     </select>
+    <select id="selectGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        #{beginCreateTime}  as beginCreateTime,
+        #{finishCreateTime} as finishCreateTime,
+        bgbs.supplier_code as supplierCode,
+        bgbs.supplier_name as supplierName,
+        bgbs.sku_code as skuCode,
+        bgbs.sku_name as skuName,
+        bgbs.batch_code as batchCode,
+        bgbs.product_sort_code as productSortCode,
+        bgbs.product_sort_name as productSortName,
+        bgbs.transport_center_code as transportCenterCode,
+        bgbs.transport_center_name as transportCenterName,
+        bgbs.warehouse_code as warehouseCode,
+        bgbs.warehouse_name as warehouseName,
+        bgbs.category_name as productCategoryName,
+        bgbs.product_category_code as productCategoryCode,
+        bgbs.product_category_one as productCategoryOne,
+        bgbs.product_category_two as productCategoryTwo,
+        bgbs.product_category_three as productCategoryThree,
+        bgbs.product_category_four as productCategoryFour,
+        bgbs.product_brand_code as productBrandCode,
+        bgbs.product_brand_name as productBrandName,
+        bgbs.manufacturer_guide_price as manufacturerGuidePrice,
+        bgbs.inventory_num as inventoryNum,
+        bgbs.tax_cost as taxCost,
+        bgbs.sales_num_one_month as salesNumOneMonth,
+        bgbs.sales_cost_one_month as salesCostOneMonth,
+        bgbs.fen_sales_money_one_month as fenSalesMoneyOneMonth,
+        bgbs.fen_sales_maori_one_month as fenSalesMaoriOneMonth,
+        bgbs.fen_sales_maori_one_month_rate as fenSalesMaoriOneMonthRate,
+        bgbs.qun_sales_money_one_month as qunSalesMoneyOneMonth,
+        bgbs.qun_sales_maori_one_month as qunSalesMaoriOneMonth,
+        bgbs.qun_sales_maori_one_month_rate as qunSalesMaoriOneMonthRate,
+        bgbs.turnover_days as turnoverDays,
+        bgbs.create_time as createTime,
+        bgbs.inbound_days as inboundDays,
+        bgbs.config_status as configStatus,
+        bgbs.responsible_person_code as responsiblePersonCode,
+        bgbs.responsible_person_name as responsiblePersonName,
+        bgbs.production_date as productionDate,
+        bgbs.quality_number as qualityNumber
+        from bi_goods_buy_sales bgbs
+        where 1=1
+        <if test="supplierCode!=null and supplierCode!=''">
+            and bgbs.supplier_code=#{supplierCode}
+        </if>
+        <if test="supplierName!=null and supplierName!=''">
+            and bgbs.supplier_name like concat('%', #{supplierName}, '%')
+        </if>
+        <if test="skuCode!=null and skuCode!=''">
+            and bgbs.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and bgbs.sku_name like concat('%', #{skuName}, '%')
+        </if>
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and bgbs.transport_center_code=#{transportCenterCode}
+        </if>
+        <if test="transportCenterName!=null and transportCenterName!=''">
+            and bgbs.transport_center_name like concat('%', #{transportCenterName}, '%')
+        </if>
+        <if test="productCategoryName!=null and productCategoryName!=''">
+            and bgbs.category_name like concat('%', #{productCategoryName}, '%')
+        </if>
+        <if test="productCategoryCode!=null and productCategoryCode!=''">
+            and bgbs.product_category_code=#{productCategoryCode}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and bgbs.product_sort_code=#{productSortCode}
+        </if>
+        <if test="productSortName!=null and productSortName!=''">
+            and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
+        </if>
+        <if test="beginCreateTime!=null and beginCreateTime!=''">
+            and bgbs.create_time between #{beginCreateTime}
+        </if>
+        <if test="finishCreateTime!=null and finishCreateTime!=''">
+            and #{finishCreateTime}
+        </if>
+        <if test="inboundDays!=null and inboundDays!=''">
+            and bgbs.inbound_days=#{inboundDays}
+        </if>
+        <if test="beginTurnoverDays!=null">
+            and st.turnover_days <![CDATA[>=]]> #{beginTurnoverDays}
+        </if>
+        <if test="finishTurnoverDays!=null">
+            and st.turnover_days <![CDATA[<=]]> #{finishTurnoverDays}
+        </if>
+        <if test="warehouseCode!=null and warehouseCode!=''">
+            and bgbs.warehouse_code=#{warehouseCode}
+        </if>
+        <if test="warehouseName!=null and warehouseName!=''">
+            and bgbs.warehouse_name like concat('%', #{warehouseName}, '%')
+        </if>
+        <if test="productCategoryOne!=null and productCategoryOne!=''">
+            and bgbs.product_category_one like concat('%', #{productCategoryOne}, '%')
+        </if>
+        <if test="productCategoryTwo!=null and productCategoryTwo!=''">
+            and bgbs.product_category_two like concat('%', #{productCategoryTwo}, '%')
+        </if>
+        <if test="productCategoryThree!=null and productCategoryThree!=''">
+            and bgbs.product_category_three like concat('%', #{productCategoryThree}, '%')
+        </if>
+        <if test="productCategoryFour!=null and productCategoryFour!=''">
+            and bgbs.product_category_four like concat('%', #{productCategoryFour}, '%')
+        </if>
+    </select>
+    <select id="selectGiftsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
+        select
+        bgbs.sku_code as skuCode,
+        bgbs.sku_name as skuName,
+        #{beginCreateTime}  as beginCreateTime,
+        #{finishCreateTime} as finishCreateTime,
+        bgbs.category_name as productCategoryName,
+        bgbs.product_category_code as productCategoryCode,
+        bgbs.product_category_one as productCategoryOne,
+        bgbs.product_category_two as productCategoryTwo,
+        bgbs.product_category_three as productCategoryThree,
+        bgbs.product_category_four as productCategoryFour,
+        bgbs.product_sort_code as productSortCode,
+        bgbs.product_sort_name as productSortName,
+        bgbs.product_brand_code as productBrandCode,
+        bgbs.product_brand_name as productBrandName,
+        bgbs.manufacturer_guide_price as manufacturerGuidePrice,
+        bgbs.transport_center_code as transportCenterCode,
+        bgbs.transport_center_name as transportCenterName,
+        bgbs.warehouse_code as warehouseCode,
+        bgbs.warehouse_name as warehouseName,
+        bgbs.inventory_num as inventoryNum,
+        bgbs.sales_num_one_month as salesNumOneMonth,
+        bgbs.sales_money_one_month as salesMoneyOneMonth,
+        bgbs.turnover_days as turnoverDays,
+        bgbs.create_time as createTime,
+        bgbs.inbound_days as inboundDays,
+        bgbs.responsible_person_code as responsiblePersonCode,
+        bgbs.responsible_person_name as responsiblePersonName
+        from bi_gifts_buy_sales bgbs
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and bgbs.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and bgbs.sku_name like concat('%', #{skuName}, '%')
+        </if>
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and bgbs.transport_center_code=#{transportCenterCode}
+        </if>
+        <if test="transportCenterName!=null and transportCenterName!=''">
+            and bgbs.transport_center_name like concat('%', #{transportCenterName}, '%')
+        </if>
+        <if test="inboundDays!=null and inboundDays!=''">
+            and bgbs.inbound_days=#{inboundDays}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and bgbs.product_sort_code=#{productSortCode}
+        </if>
+        <if test="productSortName!=null and productSortName!=''">
+            and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
+        </if>
+        <if test="beginCreateTime!=null and beginCreateTime!=''">
+            and bgbs.create_time between #{beginCreateTime}
+        </if>
+        <if test="finishCreateTime!=null and finishCreateTime!=''">
+            and #{finishCreateTime}
+        </if>
+        <if test="warehouseCode!=null and warehouseCode!=''">
+            and bgbs.warehouse_code=#{warehouseCode}
+        </if>
+        <if test="warehouseName!=null and warehouseName!=''">
+            and bgbs.warehouse_name like concat('%', #{warehouseName}, '%')
+        </if>
+        <if test="beginTurnoverDays!=null">
+            and st.turnover_days <![CDATA[>=]]> #{beginTurnoverDays}
+        </if>
+        <if test="finishTurnoverDays!=null">
+            and st.turnover_days <![CDATA[<=]]> #{finishTurnoverDays}
+        </if>
+        <if test="productCategoryOne!=null and productCategoryOne!=''">
+            and bgbs.product_category_one like concat('%', #{productCategoryOne}, '%')
+        </if>
+        <if test="productCategoryTwo!=null and productCategoryTwo!=''">
+            and bgbs.product_category_two like concat('%', #{productCategoryTwo}, '%')
+        </if>
+        <if test="productCategoryThree!=null and productCategoryThree!=''">
+            and bgbs.product_category_three like concat('%', #{productCategoryThree}, '%')
+        </if>
+        <if test="productCategoryFour!=null and productCategoryFour!=''">
+            and bgbs.product_category_four like concat('%', #{productCategoryFour}, '%')
+        </if>
+    </select>
 
 </mapper>

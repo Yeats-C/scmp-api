@@ -269,6 +269,9 @@
       <if test="productPropertyCode != null">
         and product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
       </if>
+      <if test="productPropertyName != null">
+        and product_property_name like CONCAT('', #{productPropertyName,jdbcType=VARCHAR},"%")
+      </if>
       <if test="brandId != null">
         and brand_id = #{brandId,jdbcType=VARCHAR}
       </if>
@@ -337,6 +340,9 @@
       </if>
       <if test="productPropertyCode != null">
         and product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productPropertyName != null">
+        and product_property_name like CONCAT('', #{productPropertyName,jdbcType=VARCHAR},"%")
       </if>
       <if test="brandId != null">
         and brand_id = #{brandId,jdbcType=VARCHAR}

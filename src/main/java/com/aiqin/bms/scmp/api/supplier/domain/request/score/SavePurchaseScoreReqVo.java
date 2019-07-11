@@ -30,4 +30,7 @@ public class SavePurchaseScoreReqVo {
 
     @ApiModelProperty("标签信息")
     private List<SaveUseTagRecordItemReqVo> tagInfoList;
+
+    @ApiModelProperty("残损率")
+    private BigDecimal damageRate;
 }

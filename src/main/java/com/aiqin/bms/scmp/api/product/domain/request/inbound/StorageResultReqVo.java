@@ -32,7 +32,6 @@ public class StorageResultReqVo {
     @ApiModelProperty("实际含税采购总金额")
     private Long actualAmount;
 
-
     @ApiModelProperty("采购单商品集合")
     private List<StorageResultItemReqVo> itemReqVos;
 }

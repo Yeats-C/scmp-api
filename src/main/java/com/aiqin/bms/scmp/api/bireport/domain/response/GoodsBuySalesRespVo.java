@@ -1,17 +1,27 @@
-package com.aiqin.bms.scmp.api.bireport.domain.pojo;
+package com.aiqin.bms.scmp.api.bireport.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("批次商品进销存实体Model")
+import java.io.Serializable;
+
+@ApiModel("批次商品进销存respVo")
 @Data
-public class BiGoodsBuySales {
+public class GoodsBuySalesRespVo  implements Serializable {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
     private Long id;
+
+    @ApiModelProperty("入库时间begin")
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
+
+    @ApiModelProperty("入库时间finish")
+    @JsonProperty("finish_create_time")
+    private String finishCreateTime;
 
     @ApiModelProperty("供应商编码")
     @JsonProperty("supplier_code")
@@ -28,6 +38,10 @@ public class BiGoodsBuySales {
     @ApiModelProperty("sku名称")
     @JsonProperty("sku_name")
     private String skuName;
+
+    @ApiModelProperty("批次号")
+    @JsonProperty("batch_code")
+    private String batchCode;
 
     @ApiModelProperty("部门编码")
     @JsonProperty("product_sort_code")
@@ -52,10 +66,6 @@ public class BiGoodsBuySales {
     @ApiModelProperty("库房名称")
     @JsonProperty("warehouse_name")
     private String warehouseName;
-
-    @ApiModelProperty("批次号")
-    @JsonProperty("batch_code")
-    private String batchCode;
 
     @ApiModelProperty("品类名称")
     @JsonProperty("product_category_name")
@@ -164,5 +174,4 @@ public class BiGoodsBuySales {
     @ApiModelProperty("保质期")
     @JsonProperty("quality_number")
     private String qualityNumber;
-
 }
