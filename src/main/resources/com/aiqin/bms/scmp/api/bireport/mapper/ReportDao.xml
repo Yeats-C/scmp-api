@@ -128,10 +128,10 @@
             and bgbs.inbound_days=#{inboundDays}
         </if>
         <if test="beginTurnoverDays!=null">
-            and st.turnover_days <![CDATA[>=]]> #{beginTurnoverDays}
+            and bgbs.turnover_days <![CDATA[>=]]> #{beginTurnoverDays}
         </if>
         <if test="finishTurnoverDays!=null">
-            and st.turnover_days <![CDATA[<=]]> #{finishTurnoverDays}
+            and bgbs.turnover_days <![CDATA[<=]]> #{finishTurnoverDays}
         </if>
         <if test="warehouseCode!=null and warehouseCode!=''">
             and bgbs.warehouse_code=#{warehouseCode}
@@ -218,10 +218,10 @@
             and bgbs.warehouse_name like concat('%', #{warehouseName}, '%')
         </if>
         <if test="beginTurnoverDays!=null">
-            and st.turnover_days <![CDATA[>=]]> #{beginTurnoverDays}
+            and bgbs.turnover_days <![CDATA[>=]]> #{beginTurnoverDays}
         </if>
         <if test="finishTurnoverDays!=null">
-            and st.turnover_days <![CDATA[<=]]> #{finishTurnoverDays}
+            and bgbs.turnover_days <![CDATA[<=]]> #{finishTurnoverDays}
         </if>
         <if test="productCategoryOne!=null and productCategoryOne!=''">
             and bgbs.product_category_one like concat('%', #{productCategoryOne}, '%')
@@ -234,6 +234,135 @@
         </if>
         <if test="productCategoryFour!=null and productCategoryFour!=''">
             and bgbs.product_category_four like concat('%', #{productCategoryFour}, '%')
+        </if>
+    </select>
+    <select id="selectSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierReturnRespVo">
+        select
+        bsr.id as id,
+        bsr.supplier_code as supplierCode,
+        bsr.supplier_name as supplierName,
+        bsr.transport_center_code as transportCenterCode,
+        bsr.transport_center_name as transportCenterName,
+        bsr.warehouse_code as warehouseCode,
+        bsr.warehouse_name as warehouseName,
+        bsr.reject_record_code as rejectRecordCode,
+        bsr.sum_count as sumCount,
+        bsr.sum_amount as sumAmount,
+        bsr.create_time as createTime,
+        bsr.out_stock_time as outStockTime,
+        bsr.reject_status as rejectStatus,
+        bsr.purchase_group_code as purchaseGroupCode,
+        bsr.purchase_group_name as purchaseGroupName,
+        bsr.responsible_person_code as responsiblePersonCode,
+        bsr.responsible_person_name as responsiblePersonName
+        from bi_supplier_return bsr
+        where 1=1
+        <if test="supplierCode!=null and supplierCode!=''">
+            and bsr.supplier_code=#{supplierCode}
+        </if>
+        <if test="supplierName!=null and supplierName!=''">
+            and bsr.supplier_name like concat('%', #{supplierName}, '%')
+        </if>
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and bsr.transport_center_code=#{transportCenterCode}
+        </if>
+        <if test="transportCenterName!=null and transportCenterName!=''">
+            and bsr.transport_center_name like concat('%', #{transportCenterName}, '%')
+        </if>
+        <if test="warehouseCode!=null and warehouseCode!=''">
+            and bsr.warehouse_code=#{warehouseCode}
+        </if>
+        <if test="warehouseName!=null and warehouseName!=''">
+            and bsr.warehouse_name like concat('%', #{warehouseName}, '%')
+        </if>
+        <if test="beginCreateTime!=null and beginCreateTime!=''">
+            and bsr.create_time between #{beginCreateTime}
+        </if>
+        <if test="finishCreateTime!=null and finishCreateTime!=''">
+            and #{finishCreateTime}
+        </if>
+
+    </select>
+    <select id="selectNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
+        select
+        bnpbmr.id as id,
+        bnpbmr.sku_code as skuCode,
+        bnpbmr.sku_name as skuName,
+        bnpbmr.batch_code as batchCode,
+        bnpbmr.supplier_code as supplierCode,
+        bnpbmr.supplier_name as supplierName,
+        bnpbmr.product_sort_code as productSortCode,
+        bnpbmr.product_sort_name as productSortName,
+        bnpbmr.product_category_code as productCategoryCode,
+        bnpbmr.product_category_one as productCategoryOne,
+        bnpbmr.product_category_two as productCategoryTwo,
+        bnpbmr.product_category_three as productCategoryThree,
+        bnpbmr.product_category_four as productCategoryFour,
+        bnpbmr.product_brand_code as productBrandCode,
+        bnpbmr.product_brand_name as productBrandName,
+        bnpbmr.purchase_price as purchasePrice,
+        bnpbmr.manufacturer_guide_price as manufacturerGuidePrice,
+        bnpbmr.inventory_num as inventoryNum,
+        bnpbmr.tax_cost as taxCost,
+        bnpbmr.price_channel_name as priceChannelName,
+        bnpbmr.num as num,
+        bnpbmr.sales_costs as salesCosts,
+        bnpbmr.qun_amount as qunAmount,
+        bnpbmr.qun_maori as qunMaori,
+        bnpbmr.qun_maori_rate as qunMaoriRate,
+        bnpbmr.fen_amount as fenAmount,
+        bnpbmr.fen_maori as fenMaori,
+        bnpbmr.fen_maori_rate as fenMaoriRate,
+        bnpbmr.sales_num_one_month as salesNumOneMonth,
+        bnpbmr.sales_cost_one_month as salesCostOneMonth,
+        bnpbmr.turnover_days as turnoverDays,
+        bnpbmr.create_time as createTime,
+        bnpbmr.inbound_days as inboundDays,
+        bnpbmr.config_status as configStatus,
+        bnpbmr.responsible_person_code as responsiblePersonCode,
+        bnpbmr.responsible_person_name as responsiblePersonName
+        from bi_new_product_batch_moving_rate bnpbmr
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and bnpbmr.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and bnpbmr.sku_name like concat('%', #{skuName}, '%')
+        </if>
+        <if test="priceChannelName!=null and priceChannelName!=''">
+            and bnpbmr.price_channel_name=#{priceChannelName}
+        </if>
+        <if test="supplierCode!=null and supplierCode!=''">
+            and bnpbmr.supplier_code=#{supplierCode}
+        </if>
+        <if test="supplierName!=null and supplierName!=''">
+            and bnpbmr.supplier_name like concat('%', #{supplierName}, '%')
+        </if>
+        <if test="productCategoryCode!=null and productCategoryCode!=''">
+            and bnpbmr.product_category_code=#{productCategoryCode}
+        </if>
+        <if test="beginCreateTime!=null and beginCreateTime!=''">
+            and bnpbmr.create_time between #{beginCreateTime}
+        </if>
+        <if test="finishCreateTime!=null and finishCreateTime!=''">
+            and #{finishCreateTime}
+        </if>
+        <if test="batchCode!=null and batchCode!=''">
+            and bnpbmr.batch_code=#{batchCode}
+        </if>
+        <if test="beginMaoriRate!=null">
+            and bnpbmr.maori_rate <![CDATA[>=]]> #{beginMaoriRate}
+        </if>
+        <if test="finishMaoriRate!=null">
+            and bnpbmr.maori_rate <![CDATA[<=]]> #{finishMaoriRate}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and bnpbmr.product_sort_code=#{productSortCode}
+        </if>
+        <if test="productSortName!=null and productSortName!=''">
+            and bnpbmr.product_sort_name like concat('%', #{productSortName}, '%')
         </if>
     </select>
 

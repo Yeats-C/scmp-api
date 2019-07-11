@@ -1,11 +1,7 @@
 package com.aiqin.bms.scmp.api.bireport.service;
 
-import com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo;
+import com.aiqin.bms.scmp.api.bireport.domain.request.*;
+import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.github.pagehelper.PageInfo;
 
 import java.util.List;
@@ -32,4 +28,18 @@ public interface ReportService {
      * @return
      */
     PageInfo<GiftsBuySalesRespVo> selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
+
+    /**
+     *  供应商退货(退供)
+     * @param supplierReturnReqVo
+     * @return
+     */
+    PageInfo<SupplierReturnRespVo> selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
+
+    /**
+     *  新品批次动销率
+     * @param newProductBatchMovingRateReqVo
+     * @return
+     */
+    PageInfo<NewProductBatchMovingRateRespVo> selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
 }

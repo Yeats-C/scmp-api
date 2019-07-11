@@ -1,17 +1,25 @@
-package com.aiqin.bms.scmp.api.bireport.domain.pojo;
+package com.aiqin.bms.scmp.api.bireport.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("新品批次动销率实体Model")
+@ApiModel("新品批次动销率respVo")
 @Data
-public class BiNewProductBatchMovingRate {
+public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
     private Long id;
+
+    @ApiModelProperty("sku编码")
+    @JsonProperty("sku_code")
+    private String skuCode;
+
+    @ApiModelProperty("sku名称")
+    @JsonProperty("sku_name")
+    private String skuName;
 
     @ApiModelProperty("批次号")
     @JsonProperty("batch_code")
@@ -24,14 +32,6 @@ public class BiNewProductBatchMovingRate {
     @ApiModelProperty("供应商名称")
     @JsonProperty("supplier_name")
     private String supplierName;
-
-    @ApiModelProperty("sku编码")
-    @JsonProperty("sku_code")
-    private String skuCode;
-
-    @ApiModelProperty("sku名称")
-    @JsonProperty("sku_name")
-    private String skuName;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -87,7 +87,7 @@ public class BiNewProductBatchMovingRate {
 
     @ApiModelProperty("销售渠道")
     @JsonProperty("price_channel_name")
-    private Integer priceChannelName;
+    private String priceChannelName;
 
     @ApiModelProperty("销售数量")
     @JsonProperty("num")
@@ -152,5 +152,4 @@ public class BiNewProductBatchMovingRate {
     @ApiModelProperty("采购组负责人")
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
-
 }

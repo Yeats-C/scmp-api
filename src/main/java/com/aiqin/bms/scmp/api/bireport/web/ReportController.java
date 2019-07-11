@@ -1,12 +1,7 @@
 package com.aiqin.bms.scmp.api.bireport.web;
 
-import com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo;
+import com.aiqin.bms.scmp.api.bireport.domain.request.*;
+import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.bireport.service.ReportService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -174,4 +169,78 @@ public class ReportController {
         giftsBuySalesReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectGiftsBuySales(giftsBuySalesReqVo));
     }
+
+    @GetMapping("/search/supplier/return")
+    @ApiOperation("供应商退货(退供)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
+            @ApiImplicitParam(name = "supplier_name", value = "供应商name", type = "String"),
+            @ApiImplicitParam(name = "transport_center_code", value = "仓库编码", type = "String"),
+            @ApiImplicitParam(name = "transport_center_name", value = "仓库名称", type = "String"),
+            @ApiImplicitParam(name = "warehouse_code", value = "库房编码", type = "String"),
+            @ApiImplicitParam(name = "warehouseName", value = "库房名称", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<List<SupplierReturnRespVo>> selectSupplierReturn(
+            @RequestParam(value = "supplier_code", required = false) String supplierCode,
+            @RequestParam(value = "supplier_name", required = false) String supplierName,
+            @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
+            @RequestParam(value = "transport_center_name", required = false) String transportCenterName,
+            @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
+            @RequestParam(value = "warehouseName", required = false) String warehouseName,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        SupplierReturnReqVo supplierReturnReqVo = new SupplierReturnReqVo(supplierCode,supplierName,transportCenterCode,transportCenterName,warehouseCode,warehouseName,beginCreateTime,finishCreateTime);
+        supplierReturnReqVo.setPageNo(pageNo);
+        supplierReturnReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectSupplierReturn(supplierReturnReqVo));
+    }
+
+    @GetMapping("/search/new/product/batch/moving/rate")
+    @ApiOperation("新品批次动销率")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
+            @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
+            @ApiImplicitParam(name = "price_channel_name", value = "销售渠道", type = "String"),
+            @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
+            @ApiImplicitParam(name = "supplier_name", value = "供应商name", type = "String"),
+            @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "batch_code", value = "批次号", type = "String"),
+            @ApiImplicitParam(name = "begin_maori_rate", value = "毛利率begin", type = "Integer"),
+            @ApiImplicitParam(name = "finish_maori_rate", value = "毛利率finish", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<List<NewProductBatchMovingRateRespVo>> selectNewProductBatchMovingRate(
+            @RequestParam(value = "sku_code", required = false) String skuCode,
+            @RequestParam(value = "sku_name", required = false) String skuName,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
+            @RequestParam(value = "supplier_code", required = false) String supplierCode,
+            @RequestParam(value = "supplier_name", required = false) String supplierName,
+            @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "batch_code", required = false) String batchCode,
+            @RequestParam(value = "begin_maori_rate", required = false) Integer beginMaoriRate,
+            @RequestParam(value = "finish_maori_rate", required = false) Integer finishMaoriRate,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+            @RequestParam(value = "product_sort_code", required = false) String productSortName,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo = new NewProductBatchMovingRateReqVo(skuCode,skuName,priceChannelName,supplierCode,supplierName,productCategoryCode,beginCreateTime,finishCreateTime,batchCode,beginMaoriRate,finishMaoriRate,
+                productSortCode,productSortName);
+        newProductBatchMovingRateReqVo.setPageNo(pageNo);
+        newProductBatchMovingRateReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectNewProductBatchMovingRate(newProductBatchMovingRateReqVo));
+    }
+
 }
