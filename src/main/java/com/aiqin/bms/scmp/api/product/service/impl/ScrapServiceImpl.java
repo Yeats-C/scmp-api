@@ -148,7 +148,7 @@ public class ScrapServiceImpl extends BaseServiceImpl implements ScrapService, W
      */
     @Override
     public int revocation(Long id) {
-        return 0;
+        return allocationService.revocation(id);
     }
 
 

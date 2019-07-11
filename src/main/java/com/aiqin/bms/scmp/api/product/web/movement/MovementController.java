@@ -85,6 +85,7 @@ public class MovementController {
         try {
             return  HttpResponse.success(movementService.revocation(id));
         }catch ( Exception e){
-            return HttpResponse.failure(ResultCode.MOVEMENT_RECOVER);}
+            return HttpResponse.failure(ResultCode.MOVEMENT_RECOVER);
+        }
     }
 }
