@@ -87,6 +87,10 @@ public class ScrapController {
     @ApiOperation("撤销报废单" )
     @GetMapping("/revocation")
     public HttpResponse<Integer> revocation(Long id) {
-        return null;
+        try {
+            return  HttpResponse.success(ScrapService.revocation(id));
+        }catch ( Exception e){
+            return HttpResponse.failure(ResultCode.MOVEMENT_RECOVER);
+        }
     }
 }
