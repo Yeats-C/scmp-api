@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuInspReportDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
@@ -79,6 +80,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     private SupplierScoreService scoreService;
     @Resource
     private ProductSkuInspReportService productSkuInspReportService;
+    @Resource
+    private ProductSkuInspReportDao productSkuInspReportDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -706,7 +709,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
         // 保存质检报告
-        productSkuInspReportService.saveProductSkuInspReports(storageRequest.getReportReqVo());
+        productSkuInspReportDao.insertInspReportList(storageRequest.getReportRequest());
         // 保存供应商评分
         String code = scoreService.saveByPurchase(storageRequest.getScoreRequest());
         if(StringUtils.isBlank(code)){

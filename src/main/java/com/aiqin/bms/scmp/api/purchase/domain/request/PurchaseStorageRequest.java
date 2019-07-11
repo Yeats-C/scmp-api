@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author: zhao shuai
  * @create: 2019-07-10
@@ -20,7 +22,7 @@ public class PurchaseStorageRequest {
 
     @ApiModelProperty(value="质检报告数据")
     @JsonProperty("report_request")
-    private SaveProductSkuInspReportReqVo reportReqVo;
+    private List<ProductSkuInspReport> reportRequest;
 
     @ApiModelProperty(value="采购供应商评分")
     @JsonProperty("score_request")
