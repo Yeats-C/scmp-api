@@ -80,7 +80,7 @@ public class ReturnGoodsController {
 
     @ApiOperation("退货详情")
     @GetMapping("/returnOrderDetail")
-    public HttpResponse<ReturnOrderDetailRespVO> returnOrderDetail(@RequestParam(name = "退货单订单编码") String code){
+    public HttpResponse<ReturnOrderDetailRespVO> returnOrderDetail(@RequestParam String code){
         log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
         try {
             return HttpResponse.success(returnGoodsService.returnOrderDetail(code));
@@ -94,7 +94,7 @@ public class ReturnGoodsController {
 
     @ApiOperation("更改状态")
     @GetMapping("/changeOrderStatus")
-    public HttpResponse<Boolean> changeOrderStatus(@RequestParam(name = "退货单订单编码") String code,@RequestParam("需要修改为订单的状态编码") Integer status){
+    public HttpResponse<Boolean> changeOrderStatus(@RequestParam String code,@RequestParam Integer status){
         log.info("ReturnGoodsController---changeOrderStatus---param：[{}] param：[{}]", code,status);
         try {
             return HttpResponse.success(returnGoodsService.changeOrderStatus(code,status));
@@ -108,7 +108,7 @@ public class ReturnGoodsController {
 
     @ApiOperation("直送退货详情")
     @GetMapping("/directReturnOrderDetail")
-    public HttpResponse<ReturnOrderDetailRespVO> directReturnOrderDetail(@RequestParam(name = "退货单订单编码") String code){
+    public HttpResponse<ReturnOrderDetailRespVO> directReturnOrderDetail(@RequestParam String code){
         log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
         try {
             return HttpResponse.success(returnGoodsService.directReturnOrderDetail(code));
@@ -122,7 +122,7 @@ public class ReturnGoodsController {
 
     @ApiOperation("退货收货")
     @PostMapping("/returnReceipt")
-    public HttpResponse<Boolean> returnReceipt(@RequestBody List<ReturnReceiptReqVO> reqVO, @RequestParam(name = "退货单订单编码") String code){
+    public HttpResponse<Boolean> returnReceipt(@RequestBody List<ReturnReceiptReqVO> reqVO, @RequestParam String code){
         log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
         try {
             return HttpResponse.success(returnGoodsService.returnReceipt(reqVO,code));
@@ -149,7 +149,7 @@ public class ReturnGoodsController {
     }
     @ApiOperation("验货详情")
     @GetMapping("/inspectionDetail")
-    public HttpResponse<InspectionDetailRespVO> inspectionDetail(@RequestParam(name = "退货单订单编码") String code){
+    public HttpResponse<InspectionDetailRespVO> inspectionDetail(@RequestParam String code){
         log.info("ReturnGoodsController---inspectionDetail---param：[{}]", code);
         try {
             return HttpResponse.success(returnGoodsService.inspectionDetail(code));
@@ -162,7 +162,7 @@ public class ReturnGoodsController {
     }
     @ApiOperation("验货保存")
     @PostMapping("/saveReturnInspection")
-    public HttpResponse<Boolean> saveReturnInspection(@RequestBody List<ReturnInspectionReq> reqVO,@RequestParam(name = "验货备注") String remark){
+    public HttpResponse<Boolean> saveReturnInspection(@RequestBody List<ReturnInspectionReq> reqVO,@RequestParam String remark){
         log.info("ReturnGoodsController---saveReturnInspection---param：[{}]", JSONObject.toJSONString(reqVO));
         try {
             return HttpResponse.success(returnGoodsService.saveReturnInspection(reqVO,remark));
@@ -176,7 +176,7 @@ public class ReturnGoodsController {
 
     @ApiOperation("验货查看")
     @GetMapping("/inspectionView")
-    public HttpResponse<InspectionViewRespVO> inspectionView(@RequestParam(name = "退货单订单编码") String code){
+    public HttpResponse<InspectionViewRespVO> inspectionView(@RequestParam String code){
         log.info("ReturnGoodsController---inspectionView---param：[{}]", code);
         try {
             return HttpResponse.success(returnGoodsService.inspectionView(code));
