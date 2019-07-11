@@ -46,7 +46,7 @@
   <select id="getDrafts" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuPurchaseInfoDraftMapper.BaseResultMap">
     SELECT * FROM product_sku_purchase_info_draft WHERE del_flag=0 AND product_sku_code IN
     <foreach collection="productSkus" item="item" open="(" separator="," close=")">
-      #{item.skuCode,jdbcType=VARCHAR} #{item.zeroRemovalCoefficient,jdbcType=BIGINT}
+      #{item.skuCode,jdbcType=VARCHAR}
     </foreach>
   </select>
   <insert id="insertApplyList" parameterType="java.util.List">

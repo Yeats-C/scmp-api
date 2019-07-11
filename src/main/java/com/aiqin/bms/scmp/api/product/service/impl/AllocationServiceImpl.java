@@ -6,6 +6,9 @@ import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
+import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToInboundConverter;
+import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToOutboundConverter;
+import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
@@ -13,6 +16,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
@@ -88,7 +92,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Autowired
     private WorkFlowBaseUrl workFlowBaseUrl;
 
-
+    @Autowired
+    private InboundService inboundService;
     @Autowired
     private StockService stockService;
 
@@ -99,6 +104,9 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
     @Autowired
     private OutboundService outboundService;
+    @Autowired
+    private WarehouseService warehouseService;
+
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
         AuthToken authToken = getUser();
@@ -164,7 +172,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                  log.error(httpResponse.getMessage());
                  throw  new GroundRuntimeException("库存操作失败");
              }*/
-
              //调用审批流
              workFlow(k,form);
              return  k;
@@ -470,20 +477,32 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         WorkFlowCallbackVO vo = updateSupStatus(vo1);
         // 通过流水编码查询调拨单实体
         Allocation oldAllocation = new Allocation();
-        Allocation allocation  = allocationMapper.selectByFormNO(vo1.getFormNo());
+        AllocationDTO allocation  = allocationMapper.selectByFormNO1(vo1.getFormNo());
         oldAllocation.setId(allocation.getId());
-        List<AllocationProductBatchResVo> list =  allocationProductBatchMapper.selectByAllocationCode(allocation.getAllocationCode());
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             productCommonService.instanceThreeParty(allocation.getAllocationCode()+"", HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getName(),new Date(),vo.getApprovalUserName());
             //审批成功
             //生成出库单并且返回出库单编码
+            //生成入库单
+            String outboundCode = null;
+            String inboundCode = null;
+            AllocationTypeEnum enumByType = AllocationTypeEnum.getAllocationTypeEnumByType(allocation.getAllocationType());
+            OutboundReqVo convert = new AllocationOrderToOutboundConverter(warehouseService, enumByType).convert(allocation);
+            outboundCode =outboundService.save(convert);
+            if(!AllocationTypeEnum.SCRAP.getType().equals(allocation.getAllocationType())){
+                InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType).convert(allocation);
+                inboundCode = inboundService.saveInbound(convert1);
+            }
 //            String outboundOderCode = createOutbound(allocation.getId());
-            String outboundOderCode = new IdSequenceUtils().nextId()+"";
             oldAllocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus());
             oldAllocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
-            oldAllocation.setOutboundOderCode(outboundOderCode);
+            oldAllocation.setOutboundOderCode(outboundCode);
+            oldAllocation.setInboundOderCode(inboundCode);
             //更新审核状态
             int  k = ((AllocationService)AopContext.currentProxy()).updateByPrimaryKeySelective(oldAllocation);
+            if(k!=1){
+                throw new BizException(ResultCode.UPDATE_ERROR);
+            }
             productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.OUTBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.OUTBOUND_ALLOCATION.getName());
             return "success";
         }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){

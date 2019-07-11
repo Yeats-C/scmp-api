@@ -47,7 +47,7 @@
     <logger name="org.apache.ibatis.io.DefaultVFS" level="INFO" additivity="false">
         <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
     </logger>
-    <logger name="com.aiqin.mgs.supplier.api" level="DEBUG" additivity="false">
+    <logger name="com.aiqin.bms.scmp.api" level="DEBUG" additivity="false">
         <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
     </logger>
     <root level="${LOGGER_LEVEL:-INFO}">

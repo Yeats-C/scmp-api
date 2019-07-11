@@ -96,12 +96,12 @@ public class SkuConfigsRepsVo {
     private String purchasingGroupName;
 
     @ApiModelProperty("备用仓库")
-    private List<SpareWarehouseRepsVo> spareWarehouseList;
+    private List<SpareWarehouseRepsVo> spareWarehouses;
 
     public String getSpareWarehouse() {
         List<String> stringList = new ArrayList<>();
-        if(CollectionUtils.isNotEmptyCollection(this.spareWarehouseList)) {
-            this.spareWarehouseList.stream().forEach(item->stringList.add(item.getTransportCenterName()));
+        if(CollectionUtils.isNotEmptyCollection(this.spareWarehouses)) {
+            this.spareWarehouses.stream().forEach(item->stringList.add(item.getTransportCenterName()));
         }
         this.spareWarehouse = String.join(",",stringList);
         return spareWarehouse;

@@ -252,6 +252,7 @@ public interface ResultCode {
     MessageId IMPORT_DATA_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入数据异常");
     MessageId IMPORT_DATA_EMPTY= MessageId.create(Project.SCMP_API, 1000, "导入数据为空");
     MessageId MAIN_PRODUCT_EMPTY= MessageId.create(Project.SCMP_API, 1000, "主商品为空,请选择主商品");
+    MessageId SKU_CODE_EMPTY= MessageId.create(Project.SCMP_API, 1000, "skuCode为空,找不到需要修改的数据");
 
 
 }
