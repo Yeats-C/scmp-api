@@ -395,6 +395,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     if(applyProduct != null){
                          // 报表取缺货影响的销售额， 缺货天数， 预测订货件数, 库存周转期
                         // TODO
+
                         // 获取到货后周转期
                         ProductSkuConfig cycleInfo = productSkuConfigDao.getCycleInfo(applyProduct.getSkuCode(), applyProduct.getTransportCenterCode());
                         if(cycleInfo != null){
@@ -433,8 +434,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
             return HttpResponse.success(new PageResData(errorCount,list));
         } catch (Exception e) {
-            e.printStackTrace();
-            //LOGGER.error("采购申请单导入异常:{}", e.getMessage());
+            LOGGER.error("采购申请单导入异常:{}", e.getMessage());
             return HttpResponse.failure(ResultCode.IMPORT_PURCHASE_APPLY_ERROR);
         }
     }

@@ -128,7 +128,7 @@ public class PurchaseManageController {
     }
 
     @GetMapping("/order/amount")
-    @ApiOperation("查询采购单-采购数量金额")
+    @ApiOperation("查询采购单-采购数量金额/实际数量金额")
     public HttpResponse<PurchaseCountAmountResponse> purchaseOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
         return purchaseManageService.purchaseOrderAmount(purchaseOrderId);
     }

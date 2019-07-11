@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,4 +20,6 @@ public interface PurchaseOrderProductDao {
     Integer purchaseOrderCount(PurchaseOrderProductRequest request);
 
     List<PurchaseOrderProduct> orderBySku(String purchaseOrderId);
+
+    PurchaseApplyDetailResponse  warehousingInfo(@Param("purchaseOrderId")String purchaseOrderId,@Param("skuCode") String skuCode);
 }
