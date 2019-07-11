@@ -88,7 +88,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Autowired
     private WorkFlowBaseUrl workFlowBaseUrl;
 
-
+    @Autowired
+    private InboundService inboundService;
     @Autowired
     private StockService stockService;
 
@@ -164,7 +165,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                  log.error(httpResponse.getMessage());
                  throw  new GroundRuntimeException("库存操作失败");
              }*/
-
              //调用审批流
              workFlow(k,form);
              return  k;
@@ -482,6 +482,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             oldAllocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus());
             oldAllocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
             oldAllocation.setOutboundOderCode(outboundOderCode);
+
             //更新审核状态
             int  k = ((AllocationService)AopContext.currentProxy()).updateByPrimaryKeySelective(oldAllocation);
             productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.OUTBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.OUTBOUND_ALLOCATION.getName());

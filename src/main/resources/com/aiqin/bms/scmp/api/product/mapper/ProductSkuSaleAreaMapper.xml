@@ -77,10 +77,10 @@
       <if test="skuName != null and skuName != ''">
         and a.sku_name like CONCAT('%',#{skuName},'%')
       </if>
-      <if test="beDisable != null and beDisable != ''">
+      <if test="beDisable != null">
         and c.be_disable = #{beDisable}
       </if>
-      <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != ''">
+      <if test="categoriesSupplyChannelsCode != null">
         and a.categories_supply_channels_code = #{categoriesSupplyChannelsCode}
       </if>
       <if test="directDeliverySupplierName != null and directDeliverySupplierName != ''">
