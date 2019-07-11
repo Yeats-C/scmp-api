@@ -182,14 +182,6 @@ public class StockBatchRespVO {
     @JsonProperty(value = "source_document_num")
     private Long sourceDocumentNum;
 
-    @ApiModelProperty("操作时间")
-    @JsonProperty(value = "operating_time")
-    private String operatingTime;
-
-    @ApiModelProperty("操作人")
-    @JsonProperty(value = "operating_by")
-    private String operatingBy;
-
     @ApiModelProperty("批次单商品备注")
     @JsonProperty(value = "remark")
     private String remark;
@@ -221,6 +213,30 @@ public class StockBatchRespVO {
     @ApiModelProperty("操作类型")
     @JsonProperty(value = "operation_type")
     private Integer operationType;
+
+    @ApiModelProperty("创建时间")
+    @JsonProperty(value = "create_time")
+    private String createTime;
+
+    @ApiModelProperty("创建人code")
+    @JsonProperty(value = "create_by_code")
+    private String createByCode;
+
+    @ApiModelProperty("创建人名称")
+    @JsonProperty(value = "create_by_name")
+    private String createByName;
+
+    @ApiModelProperty("更新时间")
+    @JsonProperty(value = "update_time")
+    private String updateTime;
+
+    @ApiModelProperty("更新人code")
+    @JsonProperty(value = "update_by_code")
+    private String updateByCode;
+
+    @ApiModelProperty("更新人名称")
+    @JsonProperty(value = "update_by_name")
+    private String updateByName;
 
     public Long getId() {
         return id;
@@ -566,22 +582,6 @@ public class StockBatchRespVO {
         this.sourceDocumentNum = sourceDocumentNum;
     }
 
-    public String getOperatingTime() {
-        return operatingTime;
-    }
-
-    public void setOperatingTime(String operatingTime) {
-        this.operatingTime = operatingTime;
-    }
-
-    public String getOperatingBy() {
-        return operatingBy;
-    }
-
-    public void setOperatingBy(String operatingBy) {
-        this.operatingBy = operatingBy;
-    }
-
     public String getRemark() {
         return remark;
     }
@@ -644,5 +644,53 @@ public class StockBatchRespVO {
 
     public void setOperationType(Integer operationType) {
         this.operationType = operationType;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getCreateByCode() {
+        return createByCode;
+    }
+
+    public void setCreateByCode(String createByCode) {
+        this.createByCode = createByCode;
+    }
+
+    public String getCreateByName() {
+        return createByName;
+    }
+
+    public void setCreateByName(String createByName) {
+        this.createByName = createByName;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getUpdateByCode() {
+        return updateByCode;
+    }
+
+    public void setUpdateByCode(String updateByCode) {
+        this.updateByCode = updateByCode;
+    }
+
+    public String getUpdateByName() {
+        return updateByName;
+    }
+
+    public void setUpdateByName(String updateByName) {
+        this.updateByName = updateByName;
     }
 }

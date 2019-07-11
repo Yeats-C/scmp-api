@@ -62,6 +62,18 @@ public class PriceProjectController {
         }
     }
 
+    @GetMapping("/project/byType")
+    @ApiOperation(value = "获取对应类型的价格项目列表信息")
+    public  HttpResponse<List<QueryPriceProjectRespVo>> queryProjectListByType(@RequestParam String type) {
+        try {
+            log.info("request uri:{},参数信息:{}","/basic/price/project/all", "{}",type);
+            return HttpResponse.success(priceProjectService.getByTypeCode(type));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @PostMapping("/project")
     @ApiOperation(value = "获取价格项目信息,按照价格类型分组")
     public  HttpResponse<PriceProjetGroupType>  queryProject() {

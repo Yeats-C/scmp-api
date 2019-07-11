@@ -18,7 +18,6 @@ import com.aiqin.bms.scmp.api.product.mapper.SupervisoryWarehouseOrderProductMap
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.SupervisoryWarehouseOrderService;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.service.EncodingRuleService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
@@ -31,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author knight.xie
@@ -83,26 +83,31 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
         order.setWarehouseCode(warehouseResVo.getWarehouseCode());
         order.setWarehouseName(warehouseResVo.getWarehouseName());
         //获取订单编号
-        EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPERVISORY_WAREHOUSE_ORDER_CODE);
-        String orderCode = String.valueOf(encodingRule.getNumberingValue());
-        order.setOrderCode(orderCode);
-        encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+//        EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPERVISORY_WAREHOUSE_ORDER_CODE);
+//        String orderCode = String.valueOf(encodingRule.getNumberingValue());
+//        order.setOrderCode(orderCode);
+//        encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        synchronized (SupervisoryWarehouseOrderServiceImpl.class){
+            order.setOrderCode(getCode("JG", EncodingRuleType.SUPERVISORY_WAREHOUSE_ORDER_CODE));
+        }
         //获取订单类型名称
         SupervisoryWarehouseOrderTypeEnum typeName = SupervisoryWarehouseOrderTypeEnum.getName(order.getOrderType());
-        if(Objects.nonNull(typeName)){
+        if(Objects.isNull(typeName)){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
         order.setOrderTypeName(typeName.getName());
         //保存订单信息
         int insert = ((SupervisoryWarehouseOrderService) AopContext.currentProxy()).insert(order);
         List<SupervisoryWarehouseOrderProduct> records = BeanCopyUtils.copyList(reqVo.getProducts(),SupervisoryWarehouseOrderProduct.class);
+        AtomicInteger i = new AtomicInteger();
         records.forEach(item->{
-            item.setOrderCode(orderCode);
+            item.setOrderCode(order.getOrderCode());
             item.setOrderTypeName(typeName.getName());
             item.setOrderType(order.getOrderType());
             if(Objects.isNull(item.getProductTotalAmount())){
                 item.setProductTotalAmount(item.getProductAmount() * item.getNum());
             }
+            item.setLineNum(i.getAndIncrement()*10);
         });
         //保存商品信息
         ((SupervisoryWarehouseOrderService)AopContext.currentProxy()).insertBatchProduct(records);
@@ -110,6 +115,7 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
         if (Objects.equals(SupervisoryWarehouseOrderTypeEnum.INBOUND, typeName)) {
             inboundService.saveInbound(new WarehouseOrderToInboundConverter().convert(order));
         } else {
+            //TODO 锁库
             outboundService.save(new WarehouseOrderToOutboundConverter().convert(order));
         }
         return insert;

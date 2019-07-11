@@ -32,8 +32,8 @@ public class WarehouseOrderToInboundConverter implements Converter<SupervisoryWa
         inboundReqSave.setCompanyName(order.getCompanyName());
         inboundReqSave.setInboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
         inboundReqSave.setInboundStatusName(InOutStatus.CREATE_INOUT.getName());
-        inboundReqSave.setInboundTypeCode(InboundTypeEnum.SUPERVISORY__WAREHOUSE_INBOUND.getCode());
-        inboundReqSave.setInboundTypeName(InboundTypeEnum.SUPERVISORY__WAREHOUSE_INBOUND.getName());
+        inboundReqSave.setInboundTypeCode(InboundTypeEnum.SUPERVISORY_WAREHOUSE_INBOUND.getCode());
+        inboundReqSave.setInboundTypeName(InboundTypeEnum.SUPERVISORY_WAREHOUSE_INBOUND.getName());
         inboundReqSave.setSourceOderCode(order.getOrderCode());
         inboundReqSave.setLogisticsCenterCode(order.getTransportCenterCode());
         inboundReqSave.setLogisticsCenterName(order.getTransportCenterName());

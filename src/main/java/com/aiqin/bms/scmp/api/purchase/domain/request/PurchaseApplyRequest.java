@@ -86,6 +86,10 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("product_property_code")
     private String productPropertyCode;
 
+    @ApiModelProperty(value="商品属性名称")
+    @JsonProperty("product_property_name")
+    private String productPropertyName;
+
     @ApiModelProperty(value="14大A品建议补货传值类型是否有值：0.是 1.否")
     @JsonProperty("a_replenish_type")
     private Integer aReplenishType;
@@ -152,7 +156,7 @@ public class PurchaseApplyRequest extends PagesRequest {
 
     public PurchaseApplyRequest(String purchaseApplyId, String purchaseGroupCode, String skuCode, String skuName, String spuCode, String productName,
                                 String supplierCode, String transportCenterCode, String brandId, String brandName, String categoryId, String categoryName,
-                                String productPropertyCode, Integer aReplenishType, Integer productReplenishType, Integer aShortageType, Integer productShortageType) {
+                                String productPropertyCode, String productPropertyName,Integer aReplenishType, Integer productReplenishType, Integer aShortageType, Integer productShortageType) {
         this.purchaseApplyId = purchaseApplyId;
         this.purchaseGroupCode = purchaseGroupCode;
         this.skuCode = skuCode;
@@ -166,6 +170,7 @@ public class PurchaseApplyRequest extends PagesRequest {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.productPropertyCode = productPropertyCode;
+        this.productPropertyName = productPropertyName;
         this.aReplenishType = aReplenishType;
         this.productReplenishType = productReplenishType;
         this.aShortageType = aShortageType;
