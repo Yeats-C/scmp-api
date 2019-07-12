@@ -86,10 +86,12 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
             }
         }
         if (flag){
-            PurchaseApplyRespVo purchaseApplyRespVo = purchaseApplyRespVos.get(purchaseApplyRespVos.size() - 1);
-            calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+9);
-            purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
-            purRespVo = purchaseApplyRespVo;
+            if (purchaseApplyRespVos.size()>0){
+                PurchaseApplyRespVo purchaseApplyRespVo = purchaseApplyRespVos.get(purchaseApplyRespVos.size() - 1);
+                calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+9);
+                purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
+                purRespVo = purchaseApplyRespVo;
+            }
         }
         return purRespVo;
     }

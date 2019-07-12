@@ -32,6 +32,10 @@ public class PurchaseApplyRespVo  implements Serializable {
     @JsonProperty(value = "out_stock_continuous_days")
     private Long outStockContinuousDays;
 
+    @ApiModelProperty("库存数量")
+    @JsonProperty(value = "available_num")
+    private Long availableNum;
+
     @ApiModelProperty("到货周期")
     @JsonProperty(value = "arrival_cycle")
     private Long arrivalCycle;
@@ -43,4 +47,6 @@ public class PurchaseApplyRespVo  implements Serializable {
     @ApiModelProperty("需要天数")
     @JsonProperty(value = "need_Days")
     private Long needDays;
+
+
 }

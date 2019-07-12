@@ -33,6 +33,7 @@
         bsr.average_amount as averageAmount,
         bsr.out_stock_affect_money as outStockAffectMoney,
         bsr.out_stock_continuous_days as outStockContinuousDays,
+        bsr.available_num as availableNum,
         apsc.arrival_cycle as arrivalCycle,
         pssuc.out_put as outPuts,
         pssuc.need_days as needDays
