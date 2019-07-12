@@ -50,12 +50,12 @@ public class SuggestReplenishmentRespVo {
     private Long averageAmount;
 
     @ApiModelProperty("库存数量")
-    @JsonProperty("inventory_num")
-    private Long inventoryNum;
+    @JsonProperty("available_num")
+    private Long availableNum;
 
     @ApiModelProperty("库存金额")
-    @JsonProperty("inventory_money")
-    private Long inventoryMoney;
+    @JsonProperty("available_money")
+    private Long availableMoney;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.service.impl;
 
+import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.dao.ReportDao;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
@@ -10,6 +11,8 @@ import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -25,10 +28,14 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
+    // public PageInfo<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
+    public PageResData selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
         try {
             PageHelper.startPage(supplierArrivalRateReqVo.getPageNo(), supplierArrivalRateReqVo.getPageSize());
-            return new PageInfo<SupplierArrivalRateRespVo>(reportDao.selectSupplierArrivalRate(supplierArrivalRateReqVo));
+          // return new PageInfo<SupplierArrivalRateRespVo>(reportDao.selectSupplierArrivalRate(supplierArrivalRateReqVo));
+            List<SupplierArrivalRateRespVo> supplierArrivalRateRespVos = reportDao.selectSupplierArrivalRate(supplierArrivalRateReqVo);
+            Integer total = reportDao.countSupplierArrivalRate(supplierArrivalRateReqVo);
+            return new PageResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos);
         } catch (Exception ex) {
             log.error("查询供应商到货率失败");
             ex.printStackTrace();
@@ -182,6 +189,23 @@ public class ReportServiceImpl implements ReportService {
         try {
             PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
             return new PageInfo<HighInventoryRespVo>(reportDao.selectHighInventory(highLowInventoryReqVo));
+        } catch (Exception ex) {
+            log.error("查询高库存失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  大效期
+     * @param bigEffectReqVo
+     * @return
+     */
+    @Override
+    public PageInfo<BigEffectRespVo> selectBigEffect(BigEffectReqVo bigEffectReqVo) {
+        try {
+            PageHelper.startPage(bigEffectReqVo.getPageNo(), bigEffectReqVo.getPageSize());
+            return new PageInfo<BigEffectRespVo>(reportDao.selectBigEffect(bigEffectReqVo));
         } catch (Exception ex) {
             log.error("查询高库存失败");
             ex.printStackTrace();

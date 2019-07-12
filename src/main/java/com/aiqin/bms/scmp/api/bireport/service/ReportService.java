@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.service;
 
+import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.github.pagehelper.PageInfo;
@@ -11,7 +12,8 @@ public interface ReportService {
      * @param supplierArrivalRateReqVo
      * @return
      */
-    PageInfo<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+    // PageInfo<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+    PageResData selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
     /**
      *  批次商品进销存
@@ -75,4 +77,11 @@ public interface ReportService {
      * @return
      */
     PageInfo<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+
+    /**
+     *  大效期
+     * @param bigEffectReqVo
+     * @return
+     */
+    PageInfo<BigEffectRespVo> selectBigEffect(BigEffectReqVo bigEffectReqVo);
 }

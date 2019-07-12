@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.bireport.dao;
 
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
+import com.aiqin.bms.scmp.api.product.domain.request.StockBatchRequest;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ public interface ReportDao {
      * @return
      */
     List<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+
+    Integer countSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
     /**
      *  批次商品进销存
@@ -76,4 +79,11 @@ public interface ReportDao {
      * @return
      */
     List<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+
+    /**
+     *  大效期
+     * @param bigEffectReqVo
+     * @return
+     */
+    List<BigEffectRespVo> selectBigEffect(BigEffectReqVo bigEffectReqVo);
 }

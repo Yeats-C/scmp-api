@@ -44,6 +44,37 @@
         </if>
 
     </select>
+    <select id="countSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bsar.id
+        from bi_supplier_arrival_rate bsar
+        where 1=1
+        <if test="supplierCode!=null and supplierCode!=''">
+            and bsar.supplier_code=#{supplierCode}
+        </if>
+        <if test="supplierName!=null and supplierName!=''">
+            and bsar.supplier_name like concat('%', #{supplierName}, '%')
+        </if>
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and bsar.logistics_center_code=#{transportCenterCode}
+        </if>
+        <if test="categoryLevelCode!=null and categoryLevelCode!=''">
+            and bsar.category_level_code=#{categoryLevelCode}
+        </if>
+        <if test="categoryLevelName!=null and categoryLevelName!=''">
+            and bsar.category_level_name like concat('%', #{categoryLevelName}, '%')
+        </if>
+        <if test="beginInboundTime!=null and beginInboundTime!=''">
+            and bsar.inbound_time between #{beginInboundTime}
+        </if>
+        <if test="finishInboundTime!=null and finishInboundTime!=''">
+            and #{finishInboundTime}
+        </if>
+        group by bsar.id
+        ) as tmp
+    </select>
     <select id="selectGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
         select
@@ -479,8 +510,8 @@
         bsr.transport_center_code as transportCenterCode,
         bsr.transport_center_name as transportCenterName,
         bsr.average_amount as averageAmount,
-        bsr.inventory_num as inventoryNum,
-        bsr.inventory_money as inventoryMoney,
+        bsr.available_num as availableNum,
+        bsr.available_money as availableMoney,
         bsr.turnover_days as turnoverDays,
         bsr.out_stock_continuous_days as outStockContinuousDays,
         bsr.last_month_out_stock_days as lastMonthOutStockDays,
@@ -587,5 +618,73 @@
             and #{finishCreateTime}
         </if>
 
+    </select>
+    <select id="selectBigEffect" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.BigEffectReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BigEffectRespVo">
+        select
+        bge.id as id,
+        bnm.product_category_code as productCategoryCode,
+        bnm.product_category_name as productCategoryName,
+        bnm.product_brand_code as productBrandCode,
+        bnm.product_brand_name as productBrandName,
+        bli.procurement_section_code as procurementSectionCode,
+        bli.procurement_section_name as procurementSectionName,
+        bsr.supply_unit_code as supplyUnitCode,
+        bsr.supply_unit_name as supplyUnitName,
+        bsr.sku_code as skuCode,
+        bsr.sku_name as skuName,
+        bhi.production_date as productionDate,
+        bhi.end_date as endDate,
+        bhi.quality_number as qualityNumber,
+        bgbs.big_effect_period_warn_day as bigEffectPeriodWarnDay,
+        bgbs.transport_center_code as transportCenterCode,
+        bgbs.transport_center_name as transportCenterName
+        from bi_big_effect bge
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and bge.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and bge.sku_name like concat('%', #{skuName}, '%')
+        </if>
+        <if test="productBrandCode!=null and productBrandCode!=''">
+            and bge.product_brand_code=#{productBrandCode}
+        </if>
+        <if test="productBrandName!=null and productBrandName!=''">
+            and bge.product_brand_name like concat('%', #{productBrandName}, '%')
+        </if>
+        <if test="productCategoryCode!=null and productCategoryCode!=''">
+            and bge.product_category_code=#{productCategoryCode}
+        </if>
+        <if test="productCategoryName!=null and productCategoryName!=''">
+            and bge.product_category_name like concat('%', #{productCategoryName}, '%')
+        </if>
+        <if test="supplyUnitCode!=null and supplyUnitCode!=''">
+            and bge.supply_unit_code=#{supplyUnitCode}
+        </if>
+        <if test="supplyUnitName!=null and supplyUnitName!=''">
+            and bge.supply_unit_name like concat('%', #{supplyUnitName}, '%')
+        </if>
+        <if test="procurementSectionCode!=null and procurementSectionCode!=''">
+            and bge.procurement_section_code=#{procurementSectionCode}
+        </if>
+        <if test="procurementSectionName!=null and procurementSectionName!=''">
+            and bge.procurement_section_name like concat('%', #{procurementSectionName}, '%')
+        </if>
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and bge.transport_center_code=#{transportCenterCode}
+        </if>
+        <if test="transportCenterName!=null and transportCenterName!=''">
+            and bge.transport_center_name like concat('%', #{transportCenterName}, '%')
+        </if>
+        <if test="warehouseCode!=null and warehouseCode!=''">
+            and bge.warehouse_code=#{warehouseCode}
+        </if>
+        <if test="warehouseName!=null and warehouseName!=''">
+            and bge.warehouse_name like concat('%', #{warehouseName}, '%')
+        </if>
+        <if test="bigEffectPeriodWarnDay!=null and bigEffectPeriodWarnDay!=''">
+            and bge.big_effect_period_warn_day=#{bigEffectPeriodWarnDay}
+        </if>
     </select>
 </mapper>
