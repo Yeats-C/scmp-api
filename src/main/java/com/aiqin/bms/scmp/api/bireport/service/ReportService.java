@@ -20,68 +20,68 @@ public interface ReportService {
      * @param goodsBuySalesReqVo
      * @return
      */
-    PageInfo<GoodsBuySalesRespVo> selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
+    PageResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
     /**
      *  赠品进销存
      * @param giftsBuySalesReqVo
      * @return
      */
-    PageInfo<GiftsBuySalesRespVo> selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
+    PageResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
 
     /**
      *  供应商退货(退供)
      * @param supplierReturnReqVo
      * @return
      */
-    PageInfo<SupplierReturnRespVo> selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
+    PageResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
     /**
      *  新品批次动销率
      * @param newProductBatchMovingRateReqVo
      * @return
      */
-    PageInfo<NewProductBatchMovingRateRespVo> selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
+    PageResData selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
 
     /**
      *  门店复购率
      * @param storeRepurchaseRateReqVo
      * @return
      */
-    PageInfo<StoreRepurchaseRateRespVo> selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo);
+    PageResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo);
 
     /**
      *  负毛利
      * @param negativeMarginReqVo
      * @return
      */
-    PageInfo<NegativeMarginRespVo> selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
+    PageResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
 
     /**
      *  建议补货
      * @param suggestReplenishmentReqVo
      * @return
      */
-    PageInfo<SuggestReplenishmentRespVo> selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
+    PageResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
 
     /**
      *  低库存
      * @param highLowInventoryReqVo
      * @return
      */
-    PageInfo<LowInventoryRespVo> selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+    PageResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
      *  高库存
      * @param highLowInventoryReqVo
      * @return
      */
-    PageInfo<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+    PageResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
      *  大效期
      * @param bigEffectReqVo
      * @return
      */
-    PageInfo<BigEffectRespVo> selectBigEffect(BigEffectReqVo bigEffectReqVo);
+    PageResData selectBigEffect(BigEffectReqVo bigEffectReqVo);
 }

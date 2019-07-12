@@ -28,11 +28,9 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    // public PageInfo<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
     public PageResData selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
         try {
             PageHelper.startPage(supplierArrivalRateReqVo.getPageNo(), supplierArrivalRateReqVo.getPageSize());
-          // return new PageInfo<SupplierArrivalRateRespVo>(reportDao.selectSupplierArrivalRate(supplierArrivalRateReqVo));
             List<SupplierArrivalRateRespVo> supplierArrivalRateRespVos = reportDao.selectSupplierArrivalRate(supplierArrivalRateReqVo);
             Integer total = reportDao.countSupplierArrivalRate(supplierArrivalRateReqVo);
             return new PageResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos);
@@ -49,10 +47,12 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<GoodsBuySalesRespVo> selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo) {
+    public PageResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo) {
         try {
             PageHelper.startPage(goodsBuySalesReqVo.getPageNo(), goodsBuySalesReqVo.getPageSize());
-            return new PageInfo<GoodsBuySalesRespVo>(reportDao.selectGoodsBuySales(goodsBuySalesReqVo));
+            List<GoodsBuySalesRespVo> goodsBuySalesRespVos = reportDao.selectGoodsBuySales(goodsBuySalesReqVo);
+            Integer total = reportDao.countGoodsBuySales(goodsBuySalesReqVo);
+            return new PageResData<GoodsBuySalesRespVo>(total,goodsBuySalesRespVos);
         } catch (Exception ex) {
             log.error("查询批次商品进销存失败");
             ex.printStackTrace();
@@ -66,10 +66,12 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<GiftsBuySalesRespVo> selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo) {
+    public PageResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo) {
         try {
             PageHelper.startPage(giftsBuySalesReqVo.getPageNo(), giftsBuySalesReqVo.getPageSize());
-            return new PageInfo<GiftsBuySalesRespVo>(reportDao.selectGiftsBuySales(giftsBuySalesReqVo));
+            List<GiftsBuySalesRespVo> giftsBuySalesRespVos = reportDao.selectGiftsBuySales(giftsBuySalesReqVo);
+            Integer total = reportDao.countGiftsBuySales(giftsBuySalesReqVo);
+            return new PageResData<GiftsBuySalesRespVo>(total,giftsBuySalesRespVos);
         } catch (Exception ex) {
             log.error("查询赠品进销存失败");
             ex.printStackTrace();
@@ -83,10 +85,12 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<SupplierReturnRespVo> selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo) {
+    public PageResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo) {
         try {
             PageHelper.startPage(supplierReturnReqVo.getPageNo(), supplierReturnReqVo.getPageSize());
-            return new PageInfo<SupplierReturnRespVo>(reportDao.selectSupplierReturn(supplierReturnReqVo));
+            List<SupplierReturnRespVo> supplierReturnRespVos = reportDao.selectSupplierReturn(supplierReturnReqVo);
+            Integer total = reportDao.countSupplierReturn(supplierReturnReqVo);
+            return new PageResData<SupplierReturnRespVo>(total,supplierReturnRespVos);
         } catch (Exception ex) {
             log.error("查询供应商退货失败");
             ex.printStackTrace();
@@ -100,10 +104,12 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<NewProductBatchMovingRateRespVo> selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo) {
+    public PageResData selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo) {
         try {
             PageHelper.startPage(newProductBatchMovingRateReqVo.getPageNo(), newProductBatchMovingRateReqVo.getPageSize());
-            return new PageInfo<NewProductBatchMovingRateRespVo>(reportDao.selectNewProductBatchMovingRate(newProductBatchMovingRateReqVo));
+            List<NewProductBatchMovingRateRespVo> newProductBatchMovingRateRespVos = reportDao.selectNewProductBatchMovingRate(newProductBatchMovingRateReqVo);
+            Integer total = reportDao.countNewProductBatchMovingRate(newProductBatchMovingRateReqVo);
+            return new PageResData<NewProductBatchMovingRateRespVo>(total,newProductBatchMovingRateRespVos);
         } catch (Exception ex) {
             log.error("查询新品批次动销率失败");
             ex.printStackTrace();
@@ -117,10 +123,12 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<StoreRepurchaseRateRespVo> selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo) {
+    public PageResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo) {
         try {
             PageHelper.startPage(storeRepurchaseRateReqVo.getPageNo(), storeRepurchaseRateReqVo.getPageSize());
-            return new PageInfo<StoreRepurchaseRateRespVo>(reportDao.selectStoreRepurchaseRate(storeRepurchaseRateReqVo));
+            List<StoreRepurchaseRateRespVo> storeRepurchaseRateRespVos = reportDao.selectStoreRepurchaseRate(storeRepurchaseRateReqVo);
+            Integer total = reportDao.countStoreRepurchaseRate(storeRepurchaseRateReqVo);
+            return new PageResData<StoreRepurchaseRateRespVo>(total,storeRepurchaseRateRespVos);
         } catch (Exception ex) {
             log.error("查询门店复购率失败");
             ex.printStackTrace();
@@ -134,10 +142,12 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<NegativeMarginRespVo> selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
+    public PageResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
         try {
             PageHelper.startPage(negativeMarginReqVo.getPageNo(), negativeMarginReqVo.getPageSize());
-            return new PageInfo<NegativeMarginRespVo>(reportDao.selectNegativeMargin(negativeMarginReqVo));
+            List<NegativeMarginRespVo> negativeMarginRespVos = reportDao.selectNegativeMargin(negativeMarginReqVo);
+            Integer total = reportDao.countNegativeMargin(negativeMarginReqVo);
+            return new PageResData<NegativeMarginRespVo>(total,negativeMarginRespVos);
         } catch (Exception ex) {
             log.error("查询负毛利失败");
             ex.printStackTrace();
@@ -151,10 +161,12 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<SuggestReplenishmentRespVo> selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo) {
+    public PageResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo) {
         try {
             PageHelper.startPage(suggestReplenishmentReqVo.getPageNo(), suggestReplenishmentReqVo.getPageSize());
-            return new PageInfo<SuggestReplenishmentRespVo>(reportDao.selectSuggestReplenishment(suggestReplenishmentReqVo));
+            List<SuggestReplenishmentRespVo> suggestReplenishmentRespVos = reportDao.selectSuggestReplenishment(suggestReplenishmentReqVo);
+            Integer total = reportDao.countSuggestReplenishment(suggestReplenishmentReqVo);
+            return new PageResData<SuggestReplenishmentRespVo>(total,suggestReplenishmentRespVos);
         } catch (Exception ex) {
             log.error("查询建议补货失败");
             ex.printStackTrace();
@@ -168,10 +180,12 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<LowInventoryRespVo> selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
+    public PageResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
             PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
-            return new PageInfo<LowInventoryRespVo>(reportDao.selectLowInventory(highLowInventoryReqVo));
+            List<LowInventoryRespVo> lowInventoryRespVos = reportDao.selectLowInventory(highLowInventoryReqVo);
+            Integer total = reportDao.countLowInventory(highLowInventoryReqVo);
+            return new PageResData<LowInventoryRespVo>(total,lowInventoryRespVos);
         } catch (Exception ex) {
             log.error("查询低库存失败");
             ex.printStackTrace();
@@ -185,10 +199,12 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
+    public PageResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
             PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
-            return new PageInfo<HighInventoryRespVo>(reportDao.selectHighInventory(highLowInventoryReqVo));
+            List<HighInventoryRespVo> highInventoryRespVos = reportDao.selectHighInventory(highLowInventoryReqVo);
+            Integer total = reportDao.countHighInventory(highLowInventoryReqVo);
+            return new PageResData<HighInventoryRespVo>(total,highInventoryRespVos);
         } catch (Exception ex) {
             log.error("查询高库存失败");
             ex.printStackTrace();
@@ -202,10 +218,12 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageInfo<BigEffectRespVo> selectBigEffect(BigEffectReqVo bigEffectReqVo) {
+    public PageResData selectBigEffect(BigEffectReqVo bigEffectReqVo) {
         try {
             PageHelper.startPage(bigEffectReqVo.getPageNo(), bigEffectReqVo.getPageSize());
-            return new PageInfo<BigEffectRespVo>(reportDao.selectBigEffect(bigEffectReqVo));
+            List<BigEffectRespVo> bigEffectRespVos = reportDao.selectBigEffect(bigEffectReqVo);
+            Integer total = reportDao.countBigEffect(bigEffectReqVo);
+            return new PageResData<BigEffectRespVo>(total,bigEffectRespVos);
         } catch (Exception ex) {
             log.error("查询高库存失败");
             ex.printStackTrace();
