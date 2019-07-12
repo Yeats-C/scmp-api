@@ -321,18 +321,24 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Async("myTaskAsyncPool")
     public void workFlow(Long id,String formNo) {
         Allocation allocation1 = allocationMapper.selectByPrimaryKey(id);
-        try {
-            Thread.sleep(1000*2);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         log.info("AllocationServiceImplProduct-workFlow-传入参数是：[{}]", JSON.toJSONString(id));
         try {
             AllocationTypeEnum allocationTypeEnum = AllocationTypeEnum.getAllocationTypeEnumByType(allocation1.getAllocationType());
             WorkFlowVO workFlowVO = new WorkFlowVO();
             productCommonService.getInstance(allocation1.getAllocationCode()+"", HandleTypeCoce.FLOW_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), id,HandleTypeCoce.FLOW_ALLOCATION.getName());
-            //TODO 替换详情页面
-            workFlowVO.setFormUrl(workFlowBaseUrl.applyAllocattion +"?id="+id+"&"+workFlowBaseUrl.authority);
+            //判断类型
+            String baseUrl;
+            if (allocationTypeEnum.equals(AllocationTypeEnum.SCRAP)) {
+                baseUrl = workFlowBaseUrl.scrap;
+            } else if (allocationTypeEnum.equals(AllocationTypeEnum.MOVE)) {
+                baseUrl = workFlowBaseUrl.movement;
+            } else if (allocationTypeEnum.equals(AllocationTypeEnum.ALLOCATION)) {
+                baseUrl = workFlowBaseUrl.applyAllocattion;
+            }else {
+                throw new BizException(ResultCode.DATA_ERROR);
+            }
+
+            workFlowVO.setFormUrl( baseUrl+"?id="+id+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setTitle(allocation1.getCreateBy()+"创建"+allocationTypeEnum.getTypeName()+"单");
             workFlowVO.setFormNo(formNo);
