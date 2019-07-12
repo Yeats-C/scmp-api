@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.bireport.web;
 
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
-import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.bireport.service.ReportService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -337,14 +336,69 @@ public class ReportController {
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
             @RequestParam(value = "transport_center_name", required = false) String transportCenterName,
             @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) Integer finishCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        SuggestReplenishmentReqVo suggestReplenishmentReqVo = new SuggestReplenishmentReqVo();
+        SuggestReplenishmentReqVo suggestReplenishmentReqVo = new SuggestReplenishmentReqVo(skuCode,skuName,productCategoryCode,productCategoryName,productBrandCode,productBrandName,transportCenterCode,transportCenterName,beginCreateTime,finishCreateTime);
         suggestReplenishmentReqVo.setPageNo(pageNo);
         suggestReplenishmentReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectSuggestReplenishment(suggestReplenishmentReqVo));
     }
 
+    @GetMapping("/search/low/inventory")
+    @ApiOperation("低库存")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "procurement_section_code", value = "采购组编码", type = "String"),
+            @ApiImplicitParam(name = "procurement_section_name", value = "采购组", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<List<LowInventoryRespVo>> selectLowInventory(
+            @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
+            @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        HighLowInventoryReqVo highLowInventoryReqVo = new HighLowInventoryReqVo(procurementSectionCode,procurementSectionName,beginCreateTime,finishCreateTime,productSortCode,
+                productSortName);
+        highLowInventoryReqVo.setPageNo(pageNo);
+        highLowInventoryReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectLowInventory(highLowInventoryReqVo));
+    }
+
+    @GetMapping("/search/high/inventory")
+    @ApiOperation("高库存")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "procurement_section_code", value = "采购组编码", type = "String"),
+            @ApiImplicitParam(name = "procurement_section_name", value = "采购组", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<List<HighInventoryRespVo>> selectHighInventory(
+            @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
+            @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        HighLowInventoryReqVo highLowInventoryReqVo = new HighLowInventoryReqVo(procurementSectionCode,procurementSectionName,beginCreateTime,finishCreateTime,productSortCode,
+                productSortName);
+        highLowInventoryReqVo.setPageNo(pageNo);
+        highLowInventoryReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectHighInventory(highLowInventoryReqVo));
+    }
 
 }

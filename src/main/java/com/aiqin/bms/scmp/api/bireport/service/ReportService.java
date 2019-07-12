@@ -4,8 +4,6 @@ import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.github.pagehelper.PageInfo;
 
-import java.util.List;
-
 public interface ReportService {
 
     /**
@@ -63,4 +61,18 @@ public interface ReportService {
      * @return
      */
     PageInfo<SuggestReplenishmentRespVo> selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
+
+    /**
+     *  低库存
+     * @param highLowInventoryReqVo
+     * @return
+     */
+    PageInfo<LowInventoryRespVo> selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+
+    /**
+     *  高库存
+     * @param highLowInventoryReqVo
+     * @return
+     */
+    PageInfo<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 }

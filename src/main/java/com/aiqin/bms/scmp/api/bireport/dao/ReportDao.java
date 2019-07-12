@@ -62,4 +62,18 @@ public interface ReportDao {
      * @return
      */
     List<SuggestReplenishmentRespVo> selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
+
+    /**
+     *  低库存
+     * @param highLowInventoryReqVo
+     * @return
+     */
+    List<LowInventoryRespVo> selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+
+    /**
+     *  高库存
+     * @param highLowInventoryReqVo
+     * @return
+     */
+    List<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 }

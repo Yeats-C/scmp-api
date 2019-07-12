@@ -11,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @Slf4j
 public class ReportServiceImpl implements ReportService {
@@ -117,7 +115,7 @@ public class ReportServiceImpl implements ReportService {
             PageHelper.startPage(storeRepurchaseRateReqVo.getPageNo(), storeRepurchaseRateReqVo.getPageSize());
             return new PageInfo<StoreRepurchaseRateRespVo>(reportDao.selectStoreRepurchaseRate(storeRepurchaseRateReqVo));
         } catch (Exception ex) {
-            log.error("查询新品批次动销率失败");
+            log.error("查询门店复购率失败");
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
@@ -134,7 +132,7 @@ public class ReportServiceImpl implements ReportService {
             PageHelper.startPage(negativeMarginReqVo.getPageNo(), negativeMarginReqVo.getPageSize());
             return new PageInfo<NegativeMarginRespVo>(reportDao.selectNegativeMargin(negativeMarginReqVo));
         } catch (Exception ex) {
-            log.error("查询新品批次动销率失败");
+            log.error("查询负毛利失败");
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
@@ -151,7 +149,41 @@ public class ReportServiceImpl implements ReportService {
             PageHelper.startPage(suggestReplenishmentReqVo.getPageNo(), suggestReplenishmentReqVo.getPageSize());
             return new PageInfo<SuggestReplenishmentRespVo>(reportDao.selectSuggestReplenishment(suggestReplenishmentReqVo));
         } catch (Exception ex) {
-            log.error("查询新品批次动销率失败");
+            log.error("查询建议补货失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  低库存
+     * @param highLowInventoryReqVo
+     * @return
+     */
+    @Override
+    public PageInfo<LowInventoryRespVo> selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
+        try {
+            PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
+            return new PageInfo<LowInventoryRespVo>(reportDao.selectLowInventory(highLowInventoryReqVo));
+        } catch (Exception ex) {
+            log.error("查询低库存失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  高库存
+     * @param highLowInventoryReqVo
+     * @return
+     */
+    @Override
+    public PageInfo<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
+        try {
+            PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
+            return new PageInfo<HighInventoryRespVo>(reportDao.selectHighInventory(highLowInventoryReqVo));
+        } catch (Exception ex) {
+            log.error("查询高库存失败");
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
