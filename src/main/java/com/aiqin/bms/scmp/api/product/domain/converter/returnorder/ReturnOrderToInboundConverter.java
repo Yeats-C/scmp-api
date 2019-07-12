@@ -11,7 +11,6 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
  * @date: 2019-06-27
  * @time: 17:54
  */
-@Component
 public class ReturnOrderToInboundConverter implements Converter<ReturnOrderInfoDTO, List<InboundReqSave>> {
 
     @Override
