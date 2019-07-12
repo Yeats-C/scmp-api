@@ -1,13 +1,13 @@
-package com.aiqin.bms.scmp.api.bireport.domain.pojo;
+package com.aiqin.bms.scmp.api.bireport.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("建议补货实体Model")
+@ApiModel("建议补货respVo")
 @Data
-public class BiSuggestReplenishment {
+public class SuggestReplenishmentRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
@@ -37,10 +37,6 @@ public class BiSuggestReplenishment {
     @JsonProperty("sku_name")
     private String skuName;
 
-    @ApiModelProperty("商品状态(0:再用 1:停止进货 2:停止配送 3:停止销售)")
-    @JsonProperty("config_status")
-    private int configStatus;
-
     @ApiModelProperty("仓库编码")
     @JsonProperty("transport_center_code")
     private String transportCenterCode;
@@ -69,10 +65,6 @@ public class BiSuggestReplenishment {
     @JsonProperty("out_stock_continuous_days")
     private Long outStockContinuousDays;
 
-    @ApiModelProperty("缺货影响金额")
-    @JsonProperty("out_stock_affect_money")
-    private Long outStockAffectMoney;
-
     @ApiModelProperty("近一月内缺货天数")
     @JsonProperty("last_month_out_stock_days")
     private Long lastMonthOutStockDays;
@@ -81,24 +73,8 @@ public class BiSuggestReplenishment {
     @JsonProperty("advice_orders")
     private Long adviceOrders;
 
-    @ApiModelProperty("商品属性编码")
-    @JsonProperty("product_property_code")
-    private String productPropertyCode;
-
-    @ApiModelProperty("商品属性")
-    @JsonProperty("product_property_name")
-    private String productPropertyName;
-
-    @ApiModelProperty("是否A类")
-    @JsonProperty("is_product_property_name")
-    private int isProductPropertyName;
-
-    @ApiModelProperty("是否畅销品")
-    @JsonProperty("is_sell")
-    private int isSell;
-
-    @ApiModelProperty("入库时间")
-    @JsonProperty("create_time")
-    private Integer createTime;
+    @ApiModelProperty("商品状态(0:再用 1:停止进货 2:停止配送 3:停止销售)")
+    @JsonProperty("config_status")
+    private int configStatus;
 
 }

@@ -5,6 +5,7 @@
     <select id="selectSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
         select
+        bsar.id as id,
         #{beginInboundTime}  as beginInboundTime,
         #{finishInboundTime} as finishInboundTime,
         bsar.supplier_code as supplierCode,
@@ -155,6 +156,7 @@
     <select id="selectGiftsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
         select
+        bgbs.id as id,
         bgbs.sku_code as skuCode,
         bgbs.sku_name as skuName,
         #{beginCreateTime}  as beginCreateTime,
@@ -365,5 +367,157 @@
             and bnpbmr.product_sort_name like concat('%', #{productSortName}, '%')
         </if>
     </select>
+    <select id="selectStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StoreRepurchaseRateRespVo">
+        select
+        bnm.id as id,
+        bnm.order_original as orderOriginal,
+        bnm.province_name as provinceName,
+        bnm.city_name as cityName,
+        bnm.district_name as districtName,
+        bnm.product_category_code as productCategoryCode,
+        bnm.product_category_name as productCategoryName,
+        bnm.product_num as productNum,
+        bnm.fen_order_amount as fenOrderAmount,
+        bnm.qun_order_amount as qunOrderAmount,
+        bnm.shopping_frequency as shoppingFrequency,
+        bnm.after_buy_rate as afterBuyRate
+        from bi_store_repurchase_rate bsrr
+        where 1=1
+        <if test="provinceName!=null and provinceName!=''">
+            and bsrr.province_name like concat('%', #{provinceName}, '%')
+        </if>
+        <if test="cityName!=null and cityName!=''">
+            and bsrr.city_name like concat('%', #{cityName}, '%')
+        </if>
+        <if test="districtName!=null and districtName!=''">
+            and bsrr.district_name like concat('%', #{districtName}, '%')
+        </if>
+        <if test="productCategoryCode!=null and productCategoryCode!=''">
+            and bsrr.product_category_code=#{productCategoryCode}
+        </if>
+        <if test="productCategoryName!=null and productCategoryName!=''">
+            and bsrr.product_category_name like concat('%', #{productCategoryName}, '%')
+        </if>
+        <if test="orderOriginal!=null and orderOriginal!=''">
+            and bsrr.order_original=#{orderOriginal}
+        </if>
+        <if test="beginCreateTime!=null and beginCreateTime!=''">
+            and bsrr.begin_create_time between #{beginCreateTime}
+        </if>
+        <if test="finishCreateTime!=null and finishCreateTime!=''">
+            and #{finishCreateTime}
+        </if>
+    </select>
+    <select id="selectNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NegativeMarginRespVo">
+        select
+        bnm.id as id,
+        bnm.order_original as orderOriginal,
+        bnm.sku_code as skuCode,
+        bnm.sku_name as skuName,
+        bnm.product_category_code as productCategoryCode,
+        bnm.product_category_name as productCategoryName,
+        bnm.product_brand_code as productBrandCode,
+        bnm.product_brand_name as productBrandName,
+        bnm.product_num as productNum,
+        bnm.sales_cost as salesCost,
+        bnm.qun_order_amount as qunOrderAmount,
+        bnm.qun_maori as qunMaori,
+        bnm.qun_maori_rate as qunMaoriRate,
+        bnm.fen_order_amount as fenOrderAmount,
+        bnm.fen_maori as fenMaori,
+        bnm.fen_maori_rate as fenMaoriRate,
+        bnm.product_sort_code as productSortCode,
+        bnm.product_sort_name as productSortName
+        from bi_negative_margin bnm
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and bnm.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and bnm.sku_name like concat('%', #{skuName}, '%')
+        </if>
+        <if test="productCategoryCode!=null and productCategoryCode!=''">
+            and bnm.product_category_code=#{productCategoryCode}
+        </if>
+        <if test="productCategoryName!=null and productCategoryName!=''">
+            and bnm.product_category_name like concat('%', #{productCategoryName}, '%')
+        </if>
+        <if test="productBrandCode!=null and productBrandCode!=''">
+            and bnm.product_brand_code=#{productBrandCode}
+        </if>
+        <if test="productBrandName!=null and productBrandName!=''">
+            and bnm.product_brand_name like concat('%', #{productBrandName}, '%')
+        </if>
+        <if test="orderOriginal!=null and orderOriginal!=''">
+            and bnm.order_original=#{orderOriginal}
+        </if>
+        <if test="beginTimeMonth!=null and beginTimeMonth!=''">
+            and bnm.begin_time_month between #{beginTimeMonth}
+        </if>
+        <if test="finishTimeMonth!=null and finishTimeMonth!=''">
+            and #{finishTimeMonth}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and bnm.product_sort_code=#{productSortCode}
+        </if>
+        <if test="productSortName!=null and productSortName!=''">
+            and bnm.product_sort_name like concat('%', #{productSortName}, '%')
+        </if>
+    </select>
+    <select id="selectSuggestReplenishment" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SuggestReplenishmentReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SuggestReplenishmentRespVo">
+        select
+        bsr.id as id,
+        bsr.product_category_code as productCategoryCode,
+        bsr.product_category_name as productCategoryName,
+        bsr.product_brand_code as productBrandCode,
+        bsr.product_brand_name as productBrandName,
+        bsr.sku_code as skuCode,
+        bsr.sku_name as skuName,
+        bsr.transport_center_code as transportCenterCode,
+        bsr.transport_center_name as transportCenterName,
+        bsr.average_amount as averageAmount,
+        bsr.inventory_num as inventoryNum,
+        bsr.inventory_money as inventoryMoney,
+        bsr.turnover_days as turnoverDays,
+        bsr.out_stock_continuous_days as outStockContinuousDays,
+        bsr.last_month_out_stock_days as lastMonthOutStockDays,
+        bsr.advice_orders as adviceOrders,
+        bsr.config_status as configStatus
+        from bi_suggest_replenishment bsr
+        where 1=1
+        <if test="skuCode!=null and skuCode!=''">
+            and bsr.sku_code=#{skuCode}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            and bsr.sku_name like concat('%', #{skuName}, '%')
+        </if>
+        <if test="productCategoryCode!=null and productCategoryCode!=''">
+            and bsr.product_category_code=#{productCategoryCode}
+        </if>
+        <if test="productCategoryName!=null and productCategoryName!=''">
+            and bsr.product_category_name like concat('%', #{productCategoryName}, '%')
+        </if>
+        <if test="productBrandCode!=null and productBrandCode!=''">
+            and bsr.product_brand_code=#{productBrandCode}
+        </if>
+        <if test="productBrandName!=null and productBrandName!=''">
+            and bsr.product_brand_name like concat('%', #{productBrandName}, '%')
+        </if>
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and bsr.transport_center_code=#{transportCenterCode}
+        </if>
+        <if test="transportCenterName!=null and transportCenterName!=''">
+            and bsr.transport_center_name like concat('%', #{transportCenterName}, '%')
+        </if>
+        <if test="beginCreateTime!=null and beginCreateTime!=''">
+            and bsr.begin_create_time between #{beginCreateTime}
+        </if>
+        <if test="finishCreateTime!=null and finishCreateTime!=''">
+            and #{finishCreateTime}
+        </if>
 
+    </select>
 </mapper>

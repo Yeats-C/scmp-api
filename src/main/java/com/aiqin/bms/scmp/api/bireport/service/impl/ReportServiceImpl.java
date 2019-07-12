@@ -105,4 +105,55 @@ public class ReportServiceImpl implements ReportService {
             throw new GroundRuntimeException(ex.getMessage());
         }
     }
+
+    /**
+     *  门店复购率
+     * @param storeRepurchaseRateReqVo
+     * @return
+     */
+    @Override
+    public PageInfo<StoreRepurchaseRateRespVo> selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo) {
+        try {
+            PageHelper.startPage(storeRepurchaseRateReqVo.getPageNo(), storeRepurchaseRateReqVo.getPageSize());
+            return new PageInfo<StoreRepurchaseRateRespVo>(reportDao.selectStoreRepurchaseRate(storeRepurchaseRateReqVo));
+        } catch (Exception ex) {
+            log.error("查询新品批次动销率失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  负毛利
+     * @param negativeMarginReqVo
+     * @return
+     */
+    @Override
+    public PageInfo<NegativeMarginRespVo> selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
+        try {
+            PageHelper.startPage(negativeMarginReqVo.getPageNo(), negativeMarginReqVo.getPageSize());
+            return new PageInfo<NegativeMarginRespVo>(reportDao.selectNegativeMargin(negativeMarginReqVo));
+        } catch (Exception ex) {
+            log.error("查询新品批次动销率失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  建议补货
+     * @param suggestReplenishmentReqVo
+     * @return
+     */
+    @Override
+    public PageInfo<SuggestReplenishmentRespVo> selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo) {
+        try {
+            PageHelper.startPage(suggestReplenishmentReqVo.getPageNo(), suggestReplenishmentReqVo.getPageSize());
+            return new PageInfo<SuggestReplenishmentRespVo>(reportDao.selectSuggestReplenishment(suggestReplenishmentReqVo));
+        } catch (Exception ex) {
+            log.error("查询新品批次动销率失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
 }

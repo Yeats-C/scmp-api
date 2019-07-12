@@ -72,7 +72,7 @@ public class ReportController {
             @ApiImplicitParam(name = "transport_center_name", value = "仓库名称", type = "String"),
             @ApiImplicitParam(name = "product_category_name", value = "品类名称", type = "String"),
             @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
-            @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
             @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
@@ -242,5 +242,109 @@ public class ReportController {
         newProductBatchMovingRateReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectNewProductBatchMovingRate(newProductBatchMovingRateReqVo));
     }
+
+    @GetMapping("/search/store/repurchase/rate")
+    @ApiOperation("门店复购率")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "province_name", value = "省区", type = "String"),
+            @ApiImplicitParam(name = "city_name", value = "市", type = "String"),
+            @ApiImplicitParam(name = "district_name", value = "区", type = "String"),
+            @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
+            @ApiImplicitParam(name = "product_category_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<List<StoreRepurchaseRateRespVo>> selectStoreRepurchaseRate(
+            @RequestParam(value = "province_name", required = false) String provinceName,
+            @RequestParam(value = "city_name", required = false) String cityName,
+            @RequestParam(value = "district_name", required = false) String districtName,
+            @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
+            @RequestParam(value = "product_category_name", required = false) String productCategoryName,
+            @RequestParam(value = "order_original", required = false) String orderOriginal,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        StoreRepurchaseRateReqVo storeRepurchaseRateReqVo = new StoreRepurchaseRateReqVo(provinceName,cityName,districtName,productCategoryCode,productCategoryName,orderOriginal,beginCreateTime,finishCreateTime);
+        storeRepurchaseRateReqVo.setPageNo(pageNo);
+        storeRepurchaseRateReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectStoreRepurchaseRate(storeRepurchaseRateReqVo));
+    }
+
+    @GetMapping("/search/negative/margin")
+    @ApiOperation("负毛利")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
+            @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
+            @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
+            @ApiImplicitParam(name = "product_category_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "product_brand_code", value = "品牌编码", type = "String"),
+            @ApiImplicitParam(name = "product_brand_name", value = "品牌", type = "String"),
+            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<List<NegativeMarginRespVo>> selectNegativeMargin(
+            @RequestParam(value = "sku_code", required = false) String skuCode,
+            @RequestParam(value = "sku_name", required = false) String skuName,
+            @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
+            @RequestParam(value = "product_category_name", required = false) String productCategoryName,
+            @RequestParam(value = "product_brand_code", required = false) String productBrandCode,
+            @RequestParam(value = "product_brand_name", required = false) String productBrandName,
+            @RequestParam(value = "order_original", required = false) String orderOriginal,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+            @RequestParam(value = "product_sort_code", required = false) String productSortName,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        NegativeMarginReqVo negativeMarginReqVo = new NegativeMarginReqVo(skuCode,skuName,productCategoryCode,productCategoryName,productBrandCode,productBrandName,orderOriginal,beginCreateTime,finishCreateTime,productSortCode,productSortName);
+        negativeMarginReqVo.setPageNo(pageNo);
+        negativeMarginReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectNegativeMargin(negativeMarginReqVo));
+    }
+
+    @GetMapping("/search/suggest/replenishment")
+    @ApiOperation("建议补货")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
+            @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
+            @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
+            @ApiImplicitParam(name = "product_category_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "product_brand_code", value = "品牌编码", type = "String"),
+            @ApiImplicitParam(name = "product_brand_name", value = "品牌", type = "String"),
+            @ApiImplicitParam(name = "transport_center_code", value = "仓库编码", type = "String"),
+            @ApiImplicitParam(name = "transport_center_name", value = "仓库名称", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<List<SuggestReplenishmentRespVo>> selectSuggestReplenishment(
+            @RequestParam(value = "sku_code", required = false) String skuCode,
+            @RequestParam(value = "sku_name", required = false) String skuName,
+            @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
+            @RequestParam(value = "product_category_name", required = false) String productCategoryName,
+            @RequestParam(value = "product_brand_code", required = false) String productBrandCode,
+            @RequestParam(value = "product_brand_name", required = false) String productBrandName,
+            @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
+            @RequestParam(value = "transport_center_name", required = false) String transportCenterName,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) Integer finishCreateTime,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        SuggestReplenishmentReqVo suggestReplenishmentReqVo = new SuggestReplenishmentReqVo();
+        suggestReplenishmentReqVo.setPageNo(pageNo);
+        suggestReplenishmentReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectSuggestReplenishment(suggestReplenishmentReqVo));
+    }
+
 
 }

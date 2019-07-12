@@ -41,4 +41,25 @@ public interface ReportDao {
      * @return
      */
     List<NewProductBatchMovingRateRespVo> selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
+
+    /**
+     *  门店复购率
+     * @param storeRepurchaseRateReqVo
+     * @return
+     */
+    List<StoreRepurchaseRateRespVo> selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo);
+
+    /**
+     *  负毛利
+     * @param negativeMarginReqVo
+     * @return
+     */
+    List<NegativeMarginRespVo> selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
+
+    /**
+     *  建议补货
+     * @param suggestReplenishmentReqVo
+     * @return
+     */
+    List<SuggestReplenishmentRespVo> selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
 }

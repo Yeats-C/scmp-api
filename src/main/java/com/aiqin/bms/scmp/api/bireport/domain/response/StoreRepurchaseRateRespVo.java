@@ -1,17 +1,21 @@
-package com.aiqin.bms.scmp.api.bireport.domain.pojo;
+package com.aiqin.bms.scmp.api.bireport.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("门店复购率实体Model")
+@ApiModel("门店复购率respVo")
 @Data
-public class BiStoreRepurchaseRate {
+public class StoreRepurchaseRateRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
     private Long id;
+
+    @ApiModelProperty("渠道")
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("省区")
     @JsonProperty("province_name")
@@ -25,10 +29,6 @@ public class BiStoreRepurchaseRate {
     @JsonProperty("district_name")
     private String districtName;
 
-    @ApiModelProperty("渠道")
-    @JsonProperty("order_original")
-    private String orderOriginal;
-
     @ApiModelProperty("品类编码")
     @JsonProperty("product_category_code")
     private String productCategoryCode;
@@ -36,14 +36,6 @@ public class BiStoreRepurchaseRate {
     @ApiModelProperty("品类名称")
     @JsonProperty("product_category_name")
     private String productCategoryName;
-
-    @ApiModelProperty("所属部门编码")
-    @JsonProperty("product_sort_code")
-    private String productSortCode;
-
-    @ApiModelProperty("所属部门")
-    @JsonProperty("product_sort_name")
-    private String productSortName;
 
     @ApiModelProperty("销售数量")
     @JsonProperty("product_num")
@@ -65,7 +57,4 @@ public class BiStoreRepurchaseRate {
     @JsonProperty("after_buy_rate")
     private Integer afterBuyRate;
 
-    @ApiModelProperty("入库时间")
-    @JsonProperty("create_time")
-    private Integer createTime;
 }

@@ -1,17 +1,21 @@
-package com.aiqin.bms.scmp.api.bireport.domain.pojo;
+package com.aiqin.bms.scmp.api.bireport.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("负毛利实体Model")
+@ApiModel("负毛利respVo")
 @Data
-public class BiNegativeMargin {
+public class NegativeMarginRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
     private Long id;
+
+    @ApiModelProperty("渠道")
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("sku编码")
     @JsonProperty("sku_code")
@@ -36,18 +40,6 @@ public class BiNegativeMargin {
     @ApiModelProperty("品牌")
     @JsonProperty("product_brand_name")
     private String productBrandName;
-
-    @ApiModelProperty("所属部门编码")
-    @JsonProperty("product_sort_code")
-    private String productSortCode;
-
-    @ApiModelProperty("所属部门")
-    @JsonProperty("product_sort_name")
-    private String productSortName;
-
-    @ApiModelProperty("渠道")
-    @JsonProperty("order_original")
-    private String orderOriginal;
 
     @ApiModelProperty("销售数量")
     @JsonProperty("product_num")
@@ -81,8 +73,12 @@ public class BiNegativeMargin {
     @JsonProperty("fen_maori_rate")
     private Integer fenMaoriRate;
 
-    @ApiModelProperty("入库时间")
-    @JsonProperty("create_time")
-    private Integer createTime;
+    @ApiModelProperty("所属部门编码")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty("所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
 
 }

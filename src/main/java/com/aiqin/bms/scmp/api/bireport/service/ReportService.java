@@ -42,4 +42,25 @@ public interface ReportService {
      * @return
      */
     PageInfo<NewProductBatchMovingRateRespVo> selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
+
+    /**
+     *  门店复购率
+     * @param storeRepurchaseRateReqVo
+     * @return
+     */
+    PageInfo<StoreRepurchaseRateRespVo> selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo);
+
+    /**
+     *  负毛利
+     * @param negativeMarginReqVo
+     * @return
+     */
+    PageInfo<NegativeMarginRespVo> selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
+
+    /**
+     *  建议补货
+     * @param suggestReplenishmentReqVo
+     * @return
+     */
+    PageInfo<SuggestReplenishmentRespVo> selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
 }
