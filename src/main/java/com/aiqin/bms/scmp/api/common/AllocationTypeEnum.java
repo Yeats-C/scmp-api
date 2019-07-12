@@ -16,8 +16,7 @@ import java.util.Objects;
 public enum AllocationTypeEnum {
     ALLOCATION(Byte.valueOf("1"),"调拨","DB", WorkFlow.APPLY_ALLOCATTION,(byte)2),
     MOVE(Byte.valueOf("2"),"移库","YK", WorkFlow.MOVEMENT_ODER,(byte)4),
-    SCRAP(Byte.valueOf("3"),"报废","BF",WorkFlow.SCRAP,(byte)6),
-    ;
+    SCRAP(Byte.valueOf("3"),"报废","BF",WorkFlow.SCRAP,(byte)6);
     private Byte type;
     private String typeName;
     private String generateCode;
