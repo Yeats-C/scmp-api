@@ -77,7 +77,7 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
         Calendar calendar = Calendar.getInstance();
         Boolean flag = true;
         for (PurchaseApplyRespVo purchaseApplyRespVo : purchaseApplyRespVos) {
-            if (purchaseApplyRespVo.getAdviceOrders() != null && purchaseApplyRespVo.getArrivalCycle() != null){
+            if (purchaseApplyRespVo.getAdviceOrders() != null & purchaseApplyRespVo.getArrivalCycle() != null & purchaseApplyRespVo.getOutPuts() != null & purchaseApplyRespVo.getNeedDays() != null){
                 if (!(purchaseApplyRespVo.getAdviceOrders() >= purchaseApplyRespVo.getOutPuts())) {
                     calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVo.getNumOrderApproved().intValue()+purchaseApplyRespVo.getNumApprovedPayment().intValue()+purchaseApplyRespVo.getNumPaymentConfirm().intValue());
                     purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
@@ -90,7 +90,7 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
         if (flag){
             if (purchaseApplyRespVos.size()>0 ){
                 PurchaseApplyRespVo purchaseApplyRespVo = purchaseApplyRespVos.get(purchaseApplyRespVos.size() - 1);
-                if (purchaseApplyRespVo.getAdviceOrders() != null && purchaseApplyRespVo.getArrivalCycle() != null){
+                if (purchaseApplyRespVo.getAdviceOrders() != null & purchaseApplyRespVo.getArrivalCycle() != null & purchaseApplyRespVo.getOutPuts() != null & purchaseApplyRespVo.getNeedDays() != null){
                     calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVo.getNumOrderApproved().intValue()+purchaseApplyRespVo.getNumApprovedPayment().intValue()+purchaseApplyRespVo.getNumPaymentConfirm().intValue());
                     purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
                     purRespVo = purchaseApplyRespVo;
