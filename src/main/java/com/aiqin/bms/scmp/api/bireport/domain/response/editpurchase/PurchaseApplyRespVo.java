@@ -48,5 +48,17 @@ public class PurchaseApplyRespVo  implements Serializable {
     @JsonProperty(value = "need_Days")
     private Long needDays;
 
+    @ApiModelProperty("下单到审核天数")
+    @JsonProperty(value = "num_order_approved")
+    private Long numOrderApproved;
+
+    @ApiModelProperty("审核至财务付款天数")
+    @JsonProperty(value = "num_approved_payment")
+    private Long numApprovedPayment;
+
+    @ApiModelProperty("财务付款至供应商确认")
+    @JsonProperty(value = "num_payment_confirm")
+    private Long numPaymentConfirm;
+
 
 }

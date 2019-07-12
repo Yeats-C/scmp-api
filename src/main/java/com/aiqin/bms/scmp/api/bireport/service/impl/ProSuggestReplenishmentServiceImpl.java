@@ -77,20 +77,24 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
         Calendar calendar = Calendar.getInstance();
         Boolean flag = true;
         for (PurchaseApplyRespVo purchaseApplyRespVo : purchaseApplyRespVos) {
-            if (!(purchaseApplyRespVo.getAdviceOrders() >= purchaseApplyRespVo.getOutPuts())) {
-                calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+9);
-                purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
-                purRespVo = purchaseApplyRespVo;
-                flag = false;
-                break;
+            if (purchaseApplyRespVo.getAdviceOrders() != null && purchaseApplyRespVo.getArrivalCycle() != null){
+                if (!(purchaseApplyRespVo.getAdviceOrders() >= purchaseApplyRespVo.getOutPuts())) {
+                    calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVo.getNumOrderApproved().intValue()+purchaseApplyRespVo.getNumApprovedPayment().intValue()+purchaseApplyRespVo.getNumPaymentConfirm().intValue());
+                    purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
+                    purRespVo = purchaseApplyRespVo;
+                    flag = false;
+                    break;
+                }
             }
         }
         if (flag){
-            if (purchaseApplyRespVos.size()>0){
+            if (purchaseApplyRespVos.size()>0 ){
                 PurchaseApplyRespVo purchaseApplyRespVo = purchaseApplyRespVos.get(purchaseApplyRespVos.size() - 1);
-                calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+9);
-                purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
-                purRespVo = purchaseApplyRespVo;
+                if (purchaseApplyRespVo.getAdviceOrders() != null && purchaseApplyRespVo.getArrivalCycle() != null){
+                    calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVo.getNumOrderApproved().intValue()+purchaseApplyRespVo.getNumApprovedPayment().intValue()+purchaseApplyRespVo.getNumPaymentConfirm().intValue());
+                    purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
+                    purRespVo = purchaseApplyRespVo;
+                }
             }
         }
         return purRespVo;

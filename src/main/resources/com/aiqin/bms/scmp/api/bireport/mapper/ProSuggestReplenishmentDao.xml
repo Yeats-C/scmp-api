@@ -34,6 +34,9 @@
         bsr.out_stock_affect_money as outStockAffectMoney,
         bsr.out_stock_continuous_days as outStockContinuousDays,
         bsr.available_num as availableNum,
+        bsr.num_order_approved as numOrderApproved,
+        bsr.num_approved_payment as numApprovedPayment,
+        bsr.num_payment_confirm as numPaymentConfirm,
         apsc.arrival_cycle as arrivalCycle,
         pssuc.out_put as outPuts,
         pssuc.need_days as needDays
@@ -44,6 +47,7 @@
             <if test="supplierCode!=null and supplierCode!=''">
                 AND CONVERT(#{supplierCode} USING utf8) COLLATE utf8_unicode_ci  = pssuc.supply_unit_code
             </if>
+        LEFT JOIN supplier_rule AS sr ON sr.id = 999
         where 1=1
         <if test="transportCenterCode!=null and transportCenterCode!=''">
             and bsr.transport_center_code=#{transportCenterCode}
