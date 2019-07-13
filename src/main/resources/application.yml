@@ -423,237 +423,237 @@ mgs:
             methods:
             - code: SCMP005006001
               name: 查询
-#        - code: SCMP006
-#          name: 销售管理
-#          link: ''
-#          icon: icon-scm-xiaoshou
-#          resources:
-#          - code: SCMP006001
-#            name: 订单管理
-#            link: '/sale/order'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP006001001
-#              name: 查询
-#          - code: SCMP006002
-#            name: 辅采订单管理
-#            link: '/sale/auxiliaryOrder'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP006002001
-#              name: 查询
-#          - code: SCMP006003
-#            name: 直送订单管理
-#            link: '/sale/directOrder'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP006003001
-#              name: 查询
-#          - code: SCMP006004
-#            name: 订单商品查询
-#            link: '/sale/orderProduct'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP006004001
-#              name: 查询
-#          - code: SCMP006005
-#            name: 商品唯一码查询
-#            link: '/sale/uniqueCode'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP006005001
-#              name: 查询
-#          - code: SCMP006006
-#            name: 退货管理
-#            link: '/sale/return'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP006006001
-#              name: 查询
-#          - code: SCMP006007
-#            name: 直送退货管理
-#            link: '/sale/directReturn'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP006007001
-#              name: 查询
-#          - code: SCMP006008
-#            name: 退货验货
-#            link: '/sale/returnInspection'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP006008001
-#              name: 查询
-#        - code: SCMP008
-#          name: 库房管理
-#          link: ''
-#          icon: icon-scm-kufang
-#          resources:
-#          - code: SCMP008001
-#            name: 监管仓开单
-#            link: '/store/superviseOpen'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP008001001
-#              name: 查询
-#          - code: SCMP008002
-#            name: 入库管理
-#            link: '/store/inStore'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP008002001
-#              name: 查询
-#          - code: SCMP008003
-#            name: 出库管理
-#            link: '/store/outStore'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP005003001
-#              name: 查询
-#            - code: SCMP005003002
-#              name: 增加
-#          - code: SCMP008004
-#            name: 调拨管理
-#            link: '/store/transfer'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP005004001
-#              name: 查询
-#            - code: SCMP005004002
-#              name: 增加
-#          - code: SCMP008005
-#            name: 移库管理
-#            link: '/store/move'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP005005001
-#              name: 查询
-#            - code: SCMP005005002
-#              name: 增加
-#          - code: SCMP008006
-#            name: 报废管理
-#            link: '/store/scrap'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP005006001
-#              name: 查询
-#            - code: SCMP005006002
-#              name: 增加
-#          - code: SCMP008007
-#            name: 损益管理
-#            link: '/store/profitLoss'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP005007001
-#              name: 查询
-#            - code: SCMP005007002
-#              name: 增加
-#          - code: SCMP008008
-#            name: 供应商到货预约
-#            link: '/store/reservation'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP005008001
-#              name: 查询
-#            - code: SCMP005008002
-#              name: 增加
-#        - code: SCMP009
-#          name: 运输管理
-#          link: ''
-#          icon: icon-scm-kufang
-#          resources:
-#          - code: SCMP009001
-#            name: 发运管理
-#            link: '/transport/shipment'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP009001001
-#              name: 查询
-#            - code: SCMP009001002
-#              name: 新增
-#          - code: SCMP009002
-#            name: 运输管理
-#            link: '/transport/transport'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP009002001
-#              name: 查询
-#            - code: SCMP009002002
-#              name: 新增
-#        - code: SCMP010
-#          name: 报表
-#          link: ''
-#          icon: icon-scm-baobiao
-#          resources:
-#          - code: SCMP010001
-#            name: 缺货报表
-#            link: '/report/stockout'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP010001001
-#              name: 查询
-#            - code: SCMP010001002
-#              name: 新增
-#          - code: SCMP010002
-#            name: 大库存预警报表
-#            link: '/report/largeInventory'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP010002001
-#              name: 查询
-#            - code: SCMP010002002
-#              name: 新增
-#          - code: SCMP010003
-#            name: 大效期预警报表
-#            link: '/report/largePeriod'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP010003001
-#              name: 查询
-#            - code: SCMP010003002
-#              name: 新增
-#          - code: SCMP010004
-#            name: 建议补货
-#            link: '/report/suggest'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP010004001
-#              name: 查询
-#            - code: SCMP010004002
-#              name: 新增
-#          - code: SCMP010005
-#            name: SKU缺货原因分析
-#            link: '/report/reasonAnalysis'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP010005001
-#              name: 查询
-#            - code: SCMP010005002
-#              name: 新增
-#          - code: SCMP010006
-#            name: 采购到货预警
-#            link: '/report/arrival'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP010006001
-#              name: 查询
-#            - code: SCMP010002002
-#              name: 新增
-#          - code: SCMP010007
-#            name: 合同临期预警
-#            link: '/report/contractDeadline'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP010007001
-#              name: 查询
-#            - code: SCMP010007002
-#              name: 新增
-#          - code: SCMP010008
-#            name: SKU采购价统计
-#            link: '/report/statistics'
-#            icon: fa-home
-#            methods:
-#            - code: SCMP010008001
-#              name: 查询
-#            - code: SCMP010008002
-#              name: 新增
+        - code: SCMP006
+          name: 销售管理
+          link: ''
+          icon: icon-scm-xiaoshou
+          resources:
+          - code: SCMP006001
+            name: 订单管理
+            link: '/sale/order'
+            icon: fa-home
+            methods:
+            - code: SCMP006001001
+              name: 查询
+          - code: SCMP006002
+            name: 辅采订单管理
+            link: '/sale/auxiliaryOrder'
+            icon: fa-home
+            methods:
+            - code: SCMP006002001
+              name: 查询
+          - code: SCMP006003
+            name: 直送订单管理
+            link: '/sale/directOrder'
+            icon: fa-home
+            methods:
+            - code: SCMP006003001
+              name: 查询
+          - code: SCMP006004
+            name: 订单商品查询
+            link: '/sale/orderProduct'
+            icon: fa-home
+            methods:
+            - code: SCMP006004001
+              name: 查询
+          - code: SCMP006005
+            name: 商品唯一码查询
+            link: '/sale/uniqueCode'
+            icon: fa-home
+            methods:
+            - code: SCMP006005001
+              name: 查询
+          - code: SCMP006006
+            name: 退货管理
+            link: '/sale/return'
+            icon: fa-home
+            methods:
+            - code: SCMP006006001
+              name: 查询
+          - code: SCMP006007
+            name: 直送退货管理
+            link: '/sale/directReturn'
+            icon: fa-home
+            methods:
+            - code: SCMP006007001
+              name: 查询
+          - code: SCMP006008
+            name: 退货验货
+            link: '/sale/returnInspection'
+            icon: fa-home
+            methods:
+            - code: SCMP006008001
+              name: 查询
+        - code: SCMP008
+          name: 库房管理
+          link: ''
+          icon: icon-scm-kufang
+          resources:
+          - code: SCMP008001
+            name: 监管仓开单
+            link: '/store/superviseOpen'
+            icon: fa-home
+            methods:
+            - code: SCMP008001001
+              name: 查询
+          - code: SCMP008002
+            name: 入库管理
+            link: '/store/inStore'
+            icon: fa-home
+            methods:
+            - code: SCMP008002001
+              name: 查询
+          - code: SCMP008003
+            name: 出库管理
+            link: '/store/outStore'
+            icon: fa-home
+            methods:
+            - code: SCMP005003001
+              name: 查询
+            - code: SCMP005003002
+              name: 增加
+          - code: SCMP008004
+            name: 调拨管理
+            link: '/store/transfer'
+            icon: fa-home
+            methods:
+            - code: SCMP005004001
+              name: 查询
+            - code: SCMP005004002
+              name: 增加
+          - code: SCMP008005
+            name: 移库管理
+            link: '/store/move'
+            icon: fa-home
+            methods:
+            - code: SCMP005005001
+              name: 查询
+            - code: SCMP005005002
+              name: 增加
+          - code: SCMP008006
+            name: 报废管理
+            link: '/store/scrap'
+            icon: fa-home
+            methods:
+            - code: SCMP005006001
+              name: 查询
+            - code: SCMP005006002
+              name: 增加
+          - code: SCMP008007
+            name: 损益管理
+            link: '/store/profitLoss'
+            icon: fa-home
+            methods:
+            - code: SCMP005007001
+              name: 查询
+            - code: SCMP005007002
+              name: 增加
+          - code: SCMP008008
+            name: 供应商到货预约
+            link: '/store/reservation'
+            icon: fa-home
+            methods:
+            - code: SCMP005008001
+              name: 查询
+            - code: SCMP005008002
+              name: 增加
+        - code: SCMP009
+          name: 运输管理
+          link: ''
+          icon: icon-scm-kufang
+          resources:
+          - code: SCMP009001
+            name: 发运管理
+            link: '/transport/shipment'
+            icon: fa-home
+            methods:
+            - code: SCMP009001001
+              name: 查询
+            - code: SCMP009001002
+              name: 新增
+          - code: SCMP009002
+            name: 运输管理
+            link: '/transport/transport'
+            icon: fa-home
+            methods:
+            - code: SCMP009002001
+              name: 查询
+            - code: SCMP009002002
+              name: 新增
+        - code: SCMP010
+          name: 报表
+          link: ''
+          icon: icon-scm-baobiao
+          resources:
+          - code: SCMP010001
+            name: 缺货报表
+            link: '/report/stockout'
+            icon: fa-home
+            methods:
+            - code: SCMP010001001
+              name: 查询
+            - code: SCMP010001002
+              name: 新增
+          - code: SCMP010002
+            name: 大库存预警报表
+            link: '/report/largeInventory'
+            icon: fa-home
+            methods:
+            - code: SCMP010002001
+              name: 查询
+            - code: SCMP010002002
+              name: 新增
+          - code: SCMP010003
+            name: 大效期预警报表
+            link: '/report/largePeriod'
+            icon: fa-home
+            methods:
+            - code: SCMP010003001
+              name: 查询
+            - code: SCMP010003002
+              name: 新增
+          - code: SCMP010004
+            name: 建议补货
+            link: '/report/suggest'
+            icon: fa-home
+            methods:
+            - code: SCMP010004001
+              name: 查询
+            - code: SCMP010004002
+              name: 新增
+          - code: SCMP010005
+            name: SKU缺货原因分析
+            link: '/report/reasonAnalysis'
+            icon: fa-home
+            methods:
+            - code: SCMP010005001
+              name: 查询
+            - code: SCMP010005002
+              name: 新增
+          - code: SCMP010006
+            name: 采购到货预警
+            link: '/report/arrival'
+            icon: fa-home
+            methods:
+            - code: SCMP010006001
+              name: 查询
+            - code: SCMP010002002
+              name: 新增
+          - code: SCMP010007
+            name: 合同临期预警
+            link: '/report/contractDeadline'
+            icon: fa-home
+            methods:
+            - code: SCMP010007001
+              name: 查询
+            - code: SCMP010007002
+              name: 新增
+          - code: SCMP010008
+            name: SKU采购价统计
+            link: '/report/statistics'
+            icon: fa-home
+            methods:
+            - code: SCMP010008001
+              name: 查询
+            - code: SCMP010008002
+              name: 新增
