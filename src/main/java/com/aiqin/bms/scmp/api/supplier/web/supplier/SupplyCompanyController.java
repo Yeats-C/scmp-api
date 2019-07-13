@@ -1,13 +1,10 @@
 package com.aiqin.bms.scmp.api.supplier.web.supplier;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.StatusTypeCode;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.im.SupplierImportNew;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailByCodeRespVO;
@@ -16,12 +13,19 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComListRes
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComServcie;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
+import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
+import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -129,6 +133,17 @@ public class SupplyCompanyController extends SupplierBaseController {
             return HttpResponse.success(supplyComDetailRespVO);
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
+        }
+    }
+    @PostMapping("/import")
+    @ApiOperation(value = "批量导入")
+    public List<SupplierImportNew> importData(MultipartFile file){
+        try {
+            List<SupplierImportNew> supplierImportNews = ExcelUtil.readExcel(file, SupplierImportNew.class, 1, 0);
+            return supplierImportNews;
+        } catch (ExcelException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 }

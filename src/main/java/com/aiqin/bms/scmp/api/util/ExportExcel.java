@@ -5,6 +5,10 @@ import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductRespo
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -25,19 +29,19 @@ public class ExportExcel {
 
         // 生成一个样式
         HSSFCellStyle style = wb.createCellStyle();
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 水平居中
-        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直居中
+        style.setAlignment(HorizontalAlignment.CENTER);// 水平居中
+        style.setVerticalAlignment(VerticalAlignment.CENTER);// 垂直居中
 
         // 背景色
         style.setFillForegroundColor(HSSFColor.TAN.index);
-        style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         style.setFillBackgroundColor(HSSFColor.DARK_RED.index);
 
         // 设置边框
-        style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-        style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-        style.setBorderRight(HSSFCellStyle.BORDER_THIN);
-        style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+        style.setBorderBottom(BorderStyle.THIN);
+        style.setBorderLeft(BorderStyle.THIN);
+        style.setBorderRight(BorderStyle.THIN);
+        style.setBorderTop(BorderStyle.THIN);
 
         // 生成一个字体
         HSSFFont font = wb.createFont();
