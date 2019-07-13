@@ -85,4 +85,12 @@ public class PurchaseFlowPathResponse{
     @ApiModelProperty("在途库存的查询")
     @JsonProperty("afloat_list")
     private List<PurchaseAfloatResponse> afloatList;
+
+    @ApiModelProperty("采购周期")
+    @JsonProperty("purchase_cycle")
+    private Integer purchaseCycle;
+
+    @ApiModelProperty("日消耗库存")
+    @JsonProperty("average_count")
+    private Integer averageCount;
 }
