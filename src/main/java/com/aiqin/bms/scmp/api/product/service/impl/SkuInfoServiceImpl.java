@@ -527,6 +527,24 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
     }
 
+    /**
+     * 更新sku所有信息
+     *
+     * @param addSkuInfoReqVO
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO) {
+        if(Objects.isNull(addSkuInfoReqVO.getProductSkuDraft().getSkuCode())){
+            throw new BizException(ResultCode.SKU_CODE_EMPTY);
+        }
+        List<String> skuCodes = Lists.newArrayList();
+        skuCodes.add(addSkuInfoReqVO.getProductSkuDraft().getSkuCode());
+        ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraft(skuCodes);
+        return  ((SkuInfoService)AopContext.currentProxy()).saveDraftSkuInfo(addSkuInfoReqVO);
+    }
+
     @Override
     @Transactional(rollbackFor = BizException.class)
     @Save

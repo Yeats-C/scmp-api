@@ -52,6 +52,19 @@ public class SkuInfoController {
         }
     }
 
+    @PostMapping("/update")
+    @ApiOperation("修改临时表信息")
+    public HttpResponse<Integer> updateSkuInfo(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
+        try {
+            return HttpResponse.success(skuInfoService.updateDraftSkuInfo(addSkuInfoReqVO));
+        } catch (BizException bz){
+            return HttpResponse.failure(bz.getMessageId(),0);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,0);
+        }
+    }
+
     @GetMapping("/draft/detail")
     @ApiOperation("sku草稿详情")
     public HttpResponse<ProductSkuDetailResp> getSkuDraft(String skuCode){

@@ -11,7 +11,6 @@ import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -22,7 +21,6 @@ import java.util.List;
  * @date: 2019-06-27
  * @time: 17:54
  */
-@Component
 public class WarehouseOrderToInboundConverter implements Converter<SupervisoryWarehouseOrder, InboundReqSave> {
 
     @Override
@@ -32,8 +30,8 @@ public class WarehouseOrderToInboundConverter implements Converter<SupervisoryWa
         inboundReqSave.setCompanyName(order.getCompanyName());
         inboundReqSave.setInboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
         inboundReqSave.setInboundStatusName(InOutStatus.CREATE_INOUT.getName());
-        inboundReqSave.setInboundTypeCode(InboundTypeEnum.SUPERVISORY__WAREHOUSE_INBOUND.getCode());
-        inboundReqSave.setInboundTypeName(InboundTypeEnum.SUPERVISORY__WAREHOUSE_INBOUND.getName());
+        inboundReqSave.setInboundTypeCode(InboundTypeEnum.SUPERVISORY_WAREHOUSE_INBOUND.getCode());
+        inboundReqSave.setInboundTypeName(InboundTypeEnum.SUPERVISORY_WAREHOUSE_INBOUND.getName());
         inboundReqSave.setSourceOderCode(order.getOrderCode());
         inboundReqSave.setLogisticsCenterCode(order.getTransportCenterCode());
         inboundReqSave.setLogisticsCenterName(order.getTransportCenterName());

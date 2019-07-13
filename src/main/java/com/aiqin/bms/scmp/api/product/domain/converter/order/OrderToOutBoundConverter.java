@@ -12,7 +12,6 @@ import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
@@ -24,7 +23,6 @@ import java.util.List;
  * @date: 2019-06-25
  * @time: 14:47
  */
-@Component
 public class OrderToOutBoundConverter extends BaseServiceImpl implements Converter<List<OrderInfoDTO>, List<OutboundReqVo>> {
 
     @Override

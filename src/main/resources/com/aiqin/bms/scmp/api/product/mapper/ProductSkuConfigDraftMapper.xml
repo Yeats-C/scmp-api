@@ -52,7 +52,7 @@
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="procurement_section_code" jdbcType="VARCHAR" property="purchasingGroupCode"/>
     <result column="procurement_section_name" jdbcType="VARCHAR" property="purchasingGroupName"/>
-    <collection property="spareWarehouseList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo">
+    <collection property="spareWarehouses" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo">
       <result column="b_config_code" jdbcType="VARCHAR" property="configCode"/>
       <result column="b_transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
       <result column="b_transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
