@@ -204,4 +204,8 @@
     select <include refid="Base_Column_List"></include>
     from purchase_order where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
   </select>
+  <select id="purchaseOrderInfo" resultMap="BaseResultMap">
+     select <include refid="Base_Column_List"></include>
+     from purchase_order where purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

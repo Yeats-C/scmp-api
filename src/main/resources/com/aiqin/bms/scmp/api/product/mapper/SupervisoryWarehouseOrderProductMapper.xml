@@ -98,7 +98,7 @@
       #{item.productSpec,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR},
       #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
       #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.unitCode,jdbcType=VARCHAR},
-      #{item.unitName,jdbcType=VARCHAR}, #{idx}+1, #{item.boxGrossWeight,jdbcType=BIGINT},
+      #{item.unitName,jdbcType=VARCHAR}, #{item.lineNum,jdbcType=INTEGER}, #{item.boxGrossWeight,jdbcType=BIGINT},
       #{item.netWeight,jdbcType=BIGINT})
     </foreach>
   </insert>

@@ -29,24 +29,60 @@ public class BiNegativeMargin {
     @JsonProperty("product_category_name")
     private String productCategoryName;
 
+    @ApiModelProperty("品牌编码")
+    @JsonProperty("product_brand_code")
+    private String productBrandCode;
+
+    @ApiModelProperty("品牌")
+    @JsonProperty("product_brand_name")
+    private String productBrandName;
+
+    @ApiModelProperty("所属部门编码")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty("所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
+
+    @ApiModelProperty("渠道")
+    @JsonProperty("order_original")
+    private String orderOriginal;
+
     @ApiModelProperty("销售数量")
     @JsonProperty("product_num")
     private Integer productNum;
-
-    @ApiModelProperty("销售金额")
-    @JsonProperty("order_amount")
-    private Integer orderAmount;
 
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_cost")
     private Integer salesCost;
 
-    @ApiModelProperty("毛利额")
-    @JsonProperty("maori")
-    private Integer maori;
+    @ApiModelProperty("渠道销售金额")
+    @JsonProperty("qun_order_amount")
+    private Integer qunOrderAmount;
 
-    @ApiModelProperty("毛利率")
-    @JsonProperty("maori_rate")
-    private Integer maoriRate;
+    @ApiModelProperty("渠道毛利额")
+    @JsonProperty("qun_maori")
+    private Integer qunMaori;
+
+    @ApiModelProperty("渠道毛利率")
+    @JsonProperty("qun_maori_rate")
+    private Integer qunMaoriRate;
+
+    @ApiModelProperty("分销销售金额")
+    @JsonProperty("fen_order_amount")
+    private Integer fenOrderAmount;
+
+    @ApiModelProperty("分销毛利额")
+    @JsonProperty("fen_maori")
+    private Integer fenMaori;
+
+    @ApiModelProperty("分销毛利率")
+    @JsonProperty("fen_maori_rate")
+    private Integer fenMaoriRate;
+
+    @ApiModelProperty("入库时间")
+    @JsonProperty("create_time")
+    private Integer createTime;
 
 }

@@ -29,6 +29,14 @@ public class BiGoodsBuySales {
     @JsonProperty("sku_name")
     private String skuName;
 
+    @ApiModelProperty("部门编码")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty("所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
+
     @ApiModelProperty("仓库编码")
     @JsonProperty("transport_center_code")
     private String transportCenterCode;
@@ -97,21 +105,33 @@ public class BiGoodsBuySales {
     @JsonProperty("sales_num_one_month")
     private Integer salesNumOneMonth;
 
-    @ApiModelProperty("近一个月销售金额")
-    @JsonProperty("sales_money_one_month")
-    private Integer salesMoneyOneMonth;
-
     @ApiModelProperty("近一个月销售成本")
     @JsonProperty("sales_cost_one_month")
     private Integer salesCostOneMonth;
 
-    @ApiModelProperty("近一个月毛利额")
-    @JsonProperty("sales_maori_one_month")
-    private Integer salesMaoriOneMonth;
+    @ApiModelProperty("近一个月分销销售金额")
+    @JsonProperty("fen_sales_money_one_month")
+    private Integer fenSalesMoneyOneMonth;
 
-    @ApiModelProperty("近一个月毛利率")
-    @JsonProperty("sales_maori_one_month_rate")
-    private Integer salesMaoriOneMonthRate;
+    @ApiModelProperty("近一个月分销毛利额")
+    @JsonProperty("fen_sales_maori_one_month")
+    private Integer fenSalesMaoriOneMonth;
+
+    @ApiModelProperty("近一个月分销毛利率")
+    @JsonProperty("fen_sales_maori_one_month_rate")
+    private Integer fenSalesMaoriOneMonthRate;
+
+    @ApiModelProperty("近一个月渠道销售金额")
+    @JsonProperty("qun_sales_money_one_month")
+    private Integer qunSalesMoneyOneMonth;
+
+    @ApiModelProperty("近一个月渠道毛利额")
+    @JsonProperty("qun_sales_maori_one_month")
+    private Integer qunSalesMaoriOneMonth;
+
+    @ApiModelProperty("近一个月渠道毛利率")
+    @JsonProperty("qun_sales_maori_one_month_rate")
+    private Integer qunSalesMaoriOneMonthRate;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")

@@ -1,5 +1,10 @@
 package com.aiqin.bms.scmp.api.util;
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -28,5 +33,13 @@ public class DateUtils {
         instance.setTime(date);
         instance.add(Calendar.DATE,day);
         return instance.getTime();
+    }
+
+    public static Date toDate(String productDate) {
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(productDate);
+        } catch (ParseException e) {
+            throw new BizException(ResultCode.DATE_CONVERSION_FAILED);
+        }
     }
 }

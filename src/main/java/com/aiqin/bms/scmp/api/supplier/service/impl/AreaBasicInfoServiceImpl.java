@@ -66,7 +66,7 @@ public class AreaBasicInfoServiceImpl implements AreaBasicInfoService {
     }
 
     @Override
-    public HttpResponse getTreeList() {
+    public HttpResponse<List<AreaBasic>> getTreeList() {
         try {
             HttpResponse result = areaBasicService.selectAreaOneTree();
             if (result != null && result.getData()!=null){

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @ApiModel("监管仓订单")
 @Data
@@ -70,5 +71,6 @@ public class SupervisoryWarehouseOrder extends CommonBean {
     @ApiModelProperty("开单人")
     private String openOrderName;
 
-
+    @ApiModelProperty("商品数据")
+    private List<SupervisoryWarehouseOrderProduct> records;
 }

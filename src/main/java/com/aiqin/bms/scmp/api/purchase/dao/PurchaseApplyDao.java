@@ -16,4 +16,6 @@ public interface PurchaseApplyDao {
 
     Integer applyCount(PurchaseApplyRequest purchaseApplyRequest);
 
+    PurchaseApply purchaseApplyInfo(String purchaseApplyId);
+
 }

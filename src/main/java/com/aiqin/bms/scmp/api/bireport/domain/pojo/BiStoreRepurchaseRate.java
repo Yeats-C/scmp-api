@@ -25,6 +25,10 @@ public class BiStoreRepurchaseRate {
     @JsonProperty("district_name")
     private String districtName;
 
+    @ApiModelProperty("渠道")
+    @JsonProperty("order_original")
+    private String orderOriginal;
+
     @ApiModelProperty("品类编码")
     @JsonProperty("product_category_code")
     private String productCategoryCode;
@@ -45,9 +49,13 @@ public class BiStoreRepurchaseRate {
     @JsonProperty("product_num")
     private Integer productNum;
 
-    @ApiModelProperty("销售金额")
-    @JsonProperty("order_amount")
-    private Integer orderAmount;
+    @ApiModelProperty("渠道销售金额")
+    @JsonProperty("fen_order_amount")
+    private Integer fenOrderAmount;
+
+    @ApiModelProperty("分销销售金额")
+    @JsonProperty("qun_order_amount")
+    private Integer qunOrderAmount;
 
     @ApiModelProperty("购物频次")
     @JsonProperty("shopping_frequency")
@@ -56,4 +64,8 @@ public class BiStoreRepurchaseRate {
     @ApiModelProperty("复购率")
     @JsonProperty("after_buy_rate")
     private Integer afterBuyRate;
+
+    @ApiModelProperty("入库时间")
+    @JsonProperty("create_time")
+    private Integer createTime;
 }

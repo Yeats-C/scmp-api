@@ -71,10 +71,10 @@
                left join product_sku_sale_area_main c
                          on a.code = c.code
         where c.company_code = #{companyCode}
-      <if test="skuCode != null">
+      <if test="skuCode != null and skuCode != ''">
         and a.sku_code = #{skuCode}
       </if>
-      <if test="skuName != null">
+      <if test="skuName != null and skuName != ''">
         and a.sku_name like CONCAT('%',#{skuName},'%')
       </if>
       <if test="beDisable != null">
@@ -83,7 +83,7 @@
       <if test="categoriesSupplyChannelsCode != null">
         and a.categories_supply_channels_code = #{categoriesSupplyChannelsCode}
       </if>
-      <if test="directDeliverySupplierName != null">
+      <if test="directDeliverySupplierName != null and directDeliverySupplierName != ''">
         and a.direct_delivery_supplier_name like CONCAT('%',#{directDeliverySupplierName},'%')
       </if>
     </select>

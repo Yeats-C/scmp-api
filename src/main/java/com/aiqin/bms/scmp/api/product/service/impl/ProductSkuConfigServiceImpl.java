@@ -408,11 +408,6 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if(CollectionUtils.isNotEmpty(drafts)){
             List<String> configCodes = drafts.stream().map(ProductSkuConfigDraft::getConfigCode).distinct().collect(Collectors.toList());
             List<ApplyProductSkuConfig> applyProductSkuConfigs  = BeanCopyUtils.copyList(drafts,ApplyProductSkuConfig.class);
-            //通过编码查询出备用仓库信息
-            List<ProductSkuConfigSpareWarehouseDraft> spareWarehouseDrafts = spareWarehouseDraftMapper.
-                    getListByConfigCodes(configCodes);
-            List<ApplyProductSkuConfigSpareWarehouse>  applyProductSkuConfigSpareWarehouses =
-                    BeanCopyUtils.copyList(spareWarehouseDrafts,ApplyProductSkuConfigSpareWarehouse.class);
             Date currentDate = new Date();
             applyProductSkuConfigs.stream().forEach(item->{
                 item.setId(null);
@@ -421,12 +416,19 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 item.setCreateTime(currentDate);
             });
             num = applyMapper.insertBatch(applyProductSkuConfigs);
-            //批量保存备用仓库
-            applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
-            //删除临时表配置信息
-            draftMapper.deleteOutByConfigCodes(configCodes);
             //删除临时表备用仓库信息
             spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
+            //通过编码查询出备用仓库信息
+            List<ProductSkuConfigSpareWarehouseDraft> spareWarehouseDrafts = spareWarehouseDraftMapper.
+                    getListByConfigCodes(configCodes);
+            if(CollectionUtils.isNotEmpty(spareWarehouseDrafts)){
+                List<ApplyProductSkuConfigSpareWarehouse>  applyProductSkuConfigSpareWarehouses =
+                        BeanCopyUtils.copyList(spareWarehouseDrafts,ApplyProductSkuConfigSpareWarehouse.class);
+                //批量保存备用仓库
+                applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
+                //删除临时表配置信息
+                draftMapper.deleteOutByConfigCodes(configCodes);
+            }
         }
 
         return num;

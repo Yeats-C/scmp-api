@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseFormRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
@@ -24,9 +26,9 @@ public interface PurchaseManageService {
 
     HttpResponse cancelPurchaseOrder(PurchaseOrder purchaseOrder);
 
-    HttpResponse purchaseOrderDetails(String purchaseOrderId);
+    HttpResponse<PurchaseApplyDetailResponse> purchaseOrderDetails(String purchaseOrderId);
 
-    HttpResponse purchaseOrderProduct(String purchaseOrderId, Integer isPage, Integer pageNo, Integer pageSize);
+    HttpResponse purchaseOrderProduct(PurchaseOrderProductRequest request);
 
     HttpResponse purchaseOrderFile(String purchaseOrderId);
 
@@ -37,4 +39,14 @@ public interface PurchaseManageService {
     HttpResponse purchaseOrderStock(String purchaseOrderId, String createById, String createByName);
 
     HttpResponse getWarehousing(List<PurchaseOrderProduct> list);
+
+    HttpResponse reportSku(String purchaseOrderId);
+
+    HttpResponse<List<Inbound>> receipt(String purchaseOrderId);
+
+    HttpResponse storageConfirm(PurchaseStorageRequest storageRequest);
+
+    HttpResponse<InboundProduct> receiptProduct(String purchaseOrderId, Integer purchaseNum, Integer pageNo, Integer pageSize);
+
+    HttpResponse addLog(OperationLog operationLog);
 }

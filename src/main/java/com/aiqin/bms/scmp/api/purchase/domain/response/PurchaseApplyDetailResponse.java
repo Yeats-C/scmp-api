@@ -18,6 +18,10 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("apply_product_id")
     private String applyProductId;
 
+    @ApiModelProperty(value="采购单id")
+    @JsonProperty("purchase_order_id")
+    private String purchaseOrderId;
+
     @ApiModelProperty(value="采购单号")
     @JsonProperty("purchase_order_code")
     private String purchaseOrderCode;
@@ -285,5 +289,41 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("warehouse_time")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date warehouseTime;
+
+    @ApiModelProperty(value="取消原因")
+    @JsonProperty("cancel_reason")
+    private String cancelReason;
+
+    @ApiModelProperty(value="取消备注")
+    @JsonProperty("cancel_remark")
+    private String cancelRemark;
+
+    @ApiModelProperty(value="评分编码")
+    @JsonProperty("score_code")
+    private String scoreCode;
+
+    @ApiModelProperty(value="实际单品数量")
+    @JsonProperty("actual_single_count")
+    private Integer actualSingleCount;
+
+    @ApiModelProperty(value="实际含税总计")
+    @JsonProperty("actual_tax_sum")
+    private Integer actualTaxSum;
+
+    @ApiModelProperty(value="入库单的来源单号")
+    @JsonProperty("source_oder_code")
+    private String sourceOderCode;
+
+    @ApiModelProperty(value="含税单价")
+    @JsonProperty("product_amount")
+    private Integer productAmount;
+
+    @ApiModelProperty(value="含税总价")
+    @JsonProperty("product_total_amount")
+    private Integer productTotalAmount;
+
+    @ApiModelProperty(value="仓储状态 0.未开始  1.确认中 2.完成")
+    @JsonProperty("storage_status")
+    private Integer storageStatus;
 }
 

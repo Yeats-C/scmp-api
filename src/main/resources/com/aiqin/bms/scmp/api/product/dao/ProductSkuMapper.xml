@@ -833,7 +833,7 @@
     <include refid="Product_Sku_Resp_Column"/>,
       apply_type,
       apply_type_name
-    from product_sku
+    from product_sku_draft
     where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
 
@@ -1543,6 +1543,8 @@
     <result column="price_model" jdbcType="TINYINT" property="priceModel" />
     <result column="sku_status" jdbcType="TINYINT" property="skuStatus" />
     <result column="on_sale" jdbcType="TINYINT" property="onSale" />
+    <result column="apply_type" jdbcType="TINYINT" property="applyType" />
+    <result column="apply_type_name" jdbcType="TINYINT" property="applyTypeName" />
   </resultMap>
   <sql id="Product_Sku_Resp_Column">
   id,product_code,product_name,sku_code,sku_name,sku_abbreviation,product_brand_code,product_brand_name,product_category_code,
@@ -1811,17 +1813,12 @@ select a.sku_code              as skuCode,
       <result column="goods_gifts" property="goodsGifts"/>
       <result column="product_property_name" property="productPropertyName"/>
       <result column="priceChannelName" property="priceChannelName"/>
-      <collection property="supplierList" select="getSupplier" column="skuCode = sku_code" javaType="java.util.List"  ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaSupplierInfo"/>
+      <collection property="supplierList" ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaSupplierInfo">
+        <result column="directDeliverySupplierCode" property="directDeliverySupplierCode"/>
+        <result column="directDeliverySupplierName" property="directDeliverySupplierName"/>
+      </collection>
     </resultMap>
-    <select id="getSupplier" resultType="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaSupplierInfo">
-            select
-                c.supply_unit_name directDeliverySupplierName,
-                c.supply_unit_code directDeliverySupplierCode
-            from
-                product_sku_supply_unit c
-        where c.product_sku_code = #{skuCode} and c.categories_supply_channels_code = 2
-    </select>
-    <select id="selectSkuListForSaleArea" resultMap="selectSkuListForSaleArea">
+    <select id="selectSkuListForSaleArea" resultMap="selectSkuListForSaleArea" parameterType="java.util.List">
         select
                a.sku_code,
                a.sku_name,
@@ -1833,10 +1830,30 @@ select a.sku_code              as skuCode,
                a.color_name,
                a.model_number,
                d.unit_name,
-               group_concat(b.price_channel_name) priceChannelName
+               group_concat(b.price_channel_name) priceChannelName,
+               c.supply_unit_name directDeliverySupplierName,
+               c.supply_unit_code directDeliverySupplierCode
         from product_sku a
                left join product_sku_channel b
                          on a.sku_code = b.sku_code
+               left join product_sku_supply_unit c
+                         on a.sku_code = c.product_sku_code and c.categories_supply_channels_code = 2
+               left join product_sku_purchase_info d
+                         on a.sku_code = d.product_sku_code
+         where a.id in
+         <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+         </foreach>
+         group by a.id
+    </select>
+  <select id="selectSkuListForSaleAreaCount" resultType="java.lang.Long">
+        select
+               a.id
+        from product_sku a
+               left join product_sku_channel b
+                         on a.sku_code = b.sku_code
+               left join product_sku_supply_unit c
+                         on a.sku_code = c.product_sku_code and c.categories_supply_channels_code = 2
                left join product_sku_purchase_info d
                          on a.sku_code = d.product_sku_code
          where a.company_code = #{companyCode}
@@ -1867,6 +1884,7 @@ select a.sku_code              as skuCode,
               #{item}
             </foreach>
           </if>
+          group by a.id order by a.create_time desc
     </select>
   <select id="getSupervisoryWarehouseSku"
           resultType="com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo">
@@ -1894,6 +1912,24 @@ select a.sku_code              as skuCode,
         WHERE ps.del_flag=0 and ps.goods_gifts!=2
         <if test="companyCode != null and companyCode != '' ">
           and ps.company_code = #{companyCode}
+        </if>
+        <if test="skuCode!=null and skuCode!=''">
+          AND ps.sku_code = #{skuCode,jdbcType=VARCHAR}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+          AND ps.sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productCategoryName!=null and productCategoryName!=''">
+          AND ps.product_category_name LIKE CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productBrandName!=null and productBrandName!=''">
+          AND ps.product_brand_name LIKE CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productCode!=null and productCode!=''">
+          AND ps.product_code = #{productCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productName!=null and productName!=''">
+          AND ps.product_name LIKE CONCAT('%',#{productName,jdbcType=VARCHAR},'%')
         </if>
   </select>
 </mapper>

@@ -21,6 +21,14 @@ public class BiGiftsBuySales {
     @JsonProperty("sku_name")
     private String skuName;
 
+    @ApiModelProperty("部门编码")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty("所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
+
     @ApiModelProperty("品类名称")
     @JsonProperty("category_name")
     private String categoryName;

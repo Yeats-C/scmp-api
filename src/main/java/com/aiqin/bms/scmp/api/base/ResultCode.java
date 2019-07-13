@@ -167,6 +167,7 @@ public interface ResultCode {
     MessageId BOX_PACKING_EMPTY = MessageId.create(Project.PRODUCT_API, 70, "包装信息为空");
 
     MessageId  OBJECT_CONVERSION_FAILED = MessageId.create(Project.PRODUCT_API, 71, "对象转化失败");
+    MessageId  DATE_CONVERSION_FAILED = MessageId.create(Project.PRODUCT_API, 71, "日期转换异常");
     MessageId OBJECT_NOT_FOUND = MessageId.create(Project.PRODUCT_API, 72, "没有找到对应的对象");
 
 
@@ -227,6 +228,7 @@ public interface ResultCode {
     MessageId IMPORT_PURCHASE_APPLY_ERROR = MessageId.create(Project.SCMP_API, 202, "导入采购申请单异常");
     MessageId PURCHASE_ORDER_CHECK = MessageId.create(Project.SCMP_API, 203, "该采购单未审核通过， 不能开始备货");
     MessageId PURCHASE_PRODUCT_NOT_SUBMIT = MessageId.create(Project.SCMP_API, 204, "此采购单所有商品都未提交， 不能完成");
+    MessageId STORAGE_NOT_CONFIRM = MessageId.create(Project.SCMP_API, 205, "采购仓储状态非确认中状态， 不能确认");
 
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");
@@ -251,6 +253,7 @@ public interface ResultCode {
     MessageId IMPORT_DATA_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入数据异常");
     MessageId IMPORT_DATA_EMPTY= MessageId.create(Project.SCMP_API, 1000, "导入数据为空");
     MessageId MAIN_PRODUCT_EMPTY= MessageId.create(Project.SCMP_API, 1000, "主商品为空,请选择主商品");
+    MessageId SKU_CODE_EMPTY= MessageId.create(Project.SCMP_API, 1000, "skuCode为空,找不到需要修改的数据");
 
 
 }

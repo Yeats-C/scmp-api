@@ -46,77 +46,58 @@ public class WorkFlowBaseUrl {
     public String applySupplierAccountUrl;
 
     /**
-     * 制造商申请详情前面的url
-     */
-    @Value("${WorkFlowBaseUrl.supplierUrl.applyManu}")
-    public String applyManu;
-
-    /**
      * 采购申请详情前面的url
      */
-    @Value("${WorkFlowBaseUrl.supplierUrl.applyPurchase}")
+    @Value("${WorkFlowBaseUrl.purchaseUrl.applyPurchase}")
     public String applyPurchase;
 
     /**
      * 退供申请详情前面的url
      */
-    @Value("${WorkFlowBaseUrl.supplierUrl.applyRefund}")
+    @Value("${WorkFlowBaseUrl.purchaseUrl.applyRefund}")
     public String applyRefund;
+
+    /**
+     * 变价
+     */
+    @Value("${WorkFlowBaseUrl.productUrl.variablePrice}")
+    public String variableUrl;
+    /**
+     * sku审批
+     */
+    @Value("${WorkFlowBaseUrl.productUrl.applySku}")
+    public String applySku;
+    /**
+     * 商品配置
+     */
+    @Value("${WorkFlowBaseUrl.productUrl.applySkuConfig}")
+    public String applySkuConfig;
+    /**
+     * 移库查看详情页面
+     */
+    @Value("${WorkFlowBaseUrl.productUrl.movement}")
+    public String movement;
 
     /**
      * 调拨申请详情前面的url
      */
-    @Value("${WorkFlowBaseUrl.supplierUrl.applyAllocattion}")
+    @Value("${WorkFlowBaseUrl.productUrl.applyAllocattion}")
     public String applyAllocattion;
+    /**
+     * 报废
+     */
+    @Value("${WorkFlowBaseUrl.productUrl.scrap}")
+    public String scrap;
 
     /**
-     * 商品申请详情前面的url
+     * 销售区域查看详情页面
      */
-    @Value("${WorkFlowBaseUrl.supplierUrl.applyGoods}")
-    public String applyGoods;
-
-    /**
-     * 商品配置申请详情前面的url
-     */
-    @Value("${WorkFlowBaseUrl.supplierUrl.applyGoodsConfig}")
-    public String applyGoodsConfig;
-
-    /**
-     * 商品价格申请详情前面的url
-     */
-    @Value("${WorkFlowBaseUrl.supplierUrl.applyGoodsPrice}")
-    public String applyGoodsPrice;
-
+    @Value("${WorkFlowBaseUrl.productUrl.applySaleArea}")
+    public String applySaleArea;
 
     /**
      * host
      */
     @Value("${WorkFlowBaseHost.supplierHost}")
     public String supplierHost;
-
-
-    /**
-     * 前端页面标识符，用于和审批流页面区分
-     */
-    @Value("${WorkFlowBaseUrl.productUrl.variablePrice}")
-    public String variableUrl;
-
-
-
-    @Value("${WorkFlowBaseUrl.productUrl.applySku}")
-    public String applySku;
-
-    @Value("${WorkFlowBaseUrl.productUrl.applySkuConfig}")
-    public String applySkuConfig;
-
-    /**
-     * 移库查看详情页面
-     */
-    @Value("${WorkFlowBaseUrl.productUrl.movement}")
-    public String movement;
-    /**
-     * 销售区域查看详情页面
-     */
-    @Value("${WorkFlowBaseUrl.productUrl.applySaleArea}")
-    public String applySaleArea;
 }

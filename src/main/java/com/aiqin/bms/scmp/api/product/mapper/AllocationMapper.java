@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 
+import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
@@ -59,6 +60,12 @@ public interface AllocationMapper {
      */
     Allocation selectByFormNO(String FormNo);
 
+    /**
+     * 根据流程变成查询申请合同
+     * @param FormNo
+     * @return
+     */
+    AllocationDTO selectByFormNO1(String FormNo);
 
     Long findIdByFormNo(String FormNo);
 

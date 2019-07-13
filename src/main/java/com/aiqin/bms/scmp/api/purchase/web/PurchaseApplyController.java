@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.web;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -61,7 +62,8 @@ public class PurchaseApplyController {
             @ApiImplicitParam(name = "purchase_group_code", value = "采购组 code", type = "String"),
             @ApiImplicitParam(name = "sku_code", value = "sku 编码", type = "String"),
             @ApiImplicitParam(name = "sku_name", value = "sku 名称", type = "String"),
-            @ApiImplicitParam(name = "product_property_code", value = "商品属性", type = "String"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性编码", type = "String"),
+            @ApiImplicitParam(name = "product_property_name", value = "商品属性名称", type = "String"),
             @ApiImplicitParam(name = "category_id", value = "品类", type = "String"),
             @ApiImplicitParam(name = "brand_id", value = "品牌", type = "String"),
             @ApiImplicitParam(name = "spu_code", value = "spu 编码", type = "String"),
@@ -80,6 +82,7 @@ public class PurchaseApplyController {
                                          @RequestParam(value = "sku_code", required = false) String skuCode,
                                          @RequestParam(value = "sku_name", required = false) String skuName,
                                          @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+                                         @RequestParam(value = "product_property_name", required = false) String productPropertyName,
                                          @RequestParam(value = "category_id", required = false) String categoryId,
                                          @RequestParam(value = "category_name", required = false) String categoryName,
                                          @RequestParam(value = "brand_id", required = false) String brandId,
@@ -94,7 +97,7 @@ public class PurchaseApplyController {
                                          @RequestParam(value = "page_size", required = false) Integer pageSize) {
         PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseApplyId, purchaseGroupCode, skuCode,
                 skuName, spuCode, productName, supplierCode, transportCenterCode, brandId, brandName, categoryId, categoryName,
-                productPropertyCode, aReplenishType, productReplenishType, aShortageType, productShortageType);
+                productPropertyCode, productPropertyName, aReplenishType, productReplenishType, aShortageType, productShortageType);
         purchaseApplyRequest.setPageSize(pageSize);
         purchaseApplyRequest.setPageNo(pageNo);
         return purchaseApplyService.applyProductList(purchaseApplyRequest);
@@ -140,5 +143,15 @@ public class PurchaseApplyController {
     @ApiOperation(value = "修改采购申请单的状态")
     public HttpResponse purchaseApplyStatus(@RequestBody PurchaseApply purchaseApply) {
         return purchaseApplyService.purchaseApplyStatus(purchaseApply);
+    }
+
+    @GetMapping("/apply/product/detail")
+    @ApiOperation("查询采购申请单商品的详情")
+    public HttpResponse<PurchaseFlowPathResponse> purchase(@RequestParam("single_count") Integer singleCount,
+                                                           @RequestParam("product_purchase_amount") Integer productPurchaseAmount,
+                                                           @RequestParam("sku_code") String skuCode,
+                                                           @RequestParam("supplier_code") String supplierCode,
+                                                           @RequestParam("transport_center_code") String transportCenterCode) {
+        return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode);
     }
 }

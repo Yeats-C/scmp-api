@@ -14,8 +14,8 @@ public class BiNewProductBatchMovingRate {
     private Long id;
 
     @ApiModelProperty("批次号")
-    @JsonProperty("stock_batch_code")
-    private String stockBatchCode;
+    @JsonProperty("batch_code")
+    private String batchCode;
 
     @ApiModelProperty("供应商编码")
     @JsonProperty("supplier_code")
@@ -93,21 +93,33 @@ public class BiNewProductBatchMovingRate {
     @JsonProperty("num")
     private Integer num;
 
-    @ApiModelProperty("销售金额")
-    @JsonProperty("amount")
-    private Integer amount;
-
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_costs")
     private Integer salesCosts;
 
-    @ApiModelProperty("毛利额")
-    @JsonProperty("maori")
-    private Integer maori;
+    @ApiModelProperty("渠道销售金额")
+    @JsonProperty("qun_amount")
+    private Integer qunAmount;
 
-    @ApiModelProperty("毛利率")
-    @JsonProperty("maori_rate")
-    private Integer maoriRate;
+    @ApiModelProperty("渠道毛利额")
+    @JsonProperty("qun_maori")
+    private Integer qunMaori;
+
+    @ApiModelProperty("渠道毛利率")
+    @JsonProperty("qun_maori_rate")
+    private Integer qunMaoriRate;
+
+    @ApiModelProperty("分销销售金额")
+    @JsonProperty("fen_amount")
+    private Integer fenAmount;
+
+    @ApiModelProperty("分销毛利额")
+    @JsonProperty("fen_maori")
+    private Integer fenMaori;
+
+    @ApiModelProperty("分销毛利率")
+    @JsonProperty("fen_maori_rate")
+    private Integer fenMaoriRate;
 
     @ApiModelProperty("近一个月销售数量")
     @JsonProperty("sales_num_one_month")

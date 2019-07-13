@@ -83,7 +83,7 @@ public class ProductSkuPurchaseInfoServiceImpl implements ProductSkuPurchaseInfo
         if (CollectionUtils.isNotEmptyCollection(applyProductSkuPurchaseInfo)){
             ProductSkuPurchaseInfo oldInfo = productSkuPurchaseInfoDao.getInfo(skuCode);
             ProductSkuPurchaseInfo productSkuPurchaseInfo = new ProductSkuPurchaseInfo();
-            BeanCopyUtils.copy(applyProductSkuPurchaseInfo,productSkuPurchaseInfo);
+            BeanCopyUtils.copy(applyProductSkuPurchaseInfo.get(0),productSkuPurchaseInfo);
             if (null != oldInfo){
                 productSkuPurchaseInfo.setId(oldInfo.getId());
                 return ((ProductSkuPurchaseInfoService)AopContext.currentProxy()).update(productSkuPurchaseInfo);

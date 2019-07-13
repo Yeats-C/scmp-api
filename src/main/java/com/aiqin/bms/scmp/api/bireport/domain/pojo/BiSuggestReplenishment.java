@@ -13,11 +13,11 @@ public class BiSuggestReplenishment {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("种类编码")
+    @ApiModelProperty("品类编码")
     @JsonProperty("product_category_code")
     private String productCategoryCode;
 
-    @ApiModelProperty("种类名称")
+    @ApiModelProperty("品类名称")
     @JsonProperty("product_category_name")
     private String productCategoryName;
 
@@ -81,11 +81,11 @@ public class BiSuggestReplenishment {
     @JsonProperty("advice_orders")
     private Long adviceOrders;
 
-    @ApiModelProperty("品类编码")
+    @ApiModelProperty("商品属性编码")
     @JsonProperty("product_property_code")
     private String productPropertyCode;
 
-    @ApiModelProperty("品类名称")
+    @ApiModelProperty("商品属性")
     @JsonProperty("product_property_name")
     private String productPropertyName;
 
@@ -96,5 +96,9 @@ public class BiSuggestReplenishment {
     @ApiModelProperty("是否畅销品")
     @JsonProperty("is_sell")
     private int isSell;
+
+    @ApiModelProperty("入库时间")
+    @JsonProperty("create_time")
+    private Integer createTime;
 
 }

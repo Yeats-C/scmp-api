@@ -642,14 +642,13 @@
     from inbound
     where  inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
-
   <select id="selectMaxPurchaseNumBySourceOderCode" parameterType="java.lang.String" resultType="java.lang.Integer">
     select max(purchase_num) from inbound where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
   </select>
-
   <select id="selectTimeAndSatusBySourchAndNum" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
     from inbound where
-    source_oder_code = #{sourceOderCode,jdbcType=VARCHAR} and purchase_num = #{purchaseNum,jdbcType=INTEGER}
+    source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+    order by purchase_num asc
   </select>
 </mapper>

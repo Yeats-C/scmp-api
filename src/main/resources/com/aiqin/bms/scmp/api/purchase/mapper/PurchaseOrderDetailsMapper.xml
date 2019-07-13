@@ -32,6 +32,7 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="details_status" jdbcType="INTEGER" property="detailsStatus" />
     <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="score_code" jdbcType="VARCHAR" property="scoreCode" />
     <result column="order_type" jdbcType="VARCHAR" property="orderType" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -46,7 +47,7 @@
     valid_time, direct_supervisor_code, direct_supervisor_name, payment_type, advance_payment, 
     amount_payable, month_amount, payable_time, month_time, receipt, receipt_address, 
     delivery, delivery_address, delivery_time, warehouse_time, remark, details_status, 
-    order_code, order_type, create_time, create_by_id, create_by_name
+    order_code, order_type, score_code as scoreCode, create_time, create_by_id, create_by_name
   </sql>
   <insert id="insert">
     insert into purchase_order_details (purchase_details_id, purchase_order_id,
@@ -54,7 +55,7 @@
       contact_person, mobile, expect_arrival_time, valid_time, direct_supervisor_code, direct_supervisor_name,
       payment_type, advance_payment, amount_payable, month_amount, payable_time, month_time,
       receipt, receipt_address, delivery, delivery_address, delivery_time, warehouse_time,
-      remark, details_status, order_code, order_type, create_time, create_by_id, create_by_name)
+      remark, details_status, order_code, order_type, score_code, create_time, create_by_id, create_by_name)
     values (#{purchaseDetailsId,jdbcType=VARCHAR}, #{purchaseOrderId,jdbcType=VARCHAR},
       #{purchaseOrderCode,jdbcType=VARCHAR}, #{accountCode,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, 
       #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR}, #{chargePerson,jdbcType=VARCHAR}, 
@@ -65,20 +66,11 @@
       #{receipt,jdbcType=VARCHAR}, #{receiptAddress,jdbcType=VARCHAR}, #{delivery,jdbcType=VARCHAR}, 
       #{deliveryAddress,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, #{warehouseTime,jdbcType=TIMESTAMP}, 
       #{remark,jdbcType=VARCHAR}, #{detailsStatus,jdbcType=INTEGER}, #{orderCode,jdbcType=VARCHAR}, 
-      #{orderType,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
+      #{orderType,jdbcType=VARCHAR}, #{scoreCode,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_order_details
     <set>
-      <if test="purchaseDetailsId != null">
-        purchase_details_id = #{purchaseDetailsId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderId != null">
-        purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderCode != null">
-        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
-      </if>
       <if test="accountCode != null">
         account_code = #{accountCode,jdbcType=VARCHAR},
       </if>
@@ -160,6 +152,9 @@
       <if test="orderType != null">
         order_type = #{orderType,jdbcType=VARCHAR},
       </if>
+      <if test="scoreCode != null">
+        score_code = #{scoreCode,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -171,7 +166,7 @@
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
   </update>
   <select id="purchaseOrderDetail" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select o.purchase_order_id as purchaseOrderId, o.purchase_order_code as purchaseOrderCode,
@@ -183,12 +178,13 @@
     d.account_code as accountCode, d.account_name as accountName, o.settlement_method_code as settlementMethodCode,
     o.settlement_method_name as settlementMethodName, d.contact_person as contactPerson, d.mobile,
     d.delivery_time as deliveryTime, d.warehouse_time as warehouseTime, d.update_time as updateTime,
-    d.order_type as orderType, d.order_code as orderCode
+    d.order_type as orderType, d.order_code as orderCode, o.cancel_reason as cancelReason, o.cancel_remark as cancelRemark,
+    d.score_code as scoreCode, o.storage_status as storageStatus
     from purchase_order o
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id
     <where>
-      o.purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+      o.purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
     </where>
   </select>
 </mapper>

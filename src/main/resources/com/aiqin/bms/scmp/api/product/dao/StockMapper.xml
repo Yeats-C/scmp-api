@@ -177,6 +177,7 @@
         <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
         <result column="pack" jdbcType="VARCHAR" property="pack"/>
         <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
+        <result column="product_brand_name" jdbcType="BIGINT" property="productBrandName"/>
         <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum"/>
         <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
         <result column="lock_num" jdbcType="BIGINT" property="lockNum"/>
@@ -195,8 +196,6 @@
         <result column="document_num" jdbcType="BIGINT" property="documentNum"/>
         <result column="source_document_type" jdbcType="BIGINT" property="sourceDocumentType"/>
         <result column="source_document_num" jdbcType="BIGINT" property="sourceDocumentNum"/>
-        <result column="operating_time" jdbcType="VARCHAR" property="operatingTime"/>
-        <result column="operating_by" jdbcType="VARCHAR" property="operatingBy"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
         <result column="before_inventory_num" jdbcType="BIGINT" property="beforeInventoryNum"/>
         <result column="after_inventory_num" jdbcType="BIGINT" property="afterInventoryNum"/>
@@ -205,6 +204,12 @@
         <result column="before_lock_num" jdbcType="BIGINT" property="beforeLockNum"/>
         <result column="after_lock_num" jdbcType="BIGINT" property="afterLockNum"/>
         <result column="operation_type" jdbcType="VARCHAR" property="operationType"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="create_by_code" jdbcType="VARCHAR" property="createByCode"/>
+        <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
+        <result column="update_time" jdbcType="VARCHAR" property="updateTime"/>
+        <result column="update_by_code" jdbcType="VARCHAR" property="updateByCode"/>
+        <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
     </resultMap>
     <resultMap id="QueryStockSkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo">
         <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
@@ -382,9 +387,9 @@
 
     <sql id="Query_Stock_Batch_Id">
         sbf.id,sbf.stock_batch_code,sbf.flow_batch_code,sbf.batch_code,sbf.order_code,sbf.order_type,sbf.order_source,sbf.sku_code,sbf.sku_name,
-        sbf.lock_status,sbf.document_type,sbf.document_num,sbf.source_document_type,sbf.source_document_num,sbf.operating_time,
-        sbf.operating_by,sbf.remark,sbf.before_inventory_num,sbf.after_inventory_num,sbf.before_available_num,sbf.after_available_num,
-        sbf.before_lock_num,sbf.after_lock_num,sbf.change_num,sbf.operation_type
+        sbf.lock_status,sbf.document_type,sbf.document_num,sbf.source_document_type,sbf.source_document_num,sbf.remark,sbf.before_inventory_num,
+        sbf.after_inventory_num,sbf.before_available_num,sbf.after_available_num,sbf.before_lock_num,sbf.after_lock_num,sbf.change_num,sbf.operation_type,
+        sbf.create_time,sbf.create_by_code,sbf.create_by_name,sbf.update_time,sbf.update_by_code,sbf.update_by_name
     </sql>
 
     <select id="selectWarehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
@@ -1565,7 +1570,7 @@
         <include refid="Query_Stock_Batch_Id"/>
         from stock_batch sb
         LEFT JOIN stock_batch_flow AS sbf ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = sbf.sku_code
-        where sb.id = #{stockBatchId, jdbcType=VARCHAR}
+        where sb.sku_code = #{stockBatchId, jdbcType=VARCHAR}
     </select>
 
     <select id="selectOneStockBatchInfoByStockBatchIdInfoByPage" resultType="java.lang.Long">
@@ -1613,11 +1618,20 @@
             <if test="productPropertyCode != null">
                 and ps.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
             </if>
+            <if test="productPropertyName != null">
+                and ps.product_property_name like CONCAT('', #{productPropertyName,jdbcType=VARCHAR},"%")
+            </if>
             <if test="brandId != null">
                 and ps.product_brand_code = #{brandId,jdbcType=VARCHAR}
             </if>
+            <if test="brandName != null">
+                and ps.product_brand_name like CONCAT('', #{brandName,jdbcType=VARCHAR},"%")
+            </if>
             <if test="categoryId != null">
                 and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
+            </if>
+            <if test="categoryName != null">
+                and ps.product_category_name like CONCAT('', #{categoryName,jdbcType=VARCHAR},"%")
             </if>
             <if test="spuCode != null">
                 and ps.product_code = #{spuCode,jdbcType=VARCHAR}
@@ -1677,11 +1691,20 @@
             <if test="productPropertyCode != null">
                 and ps.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
             </if>
+            <if test="productPropertyName != null">
+                and ps.product_property_name like CONCAT('', #{productPropertyName,jdbcType=VARCHAR},"%")
+            </if>
             <if test="brandId != null">
                 and ps.product_brand_code = #{brandId,jdbcType=VARCHAR}
             </if>
+            <if test="brandName != null">
+                and ps.product_brand_name like CONCAT('', #{brandName,jdbcType=VARCHAR},"%")
+            </if>
             <if test="categoryId != null">
                 and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
+            </if>
+            <if test="categoryName != null">
+                and ps.product_category_name like CONCAT('', #{categoryName,jdbcType=VARCHAR},"%")
             </if>
             <if test="spuCode != null">
                 and ps.product_code = #{spuCode,jdbcType=VARCHAR}

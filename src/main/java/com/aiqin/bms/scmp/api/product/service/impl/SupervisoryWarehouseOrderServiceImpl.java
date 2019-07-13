@@ -8,19 +8,21 @@ import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.common.SupervisoryWarehouseOrderTypeEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.converter.supervisorywarehouseorder.WarehouseOrderToInboundConverter;
+import com.aiqin.bms.scmp.api.product.domain.converter.supervisorywarehouseorder.WarehouseOrderToOutboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrder;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.supervisory.SaveSupervisoryWarehouseOrderReqVo;
 import com.aiqin.bms.scmp.api.product.mapper.SupervisoryWarehouseOrderMapper;
 import com.aiqin.bms.scmp.api.product.mapper.SupervisoryWarehouseOrderProductMapper;
+import com.aiqin.bms.scmp.api.product.service.InboundService;
+import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.SupervisoryWarehouseOrderService;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.service.EncodingRuleService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author knight.xie
@@ -50,6 +53,12 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
 
     @Autowired
     private EncodingRuleService encodingRuleService;
+
+    @Autowired
+    private InboundService inboundService;
+
+    @Autowired
+    private OutboundService outboundService;
 
     /**
      * 功能描述: 保存
@@ -74,28 +83,41 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
         order.setWarehouseCode(warehouseResVo.getWarehouseCode());
         order.setWarehouseName(warehouseResVo.getWarehouseName());
         //获取订单编号
-        EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPERVISORY_WAREHOUSE_ORDER_CODE);
-        String orderCode = String.valueOf(encodingRule.getNumberingValue());
-        order.setOrderCode(orderCode);
-        encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+//        EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPERVISORY_WAREHOUSE_ORDER_CODE);
+//        String orderCode = String.valueOf(encodingRule.getNumberingValue());
+//        order.setOrderCode(orderCode);
+//        encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        synchronized (SupervisoryWarehouseOrderServiceImpl.class){
+            order.setOrderCode(getCode("JG", EncodingRuleType.SUPERVISORY_WAREHOUSE_ORDER_CODE));
+        }
         //获取订单类型名称
-        String typeName = SupervisoryWarehouseOrderTypeEnum.getName(order.getOrderType());
-        if(StringUtils.isBlank(typeName)){
+        SupervisoryWarehouseOrderTypeEnum typeName = SupervisoryWarehouseOrderTypeEnum.getName(order.getOrderType());
+        if(Objects.isNull(typeName)){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
-        order.setOrderTypeName(typeName);
+        order.setOrderTypeName(typeName.getName());
         //保存订单信息
         int insert = ((SupervisoryWarehouseOrderService) AopContext.currentProxy()).insert(order);
         List<SupervisoryWarehouseOrderProduct> records = BeanCopyUtils.copyList(reqVo.getProducts(),SupervisoryWarehouseOrderProduct.class);
-
+        AtomicInteger i = new AtomicInteger();
         records.forEach(item->{
-            item.setOrderCode(orderCode);
-            item.setOrderTypeName(typeName);
+            item.setOrderCode(order.getOrderCode());
+            item.setOrderTypeName(typeName.getName());
             item.setOrderType(order.getOrderType());
+            if(Objects.isNull(item.getProductTotalAmount())){
+                item.setProductTotalAmount(item.getProductAmount() * item.getNum());
+            }
+            item.setLineNum(i.getAndIncrement()*10);
         });
         //保存商品信息
         ((SupervisoryWarehouseOrderService)AopContext.currentProxy()).insertBatchProduct(records);
-        //TODO 生成出入库单据
+        order.setRecords(records);
+        if (Objects.equals(SupervisoryWarehouseOrderTypeEnum.INBOUND, typeName)) {
+            inboundService.saveInbound(new WarehouseOrderToInboundConverter().convert(order));
+        } else {
+            //TODO 锁库
+            outboundService.save(new WarehouseOrderToOutboundConverter().convert(order));
+        }
         return insert;
     }
 
