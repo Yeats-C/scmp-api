@@ -18,4 +18,6 @@ public interface PurchaseOrderDao {
 
     PurchaseOrder purchaseOrder(String purchaseOrderId);
 
+    PurchaseOrder purchaseOrderInfo(PurchaseOrder purchaseOrder);
+
 }

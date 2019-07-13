@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
@@ -24,4 +25,7 @@ public interface PurchaseOrderProductDao {
     PurchaseApplyDetailResponse  warehousingInfo(@Param("purchaseOrderId")String purchaseOrderId,@Param("skuCode") String skuCode);
 
     List<PurchaseOrderProduct> orderProductInfo(String purchaseOrderId);
+
+    List<PurchaseApplyDetailResponse> orderStatusByCount(@Param("skuCode") String skuCode, @Param("transportCenterCode") String transportCenterCode);
+
 }

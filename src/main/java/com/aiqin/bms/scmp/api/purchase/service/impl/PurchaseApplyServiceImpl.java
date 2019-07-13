@@ -13,14 +13,14 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseImportResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
@@ -29,7 +29,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -44,7 +43,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.xml.crypto.Data;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -77,6 +81,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private ProductSkuConfigMapper productSkuConfigDao;
     @Resource
     private ProSuggestReplenishmentService replenishmentService;
+    @Resource
+    private PurchaseOrderProductDao purchaseOrderProductDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -156,6 +162,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         // 查询库存，商品， 供应商等信息
         List<PurchaseApplyDetailResponse> detail = stockDao.purchaseProductList(purchases);
         if (CollectionUtils.isNotEmptyCollection(detail)) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             PurchaseApplyReqVo applyReqVo;
             for (PurchaseApplyDetailResponse product : detail) {
                 // 获取最高采购价(价格管理中供应商的含税价格)
@@ -175,12 +182,19 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 applyReqVo.setTransportCenterCode(product.getTransportCenterCode());
                 PurchaseApplyRespVo vo = replenishmentService.selectPurchaseApplySkuList(applyReqVo);
                 if(vo != null){
-                    product.setPurchaseNumber(vo.getAdviceOrders().intValue());
-                    product.setReceiptTime(DateUtils.toDate(vo.getPredictedArrival()));
-                    product.setSalesVolume(vo.getAverageAmount().intValue());
-                    product.setShortageNumber(vo.getOutStockAffectMoney().intValue());
-                    product.setShortageDay(vo.getOutStockContinuousDays().intValue());
-                    product.setStockTurnover(vo.getArrivalCycle().intValue());
+                    product.setPurchaseNumber(vo.getAdviceOrders() == null ? 0: vo.getAdviceOrders().intValue());
+                    try {
+                        if(StringUtils.isNotBlank(vo.getPredictedArrival())){
+                            Date parse = formatter.parse(vo.getPredictedArrival());
+                            product.setReceiptTime(parse);
+                        }
+                    }catch (Exception e){
+                        LOGGER.error("转换时间失败");
+                    }
+                    product.setSalesVolume(vo.getAverageAmount() == null ? 0: vo.getAverageAmount().intValue() * 90);
+                    product.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0: vo.getOutStockAffectMoney().intValue());
+                    product.setShortageDay(vo.getOutStockContinuousDays() == null ? 0: vo.getOutStockContinuousDays().intValue());
+                    product.setStockTurnover(vo.getArrivalCycle() == null ? 0: vo.getArrivalCycle().intValue());
                 }
             }
         }
@@ -489,5 +503,70 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
         return HttpResponse.success();
+    }
+
+    @Override
+    public HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, Integer productPurchaseAmount, String skuCode,
+                                                                     String supplierCode, String transportCenterCode){
+        if(StringUtils.isBlank(skuCode) || StringUtils.isBlank(supplierCode) || StringUtils.isBlank(transportCenterCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        PurchaseFlowPathResponse flow = new PurchaseFlowPathResponse();
+        PurchaseApplyReqVo applyReqVo = new PurchaseApplyReqVo();
+        applyReqVo.setSkuCode(skuCode);
+        applyReqVo.setSupplierCode(supplierCode);
+        applyReqVo.setTransportCenterCode(transportCenterCode);
+        PurchaseApplyRespVo vo = replenishmentService.selectPurchaseApplySkuList(applyReqVo);
+        flow.setPurchaseCount(singleCount);
+        flow.setPurchaseAmount(productPurchaseAmount);
+        flow.setPurchaseAmountSum(singleCount * productPurchaseAmount);
+        // 查询sku配置信息
+        ProductSkuConfig cycleInfo = productSkuConfigDao.getCycleInfo(skuCode, transportCenterCode);
+        if(cycleInfo != null){
+            flow.setLargeInventoryWarnDay(cycleInfo.getLargeInventoryWarnDay());
+            flow.setBigEffectPeriodWarnDay(cycleInfo.getBigEffectPeriodWarnDay());
+            flow.setTurnoverPeriodAfterArrival(cycleInfo.getTurnoverPeriodAfterArrival());
+            flow.setBasicInventoryDay(cycleInfo.getBasicInventoryDay());
+            flow.setOrderCycle(cycleInfo.getOrderCycle());
+            flow.setArrivalCycle(cycleInfo.getArrivalCycle());
+        }
+        if(vo != null){
+            flow.setDayOne(vo.getNumOrderApproved() == null ? 0 : vo.getNumOrderApproved().intValue());
+            flow.setDayTwo(vo.getNumApprovedPayment() == null ? 0 : vo.getNumApprovedPayment().intValue());
+            flow.setDayThree(vo.getNumPaymentConfirm() == null ? 0 : vo.getNumPaymentConfirm().intValue());
+            flow.setDayFour(vo.getNeedDays() == null ? 0 : vo.getNeedDays().intValue());
+            Long availableNum = vo.getAvailableNum() == null ? 0 : vo.getAvailableNum();
+            Long averageAmount = vo.getAverageAmount() == null ? 0 : vo.getAverageAmount();
+            if(availableNum == 0 || averageAmount == 0){
+                flow.setConsumeDay(0);
+            }else {
+                flow.setConsumeDay(availableNum.intValue() / averageAmount.intValue());
+            }
+            if(singleCount == 0 || averageAmount == 0){
+                flow.setPurchaseTurnover(0);
+            }else {
+                flow.setPurchaseTurnover(singleCount / averageAmount.intValue());
+            }
+            // 在途库存的查询(查询采购单商品审核完成、入库开始、入库中、备货发货的时间与采购数量)
+            List<PurchaseApplyDetailResponse> statusByCount = purchaseOrderProductDao.orderStatusByCount(skuCode, transportCenterCode);
+            if(CollectionUtils.isNotEmptyCollection(statusByCount)){
+                Date d1 = new Date();
+                List<PurchaseAfloatResponse> list = new ArrayList<>();
+                PurchaseAfloatResponse afloat;
+                for(PurchaseApplyDetailResponse order:statusByCount){
+                    Integer single = order.getSingleCount() == null ? 0 : order.getSingleCount();
+                    Integer actualSingle = order.getActualSingleCount() == null ? 0 : order.getActualSingleCount();
+                    if(order.getExpectArrivalTime() != null){
+                        int days = (int) ((order.getExpectArrivalTime().getTime() - d1.getTime()) / (24*3600*1000));
+                        afloat = new PurchaseAfloatResponse();
+                        afloat.setAfloatCount(single - actualSingle);
+                        afloat.setAfloatDay(days);
+                        list.add(afloat);
+                    }
+                }
+                flow.setAfloatList(list);
+            }
+        }
+        return HttpResponse.success(flow);
     }
 }

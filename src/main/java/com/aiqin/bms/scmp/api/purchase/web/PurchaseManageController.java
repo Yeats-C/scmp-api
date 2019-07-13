@@ -15,7 +15,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -180,4 +179,5 @@ public class PurchaseManageController {
     public HttpResponse addLog(@RequestBody OperationLog operationLog) {
         return purchaseManageService.addLog(operationLog);
     }
+
 }

@@ -16,9 +16,9 @@ public enum PurchaseOrderLogEnum {
     CHECKOUT_ADOPT(3,"采购单审核通过"), // 审核通过
     STOCK_UP(4,"采购单供应商开始备货"), // 备货确认
     DELIVER_GOODS(6,"采购单供应商开始发货"), // 发货确认
-    WAREHOUSING_BEGIN(7,""),  // 入库开始
-    WAREHOUSING_IN(8,""), // 入库中
-    WAREHOUSING_FINISH(9,""), // 入库完成
+    WAREHOUSING_BEGIN(7,"入库申请单，开始入库"),  // 入库开始
+    WAREHOUSING_IN(8,"入库申请单，入库中"), // 入库中
+    WAREHOUSING_FINISH(9,"入库申请单，入库完成"), // 入库完成
     ORDER_WAREHOUSING_FINISH(10,"采购单入库完成"), // 入库完成
     PURCHASE_FINISH(1,"采购单采购完成"),  // 采购完成
     REVOKE(12,"采购单撤销"), // 撤销

@@ -317,5 +317,9 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="含税总价")
     @JsonProperty("product_total_amount")
     private Integer productTotalAmount;
+
+    @ApiModelProperty(value="仓储状态 0.未开始  1.确认中 2.完成")
+    @JsonProperty("storage_status")
+    private Integer storageStatus;
 }
 

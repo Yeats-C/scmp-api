@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.web;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -142,5 +143,15 @@ public class PurchaseApplyController {
     @ApiOperation(value = "修改采购申请单的状态")
     public HttpResponse purchaseApplyStatus(@RequestBody PurchaseApply purchaseApply) {
         return purchaseApplyService.purchaseApplyStatus(purchaseApply);
+    }
+
+    @GetMapping("/apply/product/detail")
+    @ApiOperation("查询采购申请单商品的详情")
+    public HttpResponse<PurchaseFlowPathResponse> purchase(@RequestParam("single_count") Integer singleCount,
+                                                           @RequestParam("product_purchase_amount") Integer productPurchaseAmount,
+                                                           @RequestParam("sku_code") String skuCode,
+                                                           @RequestParam("supplier_code") String supplierCode,
+                                                           @RequestParam("transport_center_code") String transportCenterCode) {
+        return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode);
     }
 }

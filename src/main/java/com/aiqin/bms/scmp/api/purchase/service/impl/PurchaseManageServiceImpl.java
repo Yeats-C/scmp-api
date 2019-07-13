@@ -386,8 +386,14 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             detail.setUpdateById(createById);
             detail.setUpdateByName(createByName);
             purchaseOrderDetailsDao.update(detail);
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
+            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
+                    PurchaseOrderLogEnum.WAREHOUSING_FINISH.getName() , null);
+        }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_5)){
+            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode(),
+                    PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getName() , null);
+        }else if(purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
+            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STORAGE_STAY.getCode(),
+                    PurchaseOrderLogEnum.STORAGE_STAY.getName() , null);
         }
         return HttpResponse.success();
     }
@@ -697,6 +703,11 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         String purchaseOrderId = storageRequest.getPurchaseOrderId();
+        PurchaseOrder order = purchaseOrderDao.purchaseOrder(purchaseOrderId);
+        if(!order.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
+            LOGGER.info("采购仓储状态非确认中状态， 不能确认");
+            return HttpResponse.failure(ResultCode.STORAGE_NOT_CONFIRM);
+        }
         // 变更采购单的状态
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setPurchaseOrderId(purchaseOrderId);
