@@ -9,6 +9,6 @@ public interface PurchaseOrderDetailsDao {
 
     Integer update(PurchaseOrderDetails record);
 
-    PurchaseApplyDetailResponse purchaseOrderDetail(String purchaseOrderId);
+    PurchaseApplyDetailResponse purchaseOrderDetail(String purchaseOrderCode);
 
 }

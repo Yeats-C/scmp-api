@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
@@ -14,7 +15,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -128,7 +128,7 @@ public class PurchaseManageController {
     }
 
     @GetMapping("/order/amount")
-    @ApiOperation("查询采购单-采购数量金额")
+    @ApiOperation("查询采购单-采购数量金额/实际数量金额")
     public HttpResponse<PurchaseCountAmountResponse> purchaseOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
         return purchaseManageService.purchaseOrderAmount(purchaseOrderId);
     }
@@ -173,4 +173,11 @@ public class PurchaseManageController {
                                                        @RequestParam(value = "page_size", required = false) Integer pageSize) {
         return purchaseManageService.receiptProduct(purchaseOrderId, purchaseNum, pageNo, pageSize);
     }
+
+    @PostMapping("/add/log")
+    @ApiOperation("添加采购单-操作日志")
+    public HttpResponse addLog(@RequestBody OperationLog operationLog) {
+        return purchaseManageService.addLog(operationLog);
+    }
+
 }

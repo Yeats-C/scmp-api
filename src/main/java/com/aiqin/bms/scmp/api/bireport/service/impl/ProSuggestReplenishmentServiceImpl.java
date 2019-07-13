@@ -24,12 +24,10 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
      * @return
      */
     @Override
-    public ProReplenishmentOutStockRespVo selectSuggestReplenishmentByPro() {
+    public List<String> selectSuggestReplenishmentByPro() {
         int proStatus = 1;
         List<String> skuCodes = proSuggestReplenishmentDao.selectSuggestReplenishmentByPro(proStatus);
-        ProReplenishmentOutStockRespVo proReplenishmentOutStockRespVo = new ProReplenishmentOutStockRespVo();
-        proReplenishmentOutStockRespVo.setSkuCode(skuCodes);
-        return proReplenishmentOutStockRespVo;
+        return skuCodes;
     }
 
     /**
@@ -37,12 +35,10 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
      * @return
      */
     @Override
-    public ProReplenishmentOutStockRespVo selectSuggestReplenishmentBySell() {
+    public List<String> selectSuggestReplenishmentBySell() {
         int proStatus = 1;
         List<String> skuCodes = proSuggestReplenishmentDao.selectSuggestReplenishmentBySell(proStatus);
-        ProReplenishmentOutStockRespVo proReplenishmentOutStockRespVo = new ProReplenishmentOutStockRespVo();
-        proReplenishmentOutStockRespVo.setSkuCode(skuCodes);
-        return proReplenishmentOutStockRespVo;
+        return skuCodes;
     }
 
     /**
@@ -50,13 +46,11 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
      * @return
      */
     @Override
-    public ProReplenishmentOutStockRespVo selectOutStockByPro() {
+    public List<String> selectOutStockByPro() {
         int proStatus = 1;
         int continuousDays = 0;
         List<String> skuCodes = proSuggestReplenishmentDao.selectOutStockByPro(proStatus,continuousDays);
-        ProReplenishmentOutStockRespVo proReplenishmentOutStockRespVo = new ProReplenishmentOutStockRespVo();
-        proReplenishmentOutStockRespVo.setSkuCode(skuCodes);
-        return proReplenishmentOutStockRespVo;
+        return skuCodes;
     }
 
     /**
@@ -64,13 +58,11 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
      * @return
      */
     @Override
-    public ProReplenishmentOutStockRespVo selectOutStockBySell() {
+    public List<String> selectOutStockBySell() {
         int proStatus = 1;
         int continuousDays = 0;
         List<String> skuCodes = proSuggestReplenishmentDao.selectOutStockBySell(proStatus,continuousDays);
-        ProReplenishmentOutStockRespVo proReplenishmentOutStockRespVo = new ProReplenishmentOutStockRespVo();
-        proReplenishmentOutStockRespVo.setSkuCode(skuCodes);
-        return proReplenishmentOutStockRespVo;
+        return skuCodes;
     }
 
     /**
@@ -85,19 +77,25 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
         Calendar calendar = Calendar.getInstance();
         Boolean flag = true;
         for (PurchaseApplyRespVo purchaseApplyRespVo : purchaseApplyRespVos) {
-            if (!(purchaseApplyRespVo.getAdviceOrders() >= purchaseApplyRespVo.getOutPuts())) {
-                calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+9);
-                purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
-                purRespVo = purchaseApplyRespVo;
-                flag = false;
-                break;
+            if (purchaseApplyRespVo.getAdviceOrders() != null & purchaseApplyRespVo.getArrivalCycle() != null & purchaseApplyRespVo.getOutPuts() != null & purchaseApplyRespVo.getNeedDays() != null){
+                if (!(purchaseApplyRespVo.getAdviceOrders() >= purchaseApplyRespVo.getOutPuts())) {
+                    calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVo.getNumOrderApproved().intValue()+purchaseApplyRespVo.getNumApprovedPayment().intValue()+purchaseApplyRespVo.getNumPaymentConfirm().intValue());
+                    purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
+                    purRespVo = purchaseApplyRespVo;
+                    flag = false;
+                    break;
+                }
             }
         }
         if (flag){
-            PurchaseApplyRespVo purchaseApplyRespVo = purchaseApplyRespVos.get(purchaseApplyRespVos.size() - 1);
-            calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+9);
-            purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
-            purRespVo = purchaseApplyRespVo;
+            if (purchaseApplyRespVos.size()>0 ){
+                PurchaseApplyRespVo purchaseApplyRespVo = purchaseApplyRespVos.get(purchaseApplyRespVos.size() - 1);
+                if (purchaseApplyRespVo.getAdviceOrders() != null & purchaseApplyRespVo.getArrivalCycle() != null & purchaseApplyRespVo.getOutPuts() != null & purchaseApplyRespVo.getNeedDays() != null){
+                    calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVo.getNumOrderApproved().intValue()+purchaseApplyRespVo.getNumApprovedPayment().intValue()+purchaseApplyRespVo.getNumPaymentConfirm().intValue());
+                    purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
+                    purRespVo = purchaseApplyRespVo;
+                }
+            }
         }
         return purRespVo;
     }

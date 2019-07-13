@@ -1,14 +1,9 @@
 package com.aiqin.bms.scmp.api.bireport.service;
 
-import com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo;
+import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.bireport.domain.request.*;
+import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.github.pagehelper.PageInfo;
-
-import java.util.List;
 
 public interface ReportService {
 
@@ -17,19 +12,76 @@ public interface ReportService {
      * @param supplierArrivalRateReqVo
      * @return
      */
-    PageInfo<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+    // PageInfo<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+    PageResData selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
     /**
      *  批次商品进销存
      * @param goodsBuySalesReqVo
      * @return
      */
-    PageInfo<GoodsBuySalesRespVo> selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
+    PageResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
     /**
      *  赠品进销存
      * @param giftsBuySalesReqVo
      * @return
      */
-    PageInfo<GiftsBuySalesRespVo> selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
+    PageResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
+
+    /**
+     *  供应商退货(退供)
+     * @param supplierReturnReqVo
+     * @return
+     */
+    PageResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
+
+    /**
+     *  新品批次动销率
+     * @param newProductBatchMovingRateReqVo
+     * @return
+     */
+    PageResData selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
+
+    /**
+     *  门店复购率
+     * @param storeRepurchaseRateReqVo
+     * @return
+     */
+    PageResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo);
+
+    /**
+     *  负毛利
+     * @param negativeMarginReqVo
+     * @return
+     */
+    PageResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
+
+    /**
+     *  建议补货
+     * @param suggestReplenishmentReqVo
+     * @return
+     */
+    PageResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
+
+    /**
+     *  低库存
+     * @param highLowInventoryReqVo
+     * @return
+     */
+    PageResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+
+    /**
+     *  高库存
+     * @param highLowInventoryReqVo
+     * @return
+     */
+    PageResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+
+    /**
+     *  大效期
+     * @param bigEffectReqVo
+     * @return
+     */
+    PageResData selectBigEffect(BigEffectReqVo bigEffectReqVo);
 }

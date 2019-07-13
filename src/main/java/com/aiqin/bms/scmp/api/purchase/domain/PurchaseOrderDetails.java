@@ -136,6 +136,10 @@ public class PurchaseOrderDetails {
     @JsonProperty("order_type")
     private String orderType;
 
+    @ApiModelProperty(value="评分编码")
+    @JsonProperty("score_code")
+    private String scoreCode;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

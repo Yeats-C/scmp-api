@@ -11,6 +11,10 @@ import java.io.Serializable;
 @Data
 public class SupplierArrivalRateRespVo implements Serializable {
 
+    @ApiModelProperty("主键")
+    @JsonProperty("id")
+    private Long id;
+
     @ApiModelProperty("入库时间begin")
     @JsonProperty("begin_inbound_time")
     private String beginInboundTime;

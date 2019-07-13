@@ -468,7 +468,11 @@
   <select id="getCycleInfo" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig">
     select
     product_code as productCode, product_name as productName, sku_code as skuCode, sku_name as skuName,
-    turnover_period_after_arrival as turnoverPeriodAfterArrival from
+    turnover_period_after_arrival as turnoverPeriodAfterArrival, transport_center_code as transportCenterCode,
+    transport_center_name as transportCenterName, arrival_cycle as arrivalCycle, order_cycle as orderCycle,
+    basic_inventory_day as basicInventoryDay, large_inventory_warn_day as largeInventoryWarnDay,
+    big_effect_period_warn_day as bigEffectPeriodWarnDay
+    from
     product_sku_config
     where sku_code = #{skuCode,jdbcType=VARCHAR}
     and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
