@@ -16,7 +16,6 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
-import com.aiqin.bms.scmp.api.product.service.ProductSkuInspReportService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
@@ -24,6 +23,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailRespon
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
+import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
@@ -79,9 +79,9 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     @Resource
     private SupplierScoreService scoreService;
     @Resource
-    private ProductSkuInspReportService productSkuInspReportService;
-    @Resource
     private ProductSkuInspReportDao productSkuInspReportDao;
+    @Resource
+    private PurchaseApprovalService purchaseApprovalService;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -212,6 +212,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         purchaseOrder.setPurchaseOrderCode(purchaseProductCode);
         purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
+        purchaseOrder.setCreateById(purchaseOrderRequest.getPersonId());
+        purchaseOrder.setCreateByName(purchaseOrderRequest.getPersonName());
         // 添加采购单
         Integer orderCount = purchaseOrderDao.insert(purchaseOrder);
         if(orderCount > 0){
@@ -270,6 +272,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 form.setUpdateByName(purchaseOrderRequest.getPersonName());
                 purchaseApplyProductDao.updateInfoStatus(form);
             }
+            // 调审批流
+            purchaseApprovalService.workFlow(purchaseProductCode, purchaseOrderRequest.getPersonName(), details.getDirectSupervisorCode());
         }
         return HttpResponse.success();
     }

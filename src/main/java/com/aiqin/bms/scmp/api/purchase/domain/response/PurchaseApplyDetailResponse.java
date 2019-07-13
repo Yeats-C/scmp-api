@@ -18,6 +18,10 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("apply_product_id")
     private String applyProductId;
 
+    @ApiModelProperty(value="采购单id")
+    @JsonProperty("purchase_order_id")
+    private String purchaseOrderId;
+
     @ApiModelProperty(value="采购单号")
     @JsonProperty("purchase_order_code")
     private String purchaseOrderCode;
