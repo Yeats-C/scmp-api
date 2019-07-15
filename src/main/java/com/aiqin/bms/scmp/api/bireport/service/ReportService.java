@@ -92,4 +92,38 @@ public interface ReportService {
      */
     PageResData selectBigEffect(BigEffectReqVo bigEffectReqVo);
 
+    /**
+     *  月销售情况
+     * @param monthlySalesReqVo
+     * @return
+     */
+    PageResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
+
+    /**
+     *  月毛利率情况
+     * @param monthlyGrossMarginReqVo
+     * @return
+     */
+    PageResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
+
+    /**
+     *  月销售达成情况
+     * @param monthSalesAchievementReqVo
+     * @return
+     */
+    PageResData selectMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo);
+
+    /**
+     *  月累计品类销售情况
+     * @param monthCumulativeBrandSalesReqVo
+     * @return
+     */
+    PageResData selectMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo);
+
+    /**
+     *  月累计品类毛利率情况
+     * @param monthCumulativeGrossProfitMarginReqVo
+     * @return
+     */
+    PageResData selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo);
 }

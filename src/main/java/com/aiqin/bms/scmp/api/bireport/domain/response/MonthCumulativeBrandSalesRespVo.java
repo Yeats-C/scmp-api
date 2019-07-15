@@ -1,21 +1,25 @@
-package com.aiqin.bms.scmp.api.bireport.domain.pojo;
+package com.aiqin.bms.scmp.api.bireport.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("月销售情况实体Model")
+@ApiModel("月累计品类销售情况respVo")
 @Data
-public class BiMonthlySales {
+public class MonthCumulativeBrandSalesRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("月份")
-    @JsonProperty("month")
-    private String month;
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
+
+    @ApiModelProperty("时间finish")
+    @JsonProperty("finish_create_time")
+    private String finishCreateTime;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -40,6 +44,14 @@ public class BiMonthlySales {
     @ApiModelProperty("数据类型")
     @JsonProperty("data_style")
     private String dataStyle;
+
+    @ApiModelProperty("品类编码")
+    @JsonProperty("category_type_code")
+    private String categoryTypeCode;
+
+    @ApiModelProperty("品类名称")
+    @JsonProperty("category_type_name")
+    private String categoryTypeName;
 
     @ApiModelProperty("渠道销售额")
     @JsonProperty("qun_order_amount")
@@ -80,6 +92,5 @@ public class BiMonthlySales {
     @ApiModelProperty("分销环比")
     @JsonProperty("fen_sequential")
     private String fenSequential;
-
 
 }

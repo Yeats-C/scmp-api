@@ -1,21 +1,25 @@
-package com.aiqin.bms.scmp.api.bireport.domain.pojo;
+package com.aiqin.bms.scmp.api.bireport.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("月销售达成情况实体Model")
+@ApiModel("月销售达成情况respVo")
 @Data
-public class BiMonthSalesAchievement {
+public class MonthSalesAchievementRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("月份")
-    @JsonProperty("month")
-    private String month;
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
+
+    @ApiModelProperty("时间finish")
+    @JsonProperty("finish_create_time")
+    private String finishCreateTime;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -29,37 +33,25 @@ public class BiMonthSalesAchievement {
     @JsonProperty("price_channel_code")
     private String priceChannelCode;
 
-    @ApiModelProperty("渠道名称")
+    @ApiModelProperty("渠道")
     @JsonProperty("price_channel_name")
     private String priceChannelName;
 
     @ApiModelProperty("门店类型")
     @JsonProperty("store_type")
-    private Integer storeType;
+    private String storeType;
 
     @ApiModelProperty("数据类型")
     @JsonProperty("data_style")
-    private Integer dataStyle;
+    private String dataStyle;
 
-    @ApiModelProperty("销售额")
-    @JsonProperty("data_type")
-    private String dataType;
+    @ApiModelProperty("品类编码")
+    @JsonProperty("category_type_code")
+    private String categoryTypeCode;
 
-    @ApiModelProperty("去年同期销售额")
-    @JsonProperty("last_year_sales")
-    private Integer lastYearSales;
-
-    @ApiModelProperty("上月销售额")
-    @JsonProperty("last_month_sales")
-    private Integer lastMonthSales;
-
-    @ApiModelProperty("同比")
-    @JsonProperty("compared_same")
-    private Integer comparedSame;
-
-    @ApiModelProperty("环比")
-    @JsonProperty("sequential")
-    private Integer sequential;
+    @ApiModelProperty("品类名称")
+    @JsonProperty("category_type_name")
+    private String categoryTypeName;
 
     @ApiModelProperty("渠道销售额")
     @JsonProperty("qun_amount")
@@ -79,10 +71,9 @@ public class BiMonthSalesAchievement {
 
     @ApiModelProperty("分销预算额")
     @JsonProperty("fen_budget")
-    private Integer feb_Budget;
+    private Integer febBudget;
 
     @ApiModelProperty("分销达成率")
     @JsonProperty("fen_yield_rate")
     private Integer fenYieldRate;
-
 }
