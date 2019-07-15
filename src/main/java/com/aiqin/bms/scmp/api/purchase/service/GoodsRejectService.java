@@ -69,4 +69,6 @@ public interface GoodsRejectService {
     HttpResponse rejectCancel(String reject_record_id);
 
     ILockStockBatchReqVO handleStockParam(List<RejectRecordDetail> detailList, RejectRecord rejectRecord);
+
+    HttpResponse rejectStockProduct(RejectProductRequest rejectQueryRequest);
 }

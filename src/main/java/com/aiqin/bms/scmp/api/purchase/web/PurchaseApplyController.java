@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author: zhao shuai
@@ -154,4 +156,11 @@ public class PurchaseApplyController {
                                                            @RequestParam("transport_center_code") String transportCenterCode) {
         return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode);
     }
+
+    @GetMapping("/product/contrast")
+    @ApiOperation("查询采购对比信息")
+    public HttpResponse contrast(List<PurchaseApplyProduct> list) {
+        return purchaseApplyService.contrast(list);
+    }
+
 }

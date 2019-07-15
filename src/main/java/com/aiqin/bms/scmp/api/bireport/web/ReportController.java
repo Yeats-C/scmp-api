@@ -402,7 +402,53 @@ public class ReportController {
         return HttpResponse.success(reportService.selectHighInventory(highLowInventoryReqVo));
     }
 
-    // TODO: 2019/7/12 品牌促销  品类促销  数据库表都没 
+    // TODO: 2019/7/12 品牌促销  品类促销  mapper无
+
+    @GetMapping("/search/brand/sale")
+    @ApiOperation("品牌促销")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "month", value = "月份", type = "Integer"),
+            @ApiImplicitParam(name = "channel_name", value = "渠道", type = "String"),
+            @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
+            @ApiImplicitParam(name = "department_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<PageResData<CategorySaleRespVo>> selectBrandSale(
+            @RequestParam(value = "month", required = false) int month,
+            @RequestParam(value = "channel_name", required = false) String channelName,
+            @RequestParam(value = "department_code", required = false) String departmentCode,
+            @RequestParam(value = "department_name", required = false) String departmentName,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        CategorySaleReqVo categorySaleReqVo = new CategorySaleReqVo(month,channelName,departmentCode,departmentName);
+        categorySaleReqVo.setPageNo(pageNo);
+        categorySaleReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectCategorySale(categorySaleReqVo));
+    }
+
+    @GetMapping("/search/category/sale")
+    @ApiOperation("品类促销")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "month", value = "月份", type = "Integer"),
+            @ApiImplicitParam(name = "channel_name", value = "渠道", type = "String"),
+            @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
+            @ApiImplicitParam(name = "department_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<PageResData<CategorySaleRespVo>> selectCategorySale(
+            @RequestParam(value = "month", required = false) int month,
+            @RequestParam(value = "channel_name", required = false) String channelName,
+            @RequestParam(value = "department_code", required = false) String departmentCode,
+            @RequestParam(value = "department_name", required = false) String departmentName,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        CategorySaleReqVo categorySaleReqVo = new CategorySaleReqVo(month,channelName,departmentCode,departmentName);
+        categorySaleReqVo.setPageNo(pageNo);
+        categorySaleReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectCategorySale(categorySaleReqVo));
+    }
     
     @GetMapping("/search/big/effect")
     @ApiOperation("大效期")
