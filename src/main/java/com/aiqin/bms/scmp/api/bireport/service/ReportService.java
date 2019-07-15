@@ -79,9 +79,17 @@ public interface ReportService {
     PageResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
+     *  品类促销
+     * @param categorySaleReqVo
+     * @return
+     */
+    PageResData selectCategorySale(CategorySaleReqVo categorySaleReqVo);
+
+    /**
      *  大效期
      * @param bigEffectReqVo
      * @return
      */
     PageResData selectBigEffect(BigEffectReqVo bigEffectReqVo);
+
 }

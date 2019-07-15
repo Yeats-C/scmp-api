@@ -18,6 +18,7 @@ import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
@@ -535,6 +536,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             flow.setDayTwo(vo.getNumApprovedPayment() == null ? 0 : vo.getNumApprovedPayment().intValue());
             flow.setDayThree(vo.getNumPaymentConfirm() == null ? 0 : vo.getNumPaymentConfirm().intValue());
             flow.setDayFour(vo.getNeedDays() == null ? 0 : vo.getNeedDays().intValue());
+            flow.setAverageCount(vo.getAverageAmount() == null ? 0 : vo.getAverageAmount().intValue());
             Long availableNum = vo.getAvailableNum() == null ? 0 : vo.getAvailableNum();
             Long averageAmount = vo.getAverageAmount() == null ? 0 : vo.getAverageAmount();
             if(availableNum == 0 || averageAmount == 0){
@@ -547,6 +549,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }else {
                 flow.setPurchaseTurnover(singleCount / averageAmount.intValue());
             }
+            flow.setPurchaseCycle(flow.getDayOne() + flow.getDayTwo() + flow.getDayThree() + flow.getDayFour() + flow.getOrderCycle());
             // 在途库存的查询(查询采购单商品审核完成、入库开始、入库中、备货发货的时间与采购数量)
             List<PurchaseApplyDetailResponse> statusByCount = purchaseOrderProductDao.orderStatusByCount(skuCode, transportCenterCode);
             if(CollectionUtils.isNotEmptyCollection(statusByCount)){
@@ -568,5 +571,17 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
         }
         return HttpResponse.success(flow);
+    }
+
+    @Override
+    public HttpResponse contrast(List<PurchaseApplyProduct> list){
+        if(CollectionUtils.isEmptyCollection(list)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 查询采购后的信息
+        for(PurchaseApplyProduct product:list){
+            // 计算采购的总营业额
+        }
+        return HttpResponse.success();
     }
 }

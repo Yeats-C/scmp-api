@@ -213,6 +213,25 @@ public class ReportServiceImpl implements ReportService {
     }
 
     /**
+     *  品类促销
+     * @param categorySaleReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectCategorySale(CategorySaleReqVo categorySaleReqVo) {
+        try {
+            PageHelper.startPage(categorySaleReqVo.getPageNo(), categorySaleReqVo.getPageSize());
+            List<CategorySaleRespVo> categorySaleRespVo = reportDao.selectCategorySale(categorySaleReqVo);
+            Integer total = reportDao.countCategorySale(categorySaleReqVo);
+            return new PageResData<CategorySaleRespVo>(total,categorySaleRespVo);
+        } catch (Exception ex) {
+            log.error("查询高库存失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
      *  大效期
      * @param bigEffectReqVo
      * @return
