@@ -34,4 +34,7 @@ public class LogData {
 
     @ApiModelProperty("备注")
     private String remark;
+
+    @ApiModelProperty("状态")
+    private String status;
 }
