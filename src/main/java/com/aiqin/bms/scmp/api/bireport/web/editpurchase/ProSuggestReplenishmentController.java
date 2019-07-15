@@ -62,7 +62,7 @@ public class ProSuggestReplenishmentController {
             @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
             @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
             @ApiImplicitParam(name = "transport_center_code", value = "仓库名称", type = "String") })
-    public HttpResponse<List<PurchaseApplyRespVo>> selectPurchaseApplySkuList(
+    public HttpResponse<PurchaseApplyRespVo> selectPurchaseApplySkuList(
             @RequestParam(value = "sku_code", required = false) String skuCode,
             @RequestParam(value = "supplier_code", required = false) String supplierCode,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterName){
