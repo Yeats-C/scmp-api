@@ -628,7 +628,7 @@ public class ReportController {
     }
 
     @GetMapping("/search/month/cumulative/gross/profit/margin")
-    @ApiOperation("月累计品类毛利率情况")
+    @ApiOperation("月累计品类毛利率情况(带分页)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
