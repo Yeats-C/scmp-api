@@ -362,6 +362,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     operationLogVo.setObjectType(ObjectTypeCode.OUTBOUND_ODER.getStatus());
                     operationLogVo.setObjectId(outboundResVo.getOutboundOderCode());
                     List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
+                    pageList.stream().forEach(logData -> logData.setStatus(outbound.getOutboundStatusName()));
                     outboundResVo.setLogDataList(pageList);
                 }
                 return outboundResVo;
