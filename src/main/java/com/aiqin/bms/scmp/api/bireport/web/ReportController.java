@@ -495,4 +495,48 @@ public class ReportController {
         return HttpResponse.success(reportService.selectBigEffect(bigEffectReqVo));
     }
 
+    @GetMapping("/search/monthly/sales")
+    @ApiOperation("月销售情况")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
+            @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
+            @ApiImplicitParam(name = "product_brand_code", value = "品牌编码", type = "String"),
+            @ApiImplicitParam(name = "product_brand_name", value = "品牌", type = "String"),
+            @ApiImplicitParam(name = "supply_unit_code", value = "供应商code", type = "String"),
+            @ApiImplicitParam(name = "supply_unit_name", value = "供应商name", type = "String"),
+            @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
+            @ApiImplicitParam(name = "product_category_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "procurement_section_code", value = "采购组编码", type = "String"),
+            @ApiImplicitParam(name = "procurement_section_name", value = "采购组", type = "String"),
+            @ApiImplicitParam(name = "transport_center_code", value = "仓库编码", type = "String"),
+            @ApiImplicitParam(name = "transport_center_name", value = "仓库名称", type = "String"),
+            @ApiImplicitParam(name = "warehouse_code", value = "库房编码", type = "String"),
+            @ApiImplicitParam(name = "warehouse_name", value = "库房名称", type = "String"),
+            @ApiImplicitParam(name = "big_effect_period_warn_day", value = "状态", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<PageResData<MonthlySalesRespVo>> selectMonthlySales(
+            @RequestParam(value = "sku_code", required = false) String skuCode,
+            @RequestParam(value = "sku_name", required = false) String skuName,
+            @RequestParam(value = "product_brand_code", required = false) String productBrandCode,
+            @RequestParam(value = "product_brand_name", required = false) String productBrandName,
+            @RequestParam(value = "supply_unit_code", required = false) String supplyUnitCode,
+            @RequestParam(value = "supply_unit_name", required = false) String supplyUnitName,
+            @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
+            @RequestParam(value = "product_category_name", required = false) String productCategoryName,
+            @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
+            @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
+            @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
+            @RequestParam(value = "transport_center_name", required = false) String transportCenterName,
+            @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
+            @RequestParam(value = "warehouse_name", required = false) String warehouseName,
+            @RequestParam(value = "big_effect_period_warn_day", required = false) String bigEffectPeriodWarnDay,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        MonthlySalesReqVo monthlySalesReqVo = new MonthlySalesReqVo();
+        monthlySalesReqVo.setPageNo(pageNo);
+        monthlySalesReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectMonthlySales(monthlySalesReqVo));
+    }
 }

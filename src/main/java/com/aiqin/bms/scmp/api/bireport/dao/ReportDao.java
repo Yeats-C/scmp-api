@@ -116,5 +116,14 @@ public interface ReportDao {
 
     Integer countBigEffect(BigEffectReqVo bigEffectReqVo);
 
+    /**
+     *  月销售情况
+     * @param monthlySalesReqVo
+     * @return
+     */
+    List<MonthlySalesRespVo> selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
+
+    Integer countMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
+
 
 }

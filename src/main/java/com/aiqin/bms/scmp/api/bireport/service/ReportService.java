@@ -92,4 +92,10 @@ public interface ReportService {
      */
     PageResData selectBigEffect(BigEffectReqVo bigEffectReqVo);
 
+    /**
+     *  月销售情况
+     * @param monthlySalesReqVo
+     * @return
+     */
+    PageResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
 }

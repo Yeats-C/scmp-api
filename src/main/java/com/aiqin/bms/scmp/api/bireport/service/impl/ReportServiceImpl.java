@@ -249,4 +249,23 @@ public class ReportServiceImpl implements ReportService {
             throw new GroundRuntimeException(ex.getMessage());
         }
     }
+
+    /**
+     *  月销售情况
+     * @param monthlySalesReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo) {
+        try {
+            PageHelper.startPage(monthlySalesReqVo.getPageNo(), monthlySalesReqVo.getPageSize());
+            List<MonthlySalesRespVo> monthlySalesRespVos = reportDao.selectMonthlySales(monthlySalesReqVo);
+            Integer total = reportDao.countMonthlySales(monthlySalesReqVo);
+            return new PageResData<MonthlySalesRespVo>(total,monthlySalesRespVos);
+        } catch (Exception ex) {
+            log.error("查询高库存失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
 }
