@@ -189,6 +189,7 @@ public class InboundServiceImpl implements InboundService {
                     operationLogVo.setObjectType(ObjectTypeCode.INBOUND_ODER.getStatus());
                     operationLogVo.setObjectId(inboundResVo.getInboundOderCode());
                     List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
+                    pageList.stream().forEach(logData -> logData.setStatus(inbound.getInboundStatusName()));
                     inboundResVo.setLogDataList(pageList);
                 }
                 return inboundResVo;
