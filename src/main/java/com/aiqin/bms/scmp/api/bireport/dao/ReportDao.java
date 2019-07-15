@@ -99,6 +99,15 @@ public interface ReportDao {
     Integer countHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
+     *  品类促销
+     * @param categorySaleReqVo
+     * @return
+     */
+    List<CategorySaleRespVo> selectCategorySale(CategorySaleReqVo categorySaleReqVo);
+
+    Integer countCategorySale(CategorySaleReqVo categorySaleReqVo);
+
+    /**
      *  大效期
      * @param bigEffectReqVo
      * @return
@@ -106,4 +115,6 @@ public interface ReportDao {
     List<BigEffectRespVo> selectBigEffect(BigEffectReqVo bigEffectReqVo);
 
     Integer countBigEffect(BigEffectReqVo bigEffectReqVo);
+
+
 }
