@@ -125,5 +125,23 @@ public interface ReportDao {
 
     Integer countMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
 
+    /**
+     *  月毛利率情况
+     * @param monthlyGrossMarginReqVo
+     * @return
+     */
+    List<MonthlySalesRespVo> selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
+
+    Integer countMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
+
+    /**
+     *  月销售达成情况
+     * @param monthSalesAchievementReqVo
+     * @return
+     */
+    List<MonthSalesAchievementRespVo> selectMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo);
+
+    Integer countMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo);
+
 
 }

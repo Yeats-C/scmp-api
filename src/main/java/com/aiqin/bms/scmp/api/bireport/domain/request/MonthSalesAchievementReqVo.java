@@ -8,9 +8,9 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-@ApiModel("月销售情况request")
+@ApiModel("月销售达成情况request")
 @Data
-public class MonthlySalesReqVo extends PageReq implements Serializable {
+public class MonthSalesAchievementReqVo extends PageReq implements Serializable {
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -44,7 +44,15 @@ public class MonthlySalesReqVo extends PageReq implements Serializable {
     @JsonProperty("finish_create_time")
     private String finishCreateTime;
 
-    public MonthlySalesReqVo(String productSortCode, String productSortName, String priceChannelCode, String priceChannelName, String storeType, String dataStyle, String beginCreateTime, String finishCreateTime) {
+    @ApiModelProperty("品类编码")
+    @JsonProperty("category_type_code")
+    private String categoryTypeCode;
+
+    @ApiModelProperty("品类名称")
+    @JsonProperty("category_type_name")
+    private String categoryTypeName;
+
+    public MonthSalesAchievementReqVo(String productSortCode, String productSortName, String priceChannelCode, String priceChannelName, String storeType, String dataStyle, String beginCreateTime, String finishCreateTime, String categoryTypeCode, String categoryTypeName) {
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
         this.priceChannelCode = priceChannelCode;
@@ -53,8 +61,10 @@ public class MonthlySalesReqVo extends PageReq implements Serializable {
         this.dataStyle = dataStyle;
         this.beginCreateTime = beginCreateTime;
         this.finishCreateTime = finishCreateTime;
+        this.categoryTypeCode = categoryTypeCode;
+        this.categoryTypeName = categoryTypeName;
     }
 
-    public MonthlySalesReqVo() {
+    public MonthSalesAchievementReqVo() {
     }
 }
