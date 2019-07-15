@@ -34,25 +34,25 @@ public class ProSuggestReplenishmentController {
 
     @GetMapping("/search/Replenishment")
     @ApiOperation("获取14大A品建议补货skuCode")
-    public HttpResponse<List<ProReplenishmentOutStockRespVo>> selectSuggestReplenishmentByPro(){
+    public HttpResponse<List<String>> selectSuggestReplenishmentByPro(){
         return HttpResponse.success(proSuggestReplenishmentService.selectSuggestReplenishmentByPro());
     }
 
     @GetMapping("/search/sell/Replenishment")
     @ApiOperation("获取畅销建议补货skuCode")
-    public HttpResponse<List<ProReplenishmentOutStockRespVo>> selectSuggestReplenishmentBySell(){
+    public HttpResponse<List<String>> selectSuggestReplenishmentBySell(){
         return HttpResponse.success(proSuggestReplenishmentService.selectSuggestReplenishmentBySell());
     }
 
     @GetMapping("/search/outstock")
     @ApiOperation("获取14大A品缺货")
-    public HttpResponse<List<ProReplenishmentOutStockRespVo>> selectOutStockByPro(){
+    public HttpResponse<List<String>> selectOutStockByPro(){
         return HttpResponse.success(proSuggestReplenishmentService.selectOutStockByPro());
     }
 
     @GetMapping("/search/sell/outstock")
     @ApiOperation("获取畅销缺货")
-    public HttpResponse<List<ProReplenishmentOutStockRespVo>> selectOutStockBySell(){
+    public HttpResponse<List<String>> selectOutStockBySell(){
         return HttpResponse.success(proSuggestReplenishmentService.selectOutStockBySell());
     }
 
@@ -62,7 +62,7 @@ public class ProSuggestReplenishmentController {
             @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
             @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
             @ApiImplicitParam(name = "transport_center_code", value = "仓库名称", type = "String") })
-    public HttpResponse<List<PurchaseApplyRespVo>> selectPurchaseApplySkuList(
+    public HttpResponse<PurchaseApplyRespVo> selectPurchaseApplySkuList(
             @RequestParam(value = "sku_code", required = false) String skuCode,
             @RequestParam(value = "supplier_code", required = false) String supplierCode,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterName){

@@ -80,6 +80,9 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
         if(Objects.isNull(warehouseResVo)){
             throw new BizException(ResultCode.SUPERVISORY_WAREHOUSE_NOT_EXISTS);
         }
+        if (Objects.isNull(reqVo.getOrderType())) {
+            throw new BizException(ResultCode.ORDER_TYPE_EMPTY);
+        }
         order.setWarehouseCode(warehouseResVo.getWarehouseCode());
         order.setWarehouseName(warehouseResVo.getWarehouseName());
         //获取订单编号
@@ -93,7 +96,7 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
         //获取订单类型名称
         SupervisoryWarehouseOrderTypeEnum typeName = SupervisoryWarehouseOrderTypeEnum.getName(order.getOrderType());
         if(Objects.isNull(typeName)){
-            throw new BizException(ResultCode.OBJECT_EMPTY);
+            throw new BizException(ResultCode.ORDER_TYPE_ERROR);
         }
         order.setOrderTypeName(typeName.getName());
         //保存订单信息
