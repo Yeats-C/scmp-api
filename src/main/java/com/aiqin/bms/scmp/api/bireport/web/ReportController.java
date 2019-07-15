@@ -591,4 +591,74 @@ public class ReportController {
         monthSalesAchievementReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthSalesAchievement(monthSalesAchievementReqVo));
     }
+
+    @GetMapping("/search/month/cumulative/brand/sales")
+    @ApiOperation("月累计品类销售情况")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
+            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "data_style", value = "数据类型", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "category_type_code", value = "品类编码", type = "String"),
+            @ApiImplicitParam(name = "category_type_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<PageResData<MonthCumulativeBrandSalesRespVo>> selectMonthCumulativeBrandSales(
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
+            @RequestParam(value = "store_type", required = false) String storeType,
+            @RequestParam(value = "data_style", required = false) String dataStyle,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "category_type_code", required = false) String categoryTypeCode,
+            @RequestParam(value = "category_type_name", required = false) String categoryTypeName,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeType,dataStyle,beginCreateTime,finishCreateTime,categoryTypeCode,categoryTypeName);
+        monthCumulativeBrandSalesReqVo.setPageNo(pageNo);
+        monthCumulativeBrandSalesReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo));
+    }
+
+    @GetMapping("/search/month/cumulative/gross/profit/margin")
+    @ApiOperation("月累计品类毛利率情况")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
+            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "data_style", value = "数据类型", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "category_type_code", value = "品类编码", type = "String"),
+            @ApiImplicitParam(name = "category_type_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public HttpResponse<PageResData<MonthCumulativeGrossProfitMarginRespVo>> selectMonthCumulativeGrossProfitMargin(
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
+            @RequestParam(value = "store_type", required = false) String storeType,
+            @RequestParam(value = "data_style", required = false) String dataStyle,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "category_type_code", required = false) String categoryTypeCode,
+            @RequestParam(value = "category_type_name", required = false) String categoryTypeName,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeType,dataStyle,beginCreateTime,finishCreateTime,categoryTypeCode,categoryTypeName);
+        monthCumulativeGrossProfitMarginReqVo.setPageNo(pageNo);
+        monthCumulativeGrossProfitMarginReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo));
+    }
 }

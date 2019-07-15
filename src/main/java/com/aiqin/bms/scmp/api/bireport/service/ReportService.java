@@ -112,4 +112,18 @@ public interface ReportService {
      * @return
      */
     PageResData selectMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo);
+
+    /**
+     *  月累计品类销售情况
+     * @param monthCumulativeBrandSalesReqVo
+     * @return
+     */
+    PageResData selectMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo);
+
+    /**
+     *  月累计品类毛利率情况
+     * @param monthCumulativeGrossProfitMarginReqVo
+     * @return
+     */
+    PageResData selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo);
 }

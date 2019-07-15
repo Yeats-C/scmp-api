@@ -306,4 +306,42 @@ public class ReportServiceImpl implements ReportService {
             throw new GroundRuntimeException(ex.getMessage());
         }
     }
+
+    /**
+     *  月累计品类销售情况
+     * @param monthCumulativeBrandSalesReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo) {
+        try {
+            PageHelper.startPage(monthCumulativeBrandSalesReqVo.getPageNo(), monthCumulativeBrandSalesReqVo.getPageSize());
+            List<MonthCumulativeBrandSalesRespVo> monthCumulativeBrandSalesRespVos = reportDao.selectMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo);
+            Integer total = reportDao.countMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo);
+            return new PageResData<MonthCumulativeBrandSalesRespVo>(total,monthCumulativeBrandSalesRespVos);
+        } catch (Exception ex) {
+            log.error("月销售达成情况");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  月累计品类毛利率情况
+     * @param monthCumulativeGrossProfitMarginReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo) {
+        try {
+            PageHelper.startPage(monthCumulativeGrossProfitMarginReqVo.getPageNo(), monthCumulativeGrossProfitMarginReqVo.getPageSize());
+            List<MonthCumulativeGrossProfitMarginRespVo> monthCumulativeGrossProfitMarginRespVos = reportDao.selectMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo);
+            Integer total = reportDao.countMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo);
+            return new PageResData<MonthCumulativeGrossProfitMarginRespVo>(total,monthCumulativeGrossProfitMarginRespVos);
+        } catch (Exception ex) {
+            log.error("月销售达成情况");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
 }
