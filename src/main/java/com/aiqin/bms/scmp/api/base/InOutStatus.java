@@ -11,7 +11,7 @@ package com.aiqin.bms.scmp.api.base;
 public enum InOutStatus {
     CREATE_INOUT((byte)1,"新建"),
     SEND_INOUT((byte)2,"已发送"),
-    RECEIVE_INOUT((byte)3,"已回传"),
+    RECEIVE_INOUT((byte)3,"开始作业"),
     COMPLETE_INOUT((byte)4,"完成"),
     CALL_OFF((byte)5,"取消");
     private byte code;
