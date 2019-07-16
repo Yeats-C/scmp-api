@@ -1,7 +1,10 @@
 package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.PageReq;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -42,5 +45,17 @@ public class PageUtil {
         basePage.setPageNo(page);
         basePage.setPageSize(pageSize);
         return basePage;
+    }
+    public static BasePage myPage(List<Long> longs, PageReq reqVO){
+        if(CollectionUtils.isEmpty(longs)){
+            return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
+        }
+        int total = longs.size();
+        if (total > reqVO.getPageSize()*reqVO.getPageNo()) {
+            longs = longs.subList((reqVO.getPageNo() - 1) * reqVO.getPageSize(), reqVO.getPageNo() * reqVO.getPageSize());
+        }else {
+            longs = longs.subList((reqVO.getPageNo() - 1) * reqVO.getPageSize(), total);
+        }
+        return null;
     }
 }

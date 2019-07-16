@@ -257,5 +257,7 @@ public interface ResultCode {
     MessageId ORDER_TYPE_EMPTY= MessageId.create(Project.SCMP_API, 1000, "订单类型为空,请传入订单订单类型");
     MessageId ORDER_TYPE_ERROR= MessageId.create(Project.SCMP_API, 1000, "订单类型传输错误,请传入正确的订单类型");
 
-
+    //导入
+    MessageId IMPORT_EXCEPTION = MessageId.create(Project.SCMP_API, 1000, "导入异常，请检查格式！");
+    MessageId IMPORT_HEDE_ERROR = MessageId.create(Project.SCMP_API, 1000, "表头格式错误！");
 }

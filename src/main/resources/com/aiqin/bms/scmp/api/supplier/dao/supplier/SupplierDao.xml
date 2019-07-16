@@ -121,4 +121,13 @@
     where
       supplier_name = #{supplierName,jdbcType=VARCHAR}
   </select>
+  <select id="selectByNameList" resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplierMapper.BaseResultMap">
+    SELECT
+    <include refid="com.aiqin.bms.scmp.api.supplier.mapper.SupplierMapper.Base_Column_List"/>
+    from supplier where supplier_name in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+    and company_code = #{companyCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

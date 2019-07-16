@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComDe
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComListRespVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -99,4 +100,12 @@ public interface ApplySupplyComServcie {
      * @return
      */
     List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
+    /**
+     * 保存导入
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param file
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO>
+     */
+    List<ApplySupplyCompanyReqVO> dealImport(MultipartFile file);
 }

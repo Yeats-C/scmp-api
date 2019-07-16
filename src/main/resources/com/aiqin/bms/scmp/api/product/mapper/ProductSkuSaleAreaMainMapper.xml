@@ -294,6 +294,9 @@
       <result column="bsku_code"  property="skuCode" />
       <result column="bsku_name"  property="skuName" />
       <result column="bbe_disable"  property="beDisable" />
+      <result column="bcolor"  property="color" />
+      <result column="bspec"  property="spec" />
+      <result column="bmodel"  property="model" />
       <result column="bcategories_supply_channels_code"  property="categoriesSupplyChannelsCode" />
       <result column="bcategories_supply_channels_name"  property="categoriesSupplyChannelsName" />
       <result column="bdirect_delivery_supplier_code"  property="directDeliverySupplierCode" />
@@ -317,6 +320,9 @@
              a.be_disable abe_disable,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
+             e.color_name bcolor,
+             f.spec bspec,
+             e.model_number bmodel,
              b.be_disable bbe_disable,
              b.categories_supply_channels_code bcategories_supply_channels_code,
              b.categories_supply_channels_name bcategories_supply_channels_name,
@@ -335,6 +341,10 @@
                        on a.code = c.main_code
              left join product_sku_sale_area_channel d
                        on a.code = d.code
+             left join product_sku e
+                       on c.sku_code = e.sku_code
+             left join product_sku_distribution_info f
+                   on f.product_sku_code = c.sku_code
       where a.code = #{code}
   </select>
     <select id="selectListByStatusAndDate" resultMap="BaseResultMap">
