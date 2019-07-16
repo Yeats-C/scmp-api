@@ -23,25 +23,25 @@
         <where>
             1=1
             <if test="supplierCode!=null and supplierCode!=''">
-                and bsar.supplier_code=#{supplierCode}
+                and bsar.supplier_code like concat('%', #{supplierCode,jdbcType=VARCHAR}, '%')
             </if>
             <if test="supplierName!=null and supplierName!=''">
-                and bsar.supplier_name like concat('%', #{supplierName}, '%')
+                and bsar.supplier_name like concat('%', #{supplierName,jdbcType=VARCHAR}}, '%')
             </if>
             <if test="transportCenterCode!=null and transportCenterCode!=''">
-                and bsar.logistics_center_code=#{transportCenterCode}
+                and bsar.logistics_center_code like concat('%', #{transportCenterCode,jdbcType=VARCHAR}}, '%')
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bsar.category_code=#{categoryCode}
+                and bsar.category_code like concat('%', #{categoryCode,jdbcType=VARCHAR}}, '%')
             </if>
             <if test="categoryName!=null and categoryName!=''">
-                and bsar.category_name like concat('%', #{categoryName}, '%')
+                and bsar.category_name like concat('%', #{categoryName,jdbcType=VARCHAR}}, '%')
             </if>
             <if test="beginRunTime!=null and beginRunTime!=''">
-                and bsar.run_time between #{beginRunTime}
+                and bsar.run_time between #{beginRunTime,jdbcType=VARCHAR}}
             </if>
             <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+                and #{finishRunTime,jdbcType=VARCHAR}}
             </if>
         </where>
     </sql>
@@ -655,7 +655,7 @@
         </where>
     </sql>
     <select id="selectSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
-            resultMap="supplierArrivalRateResultMap">
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
         select
         bsar.id as id,
         #{beginRunTime}  as beginRunTime,
@@ -681,7 +681,29 @@
         select
         bsar.id
         from bi_supplier_arrival_rate bsar
-        <include refid="select_supplier_arrival_rate"/>
+        WHERE
+        1=1
+        <if test="supplierCode!=null and supplierCode!=''">
+            and bsar.supplier_code like concat('%', #{supplierCode,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="supplierName!=null and supplierName!=''">
+            and bsar.supplier_name like concat('%', #{supplierName,jdbcType=VARCHAR}}, '%')
+        </if>
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and bsar.logistics_center_code like concat('%', #{transportCenterCode,jdbcType=VARCHAR}}, '%')
+        </if>
+        <if test="categoryCode!=null and categoryCode!=''">
+            and bsar.category_code like concat('%', #{categoryCode,jdbcType=VARCHAR}}, '%')
+        </if>
+        <if test="categoryName!=null and categoryName!=''">
+            and bsar.category_name like concat('%', #{categoryName,jdbcType=VARCHAR}}, '%')
+        </if>
+        <if test="beginRunTime!=null and beginRunTime!=''">
+            and bsar.run_time between #{beginRunTime,jdbcType=VARCHAR}}
+        </if>
+        <if test="finishRunTime!=null and finishRunTime!=''">
+            and #{finishRunTime,jdbcType=VARCHAR}}
+        </if>
         group by bsar.id
         ) as tmp
     </select>
