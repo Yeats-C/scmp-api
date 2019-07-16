@@ -53,27 +53,10 @@
     left join product_sku c
     on a.sku_code = c.sku_code
     where a.del_flag = 0
-    <if test="skuCode != null and skuCode != '' ">
-      and a.sku_code = #{skuCode,jdbcType=VARCHAR}
-    </if>
-    <if test="skuName != null and skuName != ''  ">
-      and a.sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')
-    </if>
-    <if test="transportCenterCode != null and transportCenterCode != ''  ">
-      and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-    </if>
-    <if test="transportCenterName != null and transportCenterName != ''  ">
-      and a.transport_center_name like concat('%', #{transportCenterName,jdbcType=VARCHAR}, '%')
-    </if>
-    <if test="configStatus != null ">
-      and a.config_status = #{configStatus,jdbcType=TINYINT}
-    </if>
-    <if test="purchaseGroupCode != null and purchaseGroupCode != ''  ">
-      and c.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-    </if>
-    <if test="purchaseGroupName != null and purchaseGroupName != '' ">
-      and c.procurement_section_name like concat('%', #{purchaseGroupName,jdbcType=VARCHAR}, '%')
-    </if>
+    and a.id in
+    <foreach collection="list" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
   </select>
   <resultMap id="SkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo">
     <result column="product_code" jdbcType="VARCHAR" property="productCode" />
@@ -496,5 +479,38 @@
     on a.sku_code = c.sku_code
     where a.del_flag = 0
     and a.sku_code = #{skuCode}
+  </select>
+  <select id="selectSkuListForSaleAreaCount" resultType="java.lang.Long">
+    select
+      a.id
+    from
+    product_sku_config a
+    left join product_sku_config_spare_warehouse b
+    on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
+    where a.del_flag = 0
+    <if test="skuCode != null and skuCode != '' ">
+      and a.sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName != null and skuName != ''  ">
+      and a.sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="transportCenterCode != null and transportCenterCode != ''  ">
+      and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    </if>
+    <if test="transportCenterName != null and transportCenterName != ''  ">
+      and a.transport_center_name like concat('%', #{transportCenterName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="configStatus != null ">
+      and a.config_status = #{configStatus,jdbcType=TINYINT}
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != ''  ">
+      and c.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != '' ">
+      and c.procurement_section_name like concat('%', #{purchaseGroupName,jdbcType=VARCHAR}, '%')
+    </if>
+    group by a.id order by a.create_time desc
   </select>
 </mapper>

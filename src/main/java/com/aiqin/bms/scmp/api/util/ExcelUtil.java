@@ -3,10 +3,7 @@ package com.aiqin.bms.scmp.api.util;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,7 +29,7 @@ public class ExcelUtil {
 		HSSFRow row = sheet.createRow(0);
 		// 第四步，创建单元格，并设置值表头 设置表头居中
 		HSSFCellStyle style = wb.createCellStyle();
-		style.setAlignment(HSSFCellStyle.ALIGN_CENTER); // 创建一个居中格式
+		style.setAlignment(HorizontalAlignment.CENTER); // 创建一个居中格式
 
 		HSSFCell cell = null;
 		// 创建标题
@@ -87,7 +84,7 @@ public class ExcelUtil {
 		// 创建字体样式
 		HSSFFont font = wb.createFont();
 		// 宽度
-		font.setBoldweight((short) 80);
+		font.setBold(true);
 		// 高度
 		font.setFontHeight((short) 200);
 		// 字体
@@ -100,15 +97,15 @@ public class ExcelUtil {
 			// 创建单元格样式
 			HSSFCellStyle style = wb.createCellStyle();
 			// 左右居中
-			style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+			style.setAlignment(HorizontalAlignment.CENTER);
 			// 垂直居中
-			style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+			style.setVerticalAlignment(VerticalAlignment.CENTER);
 
 			style.setFont(font);// 设置字体
-			style.setBorderBottom(HSSFCellStyle.BORDER_THIN);
-			style.setBorderLeft(HSSFCellStyle.BORDER_THIN);
-			style.setBorderRight(HSSFCellStyle.BORDER_THIN);
-			style.setBorderTop(HSSFCellStyle.BORDER_THIN);
+			style.setBorderBottom(BorderStyle.THIN);
+			style.setBorderLeft(BorderStyle.THIN);
+			style.setBorderRight(BorderStyle.THIN);
+			style.setBorderTop(BorderStyle.THIN);
 
 			for (int titleNum = 0; titleNum < title.length; titleNum++) {
 				// 创建一个Excel的单元格

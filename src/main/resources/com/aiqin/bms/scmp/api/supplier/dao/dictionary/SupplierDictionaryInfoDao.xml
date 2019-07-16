@@ -143,7 +143,20 @@
       supplier_dictionary_code = #{code,jdbcType=VARCHAR}
     </if>
   </select>
-  <update id="infoEnabled">
+    <select id="selectByName" resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo">
+      select
+       b.supplier_dictionary_value supplierDictionaryValue,
+       b.supplier_content supplierContent
+        from supplier_dictionary a
+                 left join supplier_dictionary_info b
+                           on a.supplier_dictionary_code = b.supplier_dictionary_code
+        where a.supplier_dictionary_name in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+          #{item}
+      </foreach>
+        and a.company_code = #{companyCode}
+    </select>
+    <update id="infoEnabled">
     update supplier_dictionary_info
     set enabled=#{enabled,jdbcType=TINYINT}
     where

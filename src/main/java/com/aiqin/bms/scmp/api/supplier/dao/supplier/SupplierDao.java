@@ -6,6 +6,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplierListRespVO;
+import org.apache.ibatis.annotations.MapKey;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -45,5 +47,14 @@ public interface SupplierDao {
      * 根据供应商名称查询供应商信息 (退供导入使用)
      */
     Supplier selectBySupplierName(String supplierName);
-
+    /**
+     * TODO
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param supplierNameList
+     * @param companyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier>
+     */
+    @MapKey("supplierName")
+    Map<String, Supplier> selectByNameList(@Param("list") List<String> supplierNameList, @Param("companyCode") String companyCode);
 }

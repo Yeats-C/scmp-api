@@ -43,5 +43,13 @@ public interface ProductSkuSaleAreaMapper {
      * @param reqVO
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaSkuRespVO>
      */
-    List<QueryProductSaleAreaSkuRespVO> officialSkuList(QueryProductSaleAreaReqVO reqVO);
+    List<QueryProductSaleAreaSkuRespVO> officialSkuList(List<Long> id);
+    /**
+     * 差数量
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param reqVO
+     * @return java.util.List<java.lang.Long>
+     */
+    List<Long> officialSkuListCount(QueryProductSaleAreaReqVO reqVO);
 }

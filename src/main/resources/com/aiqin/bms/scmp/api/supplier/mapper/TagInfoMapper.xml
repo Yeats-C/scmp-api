@@ -56,7 +56,7 @@
     from tag_info
     <where>
       <if test="tagCode != null and tagCode.length >0">
-        tag_code = #{tagCode,jdbcType=VARCHAR}
+        tag_code like CONCAT('%',#{tagCode,jdbcType=VARCHAR},'%')
       </if>
       <if test="companyCode != null and companyCode.length >0">
         and company_code = #{companyCode,jdbcType=VARCHAR}
@@ -68,7 +68,7 @@
         and tag_type_code = #{tagTypeCode,jdbcType=TINYINT}
       </if>
       <if test="tagName != null and tagName.length >0">
-        and tag_name like CONCAT('%', #{tagName,jdbcType=TINYINT}, '%')
+        and tag_name like CONCAT('%', #{tagName,jdbcType=VARCHAR}, '%')
       </if>
     </where>
     order by tag_use_num,create_time desc

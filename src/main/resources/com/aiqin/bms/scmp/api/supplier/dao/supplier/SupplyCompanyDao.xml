@@ -162,7 +162,7 @@
     <if test="supplierCode != null and supplierCode != '' ">
       and supplier_code = #{supplierCode,jdbcType=VARCHAR}
     </if>
-    ORDER by update_time desc
+    ORDER by supply_code desc
   </select>
   <select id="getSupplyComDetail" parameterType="java.lang.Long" resultMap="SupplyComDetailMap">
     SELECT
@@ -227,4 +227,14 @@
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
   </select>
+    <select id="selectByCompanyNameList"
+            resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.BaseResultMap">
+      SELECT
+      <include refid="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.Base_Column_List"/>
+      from supply_company where supply_name in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+        #{item}
+      </foreach>
+        and company_code = #{companyCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

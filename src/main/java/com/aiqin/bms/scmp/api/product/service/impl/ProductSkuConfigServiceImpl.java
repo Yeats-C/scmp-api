@@ -622,9 +622,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if (null != token) {
             reqVo.setCompanyCode(token.getCompanyCode());
         }
-        PageHelper.startPage(reqVo.getPageNo(),reqVo.getPageSize());
-        List<SkuConfigsRepsVo> list = mapper.getList(reqVo);
-        return PageUtil.getPageList(reqVo.getPageNo(),list);
+        List<Long> longs = mapper.selectSkuListForSaleAreaCount(reqVo);
+        if(CollectionUtils.isEmpty(longs)){
+            return PageUtil.getPageList(reqVo.getPageNo(), Lists.newArrayList());
+        }
+        List<SkuConfigsRepsVo> list = mapper.getList(PageUtil.myPage(longs, reqVo));
+        return PageUtil.getPageList(reqVo.getPageNo(),reqVo.getPageSize(),longs.size(),list);
     }
 
     /**
