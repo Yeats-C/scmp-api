@@ -697,11 +697,10 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     public BasePage<QueryProductSaleAreaSkuRespVO> officialSkuList(QueryProductSaleAreaReqVO reqVO) {
         reqVO.setCompanyCode(getUser().getCompanyCode());
         List<Long> longs = productSkuSaleAreaMapper.officialSkuListCount(reqVO);
-        longs = PageUtil.myPage(longs, reqVO);
         if(CollectionUtils.isEmpty(longs)){
             return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
         }
-        List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList(longs);
+        List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList( PageUtil.myPage(longs, reqVO));
         return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),longs.size(),list);
     }
 
