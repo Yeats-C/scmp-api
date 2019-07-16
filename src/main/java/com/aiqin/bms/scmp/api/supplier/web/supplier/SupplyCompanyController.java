@@ -56,7 +56,7 @@ public class SupplyCompanyController extends SupplierBaseController {
 
     @GetMapping("/all")
     @ApiOperation("查询所有供应商")
-    public HttpResponse<List<SupplyComListRespVO>> getAllSupplyComList(@RequestParam("name") String name){
+    public HttpResponse<List<SupplyComListRespVO>> getAllSupplyComList(String name){
         try {
             List<SupplyComListRespVO> respVOList = supplyComService.getAllSupplyComList(name);
             return HttpResponse.success(respVOList);
