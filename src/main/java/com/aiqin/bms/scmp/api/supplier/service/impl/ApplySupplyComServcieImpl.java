@@ -178,6 +178,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 ApplySupplyCompany applySupplyCompany1= applySupplyCompanyMapper.selectByPrimaryKey(id);
                 code=applySupplyCompany1.getApplySupplyCompanyCode();
                 BeanCopyUtils.copy(applySupplyCompany1,applySupplyCompanyReqDTO);
+                applySupplyCompanyReqDTO.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
                 applySupplyCompanyReqDTO.setApplyCode(applySupplyCompany1.getApplySupplyCompanyCode());
             }
             supplierCommonService.getInstance(code, HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), applySupplyCompany,HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getName());
@@ -281,7 +282,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setFormNo(applySupplyCompanyReqDTO.getFormNo());
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_COMPANY.getNum());
-            workFlowVO.setTitle(applySupplyCompanyReqDTO.getApplySupplyName()+"申请");
+            String title = "修改";
+            if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applySupplyCompanyReqDTO.getApplyStatus())){
+                title = "新增";
+            }
+            workFlowVO.setTitle(title+applySupplyCompanyReqDTO.getApplySupplyName()+"申请");
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("auditPersonId",applySupplyCompanyReqDTO.getDirectSupervisorCode());
             workFlowVO.setVariables(jsonObject.toString());

@@ -176,6 +176,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
             ApplySupplierReqDTO applySupplierReqDTO = new ApplySupplierReqDTO();
             BeanCopyUtils.copy(applySupplierId,applySupplierReqDTO);
             applySupplierReqDTO.setApplySupplierCode(applySupplierId.getApplySupplierCode());
+            applySupplierReqDTO.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
             applySupplierReqDTO.setFormNo(applySupplier.getFormNo());
             applySupplierReqDTO.setDirectSupervisorCode(applySupplier.getDirectSupervisorCode());
             workFlow(applySupplierReqDTO);
