@@ -83,7 +83,7 @@ public class SupplyComServiceImpl implements SupplyComService {
     }
 
     @Override
-    public List<SupplyComListRespVO> getAllSupplyComList() {
+    public List<SupplyComListRespVO> getAllSupplyComList(String name) {
         QuerySupplyComReqVO querySupplyComReqVO = new QuerySupplyComReqVO();
         try {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
@@ -91,6 +91,7 @@ public class SupplyComServiceImpl implements SupplyComService {
                 querySupplyComReqVO.setCompanyCode(authToken.getCompanyCode());
             }
             querySupplyComReqVO.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
+            querySupplyComReqVO.setSupplyComNameOrShort(name);
             List<SupplyComListRespVO> supplyComListRespVOS = supplyCompanyDao.getSupplyCompanyList(querySupplyComReqVO);
             return supplyComListRespVOS;
         } catch (Exception e) {

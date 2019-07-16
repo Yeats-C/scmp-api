@@ -162,7 +162,7 @@
     <if test="supplierCode != null and supplierCode != '' ">
       and supplier_code = #{supplierCode,jdbcType=VARCHAR}
     </if>
-    ORDER by update_time desc
+    ORDER by supply_code desc
   </select>
   <select id="getSupplyComDetail" parameterType="java.lang.Long" resultMap="SupplyComDetailMap">
     SELECT
