@@ -15,13 +15,13 @@ public class GoodsBuySalesRespVo  implements Serializable {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("入库时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
 
-    @ApiModelProperty("入库时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishCreateTime;
+    @ApiModelProperty("时间finish")
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
 
     @ApiModelProperty("供应商编码")
     @JsonProperty("supplier_code")
@@ -129,7 +129,7 @@ public class GoodsBuySalesRespVo  implements Serializable {
 
     @ApiModelProperty("近一个月分销毛利率")
     @JsonProperty("fen_sales_maori_one_month_rate")
-    private Integer fenSalesMaoriOneMonthRate;
+    private Double fenSalesMaoriOneMonthRate;
 
     @ApiModelProperty("近一个月渠道销售金额")
     @JsonProperty("qun_sales_money_one_month")
@@ -141,7 +141,7 @@ public class GoodsBuySalesRespVo  implements Serializable {
 
     @ApiModelProperty("近一个月渠道毛利率")
     @JsonProperty("qun_sales_maori_one_month_rate")
-    private Integer qunSalesMaoriOneMonthRate;
+    private Double qunSalesMaoriOneMonthRate;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")

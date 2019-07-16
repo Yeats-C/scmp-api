@@ -20,6 +20,10 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
     @JsonProperty("sku_name")
     private String skuName;
 
+    @ApiModelProperty("销售渠道code")
+    @JsonProperty("price_channel_code")
+    private String priceChannelCode;
+
     @ApiModelProperty("销售渠道")
     @JsonProperty("price_channel_name")
     private String priceChannelName;
@@ -36,13 +40,17 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
     @JsonProperty("product_category_code")
     private String productCategoryCode;
 
-    @ApiModelProperty("入库时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @ApiModelProperty("品类")
+    @JsonProperty("product_category_name")
+    private String productCategoryName;
 
-    @ApiModelProperty("入库时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishCreateTime;
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
+
+    @ApiModelProperty("时间finish")
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
 
     @ApiModelProperty("批次号")
     @JsonProperty("batch_code")
@@ -50,11 +58,11 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
 
     @ApiModelProperty("毛利率begin")
     @JsonProperty("begin_maori_rate")
-    private Integer beginMaoriRate;
+    private Double beginMaoriRate;
 
     @ApiModelProperty("毛利率finish")
     @JsonProperty("finish_maori_rate")
-    private Integer finishMaoriRate;
+    private Double finishMaoriRate;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -65,15 +73,17 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
     private String productSortName;
 
 
-    public NewProductBatchMovingRateReqVo(String skuCode, String skuName, String priceChannelName, String supplierCode, String supplierName, String productCategoryCode, String beginCreateTime, String finishCreateTime, String batchCode, Integer beginMaoriRate, Integer finishMaoriRate, String productSortCode, String productSortName) {
+    public NewProductBatchMovingRateReqVo(String skuCode, String skuName, String priceChannelCode, String priceChannelName, String supplierCode, String supplierName, String productCategoryCode, String productCategoryName, String beginRunTime, String finishRunTime, String batchCode, Double beginMaoriRate, Double finishMaoriRate, String productSortCode, String productSortName) {
         this.skuCode = skuCode;
         this.skuName = skuName;
+        this.priceChannelCode = priceChannelCode;
         this.priceChannelName = priceChannelName;
         this.supplierCode = supplierCode;
         this.supplierName = supplierName;
         this.productCategoryCode = productCategoryCode;
-        this.beginCreateTime = beginCreateTime;
-        this.finishCreateTime = finishCreateTime;
+        this.productCategoryName = productCategoryName;
+        this.beginRunTime = beginRunTime;
+        this.finishRunTime = finishRunTime;
         this.batchCode = batchCode;
         this.beginMaoriRate = beginMaoriRate;
         this.finishMaoriRate = finishMaoriRate;

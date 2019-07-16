@@ -32,27 +32,32 @@ public class StoreRepurchaseRateReqVo extends PageReq implements Serializable {
     @JsonProperty("product_category_name")
     private String productCategoryName;
 
-    @ApiModelProperty("渠道")
-    @JsonProperty("order_original")
-    private String orderOriginal;
+    @ApiModelProperty("渠道编码")
+    @JsonProperty("order_original_code")
+    private String orderOriginalCode;
 
-    @ApiModelProperty("入库时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @ApiModelProperty("渠道名称")
+    @JsonProperty("order_original_name")
+    private String orderOriginalName;
 
-    @ApiModelProperty("入库时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishCreateTime;
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
 
-    public StoreRepurchaseRateReqVo(String provinceName, String cityName, String districtName, String productCategoryCode, String productCategoryName, String orderOriginal, String beginCreateTime, String finishCreateTime) {
+    @ApiModelProperty("时间finish")
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
+
+    public StoreRepurchaseRateReqVo(String provinceName, String cityName, String districtName, String productCategoryCode, String productCategoryName, String orderOriginalCode, String orderOriginalName, String beginRunTime, String finishRunTime) {
         this.provinceName = provinceName;
         this.cityName = cityName;
         this.districtName = districtName;
         this.productCategoryCode = productCategoryCode;
         this.productCategoryName = productCategoryName;
-        this.orderOriginal = orderOriginal;
-        this.beginCreateTime = beginCreateTime;
-        this.finishCreateTime = finishCreateTime;
+        this.orderOriginalCode = orderOriginalCode;
+        this.orderOriginalName = orderOriginalName;
+        this.beginRunTime = beginRunTime;
+        this.finishRunTime = finishRunTime;
     }
 
     public StoreRepurchaseRateReqVo() {

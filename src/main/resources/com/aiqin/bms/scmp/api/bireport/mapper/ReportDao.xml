@@ -2,6 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aiqin.bms.scmp.api.bireport.dao.ReportDao">
 
+    <resultMap id="supplierArrivalRateResultMap" type="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="begin_run_time" jdbcType="VARCHAR" property="beginRunTime"/>
+        <result column="finish_run_time" jdbcType="VARCHAR" property="finishRunTime"/>
+        <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode"/>
+        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
+        <result column="category_code" jdbcType="VARCHAR" property="categoryCode"/>
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
+        <result column="pre_inbound_num" jdbcType="VARCHAR" property="preInboundNum"/>
+        <result column="pre_tax_amount" jdbcType="VARCHAR" property="preTaxAmount"/>
+        <result column="pra_inbound_num" jdbcType="VARCHAR" property="praInboundNum"/>
+        <result column="pra_tax_amount" jdbcType="VARCHAR" property="praTaxAmount"/>
+        <result column="pra_tax_amount_rate" jdbcType="VARCHAR" property="praTaxAmountRate"/>
+        <result column="responsible_person_name" jdbcType="VARCHAR" property="responsiblePersonName"/>
+    </resultMap>
+
     <sql id="select_supplier_arrival_rate">
         <where>
             1=1
@@ -14,17 +31,17 @@
             <if test="transportCenterCode!=null and transportCenterCode!=''">
                 and bsar.logistics_center_code=#{transportCenterCode}
             </if>
-            <if test="categoryLevelCode!=null and categoryLevelCode!=''">
-                and bsar.category_level_code=#{categoryLevelCode}
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bsar.category_code=#{categoryCode}
             </if>
-            <if test="categoryLevelName!=null and categoryLevelName!=''">
-                and bsar.category_level_name like concat('%', #{categoryLevelName}, '%')
+            <if test="categoryName!=null and categoryName!=''">
+                and bsar.category_name like concat('%', #{categoryName}, '%')
             </if>
-            <if test="beginInboundTime!=null and beginInboundTime!=''">
-                and bsar.inbound_time between #{beginInboundTime}
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bsar.run_time between #{beginRunTime}
             </if>
-            <if test="finishInboundTime!=null and finishInboundTime!=''">
-                and #{finishInboundTime}
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
         </where>
     </sql>
@@ -61,11 +78,11 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bgbs.create_time between #{beginCreateTime}
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bgbs.run_time between #{beginRunTime}
             </if>
-            <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
             <if test="inboundDays!=null and inboundDays!=''">
                 and bgbs.inbound_days=#{inboundDays}
@@ -111,6 +128,12 @@
             <if test="transportCenterName!=null and transportCenterName!=''">
                 and bgbs.transport_center_name like concat('%', #{transportCenterName}, '%')
             </if>
+            <if test="productCategoryName!=null and productCategoryName!=''">
+                and bgbs.product_category_name like concat('%', #{productCategoryName}, '%')
+            </if>
+            <if test="productCategoryCode!=null and productCategoryCode!=''">
+                and bgbs.product_category_code=#{productCategoryCode}
+            </if>
             <if test="inboundDays!=null and inboundDays!=''">
                 and bgbs.inbound_days=#{inboundDays}
             </if>
@@ -120,11 +143,11 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bgbs.create_time between #{beginCreateTime}
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bgbs.run_time between #{beginRunTime}
             </if>
-            <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
             <if test="warehouseCode!=null and warehouseCode!=''">
                 and bgbs.warehouse_code=#{warehouseCode}
@@ -173,11 +196,11 @@
             <if test="warehouseName!=null and warehouseName!=''">
                 and bsr.warehouse_name like concat('%', #{warehouseName}, '%')
             </if>
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bsr.create_time between #{beginCreateTime}
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bsr.run_time between #{beginRunTime}
             </if>
-            <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
         </where>
     </sql>
@@ -190,8 +213,11 @@
             <if test="skuName!=null and skuName!=''">
                 and bnpbmr.sku_name like concat('%', #{skuName}, '%')
             </if>
+            <if test="priceChannelCode!=null and priceChannelCode!=''">
+                and bnpbmr.price_channel_code=#{priceChannelCode}
+            </if>
             <if test="priceChannelName!=null and priceChannelName!=''">
-                and bnpbmr.price_channel_name=#{priceChannelName}
+                and bnpbmr.price_channel_name like concat('%', #{priceChannelName}, '%')
             </if>
             <if test="supplierCode!=null and supplierCode!=''">
                 and bnpbmr.supplier_code=#{supplierCode}
@@ -202,11 +228,14 @@
             <if test="productCategoryCode!=null and productCategoryCode!=''">
                 and bnpbmr.product_category_code=#{productCategoryCode}
             </if>
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bnpbmr.create_time between #{beginCreateTime}
+            <if test="productCategoryName!=null and productCategoryName!=''">
+                and bnpbmr.product_category_name like concat('%', #{productCategoryName}, '%')
             </if>
-            <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bnpbmr.run_time between #{beginRunTime}
+            </if>
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
             <if test="batchCode!=null and batchCode!=''">
                 and bnpbmr.batch_code=#{batchCode}
@@ -243,14 +272,17 @@
             <if test="productCategoryName!=null and productCategoryName!=''">
                 and bsrr.product_category_name like concat('%', #{productCategoryName}, '%')
             </if>
-            <if test="orderOriginal!=null and orderOriginal!=''">
-                and bsrr.order_original=#{orderOriginal}
+            <if test="orderOriginalCode!=null and orderOriginalCode!=''">
+                and bsrr.order_original_code=#{orderOriginalCode}
             </if>
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bsrr.begin_create_time between #{beginCreateTime}
+            <if test="orderOriginalName!=null and orderOriginalName!=''">
+                and bsrr.order_original_name like concat('%', #{orderOriginalName}, '%')
             </if>
-            <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bsrr.run_time between #{beginRunTime}
+            </if>
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
         </where>
     </sql>
@@ -275,14 +307,17 @@
             <if test="productBrandName!=null and productBrandName!=''">
                 and bnm.product_brand_name like concat('%', #{productBrandName}, '%')
             </if>
-            <if test="orderOriginal!=null and orderOriginal!=''">
-                and bnm.order_original=#{orderOriginal}
+            <if test="orderOriginalCode!=null and orderOriginalCode!=''">
+                and bnm.order_original_code=#{orderOriginalCode}
             </if>
-            <if test="beginTimeMonth!=null and beginTimeMonth!=''">
-                and bnm.begin_time_month between #{beginTimeMonth}
+            <if test="orderOriginalName!=null and orderOriginalName!=''">
+                and bnm.order_original_name like concat('%', #{orderOriginalName}, '%')
             </if>
-            <if test="finishTimeMonth!=null and finishTimeMonth!=''">
-                and #{finishTimeMonth}
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bnm.run_time between #{beginRunTime}
+            </if>
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bnm.product_sort_code=#{productSortCode}
@@ -319,11 +354,11 @@
             <if test="transportCenterName!=null and transportCenterName!=''">
                 and bsr.transport_center_name like concat('%', #{transportCenterName}, '%')
             </if>
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bsr.begin_create_time between #{beginCreateTime}
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bsr.run_time between #{beginRunTime}
             </if>
-            <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
         </where>
     </sql>
@@ -342,11 +377,11 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bli.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bli.begin_create_time between #{beginCreateTime}
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bli.run_time between #{beginRunTime}
             </if>
-            <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
         </where>
     </sql>
@@ -365,17 +400,20 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bhi.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bhi.begin_create_time between #{beginCreateTime}
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bhi.run_time between #{beginRunTime}
             </if>
-            <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
         </where>
     </sql>
     <sql id="select_big_effect">
         <where>
             1=1
+            <if test="productionDate!=null and productionDate!=''">
+                and bbe.production_date like concat('%', #{productionDate}, '%')
+            </if>
             <if test="skuCode!=null and skuCode!=''">
                 and bbe.sku_code=#{skuCode}
             </if>
@@ -438,17 +476,58 @@
             <if test="priceChannelName!=null and priceChannelName!=''">
                 and bms.price_channel_name like concat('%', #{priceChannelName}, '%')
             </if>
-            <if test="storeType!=null and storeType!=''">
-                and bms.store_type=#{storeType}
+            <if test="storeTypeCode!=null and storeTypeCode!=''">
+                and bms.store_type_code=#{storeTypeCode}
             </if>
-            <if test="dataStyle!=null and dataStyle!=''">
-                and bms.data_style=#{dataStyle}
+            <if test="storeTypeName!=null and storeTypeName!=''">
+                and bms.store_type_name like concat('%', #{storeTypeName}, '%')
             </if>
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bhi.begin_create_time between #{beginCreateTime}
+            <if test="dataStyleCode!=null and dataStyleCode!=''">
+                and bms.data_style_code=#{dataStyleCode}
             </if>
-            <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+            <if test="dataStyleName!=null and dataStyleName!=''">
+                and bms.data_style_name like concat('%', #{dataStyleName}, '%')
+            </if>
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bhi.run_time between #{beginRunTime}
+            </if>
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="select_monthly_gross_margin">
+        <where>
+            1=1
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bmgm.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bmgm.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="priceChannelCode!=null and priceChannelCode!=''">
+                and bmgm.price_channel_code=#{priceChannelCode}
+            </if>
+            <if test="priceChannelName!=null and priceChannelName!=''">
+                and bmgm.price_channel_name like concat('%', #{priceChannelName}, '%')
+            </if>
+            <if test="storeTypeCode!=null and storeTypeCode!=''">
+                and bmgm.store_type_code=#{storeTypeCode}
+            </if>
+            <if test="storeTypeName!=null and storeTypeName!=''">
+                and bmgm.store_type_name like concat('%', #{storeTypeName}, '%')
+            </if>
+            <if test="dataStyleCode!=null and dataStyleCode!=''">
+                and bmgm.data_style_code=#{dataStyleCode}
+            </if>
+            <if test="dataStyleName!=null and dataStyleName!=''">
+                and bmgm.data_style_name like concat('%', #{dataStyleName}, '%')
+            </if>
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bmgm.run_time between #{beginRunTime}
+            </if>
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
         </where>
     </sql>
@@ -456,48 +535,135 @@
         <where>
             1=1
             <if test="productSortCode!=null and productSortCode!=''">
-                and bms.product_sort_code=#{productSortCode}
+                and bmsa.product_sort_code=#{productSortCode}
             </if>
             <if test="productSortName!=null and productSortName!=''">
-                and bms.product_sort_name like concat('%', #{productSortName}, '%')
+                and bmsa.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="priceChannelCode!=null and priceChannelCode!=''">
-                and bms.price_channel_code=#{priceChannelCode}
+                and bmsa.price_channel_code=#{priceChannelCode}
             </if>
             <if test="priceChannelName!=null and priceChannelName!=''">
-                and bms.price_channel_name like concat('%', #{priceChannelName}, '%')
+                and bmsa.price_channel_name like concat('%', #{priceChannelName}, '%')
             </if>
-            <if test="storeType!=null and storeType!=''">
-                and bms.store_type=#{storeType}
+            <if test="storeTypeCode!=null and storeTypeCode!=''">
+                and bmsa.store_type_code=#{storeTypeCode}
             </if>
-            <if test="dataStyle!=null and dataStyle!=''">
-                and bms.data_style=#{dataStyle}
+            <if test="storeTypeName!=null and storeTypeName!=''">
+                and bmsa.store_type_name like concat('%', #{storeTypeName}, '%')
             </if>
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bhi.begin_create_time between #{beginCreateTime}
+            <if test="data_style_code!=null and data_style_code!=''">
+                and bmsa.data_style_code=#{data_style_code}
             </if>
-            <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+            <if test="dataStyleCode!=null and dataStyleCode!=''">
+                and bmsa.data_style_name like concat('%', #{dataStyleCode}, '%')
+            </if>
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bmsa.run_time between #{beginRunTime}
+            </if>
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
             </if>
             <if test="categoryTypeCode!=null and categoryTypeCode!=''">
-                and bms.category_type_code=#{categoryTypeCode}
+                and bmsa.category_type_code=#{categoryTypeCode}
             </if>
             <if test="categoryTypeName!=null and categoryTypeName!=''">
-                and bms.category_type_name like concat('%', #{categoryTypeName}, '%')
+                and bmsa.category_type_name like concat('%', #{categoryTypeName}, '%')
             </if>
         </where>
     </sql>
-
+    <sql id="select_month_cumulative_brand_sales">
+        <where>
+            1=1
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bmcbs.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bmcbs.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="priceChannelCode!=null and priceChannelCode!=''">
+                and bmcbs.price_channel_code=#{priceChannelCode}
+            </if>
+            <if test="priceChannelName!=null and priceChannelName!=''">
+                and bmcbs.price_channel_name like concat('%', #{priceChannelName}, '%')
+            </if>
+            <if test="storeTypeCode!=null and storeTypeCode!=''">
+                and bmcbs.store_type_code=#{storeTypeCode}
+            </if>
+            <if test="storeTypeName!=null and storeTypeName!=''">
+                and bmcbs.store_type_name like concat('%', #{storeTypeName}, '%')
+            </if>
+            <if test="data_style_code!=null and data_style_code!=''">
+                and bmcbs.data_style_code=#{data_style_code}
+            </if>
+            <if test="dataStyleCode!=null and dataStyleCode!=''">
+                and bmcbs.data_style_name like concat('%', #{dataStyleCode}, '%')
+            </if>
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bmcbs.run_time between #{beginRunTime}
+            </if>
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
+            </if>
+            <if test="categoryTypeCode!=null and categoryTypeCode!=''">
+                and bmcbs.category_type_code=#{categoryTypeCode}
+            </if>
+            <if test="categoryTypeName!=null and categoryTypeName!=''">
+                and bmcbs.category_type_name like concat('%', #{categoryTypeName}, '%')
+            </if>
+        </where>
+    </sql>
+    <sql id="select_month_cumulative_gross_profit_margin">
+        <where>
+            1=1
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bmcgpm.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bmcgpm.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="priceChannelCode!=null and priceChannelCode!=''">
+                and bmcgpm.price_channel_code=#{priceChannelCode}
+            </if>
+            <if test="priceChannelName!=null and priceChannelName!=''">
+                and bmcgpm.price_channel_name like concat('%', #{priceChannelName}, '%')
+            </if>
+            <if test="storeTypeCode!=null and storeTypeCode!=''">
+                and bmcgpm.store_type_code=#{storeTypeCode}
+            </if>
+            <if test="storeTypeName!=null and storeTypeName!=''">
+                and bmcgpm.store_type_name like concat('%', #{storeTypeName}, '%')
+            </if>
+            <if test="data_style_code!=null and data_style_code!=''">
+                and bmcgpm.data_style_code=#{data_style_code}
+            </if>
+            <if test="dataStyleCode!=null and dataStyleCode!=''">
+                and bmcgpm.data_style_name like concat('%', #{dataStyleCode}, '%')
+            </if>
+            <if test="beginRunTime!=null and beginRunTime!=''">
+                and bmcgpm.run_time between #{beginRunTime}
+            </if>
+            <if test="finishRunTime!=null and finishRunTime!=''">
+                and #{finishRunTime}
+            </if>
+            <if test="categoryTypeCode!=null and categoryTypeCode!=''">
+                and bmcgpm.category_type_code=#{categoryTypeCode}
+            </if>
+            <if test="categoryTypeName!=null and categoryTypeName!=''">
+                and bmcgpm.category_type_name like concat('%', #{categoryTypeName}, '%')
+            </if>
+        </where>
+    </sql>
     <select id="selectSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
-            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
+            resultMap="supplierArrivalRateResultMap">
         select
         bsar.id as id,
-        #{beginInboundTime}  as beginInboundTime,
-        #{finishInboundTime} as finishInboundTime,
+        #{beginRunTime}  as beginRunTime,
+        #{finishRunTime} as finishRunTime,
         bsar.supplier_code as supplierCode,
         bsar.supplier_name as supplierName,
-        bsar.category_level_code as categoryLevelCode,
-        bsar.category_level_name as categoryLevelName,
+        bsar.category_code as categoryCode,
+        bsar.category_name as categoryName,
         bsar.logistics_center_code as transportCenterCode,
         bsar.pre_inbound_num as preInboundNum,
         bsar.pre_tax_amount as preTaxAmount,
@@ -522,8 +688,9 @@
     <select id="selectGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
         select
-        #{beginCreateTime}  as beginCreateTime,
-        #{finishCreateTime} as finishCreateTime,
+        bgbs.id as id,
+        #{beginRunTime}  as beginRunTime,
+        #{finishRunTime} as finishRunTime,
         bgbs.supplier_code as supplierCode,
         bgbs.supplier_name as supplierName,
         bgbs.sku_code as skuCode,
@@ -582,9 +749,7 @@
         bgbs.id as id,
         bgbs.sku_code as skuCode,
         bgbs.sku_name as skuName,
-        #{beginCreateTime}  as beginCreateTime,
-        #{finishCreateTime} as finishCreateTime,
-        bgbs.category_name as productCategoryName,
+        bgbs.category_name as categoryName,
         bgbs.product_category_code as productCategoryCode,
         bgbs.product_category_one as productCategoryOne,
         bgbs.product_category_two as productCategoryTwo,
@@ -667,6 +832,7 @@
         bnpbmr.product_sort_code as productSortCode,
         bnpbmr.product_sort_name as productSortName,
         bnpbmr.product_category_code as productCategoryCode,
+        bnpbmr.product_category_name as productCategoryName,
         bnpbmr.product_category_one as productCategoryOne,
         bnpbmr.product_category_two as productCategoryTwo,
         bnpbmr.product_category_three as productCategoryThree,
@@ -712,7 +878,8 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StoreRepurchaseRateRespVo">
         select
         bnm.id as id,
-        bnm.order_original as orderOriginal,
+        bnm.order_original_code as orderOriginalCode,
+        bnm.order_original_name as orderOriginalName,
         bnm.province_name as provinceName,
         bnm.city_name as cityName,
         bnm.district_name as districtName,
@@ -741,7 +908,8 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NegativeMarginRespVo">
         select
         bnm.id as id,
-        bnm.order_original as orderOriginal,
+        bnm.order_original_code as orderOriginalCode,
+        bnm.order_original_name as orderOriginalName,
         bnm.sku_code as skuCode,
         bnm.sku_name as skuName,
         bnm.product_category_code as productCategoryCode,
@@ -817,7 +985,12 @@
         bli.responsible_person_code as responsiblePersonCode,
         bli.responsible_person_name as responsiblePersonName,
         bli.warehouse_type_code as warehouseTypeCode,
-        bli.warehouse_type_name as warehouseTypeName
+        bli.warehouse_type_name as warehouseTypeName,
+        bli.lastweek_total_national as lastweekTotalNational,
+        bli.thisweek_total_national as thisweekTotalNational,
+        bli.total_sku_num as totalSkuNum,
+        bli.low_inventory_num as lowInventoryNum,
+        bli.low_inventory_ratio as low_Inventory_ratio
         from bi_low_inventory bli
         <include refid="select_low_inventory"/>
         order by bli.id asc
@@ -843,7 +1016,12 @@
         bhi.responsible_person_code as responsiblePersonCode,
         bhi.responsible_person_name as responsiblePersonName,
         bhi.warehouse_type_code as warehouseTypeCode,
-        bhi.warehouse_type_name as warehouseTypeName
+        bhi.warehouse_type_name as warehouseTypeName,
+        bhi.lastweek_total_national as lastweekTotalNational,
+        bhi.thisweek_total_national as thisweekTotalNational,
+        bhi.high_inventory_amount as highInventoryAmount,
+        bhi.inventory_total_amount as inventoryTotalAmount,
+        bhi.high_inventory_ratio as highInventoryRatio
         from bi_high_inventory bhi
         <include refid="select_high_inventory"/>
         order by bhi.id asc
@@ -896,14 +1074,16 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
         select
         bms.id as id,
-        #{beginCreateTime}  as beginCreateTime,
-        #{finishCreateTime} as finishCreateTime,
+        #{beginRunTime}  as beginRunTime,
+        #{finishRunTime} as finishRunTime,
         bms.product_sort_code as productSortCode,
         bms.product_sort_name as productSortName,
         bms.price_channel_code as priceChannelCode,
         bms.price_channel_name as priceChannelName,
-        bms.store_type as storeType,
-        bms.data_style as dataStyle,
+        bms.store_type_code as storeTypeCode,
+        bms.store_type_name as storeTypeName,
+        bms.data_style_code as dataStyleCode,
+        bms.data_style_name as dataStyleName,
         bms.qun_order_amount as qunOrderAmount,
         bms.qun_last_year_sales as qunLastYearSales,
         bms.qun_last_month_sales as qunLastMonthSales,
@@ -932,14 +1112,16 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
         select
         bmgm.id as id,
-        #{beginCreateTime}  as beginCreateTime,
-        #{finishCreateTime} as finishCreateTime,
+        #{beginRunTime}  as beginRunTime,
+        #{finishRunTime} as finishRunTime,
         bmgm.product_sort_code as productSortCode,
         bmgm.product_sort_name as productSortName,
         bmgm.price_channel_code as priceChannelCode,
         bmgm.price_channel_name as priceChannelName,
-        bmgm.store_type as storeType,
-        bmgm.data_style as dataStyle,
+        bmgm.store_type_code as storeTypeCode,
+        bmgm.store_type_name as storeTypeName,
+        bmgm.data_style_code as dataStyleCode,
+        bmgm.data_style_name as dataStyleName,
         bmgm.qun_order_amount as qunOrderAmount,
         bmgm.qun_last_year_sales as qunLastYearSales,
         bmgm.qun_last_month_sales as qunLastMonthSales,
@@ -951,7 +1133,7 @@
         bmgm.fen_compared_same as fenComparedSame,
         bmgm.fen_sequential as fenSequential
         from bi_month_gross_margin bmgm
-        <include refid="select_monthly_sales"/>
+        <include refid="select_monthly_gross_margin"/>
         order by bmgm.id asc
     </select>
     <select id="countMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
@@ -960,7 +1142,7 @@
         select
         bmgm.id
         from bi_month_gross_margin bmgm
-        <include refid="select_monthly_sales"/>
+        <include refid="select_monthly_gross_margin"/>
         group by bmgm.id
         ) as tmp
     </select>
@@ -968,14 +1150,16 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthSalesAchievementRespVo">
         select
         bmsa.id as id,
-        #{beginCreateTime}  as beginCreateTime,
-        #{finishCreateTime} as finishCreateTime,
+        #{beginRunTime}  as beginRunTime,
+        #{finishRunTime} as finishRunTime,
         bmsa.product_sort_code as productSortCode,
         bmsa.product_sort_name as productSortName,
         bmsa.price_channel_code as priceChannelCode,
         bmsa.price_channel_name as priceChannelName,
-        bmsa.store_type as storeType,
-        bmsa.data_style as dataStyle,
+        bmsa.store_type_code as storeTypeCode,
+        bmsa.store_type_name as storeTypeName,
+        bmsa.data_style_code as dataStyleCode,
+        bmsa.data_style_name as dataStyleName,
         bmsa.category_type_code as categoryTypeCode,
         bmsa.category_type_name as categoryTypeName,
         bmsa.qun_amount as qunAmount,
@@ -1002,14 +1186,16 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeBrandSalesRespVo">
         select
         bmcbs.id as id,
-        #{beginCreateTime}  as beginCreateTime,
-        #{finishCreateTime} as finishCreateTime,
+        #{beginRunTime}  as beginRunTime,
+        #{finishRunTime} as finishRunTime,
         bmcbs.product_sort_code as productSortCode,
         bmcbs.product_sort_name as productSortName,
         bmcbs.price_channel_code as priceChannelCode,
         bmcbs.price_channel_name as priceChannelName,
-        bmcbs.store_type as storeType,
-        bmcbs.data_style as dataStyle,
+        bmcbs.store_type_code as storeTypeCode,
+        bmcbs.store_type_name as storeTypeName,
+        bmcbs.data_style_code as dataStyleCode,
+        bmcbs.data_style_name as dataStyleName,
         bmcbs.category_type_code as categoryTypeCode,
         bmcbs.category_type_name as categoryTypeName,
         bmcbs.qun_order_amount as qunOrderAmount,
@@ -1023,7 +1209,7 @@
         bmcbs.fen_compared_same as fenComparedSame,
         bmcbs.fen_sequential as fenSequential
         from bi_month_cumulative_brand_sales bmcbs
-        <include refid="select_month_sales_achievement"/>
+        <include refid="select_month_cumulative_brand_sales"/>
         order by bmcbs.id asc
     </select>
     <select id="countMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
@@ -1032,22 +1218,24 @@
         select
         bmcbs.id
         from bi_month_cumulative_brand_sales bmcbs
-        <include refid="select_month_sales_achievement"/>
+        <include refid="select_month_cumulative_brand_sales"/>
         group by bmcbs.id
         ) as tmp
     </select>
     <select id="selectMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeGrossProfitMarginRespVo">
         select
-        bmcgpmid as id,
-        #{beginCreateTime}  as beginCreateTime,
-        #{finishCreateTime} as finishCreateTime,
+        bmcgpm.id as id,
+        #{beginRunTime}  as beginRunTime,
+        #{finishRunTime} as finishRunTime,
         bmcgpm.product_sort_code as productSortCode,
         bmcgpm.product_sort_name as productSortName,
         bmcgpm.price_channel_code as priceChannelCode,
         bmcgpm.price_channel_name as priceChannelName,
-        bmcgpm.store_type as storeType,
-        bmcgpm.data_style as dataStyle,
+        bmcgpm.store_type_code as storeTypeCode,
+        bmcgpm.store_type_name as storeTypeName,
+        bmcgpm.data_style_code as dataStyleCode,
+        bmcgpm.data_style_name as dataStyleName,
         bmcgpm.category_type_code as categoryTypeCode,
         bmcgpm.category_type_name as categoryTypeName,
         bmcgpm.sales_cost as salesCost,
@@ -1064,7 +1252,7 @@
         bmcgpm.fen_compared_same as fenComparedSame,
         bmcgpm.fen_sequential as fenSequential
         from bi_month_cumulative_gross_profit_margin bmcgpm
-        <include refid="select_month_sales_achievement"/>
+        <include refid="select_month_cumulative_gross_profit_margin"/>
         order by bmcgpm.id asc
     </select>
     <select id="countMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
@@ -1073,7 +1261,7 @@
         select
         bmcgpm.id
         from bi_month_cumulative_gross_profit_margin bmcgpm
-        <include refid="select_month_sales_achievement"/>
+        <include refid="select_month_cumulative_gross_profit_margin"/>
         group by bmcgpm.id
         ) as tmp
     </select>

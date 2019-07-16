@@ -14,12 +14,12 @@ public class MonthlySalesRespVo {
     private Long id;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishCreateTime;
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
