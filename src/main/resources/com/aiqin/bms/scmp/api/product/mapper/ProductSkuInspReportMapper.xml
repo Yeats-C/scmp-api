@@ -27,6 +27,13 @@
     delete from product_sku_inspection_report
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteByIds" parameterType="java.util.List">
+    delete from product_sku_inspection_report
+    where id in
+    <foreach collection="list" item="id" open="(" close=")" separator=",">
+      #{id,jdbcType=BIGINT}
+    </foreach>
+  </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport">
     insert into product_sku_inspection_report (id, sku_code, sku_name, 
       production_date, inspection_report_path, 
