@@ -232,12 +232,12 @@ public class StockRespVO {
     private Long sourceDocumentNum;
 
     @ApiModelProperty("操作时间")
-    @JsonProperty(value = "operating_time")
-    private String operatingTime;
+    @JsonProperty(value = "update_time")
+    private String updateTime;
 
     @ApiModelProperty("操作人")
-    @JsonProperty(value = "operating_by")
-    private String operatingBy;
+    @JsonProperty(value = "update_by")
+    private String updateBy;
 
     @ApiModelProperty("商品备注")
     @JsonProperty(value = "remark")

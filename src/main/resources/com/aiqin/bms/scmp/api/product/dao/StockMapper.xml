@@ -145,8 +145,8 @@
         <result column="document_num" jdbcType="BIGINT" property="documentNum"/>
         <result column="source_document_type" jdbcType="BIGINT" property="sourceDocumentType"/>
         <result column="source_document_num" jdbcType="BIGINT" property="sourceDocumentNum"/>
-        <result column="operating_time" jdbcType="VARCHAR" property="operatingTime"/>
-        <result column="operating_by" jdbcType="VARCHAR" property="operatingBy"/>
+        <result column="update_time" jdbcType="VARCHAR" property="updateTime"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
         <result column="change_num" jdbcType="VARCHAR" property="changeNum"/>
         <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
@@ -527,13 +527,13 @@
         st.total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,
         st.stock_unit_code,st.stock_unit_name,st.tax_price,st.tax_rate,
-        st.create_time,st.create_by,st.update_time,st.update_by,
+        st.create_time,st.create_by,
         psc.config_status,
         ps.product_brand_name,
         ps.unit_code,ps.product_category_code,ps.product_category_name,psbp.large_unit,
         pssi.spec,st.tax_cost,
         sf.lock_status,sf.document_type,sf.document_num,sf.source_document_type,
-        sf.source_document_num,sf.operating_time,sf.operating_by,sf.remark,sf.change_num
+        sf.source_document_num,sf.update_time,sf.update_by,sf.remark,sf.change_num
         from stock as st
 
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
@@ -544,6 +544,7 @@
         left join stock_flow as sf on st.sku_code=CONVERT(sf.sku_code USING utf8) COLLATE utf8_unicode_ci
 
         where st.id = #{stockId, jdbcType=VARCHAR}
+        group by st.id
     </select>
 
     <select id="selectOneStockInfoByStockIdInfoByPage" resultType="java.lang.Long">
