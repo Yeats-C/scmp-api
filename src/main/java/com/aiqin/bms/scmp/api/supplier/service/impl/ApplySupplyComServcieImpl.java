@@ -190,14 +190,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             Long id=applySupplyCompany.getId();
             String code=null;
             ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO = new ApplySupplyCompanyReqDTO();
-            if(id!=null){
-                ApplySupplyCompany applySupplyCompany1= applySupplyCompanyMapper.selectByPrimaryKey(id);
-                code=applySupplyCompany1.getApplySupplyCompanyCode();
-                BeanCopyUtils.copy(applySupplyCompany1,applySupplyCompanyReqDTO);
+            if(id!=null) {
+                ApplySupplyCompany applySupplyCompany1 = applySupplyCompanyMapper.selectByPrimaryKey(id);
+                code = applySupplyCompany1.getApplySupplyCompanyCode();
+                BeanCopyUtils.copy(applySupplyCompany1, applySupplyCompanyReqDTO);
                 applySupplyCompanyReqDTO.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
                 applySupplyCompanyReqDTO.setApplyCode(applySupplyCompany1.getApplySupplyCompanyCode());
             }
-            supplierCommonService.getInstance(code, HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), applySupplyCompany,HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getName());
             //结算信息 去掉结算信息
 //            if (null != applySupplyCompanyReqVO.getApplySettlementInfoReqVO()){
 //                ApplySettlementVO applySettlementVO = new ApplySettlementVO();
@@ -349,7 +348,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     throw new GroundRuntimeException("审核状态修改失败");
                 }
                 //存日志
-                supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"", HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),applySupplyCompanyReqDTO,HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUPPLY_COMPANY.getName());
+                supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),null,null,HandleTypeCoce.PENDING.getName());
             }else {
                 //存调用失败的日志
                 String msg = workFlowRespVO.getMsg();

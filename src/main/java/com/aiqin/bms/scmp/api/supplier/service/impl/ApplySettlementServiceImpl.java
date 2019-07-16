@@ -80,7 +80,6 @@ public class ApplySettlementServiceImpl extends BaseServiceImpl implements Apply
         num = ((ApplySettlementService) AopContext.currentProxy()).update(applySettlementInformation);
         if (null != applySettlementVO.getId()) {
             ApplySettlementInformation applySettlementInformation1 = applySettlementInformationMapper.selectByPrimaryKey(applySettlementVO.getId());
-            supplierCommonService.getInstance(applySettlementInformation1.getApplyCode(), HandleTypeCoce.APPLY_UPDATE_SETTLEMENT_INFORMATION.getStatus(), ObjectTypeCode.APPLY_SETTLEMENT_INFORMATION.getStatus(), applySettlementInformation1,HandleTypeCoce.APPLY_UPDATE_SETTLEMENT_INFORMATION.getName());
         }
         return num;
     }
@@ -95,7 +94,6 @@ public class ApplySettlementServiceImpl extends BaseServiceImpl implements Apply
             int num = ((ApplySettlementService)AopContext.currentProxy()).update(applySettlementInformation);
             if (null != id) {
                 ApplySettlementInformation applySettlementInformation1 = applySettlementInformationMapper.selectByPrimaryKey(id);
-                supplierCommonService.getInstance(applySettlementInformation1.getApplyCode(), HandleTypeCoce.APPLY_UPDATE_REVOKE_SETTLEMENT_INFORMATION.getStatus(), ObjectTypeCode.APPLY_SETTLEMENT_INFORMATION.getStatus(), applySettlementInformation1,HandleTypeCoce.APPLY_UPDATE_REVOKE_SETTLEMENT_INFORMATION.getName());
             }
             if(num > 0){
                 return  num;
@@ -134,7 +132,6 @@ public class ApplySettlementServiceImpl extends BaseServiceImpl implements Apply
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public Long insertApplyAndLog(ApplySettlementInfoReqDTO applySettlementInfoReqDTO){
         Long resultNum = ((ApplySettlementService) AopContext.currentProxy()).insert(applySettlementInfoReqDTO);
-        resultNum= supplierCommonService.getInstance(applySettlementInfoReqDTO.getApplyCode(), HandleTypeCoce.APPLY_ADD_SETTLEMENT_INFORMATION.getStatus(), ObjectTypeCode.APPLY_SETTLEMENT_INFORMATION.getStatus(), applySettlementInfoReqDTO,HandleTypeCoce.APPLY_ADD_SETTLEMENT_INFORMATION.getName());
         return resultNum;
     }
 
@@ -178,7 +175,6 @@ public class ApplySettlementServiceImpl extends BaseServiceImpl implements Apply
                     settlementInformationMapper.insert(settlementInformation);
                     encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
                 }
-                supplierCommonService.getInstance(settlementInformation.getSettlementCode(),HandleTypeCoce.UPDATE_APPROVAL_SUCCESS_SETTLEMENT_INFORMATION.getStatus(),ObjectTypeCode.SETTLEMENT_INFORMATION.getStatus(),settlementInformation,HandleTypeCoce.UPDATE_APPROVAL_SUCCESS_SETTLEMENT_INFORMATION.getName());
             }else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
                 //驳回, 设置状态
                 applySettlementInformation.setApplyStatus(vo.getApplyStatus());
@@ -197,8 +193,6 @@ public class ApplySettlementServiceImpl extends BaseServiceImpl implements Apply
         applySettlementInformation.setAuditorTime(new Date());
         applySettlementInformationMapper.updateByPrimaryKey(applySettlementInformation);
         //判断审核状态，存日志信息
-        HandleTypeCoce s = applySettlementInformation.getApplyStatus().intValue()==ApplyStatus.APPROVAL_SUCCESS.getNumber()?HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUCCESS_SETTLEMENT_INFORMATION:HandleTypeCoce.APPLY_UPDATE_APPROVAL_FAIL_SETTLEMENT_INFORMATION;
-        supplierCommonService.getInstance(applySettlementInformation.getApplyCode(),s.getStatus(),ObjectTypeCode.APPLY_SETTLEMENT_INFORMATION.getStatus(),applySettlementInformation,s.getName());
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
 

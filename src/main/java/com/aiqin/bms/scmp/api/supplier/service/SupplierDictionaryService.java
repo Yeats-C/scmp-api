@@ -1,15 +1,14 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionary;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierOperationLog;
 import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.DictionaryType;
 import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryCodeResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryDetailResVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryListResVO;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.Collection;
 import java.util.List;
@@ -35,10 +34,6 @@ public interface SupplierDictionaryService {
 
     int updateList(Collection<SupplierDictionaryInfo> list);
 
-    /**
-     * @return
-     */
-    List<SupplierOperationLog> conversion(List<SupplierDictionaryInfo> supplierDictionaryInfos, String status);
 
 
     List<DictionaryType> getType();

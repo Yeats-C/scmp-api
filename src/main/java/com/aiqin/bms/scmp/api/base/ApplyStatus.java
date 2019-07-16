@@ -16,7 +16,8 @@ public enum ApplyStatus {
     APPROVAL((byte)1, "审批中"),
     APPROVAL_SUCCESS((byte)2, "审批通过"),
     APPROVAL_FAILED((byte)3, "审批失败"),
-    REVOKED((byte)4, "已撤销");
+    REVOKED((byte)4, "已撤销"),
+    PENDING_SUBMISSION((byte)5, "待提交");
     private Byte number;
     private String desc;
 
