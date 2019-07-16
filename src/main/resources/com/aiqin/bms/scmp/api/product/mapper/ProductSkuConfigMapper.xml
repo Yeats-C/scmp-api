@@ -465,6 +465,14 @@
       apply_status = #{auditorStatus,jdbcType=TINYINT}
     where apply_code = #{applyCode,jdbcType=VARCHAR}
   </update>
+  <update id="updateApplyCodeByConfigCodes">
+    update product_sku_config
+    set apply_code = #{applyCode}
+    where config_code in
+     <foreach collection="configCodes" item="configCode" separator="," open="(" close=")">
+       #{configCode}
+     </foreach>
+  </update>
   <select id="getCycleInfo" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig">
     select
     product_code as productCode, product_name as productName, sku_code as skuCode, sku_name as skuName,

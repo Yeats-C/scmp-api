@@ -5,6 +5,8 @@ import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.github.pagehelper.PageInfo;
 
+import java.util.List;
+
 public interface ReportService {
 
     /**
@@ -126,4 +128,18 @@ public interface ReportService {
      * @return
      */
     PageResData selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo);
+
+    /**
+     *  查询所有门店类型
+     * @param
+     * @return
+     */
+    List<MonthlySalesRespVo> selectStoreType();
+
+    /**
+     *  查询所有数据类型
+     * @param
+     * @return
+     */
+    List<MonthlySalesRespVo> selectDataStyle();
 }

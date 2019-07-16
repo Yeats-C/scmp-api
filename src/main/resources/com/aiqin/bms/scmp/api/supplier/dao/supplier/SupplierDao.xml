@@ -111,6 +111,7 @@
       <if test="applyBy != null and applyBy != '' ">
         and update_by = #{applyBy,jdbcType=VARCHAR}
       </if>
+      order by apply_supplier_code desc
     </select>
   <select id="selectBySupplierName" resultMap="BaseResultMap" >
     select
