@@ -117,11 +117,11 @@ public class SupplierImportNew extends BaseRowModel {
     private String sendDistrictName;
 
     @ApiModelProperty("发送至")
-    @ExcelProperty(index = 23 , value = "发送至")
+    @ExcelProperty(index = 24 , value = "发送至")
     private String sendTo;
 
     @ApiModelProperty("发送地址")
-    @ExcelProperty(index = 24 , value = "发送地址")
+    @ExcelProperty(index = 23 , value = "发送地址")
     private String sendingAddress;
 
     @ApiModelProperty("发送送货天数")
