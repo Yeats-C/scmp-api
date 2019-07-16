@@ -37,13 +37,21 @@ public class MonthlySalesRespVo {
     @JsonProperty("price_channel_name")
     private String priceChannelName;
 
-    @ApiModelProperty("门店类型")
-    @JsonProperty("store_type")
-    private String storeType;
+    @ApiModelProperty("门店类型code")
+    @JsonProperty("store_type_code")
+    private String storeTypeCode;
 
-    @ApiModelProperty("数据类型")
-    @JsonProperty("data_style")
-    private String dataStyle;
+    @ApiModelProperty("门店类型名称")
+    @JsonProperty("store_type_name")
+    private String storeTypeName;
+
+    @ApiModelProperty("数据类型code")
+    @JsonProperty("data_style_code")
+    private String dataStyleCode;
+
+    @ApiModelProperty("数据类型name")
+    @JsonProperty("data_style_name")
+    private String dataStyleName;
 
     @ApiModelProperty("渠道销售额")
     @JsonProperty("qun_order_amount")
