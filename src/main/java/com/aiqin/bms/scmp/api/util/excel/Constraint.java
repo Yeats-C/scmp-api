@@ -13,7 +13,7 @@ public class Constraint {
     //注意：反斜线属于转义字符，故这里的反斜线是一对的
     private static final String IS_NUM = "^[0-9]*$";     //001.验证只能是0到9
     private static final String IS_JUST_NUMBER = "^\\+?[1-9][0-9]*$";     //002.非0正整数
-    private static final String IS_COUNT_NUMBER = "^\\d{n}$";     //003.只能输入n位数字
+    private static final String IS_COUNT_NUMBER = "\\d{n}$";     //003.只能输入n位数字
     private static final String IS_MIN_NUMBER = "^\\d{n,}$";      //004.最少n长度的字符串
     private static final String IS_ONLY_CHN = "^[\\u4e00-\\u9fa5]{0,}$";   //005.只能输入汉字
     private static final String IS_ONLY_CHN_AND_NUM = "^[\\u4e00-\\u9fa50-9]+$";   //006.只能是汉字和数字
@@ -30,6 +30,8 @@ public class Constraint {
         System.out.println(Constraint.ckChnLetterAndNum("aazzz"));
         System.out.println(Constraint.ckChnLetterAndNumAndChar("呵呵123zzz"));
         System.out.println(Constraint.ckChnCharAndNum("呵呵123"));
+        System.out.println(Constraint.ckCountNum(11,"11231111111"));
+
     }
 
     //001.只能是0到9

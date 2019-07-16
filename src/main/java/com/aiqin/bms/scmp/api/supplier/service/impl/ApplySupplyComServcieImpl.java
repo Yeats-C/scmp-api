@@ -773,8 +773,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         ApplySupplyCompanyReqVO reqVO = new ApplySupplyCompanyReqVO();
         List<String> name = Lists.newArrayList();
         SupplyCompany supplyCompany1 = supplyCompanies.get(supplierImportNew.getApplySupplyName().trim());
-        if(Objects.nonNull(supplyCompany1)&&name.contains(supplierImportNew.getApplySupplyName())){
-            sb.append(",").append("供应商名称重复");
+        if(Objects.nonNull(supplyCompany1)||name.contains(supplierImportNew.getApplySupplyName())){
+            if (StringUtils.isNotBlank(sb.toString())) {
+                sb.append(",");
+            }
+            sb.append("供应商名称重复");
         }
         name.add(supplierImportNew.getApplySupplyName().trim());
         reqVO.setApplySupplyName(supplierImportNew.getApplySupplyName().trim());
@@ -811,9 +814,9 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         reqVO.setEmail(supplierImportNew.getEmail().trim());
         reqVO.setTaxId(supplierImportNew.getTaxId().trim());
         reqVO.setCorporateRepresentative(supplierImportNew.getCorporateRepresentative());
-        if (!Constraint.ckCountNum(8, supplierImportNew.getRegisteredCapital())) {
-            sb.append(",").append("注册资金不能超过一千万亿");
-        }
+//        if (!Constraint.ckCountNum(8, supplierImportNew.getRegisteredCapital())) {
+//            sb.append(",").append("注册资金");
+//        }
         try {
             reqVO.setRegisteredCapital(Long.parseLong(supplierImportNew.getRegisteredCapital()));
         } catch (NumberFormatException e) {
