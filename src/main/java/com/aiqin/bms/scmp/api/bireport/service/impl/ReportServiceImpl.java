@@ -213,6 +213,25 @@ public class ReportServiceImpl implements ReportService {
     }
 
     /**
+     *  品类促销
+     * @param categorySaleReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectCategorySale(CategorySaleReqVo categorySaleReqVo) {
+        try {
+            PageHelper.startPage(categorySaleReqVo.getPageNo(), categorySaleReqVo.getPageSize());
+            List<CategorySaleRespVo> categorySaleRespVo = reportDao.selectCategorySale(categorySaleReqVo);
+            Integer total = reportDao.countCategorySale(categorySaleReqVo);
+            return new PageResData<CategorySaleRespVo>(total,categorySaleRespVo);
+        } catch (Exception ex) {
+            log.error("品类促销");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
      *  大效期
      * @param bigEffectReqVo
      * @return
@@ -225,7 +244,102 @@ public class ReportServiceImpl implements ReportService {
             Integer total = reportDao.countBigEffect(bigEffectReqVo);
             return new PageResData<BigEffectRespVo>(total,bigEffectRespVos);
         } catch (Exception ex) {
-            log.error("查询高库存失败");
+            log.error("大效期");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  月销售情况
+     * @param monthlySalesReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo) {
+        try {
+            PageHelper.startPage(monthlySalesReqVo.getPageNo(), monthlySalesReqVo.getPageSize());
+            List<MonthlySalesRespVo> monthlySalesRespVos = reportDao.selectMonthlySales(monthlySalesReqVo);
+            Integer total = reportDao.countMonthlySales(monthlySalesReqVo);
+            return new PageResData<MonthlySalesRespVo>(total,monthlySalesRespVos);
+        } catch (Exception ex) {
+            log.error("月销售情况");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  月毛利率情况
+     * @param monthlyGrossMarginReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo) {
+        try {
+            PageHelper.startPage(monthlyGrossMarginReqVo.getPageNo(), monthlyGrossMarginReqVo.getPageSize());
+            List<MonthlySalesRespVo> monthlySalesRespVos = reportDao.selectMonthlyGrossMargin(monthlyGrossMarginReqVo);
+            Integer total = reportDao.countMonthlyGrossMargin(monthlyGrossMarginReqVo);
+            return new PageResData<MonthlySalesRespVo>(total,monthlySalesRespVos);
+        } catch (Exception ex) {
+            log.error("月毛利率情况");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  月销售达成情况
+     * @param monthSalesAchievementReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo) {
+        try {
+            PageHelper.startPage(monthSalesAchievementReqVo.getPageNo(), monthSalesAchievementReqVo.getPageSize());
+            List<MonthSalesAchievementRespVo> monthSalesAchievementRespVos = reportDao.selectMonthSalesAchievement(monthSalesAchievementReqVo);
+            Integer total = reportDao.countMonthSalesAchievement(monthSalesAchievementReqVo);
+            return new PageResData<MonthSalesAchievementRespVo>(total,monthSalesAchievementRespVos);
+        } catch (Exception ex) {
+            log.error("月销售达成情况");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  月累计品类销售情况
+     * @param monthCumulativeBrandSalesReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo) {
+        try {
+            PageHelper.startPage(monthCumulativeBrandSalesReqVo.getPageNo(), monthCumulativeBrandSalesReqVo.getPageSize());
+            List<MonthCumulativeBrandSalesRespVo> monthCumulativeBrandSalesRespVos = reportDao.selectMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo);
+            Integer total = reportDao.countMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo);
+            return new PageResData<MonthCumulativeBrandSalesRespVo>(total,monthCumulativeBrandSalesRespVos);
+        } catch (Exception ex) {
+            log.error("月销售达成情况");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  月累计品类毛利率情况
+     * @param monthCumulativeGrossProfitMarginReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo) {
+        try {
+            PageHelper.startPage(monthCumulativeGrossProfitMarginReqVo.getPageNo(), monthCumulativeGrossProfitMarginReqVo.getPageSize());
+            List<MonthCumulativeGrossProfitMarginRespVo> monthCumulativeGrossProfitMarginRespVos = reportDao.selectMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo);
+            Integer total = reportDao.countMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo);
+            return new PageResData<MonthCumulativeGrossProfitMarginRespVo>(total,monthCumulativeGrossProfitMarginRespVos);
+        } catch (Exception ex) {
+            log.error("月销售达成情况");
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }

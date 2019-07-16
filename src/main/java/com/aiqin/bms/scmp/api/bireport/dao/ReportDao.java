@@ -99,6 +99,15 @@ public interface ReportDao {
     Integer countHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
+     *  品类促销
+     * @param categorySaleReqVo
+     * @return
+     */
+    List<CategorySaleRespVo> selectCategorySale(CategorySaleReqVo categorySaleReqVo);
+
+    Integer countCategorySale(CategorySaleReqVo categorySaleReqVo);
+
+    /**
      *  大效期
      * @param bigEffectReqVo
      * @return
@@ -106,4 +115,51 @@ public interface ReportDao {
     List<BigEffectRespVo> selectBigEffect(BigEffectReqVo bigEffectReqVo);
 
     Integer countBigEffect(BigEffectReqVo bigEffectReqVo);
+
+    /**
+     *  月销售情况
+     * @param monthlySalesReqVo
+     * @return
+     */
+    List<MonthlySalesRespVo> selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
+
+    Integer countMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
+
+    /**
+     *  月毛利率情况
+     * @param monthlyGrossMarginReqVo
+     * @return
+     */
+    List<MonthlySalesRespVo> selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
+
+    Integer countMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
+
+    /**
+     *  月销售达成情况
+     * @param monthSalesAchievementReqVo
+     * @return
+     */
+    List<MonthSalesAchievementRespVo> selectMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo);
+
+    Integer countMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo);
+
+    /**
+     *  月累计品类销售情况
+     * @param monthCumulativeBrandSalesReqVo
+     * @return
+     */
+    List<MonthCumulativeBrandSalesRespVo> selectMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo);
+
+    Integer countMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo);
+
+    /**
+     *  月累计品类毛利率情况
+     * @param monthCumulativeGrossProfitMarginReqVo
+     * @return
+     */
+    List<MonthCumulativeGrossProfitMarginRespVo> selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo);
+
+    Integer countMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo);
+
+
 }
