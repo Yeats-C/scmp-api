@@ -4,7 +4,6 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.StatusTypeCode;
-import com.aiqin.bms.scmp.api.supplier.domain.excel.im.SupplierImportNew;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailByCodeRespVO;
@@ -13,8 +12,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComListRes
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComServcie;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
-import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
-import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -22,6 +19,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +36,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/supplier/company")
 @Api(description = "供应商管理")
+@Slf4j
 public class SupplyCompanyController extends SupplierBaseController {
     @Autowired
     private ApplySupplyComServcie applySupplyComServcie;
@@ -137,13 +136,14 @@ public class SupplyCompanyController extends SupplierBaseController {
     }
     @PostMapping("/import")
     @ApiOperation(value = "批量导入")
-    public List<SupplierImportNew> importData(MultipartFile file){
+    public HttpResponse<ApplySupplyCompanyReqVO> importData(MultipartFile file){
         try {
-            List<SupplierImportNew> supplierImportNews = ExcelUtil.readExcel(file, SupplierImportNew.class, 1, 0);
-            return supplierImportNews;
-        } catch (ExcelException e) {
-            e.printStackTrace();
-            return null;
+            return HttpResponse.success(applySupplyComServcie.dealImport(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
 }
