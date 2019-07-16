@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompanyDetailDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComListRespVO;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -50,5 +51,13 @@ public interface SupplyCompanyDao {
      * @return
      */
     SupplyCompany detailByCode(@Param("supplyCode") String supplyCode, @Param("companyCode") String companyCode);
-
+    /**
+     * 根据名称查询
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param companyNameList
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany>
+     */
+    @MapKey("supplyName")
+    Map<String,SupplyCompany> selectByCompanyNameList(@Param("list") List<String> companyNameList, @Param("companyCode") String companyCode);
 }

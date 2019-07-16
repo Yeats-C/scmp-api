@@ -51,7 +51,7 @@
         <result column="bcode"  property="code" />
       </collection>
     </resultMap>
-    <select id="officialSkuList" resultMap="officialSkuList">
+    <select id="officialSkuList" parameterType="java.util.List" resultMap="officialSkuList">
         select a.sku_code asku_code,
                a.sku_name asku_name,
                a.categories_supply_channels_code acategories_supply_channels_code,
@@ -70,24 +70,37 @@
                          on a.code = b.main_code
                left join product_sku_sale_area_main c
                          on a.code = c.code
-        where c.company_code = #{companyCode}
-      <if test="skuCode != null and skuCode != ''">
-        and a.sku_code = #{skuCode}
-      </if>
-      <if test="skuName != null and skuName != ''">
-        and a.sku_name like CONCAT('%',#{skuName},'%')
-      </if>
-      <if test="beDisable != null">
-        and c.be_disable = #{beDisable}
-      </if>
-      <if test="categoriesSupplyChannelsCode != null">
-        and a.categories_supply_channels_code = #{categoriesSupplyChannelsCode}
-      </if>
-      <if test="directDeliverySupplierName != null and directDeliverySupplierName != ''">
-        and a.direct_delivery_supplier_name like CONCAT('%',#{directDeliverySupplierName},'%')
-      </if>
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        where a.id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+</select>
+  <select id="officialSkuListCount" resultType="java.lang.Long">
+    select a.id
+    from product_sku_sale_area a
+    left join product_sku_sale_area_info b
+    on a.code = b.main_code
+    left join product_sku_sale_area_main c
+    on a.code = c.code
+    where c.company_code = #{companyCode}
+    <if test="skuCode != null and skuCode != ''">
+      and a.sku_code = #{skuCode}
+    </if>
+    <if test="skuName != null and skuName != ''">
+      and a.sku_name like CONCAT('%',#{skuName},'%')
+    </if>
+    <if test="beDisable != null">
+      and c.be_disable = #{beDisable}
+    </if>
+    <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != ''">
+      and a.categories_supply_channels_code = #{categoriesSupplyChannelsCode}
+    </if>
+    <if test="directDeliverySupplierCode != null and directDeliverySupplierCode != ''">
+      and a.direct_delivery_supplier_code like CONCAT('%',#{directDeliverySupplierCode},'%')
+    </if>
+    group by a.id
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_sale_area
     where id = #{id,jdbcType=BIGINT}
   </delete>
