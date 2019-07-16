@@ -777,8 +777,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         ApplySupplyCompanyReqVO reqVO = new ApplySupplyCompanyReqVO();
         List<String> name = Lists.newArrayList();
         SupplyCompany supplyCompany1 = supplyCompanies.get(supplierImportNew.getApplySupplyName().trim());
-        if(Objects.nonNull(supplyCompany1)&&name.contains(supplierImportNew.getApplySupplyName())){
-            sb.append(",").append("供应商名称重复");
+        if(Objects.nonNull(supplyCompany1)||name.contains(supplierImportNew.getApplySupplyName())){
+            if (StringUtils.isNotBlank(sb.toString())) {
+                sb.append(",");
+            }
+            sb.append("供应商名称重复");
         }
         name.add(supplierImportNew.getApplySupplyName().trim());
         reqVO.setApplySupplyName(supplierImportNew.getApplySupplyName().trim());
@@ -815,9 +818,9 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         reqVO.setEmail(supplierImportNew.getEmail().trim());
         reqVO.setTaxId(supplierImportNew.getTaxId().trim());
         reqVO.setCorporateRepresentative(supplierImportNew.getCorporateRepresentative());
-        if (!Constraint.ckCountNum(8, supplierImportNew.getRegisteredCapital())) {
-            sb.append(",").append("注册资金不能超过一千万亿");
-        }
+//        if (!Constraint.ckCountNum(8, supplierImportNew.getRegisteredCapital())) {
+//            sb.append(",").append("注册资金");
+//        }
         try {
             reqVO.setRegisteredCapital(Long.parseLong(supplierImportNew.getRegisteredCapital()));
         } catch (NumberFormatException e) {
@@ -849,12 +852,18 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         ApplyDeliveryInfoReqVO sendVO = new ApplyDeliveryInfoReqVO();
         ApplyDeliveryInfoReqVO returnVO = new ApplyDeliveryInfoReqVO();
         try {
-            sendVO.setDeliveryDays(Long.valueOf(supplierImportNew.getDeliveryDays()));
+            String deliveryDays = supplierImportNew.getDeliveryDays();
+            if (StringUtils.isNotBlank(deliveryDays)) {
+                sendVO.setDeliveryDays(Long.valueOf(deliveryDays));
+            }
         } catch (NumberFormatException e) {
             sb.append(",").append("发货天数格式不正确");
         }
         try {
-            sendVO.setDeliveryDays(Long.valueOf(supplierImportNew.getReturnDays()));
+            String deliveryDays = supplierImportNew.getReturnDays();
+            if (StringUtils.isNotBlank(deliveryDays)) {
+                returnVO.setDeliveryDays(Long.valueOf(deliveryDays));
+            }
         } catch (NumberFormatException e) {
             sb.append(",").append("收货天数格式不正确");
         }
@@ -863,13 +872,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         returnVO.setDeliveryType((byte)1);
         returnVO.setSendingAddress(supplierImportNew.getReturningAddress().trim());
         SupplierDictionaryInfo info1 = dictionaryInfoList.get(supplierImportNew.getSendTo().trim());
-        if(Objects.isNull(info)){
+        if(Objects.isNull(info1)){
             sb.append(",").append("未找到对应的发货至选项");
         }else {
             sendVO.setSendTo(info.getSupplierDictionaryValue());
         }
         SupplierDictionaryInfo info2 = dictionaryInfoList.get(supplierImportNew.getReturnTo().trim());
-        if(Objects.isNull(info)){
+        if(Objects.isNull(info2)){
             sb.append(",").append("未找到对应的收货至选项");
         }else {
             returnVO.setSendTo(info.getSupplierDictionaryValue());
@@ -890,7 +899,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             if (specialArea.getHasCity()) {
                 AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
                 if(Objects.isNull(areaInfo)){
-                    sb.append(checkAreaEnum.getCity());
+                    sb.append(",").append(checkAreaEnum.getCity());
                     return;
                 }else {
                     reqVO.setCityId(areaInfo.getCode());
@@ -898,7 +907,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 reqVO.setCityName(supplierImportNew.getCityName());
                 AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
                 if(Objects.isNull(areaInfo1)|| supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
-                    sb.append(checkAreaEnum.getProvince());
+                    sb.append(",").append(checkAreaEnum.getProvince());
                     return;
                 }else {
                     reqVO.setProvinceId(areaInfo1.getCode());
@@ -907,7 +916,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }else{
                 AreaInfo areaInfo = areaTree.get(supplierImportNew.getProvinceName());
                 if(Objects.isNull(areaInfo)){
-                    sb.append(checkAreaEnum.getProvince());
+                    sb.append(",").append(checkAreaEnum.getProvince());
                     return;
                 }else {
                     reqVO.setProvinceId(areaInfo.getCode());
@@ -917,7 +926,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         }else {
             AreaInfo areaInfo2 = areaTree.get(supplierImportNew.getDistrictName());
             if(Objects.isNull(areaInfo2)){
-                sb.append(checkAreaEnum.getDis());
+                sb.append(",").append(checkAreaEnum.getDis());
                 return;
             }else {
                 reqVO.setDistrictId(areaInfo2.getCode());
@@ -925,7 +934,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             reqVO.setDistrictName(supplierImportNew.getDistrictName());
             AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
             if(Objects.isNull(areaInfo)||!supplierImportNew.getCityName().equals(areaInfo2.getParentName())){
-                sb.append(checkAreaEnum.getCity());
+                sb.append(",").append(checkAreaEnum.getCity());
                 return;
             }else {
                 reqVO.setCityId(areaInfo.getCode());
@@ -933,7 +942,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             reqVO.setCityName(supplierImportNew.getCityName());
             AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
             if(Objects.isNull(areaInfo1)|| !supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
-                sb.append(checkAreaEnum.getProvince());
+                sb.append(",").append(checkAreaEnum.getProvince());
                 return;
             }else {
                 reqVO.setProvinceId(areaInfo1.getCode());
@@ -948,7 +957,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             if (specialArea.getHasCity()) {
                 AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
                 if(Objects.isNull(areaInfo)){
-                    sb.append(checkAreaEnum.getCity());
+                    sb.append(",").append(checkAreaEnum.getCity());
                     return;
                 }else {
                     reqVO.setSendCityId(areaInfo.getCode());
@@ -956,7 +965,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 reqVO.setSendCityName(supplierImportNew.getCityName());
                 AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
                 if(Objects.isNull(areaInfo1)|| supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
-                    sb.append(checkAreaEnum.getProvince());
+                    sb.append(",").append(checkAreaEnum.getProvince());
                     return;
                 }else {
                     reqVO.setSendProvinceId(areaInfo1.getCode());
@@ -965,7 +974,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }else{
                 AreaInfo areaInfo = areaTree.get(supplierImportNew.getProvinceName());
                 if(Objects.isNull(areaInfo)){
-                    sb.append(checkAreaEnum.getProvince());
+                    sb.append(",").append(checkAreaEnum.getProvince());
                     return;
                 }else {
                     reqVO.setSendProvinceId(areaInfo.getCode());
@@ -975,7 +984,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         }else {
             AreaInfo areaInfo2 = areaTree.get(supplierImportNew.getDistrictName());
             if(Objects.isNull(areaInfo2)){
-                sb.append(checkAreaEnum.getDis());
+                sb.append(",").append(checkAreaEnum.getDis());
                 return;
             }else {
                 reqVO.setSendDistrictId(areaInfo2.getCode());
@@ -983,7 +992,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             reqVO.setSendDistrictName(supplierImportNew.getDistrictName());
             AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
             if(Objects.isNull(areaInfo)||!supplierImportNew.getCityName().equals(areaInfo2.getParentName())){
-                sb.append(checkAreaEnum.getCity());
+                sb.append(",").append(checkAreaEnum.getCity());
                 return;
             }else {
                 reqVO.setSendCityId(areaInfo.getCode());
@@ -991,7 +1000,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             reqVO.setSendCityName(supplierImportNew.getCityName());
             AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
             if(Objects.isNull(areaInfo1)|| !supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
-                sb.append(checkAreaEnum.getProvince());
+                sb.append(",").append(checkAreaEnum.getProvince());
                 return;
             }else {
                 reqVO.setSendProvinceId(areaInfo1.getCode());
