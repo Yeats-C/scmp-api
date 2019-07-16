@@ -344,4 +344,24 @@ public class ReportServiceImpl implements ReportService {
             throw new GroundRuntimeException(ex.getMessage());
         }
     }
+
+    /**
+     *  查询所有门店类型
+     * @param
+     * @return
+     */
+    @Override
+    public List<MonthlySalesRespVo> selectStoreType() {
+        return reportDao.selectStoreType();
+    }
+
+    /**
+     *  查询所有数据类型
+     * @param
+     * @return
+     */
+    @Override
+    public List<MonthlySalesRespVo> selectDataStyle() {
+        return reportDao.selectDataStyle();
+    }
 }
