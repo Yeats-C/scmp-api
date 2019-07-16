@@ -161,5 +161,17 @@ public interface ReportDao {
 
     Integer countMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo);
 
+    /**
+     *  月累计品类毛利率情况
+     * @param
+     * @return
+     */
+    List<MonthlySalesRespVo> selectStoreType();
 
+    /**
+     *  查询所有数据类型
+     * @param
+     * @return
+     */
+    List<MonthlySalesRespVo> selectDataStyle();
 }

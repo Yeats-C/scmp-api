@@ -661,4 +661,17 @@ public class ReportController {
         monthCumulativeGrossProfitMarginReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo));
     }
+
+    @GetMapping("/search/store/type")
+    @ApiOperation("查询所有门店类型")
+    public HttpResponse<List<MonthlySalesRespVo>> selectStoreType(){
+        return HttpResponse.success(reportService.selectStoreType());
+    }
+
+    @GetMapping("/search/data/style")
+    @ApiOperation("查询所有数据类型")
+    public HttpResponse<List<MonthlySalesRespVo>> selectDataStyle(){
+        return HttpResponse.success(reportService.selectDataStyle());
+    }
+
 }

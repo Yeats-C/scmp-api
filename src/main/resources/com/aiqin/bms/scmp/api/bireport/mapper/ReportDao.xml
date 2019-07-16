@@ -1077,4 +1077,16 @@
         group by bmcgpm.id
         ) as tmp
     </select>
+    <select id="selectStoreType" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
+        SELECT
+        bms.store_type_code as storeTypeCode,
+        bms.store_type_name as storeTypeName
+        FROM bi_monthly_sales bms
+    </select>
+    <select id="selectDataStyle" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
+        SELECT
+        bms.data_style_code as dataStyleCode,
+        bms.data_style_name as dataStyleName
+        FROM bi_monthly_sales bms
+    </select>
 </mapper>
