@@ -31,6 +31,8 @@ public interface ProductSkuSupplyUnitService {
      */
     List<ProductSkuSupplyUnitRespVo> getDraftList(String skuCode);
 
+    List<ProductSkuSupplyUnitRespVo> getDraftList(List<String> skuCodes);
+
     /**
      * 删除临时表数据
      * @param skuCodes

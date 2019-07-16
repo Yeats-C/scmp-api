@@ -141,10 +141,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         List<ProductSkuConfigDraft> drafts;
         List<SpareWarehouseReqVo> spareWarehouseReqVos = Lists.newArrayList();
         configReqVos.forEach(item->{
-            item.getSpareWarehouses().forEach(item1->{
-                item1.setConfigCode(item.getConfigCode());
-            });
-            spareWarehouseReqVos.addAll(item.getSpareWarehouses());
+            if(CollectionUtils.isNotEmpty(item.getSpareWarehouses())){
+                item.getSpareWarehouses().forEach(item1->{
+                    item1.setConfigCode(item.getConfigCode());
+                });
+                spareWarehouseReqVos.addAll(item.getSpareWarehouses());
+            }
         });
         try {
            drafts = BeanCopyUtils.copyList(configReqVos,ProductSkuConfigDraft.class);
@@ -168,14 +170,17 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         req.setApplyCode(productSkuConfig.getApplyCode());
         req.setAuditorStatus(ApplyStatus.APPROVAL.getNumber());
         mapper.updateApplyStatusByApplyCode(req);
-        List<ProductSkuConfigSpareWarehouseDraft> draftList = null;
-        try {
-            draftList = BeanCopyUtils.copyList(spareWarehouseReqVos,ProductSkuConfigSpareWarehouseDraft.class);
-        } catch (Exception e) {
-            throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
+        if(CollectionUtils.isNotEmpty(spareWarehouseReqVos)){
+            List<ProductSkuConfigSpareWarehouseDraft> draftList = null;
+            try {
+                draftList = BeanCopyUtils.copyList(spareWarehouseReqVos,ProductSkuConfigSpareWarehouseDraft.class);
+            } catch (Exception e) {
+                throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
+            }
+            //插入临时表
+            ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseDraftList(draftList);
         }
-        //插入临时表
-        ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseDraftList(draftList);
+
         //供应商更新
         if(CollectionUtils.isNotEmpty(reqVo.getUpdateProductSkuSupplyUnitReqVos())) {
             List<UpdateProductSkuSupplyUnitReqVo> supplyUnitReqVos = reqVo.getUpdateProductSkuSupplyUnitReqVos();
@@ -253,7 +258,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         respVo.setConfigs(list);
         List<ProductSkuSupplyUnitRespVo> skuSupplyUnitRespVos = Lists.newArrayList();
         if(CollectionUtils.isNotEmpty(list)){
-            skuSupplyUnitRespVos = productSkuSupplyUnitService.getDraftList(list.get(0).getSkuCode());
+            List<String> skuCodes = list.stream().map(SkuConfigsRepsVo::getSkuCode).collect(Collectors.toList());
+            skuSupplyUnitRespVos = productSkuSupplyUnitService.getDraftList(skuCodes);
         }
         respVo.setSuppliers(skuSupplyUnitRespVos);
         return respVo;
@@ -351,15 +357,18 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             log.error("希望插入主表条数:[{}],实际插入主表条数：[{}]", applyProductSkuConfigs.size(), num);
             throw new BizException(ResultCode.SKU_CONFIG_SUBMIT_ERROR);
         }
-        //批量保存备用仓库
-        applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
+        if (CollectionUtils.isNotEmpty(applyProductSkuConfigSpareWarehouses)) {
+            //批量保存备用仓库
+            applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
+        }
         //更新编码
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         //删除临时表配置信息
         draftMapper.deleteByConfigCodes(reqVo.getSkuConfigs());
         //删除临时表备用仓库信息
         spareWarehouseDraftMapper.deleteByConfigCodes(reqVo.getSkuConfigs());
-
+        //更新正式表申请编码
+        mapper.updateApplyCodeByConfigCodes(code,reqVo.getSkuConfigs());
         //供应商信息保存
         //根据供应商信息ID查询供应商信息
         List<Long> supplierId = reqVo.getSupplierId();

@@ -34,6 +34,8 @@ public interface ProductSkuConfigMapper {
 
     int updateApplyStatusByApplyCode(ApplyProductSkuConfigReqVo req);
 
+    int updateApplyCodeByConfigCodes(@Param("applyCode")String applyCode,@Param("configCodes")List<String> configCodes);
+
     ProductSkuConfig getCycleInfo(@Param("skuCode")String skuCode, @Param("transportCenterCode") String transportCenterCode);
 
     List<SkuConfigsRepsVo> getListBySkuCode(String skuCode);
