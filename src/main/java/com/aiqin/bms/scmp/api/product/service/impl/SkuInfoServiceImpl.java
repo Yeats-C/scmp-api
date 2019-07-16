@@ -1169,11 +1169,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     public BasePage<QueryProductSaleAreaForSkuRespVO> selectSkuListForSaleArea(QueryProductSaleAreaForSkuReqVO reqVO) {
         List<Long> longs = productSkuDao.selectSkuListForSaleAreaCount(reqVO);
-        longs= PageUtil.myPage(longs, reqVO);
         if(CollectionUtils.isEmpty(longs)){
             return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
         }
-       List<QueryProductSaleAreaForSkuRespVO> list =  productSkuDao.selectSkuListForSaleArea(longs);
+       List<QueryProductSaleAreaForSkuRespVO> list =  productSkuDao.selectSkuListForSaleArea(PageUtil.myPage(longs, reqVO));
         return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),longs.size(),list);
     }
 
