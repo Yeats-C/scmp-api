@@ -39,13 +39,13 @@ public class QueryProductSaleAreaRespVO {
     private String directDeliverySupplierName;
 
     @ApiModelProperty("颜色")
-    private String color;
+    private String colorName;
 
     @ApiModelProperty("规格")
     private String spec;
 
     @ApiModelProperty("型号")
-    private String model;
+    private String modelNumber;
 
     @ApiModelProperty("供应商集合")
     private List<ProductSaleAreaSupplierInfo> supplierList;
