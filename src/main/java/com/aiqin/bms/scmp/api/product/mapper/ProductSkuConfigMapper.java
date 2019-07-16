@@ -28,7 +28,7 @@ public interface ProductSkuConfigMapper {
 
     int updateBatch(List<ProductSkuConfig> configs);
 
-    List<SkuConfigsRepsVo> getList(QuerySkuConfigReqVo reqVo);
+    List<SkuConfigsRepsVo> getList(List<Long> ids);
 
     SkuConfigDetailRepsVo detail(String skuCode);
 
@@ -39,4 +39,6 @@ public interface ProductSkuConfigMapper {
     ProductSkuConfig getCycleInfo(@Param("skuCode")String skuCode, @Param("transportCenterCode") String transportCenterCode);
 
     List<SkuConfigsRepsVo> getListBySkuCode(String skuCode);
+
+    List<Long> selectSkuListForSaleAreaCount(QuerySkuConfigReqVo reqVo);
 }
