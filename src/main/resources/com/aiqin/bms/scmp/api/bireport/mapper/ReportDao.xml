@@ -592,11 +592,11 @@
             <if test="storeTypeName!=null and storeTypeName!=''">
                 and bmsa.store_type_name like concat('%', #{storeTypeName}, '%')
             </if>
-            <if test="data_style_code!=null and data_style_code!=''">
-                and bmsa.data_style_code=#{data_style_code}
-            </if>
             <if test="dataStyleCode!=null and dataStyleCode!=''">
-                and bmsa.data_style_name like concat('%', #{dataStyleCode}, '%')
+                and bmsa.data_style_code=#{dataStyleCode}
+            </if>
+            <if test="dataStyleName!=null and dataStyleName!=''">
+                and bmsa.data_style_name like concat('%', #{dataStyleName}, '%')
             </if>
             <if test="beginRunTime!=null and beginRunTime!=''">
                 and bmsa.run_time between #{beginRunTime}
@@ -633,11 +633,11 @@
             <if test="storeTypeName!=null and storeTypeName!=''">
                 and bmcbs.store_type_name like concat('%', #{storeTypeName}, '%')
             </if>
-            <if test="data_style_code!=null and data_style_code!=''">
-                and bmcbs.data_style_code=#{data_style_code}
-            </if>
             <if test="dataStyleCode!=null and dataStyleCode!=''">
-                and bmcbs.data_style_name like concat('%', #{dataStyleCode}, '%')
+                and bmcbs.data_style_code=#{dataStyleCode}
+            </if>
+            <if test="dataStyleName!=null and dataStyleName!=''">
+                and bmcbs.data_style_name like concat('%', #{dataStyleName}, '%')
             </if>
             <if test="beginRunTime!=null and beginRunTime!=''">
                 and bmcbs.run_time between #{beginRunTime}
@@ -674,11 +674,11 @@
             <if test="storeTypeName!=null and storeTypeName!=''">
                 and bmcgpm.store_type_name like concat('%', #{storeTypeName}, '%')
             </if>
-            <if test="data_style_code!=null and data_style_code!=''">
-                and bmcgpm.data_style_code=#{data_style_code}
-            </if>
             <if test="dataStyleCode!=null and dataStyleCode!=''">
-                and bmcgpm.data_style_name like concat('%', #{dataStyleCode}, '%')
+                and bmcgpm.data_style_code=#{dataStyleCode}
+            </if>
+            <if test="dataStyleName!=null and dataStyleName!=''">
+                and bmcgpm.data_style_name like concat('%', #{dataStyleName}, '%')
             </if>
             <if test="beginRunTime!=null and beginRunTime!=''">
                 and bmcgpm.run_time between #{beginRunTime}
