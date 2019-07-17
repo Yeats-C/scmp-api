@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockBatchRequest;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ReportDao {
 
@@ -16,6 +17,8 @@ public interface ReportDao {
     List<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
     Integer countSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+
+    List<Map> selectTableCloumnName();
 
     /**
      *  批次商品进销存

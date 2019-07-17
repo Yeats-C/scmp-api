@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.service.impl;
 
+import com.aiqin.bms.scmp.api.base.PageReportResData;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.dao.ReportDao;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -28,12 +30,13 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
+    public PageReportResData selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
         try {
            // PageHelper.startPage(supplierArrivalRateReqVo.getPageNo(), supplierArrivalRateReqVo.getPageSize());
             List<SupplierArrivalRateRespVo> supplierArrivalRateRespVos = reportDao.selectSupplierArrivalRate(supplierArrivalRateReqVo);
+            List<Map> maps = reportDao.selectTableCloumnName();
             Integer total = reportDao.countSupplierArrivalRate(supplierArrivalRateReqVo);
-            return new PageResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos);
+            return new PageReportResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos,maps);
         } catch (Exception ex) {
             log.error("查询供应商到货率失败");
             ex.printStackTrace();

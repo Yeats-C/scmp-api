@@ -747,6 +747,13 @@
         group by bsar.id
         ) as tmp
     </select>
+    <select id="selectTableCloumnName" resultType="java.util.HashMap">
+        select
+          COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
+        from information_schema.COLUMNS
+        where
+          table_name = 'bi_app_suggest_replenishment' and table_schema = 'bms_scmp'
+    </select>
     <select id="selectGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
         select
