@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -106,10 +107,12 @@ public class RejectRequest {
     @JsonProperty("return_amount")
     private Long returnAmount;
 
+    @Size(max = 15,message = "负责人名称长度小于15")
     @ApiModelProperty(value = "负责人")
     @JsonProperty("duty_person")
     private String dutyPerson;
 
+    @Size(max = 15,message = "联系人名称长度小于15")
     @ApiModelProperty(value = "联系人")
     @JsonProperty("contacts_person")
     private String contactsPerson;
@@ -162,6 +165,7 @@ public class RejectRequest {
     @JsonProperty("dictionary_name")
     private String dictionaryName;
 
+    @Size(max = 66,message = "备注长度小于66")
     @ApiModelProperty(value = "")
     @JsonProperty("remark")
     private String remark;

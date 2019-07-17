@@ -449,11 +449,11 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             operationLogDao.insert(new OperationLog(rejectId, 0, "新增退供单", "", request.getCreateById(), request.getCreateByName()));
             //锁定库存
             ILockStockBatchReqVO iLockStockBatchReqVO = handleStockParam(list, rejectRecord);
-            Boolean stockStatus = stockService.returnSupplyLockStockBatch(iLockStockBatchReqVO);
-            if (!stockStatus) {
-                LOGGER.error("锁定库存异常:{}", rejectRecord.toString());
-                throw new RuntimeException(String.format("锁定库存异常:{%s}", rejectRecord.toString()));
-            }
+//            Boolean stockStatus = stockService.returnSupplyLockStockBatch(iLockStockBatchReqVO);
+//            if (!stockStatus) {
+//                LOGGER.error("锁定库存异常:{}", rejectRecord.toString());
+//                throw new RuntimeException(String.format("锁定库存异常:{%s}", rejectRecord.toString()));
+//            }
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
         } catch (BeansException e) {

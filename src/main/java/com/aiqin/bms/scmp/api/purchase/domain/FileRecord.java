@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @ApiModel
@@ -23,6 +24,7 @@ public class FileRecord {
     @JsonProperty("file_code")
     private String fileCode;
 
+    @Size(max = 15,message = "文件名称长度小于15")
     @ApiModelProperty(value="文件名称")
     @JsonProperty("file_name")
     private String fileName;
