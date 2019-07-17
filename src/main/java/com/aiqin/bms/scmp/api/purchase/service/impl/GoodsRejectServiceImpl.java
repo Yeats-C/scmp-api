@@ -665,6 +665,11 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
+    /**
+     *  根据品类code 查询所有的名称(包含父级)
+     * @param categoryCode
+     * @return String
+     */
     public String selectCategoryName(String categoryCode) {
         StringBuilder stringBuilder = new StringBuilder();
         ProductCategoryResponse productCategoryResponse;
