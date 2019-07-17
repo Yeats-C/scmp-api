@@ -106,6 +106,11 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
         return productSkuSupplyUnitDao.getDraft(skuCode);
     }
 
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> getDraftList(List<String> skuCodes) {
+        return productSkuSupplyUnitDao.getDraftBySkuCodes(skuCodes);
+    }
+
     /**
      * 删除临时表数据
      *

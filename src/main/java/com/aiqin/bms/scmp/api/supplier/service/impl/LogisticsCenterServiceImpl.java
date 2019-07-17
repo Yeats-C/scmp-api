@@ -107,7 +107,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         String logisticsCenterName = logisticsCenterReqVo.getLogisticsCenterName();
         Integer integer = logisticsCenterDao.checkName(logisticsCenterName,null,companyCode);
         if(integer>0){
-            throw new GroundRuntimeException("物流中心名称不能重复");
+            throw new GroundRuntimeException("仓库名称不能重复");
         }
        LogisticsCenterDTO  logisticsCenterDTO = new LogisticsCenterDTO();
        BeanCopyUtils.copy(logisticsCenterReqVo,logisticsCenterDTO);
@@ -136,13 +136,13 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
                     if(kp>0){
                         return HttpResponse.success(kp);
                     }else {
-                        throw new GroundRuntimeException("物流中心服务范围新增失败");
+                        throw new GroundRuntimeException("仓库服务范围新增失败");
                     }
                 }else{
                     return HttpResponse.success(k);
                 }
             }catch (Exception e){
-                throw new GroundRuntimeException("物流中心服务范围新增失败");
+                throw new GroundRuntimeException("仓库服务范围新增失败");
             }
 
         }else {
@@ -191,7 +191,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         }
         Integer integer = logisticsCenterDao.checkName(logisticsCenterName,updateLogisticsCenterReqVo.getLogisticsCenterCode(),companyCode);
         if(integer>0){
-            throw new GroundRuntimeException("物流中心名称不能重复");
+            throw new GroundRuntimeException("仓库名称不能重复");
         }
         LogisticsCenterDTO  logisticsCenterDTO = new LogisticsCenterDTO();
         BeanCopyUtils.copy(updateLogisticsCenterReqVo,logisticsCenterDTO);
@@ -221,7 +221,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
                 //批量插入
                 int kp = ((LogisticsCenterService)AopContext.currentProxy()).saveList(list1);
                 if(kp!=list1.size()){
-                    throw new GroundRuntimeException("物流中心服务范围新增失败");
+                    throw new GroundRuntimeException("仓库服务范围新增失败");
                 }
                 return HttpResponse.success(kp);
             }else{
@@ -249,7 +249,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
             }
             return logisticsCenterDao.insertSelective(record);
         }catch (Exception e){
-            throw new GroundRuntimeException("物流中心新增失败");
+            throw new GroundRuntimeException("仓库新增失败");
         }
     }
 
@@ -266,7 +266,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         try{
             return logisticsCenterAreaDao.saveList(logisticsCenterAreaDTOS);
         }catch (Exception e){
-            throw new GroundRuntimeException("物流中心服务区新增失败");
+            throw new GroundRuntimeException("仓库服务区新增失败");
         }
     }
 
@@ -283,7 +283,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         try {
          return logisticsCenterDao.updateByCodeSelective(record);
         }catch (Exception e){
-            throw new GroundRuntimeException("物流中心修改失败");
+            throw new GroundRuntimeException("仓库修改失败");
         }
     }
 
@@ -299,7 +299,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         try {
             return logisticsCenterAreaDao.updateList(logisticsCenterAreaDTOS);
         }catch (Exception e){
-            throw new GroundRuntimeException("物流中心服务区修改失败");
+            throw new GroundRuntimeException("仓库服务区修改失败");
         }
     }
 
@@ -323,7 +323,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
             }
             return logisticsCenterResVos;
         } catch (Exception e) {
-            throw new GroundRuntimeException("物流中心查询失败");
+            throw new GroundRuntimeException("仓库查询失败");
         }
     }
 

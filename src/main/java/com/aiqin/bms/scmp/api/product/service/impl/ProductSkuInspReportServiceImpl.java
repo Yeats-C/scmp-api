@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInspReportDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInspReportMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuInspReportService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @功能说明:
@@ -203,6 +205,15 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     @Transactional(rollbackFor = Exception.class)
     @Save
     public int saveProductSkuInspReport(ProductSkuInspReport reportReqVo) {
+        //根据SKU和生产日期查询
+        QueryProductSkuInspReportReqVo queryReqVo = new QueryProductSkuInspReportReqVo();
+        queryReqVo.setProductionDate(reportReqVo.getProductionDate());
+        queryReqVo.setSkuCode(reportReqVo.getSkuCode());
+        List<ProductSkuInspReportRespVo> list = this.getList(queryReqVo);
+        if(CollectionUtils.isNotEmpty(list)){
+            List<Long> ids = list.stream().map(ProductSkuInspReportRespVo::getId).collect(Collectors.toList());
+            productSkuInspReportMapper.deleteByIds(ids);
+        }
         return productSkuInspReportMapper.insertSelective(reportReqVo);
     }
 

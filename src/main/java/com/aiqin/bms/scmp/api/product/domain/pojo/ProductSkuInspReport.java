@@ -18,7 +18,7 @@ public class ProductSkuInspReport extends CommonBean {
     @ApiModelProperty("sku名称")
     private String skuName;
 
-    @ApiModelProperty("生产日期")
+    @ApiModelProperty(value = "生产日期")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date productionDate;
 

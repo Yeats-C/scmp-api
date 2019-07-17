@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.PageReq;
 import com.github.pagehelper.PageInfo;
 
 import java.util.HashMap;
@@ -42,5 +43,14 @@ public class PageUtil {
         basePage.setPageNo(page);
         basePage.setPageSize(pageSize);
         return basePage;
+    }
+    public static List<Long> myPage(List<Long> longs, PageReq reqVO){
+        int total = longs.size();
+        if (total > reqVO.getPageSize()*reqVO.getPageNo()) {
+            longs = longs.subList((reqVO.getPageNo() - 1) * reqVO.getPageSize(), reqVO.getPageNo() * reqVO.getPageSize());
+        }else {
+            longs = longs.subList((reqVO.getPageNo() - 1) * reqVO.getPageSize(), total);
+        }
+        return longs;
     }
 }

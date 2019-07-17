@@ -4,7 +4,12 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.*;
+import com.aiqin.bms.scmp.api.supplier.domain.SpecialArea;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.AreaInfo;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.CheckAreaEnum;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.im.SupplierImportNew;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
@@ -19,6 +24,9 @@ import com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.util.excel.Constraint;
+import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
+import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
@@ -29,8 +37,10 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -38,6 +48,7 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -90,9 +101,14 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     private DeliveryInfoDao deliveryInfoDao;
     @Autowired
     private ApplyUseTagRecordService applyUseTagRecordService;
-
     @Autowired
     private TagInfoService tagInfoService;
+    @Autowired
+    private SupplierDao supplierDao;
+    @Autowired
+    private AreaBasicInfoService areaBasicInfoService;
+    @Autowired
+    private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
 
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
@@ -141,106 +157,107 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int updateApply(ApplySupplyCompanyReqVO applySupplyCompanyReqVO) {
-        return saveApply(applySupplyCompanyReqVO).getData();
-//        int num;
-//        try {
-//            String companyCode = "";
-//            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-//            if(null != authToken){
-//                companyCode = authToken.getCompanyCode();
+//        return saveApply(applySupplyCompanyReqVO).getData();
+        int num;
+        try {
+            String companyCode = "";
+            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+            if(null != authToken){
+                companyCode = authToken.getCompanyCode();
+            }
+            Map<String,Object> map = new HashMap<>();
+            map.put("name",applySupplyCompanyReqVO.getApplySupplyName());
+            map.put("code",applySupplyCompanyReqVO.getApplySupplyCode());
+            map.put("companyCode",companyCode);
+            int nameCount = supplyCompanyDao.checkName(map);
+            if (nameCount > 0){
+                throw new BizException(ResultCode.NAME_REPEAT);
+            }
+            //复制对象
+            ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();
+            BeanCopyUtils.copy(applySupplyCompanyReqVO,applySupplyCompany);
+            applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
+            //根据供货单位code获取相应的三张申请表id
+            SupplyThreeIdDTO supplyThreeIdDTO = applySupplyCompanyDao.getThreeApplyIdBySupplyCode(applySupplyCompanyReqVO.getApplySupplyCode());
+            if (null != supplyThreeIdDTO){
+                applySupplyCompany.setId(supplyThreeIdDTO.getApplySupplyId());
+            } else {
+                throw new BizException(ResultCode.UPDATE_ERROR);
+            }
+            applySupplyCompany.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
+            applySupplyCompany.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+            num = ((ApplySupplyComServcie)AopContext.currentProxy()).update(applySupplyCompany);
+            Long id=applySupplyCompany.getId();
+            String code=null;
+            ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO = new ApplySupplyCompanyReqDTO();
+            if(id!=null){
+                ApplySupplyCompany applySupplyCompany1= applySupplyCompanyMapper.selectByPrimaryKey(id);
+                code=applySupplyCompany1.getApplySupplyCompanyCode();
+                BeanCopyUtils.copy(applySupplyCompany1,applySupplyCompanyReqDTO);
+                applySupplyCompanyReqDTO.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+                applySupplyCompanyReqDTO.setApplyCode(applySupplyCompany1.getApplySupplyCompanyCode());
+            }
+            supplierCommonService.getInstance(code, HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), applySupplyCompany,HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getName());
+            //结算信息 去掉结算信息
+//            if (null != applySupplyCompanyReqVO.getApplySettlementInfoReqVO()){
+//                ApplySettlementVO applySettlementVO = new ApplySettlementVO();
+//                BeanCopyUtils.copy(applySupplyCompanyReqVO.getApplySettlementInfoReqVO(),applySettlementVO);
+//                applySettlementVO.setId(supplyThreeIdDTO.getApplySettlementId());
+//                num = applySettlementService.updateApply(applySettlementVO);
 //            }
-//            Map<String,Object> map = new HashMap<>();
-//            map.put("name",applySupplyCompanyReqVO.getApplySupplyName());
-//            map.put("code",applySupplyCompanyReqVO.getApplySupplyCode());
-//            map.put("companyCode",companyCode);
-//            int nameCount = supplyCompanyDao.checkName(map);
-//            if (nameCount > 0){
-//                throw new BizException(ResultCode.NAME_REPEAT);
-//            }
-//            //复制对象
-//            ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();
-//            BeanCopyUtils.copy(applySupplyCompanyReqVO,applySupplyCompany);
-//            applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
-//            //根据供货单位code获取相应的三张申请表id
-//            SupplyThreeIdDTO supplyThreeIdDTO = applySupplyCompanyDao.getThreeApplyIdBySupplyCode(applySupplyCompanyReqVO.getApplySupplyCode());
-//            if (null != supplyThreeIdDTO){
-//                applySupplyCompany.setId(supplyThreeIdDTO.getApplySupplyId());
-//            } else {
-//                throw new BizException(ResultCode.UPDATE_ERROR);
-//            }
-//            applySupplyCompany.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
-//            applySupplyCompany.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
-//            num = ((ApplySupplyComServcie)AopContext.currentProxy()).update(applySupplyCompany);
-//            Long id=applySupplyCompany.getId();
-//            String code=null;
-//            ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO = new ApplySupplyCompanyReqDTO();
-//            if(id!=null){
-//                ApplySupplyCompany applySupplyCompany1= applySupplyCompanyMapper.selectByPrimaryKey(id);
-//                code=applySupplyCompany1.getApplySupplyCompanyCode();
-//                BeanCopyUtils.copy(applySupplyCompany1,applySupplyCompanyReqDTO);
-//                applySupplyCompanyReqDTO.setApplyCode(applySupplyCompany1.getApplySupplyCompanyCode());
-//            }
-//            supplierCommonService.getInstance(code, HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), applySupplyCompany,HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getName());
-//            //结算信息 去掉结算信息
-////            if (null != applySupplyCompanyReqVO.getApplySettlementInfoReqVO()){
-////                ApplySettlementVO applySettlementVO = new ApplySettlementVO();
-////                BeanCopyUtils.copy(applySupplyCompanyReqVO.getApplySettlementInfoReqVO(),applySettlementVO);
-////                applySettlementVO.setId(supplyThreeIdDTO.getApplySettlementId());
-////                num = applySettlementService.updateApply(applySettlementVO);
-////            }
-//            //发货信息
-//            applyDeliveryInfoDao.deleteBatch(applySupplyCompanyReqDTO.getApplyCode());
-//            if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyReqVO.getDeliveryInfoList())){
-//                try {
-//                    List<ApplyDeliveryDTO> deliveryDTOS = BeanCopyUtils.copyList(applySupplyCompanyReqVO.getDeliveryInfoList(), ApplyDeliveryDTO.class);
-//                    deliveryDTOS.forEach(item->{
-//                        item.setApplySupplyCompanyCode(applySupplyCompanyReqDTO.getApplyCode());
-//                        item.setApplySupplyCompanyName(applySupplyCompanyReqDTO.getApplySupplyName());
+            //发货信息
+            applyDeliveryInfoDao.deleteBatch(applySupplyCompanyReqDTO.getApplyCode());
+            if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyReqVO.getDeliveryInfoList())){
+                try {
+                    List<ApplyDeliveryDTO> deliveryDTOS = BeanCopyUtils.copyList(applySupplyCompanyReqVO.getDeliveryInfoList(), ApplyDeliveryDTO.class);
+                    deliveryDTOS.forEach(item->{
+                        item.setApplySupplyCompanyCode(applySupplyCompanyReqDTO.getApplyCode());
+                        item.setApplySupplyCompanyName(applySupplyCompanyReqDTO.getApplySupplyName());
+                    });
+                    applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
+                            "系统错误"));
+                }
+            }
+            applySupplyCompanyReqDTO.setFormNo("GYS"+new IdSequenceUtils().nextId());
+            //增加文件信息
+            applySupplierFileDao.deleteApplySupplierFileByApplyCode(applySupplyCompanyReqDTO.getApplyCode());
+            List<SupplierFileReqVO> fileReqVOList = applySupplyCompanyReqVO.getFileReqVOList();
+            if(CollectionUtils.isNotEmptyCollection(fileReqVOList)){
+                fileReqVOList.forEach(item->{
+                    item.setApplySupplierCode(applySupplyCompanyReqDTO.getApplyCode());
+                    item.setApplySupplierName(applySupplyCompanyReqDTO.getApplySupplyName());
+                    item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+                });
+                applySupplierFileService.copySaveInfo(fileReqVOList);
+            }
+            //标签信息
+//            applyUseTagRecordService.delete(applySupplyCompanyReqDTO.getApplyCode());
+//            SaveUseTagRecordReqVo tagInfo = applySupplyCompanyReqVO.getTagInfo();
+//            if (null != tagInfo) {
+//                if (CollectionUtils.isNotEmptyCollection(tagInfo.getItemReqVos())) {
+//                    List<ApplyUseTagRecord> applyUseTagRecords = Lists.newArrayList();
+//                    tagInfo.getItemReqVos().forEach(item->{
+//                        ApplyUseTagRecord applyUseTagRecord = new ApplyUseTagRecord();
+//                        applyUseTagRecord.setApplyUseObjectCode(applySupplyCompanyReqDTO.getApplyCode());
+//                        applyUseTagRecord.setUseObjectName(applySupplyCompanyReqDTO.getApplySupplyName());
+//                        applyUseTagRecord.setTagCode(item.getTagCode());
+//                        applyUseTagRecord.setTagName(item.getTagName());
+//                        applyUseTagRecord.setTagTypeCode(tagInfo.getTagTypeCode());
+//                        applyUseTagRecord.setTagTypeName(tagInfo.getTagTypeName());
+//                        applyUseTagRecords.add(applyUseTagRecord);
 //                    });
-//                    applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
-//                            "系统错误"));
+//                    applyUseTagRecordService.saveBatch(applyUseTagRecords);
 //                }
 //            }
-//            applySupplyCompanyReqDTO.setFormNo("GYS"+new IdSequenceUtils().nextId());
-//            //增加文件信息
-//            applySupplierFileDao.deleteApplySupplierFileByApplyCode(applySupplyCompanyReqDTO.getApplyCode());
-//            List<SupplierFileReqVO> fileReqVOList = applySupplyCompanyReqVO.getFileReqVOList();
-//            if(CollectionUtils.isNotEmptyCollection(fileReqVOList)){
-//                fileReqVOList.forEach(item->{
-//                    item.setApplySupplierCode(applySupplyCompanyReqDTO.getApplyCode());
-//                    item.setApplySupplierName(applySupplyCompanyReqDTO.getApplySupplyName());
-//                    item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
-//                });
-//                applySupplierFileService.copySaveInfo(fileReqVOList);
-//            }
-//            //标签信息
-////            applyUseTagRecordService.delete(applySupplyCompanyReqDTO.getApplyCode());
-////            SaveUseTagRecordReqVo tagInfo = applySupplyCompanyReqVO.getTagInfo();
-////            if (null != tagInfo) {
-////                if (CollectionUtils.isNotEmptyCollection(tagInfo.getItemReqVos())) {
-////                    List<ApplyUseTagRecord> applyUseTagRecords = Lists.newArrayList();
-////                    tagInfo.getItemReqVos().forEach(item->{
-////                        ApplyUseTagRecord applyUseTagRecord = new ApplyUseTagRecord();
-////                        applyUseTagRecord.setApplyUseObjectCode(applySupplyCompanyReqDTO.getApplyCode());
-////                        applyUseTagRecord.setUseObjectName(applySupplyCompanyReqDTO.getApplySupplyName());
-////                        applyUseTagRecord.setTagCode(item.getTagCode());
-////                        applyUseTagRecord.setTagName(item.getTagName());
-////                        applyUseTagRecord.setTagTypeCode(tagInfo.getTagTypeCode());
-////                        applyUseTagRecord.setTagTypeName(tagInfo.getTagTypeName());
-////                        applyUseTagRecords.add(applyUseTagRecord);
-////                    });
-////                    applyUseTagRecordService.saveBatch(applyUseTagRecords);
-////                }
-////            }
-//            workFlow(applySupplyCompanyReqDTO);
-//        } catch (Exception e){
-//            e.printStackTrace();
-//            throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
-//        }
-//        return num;
+            workFlow(applySupplyCompanyReqDTO);
+        } catch (Exception e){
+            e.printStackTrace();
+            throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
+        }
+        return num;
     }
 
     @Override
@@ -281,7 +298,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setFormNo(applySupplyCompanyReqDTO.getFormNo());
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_COMPANY.getNum());
-            workFlowVO.setTitle(applySupplyCompanyReqDTO.getApplySupplyName()+"申请");
+            String title = "修改";
+            if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applySupplyCompanyReqDTO.getApplyStatus())){
+                title = "新增";
+            }
+            workFlowVO.setTitle(title+applySupplyCompanyReqDTO.getApplySupplyName()+"申请");
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("auditPersonId",applySupplyCompanyReqDTO.getDirectSupervisorCode());
             workFlowVO.setVariables(jsonObject.toString());
@@ -704,6 +725,479 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     }
 
     @Override
+    public List<ApplySupplyCompanyReqVO> dealImport(MultipartFile file) {
+        try {
+            List<SupplierImportNew> supplierImportNews = ExcelUtil.readExcel(file, SupplierImportNew.class, 1, 0);
+            //校验
+            dataValidation(supplierImportNews);
+            supplierImportNews.remove(0);
+            List<String> companyNameList = Lists.newArrayList();
+            List<String> supplierNameList = Lists.newArrayList();
+            for (SupplierImportNew o : supplierImportNews) {
+                companyNameList.add(o.getApplySupplyName());
+                supplierNameList.add(o.getSupplierName());
+            }
+            Map<String, AreaInfo> areaTree = getAreaTree();
+            Map<String, SupplyCompany> supplyCompanies = supplyCompanyDao.selectByCompanyNameList(companyNameList, getUser().getCompanyCode());
+            List<String> dicName = Lists.newArrayList();
+            dicName.add("供应商类型");
+            dicName.add("发送至");
+            Map<String, SupplierDictionaryInfo> dictionaryInfoList = supplierDictionaryInfoDao.selectByName(dicName, getUser().getCompanyCode());
+            Map<String, Supplier> supplierList = null;
+            if(CollectionUtils.isEmptyCollection(supplierNameList)){
+                supplierList = supplierDao.selectByNameList(supplierNameList,getUser().getCompanyCode());
+            }
+            List<ApplySupplyCompanyReqVO> applyList = Lists.newArrayList();
+            for (int i = 0; i < supplierImportNews.size(); i++) {
+                SupplierImportNew supplierImportNew = supplierImportNews.get(i);
+                StringBuilder sb = new StringBuilder();
+                //判空
+                validNull(supplierImportNew, sb);
+                //验证拼装
+                ApplySupplyCompanyReqVO reqVO = validAndFullUp(supplierImportNew,sb,areaTree,supplyCompanies,supplierList,dictionaryInfoList);
+                applyList.add(reqVO);
+            }
+            return applyList;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_EXCEPTION);
+        }
+    }
+    /**
+     * 校验并返回
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param supplierImportNew
+     * @param sb
+     * @param areaTree
+     * @param supplyCompanies
+     * @param supplierList
+     * @param dictionaryInfoList
+     * @return com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO
+     */
+    private ApplySupplyCompanyReqVO validAndFullUp(SupplierImportNew supplierImportNew, StringBuilder sb, Map<String, AreaInfo> areaTree, Map<String, SupplyCompany> supplyCompanies, Map<String, Supplier> supplierList, Map<String, SupplierDictionaryInfo> dictionaryInfoList) {
+        ApplySupplyCompanyReqVO reqVO = new ApplySupplyCompanyReqVO();
+        List<String> name = Lists.newArrayList();
+        SupplyCompany supplyCompany1 = supplyCompanies.get(supplierImportNew.getApplySupplyName().trim());
+        if(Objects.nonNull(supplyCompany1)||name.contains(supplierImportNew.getApplySupplyName())){
+            if (StringUtils.isNotBlank(sb.toString())) {
+                sb.append(",");
+            }
+            sb.append("供应商名称重复");
+        }
+        name.add(supplierImportNew.getApplySupplyName().trim());
+        reqVO.setApplySupplyName(supplierImportNew.getApplySupplyName().trim());
+        if(StringUtils.isNotBlank(supplierImportNew.getSupplierName())){
+            SupplyCompany supplyCompany = supplyCompanies.get(supplierImportNew.getSupplierName().trim());
+            if(Objects.isNull(supplyCompany)){
+                sb.append(",").append("未找到对应名称的供应商集团");
+            }else {
+                reqVO.setSupplierCode(supplierList.get(supplierImportNew.getSupplierName().trim()).getSupplierCode());
+            }
+            reqVO.setSupplierName(supplierList.get(supplierImportNew.getSupplierName().trim()).getSupplierName());
+        }
+        SupplierDictionaryInfo info = dictionaryInfoList.get(supplierImportNew.getApplySupplyType().trim());
+        if(Objects.isNull(info)){
+            sb.append(",").append("未找到对应的供应商类型");
+        }else {
+            reqVO.setApplySupplyType(info.getSupplierDictionaryValue());
+        }
+        reqVO.setApplySupplyTypeName(supplierImportNew.getApplySupplyType().trim());
+        if(!Constraint.ckChnLetterAndNumAndChar(supplierImportNew.getApplyAbbreviation().trim())){
+            sb.append(",").append("简称不能输入特殊字符");
+        }
+        reqVO.setApplyAbbreviation(supplierImportNew.getApplyAbbreviation().trim());
+        checkArea(supplierImportNew, sb, areaTree, reqVO, CheckAreaEnum.普通省市县);
+        reqVO.setAddress(supplierImportNew.getAddress().trim());
+        reqVO.setContactName(supplierImportNew.getContactName().trim());
+        String mobilePhone = supplierImportNew.getMobilePhone();
+        if(!Constraint.ckCountNum(11,mobilePhone)){
+            sb.append(",").append("手机号码格式不正确");
+        }
+        reqVO.setMobilePhone(mobilePhone);
+        reqVO.setPhone(supplierImportNew.getPhone());
+        reqVO.setFax(supplierImportNew.getFax());
+        reqVO.setEmail(supplierImportNew.getEmail().trim());
+        reqVO.setTaxId(supplierImportNew.getTaxId().trim());
+        reqVO.setCorporateRepresentative(supplierImportNew.getCorporateRepresentative());
+//        if (!Constraint.ckCountNum(8, supplierImportNew.getRegisteredCapital())) {
+//            sb.append(",").append("注册资金");
+//        }
+        try {
+            reqVO.setRegisteredCapital(Long.parseLong(supplierImportNew.getRegisteredCapital()));
+        } catch (NumberFormatException e) {
+            sb.append(",").append("注册资金格式不正确");
+        }
+        reqVO.setZipCode(supplierImportNew.getZipCode());
+        reqVO.setCompanyWebsite(supplierImportNew.getCompanyWebsite());
+
+        try {
+            String minOrderAmount = supplierImportNew.getMinOrderAmount();
+            String maxOrderAmount = supplierImportNew.getMaxOrderAmount();
+            long l = Long.parseLong(minOrderAmount);
+            long l2 = Long.parseLong(maxOrderAmount);
+            if(l<0){
+                sb.append(",").append("最小起订金额不能小于0");
+            }
+            if(l2<0){
+                sb.append(",").append("最大起订金额不能小于0");
+            }
+            if (l > l2) {
+                sb.append(",").append("最小起订金额不能大于最大起订金额");
+            }
+            reqVO.setMinOrderAmount(l);
+            reqVO.setMaxOrderAmount(l2);
+        } catch (NumberFormatException e) {
+            sb.append(",").append("最小起订金额或最大起订金额格式不正确");
+        }
+        List<ApplyDeliveryInfoReqVO> deliver = Lists.newArrayList();
+        ApplyDeliveryInfoReqVO sendVO = new ApplyDeliveryInfoReqVO();
+        ApplyDeliveryInfoReqVO returnVO = new ApplyDeliveryInfoReqVO();
+        try {
+            String deliveryDays = supplierImportNew.getDeliveryDays();
+            if (StringUtils.isNotBlank(deliveryDays)) {
+                sendVO.setDeliveryDays(Long.valueOf(deliveryDays));
+            }
+        } catch (NumberFormatException e) {
+            sb.append(",").append("发货天数格式不正确");
+        }
+        try {
+            String deliveryDays = supplierImportNew.getReturnDays();
+            if (StringUtils.isNotBlank(deliveryDays)) {
+                returnVO.setDeliveryDays(Long.valueOf(deliveryDays));
+            }
+        } catch (NumberFormatException e) {
+            sb.append(",").append("收货天数格式不正确");
+        }
+        sendVO.setDeliveryType((byte)0);
+        sendVO.setSendingAddress(supplierImportNew.getSendingAddress().trim());
+        returnVO.setDeliveryType((byte)1);
+        returnVO.setSendingAddress(supplierImportNew.getReturningAddress().trim());
+        SupplierDictionaryInfo info1 = dictionaryInfoList.get(supplierImportNew.getSendTo().trim());
+        if(Objects.isNull(info1)){
+            sb.append(",").append("未找到对应的发货至选项");
+        }else {
+            sendVO.setSendTo(info.getSupplierDictionaryValue());
+        }
+        SupplierDictionaryInfo info2 = dictionaryInfoList.get(supplierImportNew.getReturnTo().trim());
+        if(Objects.isNull(info2)){
+            sb.append(",").append("未找到对应的收货至选项");
+        }else {
+            returnVO.setSendTo(info.getSupplierDictionaryValue());
+        }
+        reqVO.setApplySupplyTypeName(supplierImportNew.getApplySupplyType().trim());
+        returnVO.setSendToDesc(supplierImportNew.getReturnTo().trim());
+        sendVO.setSendToDesc(supplierImportNew.getSendTo().trim());
+        deliver.add(sendVO);
+        deliver.add(returnVO);
+        reqVO.setDeliveryInfoList(deliver);
+        reqVO.setError(sb.toString());
+        return reqVO;
+    }
+
+    private void checkArea(SupplierImportNew supplierImportNew, StringBuilder sb, Map<String, AreaInfo> areaTree, ApplySupplyCompanyReqVO reqVO,CheckAreaEnum checkAreaEnum) {
+        SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getProvinceName());
+        if (Objects.nonNull(specialArea)) {
+            if (specialArea.getHasCity()) {
+                AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
+                if(Objects.isNull(areaInfo)){
+                    sb.append(",").append(checkAreaEnum.getCity());
+                    return;
+                }else {
+                    reqVO.setCityId(areaInfo.getCode());
+                }
+                reqVO.setCityName(supplierImportNew.getCityName());
+                AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
+                if(Objects.isNull(areaInfo1)|| supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
+                    sb.append(",").append(checkAreaEnum.getProvince());
+                    return;
+                }else {
+                    reqVO.setProvinceId(areaInfo1.getCode());
+                }
+                reqVO.setProvinceName(supplierImportNew.getProvinceName());
+            }else{
+                AreaInfo areaInfo = areaTree.get(supplierImportNew.getProvinceName());
+                if(Objects.isNull(areaInfo)){
+                    sb.append(",").append(checkAreaEnum.getProvince());
+                    return;
+                }else {
+                    reqVO.setProvinceId(areaInfo.getCode());
+                }
+                reqVO.setProvinceName(supplierImportNew.getProvinceName());
+            }
+        }else {
+            AreaInfo areaInfo2 = areaTree.get(supplierImportNew.getDistrictName());
+            if(Objects.isNull(areaInfo2)){
+                sb.append(",").append(checkAreaEnum.getDis());
+                return;
+            }else {
+                reqVO.setDistrictId(areaInfo2.getCode());
+            }
+            reqVO.setDistrictName(supplierImportNew.getDistrictName());
+            AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
+            if(Objects.isNull(areaInfo)||!supplierImportNew.getCityName().equals(areaInfo2.getParentName())){
+                sb.append(",").append(checkAreaEnum.getCity());
+                return;
+            }else {
+                reqVO.setCityId(areaInfo.getCode());
+            }
+            reqVO.setCityName(supplierImportNew.getCityName());
+            AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
+            if(Objects.isNull(areaInfo1)|| !supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
+                sb.append(",").append(checkAreaEnum.getProvince());
+                return;
+            }else {
+                reqVO.setProvinceId(areaInfo1.getCode());
+            }
+            reqVO.setProvinceName(supplierImportNew.getProvinceName());
+        }
+    }
+
+    private void checkArea2(SupplierImportNew supplierImportNew, StringBuilder sb, Map<String, AreaInfo> areaTree, ApplyDeliveryInfoReqVO reqVO,CheckAreaEnum checkAreaEnum) {
+        SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getProvinceName());
+        if (Objects.nonNull(specialArea)) {
+            if (specialArea.getHasCity()) {
+                AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
+                if(Objects.isNull(areaInfo)){
+                    sb.append(",").append(checkAreaEnum.getCity());
+                    return;
+                }else {
+                    reqVO.setSendCityId(areaInfo.getCode());
+                }
+                reqVO.setSendCityName(supplierImportNew.getCityName());
+                AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
+                if(Objects.isNull(areaInfo1)|| supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
+                    sb.append(",").append(checkAreaEnum.getProvince());
+                    return;
+                }else {
+                    reqVO.setSendProvinceId(areaInfo1.getCode());
+                }
+                reqVO.setSendProvinceName(supplierImportNew.getProvinceName());
+            }else{
+                AreaInfo areaInfo = areaTree.get(supplierImportNew.getProvinceName());
+                if(Objects.isNull(areaInfo)){
+                    sb.append(",").append(checkAreaEnum.getProvince());
+                    return;
+                }else {
+                    reqVO.setSendProvinceId(areaInfo.getCode());
+                }
+                reqVO.setSendProvinceName(supplierImportNew.getProvinceName());
+            }
+        }else {
+            AreaInfo areaInfo2 = areaTree.get(supplierImportNew.getDistrictName());
+            if(Objects.isNull(areaInfo2)){
+                sb.append(",").append(checkAreaEnum.getDis());
+                return;
+            }else {
+                reqVO.setSendDistrictId(areaInfo2.getCode());
+            }
+            reqVO.setSendDistrictName(supplierImportNew.getDistrictName());
+            AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
+            if(Objects.isNull(areaInfo)||!supplierImportNew.getCityName().equals(areaInfo2.getParentName())){
+                sb.append(",").append(checkAreaEnum.getCity());
+                return;
+            }else {
+                reqVO.setSendCityId(areaInfo.getCode());
+            }
+            reqVO.setSendCityName(supplierImportNew.getCityName());
+            AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
+            if(Objects.isNull(areaInfo1)|| !supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
+                sb.append(",").append(checkAreaEnum.getProvince());
+                return;
+            }else {
+                reqVO.setSendProvinceId(areaInfo1.getCode());
+            }
+            reqVO.setSendProvinceName(supplierImportNew.getProvinceName());
+        }
+    }
+
+    /**
+     * TODO
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param supplierImportNew
+     * @param sb
+     * @return void
+     */
+    private StringBuilder validNull(SupplierImportNew supplierImportNew, StringBuilder sb) {
+        if(StringUtils.isBlank(supplierImportNew.getApplySupplyName())){
+            sb.append("供应商名称不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getApplySupplyType())){
+            sb.append(",");
+            sb.append("供应商类型不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getApplyAbbreviation())){
+            sb.append(",");
+            sb.append("简称不能为空");
+        }
+        if (StringUtils.isBlank(supplierImportNew.getProvinceName())) {
+            sb.append(",");
+            sb.append("省不能为空");
+        } else {
+            SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getProvinceName());
+            if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+                if (StringUtils.isBlank(supplierImportNew.getCityName())) {
+                    sb.append(",");
+                    sb.append("市不能为空");
+                }
+            }
+            if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+                if (StringUtils.isBlank(supplierImportNew.getCityName())) {
+                    sb.append(",");
+                    sb.append("县不能为空");
+                }
+            }
+
+        }
+        if(StringUtils.isBlank(supplierImportNew.getAddress())){
+            sb.append(",");
+            sb.append("详细地址不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getEmail())){
+            sb.append(",");
+            sb.append("邮箱不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getTaxId())){
+            sb.append(",");
+            sb.append("税号不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getRegisteredCapital())){
+            sb.append(",");
+            sb.append("注册资金不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getCorporateRepresentative())){
+            sb.append(",");
+            sb.append("法人代表不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getContactName())){
+            sb.append(",");
+            sb.append("联系人姓名不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getMobilePhone())){
+            sb.append(",");
+            sb.append("手机号不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getMinOrderAmount())){
+            sb.append(",");
+            sb.append("最低订货金额不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getMaxOrderAmount())){
+            sb.append(",");
+            sb.append("最高订货金额不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getSendProvinceName())){
+            sb.append(",");
+            sb.append("发货省不能为空");
+        }else {
+            SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getSendProvinceName());
+            if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+                if(StringUtils.isBlank(supplierImportNew.getSendCityName())){
+                    sb.append(",");
+                    sb.append("发货市不能为空");
+                }
+            }
+            if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+                if(StringUtils.isBlank(supplierImportNew.getSendDistrictName())){
+                    sb.append(",");
+                    sb.append("发货县不能为空");
+                }
+            }
+
+        }
+        if(StringUtils.isBlank(supplierImportNew.getSendingAddress())){
+            sb.append(",");
+            sb.append("发货详细地址不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getSendTo())){
+            sb.append(",");
+            sb.append("发货至不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getReturnProvinceName())){
+            sb.append(",");
+            sb.append("收货省不能为空");
+        }else {
+            SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getReturnProvinceName());
+            if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+                if(StringUtils.isBlank(supplierImportNew.getReturnCityName())){
+                    sb.append(",");
+                    sb.append("收货市不能为空");
+                }
+            }
+            if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+                if(StringUtils.isBlank(supplierImportNew.getReturnDistrictName())){
+                    sb.append(",");
+                    sb.append("收货县不能为空");
+                }
+            }
+        }
+        if(StringUtils.isBlank(supplierImportNew.getReturningAddress())){
+            sb.append(",");
+            sb.append("收货详细地址不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getReturnTo())){
+            sb.append(",");
+            sb.append("收货至不能为空");
+        }
+        return sb;
+    }
+
+    /**
+     *
+     * @author NullPointException
+     * @date 2019/7/16
+     * @return Map
+     */
+    public Map<String, AreaInfo> getAreaTree() {
+        HttpResponse<List<AreaBasic>> treeList = areaBasicInfoService.getTreeList();
+        List<AreaBasic> tempData = treeList.getData();
+        String s = JSON.toJSONString(tempData);
+        List<AreaBasic> data = JSON.parseArray(s, AreaBasic.class);
+        Map<String, AreaInfo> map = new HashMap<>(3500);
+        for (AreaBasic datum : data) {
+            //省
+            List<AreaBasic> children = datum.getChildren();
+            if (CollectionUtils.isEmptyCollection(children)) {
+                continue;
+            }
+            //市
+            for (AreaBasic child : children) {
+                List<AreaBasic> children1 = child.getChildren();
+                if (CollectionUtils.isEmptyCollection(children1)) {
+                    continue;
+                }
+                Map<String, AreaBasic> map1 = Maps.newHashMap();
+                //区
+                for (AreaBasic areaBasic : children1) {
+                    AreaInfo info = new AreaInfo(areaBasic.getParent_area_name(),areaBasic.getArea_id(),areaBasic.getArea_name());
+                    map.put(areaBasic.getArea_name(),info);
+                }
+                AreaInfo info = new AreaInfo(child.getParent_area_name(),child.getArea_id(),child.getArea_name());
+                map.put(child.getArea_name(), info);
+            }
+            AreaInfo info = new AreaInfo(datum.getParent_area_name(),datum.getArea_id(),datum.getArea_name());
+            map.put(datum.getArea_name(), info);
+        }
+        return map;
+    }
+
+    /**
+     * 校验参数
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param supplierImportNews
+     * @return void
+     */
+    private void dataValidation(List<SupplierImportNew> supplierImportNews) {
+        if(CollectionUtils.isEmptyCollection(supplierImportNews)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        boolean equals = supplierImportNews.get(0).toString().equals(SupplierImportNew.HEDE);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
+    }
+
+    @Override
     @Transactional(rollbackFor = BizException.class)
     public String workFlowCallback(WorkFlowCallbackVO workFlowCallbackVO){
         //通过编码查询实体
@@ -714,5 +1208,4 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         }
         return insideWorkFlowCallback(applySupplyCompany,vo);
     }
-
 }

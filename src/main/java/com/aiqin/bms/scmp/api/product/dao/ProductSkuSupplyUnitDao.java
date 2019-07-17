@@ -47,4 +47,6 @@ public interface ProductSkuSupplyUnitDao {
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo>
      */
     List<ProductSkuSupplyUnitRespVo> selectBySkuCode(String skuCode);
+
+    List<ProductSkuSupplyUnitRespVo> getDraftBySkuCodes(List<String> skuCodes);
 }

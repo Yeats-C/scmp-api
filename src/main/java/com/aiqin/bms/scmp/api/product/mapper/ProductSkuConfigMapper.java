@@ -28,13 +28,17 @@ public interface ProductSkuConfigMapper {
 
     int updateBatch(List<ProductSkuConfig> configs);
 
-    List<SkuConfigsRepsVo> getList(QuerySkuConfigReqVo reqVo);
+    List<SkuConfigsRepsVo> getList(List<Long> ids);
 
     SkuConfigDetailRepsVo detail(String skuCode);
 
     int updateApplyStatusByApplyCode(ApplyProductSkuConfigReqVo req);
 
+    int updateApplyCodeByConfigCodes(@Param("applyCode")String applyCode,@Param("configCodes")List<String> configCodes);
+
     ProductSkuConfig getCycleInfo(@Param("skuCode")String skuCode, @Param("transportCenterCode") String transportCenterCode);
 
     List<SkuConfigsRepsVo> getListBySkuCode(String skuCode);
+
+    List<Long> selectSkuListForSaleAreaCount(QuerySkuConfigReqVo reqVo);
 }

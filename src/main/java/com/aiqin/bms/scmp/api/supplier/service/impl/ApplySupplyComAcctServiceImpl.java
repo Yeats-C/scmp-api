@@ -453,7 +453,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             BeanUtils.copyProperties(s, t);
             m.setNewSupplyAccount(t);
             //封装日志数据
-            List<LogData> log = operationLogService.selectListByVO(new OperationLogBean(s.getApplyCompanyAccountCode(), null, ObjectTypeCode.SUPPLY_COMPANY_ACCOUNT.getStatus(), null, null));
+            List<LogData> log = operationLogService.selectListByVO(new OperationLogBean(s.getSupplyCompanyAccountCode(), null, ObjectTypeCode.SUPPLY_COMPANY_ACCOUNT.getStatus(), null, null));
             m.setLogData(log);
             //过滤  拿到修改的数据
             List<LogData> collect = log.stream().filter(o -> o.getHandleType().equals(HandleTypeCoce.UPDATE_SUPPLY_COMPANY_ACCOUNT.getStatus())).collect(Collectors.toList());
