@@ -45,7 +45,7 @@
       #{delFlag,jdbcType=TINYINT})
   </insert>
 
-  <insert id="insertBatch" parameterType="java.util.List">
+  <insert id="insertBatch">
     insert into apply_product_sku_config_spare_warehouse (config_code, apply_code, transport_center_code,
     transport_center_name, use_order, create_by,
     create_time, update_by, update_time,

@@ -21,11 +21,17 @@
     from product_sku_promote_sales
     where 1= 1
     <if test="skuCode != null and skuCode != '' ">
-      and sku_code =  #{skuCode,jdbcType=VARCHAR}
+      and sku_code like CONCAT('%',#{skuCode,jdbcType=VARCHAR},'%')
     </if>
     <if test="skuName != null and skuName != '' ">
       and sku_name like CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
     </if>
+  </select>
+
+  <select id="getAll" resultMap="BaseResultMap">
+  select
+  <include refid="Base_Column_List" />
+  from product_sku_promote_sales
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_promote_sales
@@ -33,6 +39,14 @@
   </delete>
   <delete id="deleteAll">
     delete from product_sku_promote_sales
+  </delete>
+
+  <delete id="deleteBySkuCodes" parameterType="java.util.List">
+    delete from product_sku_promote_sales
+    where sku_code in
+    <foreach collection="list" item="item" separator="," open="(" close=")">
+      #{item}
+    </foreach>
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ProductSkuPromoteSales">
     insert into product_sku_promote_sales (id, sku_code, sku_name

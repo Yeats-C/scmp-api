@@ -42,7 +42,7 @@
     from product_sku_config
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="getList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo"
+  <select id="getList" parameterType="java.util.List"
           resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
     select
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
@@ -58,6 +58,40 @@
       #{id}
     </foreach>
   </select>
+
+  <select id="getList2" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo"
+          resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
+    from
+    product_sku_config a
+    left join product_sku_config_spare_warehouse b
+    on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
+    where a.del_flag = 0
+    <if test="skuCode != null and skuCode != '' ">
+      and a.sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName != null and skuName != ''  ">
+      and a.sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="transportCenterCode != null and transportCenterCode != ''  ">
+      and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    </if>
+    <if test="transportCenterName != null and transportCenterName != ''  ">
+      and a.transport_center_name like concat('%', #{transportCenterName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="configStatus != null ">
+      and a.config_status = #{configStatus,jdbcType=TINYINT}
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != ''  ">
+      and c.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != '' ">
+      and c.procurement_section_name like concat('%', #{purchaseGroupName,jdbcType=VARCHAR}, '%')
+    </if>
+  </select>
   <resultMap id="SkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo">
     <result column="product_code" jdbcType="VARCHAR" property="productCode" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
@@ -71,7 +105,7 @@
     <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
     <result column="goods_gifts" jdbcType="TINYINT" property="skuType" />
     <collection property="configs" column="{skuCode = sku_code}"
-                javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo" select="getList"/>
+                javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo" select="getList2"/>
   </resultMap>
   <select id="detail" parameterType="java.lang.String" resultMap="SkuResultMap">
     select

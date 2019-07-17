@@ -223,7 +223,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
             workFlowVO.setVariables(jsonObject.toString());
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_SUPPLIER.getNum());
             String applyTypeTitle = "新增";
-            if(StatusTypeCode.ADD_APPLY.getStatus().equals(applySupplierReqDTO.getApplyStatus())) {
+            if(StatusTypeCode.ADD_APPLY.getStatus().equals(applySupplierReqDTO.getApplyType())) {
                 applyTypeTitle =  "新增";
             } else {
                 applyTypeTitle =  "修改";

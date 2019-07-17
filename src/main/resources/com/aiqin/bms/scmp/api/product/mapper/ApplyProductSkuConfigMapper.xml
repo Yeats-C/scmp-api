@@ -108,7 +108,7 @@
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
     from apply_product_sku_config a
     left join apply_product_sku_config_spare_warehouse b
-    on a.apply_code = b.apply_code
+    on a.apply_code = b.apply_code and a.config_code = b.config_code
     left join product_sku c
     on a.sku_code = c.sku_code
     where a.apply_code = #{applyCode,jdbcType=VARCHAR}
@@ -118,7 +118,7 @@
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
     from apply_product_sku_config a
     left join apply_product_sku_config_spare_warehouse b
-    on a.apply_code = b.apply_code
+    on a.apply_code = b.apply_code and a.config_code = b.config_code
     left join product_sku c
     on a.sku_code = c.sku_code
     where a.apply_code = #{applyCode,jdbcType=VARCHAR}

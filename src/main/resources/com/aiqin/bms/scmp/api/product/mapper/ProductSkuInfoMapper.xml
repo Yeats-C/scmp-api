@@ -914,4 +914,13 @@
       price_model = #{priceModel,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateStatus" parameterType="java.util.List">
+    <foreach collection="list" item="item" separator=";">
+      update product_sku
+      set sku_status = #{item.skuStatus},
+      on_sale = #{item.onSale}
+      where sku_code = #{item.skuCode}
+    </foreach>
+  </update>
+
 </mapper>

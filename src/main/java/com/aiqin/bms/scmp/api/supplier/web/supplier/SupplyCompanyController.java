@@ -73,6 +73,8 @@ public class SupplyCompanyController extends SupplierBaseController {
             return  applySupplyComServcie.saveApply(applySupplyCompanyReqVO);
         } catch (GroundRuntimeException ex) {
             return HttpResponse.failure(MessageId .create(Project.SUPPLIER_API,13,ex.getMessage()));
+        } catch (BizException ex) {
+            return HttpResponse.failure(ex.getMessageId());
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.ADD_ERROR);
         }
@@ -87,6 +89,10 @@ public class SupplyCompanyController extends SupplierBaseController {
         try {
             int i = applySupplyComServcie.updateApply(applySupplyCompanyReqVO);
             return HttpResponse.success(i);
+        } catch (GroundRuntimeException ex) {
+            return HttpResponse.failure(MessageId .create(Project.SUPPLIER_API,13,ex.getMessage()));
+        } catch (BizException ex) {
+            return HttpResponse.failure(ex.getMessageId());
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
