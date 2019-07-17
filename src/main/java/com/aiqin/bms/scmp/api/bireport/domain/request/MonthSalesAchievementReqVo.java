@@ -28,21 +28,29 @@ public class MonthSalesAchievementReqVo extends PageReq implements Serializable 
     @JsonProperty("price_channel_name")
     private String priceChannelName;
 
-    @ApiModelProperty("门店类型")
-    @JsonProperty("store_type")
-    private String storeType;
+    @ApiModelProperty("门店类型code")
+    @JsonProperty("store_type_code")
+    private String storeTypeCode;
 
-    @ApiModelProperty("数据类型")
-    @JsonProperty("data_style")
-    private String dataStyle;
+    @ApiModelProperty("门店类型名称")
+    @JsonProperty("store_type_name")
+    private String storeTypeName;
+
+    @ApiModelProperty("数据类型code")
+    @JsonProperty("data_style_code")
+    private String dataStyleCode;
+
+    @ApiModelProperty("数据类型name")
+    @JsonProperty("data_style_name")
+    private String dataStyleName;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishCreateTime;
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
 
     @ApiModelProperty("品类编码")
     @JsonProperty("category_type_code")
@@ -52,15 +60,17 @@ public class MonthSalesAchievementReqVo extends PageReq implements Serializable 
     @JsonProperty("category_type_name")
     private String categoryTypeName;
 
-    public MonthSalesAchievementReqVo(String productSortCode, String productSortName, String priceChannelCode, String priceChannelName, String storeType, String dataStyle, String beginCreateTime, String finishCreateTime, String categoryTypeCode, String categoryTypeName) {
+    public MonthSalesAchievementReqVo(String productSortCode, String productSortName, String priceChannelCode, String priceChannelName, String storeTypeCode, String storeTypeName, String dataStyleCode, String dataStyleName, String beginRunTime, String finishRunTime, String categoryTypeCode, String categoryTypeName) {
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
         this.priceChannelCode = priceChannelCode;
         this.priceChannelName = priceChannelName;
-        this.storeType = storeType;
-        this.dataStyle = dataStyle;
-        this.beginCreateTime = beginCreateTime;
-        this.finishCreateTime = finishCreateTime;
+        this.storeTypeCode = storeTypeCode;
+        this.storeTypeName = storeTypeName;
+        this.dataStyleCode = dataStyleCode;
+        this.dataStyleName = dataStyleName;
+        this.beginRunTime = beginRunTime;
+        this.finishRunTime = finishRunTime;
         this.categoryTypeCode = categoryTypeCode;
         this.categoryTypeName = categoryTypeName;
     }

@@ -33,6 +33,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -104,7 +105,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         }
         Map<String,Object> map = new HashMap<>();
         map.put("name",applySupplyCompanyReqVO.getApplySupplyName());
-        map.put("code",null);
+        map.put("code",applySupplyCompanyReqVO.getApplySupplyCode());
         map.put("companyCode",companyCode);
         int nameCount = applySupplyCompanyDao.checkName(map);
         if (nameCount > 0){
@@ -115,6 +116,12 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO = new ApplySupplyCompanyReqDTO();
             BeanCopyUtils.copy(applySupplyCompanyReqVO,applySupplyCompanyReqDTO);
             //新增申请和日志
+            if(StringUtils.isNotBlank(applySupplyCompanyReqVO.getApplySupplyCode())){
+                applySupplyCompanyReqDTO.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+            } else {
+                applySupplyCompanyReqDTO.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
+                applySupplyCompanyReqDTO.setEnable(StatusTypeCode.EN_ABLE.getStatus());
+            }
             String applySupplyCompanyCode = insertApplyAndOther(applySupplyCompanyReqDTO);
             //审批流程
             applySupplyCompanyReqDTO.setFormNo("GYS"+new IdSequenceUtils().nextId());
@@ -134,105 +141,106 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int updateApply(ApplySupplyCompanyReqVO applySupplyCompanyReqVO) {
-        int num;
-        try {
-            String companyCode = "";
-            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if(null != authToken){
-                companyCode = authToken.getCompanyCode();
-            }
-            Map<String,Object> map = new HashMap<>();
-            map.put("name",applySupplyCompanyReqVO.getApplySupplyName());
-            map.put("code",applySupplyCompanyReqVO.getApplySupplyCode());
-            map.put("companyCode",companyCode);
-            int nameCount = supplyCompanyDao.checkName(map);
-            if (nameCount > 0){
-                throw new BizException(ResultCode.NAME_REPEAT);
-            }
-            //复制对象
-            ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();
-            BeanCopyUtils.copy(applySupplyCompanyReqVO,applySupplyCompany);
-            applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
-            //根据供货单位code获取相应的三张申请表id
-            SupplyThreeIdDTO supplyThreeIdDTO = applySupplyCompanyDao.getThreeApplyIdBySupplyCode(applySupplyCompanyReqVO.getApplySupplyCode());
-            if (null != supplyThreeIdDTO){
-                applySupplyCompany.setId(supplyThreeIdDTO.getApplySupplyId());
-            } else {
-                throw new BizException(ResultCode.UPDATE_ERROR);
-            }
-            applySupplyCompany.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
-            applySupplyCompany.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
-            num = ((ApplySupplyComServcie)AopContext.currentProxy()).update(applySupplyCompany);
-            Long id=applySupplyCompany.getId();
-            String code=null;
-            ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO = new ApplySupplyCompanyReqDTO();
-            if(id!=null){
-                ApplySupplyCompany applySupplyCompany1= applySupplyCompanyMapper.selectByPrimaryKey(id);
-                code=applySupplyCompany1.getApplySupplyCompanyCode();
-                BeanCopyUtils.copy(applySupplyCompany1,applySupplyCompanyReqDTO);
-                applySupplyCompanyReqDTO.setApplyCode(applySupplyCompany1.getApplySupplyCompanyCode());
-            }
-            supplierCommonService.getInstance(code, HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), applySupplyCompany,HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getName());
-            //结算信息 去掉结算信息
-//            if (null != applySupplyCompanyReqVO.getApplySettlementInfoReqVO()){
-//                ApplySettlementVO applySettlementVO = new ApplySettlementVO();
-//                BeanCopyUtils.copy(applySupplyCompanyReqVO.getApplySettlementInfoReqVO(),applySettlementVO);
-//                applySettlementVO.setId(supplyThreeIdDTO.getApplySettlementId());
-//                num = applySettlementService.updateApply(applySettlementVO);
+        return saveApply(applySupplyCompanyReqVO).getData();
+//        int num;
+//        try {
+//            String companyCode = "";
+//            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+//            if(null != authToken){
+//                companyCode = authToken.getCompanyCode();
 //            }
-            //发货信息
-            applyDeliveryInfoDao.deleteBatch(applySupplyCompanyReqDTO.getApplyCode());
-            if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyReqVO.getDeliveryInfoList())){
-                try {
-                    List<ApplyDeliveryDTO> deliveryDTOS = BeanCopyUtils.copyList(applySupplyCompanyReqVO.getDeliveryInfoList(), ApplyDeliveryDTO.class);
-                    deliveryDTOS.forEach(item->{
-                        item.setApplySupplyCompanyCode(applySupplyCompanyReqDTO.getApplyCode());
-                        item.setApplySupplyCompanyName(applySupplyCompanyReqDTO.getApplySupplyName());
-                    });
-                    applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
-                            "系统错误"));
-                }
-            }
-            applySupplyCompanyReqDTO.setFormNo("GYS"+new IdSequenceUtils().nextId());
-            //增加文件信息
-            applySupplierFileDao.deleteApplySupplierFileByApplyCode(applySupplyCompanyReqDTO.getApplyCode());
-            List<SupplierFileReqVO> fileReqVOList = applySupplyCompanyReqVO.getFileReqVOList();
-            if(CollectionUtils.isNotEmptyCollection(fileReqVOList)){
-                fileReqVOList.forEach(item->{
-                    item.setApplySupplierCode(applySupplyCompanyReqDTO.getApplyCode());
-                    item.setApplySupplierName(applySupplyCompanyReqDTO.getApplySupplyName());
-                    item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
-                });
-                applySupplierFileService.copySaveInfo(fileReqVOList);
-            }
-            //标签信息
-//            applyUseTagRecordService.delete(applySupplyCompanyReqDTO.getApplyCode());
-//            SaveUseTagRecordReqVo tagInfo = applySupplyCompanyReqVO.getTagInfo();
-//            if (null != tagInfo) {
-//                if (CollectionUtils.isNotEmptyCollection(tagInfo.getItemReqVos())) {
-//                    List<ApplyUseTagRecord> applyUseTagRecords = Lists.newArrayList();
-//                    tagInfo.getItemReqVos().forEach(item->{
-//                        ApplyUseTagRecord applyUseTagRecord = new ApplyUseTagRecord();
-//                        applyUseTagRecord.setApplyUseObjectCode(applySupplyCompanyReqDTO.getApplyCode());
-//                        applyUseTagRecord.setUseObjectName(applySupplyCompanyReqDTO.getApplySupplyName());
-//                        applyUseTagRecord.setTagCode(item.getTagCode());
-//                        applyUseTagRecord.setTagName(item.getTagName());
-//                        applyUseTagRecord.setTagTypeCode(tagInfo.getTagTypeCode());
-//                        applyUseTagRecord.setTagTypeName(tagInfo.getTagTypeName());
-//                        applyUseTagRecords.add(applyUseTagRecord);
+//            Map<String,Object> map = new HashMap<>();
+//            map.put("name",applySupplyCompanyReqVO.getApplySupplyName());
+//            map.put("code",applySupplyCompanyReqVO.getApplySupplyCode());
+//            map.put("companyCode",companyCode);
+//            int nameCount = supplyCompanyDao.checkName(map);
+//            if (nameCount > 0){
+//                throw new BizException(ResultCode.NAME_REPEAT);
+//            }
+//            //复制对象
+//            ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();
+//            BeanCopyUtils.copy(applySupplyCompanyReqVO,applySupplyCompany);
+//            applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
+//            //根据供货单位code获取相应的三张申请表id
+//            SupplyThreeIdDTO supplyThreeIdDTO = applySupplyCompanyDao.getThreeApplyIdBySupplyCode(applySupplyCompanyReqVO.getApplySupplyCode());
+//            if (null != supplyThreeIdDTO){
+//                applySupplyCompany.setId(supplyThreeIdDTO.getApplySupplyId());
+//            } else {
+//                throw new BizException(ResultCode.UPDATE_ERROR);
+//            }
+//            applySupplyCompany.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
+//            applySupplyCompany.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+//            num = ((ApplySupplyComServcie)AopContext.currentProxy()).update(applySupplyCompany);
+//            Long id=applySupplyCompany.getId();
+//            String code=null;
+//            ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO = new ApplySupplyCompanyReqDTO();
+//            if(id!=null){
+//                ApplySupplyCompany applySupplyCompany1= applySupplyCompanyMapper.selectByPrimaryKey(id);
+//                code=applySupplyCompany1.getApplySupplyCompanyCode();
+//                BeanCopyUtils.copy(applySupplyCompany1,applySupplyCompanyReqDTO);
+//                applySupplyCompanyReqDTO.setApplyCode(applySupplyCompany1.getApplySupplyCompanyCode());
+//            }
+//            supplierCommonService.getInstance(code, HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), applySupplyCompany,HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getName());
+//            //结算信息 去掉结算信息
+////            if (null != applySupplyCompanyReqVO.getApplySettlementInfoReqVO()){
+////                ApplySettlementVO applySettlementVO = new ApplySettlementVO();
+////                BeanCopyUtils.copy(applySupplyCompanyReqVO.getApplySettlementInfoReqVO(),applySettlementVO);
+////                applySettlementVO.setId(supplyThreeIdDTO.getApplySettlementId());
+////                num = applySettlementService.updateApply(applySettlementVO);
+////            }
+//            //发货信息
+//            applyDeliveryInfoDao.deleteBatch(applySupplyCompanyReqDTO.getApplyCode());
+//            if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyReqVO.getDeliveryInfoList())){
+//                try {
+//                    List<ApplyDeliveryDTO> deliveryDTOS = BeanCopyUtils.copyList(applySupplyCompanyReqVO.getDeliveryInfoList(), ApplyDeliveryDTO.class);
+//                    deliveryDTOS.forEach(item->{
+//                        item.setApplySupplyCompanyCode(applySupplyCompanyReqDTO.getApplyCode());
+//                        item.setApplySupplyCompanyName(applySupplyCompanyReqDTO.getApplySupplyName());
 //                    });
-//                    applyUseTagRecordService.saveBatch(applyUseTagRecords);
+//                    applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
+//                            "系统错误"));
 //                }
 //            }
-            workFlow(applySupplyCompanyReqDTO);
-        } catch (Exception e){
-            e.printStackTrace();
-            throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
-        }
-        return num;
+//            applySupplyCompanyReqDTO.setFormNo("GYS"+new IdSequenceUtils().nextId());
+//            //增加文件信息
+//            applySupplierFileDao.deleteApplySupplierFileByApplyCode(applySupplyCompanyReqDTO.getApplyCode());
+//            List<SupplierFileReqVO> fileReqVOList = applySupplyCompanyReqVO.getFileReqVOList();
+//            if(CollectionUtils.isNotEmptyCollection(fileReqVOList)){
+//                fileReqVOList.forEach(item->{
+//                    item.setApplySupplierCode(applySupplyCompanyReqDTO.getApplyCode());
+//                    item.setApplySupplierName(applySupplyCompanyReqDTO.getApplySupplyName());
+//                    item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+//                });
+//                applySupplierFileService.copySaveInfo(fileReqVOList);
+//            }
+//            //标签信息
+////            applyUseTagRecordService.delete(applySupplyCompanyReqDTO.getApplyCode());
+////            SaveUseTagRecordReqVo tagInfo = applySupplyCompanyReqVO.getTagInfo();
+////            if (null != tagInfo) {
+////                if (CollectionUtils.isNotEmptyCollection(tagInfo.getItemReqVos())) {
+////                    List<ApplyUseTagRecord> applyUseTagRecords = Lists.newArrayList();
+////                    tagInfo.getItemReqVos().forEach(item->{
+////                        ApplyUseTagRecord applyUseTagRecord = new ApplyUseTagRecord();
+////                        applyUseTagRecord.setApplyUseObjectCode(applySupplyCompanyReqDTO.getApplyCode());
+////                        applyUseTagRecord.setUseObjectName(applySupplyCompanyReqDTO.getApplySupplyName());
+////                        applyUseTagRecord.setTagCode(item.getTagCode());
+////                        applyUseTagRecord.setTagName(item.getTagName());
+////                        applyUseTagRecord.setTagTypeCode(tagInfo.getTagTypeCode());
+////                        applyUseTagRecord.setTagTypeName(tagInfo.getTagTypeName());
+////                        applyUseTagRecords.add(applyUseTagRecord);
+////                    });
+////                    applyUseTagRecordService.saveBatch(applyUseTagRecords);
+////                }
+////            }
+//            workFlow(applySupplyCompanyReqDTO);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
+//        }
+//        return num;
     }
 
     @Override
@@ -443,39 +451,6 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }else {
                 throw  new GroundRuntimeException("撤销失败");
             }
-
-//            SupplyThreeIdDTO supplyThreeIdDTO = applySupplyCompanyDao.getApplyIdsById(cancelApplySupplyComReqVO.getId());
-//            if(null == supplyThreeIdDTO){
-//                throw new GroundRuntimeException("没有找到申请信息");
-//            }
-//            if (null == cancelApplySupplyComReqVO.getDeliveryInfoId() || null == cancelApplySupplyComReqVO.getSettlementInfoId()){
-//                if (null != supplyThreeIdDTO){
-//                    if (null != supplyThreeIdDTO.getApplySettlementId()){
-//                        cancelApplySupplyComReqVO.setSettlementInfoId(supplyThreeIdDTO.getApplySettlementId());
-//                    }
-//                    if (null != supplyThreeIdDTO.getApplyDeliveryId()){
-//                        cancelApplySupplyComReqVO.setDeliveryInfoId(supplyThreeIdDTO.getApplyDeliveryId());
-//                    }
-//                }
-//            }
-//            ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();
-//            applySupplyCompany.setId(cancelApplySupplyComReqVO.getId());
-//            applySupplyCompany.setApplyStatus(StatusTypeCode.CANCEL_APPLY.getStatus());
-//            //根据id修改供货单位申请状态为撤销
-//            int num = ((ApplySupplyComServcie)AopContext.currentProxy()).update(applySupplyCompany);
-//            if (null != cancelApplySupplyComReqVO.getId()){
-//                ApplySupplyCompany applySupplyCompany1 = applySupplyCompany2;
-//                supplierCommonService.getInstance(applySupplyCompany1.getApplySupplyCompanyCode(), HandleTypeCoce.APPLY_UPDATE_REVOKE_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), applySupplyCompany1,HandleTypeCoce.APPLY_UPDATE_REVOKE_SUPPLY_COMPANY.getName());
-//            }
-//            //根据id修改供货单位结算信息申请状态为撤销
-//            applySettlementService.cancelApply(cancelApplySupplyComReqVO.getSettlementInfoId());
-//            //根据id修改供货单位收货信息申请状态为撤销
-//            applyDeliveryService.cancelApply(cancelApplySupplyComReqVO.getDeliveryInfoId());
-//            if (num > 0){
-//                return  num;
-//            } else {
-//                throw new BizException(ResultCode.CANCEL_ERROR);
-//            }
         } catch (GroundRuntimeException e){
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         }
@@ -487,22 +462,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         String applySupplyCompanyCode = null;
         //供货单位申请编码
         EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_CODE);
+        applySupplyCompanyReqDTO.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
         applySupplyCompanyReqDTO.setApplyCode(String.valueOf(encodingRule.getNumberingValue()+1));
-        applySupplyCompanyReqDTO.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
-        applySupplyCompanyReqDTO.setEnable(StatusTypeCode.EN_ABLE.getStatus());
         //新增供货单位申请
         Long resultNum =((ApplySupplyComServcie)AopContext.currentProxy()).insert(applySupplyCompanyReqDTO);
         supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode(), HandleTypeCoce.APPLY_ADD_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), applySupplyCompanyReqDTO,HandleTypeCoce.APPLY_ADD_SUPPLY_COMPANY.getName());
         //修改编码
         encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
-        //结算信息 去掉结算结算 2019-04-22
-//        ApplySettlementDTO applySettlementDTO = new ApplySettlementDTO();
-//        if (null != applySupplyCompanyReqDTO.getApplySettlementInfoReqVO()){
-//            BeanCopyUtils.copy(applySupplyCompanyReqDTO.getApplySettlementInfoReqVO(), applySettlementDTO);
-//            applySettlementDTO.setApplySupplyCompanyCode(applySupplyCompanyReqDTO.getApplyCode());
-//            applySettlementDTO.setApplySupplyCompanyName(applySupplyCompanyReqDTO.getApplySupplyName());
-//            resultNum = applySettlementService.insideSaveApply(applySettlementDTO);
-//        }
         //发货信息
         if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyReqDTO.getDeliveryInfoList())){
             try {
@@ -524,32 +490,14 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             fileReqVOList.forEach(item->{
                 item.setApplySupplierCode(applySupplyCompanyReqDTO.getApplyCode());
                 item.setApplySupplierName(applySupplyCompanyReqDTO.getApplySupplyName());
-                item.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
+                item.setApplyType(applySupplyCompanyReqDTO.getApplyType());
             });
             applySupplierFileService.copySaveInfo(fileReqVOList);
         }
-        //标签信息
-//        SaveUseTagRecordReqVo tagInfos = applySupplyCompanyReqDTO.getTagInfo();
-//        if (null != tagInfos) {
-//            if (CollectionUtils.isNotEmptyCollection(tagInfos.getItemReqVos())) {
-//                List<ApplyUseTagRecord> applyUseTagRecords = Lists.newArrayList();
-//                tagInfos.getItemReqVos().forEach(item->{
-//                    ApplyUseTagRecord applyUseTagRecord = new ApplyUseTagRecord();
-//                    applyUseTagRecord.setTagTypeCode(tagInfos.getTagTypeCode());
-//                    applyUseTagRecord.setTagTypeName(tagInfos.getTagTypeName());
-//                    applyUseTagRecord.setApplyUseObjectCode(applySupplyCompanyReqDTO.getApplyCode());
-//                    applyUseTagRecord.setUseObjectName(applySupplyCompanyReqDTO.getApplySupplyName());
-//                    applyUseTagRecord.setTagCode(item.getTagCode());
-//                    applyUseTagRecord.setTagName(item.getTagName());
-//                    applyUseTagRecords.add(applyUseTagRecord);
-//                });
-//                applyUseTagRecordService.saveBatch(applyUseTagRecords);
-//            }
-//        }
         //判断是否需要新增供货单位账户申请
         //判断是否需要新增账户信息
         Boolean addAccount = null != applySupplyCompanyReqDTO.getAddAccount() && applySupplyCompanyReqDTO.getAddAccount().equals(StatusTypeCode.ADD_ACCOUNT.getStatus());
-        if(addAccount){
+        if(addAccount && Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applySupplyCompanyReqDTO.getApplyType())){
             ApplySupplyCompanyAcctReqVO applySupplyCompanyAcctReqVO = applySupplyCompanyReqDTO.getApplySupplyCompanyAccountReq();
             ApplySupplyComAcctDTO applySupplyComAcctDTO = new ApplySupplyComAcctDTO();
             BeanCopyUtils.copy(applySupplyCompanyAcctReqVO, applySupplyComAcctDTO);

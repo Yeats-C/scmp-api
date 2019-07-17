@@ -1,9 +1,9 @@
 package com.aiqin.bms.scmp.api.bireport.service;
 
+import com.aiqin.bms.scmp.api.base.PageReportResData;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
-import com.github.pagehelper.PageInfo;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public interface ReportService {
      * @return
      */
     // PageInfo<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
-    PageResData selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+    PageReportResData<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
     /**
      *  批次商品进销存
@@ -79,6 +79,13 @@ public interface ReportService {
      * @return
      */
     PageResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+
+    /**
+     *  品牌促销
+     * @param brandSaleReqVo
+     * @return
+     */
+    PageResData selectBrandSale(CategorySaleReqVo brandSaleReqVo);
 
     /**
      *  品类促销

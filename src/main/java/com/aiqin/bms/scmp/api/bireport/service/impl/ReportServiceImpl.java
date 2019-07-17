@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.service.impl;
 
+import com.aiqin.bms.scmp.api.base.PageReportResData;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.dao.ReportDao;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -28,12 +30,13 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
+    public PageReportResData selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
         try {
-            PageHelper.startPage(supplierArrivalRateReqVo.getPageNo(), supplierArrivalRateReqVo.getPageSize());
+           // PageHelper.startPage(supplierArrivalRateReqVo.getPageNo(), supplierArrivalRateReqVo.getPageSize());
             List<SupplierArrivalRateRespVo> supplierArrivalRateRespVos = reportDao.selectSupplierArrivalRate(supplierArrivalRateReqVo);
+            List<Map> maps = reportDao.selectTableCloumnName();
             Integer total = reportDao.countSupplierArrivalRate(supplierArrivalRateReqVo);
-            return new PageResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos);
+            return new PageReportResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos,maps);
         } catch (Exception ex) {
             log.error("查询供应商到货率失败");
             ex.printStackTrace();
@@ -49,7 +52,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo) {
         try {
-            PageHelper.startPage(goodsBuySalesReqVo.getPageNo(), goodsBuySalesReqVo.getPageSize());
+            // PageHelper.startPage(goodsBuySalesReqVo.getPageNo(), goodsBuySalesReqVo.getPageSize());
             List<GoodsBuySalesRespVo> goodsBuySalesRespVos = reportDao.selectGoodsBuySales(goodsBuySalesReqVo);
             Integer total = reportDao.countGoodsBuySales(goodsBuySalesReqVo);
             return new PageResData<GoodsBuySalesRespVo>(total,goodsBuySalesRespVos);
@@ -68,7 +71,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo) {
         try {
-            PageHelper.startPage(giftsBuySalesReqVo.getPageNo(), giftsBuySalesReqVo.getPageSize());
+            // PageHelper.startPage(giftsBuySalesReqVo.getPageNo(), giftsBuySalesReqVo.getPageSize());
             List<GiftsBuySalesRespVo> giftsBuySalesRespVos = reportDao.selectGiftsBuySales(giftsBuySalesReqVo);
             Integer total = reportDao.countGiftsBuySales(giftsBuySalesReqVo);
             return new PageResData<GiftsBuySalesRespVo>(total,giftsBuySalesRespVos);
@@ -87,7 +90,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo) {
         try {
-            PageHelper.startPage(supplierReturnReqVo.getPageNo(), supplierReturnReqVo.getPageSize());
+            // PageHelper.startPage(supplierReturnReqVo.getPageNo(), supplierReturnReqVo.getPageSize());
             List<SupplierReturnRespVo> supplierReturnRespVos = reportDao.selectSupplierReturn(supplierReturnReqVo);
             Integer total = reportDao.countSupplierReturn(supplierReturnReqVo);
             return new PageResData<SupplierReturnRespVo>(total,supplierReturnRespVos);
@@ -106,7 +109,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo) {
         try {
-            PageHelper.startPage(newProductBatchMovingRateReqVo.getPageNo(), newProductBatchMovingRateReqVo.getPageSize());
+            // PageHelper.startPage(newProductBatchMovingRateReqVo.getPageNo(), newProductBatchMovingRateReqVo.getPageSize());
             List<NewProductBatchMovingRateRespVo> newProductBatchMovingRateRespVos = reportDao.selectNewProductBatchMovingRate(newProductBatchMovingRateReqVo);
             Integer total = reportDao.countNewProductBatchMovingRate(newProductBatchMovingRateReqVo);
             return new PageResData<NewProductBatchMovingRateRespVo>(total,newProductBatchMovingRateRespVos);
@@ -125,7 +128,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo) {
         try {
-            PageHelper.startPage(storeRepurchaseRateReqVo.getPageNo(), storeRepurchaseRateReqVo.getPageSize());
+            // PageHelper.startPage(storeRepurchaseRateReqVo.getPageNo(), storeRepurchaseRateReqVo.getPageSize());
             List<StoreRepurchaseRateRespVo> storeRepurchaseRateRespVos = reportDao.selectStoreRepurchaseRate(storeRepurchaseRateReqVo);
             Integer total = reportDao.countStoreRepurchaseRate(storeRepurchaseRateReqVo);
             return new PageResData<StoreRepurchaseRateRespVo>(total,storeRepurchaseRateRespVos);
@@ -144,7 +147,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
         try {
-            PageHelper.startPage(negativeMarginReqVo.getPageNo(), negativeMarginReqVo.getPageSize());
+            // PageHelper.startPage(negativeMarginReqVo.getPageNo(), negativeMarginReqVo.getPageSize());
             List<NegativeMarginRespVo> negativeMarginRespVos = reportDao.selectNegativeMargin(negativeMarginReqVo);
             Integer total = reportDao.countNegativeMargin(negativeMarginReqVo);
             return new PageResData<NegativeMarginRespVo>(total,negativeMarginRespVos);
@@ -163,7 +166,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo) {
         try {
-            PageHelper.startPage(suggestReplenishmentReqVo.getPageNo(), suggestReplenishmentReqVo.getPageSize());
+            // PageHelper.startPage(suggestReplenishmentReqVo.getPageNo(), suggestReplenishmentReqVo.getPageSize());
             List<SuggestReplenishmentRespVo> suggestReplenishmentRespVos = reportDao.selectSuggestReplenishment(suggestReplenishmentReqVo);
             Integer total = reportDao.countSuggestReplenishment(suggestReplenishmentReqVo);
             return new PageResData<SuggestReplenishmentRespVo>(total,suggestReplenishmentRespVos);
@@ -182,7 +185,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
-            PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
+           // PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
             List<LowInventoryRespVo> lowInventoryRespVos = reportDao.selectLowInventory(highLowInventoryReqVo);
             Integer total = reportDao.countLowInventory(highLowInventoryReqVo);
             return new PageResData<LowInventoryRespVo>(total,lowInventoryRespVos);
@@ -201,12 +204,31 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
-            PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
+            // PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
             List<HighInventoryRespVo> highInventoryRespVos = reportDao.selectHighInventory(highLowInventoryReqVo);
             Integer total = reportDao.countHighInventory(highLowInventoryReqVo);
             return new PageResData<HighInventoryRespVo>(total,highInventoryRespVos);
         } catch (Exception ex) {
             log.error("查询高库存失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     *  品牌促销
+     * @param brandSaleReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectBrandSale(CategorySaleReqVo brandSaleReqVo) {
+        try {
+            // PageHelper.startPage(categorySaleReqVo.getPageNo(), categorySaleReqVo.getPageSize());
+            List<CategorySaleRespVo> brandSaleRespVo = reportDao.selectBrandSale(brandSaleReqVo);
+            Integer total = reportDao.countBrandSale(brandSaleReqVo);
+            return new PageResData<CategorySaleRespVo>(total,brandSaleRespVo);
+        } catch (Exception ex) {
+            log.error("品类促销");
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
@@ -220,7 +242,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectCategorySale(CategorySaleReqVo categorySaleReqVo) {
         try {
-            PageHelper.startPage(categorySaleReqVo.getPageNo(), categorySaleReqVo.getPageSize());
+            // PageHelper.startPage(categorySaleReqVo.getPageNo(), categorySaleReqVo.getPageSize());
             List<CategorySaleRespVo> categorySaleRespVo = reportDao.selectCategorySale(categorySaleReqVo);
             Integer total = reportDao.countCategorySale(categorySaleReqVo);
             return new PageResData<CategorySaleRespVo>(total,categorySaleRespVo);
@@ -239,7 +261,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectBigEffect(BigEffectReqVo bigEffectReqVo) {
         try {
-            PageHelper.startPage(bigEffectReqVo.getPageNo(), bigEffectReqVo.getPageSize());
+            // PageHelper.startPage(bigEffectReqVo.getPageNo(), bigEffectReqVo.getPageSize());
             List<BigEffectRespVo> bigEffectRespVos = reportDao.selectBigEffect(bigEffectReqVo);
             Integer total = reportDao.countBigEffect(bigEffectReqVo);
             return new PageResData<BigEffectRespVo>(total,bigEffectRespVos);
@@ -258,7 +280,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo) {
         try {
-            PageHelper.startPage(monthlySalesReqVo.getPageNo(), monthlySalesReqVo.getPageSize());
+            // PageHelper.startPage(monthlySalesReqVo.getPageNo(), monthlySalesReqVo.getPageSize());
             List<MonthlySalesRespVo> monthlySalesRespVos = reportDao.selectMonthlySales(monthlySalesReqVo);
             Integer total = reportDao.countMonthlySales(monthlySalesReqVo);
             return new PageResData<MonthlySalesRespVo>(total,monthlySalesRespVos);
@@ -277,10 +299,10 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo) {
         try {
-            PageHelper.startPage(monthlyGrossMarginReqVo.getPageNo(), monthlyGrossMarginReqVo.getPageSize());
-            List<MonthlySalesRespVo> monthlySalesRespVos = reportDao.selectMonthlyGrossMargin(monthlyGrossMarginReqVo);
+            // PageHelper.startPage(monthlyGrossMarginReqVo.getPageNo(), monthlyGrossMarginReqVo.getPageSize());
+            List<MonthlyGrossMarginRespVo> monthlySalesRespVos = reportDao.selectMonthlyGrossMargin(monthlyGrossMarginReqVo);
             Integer total = reportDao.countMonthlyGrossMargin(monthlyGrossMarginReqVo);
-            return new PageResData<MonthlySalesRespVo>(total,monthlySalesRespVos);
+            return new PageResData<MonthlyGrossMarginRespVo>(total,monthlySalesRespVos);
         } catch (Exception ex) {
             log.error("月毛利率情况");
             ex.printStackTrace();
@@ -296,7 +318,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo) {
         try {
-            PageHelper.startPage(monthSalesAchievementReqVo.getPageNo(), monthSalesAchievementReqVo.getPageSize());
+           // PageHelper.startPage(monthSalesAchievementReqVo.getPageNo(), monthSalesAchievementReqVo.getPageSize());
             List<MonthSalesAchievementRespVo> monthSalesAchievementRespVos = reportDao.selectMonthSalesAchievement(monthSalesAchievementReqVo);
             Integer total = reportDao.countMonthSalesAchievement(monthSalesAchievementReqVo);
             return new PageResData<MonthSalesAchievementRespVo>(total,monthSalesAchievementRespVos);
@@ -315,7 +337,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo) {
         try {
-            PageHelper.startPage(monthCumulativeBrandSalesReqVo.getPageNo(), monthCumulativeBrandSalesReqVo.getPageSize());
+          //  PageHelper.startPage(monthCumulativeBrandSalesReqVo.getPageNo(), monthCumulativeBrandSalesReqVo.getPageSize());
             List<MonthCumulativeBrandSalesRespVo> monthCumulativeBrandSalesRespVos = reportDao.selectMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo);
             Integer total = reportDao.countMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo);
             return new PageResData<MonthCumulativeBrandSalesRespVo>(total,monthCumulativeBrandSalesRespVos);
@@ -334,7 +356,7 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageResData selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo) {
         try {
-            PageHelper.startPage(monthCumulativeGrossProfitMarginReqVo.getPageNo(), monthCumulativeGrossProfitMarginReqVo.getPageSize());
+         //   PageHelper.startPage(monthCumulativeGrossProfitMarginReqVo.getPageNo(), monthCumulativeGrossProfitMarginReqVo.getPageSize());
             List<MonthCumulativeGrossProfitMarginRespVo> monthCumulativeGrossProfitMarginRespVos = reportDao.selectMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo);
             Integer total = reportDao.countMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo);
             return new PageResData<MonthCumulativeGrossProfitMarginRespVo>(total,monthCumulativeGrossProfitMarginRespVos);

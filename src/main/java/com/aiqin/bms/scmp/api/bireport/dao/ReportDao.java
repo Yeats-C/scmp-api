@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockBatchRequest;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ReportDao {
 
@@ -16,6 +17,8 @@ public interface ReportDao {
     List<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
     Integer countSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+
+    List<Map> selectTableCloumnName();
 
     /**
      *  批次商品进销存
@@ -99,6 +102,15 @@ public interface ReportDao {
     Integer countHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
+     *  品牌促销
+     * @param brandSaleReqVo
+     * @return
+     */
+    List<CategorySaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
+
+    Integer countBrandSale(CategorySaleReqVo brandSaleReqVo);
+
+    /**
      *  品类促销
      * @param categorySaleReqVo
      * @return
@@ -130,7 +142,7 @@ public interface ReportDao {
      * @param monthlyGrossMarginReqVo
      * @return
      */
-    List<MonthlySalesRespVo> selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
+    List<MonthlyGrossMarginRespVo> selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
 
     Integer countMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
 
@@ -162,7 +174,7 @@ public interface ReportDao {
     Integer countMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo);
 
     /**
-     *  月累计品类毛利率情况
+     *  查询所有门店类型
      * @param
      * @return
      */

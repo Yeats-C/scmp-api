@@ -13,9 +13,13 @@ public class NegativeMarginRespVo {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("渠道")
-    @JsonProperty("order_original")
-    private String orderOriginal;
+    @ApiModelProperty("渠道编码")
+    @JsonProperty("order_original_code")
+    private String orderOriginalCode;
+
+    @ApiModelProperty("渠道名称")
+    @JsonProperty("order_original_name")
+    private String orderOriginalName;
 
     @ApiModelProperty("sku编码")
     @JsonProperty("sku_code")
@@ -59,7 +63,7 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("qun_maori_rate")
-    private Integer qunMaoriRate;
+    private Double qunMaoriRate;
 
     @ApiModelProperty("分销销售金额")
     @JsonProperty("fen_order_amount")
@@ -71,7 +75,7 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("fen_maori_rate")
-    private Integer fenMaoriRate;
+    private Double fenMaoriRate;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
