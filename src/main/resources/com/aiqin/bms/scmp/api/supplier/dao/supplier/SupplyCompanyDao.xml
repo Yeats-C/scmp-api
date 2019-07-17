@@ -227,4 +227,12 @@
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
   </select>
+  <select id="selectBySupplierName" resultMap="BaseResultMap" >
+   select
+      supply_code , supply_name
+    from
+      supply_company
+    where
+      supply_name = #{supplyName,jdbcType=VARCHAR}
+  </select>
 </mapper>

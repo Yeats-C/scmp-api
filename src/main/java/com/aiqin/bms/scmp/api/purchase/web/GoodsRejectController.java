@@ -1,10 +1,10 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
+import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -70,7 +70,7 @@ public class GoodsRejectController {
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<List<RejectApplyQueryResponse>> rejectApplyList(@RequestParam(value = "reject_apply_record_code", required = false) String rejectApplyRecordCode,
+    public HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(@RequestParam(value = "reject_apply_record_code", required = false) String rejectApplyRecordCode,
                                                                         @RequestParam(value = "apply_type", required = false) Integer applyType,
                                                                         @RequestParam(value = "apply_record_status", required = false) Integer applyRecordStatus,
                                                                         @RequestParam(value = "page_no", required = false) Integer page_no,
@@ -111,28 +111,28 @@ public class GoodsRejectController {
 
     @GetMapping("/apply/{reject_apply_record_code}")
     @ApiOperation(value = "退供申请单查询")
-    public HttpResponse<RejectApplyResponse> selectRejectApply(@PathVariable String reject_apply_record_code) {
+    public HttpResponse<RejectApplyHandleResponse> selectRejectApply(@PathVariable String reject_apply_record_code) {
         LOGGER.info("退供申请单查询请求:{}", reject_apply_record_code);
         return goodsRejectService.selectRejectApply(reject_apply_record_code);
     }
 
     @PostMapping("/apply/import")
     @ApiOperation(value = "批量导入退供申请单")
-    public HttpResponse rejectApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
+    public HttpResponse<PageResData<RejectImportResponse>> rejectApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
         LOGGER.info("批量导入退供申请单请求,purchaseGroupCode:{}", purchaseGroupCode);
         return goodsRejectService.rejectApplyImport(file, purchaseGroupCode);
     }
 
     @PostMapping("/apply/info")
     @ApiOperation(value = "查询退供申请单信息去生成退供单")
-    public HttpResponse<RejectApplyResponse> rejectApplyInfo(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+    public HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(@Valid @RequestBody RejectApplyRequest rejectApplyQueryRequest) {
         LOGGER.info("查询退供申请单信息去生成退供单请求,rejectRecord:{}", rejectApplyQueryRequest.toString());
         return goodsRejectService.rejectApplyInfo(rejectApplyQueryRequest);
     }
 
     @PostMapping("/apply/info/detail")
     @ApiOperation(value = "查询退供申请单详情信息去生成退供单")
-    public HttpResponse<RejectApplyResponse> rejectApplyDetailInfo(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> rejectApplyDetailInfo(@RequestBody RejectApplyRequest rejectApplyQueryRequest) {
         LOGGER.info("查询退供申请单详情信息去生成退供单,rejectApplyQueryRequest:{}", rejectApplyQueryRequest.toString());
         return goodsRejectService.rejectApplyDetailInfo(rejectApplyQueryRequest);
     }
@@ -158,11 +158,11 @@ public class GoodsRejectController {
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<RejectRecord> rejectList(@RequestParam(value = "page_no", required = false) Integer page_no, @RequestParam(value = "page_size", required = false) Integer page_size,
-                                                 @RequestParam(value = "begin_time", required = false) String beginTime, @RequestParam(value = "purchase_group_code", required = false) String purchase_group_code,
-                                                 @RequestParam(value = "reject_record_code", required = false) String reject_record_code, @RequestParam(value = "reject_status", required = false) Integer reject_status,
-                                                 @RequestParam(value = "transport_center_code", required = false) String transport_center_code, @RequestParam(value = "supplier_code", required = false) String supplier_code,
-                                                 @RequestParam(value = "warehouse_code", required = false) String warehouse_code, @RequestParam(value = "finish_time", required = false) String finishTime) {
+    public HttpResponse<PageResData<RejectRecord>> rejectList(@RequestParam(value = "page_no", required = false) Integer page_no, @RequestParam(value = "page_size", required = false) Integer page_size,
+                                                              @RequestParam(value = "begin_time", required = false) String beginTime, @RequestParam(value = "purchase_group_code", required = false) String purchase_group_code,
+                                                              @RequestParam(value = "reject_record_code", required = false) String reject_record_code, @RequestParam(value = "reject_status", required = false) Integer reject_status,
+                                                              @RequestParam(value = "transport_center_code", required = false) String transport_center_code, @RequestParam(value = "supplier_code", required = false) String supplier_code,
+                                                              @RequestParam(value = "warehouse_code", required = false) String warehouse_code, @RequestParam(value = "finish_time", required = false) String finishTime) {
         RejectQueryRequest rejectQueryRequest = new RejectQueryRequest(beginTime, finishTime, reject_record_code, purchase_group_code, supplier_code, transport_center_code, warehouse_code, reject_status);
         rejectQueryRequest.setPageNo(page_no);
         rejectQueryRequest.setPageSize(page_size);
@@ -227,7 +227,7 @@ public class GoodsRejectController {
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse rejectStockProduct(@RequestParam(value = "page_no", required = false) Integer page_no, @RequestParam(value = "page_size", required = false) Integer page_size,
+    public HttpResponse<PageResData<RejectApplyDetailHandleResponse>> rejectStockProduct(@RequestParam(value = "page_no", required = false) Integer page_no, @RequestParam(value = "page_size", required = false) Integer page_size,
                                                  @RequestParam(value = "product_property_name", required = false) String product_property_name, @RequestParam(value = "purchase_group_code") String purchase_group_code,
                                                  @RequestParam(value = "sku_code", required = false) String sku_code, @RequestParam(value = "sku_name", required = false) String sku_name,
                                                  @RequestParam(value = "transport_center_code") String transport_center_code, @RequestParam(value = "supplier_code") String supplier_code,

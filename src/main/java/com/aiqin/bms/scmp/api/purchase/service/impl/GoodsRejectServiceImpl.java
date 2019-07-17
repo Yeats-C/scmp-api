@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierDao;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
@@ -104,14 +105,14 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     @Resource
     private StockService stockService;
     @Resource
-    private SupplierDao supplierDao;
+    private SupplyCompanyDao supplyCompanyDao;
     @Resource
     private LogisticsCenterDao logisticsCenterDao;
     @Resource
     private WarehouseDao warehouseDao;
 
     @Override
-    public HttpResponse rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
+    public HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup();
         if (CollectionUtils.isEmpty(groupVoList)) {
             return HttpResponse.success();
@@ -127,7 +128,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             }
         }
         Integer count = rejectApplyRecordDao.listCount(rejectApplyQueryRequest);
-        return HttpResponse.success(new PageResData(count, list));
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -215,7 +216,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     }
 
     @Override
-    public HttpResponse selectRejectApply(String rejectApplyCode) {
+    public HttpResponse<RejectApplyHandleResponse> selectRejectApply(String rejectApplyCode) {
         RejectApplyRecord rejectApplyRecord = rejectApplyRecordDao.selectByRejectCode(rejectApplyCode);
         if (rejectApplyRecord == null) {
             LOGGER.error("未查询到退供申请单信息:{}", rejectApplyCode);
@@ -225,11 +226,11 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         BeanUtils.copyProperties(rejectApplyRecord, response);
         List<RejectApplyDetailHandleResponse> list = rejectApplyRecordDetailDao.selectHandleByRejectCode(rejectApplyCode);
         response.setDetailList(list);
-        return HttpResponse.success(response);
+        return HttpResponse.successGenerics(response);
     }
 
     @Override
-    public HttpResponse rejectApplyImport(MultipartFile file, String purchaseGroupCode) {
+    public HttpResponse<PageResData<RejectImportResponse>> rejectApplyImport(MultipartFile file, String purchaseGroupCode) {
         if (file == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
@@ -245,7 +246,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                 return HttpResponse.failure(MessageId.create(Project.SCMP_API, 88888, validResult));
             }
             String[] record;
-            Supplier supplier;
+            SupplyCompany supplier;
             Warehouse warehouse;
             LogisticsCenter logisticsCenter;
             RejectImportResponse response;
@@ -259,7 +260,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                     list.add(response);
                     continue;
                 }
-                supplier = supplierDao.selectBySupplierName(record[2]);
+                supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                 if (supplier == null) {
                     HandleResponse(response, record, "未查询到供应商信息");
                     errorCount++;
@@ -296,7 +297,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                 }
                 list.add(response);
             }
-            return HttpResponse.success(new PageResData(errorCount, list));
+            return HttpResponse.successGenerics(new PageResData<>(errorCount, list));
         } catch (Exception e) {
             LOGGER.error("退供申请单导入异常:{}", e.getMessage());
             return HttpResponse.failure(ResultCode.IMPORT_REJECT_APPLY_ERROR);
@@ -317,7 +318,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     }
 
     @Override
-    public HttpResponse rejectApplyDetailInfo(RejectApplyRequest response) {
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> rejectApplyDetailInfo(RejectApplyRequest response) {
         List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByConditionPage(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
                 response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes(), response.getPageSize(), response.getBeginIndex());
         QueryStockBatchSkuRespVo queryStockBatchSkuRespVo;
@@ -329,11 +330,11 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         }
         Integer listCount = rejectApplyRecordDetailDao.listByConditionPageCount(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
                 response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes());
-        return HttpResponse.success(new PageResData(listCount, detailList));
+        return HttpResponse.successGenerics(new PageResData<>(listCount, detailList));
     }
 
     @Override
-    public HttpResponse rejectApplyInfo(RejectApplyRequest request) {
+    public HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(RejectApplyRequest request) {
         if (CollectionUtils.isEmpty(request.getRejectApplyRecordCodes())) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
@@ -364,7 +365,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                 response.setDistrictName("");
             }
         }
-        return HttpResponse.success(list);
+        return HttpResponse.successGenerics(list);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -448,7 +449,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             //增加操作记录 操作状态  : 0 新增 1 修改 2 下载
             operationLogDao.insert(new OperationLog(rejectId, 0, "新增退供单", "", request.getCreateById(), request.getCreateByName()));
             //锁定库存
-            ILockStockBatchReqVO iLockStockBatchReqVO = handleStockParam(list, rejectRecord);
+//            ILockStockBatchReqVO iLockStockBatchReqVO = handleStockParam(list, rejectRecord);
 //            Boolean stockStatus = stockService.returnSupplyLockStockBatch(iLockStockBatchReqVO);
 //            if (!stockStatus) {
 //                LOGGER.error("锁定库存异常:{}", rejectRecord.toString());
@@ -502,15 +503,15 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     }
 
     @Override
-    public HttpResponse rejectList(RejectQueryRequest rejectApplyQueryRequest) {
+    public HttpResponse<PageResData<RejectRecord>> rejectList(RejectQueryRequest rejectApplyQueryRequest) {
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup();
         if (CollectionUtils.isEmpty(groupVoList)) {
-            return HttpResponse.success();
+            return HttpResponse.successGenerics(new PageResData<>());
         }
         rejectApplyQueryRequest.setGroupList(groupVoList);
         List<RejectRecord> list = rejectRecordDao.list(rejectApplyQueryRequest);
         Integer count = rejectRecordDao.listCount(rejectApplyQueryRequest);
-        return HttpResponse.success(new PageResData(count, list));
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
     @Transactional
@@ -565,7 +566,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     }
 
     @Override
-    public HttpResponse rejectInfo(String rejectRecordCode) {
+    public HttpResponse<RejectResponse> rejectInfo(String rejectRecordCode) {
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup();
         if (CollectionUtils.isEmpty(groupVoList)) {
             return HttpResponse.success();
@@ -579,7 +580,6 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             //没有权限查询详情
             return HttpResponse.failure(ResultCode.JURISDICTION_ERROR);
         }
-
         BeanUtils.copyProperties(rejectRecord, rejectResponse);
         List<RejectRecordDetail> batchList = rejectRecordDetailDao.selectByRejectId(rejectRecord.getRejectRecordId());
         List<RejectRecordDetailResponse> productList = rejectRecordDetailDao.selectProductByRejectId(rejectRecord.getRejectRecordId());
@@ -589,7 +589,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         rejectResponse.setBatchList(batchList);
         rejectResponse.setProductList(productList);
         rejectResponse.setFileList(fileList);
-        return HttpResponse.success(rejectResponse);
+        return HttpResponse.successGenerics(rejectResponse);
     }
 
     /**
@@ -642,13 +642,11 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             throw new RuntimeException(String.format("取消-更改退供申请异常:{%s}", e.getMessage()));
         }
     }
-
     @Override
-    public HttpResponse rejectStockProduct(RejectProductRequest rejectQueryRequest) {
+    public HttpResponse<PageResData<RejectApplyDetailHandleResponse>> rejectStockProduct(RejectProductRequest rejectQueryRequest) {
         List<RejectApplyDetailHandleResponse> list = stockDao.rejectProductList(rejectQueryRequest);
         Integer count = stockDao.rejectProductListCount(rejectQueryRequest);
-        return HttpResponse.success(new PageResData(count,list));
+        return HttpResponse.successGenerics(new PageResData<>(count,list));
     }
-
 
 }

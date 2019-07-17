@@ -112,12 +112,4 @@
         and update_by = #{applyBy,jdbcType=VARCHAR}
       </if>
     </select>
-  <select id="selectBySupplierName" resultMap="BaseResultMap" >
-    select
-      supplier_name , supplier_code
-    from
-      supplier
-    where
-      supplier_name = #{supplierName,jdbcType=VARCHAR}
-  </select>
 </mapper>
