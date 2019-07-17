@@ -371,10 +371,10 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         String createById = purchaseOrder.getCreateById();
         String createByName = purchaseOrder.getCreateByName();
         PurchaseOrderDetails detail;
-        if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_2)){
+        if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_2)){
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STOCK_UP.getCode(),
                     PurchaseOrderLogEnum.STOCK_UP.getName() , null);
-        }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_3)){
+        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_3)){
             detail = new PurchaseOrderDetails();
             detail.setPurchaseOrderId(purchaseOrderId);
             detail.setDeliveryTime(Calendar.getInstance().getTime());
@@ -383,7 +383,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             purchaseOrderDetailsDao.update(detail);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.DELIVER_GOODS.getCode(),
                     PurchaseOrderLogEnum.DELIVER_GOODS.getName() , null);
-        }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
+        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
             detail = new PurchaseOrderDetails();
             detail.setPurchaseOrderId(purchaseOrderId);
             detail.setWarehouseTime(Calendar.getInstance().getTime());
@@ -392,10 +392,10 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             purchaseOrderDetailsDao.update(detail);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.WAREHOUSING_FINISH.getName() , null);
-        }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_5)){
+        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_5)){
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode(),
                     PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getName() , null);
-        }else if(purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
+        }else if(purchaseOrder.getStorageStatus() != null && purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STORAGE_STAY.getCode(),
                     PurchaseOrderLogEnum.STORAGE_STAY.getName() , null);
         }
@@ -724,20 +724,24 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
         // 保存质检报告
-        productSkuInspReportDao.insertInspReportList(storageRequest.getReportRequest());
-        // 保存供应商评分
-        String code = scoreService.saveByPurchase(storageRequest.getScoreRequest());
-        if(StringUtils.isBlank(code)){
-            LOGGER.error("保存采购单对应的评分失败");
-            return HttpResponse.failure(ResultCode.ADD_ERROR);
+        if(CollectionUtils.isNotEmptyCollection(storageRequest.getReportRequest())){
+            productSkuInspReportDao.insertInspReportList(storageRequest.getReportRequest());
         }
-        // 评分编码存入采购单详情
-        PurchaseOrderDetails detail = new PurchaseOrderDetails();
-        detail.setPurchaseOrderId(purchaseOrderId);
-        detail.setScoreCode(code);
-        detail.setUpdateByName(storageRequest.getCreateByName());
-        detail.setUpdateById(storageRequest.getCreateById());
-        purchaseOrderDetailsDao.update(detail);
+        // 保存供应商评分
+        if(storageRequest.getScoreRequest() != null){
+            String code = scoreService.saveByPurchase(storageRequest.getScoreRequest());
+            if(StringUtils.isBlank(code)){
+                LOGGER.error("保存采购单对应的评分失败");
+                return HttpResponse.failure(ResultCode.ADD_ERROR);
+            }
+            // 评分编码存入采购单详情
+            PurchaseOrderDetails detail = new PurchaseOrderDetails();
+            detail.setPurchaseOrderId(purchaseOrderId);
+            detail.setScoreCode(code);
+            detail.setUpdateByName(storageRequest.getCreateByName());
+            detail.setUpdateById(storageRequest.getCreateById());
+            purchaseOrderDetailsDao.update(detail);
+        }
         // 新增操作日志
         log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.STORAGE_FINISH.getCode(),
                 PurchaseOrderLogEnum.STORAGE_FINISH.getName() , null);
