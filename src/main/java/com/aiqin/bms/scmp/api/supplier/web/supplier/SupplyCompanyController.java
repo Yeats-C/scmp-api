@@ -134,11 +134,23 @@ public class SupplyCompanyController extends SupplierBaseController {
             return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
         }
     }
-    @PostMapping("/import")
-    @ApiOperation(value = "批量导入")
+    @PostMapping("/import/add")
+    @ApiOperation(value = "新增批量导入")
     public HttpResponse<ApplySupplyCompanyReqVO> importData(MultipartFile file){
         try {
             return HttpResponse.success(applySupplyComServcie.dealImport(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @PostMapping("/import/update")
+    @ApiOperation(value = "修改批量导入")
+    public HttpResponse<ApplySupplyCompanyReqVO> importData2(MultipartFile file){
+        try {
+            return HttpResponse.success(applySupplyComServcie.dealImport2(file));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {

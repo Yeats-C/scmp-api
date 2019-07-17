@@ -130,7 +130,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public int addSupplierFileDownLog(DownSupplierFileReq downSupplierFileReq) {
         try {
-            supplierCommonService.getInstance(downSupplierFileReq.getSupplierCode(), HandleTypeCoce.DOWNLOAD_REVOKE_SUPPLIER.getStatus(), ObjectTypeCode.SUPPLIER.getStatus(), downSupplierFileReq,HandleTypeCoce.DOWNLOAD_REVOKE_SUPPLIER.getName());
+            supplierCommonService.getInstance(downSupplierFileReq.getSupplierCode(), HandleTypeCoce.DOWNLOAD.getStatus(), ObjectTypeCode.SUPPLIER.getStatus(),HandleTypeCoce.DOWNLOAD_REVOKE_SUPPLIER.getName(),null ,HandleTypeCoce.DOWNLOAD.getName());
             return 1;
         } catch (BizException e){
             throw new BizException(e.getMessage());

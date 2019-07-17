@@ -108,4 +108,12 @@ public interface ApplySupplyComServcie {
      * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO>
      */
     List<ApplySupplyCompanyReqVO> dealImport(MultipartFile file);
+    /**
+     * 修改导入
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param file
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO>
+     */
+    List<ApplySupplyCompanyReqVO> dealImport2(MultipartFile file);
 }

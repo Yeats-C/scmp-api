@@ -21,8 +21,12 @@ public class OperationLogBean extends CommonBean {
 
     @ApiModelProperty("对象类型(供应商，合同等)")
     private Byte objectType;
+
     @ApiModelProperty("内容")
     private String content;
+
+    @ApiModelProperty("备注")
+    private String remark;
 
     public OperationLogBean(String objectId, Byte handleType, Byte objectType, String content,String handleName) {
         this.objectId = objectId;

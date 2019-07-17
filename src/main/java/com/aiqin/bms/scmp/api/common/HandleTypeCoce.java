@@ -233,7 +233,19 @@ public enum  HandleTypeCoce {
     OUTBOUND_MOVEMENT((byte)193,"移库单待出库"),
     SUCCESS_OUT_MOVEMENT((byte)194,"移库单已出库"),
     INBOUND_MOVEMENT((byte)195,"移库单待入库"),
-    SUCCESS__MOVEMENT((byte)196,"移库单已完成"),;
+    SUCCESS__MOVEMENT((byte)196,"移库单已完成"),
+
+    ADD((byte)1000,"新增"),
+    UPDATE((byte)10001,"修改"),
+    DOWNLOAD((byte)10002,"下载"),
+    PENDING((byte)10004, "待审"),
+    APPROVAL((byte)10005, "审批中"),
+    APPROVAL_SUCCESS((byte)10006, "审批通过"),
+    APPROVAL_FAILED((byte)10007, "审批失败"),
+    REVOKED((byte)10008, "已撤销"),
+    PENDING_SUBMISSION((byte)10009, "待提交"),
+    DELETE((byte)100010, "删除"),
+    ;
     private Byte status;
     private String name;
     HandleTypeCoce(Byte status, String name) {

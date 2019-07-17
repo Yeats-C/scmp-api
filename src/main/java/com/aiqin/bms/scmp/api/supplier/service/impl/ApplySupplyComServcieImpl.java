@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.SpecialArea;
 import com.aiqin.bms.scmp.api.supplier.domain.excel.AreaInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.excel.CheckAreaEnum;
 import com.aiqin.bms.scmp.api.supplier.domain.excel.im.SupplierImportNew;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.im.SupplierImportUpdate;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
@@ -187,17 +188,18 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             applySupplyCompany.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
             applySupplyCompany.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
             num = ((ApplySupplyComServcie)AopContext.currentProxy()).update(applySupplyCompany);
+
+            String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplyCompany.getUpdateBy()).replace("APPLYTYPE", "修改");
+            //存日志
+            supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,HandleTypeCoce.PENDING.getName());
             Long id=applySupplyCompany.getId();
-            String code=null;
             ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO = new ApplySupplyCompanyReqDTO();
-            if(id!=null){
-                ApplySupplyCompany applySupplyCompany1= applySupplyCompanyMapper.selectByPrimaryKey(id);
-                code=applySupplyCompany1.getApplySupplyCompanyCode();
-                BeanCopyUtils.copy(applySupplyCompany1,applySupplyCompanyReqDTO);
+            if(id!=null) {
+                ApplySupplyCompany applySupplyCompany1 = applySupplyCompanyMapper.selectByPrimaryKey(id);
+                BeanCopyUtils.copy(applySupplyCompany1, applySupplyCompanyReqDTO);
                 applySupplyCompanyReqDTO.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
                 applySupplyCompanyReqDTO.setApplyCode(applySupplyCompany1.getApplySupplyCompanyCode());
             }
-            supplierCommonService.getInstance(code, HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), applySupplyCompany,HandleTypeCoce.APPLY_UPDATE_SUPPLY_COMPANY.getName());
             //结算信息 去掉结算信息
 //            if (null != applySupplyCompanyReqVO.getApplySettlementInfoReqVO()){
 //                ApplySettlementVO applySettlementVO = new ApplySettlementVO();
@@ -344,12 +346,12 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     newApplySupplyComAcct.setApplyStatus(StatusTypeCode.REVIEW_STATUS.getStatus());
                     applySupplyCompanyAccountMapper.updateByPrimaryKeySelective(newApplySupplyComAcct);
                 }
-
                 if(i<=0){
                     throw new GroundRuntimeException("审核状态修改失败");
                 }
+                String content = ApplyStatus.APPROVAL.getContent().replace("CREATEBY", applySupplyCompany.getUpdateBy()).replace("APPLYTYPE", title);
                 //存日志
-                supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"", HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),applySupplyCompanyReqDTO,HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUPPLY_COMPANY.getName());
+                supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"", HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,HandleTypeCoce.APPROVAL.getName());
             }else {
                 //存调用失败的日志
                 String msg = workFlowRespVO.getMsg();
@@ -487,7 +489,9 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         applySupplyCompanyReqDTO.setApplyCode(String.valueOf(encodingRule.getNumberingValue()+1));
         //新增供货单位申请
         Long resultNum =((ApplySupplyComServcie)AopContext.currentProxy()).insert(applySupplyCompanyReqDTO);
-        supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode(), HandleTypeCoce.APPLY_ADD_SUPPLY_COMPANY.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), applySupplyCompanyReqDTO,HandleTypeCoce.APPLY_ADD_SUPPLY_COMPANY.getName());
+        String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplyCompanyReqDTO.getCreateBy()).replace("APPLYTYPE", "新增");
+        //存日志
+        supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,HandleTypeCoce.PENDING.getName());
         //修改编码
         encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         //发货信息
@@ -538,18 +542,20 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     public String insideWorkFlowCallback(ApplySupplyCompany applySupplyCompany, WorkFlowCallbackVO vo) {
        // ApplySettlementInformation applySettlementInformation = applySettlementInfoDao.getApplySettInfo(applySupplyCompany.getApplySupplyCompanyCode());
        // List<ApplyDeliveryInformation> applyDeliveryInformations = applyDeliveryInfoDao.getApplyDeliveryInfo(applySupplyCompany.getApplySupplyCompanyCode());
+        HandleTypeCoce applyHandleTypeCoce;
         ApplySupplyCompanyAccount applySupplyCompanyAccount = applySupplyCompanyAcctDao.getApplySupplyComAcct(applySupplyCompany.getApplySupplyCompanyCode());
         if(applySupplyCompany.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
             applySupplyCompany.setApplyStatus(vo.getApplyStatus());
             if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())){
+                applyHandleTypeCoce = HandleTypeCoce.APPROVAL_SUCCESS;
                 SupplyCompany oldSupplyCompany = supplyCompanyDao.getSupplyComByApplyCode(applySupplyCompany.getApplySupplyCompanyCode());
                 //通过插入正式数据
                 SupplyCompany supplyCompany = new SupplyCompany();
                 BeanCopyUtils.copy(applySupplyCompany,supplyCompany);
                 supplyCompany.setAuditorBy(vo.getApprovalUserName());
                 supplyCompany.setAuditorTime(new Date());
-                Byte handleTypeCoceStatus;
-                String handleTypeCoceName;
+                String content;
+                HandleTypeCoce handleTypeCoce;
                 if (null != oldSupplyCompany){
                     //删除原有的发货/退货信息
                     deliveryInfoDao.deleteDeliveryInfoBySupplyCompanyCode(oldSupplyCompany.getSupplyCode());
@@ -561,8 +567,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     supplyCompany.setSupplyAbbreviation(applySupplyCompany.getApplyAbbreviation());
                     supplyCompany.setSupplyCode(oldSupplyCompany.getSupplyCode());
                     supplyCompany.setSupplyType(applySupplyCompany.getApplySupplyType());
-                    handleTypeCoceStatus = HandleTypeCoce.UPDATE_APPROVAL_SUCCESS_SUPPLY_COMPANY.getStatus();
-                    handleTypeCoceName = HandleTypeCoce.UPDATE_APPROVAL_SUCCESS_SUPPLY_COMPANY.getName();
+                    handleTypeCoce = HandleTypeCoce.ADD;
+                    content = HandleTypeCoce.ADD_SUPPLY_COMPANY.getName();
                     supplyCompanyMapper.updateByPrimaryKey(supplyCompany);
                 } else {
                     EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLY_COM_CODE);
@@ -571,8 +577,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     supplyCompany.setSupplyType(applySupplyCompany.getApplySupplyType());
                     supplyCompany.setSupplyAbbreviation(applySupplyCompany.getApplyAbbreviation());
                     supplyCompany.setSupplyCode(String.valueOf(encodingRule.getNumberingValue()));
-                    handleTypeCoceStatus = HandleTypeCoce.ADD_APPROVAL_SUCCESS_SUPPLY_COMPANY.getStatus();
-                    handleTypeCoceName = HandleTypeCoce.ADD_APPROVAL_SUCCESS_SUPPLY_COMPANY.getName();
+                    content = HandleTypeCoce.UPDATE_SUPPLY_COMPANY.getName();
+                    handleTypeCoce = HandleTypeCoce.UPDATE;
                     supplyCompanyMapper.insert(supplyCompany);
                     encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
                 }
@@ -660,8 +666,9 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
 //                records.add(recordReqVo);
 //                tagInfoService.saveRecordList(records);
 
-                supplierCommonService.getInstance(supplyCompany.getSupplyCode(),handleTypeCoceStatus,ObjectTypeCode.SUPPLY_COMPANY.getStatus(),supplyCompany,handleTypeCoceName);
+                supplierCommonService.getInstance(supplyCompany.getSupplyCode(),handleTypeCoce.getStatus(),ObjectTypeCode.SUPPLY_COMPANY.getStatus(),content,null, handleTypeCoce.getName(),applySupplyCompanyAccount.getCreateBy());
             }else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
+                applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
                 //驳回, 设置状态
                 applySupplyCompany.setApplyStatus(vo.getApplyStatus());
                 SupplyCompany oldSupplyCompany = supplyCompanyDao.getSupplyComByApplyCode(applySupplyCompany.getApplySupplyCompanyCode());
@@ -672,9 +679,14 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     supplyCompanyMapper.updateByPrimaryKeySelective(supplyCompany);
                 }
             }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
+                applyHandleTypeCoce = HandleTypeCoce.APPROVAL;
+                ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(applySupplyCompany.getApplyStatus());
+                String content = applyStatus.getContent().replace("CREATEBY", applySupplyCompany.getCreateBy()).replace("AUDITORBY", vo.getApprovalUserName());
+                supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode(),applyHandleTypeCoce.getStatus(),ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content, null,applyHandleTypeCoce.getName(),vo.getApprovalUserName());
                 //传入的是审批中，继续该流程
                 return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
             }else if (vo.getApplyStatus().equals(ApplyStatus.REVOKED.getNumber())){
+                applyHandleTypeCoce = HandleTypeCoce.REVOKED;
                 applySupplyCompany.setApplyStatus(vo.getApplyStatus());
                 SupplyCompany oldSupplyCompany = supplyCompanyDao.getSupplyComByApplyCode(applySupplyCompany.getApplySupplyCompanyCode());
                 if(null != oldSupplyCompany){
@@ -709,8 +721,9 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         applySupplyCompany.setAuditorTime(new Date());
         applySupplyCompanyMapper.updateByPrimaryKey(applySupplyCompany);
         //判断审核状态，存日志信息
-        HandleTypeCoce s = applySupplyCompany.getApplyStatus().intValue()==ApplyStatus.APPROVAL_SUCCESS.getNumber()?HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUCCESS_SUPPLY_COMPANY:HandleTypeCoce.APPLY_UPDATE_APPROVAL_FAIL_SUPPLY_COMPANY;
-        supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode(),s.getStatus(),ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),applySupplyCompany,s.getName());
+        ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(applySupplyCompany.getApplyStatus());
+        String content = applyStatus.getContent().replace("CREATEBY", applySupplyCompany.getCreateBy()).replace("AUDITORBY", vo.getApprovalUserName());
+        supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode(),applyHandleTypeCoce.getStatus(),ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content, null,applyHandleTypeCoce.getName(),vo.getApprovalUserName());
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
 
@@ -744,7 +757,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             dicName.add("发送至");
             Map<String, SupplierDictionaryInfo> dictionaryInfoList = supplierDictionaryInfoDao.selectByName(dicName, getUser().getCompanyCode());
             Map<String, Supplier> supplierList = null;
-            if(CollectionUtils.isEmptyCollection(supplierNameList)){
+            if(CollectionUtils.isNotEmptyCollection(supplierNameList)){
                 supplierList = supplierDao.selectByNameList(supplierNameList,getUser().getCompanyCode());
             }
             List<ApplySupplyCompanyReqVO> applyList = Lists.newArrayList();
@@ -753,6 +766,9 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 StringBuilder sb = new StringBuilder();
                 //判空
                 validNull(supplierImportNew, sb);
+                if (StringUtils.isNotBlank(sb.toString())) {
+                    throw new BizException(MessageId.create(Project.PRODUCT_API,62,"第"+(i+1)+"数据不完整"+sb.toString()+",请将该行填写完整或删除该行！"));
+                }
                 //验证拼装
                 ApplySupplyCompanyReqVO reqVO = validAndFullUp(supplierImportNew,sb,areaTree,supplyCompanies,supplierList,dictionaryInfoList);
                 applyList.add(reqVO);
@@ -762,18 +778,66 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             throw new BizException(ResultCode.IMPORT_EXCEPTION);
         }
     }
-    /**
-     * 校验并返回
-     * @author NullPointException
-     * @date 2019/7/16
-     * @param supplierImportNew
-     * @param sb
-     * @param areaTree
-     * @param supplyCompanies
-     * @param supplierList
-     * @param dictionaryInfoList
-     * @return com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO
-     */
+    @Override
+    public List<ApplySupplyCompanyReqVO> dealImport2(MultipartFile file) {
+        try {
+            List<SupplierImportUpdate> supplierImportNews = ExcelUtil.readExcel(file, SupplierImportUpdate.class, 1, 0);
+            //校验
+            dataValidation2(supplierImportNews);
+            supplierImportNews.remove(0);
+            List<String> companyNameList = Lists.newArrayList();
+            List<String> supplierNameList = Lists.newArrayList();
+            List<String> companyCodeList = Lists.newArrayList();
+            for (SupplierImportUpdate o : supplierImportNews) {
+                companyNameList.add(o.getApplySupplyName());
+                supplierNameList.add(o.getSupplierName());
+                companyCodeList.add(o.getApplySupplyCode());
+            }
+
+            Map<String, AreaInfo> areaTree = getAreaTree();
+            Map<String, SupplyCompany> supplyCompanies = supplyCompanyDao.selectByCompanyNameList(companyNameList, getUser().getCompanyCode());
+            Map<String, SupplyCompany> codeList = supplyCompanyDao.selectByCompanyCodeList(companyCodeList, getUser().getCompanyCode());
+            List<String> dicName = Lists.newArrayList();
+            dicName.add("供应商类型");
+            dicName.add("发送至");
+            Map<String, SupplierDictionaryInfo> dictionaryInfoList = supplierDictionaryInfoDao.selectByName(dicName, getUser().getCompanyCode());
+            Map<String, Supplier> supplierList = null;
+            if(CollectionUtils.isNotEmptyCollection(supplierNameList)){
+                supplierList = supplierDao.selectByNameList(supplierNameList,getUser().getCompanyCode());
+            }
+            List<ApplySupplyCompanyReqVO> applyList = Lists.newArrayList();
+            for (int i = 0; i < supplierImportNews.size(); i++) {
+                SupplierImportUpdate supplierImportNew = supplierImportNews.get(i);
+                StringBuilder sb = new StringBuilder();
+                //判空
+                validNull2(supplierImportNew, sb);
+                if (StringUtils.isNotBlank(sb.toString())) {
+                    throw new BizException(MessageId.create(Project.PRODUCT_API,62,"第"+(i+1)+"数据不完整"+sb.toString()+",请将该行填写完整或删除该行！"));
+                }
+                //验证拼装
+                ApplySupplyCompanyReqVO reqVO = validAndFullUp2(supplierImportNew,sb,areaTree,supplyCompanies,supplierList,dictionaryInfoList,codeList);
+                applyList.add(reqVO);
+            }
+            return applyList;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_EXCEPTION);
+        }
+    }
+
+
+
+    @Override
+    @Transactional(rollbackFor = BizException.class)
+    public String workFlowCallback(WorkFlowCallbackVO workFlowCallbackVO){
+        //通过编码查询实体
+        WorkFlowCallbackVO vo = updateSupStatus(workFlowCallbackVO);
+        ApplySupplyCompany applySupplyCompany = applySupplyCompanyDao.getApplySupplyComByFormNo(vo.getFormNo());
+        if(Objects.isNull(applySupplyCompany)){
+            return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
+        }
+        return insideWorkFlowCallback(applySupplyCompany,vo);
+    }
+    //导入的校验
     private ApplySupplyCompanyReqVO validAndFullUp(SupplierImportNew supplierImportNew, StringBuilder sb, Map<String, AreaInfo> areaTree, Map<String, SupplyCompany> supplyCompanies, Map<String, Supplier> supplierList, Map<String, SupplierDictionaryInfo> dictionaryInfoList) {
         ApplySupplyCompanyReqVO reqVO = new ApplySupplyCompanyReqVO();
         List<String> name = Lists.newArrayList();
@@ -787,13 +851,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         name.add(supplierImportNew.getApplySupplyName().trim());
         reqVO.setApplySupplyName(supplierImportNew.getApplySupplyName().trim());
         if(StringUtils.isNotBlank(supplierImportNew.getSupplierName())){
-            SupplyCompany supplyCompany = supplyCompanies.get(supplierImportNew.getSupplierName().trim());
-            if(Objects.isNull(supplyCompany)){
+            Supplier supplier = supplierList.get(supplierImportNew.getSupplierName().trim());
+            if(Objects.isNull(supplier)){
                 sb.append(",").append("未找到对应名称的供应商集团");
             }else {
-                reqVO.setSupplierCode(supplierList.get(supplierImportNew.getSupplierName().trim()).getSupplierCode());
+                reqVO.setSupplierCode(supplier.getSupplierCode());
             }
-            reqVO.setSupplierName(supplierList.get(supplierImportNew.getSupplierName().trim()).getSupplierName());
+            reqVO.setSupplierName(supplierImportNew.getSupplierName().trim());
         }
         SupplierDictionaryInfo info = dictionaryInfoList.get(supplierImportNew.getApplySupplyType().trim());
         if(Objects.isNull(info)){
@@ -869,8 +933,140 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             sb.append(",").append("收货天数格式不正确");
         }
         sendVO.setDeliveryType((byte)0);
+        checkArea2(supplierImportNew, sb, areaTree, sendVO, CheckAreaEnum.发货省市县);
         sendVO.setSendingAddress(supplierImportNew.getSendingAddress().trim());
         returnVO.setDeliveryType((byte)1);
+        checkArea2(supplierImportNew, sb, areaTree, returnVO, CheckAreaEnum.退货省市县);
+        returnVO.setSendingAddress(supplierImportNew.getReturningAddress().trim());
+        SupplierDictionaryInfo info1 = dictionaryInfoList.get(supplierImportNew.getSendTo().trim());
+        if(Objects.isNull(info1)){
+            sb.append(",").append("未找到对应的发货至选项");
+        }else {
+            sendVO.setSendTo(info.getSupplierDictionaryValue());
+        }
+        SupplierDictionaryInfo info2 = dictionaryInfoList.get(supplierImportNew.getReturnTo().trim());
+        if(Objects.isNull(info2)){
+            sb.append(",").append("未找到对应的收货至选项");
+        }else {
+            returnVO.setSendTo(info.getSupplierDictionaryValue());
+        }
+        reqVO.setApplySupplyTypeName(supplierImportNew.getApplySupplyType().trim());
+        returnVO.setSendToDesc(supplierImportNew.getReturnTo().trim());
+        sendVO.setSendToDesc(supplierImportNew.getSendTo().trim());
+        deliver.add(sendVO);
+        deliver.add(returnVO);
+        reqVO.setDeliveryInfoList(deliver);
+        reqVO.setError(sb.toString());
+        return reqVO;
+    }
+
+    private ApplySupplyCompanyReqVO validAndFullUp2(SupplierImportUpdate supplierImportNew, StringBuilder sb, Map<String, AreaInfo> areaTree, Map<String, SupplyCompany> supplyCompanies, Map<String, Supplier> supplierList, Map<String, SupplierDictionaryInfo> dictionaryInfoList,Map<String, SupplyCompany> codeForlist) {
+        ApplySupplyCompanyReqVO reqVO = new ApplySupplyCompanyReqVO();
+        List<String> name = Lists.newArrayList();
+        if (Objects.isNull(codeForlist.get(supplierImportNew.getApplySupplyCode()))) {
+            if (StringUtils.isNotBlank(sb.toString())) {
+                sb.append(",");
+            }
+            sb.append("该编码对应的供应商不存在");
+        } else {
+            SupplyCompany supplyCompany1 = supplyCompanies.get(supplierImportNew.getApplySupplyName().trim());
+            if((Objects.nonNull(supplyCompany1)&&!codeForlist.get(supplierImportNew.getApplySupplyCode()).getSupplyName().equals(supplierImportNew.getApplySupplyName()))||name.contains(supplierImportNew.getApplySupplyName())){
+                if (StringUtils.isNotBlank(sb.toString())) {
+                    sb.append(",");
+                }
+                sb.append("供应商名称重复");
+            }
+            name.add(supplierImportNew.getApplySupplyName().trim());
+            reqVO.setApplySupplyName(supplierImportNew.getApplySupplyName().trim());
+        }
+        reqVO.setApplySupplyCode(supplierImportNew.getApplySupplyCode());
+        if(StringUtils.isNotBlank(supplierImportNew.getSupplierName())){
+            Supplier supplier = supplierList.get(supplierImportNew.getSupplierName().trim());
+            if(Objects.isNull(supplier)){
+                sb.append(",").append("未找到对应名称的供应商集团");
+            }else {
+                reqVO.setSupplierCode(supplier.getSupplierCode());
+            }
+            reqVO.setSupplierName(supplierImportNew.getSupplierName().trim());
+        }
+        SupplierDictionaryInfo info = dictionaryInfoList.get(supplierImportNew.getApplySupplyType().trim());
+        if(Objects.isNull(info)){
+            sb.append(",").append("未找到对应的供应商类型");
+        }else {
+            reqVO.setApplySupplyType(info.getSupplierDictionaryValue());
+        }
+        reqVO.setApplySupplyTypeName(supplierImportNew.getApplySupplyType().trim());
+        if(!Constraint.ckChnLetterAndNumAndChar(supplierImportNew.getApplyAbbreviation().trim())){
+            sb.append(",").append("简称不能输入特殊字符");
+        }
+        reqVO.setApplyAbbreviation(supplierImportNew.getApplyAbbreviation().trim());
+        checkAreaForUpdate(supplierImportNew, sb, areaTree, reqVO, CheckAreaEnum.普通省市县);
+        reqVO.setAddress(supplierImportNew.getAddress().trim());
+        reqVO.setContactName(supplierImportNew.getContactName().trim());
+        String mobilePhone = supplierImportNew.getMobilePhone();
+        if(!Constraint.ckCountNum(11,mobilePhone)){
+            sb.append(",").append("手机号码格式不正确");
+        }
+        reqVO.setMobilePhone(mobilePhone);
+        reqVO.setPhone(supplierImportNew.getPhone());
+        reqVO.setFax(supplierImportNew.getFax());
+        reqVO.setEmail(supplierImportNew.getEmail().trim());
+        reqVO.setTaxId(supplierImportNew.getTaxId().trim());
+        reqVO.setCorporateRepresentative(supplierImportNew.getCorporateRepresentative());
+//        if (!Constraint.ckCountNum(8, supplierImportNew.getRegisteredCapital())) {
+//            sb.append(",").append("注册资金");
+//        }
+        try {
+            reqVO.setRegisteredCapital(Long.parseLong(supplierImportNew.getRegisteredCapital()));
+        } catch (NumberFormatException e) {
+            sb.append(",").append("注册资金格式不正确");
+        }
+        reqVO.setZipCode(supplierImportNew.getZipCode());
+        reqVO.setCompanyWebsite(supplierImportNew.getCompanyWebsite());
+
+        try {
+            String minOrderAmount = supplierImportNew.getMinOrderAmount();
+            String maxOrderAmount = supplierImportNew.getMaxOrderAmount();
+            long l = Long.parseLong(minOrderAmount);
+            long l2 = Long.parseLong(maxOrderAmount);
+            if(l<0){
+                sb.append(",").append("最小起订金额不能小于0");
+            }
+            if(l2<0){
+                sb.append(",").append("最大起订金额不能小于0");
+            }
+            if (l > l2) {
+                sb.append(",").append("最小起订金额不能大于最大起订金额");
+            }
+            reqVO.setMinOrderAmount(l);
+            reqVO.setMaxOrderAmount(l2);
+        } catch (NumberFormatException e) {
+            sb.append(",").append("最小起订金额或最大起订金额格式不正确");
+        }
+        List<ApplyDeliveryInfoReqVO> deliver = Lists.newArrayList();
+        ApplyDeliveryInfoReqVO sendVO = new ApplyDeliveryInfoReqVO();
+        ApplyDeliveryInfoReqVO returnVO = new ApplyDeliveryInfoReqVO();
+        try {
+            String deliveryDays = supplierImportNew.getDeliveryDays();
+            if (StringUtils.isNotBlank(deliveryDays)) {
+                sendVO.setDeliveryDays(Long.valueOf(deliveryDays));
+            }
+        } catch (NumberFormatException e) {
+            sb.append(",").append("发货天数格式不正确");
+        }
+        try {
+            String deliveryDays = supplierImportNew.getReturnDays();
+            if (StringUtils.isNotBlank(deliveryDays)) {
+                returnVO.setDeliveryDays(Long.valueOf(deliveryDays));
+            }
+        } catch (NumberFormatException e) {
+            sb.append(",").append("收货天数格式不正确");
+        }
+        sendVO.setDeliveryType((byte)0);
+        checkArea2ForUpdate(supplierImportNew, sb, areaTree, sendVO, CheckAreaEnum.发货省市县);
+        sendVO.setSendingAddress(supplierImportNew.getSendingAddress().trim());
+        returnVO.setDeliveryType((byte)1);
+        checkArea2ForUpdate(supplierImportNew, sb, areaTree, returnVO, CheckAreaEnum.退货省市县);
         returnVO.setSendingAddress(supplierImportNew.getReturningAddress().trim());
         SupplierDictionaryInfo info1 = dictionaryInfoList.get(supplierImportNew.getSendTo().trim());
         if(Objects.isNull(info1)){
@@ -895,6 +1091,64 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     }
 
     private void checkArea(SupplierImportNew supplierImportNew, StringBuilder sb, Map<String, AreaInfo> areaTree, ApplySupplyCompanyReqVO reqVO,CheckAreaEnum checkAreaEnum) {
+        SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getProvinceName());
+        if (Objects.nonNull(specialArea)) {
+            if (specialArea.getHasCity()) {
+                AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
+                if(Objects.isNull(areaInfo)){
+                    sb.append(",").append(checkAreaEnum.getCity());
+                    return;
+                }else {
+                    reqVO.setCityId(areaInfo.getCode());
+                }
+                reqVO.setCityName(supplierImportNew.getCityName());
+                AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
+                if(Objects.isNull(areaInfo1)|| supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
+                    sb.append(",").append(checkAreaEnum.getProvince());
+                    return;
+                }else {
+                    reqVO.setProvinceId(areaInfo1.getCode());
+                }
+                reqVO.setProvinceName(supplierImportNew.getProvinceName());
+            }else{
+                AreaInfo areaInfo = areaTree.get(supplierImportNew.getProvinceName());
+                if(Objects.isNull(areaInfo)){
+                    sb.append(",").append(checkAreaEnum.getProvince());
+                    return;
+                }else {
+                    reqVO.setProvinceId(areaInfo.getCode());
+                }
+                reqVO.setProvinceName(supplierImportNew.getProvinceName());
+            }
+        }else {
+            AreaInfo areaInfo2 = areaTree.get(supplierImportNew.getDistrictName());
+            if(Objects.isNull(areaInfo2)){
+                sb.append(",").append(checkAreaEnum.getDis());
+                return;
+            }else {
+                reqVO.setDistrictId(areaInfo2.getCode());
+            }
+            reqVO.setDistrictName(supplierImportNew.getDistrictName());
+            AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
+            if(Objects.isNull(areaInfo)||!supplierImportNew.getCityName().equals(areaInfo2.getParentName())){
+                sb.append(",").append(checkAreaEnum.getCity());
+                return;
+            }else {
+                reqVO.setCityId(areaInfo.getCode());
+            }
+            reqVO.setCityName(supplierImportNew.getCityName());
+            AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
+            if(Objects.isNull(areaInfo1)|| !supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
+                sb.append(",").append(checkAreaEnum.getProvince());
+                return;
+            }else {
+                reqVO.setProvinceId(areaInfo1.getCode());
+            }
+            reqVO.setProvinceName(supplierImportNew.getProvinceName());
+        }
+    }
+
+    private void checkAreaForUpdate(SupplierImportUpdate supplierImportNew, StringBuilder sb, Map<String, AreaInfo> areaTree, ApplySupplyCompanyReqVO reqVO,CheckAreaEnum checkAreaEnum) {
         SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getProvinceName());
         if (Objects.nonNull(specialArea)) {
             if (specialArea.getHasCity()) {
@@ -1010,14 +1264,64 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         }
     }
 
-    /**
-     * TODO
-     * @author NullPointException
-     * @date 2019/7/16
-     * @param supplierImportNew
-     * @param sb
-     * @return void
-     */
+    private void checkArea2ForUpdate(SupplierImportUpdate supplierImportNew, StringBuilder sb, Map<String, AreaInfo> areaTree, ApplyDeliveryInfoReqVO reqVO,CheckAreaEnum checkAreaEnum) {
+        SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getProvinceName());
+        if (Objects.nonNull(specialArea)) {
+            if (specialArea.getHasCity()) {
+                AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
+                if(Objects.isNull(areaInfo)){
+                    sb.append(",").append(checkAreaEnum.getCity());
+                    return;
+                }else {
+                    reqVO.setSendCityId(areaInfo.getCode());
+                }
+                reqVO.setSendCityName(supplierImportNew.getCityName());
+                AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
+                if(Objects.isNull(areaInfo1)|| supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
+                    sb.append(",").append(checkAreaEnum.getProvince());
+                    return;
+                }else {
+                    reqVO.setSendProvinceId(areaInfo1.getCode());
+                }
+                reqVO.setSendProvinceName(supplierImportNew.getProvinceName());
+            }else{
+                AreaInfo areaInfo = areaTree.get(supplierImportNew.getProvinceName());
+                if(Objects.isNull(areaInfo)){
+                    sb.append(",").append(checkAreaEnum.getProvince());
+                    return;
+                }else {
+                    reqVO.setSendProvinceId(areaInfo.getCode());
+                }
+                reqVO.setSendProvinceName(supplierImportNew.getProvinceName());
+            }
+        }else {
+            AreaInfo areaInfo2 = areaTree.get(supplierImportNew.getDistrictName());
+            if(Objects.isNull(areaInfo2)){
+                sb.append(",").append(checkAreaEnum.getDis());
+                return;
+            }else {
+                reqVO.setSendDistrictId(areaInfo2.getCode());
+            }
+            reqVO.setSendDistrictName(supplierImportNew.getDistrictName());
+            AreaInfo areaInfo = areaTree.get(supplierImportNew.getCityName());
+            if(Objects.isNull(areaInfo)||!supplierImportNew.getCityName().equals(areaInfo2.getParentName())){
+                sb.append(",").append(checkAreaEnum.getCity());
+                return;
+            }else {
+                reqVO.setSendCityId(areaInfo.getCode());
+            }
+            reqVO.setSendCityName(supplierImportNew.getCityName());
+            AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
+            if(Objects.isNull(areaInfo1)|| !supplierImportNew.getProvinceName().equals(areaInfo.getParentName())){
+                sb.append(",").append(checkAreaEnum.getProvince());
+                return;
+            }else {
+                reqVO.setSendProvinceId(areaInfo1.getCode());
+            }
+            reqVO.setSendProvinceName(supplierImportNew.getProvinceName());
+        }
+    }
+
     private StringBuilder validNull(SupplierImportNew supplierImportNew, StringBuilder sb) {
         if(StringUtils.isBlank(supplierImportNew.getApplySupplyName())){
             sb.append("供应商名称不能为空");
@@ -1141,12 +1445,132 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         return sb;
     }
 
-    /**
-     *
-     * @author NullPointException
-     * @date 2019/7/16
-     * @return Map
-     */
+    private StringBuilder validNull2(SupplierImportUpdate supplierImportNew, StringBuilder sb) {
+        if(StringUtils.isBlank(supplierImportNew.getApplySupplyCode())){
+            sb.append("供应商编码不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getApplySupplyName())){
+            sb.append("供应商名称不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getApplySupplyType())){
+            sb.append(",");
+            sb.append("供应商类型不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getApplyAbbreviation())){
+            sb.append(",");
+            sb.append("简称不能为空");
+        }
+        if (StringUtils.isBlank(supplierImportNew.getProvinceName())) {
+            sb.append(",");
+            sb.append("省不能为空");
+        } else {
+            SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getProvinceName());
+            if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+                if (StringUtils.isBlank(supplierImportNew.getCityName())) {
+                    sb.append(",");
+                    sb.append("市不能为空");
+                }
+            }
+            if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+                if (StringUtils.isBlank(supplierImportNew.getCityName())) {
+                    sb.append(",");
+                    sb.append("县不能为空");
+                }
+            }
+
+        }
+        if(StringUtils.isBlank(supplierImportNew.getAddress())){
+            sb.append(",");
+            sb.append("详细地址不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getEmail())){
+            sb.append(",");
+            sb.append("邮箱不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getTaxId())){
+            sb.append(",");
+            sb.append("税号不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getRegisteredCapital())){
+            sb.append(",");
+            sb.append("注册资金不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getCorporateRepresentative())){
+            sb.append(",");
+            sb.append("法人代表不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getContactName())){
+            sb.append(",");
+            sb.append("联系人姓名不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getMobilePhone())){
+            sb.append(",");
+            sb.append("手机号不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getMinOrderAmount())){
+            sb.append(",");
+            sb.append("最低订货金额不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getMaxOrderAmount())){
+            sb.append(",");
+            sb.append("最高订货金额不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getSendProvinceName())){
+            sb.append(",");
+            sb.append("发货省不能为空");
+        }else {
+            SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getSendProvinceName());
+            if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+                if(StringUtils.isBlank(supplierImportNew.getSendCityName())){
+                    sb.append(",");
+                    sb.append("发货市不能为空");
+                }
+            }
+            if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+                if(StringUtils.isBlank(supplierImportNew.getSendDistrictName())){
+                    sb.append(",");
+                    sb.append("发货县不能为空");
+                }
+            }
+
+        }
+        if(StringUtils.isBlank(supplierImportNew.getSendingAddress())){
+            sb.append(",");
+            sb.append("发货详细地址不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getSendTo())){
+            sb.append(",");
+            sb.append("发货至不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getReturnProvinceName())){
+            sb.append(",");
+            sb.append("收货省不能为空");
+        }else {
+            SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getReturnProvinceName());
+            if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+                if(StringUtils.isBlank(supplierImportNew.getReturnCityName())){
+                    sb.append(",");
+                    sb.append("收货市不能为空");
+                }
+            }
+            if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+                if(StringUtils.isBlank(supplierImportNew.getReturnDistrictName())){
+                    sb.append(",");
+                    sb.append("收货县不能为空");
+                }
+            }
+        }
+        if(StringUtils.isBlank(supplierImportNew.getReturningAddress())){
+            sb.append(",");
+            sb.append("收货详细地址不能为空");
+        }
+        if(StringUtils.isBlank(supplierImportNew.getReturnTo())){
+            sb.append(",");
+            sb.append("收货至不能为空");
+        }
+        return sb;
+    }
+
     public Map<String, AreaInfo> getAreaTree() {
         HttpResponse<List<AreaBasic>> treeList = areaBasicInfoService.getTreeList();
         List<AreaBasic> tempData = treeList.getData();
@@ -1180,32 +1604,31 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         return map;
     }
 
-    /**
-     * 校验参数
-     * @author NullPointException
-     * @date 2019/7/16
-     * @param supplierImportNews
-     * @return void
-     */
     private void dataValidation(List<SupplierImportNew> supplierImportNews) {
         if(CollectionUtils.isEmptyCollection(supplierImportNews)) {
             throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
         }
-        boolean equals = supplierImportNews.get(0).toString().equals(SupplierImportNew.HEDE);
+        if (Objects.isNull(supplierImportNews.size()<2)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+         String  head = SupplierImportNew.HEDE;
+        boolean equals = supplierImportNews.get(0).toString().equals(head);
         if(!equals){
             throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
         }
     }
 
-    @Override
-    @Transactional(rollbackFor = BizException.class)
-    public String workFlowCallback(WorkFlowCallbackVO workFlowCallbackVO){
-        //通过编码查询实体
-        WorkFlowCallbackVO vo = updateSupStatus(workFlowCallbackVO);
-        ApplySupplyCompany applySupplyCompany = applySupplyCompanyDao.getApplySupplyComByFormNo(vo.getFormNo());
-        if(Objects.isNull(applySupplyCompany)){
-            return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
+    private void dataValidation2(List<SupplierImportUpdate> supplierImportNews) {
+        if(CollectionUtils.isEmptyCollection(supplierImportNews)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
         }
-        return insideWorkFlowCallback(applySupplyCompany,vo);
+        if (supplierImportNews.size()<2) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        String head = SupplierImportUpdate.HEDE;
+        boolean equals = supplierImportNews.get(0).toString().equals(head);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
     }
 }
