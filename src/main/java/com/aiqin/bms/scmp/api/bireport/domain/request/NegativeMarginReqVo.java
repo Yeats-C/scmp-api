@@ -36,17 +36,21 @@ public class NegativeMarginReqVo extends PageReq implements Serializable {
     @JsonProperty("product_brand_name")
     private String productBrandName;
 
-    @ApiModelProperty("渠道")
-    @JsonProperty("order_original")
-    private String orderOriginal;
+    @ApiModelProperty("渠道编码")
+    @JsonProperty("order_original_code")
+    private String orderOriginalCode;
 
-    @ApiModelProperty("入库时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginTimeMonth;
+    @ApiModelProperty("渠道名称")
+    @JsonProperty("order_original_name")
+    private String orderOriginalName;
 
-    @ApiModelProperty("入库时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishTimeMonth;
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
+
+    @ApiModelProperty("时间finish")
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -56,16 +60,17 @@ public class NegativeMarginReqVo extends PageReq implements Serializable {
     @JsonProperty("product_sort_name")
     private String productSortName;
 
-    public NegativeMarginReqVo(String skuCode, String skuName, String productCategoryCode, String productCategoryName, String productBrandCode, String productBrandName, String orderOriginal, String beginTimeMonth, String finishTimeMonth, String productSortCode, String productSortName) {
+    public NegativeMarginReqVo(String skuCode, String skuName, String productCategoryCode, String productCategoryName, String productBrandCode, String productBrandName, String orderOriginalCode, String orderOriginalName, String beginRunTime, String finishRunTime, String productSortCode, String productSortName) {
         this.skuCode = skuCode;
         this.skuName = skuName;
         this.productCategoryCode = productCategoryCode;
         this.productCategoryName = productCategoryName;
         this.productBrandCode = productBrandCode;
         this.productBrandName = productBrandName;
-        this.orderOriginal = orderOriginal;
-        this.beginTimeMonth = beginTimeMonth;
-        this.finishTimeMonth = finishTimeMonth;
+        this.orderOriginalCode = orderOriginalCode;
+        this.orderOriginalName = orderOriginalName;
+        this.beginRunTime = beginRunTime;
+        this.finishRunTime = finishRunTime;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
     }

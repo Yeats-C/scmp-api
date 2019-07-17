@@ -25,29 +25,29 @@ public class SupplierArrivalRateReqVo extends PageReq implements Serializable {
     private String transportCenterCode;
 
     @ApiModelProperty("一级品类编号")
-    @JsonProperty("category_level_code")
-    private String categoryLevelCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("一级品类名称")
-    @JsonProperty("category_level_name")
-    private String categoryLevelName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
-    @ApiModelProperty("入库时间begin")
-    @JsonProperty("begin_inbound_time")
-    private String beginInboundTime;
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
 
-    @ApiModelProperty("入库时间finish")
-    @JsonProperty("finish_inbound_time")
-    private String finishInboundTime;
+    @ApiModelProperty("时间finish")
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
 
-    public SupplierArrivalRateReqVo(String supplierCode, String supplierName, String transportCenterCode, String categoryLevelCode, String categoryLevelName, String beginInboundTime, String finishInboundTime) {
+    public SupplierArrivalRateReqVo(String supplierCode, String supplierName, String transportCenterCode, String categoryCode, String categoryName, String beginRunTime, String finishRunTime) {
         this.supplierCode = supplierCode;
         this.supplierName = supplierName;
         this.transportCenterCode = transportCenterCode;
-        this.categoryLevelCode = categoryLevelCode;
-        this.categoryLevelName = categoryLevelName;
-        this.beginInboundTime = beginInboundTime;
-        this.finishInboundTime = finishInboundTime;
+        this.categoryCode = categoryCode;
+        this.categoryName = categoryName;
+        this.beginRunTime = beginRunTime;
+        this.finishRunTime = finishRunTime;
     }
 
     public SupplierArrivalRateReqVo() {

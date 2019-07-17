@@ -44,4 +44,24 @@ public class HighInventoryRespVo {
     @ApiModelProperty("仓位类型名称(库房)")
     @JsonProperty("warehouse_type_name")
     private String warehouseTypeName;
+
+    @ApiModelProperty("上周全国合计")
+    @JsonProperty("lastweek_total_national")
+    private String lastweekTotalNational;
+
+    @ApiModelProperty("本周全国合计")
+    @JsonProperty("thisweek_total_national")
+    private String thisweekTotalNational;
+
+    @ApiModelProperty("高库存金额")
+    @JsonProperty("high_inventory_amount")
+    private String highInventoryAmount;
+
+    @ApiModelProperty("库存总金额")
+    @JsonProperty("inventory_total_amount")
+    private String inventoryTotalAmount;
+
+    @ApiModelProperty("高库存占比")
+    @JsonProperty("high_inventory_ratio")
+    private Double highInventoryRatio;
 }

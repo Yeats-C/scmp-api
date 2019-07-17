@@ -58,6 +58,10 @@ public class RejectTest extends SpringBootTestContext {
         request.setOutStockTime(new Date());
         goodsRejectService.finishStock(request);
 
+    }    @Test
+    public void categoryName(){
+        String categoryName = goodsRejectService.selectCategoryName("103001001001");
+        System.out.println(categoryName);
     }
     @Test
     public void rejectApply(){

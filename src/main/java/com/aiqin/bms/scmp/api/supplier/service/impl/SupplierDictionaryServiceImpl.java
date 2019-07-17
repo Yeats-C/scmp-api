@@ -179,7 +179,6 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
             supplierDictionary.setEnabled(HandlingExceptionCode.ZERO);
             supplierDictionary.setDelFlag(HandlingExceptionCode.ZERO);
             ((SupplierDictionaryService) AopContext.currentProxy()).insertSelective(supplierDictionary);
-            supplierCommonService.getInstance(code + "", HandleTypeCoce.ADD_SUPPLIER_DICTIONARY.getStatus(), ObjectTypeCode.SUPPLIER_DICTIONARY.getStatus(), supplierDictionary, HandleTypeCoce.ADD_SUPPLIER_DICTIONARY.getName());
             if (listDTO.getListInfo() != null && listDTO.getListInfo().size() > 0) {
                 listDTO.getListInfo().forEach(infoReqVO -> {
                     SupplierDictionaryInfo supplierDic1 = new SupplierDictionaryInfo();
@@ -198,8 +197,6 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
                 });
             }
             if (save.size() > 0) {
-                List<SupplierOperationLog> supplierOperationLogList = conversion(save, "save");
-                operationLogService.inserList(supplierOperationLogList);
                 flg = ((SupplierDictionaryService) AopContext.currentProxy()).insertList(save);
             }
         } catch (Exception ex) {
@@ -252,7 +249,6 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
                 supplierDictionary1.setUpdateTime(supplierDictionary.getUpdateTime());
                 supplierDictionary1.setEnabled(listDTO.getEnabled());
                 ((SupplierDictionaryService) AopContext.currentProxy()).updateDictionary(supplierDictionary1);
-                supplierCommonService.getInstance(code, HandleTypeCoce.UPDATE_SUPPLIER_DICTIONARY.getStatus(), ObjectTypeCode.SUPPLIER_DICTIONARY.getStatus(), supplierDictionary1, HandleTypeCoce.UPDATE_SUPPLIER_DICTIONARY.getName());
                 String finalCode = code;
                 if (listDTO.getListInfo() != null && listDTO.getListInfo().size() > 0) {
                     listDTO.getListInfo().forEach(infoReqVO -> {
@@ -286,12 +282,11 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
             }
             if (save.size() > 0) {
                 flg = ((SupplierDictionaryService) AopContext.currentProxy()).insertList(save);
-                List<SupplierOperationLog> supplierOperationLogList = conversion(save, "save");
-                operationLogService.inserList(supplierOperationLogList);
+
+
             }
             if (update.size() > 0) {
-                List<SupplierOperationLog> supplierOperationLogList = conversion(update, "update");
-                operationLogService.inserList(supplierOperationLogList);
+
                 flg = ((SupplierDictionaryService) AopContext.currentProxy()).updateList(update);
             }
         } catch (Exception ex) {
@@ -320,10 +315,7 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
                 supplierDictionary.setDelFlag(StatusTypeCode.DEL_FLAG.getStatus());
                 if (StringUtils.isNotBlank(code)) {
                     List<SupplierDictionaryInfo> supplierDictionaries = supplierDictionaryInfoService.getList(code);
-                    List<SupplierOperationLog> supplierOperationLogList = conversion(supplierDictionaries, "delete");
                     supplierDictionaryInfoDao.deleteList(code);
-                    operationLogService.inserList(supplierOperationLogList);
-                    supplierCommonService.getInstance(code, HandleTypeCoce.DELETE_SUPPLIER_DICTIONARY.getStatus(), ObjectTypeCode.SUPPLIER_DICTIONARY.getStatus(), supplierDictionary, HandleTypeCoce.DELETE_SUPPLIER_DICTIONARY.getName());
                     resultNum = supplierDictionaryDao.offOrOn(id);
                 } else {
                     log.error("code 关联不存在");
@@ -394,11 +386,6 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
         if (supplierDictionary != null) {
             String code = supplierDictionary.getSupplierDictionaryCode();
             supplierDictionary.setEnabled(status);
-            if (status.equals(StatusTypeCode.UN_DEL_FLAG.getStatus())) {
-                supplierCommonService.getInstance(code, HandleTypeCoce.ENABLED_SUPPLIER_DICTIONARY.getStatus(), ObjectTypeCode.SUPPLIER_DICTIONARY.getStatus(), supplierDictionary, HandleTypeCoce.ENABLED_SUPPLIER_DICTIONARY.getName());
-            } else {
-                supplierCommonService.getInstance(code, HandleTypeCoce.NO_ENABLED_SUPPLIER_DICTIONARY.getStatus(), ObjectTypeCode.SUPPLIER_DICTIONARY.getStatus(), supplierDictionary, HandleTypeCoce.NO_ENABLED_SUPPLIER_DICTIONARY.getName());
-            }
              supplierDictionaryInfoDao.infoEnabled(status,code);
             return HttpResponse.success(supplierDictionaryMapper.updateByPrimaryKeySelective(supplierDictionary));
         } else {
@@ -435,36 +422,7 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
         }
     }
 
-    @Override
-    public List<SupplierOperationLog> conversion(List<SupplierDictionaryInfo> supplierDictionaryInfos, String status) {
-        List<SupplierOperationLog> supplierlist = new LinkedList<>();
-        if (supplierDictionaryInfos != null && supplierDictionaryInfos.size() > 0) {
-            supplierDictionaryInfos.forEach(dictionaryInfo -> {
-                SupplierOperationLog supplierOperationLog = new SupplierOperationLog();
-                supplierOperationLog.setContent(JsonMapper.toJsonString(dictionaryInfo));
-                supplierOperationLog.setObjectType(ObjectTypeCode.SUPPLIER_DICTIONARY.getStatus());
-                if ("delete".equals(status)) {
-                    dictionaryInfo.setDelFlag((byte) 1);
-                    supplierOperationLog.setHandleType(HandleTypeCoce.DELETE_SUPPLIER_DICTIONARY_INFO.getStatus());
-                    supplierOperationLog.setHandleName(HandleTypeCoce.DELETE_SUPPLIER_DICTIONARY_INFO.getName());
-                }
-                if ("save".equals(status)) {
-                    supplierOperationLog.setHandleType(HandleTypeCoce.ADD_SUPPLIER_DICTIONARY_INFO.getStatus());
-                    supplierOperationLog.setHandleName(HandleTypeCoce.ADD_SUPPLIER_DICTIONARY_INFO.getName());
-                }
-                if ("update".equals(status)) {
-                    supplierOperationLog.setHandleType(HandleTypeCoce.UPDATE_SUPPLIER_DICTIONARY_INFO.getStatus());
-                    supplierOperationLog.setHandleName(HandleTypeCoce.UPDATE_SUPPLIER_DICTIONARY_INFO.getName());
-                }
-                supplierOperationLog.setObjectId(dictionaryInfo.getSupplierDictionaryCode());
-                supplierlist.add(supplierOperationLog);
-            });
-        } else {
-            log.error("字典详细不存在");
-            throw new GroundRuntimeException("字典详细不存在");
-        }
-        return supplierlist;
-    }
+
 
     @Override
     public List<DictionaryType> getType() {

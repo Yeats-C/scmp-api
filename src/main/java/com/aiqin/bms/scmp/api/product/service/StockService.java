@@ -128,6 +128,8 @@ public interface StockService {
      * @return java.lang.Boolean
      */
     Boolean returnSupplyLockStock(ILockStockReqVO reqVO);
+
+    Boolean returnSupplyLockStocks(ILockStocksReqVO reqVO);
     /**
      * 退供解锁库存
      * @author zth
@@ -136,6 +138,8 @@ public interface StockService {
      * @return java.lang.Boolean
      */
     Boolean returnSupplyUnLockStock(ILockStockReqVO reqVO);
+
+    Boolean returnSupplyUnLockStocks(ILockStocksReqVO reqVO);
 
     /**
      * 解锁库存

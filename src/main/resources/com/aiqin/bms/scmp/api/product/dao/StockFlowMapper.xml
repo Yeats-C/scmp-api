@@ -131,7 +131,13 @@
         create_time,
         create_by,
         update_time,
-        update_by
+        update_by,
+        lock_status,
+        document_type,
+        document_num,
+        source_document_type,
+        source_document_num,
+        remark
         )
         values
         <foreach collection="stockFlows" item="item" index="index" separator=",">
@@ -159,8 +165,14 @@
             #{item.operationType},
             #{item.createTime},
             #{item.createBy},
-            #{item.updateTime},
-            #{item.updateBy}
+            NOW(),
+            #{item.updateBy},
+            #{item.lockStatus},
+            #{item.documentType},
+            #{item.documentNum},
+            #{item.sourceDocumentType},
+            #{item.sourceDocumentNum},
+            #{item.remark}
         )
         </foreach>
     </insert>

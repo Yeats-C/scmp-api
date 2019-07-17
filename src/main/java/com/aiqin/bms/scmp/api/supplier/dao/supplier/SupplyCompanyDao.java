@@ -51,6 +51,11 @@ public interface SupplyCompanyDao {
      * @return
      */
     SupplyCompany detailByCode(@Param("supplyCode") String supplyCode, @Param("companyCode") String companyCode);
+
+    /**
+     * 根据供应商名称查询供应商信息 (退供导入使用)
+     */
+    SupplyCompany selectBySupplierName(String supplyName);
     /**
      * 根据名称查询
      * @author NullPointException

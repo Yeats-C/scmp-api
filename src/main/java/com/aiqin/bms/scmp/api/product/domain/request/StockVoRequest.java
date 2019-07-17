@@ -72,5 +72,27 @@ public class StockVoRequest {
     @JsonProperty(value = "new_purchase_price")
     private Long newPurchasePrice;
 
+    @ApiModelProperty("单据类型")
+    @JsonProperty(value = "document_type")
+    private Integer documentType;
 
+    @ApiModelProperty("单据号")
+    @JsonProperty(value = "document_num")
+    private String documentNum;
+
+    @ApiModelProperty("来源单据类型")
+    @JsonProperty(value = "source_document_type")
+    private Integer sourceDocumentType;
+
+    @ApiModelProperty("来源单据号")
+    @JsonProperty(value = "source_document_num")
+    private String sourceDocumentNum;
+
+    @ApiModelProperty("操作人")
+    @JsonProperty(value = "operator")
+    private String operator;
+
+    @ApiModelProperty("商品备注")
+    @JsonProperty(value = "remark")
+    private String remark;
 }
