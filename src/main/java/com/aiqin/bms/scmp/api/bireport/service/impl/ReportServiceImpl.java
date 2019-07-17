@@ -297,9 +297,9 @@ public class ReportServiceImpl implements ReportService {
     public PageResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo) {
         try {
             // PageHelper.startPage(monthlyGrossMarginReqVo.getPageNo(), monthlyGrossMarginReqVo.getPageSize());
-            List<MonthlySalesRespVo> monthlySalesRespVos = reportDao.selectMonthlyGrossMargin(monthlyGrossMarginReqVo);
+            List<MonthlyGrossMarginRespVo> monthlySalesRespVos = reportDao.selectMonthlyGrossMargin(monthlyGrossMarginReqVo);
             Integer total = reportDao.countMonthlyGrossMargin(monthlyGrossMarginReqVo);
-            return new PageResData<MonthlySalesRespVo>(total,monthlySalesRespVos);
+            return new PageResData<MonthlyGrossMarginRespVo>(total,monthlySalesRespVos);
         } catch (Exception ex) {
             log.error("月毛利率情况");
             ex.printStackTrace();

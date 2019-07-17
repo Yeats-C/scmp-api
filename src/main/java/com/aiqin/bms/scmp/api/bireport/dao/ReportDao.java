@@ -139,7 +139,7 @@ public interface ReportDao {
      * @param monthlyGrossMarginReqVo
      * @return
      */
-    List<MonthlySalesRespVo> selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
+    List<MonthlyGrossMarginRespVo> selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
 
     Integer countMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
 
@@ -171,7 +171,7 @@ public interface ReportDao {
     Integer countMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo);
 
     /**
-     *  月累计品类毛利率情况
+     *  查询所有门店类型
      * @param
      * @return
      */
