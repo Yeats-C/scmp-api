@@ -5,10 +5,12 @@ import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
+import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
@@ -19,10 +21,12 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
-import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
@@ -73,6 +77,7 @@ import java.util.stream.Collectors;
  * 思维方式*热情*能力
  */
 @Service
+@SuppressWarnings("unchecked")
 public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
@@ -80,6 +85,11 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     private static final String[] importRejectApplyHeaders = new String[]{
             "SKU编号", "SKU名称", "供应商名称", "仓库名称", "库房名称", "商品批次号", "退供类型", "退供数量", "含税单价",
     };
+    /**
+     * 品类code递增长度
+     */
+    private static final int categoryAddLength = 3;
+
     @Resource
     private RejectApplyRecordDao rejectApplyRecordDao;
     @Resource
@@ -110,6 +120,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     private LogisticsCenterDao logisticsCenterDao;
     @Resource
     private WarehouseDao warehouseDao;
+    @Resource
+    private ProductCategoryDao productCategoryDao;
 
     @Override
     public HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -642,11 +654,33 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             throw new RuntimeException(String.format("取消-更改退供申请异常:{%s}", e.getMessage()));
         }
     }
+
     @Override
     public HttpResponse<PageResData<RejectApplyDetailHandleResponse>> rejectStockProduct(RejectProductRequest rejectQueryRequest) {
         List<RejectApplyDetailHandleResponse> list = stockDao.rejectProductList(rejectQueryRequest);
+        for (RejectApplyDetailHandleResponse response : list) {
+            response.setCategoryName(selectCategoryName(response.getCategoryId()));
+        }
         Integer count = stockDao.rejectProductListCount(rejectQueryRequest);
-        return HttpResponse.successGenerics(new PageResData<>(count,list));
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
+    }
+
+    public String selectCategoryName(String categoryCode) {
+        StringBuilder stringBuilder = new StringBuilder();
+        ProductCategoryResponse productCategoryResponse;
+        if (StringUtils.isNotBlank(categoryCode)) {
+            int s = categoryCode.length() / categoryAddLength;
+            for (int i = 0; i < s; i++) {
+                productCategoryResponse = productCategoryDao.selectCategoryLevelByCategoryId(categoryCode.substring(0, (i + 1) * 3));
+                if (productCategoryResponse != null) {
+                    stringBuilder.append(productCategoryResponse.getCategoryName());
+                    if (i < s - 1) {
+                        stringBuilder.append("/");
+                    }
+                }
+            }
+        }
+        return stringBuilder.toString();
     }
 
 }
