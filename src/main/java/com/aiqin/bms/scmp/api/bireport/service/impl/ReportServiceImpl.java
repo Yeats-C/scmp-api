@@ -213,6 +213,25 @@ public class ReportServiceImpl implements ReportService {
     }
 
     /**
+     *  品牌促销
+     * @param brandSaleReqVo
+     * @return
+     */
+    @Override
+    public PageResData selectBrandSale(CategorySaleReqVo brandSaleReqVo) {
+        try {
+            // PageHelper.startPage(categorySaleReqVo.getPageNo(), categorySaleReqVo.getPageSize());
+            List<CategorySaleRespVo> brandSaleRespVo = reportDao.selectBrandSale(brandSaleReqVo);
+            Integer total = reportDao.countBrandSale(brandSaleReqVo);
+            return new PageResData<CategorySaleRespVo>(total,brandSaleRespVo);
+        } catch (Exception ex) {
+            log.error("品类促销");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
      *  品类促销
      * @param categorySaleReqVo
      * @return

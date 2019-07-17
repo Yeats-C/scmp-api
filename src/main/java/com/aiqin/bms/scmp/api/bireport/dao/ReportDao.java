@@ -99,6 +99,15 @@ public interface ReportDao {
     Integer countHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
+     *  品牌促销
+     * @param brandSaleReqVo
+     * @return
+     */
+    List<CategorySaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
+
+    Integer countBrandSale(CategorySaleReqVo brandSaleReqVo);
+
+    /**
      *  品类促销
      * @param categorySaleReqVo
      * @return

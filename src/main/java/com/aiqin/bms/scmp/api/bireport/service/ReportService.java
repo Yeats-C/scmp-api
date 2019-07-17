@@ -81,6 +81,13 @@ public interface ReportService {
     PageResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
+     *  品牌促销
+     * @param brandSaleReqVo
+     * @return
+     */
+    PageResData selectBrandSale(CategorySaleReqVo brandSaleReqVo);
+
+    /**
      *  品类促销
      * @param categorySaleReqVo
      * @return

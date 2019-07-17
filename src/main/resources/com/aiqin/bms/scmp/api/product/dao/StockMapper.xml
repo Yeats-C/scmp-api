@@ -544,7 +544,6 @@
         left join stock_flow as sf on st.sku_code=CONVERT(sf.sku_code USING utf8) COLLATE utf8_unicode_ci
 
         where st.id = #{stockId, jdbcType=VARCHAR}
-        group by st.id
     </select>
 
     <select id="selectOneStockInfoByStockIdInfoByPage" resultType="java.lang.Long">

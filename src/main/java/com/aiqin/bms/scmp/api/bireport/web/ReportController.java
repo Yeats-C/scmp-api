@@ -414,8 +414,6 @@ public class ReportController {
         return HttpResponse.success(reportService.selectHighInventory(highLowInventoryReqVo));
     }
 
-    // TODO: 2019/7/12 品牌促销  品类促销  mapper无
-
     @GetMapping("/search/brand/sale")
     @ApiOperation("品牌促销")
     @ApiImplicitParams({
@@ -435,16 +433,16 @@ public class ReportController {
             @RequestParam(value = "department_name", required = false) String departmentName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        CategorySaleReqVo categorySaleReqVo = new CategorySaleReqVo(month,channelCode,channelName,departmentCode,departmentName);
-        categorySaleReqVo.setPageNo(pageNo);
-        categorySaleReqVo.setPageSize(pageSize);
-        return HttpResponse.success(reportService.selectCategorySale(categorySaleReqVo));
+        CategorySaleReqVo brandSaleReqVo = new CategorySaleReqVo(month,channelCode,channelName,departmentCode,departmentName);
+        brandSaleReqVo.setPageNo(pageNo);
+        brandSaleReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectBrandSale(brandSaleReqVo));
     }
 
     @GetMapping("/search/category/sale")
     @ApiOperation("品类促销")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "month", value = "月份", type = "Integer"),
+            @ApiImplicitParam(name = "month", value = "月份", type = "int"),
             @ApiImplicitParam(name = "channel_code", value = "渠道编码", type = "String"),
             @ApiImplicitParam(name = "channel_name", value = "渠道", type = "String"),
             @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
