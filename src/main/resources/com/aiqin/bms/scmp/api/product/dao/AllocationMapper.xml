@@ -496,7 +496,7 @@
       AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
     </if>
     <if test="allocationCode != null and allocationCode != '' ">
-      AND allocation_code =#{allocationCode}
+      AND allocation_code LIKE CONCAT(CONCAT('%',#{allocationCode},'%'))
     </if>
     <if test="allocationStatusCode != null">
       AND allocation_status_code = #{allocationStatusCode}
@@ -580,7 +580,7 @@
       AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
     </if>
     <if test="movementCode != null and movementCode != '' ">
-      AND allocation_code = #{movementCode}
+      AND allocation_code LIKE CONCAT(CONCAT('%',#{movementCode},'%'))
     </if>
     <if test="movementStatusCode != null">
       AND allocation_status_code = #{movementStatusCode}
@@ -661,7 +661,7 @@
       AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
     </if>
     <if test="scrapCode != null and scrapCode != '' ">
-      AND allocation_code = #{movementCode}
+      AND allocation_code LIKE CONCAT('%',#{scrapCode},'%')
     </if>
     <if test="scrapStatusCode != null">
       AND allocation_status_code = #{scrapStatusCode}

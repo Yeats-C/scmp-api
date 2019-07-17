@@ -65,13 +65,13 @@
     WHERE
     1=1
     <if test="contractCode != null and contractCode != '' ">
-      AND contract_code  = #{contractCode}
+      AND contract_code LIKE  CONCAT('%',#{contractCode},'%')
     </if>
     <if test="yearName != null and yearName != '' ">
       and year_name LIKE  CONCAT('%',#{yearName},'%')
     </if>
     <if test="supplierCode != null  and supplierCode != ''">
-      AND supplier_code =  #{supplierCode}
+      AND supplier_code LIKE  CONCAT('%',#{supplierCode},'%')
     </if>
     <if test="supplierName != null and supplierName != ''">
       AND supplier_name LIKE  CONCAT('%',#{supplierName},'%')

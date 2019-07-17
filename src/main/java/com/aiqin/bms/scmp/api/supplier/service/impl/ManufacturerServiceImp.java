@@ -280,7 +280,7 @@ public class ManufacturerServiceImp  implements ManufacturerService {
                 record.setCompanyCode(authToken.getCompanyCode());
                 record.setCompanyName(authToken.getCompanyName());
             }
-            record.setEnable(Byte.parseByte("1"));
+            record.setEnable(Byte.parseByte("0"));
             return manufacturerDao.insert(record);
         }catch (Exception e){
             log.error(e.getMessage());
@@ -337,7 +337,7 @@ public class ManufacturerServiceImp  implements ManufacturerService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int enable(String manufacturerCode, byte enable) {
         try{
-            if(enable==0){
+            if(enable==1){
                  // 禁用日志
                 supplierCommonService.getInstance(manufacturerCode+"", HandleTypeCoce.DISABLE_MANUFACTURER.getStatus(), ObjectTypeCode.MANUFACTURER.getStatus(), enable,HandleTypeCoce.DISABLE_MANUFACTURER.getName());
 

@@ -86,7 +86,7 @@
     <select id="selectList" resultMap="BaseResultMap">
       select <include refid="Base_clomn_sql"></include> from transport where 1=1
         <if test="transportCode !=null and transportCode!=''">
-            and transport_code=#{transportCode}
+            and transport_code LIKE CONCAT('%',#{transportCode},'%')
         </if>
         <if test="transportCenterCode !=null and transportCenterCode !=''">
             and transport_center_code=#{transportCenterCode}
@@ -115,6 +115,7 @@
         <if test="status!=null">
             and status=#{status}
         </if>
+        order by create_time desc
     </select>
     <select id="selectTransportOrdersWithOutCodeList" resultMap="TransportOrdersMap">
           select <include refid="Transport_orders_without_code"></include>

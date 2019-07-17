@@ -101,7 +101,7 @@ public class WarehouseServiceImpl implements WarehouseService {
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         //设置采购组主体的删除状态，启用禁用状态
         warehouseDTO.setDelFlag(Byte.parseByte("0"));
-        warehouseDTO.setEnable(Byte.parseByte("1"));
+        warehouseDTO.setEnable(Byte.parseByte("0"));
         //保存采购组的主体
         int k = ((WarehouseService) AopContext.currentProxy()).insertSelective(warehouseDTO);
         if(k>0){
