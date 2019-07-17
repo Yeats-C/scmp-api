@@ -21,4 +21,12 @@ public class PurchaseApplyProductRequest {
     @ApiModelProperty(value="采购申请单id")
     @JsonProperty("purchase_apply_id")
     private String purchaseApplyId;
+
+    @ApiModelProperty(value="创建者id")
+    @JsonProperty("create_by_id")
+    private String createById;
+
+    @ApiModelProperty(value="创建者")
+    @JsonProperty("create_by_name")
+    private String createByName;
 }

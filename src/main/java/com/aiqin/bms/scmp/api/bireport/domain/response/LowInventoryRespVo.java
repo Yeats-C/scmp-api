@@ -45,4 +45,24 @@ public class LowInventoryRespVo {
     @JsonProperty("warehouse_type_name")
     private String warehouseTypeName;
 
+    @ApiModelProperty("上周全国合计")
+    @JsonProperty("lastweek_total_national")
+    private String lastweekTotalNational;
+
+    @ApiModelProperty("本周全国合计")
+    @JsonProperty("thisweek_total_national")
+    private String thisweekTotalNational;
+
+    @ApiModelProperty("总sku数量")
+    @JsonProperty("total_sku_num")
+    private String totalSkuNum;
+
+    @ApiModelProperty("低库存sku数")
+    @JsonProperty("low_inventory_num")
+    private String lowInventoryNum;
+
+    @ApiModelProperty("低库存占比")
+    @JsonProperty("low_inventory_ratio")
+    private Double low_Inventory_ratio;
+
 }

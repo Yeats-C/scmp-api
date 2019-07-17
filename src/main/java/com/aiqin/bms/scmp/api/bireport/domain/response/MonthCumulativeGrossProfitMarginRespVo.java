@@ -14,12 +14,12 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     private Long id;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishCreateTime;
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -37,13 +37,21 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     @JsonProperty("price_channel_name")
     private String priceChannelName;
 
-    @ApiModelProperty("门店类型")
-    @JsonProperty("store_type")
-    private String storeType;
+    @ApiModelProperty("门店类型code")
+    @JsonProperty("store_type_code")
+    private String storeTypeCode;
 
-    @ApiModelProperty("数据类型")
-    @JsonProperty("data_style")
-    private String dataStyle;
+    @ApiModelProperty("门店类型名称")
+    @JsonProperty("store_type_name")
+    private String storeTypeName;
+
+    @ApiModelProperty("数据类型code")
+    @JsonProperty("data_style_code")
+    private String dataStyleCode;
+
+    @ApiModelProperty("数据类型name")
+    @JsonProperty("data_style_name")
+    private String dataStyleName;
 
     @ApiModelProperty("品类编码")
     @JsonProperty("category_type_code")
@@ -67,11 +75,11 @@ public class MonthCumulativeGrossProfitMarginRespVo {
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("qun_maori_rate")
-    private String qunMaoriRate;
+    private Double qunMaoriRate;
 
     @ApiModelProperty("上期毛利率")
     @JsonProperty("qun_last_maori_rate")
-    private String qunLastMaoriRate;
+    private Double qunLastMaoriRate;
 
     @ApiModelProperty("渠道同比")
     @JsonProperty("qun_compared_same")
@@ -91,11 +99,11 @@ public class MonthCumulativeGrossProfitMarginRespVo {
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("fen_maori_rate")
-    private String fenMaoriRate;
+    private Double fenMaoriRate;
 
     @ApiModelProperty("上期分销毛利率")
     @JsonProperty("fen_last_maori_rate")
-    private String fenLastMaoriRate;
+    private Double fenLastMaoriRate;
 
     @ApiModelProperty("分销同比")
     @JsonProperty("fen_compared_same")

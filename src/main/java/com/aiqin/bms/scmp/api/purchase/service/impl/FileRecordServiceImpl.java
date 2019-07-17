@@ -29,14 +29,15 @@ public class FileRecordServiceImpl implements FileRecordService {
     private FileRecordDao fileRecordDao;
     @Resource
     private OperationLogDao operationLogDao;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse deleteFile(FileRecord fileRecord){
-        if(fileRecord == null || StringUtils.isBlank(fileRecord.getFileId())){
+    public HttpResponse deleteFile(FileRecord fileRecord) {
+        if (fileRecord == null || StringUtils.isBlank(fileRecord.getFileId())) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         Integer count = fileRecordDao.update(fileRecord);
-        if(count == 0){
+        if (count == 0) {
             LOGGER.info("删除采购文件失败");
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
@@ -44,8 +45,8 @@ public class FileRecordServiceImpl implements FileRecordService {
     }
 
     @Override
-    public HttpResponse fileList(String fileId){
-        if(StringUtils.isBlank(fileId)){
+    public HttpResponse fileList(String fileId) {
+        if (StringUtils.isBlank(fileId)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         List<FileRecord> files = fileRecordDao.fileList(fileId);
@@ -53,9 +54,9 @@ public class FileRecordServiceImpl implements FileRecordService {
     }
 
     @Override
-    public HttpResponse downloadFile(String id, String fileId, String createById, String createByName,String fileName) {
+    public HttpResponse downloadFile(String id, String fileId, String createById, String createByName, String fileName) {
         //增加操作记录 操作状态  : 0 新增 1 修改 2 下载
-        operationLogDao.insert(new OperationLog(id, 2, String.format("下载文件,文件名:{%s},文件编码:{%s}",fileName,fileId),"", createById, createByName));
+        operationLogDao.insert(new OperationLog(id, 2, String.format("下载文件,文件名:{%s},文件编码:{%s}", fileName, fileId), "", createById, createByName));
         return HttpResponse.success();
     }
 }

@@ -14,12 +14,12 @@ public class MonthSalesAchievementRespVo {
     private Long id;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishCreateTime;
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -37,13 +37,21 @@ public class MonthSalesAchievementRespVo {
     @JsonProperty("price_channel_name")
     private String priceChannelName;
 
-    @ApiModelProperty("门店类型")
-    @JsonProperty("store_type")
-    private String storeType;
+    @ApiModelProperty("门店类型code")
+    @JsonProperty("store_type_code")
+    private String storeTypeCode;
 
-    @ApiModelProperty("数据类型")
-    @JsonProperty("data_style")
-    private String dataStyle;
+    @ApiModelProperty("门店类型名称")
+    @JsonProperty("store_type_name")
+    private String storeTypeName;
+
+    @ApiModelProperty("数据类型code")
+    @JsonProperty("data_style_code")
+    private String dataStyleCode;
+
+    @ApiModelProperty("数据类型name")
+    @JsonProperty("data_style_name")
+    private String dataStyleName;
 
     @ApiModelProperty("品类编码")
     @JsonProperty("category_type_code")
@@ -63,7 +71,7 @@ public class MonthSalesAchievementRespVo {
 
     @ApiModelProperty("渠道达成率")
     @JsonProperty("qun_yield_rate")
-    private Integer qunYieldRate;
+    private Double qunYieldRate;
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("fen_amount")
@@ -75,5 +83,5 @@ public class MonthSalesAchievementRespVo {
 
     @ApiModelProperty("分销达成率")
     @JsonProperty("fen_yield_rate")
-    private Integer fenYieldRate;
+    private Double fenYieldRate;
 }

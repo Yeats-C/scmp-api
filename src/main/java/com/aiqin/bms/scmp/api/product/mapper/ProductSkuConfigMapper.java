@@ -30,6 +30,8 @@ public interface ProductSkuConfigMapper {
 
     List<SkuConfigsRepsVo> getList(List<Long> ids);
 
+    List<SkuConfigsRepsVo> getList2(QuerySkuConfigReqVo reqVo);
+
     SkuConfigDetailRepsVo detail(String skuCode);
 
     int updateApplyStatusByApplyCode(ApplyProductSkuConfigReqVo req);

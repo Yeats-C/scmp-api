@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.web;
 
+import com.aiqin.bms.scmp.api.base.PageReportResData;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
@@ -40,22 +41,22 @@ public class ReportController {
             @ApiImplicitParam(name = "transport_center_code", value = "仓库编码", type = "String"),
             @ApiImplicitParam(name = "category_level_code", value = "一级品类编号", type = "String"),
             @ApiImplicitParam(name = "category_level_name", value = "一级品类名称", type = "String"),
-            @ApiImplicitParam(name = "begin_inbound_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_inbound_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<SupplierArrivalRateRespVo>> selectSupplierArrivalRate(
+    public HttpResponse<PageReportResData<SupplierArrivalRateRespVo>> selectSupplierArrivalRate(
             @RequestParam(value = "supplier_code", required = false) String supplierCode,
             @RequestParam(value = "supplier_name", required = false) String supplierName,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
             @RequestParam(value = "category_level_code", required = false) String categoryLevelCode,
             @RequestParam(value = "category_level_name", required = false) String categoryLevelName,
-            @RequestParam(value = "begin_inbound_time", required = false) String beginInboundTime,
-            @RequestParam(value = "finish_inbound_time", required = false) String finishInboundTime,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        SupplierArrivalRateReqVo supplierArrivalRateReqVo = new SupplierArrivalRateReqVo(supplierCode,supplierName,transportCenterCode,categoryLevelCode,categoryLevelName,beginInboundTime,finishInboundTime);
+        SupplierArrivalRateReqVo supplierArrivalRateReqVo = new SupplierArrivalRateReqVo(supplierCode,supplierName,transportCenterCode,categoryLevelCode,categoryLevelName,beginRunTime,finishRunTime);
         supplierArrivalRateReqVo.setPageNo(pageNo);
         supplierArrivalRateReqVo.setPageNo(pageSize);
         return HttpResponse.success(reportService.selectSupplierArrivalRate(supplierArrivalRateReqVo));
@@ -74,8 +75,8 @@ public class ReportController {
             @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "inbound_days", value = "库存日期", type = "Integer"),
             @ApiImplicitParam(name = "begin_turnover_days", value = "周转天数begin", type = "Integer"),
             @ApiImplicitParam(name = "finish_turnover_days", value = "周转天数finish", type = "Integer"),
@@ -99,8 +100,8 @@ public class ReportController {
             @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_code", required = false) String productSortName,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "inbound_days", required = false) Integer inboundDays,
             @RequestParam(value = "begin_turnover_days", required = false) Integer beginTurnoverDays,
             @RequestParam(value = "finish_turnover_days", required = false) Integer finishTurnoverDays,
@@ -113,7 +114,7 @@ public class ReportController {
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
         GoodsBuySalesReqVo goodsBuySalesReqVo = new GoodsBuySalesReqVo(supplierCode,supplierName,skuCode,skuName,transportCenterCode,transportCenterName,
-                productCategoryName,productCategoryCode,productSortCode,productSortName,beginCreateTime,finishCreateTime,inboundDays,beginTurnoverDays,
+                productCategoryName,productCategoryCode,productSortCode,productSortName,beginRunTime,finishRunTime,inboundDays,beginTurnoverDays,
                 finishTurnoverDays,warehouseCode,warehouseName,productCategoryOne,productCategoryTwo,productCategoryThree,productCategoryFour);
         goodsBuySalesReqVo.setPageNo(pageNo);
         goodsBuySalesReqVo.setPageSize(pageSize);
@@ -127,11 +128,13 @@ public class ReportController {
             @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
             @ApiImplicitParam(name = "transport_center_code", value = "仓库编码", type = "String"),
             @ApiImplicitParam(name = "transport_center_name", value = "仓库名称", type = "String"),
+            @ApiImplicitParam(name = "product_category_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
             @ApiImplicitParam(name = "inbound_days", value = "库存日期", type = "Integer"),
             @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "warehouse_code", value = "库房编码", type = "String"),
             @ApiImplicitParam(name = "warehouse_name", value = "库房名称", type = "String"),
             @ApiImplicitParam(name = "begin_turnover_days", value = "周转天数begin", type = "Integer"),
@@ -148,11 +151,13 @@ public class ReportController {
             @RequestParam(value = "sku_name", required = false) String skuName,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
             @RequestParam(value = "transport_center_name", required = false) String transportCenterName,
+            @RequestParam(value = "product_category_name", required = false) String productCategoryName,
+            @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
             @RequestParam(value = "inbound_days", required = false) Integer inboundDays,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_code", required = false) String productSortName,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
             @RequestParam(value = "warehouse_name", required = false) String warehouseName,
             @RequestParam(value = "begin_turnover_days", required = false) Integer beginTurnoverDays,
@@ -163,7 +168,7 @@ public class ReportController {
             @RequestParam(value = "product_category_four", required = false) String productCategoryFour,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        GiftsBuySalesReqVo giftsBuySalesReqVo = new GiftsBuySalesReqVo(skuCode,skuName,transportCenterCode,transportCenterName,inboundDays,productSortCode,productSortName,beginCreateTime,finishCreateTime,
+        GiftsBuySalesReqVo giftsBuySalesReqVo = new GiftsBuySalesReqVo(skuCode,skuName,transportCenterCode,transportCenterName,productCategoryName,productCategoryCode,inboundDays,productSortCode,productSortName,beginRunTime,finishRunTime,
                 warehouseCode,warehouseName,beginTurnoverDays,finishTurnoverDays,productCategoryOne,productCategoryTwo,productCategoryThree,productCategoryFour);
         giftsBuySalesReqVo.setPageNo(pageNo);
         giftsBuySalesReqVo.setPageSize(pageSize);
@@ -179,8 +184,8 @@ public class ReportController {
             @ApiImplicitParam(name = "transport_center_name", value = "仓库名称", type = "String"),
             @ApiImplicitParam(name = "warehouse_code", value = "库房编码", type = "String"),
             @ApiImplicitParam(name = "warehouse_name", value = "库房名称", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
@@ -191,11 +196,11 @@ public class ReportController {
             @RequestParam(value = "transport_center_name", required = false) String transportCenterName,
             @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
             @RequestParam(value = "warehouse_name", required = false) String warehouseName,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        SupplierReturnReqVo supplierReturnReqVo = new SupplierReturnReqVo(supplierCode,supplierName,transportCenterCode,transportCenterName,warehouseCode,warehouseName,beginCreateTime,finishCreateTime);
+        SupplierReturnReqVo supplierReturnReqVo = new SupplierReturnReqVo(supplierCode,supplierName,transportCenterCode,transportCenterName,warehouseCode,warehouseName,beginRunTime,finishRunTime);
         supplierReturnReqVo.setPageNo(pageNo);
         supplierReturnReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectSupplierReturn(supplierReturnReqVo));
@@ -206,15 +211,17 @@ public class ReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
             @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "销售渠道code", type = "String"),
             @ApiImplicitParam(name = "price_channel_name", value = "销售渠道", type = "String"),
             @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
             @ApiImplicitParam(name = "supplier_name", value = "供应商name", type = "String"),
             @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "product_category_name", value = "品类编码", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "batch_code", value = "批次号", type = "String"),
-            @ApiImplicitParam(name = "begin_maori_rate", value = "毛利率begin", type = "Integer"),
-            @ApiImplicitParam(name = "finish_maori_rate", value = "毛利率finish", type = "Integer"),
+            @ApiImplicitParam(name = "begin_maori_rate", value = "毛利率begin", type = "Double"),
+            @ApiImplicitParam(name = "finish_maori_rate", value = "毛利率finish", type = "Double"),
             @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
@@ -223,20 +230,22 @@ public class ReportController {
     public HttpResponse<PageResData<NewProductBatchMovingRateRespVo>> selectNewProductBatchMovingRate(
             @RequestParam(value = "sku_code", required = false) String skuCode,
             @RequestParam(value = "sku_name", required = false) String skuName,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
             @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
             @RequestParam(value = "supplier_code", required = false) String supplierCode,
             @RequestParam(value = "supplier_name", required = false) String supplierName,
             @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "product_category_name", required = false) String productCategoryName,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "batch_code", required = false) String batchCode,
-            @RequestParam(value = "begin_maori_rate", required = false) Integer beginMaoriRate,
-            @RequestParam(value = "finish_maori_rate", required = false) Integer finishMaoriRate,
+            @RequestParam(value = "begin_maori_rate", required = false) Double beginMaoriRate,
+            @RequestParam(value = "finish_maori_rate", required = false) Double finishMaoriRate,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_code", required = false) String productSortName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo = new NewProductBatchMovingRateReqVo(skuCode,skuName,priceChannelName,supplierCode,supplierName,productCategoryCode,beginCreateTime,finishCreateTime,batchCode,beginMaoriRate,finishMaoriRate,
+        NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo = new NewProductBatchMovingRateReqVo(skuCode,skuName,priceChannelCode,priceChannelName,supplierCode,supplierName,productCategoryCode,productCategoryName,beginRunTime,finishRunTime,batchCode,beginMaoriRate,finishMaoriRate,
                 productSortCode,productSortName);
         newProductBatchMovingRateReqVo.setPageNo(pageNo);
         newProductBatchMovingRateReqVo.setPageSize(pageSize);
@@ -251,9 +260,10 @@ public class ReportController {
             @ApiImplicitParam(name = "district_name", value = "区", type = "String"),
             @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
             @ApiImplicitParam(name = "product_category_name", value = "品类名称", type = "String"),
-            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "order_original_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "order_original_name", value = "渠道名称", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
@@ -263,12 +273,13 @@ public class ReportController {
             @RequestParam(value = "district_name", required = false) String districtName,
             @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
             @RequestParam(value = "product_category_name", required = false) String productCategoryName,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "order_original_code", required = false) String orderOriginalCode,
+            @RequestParam(value = "order_original_name", required = false) String orderOriginalName,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        StoreRepurchaseRateReqVo storeRepurchaseRateReqVo = new StoreRepurchaseRateReqVo(provinceName,cityName,districtName,productCategoryCode,productCategoryName,orderOriginal,beginCreateTime,finishCreateTime);
+        StoreRepurchaseRateReqVo storeRepurchaseRateReqVo = new StoreRepurchaseRateReqVo(provinceName,cityName,districtName,productCategoryCode,productCategoryName,orderOriginalCode,orderOriginalName,beginRunTime,finishRunTime);
         storeRepurchaseRateReqVo.setPageNo(pageNo);
         storeRepurchaseRateReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectStoreRepurchaseRate(storeRepurchaseRateReqVo));
@@ -283,9 +294,10 @@ public class ReportController {
             @ApiImplicitParam(name = "product_category_name", value = "品类名称", type = "String"),
             @ApiImplicitParam(name = "product_brand_code", value = "品牌编码", type = "String"),
             @ApiImplicitParam(name = "product_brand_name", value = "品牌", type = "String"),
-            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "order_original_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "order_original_name", value = "渠道名称", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
@@ -298,14 +310,15 @@ public class ReportController {
             @RequestParam(value = "product_category_name", required = false) String productCategoryName,
             @RequestParam(value = "product_brand_code", required = false) String productBrandCode,
             @RequestParam(value = "product_brand_name", required = false) String productBrandName,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "order_original_code", required = false) String orderOriginalCode,
+            @RequestParam(value = "order_original_name", required = false) String orderOriginalName,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_code", required = false) String productSortName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        NegativeMarginReqVo negativeMarginReqVo = new NegativeMarginReqVo(skuCode,skuName,productCategoryCode,productCategoryName,productBrandCode,productBrandName,orderOriginal,beginCreateTime,finishCreateTime,productSortCode,productSortName);
+        NegativeMarginReqVo negativeMarginReqVo = new NegativeMarginReqVo(skuCode,skuName,productCategoryCode,productCategoryName,productBrandCode,productBrandName,orderOriginalCode,orderOriginalName,beginRunTime,finishRunTime,productSortCode,productSortName);
         negativeMarginReqVo.setPageNo(pageNo);
         negativeMarginReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectNegativeMargin(negativeMarginReqVo));
@@ -322,8 +335,8 @@ public class ReportController {
             @ApiImplicitParam(name = "product_brand_name", value = "品牌", type = "String"),
             @ApiImplicitParam(name = "transport_center_code", value = "仓库编码", type = "String"),
             @ApiImplicitParam(name = "transport_center_name", value = "仓库名称", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
@@ -336,11 +349,11 @@ public class ReportController {
             @RequestParam(value = "product_brand_name", required = false) String productBrandName,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
             @RequestParam(value = "transport_center_name", required = false) String transportCenterName,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        SuggestReplenishmentReqVo suggestReplenishmentReqVo = new SuggestReplenishmentReqVo(skuCode,skuName,productCategoryCode,productCategoryName,productBrandCode,productBrandName,transportCenterCode,transportCenterName,beginCreateTime,finishCreateTime);
+        SuggestReplenishmentReqVo suggestReplenishmentReqVo = new SuggestReplenishmentReqVo(skuCode,skuName,productCategoryCode,productCategoryName,productBrandCode,productBrandName,transportCenterCode,transportCenterName,beginRunTime,finishRunTime);
         suggestReplenishmentReqVo.setPageNo(pageNo);
         suggestReplenishmentReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectSuggestReplenishment(suggestReplenishmentReqVo));
@@ -351,8 +364,8 @@ public class ReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "procurement_section_code", value = "采购组编码", type = "String"),
             @ApiImplicitParam(name = "procurement_section_name", value = "采购组", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
@@ -361,13 +374,13 @@ public class ReportController {
     public HttpResponse<PageResData<LowInventoryRespVo>> selectLowInventory(
             @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
             @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        HighLowInventoryReqVo highLowInventoryReqVo = new HighLowInventoryReqVo(procurementSectionCode,procurementSectionName,beginCreateTime,finishCreateTime,productSortCode,
+        HighLowInventoryReqVo highLowInventoryReqVo = new HighLowInventoryReqVo(procurementSectionCode,procurementSectionName,beginRunTime,finishRunTime,productSortCode,
                 productSortName);
         highLowInventoryReqVo.setPageNo(pageNo);
         highLowInventoryReqVo.setPageSize(pageSize);
@@ -379,8 +392,8 @@ public class ReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "procurement_section_code", value = "采购组编码", type = "String"),
             @ApiImplicitParam(name = "procurement_section_name", value = "采购组", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
@@ -389,25 +402,24 @@ public class ReportController {
     public HttpResponse<PageResData<HighInventoryRespVo>> selectHighInventory(
             @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
             @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        HighLowInventoryReqVo highLowInventoryReqVo = new HighLowInventoryReqVo(procurementSectionCode,procurementSectionName,beginCreateTime,finishCreateTime,productSortCode,
+        HighLowInventoryReqVo highLowInventoryReqVo = new HighLowInventoryReqVo(procurementSectionCode,procurementSectionName,beginRunTime,finishRunTime,productSortCode,
                 productSortName);
         highLowInventoryReqVo.setPageNo(pageNo);
         highLowInventoryReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectHighInventory(highLowInventoryReqVo));
     }
 
-    // TODO: 2019/7/12 品牌促销  品类促销  mapper无
-
     @GetMapping("/search/brand/sale")
     @ApiOperation("品牌促销")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "month", value = "月份", type = "Integer"),
+            @ApiImplicitParam(name = "channel_code", value = "渠道编码", type = "String"),
             @ApiImplicitParam(name = "channel_name", value = "渠道", type = "String"),
             @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "department_name", value = "所属部门", type = "String"),
@@ -416,21 +428,23 @@ public class ReportController {
     })
     public HttpResponse<PageResData<CategorySaleRespVo>> selectBrandSale(
             @RequestParam(value = "month", required = false) int month,
+            @RequestParam(value = "channel_code", required = false) String channelCode,
             @RequestParam(value = "channel_name", required = false) String channelName,
             @RequestParam(value = "department_code", required = false) String departmentCode,
             @RequestParam(value = "department_name", required = false) String departmentName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        CategorySaleReqVo categorySaleReqVo = new CategorySaleReqVo(month,channelName,departmentCode,departmentName);
-        categorySaleReqVo.setPageNo(pageNo);
-        categorySaleReqVo.setPageSize(pageSize);
-        return HttpResponse.success(reportService.selectCategorySale(categorySaleReqVo));
+        CategorySaleReqVo brandSaleReqVo = new CategorySaleReqVo(month,channelCode,channelName,departmentCode,departmentName);
+        brandSaleReqVo.setPageNo(pageNo);
+        brandSaleReqVo.setPageSize(pageSize);
+        return HttpResponse.success(reportService.selectBrandSale(brandSaleReqVo));
     }
 
     @GetMapping("/search/category/sale")
     @ApiOperation("品类促销")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "month", value = "月份", type = "Integer"),
+            @ApiImplicitParam(name = "month", value = "月份", type = "int"),
+            @ApiImplicitParam(name = "channel_code", value = "渠道编码", type = "String"),
             @ApiImplicitParam(name = "channel_name", value = "渠道", type = "String"),
             @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "department_name", value = "所属部门", type = "String"),
@@ -439,12 +453,13 @@ public class ReportController {
     })
     public HttpResponse<PageResData<CategorySaleRespVo>> selectCategorySale(
             @RequestParam(value = "month", required = false) int month,
+            @RequestParam(value = "channel_code", required = false) String channelCode,
             @RequestParam(value = "channel_name", required = false) String channelName,
             @RequestParam(value = "department_code", required = false) String departmentCode,
             @RequestParam(value = "department_name", required = false) String departmentName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        CategorySaleReqVo categorySaleReqVo = new CategorySaleReqVo(month,channelName,departmentCode,departmentName);
+        CategorySaleReqVo categorySaleReqVo = new CategorySaleReqVo(month,channelCode,channelName,departmentCode,departmentName);
         categorySaleReqVo.setPageNo(pageNo);
         categorySaleReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectCategorySale(categorySaleReqVo));
@@ -453,6 +468,7 @@ public class ReportController {
     @GetMapping("/search/big/effect")
     @ApiOperation("大效期")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "production_date", value = "日期", type = "String"),
             @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
             @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
             @ApiImplicitParam(name = "product_brand_code", value = "品牌编码", type = "String"),
@@ -472,6 +488,7 @@ public class ReportController {
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
     public HttpResponse<PageResData<BigEffectRespVo>> selectBigEffect(
+            @RequestParam(value = "production_date", required = false) String productionDate,
             @RequestParam(value = "sku_code", required = false) String skuCode,
             @RequestParam(value = "sku_name", required = false) String skuName,
             @RequestParam(value = "product_brand_code", required = false) String productBrandCode,
@@ -489,7 +506,7 @@ public class ReportController {
             @RequestParam(value = "big_effect_period_warn_day", required = false) String bigEffectPeriodWarnDay,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        BigEffectReqVo bigEffectReqVo = new BigEffectReqVo(skuCode,skuName,productBrandCode,productBrandName,supplyUnitCode,supplyUnitName,productCategoryCode,productCategoryName,procurementSectionCode,procurementSectionName,transportCenterCode,transportCenterName,warehouseCode,warehouseName,bigEffectPeriodWarnDay);
+        BigEffectReqVo bigEffectReqVo = new BigEffectReqVo(productionDate,skuCode,skuName,productBrandCode,productBrandName,supplyUnitCode,supplyUnitName,productCategoryCode,productCategoryName,procurementSectionCode,procurementSectionName,transportCenterCode,transportCenterName,warehouseCode,warehouseName,bigEffectPeriodWarnDay);
         bigEffectReqVo.setPageNo(pageNo);
         bigEffectReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectBigEffect(bigEffectReqVo));
@@ -502,10 +519,12 @@ public class ReportController {
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
             @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
-            @ApiImplicitParam(name = "data_style", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
+            @ApiImplicitParam(name = "store_type_name", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "data_style_code", value = "数据类型code", type = "String"),
+            @ApiImplicitParam(name = "data_style_name", value = "数据类型", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
@@ -514,13 +533,15 @@ public class ReportController {
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
             @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
-            @RequestParam(value = "store_type", required = false) String storeType,
-            @RequestParam(value = "data_style", required = false) String dataStyle,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
+            @RequestParam(value = "store_type_name", required = false) String storeTypeName,
+            @RequestParam(value = "data_style_code", required = false) String dataStyleCode,
+            @RequestParam(value = "data_style_name", required = false) String dataStyleName,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        MonthlySalesReqVo monthlySalesReqVo = new MonthlySalesReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeType,dataStyle,beginCreateTime,finishCreateTime);
+        MonthlySalesReqVo monthlySalesReqVo = new MonthlySalesReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,beginRunTime,finishRunTime);
         monthlySalesReqVo.setPageNo(pageNo);
         monthlySalesReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthlySales(monthlySalesReqVo));
@@ -533,25 +554,29 @@ public class ReportController {
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
             @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
-            @ApiImplicitParam(name = "data_style", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
+            @ApiImplicitParam(name = "store_type_name", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "data_style_code", value = "数据类型code", type = "String"),
+            @ApiImplicitParam(name = "data_style_name", value = "数据类型", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<MonthlySalesRespVo>> selectMonthlyGrossMargin(
+    public HttpResponse<PageResData<MonthlyGrossMarginRespVo>> selectMonthlyGrossMargin(
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
             @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
-            @RequestParam(value = "store_type", required = false) String storeType,
-            @RequestParam(value = "data_style", required = false) String dataStyle,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
+            @RequestParam(value = "store_type_name", required = false) String storeTypeName,
+            @RequestParam(value = "data_style_code", required = false) String dataStyleCode,
+            @RequestParam(value = "data_style_name", required = false) String dataStyleName,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        MonthlySalesReqVo monthlyGrossMarginReqVo = new MonthlySalesReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeType,dataStyle,beginCreateTime,finishCreateTime);
+        MonthlySalesReqVo monthlyGrossMarginReqVo = new MonthlySalesReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,beginRunTime,finishRunTime);
         monthlyGrossMarginReqVo.setPageNo(pageNo);
         monthlyGrossMarginReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthlyGrossMargin(monthlyGrossMarginReqVo));
@@ -564,10 +589,12 @@ public class ReportController {
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
             @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
-            @ApiImplicitParam(name = "data_style", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
+            @ApiImplicitParam(name = "store_type_name", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "data_style_code", value = "数据类型code", type = "String"),
+            @ApiImplicitParam(name = "data_style_name", value = "数据类型", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "category_type_code", value = "品类编码", type = "String"),
             @ApiImplicitParam(name = "category_type_name", value = "品类名称", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
@@ -578,15 +605,17 @@ public class ReportController {
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
             @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
-            @RequestParam(value = "store_type", required = false) String storeType,
-            @RequestParam(value = "data_style", required = false) String dataStyle,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
+            @RequestParam(value = "store_type_name", required = false) String storeTypeName,
+            @RequestParam(value = "data_style_code", required = false) String dataStyleCode,
+            @RequestParam(value = "data_style_name", required = false) String dataStyleName,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "category_type_code", required = false) String categoryTypeCode,
             @RequestParam(value = "category_type_name", required = false) String categoryTypeName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        MonthSalesAchievementReqVo monthSalesAchievementReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeType,dataStyle,beginCreateTime,finishCreateTime,categoryTypeCode,categoryTypeName);
+        MonthSalesAchievementReqVo monthSalesAchievementReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,beginRunTime,finishRunTime,categoryTypeCode,categoryTypeName);
         monthSalesAchievementReqVo.setPageNo(pageNo);
         monthSalesAchievementReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthSalesAchievement(monthSalesAchievementReqVo));
@@ -599,10 +628,12 @@ public class ReportController {
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
             @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
-            @ApiImplicitParam(name = "data_style", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
+            @ApiImplicitParam(name = "store_type_name", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "data_style_code", value = "数据类型code", type = "String"),
+            @ApiImplicitParam(name = "data_style_name", value = "数据类型", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "category_type_code", value = "品类编码", type = "String"),
             @ApiImplicitParam(name = "category_type_name", value = "品类名称", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
@@ -613,15 +644,17 @@ public class ReportController {
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
             @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
-            @RequestParam(value = "store_type", required = false) String storeType,
-            @RequestParam(value = "data_style", required = false) String dataStyle,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
+            @RequestParam(value = "store_type_name", required = false) String storeTypeName,
+            @RequestParam(value = "data_style_code", required = false) String dataStyleCode,
+            @RequestParam(value = "data_style_name", required = false) String dataStyleName,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "category_type_code", required = false) String categoryTypeCode,
             @RequestParam(value = "category_type_name", required = false) String categoryTypeName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeType,dataStyle,beginCreateTime,finishCreateTime,categoryTypeCode,categoryTypeName);
+        MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,beginRunTime,finishRunTime,categoryTypeCode,categoryTypeName);
         monthCumulativeBrandSalesReqVo.setPageNo(pageNo);
         monthCumulativeBrandSalesReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo));
@@ -634,10 +667,12 @@ public class ReportController {
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
             @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
-            @ApiImplicitParam(name = "data_style", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "入库时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "入库时间finish", type = "String"),
+            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
+            @ApiImplicitParam(name = "store_type_name", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "data_style_code", value = "数据类型code", type = "String"),
+            @ApiImplicitParam(name = "data_style_name", value = "数据类型", type = "String"),
+            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "category_type_code", value = "品类编码", type = "String"),
             @ApiImplicitParam(name = "category_type_name", value = "品类名称", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
@@ -648,15 +683,17 @@ public class ReportController {
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
             @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
-            @RequestParam(value = "store_type", required = false) String storeType,
-            @RequestParam(value = "data_style", required = false) String dataStyle,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
+            @RequestParam(value = "store_type_name", required = false) String storeTypeName,
+            @RequestParam(value = "data_style_code", required = false) String dataStyleCode,
+            @RequestParam(value = "data_style_name", required = false) String dataStyleName,
+            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
+            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "category_type_code", required = false) String categoryTypeCode,
             @RequestParam(value = "category_type_name", required = false) String categoryTypeName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeType,dataStyle,beginCreateTime,finishCreateTime,categoryTypeCode,categoryTypeName);
+        MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,beginRunTime,finishRunTime,categoryTypeCode,categoryTypeName);
         monthCumulativeGrossProfitMarginReqVo.setPageNo(pageNo);
         monthCumulativeGrossProfitMarginReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo));
@@ -672,6 +709,12 @@ public class ReportController {
     @ApiOperation("查询所有数据类型")
     public HttpResponse<List<MonthlySalesRespVo>> selectDataStyle(){
         return HttpResponse.success(reportService.selectDataStyle());
+    }
+
+    @GetMapping("/search/one/category")
+    @ApiOperation("查询所有一级品类")
+    public HttpResponse<List<String>> selectAllOneCategory(){
+        return HttpResponse.success(reportService.selectAllOneCategory());
     }
 
 }

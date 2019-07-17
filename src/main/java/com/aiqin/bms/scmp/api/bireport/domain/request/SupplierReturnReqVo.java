@@ -36,23 +36,23 @@ public class SupplierReturnReqVo extends PageReq implements Serializable {
     @JsonProperty("warehouse_name")
     private String warehouseName;
 
-    @ApiModelProperty("入库时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
 
-    @ApiModelProperty("入库时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishCreateTime;
+    @ApiModelProperty("时间finish")
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
 
-    public SupplierReturnReqVo(String supplierCode, String supplierName, String transportCenterCode, String transportCenterName, String warehouseCode, String warehouseName, String beginCreateTime, String finishCreateTime) {
+    public SupplierReturnReqVo(String supplierCode, String supplierName, String transportCenterCode, String transportCenterName, String warehouseCode, String warehouseName, String beginRunTime, String finishRunTime) {
         this.supplierCode = supplierCode;
         this.supplierName = supplierName;
         this.transportCenterCode = transportCenterCode;
         this.transportCenterName = transportCenterName;
         this.warehouseCode = warehouseCode;
         this.warehouseName = warehouseName;
-        this.beginCreateTime = beginCreateTime;
-        this.finishCreateTime = finishCreateTime;
+        this.beginRunTime = beginRunTime;
+        this.finishRunTime = finishRunTime;
     }
 
     public SupplierReturnReqVo() {

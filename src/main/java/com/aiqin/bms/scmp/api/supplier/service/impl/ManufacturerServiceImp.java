@@ -121,14 +121,6 @@ public class ManufacturerServiceImp  implements ManufacturerService {
             log.error("制造商编码尺度更新失败");
             throw new GroundRuntimeException("制造商编码尺度更新失败");
         }
-        //保存日志
-        try{
-          supplierCommonService.getInstance(manufacturer.getManufacturerCode()+"", HandleTypeCoce.ADD_MANUFACTURER.getStatus(), ObjectTypeCode.MANUFACTURER.getStatus(), vo,HandleTypeCoce.ADD_MANUFACTURER.getName());
-        }catch (Exception e){
-                log.error(e.getMessage());
-                log.error("制造商保存日志失败");
-                throw new GroundRuntimeException("制造商保存日志失败6");
-        }
         // 保存制造商主体
         int k =((ManufacturerService) AopContext.currentProxy()).insert(manufacturer);
         if(k>0){
@@ -211,15 +203,6 @@ public class ManufacturerServiceImp  implements ManufacturerService {
         Manufacturer manufacturer = new Manufacturer();
         BeanCopyUtils.copy(vo,manufacturer);
         int k = ((ManufacturerService)AopContext.currentProxy()).updateByPrimaryKeySelective(manufacturer);
-
-        //保存日志
-        try{
-            supplierCommonService.getInstance(vo.getManufacturerCode()+"", HandleTypeCoce.UPDATE_MANUFACTURER.getStatus(), ObjectTypeCode.MANUFACTURER.getStatus(), vo,HandleTypeCoce.UPDATE_MANUFACTURER.getName());
-        }catch (Exception e){
-            log.error(e.getMessage());
-            log.error("制造商保存日志失败");
-            throw new GroundRuntimeException("制造商保存日志失败6");
-        }
        if(k>0){
            try {
                List<ManufacturerBrand> list = BeanCopyUtils.copyList(vo.getList(),ManufacturerBrand.class);
@@ -280,7 +263,7 @@ public class ManufacturerServiceImp  implements ManufacturerService {
                 record.setCompanyCode(authToken.getCompanyCode());
                 record.setCompanyName(authToken.getCompanyName());
             }
-            record.setEnable(Byte.parseByte("1"));
+            record.setEnable(Byte.parseByte("0"));
             return manufacturerDao.insert(record);
         }catch (Exception e){
             log.error(e.getMessage());
@@ -337,16 +320,6 @@ public class ManufacturerServiceImp  implements ManufacturerService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int enable(String manufacturerCode, byte enable) {
         try{
-            if(enable==0){
-                 // 禁用日志
-                supplierCommonService.getInstance(manufacturerCode+"", HandleTypeCoce.DISABLE_MANUFACTURER.getStatus(), ObjectTypeCode.MANUFACTURER.getStatus(), enable,HandleTypeCoce.DISABLE_MANUFACTURER.getName());
-
-            }else{
-                supplierCommonService.getInstance(manufacturerCode+"", HandleTypeCoce.ENABLE_MANUFACTURER.getStatus(), ObjectTypeCode.MANUFACTURER.getStatus(), enable,HandleTypeCoce.ENABLE_MANUFACTURER.getName());
-
-                //启用日志
-            }
-
             return manufacturerDao.enable(manufacturerCode,enable);
         }catch (Exception e){
             log.error(e.getMessage());

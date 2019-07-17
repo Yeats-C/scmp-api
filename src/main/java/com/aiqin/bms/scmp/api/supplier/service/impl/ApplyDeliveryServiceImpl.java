@@ -72,7 +72,6 @@ public class ApplyDeliveryServiceImpl implements ApplyDeliveryService {
         num = ((ApplyDeliveryService)AopContext.currentProxy()).update(applyDeliveryInformation);
         if (null != applyDeliveryVO.getId()){
             ApplyDeliveryInformation applyDeliveryInformation1 = applyDeliveryInformationMapper.selectByPrimaryKey(applyDeliveryVO.getId());
-            supplierCommonService.getInstance(applyDeliveryInformation1.getApplyCode(), HandleTypeCoce.APPLY_UPDATE_DELIVERY_INFORMATION.getStatus(), ObjectTypeCode.APPLY_DELIVERY_INFORMATION.getStatus(), applyDeliveryInformation1,HandleTypeCoce.APPLY_UPDATE_DELIVERY_INFORMATION.getName());
         }
         return num;
     }
@@ -87,7 +86,6 @@ public class ApplyDeliveryServiceImpl implements ApplyDeliveryService {
             int num = ((ApplyDeliveryService)AopContext.currentProxy()).update(applyDeliveryInformation);
             if (null != id){
                 ApplyDeliveryInformation applyDeliveryInformation1 = applyDeliveryInformationMapper.selectByPrimaryKey(id);
-                supplierCommonService.getInstance(applyDeliveryInformation1.getApplyCode(), HandleTypeCoce.APPLY_UPDATE_REVOKE_DELIVERY_INFORMATION.getStatus(), ObjectTypeCode.APPLY_DELIVERY_INFORMATION.getStatus(), applyDeliveryInformation1,HandleTypeCoce.APPLY_UPDATE_REVOKE_DELIVERY_INFORMATION.getName());
             }
             if(num > 0){
                 return  num;
@@ -125,7 +123,6 @@ public class ApplyDeliveryServiceImpl implements ApplyDeliveryService {
         applyDeliveryInfoReqDTO.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
         Long resultNum = ((ApplyDeliveryService) AopContext.currentProxy()).insert(applyDeliveryInfoReqDTO);
         encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
-        supplierCommonService.getInstance(applyDeliveryInfoReqDTO.getApplyCode(), HandleTypeCoce.APPLY_ADD_DELIVERY_INFORMATION.getStatus(), ObjectTypeCode.APPLY_DELIVERY_INFORMATION.getStatus(), applyDeliveryInfoReqDTO,HandleTypeCoce.APPLY_ADD_DELIVERY_INFORMATION.getName());
         return resultNum;
     }
     /**

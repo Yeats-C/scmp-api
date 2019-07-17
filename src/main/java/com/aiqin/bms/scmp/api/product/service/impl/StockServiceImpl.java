@@ -7,10 +7,7 @@ import com.aiqin.bms.scmp.api.common.StockStatusEnum;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.dao.StockFlowDao;
-import com.aiqin.bms.scmp.api.product.domain.converter.InboundReqVo2InboundSaveConverter;
-import com.aiqin.bms.scmp.api.product.domain.converter.PurchaseToStockConverter;
-import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockBatchConverter;
-import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockConverter;
+import com.aiqin.bms.scmp.api.product.domain.converter.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
@@ -358,6 +355,30 @@ public class StockServiceImpl implements StockService {
         return false;
     }
 
+    // 退供加锁
+    @Override
+    public Boolean returnSupplyLockStocks(ILockStocksReqVO reqVO) {
+        try {
+            //生成库存数据
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            //操作类型
+            Integer integer1 = 1;
+            stockChangeRequest.setOperationType(integer1);
+            //sku信息
+            List<StockVoRequest> convert = new ReturnSupplyToStocksConverter().convert(reqVO);
+            stockChangeRequest.setStockVoRequests(convert);
+            //采购编码
+            stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
+            HttpResponse httpResponse = changeStock(stockChangeRequest);
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     @Override
     public Boolean returnSupplyUnLockStock(ILockStockReqVO reqVO) {
         try {
@@ -368,6 +389,30 @@ public class StockServiceImpl implements StockService {
             stockChangeRequest.setOperationType(integer1);
             //sku信息
             List<StockVoRequest> convert = new ReturnSupplyToStockConverter().convert(reqVO);
+            stockChangeRequest.setStockVoRequests(convert);
+            //采购编码
+            stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
+            HttpResponse httpResponse = changeStock(stockChangeRequest);
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // 退供解锁
+    @Override
+    public Boolean returnSupplyUnLockStocks(ILockStocksReqVO reqVO) {
+        try {
+            //生成库存数据
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            //操作类型
+            Integer integer1 = 3;
+            stockChangeRequest.setOperationType(integer1);
+            //sku信息
+            List<StockVoRequest> convert = new ReturnSupplyToStocksConverter().convert(reqVO);
             stockChangeRequest.setStockVoRequests(convert);
             //采购编码
             stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
@@ -1023,12 +1068,19 @@ public class StockServiceImpl implements StockService {
                 }
                 //设置库存流水变化后值
                 stockFlow.setChangeNum(stockVoRequest.getChangeNum());
+                stockFlow.setLockStatus(stockChangeRequest.getOperationType());
                 stockFlow.setAfterInventoryNum(stock.getInventoryNum());
                 stockFlow.setAfterLockNum(stock.getLockNum());
                 stockFlow.setAfterAvailableNum(stock.getAvailableNum());
                 stockFlow.setAfterAllocationWayNum(stock.getAllocationWayNum());
                 stockFlow.setAfterPurchaseWayNum(stock.getPurchaseWayNum());
                 stockFlow.setAfterTotalWayNum(stock.getTotalWayNum());
+                stockFlow.setUpdateBy(stockVoRequest.getOperator());
+                stockFlow.setDocumentNum(stockVoRequest.getDocumentNum());
+                stockFlow.setDocumentType(stockVoRequest.getDocumentType());
+                stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
+                stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
+                stockFlow.setRemark(stockVoRequest.getRemark());
                 flows.add(stockFlow);
             } else {
                 Stock stock = new Stock();
@@ -1070,6 +1122,12 @@ public class StockServiceImpl implements StockService {
                 stockFlow.setAfterAllocationWayNum(stock.getAllocationWayNum());
                 stockFlow.setAfterPurchaseWayNum(stock.getPurchaseWayNum());
                 stockFlow.setAfterTotalWayNum(stock.getTotalWayNum());
+                stockFlow.setUpdateBy(stockVoRequest.getOperator());
+                stockFlow.setDocumentNum(stockVoRequest.getDocumentNum());
+                stockFlow.setDocumentType(stockVoRequest.getDocumentType());
+                stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
+                stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
+                stockFlow.setRemark(stockVoRequest.getRemark());
                 flows.add(stockFlow);
             }
         }

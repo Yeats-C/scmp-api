@@ -26,9 +26,11 @@ import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierDao;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.id.IdUtil;
@@ -77,7 +79,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     @Resource
     private LogisticsCenterDao logisticsCenterDao;
     @Resource
-    private SupplierDao supplierDao;
+    private SupplyCompanyDao supplyCompanyDao;
     @Resource
     private ProductSkuConfigMapper productSkuConfigDao;
     @Resource
@@ -244,6 +246,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             purchaseApplyId = applyProductRequest.getPurchaseApplyId();
             PurchaseApply purchaseApply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
             purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
+            purchaseApply.setUpdateByName(applyProductRequest.getCreateByName());
+            purchaseApply.setUpdateById(applyProductRequest.getCreateById());
             purchaseApplyDao.update(purchaseApply);
             purchaseApplyCode = purchaseApply.getPurchaseApplyCode();
             purchaseApplyProductDao.delete(purchaseApplyId);
@@ -260,8 +264,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
             purchaseApply.setPurchaseGroupCode(applyProducts.get(0).getPurchaseGroupCode());
             purchaseApply.setPurchaseGroupName(applyProducts.get(0).getPurchaseGroupName());
-            purchaseApply.setCreateById(applyProducts.get(0).getCreateById());
-            purchaseApply.setCreateByName(applyProducts.get(0).getCreateByName());
+            purchaseApply.setCreateById(applyProductRequest.getCreateById());
+            purchaseApply.setCreateByName(applyProductRequest.getCreateByName());
             purchaseApplyDao.insert(purchaseApply);
             encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         }
@@ -336,17 +340,17 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 Integer productPurchaseSum = productPurchaseAmount * singleCount;
                 product.setProductPurchaseSum(productPurchaseSum);
                 if(product.getProductType() != null){
-                    if(product.getProductType() == 0){
+                    if(product.getProductType().equals(Global.PRODUCT_TYPE_0)){
                         productPieceSum += purchaseWhole;
                         productSingleSum += singleCount;
                         productTaxSum += productPurchaseSum;
-                    }else if(product.getProductType() == 1){
+                    }else if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                        giftSingleSum += purchaseWhole;
+                        giftSingleSum += singleCount;
+                    }else if(product.getProductType().equals(Global.PRODUCT_TYPE_2)){
                         matterPieceSum += purchaseWhole;
                         matterSingleSum += singleCount;
                         matterTaxSum += productPurchaseSum;
-                    }else if(product.getProductType() == 2){
-                        giftSingleSum += purchaseWhole;
-                        giftSingleSum += singleCount;
                     }
                 }
             }
@@ -408,7 +412,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     return HttpResponse.failure(MessageId.create(Project.SCMP_API, 88888, validResult));
                 }
                 String[] record;
-                Supplier supplier;
+                SupplyCompany supplier;
                 LogisticsCenter logisticsCenter;
                 PurchaseImportResponse response ;
                 PurchaseApplyProduct applyProduct;
@@ -421,7 +425,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         errorCount++;
                         continue;
                     }
-                    supplier = supplierDao.selectBySupplierName(record[2]);
+                    supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                     if(supplier==null){
                         HandleResponse(response, record,"未查询到供应商信息");
                         errorCount++;

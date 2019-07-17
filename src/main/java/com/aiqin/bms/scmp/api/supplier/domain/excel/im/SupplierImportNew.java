@@ -14,11 +14,11 @@ import lombok.Data;
  */
 @Data
 
-public class SupplierImportNew extends BaseRowModel {
+public class SupplierImportNew extends BaseRowModel{
     /**
      * 表头
      */
-    public static final String HEDE = "SupplierImportNew(applySupplyName=供应商名称, applySupplyType=供应商类型, supplierName=所属集团, applyAbbreviation=简称, phone=电话, fax=传真, provinceName=省, cityName=市, districtName=县, address=详细地址, zipCode=邮编, email=邮箱, companyWebsite=公司网址, taxId=税号, registeredCapital=注册资金(万元), corporateRepresentative=法人代表, contactName=联系人姓名, mobilePhone=手机号, minOrderAmount=最低订货金额, maxOrderAmount=最高订货金额, sendProvinceName=发货省, sendCityName=发货市, sendDistrictName=发货县, sendTo=发货详细地址, sendingAddress=发货至, deliveryDays=发货送货天数, returnProvinceName=退货省, returnCityName=退货市, returnDistrictName=退货县, returningAddress=退货详细地址, returnTo=退货至, returnDays=退货送货天数)";
+    public static final String HEDE = "SupplierImportNew(applySupplyName=供应商名称, applySupplyType=供应商类型, supplierName=所属集团, applyAbbreviation=简称, phone=电话, fax=传真, provinceName=省, cityName=市, districtName=县, address=详细地址, zipCode=邮编, email=邮箱, companyWebsite=公司网址, taxId=税号, registeredCapital=注册资金(万元), corporateRepresentative=法人代表, contactName=联系人姓名, mobilePhone=手机号, minOrderAmount=最低订货金额, maxOrderAmount=最高订货金额, sendProvinceName=发货省, sendCityName=发货市, sendDistrictName=发货县, sendingAddress=发货详细地址, sendTo=发货至, deliveryDays=发货送货天数, returnProvinceName=退货省, returnCityName=退货市, returnDistrictName=退货县, returningAddress=退货详细地址, returnTo=退货至, returnDays=退货送货天数)";
 
     @ApiModelProperty("申请供应商名称")
     @ExcelProperty(index = 0 , value = "供应商名称")
@@ -116,13 +116,13 @@ public class SupplierImportNew extends BaseRowModel {
     @ExcelProperty(index = 22 , value = "发送区县")
     private String sendDistrictName;
 
-    @ApiModelProperty("发送至")
-    @ExcelProperty(index = 24 , value = "发送至")
-    private String sendTo;
-
     @ApiModelProperty("发送地址")
     @ExcelProperty(index = 23 , value = "发送地址")
     private String sendingAddress;
+
+    @ApiModelProperty("发送至")
+    @ExcelProperty(index = 24 , value = "发送至")
+    private String sendTo;
 
     @ApiModelProperty("发送送货天数")
     @ExcelProperty(index = 25 , value = "发送送货天数")

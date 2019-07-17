@@ -1069,8 +1069,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
      * @return
      */
     @Override
-    public List<ProductSkuDraftRespVo> getProductSkuDraftsByCompanyCode(String companyCode) {
-        return productSkuDraftMapper.getProductSkuDraftByCompanyCode(companyCode);
+    public List<ProductSkuDraftRespVo> getProductSkuDraftsByCompanyCode(String companyCode,String personId) {
+        return productSkuDraftMapper.getProductSkuDraftByCompanyCode(companyCode,personId);
     }
 
     /**
@@ -1186,6 +1186,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     public List<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo) {
         PageHelper.startPage(reqVo.getPageNo(),reqVo.getPageSize());
         return applyProductSkuMapper.queryApplyList(reqVo);
+    }
+
+    /**
+     * 功能描述: 更新SKU状态
+     *
+     * @param respVos
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/18 0:39
+     */
+    @Override
+    public int updateStatus(List<SkuStatusRespVo> respVos) {
+        return productSkuInfoMapper.updateStatus(respVos);
     }
 
     private ProductApplyInfoRespVO<ProductSkuApplyVo> dealApplyViewData(List<ProductSkuApplyVo> list) {

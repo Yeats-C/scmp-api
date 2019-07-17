@@ -12,6 +12,10 @@ import java.io.Serializable;
 @Data
 public class BigEffectReqVo extends PageReq implements Serializable {
 
+    @ApiModelProperty("日期")
+    @JsonProperty("production_date")
+    private String productionDate;
+
     @ApiModelProperty("商品编码")
     @JsonProperty("sku_code")
     private String skuCode;
@@ -72,7 +76,8 @@ public class BigEffectReqVo extends PageReq implements Serializable {
     @JsonProperty("big_effect_period_warn_day")
     private String bigEffectPeriodWarnDay;
 
-    public BigEffectReqVo(String skuCode, String skuName, String productBrandCode, String productBrandName, String productCategoryCode, String productCategoryName, String supplyUnitCode, String supplyUnitName, String procurementSectionCode, String procurementSectionName, String transportCenterCode, String transportCenterName, String warehouseCode, String warehouseName, String bigEffectPeriodWarnDay) {
+    public BigEffectReqVo(String productionDate, String skuCode, String skuName, String productBrandCode, String productBrandName, String productCategoryCode, String productCategoryName, String supplyUnitCode, String supplyUnitName, String procurementSectionCode, String procurementSectionName, String transportCenterCode, String transportCenterName, String warehouseCode, String warehouseName, String bigEffectPeriodWarnDay) {
+        this.productionDate = productionDate;
         this.skuCode = skuCode;
         this.skuName = skuName;
         this.productBrandCode = productBrandCode;

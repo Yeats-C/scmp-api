@@ -43,7 +43,7 @@
     and warehouse_name like CONCAT(CONCAT('%',#{warehouseName},'%'))
     </if>
     <if test ="enable!=null">
-      and enable like CONCAT(CONCAT('%',#{enable},'%'))
+      and enable = #{enable}
     </if>
     <if test ="logisticsCenterName!=null and logisticsCenterName!=''">
       and logistics_center_name like CONCAT(CONCAT('%',#{logisticsCenterName},'%'))

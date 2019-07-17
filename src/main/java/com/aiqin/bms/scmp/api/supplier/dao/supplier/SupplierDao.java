@@ -44,10 +44,6 @@ public interface SupplierDao {
     List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
 
     /**
-     * 根据供应商名称查询供应商信息 (退供导入使用)
-     */
-    Supplier selectBySupplierName(String supplierName);
-    /**
      * TODO
      * @author NullPointException
      * @date 2019/7/16

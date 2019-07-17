@@ -286,7 +286,7 @@
       and  b.sku_status = #{productStatus}
     </if>
     <if test="skuCode != null and skuCode !=''">
-      and   a.sku_code = #{skuCode}
+      and   a.sku_code  LIKE CONCAT(CONCAT('%',#{skuCode},'%'))
     </if>
     <if test="skuName != null and skuName !=''">
       and  a.sku_name = #{skuName}
@@ -312,6 +312,7 @@
     <if test="batchNumber != null and batchNumber !=''">
       and a.warehouse_batch_number like concat('%',#{batchNumber},'%')
     </if>
+    order by a.create_time desc
   </select>
   <resultMap id="selectInfoByCode" type="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO">
     <result column="asku_code"  property="skuCode" />

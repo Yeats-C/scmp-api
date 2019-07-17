@@ -52,13 +52,13 @@ public class GoodsBuySalesReqVo extends PageReq implements Serializable {
     @JsonProperty("product_sort_name")
     private String productSortName;
 
-    @ApiModelProperty("入库时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_run_time")
+    private String beginRunTime;
 
-    @ApiModelProperty("入库时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishCreateTime;
+    @ApiModelProperty("时间finish")
+    @JsonProperty("finish_run_time")
+    private String finishRunTime;
 
     @ApiModelProperty("库存日期(天)")
     @JsonProperty("inbound_days")
@@ -96,7 +96,7 @@ public class GoodsBuySalesReqVo extends PageReq implements Serializable {
     @JsonProperty("product_category_four")
     private String productCategoryFour;
 
-    public GoodsBuySalesReqVo(String supplierCode, String supplierName, String skuCode, String skuName, String transportCenterCode, String transportCenterName, String productCategoryName, String productCategoryCode, String productSortCode, String productSortName, String beginCreateTime, String finishCreateTime, Integer inboundDays, Integer beginTurnoverDays, Integer finishTurnoverDays, String warehouseCode, String warehouseName, String productCategoryOne, String productCategoryTwo, String productCategoryThree, String productCategoryFour) {
+    public GoodsBuySalesReqVo(String supplierCode, String supplierName, String skuCode, String skuName, String transportCenterCode, String transportCenterName, String productCategoryName, String productCategoryCode, String productSortCode, String productSortName, String beginRunTime, String finishRunTime, Integer inboundDays, Integer beginTurnoverDays, Integer finishTurnoverDays, String warehouseCode, String warehouseName, String productCategoryOne, String productCategoryTwo, String productCategoryThree, String productCategoryFour) {
         this.supplierCode = supplierCode;
         this.supplierName = supplierName;
         this.skuCode = skuCode;
@@ -107,8 +107,8 @@ public class GoodsBuySalesReqVo extends PageReq implements Serializable {
         this.productCategoryCode = productCategoryCode;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
-        this.beginCreateTime = beginCreateTime;
-        this.finishCreateTime = finishCreateTime;
+        this.beginRunTime = beginRunTime;
+        this.finishRunTime = finishRunTime;
         this.inboundDays = inboundDays;
         this.beginTurnoverDays = beginTurnoverDays;
         this.finishTurnoverDays = finishTurnoverDays;

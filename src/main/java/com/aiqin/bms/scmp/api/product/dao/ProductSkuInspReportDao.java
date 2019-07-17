@@ -34,7 +34,7 @@ public interface ProductSkuInspReportDao {
 
     int insertApplyList(List<ApplyProductSkuInspReport> applyProductSkuInspReports);
 
-    int insertInspReportList(@Param("productSkuInspReports") List<ProductSkuInspReport> productSkuInspReports);
+    int insertInspReportList(@Param("list") List<ProductSkuInspReport> productSkuInspReports);
 
     List<ProductSkuInspReportDraft> getDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);
 
