@@ -386,4 +386,14 @@ public class ReportServiceImpl implements ReportService {
     public List<MonthlySalesRespVo> selectDataStyle() {
         return reportDao.selectDataStyle();
     }
+
+    /**
+     *  查询所有一级品类
+     * @param
+     * @return
+     */
+    @Override
+    public List<String> selectAllOneCategory() {
+        return reportDao.selectAllOneCategory();
+    }
 }

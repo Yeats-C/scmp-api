@@ -186,4 +186,11 @@ public interface ReportDao {
      * @return
      */
     List<MonthlySalesRespVo> selectDataStyle();
+
+    /**
+     *  查询所有数据类型
+     * @param
+     * @return
+     */
+    List<String> selectAllOneCategory();
 }

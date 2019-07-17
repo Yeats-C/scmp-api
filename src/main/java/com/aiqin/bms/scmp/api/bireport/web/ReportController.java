@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.web;
 
+import com.aiqin.bms.scmp.api.base.PageReportResData;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
@@ -45,7 +46,7 @@ public class ReportController {
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<SupplierArrivalRateRespVo>> selectSupplierArrivalRate(
+    public HttpResponse<PageReportResData<SupplierArrivalRateRespVo>> selectSupplierArrivalRate(
             @RequestParam(value = "supplier_code", required = false) String supplierCode,
             @RequestParam(value = "supplier_name", required = false) String supplierName,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
@@ -708,6 +709,12 @@ public class ReportController {
     @ApiOperation("查询所有数据类型")
     public HttpResponse<List<MonthlySalesRespVo>> selectDataStyle(){
         return HttpResponse.success(reportService.selectDataStyle());
+    }
+
+    @GetMapping("/search/one/category")
+    @ApiOperation("查询所有一级品类")
+    public HttpResponse<List<String>> selectAllOneCategory(){
+        return HttpResponse.success(reportService.selectAllOneCategory());
     }
 
 }
