@@ -43,6 +43,10 @@ public class SupplierArrivalRateRespVo implements Serializable {
     @JsonProperty(value = "transport_center_code")
     private String transportCenterCode;
 
+    @ApiModelProperty("仓库名称")
+    @JsonProperty(value = "transport_center_name")
+    private String transportCenterName;
+
     @ApiModelProperty("订货数量")
     @JsonProperty("pre_inbound_num")
     private String preInboundNum;

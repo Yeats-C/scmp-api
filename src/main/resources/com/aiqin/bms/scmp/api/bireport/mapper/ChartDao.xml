@@ -6,8 +6,8 @@
     <sql id="select_monthly_sales">
         <where>
             1=1
-            <if test="productionDate!=null and productionDate!=''">
-                and bmcgpm.production_date like concat('%', #{productionDate}, '%')
+            <if test="month!=null and month!=''">
+                and bmcgpm.month like concat('%', #{month}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -44,8 +44,8 @@
     <sql id="select_monthly_gross_margin">
         <where>
             1=1
-            <if test="productionDate!=null and productionDate!=''">
-                and bmcgpm.production_date like concat('%', #{productionDate}, '%')
+            <if test="month!=null and month!=''">
+                and bmcgpm.month like concat('%', #{month}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -82,8 +82,8 @@
     <sql id="select_month_sales_achievement">
         <where>
             1=1
-            <if test="productionDate!=null and productionDate!=''">
-                and bmcgpm.production_date like concat('%', #{productionDate}, '%')
+            <if test="month!=null and month!=''">
+                and bmcgpm.month like concat('%', #{month}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -120,8 +120,8 @@
     <sql id="select_month_cumulative_brand_sales">
         <where>
             1=1
-            <if test="productionDate!=null and productionDate!=''">
-                and bmcbs.production_date like concat('%', #{productionDate}, '%')
+            <if test="month!=null and month!=''">
+                and bmcbs.month like concat('%', #{month}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcbs.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -158,8 +158,8 @@
     <sql id="select_month_cumulative_gross_profit_margin">
         <where>
             1=1
-            <if test="productionDate!=null and productionDate!=''">
-                and bmcgpm.production_date like concat('%', #{productionDate}, '%')
+            <if test="month!=null and month!=''">
+                and bmcgpm.month like concat('%', #{month}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')

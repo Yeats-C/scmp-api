@@ -705,6 +705,7 @@
         bsar.category_code as categoryCode,
         bsar.category_name as categoryName,
         bsar.logistics_center_code as transportCenterCode,
+        bsar.logistics_center_name as transportCenterName,
         bsar.pre_inbound_num as preInboundNum,
         bsar.pre_tax_amount as preTaxAmount,
         bsar.pra_inbound_num as praInboundNum,

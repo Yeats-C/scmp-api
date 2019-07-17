@@ -10,8 +10,8 @@ import lombok.Data;
 public class ChartReqVo {
 
     @ApiModelProperty("日期")
-    @JsonProperty("production_date")
-    private String productionDate;
+    @JsonProperty("month")
+    private String month;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -53,8 +53,8 @@ public class ChartReqVo {
     @JsonProperty("fen_sale")
     private String fenSale;
 
-    public ChartReqVo(String productionDate, String productSortCode, String productSortName, String priceChannelCode, String priceChannelName, String storeTypeCode, String storeTypeName, String dataStyleCode, String dataStyleName, String qunSale, String fenSale) {
-        this.productionDate = productionDate;
+    public ChartReqVo(String month, String productSortCode, String productSortName, String priceChannelCode, String priceChannelName, String storeTypeCode, String storeTypeName, String dataStyleCode, String dataStyleName, String qunSale, String fenSale) {
+        this.month = month;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
         this.priceChannelCode = priceChannelCode;

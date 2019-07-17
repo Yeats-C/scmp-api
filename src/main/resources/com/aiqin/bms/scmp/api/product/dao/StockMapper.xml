@@ -1956,12 +1956,8 @@
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update stock st
             SET
-            <if test="item.stockupNum!=null and item.stockupNum!=''">
                 st.stockup_num = #{item.stockupNum,jdbcType=BIGINT},
-            </if>
-            <if test="item.stockupfinishTime!=null and item.stockupfinishTime!=''">
                 st.stockupfinish_time = #{item.stockupfinishTime,jdbcType=VARCHAR}
-            </if>
             WHERE  st.id = #{item.id}
         </foreach>
     </update>
