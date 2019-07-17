@@ -340,17 +340,17 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 Integer productPurchaseSum = productPurchaseAmount * singleCount;
                 product.setProductPurchaseSum(productPurchaseSum);
                 if(product.getProductType() != null){
-                    if(product.getProductType() == 0){
+                    if(product.getProductType().equals(Global.PRODUCT_TYPE_0)){
                         productPieceSum += purchaseWhole;
                         productSingleSum += singleCount;
                         productTaxSum += productPurchaseSum;
-                    }else if(product.getProductType() == 1){
+                    }else if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                        giftSingleSum += purchaseWhole;
+                        giftSingleSum += singleCount;
+                    }else if(product.getProductType().equals(Global.PRODUCT_TYPE_2)){
                         matterPieceSum += purchaseWhole;
                         matterSingleSum += singleCount;
                         matterTaxSum += productPurchaseSum;
-                    }else if(product.getProductType() == 2){
-                        giftSingleSum += purchaseWhole;
-                        giftSingleSum += singleCount;
                     }
                 }
             }
