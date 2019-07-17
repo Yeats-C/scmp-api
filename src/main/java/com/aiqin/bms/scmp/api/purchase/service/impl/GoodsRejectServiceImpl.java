@@ -667,8 +667,6 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     /**
      *  根据品类code 查询所有的名称(包含父级)
-     * @param categoryCode
-     * @return String
      */
     public String selectCategoryName(String categoryCode) {
         StringBuilder stringBuilder = new StringBuilder();
