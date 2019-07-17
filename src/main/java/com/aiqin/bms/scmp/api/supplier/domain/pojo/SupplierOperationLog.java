@@ -3,10 +3,12 @@ package com.aiqin.bms.scmp.api.supplier.domain.pojo;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
 @ApiModel("操作日志")
+@Data
 public class SupplierOperationLog extends CommonBean {
     @ApiModelProperty("主键id")
     private Long id;
@@ -41,91 +43,7 @@ public class SupplierOperationLog extends CommonBean {
     @ApiModelProperty("处理描述")
     private String handleName;
 
-    public Long getId() {
-        return id;
-    }
+    @ApiModelProperty("备注")
+    private String remark;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getObjectId() {
-        return objectId;
-    }
-
-    public void setObjectId(String objectId) {
-        this.objectId = objectId == null ? null : objectId.trim();
-    }
-
-    public Byte getHandleType() {
-        return handleType;
-    }
-
-    public void setHandleType(Byte handleType) {
-        this.handleType = handleType;
-    }
-
-    public Byte getObjectType() {
-        return objectType;
-    }
-
-    public void setObjectType(Byte objectType) {
-        this.objectType = objectType;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy == null ? null : createBy.trim();
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy == null ? null : updateBy.trim();
-    }
-
-    public Byte getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(Byte delFlag) {
-        this.delFlag = delFlag;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
-    }
-
-    public String getHandleName() {
-        return handleName;
-    }
-
-    public void setHandleName(String handleName) {
-        this.handleName = handleName;
-    }
 }
