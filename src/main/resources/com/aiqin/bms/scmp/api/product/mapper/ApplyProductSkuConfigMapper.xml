@@ -101,6 +101,7 @@
       <if test="skuName != null and skuName!= '' ">
         and sku_name like CONCAT('%',#{skuName},'%')
       </if>
+    order by create_time desc
    </select>
   <select id="selectByApplyCode" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
     select

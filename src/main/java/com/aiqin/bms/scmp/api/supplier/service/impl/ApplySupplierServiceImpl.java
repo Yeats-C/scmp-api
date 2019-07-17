@@ -176,6 +176,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
             ApplySupplierReqDTO applySupplierReqDTO = new ApplySupplierReqDTO();
             BeanCopyUtils.copy(applySupplierId,applySupplierReqDTO);
             applySupplierReqDTO.setApplySupplierCode(applySupplierId.getApplySupplierCode());
+            applySupplierReqDTO.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
             applySupplierReqDTO.setFormNo(applySupplier.getFormNo());
             applySupplierReqDTO.setDirectSupervisorCode(applySupplier.getDirectSupervisorCode());
             workFlow(applySupplierReqDTO);
@@ -234,7 +235,12 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                     throw new BizException("审核状态修改失败");
                 }
                 //存日志
-                supplierCommonService.getInstance(applySupplierReqDTO.getApplySupplierCode()+"", HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUPPLIER.getStatus(), ObjectTypeCode.APPLY_SUPPLIER.getStatus(),applySupplierReqDTO,HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUPPLIER.getName());
+                supplierCommonService.getInstance(
+                        applySupplierReqDTO.getApplySupplierCode()+"",
+                        HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUPPLIER.getStatus(),
+                        ObjectTypeCode.APPLY_SUPPLIER.getStatus(),
+                        applySupplierReqDTO,HandleTypeCoce.APPLY_UPDATE_APPROVAL_SUPPLIER.getName()
+                );
             }else {
                 //存调用失败的日志
                 String msg = workFlowRespVO.getMsg();
@@ -400,7 +406,11 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                 }
                 //赋值供应商编码
                 applySupplier.setSupplierCode(supplier.getSupplierCode());
-                supplierCommonService.getInstance(supplier.getSupplierCode(),handleTypeCoceStatus,ObjectTypeCode.SUPPLIER.getStatus(),supplier,handleTypeCoceName,Optional.ofNullable(applySupplier.getUpdateBy()).orElse(applySupplier.getCreateBy()));
+                supplierCommonService.getInstance(supplier.getSupplierCode(),
+                        handleTypeCoceStatus,ObjectTypeCode.SUPPLIER.getStatus(),
+                        supplier,
+                        handleTypeCoceName,
+                        Optional.ofNullable(applySupplier.getUpdateBy()).orElse(applySupplier.getCreateBy()));
             }else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
                 //驳回, 设置状态
                 applySupplier.setApplyStatus(vo.getApplyStatus());

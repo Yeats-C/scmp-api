@@ -2,10 +2,12 @@ package com.aiqin.bms.scmp.api.supplier.dao.dictionary;
 
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryInfoResponseVO;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public interface SupplierDictionaryInfoDao {
 
@@ -25,5 +27,13 @@ public interface SupplierDictionaryInfoDao {
 
     int infoEnabled(@Param("enabled") Byte enabled, @Param("code") String code);
 
-
+    /**
+     * 通过字典名称查类型
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param dicName
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo>
+     */
+    @MapKey("supplierContent")
+    Map<String,SupplierDictionaryInfo> selectByName(@Param("list") List<String> dicName, @Param("companyCode") String companyCode);
 }

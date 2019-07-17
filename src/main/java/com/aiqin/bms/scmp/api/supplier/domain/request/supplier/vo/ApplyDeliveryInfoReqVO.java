@@ -46,4 +46,7 @@ public class ApplyDeliveryInfoReqVO{
     @ApiModelProperty("发货类型(0 发货 1退货)")
     private Byte deliveryType;
 
+    @ApiModelProperty("发送至描述")
+    private String sendToDesc;
+
 }

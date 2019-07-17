@@ -61,7 +61,7 @@
     from price_project
     <where>
       <if test="code != null and code.length()  > 0 ">
-        price_project_code =  #{code,jdbcType=VARCHAR}
+        price_project_code  LIKE CONCAT('%', #{code,jdbcType=VARCHAR},'%')
       </if>
       <if test="name != null and name.length()  > 0 ">
         and price_project_name LIKE CONCAT('%',#{name,jdbcType=VARCHAR},'%')

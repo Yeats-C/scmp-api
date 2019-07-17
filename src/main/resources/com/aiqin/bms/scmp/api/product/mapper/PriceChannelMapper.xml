@@ -64,10 +64,10 @@
     from price_channel
     <where>
       <if test="code != null and code.length() >0 ">
-        price_channel_code = #{code,jdbcType=VARCHAR}
+        price_channel_code  like CONCAT('%', #{code,jdbcType=VARCHAR},'%')
       </if>
       <if test="name != null and name.length() >0 ">
-        price_channel_name like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+        and price_channel_name like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
       </if>
       <if test="enable != null and enable.length()  > 0 ">
         and price_channel_enable =  #{enable,jdbcType=TINYINT}
