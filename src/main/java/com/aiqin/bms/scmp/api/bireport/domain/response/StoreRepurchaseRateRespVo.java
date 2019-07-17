@@ -13,9 +13,13 @@ public class StoreRepurchaseRateRespVo {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("渠道")
-    @JsonProperty("order_original")
-    private String orderOriginal;
+    @ApiModelProperty("渠道code")
+    @JsonProperty("order_original_code")
+    private String orderOriginalCode;
+
+    @ApiModelProperty("渠道名称")
+    @JsonProperty("order_original_name")
+    private String orderOriginalName;
 
     @ApiModelProperty("省区")
     @JsonProperty("province_name")

@@ -115,7 +115,7 @@
       and d.arrival_subscribe_status = #{arrivalSubscribeStatus,jdbcType=VARCHAR}
     </if>
     <if test="purchaseOrderCode != null and purchaseOrderCode != '' ">
-      and a.purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+      and a.purchase_order_code LIKE CONCAT('%',#{purchaseOrderCode},'%')
     </if>
     <if test="licensePlate != null and licensePlate != '' ">
       and d.license_plate like concat('%',#{licensePlate,jdbcType=VARCHAR},'%')

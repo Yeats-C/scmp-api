@@ -5,21 +5,21 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-@ApiModel("月累计品类销售情况respVo")
+@ApiModel("月毛利率情况respVo")
 @Data
-public class MonthCumulativeGrossProfitMarginRespVo {
+public class MonthlyGrossMarginRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
     private Long id;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @JsonProperty("finish_create_time")
+    private String finishCreateTime;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -53,21 +53,13 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     @JsonProperty("data_style_name")
     private String dataStyleName;
 
-    @ApiModelProperty("品类编码")
-    @JsonProperty("category_type_code")
-    private String categoryTypeCode;
-
-    @ApiModelProperty("品类名称")
-    @JsonProperty("category_type_name")
-    private String categoryTypeName;
-
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_cost")
     private String salesCost;
 
     @ApiModelProperty("渠道销售额")
-    @JsonProperty("qun_amount")
-    private String qunAmount;
+    @JsonProperty("qun_order_amount")
+    private String qunOrderAmount;
 
     @ApiModelProperty("渠道毛利额")
     @JsonProperty("qun_maori")
@@ -76,10 +68,6 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("qun_maori_rate")
     private Double qunMaoriRate;
-
-    @ApiModelProperty("上期毛利率")
-    @JsonProperty("qun_last_maori_rate")
-    private Double qunLastMaoriRate;
 
     @ApiModelProperty("渠道同比")
     @JsonProperty("qun_compared_same")
@@ -90,8 +78,8 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     private String qunSequential;
 
     @ApiModelProperty("分销销售额")
-    @JsonProperty("fen_amount")
-    private String fenAmount;
+    @JsonProperty("fen_order_amount")
+    private String fenOrderAmount;
 
     @ApiModelProperty("分销毛利额")
     @JsonProperty("fen_maori")
@@ -101,10 +89,6 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     @JsonProperty("fen_maori_rate")
     private Double fenMaoriRate;
 
-    @ApiModelProperty("上期分销毛利率")
-    @JsonProperty("fen_last_maori_rate")
-    private Double fenLastMaoriRate;
-
     @ApiModelProperty("分销同比")
     @JsonProperty("fen_compared_same")
     private String fenComparedSame;
@@ -112,5 +96,4 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     @ApiModelProperty("分销环比")
     @JsonProperty("fen_sequential")
     private String fenSequential;
-
 }

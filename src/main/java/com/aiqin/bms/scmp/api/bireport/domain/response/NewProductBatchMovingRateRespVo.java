@@ -45,6 +45,10 @@ public class NewProductBatchMovingRateRespVo {
     @JsonProperty("product_category_code")
     private String productCategoryCode;
 
+    @ApiModelProperty("品类编码")
+    @JsonProperty("product_category_name")
+    private String productCategoryName;
+
     @ApiModelProperty("一级品类")
     @JsonProperty("product_category_one")
     private String productCategoryOne;
@@ -107,11 +111,11 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("qun_maori_rate")
-    private Integer qunMaoriRate;
+    private Double qunMaoriRate;
 
-    @ApiModelProperty("分销销售金额")
-    @JsonProperty("fen_amount")
-    private Integer fenAmount;
+    @ApiModelProperty("分销销售成本")
+    @JsonProperty("fen_sales_costs")
+    private Integer fenSalesCosts;
 
     @ApiModelProperty("分销毛利额")
     @JsonProperty("fen_maori")
@@ -119,7 +123,7 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("fen_maori_rate")
-    private Integer fenMaoriRate;
+    private Double fenMaoriRate;
 
     @ApiModelProperty("近一个月销售数量")
     @JsonProperty("sales_num_one_month")

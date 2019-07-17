@@ -525,7 +525,7 @@
     on a.sku_code = c.sku_code
     where a.del_flag = 0
     <if test="skuCode != null and skuCode != '' ">
-      and a.sku_code = #{skuCode,jdbcType=VARCHAR}
+      and a.sku_code like concat('%',#{skuCode,jdbcType=VARCHAR}, '%')
     </if>
     <if test="skuName != null and skuName != ''  ">
       and a.sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')

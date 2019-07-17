@@ -36,7 +36,7 @@ public interface ReturnOrderInfoMapper {
      * @param reqVO
      * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO>
      */
-    List<QueryReturnOrderManagementReqVO> selectReturnOrderManagementList(QueryReturnOrderManagementReqVO reqVO);
+    List<QueryReturnOrderManagementRespVO> selectReturnOrderManagementList(QueryReturnOrderManagementReqVO reqVO);
     /**
      * 详情
      * @author NullPointException

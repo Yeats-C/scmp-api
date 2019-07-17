@@ -61,7 +61,7 @@
       and <![CDATA[ create_time <= #{createTimeEnd}]]>
     </if>
     <if test="orderCode != null and orderCode != '' ">
-      and order_code = #{orderCode}
+      and order_code LIKE CONCAT('%',#{orderCode},'%')
     </if>
     <if test="orderType != null">
       and order_type = #{orderType}

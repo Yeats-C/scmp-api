@@ -1,16 +1,17 @@
 package com.aiqin.bms.scmp.api.bireport.domain.request;
 
-import com.aiqin.bms.scmp.api.base.PageReq;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
-
-@ApiModel("月销售情况request")
+@ApiModel("图表request")
 @Data
-public class MonthlySalesReqVo extends PageReq implements Serializable {
+public class ChartReqVo {
+
+    @ApiModelProperty("日期")
+    @JsonProperty("production_date")
+    private String productionDate;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -44,15 +45,16 @@ public class MonthlySalesReqVo extends PageReq implements Serializable {
     @JsonProperty("data_style_name")
     private String dataStyleName;
 
-    @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @ApiModelProperty("渠道销售")
+    @JsonProperty("qun_sale")
+    private String qunSale;
 
-    @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @ApiModelProperty("分销销售")
+    @JsonProperty("fen_sale")
+    private String fenSale;
 
-    public MonthlySalesReqVo(String productSortCode, String productSortName, String priceChannelCode, String priceChannelName, String storeTypeCode, String storeTypeName, String dataStyleCode, String dataStyleName, String beginRunTime, String finishRunTime) {
+    public ChartReqVo(String productionDate, String productSortCode, String productSortName, String priceChannelCode, String priceChannelName, String storeTypeCode, String storeTypeName, String dataStyleCode, String dataStyleName, String qunSale, String fenSale) {
+        this.productionDate = productionDate;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
         this.priceChannelCode = priceChannelCode;
@@ -61,10 +63,10 @@ public class MonthlySalesReqVo extends PageReq implements Serializable {
         this.storeTypeName = storeTypeName;
         this.dataStyleCode = dataStyleCode;
         this.dataStyleName = dataStyleName;
-        this.beginRunTime = beginRunTime;
-        this.finishRunTime = finishRunTime;
+        this.qunSale = qunSale;
+        this.fenSale = fenSale;
     }
 
-    public MonthlySalesReqVo() {
+    public ChartReqVo() {
     }
 }

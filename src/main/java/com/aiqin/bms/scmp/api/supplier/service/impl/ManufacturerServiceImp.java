@@ -263,7 +263,7 @@ public class ManufacturerServiceImp  implements ManufacturerService {
                 record.setCompanyCode(authToken.getCompanyCode());
                 record.setCompanyName(authToken.getCompanyName());
             }
-            record.setEnable(Byte.parseByte("1"));
+            record.setEnable(Byte.parseByte("0"));
             return manufacturerDao.insert(record);
         }catch (Exception e){
             log.error(e.getMessage());

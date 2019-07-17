@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @ApiModel
@@ -113,6 +114,7 @@ public class RejectRecord {
     @JsonProperty("remark")
     private String remark;
 
+    @Size(max = 66,message = "运输信息说明长度小于66")
     @ApiModelProperty(value = "运输信息说明")
     @JsonProperty("transport_remark")
     private String transportRemark;

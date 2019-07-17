@@ -92,7 +92,7 @@
         and a.sku_code like concat('%',#{skuCode},'%')
       </if>
       <if test="orderCode != null and orderCode != ''">
-        and b.order_code = #{orderCode}
+        and b.order_code LIKE CONCAT(CONCAT('%',#{orderCode},'%'))
       </if>
     </select>
     <select id="selectproductUniqueCodeList"
@@ -143,7 +143,7 @@
         and a.sku_code like concat('%',#{skuCode},'%')
       </if>
       <if test="orderCode != null and orderCode != ''">
-        and b.order_code = #{orderCode}
+        and b.order_code LIKE CONCAT(CONCAT('%',#{orderCode},'%'))
       </if>
 <!--      <if test="uniqueCode != null and uniqueCode != ''">-->
 <!--        and a.unique_code = #{uniqueCode}-->

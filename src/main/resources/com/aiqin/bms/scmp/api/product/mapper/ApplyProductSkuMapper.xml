@@ -145,7 +145,7 @@
         and apply_status = #{applyStatus}
       </if>
       <if test="code != null and  code != '' ">
-        and apply_code = #{code}
+        and apply_code like CONCAT('%',#{code},'%')
       </if>
       <if test="skuName != null and skuName!= '' ">
         and sku_name like CONCAT('%',#{skuName},'%')

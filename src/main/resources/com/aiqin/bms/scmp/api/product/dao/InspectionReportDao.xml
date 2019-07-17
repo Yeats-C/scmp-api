@@ -69,15 +69,12 @@
   </insert>
   <insert id="insertInspReportList" parameterType="java.util.List">
     insert into product_sku_inspection_report (sku_code, sku_name,
-    production_date, inspection_report_path,
-    create_time, create_by, update_time,
-    update_by, del_flag)
+    production_date, inspection_report_path, create_time, create_by)
     values
-    <foreach collection="productSkuInspReports" item="item" index="index" separator=",">
+    <foreach collection="list" item="item" index="index" separator=",">
       (#{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
-      #{item.productionDate,jdbcType=TIMESTAMP}, #{item.inspectionReportPath,jdbcType=VARCHAR},
-      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
-      #{item.updateBy,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT})
+      #{item.productionDate,jdbcType=VARCHAR}, #{item.inspectionReportPath,jdbcType=VARCHAR},
+      now(), #{item.createBy,jdbcType=VARCHAR})
     </foreach>
   </insert>
 
