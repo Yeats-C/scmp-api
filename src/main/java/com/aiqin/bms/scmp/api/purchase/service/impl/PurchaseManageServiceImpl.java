@@ -185,7 +185,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 Integer amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
                 Integer number = purchaseWhole * packNumber + purchaseSingle;
                 detail.setSingleCount(number);
-                detail.setProductPurchaseSum(number * amount);
+                detail.setProductAmount(amount);
+                detail.setProductTotalAmount(number * amount);
             }
         }
         pageResData.setDataList(details);
