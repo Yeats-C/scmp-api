@@ -29,7 +29,7 @@ public interface RejectApplyRecordDetailDao {
 
     List<RejectApplyDetailResponse> selectByRejectCode(String rejectApplyCode);
 
-    SupplyCompany selectSupplyCompany(String supplierCode);
+    SupplyCompany selectSupplyCompany(String supplyCode);
 
     List<RejectApplyRecordDetail> listByConditionPage(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes,@Param("pageSize")Integer pageSize, @Param("beginIndex")Integer beginIndex);
 
