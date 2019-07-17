@@ -1428,4 +1428,10 @@
         bms.data_style_name as dataStyleName
         FROM bi_monthly_sales bms
     </select>
+    <select id="selectAllOneCategory" resultType="java.util.HashMap">
+        SELECT
+        bsar.category_code,
+        bsar.category_name
+        FROM bi_supplier_arrival_rate bsar
+    </select>
 </mapper>

@@ -149,4 +149,12 @@ public interface ReportService {
      * @return
      */
     List<MonthlySalesRespVo> selectDataStyle();
+
+
+    /**
+     *  查询所有一级品类
+     * @param
+     * @return
+     */
+    List<String> selectAllOneCategory();
 }
