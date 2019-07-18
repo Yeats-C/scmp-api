@@ -15,7 +15,7 @@ public class SupplierArrivalRateRespVo implements Serializable {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("入库时间")
+    @ApiModelProperty("日期时间")
     @JsonProperty("inbound_time")
     private String inboundTime;
 
@@ -66,6 +66,14 @@ public class SupplierArrivalRateRespVo implements Serializable {
     @ApiModelProperty("采购组负责人")
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
+
+    @ApiModelProperty("采购组负责人编码")
+    @JsonProperty("responsible_person_code")
+    private String responsiblePersonCode;
+
+    @ApiModelProperty("计算时间")
+    @JsonProperty("run_time")
+    private String runTime;
 
 
 }

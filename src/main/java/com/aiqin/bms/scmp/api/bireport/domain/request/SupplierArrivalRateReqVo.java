@@ -33,21 +33,21 @@ public class SupplierArrivalRateReqVo extends PageReq implements Serializable {
     private String categoryName;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @JsonProperty("begin_inbound_time")
+    private String beginInboundTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @JsonProperty("finish_inbound_time")
+    private String finishInboundTime;
 
-    public SupplierArrivalRateReqVo(String supplierCode, String supplierName, String transportCenterCode, String categoryCode, String categoryName, String beginRunTime, String finishRunTime) {
+    public SupplierArrivalRateReqVo(String supplierCode, String supplierName, String transportCenterCode, String categoryCode, String categoryName, String beginInboundTime, String finishInboundTime) {
         this.supplierCode = supplierCode;
         this.supplierName = supplierName;
         this.transportCenterCode = transportCenterCode;
         this.categoryCode = categoryCode;
         this.categoryName = categoryName;
-        this.beginRunTime = beginRunTime;
-        this.finishRunTime = finishRunTime;
+        this.beginInboundTime = beginInboundTime;
+        this.finishInboundTime = finishInboundTime;
     }
 
     public SupplierArrivalRateReqVo() {

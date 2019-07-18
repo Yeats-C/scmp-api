@@ -37,11 +37,11 @@
             <if test="categoryName!=null and categoryName!=''">
                 and bsar.category_name like concat('%', #{categoryName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bsar.run_time between #{beginRunTime}
+            <if test="beginInboundTime!=null and beginInboundTime!=''">
+                and bsar.inbound_time between #{beginInboundTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishInboundTime!=null and finishInboundTime!=''">
+                and #{finishInboundTime}
             </if>
         </where>
     </sql>
@@ -240,11 +240,11 @@
             <if test="batchCode!=null and batchCode!=''">
                 and bnpbmr.batch_code=#{batchCode}
             </if>
-            <if test="beginMaoriRate!=null">
-                and bnpbmr.maori_rate <![CDATA[>=]]> #{beginMaoriRate}
+            <if test="beginQunMaoriRate!=null">
+                and bnpbmr.qun_maori_rate <![CDATA[>=]]> #{beginQunMaoriRate}
             </if>
-            <if test="finishMaoriRate!=null">
-                and bnpbmr.maori_rate <![CDATA[<=]]> #{finishMaoriRate}
+            <if test="finishQunMaoriRate!=null">
+                and bnpbmr.qun_maori_rate <![CDATA[<=]]> #{finishQunMaoriRate}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bnpbmr.product_sort_code=#{productSortCode}
@@ -710,6 +710,8 @@
         bsar.pra_inbound_num as praInboundNum,
         bsar.pra_tax_amount as praTaxAmount,
         bsar.pra_tax_amount_rate as praTaxAmountRate,
+        date_format(bsar.run_time, '%Y-%m-%d %H:%i:%s') as runTime,
+        bsar.responsible_person_code as responsiblePersonCode,
         bsar.responsible_person_name as responsiblePersonName
         from bi_supplier_arrival_rate bsar
         <include refid="select_supplier_arrival_rate"/>
@@ -737,11 +739,11 @@
         <if test="categoryName!=null and categoryName!=''">
             and bsar.category_name like concat('%', #{categoryName}, '%')
         </if>
-        <if test="beginRunTime!=null and beginRunTime!=''">
-            and bsar.run_time between #{beginRunTime}
+        <if test="beginInboundTime!=null and beginInboundTime!=''">
+            and bsar.inbound_time between #{beginInboundTime}
         </if>
-        <if test="finishRunTime!=null and finishRunTime!=''">
-            and #{finishRunTime}
+        <if test="finishInboundTime!=null and finishInboundTime!=''">
+            and #{finishInboundTime}
         </if>
         group by bsar.id
         ) as tmp

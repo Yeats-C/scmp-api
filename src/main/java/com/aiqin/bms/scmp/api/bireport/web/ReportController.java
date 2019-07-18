@@ -41,8 +41,8 @@ public class ReportController {
             @ApiImplicitParam(name = "transport_center_code", value = "仓库编码", type = "String"),
             @ApiImplicitParam(name = "category_level_code", value = "一级品类编号", type = "String"),
             @ApiImplicitParam(name = "category_level_name", value = "一级品类名称", type = "String"),
-            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_inbound_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_inbound_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
@@ -52,11 +52,11 @@ public class ReportController {
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
             @RequestParam(value = "category_level_code", required = false) String categoryLevelCode,
             @RequestParam(value = "category_level_name", required = false) String categoryLevelName,
-            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
-            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
+            @RequestParam(value = "begin_inbound_time", required = false) String beginInboundTime,
+            @RequestParam(value = "finish_inbound_time", required = false) String finishInboundTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        SupplierArrivalRateReqVo supplierArrivalRateReqVo = new SupplierArrivalRateReqVo(supplierCode,supplierName,transportCenterCode,categoryLevelCode,categoryLevelName,beginRunTime,finishRunTime);
+        SupplierArrivalRateReqVo supplierArrivalRateReqVo = new SupplierArrivalRateReqVo(supplierCode,supplierName,transportCenterCode,categoryLevelCode,categoryLevelName,beginInboundTime,finishInboundTime);
         supplierArrivalRateReqVo.setPageNo(pageNo);
         supplierArrivalRateReqVo.setPageNo(pageSize);
         return HttpResponse.success(reportService.selectSupplierArrivalRate(supplierArrivalRateReqVo));
@@ -220,8 +220,8 @@ public class ReportController {
             @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
             @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "batch_code", value = "批次号", type = "String"),
-            @ApiImplicitParam(name = "begin_maori_rate", value = "毛利率begin", type = "Double"),
-            @ApiImplicitParam(name = "finish_maori_rate", value = "毛利率finish", type = "Double"),
+            @ApiImplicitParam(name = "begin_qun_maori_rate", value = "毛利率begin", type = "Double"),
+            @ApiImplicitParam(name = "finish_qun_maori_rate", value = "毛利率finish", type = "Double"),
             @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
@@ -239,13 +239,13 @@ public class ReportController {
             @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
             @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
             @RequestParam(value = "batch_code", required = false) String batchCode,
-            @RequestParam(value = "begin_maori_rate", required = false) Double beginMaoriRate,
-            @RequestParam(value = "finish_maori_rate", required = false) Double finishMaoriRate,
+            @RequestParam(value = "begin_qun_maori_rate", required = false) Double beginQunMaoriRate,
+            @RequestParam(value = "finish_qun_maori_rate", required = false) Double finishQunMaoriRate,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_code", required = false) String productSortName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo = new NewProductBatchMovingRateReqVo(skuCode,skuName,priceChannelCode,priceChannelName,supplierCode,supplierName,productCategoryCode,productCategoryName,beginRunTime,finishRunTime,batchCode,beginMaoriRate,finishMaoriRate,
+        NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo = new NewProductBatchMovingRateReqVo(skuCode,skuName,priceChannelCode,priceChannelName,supplierCode,supplierName,productCategoryCode,productCategoryName,beginRunTime,finishRunTime,batchCode,beginQunMaoriRate,finishQunMaoriRate,
                 productSortCode,productSortName);
         newProductBatchMovingRateReqVo.setPageNo(pageNo);
         newProductBatchMovingRateReqVo.setPageSize(pageSize);
