@@ -23,30 +23,6 @@ public class GiftsBuySalesRespVo  implements Serializable {
     @JsonProperty("sku_name")
     private String skuName;
 
-    @ApiModelProperty("品类名称")
-    @JsonProperty("category_name")
-    private String categoryName;
-
-    @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
-
-    @ApiModelProperty("一级品类")
-    @JsonProperty("product_category_one")
-    private String productCategoryOne;
-
-    @ApiModelProperty("二级品类")
-    @JsonProperty("product_category_two")
-    private String productCategoryTwo;
-
-    @ApiModelProperty("三级品类")
-    @JsonProperty("product_category_three")
-    private String productCategoryThree;
-
-    @ApiModelProperty("四级品类")
-    @JsonProperty("product_category_four")
-    private String productCategoryFour;
-
     @ApiModelProperty("部门编码")
     @JsonProperty("product_sort_code")
     private String productSortCode;
@@ -54,6 +30,26 @@ public class GiftsBuySalesRespVo  implements Serializable {
     @ApiModelProperty("所属部门")
     @JsonProperty("product_sort_name")
     private String productSortName;
+
+    @ApiModelProperty("品类名称")
+    @JsonProperty("category_name")
+    private String categoryName;
+
+    @ApiModelProperty("品类编码")
+    @JsonProperty("category_code")
+    private String categoryCode;
+
+    @ApiModelProperty("一级品类")
+    @JsonProperty("category_code_one")
+    private String categoryCodeOne;
+
+    @ApiModelProperty("二级品类")
+    @JsonProperty("category_code_two")
+    private String categoryCodeTwo;
+
+    @ApiModelProperty("三级品类")
+    @JsonProperty("category_code_three")
+    private String categoryCodeThree;
 
     @ApiModelProperty("品牌编码")
     @JsonProperty("product_brand_code")
@@ -84,8 +80,8 @@ public class GiftsBuySalesRespVo  implements Serializable {
     private String warehouseName;
 
     @ApiModelProperty("库存数量")
-    @JsonProperty("inventory_num")
-    private Integer inventoryNum;
+    @JsonProperty("available_num")
+    private Integer availableNum;
 
     @ApiModelProperty("近一个月销售数量")
     @JsonProperty("sales_num_one_month")
@@ -99,14 +95,6 @@ public class GiftsBuySalesRespVo  implements Serializable {
     @JsonProperty("turnover_days")
     private Integer turnoverDays;
 
-    @ApiModelProperty("入库开始时间")
-    @JsonProperty("create_time")
-    private String createTime;
-
-    @ApiModelProperty("已经入库天数")
-    @JsonProperty("inbound_days")
-    private Integer inboundDays;
-
     @ApiModelProperty("采购组负责人编码")
     @JsonProperty("responsible_person_code")
     private String responsiblePersonCode;
@@ -115,5 +103,15 @@ public class GiftsBuySalesRespVo  implements Serializable {
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
 
+    @ApiModelProperty("入库开始时间")
+    @JsonProperty("inbound_time")
+    private String inboundTime;
 
+    @ApiModelProperty("已经入库天数")
+    @JsonProperty("inbound_days")
+    private Integer inboundDays;
+
+    @ApiModelProperty("计算时间")
+    @JsonProperty("create_time")
+    private String createTime;
 }

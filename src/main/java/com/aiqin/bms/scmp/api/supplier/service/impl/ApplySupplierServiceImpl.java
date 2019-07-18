@@ -250,8 +250,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                 );
             }else {
                 //存调用失败的日志
-                String msg = workFlowRespVO.getMsg();
-                throw new BizException(msg);
+                throw new BizException(MessageId.create(Project.PRODUCT_API,57,workFlowRespVO.getMsg()));
             }
         } catch (Exception e) {
             //存失败日志

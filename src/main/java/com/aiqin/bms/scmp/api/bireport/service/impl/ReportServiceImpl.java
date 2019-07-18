@@ -34,7 +34,7 @@ public class ReportServiceImpl implements ReportService {
         try {
            // PageHelper.startPage(supplierArrivalRateReqVo.getPageNo(), supplierArrivalRateReqVo.getPageSize());
             List<SupplierArrivalRateRespVo> supplierArrivalRateRespVos = reportDao.selectSupplierArrivalRate(supplierArrivalRateReqVo);
-            List<Map> maps = reportDao.selectTableCloumnName();
+            List<Map> maps = reportDao.selectSupplierArrivalRateTableCloumnName();
             Integer total = reportDao.countSupplierArrivalRate(supplierArrivalRateReqVo);
             return new PageReportResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos,maps);
         } catch (Exception ex) {
@@ -50,12 +50,13 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo) {
+    public PageReportResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo) {
         try {
             // PageHelper.startPage(goodsBuySalesReqVo.getPageNo(), goodsBuySalesReqVo.getPageSize());
             List<GoodsBuySalesRespVo> goodsBuySalesRespVos = reportDao.selectGoodsBuySales(goodsBuySalesReqVo);
             Integer total = reportDao.countGoodsBuySales(goodsBuySalesReqVo);
-            return new PageResData<GoodsBuySalesRespVo>(total,goodsBuySalesRespVos);
+            List<Map> maps = reportDao.selectGoodsBuySalesTableCloumnName();
+            return new PageReportResData<GoodsBuySalesRespVo>(total,goodsBuySalesRespVos,maps);
         } catch (Exception ex) {
             log.error("查询批次商品进销存失败");
             ex.printStackTrace();
@@ -69,12 +70,14 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo) {
+    public PageReportResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo) {
         try {
             // PageHelper.startPage(giftsBuySalesReqVo.getPageNo(), giftsBuySalesReqVo.getPageSize());
             List<GiftsBuySalesRespVo> giftsBuySalesRespVos = reportDao.selectGiftsBuySales(giftsBuySalesReqVo);
             Integer total = reportDao.countGiftsBuySales(giftsBuySalesReqVo);
-            return new PageResData<GiftsBuySalesRespVo>(total,giftsBuySalesRespVos);
+            String cloumnName = "bi_gifts_buy_sales";
+            List<Map> maps = reportDao.selectTableCloumnName(cloumnName);
+            return new PageReportResData<GiftsBuySalesRespVo>(total,giftsBuySalesRespVos,maps);
         } catch (Exception ex) {
             log.error("查询赠品进销存失败");
             ex.printStackTrace();

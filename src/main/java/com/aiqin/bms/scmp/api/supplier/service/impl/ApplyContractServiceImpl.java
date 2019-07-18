@@ -630,7 +630,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 //存日志
                 supplierCommonService.getInstance(applyContractDTO.getApplyContractCode()+"", HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(),content,null,HandleTypeCoce.APPROVAL.getName());
             }else {
-                throw new GroundRuntimeException();
+                throw new GroundRuntimeException(workFlowRespVO.getMsg());
             }
         }catch (Exception e) {
           throw new GroundRuntimeException(e.getMessage());

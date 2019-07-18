@@ -354,7 +354,7 @@
     <include refid="Base_Column_List" />
     from warehouse
     where logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
-    and enable=1
+    and enable=0
     <if test="warehouseTypeCode != null and warehouseTypeCode !=3">
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
@@ -366,7 +366,7 @@
     select
     <include refid="Base_Column_List" />
     from warehouse
-    where  enable =1
+    where  enable =0
     <if test="provinceCode != null  and provinceCode !=''">
      and province_code   like CONCAT(CONCAT('%',#{provinceCode},'%'))
     </if>
@@ -386,7 +386,7 @@
     <include refid="Base_Column_List" />
     from warehouse
     where logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
-    and enable=1
+    and enable=0
     <if test="warehouseTypeCode != null ">
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
