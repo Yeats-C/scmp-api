@@ -333,11 +333,11 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     public HttpResponse<PageResData<RejectApplyRecordDetail>> rejectApplyDetailInfo(RejectApplyRequest response) {
         List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByConditionPage(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
                 response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes(), response.getPageSize(), response.getBeginIndex());
-        QueryStockBatchSkuRespVo queryStockBatchSkuRespVo;
+        RejectApplyDetailHandleResponse rejectApplyDetailHandleResponse;
         for (RejectApplyRecordDetail detailResponse : detailList) {
-            queryStockBatchSkuRespVo = stockDao.selectSkuBatchCode(detailResponse.getPurchaseGroupCode(), detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode(), detailResponse.getBarcode());
-            if (queryStockBatchSkuRespVo != null) {
-                detailResponse.setStockCount(queryStockBatchSkuRespVo.getAvailableNum().intValue());
+            rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(detailResponse.getPurchaseGroupCode(), detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode());
+            if (rejectApplyDetailHandleResponse != null) {
+                detailResponse.setStockCount(rejectApplyDetailHandleResponse.getStockCount());
             }
         }
         Integer listCount = rejectApplyRecordDetailDao.listByConditionPageCount(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
