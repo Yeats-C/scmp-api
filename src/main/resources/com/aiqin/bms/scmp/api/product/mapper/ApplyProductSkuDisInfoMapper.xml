@@ -19,6 +19,7 @@
     <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
     <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="max_order_num" jdbcType="VARCHAR" property="maxOrderNum" />
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, product_name, spec, unit_code, unit_name, delivery_code, base_product_content, 

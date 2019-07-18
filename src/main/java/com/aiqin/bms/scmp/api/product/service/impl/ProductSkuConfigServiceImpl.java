@@ -429,8 +429,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 item.setCreateTime(currentDate);
             });
             num = applyMapper.insertBatch(applyProductSkuConfigs);
-            //删除临时表备用仓库信息
-            spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
+            //删除临时表配置信息
+            draftMapper.deleteOutByConfigCodes(configCodes);
+
             //通过编码查询出备用仓库信息
             List<ProductSkuConfigSpareWarehouseDraft> spareWarehouseDrafts = spareWarehouseDraftMapper.
                     getListByConfigCodes(configCodes);
@@ -439,8 +440,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                         BeanCopyUtils.copyList(spareWarehouseDrafts,ApplyProductSkuConfigSpareWarehouse.class);
                 //批量保存备用仓库
                 applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
-                //删除临时表配置信息
-                draftMapper.deleteOutByConfigCodes(configCodes);
+                //删除临时表备用仓库信息
+                spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
             }
         }
 
