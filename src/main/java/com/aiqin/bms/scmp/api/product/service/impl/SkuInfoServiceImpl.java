@@ -1201,6 +1201,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         return productSkuInfoMapper.updateStatus(respVos);
     }
 
+    @Override
+    public Map<String,ProductSkuInfo> selectBySkuCodes(Set<String> skuList, String companyCode) {
+        return productSkuInfoMapper.selectBySkuCodes(skuList, companyCode);
+    }
+
     private ProductApplyInfoRespVO<ProductSkuApplyVo> dealApplyViewData(List<ProductSkuApplyVo> list) {
         ProductApplyInfoRespVO<ProductSkuApplyVo> resp = new ProductApplyInfoRespVO<>();
         //数据相同默认取第一个
