@@ -30,7 +30,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="linenum" jdbcType="BIGINT" property="linenum" />
   </resultMap>
-  <resultMap id="MmsReq" type="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO">
+  <resultMap id="MmsReq" type="com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundProductWmsResVO">
 
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
@@ -488,7 +488,7 @@
     </foreach>
   </update>
 
-  <select id="selectMmsReqByOutboundOderCode" parameterType="java.lang.String" resultMap="MmsReq"  resultType="com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundProductWmsResVO">
+  <select id="selectMmsReqByOutboundOderCode" parameterType="java.lang.String" resultMap="MmsReq">
     select
     <include refid="Base_Column_MmsReq" />
     from outbound_product a left join product_sku b on a.sku_code = b.sku_code
