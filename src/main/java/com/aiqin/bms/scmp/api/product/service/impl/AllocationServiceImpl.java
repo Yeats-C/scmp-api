@@ -363,7 +363,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             }else {
                 log.error("上传审批接口失败");
                 log.error("失败原因是"+workFlowRespVO.getMsg());
-                throw new GroundRuntimeException();
+                throw new GroundRuntimeException(workFlowRespVO.getMsg());
             }
         }catch (Exception e) {
             throw new GroundRuntimeException(e.getMessage());

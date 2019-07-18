@@ -937,34 +937,29 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     @Transactional(rollbackFor = BizException.class)
     public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode) {
-        try {
-            WorkFlowVO workFlowVO = new WorkFlowVO();
-            workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
-            workFlowVO.setHost(workFlowBaseUrl.supplierHost);
-            workFlowVO.setFormNo(form);
-            workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_GOODS.getNum());
-            AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-            String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
-            String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
-            String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
-            workFlowVO.setTitle(title);
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("auditPersonId",directSupervisorCode);
-            workFlowVO.setVariables(jsonObject.toString());
-            WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS);
-            if(workFlowRespVO.getSuccess()){
-                if(CollectionUtils.isNotEmpty(applyProductSkus)){
-                    //存日志
-                     productCommonService.getInstance(applyCode +"", HandleTypeCoce.ADD_PRODUCT_SKU.getStatus(), ObjectTypeCode.APPLY_SKU.getStatus(),applyProductSkus,HandleTypeCoce.ADD_PRODUCT_SKU.getName());
-                }
-            }else{
-                //存调用失败的日志
-                String msg = workFlowRespVO.getMsg();
-                throw new BizException(msg);
+
+        WorkFlowVO workFlowVO = new WorkFlowVO();
+        workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
+        workFlowVO.setHost(workFlowBaseUrl.supplierHost);
+        workFlowVO.setFormNo(form);
+        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_GOODS.getNum());
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
+        String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
+        String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
+        workFlowVO.setTitle(title);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("auditPersonId",directSupervisorCode);
+        workFlowVO.setVariables(jsonObject.toString());
+        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS);
+        if(workFlowRespVO.getSuccess()){
+            if(CollectionUtils.isNotEmpty(applyProductSkus)){
+                //存日志
+                 productCommonService.getInstance(applyCode +"", HandleTypeCoce.ADD_PRODUCT_SKU.getStatus(), ObjectTypeCode.APPLY_SKU.getStatus(),applyProductSkus,HandleTypeCoce.ADD_PRODUCT_SKU.getName());
             }
-        } catch (BizException e) {
-            //存失败日志
-            throw new BizException(e.getMessage());
+        }else{
+            //存调用失败的日志
+            throw new BizException(MessageId.create(Project.PRODUCT_API,57,workFlowRespVO.getMsg()));
         }
     }
 
