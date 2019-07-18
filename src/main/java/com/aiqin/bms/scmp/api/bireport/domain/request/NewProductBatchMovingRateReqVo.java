@@ -37,32 +37,32 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
     private String supplierName;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("品类")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @JsonProperty("begin_inbound_time")
+    private String beginInboundTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @JsonProperty("finish_inbound_time")
+    private String finishInboundTime;
 
     @ApiModelProperty("批次号")
     @JsonProperty("batch_code")
     private String batchCode;
 
     @ApiModelProperty("毛利率begin")
-    @JsonProperty("begin_qun_maori_rate")
-    private Double beginQunMaoriRate;
+    @JsonProperty("begin_channel_maori_rate")
+    private Double beginChannelMaoriRate;
 
     @ApiModelProperty("毛利率finish")
-    @JsonProperty("finish_qun_maori_rate")
-    private Double finishQunMaoriRate;
+    @JsonProperty("finish_channel_maori_rate")
+    private Double finishChannelMaoriRate;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -73,20 +73,20 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
     private String productSortName;
 
 
-    public NewProductBatchMovingRateReqVo(String skuCode, String skuName, String priceChannelCode, String priceChannelName, String supplierCode, String supplierName, String productCategoryCode, String productCategoryName, String beginRunTime, String finishRunTime, String batchCode, Double beginQunMaoriRate, Double finishQunMaoriRate, String productSortCode, String productSortName) {
+    public NewProductBatchMovingRateReqVo(String skuCode, String skuName, String priceChannelCode, String priceChannelName, String supplierCode, String supplierName, String categoryCode, String categoryName, String beginInboundTime, String finishInboundTime, String batchCode, Double beginChannelMaoriRate, Double finishChannelMaoriRate, String productSortCode, String productSortName) {
         this.skuCode = skuCode;
         this.skuName = skuName;
         this.priceChannelCode = priceChannelCode;
         this.priceChannelName = priceChannelName;
         this.supplierCode = supplierCode;
         this.supplierName = supplierName;
-        this.productCategoryCode = productCategoryCode;
-        this.productCategoryName = productCategoryName;
-        this.beginRunTime = beginRunTime;
-        this.finishRunTime = finishRunTime;
+        this.categoryCode = categoryCode;
+        this.categoryName = categoryName;
+        this.beginInboundTime = beginInboundTime;
+        this.finishInboundTime = finishInboundTime;
         this.batchCode = batchCode;
-        this.beginQunMaoriRate = beginQunMaoriRate;
-        this.finishQunMaoriRate = finishQunMaoriRate;
+        this.beginChannelMaoriRate = beginChannelMaoriRate;
+        this.finishChannelMaoriRate = finishChannelMaoriRate;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
     }

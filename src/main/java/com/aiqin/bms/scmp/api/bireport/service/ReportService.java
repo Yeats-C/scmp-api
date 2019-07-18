@@ -43,7 +43,7 @@ public interface ReportService {
      * @param newProductBatchMovingRateReqVo
      * @return
      */
-    PageResData selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
+    PageReportResData selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
 
     /**
      *  门店复购率

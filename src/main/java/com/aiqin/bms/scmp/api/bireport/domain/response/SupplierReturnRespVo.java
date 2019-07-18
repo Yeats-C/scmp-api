@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 @ApiModel("供应商退货(退供)respVo")
 @Data
 public class SupplierReturnRespVo {
@@ -80,4 +83,8 @@ public class SupplierReturnRespVo {
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")
     private String createTime;
+
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
 }

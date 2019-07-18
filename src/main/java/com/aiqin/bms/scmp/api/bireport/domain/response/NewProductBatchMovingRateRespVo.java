@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 @ApiModel("新品批次动销率respVo")
 @Data
 public class NewProductBatchMovingRateRespVo {
@@ -42,28 +45,24 @@ public class NewProductBatchMovingRateRespVo {
     private String productSortName;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("一级品类")
-    @JsonProperty("product_category_one")
-    private String productCategoryOne;
+    @JsonProperty("category_code_one")
+    private String categoryCodeOne;
 
     @ApiModelProperty("二级品类")
-    @JsonProperty("product_category_two")
-    private String productCategoryTwo;
+    @JsonProperty("category_code_two")
+    private String categoryCodeTwo;
 
     @ApiModelProperty("三级品类")
-    @JsonProperty("product_category_three")
-    private String productCategoryThree;
-
-    @ApiModelProperty("四级品类")
-    @JsonProperty("product_category_four")
-    private String productCategoryFour;
+    @JsonProperty("category_code_three")
+    private String categoryCodeThree;
 
     @ApiModelProperty("品牌编码")
     @JsonProperty("product_brand_code")
@@ -82,8 +81,8 @@ public class NewProductBatchMovingRateRespVo {
     private Integer manufacturerGuidePrice;
 
     @ApiModelProperty("库存数量")
-    @JsonProperty("inventory_num")
-    private Integer inventoryNum;
+    @JsonProperty("available_num")
+    private Integer availableNum;
 
     @ApiModelProperty("库存成本")
     @JsonProperty("tax_cost")
@@ -101,29 +100,33 @@ public class NewProductBatchMovingRateRespVo {
     @JsonProperty("sales_costs")
     private Integer salesCosts;
 
+    @ApiModelProperty("销售渠道")
+    @JsonProperty("order_original")
+    private Integer orderOriginal;
+
     @ApiModelProperty("渠道销售金额")
-    @JsonProperty("qun_amount")
-    private Integer qunAmount;
+    @JsonProperty("channel_amount")
+    private Integer channelAmount;
 
     @ApiModelProperty("渠道毛利额")
-    @JsonProperty("qun_maori")
-    private Integer qunMaori;
+    @JsonProperty("channel_maori")
+    private Integer channelMaori;
 
     @ApiModelProperty("渠道毛利率")
-    @JsonProperty("qun_maori_rate")
-    private Double qunMaoriRate;
+    @JsonProperty("channel_maori_rate")
+    private Double channelMaoriRate;
 
     @ApiModelProperty("分销销售成本")
-    @JsonProperty("fen_sales_costs")
-    private Integer fenSalesCosts;
+    @JsonProperty("distribution_sales_costs")
+    private Integer distributionSalesCosts;
 
     @ApiModelProperty("分销毛利额")
-    @JsonProperty("fen_maori")
-    private Integer fenMaori;
+    @JsonProperty("distribution_maori")
+    private Integer distributionMaori;
 
     @ApiModelProperty("分销毛利率")
-    @JsonProperty("fen_maori_rate")
-    private Double fenMaoriRate;
+    @JsonProperty("distribution_maori_rate")
+    private Double distributionMaoriRate;
 
     @ApiModelProperty("近一个月销售数量")
     @JsonProperty("sales_num_one_month")
@@ -138,8 +141,8 @@ public class NewProductBatchMovingRateRespVo {
     private String turnoverDays;
 
     @ApiModelProperty("第一次入库时间")
-    @JsonProperty("create_time")
-    private String createTime;
+    @JsonProperty("inbound_time")
+    private String inboundTime;
 
     @ApiModelProperty("已经入库天数")
     @JsonProperty("inbound_days")
@@ -156,4 +159,13 @@ public class NewProductBatchMovingRateRespVo {
     @ApiModelProperty("采购组负责人")
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
+
+    @ApiModelProperty("计算时间")
+    @JsonProperty("create_time")
+    private String createTime;
+
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
+
 }

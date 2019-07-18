@@ -32,11 +32,12 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageReportResData selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
         try {
-           // PageHelper.startPage(supplierArrivalRateReqVo.getPageNo(), supplierArrivalRateReqVo.getPageSize());
             List<SupplierArrivalRateRespVo> supplierArrivalRateRespVos = reportDao.selectSupplierArrivalRate(supplierArrivalRateReqVo);
             List<Map> maps = reportDao.selectSupplierArrivalRateTableCloumnName();
             Integer total = reportDao.countSupplierArrivalRate(supplierArrivalRateReqVo);
-            return new PageReportResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos,maps);
+            SupplierArrivalRateRespVo supplierArrivalRateRespVo = new SupplierArrivalRateRespVo();
+            supplierArrivalRateRespVo.setColumnList(maps);
+            return new PageReportResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos,supplierArrivalRateRespVo);
         } catch (Exception ex) {
             log.error("查询供应商到货率失败");
             ex.printStackTrace();
@@ -52,11 +53,12 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageReportResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo) {
         try {
-            // PageHelper.startPage(goodsBuySalesReqVo.getPageNo(), goodsBuySalesReqVo.getPageSize());
             List<GoodsBuySalesRespVo> goodsBuySalesRespVos = reportDao.selectGoodsBuySales(goodsBuySalesReqVo);
             Integer total = reportDao.countGoodsBuySales(goodsBuySalesReqVo);
             List<Map> maps = reportDao.selectGoodsBuySalesTableCloumnName();
-            return new PageReportResData<GoodsBuySalesRespVo>(total,goodsBuySalesRespVos,maps);
+            GoodsBuySalesRespVo goodsBuySalesRespVo = new GoodsBuySalesRespVo();
+            goodsBuySalesRespVo.setColumnList(maps);
+            return new PageReportResData<GoodsBuySalesRespVo>(total,goodsBuySalesRespVos,goodsBuySalesRespVo);
         } catch (Exception ex) {
             log.error("查询批次商品进销存失败");
             ex.printStackTrace();
@@ -72,12 +74,13 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageReportResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo) {
         try {
-            // PageHelper.startPage(giftsBuySalesReqVo.getPageNo(), giftsBuySalesReqVo.getPageSize());
             List<GiftsBuySalesRespVo> giftsBuySalesRespVos = reportDao.selectGiftsBuySales(giftsBuySalesReqVo);
             Integer total = reportDao.countGiftsBuySales(giftsBuySalesReqVo);
             String cloumnName = "bi_gifts_buy_sales";
             List<Map> maps = reportDao.selectTableCloumnName(cloumnName);
-            return new PageReportResData<GiftsBuySalesRespVo>(total,giftsBuySalesRespVos,maps);
+            GiftsBuySalesRespVo giftsBuySalesRespVo = new GiftsBuySalesRespVo();
+            giftsBuySalesRespVo.setColumnList(maps);
+            return new PageReportResData<GiftsBuySalesRespVo>(total,giftsBuySalesRespVos,giftsBuySalesRespVo);
         } catch (Exception ex) {
             log.error("查询赠品进销存失败");
             ex.printStackTrace();
@@ -93,12 +96,13 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageReportResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo) {
         try {
-            // PageHelper.startPage(supplierReturnReqVo.getPageNo(), supplierReturnReqVo.getPageSize());
             List<SupplierReturnRespVo> supplierReturnRespVos = reportDao.selectSupplierReturn(supplierReturnReqVo);
             Integer total = reportDao.countSupplierReturn(supplierReturnReqVo);
             String cloumnName = "bi_supplier_return";
             List<Map> maps = reportDao.selectTableCloumnName(cloumnName);
-            return new PageReportResData<SupplierReturnRespVo>(total,supplierReturnRespVos,maps);
+            SupplierReturnRespVo supplierReturnRespVo = new SupplierReturnRespVo();
+            supplierReturnRespVo.setColumnList(maps);
+            return new PageReportResData<SupplierReturnRespVo>(total,supplierReturnRespVos,supplierReturnRespVo);
         } catch (Exception ex) {
             log.error("查询供应商退货失败");
             ex.printStackTrace();
@@ -112,12 +116,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo) {
+    public PageReportResData selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo) {
         try {
-            // PageHelper.startPage(newProductBatchMovingRateReqVo.getPageNo(), newProductBatchMovingRateReqVo.getPageSize());
             List<NewProductBatchMovingRateRespVo> newProductBatchMovingRateRespVos = reportDao.selectNewProductBatchMovingRate(newProductBatchMovingRateReqVo);
             Integer total = reportDao.countNewProductBatchMovingRate(newProductBatchMovingRateReqVo);
-            return new PageResData<NewProductBatchMovingRateRespVo>(total,newProductBatchMovingRateRespVos);
+            String cloumnName = "bi_new_product_batch_moving_rate";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVo = new NewProductBatchMovingRateRespVo();
+            newProductBatchMovingRateRespVo.setColumnList(maps);
+            return new PageReportResData<NewProductBatchMovingRateRespVo>(total,newProductBatchMovingRateRespVos,newProductBatchMovingRateRespVo);
         } catch (Exception ex) {
             log.error("查询新品批次动销率失败");
             ex.printStackTrace();

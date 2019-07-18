@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 @ApiModel("供应商到货率respVo")
 @Data
@@ -75,5 +77,7 @@ public class SupplierArrivalRateRespVo implements Serializable {
     @JsonProperty("create_time")
     private String createTime;
 
-
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
 }

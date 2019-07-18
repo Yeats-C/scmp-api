@@ -15,12 +15,12 @@ public class PageReportResData<T> {
     @ApiModelProperty("返回数据")
     private List<T> dataList;
     @ApiModelProperty("返回列名")
-    private List<Map> columnList;
+    private T column;
 
-    public PageReportResData(Integer totalCount, List<T> dataList, List<Map> columnList) {
+    public PageReportResData(Integer totalCount, List<T> dataList, T column) {
         this.totalCount = totalCount;
         this.dataList = dataList;
-        this.columnList = columnList;
+        this.column = column;
     }
 
     public PageReportResData() {
@@ -42,11 +42,11 @@ public class PageReportResData<T> {
         this.dataList = dataList;
     }
 
-    public List<Map> getColumnList() {
-        return columnList;
+    public T getColumn() {
+        return column;
     }
 
-    public void setColumnList(List<Map> columnList) {
-        this.columnList = columnList;
+    public void setColumn(T column) {
+        this.column = column;
     }
 }

@@ -219,26 +219,26 @@
             <if test="supplierName!=null and supplierName!=''">
                 and bnpbmr.supplier_name like concat('%', #{supplierName}, '%')
             </if>
-            <if test="productCategoryCode!=null and productCategoryCode!=''">
-                and bnpbmr.product_category_code=#{productCategoryCode}
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bnpbmr.category_code=#{categoryCode}
             </if>
-            <if test="productCategoryName!=null and productCategoryName!=''">
-                and bnpbmr.product_category_name like concat('%', #{productCategoryName}, '%')
+            <if test="categoryName!=null and categoryName!=''">
+                and bnpbmr.category_name like concat('%', #{categoryName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bnpbmr.run_time between #{beginRunTime}
+            <if test="beginInboundTime!=null and beginInboundTime!=''">
+                and bnpbmr.inbound_time between #{beginInboundTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishInboundTime!=null and finishInboundTime!=''">
+                and #{finishInboundTime}
             </if>
             <if test="batchCode!=null and batchCode!=''">
-                and bnpbmr.batch_code=#{batchCode}
+                and bnpbmr.stock_batch_code=#{batchCode}
             </if>
-            <if test="beginQunMaoriRate!=null">
-                and bnpbmr.qun_maori_rate <![CDATA[>=]]> #{beginQunMaoriRate}
+            <if test="beginChannelMaoriRate!=null">
+                and bnpbmr.channel_maori_rate <![CDATA[>=]]> #{beginChannelMaoriRate}
             </if>
-            <if test="finishQunMaoriRate!=null">
-                and bnpbmr.qun_maori_rate <![CDATA[<=]]> #{finishQunMaoriRate}
+            <if test="finishChannelMaoriRate!=null">
+                and bnpbmr.channel_maori_rate <![CDATA[<=]]> #{finishChannelMaoriRate}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bnpbmr.product_sort_code=#{productSortCode}
@@ -893,42 +893,44 @@
         bnpbmr.id as id,
         bnpbmr.sku_code as skuCode,
         bnpbmr.sku_name as skuName,
-        bnpbmr.batch_code as batchCode,
+        bnpbmr.stock_batch_code as batchCode,
         bnpbmr.supplier_code as supplierCode,
         bnpbmr.supplier_name as supplierName,
         bnpbmr.product_sort_code as productSortCode,
         bnpbmr.product_sort_name as productSortName,
-        bnpbmr.product_category_code as productCategoryCode,
-        bnpbmr.product_category_name as productCategoryName,
-        bnpbmr.product_category_one as productCategoryOne,
-        bnpbmr.product_category_two as productCategoryTwo,
-        bnpbmr.product_category_three as productCategoryThree,
-        bnpbmr.product_category_four as productCategoryFour,
+        bnpbmr.category_code as categoryCode,
+        bnpbmr.category_name as categoryName,
+        bnpbmr.category_code_one as categoryCodeOne,
+        bnpbmr.category_code_two as categoryCodeTwo,
+        bnpbmr.category_code_three as categoryCodeThree,
         bnpbmr.product_brand_code as productBrandCode,
         bnpbmr.product_brand_name as productBrandName,
         bnpbmr.purchase_price as purchasePrice,
         bnpbmr.manufacturer_guide_price as manufacturerGuidePrice,
-        bnpbmr.inventory_num as inventoryNum,
+        bnpbmr.available_num as availableNum,
         bnpbmr.tax_cost as taxCost,
-        bnpbmr.price_channel_name as priceChannelName,
+        bnpbmr.order_original as priceChannelName,
         bnpbmr.num as num,
         bnpbmr.sales_costs as salesCosts,
-        bnpbmr.qun_amount as qunAmount,
-        bnpbmr.qun_maori as qunMaori,
-        bnpbmr.qun_maori_rate as qunMaoriRate,
-        bnpbmr.fen_amount as fenAmount,
-        bnpbmr.fen_maori as fenMaori,
-        bnpbmr.fen_maori_rate as fenMaoriRate,
+        bnpbmr.order_original as orderOriginal,
+        bnpbmr.channel_amount as channelAmount,
+        bnpbmr.channel_maori as channelMaori,
+        bnpbmr.channel_maori_rate as channelMaoriRate,
+        bnpbmr.distribution_sales_costs as distributionSalesCosts,
+        bnpbmr.distribution_maori as distributionMaori,
+        bnpbmr.distribution_maori_rate as distributionMaoriRate,
         bnpbmr.sales_num_one_month as salesNumOneMonth,
-        bnpbmr.sales_cost_one_month as salesCostOneMonth,
+        bnpbmr.sales_coses_one_month as salesCosesOneMonth,
         bnpbmr.turnover_days as turnoverDays,
-        bnpbmr.create_time as createTime,
+        date_format(bnpbmr.inbound_time, '%Y-%m-%d %H:%i:%s') as inboundTime,
         bnpbmr.inbound_days as inboundDays,
         bnpbmr.config_status as configStatus,
         bnpbmr.responsible_person_code as responsiblePersonCode,
-        bnpbmr.responsible_person_name as responsiblePersonName
+        bnpbmr.responsible_person_name as responsiblePersonName,
+        date_format(bnpbmr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_new_product_batch_moving_rate bnpbmr
         <include refid="select_new_product_batch_moving_rate"/>
+        GROUP by bnpbmr.inbound_time desc
     </select>
     <select id="countNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
             resultType="java.lang.Integer">
@@ -1419,6 +1421,13 @@
         FROM bi_supplier_arrival_rate bsar
     </select>
     <select id="selectTableCloumnName" resultType="java.util.HashMap">
+        select
+        COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
+        from information_schema.COLUMNS
+        where
+        table_name = #{cloumnName} and table_schema = 'bms_scmp'
+    </select>
+    <select id="selectNewProductBatchMovingRateTableCloumnName" resultType="java.util.HashMap">
         select
         COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
         from information_schema.COLUMNS
