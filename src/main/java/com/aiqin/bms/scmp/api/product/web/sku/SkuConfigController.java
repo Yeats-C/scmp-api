@@ -45,6 +45,18 @@ public class SkuConfigController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+    @PostMapping("/importSave")
+    @ApiOperation("保存SKU配置导入信息")
+    public HttpResponse<Integer> saveImport(@RequestBody List<SaveSkuConfigReqVo> configReqVos) {
+        try {
+            return HttpResponse.success(productSkuConfigService.importSaveDraft(configReqVos));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
     @PostMapping("/update")
     @ApiOperation("修改SKU配置信息")

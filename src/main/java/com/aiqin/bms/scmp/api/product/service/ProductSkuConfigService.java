@@ -28,6 +28,16 @@ public interface ProductSkuConfigService {
      * @return
      */
     Integer insertDraftList(List<SaveSkuConfigReqVo> configReqVos);
+    /**
+     * 批量保存导入的临时配置信息
+     * @param configReqVos
+     * @return
+     */
+    Integer importSaveDraft(List<SaveSkuConfigReqVo> configReqVos);
+
+    void saveDraftBatch(List<ProductSkuConfigDraft> draftList);
+
+    void deleteByIds(List<Long> ids);
 
     /**
      * 批量修改临时配置信息

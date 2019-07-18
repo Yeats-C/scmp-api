@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigDraft;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 
 import java.util.List;
@@ -40,4 +41,20 @@ public interface ProductSkuConfigDraftMapper {
      * @return
      */
     int insertBatch(List<ProductSkuConfigDraft> records);
+    /**
+     * 通过sku编码查询
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param configReqVos
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigDraft>
+     */
+    List<ProductSkuConfigDraft> getListBySkuVo(List<SaveSkuConfigReqVo> configReqVos);
+    /**
+     * 根据id删除
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param ids
+     * @return int
+     */
+    int deleteByIds(List<Long> ids);
 }

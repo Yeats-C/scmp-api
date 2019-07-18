@@ -55,6 +55,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -92,6 +93,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     private SkuInfoService skuInfoService;
     @Autowired
     private LogisticsCenterService logisticsCenterService;
+    @Autowired
+    private ProductSkuConfigMapper productSkuConfigMapper;
 
     /**
      * 批量保存临时配置信息
@@ -127,6 +130,88 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         return num;
     }
 
+    /**
+     * 批量保存导入的临时配置信息
+     * @param configReqVos
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer importSaveDraft(List<SaveSkuConfigReqVo> configReqVos) {
+        //校验是否有申请中的数据
+        List<ProductSkuConfig> officials = productSkuConfigMapper.selectByVo(configReqVos);
+        Map<String, ProductSkuConfig> configMap = officials.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getTransportCenterCode(), Function.identity(), (k1, k2) -> k2));
+        //草稿表的中的数据
+        List<ProductSkuConfigDraft> drafts = draftMapper.getListBySkuVo(configReqVos);
+        Map<String, ProductSkuConfigDraft> draftMap = drafts.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getTransportCenterCode(), Function.identity(), (k1, k2) -> k2));
+        Integer num = 0;
+        List<Long> ids = Lists.newArrayList();
+        List<String> error = Lists.newArrayList();
+        Date date = new Date();
+        List<ProductSkuConfigDraft> draftList = Lists.newArrayList();
+        List<SpareWarehouseReqVo> spareWarehouseReqVos = Lists.newArrayList();
+        for (SaveSkuConfigReqVo item : configReqVos) {
+            if (Objects.nonNull(draftMap.get(item.getSkuCode() + item.getTransportCenterCode()))) {
+                //临时表需要删除的数据
+                ids.add(draftMap.get(item.getSkuCode() + item.getTransportCenterCode()).getId());
+            }
+            if (Objects.nonNull(configMap.get(item.getSkuCode() + item.getTransportCenterCode()))) {
+                //判断是否有审核中的数据
+                error.add("sku编码为"+item.getSkuCode()+"下的仓库名称为"+item.getTransportCenterCode()+"有在审批中的数据。请删除该条数据，重新提交");
+                continue;
+            }
+            ProductSkuConfigDraft draft = new ProductSkuConfigDraft();
+            BeanCopyUtils.copy(item,draft);
+            draft.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
+            draft.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+            synchronized (ProductSkuConfigServiceImpl.class) {
+                String code = getCode("", EncodingRuleType.SKU_CONFIG_CODE);
+                draft.setConfigCode(code);
+            }
+            draft.setCompanyCode(getUser().getCompanyCode());
+            draft.setCompanyName(getUser().getCompanyName());
+            draft.setCreateBy(getUser().getPersonName());
+            draft.setCreateTime(date);
+            draftList.add(draft);
+            if(CollectionUtils.isNotEmpty(item.getSpareWarehouses())){
+                for (SpareWarehouseReqVo spareWarehouse : item.getSpareWarehouses()) {
+                    spareWarehouse.setConfigCode(draft.getConfigCode());
+                }
+                spareWarehouseReqVos.addAll(item.getSpareWarehouses());
+            }
+        }
+        if (CollectionUtils.isNotEmpty(error)) {
+            throw new BizException(StringUtils.strip(error.toString(),  "[]"));
+        }else {
+            //删除草稿变数据
+            deleteByIds(ids);
+            //批量保存主表数据
+            saveDraftBatch(draftList);
+            //批量附表保存
+            List<ProductSkuConfigSpareWarehouseDraft> draftList2 = BeanCopyUtils.copyList(spareWarehouseReqVos,ProductSkuConfigSpareWarehouseDraft.class);
+            ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseDraftList(draftList2);
+        }
+        return num;
+    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveDraftBatch(List<ProductSkuConfigDraft> draftList) {
+        int i = draftMapper.insertBatch(draftList);
+        if (i != draftList.size()) {
+            log.error("保存正式表数据异常！");
+            throw new BizException(ResultCode.draft_config_save_error);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByIds(List<Long> ids) {
+       int i = draftMapper.deleteByIds(ids);
+        if (i != ids.size()) {
+            log.error("删除临时表数据异常！");
+            throw new BizException(ResultCode.draft_config_save_error);
+        }
+    }
     /**
      * 批量修改临时配置信息
      *
@@ -884,10 +969,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
      * 补充数据
      * @author NullPointException
      * @date 2019/7/18
-     * @param productSkuList
-     * @param centerList
-     * @param skuCodeMap
-     * @param configImport
+     * @param productSkuList sku集合
+     * @param centerList 仓库
+     * @param skuCodeMap 验重集合
+     * @param configImport 需要校验的实体
      * @return com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo
      */
     private SaveSkuConfigReqVo validData(Map<String,ProductSkuInfo> productSkuList, Map<String,LogisticsCenterDTO> centerList, Map<String, String> skuCodeMap,SkuConfigImport configImport) {
