@@ -60,6 +60,10 @@
     create_time as createTime, create_by_id as createById, create_by_name as createByName
     from purchase_apply
     <where>
+      purchase_group_code in
+      <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+        #{item.purchaseGroupCode,jdbcType=VARCHAR}
+      </foreach>
       <if test="beginTime != null">
         and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
       </if>
@@ -85,6 +89,10 @@
   <select id="applyCount" resultType="java.lang.Integer">
     select count(1) from purchase_apply
     <where>
+      purchase_group_code in
+      <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+        #{item.purchaseGroupCode,jdbcType=VARCHAR}
+      </foreach>
       <if test="beginTime != null">
         and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
       </if>

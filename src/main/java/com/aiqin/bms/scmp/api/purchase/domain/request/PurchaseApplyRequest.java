@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
 import com.aiqin.bms.scmp.api.base.PagesRequest;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -141,6 +142,9 @@ public class PurchaseApplyRequest extends PagesRequest {
     @ApiModelProperty(value="采购方式 0 配送  1.铺采直送")
     @JsonProperty("purchase_mode")
     private Integer purchaseMode;
+
+    @ApiModelProperty(value="不需要传的参数")
+    private List<PurchaseGroupVo> groupList;
 
     public PurchaseApplyRequest() {
     }
