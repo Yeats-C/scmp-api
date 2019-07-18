@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.mapper;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplyProductSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import org.apache.ibatis.annotations.Param;
@@ -43,4 +44,12 @@ public interface ProductSkuConfigMapper {
     List<SkuConfigsRepsVo> getListBySkuCode(String skuCode);
 
     List<Long> selectSkuListForSaleAreaCount(QuerySkuConfigReqVo reqVo);
+    /**
+     * 通过vo查询
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param configReqVos
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig>
+     */
+    List<ProductSkuConfig> selectByVo(List<SaveSkuConfigReqVo> configReqVos);
 }
