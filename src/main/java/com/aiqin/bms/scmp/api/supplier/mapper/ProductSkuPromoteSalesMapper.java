@@ -23,4 +23,8 @@ public interface ProductSkuPromoteSalesMapper {
     List<ProductSkuPromoteSales> getList(QueryPromoteSalesReqVo reqVo);
 
     int insertBatch(List<ProductSkuPromoteSales> records);
+
+    List<ProductSkuPromoteSales> getAll();
+
+    int deleteBySkuCodes(List<String> delSkus);
 }

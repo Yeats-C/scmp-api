@@ -167,7 +167,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             int i1 = applySupplyCompanyAcctReqDTO.getApplyType().intValue();
             String info = "账户信息";
             String applyTypeTitle = "修改";
-            if(StatusTypeCode.ADD_APPLY.getStatus().equals(applySupplyCompanyAcctReqDTO.getApplyStatus())) {
+            if(StatusTypeCode.ADD_APPLY.getStatus().equals(applySupplyCompanyAcctReqDTO.getApplyType())) {
                 applyTypeTitle =  "新增";
             }
             workFlowVO.setTitle(applyTypeTitle+applySupplyCompanyAcctReqDTO.getAccountName()+info);

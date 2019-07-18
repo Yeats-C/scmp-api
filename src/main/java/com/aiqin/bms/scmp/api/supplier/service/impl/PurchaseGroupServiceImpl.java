@@ -122,7 +122,7 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         //设置采购组主体的删除状态，启用禁用状态
         purchaseGroupDTO.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus());
-        purchaseGroupDTO.setEnable(StatusTypeCode.DIS_ABLE.getStatus());
+        purchaseGroupDTO.setEnable(StatusTypeCode.EN_ABLE.getStatus());
         //保存采购组的主体
         int k = ((PurchaseGroupService) AopContext.currentProxy()).insertSelective(purchaseGroupDTO);
         if( k>0){
@@ -133,7 +133,7 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
                     // 设置关联编码
                     groupBuyerDTOList.stream().forEach(purchase -> purchase.setPurchaseGroupCode(String.valueOf(purchaseGroupDTO.getPurchaseGroupCode())));
                     //设置启用禁用状态
-                    groupBuyerDTOList.stream().forEach(purchase -> purchase.setEnable(StatusTypeCode.DIS_ABLE.getStatus()));
+                    groupBuyerDTOList.stream().forEach(purchase -> purchase.setEnable(StatusTypeCode.EN_ABLE.getStatus()));
                     // 设置逻辑删除状态
                     groupBuyerDTOList.stream().forEach(purchase -> purchase.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus()));
                     // 保存采购组专员

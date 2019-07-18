@@ -78,7 +78,7 @@
     from return_order_info
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectReturnOrderManagementList" resultType="com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO">
+  <select id="selectReturnOrderManagementList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnOrderManagementRespVO">
    select
              a.return_order_code returnOrderCode,
              a.return_order_type returnOrderType,
@@ -117,10 +117,10 @@
       and a.customer_code like concat('%',#{customerCode},'%')
     </if>
     <if test="orderCode != null and orderCode != ''">
-      and a.order_code = #{orderCode}
+      and a.order_code LIKE CONCAT(CONCAT('%',#{orderCode},'%'))
     </if>
     <if test="returnOrderCode != null and returnOrderCode != ''">
-      and a.return_order_code = #{returnOrderCode}
+      and a.return_order_code LIKE CONCAT(CONCAT('%',#{returnOrderCode},'%'))
     </if>
       <if test="orderTypeCode != null and orderTypeCode.size > 0">
       and a.order_type_code in
@@ -128,6 +128,7 @@
        #{item}
       </foreach>
     </if>
+    order by create_date desc
   </select>
   <resultMap id="selectReturnOrderDetail" type="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO">
     <result column="areturn_order_code" jdbcType="VARCHAR" property="returnOrderCode" />
@@ -813,7 +814,7 @@
     <select id="selectInbound" resultMap="selectInbound">
             select
                    a.inbound_oder_code acode,
-                   a.inbound_status_name astatus,
+                   a.inbound_status_code astatus,
                    a.inbound_time ainboundTime,
                    a.warehouse_name awarehouseName,
                    b.sku_code bskuCode,

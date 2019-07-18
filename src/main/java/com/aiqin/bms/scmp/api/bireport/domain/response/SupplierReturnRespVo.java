@@ -50,8 +50,8 @@ public class SupplierReturnRespVo {
     private Integer sumAmount;
 
     @ApiModelProperty("退货单日期")
-    @JsonProperty("create_time")
-    private String createTime;
+    @JsonProperty("return_goods_create_time")
+    private String returnGoodsCreateTime;
 
     @ApiModelProperty("实际发货日期")
     @JsonProperty("out_stock_time")
@@ -76,4 +76,8 @@ public class SupplierReturnRespVo {
     @ApiModelProperty("采购组负责人")
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
+
+    @ApiModelProperty("计算时间")
+    @JsonProperty("create_time")
+    private String createTime;
 }

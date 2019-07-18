@@ -27,11 +27,11 @@ public class SupplierArrivalRateRespVo implements Serializable {
     @JsonProperty(value = "supplier_name")
     private String supplierName;
 
-    @ApiModelProperty("一级品类编号")
+    @ApiModelProperty("品类编号")
     @JsonProperty("category_code")
     private String categoryCode;
 
-    @ApiModelProperty("一级品类名称")
+    @ApiModelProperty("品类名称")
     @JsonProperty("category_name")
     private String categoryName;
 
@@ -72,8 +72,8 @@ public class SupplierArrivalRateRespVo implements Serializable {
     private String responsiblePersonCode;
 
     @ApiModelProperty("计算时间")
-    @JsonProperty("run_time")
-    private String runTime;
+    @JsonProperty("create_time")
+    private String createTime;
 
 
 }

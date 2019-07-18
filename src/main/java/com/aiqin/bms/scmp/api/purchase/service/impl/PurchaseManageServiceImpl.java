@@ -261,8 +261,9 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 Integer skuCount = purchaseApplyProductDao.formSkuCount(form);
                 if(applySkuSum <= skuCount){
                     // 申请单状态变为完成
+                    purchaseApply = new PurchaseApply();
                     purchaseApply.setPurchaseApplyId(apply);
-                    purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_1);
+                    purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_1.intValue());
                     purchaseApply.setUpdateById(purchaseOrderRequest.getPersonId());
                     purchaseApply.setUpdateByName(purchaseOrderRequest.getPersonName());
                     purchaseApplyDao.update(purchaseApply);

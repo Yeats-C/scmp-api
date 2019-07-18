@@ -143,4 +143,7 @@ public class ApplySupplyCompanyReqVO {
 
     @ApiModelProperty("错误原因")
     private String error;
+
+    @ApiModelProperty("是否禁用")
+    private Byte enable;
 }

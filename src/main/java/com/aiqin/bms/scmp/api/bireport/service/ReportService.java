@@ -22,21 +22,21 @@ public interface ReportService {
      * @param goodsBuySalesReqVo
      * @return
      */
-    PageResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
+    PageReportResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
     /**
      *  赠品进销存
      * @param giftsBuySalesReqVo
      * @return
      */
-    PageResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
+    PageReportResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
 
     /**
      *  供应商退货(退供)
      * @param supplierReturnReqVo
      * @return
      */
-    PageResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
+    PageReportResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
     /**
      *  新品批次动销率

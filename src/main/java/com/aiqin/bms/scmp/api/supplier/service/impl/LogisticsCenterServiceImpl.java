@@ -118,7 +118,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),  encodingRule.getId());
         //设置采购组主体的删除状态，启用禁用状态
         logisticsCenterDTO.setDelFlag(Byte.parseByte("0"));
-        logisticsCenterDTO.setEnable(Byte.parseByte("1"));
+        logisticsCenterDTO.setEnable(Byte.parseByte("0"));
         //保存物流中心主体
         int k = ((LogisticsCenterService) AopContext.currentProxy()).insertSelective(logisticsCenterDTO);
         if (k>0){
@@ -128,7 +128,7 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
                     //设置关联编码
                     list.stream().forEach(purchase -> purchase.setLogisticsCenterCode(String.valueOf(logisticsCenterDTO.getLogisticsCenterCode())));
                     //设置启用禁用状态
-                    list.stream().forEach(purchase -> purchase.setEnable(Byte.parseByte("1")));
+                    list.stream().forEach(purchase -> purchase.setEnable(Byte.parseByte("0")));
                     // 设置逻辑删除状态
                     list.stream().forEach(purchase -> purchase.setDelFlag(Byte.parseByte("0")));
                     //批量插入
@@ -209,13 +209,13 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
             }
             if(CollectionUtils.isNotEmptyCollection(updateLogisticsCenterReqVo.getLogisticsCenterAreaReqVoList())){
                 List<LogisticsCenterAreaDTO> list1 = BeanCopyUtils.copyList(updateLogisticsCenterReqVo.getLogisticsCenterAreaReqVoList(),LogisticsCenterAreaDTO.class);
-                boolean equals = Objects.equals(updateLogisticsCenterReqVo.getEnable(), 0);
+                boolean equals = Objects.equals(updateLogisticsCenterReqVo.getEnable(), 1);
                 //设置关联编码
                 list1.forEach(o->{
                     o.setLogisticsCenterCode(updateLogisticsCenterReqVo.getLogisticsCenterCode());
                     o.setDelFlag((byte)0);
                     if (equals) {
-                        o.setEnable((byte)0);
+                        o.setEnable((byte)1);
                     }
                 });
                 //批量插入

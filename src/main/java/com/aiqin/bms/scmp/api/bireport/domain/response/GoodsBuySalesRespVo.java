@@ -15,13 +15,9 @@ public class GoodsBuySalesRespVo  implements Serializable {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
-
-    @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @ApiModelProperty("日期时间")
+    @JsonProperty("inbound_time")
+    private String inboundTime;
 
     @ApiModelProperty("供应商编码")
     @JsonProperty("supplier_code")
@@ -38,10 +34,6 @@ public class GoodsBuySalesRespVo  implements Serializable {
     @ApiModelProperty("sku名称")
     @JsonProperty("sku_name")
     private String skuName;
-
-    @ApiModelProperty("批次号")
-    @JsonProperty("batch_code")
-    private String batchCode;
 
     @ApiModelProperty("部门编码")
     @JsonProperty("product_sort_code")
@@ -67,29 +59,29 @@ public class GoodsBuySalesRespVo  implements Serializable {
     @JsonProperty("warehouse_name")
     private String warehouseName;
 
+    @ApiModelProperty("批次号")
+    @JsonProperty("batch_code")
+    private String batchCode;
+
     @ApiModelProperty("品类名称")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("一级品类")
-    @JsonProperty("product_category_one")
-    private String productCategoryOne;
+    @JsonProperty("category_code_one")
+    private String categoryCodeOne;
 
     @ApiModelProperty("二级品类")
-    @JsonProperty("product_category_two")
-    private String productCategoryTwo;
+    @JsonProperty("category_code_two")
+    private String categoryCodeTwo;
 
     @ApiModelProperty("三级品类")
-    @JsonProperty("product_category_three")
-    private String productCategoryThree;
-
-    @ApiModelProperty("四级品类")
-    @JsonProperty("product_category_four")
-    private String productCategoryFour;
+    @JsonProperty("category_code_three")
+    private String categoryCodeThree;
 
     @ApiModelProperty("品牌code")
     @JsonProperty("product_brand_code")
@@ -103,9 +95,9 @@ public class GoodsBuySalesRespVo  implements Serializable {
     @JsonProperty("manufacturer_guide_price")
     private Integer manufacturerGuidePrice;
 
-    @ApiModelProperty("库存数量")
-    @JsonProperty("inventory_num")
-    private Integer inventoryNum;
+    @ApiModelProperty("可用库存数量")
+    @JsonProperty("available_num")
+    private Integer availableNum;
 
     @ApiModelProperty("库存成本")
     @JsonProperty("tax_cost")
@@ -120,36 +112,32 @@ public class GoodsBuySalesRespVo  implements Serializable {
     private Integer salesCostOneMonth;
 
     @ApiModelProperty("近一个月分销销售金额")
-    @JsonProperty("fen_sales_money_one_month")
-    private Integer fenSalesMoneyOneMonth;
+    @JsonProperty("distribution_sales_money_one_month")
+    private Integer distributionSalesMoneyOneMonth;
 
     @ApiModelProperty("近一个月分销毛利额")
-    @JsonProperty("fen_sales_maori_one_month")
-    private Integer fenSalesMaoriOneMonth;
+    @JsonProperty("distribution_sales_maori_one_month")
+    private Integer distributionSalesMaoriOneMonth;
 
     @ApiModelProperty("近一个月分销毛利率")
-    @JsonProperty("fen_sales_maori_one_month_rate")
-    private Double fenSalesMaoriOneMonthRate;
+    @JsonProperty("distribution_sales_maori_one_month_rate")
+    private Double distributionSalesMaoriOneMonthRate;
 
     @ApiModelProperty("近一个月渠道销售金额")
-    @JsonProperty("qun_sales_money_one_month")
-    private Integer qunSalesMoneyOneMonth;
+    @JsonProperty("channel_sales_money_one_month")
+    private Integer channelSalesMoneyOneMonth;
 
     @ApiModelProperty("近一个月渠道毛利额")
-    @JsonProperty("qun_sales_maori_one_month")
-    private Integer qunSalesMaoriOneMonth;
+    @JsonProperty("channel_sales_maori_one_month")
+    private Integer channelSalesMaoriOneMonth;
 
     @ApiModelProperty("近一个月渠道毛利率")
-    @JsonProperty("qun_sales_maori_one_month_rate")
-    private Double qunSalesMaoriOneMonthRate;
+    @JsonProperty("channel_sales_maori_one_month_rate")
+    private Double channelSalesMaoriOneMonthRate;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")
     private Integer turnoverDays;
-
-    @ApiModelProperty("入库开始时间")
-    @JsonProperty("create_time")
-    private String createTime;
 
     @ApiModelProperty("已经入库天数")
     @JsonProperty("inbound_days")
@@ -174,4 +162,8 @@ public class GoodsBuySalesRespVo  implements Serializable {
     @ApiModelProperty("保质期")
     @JsonProperty("quality_number")
     private String qualityNumber;
+
+    @ApiModelProperty("计算时间")
+    @JsonProperty("create_time")
+    private String createTime;
 }

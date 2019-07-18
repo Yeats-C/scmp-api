@@ -15,6 +15,9 @@ import lombok.Data;
 @Data
 public class SkuStatusRespVo {
 
+    @ApiModelProperty("sku编码")
+    private String skuCode;
+
     @ApiModelProperty("SKU状态")
     private Byte skuStatus;
 

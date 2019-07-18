@@ -12,6 +12,15 @@ import java.io.Serializable;
 @Data
 public class GoodsBuySalesReqVo extends PageReq implements Serializable {
 
+
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_inbound_time")
+    private String beginInboundTime;
+
+    @ApiModelProperty("时间finish")
+    @JsonProperty("finish_inbound_time")
+    private String finishInboundTime;
+
     @ApiModelProperty("供应商编码")
     @JsonProperty("supplier_code")
     private String supplierCode;
@@ -37,12 +46,12 @@ public class GoodsBuySalesReqVo extends PageReq implements Serializable {
     private String transportCenterName;
 
     @ApiModelProperty("品类名称")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("部门编码")
     @JsonProperty("product_sort_code")
@@ -51,14 +60,6 @@ public class GoodsBuySalesReqVo extends PageReq implements Serializable {
     @ApiModelProperty("所属部门")
     @JsonProperty("product_sort_name")
     private String productSortName;
-
-    @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
-
-    @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
 
     @ApiModelProperty("库存日期(天)")
     @JsonProperty("inbound_days")
@@ -81,43 +82,38 @@ public class GoodsBuySalesReqVo extends PageReq implements Serializable {
     private String warehouseName;
 
     @ApiModelProperty("一级品类")
-    @JsonProperty("product_category_one")
-    private String productCategoryOne;
+    @JsonProperty("category_code_one")
+    private String categoryCodeOne;
 
     @ApiModelProperty("二级品类")
-    @JsonProperty("product_category_two")
-    private String productCategoryTwo;
+    @JsonProperty("category_code_two")
+    private String categoryCodeTwo;
 
     @ApiModelProperty("三级品类")
-    @JsonProperty("product_category_three")
-    private String productCategoryThree;
+    @JsonProperty("category_code_three")
+    private String categoryCodeThree;
 
-    @ApiModelProperty("四级品类")
-    @JsonProperty("product_category_four")
-    private String productCategoryFour;
-
-    public GoodsBuySalesReqVo(String supplierCode, String supplierName, String skuCode, String skuName, String transportCenterCode, String transportCenterName, String productCategoryName, String productCategoryCode, String productSortCode, String productSortName, String beginRunTime, String finishRunTime, Integer inboundDays, Integer beginTurnoverDays, Integer finishTurnoverDays, String warehouseCode, String warehouseName, String productCategoryOne, String productCategoryTwo, String productCategoryThree, String productCategoryFour) {
+    public GoodsBuySalesReqVo(String beginInboundTime, String finishInboundTime, String supplierCode, String supplierName, String skuCode, String skuName, String transportCenterCode, String transportCenterName, String categoryName, String categoryCode, String productSortCode, String productSortName, Integer inboundDays, Integer beginTurnoverDays, Integer finishTurnoverDays, String warehouseCode, String warehouseName, String categoryCodeOne, String categoryCodeTwo, String categoryCodeThree) {
+        this.beginInboundTime = beginInboundTime;
+        this.finishInboundTime = finishInboundTime;
         this.supplierCode = supplierCode;
         this.supplierName = supplierName;
         this.skuCode = skuCode;
         this.skuName = skuName;
         this.transportCenterCode = transportCenterCode;
         this.transportCenterName = transportCenterName;
-        this.productCategoryName = productCategoryName;
-        this.productCategoryCode = productCategoryCode;
+        this.categoryName = categoryName;
+        this.categoryCode = categoryCode;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
-        this.beginRunTime = beginRunTime;
-        this.finishRunTime = finishRunTime;
         this.inboundDays = inboundDays;
         this.beginTurnoverDays = beginTurnoverDays;
         this.finishTurnoverDays = finishTurnoverDays;
         this.warehouseCode = warehouseCode;
         this.warehouseName = warehouseName;
-        this.productCategoryOne = productCategoryOne;
-        this.productCategoryTwo = productCategoryTwo;
-        this.productCategoryThree = productCategoryThree;
-        this.productCategoryFour = productCategoryFour;
+        this.categoryCodeOne = categoryCodeOne;
+        this.categoryCodeTwo = categoryCodeTwo;
+        this.categoryCodeThree = categoryCodeThree;
     }
 
     public GoodsBuySalesReqVo() {

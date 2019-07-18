@@ -121,7 +121,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     public BasePage<QueryReturnOrderManagementRespVO> returnOrderManagement(QueryReturnOrderManagementReqVO reqVO) {
         PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         reqVO.setCompanyCode(getUser().getCompanyCode());
-        List<QueryReturnOrderManagementReqVO> list = returnOrderInfoMapper.selectReturnOrderManagementList(reqVO);
+        List<QueryReturnOrderManagementRespVO> list = returnOrderInfoMapper.selectReturnOrderManagementList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(), list);
     }
 
@@ -248,7 +248,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         orderTypes.add(OrderType.DIRECT_DELIVERY_FUCAI.getNum());
         reqVO.setOrderTypeCode(orderTypes);
         reqVO.setCompanyCode(getUser().getCompanyCode());
-        List<QueryReturnOrderManagementReqVO> list = returnOrderInfoMapper.selectReturnOrderManagementList(reqVO);
+        List<QueryReturnOrderManagementRespVO> list = returnOrderInfoMapper.selectReturnOrderManagementList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(), list);
     }
 

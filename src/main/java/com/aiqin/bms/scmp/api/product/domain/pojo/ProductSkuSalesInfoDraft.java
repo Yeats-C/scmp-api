@@ -8,7 +8,6 @@ import lombok.Data;
 @ApiModel("门店销售/销售信息")
 @Data
 public class ProductSkuSalesInfoDraft extends CommonBean {
-
     @ApiModelProperty("主键id")
     private Long id;
 

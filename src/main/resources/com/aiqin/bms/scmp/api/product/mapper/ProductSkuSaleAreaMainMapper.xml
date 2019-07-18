@@ -258,7 +258,7 @@
     on a.code = c.main_code
     where a.company_code = #{companyCode} and a.be_effective = 1
     <if test="code != null and code != ''">
-      and a.code = #{code}
+      and a.code  like concat('%',#{code},'%')
     </if>
     <if test="name != null and name != ''">
       and a.name like concat('%',#{name},'%')
@@ -267,10 +267,10 @@
       and a.be_disable = #{beDisable}
     </if>
     <if test="skuCode != null and skuCode != ''">
-      and b.sku_code = #{skuCode}
+      and b.sku_code like concat('%',#{skuCode},'%')
     </if>
     <if test="skuName != null and skuName != ''">
-      and b.sku_name like concat('%',#{skuCode},'%')
+      and b.sku_name like concat('%',#{skuName},'%')
     </if>
     <if test="allowArea != null and allowArea != ''">
       and c.name like concat('%',#{allowArea},'%') and c.status = 1 and c.type = 1

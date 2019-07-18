@@ -77,7 +77,7 @@
       and code LIKE CONCAT(CONCAT('%',#{code},'%'))
     </if>
     <if test="name != null and name !=''">
-      and code LIKE CONCAT(CONCAT('%',#{name},'%'))
+      and name LIKE CONCAT(CONCAT('%',#{name},'%'))
     </if>
     <if test="changePriceType != null and changePriceType !=''">
       and change_price_type = #{changePriceType}
@@ -91,6 +91,7 @@
     <if test="beContainArea != null and beContainArea !=''">
       and ext_field_5 = #{beContainArea}
     </if>
+    order by a.create_time desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_change_price_info

@@ -252,7 +252,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
                     throw new GroundRuntimeException("审核状态修改失败");
                 }
             } else {
-                throw new GroundRuntimeException(" 审批流回传数据失败");
+                throw new GroundRuntimeException(workFlowRespVO.getMsg());
             }
         } catch (Exception e) {
             throw new GroundRuntimeException(e.getMessage());

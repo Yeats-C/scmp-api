@@ -24,11 +24,11 @@ public class SupplierArrivalRateReqVo extends PageReq implements Serializable {
     @JsonProperty(value = "transport_center_code")
     private String transportCenterCode;
 
-    @ApiModelProperty("一级品类编号")
+    @ApiModelProperty("品类编号")
     @JsonProperty("category_code")
     private String categoryCode;
 
-    @ApiModelProperty("一级品类名称")
+    @ApiModelProperty("品类名称")
     @JsonProperty("category_name")
     private String categoryName;
 

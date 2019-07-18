@@ -34,14 +34,14 @@ public class QueryWarehouseResVo {
     @ApiModelProperty("启用禁用状态")
     private Byte enable;
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     private Date createTime;
 
     @ApiModelProperty("创建人")
     private String createBy;
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("修改时间")
     private Date updateTime;
 

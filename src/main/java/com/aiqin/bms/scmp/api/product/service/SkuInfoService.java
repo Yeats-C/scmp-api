@@ -127,7 +127,7 @@ public interface SkuInfoService{
      * @param companyCode
      * @return
      */
-    List<ProductSkuDraftRespVo> getProductSkuDraftsByCompanyCode(String companyCode);
+    List<ProductSkuDraftRespVo> getProductSkuDraftsByCompanyCode(String companyCode,String personId);
 
 
     /**
@@ -190,4 +190,15 @@ public interface SkuInfoService{
      * @return
      */
     List<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo);
+
+    /**
+     *
+     * 功能描述: 更新SKU状态
+     *
+     * @param respVos
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/18 0:39
+     */
+    int updateStatus(List<SkuStatusRespVo> respVos);
 }

@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitCapacityService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
+import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
@@ -46,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -78,9 +80,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     private ProductSkuConfigSpareWarehouseMapper spareWarehouseMapper;
     @Autowired
     private ProductSkuSupplyUnitService productSkuSupplyUnitService;
-
     @Autowired
     private ProductSkuSupplyUnitCapacityService productSkuSupplyUnitCapacityService;
+    @Autowired
+    private SkuInfoService skuInfoService;
 
     /**
      * 批量保存临时配置信息
@@ -357,6 +360,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             log.error("希望插入主表条数:[{}],实际插入主表条数：[{}]", applyProductSkuConfigs.size(), num);
             throw new BizException(ResultCode.SKU_CONFIG_SUBMIT_ERROR);
         }
+
         if (CollectionUtils.isNotEmpty(applyProductSkuConfigSpareWarehouses)) {
             //批量保存备用仓库
             applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
@@ -425,8 +429,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 item.setCreateTime(currentDate);
             });
             num = applyMapper.insertBatch(applyProductSkuConfigs);
-            //删除临时表备用仓库信息
-            spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
+            //删除临时表配置信息
+            draftMapper.deleteOutByConfigCodes(configCodes);
+
             //通过编码查询出备用仓库信息
             List<ProductSkuConfigSpareWarehouseDraft> spareWarehouseDrafts = spareWarehouseDraftMapper.
                     getListByConfigCodes(configCodes);
@@ -435,8 +440,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                         BeanCopyUtils.copyList(spareWarehouseDrafts,ApplyProductSkuConfigSpareWarehouse.class);
                 //批量保存备用仓库
                 applySpareWarehouseMapper.insertBatch(applyProductSkuConfigSpareWarehouses,code);
-                //删除临时表配置信息
-                draftMapper.deleteOutByConfigCodes(configCodes);
+                //删除临时表备用仓库信息
+                spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
             }
         }
 
@@ -514,7 +519,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                         collect(Collectors.toList());
                 //保存正式备用仓库信息
                 //删除正式
-                spareWarehouseMapper.deleteByConfigCodes(configCodes);
+                if(CollectionUtils.isNotEmpty(configCodes)){
+                    spareWarehouseMapper.deleteByConfigCodes(configCodes);
+                }
                 //批量插入
                 List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
                         ProductSkuConfigSpareWarehouse.class);
@@ -570,6 +577,18 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if (CollectionUtils.isNotEmpty(updateList)) {
             ((ProductSkuConfigService)AopContext.currentProxy()).updateBatch(updateList);
         }
+        Map<String, List<ApplyProductSkuConfig>> map = list.stream().collect(Collectors.groupingBy(ApplyProductSkuConfig::getSkuCode));
+        List<SkuStatusRespVo> respVos = Lists.newLinkedList();
+        map.forEach((k,v)->{
+            List<SkuConfigsRepsVo> skuConfigsRepsVo = BeanCopyUtils.copyList(v,SkuConfigsRepsVo.class);
+            SkuStatusRespVo respVo = calculationSkuStatus(skuConfigsRepsVo);
+            respVo.setSkuCode(k);
+            respVos.add(respVo);
+        });
+        if(CollectionUtils.isNotEmpty(respVos)){
+            skuInfoService.updateStatus(respVos);
+        }
+
     }
 
     /**
@@ -714,6 +733,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @SaveList
     @Transactional(rollbackFor = Exception.class)
     public Integer insertSpareWarehouseList(List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses) {
+        if(CollectionUtils.isEmpty(skuConfigSpareWarehouses)){
+            return 0;
+        }
         return spareWarehouseMapper.insertBatch(skuConfigSpareWarehouses);
     }
 
@@ -806,7 +828,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 collect(Collectors.toList());
         //保存正式备用仓库信息
         //删除正式
-        spareWarehouseMapper.deleteByConfigCodes(configCodes);
+        if(CollectionUtils.isNotEmpty(configCodes)) {
+            spareWarehouseMapper.deleteByConfigCodes(configCodes);
+        }
         //批量插入
         List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
                 ProductSkuConfigSpareWarehouse.class);

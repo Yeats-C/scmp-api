@@ -29,34 +29,34 @@
   </resultMap>
 
   <resultMap id="ListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="config_code" jdbcType="VARCHAR" property="configCode" />
-    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
-    <result column="product_name" jdbcType="VARCHAR" property="productName" />
-    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
-    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
-    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
-    <result column="config_status" jdbcType="TINYINT" property="configStatus" />
-    <result column="arrival_cycle" jdbcType="INTEGER" property="arrivalCycle" />
-    <result column="order_cycle" jdbcType="INTEGER" property="orderCycle" />
-    <result column="basic_inventory_day" jdbcType="INTEGER" property="basicInventoryDay" />
-    <result column="large_inventory_warn_day" jdbcType="INTEGER" property="largeInventoryWarnDay" />
-    <result column="big_effect_period_warn_day" jdbcType="INTEGER" property="bigEffectPeriodWarnDay" />
-    <result column="turnover_period_after_arrival" jdbcType="INTEGER" property="turnoverPeriodAfterArrival" />
-    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
-    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
-    <result column="procurement_section_code" jdbcType="VARCHAR" property="purchasingGroupCode"/>
-    <result column="procurement_section_name" jdbcType="VARCHAR" property="purchasingGroupName"/>
+    <id column="aid" jdbcType="BIGINT" property="id" />
+    <result column="acreate_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="acreate_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="aupdate_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="aupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="aconfig_code" jdbcType="VARCHAR" property="configCode" />
+    <result column="aproduct_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="aproduct_name" jdbcType="VARCHAR" property="productName" />
+    <result column="asku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="asku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="atransport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="atransport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="aconfig_status" jdbcType="TINYINT" property="configStatus" />
+    <result column="aarrival_cycle" jdbcType="INTEGER" property="arrivalCycle" />
+    <result column="aorder_cycle" jdbcType="INTEGER" property="orderCycle" />
+    <result column="abasic_inventory_day" jdbcType="INTEGER" property="basicInventoryDay" />
+    <result column="alarge_inventory_warn_day" jdbcType="INTEGER" property="largeInventoryWarnDay" />
+    <result column="abig_effect_period_warn_day" jdbcType="INTEGER" property="bigEffectPeriodWarnDay" />
+    <result column="aturnover_period_after_arrival" jdbcType="INTEGER" property="turnoverPeriodAfterArrival" />
+    <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="aprocurement_section_code" jdbcType="VARCHAR" property="purchasingGroupCode"/>
+    <result column="aprocurement_section_name" jdbcType="VARCHAR" property="purchasingGroupName"/>
     <collection property="spareWarehouses" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo">
-      <result column="b_config_code" jdbcType="VARCHAR" property="configCode"/>
-      <result column="b_transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
-      <result column="b_transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
-      <result column="b_use_order" jdbcType="VARCHAR" property="useOrder"/>
+      <result column="bconfig_code" jdbcType="VARCHAR" property="configCode"/>
+      <result column="btransport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
+      <result column="btransport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
+      <result column="buse_order" jdbcType="VARCHAR" property="useOrder"/>
     </collection>
   </resultMap>
 
@@ -69,12 +69,33 @@
   </sql>
 
   <sql id="List_Column">
-    a.id, a.create_by, a.create_time, a.update_by, a.update_time, a.config_code,
-    a.product_code, a.product_name, a.sku_code, a.sku_name, a.transport_center_code, a.transport_center_name,
-    a.config_status, a.arrival_cycle, a.order_cycle, a.basic_inventory_day, a.large_inventory_warn_day,
-    a.big_effect_period_warn_day, a.turnover_period_after_arrival, a.company_code,a.company_name, b.config_code as b_config_code,
-    b.transport_center_code as b_transport_center_code, b.transport_center_name as b_transport_center_name,
-    b.use_order as b_use_order,c.procurement_section_code,c.procurement_section_name
+       a.id aid,
+       a.create_by acreate_by,
+       a.create_time acreate_time,
+       a.update_by aupdate_by,
+       a.update_time aupdate_time,
+       a.config_code aconfig_code,
+       a.product_code aproduct_code,
+       a.product_name aproduct_name,
+       a.sku_code asku_code,
+       a.sku_name asku_name,
+       a.transport_center_code atransport_center_code,
+       a.transport_center_name atransport_center_name,
+       a.config_status aconfig_status,
+       a.arrival_cycle aarrival_cycle,
+       a.order_cycle aorder_cycle,
+       a.basic_inventory_day abasic_inventory_day,
+       a.large_inventory_warn_day alarge_inventory_warn_day,
+       a.big_effect_period_warn_day abig_effect_period_warn_day,
+       a.turnover_period_after_arrival aturnover_period_after_arrival,
+       a.company_code acompany_code,
+       a.company_name acompany_name,
+       b.config_code bconfig_code,
+       b.transport_center_code btransport_center_code,
+       b.transport_center_name btransport_center_name,
+       b.use_order buse_order,
+       c.procurement_section_code aprocurement_section_code,
+       c.procurement_section_name aprocurement_section_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

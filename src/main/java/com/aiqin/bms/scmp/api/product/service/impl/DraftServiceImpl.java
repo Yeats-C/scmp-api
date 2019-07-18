@@ -65,15 +65,17 @@ public class DraftServiceImpl implements DraftService {
             throw new BizException(ResultCode.OBJECT_NOT_FOUND);
         }
         String companyCode = "";
+        String personId = "";
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
             companyCode = authToken.getCompanyCode();
+            personId = authToken.getPersonId();
         }
         log.info("获取的公司信息编码[{}]",companyCode);
         HttpResponse httpResponse = null;
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
             log.info("获取商品信息");
-            List<ProductSkuDraftRespVo> productSkuDraftRespVos = skuInfoService.getProductSkuDraftsByCompanyCode(companyCode);
+            List<ProductSkuDraftRespVo> productSkuDraftRespVos = skuInfoService.getProductSkuDraftsByCompanyCode(companyCode,personId);
             log.info("获取商品信息,结果{}", JSON.toJSON(productSkuDraftRespVos));
             httpResponse = HttpResponse.success(productSkuDraftRespVos);
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
