@@ -41,7 +41,7 @@ public class ProductSkuSalesInfo extends CommonBean {
     private String salesCode;
 
     @ApiModelProperty("基商品含量")
-    private String baseProductContent;
+    private Integer baseProductContent;
 
     @ApiModelProperty("宽")
     private Long productWidth;

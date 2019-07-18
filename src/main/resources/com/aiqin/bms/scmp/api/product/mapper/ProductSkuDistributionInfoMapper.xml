@@ -8,8 +8,9 @@
     <result column="spec" jdbcType="VARCHAR" property="spec" />
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
-    <result column="delivery_code" jdbcType="VARCHAR" property="deliveryCode" />
-    <result column="base_product_content" jdbcType="VARCHAR" property="baseProductContent" />
+    <result column="base_product_content" jdbcType="BIGINT" property="baseProductContent" />
+    <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
+    <result column="max_order_num" jdbcType="INTEGER" property="maxOrderNum" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
@@ -22,7 +23,7 @@
   <sql id="Base_Column_List">
     id, product_code, product_name, spec, unit_code, unit_name, delivery_code, base_product_content, 
     del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name, 
-    apply_code
+    apply_code,zero_removal_coefficient,max_order_num
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -47,13 +48,13 @@
       delivery_code, base_product_content, del_flag, 
       create_time, create_by, update_time, 
       update_by, product_sku_code, product_sku_name, 
-      apply_code)
+      apply_code,zero_removal_coefficient,max_order_num)
     values (#{id,jdbcType=BIGINT}, #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, 
       #{spec,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, 
-      #{deliveryCode,jdbcType=VARCHAR}, #{baseProductContent,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, 
+      #{deliveryCode,jdbcType=VARCHAR}, #{baseProductContent,jdbcType=BIGINT}, #{delFlag,jdbcType=TINYINT},
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR}, #{productSkuCode,jdbcType=VARCHAR}, #{productSkuName,jdbcType=VARCHAR}, 
-      #{applyCode,jdbcType=VARCHAR})
+      #{applyCode,jdbcType=VARCHAR}, #{zeroRemovalCoefficient,jdbcType=BIGINT},, #{maxOrderNum,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDistributionInfo">
     insert into product_sku_distribution_info
@@ -106,6 +107,12 @@
       <if test="applyCode != null">
         apply_code,
       </if>
+      <if test="zeroRemovalCoefficient != null">
+        zero_removal_coefficient,
+      </if>
+      <if test="maxOrderNum != null">
+        max_order_num,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -130,7 +137,7 @@
         #{deliveryCode,jdbcType=VARCHAR},
       </if>
       <if test="baseProductContent != null">
-        #{baseProductContent,jdbcType=VARCHAR},
+        #{baseProductContent,jdbcType=BIGINT},
       </if>
       <if test="delFlag != null">
         #{delFlag,jdbcType=TINYINT},
@@ -155,6 +162,12 @@
       </if>
       <if test="applyCode != null">
         #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="zeroRemovalCoefficient != null">
+        #{zeroRemovalCoefficient,jdbcType=BIGINT},
+      </if>
+      <if test="maxOrderNum != null">
+        #{maxOrderNum,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -206,6 +219,12 @@
       <if test="applyCode != null">
         apply_code = #{applyCode,jdbcType=VARCHAR},
       </if>
+      <if test="zeroRemovalCoefficient != null">
+        zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT},
+      </if>
+      <if test="maxOrderNum != null">
+        max_order_num = #{maxOrderNum,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -225,7 +244,9 @@
       update_by = #{updateBy,jdbcType=VARCHAR},
       product_sku_code = #{productSkuCode,jdbcType=VARCHAR},
       product_sku_name = #{productSkuName,jdbcType=VARCHAR},
-      apply_code = #{applyCode,jdbcType=VARCHAR}
+      apply_code = #{applyCode,jdbcType=VARCHAR},
+      zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT},
+      max_order_num = #{maxOrderNum,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

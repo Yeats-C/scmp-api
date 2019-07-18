@@ -58,7 +58,7 @@ public interface ProductSkuDisInfoService {
      *
      * 功能描述: 
      *
-     * @param 获取正式表数据
+     * @param skuCode
      * @return 
      * @auther knight.xie
      * @date 2019/7/8 17:03
