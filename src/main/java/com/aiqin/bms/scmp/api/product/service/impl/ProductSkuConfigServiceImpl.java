@@ -157,8 +157,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             }
             if (Objects.nonNull(configMap.get(item.getSkuCode() + item.getTransportCenterCode()))) {
                 //判断是否有审核中的数据
-                error.add("sku编码为"+item.getSkuCode()+"下的仓库名称为"+item.getTransportCenterCode()+"有在审批中的数据。请删除该条数据，重新提交");
-                continue;
+                if (StatusTypeCode.UPDATE_APPLY.getStatus().equals(configMap.get(item.getSkuCode() + item.getTransportCenterCode()).getApplyStatus())) {
+                    error.add("sku编码为"+item.getSkuCode()+"下的仓库名称为"+item.getTransportCenterCode()+"有在审批中的数据。请删除该条数据，重新提交");
+                    continue;
+                }
             }
             ProductSkuConfigDraft draft = new ProductSkuConfigDraft();
             BeanCopyUtils.copy(item,draft);
