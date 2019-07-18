@@ -435,21 +435,21 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         BeanCopyUtils.copy(outbound,outboundWmsReqVO);
         List<OutboundProductWmsResVO> outboundProductWmsReqVOs =  outboundProductDao.selectMmsReqByOutboundOderCode(outbound.getOutboundOderCode());
 
-        List<OutboundBatchWmsResVO> outboundBatchWmsResVOs = outboundBatchDao.selectOutboundBatchWmsResponse(outbound.getOutboundOderCode());
-        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
-        outboundWmsReqVO.setOutboundBatchWmsResVOs(outboundBatchWmsResVOs);
+//        List<OutboundBatchWmsResVO> outboundBatchWmsResVOs = outboundBatchDao.selectOutboundBatchWmsResponse(outbound.getOutboundOderCode());
+//        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
+//        outboundWmsReqVO.setOutboundBatchWmsResVOs(outboundBatchWmsResVOs);
         try{
-            String url =urlConfig.WMS_API_URL+"/deppon/save/outbound";
-            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO));
-
-            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-            String hello= JSON.toJSONString(orderDto.getData());
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
-            if("0".equals(orderDto.getCode())){
+//            String url =urlConfig.WMS_API_URL+"/deppon/save/outbound";
+//            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO));
+//
+//            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+//            String hello= JSON.toJSONString(orderDto.getData());
+//            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+//            ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
+//            if("0".equals(orderDto.getCode())){
 
                 // 设置wms编号
-                outbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
+//                outbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
                 //设置入库状态
 //                outbound1.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
 //                outbound1.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
@@ -460,7 +460,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outboundCallBackReqVo.setOutboundOderCode(outbound.getOutboundOderCode());
 
                 List<OutboundProductCallBackReqVo> list = new ArrayList<>();
-                List<OutboundBatchCallBackReqVo> outboundBatchCallBackReqVos = new ArrayList<>();
+//                List<OutboundBatchCallBackReqVo> outboundBatchCallBackReqVos = new ArrayList<>();
                 for (OutboundProductWmsResVO outboundProductWmsReqVO : outboundProductWmsReqVOs) {
                     OutboundProductCallBackReqVo outboundProductCallBackReqVo = new OutboundProductCallBackReqVo();
                     outboundProductCallBackReqVo.setLinenum(outboundProductWmsReqVO.getLinenum());
@@ -469,20 +469,20 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     list.add(outboundProductCallBackReqVo);
 
                     //TODO 等wms回传批次的格式
-                    OutboundBatchCallBackReqVo outboundBatchCallBackReqVo = new OutboundBatchCallBackReqVo();
+//                    OutboundBatchCallBackReqVo outboundBatchCallBackReqVo = new OutboundBatchCallBackReqVo();
 //                    outboundBatchCallBackReqVo.setLinenum(inboundProductWmsReqVO.getLinenum());
 //                    outboundBatchCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
 //                    outboundBatchCallBackReqVo.setPraQty(inboundProductWmsReqVO.getPreInboundMainNum());
-                    outboundBatchCallBackReqVos.add(outboundBatchCallBackReqVo);
+//                    outboundBatchCallBackReqVos.add(outboundBatchCallBackReqVo);
                 }
                 outboundCallBackReqVo.setList(list);
-                outboundCallBackReqVo.setOutboundBatchCallBackReqVos(outboundBatchCallBackReqVos);
+//                outboundCallBackReqVo.setOutboundBatchCallBackReqVos(outboundBatchCallBackReqVos);
                 //保存日志
                 productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy());
 
                 workFlowCallBack(outboundCallBackReqVo);
                 return ;
-            }else{ throw new RuntimeException("入库单传入wms失败");}
+//            }else{ throw new RuntimeException("入库单传入wms失败");}
         }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException("入库单传入wms失败");
@@ -584,32 +584,32 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
             stockChangeRequest.setStockVoRequests(stockVoRequestList);
 
-            //TODO 等wms回传批次的格式 同时调用库存接口 减并解锁sku库存与批次库存
-            for(OutboundBatchCallBackReqVo outboundBatchCallBackReqVo : reqVo.getOutboundBatchCallBackReqVos()){
-                // 查询旧的sku，以及销项，进项税率
-                ReturnOutboundBatch returnOutboundBatch = outboundBatchDao.selectBatchInfoByLinenum(outbound.getOutboundOderCode(), outboundBatchCallBackReqVo.getSkuCode(), outboundBatchCallBackReqVo.getLinenum());
-                OutboundBatch outboundBatch = new OutboundBatch();
-                //copy 实体
-                BeanCopyUtils.copy(returnOutboundBatch, outboundBatch);
-
-                //设置实际数量
-                outboundBatch.setPraQty(outboundBatchCallBackReqVo.getPraQty());
-
-                // 修改单条 批次
-                int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
-
-                //TODO 设置修改减少库存sku批次实体
-                //  设置修改减少库存sku实体
-                StockBatchVoRequest stockBatchVoRequest = new StockBatchVoRequest();
-                //设置sku编码名称 批次号
-                stockBatchVoRequest.setSkuCode(outboundBatch.getSkuCode());
-                stockBatchVoRequest.setSkuName(outboundBatch.getSkuName());
-                stockBatchVoRequest.setBatchCode(outboundBatch.getOutboundBatchCode());
-                //设置更改数量
-                stockBatchVoRequest.setChangeNum(outboundBatch.getPraQty());
-                stockBatchVoRequestList.add(stockBatchVoRequest);
-            }
-            stockChangeRequest.setStockBatchVoRequest(stockBatchVoRequestList);
+//            //TODO 等wms回传批次的格式 同时调用库存接口 减并解锁sku库存与批次库存
+//            for(OutboundBatchCallBackReqVo outboundBatchCallBackReqVo : reqVo.getOutboundBatchCallBackReqVos()){
+//                // 查询旧的sku，以及销项，进项税率
+//                ReturnOutboundBatch returnOutboundBatch = outboundBatchDao.selectBatchInfoByLinenum(outbound.getOutboundOderCode(), outboundBatchCallBackReqVo.getSkuCode(), outboundBatchCallBackReqVo.getLinenum());
+//                OutboundBatch outboundBatch = new OutboundBatch();
+//                //copy 实体
+//                BeanCopyUtils.copy(returnOutboundBatch, outboundBatch);
+//
+//                //设置实际数量
+//                outboundBatch.setPraQty(outboundBatchCallBackReqVo.getPraQty());
+//
+//                // 修改单条 批次
+//                int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
+//
+//                //TODO 设置修改减少库存sku批次实体
+//                //  设置修改减少库存sku实体
+//                StockBatchVoRequest stockBatchVoRequest = new StockBatchVoRequest();
+//                //设置sku编码名称 批次号
+//                stockBatchVoRequest.setSkuCode(outboundBatch.getSkuCode());
+//                stockBatchVoRequest.setSkuName(outboundBatch.getSkuName());
+//                stockBatchVoRequest.setBatchCode(outboundBatch.getOutboundBatchCode());
+//                //设置更改数量
+//                stockBatchVoRequest.setChangeNum(outboundBatch.getPraQty());
+//                stockBatchVoRequestList.add(stockBatchVoRequest);
+//            }
+//            stockChangeRequest.setStockBatchVoRequest(stockBatchVoRequestList);
             // 解锁并且减库存
            HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){

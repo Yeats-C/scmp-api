@@ -15,6 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -82,5 +83,15 @@ public class SkuConfigController {
         }
     }
 
+    @PostMapping("/import")
+    @ApiOperation(("sku配置信息导入"))
+    public HttpResponse<List<SaveSkuConfigReqVo>> importData (MultipartFile file) {
+        try {
+            return HttpResponse.success(productSkuConfigService.importData(file));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
 }

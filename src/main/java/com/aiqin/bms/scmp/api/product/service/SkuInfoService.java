@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
@@ -20,6 +21,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @功能说明:
@@ -201,4 +204,13 @@ public interface SkuInfoService{
      * @date 2019/7/18 0:39
      */
     int updateStatus(List<SkuStatusRespVo> respVos);
+    /**
+     * 通过sku编码查询数据
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param skuList
+     * @param companyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.ProductSku>
+     */
+    Map<String,ProductSkuInfo> selectBySkuCodes(Set<String> skuList, String companyCode);
 }

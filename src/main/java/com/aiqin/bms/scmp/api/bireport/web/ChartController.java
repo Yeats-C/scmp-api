@@ -33,7 +33,7 @@ public class ChartController {
     @GetMapping("/search/monthly/sales")
     @ApiOperation("月销售情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "production_date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "month", value = "日期", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
@@ -46,7 +46,7 @@ public class ChartController {
             @ApiImplicitParam(name = "fen_sale", value = "分销销售", type = "String"),
     })
     public HttpResponse<List<MonthlySalesRespVo>> selectMonthlySales(
-            @RequestParam(value = "production_date", required = false) String productionDate,
+            @RequestParam(value = "month", required = false) String month,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
@@ -57,14 +57,14 @@ public class ChartController {
             @RequestParam(value = "data_style_name", required = false) String dataStyleName,
             @RequestParam(value = "qun_sale", required = false) String qunSale,
             @RequestParam(value = "fen_sale", required = false) String fenSale){
-        ChartReqVo chartReqVo = new ChartReqVo(productionDate,productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,qunSale,fenSale);
+        ChartReqVo chartReqVo = new ChartReqVo(month,productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,qunSale,fenSale);
         return HttpResponse.success(chartService.selectMonthlySales(chartReqVo));
     }
 
     @GetMapping("/search/month/gross/margin")
     @ApiOperation("月毛利率情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "production_date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "month", value = "日期", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
@@ -77,7 +77,7 @@ public class ChartController {
             @ApiImplicitParam(name = "fen_sale", value = "分销销售", type = "String"),
     })
     public HttpResponse<List<MonthlyGrossMarginRespVo>> selectMonthlyGrossMargin(
-            @RequestParam(value = "production_date", required = false) String productionDate,
+            @RequestParam(value = "month", required = false) String month,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
@@ -88,14 +88,14 @@ public class ChartController {
             @RequestParam(value = "data_style_name", required = false) String dataStyleName,
             @RequestParam(value = "qun_sale", required = false) String qunSale,
             @RequestParam(value = "fen_sale", required = false) String fenSale){
-        ChartReqVo chartReqVo = new ChartReqVo(productionDate,productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,qunSale,fenSale);
+        ChartReqVo chartReqVo = new ChartReqVo(month,productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,qunSale,fenSale);
         return HttpResponse.success(chartService.selectMonthlyGrossMargin(chartReqVo));
     }
 
     @GetMapping("/search/month/sales/achievement")
     @ApiOperation("月销售达成情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "production_date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "month", value = "日期", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
@@ -108,7 +108,7 @@ public class ChartController {
             @ApiImplicitParam(name = "fen_sale", value = "分销销售", type = "String"),
     })
     public HttpResponse<List<MonthSalesAchievementRespVo>> selectMonthSalesAchievement(
-            @RequestParam(value = "production_date", required = false) String productionDate,
+            @RequestParam(value = "month", required = false) String month,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
@@ -119,14 +119,14 @@ public class ChartController {
             @RequestParam(value = "data_style_name", required = false) String dataStyleName,
             @RequestParam(value = "qun_sale", required = false) String qunSale,
             @RequestParam(value = "fen_sale", required = false) String fenSale){
-        ChartReqVo chartReqVo = new ChartReqVo(productionDate,productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,qunSale,fenSale);
+        ChartReqVo chartReqVo = new ChartReqVo(month,productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,qunSale,fenSale);
         return HttpResponse.success(chartService.selectMonthSalesAchievement(chartReqVo));
     }
 
     @GetMapping("/search/month/cumulative/brand/sales")
     @ApiOperation("月累计品类销售情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "production_date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "month", value = "日期", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
@@ -139,7 +139,7 @@ public class ChartController {
             @ApiImplicitParam(name = "fen_sale", value = "分销销售", type = "String"),
     })
     public HttpResponse<List<MonthCumulativeBrandSalesRespVo>> selectMonthCumulativeBrandSales(
-            @RequestParam(value = "production_date", required = false) String productionDate,
+            @RequestParam(value = "month", required = false) String month,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
@@ -150,14 +150,14 @@ public class ChartController {
             @RequestParam(value = "data_style_name", required = false) String dataStyleName,
             @RequestParam(value = "qun_sale", required = false) String qunSale,
             @RequestParam(value = "fen_sale", required = false) String fenSale){
-        ChartReqVo chartReqVo = new ChartReqVo(productionDate,productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,qunSale,fenSale);
+        ChartReqVo chartReqVo = new ChartReqVo(month,productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,qunSale,fenSale);
         return HttpResponse.success(chartService.selectMonthCumulativeBrandSales(chartReqVo));
     }
 
     @GetMapping("/search/month/cumulative/gross/profit/margin")
     @ApiOperation("月累计品类毛利率情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "production_date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "month", value = "日期", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
@@ -170,7 +170,7 @@ public class ChartController {
             @ApiImplicitParam(name = "fen_sale", value = "分销销售", type = "String"),
     })
     public HttpResponse<List<MonthCumulativeGrossProfitMarginRespVo>> selectMonthCumulativeGrossProfitMargin(
-            @RequestParam(value = "production_date", required = false) String productionDate,
+            @RequestParam(value = "month", required = false) String month,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
@@ -181,7 +181,7 @@ public class ChartController {
             @RequestParam(value = "data_style_name", required = false) String dataStyleName,
             @RequestParam(value = "qun_sale", required = false) String qunSale,
             @RequestParam(value = "fen_sale", required = false) String fenSale){
-        ChartReqVo chartReqVo = new ChartReqVo(productionDate,productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,qunSale,fenSale);
+        ChartReqVo chartReqVo = new ChartReqVo(month,productSortCode,productSortName,priceChannelCode,priceChannelName,storeTypeCode,storeTypeName,dataStyleCode,dataStyleName,qunSale,fenSale);
         return HttpResponse.success(chartService.selectMonthCumulativeGrossProfitMargin(chartReqVo));
     }
 }

@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
@@ -22,7 +23,7 @@ public interface PurchaseManageService {
 
     HttpResponse purchaseOrder(PurchaseOrderRequest purchaseOrderRequest);
 
-    HttpResponse purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest);
+    HttpResponse<List<PurchaseOrderResponse>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest);
 
     HttpResponse cancelPurchaseOrder(PurchaseOrder purchaseOrder);
 

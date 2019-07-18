@@ -57,12 +57,12 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
     private String batchCode;
 
     @ApiModelProperty("毛利率begin")
-    @JsonProperty("begin_maori_rate")
-    private Double beginMaoriRate;
+    @JsonProperty("begin_qun_maori_rate")
+    private Double beginQunMaoriRate;
 
     @ApiModelProperty("毛利率finish")
-    @JsonProperty("finish_maori_rate")
-    private Double finishMaoriRate;
+    @JsonProperty("finish_qun_maori_rate")
+    private Double finishQunMaoriRate;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -73,7 +73,7 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
     private String productSortName;
 
 
-    public NewProductBatchMovingRateReqVo(String skuCode, String skuName, String priceChannelCode, String priceChannelName, String supplierCode, String supplierName, String productCategoryCode, String productCategoryName, String beginRunTime, String finishRunTime, String batchCode, Double beginMaoriRate, Double finishMaoriRate, String productSortCode, String productSortName) {
+    public NewProductBatchMovingRateReqVo(String skuCode, String skuName, String priceChannelCode, String priceChannelName, String supplierCode, String supplierName, String productCategoryCode, String productCategoryName, String beginRunTime, String finishRunTime, String batchCode, Double beginQunMaoriRate, Double finishQunMaoriRate, String productSortCode, String productSortName) {
         this.skuCode = skuCode;
         this.skuName = skuName;
         this.priceChannelCode = priceChannelCode;
@@ -85,8 +85,8 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
         this.beginRunTime = beginRunTime;
         this.finishRunTime = finishRunTime;
         this.batchCode = batchCode;
-        this.beginMaoriRate = beginMaoriRate;
-        this.finishMaoriRate = finishMaoriRate;
+        this.beginQunMaoriRate = beginQunMaoriRate;
+        this.finishQunMaoriRate = finishQunMaoriRate;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
     }

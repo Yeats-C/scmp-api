@@ -139,7 +139,7 @@
       #{singleCount,jdbcType=INTEGER}, #{untaxedAmount,jdbcType=BIGINT}, #{returnCount,jdbcType=INTEGER}, 
       #{returnAmount,jdbcType=BIGINT}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
       #{transportCenterCode,jdbcType=VARCHAR},#{transportCenterName,jdbcType=VARCHAR},
-      #{warehouseCode,jdbcType=VARCHAR},#{warehouseName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR},
+      #{warehouseCode,jdbcType=VARCHAR},#{warehouseName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{settlementMethodCode,jdbcType=VARCHAR},#{settlementMethodName,jdbcType=VARCHAR},
        now(),now())
   </insert>

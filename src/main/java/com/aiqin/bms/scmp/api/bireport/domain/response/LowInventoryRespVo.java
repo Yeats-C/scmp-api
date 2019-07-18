@@ -63,6 +63,6 @@ public class LowInventoryRespVo {
 
     @ApiModelProperty("低库存占比")
     @JsonProperty("low_inventory_ratio")
-    private Double low_Inventory_ratio;
+    private Double lowInventoryRatio;
 
 }

@@ -268,4 +268,15 @@
     where
     logistics_center_name = #{logisticsCenterName,jdbcType=VARCHAR}
   </select>
+    <select id="selectByCenterNames" resultMap="BaseResultMap" >
+      select
+      <include refid="Base_Column_List" />
+      from logistics_center
+      where logistics_center_name in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+        #{item}
+     </foreach>
+     and company_code = #{companyCode}
+     and enable = 0
+    </select>
 </mapper>
