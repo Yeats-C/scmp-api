@@ -163,7 +163,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
 
     @Override
     public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForApply(String skuCode, String applyCode) {
-        return productSkuPriceInfoMapper.selectBySkuCodeForApply(skuCode,applyCode,getUser().getCompanyCode());
+        return productSkuPriceInfoMapper.selectBySkuCodeForApply(skuCode,applyCode,null);
     }
 
     @Override
