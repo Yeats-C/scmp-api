@@ -22,6 +22,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
@@ -86,6 +87,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private ProSuggestReplenishmentService replenishmentService;
     @Resource
     private PurchaseOrderProductDao purchaseOrderProductDao;
+    @Resource
+    private GoodsRejectService goodsRejectService;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -131,6 +134,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(CollectionUtils.isNotEmptyCollection(applyProducts)){
             PurchaseApplyProduct applyProduct = null;
             for(PurchaseApplyDetailResponse product:applyProducts){
+                if(StringUtils.isNotBlank(product.getCategoryId())){
+                    String categoryName = goodsRejectService.selectCategoryName(product.getCategoryId());
+                    product.setCategoryName(categoryName);
+                }
                 product.setReturnWhole(0);
                 product.setReturnSingle(0);
                 applyProduct = new PurchaseApplyProduct();
@@ -168,6 +175,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             PurchaseApplyReqVo applyReqVo;
             for (PurchaseApplyDetailResponse product : detail) {
+                if(StringUtils.isNotBlank(product.getCategoryId())){
+                    String categoryName = goodsRejectService.selectCategoryName(product.getCategoryId());
+                    product.setCategoryName(categoryName);
+                }
                 // 获取最高采购价(价格管理中供应商的含税价格)
                 if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
                     Long priceTax = productSkuPriceInfoMapper.selectPriceTax(product.getSkuCode(), product.getSupplierCode());
@@ -416,6 +427,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 LogisticsCenter logisticsCenter;
                 PurchaseImportResponse response ;
                 PurchaseApplyProduct applyProduct;
+                PurchaseApplyReqVo applyReqVo;
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 for (int i = 1; i <= result.length - 1; i++) {
                     record = result[i];
                     response = new PurchaseImportResponse();
@@ -438,10 +451,28 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         continue;
                     }
                     applyProduct = stockDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplierCode(), "1028");
+                    if(StringUtils.isNotBlank(applyProduct.getCategoryId())){
+                        String categoryName = goodsRejectService.selectCategoryName(applyProduct.getCategoryId());
+                        applyProduct.setCategoryName(categoryName);
+                    }
                     if(applyProduct != null){
                          // 报表取缺货影响的销售额， 缺货天数， 预测订货件数, 库存周转期
-                        // TODO
-
+                        applyReqVo = new PurchaseApplyReqVo();
+                        applyReqVo.setSkuCode(record[0]);
+                        applyReqVo.setSupplierCode(supplier.getSupplyCode());
+                        applyReqVo.setTransportCenterCode(logisticsCenter.getLogisticsCenterCode());
+                        PurchaseApplyRespVo vo = replenishmentService.selectPurchaseApplySkuList(applyReqVo);
+                        if(vo != null){
+                            applyProduct.setPurchaseNumber(vo.getAdviceOrders() == null ? 0: vo.getAdviceOrders().intValue());
+                            if(StringUtils.isNotBlank(vo.getPredictedArrival())){
+                               Date parse = formatter.parse(vo.getPredictedArrival());
+                               applyProduct.setReceiptTime(parse);
+                            }
+                            applyProduct.setSalesVolume(vo.getAverageAmount() == null ? 0 : vo.getAverageAmount().intValue() * 90);
+                            applyProduct.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0 : vo.getOutStockAffectMoney().intValue());
+                            applyProduct.setShortageDay(vo.getOutStockContinuousDays() == null ? 0 : vo.getOutStockContinuousDays().intValue());
+                            applyProduct.setStockTurnover(vo.getArrivalCycle() == null ? 0 : vo.getArrivalCycle().intValue());
+                        }
                         // 获取到货后周转期
                         ProductSkuConfig cycleInfo = productSkuConfigDao.getCycleInfo(applyProduct.getSkuCode(), applyProduct.getTransportCenterCode());
                         if(cycleInfo != null){
