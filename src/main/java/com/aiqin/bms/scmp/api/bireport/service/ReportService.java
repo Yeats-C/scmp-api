@@ -22,7 +22,7 @@ public interface ReportService {
      * @param goodsBuySalesReqVo
      * @return
      */
-    PageResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
+    PageReportResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
     /**
      *  赠品进销存

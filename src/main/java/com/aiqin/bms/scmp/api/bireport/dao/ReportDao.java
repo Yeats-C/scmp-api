@@ -18,7 +18,7 @@ public interface ReportDao {
 
     Integer countSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
-    List<Map> selectTableCloumnName();
+    List<Map> selectSupplierArrivalRateTableCloumnName();
 
     /**
      *  批次商品进销存
@@ -28,6 +28,8 @@ public interface ReportDao {
     List<GoodsBuySalesRespVo> selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
     Integer countGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
+
+    List<Map> selectGoodsBuySalesTableCloumnName();
 
     /**
      *  赠品进销存
@@ -193,4 +195,6 @@ public interface ReportDao {
      * @return
      */
     List<String> selectAllOneCategory();
+
+
 }
