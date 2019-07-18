@@ -1955,9 +1955,20 @@
     <update id="updateStorehouseById" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update stock st
-            SET
-                st.stockup_num = #{item.stockupNum,jdbcType=BIGINT},
-                st.stockupfinish_time = #{item.stockupfinishTime,jdbcType=VARCHAR}
+            <set>
+                <if test="item.stockupNum!=null and item.stockupNum!=''">
+                    st.stockup_num = #{item.stockupNum,jdbcType=BIGINT},
+                </if>
+                <if test="item.stockupNum==null or item.stockupNum==''">
+                    st.stockup_num = null,
+                </if>
+                <if test="item.stockupfinishTime!=null and item.stockupfinishTime!=''">
+                    st.stockupfinish_time = #{item.stockupfinishTime,jdbcType=VARCHAR},
+                </if>
+                <if test="item.stockupfinishTime==null or item.stockupfinishTime==''">
+                    st.stockupfinish_time = null
+                </if>
+            </set>
             WHERE  st.id = #{item.id}
         </foreach>
     </update>

@@ -15,13 +15,9 @@ public class SupplierArrivalRateRespVo implements Serializable {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
-
-    @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @ApiModelProperty("入库时间")
+    @JsonProperty("inbound_time")
+    private String inboundTime;
 
     @ApiModelProperty("供应商code")
     @JsonProperty(value = "supplier_code")
@@ -71,115 +67,5 @@ public class SupplierArrivalRateRespVo implements Serializable {
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getBeginRunTime() {
-        return beginRunTime;
-    }
-
-    public void setBeginRunTime(String beginRunTime) {
-        this.beginRunTime = beginRunTime;
-    }
-
-    public String getFinishRunTime() {
-        return finishRunTime;
-    }
-
-    public void setFinishRunTime(String finishRunTime) {
-        this.finishRunTime = finishRunTime;
-    }
-
-    public String getSupplierCode() {
-        return supplierCode;
-    }
-
-    public void setSupplierCode(String supplierCode) {
-        this.supplierCode = supplierCode;
-    }
-
-    public String getSupplierName() {
-        return supplierName;
-    }
-
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
-    }
-
-    public String getCategoryCode() {
-        return categoryCode;
-    }
-
-    public void setCategoryCode(String categoryCode) {
-        this.categoryCode = categoryCode;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public String getTransportCenterCode() {
-        return transportCenterCode;
-    }
-
-    public void setTransportCenterCode(String transportCenterCode) {
-        this.transportCenterCode = transportCenterCode;
-    }
-
-    public String getPreInboundNum() {
-        return preInboundNum;
-    }
-
-    public void setPreInboundNum(String preInboundNum) {
-        this.preInboundNum = preInboundNum;
-    }
-
-    public String getPreTaxAmount() {
-        return preTaxAmount;
-    }
-
-    public void setPreTaxAmount(String preTaxAmount) {
-        this.preTaxAmount = preTaxAmount;
-    }
-
-    public String getPraInboundNum() {
-        return praInboundNum;
-    }
-
-    public void setPraInboundNum(String praInboundNum) {
-        this.praInboundNum = praInboundNum;
-    }
-
-    public String getPraTaxAmount() {
-        return praTaxAmount;
-    }
-
-    public void setPraTaxAmount(String praTaxAmount) {
-        this.praTaxAmount = praTaxAmount;
-    }
-
-    public String getPraTaxAmountRate() {
-        return praTaxAmountRate;
-    }
-
-    public void setPraTaxAmountRate(String praTaxAmountRate) {
-        this.praTaxAmountRate = praTaxAmountRate;
-    }
-
-    public String getResponsiblePersonName() {
-        return responsiblePersonName;
-    }
-
-    public void setResponsiblePersonName(String responsiblePersonName) {
-        this.responsiblePersonName = responsiblePersonName;
-    }
 }

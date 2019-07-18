@@ -23,25 +23,25 @@
         <where>
             1=1
             <if test="supplierCode!=null and supplierCode!=''">
-                and bsar.supplier_code like concat('%', #{supplierCode,jdbcType=VARCHAR}, '%')
+                and bsar.supplier_code = #{supplierCode}
             </if>
             <if test="supplierName!=null and supplierName!=''">
-                and bsar.supplier_name like concat('%', #{supplierName,jdbcType=VARCHAR}}, '%')
+                and bsar.supplier_name like concat('%', #{supplierName}, '%')
             </if>
             <if test="transportCenterCode!=null and transportCenterCode!=''">
-                and bsar.logistics_center_code like concat('%', #{transportCenterCode,jdbcType=VARCHAR}}, '%')
+                and bsar.logistics_center_code = #{transportCenterCode}
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bsar.category_code like concat('%', #{categoryCode,jdbcType=VARCHAR}}, '%')
+                and bsar.category_code = #{categoryCode}
             </if>
             <if test="categoryName!=null and categoryName!=''">
-                and bsar.category_name like concat('%', #{categoryName,jdbcType=VARCHAR}}, '%')
+                and bsar.category_name like concat('%', #{categoryName}, '%')
             </if>
             <if test="beginRunTime!=null and beginRunTime!=''">
-                and bsar.run_time between #{beginRunTime,jdbcType=VARCHAR}}
+                and bsar.run_time between #{beginRunTime}
             </if>
             <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime,jdbcType=VARCHAR}}
+                and #{finishRunTime}
             </if>
         </where>
     </sql>
@@ -698,8 +698,7 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
         select
         bsar.id as id,
-        #{beginRunTime}  as beginRunTime,
-        #{finishRunTime} as finishRunTime,
+        date_format(bsar.inbound_time, '%Y-%m-%d %H:%i:%s') as inboundTime,
         bsar.supplier_code as supplierCode,
         bsar.supplier_name as supplierName,
         bsar.category_code as categoryCode,
@@ -714,7 +713,6 @@
         bsar.responsible_person_name as responsiblePersonName
         from bi_supplier_arrival_rate bsar
         <include refid="select_supplier_arrival_rate"/>
-        order by bsar.id asc
     </select>
     <select id="countSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
             resultType="java.lang.Integer">
@@ -725,25 +723,25 @@
         WHERE
         1=1
         <if test="supplierCode!=null and supplierCode!=''">
-            and bsar.supplier_code like concat('%', #{supplierCode,jdbcType=VARCHAR}, '%')
+            and bsar.supplier_code = #{supplierCode}
         </if>
         <if test="supplierName!=null and supplierName!=''">
-            and bsar.supplier_name like concat('%', #{supplierName,jdbcType=VARCHAR}}, '%')
+            and bsar.supplier_name like concat('%', #{supplierName}, '%')
         </if>
         <if test="transportCenterCode!=null and transportCenterCode!=''">
-            and bsar.logistics_center_code like concat('%', #{transportCenterCode,jdbcType=VARCHAR}}, '%')
+            and bsar.logistics_center_code = #{transportCenterCode}
         </if>
         <if test="categoryCode!=null and categoryCode!=''">
-            and bsar.category_code like concat('%', #{categoryCode,jdbcType=VARCHAR}}, '%')
+            and bsar.category_code = #{categoryCode}
         </if>
         <if test="categoryName!=null and categoryName!=''">
-            and bsar.category_name like concat('%', #{categoryName,jdbcType=VARCHAR}}, '%')
+            and bsar.category_name like concat('%', #{categoryName}, '%')
         </if>
         <if test="beginRunTime!=null and beginRunTime!=''">
-            and bsar.run_time between #{beginRunTime,jdbcType=VARCHAR}}
+            and bsar.run_time between #{beginRunTime}
         </if>
         <if test="finishRunTime!=null and finishRunTime!=''">
-            and #{finishRunTime,jdbcType=VARCHAR}}
+            and #{finishRunTime}
         </if>
         group by bsar.id
         ) as tmp
@@ -801,7 +799,6 @@
         bgbs.quality_number as qualityNumber
         from bi_goods_buy_sales bgbs
         <include refid="select_goods_buy_sales"/>
-        order by bgbs.id asc
     </select>
     <select id="countGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
             resultType="java.lang.Integer">
@@ -844,7 +841,6 @@
         bgbs.responsible_person_name as responsiblePersonName
         from bi_gifts_buy_sales bgbs
         <include refid="select_gifts_buy_sales"/>
-        order by bgbs.id asc
     </select>
     <select id="countGiftsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo"
             resultType="java.lang.Integer">
@@ -878,7 +874,6 @@
         bsr.responsible_person_name as responsiblePersonName
         from bi_supplier_return bsr
         <include refid="select_supplier_return"/>
-        order by bsr.id asc
     </select>
     <select id="countSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
             resultType="java.lang.Integer">
@@ -932,7 +927,6 @@
         bnpbmr.responsible_person_name as responsiblePersonName
         from bi_new_product_batch_moving_rate bnpbmr
         <include refid="select_new_product_batch_moving_rate"/>
-        order by bnpbmr.id asc
     </select>
     <select id="countNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
             resultType="java.lang.Integer">
@@ -962,7 +956,6 @@
         bnm.after_buy_rate as afterBuyRate
         from bi_store_repurchase_rate bsrr
         <include refid="select_store_repurchase_rate"/>
-        order by bsrr.id asc
     </select>
     <select id="countStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
             resultType="java.lang.Integer">
@@ -998,7 +991,6 @@
         bnm.product_sort_name as productSortName
         from bi_negative_margin bnm
         <include refid="select_negative_margin"/>
-        order by bnm.id asc
     </select>
     <select id="countNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
             resultType="java.lang.Integer">
@@ -1032,7 +1024,6 @@
         bsr.config_status as configStatus
         from bi_suggest_replenishment bsr
         <include refid="select_suggest_replenishment"/>
-        order by bsr.id asc
     </select>
     <select id="countSuggestReplenishment" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SuggestReplenishmentReqVo"
             resultType="java.lang.Integer">
@@ -1063,7 +1054,6 @@
         bli.low_inventory_ratio as low_Inventory_ratio
         from bi_low_inventory bli
         <include refid="select_low_inventory"/>
-        order by bli.id asc
     </select>
     <select id="countLowInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="java.lang.Integer">
@@ -1094,7 +1084,6 @@
         bhi.high_inventory_ratio as highInventoryRatio
         from bi_high_inventory bhi
         <include refid="select_high_inventory"/>
-        order by bhi.id asc
     </select>
     <select id="countHighInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="java.lang.Integer">
@@ -1136,7 +1125,6 @@
         bbs.fen_gross_margin_link_ratio as fenGrossMarginLinkRatio
         from bi_brand_sale bbs
         <include refid="select_brand_sale"/>
-        order by bbs.id asc
     </select>
     <select id="countBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="java.lang.Integer">
@@ -1176,7 +1164,6 @@
         bcs.fen_gross_margin_link_ratio as fenGrossMarginLinkRatio
         from bi_category_sale bcs
         <include refid="select_category_sale"/>
-        order by bhi.id asc
     </select>
     <select id="countCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="java.lang.Integer">
@@ -1210,7 +1197,6 @@
         bbe.transport_center_name as transportCenterName
         from bi_big_effect bbe
         <include refid="select_big_effect"/>
-        order by bbe.id asc
     </select>
     <select id="countBigEffect" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.BigEffectReqVo"
             resultType="java.lang.Integer">
@@ -1248,7 +1234,6 @@
         bms.fen_sequential as fenSequential
         from bi_monthly_sales bms
         <include refid="select_monthly_sales"/>
-        order by bms.id asc
     </select>
     <select id="countMonthlySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="java.lang.Integer">
@@ -1286,7 +1271,6 @@
         bmgm.fen_sequential as fenSequential
         from bi_month_gross_margin bmgm
         <include refid="select_monthly_gross_margin"/>
-        order by bmgm.id asc
     </select>
     <select id="countMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="java.lang.Integer">
@@ -1322,7 +1306,6 @@
         bmsa.fen_yield_rate as fenYieldRate
         from bi_month_sales_achievement bmsa
         <include refid="select_month_sales_achievement"/>
-        order by bmsa.id asc
     </select>
     <select id="countMonthSalesAchievement" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
@@ -1362,7 +1345,6 @@
         bmcbs.fen_sequential as fenSequential
         from bi_month_cumulative_brand_sales bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
-        order by bmcbs.id asc
     </select>
     <select id="countMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
@@ -1405,7 +1387,6 @@
         bmcgpm.fen_sequential as fenSequential
         from bi_month_cumulative_gross_profit_margin bmcgpm
         <include refid="select_month_cumulative_gross_profit_margin"/>
-        order by bmcgpm.id asc
     </select>
     <select id="countMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
