@@ -158,7 +158,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             if (Objects.nonNull(configMap.get(item.getSkuCode() + item.getTransportCenterCode()))) {
                 //判断是否有审核中的数据
                 if (StatusTypeCode.UPDATE_APPLY.getStatus().equals(configMap.get(item.getSkuCode() + item.getTransportCenterCode()).getApplyStatus())) {
-                    error.add("sku编码为"+item.getSkuCode()+"下的仓库名称为"+item.getTransportCenterCode()+"有在审批中的数据。请删除该条数据，重新提交");
+                    error.add("sku编码为"+item.getSkuCode()+"下的仓库名称为"+item.getTransportCenterCode());
                     continue;
                 }
             }
@@ -183,6 +183,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             }
         }
         if (CollectionUtils.isNotEmpty(error)) {
+            error.add("有在审批中的数据。请删除数据，重新提交,或者在审批申请页面将重复的数据删除。");
             throw new BizException(StringUtils.strip(error.toString(),  "[]"));
         }else {
             //删除草稿变数据
