@@ -96,7 +96,7 @@
     <include refid="Base_Column_List" />
     from apply_product_sku
     where sku_code = #{skuCode,jdbcType=VARCHAR}
-    and apply_status (0,1)
+    and apply_status in (0,1)
   </select>
   <select id="selectByFormNO" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
