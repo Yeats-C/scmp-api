@@ -105,8 +105,8 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 outbound.setPreAmount(reqVo.getSumAmount());
                 //预计税额
 //                outbound.setPreTax(reqVo.getSumAmount()-reqVo.getSumAmount());
-                outbound.setCreateBy(reqVo.getCreateById());
-                outbound.setUpdateBy(reqVo.getUpdateById());
+                outbound.setCreateBy(reqVo.getCreateByName());
+                outbound.setUpdateBy(reqVo.getUpdateByName());
                 outbound.setCreateTime(new Date());
                 outbound.setUpdateTime(new Date());
 
