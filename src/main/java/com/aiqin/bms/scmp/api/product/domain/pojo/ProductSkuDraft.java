@@ -197,7 +197,10 @@ public class ProductSkuDraft extends CommonBean {
     @ApiModelProperty(value = "拆零系数",hidden = true)
     private Long zeroRemovalCoefficient;
 
+    @ApiModelProperty(value = "图片文件夹编码")
+    private String picFolderCode;
 
-
+    @ApiModelProperty(value = "改变内容",hidden = true)
+    private String changeContent;
 
 }

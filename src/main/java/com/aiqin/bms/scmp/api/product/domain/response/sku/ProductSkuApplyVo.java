@@ -77,4 +77,7 @@ public class ProductSkuApplyVo {
     @ApiModelProperty("生效开始时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date selectionEffectiveStartTime;
+
+    @ApiModelProperty(value = "改变内容",hidden = true)
+    private String changeContent;
 }

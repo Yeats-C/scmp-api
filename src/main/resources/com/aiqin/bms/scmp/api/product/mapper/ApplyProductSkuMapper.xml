@@ -91,6 +91,13 @@
     from apply_product_sku
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectNoExistsApprovalBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_product_sku
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and apply_status (0,1)
+  </select>
   <select id="selectByFormNO" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List"/>
@@ -175,6 +182,7 @@
     <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
     <result column="apply_status" jdbcType="TINYINT" property="applyStatus"/>
     <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy"/>
+    <result column="change_content" jdbcType="VARCHAR" property="changeContent"/>
     <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime"/>
     <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime"/>
     <result column="selection_effective_start_time" jdbcType="TIMESTAMP" property="selectionEffectiveStartTime"/>
@@ -199,7 +207,8 @@
     auditor_by,
     auditor_time,
     selection_effective_time,
-    selection_effective_start_time
+    selection_effective_start_time,
+    change_content
     from apply_product_sku
     where apply_code = #{applyCode}
   </select>

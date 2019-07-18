@@ -58,6 +58,8 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.aiqin.bms.scmp.api.util.GetChangeValueUtil.skuHeadMap;
+
 /**
  * @功能说明:
  * @author: wangxu
@@ -179,17 +181,34 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (StringUtils.isNotBlank(productSkuDraft.getSkuCode())){
                 productSkuDraft.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
                 productSkuDraft.setApplyTypeName(StatusTypeCode.UPDATE_APPLY.getName());
+                //判断临时表中是否存在
+                ProductSkuRespVo skuRespVo = productSkuDao.getSkuDraft(productSkuDraft.getSkuCode());
+                if(null != skuRespVo){
+                    throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
+                }
+                //判断申请表中是否存在申请中的数据
+                ApplyProductSku applyProductSku = applyProductSkuMapper.selectNoExistsApprovalBySkuCode(productSkuDraft.getSkuCode());
+                if(null != applyProductSku){
+                    throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
+                }
+                //计算修改的内容
+                //获取旧的数据
+                ProductSkuDraft oldSku = productSkuDraftMapper.getOfficialBySkuCode(productSkuDraft.getSkuCode());
+                String compareResult = new GetChangeValueUtil<ProductSkuDraft>().compareResult(oldSku, productSkuDraft, skuHeadMap);
+                productSkuDraft.setChangeContent(compareResult);
                 ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
+                productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
             } else {
                 EncodingRule encodingRule=encodingRuleDao.getNumberingType("PRODUCT_SKU_CODE");
                 Long thisCode = encodingRule.getNumberingValue();
                 productSkuDraft.setSkuCode(String.valueOf(thisCode+1));
                 productSkuDraft.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
                 productSkuDraft.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
+                productSkuDraft.setChangeContent("新增SKU");
                 ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
                 encodingRuleDao.updateNumberValue(thisCode,encodingRule.getId());
+                productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.ADD_SKU.getName(),HandleTypeCoce.ADD.getName());
             }
-            productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.ADD_SKU.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),addSkuInfoReqVO.getProductSkuDraft(),HandleTypeCoce.ADD_SKU.getName());
             SkuTypeEnum skuTypeEnum = SkuTypeEnum.getSkuTypeEnumByType(productSkuDraft.getGoodsGifts());
             //组合商品-子商品列表
             List<ProductSkuSubDraft> productSkuSubs = addSkuInfoReqVO.getProductSkuSubs();
@@ -294,6 +313,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         item.setProductSkuName(productSkuDraft.getSkuName());
                         item.setProductName(productSkuDraft.getProductName());
                         item.setProductCode(productSkuDraft.getProductCode());
+                        item.setBaseProductContent(1);
+                        item.setZeroRemovalCoefficient(1L);
                         item.setUsageStatus(StatusTypeCode.USE.getStatus());
                     });
                     productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);

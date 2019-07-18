@@ -40,6 +40,13 @@ public class QueryPurchaseGroupResVo {
     @ApiModelProperty("创建人")
     private String createBy;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
+
     @ApiModelProperty("关联人员List")
     private List<QueryPurchaseGroupBuyerResVo> buyerResVoList;
 
