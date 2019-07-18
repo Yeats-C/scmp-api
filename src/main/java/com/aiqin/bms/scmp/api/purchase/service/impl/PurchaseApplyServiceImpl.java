@@ -32,6 +32,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
+import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.id.IdUtil;
@@ -89,11 +91,18 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private PurchaseOrderProductDao purchaseOrderProductDao;
     @Resource
     private GoodsRejectService goodsRejectService;
+    @Resource
+    private PurchaseGroupService purchaseGroupService;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
-        PageResData pageResData = new PageResData();
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup();
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+            return HttpResponse.success();
+        }
+        purchaseApplyRequest.setGroupList(groupVoList);
         List<PurchaseApplyResponse> purchases = purchaseApplyDao.applyList(purchaseApplyRequest);
+        PageResData pageResData = new PageResData();
         if(CollectionUtils.isNotEmptyCollection(purchases)){
             for (PurchaseApplyResponse apply:purchases){
                 // 计算sku数量 / 单品数量/ 采购含税金额 / 实物返金额
