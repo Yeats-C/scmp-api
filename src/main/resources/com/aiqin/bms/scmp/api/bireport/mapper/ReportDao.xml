@@ -125,11 +125,11 @@
             <if test="transportCenterName!=null and transportCenterName!=''">
                 and bgbs.transport_center_name like concat('%', #{transportCenterName}, '%')
             </if>
-            <if test="productCategoryName!=null and productCategoryName!=''">
-                and bgbs.product_category_name like concat('%', #{productCategoryName}, '%')
+            <if test="categoryName!=null and categoryName!=''">
+                and bgbs.category_name like concat('%', #{categoryName}, '%')
             </if>
-            <if test="productCategoryCode!=null and productCategoryCode!=''">
-                and bgbs.product_category_code=#{productCategoryCode}
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bgbs.category_code=#{categoryCode}
             </if>
             <if test="inboundDays!=null and inboundDays!=''">
                 and bgbs.inbound_days=#{inboundDays}
@@ -140,11 +140,11 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bgbs.run_time between #{beginRunTime}
+            <if test="beginInboundTime!=null and beginInboundTime!=''">
+                and bgbs.inbound_time between #{beginInboundTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishInboundTime!=null and finishInboundTime!=''">
+                and #{finishInboundTime}
             </if>
             <if test="warehouseCode!=null and warehouseCode!=''">
                 and bgbs.warehouse_code=#{warehouseCode}
@@ -158,17 +158,14 @@
             <if test="finishTurnoverDays!=null">
                 and bgbs.turnover_days <![CDATA[<=]]> #{finishTurnoverDays}
             </if>
-            <if test="productCategoryOne!=null and productCategoryOne!=''">
-                and bgbs.product_category_one like concat('%', #{productCategoryOne}, '%')
+            <if test="categoryCodeOne!=null and categoryCodeOne!=''">
+                and bgbs.category_code_one like concat('%', #{categoryCodeOne}, '%')
             </if>
-            <if test="productCategoryTwo!=null and productCategoryTwo!=''">
-                and bgbs.product_category_two like concat('%', #{productCategoryTwo}, '%')
+            <if test="categoryCodeTwo!=null and categoryCodeTwo!=''">
+                and bgbs.category_code_two like concat('%', #{categoryCodeTwo}, '%')
             </if>
-            <if test="productCategoryThree!=null and productCategoryThree!=''">
-                and bgbs.product_category_three like concat('%', #{productCategoryThree}, '%')
-            </if>
-            <if test="productCategoryFour!=null and productCategoryFour!=''">
-                and bgbs.product_category_four like concat('%', #{productCategoryFour}, '%')
+            <if test="categoryCodeThree!=null and categoryCodeThree!=''">
+                and bgbs.category_code_three like concat('%', #{categoryCodeThree}, '%')
             </if>
         </where>
     </sql>
@@ -820,14 +817,13 @@
         bgbs.id as id,
         bgbs.sku_code as skuCode,
         bgbs.sku_name as skuName,
-        bgbs.category_name as categoryName,
-        bgbs.product_category_code as productCategoryCode,
-        bgbs.product_category_one as productCategoryOne,
-        bgbs.product_category_two as productCategoryTwo,
-        bgbs.product_category_three as productCategoryThree,
-        bgbs.product_category_four as productCategoryFour,
         bgbs.product_sort_code as productSortCode,
         bgbs.product_sort_name as productSortName,
+        bgbs.category_name as categoryName,
+        bgbs.category_code as categoryCode,
+        bgbs.category_code_one as categoryCodeOne,
+        bgbs.category_code_two as categoryCodeTwo,
+        bgbs.category_code_three as categoryCodeThree,
         bgbs.product_brand_code as productBrandCode,
         bgbs.product_brand_name as productBrandName,
         bgbs.manufacturer_guide_price as manufacturerGuidePrice,
@@ -835,14 +831,15 @@
         bgbs.transport_center_name as transportCenterName,
         bgbs.warehouse_code as warehouseCode,
         bgbs.warehouse_name as warehouseName,
-        bgbs.inventory_num as inventoryNum,
+        bgbs.available_num as availableNum,
         bgbs.sales_num_one_month as salesNumOneMonth,
         bgbs.sales_money_one_month as salesMoneyOneMonth,
         bgbs.turnover_days as turnoverDays,
-        bgbs.create_time as createTime,
-        bgbs.inbound_days as inboundDays,
         bgbs.responsible_person_code as responsiblePersonCode,
-        bgbs.responsible_person_name as responsiblePersonName
+        bgbs.responsible_person_name as responsiblePersonName,
+        bgbs.inbound_time as inboundTime,
+        bgbs.inbound_days as inboundDays,
+        bgbs.create_time as createTime
         from bi_gifts_buy_sales bgbs
         <include refid="select_gifts_buy_sales"/>
     </select>
@@ -1419,5 +1416,12 @@
         bsar.category_code,
         bsar.category_name
         FROM bi_supplier_arrival_rate bsar
+    </select>
+    <select id="selectTableCloumnName" resultType="java.util.HashMap">
+        select
+        COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
+        from information_schema.COLUMNS
+        where
+        table_name = #{cloumnName} and table_schema = 'bms_scmp'
     </select>
 </mapper>

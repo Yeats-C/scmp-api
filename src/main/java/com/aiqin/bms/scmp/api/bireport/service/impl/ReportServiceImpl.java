@@ -70,12 +70,14 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo) {
+    public PageReportResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo) {
         try {
             // PageHelper.startPage(giftsBuySalesReqVo.getPageNo(), giftsBuySalesReqVo.getPageSize());
             List<GiftsBuySalesRespVo> giftsBuySalesRespVos = reportDao.selectGiftsBuySales(giftsBuySalesReqVo);
             Integer total = reportDao.countGiftsBuySales(giftsBuySalesReqVo);
-            return new PageResData<GiftsBuySalesRespVo>(total,giftsBuySalesRespVos);
+            String cloumnName = "bi_gifts_buy_sales";
+            List<Map> maps = reportDao.selectTableCloumnName(cloumnName);
+            return new PageReportResData<GiftsBuySalesRespVo>(total,giftsBuySalesRespVos,maps);
         } catch (Exception ex) {
             log.error("查询赠品进销存失败");
             ex.printStackTrace();

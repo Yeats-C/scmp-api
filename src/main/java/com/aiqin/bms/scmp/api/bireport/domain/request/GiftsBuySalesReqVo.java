@@ -29,12 +29,12 @@ public class GiftsBuySalesReqVo extends PageReq implements Serializable {
     private String transportCenterName;
 
     @ApiModelProperty("品类名称")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("库存日期(天)")
     @JsonProperty("inbound_days")
@@ -49,12 +49,12 @@ public class GiftsBuySalesReqVo extends PageReq implements Serializable {
     private String productSortName;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @JsonProperty("begin_inbound_time")
+    private String beginInboundTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @JsonProperty("finish_inbound_time")
+    private String finishInboundTime;
 
     @ApiModelProperty("库房编码")
     @JsonProperty("warehouse_code")
@@ -73,41 +73,37 @@ public class GiftsBuySalesReqVo extends PageReq implements Serializable {
     private Integer finishTurnoverDays;
 
     @ApiModelProperty("一级品类")
-    @JsonProperty("product_category_one")
-    private String productCategoryOne;
+    @JsonProperty("category_code_one")
+    private String categoryCodeOne;
 
     @ApiModelProperty("二级品类")
-    @JsonProperty("product_category_two")
-    private String productCategoryTwo;
+    @JsonProperty("category_code_two")
+    private String categoryCodeTwo;
 
     @ApiModelProperty("三级品类")
-    @JsonProperty("product_category_three")
-    private String productCategoryThree;
+    @JsonProperty("category_code_three")
+    private String categoryCodeThree;
 
-    @ApiModelProperty("四级品类")
-    @JsonProperty("product_category_four")
-    private String productCategoryFour;
 
-    public GiftsBuySalesReqVo(String skuCode, String skuName, String transportCenterCode, String transportCenterName, String productCategoryName, String productCategoryCode, Integer inboundDays, String productSortCode, String productSortName, String beginRunTime, String finishRunTime, String warehouseCode, String warehouseName, Integer beginTurnoverDays, Integer finishTurnoverDays, String productCategoryOne, String productCategoryTwo, String productCategoryThree, String productCategoryFour) {
+    public GiftsBuySalesReqVo(String skuCode, String skuName, String transportCenterCode, String transportCenterName, String categoryName, String categoryCode, Integer inboundDays, String productSortCode, String productSortName, String beginInboundTime, String finishInboundTime, String warehouseCode, String warehouseName, Integer beginTurnoverDays, Integer finishTurnoverDays, String categoryCodeOne, String categoryCodeTwo, String categoryCodeThree) {
         this.skuCode = skuCode;
         this.skuName = skuName;
         this.transportCenterCode = transportCenterCode;
         this.transportCenterName = transportCenterName;
-        this.productCategoryName = productCategoryName;
-        this.productCategoryCode = productCategoryCode;
+        this.categoryName = categoryName;
+        this.categoryCode = categoryCode;
         this.inboundDays = inboundDays;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
-        this.beginRunTime = beginRunTime;
-        this.finishRunTime = finishRunTime;
+        this.beginInboundTime = beginInboundTime;
+        this.finishInboundTime = finishInboundTime;
         this.warehouseCode = warehouseCode;
         this.warehouseName = warehouseName;
         this.beginTurnoverDays = beginTurnoverDays;
         this.finishTurnoverDays = finishTurnoverDays;
-        this.productCategoryOne = productCategoryOne;
-        this.productCategoryTwo = productCategoryTwo;
-        this.productCategoryThree = productCategoryThree;
-        this.productCategoryFour = productCategoryFour;
+        this.categoryCodeOne = categoryCodeOne;
+        this.categoryCodeTwo = categoryCodeTwo;
+        this.categoryCodeThree = categoryCodeThree;
     }
 
     public GiftsBuySalesReqVo() {

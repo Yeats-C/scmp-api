@@ -29,7 +29,7 @@ public interface ReportService {
      * @param giftsBuySalesReqVo
      * @return
      */
-    PageResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
+    PageReportResData selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
 
     /**
      *  供应商退货(退供)

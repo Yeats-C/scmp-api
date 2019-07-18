@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.bireport.dao;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockBatchRequest;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -197,4 +198,10 @@ public interface ReportDao {
     List<String> selectAllOneCategory();
 
 
+    /**
+     * 获取数据库表列名
+     * @param cloumnName
+     * @return
+     */
+    List<Map> selectTableCloumnName(@Param("cloumnName") String cloumnName);
 }
