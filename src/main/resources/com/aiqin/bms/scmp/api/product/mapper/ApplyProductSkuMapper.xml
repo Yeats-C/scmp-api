@@ -150,6 +150,7 @@
       <if test="skuName != null and skuName!= '' ">
         and sku_name like CONCAT('%',#{skuName},'%')
       </if>
+      order by create_time desc
     </select>
   <select id="findFormNoByCode" resultType="java.lang.String">
     select
