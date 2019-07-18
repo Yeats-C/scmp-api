@@ -301,7 +301,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             workFlowVO.setFormNo(applySupplyCompanyReqDTO.getFormNo());
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_COMPANY.getNum());
             String title = "修改";
-            if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applySupplyCompanyReqDTO.getApplyStatus())){
+            if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applySupplyCompanyReqDTO.getApplyType())){
                 title = "新增";
             }
             workFlowVO.setTitle(title+applySupplyCompanyReqDTO.getApplySupplyName()+"申请");
@@ -349,7 +349,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 if(i<=0){
                     throw new GroundRuntimeException("审核状态修改失败");
                 }
-                String content = ApplyStatus.APPROVAL.getContent().replace("CREATEBY", applySupplyCompany.getUpdateBy()).replace("APPLYTYPE", title);
+                String content = ApplyStatus.APPROVAL.getContent().replace("CREATEBY", applySupplyCompanyReqDTO.getUpdateBy()).replace("APPLYTYPE", title);
                 //存日志
                 supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"", HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,HandleTypeCoce.APPROVAL.getName());
             }else {
@@ -567,8 +567,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     supplyCompany.setSupplyAbbreviation(applySupplyCompany.getApplyAbbreviation());
                     supplyCompany.setSupplyCode(oldSupplyCompany.getSupplyCode());
                     supplyCompany.setSupplyType(applySupplyCompany.getApplySupplyType());
-                    handleTypeCoce = HandleTypeCoce.ADD;
-                    content = HandleTypeCoce.ADD_SUPPLY_COMPANY.getName();
+                    handleTypeCoce = HandleTypeCoce.UPDATE;
+                    content = HandleTypeCoce.UPDATE_SUPPLY_COMPANY.getName();
                     supplyCompanyMapper.updateByPrimaryKey(supplyCompany);
                 } else {
                     EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLY_COM_CODE);
@@ -577,8 +577,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     supplyCompany.setSupplyType(applySupplyCompany.getApplySupplyType());
                     supplyCompany.setSupplyAbbreviation(applySupplyCompany.getApplyAbbreviation());
                     supplyCompany.setSupplyCode(String.valueOf(encodingRule.getNumberingValue()));
-                    content = HandleTypeCoce.UPDATE_SUPPLY_COMPANY.getName();
-                    handleTypeCoce = HandleTypeCoce.UPDATE;
+                    content = HandleTypeCoce.ADD_SUPPLY_COMPANY.getName();
+                    handleTypeCoce = HandleTypeCoce.ADD;
                     supplyCompanyMapper.insert(supplyCompany);
                     encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
                 }
@@ -666,7 +666,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
 //                records.add(recordReqVo);
 //                tagInfoService.saveRecordList(records);
 
-                supplierCommonService.getInstance(supplyCompany.getSupplyCode(),handleTypeCoce.getStatus(),ObjectTypeCode.SUPPLY_COMPANY.getStatus(),content,null, handleTypeCoce.getName(),applySupplyCompanyAccount.getCreateBy());
+                supplierCommonService.getInstance(supplyCompany.getSupplyCode(),handleTypeCoce.getStatus(),ObjectTypeCode.SUPPLY_COMPANY.getStatus(),content,null, handleTypeCoce.getName(),applySupplyCompany.getCreateBy());
             }else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
                 applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
                 //驳回, 设置状态

@@ -253,7 +253,7 @@
     <include refid="Base_Column_List" />
     from logistics_center_area
     where logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
-    And enable=1
+    And enable=0
   </select>
   <select id="selectByCode"
           resultMap="BaseResultMap">

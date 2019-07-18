@@ -79,7 +79,7 @@
         and company_code =  #{companyCode,jdbcType=VARCHAR}
       </if>
     </where>
-    order by price_project_order asc,update_time desc
+    order by price_project_order asc,create_time desc
   </select>
   <select id="checkName" resultType="java.lang.Integer">
     select

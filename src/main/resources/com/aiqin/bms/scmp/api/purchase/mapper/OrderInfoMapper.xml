@@ -128,8 +128,9 @@
         and customer_name like concat('%',#{customerName},'%')
       </if>
        <if test="orderCode != null and orderCode != ''">
-        and order_code = #{orderCode}
+        and order_code LIKE CONCAT(CONCAT('%',#{orderCode},'%'))
       </if>
+      order by create_date desc
   </select>
   <resultMap id="selectByOrderCode" type="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO">
     <result column="aorder_code" jdbcType="VARCHAR" property="orderCode" />

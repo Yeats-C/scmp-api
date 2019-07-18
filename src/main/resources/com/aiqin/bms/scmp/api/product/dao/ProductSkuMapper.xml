@@ -875,13 +875,13 @@
       product_sku
       WHERE del_flag=0
       <if test="skuCode!=null and skuCode!=''">
-        AND sku_code =#{skuCode,jdbcType=VARCHAR}
+        AND sku_code LIKE CONCAT('%',#{skuCode,jdbcType=VARCHAR},'%')
       </if>
       <if test="skuName!=null and skuName!=''">
         AND sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
       </if>
       <if test="productCode!=null and productCode!=''">
-        AND product_code = #{productCode,jdbcType=VARCHAR}
+        AND product_code  LIKE CONCAT('%',#{productCode,jdbcType=VARCHAR},'%')
       </if>
       <if test="productName!=null and productName!=''">
         AND product_name like CONCAT('%',#{productName,jdbcType=VARCHAR},'%')
@@ -912,6 +912,9 @@
       </if>
       <if test="companyCode != null and companyCode != '' ">
         and company_code = #{companyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuStatus != null">
+        and sku_status = #{skuStatus,jdbcType=VARCHAR}
       </if>
     order by create_time desc
   </select>

@@ -11,12 +11,15 @@ import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.ExcelUtil;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author knight.xie
@@ -86,6 +89,20 @@ public class ProductSkuPromoteSalesServiceImpl implements ProductSkuPromoteSales
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveList(List<ProductSkuPromoteSales> records) {
+        List<ProductSkuPromoteSales> all = mapper.getAll();
+        List<ProductSkuPromoteSales> delList = Lists.newLinkedList();
+        if(CollectionUtils.isNotEmptyCollection(all)){
+            Map<String, List<ProductSkuPromoteSales>> saleMaps = all.stream().collect(Collectors.groupingBy(ProductSkuPromoteSales::getSkuCode));
+            records.forEach(item->{
+                if(saleMaps.containsKey(item.getSkuCode())){
+                    delList.add(item);
+                }
+            });
+        }
+        if(CollectionUtils.isNotEmptyCollection(delList)){
+            List<String> delSkus = delList.stream().map(ProductSkuPromoteSales::getSkuCode).collect(Collectors.toList());
+            mapper.deleteBySkuCodes(delSkus);
+        }
         return mapper.insertBatch(records);
     }
 

@@ -107,6 +107,7 @@
         create_time as createTime,
         create_by as createBy
     from product_sku_draft where company_code = #{companyCode,jdbcType=VARCHAR}
+    and procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
   </select>
 
   <select id="getProductSkuDraftByProductCode" parameterType="java.lang.String" resultMap="BaseResultMap">

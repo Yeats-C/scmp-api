@@ -29,7 +29,7 @@
       and logistics_center_name like CONCAT(CONCAT('%',#{logisticsCenterName},'%'))
     </if>
     <if test ="enable!=null">
-      and enable like CONCAT(CONCAT('%',#{enable},'%'))
+      and enable = #{enable}
     </if>
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
@@ -216,7 +216,7 @@
     <include refid="Base_Column_List" />
     from logistics_center
     where del_flag=0
-   AND enable =1
+   AND enable =0
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>

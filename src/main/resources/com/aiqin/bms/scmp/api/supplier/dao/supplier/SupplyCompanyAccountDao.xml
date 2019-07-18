@@ -51,7 +51,7 @@
       and bank_account LIKE CONCAT('%',#{bankAccount,jdbcType=VARCHAR}, '%')
     </if>
     <if test="supplyCompanyAccountCode != null and supplyCompanyAccountCode !='' ">
-      and supply_company_account_code = #{supplyCompanyAccountCode,jdbcType=VARCHAR}
+      and supply_company_account_code LIKE CONCAT('%',#{supplyCompanyAccountCode,jdbcType=VARCHAR}, '%')
     </if>
     <if test="supplyCompanyCode != null and supplyCompanyCode !='' ">
       and supply_company_code LIKE CONCAT('%', #{supplyCompanyCode,jdbcType=VARCHAR}, '%')

@@ -66,10 +66,10 @@
     left join supply_company b on a.supplier_code = b.supply_code
     where a.del_flag = 0
     <if test="scoreCode != null  and scoreCode.length > 0">
-      and a.score_code = #{scoreCode,jdbcType=VARCHAR}
+      and a.score_code like CONCAT('%',#{scoreCode,jdbcType=VARCHAR},'%')
     </if>
     <if test="supplierCode != null  and supplierCode.length > 0">
-      and a.supplier_code =  #{supplierCode,jdbcType=VARCHAR}
+      and a.supplier_code like CONCAT('%',#{supplierCode,jdbcType=VARCHAR},'%')
     </if>
     <if test="supplierName != null  and supplierName.length > 0">
       and a.supplier_name like CONCAT('%', #{supplierName,jdbcType=VARCHAR}, '%')
