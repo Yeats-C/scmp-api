@@ -303,17 +303,17 @@ public class InboundServiceImpl implements InboundService {
 
         List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVos = new ArrayList<>();
         try{
-            String url =urlConfig.WMS_API_URL+"/deppon/save/inbound";
-            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(inboundWmsReqVO));
-
-            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-             String hello= JSON.toJSONString(orderDto.getData());
-             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-             ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
-             if("0".equals(orderDto.getCode())){
+//            String url =urlConfig.WMS_API_URL+"/deppon/save/inbound";
+//            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(inboundWmsReqVO));
+//
+//            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+//             String hello= JSON.toJSONString(orderDto.getData());
+//             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+//             ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
+//             if("0".equals(orderDto.getCode())){
 
                  // 设置wms编号
-                 inbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
+//                 inbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
                  //设置入库状态
                  inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
                  inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
@@ -331,17 +331,17 @@ public class InboundServiceImpl implements InboundService {
                      list.add(inboundProductCallBackReqVo);
                  }
                  inboundCallBackReqVo.setList(list);
-                 //TODO wms回传批次信息
-                 List<InboundBatch> inboundBatches = new ArrayList<>();
-                 //插入入库单商品表
-                 int insertBatchs=inboundBatchDao.insertInfo(inboundBatches);
-                 log.info("转化入库单sku批次实体表返回结果:{}", insertBatchs);
-                 for(InboundBatch inboundBatch : inboundBatches){
-                     InboundBatchCallBackReqVo inboundBatchCallBackReqVo = new InboundBatchCallBackReqVo();
-                     BeanUtils.copyProperties(inboundBatch, inboundBatchCallBackReqVo);
-                     inboundBatchCallBackReqVos.add(inboundBatchCallBackReqVo);
-                 }
-                 inboundCallBackReqVo.setInboundBatchCallBackReqVos(inboundBatchCallBackReqVos);
+//                 //TODO wms回传批次信息
+//                 List<InboundBatch> inboundBatches = new ArrayList<>();
+//                 //插入入库单商品表
+//                 int insertBatchs=inboundBatchDao.insertInfo(inboundBatches);
+//                 log.info("转化入库单sku批次实体表返回结果:{}", insertBatchs);
+//                 for(InboundBatch inboundBatch : inboundBatches){
+//                     InboundBatchCallBackReqVo inboundBatchCallBackReqVo = new InboundBatchCallBackReqVo();
+//                     BeanUtils.copyProperties(inboundBatch, inboundBatchCallBackReqVo);
+//                     inboundBatchCallBackReqVos.add(inboundBatchCallBackReqVo);
+//                 }
+//                 inboundCallBackReqVo.setInboundBatchCallBackReqVos(inboundBatchCallBackReqVos);
 
                  int s = inboundDao.updateByPrimaryKeySelective(inbound);
                  //保存日志
@@ -352,8 +352,8 @@ public class InboundServiceImpl implements InboundService {
 
                  log.error("推送保存日志修改状态,应该在回调接口前面执行");
                  return ;
-             }else{
-                 throw new RuntimeException("入库单传入wms失败");}
+//             }else{
+//                 throw new RuntimeException("入库单传入wms失败");}
         }catch (Exception e){
              e.printStackTrace();
              log.error(e.getMessage());
@@ -391,7 +391,7 @@ public class InboundServiceImpl implements InboundService {
         //更新sku 数量
         List<InboundProductCallBackReqVo> list = reqVo.getList();
         //批次
-        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVoList = reqVo.getInboundBatchCallBackReqVos();
+//        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVoList = reqVo.getInboundBatchCallBackReqVos();
 
         // 减在途数并且增加库存 实体
         StockChangeRequest  stockChangeRequest = new StockChangeRequest();
@@ -410,7 +410,7 @@ public class InboundServiceImpl implements InboundService {
         }
 
         List<StockVoRequest> stockVoRequestList = new ArrayList<>();
-        List<StockBatchVoRequest> stockBatchVoRequestList = new ArrayList<>();
+//        List<StockBatchVoRequest> stockBatchVoRequestList = new ArrayList<>();
 
         for (InboundProductCallBackReqVo inboundProductCallBackReqVo : list) {
 
@@ -452,28 +452,28 @@ public class InboundServiceImpl implements InboundService {
         }
         stockChangeRequest.setStockVoRequests(stockVoRequestList);
 
-        for(InboundBatchCallBackReqVo inboundBatchCallBackReqVo : inboundBatchCallBackReqVoList){
-            ReturnInboundBatch returnInboundBatch = inboundBatchDao.selectByLinenum(reqVo.getInboundOderCode(),inboundBatchCallBackReqVo.getSkuCode() ,inboundBatchCallBackReqVo.getLinenum());
-            InboundBatch inboundBatch = new InboundBatch();
-
-            // 复制旧的sku
-            BeanCopyUtils.copy(returnInboundBatch, inboundBatch);
-            // 实际数量
-            inboundBatch.setPraQty(inboundBatchCallBackReqVo.getPraQty());
-
-            //更新对应批次的实际数量
-            Integer i = inboundBatchDao.updateBatchInfoByInboundOderCodeAndLineNum(inboundBatch);
-            log.info("更新对应批次的实际数量返回结果:{}", i);
-            //  设置修改在途数加库存的单条sku的实体
-            StockBatchVoRequest stockBatchVoRequest = new StockBatchVoRequest();
-            //设置sku编码名称
-            stockBatchVoRequest.setSkuCode(inboundBatch.getSkuCode());
-            stockBatchVoRequest.setSkuName(inboundBatch.getSkuName());
-            //设置更改数量
-            stockBatchVoRequest.setChangeNum(inboundBatch.getPraQty());
-            stockBatchVoRequestList.add(stockBatchVoRequest);
-        }
-        stockChangeRequest.setStockBatchVoRequest(stockBatchVoRequestList);
+//        for(InboundBatchCallBackReqVo inboundBatchCallBackReqVo : inboundBatchCallBackReqVoList){
+//            ReturnInboundBatch returnInboundBatch = inboundBatchDao.selectByLinenum(reqVo.getInboundOderCode(),inboundBatchCallBackReqVo.getSkuCode() ,inboundBatchCallBackReqVo.getLinenum());
+//            InboundBatch inboundBatch = new InboundBatch();
+//
+//            // 复制旧的sku
+//            BeanCopyUtils.copy(returnInboundBatch, inboundBatch);
+//            // 实际数量
+//            inboundBatch.setPraQty(inboundBatchCallBackReqVo.getPraQty());
+//
+//            //更新对应批次的实际数量
+//            Integer i = inboundBatchDao.updateBatchInfoByInboundOderCodeAndLineNum(inboundBatch);
+//            log.info("更新对应批次的实际数量返回结果:{}", i);
+//            //  设置修改在途数加库存的单条sku的实体
+//            StockBatchVoRequest stockBatchVoRequest = new StockBatchVoRequest();
+//            //设置sku编码名称
+//            stockBatchVoRequest.setSkuCode(inboundBatch.getSkuCode());
+//            stockBatchVoRequest.setSkuName(inboundBatch.getSkuName());
+//            //设置更改数量
+//            stockBatchVoRequest.setChangeNum(inboundBatch.getPraQty());
+//            stockBatchVoRequestList.add(stockBatchVoRequest);
+//        }
+//        stockChangeRequest.setStockBatchVoRequest(stockBatchVoRequestList);
         //保存日志
         productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.RETURN_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),reqVo,HandleTypeCoce.RETURN_INBOUND_ODER.getName(),new Date(),inbound.getCreateBy());
 

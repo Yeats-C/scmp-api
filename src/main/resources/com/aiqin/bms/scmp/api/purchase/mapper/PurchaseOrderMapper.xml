@@ -123,7 +123,8 @@
     o.transport_center_name as transportCenterName, o.purchase_order_status as purchaseOrderStatus, o.storage_status as storageStatus,
     o.single_count as singleCount, o.product_total_amount as productTotalAmount, o.return_amount as returnAmount,
     d.expect_arrival_time as expectArrivalTime, d.valid_time as validTime, o.create_time as createTime,
-    o.purchase_group_code as purchaseGroupCode, o.purchase_group_name as purchaseGroupName, o.purchase_mode as purchaseMode
+    o.purchase_group_code as purchaseGroupCode, o.purchase_group_name as purchaseGroupName, o.purchase_mode as purchaseMode,
+    o.supplier_code as supplierCode, o.supplier_name as supplierName
     from purchase_order o
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id

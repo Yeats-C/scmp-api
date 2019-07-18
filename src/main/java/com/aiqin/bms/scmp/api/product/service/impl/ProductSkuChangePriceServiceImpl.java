@@ -172,7 +172,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         if (workFlowRespVO.getSuccess()) {
             //TODO 这里暂时没有任何操作
         } else {
-            throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "创建变价审批流失败！无法提价！"));
+            throw new BizException(MessageId.create(Project.PRODUCT_API, 97, workFlowRespVO.getMsg()));
         }
     }
 

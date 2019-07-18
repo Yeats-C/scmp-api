@@ -367,7 +367,7 @@
     from
       supply_company
     where
-      supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      supply_code = #{supplyCode,jdbcType=VARCHAR}
   </select>
   <select id="countByRejectId" resultType="java.lang.Integer">
     select

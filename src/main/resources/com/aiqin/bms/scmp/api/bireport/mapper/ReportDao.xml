@@ -23,31 +23,37 @@
         <where>
             1=1
             <if test="supplierCode!=null and supplierCode!=''">
-                and bsar.supplier_code like concat('%', #{supplierCode,jdbcType=VARCHAR}, '%')
+                and bsar.supplier_code = #{supplierCode}
             </if>
             <if test="supplierName!=null and supplierName!=''">
-                and bsar.supplier_name like concat('%', #{supplierName,jdbcType=VARCHAR}}, '%')
+                and bsar.supplier_name like concat('%', #{supplierName}, '%')
             </if>
             <if test="transportCenterCode!=null and transportCenterCode!=''">
-                and bsar.logistics_center_code like concat('%', #{transportCenterCode,jdbcType=VARCHAR}}, '%')
+                and bsar.transport_center_code = #{transportCenterCode}
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bsar.category_code like concat('%', #{categoryCode,jdbcType=VARCHAR}}, '%')
+                and bsar.category_code = #{categoryCode}
             </if>
             <if test="categoryName!=null and categoryName!=''">
-                and bsar.category_name like concat('%', #{categoryName,jdbcType=VARCHAR}}, '%')
+                and bsar.category_name like concat('%', #{categoryName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bsar.run_time between #{beginRunTime,jdbcType=VARCHAR}}
+            <if test="beginInboundTime!=null and beginInboundTime!=''">
+                and bsar.inbound_time between #{beginInboundTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime,jdbcType=VARCHAR}}
+            <if test="finishInboundTime!=null and finishInboundTime!=''">
+                and #{finishInboundTime}
             </if>
         </where>
     </sql>
     <sql id="select_goods_buy_sales">
         <where>
             1=1
+            <if test="beginInboundTime!=null and beginInboundTime!=''">
+                and bgbs.inbound_time between #{beginInboundTime}
+            </if>
+            <if test="finishInboundTime!=null and finishInboundTime!=''">
+                and #{finishInboundTime}
+            </if>
             <if test="supplierCode!=null and supplierCode!=''">
                 and bgbs.supplier_code=#{supplierCode}
             </if>
@@ -66,23 +72,17 @@
             <if test="transportCenterName!=null and transportCenterName!=''">
                 and bgbs.transport_center_name like concat('%', #{transportCenterName}, '%')
             </if>
-            <if test="productCategoryName!=null and productCategoryName!=''">
-                and bgbs.category_name like concat('%', #{productCategoryName}, '%')
+            <if test="categoryName!=null and categoryName!=''">
+                and bgbs.category_name like concat('%', #{categoryName}, '%')
             </if>
-            <if test="productCategoryCode!=null and productCategoryCode!=''">
-                and bgbs.product_category_code=#{productCategoryCode}
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bgbs.category_code=#{categoryCode}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bgbs.product_sort_code=#{productSortCode}
             </if>
             <if test="productSortName!=null and productSortName!=''">
                 and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
-            </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bgbs.run_time between #{beginRunTime}
-            </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
             </if>
             <if test="inboundDays!=null and inboundDays!=''">
                 and bgbs.inbound_days=#{inboundDays}
@@ -99,17 +99,14 @@
             <if test="warehouseName!=null and warehouseName!=''">
                 and bgbs.warehouse_name like concat('%', #{warehouseName}, '%')
             </if>
-            <if test="productCategoryOne!=null and productCategoryOne!=''">
-                and bgbs.product_category_one like concat('%', #{productCategoryOne}, '%')
+            <if test="categoryCodeOne!=null and categoryCodeOne!=''">
+                and bgbs.category_code_one like concat('%', #{categoryCodeOne}, '%')
             </if>
-            <if test="productCategoryTwo!=null and productCategoryTwo!=''">
-                and bgbs.product_category_two like concat('%', #{productCategoryTwo}, '%')
+            <if test="categoryCodeTwo!=null and categoryCodeTwo!=''">
+                and bgbs.category_code_two like concat('%', #{categoryCodeTwo}, '%')
             </if>
-            <if test="productCategoryThree!=null and productCategoryThree!=''">
-                and bgbs.product_category_three like concat('%', #{productCategoryThree}, '%')
-            </if>
-            <if test="productCategoryFour!=null and productCategoryFour!=''">
-                and bgbs.product_category_four like concat('%', #{productCategoryFour}, '%')
+            <if test="categoryCodeThree!=null and categoryCodeThree!=''">
+                and bgbs.category_code_three like concat('%', #{categoryCodeThree}, '%')
             </if>
         </where>
     </sql>
@@ -128,11 +125,11 @@
             <if test="transportCenterName!=null and transportCenterName!=''">
                 and bgbs.transport_center_name like concat('%', #{transportCenterName}, '%')
             </if>
-            <if test="productCategoryName!=null and productCategoryName!=''">
-                and bgbs.product_category_name like concat('%', #{productCategoryName}, '%')
+            <if test="categoryName!=null and categoryName!=''">
+                and bgbs.category_name like concat('%', #{categoryName}, '%')
             </if>
-            <if test="productCategoryCode!=null and productCategoryCode!=''">
-                and bgbs.product_category_code=#{productCategoryCode}
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bgbs.category_code=#{categoryCode}
             </if>
             <if test="inboundDays!=null and inboundDays!=''">
                 and bgbs.inbound_days=#{inboundDays}
@@ -143,11 +140,11 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bgbs.run_time between #{beginRunTime}
+            <if test="beginInboundTime!=null and beginInboundTime!=''">
+                and bgbs.inbound_time between #{beginInboundTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishInboundTime!=null and finishInboundTime!=''">
+                and #{finishInboundTime}
             </if>
             <if test="warehouseCode!=null and warehouseCode!=''">
                 and bgbs.warehouse_code=#{warehouseCode}
@@ -161,17 +158,14 @@
             <if test="finishTurnoverDays!=null">
                 and bgbs.turnover_days <![CDATA[<=]]> #{finishTurnoverDays}
             </if>
-            <if test="productCategoryOne!=null and productCategoryOne!=''">
-                and bgbs.product_category_one like concat('%', #{productCategoryOne}, '%')
+            <if test="categoryCodeOne!=null and categoryCodeOne!=''">
+                and bgbs.category_code_one like concat('%', #{categoryCodeOne}, '%')
             </if>
-            <if test="productCategoryTwo!=null and productCategoryTwo!=''">
-                and bgbs.product_category_two like concat('%', #{productCategoryTwo}, '%')
+            <if test="categoryCodeTwo!=null and categoryCodeTwo!=''">
+                and bgbs.category_code_two like concat('%', #{categoryCodeTwo}, '%')
             </if>
-            <if test="productCategoryThree!=null and productCategoryThree!=''">
-                and bgbs.product_category_three like concat('%', #{productCategoryThree}, '%')
-            </if>
-            <if test="productCategoryFour!=null and productCategoryFour!=''">
-                and bgbs.product_category_four like concat('%', #{productCategoryFour}, '%')
+            <if test="categoryCodeThree!=null and categoryCodeThree!=''">
+                and bgbs.category_code_three like concat('%', #{categoryCodeThree}, '%')
             </if>
         </where>
     </sql>
@@ -196,11 +190,11 @@
             <if test="warehouseName!=null and warehouseName!=''">
                 and bsr.warehouse_name like concat('%', #{warehouseName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bsr.run_time between #{beginRunTime}
+            <if test="beginOutStockTime!=null and beginOutStockTime!=''">
+                and bsr.out_stock_time between #{beginOutStockTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishOutStockTime!=null and finishOutStockTime!=''">
+                and #{finishOutStockTime}
             </if>
         </where>
     </sql>
@@ -240,11 +234,11 @@
             <if test="batchCode!=null and batchCode!=''">
                 and bnpbmr.batch_code=#{batchCode}
             </if>
-            <if test="beginMaoriRate!=null">
-                and bnpbmr.maori_rate <![CDATA[>=]]> #{beginMaoriRate}
+            <if test="beginQunMaoriRate!=null">
+                and bnpbmr.qun_maori_rate <![CDATA[>=]]> #{beginQunMaoriRate}
             </if>
-            <if test="finishMaoriRate!=null">
-                and bnpbmr.maori_rate <![CDATA[<=]]> #{finishMaoriRate}
+            <if test="finishQunMaoriRate!=null">
+                and bnpbmr.qun_maori_rate <![CDATA[<=]]> #{finishQunMaoriRate}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bnpbmr.product_sort_code=#{productSortCode}
@@ -698,22 +692,23 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
         select
         bsar.id as id,
-        #{beginRunTime}  as beginRunTime,
-        #{finishRunTime} as finishRunTime,
+        date_format(bsar.inbound_time, '%Y-%m-%d %H:%i:%s') as inboundTime,
         bsar.supplier_code as supplierCode,
         bsar.supplier_name as supplierName,
         bsar.category_code as categoryCode,
         bsar.category_name as categoryName,
-        bsar.logistics_center_code as transportCenterCode,
+        bsar.transport_center_code as transportCenterCode,
+        bsar.transport_center_name as transportCenterName,
         bsar.pre_inbound_num as preInboundNum,
         bsar.pre_tax_amount as preTaxAmount,
         bsar.pra_inbound_num as praInboundNum,
         bsar.pra_tax_amount as praTaxAmount,
         bsar.pra_tax_amount_rate as praTaxAmountRate,
+        date_format(bsar.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        bsar.responsible_person_code as responsiblePersonCode,
         bsar.responsible_person_name as responsiblePersonName
         from bi_supplier_arrival_rate bsar
         <include refid="select_supplier_arrival_rate"/>
-        order by bsar.id asc
     </select>
     <select id="countSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
             resultType="java.lang.Integer">
@@ -724,83 +719,80 @@
         WHERE
         1=1
         <if test="supplierCode!=null and supplierCode!=''">
-            and bsar.supplier_code like concat('%', #{supplierCode,jdbcType=VARCHAR}, '%')
+            and bsar.supplier_code = #{supplierCode}
         </if>
         <if test="supplierName!=null and supplierName!=''">
-            and bsar.supplier_name like concat('%', #{supplierName,jdbcType=VARCHAR}}, '%')
+            and bsar.supplier_name like concat('%', #{supplierName}, '%')
         </if>
         <if test="transportCenterCode!=null and transportCenterCode!=''">
-            and bsar.logistics_center_code like concat('%', #{transportCenterCode,jdbcType=VARCHAR}}, '%')
+            and bsar.logistics_center_code = #{transportCenterCode}
         </if>
         <if test="categoryCode!=null and categoryCode!=''">
-            and bsar.category_code like concat('%', #{categoryCode,jdbcType=VARCHAR}}, '%')
+            and bsar.category_code = #{categoryCode}
         </if>
         <if test="categoryName!=null and categoryName!=''">
-            and bsar.category_name like concat('%', #{categoryName,jdbcType=VARCHAR}}, '%')
+            and bsar.category_name like concat('%', #{categoryName}, '%')
         </if>
-        <if test="beginRunTime!=null and beginRunTime!=''">
-            and bsar.run_time between #{beginRunTime,jdbcType=VARCHAR}}
+        <if test="beginInboundTime!=null and beginInboundTime!=''">
+            and bsar.inbound_time between #{beginInboundTime}
         </if>
-        <if test="finishRunTime!=null and finishRunTime!=''">
-            and #{finishRunTime,jdbcType=VARCHAR}}
+        <if test="finishInboundTime!=null and finishInboundTime!=''">
+            and #{finishInboundTime}
         </if>
         group by bsar.id
         ) as tmp
     </select>
-    <select id="selectTableCloumnName" resultType="java.util.HashMap">
+    <select id="selectSupplierArrivalRateTableCloumnName" resultType="java.util.HashMap">
         select
           COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
         from information_schema.COLUMNS
         where
-          table_name = 'bi_app_suggest_replenishment' and table_schema = 'bms_scmp'
+          table_name = 'bi_supplier_arrival_rate' and table_schema = 'bms_scmp'
     </select>
     <select id="selectGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
         select
         bgbs.id as id,
-        #{beginRunTime}  as beginRunTime,
-        #{finishRunTime} as finishRunTime,
+        date_format(bgbs.inbound_time, '%Y-%m-%d %H:%i:%s') as inboundTime,
         bgbs.supplier_code as supplierCode,
         bgbs.supplier_name as supplierName,
         bgbs.sku_code as skuCode,
         bgbs.sku_name as skuName,
-        bgbs.batch_code as batchCode,
         bgbs.product_sort_code as productSortCode,
         bgbs.product_sort_name as productSortName,
         bgbs.transport_center_code as transportCenterCode,
         bgbs.transport_center_name as transportCenterName,
         bgbs.warehouse_code as warehouseCode,
         bgbs.warehouse_name as warehouseName,
-        bgbs.category_name as productCategoryName,
-        bgbs.product_category_code as productCategoryCode,
-        bgbs.product_category_one as productCategoryOne,
-        bgbs.product_category_two as productCategoryTwo,
-        bgbs.product_category_three as productCategoryThree,
-        bgbs.product_category_four as productCategoryFour,
+        bgbs.batch_code as batchCode,
+        bgbs.category_name as categoryName,
+        bgbs.category_code as categoryCode,
+        bgbs.category_code_one as categoryCodeOne,
+        bgbs.category_code_two as categoryCodeTwo,
+        bgbs.category_code_three as categoryCodeThree,
         bgbs.product_brand_code as productBrandCode,
         bgbs.product_brand_name as productBrandName,
         bgbs.manufacturer_guide_price as manufacturerGuidePrice,
-        bgbs.inventory_num as inventoryNum,
+        bgbs.available_num as availableNum,
         bgbs.tax_cost as taxCost,
         bgbs.sales_num_one_month as salesNumOneMonth,
         bgbs.sales_cost_one_month as salesCostOneMonth,
-        bgbs.fen_sales_money_one_month as fenSalesMoneyOneMonth,
-        bgbs.fen_sales_maori_one_month as fenSalesMaoriOneMonth,
-        bgbs.fen_sales_maori_one_month_rate as fenSalesMaoriOneMonthRate,
-        bgbs.qun_sales_money_one_month as qunSalesMoneyOneMonth,
-        bgbs.qun_sales_maori_one_month as qunSalesMaoriOneMonth,
-        bgbs.qun_sales_maori_one_month_rate as qunSalesMaoriOneMonthRate,
+        bgbs.distribution_sales_money_one_month as distributionSalesMoneyOneMonth,
+        bgbs.distribution_sales_maori_one_month as distributionSalesMaoriOneMonth,
+        bgbs.distribution_sales_maori_one_month_rate as distributionSalesMaoriOneMonthRate,
+        bgbs.channel_sales_money_one_month as channelSalesMoneyOneMonth,
+        bgbs.channel_sales_maori_one_month as channelSalesMaoriOneMonth,
+        bgbs.channel_sales_maori_one_month_rate as channelSalesMaoriOneMonthRate,
         bgbs.turnover_days as turnoverDays,
-        bgbs.create_time as createTime,
         bgbs.inbound_days as inboundDays,
         bgbs.config_status as configStatus,
         bgbs.responsible_person_code as responsiblePersonCode,
         bgbs.responsible_person_name as responsiblePersonName,
         bgbs.production_date as productionDate,
-        bgbs.quality_number as qualityNumber
+        bgbs.quality_number as qualityNumber,
+        date_format(bgbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_goods_buy_sales bgbs
         <include refid="select_goods_buy_sales"/>
-        order by bgbs.id asc
     </select>
     <select id="countGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
             resultType="java.lang.Integer">
@@ -812,20 +804,26 @@
         group by bgbs.id
         ) as tmp
     </select>
+    <select id="selectGoodsBuySalesTableCloumnName" resultType="java.util.HashMap">
+        select
+        COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
+        from information_schema.COLUMNS
+        where
+        table_name = 'bi_goods_buy_sales' and table_schema = 'bms_scmp'
+    </select>
     <select id="selectGiftsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
         select
         bgbs.id as id,
         bgbs.sku_code as skuCode,
         bgbs.sku_name as skuName,
-        bgbs.category_name as categoryName,
-        bgbs.product_category_code as productCategoryCode,
-        bgbs.product_category_one as productCategoryOne,
-        bgbs.product_category_two as productCategoryTwo,
-        bgbs.product_category_three as productCategoryThree,
-        bgbs.product_category_four as productCategoryFour,
         bgbs.product_sort_code as productSortCode,
         bgbs.product_sort_name as productSortName,
+        bgbs.category_name as categoryName,
+        bgbs.category_code as categoryCode,
+        bgbs.category_code_one as categoryCodeOne,
+        bgbs.category_code_two as categoryCodeTwo,
+        bgbs.category_code_three as categoryCodeThree,
         bgbs.product_brand_code as productBrandCode,
         bgbs.product_brand_name as productBrandName,
         bgbs.manufacturer_guide_price as manufacturerGuidePrice,
@@ -833,17 +831,17 @@
         bgbs.transport_center_name as transportCenterName,
         bgbs.warehouse_code as warehouseCode,
         bgbs.warehouse_name as warehouseName,
-        bgbs.inventory_num as inventoryNum,
+        bgbs.available_num as availableNum,
         bgbs.sales_num_one_month as salesNumOneMonth,
         bgbs.sales_money_one_month as salesMoneyOneMonth,
         bgbs.turnover_days as turnoverDays,
-        bgbs.create_time as createTime,
-        bgbs.inbound_days as inboundDays,
         bgbs.responsible_person_code as responsiblePersonCode,
-        bgbs.responsible_person_name as responsiblePersonName
+        bgbs.responsible_person_name as responsiblePersonName,
+        date_format(bgbs.inbound_time, '%Y-%m-%d %H:%i:%s') as inboundTime,
+        bgbs.inbound_days as inboundDays,
+        date_format(bgbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_gifts_buy_sales bgbs
         <include refid="select_gifts_buy_sales"/>
-        order by bgbs.id asc
     </select>
     <select id="countGiftsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo"
             resultType="java.lang.Integer">
@@ -868,16 +866,16 @@
         bsr.reject_record_code as rejectRecordCode,
         bsr.sum_count as sumCount,
         bsr.sum_amount as sumAmount,
-        bsr.create_time as createTime,
-        bsr.out_stock_time as outStockTime,
+        date_format(bsr.return_goods_create_time, '%Y-%m-%d %H:%i:%s') as returnGoodsCreateTime,
+        date_format(bsr.out_stock_time, '%Y-%m-%d %H:%i:%s') as outStockTime,
         bsr.reject_status as rejectStatus,
         bsr.purchase_group_code as purchaseGroupCode,
         bsr.purchase_group_name as purchaseGroupName,
         bsr.responsible_person_code as responsiblePersonCode,
-        bsr.responsible_person_name as responsiblePersonName
+        bsr.responsible_person_name as responsiblePersonName,
+        date_format(bsr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_supplier_return bsr
         <include refid="select_supplier_return"/>
-        order by bsr.id asc
     </select>
     <select id="countSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
             resultType="java.lang.Integer">
@@ -931,7 +929,6 @@
         bnpbmr.responsible_person_name as responsiblePersonName
         from bi_new_product_batch_moving_rate bnpbmr
         <include refid="select_new_product_batch_moving_rate"/>
-        order by bnpbmr.id asc
     </select>
     <select id="countNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
             resultType="java.lang.Integer">
@@ -961,7 +958,6 @@
         bnm.after_buy_rate as afterBuyRate
         from bi_store_repurchase_rate bsrr
         <include refid="select_store_repurchase_rate"/>
-        order by bsrr.id asc
     </select>
     <select id="countStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
             resultType="java.lang.Integer">
@@ -997,7 +993,6 @@
         bnm.product_sort_name as productSortName
         from bi_negative_margin bnm
         <include refid="select_negative_margin"/>
-        order by bnm.id asc
     </select>
     <select id="countNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
             resultType="java.lang.Integer">
@@ -1031,7 +1026,6 @@
         bsr.config_status as configStatus
         from bi_suggest_replenishment bsr
         <include refid="select_suggest_replenishment"/>
-        order by bsr.id asc
     </select>
     <select id="countSuggestReplenishment" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SuggestReplenishmentReqVo"
             resultType="java.lang.Integer">
@@ -1062,7 +1056,6 @@
         bli.low_inventory_ratio as low_Inventory_ratio
         from bi_low_inventory bli
         <include refid="select_low_inventory"/>
-        order by bli.id asc
     </select>
     <select id="countLowInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="java.lang.Integer">
@@ -1093,7 +1086,6 @@
         bhi.high_inventory_ratio as highInventoryRatio
         from bi_high_inventory bhi
         <include refid="select_high_inventory"/>
-        order by bhi.id asc
     </select>
     <select id="countHighInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="java.lang.Integer">
@@ -1135,7 +1127,6 @@
         bbs.fen_gross_margin_link_ratio as fenGrossMarginLinkRatio
         from bi_brand_sale bbs
         <include refid="select_brand_sale"/>
-        order by bbs.id asc
     </select>
     <select id="countBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="java.lang.Integer">
@@ -1175,7 +1166,6 @@
         bcs.fen_gross_margin_link_ratio as fenGrossMarginLinkRatio
         from bi_category_sale bcs
         <include refid="select_category_sale"/>
-        order by bhi.id asc
     </select>
     <select id="countCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="java.lang.Integer">
@@ -1209,7 +1199,6 @@
         bbe.transport_center_name as transportCenterName
         from bi_big_effect bbe
         <include refid="select_big_effect"/>
-        order by bbe.id asc
     </select>
     <select id="countBigEffect" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.BigEffectReqVo"
             resultType="java.lang.Integer">
@@ -1247,7 +1236,6 @@
         bms.fen_sequential as fenSequential
         from bi_monthly_sales bms
         <include refid="select_monthly_sales"/>
-        order by bms.id asc
     </select>
     <select id="countMonthlySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="java.lang.Integer">
@@ -1285,7 +1273,6 @@
         bmgm.fen_sequential as fenSequential
         from bi_month_gross_margin bmgm
         <include refid="select_monthly_gross_margin"/>
-        order by bmgm.id asc
     </select>
     <select id="countMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="java.lang.Integer">
@@ -1321,7 +1308,6 @@
         bmsa.fen_yield_rate as fenYieldRate
         from bi_month_sales_achievement bmsa
         <include refid="select_month_sales_achievement"/>
-        order by bmsa.id asc
     </select>
     <select id="countMonthSalesAchievement" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
@@ -1361,7 +1347,6 @@
         bmcbs.fen_sequential as fenSequential
         from bi_month_cumulative_brand_sales bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
-        order by bmcbs.id asc
     </select>
     <select id="countMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
@@ -1404,7 +1389,6 @@
         bmcgpm.fen_sequential as fenSequential
         from bi_month_cumulative_gross_profit_margin bmcgpm
         <include refid="select_month_cumulative_gross_profit_margin"/>
-        order by bmcgpm.id asc
     </select>
     <select id="countMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
@@ -1433,5 +1417,12 @@
         bsar.category_code,
         bsar.category_name
         FROM bi_supplier_arrival_rate bsar
+    </select>
+    <select id="selectTableCloumnName" resultType="java.util.HashMap">
+        select
+        COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
+        from information_schema.COLUMNS
+        where
+        table_name = #{cloumnName} and table_schema = 'bms_scmp'
     </select>
 </mapper>

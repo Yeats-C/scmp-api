@@ -103,4 +103,7 @@ public class ReturnOutboundProduct {
 
     @ApiModelProperty("税率")
     private Long tax;
+
+    @ApiModelProperty("出库拆零系数")
+    private String outboundBaseUnit;
 }

@@ -383,7 +383,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         if (workFlowRespVO.getSuccess()) {
             //TODO 这里暂时没有任何操作
         } else {
-            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "创建销售区域审批流失败！"));
+            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, workFlowRespVO.getMsg()));
         }
     }
 
