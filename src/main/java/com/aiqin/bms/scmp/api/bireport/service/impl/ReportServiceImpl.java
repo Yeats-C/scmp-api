@@ -91,12 +91,14 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo) {
+    public PageReportResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo) {
         try {
             // PageHelper.startPage(supplierReturnReqVo.getPageNo(), supplierReturnReqVo.getPageSize());
             List<SupplierReturnRespVo> supplierReturnRespVos = reportDao.selectSupplierReturn(supplierReturnReqVo);
             Integer total = reportDao.countSupplierReturn(supplierReturnReqVo);
-            return new PageResData<SupplierReturnRespVo>(total,supplierReturnRespVos);
+            String cloumnName = "bi_supplier_return";
+            List<Map> maps = reportDao.selectTableCloumnName(cloumnName);
+            return new PageReportResData<SupplierReturnRespVo>(total,supplierReturnRespVos,maps);
         } catch (Exception ex) {
             log.error("查询供应商退货失败");
             ex.printStackTrace();

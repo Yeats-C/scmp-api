@@ -190,11 +190,11 @@
             <if test="warehouseName!=null and warehouseName!=''">
                 and bsr.warehouse_name like concat('%', #{warehouseName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bsr.run_time between #{beginRunTime}
+            <if test="beginOutStockTime!=null and beginOutStockTime!=''">
+                and bsr.out_stock_time between #{beginOutStockTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishOutStockTime!=null and finishOutStockTime!=''">
+                and #{finishOutStockTime}
             </if>
         </where>
     </sql>
@@ -790,7 +790,7 @@
         bgbs.responsible_person_name as responsiblePersonName,
         bgbs.production_date as productionDate,
         bgbs.quality_number as qualityNumber,
-        bgbs.create_time as createTime
+        date_format(bgbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_goods_buy_sales bgbs
         <include refid="select_goods_buy_sales"/>
     </select>
@@ -837,9 +837,9 @@
         bgbs.turnover_days as turnoverDays,
         bgbs.responsible_person_code as responsiblePersonCode,
         bgbs.responsible_person_name as responsiblePersonName,
-        bgbs.inbound_time as inboundTime,
+        date_format(bgbs.inbound_time, '%Y-%m-%d %H:%i:%s') as inboundTime,
         bgbs.inbound_days as inboundDays,
-        bgbs.create_time as createTime
+        date_format(bgbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_gifts_buy_sales bgbs
         <include refid="select_gifts_buy_sales"/>
     </select>
@@ -866,13 +866,14 @@
         bsr.reject_record_code as rejectRecordCode,
         bsr.sum_count as sumCount,
         bsr.sum_amount as sumAmount,
-        bsr.create_time as createTime,
-        bsr.out_stock_time as outStockTime,
+        date_format(bsr.return_goods_create_time, '%Y-%m-%d %H:%i:%s') as returnGoodsCreateTime,
+        date_format(bsr.out_stock_time, '%Y-%m-%d %H:%i:%s') as outStockTime,
         bsr.reject_status as rejectStatus,
         bsr.purchase_group_code as purchaseGroupCode,
         bsr.purchase_group_name as purchaseGroupName,
         bsr.responsible_person_code as responsiblePersonCode,
-        bsr.responsible_person_name as responsiblePersonName
+        bsr.responsible_person_name as responsiblePersonName,
+        date_format(bsr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_supplier_return bsr
         <include refid="select_supplier_return"/>
     </select>

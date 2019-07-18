@@ -179,23 +179,23 @@ public class ReportController {
             @ApiImplicitParam(name = "transport_center_name", value = "仓库名称", type = "String"),
             @ApiImplicitParam(name = "warehouse_code", value = "库房编码", type = "String"),
             @ApiImplicitParam(name = "warehouse_name", value = "库房名称", type = "String"),
-            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_out_stock_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_out_stock_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<SupplierReturnRespVo>> selectSupplierReturn(
+    public HttpResponse<PageReportResData<SupplierReturnRespVo>> selectSupplierReturn(
             @RequestParam(value = "supplier_code", required = false) String supplierCode,
             @RequestParam(value = "supplier_name", required = false) String supplierName,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
             @RequestParam(value = "transport_center_name", required = false) String transportCenterName,
             @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
             @RequestParam(value = "warehouse_name", required = false) String warehouseName,
-            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
-            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
+            @RequestParam(value = "begin_out_stock_time", required = false) String beginOutStockTime,
+            @RequestParam(value = "finish_out_stock_time", required = false) String finishOutStockTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        SupplierReturnReqVo supplierReturnReqVo = new SupplierReturnReqVo(supplierCode,supplierName,transportCenterCode,transportCenterName,warehouseCode,warehouseName,beginRunTime,finishRunTime);
+        SupplierReturnReqVo supplierReturnReqVo = new SupplierReturnReqVo(supplierCode,supplierName,transportCenterCode,transportCenterName,warehouseCode,warehouseName,beginOutStockTime,finishOutStockTime);
         supplierReturnReqVo.setPageNo(pageNo);
         supplierReturnReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectSupplierReturn(supplierReturnReqVo));

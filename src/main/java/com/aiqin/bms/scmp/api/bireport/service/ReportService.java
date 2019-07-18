@@ -36,7 +36,7 @@ public interface ReportService {
      * @param supplierReturnReqVo
      * @return
      */
-    PageResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
+    PageReportResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
     /**
      *  新品批次动销率
