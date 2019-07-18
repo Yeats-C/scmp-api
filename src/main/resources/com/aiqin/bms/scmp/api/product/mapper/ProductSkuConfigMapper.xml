@@ -547,4 +547,13 @@
     </if>
     group by a.id order by a.create_time desc
   </select>
+    <select id="selectByVo" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from product_sku_config
+      where sku_code in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+        #{item.skuCode}
+    </foreach>
+    </select>
 </mapper>

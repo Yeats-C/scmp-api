@@ -214,4 +214,10 @@ public class ApplyProductSku extends CommonBean {
     @ApiModelProperty(value = "sku状态")
     private Byte skuStatus;
 
+    @ApiModelProperty(value = "图片文件夹编码")
+    private String picFolderCode;
+
+    @ApiModelProperty(value = "改变内容",hidden = true)
+    private String changeContent;
+
 }
