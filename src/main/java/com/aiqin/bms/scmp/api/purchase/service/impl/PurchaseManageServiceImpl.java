@@ -213,6 +213,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         purchaseOrder.setPurchaseOrderCode(purchaseProductCode);
         purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
+        purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_0);
         purchaseOrder.setCreateById(purchaseOrderRequest.getPersonId());
         purchaseOrder.setCreateByName(purchaseOrderRequest.getPersonName());
         // 添加采购单
@@ -325,7 +326,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     }
 
     @Override
-    public HttpResponse purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest){
+    public HttpResponse<List<PurchaseOrderResponse>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest){
         PageResData pageResData = new PageResData();
         List<PurchaseOrderResponse> list = purchaseOrderDao.purchaseOrderList(purchaseApplyRequest);
         if(CollectionUtils.isNotEmptyCollection(list)){

@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -72,18 +73,18 @@ public class PurchaseManageController {
                 @ApiImplicitParam(name = "purchase_mode", value = "采购方式 0 配送  1.铺采直送", type = "Integer"),
                 @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
                 @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer")})
-    public HttpResponse applyProductList(@RequestParam(value = "purchase_order_code", required = false) String purchaseOrderCode,
-                @RequestParam(value = "begin_time", required = false) String beginTime,
-                @RequestParam(value = "finish_time", required = false) String finishTime,
-                @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
-                @RequestParam(value = "supplier_code", required = false) String supplierCode,
-                @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
-                @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
-                @RequestParam(value = "purchase_order_status", required = false) Integer purchaseOrderStatus,
-                @RequestParam(value = "storage_status", required = false) Integer storageStatus,
-                @RequestParam(value = "purchase_mode", required = false) Integer purchaseMode,
-                @RequestParam(value = "page_no", required = false) Integer pageNo,
-                @RequestParam(value = "page_size", required = false) Integer pageSize) {
+    public HttpResponse<List<PurchaseOrderResponse>> applyProductList(@RequestParam(value = "purchase_order_code", required = false) String purchaseOrderCode,
+                                                                      @RequestParam(value = "begin_time", required = false) String beginTime,
+                                                                      @RequestParam(value = "finish_time", required = false) String finishTime,
+                                                                      @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
+                                                                      @RequestParam(value = "supplier_code", required = false) String supplierCode,
+                                                                      @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
+                                                                      @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
+                                                                      @RequestParam(value = "purchase_order_status", required = false) Integer purchaseOrderStatus,
+                                                                      @RequestParam(value = "storage_status", required = false) Integer storageStatus,
+                                                                      @RequestParam(value = "purchase_mode", required = false) Integer purchaseMode,
+                                                                      @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                                                      @RequestParam(value = "page_size", required = false) Integer pageSize) {
         PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseGroupCode, beginTime, finishTime, supplierCode,
                 transportCenterCode, purchaseOrderCode, warehouseCode, purchaseOrderStatus, storageStatus, purchaseMode);
         purchaseApplyRequest.setPageSize(pageSize);
