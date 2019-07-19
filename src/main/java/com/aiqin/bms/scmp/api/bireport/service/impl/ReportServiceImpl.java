@@ -138,12 +138,16 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo) {
+    public PageReportResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo) {
         try {
             // PageHelper.startPage(storeRepurchaseRateReqVo.getPageNo(), storeRepurchaseRateReqVo.getPageSize());
             List<StoreRepurchaseRateRespVo> storeRepurchaseRateRespVos = reportDao.selectStoreRepurchaseRate(storeRepurchaseRateReqVo);
             Integer total = reportDao.countStoreRepurchaseRate(storeRepurchaseRateReqVo);
-            return new PageResData<StoreRepurchaseRateRespVo>(total,storeRepurchaseRateRespVos);
+            String cloumnName = "bi_new_product_batch_moving_rate";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            StoreRepurchaseRateRespVo storeRepurchaseRateRespVo = new StoreRepurchaseRateRespVo();
+            storeRepurchaseRateRespVo.setColumnList(maps);
+            return new PageReportResData<StoreRepurchaseRateRespVo>(total,storeRepurchaseRateRespVos,storeRepurchaseRateRespVo);
         } catch (Exception ex) {
             log.error("查询门店复购率失败");
             ex.printStackTrace();
