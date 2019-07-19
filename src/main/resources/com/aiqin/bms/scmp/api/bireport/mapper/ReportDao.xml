@@ -371,11 +371,11 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bli.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bli.run_time between #{beginRunTime}
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bli.create_time between #{beginCreateTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -1063,13 +1063,16 @@
         bli.procurement_section_name as procurementSectionName,
         bli.responsible_person_code as responsiblePersonCode,
         bli.responsible_person_name as responsiblePersonName,
+        bli.sku_code as skuCode,
+        bli.sku_name as skuName,
         bli.warehouse_type_code as warehouseTypeCode,
         bli.warehouse_type_name as warehouseTypeName,
         bli.lastweek_total_national as lastweekTotalNational,
         bli.thisweek_total_national as thisweekTotalNational,
         bli.total_sku_num as totalSkuNum,
         bli.low_inventory_num as lowInventoryNum,
-        bli.low_inventory_ratio as low_Inventory_ratio
+        bli.low_inventory_ratio as low_Inventory_ratio,
+        date_format(bli.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_low_inventory bli
         <include refid="select_low_inventory"/>
     </select>

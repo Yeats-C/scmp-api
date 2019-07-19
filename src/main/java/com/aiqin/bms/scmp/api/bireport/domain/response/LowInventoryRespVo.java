@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 @ApiModel("低库存respVo")
 @Data
 public class LowInventoryRespVo {
@@ -37,6 +40,14 @@ public class LowInventoryRespVo {
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
 
+    @ApiModelProperty("负责人编码")
+    @JsonProperty("sku_code")
+    private String skuCode;
+
+    @ApiModelProperty("负责人名称")
+    @JsonProperty("sku_name")
+    private String skuName;
+
     @ApiModelProperty("仓位类型名称编码")
     @JsonProperty("warehouse_type_code")
     private String warehouseTypeCode;
@@ -65,4 +76,11 @@ public class LowInventoryRespVo {
     @JsonProperty("low_inventory_ratio")
     private Double lowInventoryRatio;
 
+    @ApiModelProperty("计算时间")
+    @JsonProperty("create_time")
+    private Double createTime;
+
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
 }

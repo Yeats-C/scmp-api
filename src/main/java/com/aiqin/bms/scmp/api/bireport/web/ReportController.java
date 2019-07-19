@@ -359,23 +359,23 @@ public class ReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "procurement_section_code", value = "采购组编码", type = "String"),
             @ApiImplicitParam(name = "procurement_section_name", value = "采购组", type = "String"),
-            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<LowInventoryRespVo>> selectLowInventory(
+    public HttpResponse<PageReportResData<LowInventoryRespVo>> selectLowInventory(
             @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
             @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
-            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
-            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        HighLowInventoryReqVo highLowInventoryReqVo = new HighLowInventoryReqVo(procurementSectionCode,procurementSectionName,beginRunTime,finishRunTime,productSortCode,
+        HighLowInventoryReqVo highLowInventoryReqVo = new HighLowInventoryReqVo(procurementSectionCode,procurementSectionName,beginCreateTime,finishCreateTime,productSortCode,
                 productSortName);
         highLowInventoryReqVo.setPageNo(pageNo);
         highLowInventoryReqVo.setPageSize(pageSize);
