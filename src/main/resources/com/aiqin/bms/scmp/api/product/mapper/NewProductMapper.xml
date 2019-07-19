@@ -479,4 +479,19 @@
             AND pro.product_name LIKE CONCAT(CONCAT('%',#{productName},'%'))
         </if>
     </select>
+    <select id="checkName" resultType="java.lang.Integer">
+        select
+        count(*)
+        from product
+        where del_flag = 0
+        <if test="name != null and name != '' ">
+          and product_name = #{name}
+        </if>
+        <if test="companyCode != null and companyCode != '' ">
+          and company_code = #{companyCode}
+        </if>
+        <if test="code != null and code != '' ">
+          and product_code != #{code}
+        </if>
+    </select>
 </mapper>

@@ -33,13 +33,13 @@ ground:
       profile-enable: true
 oss:
   end:
-    point: http://oss-cn-qingdao.aliyuncs.com
+    point: http://oss-cn-beijing.aliyuncs.com
   access:
     key:
-      id: LTAIPWfI0ApMnQPo
-      secret: kG0tvYo3Ts4tr95sa9eh3Pw3wF2WQ7
+      id: LTAILR1FRNY70UY0
+      secret: OWTAtojGLNLbcmGGGsOWE7AC9UguvU
   bucket:
-    name: lyj-upload-image
+    name: aq-flows-test
   dir: dev/
 Encryption:
 #  key: 16#t%9@AJ6DYaeRp

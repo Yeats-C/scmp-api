@@ -1,8 +1,8 @@
 web:
   host-url: http://scmp.bms.aiqin.com
-server:
-  tomcat:
-    basedir: /tmp/dir
+#server:
+#  tomcat:
+#    basedir: /tmp/dir
 center:
   main:
   #中控服务端

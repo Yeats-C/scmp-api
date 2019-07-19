@@ -32,4 +32,6 @@ public interface NewProductMapper {
     List<NewProductResponseVO> getList(QueryNewProductReqVO queryNewProductReqVO);
 
     List<NewSkuDetailsResponseVO> productSku(@Param("productCode") String productCode, @Param("productName") String productName);
+
+    int checkName(@Param("name")String name, @Param("companyCode")String companyCode, @Param("code") String code);
 }
