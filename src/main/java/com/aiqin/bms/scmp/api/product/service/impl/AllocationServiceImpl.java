@@ -486,7 +486,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         AllocationDTO allocation  = allocationMapper.selectByFormNO1(vo1.getFormNo());
         oldAllocation.setId(allocation.getId());
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-            productCommonService.instanceThreeParty(allocation.getAllocationCode()+"", HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getName(),new Date(),vo.getApprovalUserName());
+            productCommonService.instanceThreeParty(allocation.getAllocationCode()+"", HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.FLOW_SUCCESS_ALLOCATION.getName(),new Date(),vo.getApprovalUserName(), null);
             //审批成功
             //生成出库单并且返回出库单编码
             //生成入库单
@@ -512,7 +512,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.OUTBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.OUTBOUND_ALLOCATION.getName());
             return "success";
         }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
-            productCommonService.instanceThreeParty(allocation.getAllocationCode()+"", HandleTypeCoce.FLOW_FALSE_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.FLOW_FALSE_ALLOCATION.getName(),new Date(),vo.getApprovalUserName());
+            productCommonService.instanceThreeParty(allocation.getAllocationCode()+"", HandleTypeCoce.FLOW_FALSE_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), vo1,HandleTypeCoce.FLOW_FALSE_ALLOCATION.getName(),new Date(),vo.getApprovalUserName(), null);
             // 审核不通过
             //  通过编码查询sku
             // 解锁被锁的sku 编码

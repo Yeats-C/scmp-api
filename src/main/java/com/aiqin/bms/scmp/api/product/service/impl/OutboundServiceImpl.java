@@ -230,7 +230,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
 
             // 保存日志
-            productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy());
+            productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 
             //  调用推送接口
             OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
@@ -279,7 +279,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             //更新编码
             encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
             // 保存日志
-            productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy());
+            productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 
             //  调用推送接口
             OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
@@ -478,7 +478,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outboundCallBackReqVo.setList(list);
 //                outboundCallBackReqVo.setOutboundBatchCallBackReqVos(outboundBatchCallBackReqVos);
                 //保存日志
-                productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy());
+                productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
 
                 workFlowCallBack(outboundCallBackReqVo);
                 return ;
@@ -508,7 +508,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             Outbound outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
 
             //保存日志
-            productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy());
+            productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
 
             //设置状态
             outbound.setOutboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
@@ -648,7 +648,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
         List<OutboundBatch> list = outboundBatchDao.selectByOutboundBatchOderCode(outbound.getOutboundOderCode());
-        productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy());
+        productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy(), null);
 
         //如果是订单
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode() )){

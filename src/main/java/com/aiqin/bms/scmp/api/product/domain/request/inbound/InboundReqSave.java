@@ -148,6 +148,9 @@ public class InboundReqSave {
     @ApiModelProperty("更新时间")
     private Date updateTime;
 
+    @ApiModelProperty("备注")
+    private String remark;
+
     @ApiModelProperty("入库sku")
     private List<InboundProductReqVo> list;
 
