@@ -21,12 +21,12 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
     private String skuName;
 
     @ApiModelProperty("销售渠道code")
-    @JsonProperty("price_channel_code")
-    private String priceChannelCode;
+    @JsonProperty("order_code")
+    private String orderCode;
 
     @ApiModelProperty("销售渠道")
-    @JsonProperty("price_channel_name")
-    private String priceChannelName;
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("供应商编码")
     @JsonProperty("supplier_code")
@@ -73,11 +73,11 @@ public class NewProductBatchMovingRateReqVo extends PageReq implements Serializa
     private String productSortName;
 
 
-    public NewProductBatchMovingRateReqVo(String skuCode, String skuName, String priceChannelCode, String priceChannelName, String supplierCode, String supplierName, String categoryCode, String categoryName, String beginInboundTime, String finishInboundTime, String batchCode, Double beginChannelMaoriRate, Double finishChannelMaoriRate, String productSortCode, String productSortName) {
+    public NewProductBatchMovingRateReqVo(String skuCode, String skuName, String orderCode, String orderOriginal, String supplierCode, String supplierName, String categoryCode, String categoryName, String beginInboundTime, String finishInboundTime, String batchCode, Double beginChannelMaoriRate, Double finishChannelMaoriRate, String productSortCode, String productSortName) {
         this.skuCode = skuCode;
         this.skuName = skuName;
-        this.priceChannelCode = priceChannelCode;
-        this.priceChannelName = priceChannelName;
+        this.orderCode = orderCode;
+        this.orderOriginal = orderOriginal;
         this.supplierCode = supplierCode;
         this.supplierName = supplierName;
         this.categoryCode = categoryCode;

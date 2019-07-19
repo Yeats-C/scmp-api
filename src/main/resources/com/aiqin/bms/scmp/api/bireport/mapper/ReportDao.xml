@@ -207,11 +207,11 @@
             <if test="skuName!=null and skuName!=''">
                 and bnpbmr.sku_name like concat('%', #{skuName}, '%')
             </if>
-            <if test="priceChannelCode!=null and priceChannelCode!=''">
-                and bnpbmr.price_channel_code=#{priceChannelCode}
+            <if test="orderCode!=null and orderCode!=''">
+                and bnpbmr.order_code=#{orderCode}
             </if>
-            <if test="priceChannelName!=null and priceChannelName!=''">
-                and bnpbmr.price_channel_name like concat('%', #{priceChannelName}, '%')
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bnpbmr.order_original like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="supplierCode!=null and supplierCode!=''">
                 and bnpbmr.supplier_code=#{supplierCode}
@@ -909,9 +909,9 @@
         bnpbmr.manufacturer_guide_price as manufacturerGuidePrice,
         bnpbmr.available_num as availableNum,
         bnpbmr.tax_cost as taxCost,
-        bnpbmr.order_original as priceChannelName,
         bnpbmr.num as num,
         bnpbmr.sales_costs as salesCosts,
+        bnpbmr.order_code as orderCode,
         bnpbmr.order_original as orderOriginal,
         bnpbmr.channel_amount as channelAmount,
         bnpbmr.channel_maori as channelMaori,

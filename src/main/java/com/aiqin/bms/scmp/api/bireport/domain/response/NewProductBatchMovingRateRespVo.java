@@ -48,7 +48,7 @@ public class NewProductBatchMovingRateRespVo {
     @JsonProperty("category_code")
     private String categoryCode;
 
-    @ApiModelProperty("品类编码")
+    @ApiModelProperty("品类名称")
     @JsonProperty("category_name")
     private String categoryName;
 
@@ -88,10 +88,6 @@ public class NewProductBatchMovingRateRespVo {
     @JsonProperty("tax_cost")
     private Integer taxCost;
 
-    @ApiModelProperty("销售渠道")
-    @JsonProperty("price_channel_name")
-    private String priceChannelName;
-
     @ApiModelProperty("销售数量")
     @JsonProperty("num")
     private Integer num;
@@ -100,9 +96,13 @@ public class NewProductBatchMovingRateRespVo {
     @JsonProperty("sales_costs")
     private Integer salesCosts;
 
+    @ApiModelProperty("销售渠道code")
+    @JsonProperty("order_code")
+    private String orderCode;
+
     @ApiModelProperty("销售渠道")
     @JsonProperty("order_original")
-    private Integer orderOriginal;
+    private String orderOriginal;
 
     @ApiModelProperty("渠道销售金额")
     @JsonProperty("channel_amount")

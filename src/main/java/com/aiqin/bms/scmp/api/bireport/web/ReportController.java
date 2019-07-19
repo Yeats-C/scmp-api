@@ -206,8 +206,8 @@ public class ReportController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
             @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
-            @ApiImplicitParam(name = "price_channel_code", value = "销售渠道code", type = "String"),
-            @ApiImplicitParam(name = "price_channel_name", value = "销售渠道", type = "String"),
+            @ApiImplicitParam(name = "order_code", value = "销售渠道code", type = "String"),
+            @ApiImplicitParam(name = "order_original", value = "销售渠道", type = "String"),
             @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
             @ApiImplicitParam(name = "supplier_name", value = "供应商name", type = "String"),
             @ApiImplicitParam(name = "category_code", value = "品类编码", type = "String"),
@@ -225,8 +225,8 @@ public class ReportController {
     public HttpResponse<PageReportResData<NewProductBatchMovingRateRespVo>> selectNewProductBatchMovingRate(
             @RequestParam(value = "sku_code", required = false) String skuCode,
             @RequestParam(value = "sku_name", required = false) String skuName,
-            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
-            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
+            @RequestParam(value = "order_code", required = false) String orderCode,
+            @RequestParam(value = "order_original", required = false) String orderOriginal,
             @RequestParam(value = "supplier_code", required = false) String supplierCode,
             @RequestParam(value = "supplier_name", required = false) String supplierName,
             @RequestParam(value = "category_code", required = false) String categoryCode,
@@ -240,7 +240,7 @@ public class ReportController {
             @RequestParam(value = "product_sort_code", required = false) String productSortName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo = new NewProductBatchMovingRateReqVo(skuCode,skuName,priceChannelCode,priceChannelName,supplierCode,supplierName,categoryCode,categoryName,beginInboundTime,finishInboundTime,batchCode,beginChannelMaoriRate,finishChannelMaoriRate,
+        NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo = new NewProductBatchMovingRateReqVo(skuCode,skuName,orderCode,orderOriginal,supplierCode,supplierName,categoryCode,categoryName,beginInboundTime,finishInboundTime,batchCode,beginChannelMaoriRate,finishChannelMaoriRate,
                 productSortCode,productSortName);
         newProductBatchMovingRateReqVo.setPageNo(pageNo);
         newProductBatchMovingRateReqVo.setPageSize(pageSize);
