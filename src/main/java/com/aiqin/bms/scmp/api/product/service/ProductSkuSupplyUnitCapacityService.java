@@ -87,5 +87,12 @@ public interface ProductSkuSupplyUnitCapacityService {
      * @date 2019/7/4 20:52
      */
     int insertList( List<ProductSkuSupplyUnitCapacity> capacities);
-
+    /**
+     * 删除设置
+     * @author NullPointException
+     * @date 2019/7/19
+     * @param capacityDrafts
+     * @return int
+     */
+    int deleteDraftsByVos(List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts);
 }

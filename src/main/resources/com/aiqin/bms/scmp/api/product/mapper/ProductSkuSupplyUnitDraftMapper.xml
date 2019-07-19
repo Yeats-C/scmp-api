@@ -39,7 +39,16 @@
       #{id,jdbcType=BIGINT}
     </foreach>
   </select>
-  <delete id="delete" parameterType="java.util.List">
+    <select id="selectByVo" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from product_sku_supply_unit_draft
+      where product_sku_code in
+      <foreach collection="list" item="item" separator="," open="(" close=")">
+        #{item.product_sku_code,jdbcType=BIGINT}
+      </foreach>
+    </select>
+    <delete id="delete" parameterType="java.util.List">
     delete from product_sku_supply_unit_draft where product_sku_code in
     <foreach collection="list" item="skuCode" separator="," open="(" close=")">
       #{skuCode,jdbcType=VARCHAR}

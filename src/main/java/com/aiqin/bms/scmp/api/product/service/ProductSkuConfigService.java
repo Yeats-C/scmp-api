@@ -278,4 +278,12 @@ public interface ProductSkuConfigService {
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft>
      */
     List<ProductSkuSupplyUnitDraft> importSupplyData(MultipartFile file);
+    /**
+     * 供应商配置导入保存
+     * @author NullPointException
+     * @date 2019/7/19
+     * @param reqVo
+     * @return java.lang.Boolean
+     */
+    Boolean saveImportSupply(List<ProductSkuSupplyUnitDraft> reqVo);
 }

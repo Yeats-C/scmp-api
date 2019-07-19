@@ -104,6 +104,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     private SupplyComService supplyCompanyService;
     @Autowired
     private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
+    @Autowired
+    private ProductSkuSupplyUnitDraftMapper productSkuSupplyUnitDraftMapper;
 
     /**
      * 批量保存临时配置信息
@@ -211,7 +213,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         int i = draftMapper.insertBatch(draftList);
         if (i != draftList.size()) {
             log.error("保存正式表数据异常！");
-            throw new BizException(ResultCode.draft_config_save_error);
+            throw new BizException(ResultCode.DRAFT_CONFIG_SAVE_ERROR);
         }
     }
 
@@ -221,7 +223,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
        int i = draftMapper.deleteByIds(ids);
         if (i != ids.size()) {
             log.error("删除临时表数据异常！");
-            throw new BizException(ResultCode.draft_config_save_error);
+            throw new BizException(ResultCode.DRAFT_CONFIG_SAVE_ERROR);
         }
     }
     /**
@@ -1022,6 +1024,40 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         } catch (ExcelException e) {
             throw new BizException(ResultCode.IMPORT_DATA_ERROR);
         }
+    }
+
+    @Override
+    public Boolean saveImportSupply(List<ProductSkuSupplyUnitDraft> reqVo) {
+        //校验临时表是否含有该数据
+        List<ProductSkuSupplyUnitDraft> list = productSkuSupplyUnitDraftMapper.selectByVo(reqVo);
+        //k:skuCode+供应商编码
+        Map<String, ProductSkuSupplyUnitDraft> draftMap = list.stream().collect(Collectors.toMap(o -> o.getProductSkuCode() + o.getSupplyUnitCode(), Function.identity(), (k1, k2) -> k2));
+        List<Long> ids = Lists.newArrayList();
+        List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts = Lists.newArrayList();
+        for (ProductSkuSupplyUnitDraft draft : reqVo) {
+            ProductSkuSupplyUnitDraft supplyUnitDraft = draftMap.get(draft.getProductSkuCode() + draft.getSupplyUnitCode());
+            if (Objects.nonNull(supplyUnitDraft)) {
+                ids.add(supplyUnitDraft.getId());
+                ProductSkuSupplyUnitCapacityDraft capacityDraft = new ProductSkuSupplyUnitCapacityDraft();
+                capacityDraft.setProductSkuCode(supplyUnitDraft.getProductSkuCode());
+                capacityDraft.setSupplyUnitCode(supplyUnitDraft.getSupplyUnitCode());
+                capacityDrafts.add(capacityDraft);
+            }
+        }
+        if (CollectionUtils.isNotEmpty(ids)) {
+            //删除数据
+            int i = productSkuSupplyUnitDraftMapper.deleteDraftByIds(ids);
+            if (i != ids.size()) {
+                throw new BizException(ResultCode.IMPORT_DATA_SAVE_FAILED);
+            }
+            int j = productSkuSupplyUnitCapacityService.deleteDraftsByVos(capacityDrafts);
+        }
+        //保存
+        int i = productSkuSupplyUnitService.insertDraftList(reqVo);
+        if (i != reqVo.size()) {
+            throw new BizException(ResultCode.IMPORT_DATA_SAVE_FAILED);
+        }
+        return Boolean.TRUE;
     }
 
     private ProductSkuSupplyUnitDraft validData2(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, String> skuCodeMap, Map<String, SupplierDictionaryInfo> dicMap, SkuSupplierImport skuSupplierImport) {
