@@ -124,7 +124,7 @@ public class SkuConfigController {
 
     @PostMapping("/importSupplySave")
     @ApiOperation(("供应商配置信息导入保存"))
-    public HttpResponse<Boolean> importSupplyData (List<ProductSkuSupplyUnitDraft> reqVo) {
+    public HttpResponse<Boolean> importSupplyData (@RequestBody List<ProductSkuSupplyUnitDraft> reqVo) {
         try {
             return HttpResponse.success(productSkuConfigService.saveImportSupply(reqVo));
         } catch (BizException e) {
