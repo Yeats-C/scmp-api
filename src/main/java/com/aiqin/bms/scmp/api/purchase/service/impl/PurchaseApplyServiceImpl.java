@@ -7,8 +7,10 @@ import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
@@ -93,6 +95,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private GoodsRejectService goodsRejectService;
     @Resource
     private PurchaseGroupService purchaseGroupService;
+    @Resource
+    private ProductSkuPurchaseInfoDao productSkuPurchaseInfoDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -184,6 +188,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             PurchaseApplyReqVo applyReqVo;
             for (PurchaseApplyDetailResponse product : detail) {
+                ProductSkuPurchaseInfo info = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
+                if(info != null || StringUtils.isNotBlank(info.getUnitName()) || info.getBaseProductContent() != null){
+                    product.setBoxGauge(info.getBaseProductContent().toString().trim()+"/"+info.getUnitName());
+                }
                 if(StringUtils.isNotBlank(product.getCategoryId())){
                     String categoryName = goodsRejectService.selectCategoryName(product.getCategoryId());
                     product.setCategoryName(categoryName);

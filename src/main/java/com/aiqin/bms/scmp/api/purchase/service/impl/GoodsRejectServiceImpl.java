@@ -9,6 +9,8 @@ import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
@@ -461,12 +463,12 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             //增加操作记录 操作状态  : 0 新增 1 修改 2 下载
             operationLogDao.insert(new OperationLog(rejectId, 0, "新增退供单", "", request.getCreateById(), request.getCreateByName()));
             //锁定库存
-//            ILockStockBatchReqVO iLockStockBatchReqVO = handleStockParam(list, rejectRecord);
-//            Boolean stockStatus = stockService.returnSupplyLockStockBatch(iLockStockBatchReqVO);
-//            if (!stockStatus) {
-//                LOGGER.error("锁定库存异常:{}", rejectRecord.toString());
-//                throw new RuntimeException(String.format("锁定库存异常:{%s}", rejectRecord.toString()));
-//            }
+            ILockStocksReqVO iLockStockBatchReqVO = handleStockParam(list, rejectRecord);
+            Boolean stockStatus = stockService.returnSupplyLockStocks(iLockStockBatchReqVO);
+            if (!stockStatus) {
+                LOGGER.error("锁定库存异常:{}", rejectRecord.toString());
+                throw new RuntimeException(String.format("锁定库存异常:{%s}", rejectRecord.toString()));
+            }
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
         } catch (BeansException e) {
@@ -476,29 +478,27 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
         return HttpResponse.success();
     }
 
-    public ILockStockBatchReqVO handleStockParam(List<RejectRecordDetail> detailList, RejectRecord rejectRecord) {
-        ILockStockBatchReqVO iLockStockBatchReqVO = new ILockStockBatchReqVO();
-        iLockStockBatchReqVO.setCompanyCode(rejectRecord.getCompanyCode());
-        iLockStockBatchReqVO.setTransportCenterCode(rejectRecord.getTransportCenterCode());
-        iLockStockBatchReqVO.setWarehouseCode(rejectRecord.getWarehouseCode());
-        iLockStockBatchReqVO.setPurchaseGroupCode(rejectRecord.getPurchaseGroupCode());
-        List<ILockStockBatchItemReqVo> list = new ArrayList<>();
-        ILockStockBatchItemReqVo itemReqVo;
+    public ILockStocksReqVO handleStockParam(List<RejectRecordDetail> detailList, RejectRecord rejectRecord) {
+        ILockStocksReqVO ILockStocksReqVO = new ILockStocksReqVO();
+        ILockStocksReqVO.setCompanyCode(rejectRecord.getCompanyCode());
+        ILockStocksReqVO.setTransportCenterCode(rejectRecord.getTransportCenterCode());
+        ILockStocksReqVO.setWarehouseCode(rejectRecord.getWarehouseCode());
+        ILockStocksReqVO.setPurchaseGroupCode(rejectRecord.getPurchaseGroupCode());
+        List<ILockStocksItemReqVo> list = new ArrayList<>();
+        ILockStocksItemReqVo itemReqVo;
         for (RejectRecordDetail detail : detailList) {
-            itemReqVo = new ILockStockBatchItemReqVo();
+            itemReqVo = new ILockStocksItemReqVo();
             itemReqVo.setNum(Long.valueOf(detail.getSingleCount()));
             itemReqVo.setSkuCode(detail.getSkuCode());
             itemReqVo.setSkuName(detail.getSkuName());
-            itemReqVo.setBatchCode(detail.getBatchNo());
             itemReqVo.setDocumentType(2);
             itemReqVo.setDocumentNum(detail.getRejectRecordCode());
             itemReqVo.setRemark(rejectRecord.getRemark());
-            itemReqVo.setUpdateByName(rejectRecord.getCreateByName());
-            itemReqVo.setUpdateByCode(rejectRecord.getCreateById());
+            itemReqVo.setOperator(rejectRecord.getUpdateByName());
             list.add(itemReqVo);
         }
-        iLockStockBatchReqVO.setItemReqVos(list);
-        return iLockStockBatchReqVO;
+        ILockStocksReqVO.setItemReqVos(list);
+        return ILockStocksReqVO;
     }
 
 
@@ -642,8 +642,8 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             LOGGER.info("取消-更改退供申请详情影响条数:{}", count);
             List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
             //解锁库存
-            ILockStockBatchReqVO iLockStockBatchReqVO = handleStockParam(list, record);
-            Boolean stockStatus = stockService.returnSupplyUnLockStockBatch(iLockStockBatchReqVO);
+            ILockStocksReqVO iLockStockBatchReqVO = handleStockParam(list, record);
+            Boolean stockStatus = stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
             if (!stockStatus) {
                 LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
                 throw new RuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
