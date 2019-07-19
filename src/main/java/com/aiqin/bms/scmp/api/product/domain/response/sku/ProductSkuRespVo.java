@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author knight.xie
@@ -42,6 +44,9 @@ public class ProductSkuRespVo extends CommonBean {
 
     @ApiModelProperty("商品品类code")
     private String productCategoryCode;
+
+    @ApiModelProperty("商品品类code")
+    private List<String> productCategoryCodes;
 
     @ApiModelProperty("商品品类名称")
     private String productCategoryName;

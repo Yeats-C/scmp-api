@@ -1,11 +1,14 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryAddReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductCategoryService;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +44,9 @@ public class ProductCategoryController {
             Integer num = productCategoryService.updateProductCategory(productCategoryReqVO);
             return HttpResponse.success(num);
         } catch (Exception e){
+            if(e instanceof GroundRuntimeException){
+                return HttpResponse.failure(MessageId.create(Project.PRODUCT_API, -1, e.getMessage()));
+            }
             return HttpResponse.failure(ResultCode.UPDATE_PRODUCT_CATEGORY_ERROR);
         }
     }
@@ -52,6 +58,9 @@ public class ProductCategoryController {
             Integer num = productCategoryService.deleteProductCategory(id);
             return HttpResponse.success(num);
         } catch (Exception e){
+            if(e instanceof GroundRuntimeException){
+                return HttpResponse.failure(MessageId.create(Project.PRODUCT_API, -1, e.getMessage()));
+            }
             return HttpResponse.failure(ResultCode.DELETE_PRODUCT_CATEGORY_ERROR);
         }
     }

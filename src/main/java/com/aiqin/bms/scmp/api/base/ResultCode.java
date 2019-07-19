@@ -59,7 +59,7 @@ public interface ResultCode {
      */
     MessageId ADD_PRODUCT_CATEGORY_ERROR = MessageId.create(Project.PRODUCT_API, 37, "品类新增失败");
     MessageId UPDATE_PRODUCT_CATEGORY_ERROR = MessageId.create(Project.PRODUCT_API, 38, "品类修改失败");
-    MessageId DELETE_PRODUCT_CATEGORY_ERROR = MessageId.create(Project.PRODUCT_API, 39, "品类删除失败");
+    MessageId DELETE_PRODUCT_CATEGORY_ERROR = MessageId.create(Project.PRODUCT_API, 39, "操作失败");
     MessageId GET_PRODUCT_CATEGORY_ERROR = MessageId.create(Project.PRODUCT_API, 40, "品类查询失败");
     //**字典
     MessageId DICTIONARY_CODE = MessageId.create(Project.SUPPLIER_API, 41, "字典查询失败");

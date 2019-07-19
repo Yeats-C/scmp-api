@@ -171,20 +171,17 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int deleteProductCategory(Long id) {
         int num;
-        try {
-            ProductCategory productCategory = productCategoryDao.selectByPrimaryKey(id);
-            //设置需要更新的状态
-            Integer status = 0;
-            if(Objects.equals(0,productCategory.getCategoryStatus())){
-                status = 1;
-                verifyDisable(productCategory.getCategoryId());
-            }
-            productCategory.setCategoryStatus(status);
-            //调用修改,修改删除标志
-            num = ((ProductCategoryService)AopContext.currentProxy()).update(productCategory);
-        } catch (GroundRuntimeException e){
-            throw new GroundRuntimeException("删除品类失败");
+
+        ProductCategory productCategory = productCategoryDao.selectByPrimaryKey(id);
+        //设置需要更新的状态
+        Integer status = 0;
+        if(Objects.equals(0,productCategory.getCategoryStatus())){
+            status = 1;
+            verifyDisable(productCategory.getCategoryId());
         }
+        productCategory.setCategoryStatus(status);
+        //调用修改,修改删除标志
+        num = ((ProductCategoryService)AopContext.currentProxy()).update(productCategory);
         return num;
     }
 
