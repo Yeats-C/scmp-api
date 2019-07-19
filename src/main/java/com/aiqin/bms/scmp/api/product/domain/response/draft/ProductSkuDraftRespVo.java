@@ -61,5 +61,11 @@ public class ProductSkuDraftRespVo {
     @ApiModelProperty("创建人")
     private String createBy;
 
+    @ApiModelProperty(value = "图片文件夹编码")
+    private String picFolderCode;
+
+    @ApiModelProperty(value = "改变内容",hidden = true)
+    private String changeContent;
+
 
 }

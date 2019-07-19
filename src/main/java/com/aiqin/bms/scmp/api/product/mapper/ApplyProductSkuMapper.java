@@ -17,6 +17,8 @@ public interface ApplyProductSkuMapper {
 
     int insertSelective(ApplyProductSku record);
 
+    ApplyProductSku selectNoExistsApprovalBySkuCode(String skuCode);
+
     ApplyProductSku selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(ApplyProductSku record);

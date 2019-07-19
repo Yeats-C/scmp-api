@@ -13,8 +13,8 @@ import java.io.Serializable;
 public class BigEffectReqVo extends PageReq implements Serializable {
 
     @ApiModelProperty("日期")
-    @JsonProperty("production_date")
-    private String productionDate;
+    @JsonProperty("create_time")
+    private String createTime;
 
     @ApiModelProperty("商品编码")
     @JsonProperty("sku_code")
@@ -33,20 +33,20 @@ public class BigEffectReqVo extends PageReq implements Serializable {
     private String productBrandName;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("品类名称")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("供应商code")
-    @JsonProperty("supply_unit_code")
-    private String supplyUnitCode;
+    @JsonProperty("supply_code")
+    private String supplyCode;
 
     @ApiModelProperty("供应商name")
-    @JsonProperty("supply_unit_name")
-    private String supplyUnitName;
+    @JsonProperty("supply_name")
+    private String supplyName;
 
     @ApiModelProperty("采购组编码")
     @JsonProperty("procurement_section_code")
@@ -76,16 +76,16 @@ public class BigEffectReqVo extends PageReq implements Serializable {
     @JsonProperty("big_effect_period_warn_day")
     private String bigEffectPeriodWarnDay;
 
-    public BigEffectReqVo(String productionDate, String skuCode, String skuName, String productBrandCode, String productBrandName, String productCategoryCode, String productCategoryName, String supplyUnitCode, String supplyUnitName, String procurementSectionCode, String procurementSectionName, String transportCenterCode, String transportCenterName, String warehouseCode, String warehouseName, String bigEffectPeriodWarnDay) {
-        this.productionDate = productionDate;
+    public BigEffectReqVo(String createTime, String skuCode, String skuName, String productBrandCode, String productBrandName, String categoryCode, String categoryName, String supplyCode, String supplyName, String procurementSectionCode, String procurementSectionName, String transportCenterCode, String transportCenterName, String warehouseCode, String warehouseName, String bigEffectPeriodWarnDay) {
+        this.createTime = createTime;
         this.skuCode = skuCode;
         this.skuName = skuName;
         this.productBrandCode = productBrandCode;
         this.productBrandName = productBrandName;
-        this.productCategoryCode = productCategoryCode;
-        this.productCategoryName = productCategoryName;
-        this.supplyUnitCode = supplyUnitCode;
-        this.supplyUnitName = supplyUnitName;
+        this.categoryCode = categoryCode;
+        this.categoryName = categoryName;
+        this.supplyCode = supplyCode;
+        this.supplyName = supplyName;
         this.procurementSectionCode = procurementSectionCode;
         this.procurementSectionName = procurementSectionName;
         this.transportCenterCode = transportCenterCode;

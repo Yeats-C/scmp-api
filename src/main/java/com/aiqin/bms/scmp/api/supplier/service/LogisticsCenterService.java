@@ -1,7 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.AreaBasic;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterAreaDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
@@ -10,8 +9,11 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.vo.QueryLo
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.vo.UpdateLogisticsCenterReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.QueryLogisticsCenterResVo;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 描述:物流中心service层
@@ -111,4 +113,12 @@ public interface LogisticsCenterService {
      * @return com.aiqin.ground.util.protocol.http.HttpResponse<java.util.List<com.aiqin.bms.scmp.api.base.AreaBasic>>
      */
     HttpResponse<List<AreaBasic>> getAreaInfo();
+    /**
+     * 通过名称匹配仓
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param warehouseList
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter>
+     */
+    Map<String,LogisticsCenterDTO> selectByNameList(Set<String> warehouseList, String companyCode);
 }

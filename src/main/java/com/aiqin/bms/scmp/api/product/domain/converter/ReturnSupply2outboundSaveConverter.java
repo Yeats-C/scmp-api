@@ -110,6 +110,8 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 outbound.setCreateTime(new Date());
                 outbound.setUpdateTime(new Date());
 
+                outbound.setRemark(reqVo.getRemark());
+
                 List<String> skuCodes = reqMainVo.getRejectRecordDetails().stream().map(RejectRecordDetail::getSkuCode).collect(Collectors.toList());
                 List<ProductSkuCheckout> skuCheckOuts = skuService.getSkuCheckOuts(skuCodes);
                 Map<String, Long> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getInputTaxRate, (k1, k2) -> k2));

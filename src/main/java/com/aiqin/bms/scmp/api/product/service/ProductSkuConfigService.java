@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSup
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,6 +28,16 @@ public interface ProductSkuConfigService {
      * @return
      */
     Integer insertDraftList(List<SaveSkuConfigReqVo> configReqVos);
+    /**
+     * 批量保存导入的临时配置信息
+     * @param configReqVos
+     * @return
+     */
+    Integer importSaveDraft(List<SaveSkuConfigReqVo> configReqVos);
+
+    void saveDraftBatch(List<ProductSkuConfigDraft> draftList);
+
+    void deleteByIds(List<Long> ids);
 
     /**
      * 批量修改临时配置信息
@@ -251,4 +262,12 @@ public interface ProductSkuConfigService {
      * @date 2019/7/8 22:00
      */
     Integer saveList(WorkFlowCallbackVO workFlowCallbackVO, String skuCode, String applyCode);
+    /**
+     * 配置导入
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param file
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo>
+     */
+    List<SaveSkuConfigReqVo> importData(MultipartFile file);
 }

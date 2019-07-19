@@ -38,6 +38,9 @@ public class SaveSkuConfigReqVo {
     @ApiModelProperty("配置状态(0:再用 1:停止进货 2:停止配送 3:停止销售)")
     private Byte configStatus;
 
+    @ApiModelProperty("配置状态描述")
+    private String configStatusName;
+
     @ApiModelProperty("到货周期")
     private Integer arrivalCycle;
 
@@ -58,4 +61,7 @@ public class SaveSkuConfigReqVo {
 
     @ApiModelProperty("备用仓库")
     private List<SpareWarehouseReqVo> spareWarehouses;
+
+    @ApiModelProperty("错误信息")
+    private String error;
 }

@@ -56,5 +56,8 @@ public class QuerySkuListReqVO extends PageReq {
     @ApiModelProperty(value = "公司编码", notes = "前端查询接口可以不传,但是其他第三方系统此字段必填", hidden = true)
     private String companyCode;
 
+    @ApiModelProperty(value = "当前登录人",hidden = true)
+    private String personId;
+
 
 }

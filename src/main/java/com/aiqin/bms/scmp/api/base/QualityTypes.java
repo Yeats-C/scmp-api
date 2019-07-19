@@ -1,0 +1,36 @@
+package com.aiqin.bms.scmp.api.base;
+
+import lombok.Getter;
+
+import java.util.Objects;
+
+/**
+ * @author knight.xie
+ * @version 1.0
+ * @className QualityAssuranceManagements
+ * @date 2019/7/18 17:27
+ * @description TODO
+ */
+@Getter
+public enum QualityTypes {
+    DAY(Byte.valueOf("1"),"天"),
+    MONTH(Byte.valueOf("2"),"月"),
+    YEAR(Byte.valueOf("3"),"年"),
+    ;
+    private Byte type;
+    private String name;
+
+    QualityTypes(Byte type, String name) {
+        this.type = type;
+        this.name = name;
+    }
+
+    public static QualityTypes getByType(Byte type) {
+        for (QualityTypes value : QualityTypes.values()) {
+            if(Objects.equals(value.getType(), type)) {
+                return value;
+            }
+        }
+        return null;
+    }
+}

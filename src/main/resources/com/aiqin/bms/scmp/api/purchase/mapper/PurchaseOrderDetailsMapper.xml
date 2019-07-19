@@ -179,7 +179,7 @@
     o.settlement_method_name as settlementMethodName, d.contact_person as contactPerson, d.mobile,
     d.delivery_time as deliveryTime, d.warehouse_time as warehouseTime, d.update_time as updateTime,
     d.order_type as orderType, d.order_code as orderCode, o.cancel_reason as cancelReason, o.cancel_remark as cancelRemark,
-    d.score_code as scoreCode, o.storage_status as storageStatus
+    d.score_code as scoreCode, o.storage_status as storageStatus, o.supplier_code as supplierCode, o.supplier_name as supplierName
     from purchase_order o
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id

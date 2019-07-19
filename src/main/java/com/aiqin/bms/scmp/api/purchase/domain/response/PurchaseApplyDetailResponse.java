@@ -270,7 +270,7 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="有效期")
     @JsonProperty("valid_time")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
-    private Data validTime;
+    private Date validTime;
 
     @ApiModelProperty(value="关联订单号")
     @JsonProperty("order_code")
@@ -325,5 +325,6 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="仓储状态 0.未开始  1.确认中 2.完成")
     @JsonProperty("storage_status")
     private Integer storageStatus;
+
 }
 

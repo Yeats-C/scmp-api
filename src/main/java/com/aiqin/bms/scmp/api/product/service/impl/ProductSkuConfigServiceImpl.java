@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuConfigImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
@@ -22,10 +23,14 @@ import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
+import com.aiqin.bms.scmp.api.supplier.service.LogisticsCenterService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
+import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
@@ -37,18 +42,20 @@ import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -84,6 +91,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     private ProductSkuSupplyUnitCapacityService productSkuSupplyUnitCapacityService;
     @Autowired
     private SkuInfoService skuInfoService;
+    @Autowired
+    private LogisticsCenterService logisticsCenterService;
+    @Autowired
+    private ProductSkuConfigMapper productSkuConfigMapper;
 
     /**
      * 批量保存临时配置信息
@@ -119,6 +130,91 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         return num;
     }
 
+    /**
+     * 批量保存导入的临时配置信息
+     * @param configReqVos
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer importSaveDraft(List<SaveSkuConfigReqVo> configReqVos) {
+        //校验是否有申请中的数据
+        List<ProductSkuConfig> officials = productSkuConfigMapper.selectByVo(configReqVos);
+        Map<String, ProductSkuConfig> configMap = officials.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getTransportCenterCode(), Function.identity(), (k1, k2) -> k2));
+        //草稿表的中的数据
+        List<ProductSkuConfigDraft> drafts = draftMapper.getListBySkuVo(configReqVos);
+        Map<String, ProductSkuConfigDraft> draftMap = drafts.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getTransportCenterCode(), Function.identity(), (k1, k2) -> k2));
+        Integer num = 0;
+        List<Long> ids = Lists.newArrayList();
+        List<String> error = Lists.newArrayList();
+        Date date = new Date();
+        List<ProductSkuConfigDraft> draftList = Lists.newArrayList();
+        List<SpareWarehouseReqVo> spareWarehouseReqVos = Lists.newArrayList();
+        for (SaveSkuConfigReqVo item : configReqVos) {
+            if (Objects.nonNull(draftMap.get(item.getSkuCode() + item.getTransportCenterCode()))) {
+                //临时表需要删除的数据
+                ids.add(draftMap.get(item.getSkuCode() + item.getTransportCenterCode()).getId());
+            }
+            if (Objects.nonNull(configMap.get(item.getSkuCode() + item.getTransportCenterCode()))) {
+                //判断是否有审核中的数据
+                if (StatusTypeCode.UPDATE_APPLY.getStatus().equals(configMap.get(item.getSkuCode() + item.getTransportCenterCode()).getApplyStatus())) {
+                    error.add("sku编码为"+item.getSkuCode()+"下的仓库名称为"+item.getTransportCenterCode());
+                    continue;
+                }
+            }
+            ProductSkuConfigDraft draft = new ProductSkuConfigDraft();
+            BeanCopyUtils.copy(item,draft);
+            draft.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
+            draft.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+            synchronized (ProductSkuConfigServiceImpl.class) {
+                String code = getCode("", EncodingRuleType.SKU_CONFIG_CODE);
+                draft.setConfigCode(code);
+            }
+            draft.setCompanyCode(getUser().getCompanyCode());
+            draft.setCompanyName(getUser().getCompanyName());
+            draft.setCreateBy(getUser().getPersonName());
+            draft.setCreateTime(date);
+            draftList.add(draft);
+            if(CollectionUtils.isNotEmpty(item.getSpareWarehouses())){
+                for (SpareWarehouseReqVo spareWarehouse : item.getSpareWarehouses()) {
+                    spareWarehouse.setConfigCode(draft.getConfigCode());
+                }
+                spareWarehouseReqVos.addAll(item.getSpareWarehouses());
+            }
+        }
+        if (CollectionUtils.isNotEmpty(error)) {
+            error.add("有在审批中的数据。请删除数据，重新提交,或者在审批申请页面将重复的数据删除。");
+            throw new BizException(StringUtils.strip(error.toString(),  "[]"));
+        }else {
+            //删除草稿变数据
+            deleteByIds(ids);
+            //批量保存主表数据
+            saveDraftBatch(draftList);
+            //批量附表保存
+            List<ProductSkuConfigSpareWarehouseDraft> draftList2 = BeanCopyUtils.copyList(spareWarehouseReqVos,ProductSkuConfigSpareWarehouseDraft.class);
+            ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseDraftList(draftList2);
+        }
+        return num;
+    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveDraftBatch(List<ProductSkuConfigDraft> draftList) {
+        int i = draftMapper.insertBatch(draftList);
+        if (i != draftList.size()) {
+            log.error("保存正式表数据异常！");
+            throw new BizException(ResultCode.draft_config_save_error);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deleteByIds(List<Long> ids) {
+       int i = draftMapper.deleteByIds(ids);
+        if (i != ids.size()) {
+            log.error("删除临时表数据异常！");
+            throw new BizException(ResultCode.draft_config_save_error);
+        }
+    }
     /**
      * 批量修改临时配置信息
      *
@@ -837,6 +933,215 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
         saveOfficial(workFlowCallbackVO,applyProductSkuConfigs);
         return null;
+    }
+
+    @Override
+    public List<SaveSkuConfigReqVo> importData(MultipartFile file) {
+        try {
+            List<SkuConfigImport> skuConfigImport = ExcelUtil.readExcel(file, SkuConfigImport.class, 1, 0);
+            List<SaveSkuConfigReqVo> list = Lists.newArrayList();
+            //校验
+            dataValidation(skuConfigImport);
+            skuConfigImport.remove(0);
+            Set<String> skuList = Sets.newHashSet();
+            Set<String> warehouseList = Sets.newHashSet();
+            skuConfigImport.forEach(o->{
+                skuList.add(o.getSkuCode());
+                warehouseList.add(o.getTransportCenterName());
+                if (StringUtils.isNotBlank(o.getSpareWarehouses())) {
+                    warehouseList.addAll(Arrays.asList((o.getSpareWarehouses()).split(",")));
+                }
+            });
+            //sku信息
+            Map<String,ProductSkuInfo> productSkuList = skuInfoService.selectBySkuCodes(skuList,getUser().getCompanyCode());
+            //仓库信息
+            Map<String, LogisticsCenterDTO> centerList = logisticsCenterService.selectByNameList(warehouseList,getUser().getCompanyCode());
+            //验证sku编码名称
+            //k:仓 v:skuCode
+            Map<String,String> skuCodeMap = Maps.newHashMap();
+            for (int i = 0; i < skuConfigImport.size(); i++) {
+                SaveSkuConfigReqVo reqVo = validData(productSkuList,centerList,skuCodeMap,skuConfigImport.get(i));
+                list.add(reqVo);
+            }
+            return list;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_DATA_ERROR);
+        }
+    }
+    /**
+     * 补充数据
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param productSkuList sku集合
+     * @param centerList 仓库
+     * @param skuCodeMap 验重集合
+     * @param configImport 需要校验的实体
+     * @return com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo
+     */
+    private SaveSkuConfigReqVo validData(Map<String,ProductSkuInfo> productSkuList, Map<String,LogisticsCenterDTO> centerList, Map<String, String> skuCodeMap,SkuConfigImport configImport) {
+        List<String> errorList = Lists.newArrayList();
+        SaveSkuConfigReqVo copy = BeanCopyUtils.copy(configImport, SaveSkuConfigReqVo.class);
+        String s = skuCodeMap.get(configImport.getTransportCenterName());
+        //重复校验
+        if(StringUtils.isNotBlank(s)){
+            errorList.add("该条数据与之前的数据重复");
+            copy.setError(StringUtils.strip(errorList.toString(),"[]"));
+            return copy;
+        }
+        //sku校验
+        if (Objects.isNull(configImport.getSkuCode())) {
+            errorList.add("sku编码不能为空");
+        } else {
+            ProductSkuInfo productSkuInfo = productSkuList.get(configImport.getSkuCode().trim());
+            if (Objects.isNull(productSkuInfo)) {
+                errorList.add("该sku编码在库中不存在");
+            } else {
+                if (Objects.isNull(configImport.getSkuName())) {
+                    errorList.add("sku名称不能为空");
+                } else {
+                    if (productSkuInfo.getSkuName().equals(configImport.getSkuName())) {
+                        errorList.add("sku名称与对应的sku编码不一致");
+                    }else {
+                        copy.setProductCode(productSkuInfo.getProductCode());
+                        copy.setProductName(productSkuInfo.getProductName());
+                    }
+                }
+            }
+        }
+        //校验仓库
+        if(Objects.isNull(configImport.getTransportCenterName())){
+            errorList.add("仓库不能为空");
+        }else {
+            LogisticsCenterDTO logisticsCenter = centerList.get(configImport.getTransportCenterName().trim());
+            if (Objects.isNull(logisticsCenter)) {
+                errorList.add("未找到该名称对应的仓库或仓库被禁用");
+            }else {
+                //成功后存值
+                skuCodeMap.put(configImport.getTransportCenterName(),configImport.getSkuCode());
+                copy.setTransportCenterCode(logisticsCenter.getLogisticsCenterCode());
+            }
+        }
+        //状态
+        if (Objects.isNull(configImport.getConfigStatusName())) {
+            errorList.add("状态不能为空");
+        }else {
+            SkuStatusEnum skuStatusEnum = SkuStatusEnum.getAllStatus().get(configImport.getConfigStatusName().trim());
+            if (Objects.isNull(skuStatusEnum)) {
+                errorList.add("状态值有误");
+            }else {
+                copy.setConfigStatus(skuStatusEnum.getStatus());
+            }
+        }
+        //订货周期
+        if (Objects.isNull(configImport.getOrderCycle())) {
+            errorList.add("订货周期不能为空");
+        }else {
+            try {
+                Integer integer = Integer.valueOf((configImport.getOrderCycle().trim()));
+                copy.setOrderCycle(integer);
+            }catch (NumberFormatException e){
+                errorList.add("订货周期应为整数");
+            }
+        }
+         //到货周期
+        if (Objects.isNull(configImport.getArrivalCycle())) {
+            errorList.add("到货周期不能为空");
+        }else {
+            try {
+                Integer integer = Integer.valueOf((configImport.getArrivalCycle().trim()));
+                copy.setArrivalCycle(integer);
+            }catch (NumberFormatException e){
+                errorList.add("订货周期应为整数");
+            }
+        }
+        //到货后周转期
+        if (Objects.isNull(configImport.getTurnoverPeriodAfterArrival())) {
+            errorList.add("到货后周转期不能为空");
+        }else {
+            try {
+                Integer integer = Integer.valueOf((configImport.getTurnoverPeriodAfterArrival().trim()));
+                copy.setTurnoverPeriodAfterArrival(integer);
+            }catch (NumberFormatException e){
+                errorList.add("到货后周转期应为整数");
+            }
+        }
+        //基本库存天数
+        if (Objects.isNull(configImport.getBasicInventoryDay())) {
+            errorList.add("基本库存天数不能为空");
+        }else {
+            try {
+                Integer integer = Integer.valueOf((configImport.getBasicInventoryDay()).trim());
+                copy.setBasicInventoryDay(integer);
+            }catch (NumberFormatException e){
+                errorList.add("基本库存天数应为整数");
+            }
+        }
+        //大库存预警天数
+        if (Objects.isNull(configImport.getLargeInventoryWarnDay())) {
+            errorList.add("大库存预警天数不能为空");
+        }else {
+            try {
+                Integer integer = Integer.valueOf((configImport.getLargeInventoryWarnDay().trim()));
+                copy.setLargeInventoryWarnDay(integer);
+            }catch (NumberFormatException e){
+                errorList.add("大库存预警天数应为整数");
+            }
+        }
+        //大效期预警天数
+        if (Objects.isNull(configImport.getBigEffectPeriodWarnDay())) {
+            errorList.add("大效期预警天数不能为空");
+        }else {
+            try {
+                Integer integer = Integer.valueOf((configImport.getBigEffectPeriodWarnDay().trim()));
+                copy.setBigEffectPeriodWarnDay(integer);
+            }catch (NumberFormatException e){
+                errorList.add("大效期预警天数应为整数");
+            }
+        }
+        //备用仓
+        if (StringUtils.isNotBlank(configImport.getSpareWarehouses())) {
+            List<SpareWarehouseReqVo> spareWarehouses = Lists.newArrayList();
+            String warehouses = configImport.getSpareWarehouses();
+            String[] split = warehouses.split(",");
+            for (int i = 0; i < split.length; i++) {
+                LogisticsCenterDTO logisticsCenter = centerList.get(split[i].trim());
+                if (Objects.isNull(logisticsCenter)) {
+                    errorList.add("未找到" + split[i] + "对应的仓库或仓库被禁用");
+                }else {
+                    if (split[i].equals(configImport.getTransportCenterName())) {
+                        errorList.add("备用仓不能是自己");
+                        continue;
+                    }
+                    SpareWarehouseReqVo spareWarehouseReqVo = new SpareWarehouseReqVo();
+                    spareWarehouseReqVo.setTransportCenterCode(logisticsCenter.getLogisticsCenterCode());
+                    spareWarehouseReqVo.setTransportCenterName(logisticsCenter.getLogisticsCenterName());
+                    spareWarehouseReqVo.setUseOrder(i);
+                }
+            }
+        }
+        copy.setError(StringUtils.strip(errorList.toString(),"[]"));
+        return copy;
+    }
+
+    /**
+     * 校验
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param skuConfigImport
+     * @return void
+     */
+    private void dataValidation(List<SkuConfigImport> skuConfigImport) {
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuConfigImport)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        if (skuConfigImport.size()<2) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        String  head = SkuConfigImport.HEDE;
+        boolean equals = skuConfigImport.get(0).toString().equals(head);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
     }
 
     /**

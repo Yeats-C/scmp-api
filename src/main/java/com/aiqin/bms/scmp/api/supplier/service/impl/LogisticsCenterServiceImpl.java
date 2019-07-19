@@ -37,9 +37,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 描述:
@@ -451,5 +449,10 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
         a.setChildren(areaBasics);
         data.add(0,a);
         return HttpResponse.success(data);
+    }
+
+    @Override
+    public Map<String,LogisticsCenterDTO> selectByNameList(Set<String> warehouseList, String companyCode) {
+        return logisticsCenterDao.selectByCenterNames(warehouseList,companyCode);
     }
 }

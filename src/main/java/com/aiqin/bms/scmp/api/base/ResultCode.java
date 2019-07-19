@@ -260,4 +260,5 @@ public interface ResultCode {
     //导入
     MessageId IMPORT_EXCEPTION = MessageId.create(Project.SCMP_API, 1000, "导入异常，请检查格式！");
     MessageId IMPORT_HEDE_ERROR = MessageId.create(Project.SCMP_API, 1000, "表头格式错误！");
+    MessageId draft_config_save_error = MessageId.create(Project.SCMP_API, 1000, "保存导入数据失败！");
 }

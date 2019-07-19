@@ -22,4 +22,6 @@ public interface ProductSkuDraftMapper {
     List<ProductSkuDraftRespVo> getProductSkuDraftByCompanyCode(@Param("companyCode") String companyCode, @Param("personId") String personId);
 
     List<ProductSkuDraft> getProductSkuDraftByProductCode(String productCode);
+
+    ProductSkuDraft getOfficialBySkuCode(String skuCode);
 }

@@ -761,14 +761,24 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 supplierList = supplierDao.selectByNameList(supplierNameList,getUser().getCompanyCode());
             }
             List<ApplySupplyCompanyReqVO> applyList = Lists.newArrayList();
+            List<String> name = Lists.newArrayList();
+
             for (int i = 0; i < supplierImportNews.size(); i++) {
                 SupplierImportNew supplierImportNew = supplierImportNews.get(i);
                 StringBuilder sb = new StringBuilder();
                 //判空
                 validNull(supplierImportNew, sb);
-                if (StringUtils.isNotBlank(sb.toString())) {
-                    throw new BizException(MessageId.create(Project.PRODUCT_API,62,"第"+(i+1)+"数据不完整"+sb.toString()+",请将该行填写完整或删除该行！"));
+                if (name.contains(supplierImportNew.getApplySupplyName())) {
+                    if (StringUtils.isNotBlank(sb.toString())) {
+                        sb.append(",");
+                    }
+                    sb.append("导入的供应商数据名称是否有重复");
                 }
+                name.add(supplierImportNew.getApplySupplyName());
+                if (StringUtils.isNotBlank(sb.toString())) {
+                    throw new BizException(MessageId.create(Project.PRODUCT_API,62,"第"+(i+2)+"数据错误，"+sb.toString()+",请将该行填写正确或删除该行！"));
+                }
+
                 //验证拼装
                 ApplySupplyCompanyReqVO reqVO = validAndFullUp(supplierImportNew,sb,areaTree,supplyCompanies,supplierList,dictionaryInfoList);
                 applyList.add(reqVO);
@@ -806,13 +816,29 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 supplierList = supplierDao.selectByNameList(supplierNameList,getUser().getCompanyCode());
             }
             List<ApplySupplyCompanyReqVO> applyList = Lists.newArrayList();
+            List<String> name = Lists.newArrayList();
+            List<String> code = Lists.newArrayList();
             for (int i = 0; i < supplierImportNews.size(); i++) {
                 SupplierImportUpdate supplierImportNew = supplierImportNews.get(i);
                 StringBuilder sb = new StringBuilder();
                 //判空
                 validNull2(supplierImportNew, sb);
+                if (name.contains(supplierImportNew.getApplySupplyName())) {
+                    if (StringUtils.isNotBlank(sb.toString())) {
+                        sb.append(",");
+                    }
+                    sb.append("导入的供应商数据名称是否有重复");
+                }
+                name.add(supplierImportNew.getApplySupplyName());
+                if (code.contains(supplierImportNew.getApplySupplyCode())) {
+                    if (StringUtils.isNotBlank(sb.toString())) {
+                        sb.append(",");
+                    }
+                    sb.append("导入的供应商数据编码是否有重复");
+                }
+                code.add(supplierImportNew.getApplySupplyCode());
                 if (StringUtils.isNotBlank(sb.toString())) {
-                    throw new BizException(MessageId.create(Project.PRODUCT_API,62,"第"+(i+1)+"数据不完整"+sb.toString()+",请将该行填写完整或删除该行！"));
+                    throw new BizException(MessageId.create(Project.PRODUCT_API,62,"第"+(i+2)+"数据错误，"+sb.toString()+",请将该行填写正确或删除该行！"));
                 }
                 //验证拼装
                 ApplySupplyCompanyReqVO reqVO = validAndFullUp2(supplierImportNew,sb,areaTree,supplyCompanies,supplierList,dictionaryInfoList,codeList);
@@ -840,15 +866,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     //导入的校验
     private ApplySupplyCompanyReqVO validAndFullUp(SupplierImportNew supplierImportNew, StringBuilder sb, Map<String, AreaInfo> areaTree, Map<String, SupplyCompany> supplyCompanies, Map<String, Supplier> supplierList, Map<String, SupplierDictionaryInfo> dictionaryInfoList) {
         ApplySupplyCompanyReqVO reqVO = new ApplySupplyCompanyReqVO();
-        List<String> name = Lists.newArrayList();
         SupplyCompany supplyCompany1 = supplyCompanies.get(supplierImportNew.getApplySupplyName().trim());
-        if(Objects.nonNull(supplyCompany1)||name.contains(supplierImportNew.getApplySupplyName())){
+        if(Objects.nonNull(supplyCompany1)){
             if (StringUtils.isNotBlank(sb.toString())) {
                 sb.append(",");
             }
             sb.append("供应商名称重复");
         }
-        name.add(supplierImportNew.getApplySupplyName().trim());
         reqVO.setApplySupplyName(supplierImportNew.getApplySupplyName().trim());
         if(StringUtils.isNotBlank(supplierImportNew.getSupplierName())){
             Supplier supplier = supplierList.get(supplierImportNew.getSupplierName().trim());
@@ -942,13 +966,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         if(Objects.isNull(info1)){
             sb.append(",").append("未找到对应的发货至选项");
         }else {
-            sendVO.setSendTo(info.getSupplierDictionaryValue());
+            sendVO.setSendTo(info1.getSupplierDictionaryValue());
         }
         SupplierDictionaryInfo info2 = dictionaryInfoList.get(supplierImportNew.getReturnTo().trim());
         if(Objects.isNull(info2)){
             sb.append(",").append("未找到对应的收货至选项");
         }else {
-            returnVO.setSendTo(info.getSupplierDictionaryValue());
+            returnVO.setSendTo(info2.getSupplierDictionaryValue());
         }
         reqVO.setApplySupplyTypeName(supplierImportNew.getApplySupplyType().trim());
         returnVO.setSendToDesc(supplierImportNew.getReturnTo().trim());
@@ -962,7 +986,6 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
 
     private ApplySupplyCompanyReqVO validAndFullUp2(SupplierImportUpdate supplierImportNew, StringBuilder sb, Map<String, AreaInfo> areaTree, Map<String, SupplyCompany> supplyCompanies, Map<String, Supplier> supplierList, Map<String, SupplierDictionaryInfo> dictionaryInfoList,Map<String, SupplyCompany> codeForlist) {
         ApplySupplyCompanyReqVO reqVO = new ApplySupplyCompanyReqVO();
-        List<String> name = Lists.newArrayList();
         if (Objects.isNull(codeForlist.get(supplierImportNew.getApplySupplyCode()))) {
             if (StringUtils.isNotBlank(sb.toString())) {
                 sb.append(",");
@@ -970,13 +993,12 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             sb.append("该编码对应的供应商不存在");
         } else {
             SupplyCompany supplyCompany1 = supplyCompanies.get(supplierImportNew.getApplySupplyName().trim());
-            if((Objects.nonNull(supplyCompany1)&&!codeForlist.get(supplierImportNew.getApplySupplyCode()).getSupplyName().equals(supplierImportNew.getApplySupplyName()))||name.contains(supplierImportNew.getApplySupplyName())){
+            if((Objects.nonNull(supplyCompany1)&&!codeForlist.get(supplierImportNew.getApplySupplyCode()).getSupplyName().equals(supplierImportNew.getApplySupplyName()))){
                 if (StringUtils.isNotBlank(sb.toString())) {
                     sb.append(",");
                 }
                 sb.append("供应商名称重复");
             }
-            name.add(supplierImportNew.getApplySupplyName().trim());
             reqVO.setApplySupplyName(supplierImportNew.getApplySupplyName().trim());
         }
         reqVO.setApplySupplyCode(supplierImportNew.getApplySupplyCode());
@@ -1072,13 +1094,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         if(Objects.isNull(info1)){
             sb.append(",").append("未找到对应的发货至选项");
         }else {
-            sendVO.setSendTo(info.getSupplierDictionaryValue());
+            sendVO.setSendTo(info1.getSupplierDictionaryValue());
         }
         SupplierDictionaryInfo info2 = dictionaryInfoList.get(supplierImportNew.getReturnTo().trim());
         if(Objects.isNull(info2)){
             sb.append(",").append("未找到对应的收货至选项");
         }else {
-            returnVO.setSendTo(info.getSupplierDictionaryValue());
+            returnVO.setSendTo(info2.getSupplierDictionaryValue());
         }
         reqVO.setApplySupplyTypeName(supplierImportNew.getApplySupplyType().trim());
         returnVO.setSendToDesc(supplierImportNew.getReturnTo().trim());
@@ -1608,7 +1630,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         if(CollectionUtils.isEmptyCollection(supplierImportNews)) {
             throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
         }
-        if (Objects.isNull(supplierImportNews.size()<2)) {
+        if (supplierImportNews.size()<2) {
             throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
         }
          String  head = SupplierImportNew.HEDE;
