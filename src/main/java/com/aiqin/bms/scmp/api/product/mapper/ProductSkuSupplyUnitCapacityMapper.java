@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface ProductSkuSupplyUnitCapacityMapper {
     int deleteBySkuCode(String skuCode);
 
     int insertBatch(List<ProductSkuSupplyUnitCapacity> capacities);
+
+    int deleteDraftsByVos(List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts);
 }

@@ -59,7 +59,7 @@ public interface ResultCode {
      */
     MessageId ADD_PRODUCT_CATEGORY_ERROR = MessageId.create(Project.PRODUCT_API, 37, "品类新增失败");
     MessageId UPDATE_PRODUCT_CATEGORY_ERROR = MessageId.create(Project.PRODUCT_API, 38, "品类修改失败");
-    MessageId DELETE_PRODUCT_CATEGORY_ERROR = MessageId.create(Project.PRODUCT_API, 39, "品类删除失败");
+    MessageId DELETE_PRODUCT_CATEGORY_ERROR = MessageId.create(Project.PRODUCT_API, 39, "操作失败");
     MessageId GET_PRODUCT_CATEGORY_ERROR = MessageId.create(Project.PRODUCT_API, 40, "品类查询失败");
     //**字典
     MessageId DICTIONARY_CODE = MessageId.create(Project.SUPPLIER_API, 41, "字典查询失败");
@@ -260,6 +260,7 @@ public interface ResultCode {
     //导入
     MessageId IMPORT_EXCEPTION = MessageId.create(Project.SCMP_API, 1000, "导入异常，请检查格式！");
     MessageId IMPORT_HEDE_ERROR = MessageId.create(Project.SCMP_API, 1000, "表头格式错误！");
-    MessageId draft_config_save_error = MessageId.create(Project.SCMP_API, 1000, "保存导入数据失败！");
+    MessageId DRAFT_CONFIG_SAVE_ERROR = MessageId.create(Project.SCMP_API, 1000, "保存导入数据失败！");
     MessageId SPU_NAME_EXISTS = MessageId.create(Project.SCMP_API, 1000, "SPU名称存在，请重新输入！");
+    MessageId IMPORT_DATA_SAVE_FAILED = MessageId.create(Project.SCMP_API, 1000, "保存导入数据失败！");
 }

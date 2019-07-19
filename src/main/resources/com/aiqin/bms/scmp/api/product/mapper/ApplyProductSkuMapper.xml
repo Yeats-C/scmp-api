@@ -212,6 +212,20 @@
     from apply_product_sku
     where apply_code = #{applyCode}
   </select>
+  <select id="checkBrand" resultType="java.lang.Integer">
+    select
+    count(0)
+    from
+    apply_product_sku where product_brand_code = #{brandCode}
+    and apply_status in (0,1)
+  </select>
+  <select id="checkCategory" resultType="java.lang.Integer">
+    select
+    count(0)
+    from
+    apply_product_sku where product_category_code = #{categoryCode}
+    and apply_status in (0,1)
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku
     where id = #{id,jdbcType=BIGINT}

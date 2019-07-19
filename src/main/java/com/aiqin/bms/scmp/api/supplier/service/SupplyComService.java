@@ -11,6 +11,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComListRes
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -72,4 +74,12 @@ public interface SupplyComService {
      * @return
      */
     Integer updateStarScore(String supplierCode, BigDecimal starScore);
+    /**
+     * 根据code查编码
+     * @author NullPointException
+     * @date 2019/7/19
+     * @param supplierList
+     * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany>
+     */
+    Map<String, SupplyCompany> selectBySupplyComCodes(Set<String> supplierList,String companyCode);
 }

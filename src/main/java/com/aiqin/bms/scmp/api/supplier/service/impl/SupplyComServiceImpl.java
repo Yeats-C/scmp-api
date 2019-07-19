@@ -39,9 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @功能说明:
@@ -254,5 +252,10 @@ public class SupplyComServiceImpl implements SupplyComService {
             newStarScore = (starScore.add(supplyCompany.getStarScore())).divide(new BigDecimal(2),1,BigDecimal.ROUND_HALF_UP);
         }
         return supplyCompanyMapper.updateStarScore(supplierCode,newStarScore);
+    }
+
+    @Override
+    public Map<String, SupplyCompany> selectBySupplyComCodes(Set<String> supplierList,String companyCode) {
+        return supplyCompanyMapper.selectBySupplyComCodes(supplierList, companyCode);
     }
 }
