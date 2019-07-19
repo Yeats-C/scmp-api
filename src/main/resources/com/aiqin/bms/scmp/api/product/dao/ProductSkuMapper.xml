@@ -916,6 +916,9 @@
       <if test="skuStatus != null">
         and sku_status = #{skuStatus,jdbcType=VARCHAR}
       </if>
+      <if test="personId != null and personId != '' ">
+        and procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+      </if>
     order by create_time desc
   </select>
   <select id="getProductDraftList" resultMap="ProductDraftListMap">

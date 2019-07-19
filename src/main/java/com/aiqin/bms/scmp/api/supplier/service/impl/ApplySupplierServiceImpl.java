@@ -418,7 +418,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                         handleTypeCoceName,
                         null,
                         handleTypeCoce.getName(),
-                        vo.getApprovalUserName());
+                        applySupplier.getUpdateBy());
             }else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
                 applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
                 //驳回, 设置状态
