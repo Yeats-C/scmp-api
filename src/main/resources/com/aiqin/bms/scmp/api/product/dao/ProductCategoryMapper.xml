@@ -129,7 +129,7 @@
           resultType="com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse">
     select
     <include refid="Base_Column_List" />
-    from product_category where category_id = #{categoryId, jdbcType=VARCHAR}
+    from product_category where category_id = #{categoryId, jdbcType=VARCHAR} limit 1
   </select>
   <select id="countAllCategory" resultType="java.lang.Integer">
     select count(1) from product_category
