@@ -261,7 +261,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 OperationLogVo operationLogVo = new OperationLogVo();
                 operationLogVo.setPageNo(1);
                 operationLogVo.setPageSize(100);
-                operationLogVo.setObjectType(ObjectTypeCode.APPLY_CONTRACT.getStatus());
+                operationLogVo.setObjectType(ObjectTypeCode.CONTRACT.getStatus());
                 operationLogVo.setObjectId(applyContractResVo.getApplyContractCode());
                 BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo, 62);
                 List<LogData> logDataList = new ArrayList<>();
@@ -605,7 +605,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setFormNo("HT"+new IdSequenceUtils().nextId());
             String title = "修改";
-            if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applyContractDTO.getApplyStatus())){
+            if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applyContractDTO.getApplyType())){
                 title = "新增";
             }
             workFlowVO.setTitle(title+applyContractDTO.getYear()+"年度-"+applyContractDTO.getYearName()+"合同名称"+"-"+WorkFlow.APPLY_CONTRACT.getTitle());
