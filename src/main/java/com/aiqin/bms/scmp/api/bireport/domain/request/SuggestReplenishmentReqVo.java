@@ -45,14 +45,14 @@ public class SuggestReplenishmentReqVo extends PageReq implements Serializable {
     private String transportCenterName;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @JsonProperty("finish_create_time")
+    private String finishCreateTime;
 
-    public SuggestReplenishmentReqVo(String skuCode, String skuName, String productCategoryCode, String productCategoryName, String productBrandCode, String productBrandName, String transportCenterCode, String transportCenterName, String beginRunTime, String finishRunTime) {
+    public SuggestReplenishmentReqVo(String skuCode, String skuName, String productCategoryCode, String productCategoryName, String productBrandCode, String productBrandName, String transportCenterCode, String transportCenterName, String beginCreateTime, String finishCreateTime) {
         this.skuCode = skuCode;
         this.skuName = skuName;
         this.productCategoryCode = productCategoryCode;
@@ -61,8 +61,8 @@ public class SuggestReplenishmentReqVo extends PageReq implements Serializable {
         this.productBrandName = productBrandName;
         this.transportCenterCode = transportCenterCode;
         this.transportCenterName = transportCenterName;
-        this.beginRunTime = beginRunTime;
-        this.finishRunTime = finishRunTime;
+        this.beginCreateTime = beginCreateTime;
+        this.finishCreateTime = finishCreateTime;
     }
 
     public SuggestReplenishmentReqVo() {

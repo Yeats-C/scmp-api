@@ -21,12 +21,12 @@ public class HighLowInventoryReqVo extends PageReq implements Serializable {
     private String procurementSectionName;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @JsonProperty("finish_create_time")
+    private String finishCreateTime;
 
     @ApiModelProperty("部门编码")
     @JsonProperty("product_sort_code")
@@ -37,11 +37,11 @@ public class HighLowInventoryReqVo extends PageReq implements Serializable {
     private String productSortName;
 
 
-    public HighLowInventoryReqVo(String procurementSectionCode, String procurementSectionName, String beginRunTime, String finishRunTime, String productSortCode, String productSortName) {
+    public HighLowInventoryReqVo(String procurementSectionCode, String procurementSectionName, String beginCreateTime, String finishCreateTime, String productSortCode, String productSortName) {
         this.procurementSectionCode = procurementSectionCode;
         this.procurementSectionName = procurementSectionName;
-        this.beginRunTime = beginRunTime;
-        this.finishRunTime = finishRunTime;
+        this.beginCreateTime = beginCreateTime;
+        this.finishCreateTime = finishCreateTime;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
     }

@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface NewProductService {
 
-    int insertProduct(NewProductSaveReqVO newProductSaveReqVO);
+    String insertProduct(NewProductSaveReqVO newProductSaveReqVO);
 
     int updateProduct(NewProductUpdateReqVO newProductUpdateReqVO);
 
