@@ -143,7 +143,7 @@ public class ReportServiceImpl implements ReportService {
             // PageHelper.startPage(storeRepurchaseRateReqVo.getPageNo(), storeRepurchaseRateReqVo.getPageSize());
             List<StoreRepurchaseRateRespVo> storeRepurchaseRateRespVos = reportDao.selectStoreRepurchaseRate(storeRepurchaseRateReqVo);
             Integer total = reportDao.countStoreRepurchaseRate(storeRepurchaseRateReqVo);
-            String cloumnName = "bi_new_product_batch_moving_rate";
+            String cloumnName = "bi_store_repurchase_rate";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             StoreRepurchaseRateRespVo storeRepurchaseRateRespVo = new StoreRepurchaseRateRespVo();
             storeRepurchaseRateRespVo.setColumnList(maps);
@@ -161,12 +161,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
+    public PageReportResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
         try {
-            // PageHelper.startPage(negativeMarginReqVo.getPageNo(), negativeMarginReqVo.getPageSize());
             List<NegativeMarginRespVo> negativeMarginRespVos = reportDao.selectNegativeMargin(negativeMarginReqVo);
             Integer total = reportDao.countNegativeMargin(negativeMarginReqVo);
-            return new PageResData<NegativeMarginRespVo>(total,negativeMarginRespVos);
+            String cloumnName = "bi_negative_margin";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            NegativeMarginRespVo negativeMarginRespVo = new NegativeMarginRespVo();
+            negativeMarginRespVo.setColumnList(maps);
+            return new PageReportResData<NegativeMarginRespVo>(total,negativeMarginRespVos,negativeMarginRespVo);
         } catch (Exception ex) {
             log.error("查询负毛利失败");
             ex.printStackTrace();
@@ -275,12 +278,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectBigEffect(BigEffectReqVo bigEffectReqVo) {
+    public PageReportResData selectBigEffect(BigEffectReqVo bigEffectReqVo) {
         try {
-            // PageHelper.startPage(bigEffectReqVo.getPageNo(), bigEffectReqVo.getPageSize());
             List<BigEffectRespVo> bigEffectRespVos = reportDao.selectBigEffect(bigEffectReqVo);
             Integer total = reportDao.countBigEffect(bigEffectReqVo);
-            return new PageResData<BigEffectRespVo>(total,bigEffectRespVos);
+            String cloumnName = "bi_big_effect";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            BigEffectRespVo bigEffectRespVo = new BigEffectRespVo();
+            bigEffectRespVo.setColumnList(maps);
+            return new PageReportResData<BigEffectRespVo>(total,bigEffectRespVos,bigEffectRespVo);
         } catch (Exception ex) {
             log.error("大效期");
             ex.printStackTrace();

@@ -46,7 +46,7 @@ public class ProductCommonServiceImpl implements ProductCommonService {
     }
 
     @Override
-    public Long instanceThreeParty(String code, Byte handleType, Byte objectType, Object josn, String handleName, Date createTime, String createBy) {
+    public Long instanceThreeParty(String code, Byte handleType, Byte objectType, Object josn, String handleName, Date createTime, String createBy, String remark) {
         OperationLogBean operationLogBean = new OperationLogBean();
         operationLogBean.setDelFlag(HandlingExceptionCode.ZERO);
         operationLogBean.setCreateTime(createTime);
@@ -61,6 +61,7 @@ public class ProductCommonServiceImpl implements ProductCommonService {
             operationLogBean.setContent(contentJson);
         }
         operationLogBean.setHandleName(handleName);
+        operationLogBean.setRemark(remark);
         return productOperationLogService.saveLog(operationLogBean);
     }
 

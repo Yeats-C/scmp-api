@@ -110,6 +110,8 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 outbound.setCreateTime(new Date());
                 outbound.setUpdateTime(new Date());
 
+                outbound.setRemark(reqVo.getRemark());
+
                 List<String> skuCodes = reqMainVo.getRejectRecordDetails().stream().map(RejectRecordDetail::getSkuCode).collect(Collectors.toList());
                 List<ProductSkuCheckout> skuCheckOuts = skuService.getSkuCheckOuts(skuCodes);
                 Map<String, Long> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getInputTaxRate, (k1, k2) -> k2));
@@ -150,6 +152,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     Long aLong = map.get(item.getSkuCode());
                     Long noTaxPrice = Calculate.computeNoTaxPrice(item.getProductAmount(), aLong);
                     outboundProduct.setOutboundBaseContent("1");
+                    outboundProduct.setOutboundBaseUnit("1");
                     //计算不含税总价 (现在是主单位数量 * 单价）
 //                long noTaxTotalPrice = noTaxPrice * o.getNum();
                     long noTaxTotalPrice = noTaxPrice * item.getProductCount();

@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDetailDao;
@@ -104,8 +105,8 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
                 LOGGER.info("影响条数:{}",count);
                 //解锁库存
                 List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecord.getRejectRecordId());
-                ILockStockBatchReqVO iLockStockBatchReqVO = goodsRejectService.handleStockParam(list, record);
-                Boolean stockStatus =stockService.returnSupplyUnLockStockBatch(iLockStockBatchReqVO);
+                ILockStocksReqVO iLockStockBatchReqVO = goodsRejectService.handleStockParam(list, record);
+                Boolean stockStatus =stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
                 if (!stockStatus) {
                     LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
                     throw new RuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));

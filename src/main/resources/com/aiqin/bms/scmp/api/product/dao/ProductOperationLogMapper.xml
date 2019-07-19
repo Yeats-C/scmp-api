@@ -13,10 +13,11 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="handle_name" jdbcType="VARCHAR" property="handleName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <sql id="Base_Column_List">
     id, object_id, handle_type, object_type, content, create_time, create_by, update_time, 
-    update_by, del_flag,handle_name
+    update_by, del_flag,handle_name, remark
   </sql>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductOperationLog">
     insert into product_operation_log
@@ -54,6 +55,9 @@
       <if test="handleName !=null">
         handle_name,
       </if>
+      <if test="remark !=null">
+        remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -88,6 +92,9 @@
       </if>
       <if test="handleName !=null">
         #{handleName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark !=null">
+        #{remark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
