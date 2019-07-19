@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
@@ -60,7 +61,12 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     public int updateProduct(NewProductUpdateReqVO newProductUpdateReqVO) {
         String productCode = newProductUpdateReqVO.getProductCode();
         ExceptionId(productCode);
+
         NewProduct newProduct = newProductMapper.getProductCode(productCode);
+        int i = newProductMapper.checkName(newProductUpdateReqVO.getProductName(), newProduct.getCompanyCode(), productCode);
+        if(i>0){
+            throw  new BizException(ResultCode.SPU_NAME_EXISTS);
+        }
         BeanCopyUtils.copy(newProductUpdateReqVO, newProduct);
         //设置审批状态为审批中
        //newProduct.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
@@ -75,6 +81,10 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     public int save(NewProduct newProduct) {
         newProduct.setCompanyCode(getUser().getCompanyCode());
         newProduct.setCompanyName(getUser().getCompanyName());
+        int i = newProductMapper.checkName(newProduct.getProductName(), newProduct.getCompanyCode(),null);
+        if(i>0){
+            throw  new BizException(ResultCode.SPU_NAME_EXISTS);
+        }
         int k = newProductMapper.insertSelective(newProduct);
         if (k > 0) {
             return k;

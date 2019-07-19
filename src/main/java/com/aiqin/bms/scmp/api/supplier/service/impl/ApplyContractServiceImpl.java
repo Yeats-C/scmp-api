@@ -20,7 +20,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.UpdateApp
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.UpdateApplyContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractPurchaseVolumeDTO;
-import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractPurchaseVolumeReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
@@ -261,7 +260,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 OperationLogVo operationLogVo = new OperationLogVo();
                 operationLogVo.setPageNo(1);
                 operationLogVo.setPageSize(100);
-                operationLogVo.setObjectType(ObjectTypeCode.CONTRACT.getStatus());
+                operationLogVo.setObjectType(ObjectTypeCode.APPLY_CONTRACT.getStatus());
                 operationLogVo.setObjectId(applyContractResVo.getApplyContractCode());
                 BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo, 62);
                 List<LogData> logDataList = new ArrayList<>();
@@ -685,6 +684,8 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                     //更新数据库编码最大值
                     encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
                     log.info("合同正式数据保存成功");
+                    //保存日志信息
+                    supplierCommonService.getInstance(contractDTO.getContractCode(),HandleTypeCoce.ADD.getStatus(),ObjectTypeCode.CONTRACT.getStatus(),HandleTypeCoce.ADD_CONTRACT.getName(),null,HandleTypeCoce.ADD.getName(),vo.getApprovalUserName());
                     //查询文件信息
                     List<ApplyContractFile> files = applyContractFileMapper.selectByApplyContractCode(account.getApplyContractCode());
                     if(CollectionUtils.isNotEmptyCollection(files)){
@@ -722,10 +723,6 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                         list.stream().forEach(purchaselist -> purchaselist.setContractCode(contractDTO.getContractCode()));
                         int s = contractPurchaseVolumeDao.insertContractPurchaseVolume(list);
                         if(s > 0){
-                            //保存日志信息
-                            List<ContractPurchaseVolumeReqVo> contractPurchaseVolumeReqVos = BeanCopyUtils.copyList(list,ContractPurchaseVolumeReqVo.class);
-                            contractReqVo.setPurchaseCount(contractPurchaseVolumeReqVos);
-                            supplierCommonService.getInstance(contractDTO.getContractCode(),HandleTypeCoce.ADD.getStatus(),ObjectTypeCode.CONTRACT.getStatus(),HandleTypeCoce.ADD_CONTRACT.getName(),null,HandleTypeCoce.ADD.getName(),vo.getApprovalUserName());
                             return "success";
                         }else {
                             throw new GroundRuntimeException("合同进货额保存失败");
@@ -755,7 +752,8 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                         newContractDTO.setApplyStatus(Byte.valueOf("2"));
                         // 跟新活动主体
                         int kp = contractDao.updateByPrimaryKeySelective(newContractDTO);
-
+                        //保存日志
+                        supplierCommonService.getInstance(newContractDTO.getContractCode(),HandleTypeCoce.UPDATE.getStatus(),ObjectTypeCode.CONTRACT.getStatus(),HandleTypeCoce.UPDATE_CONTRACT.getName(),null,HandleTypeCoce.UPDATE.getName(),vo.getApprovalUserName());
                         //更新文件信息
                         //删除旧的信息
                         contractFileMapper.deleteByContractCode(oldContractDTO.getContractCode());
@@ -809,9 +807,6 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                                 // 保存实体
                                 int s = contractPurchaseVolumeDao.insertContractPurchaseVolume(list);
                                 if(s > 0){
-                                    List<ContractPurchaseVolumeReqVo> contractPurchaseVolumeReqVos = BeanCopyUtils.copyList(list,ContractPurchaseVolumeReqVo.class);
-                                    contractReqVo.setPurchaseCount(contractPurchaseVolumeReqVos);
-                                    supplierCommonService.getInstance(newContractDTO.getContractCode(),HandleTypeCoce.UPDATE.getStatus(),ObjectTypeCode.CONTRACT.getStatus(),HandleTypeCoce.UPDATE_CONTRACT.getName(),null,HandleTypeCoce.UPDATE.getName(),vo.getApprovalUserName());
                                     return "success";
                                 }else {
                                     throw new GroundRuntimeException("合同进货额保存失败");
