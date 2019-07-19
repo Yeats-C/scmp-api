@@ -195,6 +195,7 @@
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
+    order by weight
   </select>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductCategory">
     update product_category

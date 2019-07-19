@@ -1116,8 +1116,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                     spareWarehouseReqVo.setTransportCenterCode(logisticsCenter.getLogisticsCenterCode());
                     spareWarehouseReqVo.setTransportCenterName(logisticsCenter.getLogisticsCenterName());
                     spareWarehouseReqVo.setUseOrder(i);
+                    spareWarehouses.add(spareWarehouseReqVo);
                 }
             }
+            copy.setSpareWarehouses(spareWarehouses);
         }
         copy.setError(StringUtils.strip(errorList.toString(),"[]"));
         return copy;
