@@ -183,12 +183,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo) {
+    public PageReportResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo) {
         try {
-            // PageHelper.startPage(suggestReplenishmentReqVo.getPageNo(), suggestReplenishmentReqVo.getPageSize());
             List<SuggestReplenishmentRespVo> suggestReplenishmentRespVos = reportDao.selectSuggestReplenishment(suggestReplenishmentReqVo);
             Integer total = reportDao.countSuggestReplenishment(suggestReplenishmentReqVo);
-            return new PageResData<SuggestReplenishmentRespVo>(total,suggestReplenishmentRespVos);
+            String cloumnName = "bi_app_suggest_replenishment";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            SuggestReplenishmentRespVo suggestReplenishmentRespVo = new SuggestReplenishmentRespVo();
+            suggestReplenishmentRespVo.setColumnList(maps);
+            return new PageReportResData<SuggestReplenishmentRespVo>(total,suggestReplenishmentRespVos,suggestReplenishmentRespVo);
         } catch (Exception ex) {
             log.error("查询建议补货失败");
             ex.printStackTrace();

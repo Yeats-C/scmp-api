@@ -64,7 +64,7 @@ public interface ReportService {
      * @param suggestReplenishmentReqVo
      * @return
      */
-    PageResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
+    PageReportResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
 
     /**
      *  低库存

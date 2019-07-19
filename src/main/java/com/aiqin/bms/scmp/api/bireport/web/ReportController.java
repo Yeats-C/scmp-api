@@ -330,12 +330,12 @@ public class ReportController {
             @ApiImplicitParam(name = "product_brand_name", value = "品牌", type = "String"),
             @ApiImplicitParam(name = "transport_center_code", value = "仓库编码", type = "String"),
             @ApiImplicitParam(name = "transport_center_name", value = "仓库名称", type = "String"),
-            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<SuggestReplenishmentRespVo>> selectSuggestReplenishment(
+    public HttpResponse<PageReportResData<SuggestReplenishmentRespVo>> selectSuggestReplenishment(
             @RequestParam(value = "sku_code", required = false) String skuCode,
             @RequestParam(value = "sku_name", required = false) String skuName,
             @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
@@ -344,11 +344,11 @@ public class ReportController {
             @RequestParam(value = "product_brand_name", required = false) String productBrandName,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
             @RequestParam(value = "transport_center_name", required = false) String transportCenterName,
-            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
-            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        SuggestReplenishmentReqVo suggestReplenishmentReqVo = new SuggestReplenishmentReqVo(skuCode,skuName,productCategoryCode,productCategoryName,productBrandCode,productBrandName,transportCenterCode,transportCenterName,beginRunTime,finishRunTime);
+        SuggestReplenishmentReqVo suggestReplenishmentReqVo = new SuggestReplenishmentReqVo(skuCode,skuName,productCategoryCode,productCategoryName,productBrandCode,productBrandName,transportCenterCode,transportCenterName,beginCreateTime,finishCreateTime);
         suggestReplenishmentReqVo.setPageNo(pageNo);
         suggestReplenishmentReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectSuggestReplenishment(suggestReplenishmentReqVo));
