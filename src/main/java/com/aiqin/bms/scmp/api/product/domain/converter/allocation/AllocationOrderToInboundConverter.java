@@ -76,7 +76,7 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
         Long preInboundNum = 0L;
         Long preInboundMainNum = 0L;
         Long preTaxAmount = 0L;
-        Long preTax = 0L;
+        Long preNoTaxAmount = 0L;
         List<AllocationProduct> records = order.getProducts();
         for (AllocationProduct record : records) {
             InboundProductReqVo reqVo1 = new InboundProductReqVo();
@@ -103,7 +103,7 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
             preInboundNum += record.getQuantity().intValue();
             preInboundMainNum += record.getQuantity().intValue();
             preTaxAmount += record.getTaxAmount();
-            preTax += Calculate.computeNoTaxPrice(record.getTaxAmount().longValue(), record.getTax().longValue());
+            preNoTaxAmount += Calculate.computeNoTaxPrice(record.getTaxAmount().longValue(), record.getTax().longValue());
             list.add(reqVo1);
         }
         List<AllocationProductBatch> list1 = order.getList();
@@ -126,8 +126,8 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
         inboundReqSave.setPreInboundNum(preInboundNum);
         inboundReqSave.setPreMainUnitNum(preInboundMainNum);
         inboundReqSave.setPreTaxAmount(preTaxAmount);
-        inboundReqSave.setPreAmount(preTaxAmount-preTax);
-        inboundReqSave.setPreTax(preTax);
+        inboundReqSave.setPreAmount(preNoTaxAmount);
+        inboundReqSave.setPreTax(preTaxAmount-preNoTaxAmount);
         inboundReqSave.setInboundBatchReqVos(inboundBatchReqVos);
         inboundReqSave.setList(list);
         return inboundReqSave;

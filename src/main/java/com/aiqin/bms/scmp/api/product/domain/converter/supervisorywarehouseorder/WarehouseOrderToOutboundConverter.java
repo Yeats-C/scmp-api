@@ -49,7 +49,7 @@ public class WarehouseOrderToOutboundConverter implements Converter<SupervisoryW
         Long preInboundNum = 0L;
         Long preInboundMainNum = 0L;
         Long preTaxAmount = 0L;
-        Long preTax = 0L;
+        Long preNoTaxAmount = 0L;
         List<SupervisoryWarehouseOrderProduct> records = order.getRecords();
         for (SupervisoryWarehouseOrderProduct record : records) {
             OutboundProductReqVo reqVo1 = new OutboundProductReqVo();
@@ -89,15 +89,15 @@ public class WarehouseOrderToOutboundConverter implements Converter<SupervisoryW
             preInboundNum += record.getNum().intValue();
             preInboundMainNum += record.getNum().intValue();
             preTaxAmount += record.getProductTotalAmount();
-            preTax += Calculate.computeNoTaxPrice(record.getProductTotalAmount().longValue(), record.getTaxRate().longValue());
+            preNoTaxAmount += Calculate.computeNoTaxPrice(record.getProductTotalAmount().longValue(), record.getTaxRate().longValue());
             list.add(reqVo1);
             outboundBatchReqVos.add(batch);
         }
         outboundReqVo.setPreOutboundNum(preInboundNum);
         outboundReqVo.setPreMainUnitNum(preInboundMainNum);
         outboundReqVo.setPreTaxAmount(preTaxAmount);
-        outboundReqVo.setPreAmount(preTaxAmount-preTax);
-        outboundReqVo.setPreTax(preTax);
+        outboundReqVo.setPreAmount(preNoTaxAmount);
+        outboundReqVo.setPreTax(preTaxAmount-preNoTaxAmount);
         outboundReqVo.setOutboundBatches(outboundBatchReqVos);
         outboundReqVo.setList(list);
         return outboundReqVo;

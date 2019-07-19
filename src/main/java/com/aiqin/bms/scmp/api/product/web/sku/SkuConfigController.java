@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.web.sku;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateSkuConfigSupplierReqVo;
@@ -95,11 +96,22 @@ public class SkuConfigController {
         }
     }
 
-    @PostMapping("/import")
+    @PostMapping("/importConfig")
     @ApiOperation(("sku配置信息导入"))
     public HttpResponse<List<SaveSkuConfigReqVo>> importData (MultipartFile file) {
         try {
             return HttpResponse.success(productSkuConfigService.importData(file));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/importSupply")
+    @ApiOperation(("供应商配置信息导入"))
+    public HttpResponse<List<ProductSkuSupplyUnitDraft>> importSupplyData (MultipartFile file) {
+        try {
+            return HttpResponse.success(productSkuConfigService.importSupplyData(file));
         } catch (Exception e) {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);

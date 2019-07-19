@@ -968,6 +968,13 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             throw new BizException(ResultCode.IMPORT_DATA_ERROR);
         }
     }
+
+    @Override
+    public List<ProductSkuSupplyUnitDraft> importSupplyData(MultipartFile file) {
+
+        return null;
+    }
+
     /**
      * 补充数据
      * @author NullPointException
