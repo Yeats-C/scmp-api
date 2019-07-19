@@ -5,9 +5,12 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.vo.QueryLogisticsCenterReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface LogisticsCenterDao {
 
@@ -75,5 +78,14 @@ public interface LogisticsCenterDao {
      * @return int
      */
     int updateByCodeSelective(LogisticsCenterDTO record);
-
+    /**
+     * 名称集合匹配
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param warehouseList
+     * @param companyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter>
+     */
+    @MapKey("logisticsCenterName")
+    Map<String,LogisticsCenterDTO> selectByCenterNames(@Param("list") Set<String> warehouseList, @Param("companyCode") String companyCode);
 }

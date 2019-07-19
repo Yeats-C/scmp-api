@@ -241,7 +241,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         ((ApplySupplyComAcctService) AopContext.currentProxy()).updateApplyData(s);
         //存日志
         applySupplyCompanyAccountMapper.selectByPrimaryKey(applySupplyCompanyAcctReq.getId());
-        String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", account.getUpdateBy()).replace("APPLYTYPE", "修改");
+        String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", s.getUpdateBy()).replace("APPLYTYPE", "修改");
         supplierCommonService.getInstance(account.getApplyCompanyAccountCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, HandleTypeCoce.PENDING.getName());
         //申请表状态更新完成后，再更新正式表
         supplyCompanyAccount.setApplyStatus((byte) 1);
@@ -666,6 +666,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         if (account.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
             account.setApplyStatus(vo.getApplyStatus());
             if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+                typeCoce = HandleTypeCoce.APPROVAL_SUCCESS;
                 //新增
                 if (account.getApplyType().intValue() == 1) {
                     //通过插入正式数据

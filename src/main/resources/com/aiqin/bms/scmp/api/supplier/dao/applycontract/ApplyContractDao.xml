@@ -358,6 +358,7 @@
     <if test="applyBy != null and applyBy != '' ">
       and update_by = #{applyBy,jdbcType=VARCHAR}
     </if>
+    order by create_time desc
   </select>
 
 </mapper>

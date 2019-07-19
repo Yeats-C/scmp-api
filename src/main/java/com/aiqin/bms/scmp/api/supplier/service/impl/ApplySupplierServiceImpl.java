@@ -240,7 +240,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                     throw new BizException("审核状态修改失败");
                 }
                 //存日志
-                String content = ApplyStatus.APPROVAL.getContent().replace("CREATEBY", applySupplier.getUpdateBy()).replace("APPLYTYPE", applyTypeTitle);
+                String content = ApplyStatus.APPROVAL.getContent().replace("CREATEBY", applySupplierReqDTO.getUpdateBy()).replace("APPLYTYPE", applyTypeTitle);
                 supplierCommonService.getInstance(
                         applySupplierReqDTO.getApplySupplierCode()+"",
                         HandleTypeCoce.APPROVAL.getStatus(),

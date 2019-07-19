@@ -68,6 +68,8 @@
     <result column="inventory_model" jdbcType="TINYINT" property="inventoryModel" />
     <result column="inventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
     <result column="price_model" jdbcType="TINYINT" property="priceModel" />
+    <result column="change_content" jdbcType="VARCHAR" property="changeContent" />
+    <result column="pic_folder_code" jdbcType="VARCHAR" property="picFolderCode" />
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, product_name, product_category_code, product_category_name, sku_code, 
@@ -89,6 +91,12 @@
     from product_sku_draft
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getOfficialBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.Base_Column_List" />
+    from product_sku
+    where sku_code = #{skuCode}
+  </select>
   <select id="getProductSkuDraftByCompanyCode"
           resultType="com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo">
      select
@@ -105,7 +113,9 @@
         product_code as productCode,
         product_name as productName,
         create_time as createTime,
-        create_by as createBy
+        create_by as createBy,
+        pic_folder_code as picFolderCode,
+        change_content as changeContent
     from product_sku_draft where company_code = #{companyCode,jdbcType=VARCHAR}
     and procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
   </select>
@@ -143,7 +153,7 @@
       seasonal_goods,structural_goods,warehouse_type_code,
       warehouse_type_name,company_code,company_name,remark,
       apply_type,apply_type_name,inventory_model,use_time,unique_code,
-      inventory_allocation,price_model
+      inventory_allocation,price_model,change_content,pic_folder_code
       )
     values ( #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
       #{productCategoryCode,jdbcType=VARCHAR}, #{productCategoryName,jdbcType=VARCHAR}, 
@@ -170,7 +180,7 @@
       #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},
       #{applyType,jdbcType=TINYINT},#{applyTypeName,jdbcType=VARCHAR},#{inventoryModel,jdbcType=TINYINT},
       #{useTime,jdbcType=INTEGER},#{uniqueCode,jdbcType=TINYINT},#{inventoryAllocation,jdbcType=TINYINT},
-      #{priceModel,jdbcType=TINYINT}
+      #{priceModel,jdbcType=TINYINT},#{changeContent,jdbcType=VARCHAR},#{picFolderCode,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft">

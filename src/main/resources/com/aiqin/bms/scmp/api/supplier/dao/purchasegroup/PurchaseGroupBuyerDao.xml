@@ -59,7 +59,7 @@
     <include refid="Base_Column_List" />
     from purchase_group_buyer
     where purchase_group_code = #{purchaseGroupCode,jdbcType=BIGINT}
-    and enable=1
+    and enable=0
   </select>
   <update id="updateList" parameterType="java.util.List">
     <foreach collection="list" item="item" index="index" open="" close="" separator=";">
