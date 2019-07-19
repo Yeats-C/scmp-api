@@ -12,17 +12,17 @@ import java.io.Serializable;
 @Data
 public class CategorySaleReqVo extends PageReq implements Serializable {
 
-    @ApiModelProperty("月份")
-    @JsonProperty("month")
-    private int month;
+    @ApiModelProperty("时间")
+    @JsonProperty("create_time")
+    private String createTime;
 
     @ApiModelProperty("渠道编码")
-    @JsonProperty("channel_code")
-    private String channelCode;
+    @JsonProperty("order_code")
+    private String orderCode;
 
     @ApiModelProperty("渠道")
-    @JsonProperty("channel_name")
-    private String channelName;
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("department_code")
@@ -32,10 +32,10 @@ public class CategorySaleReqVo extends PageReq implements Serializable {
     @JsonProperty("department_name")
     private String departmentName;
 
-    public CategorySaleReqVo(int month, String channelCode, String channelName, String departmentCode, String departmentName) {
-        this.month = month;
-        this.channelCode = channelCode;
-        this.channelName = channelName;
+    public CategorySaleReqVo(String createTime, String orderCode, String orderOriginal, String departmentCode, String departmentName) {
+        this.createTime = createTime;
+        this.orderCode = orderCode;
+        this.orderOriginal = orderOriginal;
         this.departmentCode = departmentCode;
         this.departmentName = departmentName;
     }

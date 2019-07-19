@@ -8,9 +8,10 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
-@ApiModel("品类促销respVo")
+
+@ApiModel("品牌促销respVo")
 @Data
-public class CategorySaleRespVo {
+public class BrandSaleRespVo {
     @ApiModelProperty("ID")
     @JsonProperty("id")
     private Long id;
@@ -58,6 +59,14 @@ public class CategorySaleRespVo {
     @ApiModelProperty("品类名称")
     @JsonProperty("category_name")
     private String categoryName;
+
+    @ApiModelProperty("品牌编码")
+    @JsonProperty("product_brand_code")
+    private String productBrandCode;
+
+    @ApiModelProperty("品牌名称")
+    @JsonProperty("product_brand_name")
+    private String productBrandName;
 
     @ApiModelProperty("当期渠道销售金额")
     @JsonProperty("channel_current_sale_amount")
@@ -114,5 +123,6 @@ public class CategorySaleRespVo {
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")
     private List<Map> columnList;
+
 
 }

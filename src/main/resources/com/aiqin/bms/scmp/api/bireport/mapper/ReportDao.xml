@@ -405,14 +405,14 @@
     <sql id="select_brand_sale">
         <where>
             1=1
-            <if test="month!=null and month!=''">
-                and bbs.month= like concat('%', #{month}, '%')
+            <if test="createTime!=null and createTime!=''">
+                and bbs.create_time like concat('%', #{createTime}, '%')
             </if>
-            <if test="channelCode!=null and channelCode!=''">
-                and bbs.channel_code= like concat('%', #{channelCode}, '%')
+            <if test="orderCode!=null and orderCode!=''">
+                and bbs.order_code like concat('%', #{orderCode}, '%')
             </if>
-            <if test="channelName!=null and channelName!=''">
-                and bbs.channel_name like concat('%', #{channelName}, '%')
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bbs.order_original like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="departmentCode!=null and departmentCode!=''">
                 and bbs.department_code like concat('%', #{departmentCode}, '%')
@@ -425,14 +425,14 @@
     <sql id="select_category_sale">
         <where>
             1=1
-            <if test="month!=null and month!=''">
-                and bcs.month=#{month}
+            <if test="createTime!=null and createTime!=''">
+                and bcs.create_time=#{createTime}
             </if>
-            <if test="channelCode!=null and channelCode!=''">
-                and bcs.channel_code=#{channelCode}
+            <if test="orderCode!=null and orderCode!=''">
+                and bcs.order_code=#{orderCode}
             </if>
-            <if test="channelName!=null and channelName!=''">
-                and bcs.channel_name like concat('%', #{channelName}, '%')
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bcs.order_original like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="departmentCode!=null and departmentCode!=''">
                 and bcs.department_code=#{departmentCode}
@@ -1123,30 +1123,32 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.CategorySaleRespVo">
         select
         bbs.id as id,
+        bbs.month as month,
         bbs.department_code as departmentCode,
         bbs.department_name as departmentName,
-        bbs.channel_code as channelCode,
-        bbs.channel_name as channelName,
+        bbs.order_code as orderCode,
+        bbs.order_original as orderOriginal,
         bbs.store_type_code as storeTypeCode,
-        bbs.store_type_name as storeTypeName,
-        bbs.data_style_code as dataStyleCode,
-        bbs.data_style_name as dataStyleName,
-        bbs.category_type_code as categoryTypeCode,
-        bbs.category_type_name as categoryTypeName,
+        bbs.store_type as storeType,
+        bbs.data_type_code as dataTypeCode,
+        bbs.data_type as dataType,
+        bbs.category_code as categoryCode,
+        bbs.category_name as categoryName,
         bbs.product_brand_code as productBrandCode,
         bbs.product_brand_name as productBrandName,
-        bbs.qun_current_sale_amount as qunCurrentSaleAmount,
-        bbs.qun_previous_sales_amount as qunPreviousSalesAmount,
-        bbs.qun_current_gross_margin as qunCurrentGrossMargin,
-        bbs.qun_category_type_name as qunPreviousGrossMargin,
-        bbs.qun_sale_link_ratio as qunSaleLinkRatio,
-        bbs.qun_gross_margin_link_ratio as qunGrossMarginLinkRatio,
-        bbs.fen_current_sale_amount as fenCurrentSaleAmount,
-        bbs.fen_previous_sales_amount as fenPreviousSalesAmount,
-        bbs.fen_current_gross_margin as fenCurrentGrossMargin,
-        bbs.fen_category_type_name as fenPreviousGrossMargin,
-        bbs.fen_sale_link_ratio as fenSaleLinkRatio,
-        bbs.fen_gross_margin_link_ratio as fenGrossMarginLinkRatio
+        bbs.channel_current_sale_amount as channelCurrentSaleAmount,
+        bbs.channel_previous_sales_amount as channelPreviousSalesAmount,
+        bbs.channel_current_gross_margin as channelCurrentGrossMargin,
+        bbs.channel_previous_gross_margin as channelPreviousGrossMargin,
+        bbs.channel_sale_link_ratio as channelSaleLinkRatio,
+        bbs.channel_gross_margin_link_ratio as channelGrossMarginLinkRatio,
+        bbs.distribution_current_sale_amount as distributionCurrentSaleAmount,
+        bbs.distribution_previous_sales_amount as distributionPreviousSalesAmount,
+        bbs.distribution_current_gross_margin as distributionCurrentGrossMargin,
+        bbs.distribution_previous_gross_margin as distributionPreviousGrossMargin,
+        bbs.distribution_sale_link_ratio as distributionSaleLinkRatio,
+        bbs.distribution_gross_margin_link_ratio as distributionGrossMarginLinkRatio,
+        date_format(bbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_brand_sale bbs
         <include refid="select_brand_sale"/>
     </select>
@@ -1164,28 +1166,30 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.CategorySaleRespVo">
         select
         bcs.id as id,
+        bcs.month as month,
         bcs.department_code as departmentCode,
         bcs.department_name as departmentName,
-        bcs.channel_code as channelCode,
-        bcs.channel_name as channelName,
+        bcs.order_code as orderCode,
+        bcs.order_original as orderOriginal,
         bcs.store_type_code as storeTypeCode,
-        bcs.store_type_name as storeTypeName,
-        bcs.data_style_code as dataStyleCode,
-        bcs.data_style_name as dataStyleName,
-        bcs.category_type_code as categoryTypeCode,
-        bcs.category_type_name as categoryTypeName,
-        bcs.qun_current_sale_amount as qunCurrentSaleAmount,
-        bcs.qun_previous_sales_amount as qunPreviousSalesAmount,
-        bcs.qun_current_gross_margin as qunCurrentGrossMargin,
-        bcs.qun_category_type_name as qunPreviousGrossMargin,
-        bcs.qun_sale_link_ratio as qunSaleLinkRatio,
-        bcs.qun_gross_margin_link_ratio as qunGrossMarginLinkRatio,
-        bcs.fen_current_sale_amount as fenCurrentSaleAmount,
-        bcs.fen_previous_sales_amount as fenPreviousSalesAmount,
-        bcs.fen_current_gross_margin as fenCurrentGrossMargin,
-        bcs.fen_category_type_name as fenPreviousGrossMargin,
-        bcs.fen_sale_link_ratio as fenSaleLinkRatio,
-        bcs.fen_gross_margin_link_ratio as fenGrossMarginLinkRatio
+        bcs.store_type as storeType,
+        bcs.data_type_code as dataTypeCode,
+        bcs.data_type as dataType,
+        bcs.category_code as categoryCode,
+        bcs.category_name as categoryName,
+        bcs.channel_current_sale_amount as channelCurrentSaleAmount,
+        bcs.channel_previous_sales_amount as channelPreviousSalesAmount,
+        bcs.channel_current_gross_margin as channelCurrentGrossMargin,
+        bcs.channel_previous_gross_margin as channelPreviousGrossMargin,
+        bcs.channel_sale_link_ratio as channelSaleLinkRatio,
+        bcs.channel_gross_margin_link_ratio as channelGrossMarginLinkRatio,
+        bcs.distribution_current_sale_amount as distributionCurrentSaleAmount,
+        bcs.distribution_previous_sales_amount as distributionPreviousSalesAmount,
+        bcs.distribution_current_gross_margin as distributionCurrentGrossMargin,
+        bcs.distribution_previous_gross_margin as distributionPreviousGrossMargin,
+        bcs.distribution_sale_link_ratio as distributionSaleLinkRatio,
+        bcs.distribution_gross_margin_link_ratio as distributionGrossMarginLinkRatio,
+        date_format(bcs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_category_sale bcs
         <include refid="select_category_sale"/>
     </select>

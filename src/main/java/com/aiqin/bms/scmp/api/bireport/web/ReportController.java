@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.aiqin.bms.scmp.api.bireport.service.ReportService;
+import com.aiqin.bms.scmp.api.product.service.BrandDistributionService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -413,23 +414,23 @@ public class ReportController {
     @GetMapping("/search/brand/sale")
     @ApiOperation("品牌促销")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "month", value = "月份", type = "Integer"),
-            @ApiImplicitParam(name = "channel_code", value = "渠道编码", type = "String"),
-            @ApiImplicitParam(name = "channel_name", value = "渠道", type = "String"),
+            @ApiImplicitParam(name = "create_time", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "order_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
             @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "department_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<CategorySaleRespVo>> selectBrandSale(
-            @RequestParam(value = "month", required = false) int month,
-            @RequestParam(value = "channel_code", required = false) String channelCode,
-            @RequestParam(value = "channel_name", required = false) String channelName,
+    public HttpResponse<PageReportResData<BrandSaleRespVo>> selectBrandSale(
+            @RequestParam(value = "create_time", required = false) String createTime,
+            @RequestParam(value = "order_code", required = false) String orderCode,
+            @RequestParam(value = "order_original", required = false) String orderOriginal,
             @RequestParam(value = "department_code", required = false) String departmentCode,
             @RequestParam(value = "department_name", required = false) String departmentName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        CategorySaleReqVo brandSaleReqVo = new CategorySaleReqVo(month,channelCode,channelName,departmentCode,departmentName);
+        CategorySaleReqVo brandSaleReqVo = new CategorySaleReqVo(createTime,orderCode,orderOriginal,departmentCode,departmentName);
         brandSaleReqVo.setPageNo(pageNo);
         brandSaleReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectBrandSale(brandSaleReqVo));
@@ -438,23 +439,23 @@ public class ReportController {
     @GetMapping("/search/category/sale")
     @ApiOperation("品类促销")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "month", value = "月份", type = "int"),
-            @ApiImplicitParam(name = "channel_code", value = "渠道编码", type = "String"),
-            @ApiImplicitParam(name = "channel_name", value = "渠道", type = "String"),
+            @ApiImplicitParam(name = "create_time", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "order_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
             @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "department_name", value = "所属部门", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<CategorySaleRespVo>> selectCategorySale(
-            @RequestParam(value = "month", required = false) int month,
-            @RequestParam(value = "channel_code", required = false) String channelCode,
-            @RequestParam(value = "channel_name", required = false) String channelName,
+    public HttpResponse<PageReportResData<CategorySaleRespVo>> selectCategorySale(
+            @RequestParam(value = "create_time", required = false) String createTime,
+            @RequestParam(value = "order_code", required = false) String orderCode,
+            @RequestParam(value = "order_original", required = false) String orderOriginal,
             @RequestParam(value = "department_code", required = false) String departmentCode,
             @RequestParam(value = "department_name", required = false) String departmentName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        CategorySaleReqVo categorySaleReqVo = new CategorySaleReqVo(month,channelCode,channelName,departmentCode,departmentName);
+        CategorySaleReqVo categorySaleReqVo = new CategorySaleReqVo(createTime,orderCode,orderOriginal,departmentCode,departmentName);
         categorySaleReqVo.setPageNo(pageNo);
         categorySaleReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectCategorySale(categorySaleReqVo));

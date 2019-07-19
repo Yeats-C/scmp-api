@@ -85,14 +85,14 @@ public interface ReportService {
      * @param brandSaleReqVo
      * @return
      */
-    PageResData selectBrandSale(CategorySaleReqVo brandSaleReqVo);
+    PageReportResData selectBrandSale(CategorySaleReqVo brandSaleReqVo);
 
     /**
      *  品类促销
      * @param categorySaleReqVo
      * @return
      */
-    PageResData selectCategorySale(CategorySaleReqVo categorySaleReqVo);
+    PageReportResData selectCategorySale(CategorySaleReqVo categorySaleReqVo);
 
     /**
      *  大效期
