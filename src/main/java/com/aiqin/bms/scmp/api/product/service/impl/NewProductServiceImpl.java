@@ -43,7 +43,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insertProduct(NewProductSaveReqVO newProductSaveReqVO) {
+    public String insertProduct(NewProductSaveReqVO newProductSaveReqVO) {
         int flg = 0;
         EncodingRule encodingRule = encodingRuleDao.getNumberingType("PRODUCT_CODE");
         long code = encodingRule.getNumberingValue();
@@ -53,7 +53,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         BeanCopyUtils.copy(newProductSaveReqVO, newProduct);
         flg = ((NewProductService) AopContext.currentProxy()).save(newProduct);
         productCommonService.getInstance(Long.toString(code), HandleTypeCoce.ADD_PRODUCT.getStatus(), ObjectTypeCode.PRODUCT_MANAGEMENT.getStatus(), newProduct, HandleTypeCoce.ADD_PRODUCT.getName());
-        return flg;
+        return newProduct.getProductCode();
     }
 
     @Override
