@@ -445,8 +445,8 @@
     <sql id="select_big_effect">
         <where>
             1=1
-            <if test="productionDate!=null and productionDate!=''">
-                and bbe.production_date like concat('%', #{productionDate}, '%')
+            <if test="createTime!=null and createTime!=''">
+                and bbe.create_time like concat('%', #{createTime}, '%')
             </if>
             <if test="skuCode!=null and skuCode!=''">
                 and bbe.sku_code=#{skuCode}
@@ -460,17 +460,17 @@
             <if test="productBrandName!=null and productBrandName!=''">
                 and bbe.product_brand_name like concat('%', #{productBrandName}, '%')
             </if>
-            <if test="productCategoryCode!=null and productCategoryCode!=''">
-                and bbe.product_category_code=#{productCategoryCode}
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bbe.category_code=#{categoryCode}
             </if>
-            <if test="productCategoryName!=null and productCategoryName!=''">
-                and bbe.product_category_name like concat('%', #{productCategoryName}, '%')
+            <if test="categoryName!=null and categoryName!=''">
+                and bbe.category_name like concat('%', #{categoryName}, '%')
             </if>
-            <if test="supplyUnitCode!=null and supplyUnitCode!=''">
-                and bbe.supply_unit_code=#{supplyUnitCode}
+            <if test="supplyCode!=null and supplyCode!=''">
+                and bbe.supply_code=#{supplyCode}
             </if>
-            <if test="supplyUnitName!=null and supplyUnitName!=''">
-                and bbe.supply_unit_name like concat('%', #{supplyUnitName}, '%')
+            <if test="supplyName!=null and supplyName!=''">
+                and bbe.supply_name like concat('%', #{supplyName}, '%')
             </if>
             <if test="procurementSectionCode!=null and procurementSectionCode!=''">
                 and bbe.procurement_section_code=#{procurementSectionCode}
@@ -1187,14 +1187,14 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BigEffectRespVo">
         select
         bbe.id as id,
-        bbe.product_category_code as productCategoryCode,
-        bbe.product_category_name as productCategoryName,
+        bbe.category_code as categoryCode,
+        bbe.category_name as categoryName,
         bbe.product_brand_code as productBrandCode,
         bbe.product_brand_name as productBrandName,
         bbe.procurement_section_code as procurementSectionCode,
         bbe.procurement_section_name as procurementSectionName,
-        bbe.supply_unit_code as supplyUnitCode,
-        bbe.supply_unit_name as supplyUnitName,
+        bbe.supply_code as supplyCode,
+        bbe.supply_name as supplyName,
         bbe.sku_code as skuCode,
         bbe.sku_name as skuName,
         bbe.production_date as productionDate,
@@ -1202,7 +1202,10 @@
         bbe.quality_number as qualityNumber,
         bbe.big_effect_period_warn_day as bigEffectPeriodWarnDay,
         bbe.transport_center_code as transportCenterCode,
-        bbe.transport_center_name as transportCenterName
+        bbe.transport_center_name as transportCenterName,
+        bbe.warehouse_code as warehouseCode,
+        bbe.warehouse_name as warehouseName,
+        bbe.create_time as createTime
         from bi_big_effect bbe
         <include refid="select_big_effect"/>
     </select>

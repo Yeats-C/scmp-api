@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 @ApiModel("大效期respVo")
 @Data
 public class BigEffectRespVo {
@@ -14,12 +17,12 @@ public class BigEffectRespVo {
     private Long id;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("品类名称")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("品牌编码")
     @JsonProperty("product_brand_code")
@@ -38,12 +41,12 @@ public class BigEffectRespVo {
     private String procurementSectionName;
 
     @ApiModelProperty("供应商编码")
-    @JsonProperty("supply_unit_code")
-    private String supplyUnitCode;
+    @JsonProperty("supply_code")
+    private String supplyCode;
 
     @ApiModelProperty("供应商")
-    @JsonProperty("supply_unit_name")
-    private String supplyUnitName;
+    @JsonProperty("supply_name")
+    private String supplyName;
 
     @ApiModelProperty("sku编码")
     @JsonProperty("sku_code")
@@ -76,4 +79,20 @@ public class BigEffectRespVo {
     @ApiModelProperty("仓库名称")
     @JsonProperty("transport_center_name")
     private String transportCenterName;
+
+    @ApiModelProperty("库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty("库房")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
+
+    @ApiModelProperty("计算时间")
+    @JsonProperty("create_time")
+    private String createTime;
+
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
 }
