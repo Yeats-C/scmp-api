@@ -95,7 +95,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
     public void workFlow(String formNo, String userName, String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         //在审批中看到的页面
-        workFlowVO.setFormUrl(workFlowBaseUrl.applyPurchase + "?code=" + formNo + "&" + workFlowBaseUrl.authority);
+        workFlowVO.setFormUrl(workFlowBaseUrl.applyPurchase + "?purchase_order_code=" + formNo + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_PURCHASE.getNum());
         workFlowVO.setFormNo(formNo);
