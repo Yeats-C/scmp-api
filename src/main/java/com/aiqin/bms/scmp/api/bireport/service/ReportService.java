@@ -57,7 +57,7 @@ public interface ReportService {
      * @param negativeMarginReqVo
      * @return
      */
-    PageResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
+    PageReportResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
 
     /**
      *  建议补货

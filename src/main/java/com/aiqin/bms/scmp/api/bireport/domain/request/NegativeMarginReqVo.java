@@ -21,12 +21,12 @@ public class NegativeMarginReqVo extends PageReq implements Serializable {
     private String skuName;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("品类名称")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("品牌编码")
     @JsonProperty("product_brand_code")
@@ -37,20 +37,20 @@ public class NegativeMarginReqVo extends PageReq implements Serializable {
     private String productBrandName;
 
     @ApiModelProperty("渠道编码")
-    @JsonProperty("order_original_code")
-    private String orderOriginalCode;
+    @JsonProperty("order_code")
+    private String orderCode;
 
     @ApiModelProperty("渠道名称")
-    @JsonProperty("order_original_name")
-    private String orderOriginalName;
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @JsonProperty("finish_create_time")
+    private String finishCreateTime;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -60,17 +60,17 @@ public class NegativeMarginReqVo extends PageReq implements Serializable {
     @JsonProperty("product_sort_name")
     private String productSortName;
 
-    public NegativeMarginReqVo(String skuCode, String skuName, String productCategoryCode, String productCategoryName, String productBrandCode, String productBrandName, String orderOriginalCode, String orderOriginalName, String beginRunTime, String finishRunTime, String productSortCode, String productSortName) {
+    public NegativeMarginReqVo(String skuCode, String skuName, String categoryCode, String categoryName, String productBrandCode, String productBrandName, String orderCode, String orderOriginal, String beginCreateTime, String finishCreateTime, String productSortCode, String productSortName) {
         this.skuCode = skuCode;
         this.skuName = skuName;
-        this.productCategoryCode = productCategoryCode;
-        this.productCategoryName = productCategoryName;
+        this.categoryCode = categoryCode;
+        this.categoryName = categoryName;
         this.productBrandCode = productBrandCode;
         this.productBrandName = productBrandName;
-        this.orderOriginalCode = orderOriginalCode;
-        this.orderOriginalName = orderOriginalName;
-        this.beginRunTime = beginRunTime;
-        this.finishRunTime = finishRunTime;
+        this.orderCode = orderCode;
+        this.orderOriginal = orderOriginal;
+        this.beginCreateTime = beginCreateTime;
+        this.finishCreateTime = finishCreateTime;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
     }

@@ -161,12 +161,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
+    public PageReportResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
         try {
-            // PageHelper.startPage(negativeMarginReqVo.getPageNo(), negativeMarginReqVo.getPageSize());
             List<NegativeMarginRespVo> negativeMarginRespVos = reportDao.selectNegativeMargin(negativeMarginReqVo);
             Integer total = reportDao.countNegativeMargin(negativeMarginReqVo);
-            return new PageResData<NegativeMarginRespVo>(total,negativeMarginRespVos);
+            String cloumnName = "bi_negative_margin";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            NegativeMarginRespVo negativeMarginRespVo = new NegativeMarginRespVo();
+            negativeMarginRespVo.setColumnList(maps);
+            return new PageReportResData<NegativeMarginRespVo>(total,negativeMarginRespVos,negativeMarginRespVo);
         } catch (Exception ex) {
             log.error("查询负毛利失败");
             ex.printStackTrace();
