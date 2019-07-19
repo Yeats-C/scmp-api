@@ -9,6 +9,9 @@ import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryAddReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryReqDTO;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO;
+import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductCategoryService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -21,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @功能说明:品类service实现
@@ -31,6 +35,12 @@ import java.util.List;
 public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Autowired
     private ProductCategoryDao productCategoryDao;
+    @Autowired
+    private ProductSkuInfoMapper skuInfoMapper;
+    @Autowired
+    private ProductSkuDraftMapper skuDraftMapper;
+    @Autowired
+    private ApplyProductSkuMapper applyProductSkuMapper;
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int saveProductCategory(ProductCategoryAddReqVO productCategoryAddReqVO) {
@@ -132,6 +142,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         try {
             ProductCategory productCategory = new ProductCategory();
             BeanCopyUtils.copy(productCategoryReqVO,productCategory);
+            verifyDisable(productCategory.getCategoryId());
             num = ((ProductCategoryService)AopContext.currentProxy()).update(productCategory);
         } catch (GroundRuntimeException e){
             throw new GroundRuntimeException(e.getMessage());
@@ -161,9 +172,14 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     public int deleteProductCategory(Long id) {
         int num;
         try {
-            ProductCategory productCategory = new ProductCategory();
-            productCategory.setId(id);
-            productCategory.setDelFlag((byte) 1);
+            ProductCategory productCategory = productCategoryDao.selectByPrimaryKey(id);
+            //设置需要更新的状态
+            Integer status = 0;
+            if(Objects.equals(0,productCategory.getCategoryStatus())){
+                status = 1;
+                verifyDisable(productCategory.getCategoryId());
+            }
+            productCategory.setCategoryStatus(status);
             //调用修改,修改删除标志
             num = ((ProductCategoryService)AopContext.currentProxy()).update(productCategory);
         } catch (GroundRuntimeException e){
@@ -266,8 +282,40 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return productCategories;
     }
 
+    /**
+     * 功能描述: 验证是否能禁用
+     *
+     * @param categoryCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/19 20:03
+     */
+    @Override
+    public boolean verifyDisable(String categoryCode) {
+        //验证子集是否全部被禁用
+        int i = productCategoryDao.selectSubCategoryEnableCount(categoryCode);
+        if(i > 0){
+            throw new GroundRuntimeException("此品类存在下级启用的数据,不允许禁用");
+        }
+        //判断正式表
+        i = skuInfoMapper.checkCategory(categoryCode);
+        if(i>0){
+            throw new GroundRuntimeException("此品类在SKU中存在,不允许禁用");
+        }
+        //判断临时表
+        i = skuDraftMapper.checkCategory(categoryCode);
+        if(i>0){
+            throw new GroundRuntimeException("此品类在SKU中存在,不允许禁用");
+        }
+        //判断申请表
+        i = applyProductSkuMapper.checkCategory(categoryCode);
+        if(i>0){
+            throw new GroundRuntimeException("此品类在SKU中存在,不允许禁用");
+        }
+        return true;
+    }
 
-    private List<ProductCategory> getChildCategory(List<ProductCategory> productCategories,String categoryId,String companyCode){
+    private List<ProductCategory> getChildCategory(List<ProductCategory> productCategories, String categoryId, String companyCode){
         List<ProductCategory> productCategoryList = productCategoryDao.selectCategoryByParentId(categoryId,companyCode);
         if(CollectionUtils.isNotEmpty(productCategoryList)){
             productCategoryList.forEach(item->{

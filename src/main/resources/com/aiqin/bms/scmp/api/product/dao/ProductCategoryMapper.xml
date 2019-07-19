@@ -247,4 +247,12 @@
   <select id="getProductCategoryById" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT * from product_category where category_id=#{categoryId,jdbcType=VARCHAR}
   </select>
+    <select id="selectSubCategoryEnableCount" resultType="java.lang.Integer">
+      select count(*) from product_category
+      where parent_id = #{categoryId}
+      and del_flag =0 and category_status = 0
+    </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+     SELECT * from product_category where id = #{id,jdbcType=BIGINT}
+  </select>
 </mapper>

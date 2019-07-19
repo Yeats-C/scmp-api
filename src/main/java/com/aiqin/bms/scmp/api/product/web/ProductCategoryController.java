@@ -46,7 +46,7 @@ public class ProductCategoryController {
     }
 
     @DeleteMapping("/delete")
-    @ApiModelProperty("删除")
+    @ApiModelProperty("禁用/启用")
     public HttpResponse<Integer> delete(@RequestParam @ApiParam("id,必传") Long id){
         try {
             Integer num = productCategoryService.deleteProductCategory(id);

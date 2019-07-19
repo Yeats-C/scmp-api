@@ -55,31 +55,31 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
             if(order == null){
                 LOGGER.info("采购单为空");
                 return WorkFlowReturn.FALSE;
-            }else if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)){
+            }else if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)){
                 // 采购单不是待审核状态
                 return WorkFlowReturn.SUCCESS;
             }
 
             if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber()) || Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
                 //审批失败或者撤销
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_10);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_10);
+                Integer count = purchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(vo1.getFormNo(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT_NOT.getCode(), PurchaseOrderLogEnum.CHECKOUT_NOT.getName(), null);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
                 // 审批中
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_1);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_1);
+                Integer count = purchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批中操作日志
                 log(vo1.getFormNo(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT.getCode(), PurchaseOrderLogEnum.CHECKOUT.getName(), null);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 //审批成功
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_2);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_2);
+                Integer count = purchaseOrderDao.update(order);
                 // 添加审批通过操作日志
                 log(vo1.getFormNo(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT_ADOPT.getCode(), PurchaseOrderLogEnum.CHECKOUT_ADOPT.getName(), null);
