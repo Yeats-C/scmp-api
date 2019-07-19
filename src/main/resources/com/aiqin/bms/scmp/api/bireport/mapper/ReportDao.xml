@@ -260,23 +260,23 @@
             <if test="districtName!=null and districtName!=''">
                 and bsrr.district_name like concat('%', #{districtName}, '%')
             </if>
-            <if test="productCategoryCode!=null and productCategoryCode!=''">
-                and bsrr.product_category_code=#{productCategoryCode}
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bsrr.category_code=#{categoryCode}
             </if>
-            <if test="productCategoryName!=null and productCategoryName!=''">
-                and bsrr.product_category_name like concat('%', #{productCategoryName}, '%')
+            <if test="categoryName!=null and categoryName!=''">
+                and bsrr.category_name like concat('%', #{categoryName}, '%')
             </if>
-            <if test="orderOriginalCode!=null and orderOriginalCode!=''">
-                and bsrr.order_original_code=#{orderOriginalCode}
+            <if test="orderCode!=null and orderCode!=''">
+                and bsrr.order_code=#{orderCode}
             </if>
-            <if test="orderOriginalName!=null and orderOriginalName!=''">
-                and bsrr.order_original_name like concat('%', #{orderOriginalName}, '%')
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bsrr.order_original like concat('%', #{orderOriginal}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bsrr.run_time between #{beginRunTime}
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bsrr.create_time between #{beginCreateTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -945,19 +945,23 @@
     <select id="selectStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StoreRepurchaseRateRespVo">
         select
-        bnm.id as id,
-        bnm.order_original_code as orderOriginalCode,
-        bnm.order_original_name as orderOriginalName,
-        bnm.province_name as provinceName,
-        bnm.city_name as cityName,
-        bnm.district_name as districtName,
-        bnm.product_category_code as productCategoryCode,
-        bnm.product_category_name as productCategoryName,
-        bnm.product_num as productNum,
-        bnm.fen_order_amount as fenOrderAmount,
-        bnm.qun_order_amount as qunOrderAmount,
-        bnm.shopping_frequency as shoppingFrequency,
-        bnm.after_buy_rate as afterBuyRate
+        bsrr.id as id,
+        bsrr.order_code as orderCode,
+        bsrr.order_original as orderOriginal,
+        bsrr.province_name as provinceName,
+        bsrr.city_name as cityName,
+        bsrr.district_name as districtName,
+        bsrr.category_code as categoryCode,
+        bsrr.category_name as categoryName,
+        bsrr.product_sort_code as productSortCode,
+        bsrr.product_sort_name as productSortName,
+        bsrr.product_num as productNum,
+        bsrr.distribution_order_amount as distributionOrderAmount,
+        bsrr.channel_order_amount as channelOrderAmount,
+        bsrr.shopping_frequency as shoppingFrequency,
+        bsrr.after_buy_rate as afterBuyRate,
+        bsrr.months as months,
+        date_format(bsrr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_store_repurchase_rate bsrr
         <include refid="select_store_repurchase_rate"/>
     </select>

@@ -25,39 +25,39 @@ public class StoreRepurchaseRateReqVo extends PageReq implements Serializable {
     private String districtName;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("品类名称")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("渠道编码")
-    @JsonProperty("order_original_code")
-    private String orderOriginalCode;
+    @JsonProperty("order_code")
+    private String orderCode;
 
     @ApiModelProperty("渠道名称")
-    @JsonProperty("order_original_name")
-    private String orderOriginalName;
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @JsonProperty("finish_create_time")
+    private String finishCreateTime;
 
-    public StoreRepurchaseRateReqVo(String provinceName, String cityName, String districtName, String productCategoryCode, String productCategoryName, String orderOriginalCode, String orderOriginalName, String beginRunTime, String finishRunTime) {
+    public StoreRepurchaseRateReqVo(String provinceName, String cityName, String districtName, String categoryCode, String categoryName, String orderCode, String orderOriginal, String beginCreateTime, String finishCreateTime) {
         this.provinceName = provinceName;
         this.cityName = cityName;
         this.districtName = districtName;
-        this.productCategoryCode = productCategoryCode;
-        this.productCategoryName = productCategoryName;
-        this.orderOriginalCode = orderOriginalCode;
-        this.orderOriginalName = orderOriginalName;
-        this.beginRunTime = beginRunTime;
-        this.finishRunTime = finishRunTime;
+        this.categoryCode = categoryCode;
+        this.categoryName = categoryName;
+        this.orderCode = orderCode;
+        this.orderOriginal = orderOriginal;
+        this.beginCreateTime = beginCreateTime;
+        this.finishCreateTime = finishCreateTime;
     }
 
     public StoreRepurchaseRateReqVo() {

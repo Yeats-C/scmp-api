@@ -50,7 +50,7 @@ public interface ReportService {
      * @param storeRepurchaseRateReqVo
      * @return
      */
-    PageResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo);
+    PageReportResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo);
 
     /**
      *  负毛利
