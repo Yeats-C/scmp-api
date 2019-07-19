@@ -253,28 +253,28 @@ public class ReportController {
             @ApiImplicitParam(name = "province_name", value = "省区", type = "String"),
             @ApiImplicitParam(name = "city_name", value = "市", type = "String"),
             @ApiImplicitParam(name = "district_name", value = "区", type = "String"),
-            @ApiImplicitParam(name = "product_category_code", value = "品类编码", type = "String"),
-            @ApiImplicitParam(name = "product_category_name", value = "品类名称", type = "String"),
-            @ApiImplicitParam(name = "order_original_code", value = "渠道编码", type = "String"),
-            @ApiImplicitParam(name = "order_original_name", value = "渠道名称", type = "String"),
-            @ApiImplicitParam(name = "begin_run_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_run_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "category_code", value = "品类编码", type = "String"),
+            @ApiImplicitParam(name = "category_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "order_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "order_original", value = "渠道名称", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<StoreRepurchaseRateRespVo>> selectStoreRepurchaseRate(
+    public HttpResponse<PageReportResData<StoreRepurchaseRateRespVo>> selectStoreRepurchaseRate(
             @RequestParam(value = "province_name", required = false) String provinceName,
             @RequestParam(value = "city_name", required = false) String cityName,
             @RequestParam(value = "district_name", required = false) String districtName,
-            @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
-            @RequestParam(value = "product_category_name", required = false) String productCategoryName,
-            @RequestParam(value = "order_original_code", required = false) String orderOriginalCode,
-            @RequestParam(value = "order_original_name", required = false) String orderOriginalName,
-            @RequestParam(value = "begin_run_time", required = false) String beginRunTime,
-            @RequestParam(value = "finish_run_time", required = false) String finishRunTime,
+            @RequestParam(value = "category_code", required = false) String categoryCode,
+            @RequestParam(value = "category_name", required = false) String categoryName,
+            @RequestParam(value = "order_code", required = false) String orderCode,
+            @RequestParam(value = "order_original", required = false) String orderOriginal,
+            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        StoreRepurchaseRateReqVo storeRepurchaseRateReqVo = new StoreRepurchaseRateReqVo(provinceName,cityName,districtName,productCategoryCode,productCategoryName,orderOriginalCode,orderOriginalName,beginRunTime,finishRunTime);
+        StoreRepurchaseRateReqVo storeRepurchaseRateReqVo = new StoreRepurchaseRateReqVo(provinceName,cityName,districtName,categoryCode,categoryName,orderCode,orderOriginal,beginCreateTime,finishCreateTime);
         storeRepurchaseRateReqVo.setPageNo(pageNo);
         storeRepurchaseRateReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectStoreRepurchaseRate(storeRepurchaseRateReqVo));

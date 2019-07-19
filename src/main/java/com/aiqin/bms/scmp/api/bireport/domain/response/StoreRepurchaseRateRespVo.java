@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 @ApiModel("门店复购率respVo")
 @Data
 public class StoreRepurchaseRateRespVo {
@@ -14,12 +17,12 @@ public class StoreRepurchaseRateRespVo {
     private Long id;
 
     @ApiModelProperty("渠道code")
-    @JsonProperty("order_original_code")
-    private String orderOriginalCode;
+    @JsonProperty("order_code")
+    private String orderCode;
 
     @ApiModelProperty("渠道名称")
-    @JsonProperty("order_original_name")
-    private String orderOriginalName;
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("省区")
     @JsonProperty("province_name")
@@ -34,24 +37,32 @@ public class StoreRepurchaseRateRespVo {
     private String districtName;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("品类名称")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
+
+    @ApiModelProperty("所属部门编码")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty("所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
 
     @ApiModelProperty("销售数量")
     @JsonProperty("product_num")
     private Integer productNum;
 
     @ApiModelProperty("渠道销售金额")
-    @JsonProperty("fen_order_amount")
-    private Integer fenOrderAmount;
+    @JsonProperty("channel_order_amount")
+    private Integer channelOrderAmount;
 
     @ApiModelProperty("分销销售金额")
-    @JsonProperty("qun_order_amount")
-    private Integer qunOrderAmount;
+    @JsonProperty("distribution_order_amount")
+    private Integer distributionOrderAmount;
 
     @ApiModelProperty("购物频次")
     @JsonProperty("shopping_frequency")
@@ -61,4 +72,15 @@ public class StoreRepurchaseRateRespVo {
     @JsonProperty("after_buy_rate")
     private Integer afterBuyRate;
 
+    @ApiModelProperty("月份")
+    @JsonProperty("months")
+    private Integer months;
+
+    @ApiModelProperty("计算时间")
+    @JsonProperty("create_time")
+    private Integer createTime;
+
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
 }
