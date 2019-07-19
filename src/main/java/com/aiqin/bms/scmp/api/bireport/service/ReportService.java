@@ -64,21 +64,21 @@ public interface ReportService {
      * @param suggestReplenishmentReqVo
      * @return
      */
-    PageResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
+    PageReportResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo);
 
     /**
      *  低库存
      * @param highLowInventoryReqVo
      * @return
      */
-    PageResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+    PageReportResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
      *  高库存
      * @param highLowInventoryReqVo
      * @return
      */
-    PageResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+    PageReportResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
      *  品牌促销

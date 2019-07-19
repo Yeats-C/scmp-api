@@ -59,4 +59,7 @@ public class ProductSkuSupplyUnitDraft extends CommonBean {
     @ApiModelProperty(value = "供应商产能信息",name = "productSkuSupplyUnitCapacities",position = 7)
     @JsonProperty("productSkuSupplyUnitCapacities")
     private List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts;
+
+    @ApiModelProperty("错误信息")
+    private String error;
 }

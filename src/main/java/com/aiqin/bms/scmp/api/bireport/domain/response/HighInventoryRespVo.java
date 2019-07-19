@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 @ApiModel("高库存respVo")
 @Data
 public class HighInventoryRespVo {
@@ -37,6 +40,14 @@ public class HighInventoryRespVo {
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
 
+    @ApiModelProperty("商品编码")
+    @JsonProperty("sku_code")
+    private String skuCode;
+
+    @ApiModelProperty("商品名称")
+    @JsonProperty("sku_name")
+    private String skuName;
+
     @ApiModelProperty("仓位类型名称编码")
     @JsonProperty("warehouse_type_code")
     private String warehouseTypeCode;
@@ -64,4 +75,12 @@ public class HighInventoryRespVo {
     @ApiModelProperty("高库存占比")
     @JsonProperty("high_inventory_ratio")
     private Double highInventoryRatio;
+
+    @ApiModelProperty("计算时间")
+    @JsonProperty("create_time")
+    private Double createTime;
+
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
 }

@@ -112,11 +112,12 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                         Integer amountSum = number * amount;
                         // 单品数量
                         singleCount += number;
-                        // 含税采购金额
-                        productTotalAmount += amountSum;
                         // 实物返金额
                         if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
                             returnAmount +=  amountSum;
+                        }else {
+                            // 含税采购金额
+                            productTotalAmount += amountSum;
                         }
                     }
                 }
@@ -152,9 +153,10 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                     Integer amount = apply.getProductPurchaseAmount() == null ? 0 : apply.getProductPurchaseAmount();
                     Integer number = purchaseWhole * packNumber + purchaseSingle;
                     singleCount += number;
-                    productTotalAmount += number * amount;
                     if(apply.getProductType().equals(Global.PRODUCT_TYPE_2)){
                         returnAmount += number * amount;
+                    }else {
+                        productTotalAmount += number * amount;
                     }
                 }
                 form.setSingleCount(singleCount);
@@ -319,6 +321,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 orderProduct.setStockCount(detail.getStockCount());
                 orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
                 orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
+                orderProduct.setActualSingleCount(0);
                 list.add(orderProduct);
             }
             purchaseOrderProductDao.insertAll(list);

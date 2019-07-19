@@ -348,11 +348,11 @@
             <if test="transportCenterName!=null and transportCenterName!=''">
                 and bsr.transport_center_name like concat('%', #{transportCenterName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bsr.run_time between #{beginRunTime}
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bsr.create_time between #{beginCreateTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -371,11 +371,11 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bli.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bli.run_time between #{beginRunTime}
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bli.create_time between #{beginCreateTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -394,11 +394,11 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bhi.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bhi.run_time between #{beginRunTime}
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bhi.create_time between #{beginCreateTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -997,8 +997,8 @@
         bnm.distribution_maori_rate as distributionMaoriRate,
         bnm.product_sort_code as productSortCode,
         bnm.product_sort_name as productSortName,
-        bnm.put_storage_create_time as putStorageCreateTime,
-        bnm.create_time as createTime
+        date_format(bnm.put_storage_create_time, '%Y-%m-%d %H:%i:%s') as putStorageCreateTime,
+        date_format(bnm.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_negative_margin bnm
         <include refid="select_negative_margin"/>
     </select>
@@ -1024,15 +1024,23 @@
         bsr.sku_name as skuName,
         bsr.transport_center_code as transportCenterCode,
         bsr.transport_center_name as transportCenterName,
-        bsr.average_amount as averageAmount,
+        bsr.warehouse_code as warehouseCode,
+        bsr.warehouse_name as warehouseName,
+        bsr.sales_3_months_num as sales3monthsNum,
+        bsr.sales_avg_3_month_num as salesAvg3MonthNum,
         bsr.available_num as availableNum,
-        bsr.available_money as availableMoney,
-        bsr.turnover_days as turnoverDays,
-        bsr.out_stock_continuous_days as outStockContinuousDays,
-        bsr.last_month_out_stock_days as lastMonthOutStockDays,
-        bsr.advice_orders as adviceOrders,
-        bsr.config_status as configStatus
-        from bi_suggest_replenishment bsr
+        bsr.stock_amount as stockAmount,
+        bsr.days_turnover as daysTurnover,
+        bsr.stockout_days as stockoutDays,
+        bsr.out_stock_affects_amount as outStockAffectsAmount,
+        bsr.stock_one_month_days as stockOneMonthDays,
+        bsr.suggested_order_num as suggestedOrderNum,
+        bsr.config_status as configStatus,
+        bsr.expected_days_arrival as expectedDaysArrival,
+        bsr.product_property_code as productPropertyCode,
+        bsr.product_property_name as productPropertyName,
+        date_format(bsr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_app_suggest_replenishment bsr
         <include refid="select_suggest_replenishment"/>
     </select>
     <select id="countSuggestReplenishment" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SuggestReplenishmentReqVo"
@@ -1040,7 +1048,7 @@
         select count(1) from (
         select
         bsr.id
-        from bi_suggest_replenishment bsr
+        from bi_app_suggest_replenishment bsr
         <include refid="select_suggest_replenishment"/>
         group by bsr.id
         ) as tmp
@@ -1055,13 +1063,16 @@
         bli.procurement_section_name as procurementSectionName,
         bli.responsible_person_code as responsiblePersonCode,
         bli.responsible_person_name as responsiblePersonName,
+        bli.sku_code as skuCode,
+        bli.sku_name as skuName,
         bli.warehouse_type_code as warehouseTypeCode,
         bli.warehouse_type_name as warehouseTypeName,
         bli.lastweek_total_national as lastweekTotalNational,
         bli.thisweek_total_national as thisweekTotalNational,
         bli.total_sku_num as totalSkuNum,
         bli.low_inventory_num as lowInventoryNum,
-        bli.low_inventory_ratio as low_Inventory_ratio
+        bli.low_inventory_ratio as low_Inventory_ratio,
+        date_format(bli.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_low_inventory bli
         <include refid="select_low_inventory"/>
     </select>
@@ -1085,13 +1096,16 @@
         bhi.procurement_section_name as procurementSectionName,
         bhi.responsible_person_code as responsiblePersonCode,
         bhi.responsible_person_name as responsiblePersonName,
+        bhi.sku_code as skuCode,
+        bhi.sku_name as skuName,
         bhi.warehouse_type_code as warehouseTypeCode,
         bhi.warehouse_type_name as warehouseTypeName,
         bhi.lastweek_total_national as lastweekTotalNational,
         bhi.thisweek_total_national as thisweekTotalNational,
         bhi.high_inventory_amount as highInventoryAmount,
         bhi.inventory_total_amount as inventoryTotalAmount,
-        bhi.high_inventory_ratio as highInventoryRatio
+        bhi.high_inventory_ratio as highInventoryRatio,
+        date_format(bhi.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_high_inventory bhi
         <include refid="select_high_inventory"/>
     </select>

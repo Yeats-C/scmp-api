@@ -561,7 +561,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     @Override
     public HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, Integer productPurchaseAmount, String skuCode,
                                                                      String supplierCode, String transportCenterCode){
-        if(StringUtils.isBlank(skuCode) || StringUtils.isBlank(supplierCode) || StringUtils.isBlank(transportCenterCode)){
+        if(StringUtils.isBlank(skuCode) || StringUtils.isBlank(supplierCode) || StringUtils.isBlank(transportCenterCode) ||
+            productPurchaseAmount == null || singleCount == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         PurchaseFlowPathResponse flow = new PurchaseFlowPathResponse();

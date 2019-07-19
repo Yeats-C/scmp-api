@@ -27,14 +27,14 @@ public class ProductCategoryReqVO{
 
     @NotNull(message ="状态不能为空")
     @ApiModelProperty(value = "状态，0为启用，1为禁用")
-    private Integer categoryStatus;
+    private Byte categoryStatus;
 
     @ApiModelProperty(value = "父级id")
     private String parentId;
 
     @NotNull(message ="级别不能为空")
     @ApiModelProperty(value = "级别，1、2、3、4级")
-    private Integer categoryLevel;
+    private Byte categoryLevel;
 
     @ApiModelProperty(value = "图片路径")
     private String picturePath;

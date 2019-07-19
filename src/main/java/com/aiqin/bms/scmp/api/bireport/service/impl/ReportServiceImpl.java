@@ -183,12 +183,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo) {
+    public PageReportResData selectSuggestReplenishment(SuggestReplenishmentReqVo suggestReplenishmentReqVo) {
         try {
-            // PageHelper.startPage(suggestReplenishmentReqVo.getPageNo(), suggestReplenishmentReqVo.getPageSize());
             List<SuggestReplenishmentRespVo> suggestReplenishmentRespVos = reportDao.selectSuggestReplenishment(suggestReplenishmentReqVo);
             Integer total = reportDao.countSuggestReplenishment(suggestReplenishmentReqVo);
-            return new PageResData<SuggestReplenishmentRespVo>(total,suggestReplenishmentRespVos);
+            String cloumnName = "bi_app_suggest_replenishment";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            SuggestReplenishmentRespVo suggestReplenishmentRespVo = new SuggestReplenishmentRespVo();
+            suggestReplenishmentRespVo.setColumnList(maps);
+            return new PageReportResData<SuggestReplenishmentRespVo>(total,suggestReplenishmentRespVos,suggestReplenishmentRespVo);
         } catch (Exception ex) {
             log.error("查询建议补货失败");
             ex.printStackTrace();
@@ -202,12 +205,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
+    public PageReportResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
-           // PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
             List<LowInventoryRespVo> lowInventoryRespVos = reportDao.selectLowInventory(highLowInventoryReqVo);
             Integer total = reportDao.countLowInventory(highLowInventoryReqVo);
-            return new PageResData<LowInventoryRespVo>(total,lowInventoryRespVos);
+            String cloumnName = "bi_low_inventory";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            LowInventoryRespVo lowInventoryRespVo = new LowInventoryRespVo();
+            lowInventoryRespVo.setColumnList(maps);
+            return new PageReportResData<LowInventoryRespVo>(total,lowInventoryRespVos,lowInventoryRespVo);
         } catch (Exception ex) {
             log.error("查询低库存失败");
             ex.printStackTrace();
@@ -221,12 +227,16 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
+    public PageReportResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
             // PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
             List<HighInventoryRespVo> highInventoryRespVos = reportDao.selectHighInventory(highLowInventoryReqVo);
             Integer total = reportDao.countHighInventory(highLowInventoryReqVo);
-            return new PageResData<HighInventoryRespVo>(total,highInventoryRespVos);
+            String cloumnName = "bi_low_inventory";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            HighInventoryRespVo highInventoryRespVo = new HighInventoryRespVo();
+            highInventoryRespVo.setColumnList(maps);
+            return new PageReportResData<HighInventoryRespVo>(total,highInventoryRespVos,highInventoryRespVo);
         } catch (Exception ex) {
             log.error("查询高库存失败");
             ex.printStackTrace();

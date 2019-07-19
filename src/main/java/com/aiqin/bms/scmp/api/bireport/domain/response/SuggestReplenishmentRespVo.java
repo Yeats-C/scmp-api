@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 @ApiModel("建议补货respVo")
 @Data
 public class SuggestReplenishmentRespVo {
@@ -45,36 +48,72 @@ public class SuggestReplenishmentRespVo {
     @JsonProperty("transport_center_name")
     private String transportCenterName;
 
-    @ApiModelProperty("近三月平均日销量")
-    @JsonProperty("average_amount")
-    private Long averageAmount;
+    @ApiModelProperty("库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
 
-    @ApiModelProperty("库存数量")
+    @ApiModelProperty("库房名称")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
+
+    @ApiModelProperty("近三月销量总量")
+    @JsonProperty("sales_3_months_num")
+    private Long sales3monthsNum;
+
+    @ApiModelProperty("近三月平均日销量")
+    @JsonProperty("sales_avg_3_month_num")
+    private Long salesAvg3MonthNum;
+
+    @ApiModelProperty("可用库存数量")
     @JsonProperty("available_num")
     private Long availableNum;
 
     @ApiModelProperty("库存金额")
-    @JsonProperty("available_money")
-    private Long availableMoney;
+    @JsonProperty("stock_amount")
+    private Long stockAmount;
 
     @ApiModelProperty("周转天数")
-    @JsonProperty("turnover_days")
-    private Long turnoverDays;
+    @JsonProperty("days_turnover")
+    private Long daysTurnover;
 
     @ApiModelProperty("连续缺货天数")
-    @JsonProperty("out_stock_continuous_days")
-    private Long outStockContinuousDays;
+    @JsonProperty("stockout_days")
+    private Long stockoutDays;
+
+    @ApiModelProperty("缺货影响金额")
+    @JsonProperty("out_stock_affects_amount")
+    private Long outStockAffectsAmount;
 
     @ApiModelProperty("近一月内缺货天数")
-    @JsonProperty("last_month_out_stock_days")
-    private Long lastMonthOutStockDays;
+    @JsonProperty("stock_one_month_days")
+    private Long stockOneMonthDays;
 
     @ApiModelProperty("建议订货量")
-    @JsonProperty("advice_orders")
-    private Long adviceOrders;
+    @JsonProperty("suggested_order_num")
+    private Long suggestedOrderNum;
 
-    @ApiModelProperty("商品状态(0:再用 1:停止进货 2:停止配送 3:停止销售)")
+    @ApiModelProperty("商品状态(0:在用 1:停止进货 2:停止配送 3:停止销售)")
     @JsonProperty("config_status")
     private int configStatus;
+
+    @ApiModelProperty("预计到货天数")
+    @JsonProperty("expected_days_arrival")
+    private Long expectedDaysArrival;
+
+    @ApiModelProperty("商品属性编码")
+    @JsonProperty("product_property_code")
+    private Long productPropertyCode;
+
+    @ApiModelProperty("商品属性")
+    @JsonProperty("product_property_name")
+    private Long productPropertyName;
+
+    @ApiModelProperty("商品属性")
+    @JsonProperty("create_time")
+    private Long createTime;
+
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
 
 }
