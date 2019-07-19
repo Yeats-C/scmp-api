@@ -20,7 +20,7 @@ public interface ProductCommonService {
      * @param createBy
      * @return
      */
-     Long instanceThreeParty(String code, Byte handleType, Byte objectType, Object josn, String handleName, Date createTime, String createBy);
+     Long instanceThreeParty(String code, Byte handleType, Byte objectType, Object josn, String handleName, Date createTime, String createBy, String remark);
 
     Integer saveList(Collection<ProductOperationLog> collection);
 }

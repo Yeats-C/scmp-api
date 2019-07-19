@@ -57,7 +57,7 @@ public interface ReportService {
      * @param negativeMarginReqVo
      * @return
      */
-    PageResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
+    PageReportResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
 
     /**
      *  建议补货
@@ -99,7 +99,7 @@ public interface ReportService {
      * @param bigEffectReqVo
      * @return
      */
-    PageResData selectBigEffect(BigEffectReqVo bigEffectReqVo);
+    PageReportResData selectBigEffect(BigEffectReqVo bigEffectReqVo);
 
     /**
      *  月销售情况

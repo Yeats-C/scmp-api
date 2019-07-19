@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 @ApiModel("负毛利respVo")
 @Data
 public class NegativeMarginRespVo {
@@ -14,12 +17,12 @@ public class NegativeMarginRespVo {
     private Long id;
 
     @ApiModelProperty("渠道编码")
-    @JsonProperty("order_original_code")
-    private String orderOriginalCode;
+    @JsonProperty("order_code")
+    private String orderCode;
 
     @ApiModelProperty("渠道名称")
-    @JsonProperty("order_original_name")
-    private String orderOriginalName;
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("sku编码")
     @JsonProperty("sku_code")
@@ -30,12 +33,12 @@ public class NegativeMarginRespVo {
     private String skuName;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("product_category_code")
-    private String productCategoryCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("品类名称")
-    @JsonProperty("product_category_name")
-    private String productCategoryName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("品牌编码")
     @JsonProperty("product_brand_code")
@@ -54,28 +57,28 @@ public class NegativeMarginRespVo {
     private Integer salesCost;
 
     @ApiModelProperty("渠道销售金额")
-    @JsonProperty("qun_order_amount")
-    private Integer qunOrderAmount;
+    @JsonProperty("channel_order_amount")
+    private Integer channelOrderAmount;
 
     @ApiModelProperty("渠道毛利额")
-    @JsonProperty("qun_maori")
-    private Integer qunMaori;
+    @JsonProperty("channel_maori")
+    private Integer channelMaori;
 
     @ApiModelProperty("渠道毛利率")
-    @JsonProperty("qun_maori_rate")
-    private Double qunMaoriRate;
+    @JsonProperty("channel_maori_rate")
+    private Double channelMaoriRate;
 
     @ApiModelProperty("分销销售金额")
-    @JsonProperty("fen_order_amount")
-    private Integer fenOrderAmount;
+    @JsonProperty("distribution_order_amount")
+    private Integer distributionOrderAmount;
 
     @ApiModelProperty("分销毛利额")
-    @JsonProperty("fen_maori")
-    private Integer fenMaori;
+    @JsonProperty("distribution_maori")
+    private Integer distributionMaori;
 
     @ApiModelProperty("分销毛利率")
-    @JsonProperty("fen_maori_rate")
-    private Double fenMaoriRate;
+    @JsonProperty("distribution_maori_rate")
+    private Double distributionMaoriRate;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -84,5 +87,17 @@ public class NegativeMarginRespVo {
     @ApiModelProperty("所属部门")
     @JsonProperty("product_sort_name")
     private String productSortName;
+
+    @ApiModelProperty("入库时间")
+    @JsonProperty("put_storage_create_time")
+    private String putStorageCreateTime;
+
+    @ApiModelProperty("计算时间")
+    @JsonProperty("create_time")
+    private String createTime;
+
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
 
 }
