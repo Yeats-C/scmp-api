@@ -101,6 +101,8 @@ public class SkuConfigController {
     public HttpResponse<List<SaveSkuConfigReqVo>> importData (MultipartFile file) {
         try {
             return HttpResponse.success(productSkuConfigService.importData(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
@@ -112,7 +114,9 @@ public class SkuConfigController {
     public HttpResponse<List<ProductSkuSupplyUnitDraft>> importSupplyData (MultipartFile file) {
         try {
             return HttpResponse.success(productSkuConfigService.importSupplyData(file));
-        } catch (Exception e) {
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }

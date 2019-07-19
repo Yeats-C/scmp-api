@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuConfigImport;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuSupplierImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
@@ -22,9 +23,13 @@ import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitCapacityServic
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
 import com.aiqin.bms.scmp.api.supplier.service.LogisticsCenterService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
@@ -95,6 +100,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     private LogisticsCenterService logisticsCenterService;
     @Autowired
     private ProductSkuConfigMapper productSkuConfigMapper;
+    @Autowired
+    private SupplyComService supplyCompanyService;
+    @Autowired
+    private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
 
     /**
      * 批量保存临时配置信息
@@ -952,12 +961,18 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                     warehouseList.addAll(Arrays.asList((o.getSpareWarehouses()).split(",")));
                 }
             });
+            Map<String,ProductSkuInfo> productSkuList = Maps.newHashMap();
+            Map<String,LogisticsCenterDTO> centerList = Maps.newHashMap();
             //sku信息
-            Map<String,ProductSkuInfo> productSkuList = skuInfoService.selectBySkuCodes(skuList,getUser().getCompanyCode());
+            if (CollectionUtils.isNotEmpty(skuList)) {
+                productSkuList = skuInfoService.selectBySkuCodes(skuList,getUser().getCompanyCode());
+            }
             //仓库信息
-            Map<String, LogisticsCenterDTO> centerList = logisticsCenterService.selectByNameList(warehouseList,getUser().getCompanyCode());
+            if (CollectionUtils.isNotEmpty(warehouseList)) {
+                centerList = logisticsCenterService.selectByNameList(warehouseList, getUser().getCompanyCode());
+            }
             //验证sku编码名称
-            //k:仓 v:skuCode
+            //k:仓+skuCode v:skuCode
             Map<String,String> skuCodeMap = Maps.newHashMap();
             for (int i = 0; i < skuConfigImport.size(); i++) {
                 SaveSkuConfigReqVo reqVo = validData(productSkuList,centerList,skuCodeMap,skuConfigImport.get(i));
@@ -971,8 +986,166 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
 
     @Override
     public List<ProductSkuSupplyUnitDraft> importSupplyData(MultipartFile file) {
+        try {
+            List<SkuSupplierImport> skuSupplierImport = ExcelUtil.readExcel(file, SkuSupplierImport.class, 1, 0);
+            List<ProductSkuSupplyUnitDraft> list = Lists.newArrayList();
+            //校验
+            dataValidation2(skuSupplierImport);
+            skuSupplierImport.remove(0);
+            Set<String> skuList = Sets.newHashSet();
+            Set<String> supplierList = Sets.newHashSet();
+            skuSupplierImport.forEach(o->{
+                skuList.add(o.getProductSkuCode());
+                supplierList.add(o.getSupplyUnitCode());
+            });
+            Map<String,ProductSkuInfo> productSkuMap = Maps.newHashMap();
+            Map<String, SupplyCompany> supplyCompanyMap = Maps.newHashMap();
+            //sku信息
+            if (CollectionUtils.isNotEmpty(skuList)) {
+                productSkuMap = skuInfoService.selectBySkuCodes(skuList,getUser().getCompanyCode());
+            }
+            //供应商信息
+            if (CollectionUtils.isNotEmpty(supplierList)) {
+                supplyCompanyMap = supplyCompanyService.selectBySupplyComCodes(supplierList, getUser().getCompanyCode());
+            }
+            List<String> name = Lists.newArrayList();
+            name.add("供货渠道类别");
+            Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(name, getUser().getCompanyCode());
+            //验证sku编码名称
+            //k:供应商+skuCode v:skuCode
+            Map<String,String> skuCodeMap = Maps.newHashMap();
+            for (int i = 0; i < skuSupplierImport.size(); i++) {
+                ProductSkuSupplyUnitDraft reqVo = validData2(productSkuMap,supplyCompanyMap,skuCodeMap,dicMap,skuSupplierImport.get(i));
+                list.add(reqVo);
+            }
+            return list;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_DATA_ERROR);
+        }
+    }
 
-        return null;
+    private ProductSkuSupplyUnitDraft validData2(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, String> skuCodeMap, Map<String, SupplierDictionaryInfo> dicMap, SkuSupplierImport skuSupplierImport) {
+        List<String> errorList = Lists.newArrayList();
+        ProductSkuSupplyUnitDraft copy = BeanCopyUtils.copy(skuSupplierImport, ProductSkuSupplyUnitDraft.class);
+        String s = skuCodeMap.get(skuSupplierImport.getSupplyUnitCode()+skuSupplierImport.getProductSkuCode());
+        //重复校验
+        if(StringUtils.isNotBlank(s)){
+            errorList.add("该条数据与之前的数据重复");
+            copy.setError(StringUtils.strip(errorList.toString(),"[]"));
+            return copy;
+        }
+        //sku校验
+        if (Objects.isNull(skuSupplierImport.getProductSkuCode())) {
+            errorList.add("sku编码不能为空");
+        } else {
+            ProductSkuInfo productSkuInfo = productSkuMap.get(skuSupplierImport.getProductSkuCode().trim());
+            if (Objects.isNull(productSkuInfo)) {
+                errorList.add("该sku编码在库中不存在");
+            } else {
+                if (Objects.isNull(skuSupplierImport.getProductSkuName())) {
+                    errorList.add("sku名称不能为空");
+                } else {
+                    if (!productSkuInfo.getSkuName().equals(skuSupplierImport.getProductSkuName())) {
+                        errorList.add("sku名称与对应的sku编码不一致");
+                    }
+                }
+            }
+        }
+        //供应商校验
+        if (Objects.isNull(skuSupplierImport.getSupplyUnitCode())) {
+            errorList.add("供应商编码不能为空");
+        } else {
+            SupplyCompany supplyCompany = supplyCompanyMap.get(skuSupplierImport.getSupplyUnitCode().trim());
+            if (Objects.isNull(supplyCompany)) {
+                errorList.add("该供应商编码在库中不存在");
+            } else {
+                if (Objects.isNull(skuSupplierImport.getProductSkuName())) {
+                    errorList.add("供应商名称不能为空");
+                } else {
+                    if (!supplyCompany.getSupplyName().equals(skuSupplierImport.getSupplyUnitName())) {
+                        errorList.add("供应商名称与对应的供应商编码不一致");
+                    }else {
+                        skuCodeMap.put(skuSupplierImport.getSupplyUnitCode() + skuSupplierImport.getProductSkuCode(), skuSupplierImport.getProductSkuCode());
+                    }
+                }
+            }
+        }
+        //联营扣点(%)
+        if (Objects.isNull(skuSupplierImport.getJointFranchiseRate())) {
+            errorList.add("联营扣点(%)不能为空");
+        }else {
+            try {
+                long i = Long.parseLong(skuSupplierImport.getJointFranchiseRate());
+                if (i < 0 || i > 100) {
+                    errorList.add("联营扣点(%)应在0-100之间");
+                }else {
+                    copy.setJointFranchiseRate(i);
+                }
+            } catch (NumberFormatException e) {
+                errorList.add("联营扣点(%)格式不正确");
+            }
+        }
+        //返点(%)
+        if (Objects.isNull(skuSupplierImport.getPoint())) {
+            errorList.add("返点(%)不能为空");
+        }else {
+            try {
+                long i = Long.parseLong(skuSupplierImport.getPoint());
+                if (i < 0 || i > 100) {
+                    errorList.add("返点(%)应在0-100之间");
+                }else {
+                    copy.setPoint(i);
+                }
+            } catch (NumberFormatException e) {
+                errorList.add("返点(%)格式不正确");
+            }
+        }
+        //厂商SKU编号
+        if (Objects.isNull(skuSupplierImport.getFactorySkuCode())) {
+            errorList.add("厂商SKU编号不能为空");
+        }
+        //供货渠道类别
+        if (Objects.isNull(skuSupplierImport.getCategoriesSupplyChannelsName())) {
+            errorList.add("供货渠道类别不能为空");
+        }else {
+            SupplierDictionaryInfo info = dicMap.get(skuSupplierImport.getCategoriesSupplyChannelsName());
+            if (Objects.isNull(info)) {
+                errorList.add("供货渠道类别填写不正确，请填写直送或配送或者全部");
+            }else {
+                copy.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
+            }
+        }
+        //是否缺省
+        if (Objects.isNull(skuSupplierImport.getIsDefault())) {
+            errorList.add("是否缺省不能为空");
+        }else {
+            if (Objects.isNull(Generals.getAll().get(skuSupplierImport.getIsDefault()))) {
+                errorList.add("是否缺省不正确，请填写是或者否");
+            }else {
+                copy.setIsDefault(Generals.getAll().get(skuSupplierImport.getIsDefault()).getValue());
+            }
+        }
+        if (CollectionUtils.isNotEmpty(errorList)) {
+            copy.setError(StringUtils.strip(errorList.toString(),"[]"));
+        }else{
+
+        }
+        copy.setUsageStatus((byte)0);
+        return copy;
+    }
+
+    private void dataValidation2(List<SkuSupplierImport> skuSupplierImport) {
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuSupplierImport)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        if (skuSupplierImport.size()<2) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        String  head = SkuSupplierImport.HEAD;
+        boolean equals = skuSupplierImport.get(0).toString().equals(head);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
     }
 
     /**
@@ -988,7 +1161,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     private SaveSkuConfigReqVo validData(Map<String,ProductSkuInfo> productSkuList, Map<String,LogisticsCenterDTO> centerList, Map<String, String> skuCodeMap,SkuConfigImport configImport) {
         List<String> errorList = Lists.newArrayList();
         SaveSkuConfigReqVo copy = BeanCopyUtils.copy(configImport, SaveSkuConfigReqVo.class);
-        String s = skuCodeMap.get(configImport.getTransportCenterName());
+        String s = skuCodeMap.get(configImport.getTransportCenterName()+configImport.getSkuCode());
         //重复校验
         if(StringUtils.isNotBlank(s)){
             errorList.add("该条数据与之前的数据重复");
@@ -1006,7 +1179,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 if (Objects.isNull(configImport.getSkuName())) {
                     errorList.add("sku名称不能为空");
                 } else {
-                    if (productSkuInfo.getSkuName().equals(configImport.getSkuName())) {
+                    if (!productSkuInfo.getSkuName().equals(configImport.getSkuName())) {
                         errorList.add("sku名称与对应的sku编码不一致");
                     }else {
                         copy.setProductCode(productSkuInfo.getProductCode());
@@ -1024,7 +1197,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 errorList.add("未找到该名称对应的仓库或仓库被禁用");
             }else {
                 //成功后存值
-                skuCodeMap.put(configImport.getTransportCenterName(),configImport.getSkuCode());
+                skuCodeMap.put(configImport.getTransportCenterName()+configImport.getSkuCode(),configImport.getSkuCode());
                 copy.setTransportCenterCode(logisticsCenter.getLogisticsCenterCode());
             }
         }

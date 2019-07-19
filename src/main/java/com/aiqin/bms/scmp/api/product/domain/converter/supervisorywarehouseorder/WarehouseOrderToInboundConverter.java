@@ -65,7 +65,7 @@ public class WarehouseOrderToInboundConverter implements Converter<SupervisoryWa
             reqVo1.setInboundNorms(record.getProductSpec());
             reqVo1.setInboundBaseContent(record.getBaseProductContent().toString());
             reqVo1.setPreInboundNum(record.getNum().longValue());
-            reqVo1.setPreInboundMainNum(record.getNum().longValue());
+            reqVo1.setPreInboundMainNum(record.getSingleCount().longValue());
             reqVo1.setPreTaxPurchaseAmount(record.getProductAmount().longValue());
             reqVo1.setPreTaxAmount(record.getProductTotalAmount().longValue());
             reqVo1.setCreateBy(record.getCreateBy());
