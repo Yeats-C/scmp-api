@@ -394,11 +394,11 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bhi.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="beginRunTime!=null and beginRunTime!=''">
-                and bhi.run_time between #{beginRunTime}
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bhi.create_time between #{beginCreateTime}
             </if>
-            <if test="finishRunTime!=null and finishRunTime!=''">
-                and #{finishRunTime}
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -1096,13 +1096,16 @@
         bhi.procurement_section_name as procurementSectionName,
         bhi.responsible_person_code as responsiblePersonCode,
         bhi.responsible_person_name as responsiblePersonName,
+        bhi.sku_code as skuCode,
+        bhi.sku_name as skuName,
         bhi.warehouse_type_code as warehouseTypeCode,
         bhi.warehouse_type_name as warehouseTypeName,
         bhi.lastweek_total_national as lastweekTotalNational,
         bhi.thisweek_total_national as thisweekTotalNational,
         bhi.high_inventory_amount as highInventoryAmount,
         bhi.inventory_total_amount as inventoryTotalAmount,
-        bhi.high_inventory_ratio as highInventoryRatio
+        bhi.high_inventory_ratio as highInventoryRatio,
+        date_format(bhi.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_high_inventory bhi
         <include refid="select_high_inventory"/>
     </select>

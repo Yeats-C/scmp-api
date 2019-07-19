@@ -40,11 +40,11 @@ public class LowInventoryRespVo {
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
 
-    @ApiModelProperty("负责人编码")
+    @ApiModelProperty("商品编码")
     @JsonProperty("sku_code")
     private String skuCode;
 
-    @ApiModelProperty("负责人名称")
+    @ApiModelProperty("商品名称")
     @JsonProperty("sku_name")
     private String skuName;
 

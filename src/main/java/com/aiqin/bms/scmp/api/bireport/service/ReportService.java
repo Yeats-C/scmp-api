@@ -78,7 +78,7 @@ public interface ReportService {
      * @param highLowInventoryReqVo
      * @return
      */
-    PageResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+    PageReportResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
      *  品牌促销
