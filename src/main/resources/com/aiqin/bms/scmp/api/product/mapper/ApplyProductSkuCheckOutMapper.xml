@@ -14,8 +14,8 @@
     <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
     <result column="Integral_coefficient" jdbcType="BIGINT" property="integralCoefficient" />
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
-    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodCode" />
-    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodName" />
+    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
     <result column="rebate" jdbcType="BIGINT" property="rebate" />
     <result column="logistics_fee_award_ratio" jdbcType="DECIMAL" property="logisticsFeeAwardRatio" />
   </resultMap>
