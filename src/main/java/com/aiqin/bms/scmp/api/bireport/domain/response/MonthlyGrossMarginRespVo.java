@@ -20,6 +20,10 @@ public class MonthlyGrossMarginRespVo {
     @JsonProperty("create_time")
     private String createTime;
 
+    @ApiModelProperty("月份")
+    @JsonProperty("month")
+    private String month;
+
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
     private String productSortCode;

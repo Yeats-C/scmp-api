@@ -6,122 +6,122 @@
     <sql id="select_monthly_sales">
         <where>
             1=1
-            <if test="month!=null and month!=''">
-                and bmcgpm.month like concat('%', #{month}, '%')
+            <if test="createTime!=null and createTime!=''">
+                and bms.create_time like concat('%', #{createTime}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
-                and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
+                and bms.product_sort_code like concat('%', #{productSortCode}, '%')
             </if>
             <if test="productSortName!=null and productSortName!=''">
-                and bmcgpm.product_sort_name like concat('%', #{productSortName}, '%')
+                and bms.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="priceChannelCode!=null and priceChannelCode!=''">
-                and bmcgpm.price_channel_code like concat('%', #{priceChannelCode}, '%')
+            <if test="orderCode!=null and orderCode!=''">
+                and bms.order_code like concat('%', #{orderCode}, '%')
             </if>
-            <if test="priceChannelName!=null and priceChannelName!=''">
-                and bmcgpm.price_channel_name like concat('%', #{priceChannelName}, '%')
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bms.order_original like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="storeTypeCode!=null and storeTypeCode!=''">
-                and bmcgpm.store_type_code like concat('%', #{storeTypeCode}, '%')
+                and bms.store_type_code like concat('%', #{storeTypeCode}, '%')
             </if>
-            <if test="storeTypeName!=null and storeTypeName!=''">
-                and bmcgpm.store_type_name like concat('%', #{storeTypeName}, '%')
+            <if test="storeType!=null and storeType!=''">
+                and bms.store_type like concat('%', #{storeType}, '%')
             </if>
-            <if test="dataStyleCode!=null and dataStyleCode!=''">
-                and bmcgpm.data_style_code like concat('%', #{dataStyleCode}, '%')
+            <if test="dataTypeCode!=null and dataTypeCode!=''">
+                and bms.data_type_code like concat('%', #{dataTypeCode}, '%')
             </if>
-            <if test="dataStyleName!=null and dataStyleName!=''">
-                and bmcgpm.data_style_name like concat('%', #{dataStyleName}, '%')
+            <if test="dataType!=null and dataType!=''">
+                and bms.data_type like concat('%', #{dataType}, '%')
             </if>
-            <if test="qunSale!=null and qunSale!=''">
-                and bmcgpm.qun_sale like concat('%', #{qunSale}, '%')
+            <if test="channelOrderAmount!=null and channelOrderAmount!=''">
+                and bms.channel_order_amount like concat('%', #{channelOrderAmount}, '%')
             </if>
-            <if test="fenSale!=null and fenSale!=''">
-                and bmcgpm.fen_sale like concat('%', #{fenSale}, '%')
+            <if test="distributionOrderAmount!=null and distributionOrderAmount!=''">
+                and bms.distribution_order_amount like concat('%', #{distributionOrderAmount}, '%')
             </if>
         </where>
     </sql>
     <sql id="select_monthly_gross_margin">
         <where>
             1=1
-            <if test="month!=null and month!=''">
-                and bmcgpm.month like concat('%', #{month}, '%')
+            <if test="createTime!=null and createTime!=''">
+                and bmgm.create_time like concat('%', #{createTime}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
-                and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
+                and bmgm.product_sort_code like concat('%', #{productSortCode}, '%')
             </if>
             <if test="productSortName!=null and productSortName!=''">
-                and bmcgpm.product_sort_name like concat('%', #{productSortName}, '%')
+                and bmgm.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="priceChannelCode!=null and priceChannelCode!=''">
-                and bmcgpm.price_channel_code like concat('%', #{priceChannelCode}, '%')
+            <if test="orderCode!=null and orderCode!=''">
+                and bmgm.order_code like concat('%', #{orderCode}, '%')
             </if>
-            <if test="priceChannelName!=null and priceChannelName!=''">
-                and bmcgpm.price_channel_name like concat('%', #{priceChannelName}, '%')
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bmgm.order_original like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="storeTypeCode!=null and storeTypeCode!=''">
-                and bmcgpm.store_type_code like concat('%', #{storeTypeCode}, '%')
+                and bmgm.store_type_code like concat('%', #{storeTypeCode}, '%')
             </if>
-            <if test="storeTypeName!=null and storeTypeName!=''">
-                and bmcgpm.store_type_name like concat('%', #{storeTypeName}, '%')
+            <if test="storeType!=null and storeType!=''">
+                and bmgm.store_type like concat('%', #{storeType}, '%')
             </if>
-            <if test="dataStyleCode!=null and dataStyleCode!=''">
-                and bmcgpm.data_style_code like concat('%', #{dataStyleCode}, '%')
+            <if test="dataTypeCode!=null and dataTypeCode!=''">
+                and bmgm.data_type_code like concat('%', #{dataTypeCode}, '%')
             </if>
-            <if test="dataStyleName!=null and dataStyleName!=''">
-                and bmcgpm.data_style_name like concat('%', #{dataStyleName}, '%')
+            <if test="dataType!=null and dataType!=''">
+                and bmgm.data_type like concat('%', #{dataType}, '%')
             </if>
-            <if test="qunSale!=null and qunSale!=''">
-                and bmcgpm.qun_sale like concat('%', #{qunSale}, '%')
+            <if test="channelOrderAmount!=null and channelOrderAmount!=''">
+                and bmgm.channel_amount like concat('%', #{channelOrderAmount}, '%')
             </if>
-            <if test="fenSale!=null and fenSale!=''">
-                and bmcgpm.fen_sale like concat('%', #{fenSale}, '%')
+            <if test="distributionOrderAmount!=null and distributionOrderAmount!=''">
+                and bmgm.distribution_amount like concat('%', #{distributionOrderAmount}, '%')
             </if>
         </where>
     </sql>
     <sql id="select_month_sales_achievement">
         <where>
             1=1
-            <if test="month!=null and month!=''">
-                and bmcgpm.month like concat('%', #{month}, '%')
+            <if test="createTime!=null and createTime!=''">
+                and bmsa.create_time like concat('%', #{createTime}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
-                and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
+                and bmsa.product_sort_code like concat('%', #{productSortCode}, '%')
             </if>
             <if test="productSortName!=null and productSortName!=''">
-                and bmcgpm.product_sort_name like concat('%', #{productSortName}, '%')
+                and bmsa.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="priceChannelCode!=null and priceChannelCode!=''">
-                and bmcgpm.price_channel_code like concat('%', #{priceChannelCode}, '%')
+            <if test="orderCode!=null and orderCode!=''">
+                and bmsa.order_code like concat('%', #{orderCode}, '%')
             </if>
-            <if test="priceChannelName!=null and priceChannelName!=''">
-                and bmcgpm.price_channel_name like concat('%', #{priceChannelName}, '%')
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bmsa.order_original like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="storeTypeCode!=null and storeTypeCode!=''">
-                and bmcgpm.store_type_code like concat('%', #{storeTypeCode}, '%')
+                and bmsa.store_type_code like concat('%', #{storeTypeCode}, '%')
             </if>
-            <if test="storeTypeName!=null and storeTypeName!=''">
-                and bmcgpm.store_type_name like concat('%', #{storeTypeName}, '%')
+            <if test="storeType!=null and storeType!=''">
+                and bmsa.store_type like concat('%', #{storeType}, '%')
             </if>
-            <if test="dataStyleCode!=null and dataStyleCode!=''">
-                and bmcgpm.data_style_code like concat('%', #{dataStyleCode}, '%')
+            <if test="dataTypeCode!=null and dataTypeCode!=''">
+                and bmsa.data_type_code like concat('%', #{dataTypeCode}, '%')
             </if>
-            <if test="dataStyleName!=null and dataStyleName!=''">
-                and bmcgpm.data_style_name like concat('%', #{dataStyleName}, '%')
+            <if test="dataType!=null and dataType!=''">
+                and bmsa.data_type like concat('%', #{dataType}, '%')
             </if>
-            <if test="qunSale!=null and qunSale!=''">
-                and bmcgpm.qun_sale like concat('%', #{qunSale}, '%')
+            <if test="channelOrderAmount!=null and channelOrderAmount!=''">
+                and bmsa.channel_amount like concat('%', #{channelOrderAmount}, '%')
             </if>
-            <if test="fenSale!=null and fenSale!=''">
-                and bmcgpm.fen_sale like concat('%', #{fenSale}, '%')
+            <if test="distributionOrderAmount!=null and distributionOrderAmount!=''">
+                and bmsa.distribution_amount like concat('%', #{distributionOrderAmount}, '%')
             </if>
         </where>
     </sql>
     <sql id="select_month_cumulative_brand_sales">
         <where>
             1=1
-            <if test="month!=null and month!=''">
-                and bmcbs.month like concat('%', #{month}, '%')
+            <if test="createTime!=null and createTime!=''">
+                and bmcbs.create_time like concat('%', #{createTime}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcbs.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -129,37 +129,37 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bmcbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="priceChannelCode!=null and priceChannelCode!=''">
-                and bmcbs.price_channel_code like concat('%', #{priceChannelCode}, '%')
+            <if test="orderCode!=null and orderCode!=''">
+                and bmcbs.order_code like concat('%', #{orderCode}, '%')
             </if>
-            <if test="priceChannelName!=null and priceChannelName!=''">
-                and bmcbs.price_channel_name like concat('%', #{priceChannelName}, '%')
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bmcbs.order_original like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="storeTypeCode!=null and storeTypeCode!=''">
                 and bmcbs.store_type_code like concat('%', #{storeTypeCode}, '%')
             </if>
-            <if test="storeTypeName!=null and storeTypeName!=''">
-                and bmcbs.store_type_name like concat('%', #{storeTypeName}, '%')
+            <if test="storeType!=null and storeType!=''">
+                and bmcbs.store_type like concat('%', #{storeType}, '%')
             </if>
-            <if test="dataStyleCode!=null and dataStyleCode!=''">
-                and bmcbs.data_style_code like concat('%', #{dataStyleCode}, '%')
+            <if test="dataTypeCode!=null and dataTypeCode!=''">
+                and bmcbs.data_type_code like concat('%', #{dataTypeCode}, '%')
             </if>
-            <if test="dataStyleName!=null and dataStyleName!=''">
-                and bmcbs.data_style_name like concat('%', #{dataStyleName}, '%')
+            <if test="dataType!=null and dataType!=''">
+                and bmcbs.data_type like concat('%', #{dataType}, '%')
             </if>
-            <if test="qunSale!=null and qunSale!=''">
-                and bmcbs.qun_sale like concat('%', #{qunSale}, '%')
+            <if test="channelOrderAmount!=null and channelOrderAmount!=''">
+                and bmcbs.channel_sales like concat('%', #{channelOrderAmount}, '%')
             </if>
-            <if test="fenSale!=null and fenSale!=''">
-                and bmcbs.fen_sale like concat('%', #{fenSale}, '%')
+            <if test="distributionOrderAmount!=null and distributionOrderAmount!=''">
+                and bmcbs.distribution_sales like concat('%', #{distributionOrderAmount}, '%')
             </if>
         </where>
     </sql>
     <sql id="select_month_cumulative_gross_profit_margin">
         <where>
             1=1
-            <if test="month!=null and month!=''">
-                and bmcgpm.month like concat('%', #{month}, '%')
+            <if test="createTime!=null and createTime!=''">
+                and bmcgpm.create_time like concat('%', #{createTime}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -167,29 +167,29 @@
             <if test="productSortName!=null and productSortName!=''">
                 and bmcgpm.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
-            <if test="priceChannelCode!=null and priceChannelCode!=''">
-                and bmcgpm.price_channel_code like concat('%', #{priceChannelCode}, '%')
+            <if test="orderCode!=null and orderCode!=''">
+                and bmcgpm.order_code like concat('%', #{orderCode}, '%')
             </if>
-            <if test="priceChannelName!=null and priceChannelName!=''">
-                and bmcgpm.price_channel_name like concat('%', #{priceChannelName}, '%')
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bmcgpm.order_original like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="storeTypeCode!=null and storeTypeCode!=''">
                 and bmcgpm.store_type_code like concat('%', #{storeTypeCode}, '%')
             </if>
-            <if test="storeTypeName!=null and storeTypeName!=''">
-                and bmcgpm.store_type_name like concat('%', #{storeTypeName}, '%')
+            <if test="storeType!=null and storeType!=''">
+                and bmcgpm.store_type like concat('%', #{storeType}, '%')
             </if>
-            <if test="dataStyleCode!=null and dataStyleCode!=''">
-                and bmcgpm.data_style_code like concat('%', #{dataStyleCode}, '%')
+            <if test="dataTypeCode!=null and dataTypeCode!=''">
+                and bmcgpm.data_type_code like concat('%', #{dataTypeCode}, '%')
             </if>
-            <if test="dataStyleName!=null and dataStyleName!=''">
-                and bmcgpm.data_style_name like concat('%', #{dataStyleName}, '%')
+            <if test="dataType!=null and dataType!=''">
+                and bmcgpm.data_type like concat('%', #{dataType}, '%')
             </if>
-            <if test="qunSale!=null and qunSale!=''">
-                and bmcgpm.qun_sale like concat('%', #{qunSale}, '%')
+            <if test="channelOrderAmount!=null and channelOrderAmount!=''">
+                and bmcgpm.channel_amount like concat('%', #{channelOrderAmount}, '%')
             </if>
-            <if test="fenSale!=null and fenSale!=''">
-                and bmcgpm.fen_sale like concat('%', #{fenSale}, '%')
+            <if test="distributionOrderAmount!=null and distributionOrderAmount!=''">
+                and bmcgpm.distribution_amount like concat('%', #{distributionOrderAmount}, '%')
             </if>
         </where>
     </sql>
@@ -198,24 +198,26 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
         select
         bms.id as id,
+        date_format(bms.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        date_format(bms.month, '%Y-%m') as month,
         bms.product_sort_code as productSortCode,
         bms.product_sort_name as productSortName,
-        bms.price_channel_code as priceChannelCode,
-        bms.price_channel_name as priceChannelName,
+        bms.order_code as orderCode,
+        bms.order_original as orderOriginal,
         bms.store_type_code as storeTypeCode,
-        bms.store_type_name as storeTypeName,
-        bms.data_style_code as dataStyleCode,
-        bms.data_style_name as dataStyleName,
-        bms.qun_order_amount as qunOrderAmount,
-        bms.qun_last_year_sales as qunLastYearSales,
-        bms.qun_last_month_sales as qunLastMonthSales,
-        bms.qun_compared_same as qunComparedSame,
-        bms.qun_sequential as qunSequential,
-        bms.fen_order_amount as fenOrderAmount,
-        bms.fen_last_year_sales as fenLastYearSales,
-        bms.fen_last_month_sales as fenLastMonthSales,
-        bms.fen_compared_same as fenComparedSame,
-        bms.fen_sequential as fenSequential
+        bms.store_type as storeType,
+        bms.data_type_code as dataTypeCode,
+        bms.data_type as dataType,
+        bms.channel_order_amount as channelOrderAmount,
+        bms.channel_last_year_sales as channelLastYearSales,
+        bms.channel_last_month_sales as channelLastMonthSales,
+        bms.channel_compared_same as channelComparedSame,
+        bms.channel_sequential as channelSequential,
+        bms.distribution_order_amount as distributionOrderAmount,
+        bms.distribution_last_year_sales as distributionLastYearSales,
+        bms.distribution_last_month_sales as distributionLastMonthSales,
+        bms.distribution_compared_same as distributionComparedSame,
+        bms.distribution_sequential as distributionSequential
         from bi_monthly_sales bms
         <include refid="select_monthly_sales"/>
         order by bms.id asc
@@ -224,24 +226,27 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
         select
         bmgm.id as id,
+        date_format(bmgm.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        date_format(bmgm.month, '%Y-%m') as month,
         bmgm.product_sort_code as productSortCode,
         bmgm.product_sort_name as productSortName,
-        bmgm.price_channel_code as priceChannelCode,
-        bmgm.price_channel_name as priceChannelName,
+        bmgm.order_code as orderCode,
+        bmgm.order_original as orderOriginal,
         bmgm.store_type_code as storeTypeCode,
-        bmgm.store_type_name as storeTypeName,
-        bmgm.data_style_code as dataStyleCode,
-        bmgm.data_style_name as dataStyleName,
-        bmgm.qun_order_amount as qunOrderAmount,
-        bmgm.qun_last_year_sales as qunLastYearSales,
-        bmgm.qun_last_month_sales as qunLastMonthSales,
-        bmgm.qun_compared_same as qunComparedSame,
-        bmgm.qun_sequential as qunSequential,
-        bmgm.fen_order_amount as fenOrderAmount,
-        bmgm.fen_last_year_sales as fenLastYearSales,
-        bmgm.fen_last_month_sales as fenLastMonthSales,
-        bmgm.fen_compared_same as fenComparedSame,
-        bmgm.fen_sequential as fenSequential
+        bmgm.store_type as storeType,
+        bmgm.data_type_code as dataTypeCode,
+        bmgm.data_type as dataType,
+        bmgm.sales_cost as salesCost,
+        bmgm.channel_amount as channelAmount,
+        bmgm.channel_maori as channelMaori,
+        bmgm.channel_maori_rate as channelMaoriRate,
+        bmgm.channel_compared_same as channelComparedSame,
+        bmgm.channel_sequential as channelSequential,
+        bmgm.distribution_amount as distributionAmount,
+        bmgm.distribution_maori as distributionMaori,
+        bmgm.distribution_maori_rate as distributionMaoriRate,
+        bmgm.distribution_compared_same as distributionComparedSame,
+        bmgm.distribution_sequential as distributionSequential
         from bi_month_gross_margin bmgm
         <include refid="select_monthly_gross_margin"/>
         order by bmgm.id asc
@@ -250,22 +255,24 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthSalesAchievementRespVo">
         select
         bmsa.id as id,
+        date_format(bmsa.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        date_format(bmsa.month, '%Y-%m') as month,
         bmsa.product_sort_code as productSortCode,
         bmsa.product_sort_name as productSortName,
-        bmsa.price_channel_code as priceChannelCode,
-        bmsa.price_channel_name as priceChannelName,
+        bmsa.order_code as orderCode,
+        bmsa.order_original as orderOriginal,
         bmsa.store_type_code as storeTypeCode,
-        bmsa.store_type_name as storeTypeName,
-        bmsa.data_style_code as dataStyleCode,
-        bmsa.data_style_name as dataStyleName,
-        bmsa.category_type_code as categoryTypeCode,
-        bmsa.category_type_name as categoryTypeName,
-        bmsa.qun_amount as qunAmount,
-        bmsa.qun_budget as qunBudget,
-        bmsa.qun_yield_rate as qunYieldRate,
-        bmsa.fen_amount as fenAmount,
-        bmsa.fen_budget as febBudget,
-        bmsa.fen_yield_rate as fenYieldRate
+        bmsa.store_type as storeType,
+        bmsa.data_type_code as dataTypeCode,
+        bmsa.data_type as dataType,
+        bmsa.category_code as categoryCode,
+        bmsa.category_name as categoryName,
+        bmsa.channel_amount as channelAmount,
+        bmsa.channel_budget as channelBudget,
+        bmsa.channel_yield_rate as channelYieldRate,
+        bmsa.distribution_amount as distributionAmount,
+        bmsa.distribution_budget as distributionBudget,
+        bmsa.distribution_yield_rate as distributionYieldRate
         from bi_month_sales_achievement bmsa
         <include refid="select_month_sales_achievement"/>
         order by bmsa.id asc
@@ -274,26 +281,29 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeBrandSalesRespVo">
         select
         bmcbs.id as id,
+        date_format(bmcbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        date_format(bmcbs.month, '%Y-%m') as month,
+        bmcbs.cumulative_month as cumulativeMonth,
         bmcbs.product_sort_code as productSortCode,
         bmcbs.product_sort_name as productSortName,
-        bmcbs.price_channel_code as priceChannelCode,
-        bmcbs.price_channel_name as priceChannelName,
+        bmcbs.order_code as orderCode,
+        bmcbs.order_original as orderOriginal,
         bmcbs.store_type_code as storeTypeCode,
-        bmcbs.store_type_name as storeTypeName,
-        bmcbs.data_style_code as dataStyleCode,
-        bmcbs.data_style_name as dataStyleName,
-        bmcbs.category_type_code as categoryTypeCode,
-        bmcbs.category_type_name as categoryTypeName,
-        bmcbs.qun_order_amount as qunOrderAmount,
-        bmcbs.qun_last_year_sales as qunLastYearSales,
-        bmcbs.qun_last_month_sales as qunLastMonthSales,
-        bmcbs.qun_compared_same as qunComparedSame,
-        bmcbs.qun_sequential as qunSequential,
-        bmcbs.fen_order_amount as fenOrderAmount,
-        bmcbs.fen_last_year_sales as fenLastYearSales,
-        bmcbs.fen_last_month_sales as fenLastMonthSales,
-        bmcbs.fen_compared_same as fenComparedSame,
-        bmcbs.fen_sequential as fenSequential
+        bmcbs.store_type as storeType,
+        bmcbs.data_type_code as dataTypeCode,
+        bmcbs.data_type as dataType,
+        bmcbs.category_code as categoryCode,
+        bmcbs.category_name as categoryName,
+        bmcbs.channel_sales as channelSales,
+        bmcbs.channel_last_year_sales as channelLastYearSales,
+        bmcbs.channel_last_month_sales as channelLastMonthSales,
+        bmcbs.channel_compared_same as channelComparedSame,
+        bmcbs.channel_sequential as channelSequential,
+        bmcbs.distribution_sales as distributionSales,
+        bmcbs.distribution_last_year_sales as distributionLastYearSales,
+        bmcbs.distribution_last_month_sales as distributionLastMonthSales,
+        bmcbs.distribution_compared_same as distributionComparedSame,
+        bmcbs.distribution_sequential as distributionSequential
         from bi_month_cumulative_brand_sales bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
         order by bmcbs.id asc
@@ -302,29 +312,32 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeGrossProfitMarginRespVo">
         select
         bmcgpm.id as id,
+        date_format(bmcgpm.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        date_format(bmcgpm.month, '%Y-%m') as month,
+        bmcgpm.cumulative_month as cumulativeMonth,
         bmcgpm.product_sort_code as productSortCode,
         bmcgpm.product_sort_name as productSortName,
-        bmcgpm.price_channel_code as priceChannelCode,
-        bmcgpm.price_channel_name as priceChannelName,
+        bmcgpm.order_code as orderCode,
+        bmcgpm.order_original as orderOriginal,
         bmcgpm.store_type_code as storeTypeCode,
-        bmcgpm.store_type_name as storeTypeName,
-        bmcgpm.data_style_code as dataStyleCode,
-        bmcgpm.data_style_name as dataStyleName,
-        bmcgpm.category_type_code as categoryTypeCode,
-        bmcgpm.category_type_name as categoryTypeName,
+        bmcgpm.store_type as storeType,
+        bmcgpm.data_type_code as dataTypeCode,
+        bmcgpm.data_type as dataType,
+        bmcgpm.category_code as categoryCode,
+        bmcgpm.category_name as categoryName,
         bmcgpm.sales_cost as salesCost,
-        bmcgpm.qun_amount as qunAmount,
-        bmcgpm.qun_maori as qunMaori,
-        bmcgpm.qun_maori_rate as qunMaoriRate,
-        bmcgpm.qun_last_maori_rate as qunLastMaoriRate,
-        bmcgpm.qun_compared_same as qunComparedSame,
-        bmcgpm.qun_sequential as qunSequential,
-        bmcgpm.fen_amount as fenAmount,
-        bmcgpm.fen_maori as fenMaori,
-        bmcgpm.fen_maori_rate as fenMaoriRate,
-        bmcgpm.fen_last_maori_rate as fenLastMaoriRate,
-        bmcgpm.fen_compared_same as fenComparedSame,
-        bmcgpm.fen_sequential as fenSequential
+        bmcgpm.channel_amount as channelAmount,
+        bmcgpm.channel_maori as channelMaori,
+        bmcgpm.channel_maori_rate as channelMaoriRate,
+        bmcgpm.channel_last_maori_rate as channelLastMaoriRate,
+        bmcgpm.channel_compared_same as channelComparedSame,
+        bmcgpm.channel_sequential as channelSequential,
+        bmcgpm.distribution_amount as distributionAmount,
+        bmcgpm.distribution_maori as distributionMaori,
+        bmcgpm.distribution_maori_rate as distributionMaoriRate,
+        bmcgpm.distribution_last_maori_rate as distributionLastMaoriRate,
+        bmcgpm.distribution_compared_same as distributionComparedSame,
+        bmcgpm.distribution_sequential as distributionSequential
         from bi_month_cumulative_gross_profit_margin bmcgpm
         <include refid="select_month_cumulative_gross_profit_margin"/>
         order by bmcgpm.id asc
