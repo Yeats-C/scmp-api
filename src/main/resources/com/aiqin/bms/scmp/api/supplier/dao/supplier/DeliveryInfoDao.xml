@@ -64,18 +64,20 @@
   <select id="getDeliveryInfoBySupplyCompanyCode" parameterType="java.lang.String"
           resultType="com.aiqin.bms.scmp.api.supplier.domain.response.supplier.DeliveryInfoRespVO">
     select
-     id,
-     send_to as sendTo,
-     send_province_id as sendProvinceId,
-     send_province_name as sendProvinceName,
-     send_city_id as sendCityId,
-     send_city_name as sendCityName,
-     send_district_id as sendDistrictId,
-     send_district_name as sendDistrictName,
-     sending_address as sendingAddress,
-     delivery_days as deliveryDays,
-     delivery_type as deliveryType
-    from delivery_information
+     a.id,
+     a.send_to as sendTo,
+     b.supplier_content as sendToName,
+     a.send_province_id as sendProvinceId,
+     a.send_province_name as sendProvinceName,
+     a.send_city_id as sendCityId,
+     a.send_city_name as sendCityName,
+     a.send_district_id as sendDistrictId,
+     a.send_district_name as sendDistrictName,
+     a.sending_address as sendingAddress,
+     a.delivery_days as deliveryDays,
+     a.delivery_type as deliveryType
+    from delivery_information a
+    left join supplier_dictionary_info b on b.supplier_dictionary_name = '发货至' and a.send_to = b.supplier_dictionary_value
     where supply_company_code = #{supplyCompanyCode,jdbcType=VARCHAR}
   </select>
 </mapper>

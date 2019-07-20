@@ -30,6 +30,9 @@ public class SupplyCompanyDetailDTO {
     @ApiModelProperty("供应商类型")
     private String supplyType;
 
+    @ApiModelProperty("供应商类型")
+    private String supplyTypeName;
+
     @ApiModelProperty("供应商简称")
     private String supplyAbbreviation;
 
