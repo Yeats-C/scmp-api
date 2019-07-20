@@ -217,19 +217,19 @@ public class StockRespVO {
 
     @ApiModelProperty("单据类型")
     @JsonProperty(value = "document_type")
-    private String documentType;
+    private Integer documentType;
 
     @ApiModelProperty("单据号")
     @JsonProperty(value = "document_num")
-    private Long documentNum;
+    private String documentNum;
 
     @ApiModelProperty("来源单据类型")
     @JsonProperty(value = "source_document_type")
-    private String sourceDocumentType;
+    private Integer sourceDocumentType;
 
     @ApiModelProperty("来源单据号")
     @JsonProperty(value = "source_document_num")
-    private Long sourceDocumentNum;
+    private String sourceDocumentNum;
 
     @ApiModelProperty("操作时间")
     @JsonProperty(value = "update_time")
@@ -642,5 +642,77 @@ public class StockRespVO {
 
     public void setTaxCost(Long taxCost) {
         this.taxCost = taxCost;
+    }
+
+    public Long getLockStatus() {
+        return lockStatus;
+    }
+
+    public void setLockStatus(Long lockStatus) {
+        this.lockStatus = lockStatus;
+    }
+
+    public Long getChangeNum() {
+        return changeNum;
+    }
+
+    public void setChangeNum(Long changeNum) {
+        this.changeNum = changeNum;
+    }
+
+    public Integer getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(Integer documentType) {
+        this.documentType = documentType;
+    }
+
+    public String getDocumentNum() {
+        return documentNum;
+    }
+
+    public void setDocumentNum(String documentNum) {
+        this.documentNum = documentNum;
+    }
+
+    public Integer getSourceDocumentType() {
+        return sourceDocumentType;
+    }
+
+    public void setSourceDocumentType(Integer sourceDocumentType) {
+        this.sourceDocumentType = sourceDocumentType;
+    }
+
+    public String getSourceDocumentNum() {
+        return sourceDocumentNum;
+    }
+
+    public void setSourceDocumentNum(String sourceDocumentNum) {
+        this.sourceDocumentNum = sourceDocumentNum;
+    }
+
+    public String getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(String updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public String getUpdateBy() {
+        return updateBy;
+    }
+
+    public void setUpdateBy(String updateBy) {
+        this.updateBy = updateBy;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

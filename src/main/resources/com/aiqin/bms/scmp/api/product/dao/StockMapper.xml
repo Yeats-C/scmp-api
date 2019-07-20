@@ -142,9 +142,9 @@
         <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
         <result column="lock_status" jdbcType="VARCHAR" property="lockStatus"/>
         <result column="document_type" jdbcType="BIGINT" property="documentType"/>
-        <result column="document_num" jdbcType="BIGINT" property="documentNum"/>
+        <result column="document_num" jdbcType="VARCHAR" property="documentNum"/>
         <result column="source_document_type" jdbcType="BIGINT" property="sourceDocumentType"/>
-        <result column="source_document_num" jdbcType="BIGINT" property="sourceDocumentNum"/>
+        <result column="source_document_num" jdbcType="VARCHAR" property="sourceDocumentNum"/>
         <result column="update_time" jdbcType="VARCHAR" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
@@ -193,9 +193,9 @@
         <result column="lock_status" jdbcType="BIGINT" property="lockStatus"/>
         <result column="change_num" jdbcType="BIGINT" property="changeNum"/>
         <result column="document_type" jdbcType="BIGINT" property="documentType"/>
-        <result column="document_num" jdbcType="BIGINT" property="documentNum"/>
+        <result column="document_num" jdbcType="VARCHAR" property="documentNum"/>
         <result column="source_document_type" jdbcType="BIGINT" property="sourceDocumentType"/>
-        <result column="source_document_num" jdbcType="BIGINT" property="sourceDocumentNum"/>
+        <result column="source_document_num" jdbcType="VARCHAR" property="sourceDocumentNum"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
         <result column="before_inventory_num" jdbcType="BIGINT" property="beforeInventoryNum"/>
         <result column="after_inventory_num" jdbcType="BIGINT" property="afterInventoryNum"/>
