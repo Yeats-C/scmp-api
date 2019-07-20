@@ -101,6 +101,9 @@
     <if test="purchasingGroupCode != null and purchasingGroupCode != '' ">
       and exists (select 1 from contract_purchase_group a where a.contract_code = b.contract_code and a.purchasing_group_code = #{purchasingGroupCode})
     </if>
+    <if test="personId != null and personId != '' ">
+      and exists (select 1 from contract_purchase_group a where a.contract_code = b.contract_code and a.purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR}))
+    </if>
     order by create_time desc
   </select>
 

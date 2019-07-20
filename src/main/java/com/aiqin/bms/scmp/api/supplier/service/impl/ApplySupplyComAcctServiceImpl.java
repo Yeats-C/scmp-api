@@ -371,7 +371,8 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 vo.setCompanyCode(authToken.getCompanyCode());
-                vo.setApplyBy(authToken.getPersonName());
+//                vo.setApplyBy(authToken.getPersonName());
+                vo.setPersonId(authToken.getPersonId());
             }
             PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
             List<QuerySupplierComAcctRespVo> userDetails = supplyCompanyAccountDao.selectListByQueryVO(vo);

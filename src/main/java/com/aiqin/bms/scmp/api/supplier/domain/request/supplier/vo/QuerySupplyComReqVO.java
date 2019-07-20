@@ -39,4 +39,7 @@ public class QuerySupplyComReqVO extends PageReq{
 
     @ApiModelProperty("供应商集团编号")
     private String supplierCode;
+
+    @ApiModelProperty(value = "当前登录人",hidden = true)
+    private String personId;
 }

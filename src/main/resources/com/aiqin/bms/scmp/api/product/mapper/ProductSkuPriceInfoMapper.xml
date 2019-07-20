@@ -725,7 +725,7 @@
     </trim>
   </insert>
   <insert id="insertBatch">
-    insert into product_sku_price_info (id, code, sku_code,
+    insert into product_sku_price_info (code, sku_code,
       sku_name, purchase_group_code, purchase_group_name,
       price_item_code, price_item_name, price_type_code,
       price_type_name, price_attribute_code, price_attribute_name,
@@ -743,7 +743,7 @@
     values
     <foreach collection="items" item="item" open="" close="" separator=",">
     (
-    #{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
+      #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR}, #{item.purchaseGroupCode,jdbcType=VARCHAR}, #{item.purchaseGroupName,jdbcType=VARCHAR},
       #{item.priceItemCode,jdbcType=VARCHAR}, #{item.priceItemName,jdbcType=VARCHAR}, #{item.priceTypeCode,jdbcType=VARCHAR},
       #{item.priceTypeName,jdbcType=VARCHAR}, #{item.priceAttributeCode,jdbcType=VARCHAR}, #{item.priceAttributeName,jdbcType=VARCHAR},

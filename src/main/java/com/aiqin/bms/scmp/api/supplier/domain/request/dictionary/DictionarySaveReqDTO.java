@@ -16,7 +16,7 @@ public class DictionarySaveReqDTO {
     private String dictionaryName;
 
     @ApiModelProperty("供应商字典类型")
-    @NotEmpty(message = "供应商字典类型不能为空supplyChain->供应链,logistics->物流，商品，purchase->采购")
+//    @NotEmpty(message = "供应商字典类型不能为空supplyChain->供应链,logistics->物流，商品，purchase->采购")
     private String dictionaryType;
 
     @ApiModelProperty("供应商详细字典")

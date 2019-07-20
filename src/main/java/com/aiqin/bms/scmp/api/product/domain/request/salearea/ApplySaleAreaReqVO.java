@@ -24,7 +24,7 @@ public class ApplySaleAreaReqVO {
     private Byte selectionEffectiveTime;
 
     @ApiModelProperty("生效开始时间")
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date selectionEffectiveStartTime;
 
     @ApiModelProperty("直属上级编码")
