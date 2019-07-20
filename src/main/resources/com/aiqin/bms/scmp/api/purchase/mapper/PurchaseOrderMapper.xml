@@ -200,7 +200,6 @@
         and o.purchase_mode = #{purchaseMode,jdbcType=INTEGER}
       </if>
     </where>
-    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
   <select id="purchaseOrder"  resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>

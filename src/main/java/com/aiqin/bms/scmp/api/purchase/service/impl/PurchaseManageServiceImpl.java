@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
@@ -527,11 +528,11 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse purchaseOrderStock(PurchaseOrder purchase){
-        if(purchase == null || StringUtils.isBlank(purchase.getPurchaseOrderId())){
+    public HttpResponse purchaseOrderStock(PurchaseStorageRequest purchaseStorage){
+        if(purchaseStorage == null || StringUtils.isBlank(purchaseStorage.getPurchaseOrderId())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        String purchaseOrderId = purchase.getPurchaseOrderId();
+        String purchaseOrderId = purchaseStorage.getPurchaseOrderId();
         // 查询采购单的详情
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrder(purchaseOrderId);
         if(purchaseOrder == null){
@@ -553,12 +554,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         }
         // 开始备货， 生成入库单
         InboundReqSave save = new InboundReqSave();
-        save.setSourceOderCode(purchaseOrderId);
-        save.setInboundTypeCode(InboundTypeEnum.RETURN_SUPPLY.getCode());
-        save.setInboundTypeName(InboundTypeEnum.RETURN_SUPPLY.getName());
-        save.setWarehouseCode(purchaseOrder.getWarehouseCode());
-        save.setWarehouseName(purchaseOrder.getWarehouseName());
-        save.setPurchaseNum(1);
+
         InboundProductReqVo inboundProductReqVo;
         // 入库sku商品
         List<InboundProductReqVo> list = new ArrayList<>();
@@ -592,9 +588,33 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
         }
         String name = "入库申请单"+ s + "，入库完成";
-        log(purchaseOrderId, purchase.getCreateById(), purchase.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
+        log(purchaseOrderId, purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
                 name , null);
         return HttpResponse.success();
+    }
+
+    private void InboundReqSave(InboundReqSave save, PurchaseOrder purchaseOrder, PurchaseStorageRequest purchaseStorage){
+        save.setSourceOderCode(purchaseOrder.getPurchaseOrderCode());
+        save.setInboundTypeCode(InboundTypeEnum.RETURN_SUPPLY.getCode());
+        save.setInboundTypeName(InboundTypeEnum.RETURN_SUPPLY.getName());
+        save.setWarehouseCode(purchaseOrder.getWarehouseCode());
+        save.setWarehouseName(purchaseOrder.getWarehouseName());
+        save.setPurchaseNum(1);
+        save.setCompanyCode(purchaseStorage.getCompanyCode());
+        save.setCompanyName(purchaseStorage.getCompanyName());
+        save.setInboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
+        save.setInboundStatusName(InOutStatus.CREATE_INOUT.getName());
+        save.setLogisticsCenterCode(purchaseOrder.getTransportCenterCode());
+        save.setLogisticsCenterName(purchaseOrder.getTransportCenterName());
+        save.setWarehouseName(purchaseOrder.getWarehouseName());
+        save.setWarehouseName(purchaseOrder.getWarehouseName());
+        save.setSupplierCode(purchaseOrder.getSupplierCode());
+        save.setSupplierName(purchaseOrder.getSupplierName());
+        save.setCreateBy(purchaseStorage.getCreateByName());
+        save.setInboundTime(Calendar.getInstance().getTime());
+        save.setPreInboundNum(purchaseOrder.getSingleCount().longValue());
+        save.setPreMainUnitNum(purchaseOrder.getSingleCount().longValue());
+        save.setPreTaxAmount(purchaseOrder.getProductTotalAmount().longValue());
     }
 
     @Override

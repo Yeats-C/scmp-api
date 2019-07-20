@@ -136,8 +136,8 @@ public class PurchaseManageController {
 
     @PostMapping("/order/stock")
     @ApiOperation("采购单-开始备货")
-    public HttpResponse purchaseOrderStock(@RequestBody PurchaseOrder purchaseOrder) {
-        return purchaseManageService.purchaseOrderStock(purchaseOrder);
+    public HttpResponse purchaseOrderStock(@RequestBody PurchaseStorageRequest purchaseStorage) {
+        return purchaseManageService.purchaseOrderStock(purchaseStorage);
     }
 
     @PostMapping("/warehousing")
