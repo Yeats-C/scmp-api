@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.bireport.domain.request;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
+import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,7 +11,7 @@ import java.io.Serializable;
 
 @ApiModel("高低库存request")
 @Data
-public class HighLowInventoryReqVo extends PageReq implements Serializable {
+public class HighLowInventoryReqVo extends PagesRequest implements Serializable {
 
     @ApiModelProperty("采购组编码")
     @JsonProperty("procurement_section_code")

@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.bireport.domain.request;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
+import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,7 +11,7 @@ import java.io.Serializable;
 
 @ApiModel("月销售情况request")
 @Data
-public class MonthlySalesReqVo extends PageReq implements Serializable {
+public class MonthlySalesReqVo extends PagesRequest implements Serializable {
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
