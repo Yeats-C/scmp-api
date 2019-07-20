@@ -60,7 +60,17 @@
     from supply_company
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectBySupplyComCodes" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List"/>
+      from supply_company
+      where company_code = #{companyCode}
+      and supply_code in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+              #{item}
+      </foreach>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from supply_company
     where id = #{id,jdbcType=BIGINT}
   </delete>

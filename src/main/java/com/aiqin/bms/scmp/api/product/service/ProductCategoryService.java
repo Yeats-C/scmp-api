@@ -71,4 +71,15 @@ public interface ProductCategoryService {
      * @return
      */
     List<ProductCategory> getChildCategoryList(String categoryId, String companyCode);
+
+    /**
+     *
+     * 功能描述: 验证是否能禁用
+     *
+     * @param categoryCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/19 20:03
+     */
+    boolean verifyDisable(String categoryCode);
 }

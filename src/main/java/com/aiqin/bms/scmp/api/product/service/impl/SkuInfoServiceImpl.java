@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
+import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
@@ -155,7 +156,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private TagInfoService tagInfoService;
     @Autowired
     private ProductSkuSubService productSkuSubService;
-
+    @Autowired
+    private ProductCategoryService productCategoryService;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO) {
@@ -695,6 +697,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if (null == skuRespVo) {
             throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
         }
+        //查询所有父节点
+        List<ProductCategory> parentCategoryList = productCategoryService.getParentCategoryList(skuRespVo.getProductCategoryCode());
+        List<String> categoryIds = parentCategoryList.stream().map(ProductCategory :: getCategoryId).sorted().collect(Collectors.toList());
+        categoryIds.add(skuRespVo.getProductCategoryCode());
+        skuRespVo.setProductCategoryCodes(categoryIds);
         detailResp.setProductSkuInfo(skuRespVo);
         //标签信息
         List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuRespVo.getSkuCode(),TagTypeCode.SKU.getStatus());
@@ -757,6 +764,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if (null == skuRespVo) {
             throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
         }
+        //查询所有父节点
+        List<ProductCategory> parentCategoryList = productCategoryService.getParentCategoryList(skuRespVo.getProductCategoryCode());
+        List<String> categoryIds = parentCategoryList.stream().map(ProductCategory :: getCategoryId).sorted().collect(Collectors.toList());
+        categoryIds.add(skuRespVo.getProductCategoryCode());
+        skuRespVo.setProductCategoryCodes(categoryIds);
         detailResp.setProductSkuInfo(skuRespVo);
         //标签信息
         List<DetailTagUseRespVo> useTagRecordByUseObjectCode = tagInfoService.getUseTagRecordByUseObjectCode(skuRespVo.getSkuCode(), TagTypeCode.SKU.getStatus());
@@ -874,6 +886,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if (null == skuRespVo) {
             throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
         }
+        //查询所有父节点
+        List<ProductCategory> parentCategoryList = productCategoryService.getParentCategoryList(skuRespVo.getProductCategoryCode());
+        List<String> categoryIds = parentCategoryList.stream().map(ProductCategory :: getCategoryId).sorted().collect(Collectors.toList());
+        categoryIds.add(skuRespVo.getProductCategoryCode());
+        skuRespVo.setProductCategoryCodes(categoryIds);
         detailResp.setProductSkuInfo(skuRespVo);
         //标签信息
         List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(applyCode,TagTypeCode.SKU.getStatus());
@@ -1071,6 +1088,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<ApplyProductSkuPriceInfo> skuPriceListApplyBySkuCode = productSkuPriceInfoService.getSkuPriceListApplyBySkuCodes(skuCodes, applyCode);
         if(CollectionUtils.isNotEmpty(skuPriceListApplyBySkuCode)){
             List<ProductSkuPriceInfo> productSkuPriceInfos = BeanCopyUtils.copyList(skuPriceListApplyBySkuCode,ProductSkuPriceInfo.class);
+            Date current = new Date();
+            productSkuPriceInfos.forEach(item->{
+                if(null == item.getEffectiveTimeStart()){
+                    item.setEffectiveTimeStart(current);
+                }
+            });
             productSkuPriceInfoService.saveSkuPriceOfficial(productSkuPriceInfos);
         }
         //更新审批状态

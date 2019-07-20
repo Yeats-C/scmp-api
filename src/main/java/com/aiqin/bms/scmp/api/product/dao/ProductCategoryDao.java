@@ -72,5 +72,16 @@ public interface ProductCategoryDao {
      * @return
      */
     ProductCategory getProductCategoryById(@Param("categoryId") String categoryId);
+    ProductCategory selectByPrimaryKey(Long id);
+    /**
+     *
+     * 功能描述: 查询下级启用数量
+     *
+     * @param categoryId
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/19 20:06
+     */
+    int selectSubCategoryEnableCount(String categoryId);
 
 }

@@ -13,6 +13,9 @@ import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.QueryProductBrandReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductBrandRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryProductBrandRespVO;
+import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductBrandService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
@@ -50,6 +53,14 @@ public class ProductBrandServiceImpl implements ProductBrandService {
     private UploadFileUtil uploadFileUtil;
     @Autowired
     private EncodingRuleDao encodingRuleDao;
+    @Autowired
+    private ProductSkuInfoMapper skuInfoMapper;
+    @Autowired
+    private ProductSkuDraftMapper skuDraftMapper;
+    @Autowired
+    private ApplyProductSkuMapper applyProductSkuMapper;
+
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -182,6 +193,24 @@ public class ProductBrandServiceImpl implements ProductBrandService {
         }
         if(Objects.equals(productBrandType.getBrandStatus(),enable)){
             throw new GroundRuntimeException("状态已经为"+(enable==0?"启用":"禁用")+"无需更改！");
+        }
+        //如果状态为禁用,需要判断是否有SKU在使用,如果有的话则不允许禁用
+        if(Objects.equals(1,enable)){
+            //判断正式表
+            int i = skuInfoMapper.checkBrand(productBrandType.getBrandId());
+            if(i>0){
+                throw new GroundRuntimeException("此品牌在SKU中存在,不允许禁用");
+            }
+            //判断临时表
+            i = skuDraftMapper.checkBrand(productBrandType.getBrandId());
+            if(i>0){
+                throw new GroundRuntimeException("此品牌在SKU中存在,不允许禁用");
+            }
+            //判断申请表
+            i = applyProductSkuMapper.checkBrand(productBrandType.getBrandId());
+            if(i>0){
+                throw new GroundRuntimeException("此品牌在SKU中存在,不允许禁用");
+            }
         }
         ProductBrandReqDTO t = new ProductBrandReqDTO();
         t.setId(productBrandType.getId());

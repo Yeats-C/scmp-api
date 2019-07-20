@@ -35,4 +35,26 @@ public interface ProductSkuInfoMapper {
      */
     @MapKey("skuCode")
     Map<String,ProductSkuInfo> selectBySkuCodes(@Param("list") Set<String> skuList, @Param("companyCode") String companyCode);
+
+    /**
+     *
+     * 功能描述: 检测品牌在SKU中是否存在
+     *
+     * @param brandCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/19 18:52
+     */
+    int checkBrand(String brandCode);
+
+    /**
+     *
+     * 功能描述: 检测品类在SKU中是否存在
+     *
+     * @param categoryCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/19 18:52
+     */
+    int checkCategory(String categoryCode);
 }

@@ -103,6 +103,18 @@
         #{item}
     </foreach>
   </select>
+  <select id="checkBrand" resultType="java.lang.Integer">
+    select
+    count(0)
+    from
+    product_sku where product_brand_code = #{brandCode}
+  </select>
+  <select id="checkCategory" resultType="java.lang.Integer">
+    select
+    count(0)
+    from
+    product_sku where product_category_code = #{categoryCode}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku
     where id = #{id,jdbcType=BIGINT}

@@ -163,4 +163,9 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
     public int insertList(List<ProductSkuSupplyUnitCapacity> capacities) {
         return mapper.insertBatch(capacities);
     }
+
+    @Override
+    public int deleteDraftsByVos(List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts) {
+        return mapper.deleteDraftsByVos(capacityDrafts);
+    }
 }

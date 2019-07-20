@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.web.sku;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateSkuConfigSupplierReqVo;
@@ -95,12 +96,40 @@ public class SkuConfigController {
         }
     }
 
-    @PostMapping("/import")
+    @PostMapping("/importConfig")
     @ApiOperation(("sku配置信息导入"))
     public HttpResponse<List<SaveSkuConfigReqVo>> importData (MultipartFile file) {
         try {
             return HttpResponse.success(productSkuConfigService.importData(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/importSupply")
+    @ApiOperation(("供应商配置信息导入"))
+    public HttpResponse<List<ProductSkuSupplyUnitDraft>> importSupplyData (MultipartFile file) {
+        try {
+            return HttpResponse.success(productSkuConfigService.importSupplyData(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/importSupplySave")
+    @ApiOperation(("供应商配置信息导入保存"))
+    public HttpResponse<Boolean> importSupplyData (@RequestBody List<ProductSkuSupplyUnitDraft> reqVo) {
+        try {
+            return HttpResponse.success(productSkuConfigService.saveImportSupply(reqVo));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }

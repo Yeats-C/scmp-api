@@ -11,4 +11,12 @@ public interface ProductSkuSupplyUnitDraftMapper {
     List<ProductSkuSupplyUnitDraft> selectByIds(List<Long> ids);
 
     int deleteDraftByIds(List<Long> ids);
+    /**
+     * 通过vo查找数据
+     * @author NullPointException
+     * @date 2019/7/19
+     * @param reqVo
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft>
+     */
+    List<ProductSkuSupplyUnitDraft> selectByVo(List<ProductSkuSupplyUnitDraft> reqVo);
 }
