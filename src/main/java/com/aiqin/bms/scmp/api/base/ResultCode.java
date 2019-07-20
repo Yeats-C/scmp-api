@@ -263,4 +263,5 @@ public interface ResultCode {
     MessageId DRAFT_CONFIG_SAVE_ERROR = MessageId.create(Project.SCMP_API, 1000, "保存导入数据失败！");
     MessageId SPU_NAME_EXISTS = MessageId.create(Project.SCMP_API, 1000, "SPU名称存在，请重新输入！");
     MessageId IMPORT_DATA_SAVE_FAILED = MessageId.create(Project.SCMP_API, 1000, "保存导入数据失败！");
+    MessageId FILE_DOWNLOAD_FAILED = MessageId.create(Project.SCMP_API, 1000, "文件下载失败！");
 }
