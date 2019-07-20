@@ -527,10 +527,11 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse purchaseOrderStock(String purchaseOrderId, String createById, String createByName){
-        if(StringUtils.isBlank(purchaseOrderId)){
+    public HttpResponse purchaseOrderStock(PurchaseOrder purchase){
+        if(purchase == null || StringUtils.isBlank(purchase.getPurchaseOrderId())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        String purchaseOrderId = purchase.getPurchaseOrderId();
         // 查询采购单的详情
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrder(purchaseOrderId);
         if(purchaseOrder == null){
@@ -560,7 +561,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         save.setPurchaseNum(1);
         InboundProductReqVo inboundProductReqVo;
         // 入库sku商品
-        List<InboundProductReqVo> list = save.getList();
+        List<InboundProductReqVo> list = new ArrayList<>();
         // 查询是否有商品可以入库
         PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
         request.setPurchaseOrderId(purchaseOrderId);
@@ -591,7 +592,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
         }
         String name = "入库申请单"+ s + "，入库完成";
-        log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
+        log(purchaseOrderId, purchase.getCreateById(), purchase.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
                 name , null);
         return HttpResponse.success();
     }

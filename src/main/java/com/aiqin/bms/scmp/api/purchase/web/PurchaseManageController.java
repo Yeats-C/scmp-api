@@ -136,10 +136,8 @@ public class PurchaseManageController {
 
     @PostMapping("/order/stock")
     @ApiOperation("采购单-开始备货")
-    public HttpResponse purchaseOrderStock(@RequestParam("purchase_order_id") String purchaseOrderId,
-                                           @RequestParam("create_by_id") String createById,
-                                           @RequestParam("create_by_name") String createByName) {
-        return purchaseManageService.purchaseOrderStock(purchaseOrderId, createById, createByName);
+    public HttpResponse purchaseOrderStock(@RequestBody PurchaseOrder purchaseOrder) {
+        return purchaseManageService.purchaseOrderStock(purchaseOrder);
     }
 
     @PostMapping("/warehousing")

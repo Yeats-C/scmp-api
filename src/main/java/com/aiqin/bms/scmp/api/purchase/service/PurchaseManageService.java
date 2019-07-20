@@ -37,7 +37,7 @@ public interface PurchaseManageService {
 
     HttpResponse<PurchaseCountAmountResponse> purchaseOrderAmount(String purchaseOrderId);
 
-    HttpResponse purchaseOrderStock(String purchaseOrderId, String createById, String createByName);
+    HttpResponse purchaseOrderStock(PurchaseOrder purchaseOrder);
 
     HttpResponse getWarehousing(List<PurchaseOrderProduct> list);
 
