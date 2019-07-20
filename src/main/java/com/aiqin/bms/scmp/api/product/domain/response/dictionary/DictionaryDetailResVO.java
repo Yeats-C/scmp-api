@@ -53,22 +53,22 @@ public class DictionaryDetailResVO{
     }
 
 
-    public String getDictionaryTypeName() {
-        if(dictionaryType.equals("SupplyChain")){
-            this.dictionaryTypeName="供应链";
-        }if(dictionaryType.equals("logistics")) {
-            this.dictionaryTypeName="物流";
-        }
-        return dictionaryTypeName;
-    }
-
-    public void setDictionaryTypeName(String dictionaryTypeName) {
-        if(dictionaryType.equals("SupplyChain")){
-            this.dictionaryTypeName="供应链";
-        }if(dictionaryType.equals("logistics")) {
-            this.dictionaryTypeName="物流";
-        }
-    }
+//    public String getDictionaryTypeName() {
+//        if(dictionaryType.equals("SupplyChain")){
+//            this.dictionaryTypeName="供应链";
+//        }if(dictionaryType.equals("logistics")) {
+//            this.dictionaryTypeName="物流";
+//        }
+//        return dictionaryTypeName;
+//    }
+//
+//    public void setDictionaryTypeName(String dictionaryTypeName) {
+//        if(dictionaryType.equals("SupplyChain")){
+//            this.dictionaryTypeName="供应链";
+//        }if(dictionaryType.equals("logistics")) {
+//            this.dictionaryTypeName="物流";
+//        }
+//    }
 
     public Byte getDelFlag() {
         return delFlag;
