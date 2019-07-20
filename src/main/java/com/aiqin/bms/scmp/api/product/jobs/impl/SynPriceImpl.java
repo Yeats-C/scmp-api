@@ -159,7 +159,7 @@ public class SynPriceImpl implements SynPrice {
         int i = productSkuPriceInfoLogMapper.insertBatch(logs);
         log.info("需要插入日志条数[{}]，插入日志数据条数：[{}]", logs.size(), i);
         int i2 = productSkuChangePriceInfoMapper.updateBatch(changePriceInfos);
-        log.info("需要更新条数[{}]，更新数据条数：[{}]", changePriceInfos.size(), i2);
+//        log.info("需要更新条数[{}]，更新数据条数：[{}]", changePriceInfos.size(), i2);
         log.info("updatePriceStatusForEffective定时任务结束！");
     }
 }
