@@ -709,6 +709,7 @@
         bsar.responsible_person_name as responsiblePersonName
         from bi_supplier_arrival_rate bsar
         <include refid="select_supplier_arrival_rate"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
             resultType="java.lang.Integer">
@@ -793,6 +794,7 @@
         date_format(bgbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_goods_buy_sales bgbs
         <include refid="select_goods_buy_sales"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
             resultType="java.lang.Integer">
@@ -842,6 +844,7 @@
         date_format(bgbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_gifts_buy_sales bgbs
         <include refid="select_gifts_buy_sales"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countGiftsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo"
             resultType="java.lang.Integer">
@@ -876,6 +879,7 @@
         date_format(bsr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_supplier_return bsr
         <include refid="select_supplier_return"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
             resultType="java.lang.Integer">
@@ -930,6 +934,7 @@
         date_format(bnpbmr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_new_product_batch_moving_rate bnpbmr
         <include refid="select_new_product_batch_moving_rate"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
         GROUP by bnpbmr.inbound_time desc
     </select>
     <select id="countNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
@@ -964,6 +969,7 @@
         date_format(bsrr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_store_repurchase_rate bsrr
         <include refid="select_store_repurchase_rate"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
             resultType="java.lang.Integer">
@@ -1001,6 +1007,7 @@
         date_format(bnm.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_negative_margin bnm
         <include refid="select_negative_margin"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
             resultType="java.lang.Integer">
@@ -1042,6 +1049,7 @@
         date_format(bsr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_app_suggest_replenishment bsr
         <include refid="select_suggest_replenishment"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countSuggestReplenishment" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SuggestReplenishmentReqVo"
             resultType="java.lang.Integer">
@@ -1075,6 +1083,7 @@
         date_format(bli.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_low_inventory bli
         <include refid="select_low_inventory"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countLowInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="java.lang.Integer">
@@ -1108,6 +1117,7 @@
         date_format(bhi.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_high_inventory bhi
         <include refid="select_high_inventory"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countHighInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="java.lang.Integer">
@@ -1151,6 +1161,7 @@
         date_format(bbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_brand_sale bbs
         <include refid="select_brand_sale"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="java.lang.Integer">
@@ -1192,6 +1203,7 @@
         date_format(bcs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_category_sale bcs
         <include refid="select_category_sale"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="java.lang.Integer">
@@ -1228,6 +1240,7 @@
         date_format(bbe.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_big_effect bbe
         <include refid="select_big_effect"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countBigEffect" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.BigEffectReqVo"
             resultType="java.lang.Integer">
@@ -1265,6 +1278,7 @@
         bms.distribution_sequential as distributionSequential
         from bi_monthly_sales bms
         <include refid="select_monthly_sales"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countMonthlySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="java.lang.Integer">
@@ -1303,6 +1317,7 @@
         bmgm.distribution_sequential as distributionSequential
         from bi_month_gross_margin bmgm
         <include refid="select_monthly_gross_margin"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="java.lang.Integer">
@@ -1338,6 +1353,7 @@
         bmsa.distribution_yield_rate as distributionYieldRate
         from bi_month_sales_achievement bmsa
         <include refid="select_month_sales_achievement"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countMonthSalesAchievement" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
@@ -1378,6 +1394,7 @@
         bmcbs.distribution_sequential as distributionSequential
         from bi_month_cumulative_brand_sales bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
@@ -1421,6 +1438,7 @@
         bmcgpm.distribution_sequential as distributionSequential
         from bi_month_cumulative_gross_profit_margin bmcgpm
         <include refid="select_month_cumulative_gross_profit_margin"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
