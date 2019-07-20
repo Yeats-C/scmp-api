@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.product.domain.converter.supervisorywarehouseorde
 
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrder;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
@@ -10,8 +12,12 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.google.common.collect.Lists;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -21,7 +27,14 @@ import java.util.List;
  * @date: 2019-06-27
  * @time: 17:54
  */
+@Component
 public class WarehouseOrderToInboundConverter implements Converter<SupervisoryWarehouseOrder, InboundReqSave> {
+
+    private ProductSkuPicturesDao productSkuPicturesDao;
+
+    public WarehouseOrderToInboundConverter(ProductSkuPicturesDao productSkuPicturesDao) {
+        this.productSkuPicturesDao = productSkuPicturesDao;
+    }
 
     @Override
     public InboundReqSave convert(SupervisoryWarehouseOrder order) {
@@ -55,7 +68,8 @@ public class WarehouseOrderToInboundConverter implements Converter<SupervisoryWa
             InboundProductReqVo reqVo1 = new InboundProductReqVo();
             reqVo1.setSkuCode(record.getSkuCode());
             reqVo1.setSkuName(record.getSkuName());
-            reqVo1.setPictureUrl(null);
+            ProductSkuPictures productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(record.getSkuCode());
+            reqVo1.setPictureUrl(productSkuPicture.getProductPicturePath());
             reqVo1.setNorms(record.getProductSpec());
             reqVo1.setColorName(record.getColorName());
             reqVo1.setColorCode(null);
@@ -63,6 +77,7 @@ public class WarehouseOrderToInboundConverter implements Converter<SupervisoryWa
             reqVo1.setUnitCode(record.getUnitCode());
             reqVo1.setUnitName(record.getUnitName());
             reqVo1.setInboundNorms(record.getProductSpec());
+            reqVo1.setInboundBaseUnit("1");
             reqVo1.setInboundBaseContent(record.getBaseProductContent().toString());
             reqVo1.setPreInboundNum(record.getNum().longValue());
             reqVo1.setPreInboundMainNum(record.getSingleCount().longValue());
@@ -93,12 +108,14 @@ public class WarehouseOrderToInboundConverter implements Converter<SupervisoryWa
             list.add(reqVo1);
             inboundBatchReqVos.add(batch);
         }
+
         inboundReqSave.setPreInboundNum(preInboundNum);
         inboundReqSave.setPreMainUnitNum(preInboundMainNum);
         inboundReqSave.setPreTaxAmount(preTaxAmount);
         inboundReqSave.setPreAmount(preNoTaxAmount);
         inboundReqSave.setPreTax(preTaxAmount-preNoTaxAmount);
         inboundReqSave.setInboundBatchReqVos(inboundBatchReqVos);
+        inboundReqSave.setRemark(order.getRemark());
         inboundReqSave.setList(list);
         return inboundReqSave;
     }

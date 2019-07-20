@@ -6,17 +6,21 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceInfoRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -24,6 +28,8 @@ import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
@@ -34,6 +40,7 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,6 +90,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Autowired
     private StockService stockService;
+
+    @Autowired
+    private ProductSkuDao productSkuDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -814,5 +824,72 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
         return stockService.querySkuBatchList(reqVO);
+    }
+
+    /**
+     * 添加是导入sku
+     *
+     * @param reqVo
+     * @return
+     */
+    @Override
+    public List<ProductSkuChangePriceImportRespVO> importProductSkuChangePrice(ProductSkuChangePriceImportReqVo reqVo) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        reqVo.setCompanyCode(currentAuthToken.getCompanyCode());
+        try {
+            List<ProductSkuChangePriceImportRespVO> list = Lists.newArrayList();
+            List<Object[]> excel = ExcelUtil.getExcelAll(reqVo.getFile());
+            if(excel.size()<=1){
+                return list;
+            }
+            List<String> codes = excel.stream().map(p -> {
+                return String.valueOf(p[0]);
+            }).collect(Collectors.toList());
+            if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(codes)){
+                return Lists.newArrayList();
+            }
+            //移除表头数据
+            codes.remove(0);
+            //调用接口获取sku的详细数据
+            List<ProductSkuInfo> productSkuInfoList = productSkuDao.getSkuInfoByCodeList(codes);
+            List<ProductSkuChangePriceImportRespVO> data =JSON.parseArray(JsonUtil.toJson(productSkuInfoList),ProductSkuChangePriceImportRespVO.class);
+            //key为sku编码
+            Map<String, ProductSkuChangePriceImportRespVO> map = data.stream().collect(Collectors.toMap(ProductSkuChangePriceImportRespVO::getSkuCode, Function.identity()));
+            //错误信息
+            for(int i=1;i<excel.size();i++){
+                Object[] objects = excel.get(i);
+                String skuCode =String.valueOf(objects[0]);
+                String skuName = ExcelUtil.convertNumToString(objects[1]);
+                Long num=0L;
+                try {
+                    String s = ExcelUtil.convertNumToString(objects[2]);
+                    if(StringUtils.isNotBlank(s)){
+                        num = Long.valueOf(s);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    list.add(new ProductSkuChangePriceImportRespVO(skuCode,skuName, "数量数据格式错误"));
+                    continue;
+                }
+                //验证是否重复导入
+                if(null!=skuCode){
+                    List<String> skus =list.stream().map(ProductSkuChangePriceImportRespVO::getSkuCode).collect(Collectors.toList());
+                    if(skus.contains(skuCode)==true){
+                        list.add(new ProductSkuChangePriceImportRespVO(skuCode, skuName,"导入重复"));
+                        continue;
+                    }
+                }
+                //验证该编码是否存在
+                if(Objects.isNull(map.get(skuCode))){
+                    list.add(new ProductSkuChangePriceImportRespVO(skuCode, skuName,"sku编码不存在或者已被禁用"));
+                    continue;
+                }
+            }
+
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new GroundRuntimeException("导入异常");
+        }
     }
 }
