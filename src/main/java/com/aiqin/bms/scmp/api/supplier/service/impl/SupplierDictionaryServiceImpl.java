@@ -11,7 +11,6 @@ import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionary;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierOperationLog;
 import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.DictionaryType;
 import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryCodeResVo;
@@ -22,7 +21,6 @@ import com.aiqin.bms.scmp.api.supplier.mapper.SupplierDictionaryInfoMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplierDictionaryMapper;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.JsonMapper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -153,10 +151,10 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
         int flg = 0;
         String project=listDTO.getDictionaryType();
         try {
-            if (project == null) {
-                log.error("project 不能为空");
-                throw new GroundRuntimeException("project 不能为空");
-            }
+//            if (project == null) {
+//                log.error("project 不能为空");
+//                throw new GroundRuntimeException("project 不能为空");
+//            }
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             String companyCode = "";
             if(null != authToken){
@@ -164,7 +162,7 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
             }
             String codNa = listDTO.getDictionaryName();
             Integer integer = supplierDictionaryDao.checkName(codNa, null,companyCode);
-            if (integer > 0) {
+                if (integer > 0) {
                 log.error("字典名称不能重复");
                 throw new GroundRuntimeException("字典名称不能重复");
             }
@@ -337,9 +335,9 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
      */
     @Override
     public  HttpResponse<BasePage<DictionaryListResVO>> listDictionary(QueryDictionaryReqVO querDictionaryReqVO,String project) {
-        if (project == null) {
-            throw new GroundRuntimeException("project 不能为空");
-        }
+//        if (project == null) {
+//            throw new GroundRuntimeException("project 不能为空");
+//        }
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if (null != authToken) {
             querDictionaryReqVO.setCompanyCode(authToken.getCompanyCode());
@@ -462,10 +460,10 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
             log.error("id=>不能为空");
             throw new GroundRuntimeException("id 不能为空");
         }
-        if (project == null) {
-            log.error("project=>不能为空");
-            throw new GroundRuntimeException("project 不能为空");
-        }
+//        if (project == null) {
+//            log.error("project=>不能为空");
+//            throw new GroundRuntimeException("project 不能为空");
+//        }
     }
     @Override
     public void handleException(HttpResponse httpResponse) {
