@@ -47,4 +47,7 @@ public class QuerySupplierComAcctReqVo extends PageReq {
 
     @ApiModelProperty(value = "申请人", hidden = true)
     private String applyBy;
+
+    @ApiModelProperty(value = "当前登录人",hidden = true)
+    private String personId;
 }

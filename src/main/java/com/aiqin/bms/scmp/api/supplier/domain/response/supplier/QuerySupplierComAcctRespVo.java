@@ -78,4 +78,10 @@ public class QuerySupplierComAcctRespVo {
 
     @ApiModelProperty("供货单位账号编码")
     private String supplyCompanyAccountCode;
+
+    @ApiModelProperty("采购组编码")
+    private String purchasingGroupCode;
+
+    @ApiModelProperty("采购组名称")
+    private String purchasingGroupName;
 }

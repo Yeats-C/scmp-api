@@ -85,6 +85,7 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 vo.setCompanyCode(authToken.getCompanyCode());
+                vo.setPersonId(authToken.getPersonId());
             }
             PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
             List<QueryContractResVo> contractResDTOList = contractDao.selectBySelectContract(vo);
