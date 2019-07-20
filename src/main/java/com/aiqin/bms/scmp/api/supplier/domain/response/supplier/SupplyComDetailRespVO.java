@@ -31,6 +31,9 @@ public class SupplyComDetailRespVO {
     @ApiModelProperty("供应商类型")
     private String applySupplyType;
 
+    @ApiModelProperty("供应商类型")
+    private String applySupplyTypeName;
+
     @ApiModelProperty("简称")
     private String applyAbbreviation;
 

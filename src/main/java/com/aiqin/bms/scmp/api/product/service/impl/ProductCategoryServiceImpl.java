@@ -142,7 +142,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         try {
             ProductCategory productCategory = new ProductCategory();
             BeanCopyUtils.copy(productCategoryReqVO,productCategory);
-            verifyDisable(productCategory.getCategoryId());
+            if(productCategoryReqVO.getCategoryStatus().equals(Byte.parseByte("1"))){
+                verifyDisable(productCategory.getCategoryId());
+            }
             num = ((ProductCategoryService)AopContext.currentProxy()).update(productCategory);
         } catch (GroundRuntimeException e){
             throw new GroundRuntimeException(e.getMessage());
