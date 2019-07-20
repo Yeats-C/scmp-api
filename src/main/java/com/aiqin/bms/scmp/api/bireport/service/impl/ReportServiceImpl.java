@@ -250,14 +250,17 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectBrandSale(CategorySaleReqVo brandSaleReqVo) {
+    public PageReportResData selectBrandSale(CategorySaleReqVo brandSaleReqVo) {
         try {
-            // PageHelper.startPage(categorySaleReqVo.getPageNo(), categorySaleReqVo.getPageSize());
             List<CategorySaleRespVo> brandSaleRespVo = reportDao.selectBrandSale(brandSaleReqVo);
             Integer total = reportDao.countBrandSale(brandSaleReqVo);
-            return new PageResData<CategorySaleRespVo>(total,brandSaleRespVo);
+            String cloumnName = "bi_brand_sale";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            CategorySaleRespVo categorySaleRespVo = new CategorySaleRespVo();
+            categorySaleRespVo.setColumnList(maps);
+            return new PageReportResData<CategorySaleRespVo>(total,brandSaleRespVo,categorySaleRespVo);
         } catch (Exception ex) {
-            log.error("品类促销");
+            log.error("品牌促销");
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
@@ -269,12 +272,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectCategorySale(CategorySaleReqVo categorySaleReqVo) {
+    public PageReportResData selectCategorySale(CategorySaleReqVo categorySaleReqVo) {
         try {
-            // PageHelper.startPage(categorySaleReqVo.getPageNo(), categorySaleReqVo.getPageSize());
-            List<CategorySaleRespVo> categorySaleRespVo = reportDao.selectCategorySale(categorySaleReqVo);
+            List<CategorySaleRespVo> categorySaleRespVos = reportDao.selectCategorySale(categorySaleReqVo);
             Integer total = reportDao.countCategorySale(categorySaleReqVo);
-            return new PageResData<CategorySaleRespVo>(total,categorySaleRespVo);
+            String cloumnName = "bi_category_sale";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            CategorySaleRespVo categorySaleRespVo = new CategorySaleRespVo();
+            categorySaleRespVo.setColumnList(maps);
+            return new PageReportResData<CategorySaleRespVo>(total,categorySaleRespVos,categorySaleRespVo);
         } catch (Exception ex) {
             log.error("品类促销");
             ex.printStackTrace();

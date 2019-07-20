@@ -216,6 +216,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_0);
+        purchaseOrder.setPurchaseMode(0);
         purchaseOrder.setCreateById(purchaseOrderRequest.getPersonId());
         purchaseOrder.setCreateByName(purchaseOrderRequest.getPersonName());
         // 添加采购单
