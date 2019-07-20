@@ -106,14 +106,14 @@ public interface ReportService {
      * @param monthlySalesReqVo
      * @return
      */
-    PageResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
+    PageReportResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
 
     /**
      *  月毛利率情况
      * @param monthlyGrossMarginReqVo
      * @return
      */
-    PageResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
+    PageReportResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
 
     /**
      *  月销售达成情况

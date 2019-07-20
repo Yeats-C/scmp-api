@@ -316,12 +316,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo) {
+    public PageReportResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo) {
         try {
-            // PageHelper.startPage(monthlySalesReqVo.getPageNo(), monthlySalesReqVo.getPageSize());
             List<MonthlySalesRespVo> monthlySalesRespVos = reportDao.selectMonthlySales(monthlySalesReqVo);
             Integer total = reportDao.countMonthlySales(monthlySalesReqVo);
-            return new PageResData<MonthlySalesRespVo>(total,monthlySalesRespVos);
+            String cloumnName = "bi_monthly_sales";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            MonthlySalesRespVo monthlySalesRespVo = new MonthlySalesRespVo();
+            monthlySalesRespVo.setColumnList(maps);
+            return new PageReportResData<MonthlySalesRespVo>(total,monthlySalesRespVos,monthlySalesRespVo);
         } catch (Exception ex) {
             log.error("月销售情况");
             ex.printStackTrace();
@@ -335,12 +338,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo) {
+    public PageReportResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo) {
         try {
-            // PageHelper.startPage(monthlyGrossMarginReqVo.getPageNo(), monthlyGrossMarginReqVo.getPageSize());
             List<MonthlyGrossMarginRespVo> monthlySalesRespVos = reportDao.selectMonthlyGrossMargin(monthlyGrossMarginReqVo);
             Integer total = reportDao.countMonthlyGrossMargin(monthlyGrossMarginReqVo);
-            return new PageResData<MonthlyGrossMarginRespVo>(total,monthlySalesRespVos);
+            String cloumnName = "bi_month_gross_margin";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            MonthlyGrossMarginRespVo monthlyGrossMarginRespVo = new MonthlyGrossMarginRespVo();
+            monthlyGrossMarginRespVo.setColumnList(maps);
+            return new PageReportResData<MonthlyGrossMarginRespVo>(total,monthlySalesRespVos,monthlyGrossMarginRespVo);
         } catch (Exception ex) {
             log.error("月毛利率情况");
             ex.printStackTrace();

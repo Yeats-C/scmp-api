@@ -21,48 +21,48 @@ public class MonthlySalesReqVo extends PageReq implements Serializable {
     private String productSortName;
 
     @ApiModelProperty("渠道编码")
-    @JsonProperty("price_channel_code")
-    private String priceChannelCode;
+    @JsonProperty("order_code")
+    private String orderCode;
 
     @ApiModelProperty("渠道")
-    @JsonProperty("price_channel_name")
-    private String priceChannelName;
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("门店类型code")
     @JsonProperty("store_type_code")
     private String storeTypeCode;
 
     @ApiModelProperty("门店类型名称")
-    @JsonProperty("store_type_name")
-    private String storeTypeName;
+    @JsonProperty("store_type")
+    private String storeType;
 
     @ApiModelProperty("数据类型code")
-    @JsonProperty("data_style_code")
-    private String dataStyleCode;
+    @JsonProperty("data_type_code")
+    private String dataTypeCode;
 
     @ApiModelProperty("数据类型name")
-    @JsonProperty("data_style_name")
-    private String dataStyleName;
+    @JsonProperty("data_type")
+    private String dataType;
 
     @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
 
     @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @JsonProperty("finish_create_time")
+    private String finishCreateTime;
 
-    public MonthlySalesReqVo(String productSortCode, String productSortName, String priceChannelCode, String priceChannelName, String storeTypeCode, String storeTypeName, String dataStyleCode, String dataStyleName, String beginRunTime, String finishRunTime) {
+    public MonthlySalesReqVo(String productSortCode, String productSortName, String orderCode, String orderOriginal, String storeTypeCode, String storeType, String dataTypeCode, String dataType, String beginCreateTime, String finishCreateTime) {
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
-        this.priceChannelCode = priceChannelCode;
-        this.priceChannelName = priceChannelName;
+        this.orderCode = orderCode;
+        this.orderOriginal = orderOriginal;
         this.storeTypeCode = storeTypeCode;
-        this.storeTypeName = storeTypeName;
-        this.dataStyleCode = dataStyleCode;
-        this.dataStyleName = dataStyleName;
-        this.beginRunTime = beginRunTime;
-        this.finishRunTime = finishRunTime;
+        this.storeType = storeType;
+        this.dataTypeCode = dataTypeCode;
+        this.dataType = dataType;
+        this.beginCreateTime = beginCreateTime;
+        this.finishCreateTime = finishCreateTime;
     }
 
     public MonthlySalesReqVo() {
