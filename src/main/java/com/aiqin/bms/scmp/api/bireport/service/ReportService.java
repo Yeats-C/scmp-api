@@ -106,35 +106,35 @@ public interface ReportService {
      * @param monthlySalesReqVo
      * @return
      */
-    PageResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
+    PageReportResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo);
 
     /**
      *  月毛利率情况
      * @param monthlyGrossMarginReqVo
      * @return
      */
-    PageResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
+    PageReportResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo);
 
     /**
      *  月销售达成情况
      * @param monthSalesAchievementReqVo
      * @return
      */
-    PageResData selectMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo);
+    PageReportResData selectMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo);
 
     /**
      *  月累计品类销售情况
      * @param monthCumulativeBrandSalesReqVo
      * @return
      */
-    PageResData selectMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo);
+    PageReportResData selectMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo);
 
     /**
      *  月累计品类毛利率情况
      * @param monthCumulativeGrossProfitMarginReqVo
      * @return
      */
-    PageResData selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo);
+    PageReportResData selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo);
 
     /**
      *  查询所有门店类型

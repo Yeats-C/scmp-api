@@ -1939,4 +1939,10 @@ select a.sku_code              as skuCode,
           AND ps.product_name LIKE CONCAT('%',#{productName,jdbcType=VARCHAR},'%')
         </if>
   </select>
+  <select id="getSkuInfoByCodeList" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.BaseResultMap">
+    SELECT * FROM product_sku where sku_code in
+    <foreach collection="skuCodeList" item="item" index="index" separator="," close=")" open="(">
+      #{item, jdbcType=VARCHAR}
+    </foreach>
+  </select>
 </mapper>

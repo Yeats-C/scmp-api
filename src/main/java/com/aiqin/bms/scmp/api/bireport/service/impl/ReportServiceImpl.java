@@ -316,12 +316,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo) {
+    public PageReportResData selectMonthlySales(MonthlySalesReqVo monthlySalesReqVo) {
         try {
-            // PageHelper.startPage(monthlySalesReqVo.getPageNo(), monthlySalesReqVo.getPageSize());
             List<MonthlySalesRespVo> monthlySalesRespVos = reportDao.selectMonthlySales(monthlySalesReqVo);
             Integer total = reportDao.countMonthlySales(monthlySalesReqVo);
-            return new PageResData<MonthlySalesRespVo>(total,monthlySalesRespVos);
+            String cloumnName = "bi_monthly_sales";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            MonthlySalesRespVo monthlySalesRespVo = new MonthlySalesRespVo();
+            monthlySalesRespVo.setColumnList(maps);
+            return new PageReportResData<MonthlySalesRespVo>(total,monthlySalesRespVos,monthlySalesRespVo);
         } catch (Exception ex) {
             log.error("月销售情况");
             ex.printStackTrace();
@@ -335,12 +338,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo) {
+    public PageReportResData selectMonthlyGrossMargin(MonthlySalesReqVo monthlyGrossMarginReqVo) {
         try {
-            // PageHelper.startPage(monthlyGrossMarginReqVo.getPageNo(), monthlyGrossMarginReqVo.getPageSize());
             List<MonthlyGrossMarginRespVo> monthlySalesRespVos = reportDao.selectMonthlyGrossMargin(monthlyGrossMarginReqVo);
             Integer total = reportDao.countMonthlyGrossMargin(monthlyGrossMarginReqVo);
-            return new PageResData<MonthlyGrossMarginRespVo>(total,monthlySalesRespVos);
+            String cloumnName = "bi_month_gross_margin";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            MonthlyGrossMarginRespVo monthlyGrossMarginRespVo = new MonthlyGrossMarginRespVo();
+            monthlyGrossMarginRespVo.setColumnList(maps);
+            return new PageReportResData<MonthlyGrossMarginRespVo>(total,monthlySalesRespVos,monthlyGrossMarginRespVo);
         } catch (Exception ex) {
             log.error("月毛利率情况");
             ex.printStackTrace();
@@ -354,12 +360,15 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo) {
+    public PageReportResData selectMonthSalesAchievement(MonthSalesAchievementReqVo monthSalesAchievementReqVo) {
         try {
-           // PageHelper.startPage(monthSalesAchievementReqVo.getPageNo(), monthSalesAchievementReqVo.getPageSize());
             List<MonthSalesAchievementRespVo> monthSalesAchievementRespVos = reportDao.selectMonthSalesAchievement(monthSalesAchievementReqVo);
             Integer total = reportDao.countMonthSalesAchievement(monthSalesAchievementReqVo);
-            return new PageResData<MonthSalesAchievementRespVo>(total,monthSalesAchievementRespVos);
+            String cloumnName = "bi_month_sales_achievement";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            MonthSalesAchievementRespVo monthSalesAchievementRespVo = new MonthSalesAchievementRespVo();
+            monthSalesAchievementRespVo.setColumnList(maps);
+            return new PageReportResData<MonthSalesAchievementRespVo>(total,monthSalesAchievementRespVos,monthSalesAchievementRespVo);
         } catch (Exception ex) {
             log.error("月销售达成情况");
             ex.printStackTrace();
@@ -373,14 +382,17 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo) {
+    public PageReportResData selectMonthCumulativeBrandSales(MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo) {
         try {
-          //  PageHelper.startPage(monthCumulativeBrandSalesReqVo.getPageNo(), monthCumulativeBrandSalesReqVo.getPageSize());
             List<MonthCumulativeBrandSalesRespVo> monthCumulativeBrandSalesRespVos = reportDao.selectMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo);
             Integer total = reportDao.countMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo);
-            return new PageResData<MonthCumulativeBrandSalesRespVo>(total,monthCumulativeBrandSalesRespVos);
+            String cloumnName = "bi_month_cumulative_brand_sales";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            MonthCumulativeBrandSalesRespVo monthCumulativeBrandSalesRespVo = new MonthCumulativeBrandSalesRespVo();
+            monthCumulativeBrandSalesRespVo.setColumnList(maps);
+            return new PageReportResData<MonthCumulativeBrandSalesRespVo>(total,monthCumulativeBrandSalesRespVos,monthCumulativeBrandSalesRespVo);
         } catch (Exception ex) {
-            log.error("月销售达成情况");
+            log.error("月累计品类销售情况");
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
@@ -392,14 +404,17 @@ public class ReportServiceImpl implements ReportService {
      * @return
      */
     @Override
-    public PageResData selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo) {
+    public PageReportResData selectMonthCumulativeGrossProfitMargin(MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo) {
         try {
-         //   PageHelper.startPage(monthCumulativeGrossProfitMarginReqVo.getPageNo(), monthCumulativeGrossProfitMarginReqVo.getPageSize());
             List<MonthCumulativeGrossProfitMarginRespVo> monthCumulativeGrossProfitMarginRespVos = reportDao.selectMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo);
             Integer total = reportDao.countMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo);
-            return new PageResData<MonthCumulativeGrossProfitMarginRespVo>(total,monthCumulativeGrossProfitMarginRespVos);
+            String cloumnName = "bi_month_cumulative_gross_profit_margin";
+            List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
+            MonthCumulativeGrossProfitMarginRespVo monthCumulativeGrossProfitMarginRespVo = new MonthCumulativeGrossProfitMarginRespVo();
+            monthCumulativeGrossProfitMarginRespVo.setColumnList(maps);
+            return new PageReportResData<MonthCumulativeGrossProfitMarginRespVo>(total,monthCumulativeGrossProfitMarginRespVos,monthCumulativeGrossProfitMarginRespVo);
         } catch (Exception ex) {
-            log.error("月销售达成情况");
+            log.error("月累计品类毛利率情况");
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }

@@ -10,8 +10,8 @@ import lombok.Data;
 public class ChartReqVo {
 
     @ApiModelProperty("日期")
-    @JsonProperty("month")
-    private String month;
+    @JsonProperty("create_time")
+    private String createTime;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -22,49 +22,49 @@ public class ChartReqVo {
     private String productSortName;
 
     @ApiModelProperty("渠道编码")
-    @JsonProperty("price_channel_code")
-    private String priceChannelCode;
+    @JsonProperty("order_code")
+    private String orderCode;
 
     @ApiModelProperty("渠道")
-    @JsonProperty("price_channel_name")
-    private String priceChannelName;
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("门店类型code")
     @JsonProperty("store_type_code")
     private String storeTypeCode;
 
     @ApiModelProperty("门店类型名称")
-    @JsonProperty("store_type_name")
-    private String storeTypeName;
+    @JsonProperty("store_type")
+    private String storeType;
 
     @ApiModelProperty("数据类型code")
-    @JsonProperty("data_style_code")
-    private String dataStyleCode;
+    @JsonProperty("data_type_code")
+    private String dataTypeCode;
 
     @ApiModelProperty("数据类型name")
-    @JsonProperty("data_style_name")
-    private String dataStyleName;
+    @JsonProperty("data_type")
+    private String dataType;
 
     @ApiModelProperty("渠道销售")
-    @JsonProperty("qun_sale")
-    private String qunSale;
+    @JsonProperty("channel_order_amount")
+    private String channelOrderAmount;
 
     @ApiModelProperty("分销销售")
-    @JsonProperty("fen_sale")
-    private String fenSale;
+    @JsonProperty("distribution_order_amount")
+    private String distributionOrderAmount;
 
-    public ChartReqVo(String month, String productSortCode, String productSortName, String priceChannelCode, String priceChannelName, String storeTypeCode, String storeTypeName, String dataStyleCode, String dataStyleName, String qunSale, String fenSale) {
-        this.month = month;
+    public ChartReqVo(String createTime, String productSortCode, String productSortName, String orderCode, String orderOriginal, String storeTypeCode, String storeType, String dataTypeCode, String dataType, String channelOrderAmount, String distributionOrderAmount) {
+        this.createTime = createTime;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
-        this.priceChannelCode = priceChannelCode;
-        this.priceChannelName = priceChannelName;
+        this.orderCode = orderCode;
+        this.orderOriginal = orderOriginal;
         this.storeTypeCode = storeTypeCode;
-        this.storeTypeName = storeTypeName;
-        this.dataStyleCode = dataStyleCode;
-        this.dataStyleName = dataStyleName;
-        this.qunSale = qunSale;
-        this.fenSale = fenSale;
+        this.storeType = storeType;
+        this.dataTypeCode = dataTypeCode;
+        this.dataType = dataType;
+        this.channelOrderAmount = channelOrderAmount;
+        this.distributionOrderAmount = distributionOrderAmount;
     }
 
     public ChartReqVo() {

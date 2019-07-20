@@ -36,4 +36,12 @@ public class PurchaseStorageRequest {
     @JsonProperty("create_by_name")
     private String createByName;
 
+    @ApiModelProperty(value="公司code")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty(value="公司名称")
+    @JsonProperty("company_name")
+    private String companyName;
+
 }

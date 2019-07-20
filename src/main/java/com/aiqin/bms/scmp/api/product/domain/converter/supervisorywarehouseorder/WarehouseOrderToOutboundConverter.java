@@ -2,7 +2,9 @@ package com.aiqin.bms.scmp.api.product.domain.converter.supervisorywarehouseorde
 
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrder;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
@@ -11,6 +13,7 @@ import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -21,7 +24,14 @@ import java.util.List;
  * @date: 2019-06-27
  * @time: 17:54
  */
+@Component
 public class WarehouseOrderToOutboundConverter implements Converter<SupervisoryWarehouseOrder,OutboundReqVo> {
+
+    private ProductSkuPicturesDao productSkuPicturesDao;
+
+    public WarehouseOrderToOutboundConverter(ProductSkuPicturesDao productSkuPicturesDao) {
+        this.productSkuPicturesDao = productSkuPicturesDao;
+    }
 
     @Override
     public OutboundReqVo convert(SupervisoryWarehouseOrder order) {
@@ -55,7 +65,8 @@ public class WarehouseOrderToOutboundConverter implements Converter<SupervisoryW
             OutboundProductReqVo reqVo1 = new OutboundProductReqVo();
             reqVo1.setSkuCode(record.getSkuCode());
             reqVo1.setSkuName(record.getSkuName());
-            reqVo1.setPictureUrl(null);
+            ProductSkuPictures productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(record.getSkuCode());
+            reqVo1.setPictureUrl(productSkuPicture.getProductPicturePath());
             reqVo1.setNorms(record.getProductSpec());
             reqVo1.setColorName(record.getColorName());
             reqVo1.setColorCode(null);
@@ -63,6 +74,7 @@ public class WarehouseOrderToOutboundConverter implements Converter<SupervisoryW
             reqVo1.setUnitCode(record.getUnitCode());
             reqVo1.setUnitName(record.getUnitName());
             reqVo1.setOutboundNorms(record.getProductSpec());
+            reqVo1.setOutboundBaseUnit("1");
             reqVo1.setOutboundBaseContent(record.getBaseProductContent().toString());
             reqVo1.setPreOutboundNum(record.getNum().longValue());
             reqVo1.setPreOutboundMainNum(record.getSingleCount().longValue());
