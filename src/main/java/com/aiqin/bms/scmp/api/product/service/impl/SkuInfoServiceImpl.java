@@ -827,6 +827,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 querySkuListReqVO.setCompanyCode(authToken.getCompanyCode());
+                querySkuListReqVO.setPersonId(authToken.getPersonId());
             }
             PageHelper.startPage(querySkuListReqVO.getPageNo(),querySkuListReqVO.getPageSize());
             List<QueryProductSkuListResp> queryProductSkuListResps = productSkuDao.querySkuList(querySkuListReqVO);

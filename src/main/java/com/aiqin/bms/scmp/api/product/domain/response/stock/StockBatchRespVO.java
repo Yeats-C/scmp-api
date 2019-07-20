@@ -168,19 +168,19 @@ public class StockBatchRespVO {
 
     @ApiModelProperty("单据类型")
     @JsonProperty(value = "document_type")
-    private String documentType;
+    private Integer documentType;
 
     @ApiModelProperty("单据号")
     @JsonProperty(value = "document_num")
-    private Long documentNum;
+    private String documentNum;
 
     @ApiModelProperty("来源单据类型")
     @JsonProperty(value = "source_document_type")
-    private String sourceDocumentType;
+    private Integer sourceDocumentType;
 
     @ApiModelProperty("来源单据号")
     @JsonProperty(value = "source_document_num")
-    private Long sourceDocumentNum;
+    private String sourceDocumentNum;
 
     @ApiModelProperty("批次单商品备注")
     @JsonProperty(value = "remark")
@@ -550,35 +550,35 @@ public class StockBatchRespVO {
         this.changeNum = changeNum;
     }
 
-    public String getDocumentType() {
+    public Integer getDocumentType() {
         return documentType;
     }
 
-    public void setDocumentType(String documentType) {
+    public void setDocumentType(Integer documentType) {
         this.documentType = documentType;
     }
 
-    public Long getDocumentNum() {
+    public String getDocumentNum() {
         return documentNum;
     }
 
-    public void setDocumentNum(Long documentNum) {
+    public void setDocumentNum(String documentNum) {
         this.documentNum = documentNum;
     }
 
-    public String getSourceDocumentType() {
+    public Integer getSourceDocumentType() {
         return sourceDocumentType;
     }
 
-    public void setSourceDocumentType(String sourceDocumentType) {
+    public void setSourceDocumentType(Integer sourceDocumentType) {
         this.sourceDocumentType = sourceDocumentType;
     }
 
-    public Long getSourceDocumentNum() {
+    public String getSourceDocumentNum() {
         return sourceDocumentNum;
     }
 
-    public void setSourceDocumentNum(Long sourceDocumentNum) {
+    public void setSourceDocumentNum(String sourceDocumentNum) {
         this.sourceDocumentNum = sourceDocumentNum;
     }
 

@@ -8,8 +8,11 @@ import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.common.SupervisoryWarehouseOrderTypeEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicDescDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.converter.supervisorywarehouseorder.WarehouseOrderToInboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.supervisorywarehouseorder.WarehouseOrderToOutboundConverter;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrder;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.supervisory.SaveSupervisoryWarehouseOrderReqVo;
@@ -25,6 +28,7 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -59,6 +63,9 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
 
     @Autowired
     private OutboundService outboundService;
+
+    @Autowired
+    private ProductSkuPicturesDao productSkuPicturesDao;
 
     /**
      * 功能描述: 保存
@@ -116,10 +123,10 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
         ((SupervisoryWarehouseOrderService)AopContext.currentProxy()).insertBatchProduct(records);
         order.setRecords(records);
         if (Objects.equals(SupervisoryWarehouseOrderTypeEnum.INBOUND, typeName)) {
-            inboundService.saveInbound(new WarehouseOrderToInboundConverter().convert(order));
+            inboundService.saveInbound(new WarehouseOrderToInboundConverter(productSkuPicturesDao).convert(order));
         } else {
             //TODO 锁库
-            outboundService.save(new WarehouseOrderToOutboundConverter().convert(order));
+            outboundService.save(new WarehouseOrderToOutboundConverter(productSkuPicturesDao).convert(order));
         }
         return insert;
     }

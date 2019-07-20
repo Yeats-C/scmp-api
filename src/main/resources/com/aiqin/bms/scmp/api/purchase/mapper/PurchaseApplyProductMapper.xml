@@ -509,6 +509,9 @@
       <if test="warehouseCode != null">
         and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
       </if>
+      <if test="settlementMethodCode != null">
+        and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+      </if>
       <if test="applyIds != null and applyIds.size > 0">
         and a.purchase_apply_id in
         <foreach collection="applyIds" index="index" item="item" open="(" separator="," close=")">
@@ -535,6 +538,9 @@
       </if>
       <if test="warehouseCode != null">
         and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="settlementMethodCode != null">
+        and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
       </if>
       <if test="applyIds != null and applyIds.size > 0">
         and a.purchase_apply_id in
@@ -565,6 +571,9 @@
       </if>
       <if test="warehouseCode != null">
         and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="settlementMethodCode != null">
+        and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
       </if>
       <if test="applyIds != null and applyIds.size > 0">
         and a.purchase_apply_id in
@@ -602,6 +611,9 @@
         <if test="warehouseCode != null">
            and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
         </if>
+        <if test="settlementMethodCode != null">
+          and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+        </if>
         <if test="applyIds != null and applyIds.size > 0">
            and a.purchase_apply_id in
         <foreach collection="applyIds" index="index" item="item" open="(" separator="," close=")">
@@ -628,7 +640,10 @@
          and a.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
       <if test="warehouseCode != null">
-          and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+         and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="settlementMethodCode != null">
+         and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
       </if>
       <if test="applyIds != null and applyIds.size > 0">
           and a.purchase_apply_id in

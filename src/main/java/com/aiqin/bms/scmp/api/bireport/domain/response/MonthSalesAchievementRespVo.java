@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 @ApiModel("月销售达成情况respVo")
 @Data
 public class MonthSalesAchievementRespVo {
@@ -13,13 +16,13 @@ public class MonthSalesAchievementRespVo {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @ApiModelProperty("日期")
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
 
-    @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @ApiModelProperty("月份")
+    @JsonProperty("month")
+    private String month;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -30,58 +33,63 @@ public class MonthSalesAchievementRespVo {
     private String productSortName;
 
     @ApiModelProperty("渠道编码")
-    @JsonProperty("price_channel_code")
-    private String priceChannelCode;
+    @JsonProperty("order_code")
+    private String orderCode;
 
     @ApiModelProperty("渠道")
-    @JsonProperty("price_channel_name")
-    private String priceChannelName;
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("门店类型code")
     @JsonProperty("store_type_code")
     private String storeTypeCode;
 
     @ApiModelProperty("门店类型名称")
-    @JsonProperty("store_type_name")
-    private String storeTypeName;
+    @JsonProperty("store_type")
+    private String storeType;
 
     @ApiModelProperty("数据类型code")
-    @JsonProperty("data_style_code")
-    private String dataStyleCode;
+    @JsonProperty("data_type_code")
+    private String dataTypeCode;
 
     @ApiModelProperty("数据类型name")
-    @JsonProperty("data_style_name")
-    private String dataStyleName;
+    @JsonProperty("data_type")
+    private String dataType;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("category_type_code")
-    private String categoryTypeCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("品类名称")
-    @JsonProperty("category_type_name")
-    private String categoryTypeName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("渠道销售额")
-    @JsonProperty("qun_amount")
-    private Integer qunAmount;
+    @JsonProperty("channel_amount")
+    private Integer channelAmount;
 
     @ApiModelProperty("渠道预算额")
-    @JsonProperty("qun_budget")
-    private Integer qunBudget;
+    @JsonProperty("channel_budget")
+    private Integer channelBudget;
 
     @ApiModelProperty("渠道达成率")
-    @JsonProperty("qun_yield_rate")
-    private Double qunYieldRate;
+    @JsonProperty("channel_yield_rate")
+    private Double channelYieldRate;
 
     @ApiModelProperty("分销销售额")
-    @JsonProperty("fen_amount")
-    private Integer fenAmount;
+    @JsonProperty("distribution_amount")
+    private Integer distributionlAmount;
 
     @ApiModelProperty("分销预算额")
-    @JsonProperty("fen_budget")
-    private Integer febBudget;
+    @JsonProperty("distribution_budget")
+    private Integer distributionbBudget;
 
     @ApiModelProperty("分销达成率")
-    @JsonProperty("fen_yield_rate")
-    private Double fenYieldRate;
+    @JsonProperty("distribution_yield_rate")
+    private Double distributionYieldRate;
+
+
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
 }

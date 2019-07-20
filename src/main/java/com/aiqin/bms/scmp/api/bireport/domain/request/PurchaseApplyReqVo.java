@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.domain.request;
 
+import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,7 +10,7 @@ import java.io.Serializable;
 
 @ApiModel("编辑采购申请request")
 @Data
-public class PurchaseApplyReqVo  implements Serializable {
+public class PurchaseApplyReqVo extends PagesRequest implements Serializable {
 
     @ApiModelProperty("sku编码")
     @JsonProperty(value = "sku_code")

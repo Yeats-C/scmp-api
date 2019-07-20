@@ -275,4 +275,6 @@ public interface ProductSkuDao {
     List<PriceChannelForChangePrice>  getSaleChannelList();
 
     List<ProductSaleAreaSupplierInfo> getSupplier();
+
+    List<ProductSkuInfo> getSkuInfoByCodeList(@Param("skuCodeList")List<String> skuCodeList);
 }

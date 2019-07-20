@@ -5,6 +5,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+import java.util.Map;
+
 @ApiModel("月累计品类销售情况respVo")
 @Data
 public class MonthCumulativeBrandSalesRespVo {
@@ -13,13 +16,17 @@ public class MonthCumulativeBrandSalesRespVo {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("时间begin")
-    @JsonProperty("begin_run_time")
-    private String beginRunTime;
+    @ApiModelProperty("日期")
+    @JsonProperty("create_time")
+    private String createTime;
 
-    @ApiModelProperty("时间finish")
-    @JsonProperty("finish_run_time")
-    private String finishRunTime;
+    @ApiModelProperty("月份")
+    @JsonProperty("month")
+    private String month;
+
+    @ApiModelProperty("月累计")
+    @JsonProperty("cumulative_month")
+    private String cumulativeMonth;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -30,75 +37,80 @@ public class MonthCumulativeBrandSalesRespVo {
     private String productSortName;
 
     @ApiModelProperty("渠道编码")
-    @JsonProperty("price_channel_code")
-    private String priceChannelCode;
+    @JsonProperty("order_code")
+    private String orderCode;
 
     @ApiModelProperty("渠道")
-    @JsonProperty("price_channel_name")
-    private String priceChannelName;
+    @JsonProperty("order_original")
+    private String orderOriginal;
 
     @ApiModelProperty("门店类型code")
     @JsonProperty("store_type_code")
     private String storeTypeCode;
 
     @ApiModelProperty("门店类型名称")
-    @JsonProperty("store_type_name")
-    private String storeTypeName;
+    @JsonProperty("store_type")
+    private String storeType;
 
     @ApiModelProperty("数据类型code")
-    @JsonProperty("data_style_code")
-    private String dataStyleCode;
+    @JsonProperty("data_type_code")
+    private String dataTypeCode;
 
     @ApiModelProperty("数据类型name")
-    @JsonProperty("data_style_name")
-    private String dataStyleName;
+    @JsonProperty("data_type")
+    private String dataType;
 
     @ApiModelProperty("品类编码")
-    @JsonProperty("category_type_code")
-    private String categoryTypeCode;
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("品类名称")
-    @JsonProperty("category_type_name")
-    private String categoryTypeName;
+    @JsonProperty("category_name")
+    private String categoryName;
 
     @ApiModelProperty("渠道销售额")
-    @JsonProperty("qun_order_amount")
-    private String qunOrderAmount;
+    @JsonProperty("channel_sales")
+    private String channelSales;
 
     @ApiModelProperty("去年同期渠道销售额")
-    @JsonProperty("qun_last_year_sales")
-    private String qunLastYearSales;
+    @JsonProperty("channel_last_year_sales")
+    private String channelLastYearSales;
 
     @ApiModelProperty("上月渠道销售额")
-    @JsonProperty("qun_last_month_sales")
-    private String qunLastMonthSales;
+    @JsonProperty("channel_last_month_sales")
+    private String channelLastMonthSales;
 
     @ApiModelProperty("渠道同比")
-    @JsonProperty("qun_compared_same")
-    private String qunComparedSame;
+    @JsonProperty("channel_compared_same")
+    private String channelComparedSame;
 
     @ApiModelProperty("渠道环比")
-    @JsonProperty("qun_sequential")
-    private String qunSequential;
+    @JsonProperty("channel_sequential")
+    private String channelSequential;
 
     @ApiModelProperty("分销销售额")
-    @JsonProperty("fen_order_amount")
-    private String fenOrderAmount;
+    @JsonProperty("distribution_sales")
+    private String distributionSales;
 
     @ApiModelProperty("去年同期分销销售额")
-    @JsonProperty("fen_last_year_sales")
-    private String fenLastYearSales;
+    @JsonProperty("distribution_last_year_sales")
+    private String distributionLastYearSales;
 
     @ApiModelProperty("上月分销销售额")
-    @JsonProperty("fen_last_month_sales")
-    private String fenLastMonthSales;
+    @JsonProperty("distribution_last_month_sales")
+    private String distributionLastMonthSales;
 
     @ApiModelProperty("分销同比")
-    @JsonProperty("fen_compared_same")
-    private String fenComparedSame;
+    @JsonProperty("distribution_compared_same")
+    private String distributionComparedSame;
 
     @ApiModelProperty("分销环比")
-    @JsonProperty("fen_sequential")
-    private String fenSequential;
+    @JsonProperty("distribution_sequential")
+    private String distributionSequential;
+
+
+    @ApiModelProperty("返回列名")
+    @JsonProperty("column_list")
+    private List<Map> columnList;
 
 }

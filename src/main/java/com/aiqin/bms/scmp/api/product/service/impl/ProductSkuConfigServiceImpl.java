@@ -747,6 +747,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         AuthToken token = AuthenticationInterceptor.getCurrentAuthToken();
         if (null != token) {
             reqVo.setCompanyCode(token.getCompanyCode());
+            reqVo.setPersonId(token.getPersonId());
         }
         List<Long> longs = mapper.selectSkuListForSaleAreaCount(reqVo);
         if(CollectionUtils.isEmpty(longs)){

@@ -353,7 +353,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         PurchaseApplyProductInfoResponse info = new PurchaseApplyProductInfoResponse();
         Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
         Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0;
-        Integer productTaxSum = 0, matterTaxSum = 0;
+        Integer productTaxSum = 0, matterTaxSum = 0, singSum = 0;
         if(CollectionUtils.isNotEmptyCollection(products)) {
             for (PurchaseApplyDetailResponse product : products) {
                 // 商品采购件数量
@@ -363,6 +363,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 Integer packNumber = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent();
                 // 计算商品采购件数量
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
+                singSum += singleCount;
                 // 计算采购含税总价
                 Integer productPurchaseAmount = product.getProductPurchaseAmount() == null ? 0 : product.getProductPurchaseAmount();
                 Integer productPurchaseSum = productPurchaseAmount * singleCount;
@@ -393,7 +394,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         info.setGiftSingleSum(giftSingleSum);
         info.setGiftTaxSum(0);
         info.setPieceSum(productPieceSum + matterPieceSum + giftPieceSum);
-        info.setSingleSum(productSingleSum + matterSingleSum + giftSingleSum);
+        info.setSingleSum(singSum);
         info.setTaxSum(productTaxSum);
         return info;
     }

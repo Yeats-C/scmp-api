@@ -53,7 +53,8 @@
 	CASE WHEN ifnull(d.arrival_subscribe_status,0)=0 THEN '未预约' when d.arrival_subscribe_status = 1 THEN '已预约'else '未预约待确认' END as arrival_subscribe_status_name,
     d.license_plate,d.arrival_subscribe_time,d.driver_name,d.phone_mobile,
     d.remark,b.expect_arrival_time,b.valid_time,c.pre_inbound_num,
-    c.pre_tax_amount,a.purchase_group_code,a.purchase_group_name,d.create_time
+    c.pre_tax_amount,a.purchase_group_code,a.purchase_group_name,d.create_time,
+    d.create_by, d.update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
