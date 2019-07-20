@@ -247,6 +247,7 @@
       <foreach collection="list" open="(" close=")" separator="," item="item">
             #{item}
       </foreach>
+      order by a.create_time desc
   </select>
   <select id="selectListByQueryVoCount" resultType="java.lang.Long">
     select
