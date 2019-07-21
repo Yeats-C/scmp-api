@@ -9,18 +9,12 @@ import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
-import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -110,7 +104,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         if (Objects.nonNull(errorMsg)) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, errorMsg.toString()));
         }
-        String formNo = "CP" + new IdSequenceUtils().nextId();
+        String formNo = "CP" + IdSequenceUtils.getInstance().nextId();
         reqVO.setFormNo(formNo);
         //获取编码
         synchronized (ProductSkuChangePriceServiceImpl.class){
@@ -451,7 +445,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,null,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
             List<String> area = Lists.newArrayList();
             areaInfo.forEach(o->{
-                o.setCode(priceInfo.getCode());
+                o.setMainCode(priceInfo.getCode());
                 area.add(o.getName());
             });
             log.setAreaInfo(Joiner.on(",").join(area));
@@ -497,7 +491,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),priceInfo.getEffectiveTimeEnd(),1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
             List<String> area = Lists.newArrayList();
             areaInfo.forEach(o->{
-                o.setCode(priceInfo.getCode());
+                o.setMainCode(priceInfo.getCode());
                 area.add(o.getName());
             });
             log.setAreaInfo(Joiner.on(",").join(area));

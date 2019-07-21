@@ -91,7 +91,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
     @Override
     @Transactional
     public String saveList(ApplyDraftReqVO applyDraftReqVO,Long code) {
-        String fromNo = "SP"+ new IdSequenceUtils().nextId();
+        String fromNo = "SP"+ IdSequenceUtils.getInstance().nextId();
         try {
             List<ApplyProduct> applyProducts = new LinkedList<>();
             List<DraftSaveListReqVO> draftSaveListReqVOS = applyDraftReqVO.getDraftSaveListReqVO();
@@ -229,7 +229,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String workFlow(String applyCode) {
-        String fromNo = "SP"+ new IdSequenceUtils().nextId();
+        String fromNo = "SP"+ IdSequenceUtils.getInstance().nextId();
         log.info("ApplyProductServiceImplProduct-workFlow-传入参数是：[{}]", JSON.toJSONString(applyCode));
         try {
             WorkFlowVO workFlowVO = new WorkFlowVO();

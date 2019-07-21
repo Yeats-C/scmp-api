@@ -602,7 +602,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
             WorkFlowVO workFlowVO = new WorkFlowVO();
             workFlowVO.setFormUrl(workFlowBaseUrl.applyContractUrl+"?applyType="+applyContractDTO.getApplyType()+"&applyCode="+applyContractDTO.getApplyContractCode()+"&id="+applyContractDTO.getId()+"&itemCode=4"+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
-            workFlowVO.setFormNo("HT"+new IdSequenceUtils().nextId());
+            workFlowVO.setFormNo("HT"+IdSequenceUtils.getInstance().nextId());
             String title = "修改";
             if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applyContractDTO.getApplyType())){
                 title = "新增";
