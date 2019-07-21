@@ -1,5 +1,10 @@
 package com.aiqin.bms.scmp.api.common;
 
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 /**
  * @功能说明: 各种状态值设置
  * @author: wangxu
@@ -56,5 +61,9 @@ public enum StatusTypeCode {
 
     public String getName() {
         return name;
+    }
+
+    public static Map<String,StatusTypeCode> getAll(){
+        return Arrays.stream(values()).collect(Collectors.toMap(StatusTypeCode::getName, Function.identity(),(k1,k2)->k2));
     }
 }

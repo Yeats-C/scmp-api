@@ -22,9 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @功能说明:品类service实现
@@ -312,6 +310,11 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             throw new GroundRuntimeException("此品类在SKU中存在,不允许禁用");
         }
         return true;
+    }
+
+    @Override
+    public Map<String, ProductCategory> selectByCategoryNames(Set<String> brandNameList, String companyCode) {
+        return productCategoryDao.selectByCategoryNames(brandNameList,companyCode);
     }
 
     private List<ProductCategory> getChildCategory(List<ProductCategory> productCategories, String categoryId, String companyCode){

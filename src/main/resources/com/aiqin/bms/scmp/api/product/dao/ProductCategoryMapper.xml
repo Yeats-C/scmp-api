@@ -256,4 +256,16 @@
   <select id="selectByPrimaryKey" resultMap="BaseResultMap">
      SELECT * from product_category where id = #{id,jdbcType=BIGINT}
   </select>
+    <select id="selectByCategoryNames" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from product_category
+      where company_code = #{companyCode}
+      and
+      category_status = 0
+      and category_name  in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+          #{item}
+      </foreach>
+    </select>
 </mapper>

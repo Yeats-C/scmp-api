@@ -3,9 +3,12 @@ package com.aiqin.bms.scmp.api.product.dao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.QueryProductBrandReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryProductBrandRespVO;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface ProductBrandTypeDao {
     List<ProductBrandType> selectAllBrand();
@@ -62,4 +65,6 @@ public interface ProductBrandTypeDao {
      * @return java.util.List<com.aiqin.mgs.product.api.domain.ProductBrandType>
      */
     List<ProductBrandType> selectByBrandCodes(@Param("codes") List<String> codes);
+    @MapKey("brandName")
+    Map<String, ProductBrandType> selectByBrandNames(@Param("list") Set<String> brandNameList, @Param("companyCode") String companyCode);
 }
