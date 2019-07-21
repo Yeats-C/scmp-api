@@ -180,10 +180,19 @@ mgs:
               name: 查询
             - code: SCMP001009002
               name: 增加
+          - code: SCMP0010010
+            name: 供应商账号管理
+            link: '/basicData/accountList'
+            icon: fa-home
+            methods:
+            - code: SCMP001009001
+              name: 查询
+            - code: SCMP001009002
+              name: 增加
         - code: SCMP003
           name: 供应商管理
           link: ''
-          icon: icon-scm-scmp
+          icon: icon-scm-ziliao
           resources:
           - code: SCMP003001
             name: 供应商管理
@@ -583,77 +592,171 @@ mgs:
         - code: SCMP010
           name: 报表
           link: ''
-          icon: icon-scm-baobiao
+          icon: icon-scm-ziliao
           resources:
           - code: SCMP010001
-            name: 缺货报表
-            link: '/report/stockout'
+            name: 供应商到到货率
+            link: '/report/supplierArrival'
             icon: fa-home
             methods:
             - code: SCMP010001001
               name: 查询
-            - code: SCMP010001002
-              name: 新增
           - code: SCMP010002
-            name: 大库存预警报表
-            link: '/report/largeInventory'
+            name: 批次商品进销存
+            link: '/report/goodsInvoicing'
             icon: fa-home
             methods:
             - code: SCMP010002001
               name: 查询
-            - code: SCMP010002002
-              name: 新增
           - code: SCMP010003
-            name: 大效期预警报表
-            link: '/report/largePeriod'
+            name: 赠品进销存
+            link: '/report/presentInvoicing'
             icon: fa-home
             methods:
             - code: SCMP010003001
               name: 查询
-            - code: SCMP010003002
-              name: 新增
           - code: SCMP010004
-            name: 建议补货
-            link: '/report/suggest'
+            name: 供应商退货
+            link: '/report/supplierReturn'
             icon: fa-home
             methods:
             - code: SCMP010004001
               name: 查询
-            - code: SCMP010004002
-              name: 新增
           - code: SCMP010005
-            name: SKU缺货原因分析
-            link: '/report/reasonAnalysis'
+            name: 新品批次动销率
+            link: '/report/batchPinRate'
             icon: fa-home
             methods:
             - code: SCMP010005001
               name: 查询
-            - code: SCMP010005002
-              name: 新增
           - code: SCMP010006
-            name: 采购到货预警
-            link: '/report/arrival'
+            name: 门店复购率
+            link: '/report/storeRepurchase'
             icon: fa-home
             methods:
             - code: SCMP010006001
               name: 查询
-            - code: SCMP010002002
-              name: 新增
           - code: SCMP010007
-            name: 合同临期预警
-            link: '/report/contractDeadline'
+            name: 负毛利
+            link: '/report/nagativeGross'
             icon: fa-home
             methods:
             - code: SCMP010007001
               name: 查询
-            - code: SCMP010007002
-              name: 新增
           - code: SCMP010008
-            name: SKU采购价统计
-            link: '/report/statistics'
+            name: 建议补货
+            link: '/report/suggestReplenish'
             icon: fa-home
             methods:
             - code: SCMP010008001
               name: 查询
-            - code: SCMP010008002
-              name: 新增
+          - code: SCMP010009
+            name: 低库存
+            link: '/report/lowInventory'
+            icon: fa-home
+            methods:
+            - code: SCMP010009001
+              name: 查询
+          - code: SCMP010010
+            name: 高库存
+            link: '/report/highInventory'
+            icon: fa-home
+            methods:
+            - code: SCMP010010001
+              name: 查询
+          - code: SCMP010011
+            name: 品牌促销
+            link: '/report/brandPromotion'
+            icon: fa-home
+            methods:
+            - code: SCMP010011001
+              name: 查询
+          - code: SCMP010012
+            name: 品类促销
+            link: '/report/categoryPromotion'
+            icon: fa-home
+            methods:
+            - code: SCMP010012001
+              name: 查询
+          - code: SCMP010013
+            name: 大效期
+            link: '/report/periodValidity'
+            icon: fa-home
+            methods:
+            - code: SCMP010013001
+              name: 查询
+          - code: SCMP010014
+            name: 月销售情况
+            link: '/report/monthSales'
+            icon: fa-home
+            methods:
+            - code: SCMP010014001
+              name: 查询
+          - code: SCMP010015
+            name: 月毛利率情况
+            link: '/report/monthGross'
+            icon: fa-home
+            methods:
+            - code: SCMP010015001
+              name: 查询
+          - code: SCMP010016
+            name: 月销售情况达成率
+            link: '/report/monthSalesAchievement'
+            icon: fa-home
+            methods:
+            - code: SCMP010016001
+              name: 查询
+          - code: SCMP010017
+            name: 月累计品类销售情况
+            link: '/report/MTDCategorySales'
+            icon: fa-home
+            methods:
+            - code: SCMP010017001
+              name: 查询
+          - code: SCMP010018
+            name: 月累计品类毛利率情况
+            link: '/report/MTDCategoryGross'
+            icon: fa-home
+            methods:
+            - code: SCMP010018001
+              name: 查询
+        - code: SCMP011
+          name: 图表
+          link: ''
+          icon: icon-scm-ziliao
+          resources:
+          - code: SCMP011001
+            name: 月销售情况
+            link: '/chart/monthSales'
+            icon: fa-home
+            methods:
+            - code: SCMP011001001
+              name: 查询
+          - code: SCMP011002
+            name: 月毛利率情况
+            link: '/chart/monthGross'
+            icon: fa-home
+            methods:
+            - code: SCMP011001002001
+              name: 查询
+          - code: SCMP011001003
+            name: 月销售情况达成率
+            link: '/chart/monthSalesAchievement'
+            icon: fa-home
+            methods:
+            - code: SCMP011001003001
+              name: 查询
+          - code: SCMP011001004
+            name: 月累计品类销售情况
+            link: '/chart/MTDCategorySales'
+            icon: fa-home
+            methods:
+            - code: SCMP011001004001
+              name: 查询
+          - code: SCMP011001005
+            name: 月累计品类毛利率情况
+            link: '/chart/MTDCategoryGross'
+            icon: fa-home
+            methods:
+            - code: SCMP011001005001
+              name: 查询
