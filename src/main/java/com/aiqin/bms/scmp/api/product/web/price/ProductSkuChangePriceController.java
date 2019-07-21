@@ -3,7 +3,6 @@ package com.aiqin.bms.scmp.api.product.web.price;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO;
@@ -13,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChan
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
+import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -152,5 +152,11 @@ public class ProductSkuChangePriceController {
     public HttpResponse<List<ProductSkuChangePriceImportRespVO>> importProductSkuChangePrice(MultipartFile file, String purchaseGroupCode, String companyCode, String supplyCode){
         ProductSkuChangePriceImportReqVo productSkuChangePriceImportReqVo = new ProductSkuChangePriceImportReqVo(file,purchaseGroupCode,companyCode,supplyCode);
         return HttpResponse.success(productSkuChangePriceService.importProductSkuChangePrice(productSkuChangePriceImportReqVo));
+    }
+    @ApiOperation("测试生成id")
+    @PostMapping("/getid")
+    public Long getid(){
+        IdSequenceUtils idSequenceUtils = IdSequenceUtils.getInstance();
+        return idSequenceUtils.nextId();
     }
 }

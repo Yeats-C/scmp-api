@@ -104,7 +104,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         if (Objects.nonNull(errorMsg)) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, errorMsg.toString()));
         }
-        String formNo = "CP" + new IdSequenceUtils().nextId();
+        String formNo = "CP" + IdSequenceUtils.getInstance().nextId();
         reqVO.setFormNo(formNo);
         //获取编码
         synchronized (ProductSkuChangePriceServiceImpl.class){

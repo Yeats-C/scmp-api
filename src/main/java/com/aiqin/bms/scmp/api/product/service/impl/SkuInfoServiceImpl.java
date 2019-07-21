@@ -608,7 +608,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if (CollectionUtils.isNotEmpty(saveSkuApplyInfoReqVO.getSkuCodes())){
             productSkuDrafts = productSkuDao.getSkuDraftByCodes(saveSkuApplyInfoReqVO.getSkuCodes());
         }
-        String formNo =  "SP"+ new IdSequenceUtils().nextId();
+        String formNo =  "SP"+ IdSequenceUtils.getInstance().nextId();
         EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
         long code = encodingRule.getNumberingValue();
         List<ApplyProductSku> applyProductSkus = BeanCopyUtils.copyList(productSkuDrafts, ApplyProductSku.class);
