@@ -343,7 +343,7 @@
     <if test="createTimeEnd != null and createTimeEnd != '' ">
       and a.create_time &lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
     </if>
-    <if test="applyType != null and applyType != ''">
+    <if test="applyType != null and applyType != '' ">
       and a.apply_type = #{applyType}
     </if>
     <if test="applyCode != null  and applyCode != '' ">

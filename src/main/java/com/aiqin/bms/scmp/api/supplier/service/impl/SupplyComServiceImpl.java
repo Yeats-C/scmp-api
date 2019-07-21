@@ -159,6 +159,7 @@ public class SupplyComServiceImpl implements SupplyComService {
                 supplyComDetailRespVO.setApplyAbbreviation(supplyCompanyDetailDTO.getSupplyAbbreviation());
                 supplyComDetailRespVO.setApplySupplyCode(supplyCompanyDetailDTO.getSupplyCode());
                 supplyComDetailRespVO.setApplySupplyType(supplyCompanyDetailDTO.getSupplyType());
+                supplyComDetailRespVO.setApplySupplyTypeName(supplyCompanyDetailDTO.getSupplyTypeName());
                 supplyComDetailRespVO.setApplySupplyName(supplyCompanyDetailDTO.getSupplyName());
                 //获取操作日志
                 OperationLogVo operationLogVo = new OperationLogVo();

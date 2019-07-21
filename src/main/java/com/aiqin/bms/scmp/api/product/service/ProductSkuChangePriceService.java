@@ -6,9 +6,11 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceAreaInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceImportRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
@@ -235,4 +237,8 @@ public interface ProductSkuChangePriceService {
      * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO>
      */
     BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO);
+    /**
+     * 采购变价批量导入
+     */
+    List<ProductSkuChangePriceImportRespVO> importProductSkuChangePrice(ProductSkuChangePriceImportReqVo reqVo);
 }

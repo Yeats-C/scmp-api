@@ -3,9 +3,12 @@ package com.aiqin.bms.scmp.api.product.web.price;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceImportRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
@@ -18,8 +21,10 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -140,5 +145,12 @@ public class ProductSkuChangePriceController {
             ex.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
+    }
+
+    @ApiOperation("导入商品信息")
+    @PostMapping("/importProductSkuChangePrice")
+    public HttpResponse<List<ProductSkuChangePriceImportRespVO>> importProductSkuChangePrice(MultipartFile file, String purchaseGroupCode, String companyCode, String supplyCode){
+        ProductSkuChangePriceImportReqVo productSkuChangePriceImportReqVo = new ProductSkuChangePriceImportReqVo(file,purchaseGroupCode,companyCode,supplyCode);
+        return HttpResponse.success(productSkuChangePriceService.importProductSkuChangePrice(productSkuChangePriceImportReqVo));
     }
 }

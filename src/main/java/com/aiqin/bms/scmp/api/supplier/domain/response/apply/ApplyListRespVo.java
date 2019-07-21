@@ -25,6 +25,10 @@ public class ApplyListRespVo {
     @ApiModelProperty("申请类型")
     private String applyType;
 
+    public String getApplyType() {
+        return "0".equals(this.applyType)?"1":"2";
+    }
+
     @ApiModelProperty("功能项")
     private String modelType;
 
