@@ -242,10 +242,10 @@
             <if test="createByName != null">
                 create_by_name,
             </if>
-            <if test="updateById != null">
+            <if test="createById != null">
                 update_by_id,
             </if>
-            <if test="updateByName != null">
+            <if test="createByName != null">
                 update_by_name,
             </if>
                 create_time,
@@ -348,11 +348,11 @@
             <if test="createByName != null">
                 #{createByName,jdbcType=VARCHAR},
             </if>
-            <if test="updateById != null">
-                #{updateById,jdbcType=VARCHAR},
+            <if test="createById != null">
+                #{createById,jdbcType=VARCHAR},
             </if>
-            <if test="updateByName != null">
-                #{updateByName,jdbcType=VARCHAR},
+            <if test="createByName != null">
+                #{createByName,jdbcType=VARCHAR},
             </if>
              now(),now()
         </trim>

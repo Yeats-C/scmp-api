@@ -1749,7 +1749,8 @@
         s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
         s.warehouse_code as warehouseCode,s.warehouse_name as warehouseName,s.sku_code as skuCode,s.sku_name as skuName,
         ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
-        psc.settlement_method_code as settlementMethodCode,psc.settlement_method_name as settlementMethodName
+        psc.settlement_method_code as settlementMethodCode,psc.settlement_method_name as settlementMethodName,
+        su.factory_sku_code as factorySkuCode
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code
@@ -1779,7 +1780,8 @@
         s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
         s.warehouse_code as warehouseCode,s.warehouse_name as warehouseName,s.sku_code as skuCode,s.sku_name as skuName,
         ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
-        psc.settlement_method_code as settlementMethodCode,psc.settlement_method_name as settlementMethodName
+        psc.settlement_method_code as settlementMethodCode,psc.settlement_method_name as settlementMethodName,
+        su.factory_sku_code as factorySkuCode
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code

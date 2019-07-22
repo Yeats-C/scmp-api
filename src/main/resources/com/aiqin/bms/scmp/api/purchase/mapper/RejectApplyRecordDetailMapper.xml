@@ -48,6 +48,7 @@
     <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
     <result column="color_name" jdbcType="VARCHAR" property="colorName" />
     <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
   </resultMap>
   <sql id="Base_Column_List">
     reject_apply_record_detail_id,reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name,
@@ -56,7 +57,7 @@
     tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name, 
     product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time, 
     settlement_method_code,settlement_method_name, supplier_code, supplier_name,   create_by_id, create_by_name, update_by_id,
-    update_by_name, create_time, update_time,color_code,color_name,model_number,single_count
+    update_by_name, create_time, update_time,color_code,color_name,model_number,single_count,factory_sku_code
   </sql>
   <resultMap id="ResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse">
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
@@ -174,7 +175,7 @@
       warehouse_code, warehouse_name, product_amount, 
       product_total_amount, product_cost, batch_no, 
       batch_remark, batch_create_time, settlement_method_code, settlement_method_name,
-      supplier_code, supplier_name,  color_code,color_name,model_number,
+      supplier_code, supplier_name,  color_code,color_name,model_number,factory_sku_code,
       create_by_id, create_by_name, update_by_id, 
       update_by_name, create_time, update_time
       )
@@ -220,6 +221,7 @@
       #{item.colorCode,jdbcType=VARCHAR},
       #{item.colorName,jdbcType=VARCHAR},
       #{item.modelNumber,jdbcType=VARCHAR},
+      #{item.factorySkuCode,jdbcType=VARCHAR},
       #{item.createById,jdbcType=VARCHAR},
       #{item.createByName,jdbcType=VARCHAR},
       #{item.updateById,jdbcType=VARCHAR},

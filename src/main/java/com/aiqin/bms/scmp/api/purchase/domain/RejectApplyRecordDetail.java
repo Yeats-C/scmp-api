@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -40,7 +39,7 @@ public class RejectApplyRecordDetail {
     @JsonProperty("apply_record_status")
     private Integer applyRecordStatus;
 
-    @ApiModelProperty(value="条形码")
+    @ApiModelProperty(value = "条形码")
     @JsonProperty("barcode")
     private String barcode;
 
@@ -76,15 +75,19 @@ public class RejectApplyRecordDetail {
     @JsonProperty("product_type")
     private Integer productType;
 
-    @ApiModelProperty(value="颜色编码")
+    @ApiModelProperty(value = "颜色编码")
     @JsonProperty("color_code")
     private String colorCode;
 
-    @ApiModelProperty(value="颜色")
+    @ApiModelProperty(value = "颜色")
     @JsonProperty("color_name")
     private String colorName;
 
-    @ApiModelProperty(value="型号")
+    @ApiModelProperty(value = "厂商sku")
+    @JsonProperty("factory_sku_code")
+    private String factorySkuCode;
+
+    @ApiModelProperty(value = "型号")
     @JsonProperty("model_number")
     private String modelNumber;
 
@@ -92,11 +95,11 @@ public class RejectApplyRecordDetail {
     @JsonProperty("product_spec")
     private String productSpec;
 
-    @ApiModelProperty(value="单位")
+    @ApiModelProperty(value = "单位")
     @JsonProperty("unit_code")
     private String unitCode;
 
-    @ApiModelProperty(value="单位")
+    @ApiModelProperty(value = "单位")
     @JsonProperty("unit_name")
     private String unitName;
 

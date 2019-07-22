@@ -32,6 +32,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -167,7 +168,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         } catch (Exception e) {
             LOGGER.error("添加退供申请单异常:{}", e);
-            throw new RuntimeException(String.format("添加退供申请单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("添加退供申请单异常:{%s}", e.getMessage()));
         }
         return HttpResponse.success();
     }
@@ -224,7 +225,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             LOGGER.info("修改退供申请详情影响条数:{}", count);
         } catch (Exception e) {
             LOGGER.error("修改退供申请详情影响条数:{}", e.getMessage());
-            throw new RuntimeException(String.format("修改退供申请单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("修改退供申请单异常:{%s}", e.getMessage()));
         }
         return HttpResponse.success();
     }
@@ -467,13 +468,13 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             Boolean stockStatus = stockService.returnSupplyLockStocks(iLockStockBatchReqVO);
             if (!stockStatus) {
                 LOGGER.error("锁定库存异常:{}", rejectRecord.toString());
-                throw new RuntimeException(String.format("锁定库存异常:{%s}", rejectRecord.toString()));
+                throw new GroundRuntimeException(String.format("锁定库存异常:{%s}", rejectRecord.toString()));
             }
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
         } catch (BeansException e) {
             LOGGER.error("新增退供单异常:{}", e.getMessage());
-            throw new RuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
         }
         return HttpResponse.success();
     }
@@ -546,8 +547,9 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             outboundService.returnSupplySave(reqVo);
             return HttpResponse.success();
         } catch (Exception e) {
+
             LOGGER.error("更新退供单异常:{}", e.getMessage());
-            throw new RuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
         }
     }
 
@@ -624,7 +626,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             }
         } catch (Exception e) {
             LOGGER.error("更新退供单异常:{}", e.getMessage());
-            throw new RuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
         }
 
     }
@@ -646,12 +648,12 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             Boolean stockStatus = stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
             if (!stockStatus) {
                 LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
-                throw new RuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
+                throw new GroundRuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
             }
             return HttpResponse.success();
         } catch (RuntimeException e) {
             LOGGER.error("取消-更改退供申请异常:{}", e.getMessage());
-            throw new RuntimeException(String.format("取消-更改退供申请异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("取消-更改退供申请异常:{%s}", e.getMessage()));
         }
     }
 
