@@ -549,7 +549,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             return HttpResponse.failure(ResultCode.PURCHASE_ORDER_CHECK);
         }
         order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_3);
-        order.setPurchaseOrderId(purchaseOrderId);
+        order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
         Integer count = purchaseOrderDao.update(order);
         if(count == 0){
             LOGGER.error("采购单开始备货状态修改失败");
@@ -564,7 +564,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
         }
         String name = "入库申请单"+ s + "，入库完成";
-        log(purchaseOrderId, purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
+        log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
                 name , null);
         return HttpResponse.success();
     }
