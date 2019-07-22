@@ -580,6 +580,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 stockVoRequest.setSkuName(outboundProduct.getSkuName());
                 //设置更改数量
                 stockVoRequest.setChangeNum(outboundProduct.getPraOutboundMainNum());
+
+                stockVoRequest.setDocumentNum(outbound.getOutboundOderCode());
+                stockVoRequest.setDocumentType(1);//1出库 2入库
+                stockVoRequest.setSourceDocumentNum(outbound.getSourceOderCode());
+                stockVoRequest.setSourceDocumentType(Integer.parseInt(outbound.getOutboundTypeCode().toString()));
                 stockVoRequestList.add(stockVoRequest);
             }
             stockChangeRequest.setStockVoRequests(stockVoRequestList);

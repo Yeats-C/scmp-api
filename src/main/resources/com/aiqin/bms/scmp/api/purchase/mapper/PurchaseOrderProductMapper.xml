@@ -219,4 +219,8 @@
     and p.sku_code = #{skuCode,jdbcType=VARCHAR}
     and o.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
   </select>
+  <select id="selectPreNumAndPraNumBySkuCodeAndSource" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" /> from purchase_order_product
+    where purchase_order_code = #{code, jdbcType=VARCHAR} and sku_code = #{skuCode, jdbcType=VARCHAR}
+  </select>
 </mapper>

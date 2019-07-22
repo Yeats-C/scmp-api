@@ -531,16 +531,16 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse purchaseOrderStock(PurchaseStorageRequest purchaseStorage){
-        if(purchaseStorage == null || StringUtils.isBlank(purchaseStorage.getPurchaseOrderId())){
+        if(purchaseStorage == null || StringUtils.isBlank(purchaseStorage.getPurchaseOrderCode())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        String purchaseOrderId = purchaseStorage.getPurchaseOrderId();
+        String purchaseOrderCode = purchaseStorage.getPurchaseOrderCode();
         // 查询采购单的详情
         PurchaseOrder order = new PurchaseOrder();
-        order.setPurchaseOrderCode(purchaseOrderId);
+        order.setPurchaseOrderCode(purchaseOrderCode);
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
         if(purchaseOrder == null){
-            LOGGER.info("未查询到采购单的信息" + purchaseOrderId);
+            LOGGER.info("未查询到采购单的信息" + purchaseOrderCode);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
         }
         // 变更采购单的状态（开始备货）
@@ -628,7 +628,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 reqVo.setPreInboundMainNum(singleCount.longValue());
                 if(purchaseStorage.getPurchaseNum() > 1){
-                    Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
+                    Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
                     if(actualSingleCount < singleCount) {
                         reqVo.setPreInboundNum(singleCount.longValue() - actualSingleCount.longValue());
                     }
@@ -667,16 +667,21 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         // 变更采购的入库的实际单品数量
         List<PurchaseOrderProduct> list = purchaseStorage.getOrderList();
         for(PurchaseOrderProduct product:list){
+            product.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderCode());
             Integer count = purchaseOrderProductDao.update(product);
             if(count == 0){
                 return HttpResponse.failure(ResultCode.UPDATE_ERROR);
             }
+            PurchaseOrderProduct purchaseOrderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(purchaseStorage.getPurchaseOrderCode(), product.getSkuCode());
+            if(purchaseOrderProduct.getSingleCount() - purchaseOrderProduct.getActualSingleCount() > 0){
+                Integer code = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseStorage.getPurchaseOrderCode());
+                purchaseStorage.setPurchaseNum(code + 1);
+            }
         }
         PurchaseOrder order = new PurchaseOrder();
-        order.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderId());
+        order.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderCode());
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
-        Integer code = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseStorage.getPurchaseOrderId());
-        purchaseStorage.setPurchaseNum(code + 1);
+
         InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage);
         List<InboundProductReqVo> inboundList = save.getList();
         // 是否入库完成

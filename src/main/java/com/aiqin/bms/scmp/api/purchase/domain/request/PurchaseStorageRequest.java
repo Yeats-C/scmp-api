@@ -21,6 +21,10 @@ public class PurchaseStorageRequest {
     @JsonProperty("purchase_order_id")
     private String purchaseOrderId;
 
+    @ApiModelProperty(value="采购单code")
+    @JsonProperty("purchase_order_code")
+    private String purchaseOrderCode;
+
     @ApiModelProperty(value="质检报告数据")
     @JsonProperty("report_request")
     private List<ProductSkuInspReport> reportRequest;
