@@ -558,6 +558,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             LOGGER.error("采购单开始备货状态修改失败");
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
+        log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.STOCK_UP.getCode(),
+                PurchaseOrderLogEnum.STOCK_UP.getName() , null);
         // 开始备货， 生成入库单
         purchaseStorage.setPurchaseNum(1);
         InboundReqSave reqSave = this.InboundReqSave(purchaseOrder, purchaseStorage);
