@@ -142,8 +142,8 @@ public class PurchaseManageController {
 
     @PostMapping("/warehousing")
     @ApiOperation("入库")
-    public HttpResponse getWarehousing(@RequestBody List<PurchaseOrderProduct> list) {
-        return purchaseManageService.getWarehousing(list);
+    public HttpResponse getWarehousing(@RequestBody PurchaseStorageRequest purchaseStorageRequest) {
+        return purchaseManageService.getWarehousing(purchaseStorageRequest);
     }
 
     @GetMapping("/sku/info")

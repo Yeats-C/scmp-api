@@ -598,21 +598,21 @@ public class InboundServiceImpl implements InboundService {
         log.error("异步回调采购接口");
         log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultReqVo));
         try {
-            List<PurchaseOrderProduct> purchaseOrderProducts = new ArrayList<>();
-            List<StorageResultItemReqVo> storageResultItemReqVos = storageResultReqVo.getItemReqVos();
-            for(StorageResultItemReqVo storageResultItemReqVo : storageResultItemReqVos){
-                PurchaseOrderProduct purchaseOrderProduct = new PurchaseOrderProduct();
-                purchaseOrderProduct.setPurchaseOrderId(storageResultReqVo.getPurchaseCode());
-                purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundMainNum().toString()));
-                purchaseOrderProduct.setSkuCode(storageResultItemReqVo.getSkuCode());
-                purchaseOrderProducts.add(purchaseOrderProduct);
-            }
-            HttpResponse httpResponse = purchaseManageService.getWarehousing(purchaseOrderProducts);
-            if(httpResponse.getCode().equals("0")){
-                log.info("入库单回传给采购接口成功");
-            }else {
-                log.error("入库单回传给采购接口失败");
-            }
+//            List<PurchaseOrderProduct> purchaseOrderProducts = new ArrayList<>();
+//            List<StorageResultItemReqVo> storageResultItemReqVos = storageResultReqVo.getItemReqVos();
+//            for(StorageResultItemReqVo storageResultItemReqVo : storageResultItemReqVos){
+//                PurchaseOrderProduct purchaseOrderProduct = new PurchaseOrderProduct();
+//                purchaseOrderProduct.setPurchaseOrderId(storageResultReqVo.getPurchaseCode());
+//                purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundMainNum().toString()));
+//                purchaseOrderProduct.setSkuCode(storageResultItemReqVo.getSkuCode());
+//                purchaseOrderProducts.add(purchaseOrderProduct);
+//            }
+//            HttpResponse httpResponse = purchaseManageService.getWarehousing(purchaseOrderProducts);
+//            if(httpResponse.getCode().equals("0")){
+//                log.info("入库单回传给采购接口成功");
+//            }else {
+//                log.error("入库单回传给采购接口失败");
+//            }
         } catch (GroundRuntimeException e) {
             e.printStackTrace();
             log.error("入库单回传给采购接口失败+回传实体为：[{}]",storageResultReqVo);
