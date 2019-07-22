@@ -59,7 +59,7 @@ public class ReportController {
             @RequestParam(value = "page_size", required = false) Integer pageSize){
         SupplierArrivalRateReqVo supplierArrivalRateReqVo = new SupplierArrivalRateReqVo(supplierCode,supplierName,transportCenterCode,categoryCode,categoryName,beginInboundTime,finishInboundTime);
         supplierArrivalRateReqVo.setPageNo(pageNo);
-        supplierArrivalRateReqVo.setPageNo(pageSize);
+        supplierArrivalRateReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectSupplierArrivalRate(supplierArrivalRateReqVo));
     }
 
