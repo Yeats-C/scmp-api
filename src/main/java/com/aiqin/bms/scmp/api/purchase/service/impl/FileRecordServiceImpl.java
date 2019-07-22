@@ -112,7 +112,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                     throw new GroundRuntimeException(String.format("通过文件夹编码:%s,未查询到商品信息", folderName));
                 }
                 fileName = split[split.length - 1];
-                if (!fileNames.contains(fileName.substring(0, fileName.indexOf(".")))) {
+                if ((fileName.contains("jpg")||fileName.contains("png"))&&!fileNames.contains(fileName.substring(0, fileName.indexOf(".")))) {
                     LOGGER.info("文件名:{},未包含在导入范围内", fileName);
                     continue;
                 }

@@ -7,13 +7,10 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchItemReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
@@ -386,7 +383,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse addReject(RejectRequest request) {
         try {
-            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_APPLY_CODE);
+            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_CODE);
             RejectRecord rejectRecord = new RejectRecord();
             BeanUtils.copyProperties(request, rejectRecord);
             String rejectCode = "RR" + encodingRule.getNumberingValue();
@@ -528,18 +525,16 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     }
 
     @Transactional
-    public HttpResponse rejectSupplier(String rejectRecordId) {
+    public HttpResponse rejectSupplier(RejectRecord request) {
         try {
-            RejectRecord rejectRecord = rejectRecordDao.selectByRejectId(rejectRecordId);
+            RejectRecord rejectRecord = rejectRecordDao.selectByRejectId(request.getRejectRecordId());
             if (rejectRecord == null) {
                 return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_RECORD);
             }
-            RejectRecord request = new RejectRecord();
-            request.setRejectRecordId(rejectRecordId);
             request.setRejectStatus(RejectRecordStatus.REJECT_STATUS_STOCK);
             Integer count = rejectRecordDao.updateStatus(request);
             LOGGER.info("供应商确认-更改退供申请详情影响条数:{}", count);
-            List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
+            List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(request.getRejectRecordId());
             ReturnSupplyToOutBoundReqVo reqVo = new ReturnSupplyToOutBoundReqVo();
             reqVo.setRejectRecord(rejectRecord);
             reqVo.setRejectRecordDetails(list);

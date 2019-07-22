@@ -224,8 +224,8 @@
       #{item.factorySkuCode,jdbcType=VARCHAR},
       #{item.createById,jdbcType=VARCHAR},
       #{item.createByName,jdbcType=VARCHAR},
-      #{item.updateById,jdbcType=VARCHAR},
-      #{item.updateByName,jdbcType=VARCHAR},
+      #{item.createById,jdbcType=VARCHAR},
+      #{item.createByName,jdbcType=VARCHAR},
       now(),now()
       )
     </foreach>
