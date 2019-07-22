@@ -18,6 +18,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
@@ -448,6 +449,11 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSkuName(inboundProduct.getSkuName());
             //设置更改数量
             stockVoRequest.setChangeNum(inboundProduct.getPraInboundMainNum());
+
+            stockVoRequest.setDocumentNum(inbound.getInboundOderCode());
+            stockVoRequest.setDocumentType(2);//1出库 2入库
+            stockVoRequest.setSourceDocumentNum(inbound.getSourceOderCode());
+            stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockVoRequestList.add(stockVoRequest);
         }
         stockChangeRequest.setStockVoRequests(stockVoRequestList);
@@ -598,16 +604,26 @@ public class InboundServiceImpl implements InboundService {
         log.error("异步回调采购接口");
         log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultReqVo));
         try {
+            PurchaseStorageRequest purchaseStorage = new PurchaseStorageRequest();
             List<PurchaseOrderProduct> purchaseOrderProducts = new ArrayList<>();
             List<StorageResultItemReqVo> storageResultItemReqVos = storageResultReqVo.getItemReqVos();
             for(StorageResultItemReqVo storageResultItemReqVo : storageResultItemReqVos){
                 PurchaseOrderProduct purchaseOrderProduct = new PurchaseOrderProduct();
-                purchaseOrderProduct.setPurchaseOrderId(storageResultReqVo.getPurchaseCode());
+                purchaseOrderProduct.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
                 purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundMainNum().toString()));
                 purchaseOrderProduct.setSkuCode(storageResultItemReqVo.getSkuCode());
                 purchaseOrderProducts.add(purchaseOrderProduct);
             }
-            HttpResponse httpResponse = purchaseManageService.getWarehousing(purchaseOrderProducts);
+            List<Inbound> inboundList = inboundDao.selectTimeAndSatusBySourchAndNum(storageResultReqVo.getPurchaseCode());
+            if(CollectionUtils.isNotEmpty(inboundList)){
+                Inbound inbound = inboundList.get(0);
+                purchaseStorage.setCompanyName(inbound.getCompanyName());
+                purchaseStorage.setCompanyCode(inbound.getCompanyCode());
+                purchaseStorage.setCreateByName(inbound.getCreateBy());
+            }
+            purchaseStorage.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
+            purchaseStorage.setOrderList(purchaseOrderProducts);
+            HttpResponse httpResponse = purchaseManageService.getWarehousing(purchaseStorage);
             if(httpResponse.getCode().equals("0")){
                 log.info("入库单回传给采购接口成功");
             }else {
