@@ -134,8 +134,8 @@
             resultMap="QueryApplyList">
       select
       distinct apply_code,
-      create_by,
-      create_time,
+      update_by as create_by,
+      update_time as create_time,
       apply_status,
       auditor_by,
       auditor_time,
@@ -143,10 +143,10 @@
       from apply_product_sku
       where company_code = #{companyCode}
       <if test="createTimeStart != null">
-        and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+        and update_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
       </if>
       <if test="createTimeEnd != null">
-        and create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+        and update_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
       </if>
       <if test="applyStatus != null">
         and apply_status = #{applyStatus}
@@ -157,7 +157,7 @@
       <if test="skuName != null and skuName!= '' ">
         and sku_name like CONCAT('%',#{skuName},'%')
       </if>
-      order by create_time desc
+      order by update_time desc
     </select>
   <select id="findFormNoByCode" resultType="java.lang.String">
     select

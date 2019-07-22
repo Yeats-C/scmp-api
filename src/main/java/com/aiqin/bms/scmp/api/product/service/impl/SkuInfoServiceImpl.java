@@ -629,12 +629,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         long code = encodingRule.getNumberingValue();
         List<ApplyProductSku> applyProductSkus = BeanCopyUtils.copyList(productSkuDrafts, ApplyProductSku.class);
         Date currentDate = new Date();
+        String applyBy = getUser().getPersonName();
         applyProductSkus.forEach(item->{
             item.setApplyCode(String.valueOf(code));
             item.setSelectionEffectiveTime(saveSkuApplyInfoReqVO.getSelectionEffectiveTime());
             item.setSelectionEffectiveStartTime(saveSkuApplyInfoReqVO.getSelectionEffectiveStartTime());
             item.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
-            item.setCreateTime(currentDate);
+            item.setUpdateBy(applyBy);
             item.setUpdateTime(currentDate);
             item.setFormNo(formNo);
         });
