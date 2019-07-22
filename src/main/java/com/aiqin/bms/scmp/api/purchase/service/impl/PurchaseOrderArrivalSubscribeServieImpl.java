@@ -72,7 +72,7 @@ public class PurchaseOrderArrivalSubscribeServieImpl implements PurchaseOrderArr
             BeanCopyUtils.copy(reqVo,purchaseOrderArrivalSubscribe);
             num = ((PurchaseOrderArrivalSubscribeService) AopContext.currentProxy()).insertSelective(purchaseOrderArrivalSubscribe);
         } else {
-            purchaseOrderArrivalSubscribe.setArrivalSubscribeStatus(Objects.equals(reqVo.getArrivalSubscribeStatus(),Byte.parseByte("3")) ? Byte.parseByte("1") : reqVo.getArrivalSubscribeStatus());
+            //purchaseOrderArrivalSubscribe.setArrivalSubscribeStatus(Objects.equals(reqVo.getArrivalSubscribeStatus(),Byte.parseByte("3")) ? Byte.parseByte("1") : reqVo.getArrivalSubscribeStatus());
             purchaseOrderArrivalSubscribe.setRemark(reqVo.getRemark());
             purchaseOrderArrivalSubscribe.setArrivalSubscribeTime(reqVo.getArrivalSubscribeTime());
             purchaseOrderArrivalSubscribe.setDriverName(reqVo.getDriverName());

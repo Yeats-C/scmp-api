@@ -37,7 +37,7 @@ public class SavePurchaseOrderArrivalSubscribeVo {
     @ApiModelProperty("手机号")
     private String phoneMobile;
 
-    @ApiModelProperty("'到货预约状态(0:未预约 1:已预约 2:未预约待确认 3:驳回")
+    @ApiModelProperty("'到货预约状态(0:未预约 1:已预约 2:已预约待确认 3:驳回")
     private Byte arrivalSubscribeStatus;
 
     @ApiModelProperty("备注,确认填写")
