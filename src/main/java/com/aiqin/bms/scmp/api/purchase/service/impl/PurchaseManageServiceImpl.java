@@ -634,8 +634,10 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 reqVo.setPreInboundMainNum(singleCount.longValue());
                 if(purchaseStorage.getPurchaseNum() > 1){
                     Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
-                    if(actualSingleCount < singleCount) {
+                    if(actualSingleCount <= singleCount) {
                         reqVo.setPreInboundNum(singleCount.longValue() - actualSingleCount.longValue());
+                    }else {
+                        reqVo.setPreInboundNum(Long.valueOf(0));
                     }
                 }else {
                     reqVo.setPreInboundNum(singleCount.longValue());
