@@ -536,7 +536,9 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         }
         String purchaseOrderId = purchaseStorage.getPurchaseOrderId();
         // 查询采购单的详情
-        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrder(purchaseOrderId);
+        PurchaseOrder order = new PurchaseOrder();
+        order.setPurchaseOrderCode(purchaseOrderId);
+        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
         if(purchaseOrder == null){
             LOGGER.info("未查询到采购单的信息" + purchaseOrderId);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
@@ -546,7 +548,6 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             LOGGER.error("该采购单未审核通过， 不能开始备货");
             return HttpResponse.failure(ResultCode.PURCHASE_ORDER_CHECK);
         }
-        PurchaseOrder order = new PurchaseOrder();
         order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_3);
         order.setPurchaseOrderId(purchaseOrderId);
         Integer count = purchaseOrderDao.update(order);
@@ -671,24 +672,24 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 return HttpResponse.failure(ResultCode.UPDATE_ERROR);
             }
         }
-        String purchaseOrderId = list.get(0).getPurchaseOrderId();
-        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrder(purchaseOrderId);
-        Integer code = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseOrderId);
+        PurchaseOrder order = new PurchaseOrder();
+        order.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderId());
+        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
+        Integer code = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseStorage.getPurchaseOrderId());
         purchaseStorage.setPurchaseNum(code + 1);
         InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage);
         List<InboundProductReqVo> inboundList = save.getList();
         // 是否入库完成
         if(inboundList.size() <= 0){
-            PurchaseOrder order = new PurchaseOrder();
             order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
-            order.setPurchaseOrderId(purchaseOrderId);
+            order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
             Integer count = purchaseOrderDao.update(order);
             if(count == 0){
                 LOGGER.error("采购单入库状态修改失败");
                 return HttpResponse.failure(ResultCode.UPDATE_ERROR);
             }
             // 添加日志
-            log(purchaseOrderId, list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+            log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , "手动");
         }else {
             String s = inboundService.saveInbound(save);
@@ -697,7 +698,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
             }
             String name = "入库申请单"+ s + "，入库完成";
-            log(purchaseOrderId, list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
+            log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
                     name , null);
         }
         return HttpResponse.success();
