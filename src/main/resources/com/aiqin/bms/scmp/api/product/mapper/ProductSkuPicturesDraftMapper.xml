@@ -36,24 +36,26 @@
     </foreach>
   </delete>
   <insert id="insertAll">
-     insert into product_sku_pictures_draft (id, product_picture_path, product_picture_name,
+     insert into product_sku_pictures_draft ( product_picture_path, product_picture_name,
       product_introduction, product_sku_code, product_sku_name,
-      del_flag, main_picture, create_time,
-      create_by, update_time, update_by
+      del_flag, main_picture, create_by,  update_by,create_time,update_time
       )
-    values (
-      #{id,jdbcType=BIGINT},
-      #{productPicturePath,jdbcType=VARCHAR},
-      #{productPictureName,jdbcType=VARCHAR},
-      #{productIntroduction,jdbcType=VARCHAR},
-      #{productSkuCode,jdbcType=VARCHAR},
-      #{productSkuName,jdbcType=VARCHAR},
-      0, #{mainPicture,jdbcType=TINYINT},
+    values
+    <foreach collection="list" item="item" separator=",">
+    (
+      #{item.productPicturePath,jdbcType=VARCHAR},
+      #{item.productPictureName,jdbcType=VARCHAR},
+      #{item.productIntroduction,jdbcType=VARCHAR},
+      #{item.productSkuCode,jdbcType=VARCHAR},
+      #{item.productSkuName,jdbcType=VARCHAR},
+      0,
+      0,
+      #{item.createBy,jdbcType=VARCHAR},
+      #{item.createBy,jdbcType=VARCHAR},
       now(),
-      #{createBy,jdbcType=VARCHAR},
-      now(),
-      #{updateBy,jdbcType=VARCHAR}
+      now()
       )
+    </foreach>
   </insert>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPicturesDraft">
     insert into product_sku_pictures_draft (id, product_picture_path, product_picture_name, 

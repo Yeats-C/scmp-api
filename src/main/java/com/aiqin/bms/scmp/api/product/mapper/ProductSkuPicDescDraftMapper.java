@@ -21,5 +21,5 @@ public interface ProductSkuPicDescDraftMapper {
 
     Integer delete(List<String> skuCodes);
 
-    Integer insertAll(@Param("list") List<ProductSkuPicturesDraft> productSkuPicturesDraftList);
+    Integer insertAll(@Param("list") List<ProductSkuPicDescDraft> productSkuPicturesDraftList);
 }

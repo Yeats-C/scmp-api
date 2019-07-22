@@ -12,5 +12,5 @@ public interface FileRecordService {
 
     HttpResponse downloadFile(String id, String fileId, String createById, String createByName,String fileName);
 
-    HttpResponse<String> uploadImageFolder(MultipartFile[] folder);
+    HttpResponse<String> uploadImageFolder(MultipartFile[] folder, String create_by_id, String create_by_name);
 }
