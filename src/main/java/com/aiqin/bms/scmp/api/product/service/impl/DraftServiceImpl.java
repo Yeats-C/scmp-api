@@ -162,6 +162,9 @@ public class DraftServiceImpl implements DraftService {
         if(null == approvalTypeEnum){
             throw new BizException(ResultCode.OBJECT_NOT_FOUND);
         }
+        if(null == reqVo.getData()){
+            throw new BizException(ResultCode.APPLY_DATA_EMPTY);
+        }
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
             SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO = new SaveSkuApplyInfoReqVO();
             BeanCopyUtils.copy(reqVo,saveSkuApplyInfoReqVO);

@@ -721,24 +721,24 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         }
         if(CollectionUtils.isNotEmpty(priceUpdateInfos)) {
             int j = productSkuPriceInfoMapper.updateBatch(priceUpdateInfos);
-            if (j != priceUpdateInfos.size()) {
-                log.error("ProductSkuChangePriceServiceImpl--saveData--需要更新的数据条数:[{}], 实际更新数据的条数[{}]", priceUpdateInfos.size(), j);
-                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "更新价格表数据异常！"));
-            }
+//            if (j != priceUpdateInfos.size()) {
+//                log.error("ProductSkuChangePriceServiceImpl--saveData--需要更新的数据条数:[{}], 实际更新数据的条数[{}]", priceUpdateInfos.size(), j);
+//                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "更新价格表数据异常！"));
+//            }
         }
         if(CollectionUtils.isNotEmpty(logList)) {
             int n = productSkuPriceInfoLogMapper.insertBatch(logList);
-            if (n != logList.size()) {
-                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", logList.size(), n);
-                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入日志表数据异常！"));
-            }
+//            if (n != logList.size()) {
+//                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", logList.size(), n);
+//                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入日志表数据异常！"));
+//            }
         }
         if(CollectionUtils.isNotEmpty(areaInfos)) {
             int m = productSkuPriceAreaInfoMapper.insertBatch(areaInfos);
-            if (m != areaInfos.size()) {
-                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", areaInfos.size(), m);
-                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入附表数据异常！"));
-            }
+//            if (m != areaInfos.size()) {
+//                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", areaInfos.size(), m);
+//                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入附表数据异常！"));
+//            }
         }
         if(CollectionUtils.isNotEmpty(infoList)) {
             //更新申请表
@@ -772,8 +772,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         infos.forEach(
                 o -> {
                     skuCode.add(o.getSkuCode());
-//                    priceItemCode.add(o.getPriceItemCode());
-//                    supplierCode.add(o.getSupplierCode());
+                    priceItemCode.add(o.getPriceItemCode());
+                    supplierCode.add(o.getSupplierCode());
 //                    transportCenterCode.add(o.getTransportCenterCode());
 //                    warehouseCode.add(o.getWarehouseCode());
 //                    warehouseBatchNumber.add(o.getWarehouseBatchNumber());
