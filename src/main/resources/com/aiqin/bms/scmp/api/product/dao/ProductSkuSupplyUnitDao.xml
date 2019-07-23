@@ -294,4 +294,9 @@
         on a.product_sku_code = b.product_sku_code and a.supply_unit_code = b.supply_unit_code
         where a.product_sku_code = #{skuCode}
   </select>
+  <select id="getFactorySkuCode" resultType="java.lang.String">
+      select factory_sku_code as factorySkuCode from product_sku_supply_unit
+      where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+      and supply_unit_code = #{supplyUnitCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

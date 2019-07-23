@@ -1955,7 +1955,8 @@ select a.sku_code              as skuCode,
     ps.product_sort_name as productSortName, ps.color_name as colorName,ps.model_number as modelNumber,
     ps.product_code as spuCode, ps.product_name as spuName, ps.spec as productSpec, su.supply_unit_code as supplierCode,
     su.supply_unit_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
-    s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, pi.base_product_content as baseProductContent
+    s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, pi.base_product_content as baseProductContent,
+    su.factory_sku_code as factorySkuCode
     from product_sku ps
     left join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     left join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code

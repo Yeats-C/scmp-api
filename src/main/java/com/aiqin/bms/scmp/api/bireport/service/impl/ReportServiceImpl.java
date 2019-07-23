@@ -449,4 +449,17 @@ public class ReportServiceImpl implements ReportService {
     public List<String> selectAllOneCategory() {
         return reportDao.selectAllOneCategory();
     }
+
+    @Override
+    public List<HighInventoryRespVo> selectHighInventorys(HighLowInventoryReqVo highLowInventoryReqVo) {
+        List<HighInventoryRespVo> lowInventoryRespVos = reportDao.selectHighInventory(highLowInventoryReqVo);
+        return lowInventoryRespVos;
+    }
+
+    @Override
+    public List<LowInventoryRespVo> selectLowInventorys(HighLowInventoryReqVo highLowInventoryReqVo) {
+        List<LowInventoryRespVo> lowInventoryRespVos = reportDao.selectLowInventory(highLowInventoryReqVo);
+        return lowInventoryRespVos;
+    }
+
 }

@@ -66,7 +66,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 Integer count = purchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
-                log(vo1.getFormNo(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
+                log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT_NOT.getCode(), PurchaseOrderLogEnum.CHECKOUT_NOT.getName(), null);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
                 // 审批中
@@ -74,14 +74,14 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 Integer count = purchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批中操作日志
-                log(vo1.getFormNo(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
+                log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT.getCode(), PurchaseOrderLogEnum.CHECKOUT.getName(), null);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 //审批成功
                 order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_2);
                 Integer count = purchaseOrderDao.update(order);
                 // 添加审批通过操作日志
-                log(vo1.getFormNo(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
+                log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT_ADOPT.getCode(), PurchaseOrderLogEnum.CHECKOUT_ADOPT.getName(), null);
             } else if(Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())){
                 // 审批撤销
@@ -89,7 +89,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 Integer count = purchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
-                log(vo1.getFormNo(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
+                log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.REVOKE.getCode(), PurchaseOrderLogEnum.REVOKE.getName(), null);
             }
             return WorkFlowReturn.SUCCESS;

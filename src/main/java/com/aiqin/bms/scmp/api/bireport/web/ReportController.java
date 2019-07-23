@@ -1,23 +1,25 @@
 package com.aiqin.bms.scmp.api.bireport.web;
 
 import com.aiqin.bms.scmp.api.base.PageReportResData;
-import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.aiqin.bms.scmp.api.bireport.service.ReportService;
-import com.aiqin.bms.scmp.api.product.service.BrandDistributionService;
+import com.aiqin.bms.scmp.api.util.ExportExcelReportHigh;
+import com.aiqin.bms.scmp.api.util.ExportExcelReportLow;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -713,4 +715,51 @@ public class ReportController {
         return HttpResponse.success(reportService.selectAllOneCategory());
     }
 
+    @PostMapping("/excel/high")
+    @ApiOperation("高库存导出")
+    public void exportProductHigh(@RequestBody HighLowInventoryReqVo highLowInventoryReqVo, HttpServletResponse response) throws IOException {
+        try {
+            List<HighInventoryRespVo> highInventoryRespVo = reportService.selectHighInventorys(highLowInventoryReqVo);
+            XSSFWorkbook wb = ExportExcelReportHigh.exportData(highInventoryRespVo);
+            String excelName = "高库存数据导出";
+            response.reset();
+            // response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            // response.setCharacterEncoding("UTF-8");
+            // response.addHeader("Content-Disposition", "attachment;fileName=" + new String(excelName.getBytes("UTF-8"), "iso-8859-1"));
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("content-disposition",
+                    "attachment;filename=" + new String(excelName.getBytes("utf-8"),"ISO-8859-1" )+ ".xlsx");
+            OutputStream os = response.getOutputStream();
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception ex) {
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    @PostMapping("/excel/low")
+    @ApiOperation("低库存导出")
+    public void exportProductLow(@RequestBody HighLowInventoryReqVo highLowInventoryReqVo, HttpServletResponse response) throws IOException {
+        try {
+            List<LowInventoryRespVo> lowInventoryRespVo = reportService.selectLowInventorys(highLowInventoryReqVo);
+            XSSFWorkbook wb = ExportExcelReportLow.exportData(lowInventoryRespVo);
+            String excelName = "低库存数据导出";
+            response.reset();
+            // response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+            // response.setCharacterEncoding("UTF-8");
+            // response.addHeader("Content-Disposition", "attachment;fileName=" + new String(excelName.getBytes("UTF-8"), "iso-8859-1"));
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/vnd.ms-excel");
+            response.setHeader("content-disposition",
+                    "attachment;filename=" + new String(excelName.getBytes("utf-8"),"ISO-8859-1" )+ ".xlsx");
+            OutputStream os = response.getOutputStream();
+            wb.write(os);
+            os.flush();
+            os.close();
+        } catch (Exception ex) {
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
 }

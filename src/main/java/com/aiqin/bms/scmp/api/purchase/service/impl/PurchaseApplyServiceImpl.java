@@ -193,7 +193,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             for (PurchaseApplyDetailResponse product : detail) {
                 ProductSkuPurchaseInfo info = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
                 if(info != null || StringUtils.isNotBlank(info.getUnitName()) || info.getBaseProductContent() != null){
-                    product.setBoxGauge(info.getBaseProductContent().toString().trim()+"/"+info.getUnitName());
+                    product.setBoxGauge(info.getBaseProductContent().toString().trim()+"/"+info.getUnitName().trim());
                 }
                 if(StringUtils.isNotBlank(product.getCategoryId())){
                     String categoryName = goodsRejectService.selectCategoryName(product.getCategoryId());

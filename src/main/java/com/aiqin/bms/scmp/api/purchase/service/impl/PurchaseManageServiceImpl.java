@@ -85,6 +85,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     private PurchaseApprovalService purchaseApprovalService;
     @Resource
     private ProductSkuPicturesDao productSkuPicturesDao;
+    @Resource
+    private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -119,7 +121,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                         if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
                             returnAmount +=  amountSum;
                         }
-                        if(detail.getProductType().equals(Global.PRODUCT_TYPE_2) || detail.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                        if(detail.getProductType().equals(Global.PRODUCT_TYPE_1) || detail.getProductType().equals(Global.PRODUCT_TYPE_0)){
                             // 含税采购金额
                             productTotalAmount += amountSum;
                         }
@@ -160,7 +162,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                     if(apply.getProductType().equals(Global.PRODUCT_TYPE_2)){
                         returnAmount += number * amount;
                     }
-                    if(apply.getProductType().equals(Global.PRODUCT_TYPE_2) || apply.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                    if(apply.getProductType().equals(Global.PRODUCT_TYPE_1) || apply.getProductType().equals(Global.PRODUCT_TYPE_0)){
                         // 含税采购金额
                         productTotalAmount += number * amount;;
                     }
@@ -329,6 +331,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
                 orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
                 orderProduct.setActualSingleCount(0);
+                orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
                 list.add(orderProduct);
             }
             purchaseOrderProductDao.insertAll(list);
@@ -615,10 +618,6 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         // 入库sku商品
         List<InboundProductReqVo> list = Lists.newArrayList();
         // 查询是否有商品可以入库
-        //PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
-        //request.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
-        //request.setIsPage(1);
-        //List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(request);
         if(CollectionUtils.isNotEmptyCollection(productList)){
             for(PurchaseOrderProduct product:productList){
                 reqVo = new InboundProductReqVo();
@@ -707,6 +706,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         if(num <= purchaseStorage.getPurchaseNum()){
             order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
             order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
+            order.setStorageStatus(Global.STORAGE_STATUS_2);
             Integer count = purchaseOrderDao.update(order);
             if(count == 0){
                 LOGGER.error("采购单入库状态修改失败");
@@ -829,6 +829,11 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         // 查询对应采购数据
         if(CollectionUtils.isNotEmptyCollection(list)){
             for(PurchaseApplyDetailResponse product:list){
+                // 查询厂商sku
+                String factorySkuCode = productSkuSupplyUnitDao.getFactorySkuCode(product.getSkuCode(), product.getSupplierCode());
+                if(StringUtils.isNotBlank(factorySkuCode)){
+                    product.setFactorySkuCode(factorySkuCode);
+                }
                 if(product != null){
                     PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getSkuCode());
                     if(orderProduct != null){
