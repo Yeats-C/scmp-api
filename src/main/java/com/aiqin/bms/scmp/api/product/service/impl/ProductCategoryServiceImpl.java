@@ -313,7 +313,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public Map<String, ProductCategory> selectByCategoryNames(Set<String> brandNameList, String companyCode) {
+    public List<ProductCategory> selectByCategoryNames(Set<String> brandNameList, String companyCode) {
         return productCategoryDao.selectByCategoryNames(brandNameList,companyCode);
     }
 
