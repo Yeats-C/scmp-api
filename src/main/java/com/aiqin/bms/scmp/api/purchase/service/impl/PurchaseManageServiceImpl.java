@@ -561,7 +561,16 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 PurchaseOrderLogEnum.STOCK_UP.getName() , null);
         // 开始备货， 生成入库单
         purchaseStorage.setPurchaseNum(1);
-        InboundReqSave reqSave = this.InboundReqSave(purchaseOrder, purchaseStorage);
+        // 查询采购单商品
+        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
+        request.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
+        request.setIsPage(1);
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(request);
+        if(CollectionUtils.isEmptyCollection(products)){
+            LOGGER.error("此采购单没有商品");
+            return HttpResponse.failure(ResultCode.PRODUCT_NO_EXISTS);
+        }
+        InboundReqSave reqSave = this.InboundReqSave(purchaseOrder, purchaseStorage, products);
         String s = inboundService.saveInbound(reqSave);
         if(StringUtils.isBlank(s)){
             LOGGER.error("生成入库单失败....");
@@ -573,7 +582,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         return HttpResponse.success();
     }
 
-    private InboundReqSave InboundReqSave(PurchaseOrder purchaseOrder, PurchaseStorageRequest purchaseStorage){
+    private InboundReqSave InboundReqSave(PurchaseOrder purchaseOrder, PurchaseStorageRequest purchaseStorage, List<PurchaseOrderProduct> productList){
         InboundReqSave save = new InboundReqSave();
         save.setCompanyCode(purchaseStorage.getCompanyCode());
         save.setCompanyName(purchaseStorage.getCompanyName());
@@ -606,12 +615,12 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         // 入库sku商品
         List<InboundProductReqVo> list = Lists.newArrayList();
         // 查询是否有商品可以入库
-        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
-        request.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
-        request.setIsPage(1);
-        List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(request);
-        if(CollectionUtils.isNotEmptyCollection(products)){
-            for(PurchaseOrderProduct product:products){
+        //PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
+        //request.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
+        //request.setIsPage(1);
+        //List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(request);
+        if(CollectionUtils.isNotEmptyCollection(productList)){
+            for(PurchaseOrderProduct product:productList){
                 reqVo = new InboundProductReqVo();
                 reqVo.setSkuCode(product.getSkuCode());
                 reqVo.setSkuName(product.getSkuName());
@@ -673,6 +682,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         }
         // 变更采购的入库的实际单品数量
         List<PurchaseOrderProduct> list = purchaseStorage.getOrderList();
+        List<PurchaseOrderProduct> productList = Lists.newArrayList();
         for(PurchaseOrderProduct product:list){
             product.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderCode());
             Integer count = purchaseOrderProductDao.update(product);
@@ -687,6 +697,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             if(singleCount - actualSingleCount > 0){
                 Integer code = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseStorage.getPurchaseOrderCode());
                 purchaseStorage.setPurchaseNum(code + 1);
+                productList.add(purchaseOrderProduct);
             }
         }
         // 是否入库完成
@@ -705,7 +716,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , "手动");
         }else {
-            InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage);
+            InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
             String s = inboundService.saveInbound(save);
             order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_6);
             order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
