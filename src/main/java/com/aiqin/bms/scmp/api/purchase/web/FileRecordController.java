@@ -7,6 +7,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URLEncoder;
 
 /**
@@ -65,25 +63,17 @@ public class FileRecordController {
     @GetMapping("/download/model/{fileName}")
     public void getModel(HttpServletResponse response, HttpServletRequest request, @PathVariable String fileName) {
         OutputStream outputStream = null;
-        BufferedInputStream bis = null;
         try {
-            byte[] buff = new byte[1024];
             response.setContentType("text/plain;charset=utf-8");
             response.setHeader("Content-Type", "multipart/form-data");
             response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".xlsx");
             // 循环取出流中的数据
             String excelPath = request.getSession().getServletContext().getRealPath("/WEB-INF/template/" + fileName + ".xlsx");
-            InputStream inStream = new FileInputStream(excelPath);//文件的存放路径
-            bis = new BufferedInputStream(inStream);
-            int i = bis.read(buff);
+            byte[] arr = FileUtils.readFileToByteArray(new File(excelPath));
             outputStream = response.getOutputStream();
-            while (i != -1) {
-                outputStream.write(buff, 0, buff.length);
-                outputStream.flush();
-                i = bis.read(buff);
-            }
-            bis.close();
-            inStream.close();
+            outputStream.write(arr);
+            outputStream.flush();
+            outputStream.close();
         } catch (Exception e) {
             LOGGER.error("下载模板异常,message:{},cause:{}", e.getMessage(), e.getCause());
         }
