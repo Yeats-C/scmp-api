@@ -118,6 +118,9 @@
         <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
         <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
         <result column="spec" jdbcType="VARCHAR" property="spec"/>
+        <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
+        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
+        <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
         <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
         <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
@@ -400,7 +403,7 @@
         st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
         sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.unit_code,ps.product_category_code,ps.product_category_name,
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.color_code,ps.color_name,ps.model_number,ps.unit_code,ps.product_category_code,ps.product_category_name,
         st.stockup_num,st.stockupfinish_time
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
@@ -823,7 +826,7 @@
         st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
         sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.unit_code,ps.product_category_code,ps.product_category_name
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.color_code,ps.color_name,ps.model_number,ps.unit_code,ps.product_category_code,ps.product_category_name
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
@@ -964,7 +967,7 @@
         st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
         sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.unit_code,ps.product_category_code,ps.product_category_name,
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.color_code,ps.color_name,ps.model_number,ps.unit_code,ps.product_category_code,ps.product_category_name,
         st.stockup_num,date_format(st.stockupfinish_time, '%Y-%m-%d %H:%i:%s') stockupfinish_time
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
@@ -1573,171 +1576,13 @@
         LEFT JOIN stock_batch_flow AS sbf ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = sbf.sku_code
         where sb.sku_code = #{stockBatchId, jdbcType=VARCHAR}
     </select>
-
     <select id="selectOneStockBatchInfoByStockBatchIdInfoByPage" resultType="java.lang.Long">
         select count(1) from (
         select
         sb.sku_code
-
         from stock_batch sb
         LEFT JOIN stock_batch_flow AS sbf ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = sbf.sku_code
-        where sb.id = #{stockBatchId, jdbcType=VARCHAR}
-
-        ) as tmp
-    </select>
-    <select id="purchaseProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
-        select s.stock_code as stockCode,s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
-        s.warehouse_code as warehouseCode,s.warehouse_name as warehouseName,s.sku_code as skuCode,s.sku_name as skuName,
-        s.stock_unit_code as stockUnitCode,s.stock_unit_name as stockUnitName,s.inventory_num as stockCount, s.total_way_num as totalWayNum,
-        ps.box_gauge as boxGauge,ps.product_brand_code as brandId,ps.product_brand_name as brandName,
-        ps.product_category_code as categoryId,ps.product_category_name as categoryName, ps.product_property_code as productPropertyCode,
-        ps.product_property_name as productPropertyName,ps.goods_gifts as productType, ps.product_sort_code as productSortCode,
-        ps.product_sort_name as productSortName, ps.color_name as colorName,ps.model_number as modelNumber,
-        ps.product_code as spuCode, ps.product_name as spuName, ps.spec as productSpec, su.supply_unit_code as supplierCode,
-        su.supply_unit_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
-        s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, pi.base_product_content as baseProductContent
-        from stock s inner join product_sku ps on s.sku_code = ps.sku_code
-        inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
-        inner join product_sku_purchase_info pi on s.sku_code = pi.product_sku_code
-        <where>
-            ps.del_flag = 0
-            <if test="supplierCode != null">
-                and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
-            </if>
-            <if test="transportCenterCode != null">
-                and s.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-            </if>
-            <if test="skuCode != null">
-                and s.sku_code = #{skuCode,jdbcType=VARCHAR}
-            </if>
-            <if test="skuName != null">
-                and s.sku_name like CONCAT('',#{skuName,jdbcType=VARCHAR},"%")
-            </if>
-            <if test="purchaseGroupCode != null">
-                and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-            </if>
-            <if test="productPropertyCode != null">
-                and ps.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
-            </if>
-            <if test="productPropertyName != null">
-                and ps.product_property_name like CONCAT('', #{productPropertyName,jdbcType=VARCHAR},"%")
-            </if>
-            <if test="brandId != null">
-                and ps.product_brand_code = #{brandId,jdbcType=VARCHAR}
-            </if>
-            <if test="brandName != null">
-                and ps.product_brand_name like CONCAT('', #{brandName,jdbcType=VARCHAR},"%")
-            </if>
-            <if test="categoryId != null">
-                and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
-            </if>
-            <if test="categoryName != null">
-                and ps.product_category_name like CONCAT('', #{categoryName,jdbcType=VARCHAR},"%")
-            </if>
-            <if test="spuCode != null">
-                and ps.product_code = #{spuCode,jdbcType=VARCHAR}
-            </if>
-            <if test="productName != null">
-                and ps.product_name like CONCAT('',#{productName,jdbcType=VARCHAR},"%")
-            </if>
-            <if test="aReplenish != null and aReplenish.size > 0">
-                and s.sku_code in
-                <foreach collection="aReplenish" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-            <if test="productReplenish != null and productReplenish.size > 0">
-                and s.sku_code in
-                <foreach collection="productReplenish" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-            <if test="aShortage != null and aShortage.size > 0">
-                and s.sku_code in
-                <foreach collection="aShortage" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-            <if test="productShortage != null and productShortage.size > 0">
-                and s.sku_code in
-                <foreach collection="productShortage" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-        </where>
-        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-    </select>
-    <select id="purchaseProductCount" resultType="java.lang.Integer">
-        select count(1)
-        from stock s inner join product_sku ps on s.sku_code = ps.sku_code
-        inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
-        inner join product_sku_purchase_info pi on s.sku_code = pi.product_sku_code
-        <where>
-            ps.del_flag = 0
-            <if test="supplierCode != null">
-                and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
-            </if>
-            <if test="transportCenterCode != null">
-                and s.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-            </if>
-            <if test="skuCode != null">
-                and s.sku_code = #{skuCode,jdbcType=VARCHAR}
-            </if>
-            <if test="skuName != null">
-                and s.sku_name like CONCAT('',#{skuName,jdbcType=VARCHAR},"%")
-            </if>
-            <if test="purchaseGroupCode != null">
-                and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-            </if>
-            <if test="productPropertyCode != null">
-                and ps.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
-            </if>
-            <if test="productPropertyName != null">
-                and ps.product_property_name like CONCAT('', #{productPropertyName,jdbcType=VARCHAR},"%")
-            </if>
-            <if test="brandId != null">
-                and ps.product_brand_code = #{brandId,jdbcType=VARCHAR}
-            </if>
-            <if test="brandName != null">
-                and ps.product_brand_name like CONCAT('', #{brandName,jdbcType=VARCHAR},"%")
-            </if>
-            <if test="categoryId != null">
-                and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
-            </if>
-            <if test="categoryName != null">
-                and ps.product_category_name like CONCAT('', #{categoryName,jdbcType=VARCHAR},"%")
-            </if>
-            <if test="spuCode != null">
-                and ps.product_code = #{spuCode,jdbcType=VARCHAR}
-            </if>
-            <if test="productName != null">
-                and ps.product_name like CONCAT('',#{productName,jdbcType=VARCHAR},"%")
-            </if>
-            <if test="aReplenish != null and aReplenish.size > 0">
-                and s.sku_code in
-                <foreach collection="aReplenish" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-            <if test="productReplenish != null and productReplenish.size > 0">
-                and s.sku_code in
-                <foreach collection="productReplenish" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-            <if test="aShortage != null and aShortage.size > 0">
-                and s.sku_code in
-                <foreach collection="aShortage" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-            <if test="productShortage != null and productShortage.size > 0">
-                and s.sku_code in
-                <foreach collection="productShortage" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
-        </where>
+        where sb.id = #{stockBatchId, jdbcType=VARCHAR}) as tmp
     </select>
     <select id="rejectProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
         select
@@ -1749,7 +1594,8 @@
         s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
         s.warehouse_code as warehouseCode,s.warehouse_name as warehouseName,s.sku_code as skuCode,s.sku_name as skuName,
         ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
-        psc.settlement_method_code as settlementMethodCode,psc.settlement_method_name as settlementMethodName
+        psc.settlement_method_code as settlementMethodCode,psc.settlement_method_name as settlementMethodName,
+        su.factory_sku_code as factorySkuCode
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code
@@ -1779,7 +1625,8 @@
         s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
         s.warehouse_code as warehouseCode,s.warehouse_name as warehouseName,s.sku_code as skuCode,s.sku_name as skuName,
         ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
-        psc.settlement_method_code as settlementMethodCode,psc.settlement_method_name as settlementMethodName
+        psc.settlement_method_code as settlementMethodCode,psc.settlement_method_name as settlementMethodName,
+        su.factory_sku_code as factorySkuCode
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code
@@ -1816,14 +1663,17 @@
             <if test="purchaseGroupCode != null">
                 and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
             </if>
+            <if test="productPropertyCode != null">
+                and ps.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+            </if>
             <if test="productPropertyName != null">
                 and ps.product_property_name = #{productPropertyName,jdbcType=VARCHAR}
             </if>
             <if test="brandName != null">
-                and ps.product_brand_name = #{brandId,jdbcType=VARCHAR}
+                and ps.product_brand_name like CONCAT( #{brandName,jdbcType=VARCHAR},"%")
             </if>
             <if test="categoryName != null">
-                and ps.product_category_name = #{categoryName,jdbcType=VARCHAR}
+                and ps.product_category_name like CONCAT( #{categoryName,jdbcType=VARCHAR},"%")
             </if>
         </where>
     </sql>

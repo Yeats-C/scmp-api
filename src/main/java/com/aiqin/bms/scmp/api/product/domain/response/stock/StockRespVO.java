@@ -118,6 +118,18 @@ public class StockRespVO {
     @JsonProperty(value = "spec")
     private String spec;
 
+    @ApiModelProperty("颜色code")
+    @JsonProperty(value = "color_code")
+    private String colorCode;
+
+    @ApiModelProperty("颜色名称")
+    @JsonProperty(value = "color_name")
+    private String colorName;
+
+    @ApiModelProperty("型号")
+    @JsonProperty(value = "model_number")
+    private String modelNumber;
+
     @ApiModelProperty("单位")
     @JsonProperty(value = "unit_code")
     private String unitCode;
@@ -466,6 +478,30 @@ public class StockRespVO {
 
     public void setSpec(String spec) {
         this.spec = spec;
+    }
+
+    public String getColorCode() {
+        return colorCode;
+    }
+
+    public void setColorCode(String colorCode) {
+        this.colorCode = colorCode;
+    }
+
+    public String getColorName() {
+        return colorName;
+    }
+
+    public void setColorName(String colorName) {
+        this.colorName = colorName;
+    }
+
+    public String getModelNumber() {
+        return modelNumber;
+    }
+
+    public void setModelNumber(String modelNumber) {
+        this.modelNumber = modelNumber;
     }
 
     public String getUnitCode() {

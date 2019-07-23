@@ -70,10 +70,14 @@ public class RejectProductRequest extends PagesRequest {
     @JsonProperty("product_property_name")
     private String productPropertyName;
 
+    @ApiModelProperty(value = "商品code")
+    @JsonProperty("product_property_code")
+    private String productPropertyCode;
+
     public RejectProductRequest() {
     }
 
-    public RejectProductRequest(String purchaseGroupCode, String supplierCode, String transportCenterCode, String warehouseCode, String skuCode, String skuName, String categoryName, String brandName, String productPropertyName) {
+    public RejectProductRequest(String purchaseGroupCode, String supplierCode, String transportCenterCode, String warehouseCode, String skuCode, String skuName, String categoryName, String brandName, String productPropertyName,String productPropertyCode) {
         this.purchaseGroupCode = purchaseGroupCode;
         this.supplierCode = supplierCode;
         this.transportCenterCode = transportCenterCode;
@@ -83,5 +87,6 @@ public class RejectProductRequest extends PagesRequest {
         this.categoryName = categoryName;
         this.brandName = brandName;
         this.productPropertyName = productPropertyName;
+        this.productPropertyCode = productPropertyCode;
     }
 }

@@ -26,6 +26,7 @@
     <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
     <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
     <result column="actual_single_count" jdbcType="INTEGER" property="actualSingleCount" />
+    <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
@@ -41,7 +42,7 @@
     base_product_content as baseProductContent, box_gauge as boxGauge, single_count as singleCount,
     tax_rate as taxRate, product_amount as productAmount, product_total_amount as productTotalAmount,
     stock_count as stockCount, actual_single_count as actualSingleCount, create_time as createTime, update_time as updateTime,
-    create_by_id as createById, create_by_name as createByName
+    create_by_id as createById, create_by_name as createByName, factory_sku_code as factorySkuCode
   </sql>
   <insert id="insert">
     insert into purchase_order_product (order_product_id, purchase_order_id,
@@ -50,8 +51,8 @@
       category_name, product_spec, color_name, 
       model_number, product_type, purchase_whole, 
       purchase_single, base_product_content, box_gauge, 
-      single_count, tax_rate, product_amount, 
-      product_total_amount, stock_count, create_time, create_by_id, create_by_name)
+      single_count, tax_rate, product_amount, product_total_amount, stock_count,
+      factory_sku_code, create_time, create_by_id, create_by_name)
     values (#{orderProductId,jdbcType=VARCHAR}, #{purchaseOrderId,jdbcType=VARCHAR},
       #{purchaseOrderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
       #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, 
@@ -59,15 +60,12 @@
       #{modelNumber,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER}, #{purchaseWhole,jdbcType=INTEGER}, 
       #{purchaseSingle,jdbcType=INTEGER}, #{baseProductContent,jdbcType=INTEGER}, #{boxGauge,jdbcType=VARCHAR}, 
       #{singleCount,jdbcType=INTEGER}, #{taxRate,jdbcType=INTEGER}, #{productAmount,jdbcType=INTEGER}, 
-      #{productTotalAmount,jdbcType=INTEGER}, #{stockCount,jdbcType=INTEGER}, now(), #{createById,jdbcType=VARCHAR},
-       #{createByName,jdbcType=VARCHAR})
+      #{productTotalAmount,jdbcType=INTEGER}, #{stockCount,jdbcType=INTEGER}, #{factorySkuCode,jdbcType=VARCHAR},
+      now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_order_product
     <set>
-      <if test="skuCode != null">
-        sku_code = #{skuCode,jdbcType=VARCHAR},
-      </if>
       <if test="skuName != null">
         sku_name = #{skuName,jdbcType=VARCHAR},
       </if>
@@ -91,9 +89,6 @@
       </if>
       <if test="modelNumber != null">
         model_number = #{modelNumber,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        product_type = #{productType,jdbcType=INTEGER},
       </if>
       <if test="purchaseWhole != null">
         purchase_whole = #{purchaseWhole,jdbcType=INTEGER},
@@ -140,6 +135,12 @@
       <if test="purchaseOrderCode != null">
         and purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
       </if>
+      <if test="skuCode != null">
+        and sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="id != null">
+        and id = #{id,jdbcType=BIGINT}
+      </if>
     </where>
   </update>
   <select id="purchaseOrderList" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
@@ -167,7 +168,7 @@
       purchase_order_code, sku_code, sku_name, brand_id, brand_name, category_id,
       category_name, product_spec, color_name, model_number, product_type, purchase_whole,
       purchase_single, base_product_content, box_gauge, single_count, tax_rate, product_amount,
-      product_total_amount, stock_count, create_time, create_by_id, create_by_name)
+      product_total_amount, stock_count, factory_sku_code, create_time, create_by_id, create_by_name)
     values
     <foreach collection="list" item="item" index="" separator=",">
     (#{item.orderProductId,jdbcType=VARCHAR}, #{item.purchaseOrderId,jdbcType=VARCHAR},
@@ -177,8 +178,8 @@
       #{item.modelNumber,jdbcType=VARCHAR}, #{item.productType,jdbcType=INTEGER}, #{item.purchaseWhole,jdbcType=INTEGER},
       #{item.purchaseSingle,jdbcType=INTEGER}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.boxGauge,jdbcType=VARCHAR},
       #{item.singleCount,jdbcType=INTEGER}, #{item.taxRate,jdbcType=INTEGER}, #{item.productAmount,jdbcType=INTEGER},
-      #{item.productTotalAmount,jdbcType=INTEGER}, #{item.stockCount,jdbcType=INTEGER}, now(), #{item.createById,jdbcType=VARCHAR},
-       #{item.createByName,jdbcType=VARCHAR})
+      #{item.productTotalAmount,jdbcType=INTEGER}, #{item.stockCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR},
+      now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <select id="orderBySku" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
@@ -218,5 +219,11 @@
     and o.purchase_order_status in (2, 3, 4, 5, 6)
     and p.sku_code = #{skuCode,jdbcType=VARCHAR}
     and o.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectPreNumAndPraNumBySkuCodeAndSource" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
+    select <include refid="Base_Column_List" /> from purchase_order_product
+    where purchase_order_code = #{code, jdbcType=VARCHAR}
+    and sku_code = #{skuCode, jdbcType=VARCHAR}
+    and id = #{id, jdbcType=VARCHAR}
   </select>
 </mapper>

@@ -726,7 +726,7 @@
             and bsar.supplier_name like concat('%', #{supplierName}, '%')
         </if>
         <if test="transportCenterCode!=null and transportCenterCode!=''">
-            and bsar.logistics_center_code = #{transportCenterCode}
+            and bsar.transport_center_code = #{transportCenterCode}
         </if>
         <if test="categoryCode!=null and categoryCode!=''">
             and bsar.category_code = #{categoryCode}
@@ -934,8 +934,8 @@
         date_format(bnpbmr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_new_product_batch_moving_rate bnpbmr
         <include refid="select_new_product_batch_moving_rate"/>
-        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
         GROUP by bnpbmr.inbound_time desc
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
             resultType="java.lang.Integer">

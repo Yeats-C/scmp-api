@@ -102,6 +102,10 @@ public class RejectApplyDetailHandleRequest {
     @JsonProperty("color_code")
     private String colorCode;
 
+    @ApiModelProperty(value="厂商sku")
+    @JsonProperty("factory_sku_code")
+    private String factorySkuCode;
+
     @ApiModelProperty(value="颜色")
     @JsonProperty("color_name")
     private String colorName;

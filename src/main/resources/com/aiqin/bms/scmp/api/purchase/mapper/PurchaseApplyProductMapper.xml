@@ -51,6 +51,7 @@
     <result column="error_info" jdbcType="VARCHAR" property="errorInfo" />
     <result column="apply_product_status" jdbcType="INTEGER" property="applyProductStatus" />
     <result column="info_status" jdbcType="INTEGER" property="infoStatus" />
+    <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
@@ -71,7 +72,8 @@
     base_product_content as baseProductContent, box_gauge as boxGauge, purchase_number as purchaseNumber, receipt_time as receiptTime,
     purchase_max as purchaseMax, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
     shortage_number as shortageNumber, shortage_day as shortageDay, stock_turnover as stockTurnover,
-    receipt_turnover as receiptTurnover, error_info as errorInfo, purchase_apply_code as purchaseApplyCode
+    receipt_turnover as receiptTurnover, error_info as errorInfo, purchase_apply_code as purchaseApplyCode,
+    factory_sku_code as factorySkuCode
   </sql>
   <insert id="insert">
     insert into purchase_apply_product (apply_product_id, purchase_apply_id, purchase_apply_code,
@@ -81,7 +83,7 @@
       product_sort_name, product_type, product_purchase_amount, new_purchase_price, purchase_whole, purchase_single,
       stock_unit_name, stock_count, total_way_num, last_time, sales_volume, box_gauge, base_product_content,
       purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
-      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, create_time, create_by_id, create_by_name)
+      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, factory_sku_code, create_time, create_by_id, create_by_name)
     values ( #{applyProductId,jdbcType=VARCHAR}, #{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR},
       #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{spuCode,jdbcType=VARCHAR}, 
       #{productName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehousName,jdbcType=VARCHAR},
@@ -97,7 +99,7 @@
       #{purchaseMax,jdbcType=INTEGER}, #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, 
       #{modelNumber,jdbcType=VARCHAR}, #{shortageNumber,jdbcType=INTEGER}, #{shortageDay,jdbcType=INTEGER}, 
       #{stockTurnover,jdbcType=INTEGER}, #{receiptTurnover,jdbcType=INTEGER}, #{errorInfo,jdbcType=VARCHAR}, 
-      #{applyProductStatus,jdbcType=INTEGER}, now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
+      #{applyProductStatus,jdbcType=INTEGER}, #{factorySkuCode,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_apply_product
@@ -435,7 +437,8 @@
       product_sort_name, product_type, product_purchase_amount, new_purchase_price, purchase_whole, purchase_single,
       stock_unit_name, stock_count, total_way_num, last_time, sales_volume, box_gauge, base_product_content,
       purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
-      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, create_time, create_by_id, create_by_name)
+      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, factory_sku_code,
+      create_time, create_by_id, create_by_name)
     values
      <foreach collection="list" item="item" index="" separator=",">
       (#{item.applyProductId,jdbcType=VARCHAR},
@@ -461,7 +464,8 @@
        #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR},
        #{item.shortageNumber,jdbcType=INTEGER}, #{item.shortageDay,jdbcType=INTEGER},
        #{item.stockTurnover,jdbcType=INTEGER}, #{item.receiptTurnover,jdbcType=INTEGER},
-       #{item.errorInfo,jdbcType=VARCHAR}, #{item.applyProductStatus,jdbcType=INTEGER}, now(),
+       #{item.errorInfo,jdbcType=VARCHAR}, #{item.applyProductStatus,jdbcType=INTEGER},
+       #{item.factorySkuCode,jdbcType=VARCHAR}, now(),
        #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
      </foreach>
   </insert>

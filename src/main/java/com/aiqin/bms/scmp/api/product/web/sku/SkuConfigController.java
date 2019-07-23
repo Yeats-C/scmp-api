@@ -98,9 +98,9 @@ public class SkuConfigController {
 
     @PostMapping("/importConfig")
     @ApiOperation(("sku配置信息导入"))
-    public HttpResponse<List<SaveSkuConfigReqVo>> importData (MultipartFile file) {
+    public HttpResponse<List<SaveSkuConfigReqVo>> importData (MultipartFile file,String purchaseGroupCode) {
         try {
-            return HttpResponse.success(productSkuConfigService.importData(file));
+            return HttpResponse.success(productSkuConfigService.importData(file,purchaseGroupCode));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
@@ -111,9 +111,9 @@ public class SkuConfigController {
 
     @PostMapping("/importSupply")
     @ApiOperation(("供应商配置信息导入"))
-    public HttpResponse<List<ProductSkuSupplyUnitDraft>> importSupplyData (MultipartFile file) {
+    public HttpResponse<List<ProductSkuSupplyUnitDraft>> importSupplyData (MultipartFile file,String purchaseGroupCode) {
         try {
-            return HttpResponse.success(productSkuConfigService.importSupplyData(file));
+            return HttpResponse.success(productSkuConfigService.importSupplyData(file,purchaseGroupCode));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {

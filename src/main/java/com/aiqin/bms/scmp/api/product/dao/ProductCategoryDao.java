@@ -4,11 +4,9 @@ import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryReqDTO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
-import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public interface ProductCategoryDao {
@@ -86,6 +84,5 @@ public interface ProductCategoryDao {
      * @date 2019/7/19 20:06
      */
     int selectSubCategoryEnableCount(String categoryId);
-    @MapKey("categoryName")
-    Map<String, ProductCategory> selectByCategoryNames(@Param("list") Set<String> brandNameList, @Param("companyCode") String companyCode);
+    List<ProductCategory> selectByCategoryNames(@Param("list") Set<String> brandNameList, @Param("companyCode") String companyCode);
 }

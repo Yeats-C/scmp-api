@@ -208,6 +208,10 @@ public class PurchaseApplyProduct {
     @JsonProperty("info_status")
     private Integer infoStatus;
 
+    @ApiModelProperty(value="厂商SKU编码")
+    @JsonProperty("factory_sku_code")
+    private String factorySkuCode;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

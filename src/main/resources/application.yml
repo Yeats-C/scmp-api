@@ -19,7 +19,7 @@ spring:
         base-package: com.aiqin.bms.scmp.api.webSwagger2Config
     servlet:
         multipart:
-            max-file-size: 2MB
+            max-file-size: 20MB
             max-request-size: 20MB
 mybatis:
     mapper-locations: classpath*:/com/aiqin/bms/scmp/api/*/dao/*.xml,classpath*:/com/aiqin/bms/scmp/api/*/mapper/*.xml

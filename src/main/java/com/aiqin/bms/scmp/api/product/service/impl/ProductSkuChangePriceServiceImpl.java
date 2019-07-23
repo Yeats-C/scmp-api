@@ -551,7 +551,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     public void saveSaleChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) {
         //处理数据
-        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto);
+        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto,"2");
         //验重
         List<ProductSkuPriceInfo> list = productSkuPriceInfoMapper.checkRepeat(queryVO);
         //skuCode+价格项目+仓库批次号
@@ -561,6 +561,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //数据对比，分类
         List<ProductSkuChangePriceInfo> noRepeat = dto.getInfos();
         List<ProductSkuChangePriceInfo> repeat = dto.getInfos().stream().filter(o -> Objects.nonNull(infoMap.get(o.getSkuCode() + o.getPriceItemCode()+o.getTransportCenterCode()+o.getWarehouseCode()+o.getWarehouseBatchNumber()+o.getWarehouseBatchNumber()))).collect(Collectors.toList());
+        noRepeat.removeAll(repeat);
         List<ProductSkuPriceInfo> priceInsertInfos = Lists.newArrayList();
         List<ProductSkuChangePriceInfo> infoList = Lists.newArrayList();
         List<ProductSkuPriceInfoLog> logList = Lists.newArrayList();
@@ -599,7 +600,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         if (CollectionUtils.isNotEmpty(repeat)) {
             //处理更新数据
             for (ProductSkuChangePriceInfo productSkuChangePriceInfo : repeat) {
-                ProductSkuPriceInfo priceInfo = infoMap.get(productSkuChangePriceInfo.getSkuCode() + productSkuChangePriceInfo.getSupplierCode());
+                ProductSkuPriceInfo priceInfo = infoMap.get(productSkuChangePriceInfo.getSkuCode() + productSkuChangePriceInfo.getPriceItemCode()+productSkuChangePriceInfo.getTransportCenterCode()+productSkuChangePriceInfo.getWarehouseCode()+productSkuChangePriceInfo.getWarehouseBatchNumber()+productSkuChangePriceInfo.getWarehouseBatchNumber());
                 ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
                 priceInfo.setApplyCode(productSkuChangePriceInfo.getCode());
                 priceInfo.setPriceTax(productSkuChangePriceInfo.getNewPrice());
@@ -632,7 +633,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Transactional(rollbackFor = Exception.class)
     public void savePurchaseChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         //处理数据
-        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto);
+        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto,"1");
         //验重
         List<ProductSkuPriceInfo> list = productSkuPriceInfoMapper.checkRepeat(queryVO);
         Map<String, ProductSkuPriceInfo> infoMap = list.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getSupplierCode(), Function.identity()));
@@ -661,7 +662,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 info.setBeSynchronize(1);
                 info.setOfficialCode(priceInfo.getCode());
                 priceInsertInfos.add(priceInfo);
-                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,null,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
+                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                 //判断生效日期
                 if (info.getEffectiveTimeStart().after(new Date())) {
                     //未生效的
@@ -687,7 +688,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                 priceInfo.setUpdateTime(new Date());
                 productSkuChangePriceInfo.setOfficialCode(priceInfo.getCode());
-                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),productSkuChangePriceInfo.getEffectiveTimeStart(),null,null,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
+                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),productSkuChangePriceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                 //判断生效日期
                 if (productSkuChangePriceInfo.getEffectiveTimeStart().after(new Date())) {
                     //未生效的
@@ -758,7 +759,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
      * @author NullPointException
      * @date 2019/5/24
      */
-    private QueryProductSkuPriceInfo dealPurchaseChangePriceData(ProductSkuChangePriceDTO dto) {
+    private QueryProductSkuPriceInfo dealPurchaseChangePriceData(ProductSkuChangePriceDTO dto,String priceType) {
         List<ProductSkuChangePriceInfo> infos = dto.getInfos();
         if (CollectionUtils.isEmpty(infos)) {
             throw new BizException(ResultCode.NOT_HAVE_PARAM);
@@ -772,14 +773,14 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         infos.forEach(
                 o -> {
                     skuCode.add(o.getSkuCode());
-                    priceItemCode.add(o.getPriceItemCode());
-                    supplierCode.add(o.getSupplierCode());
+//                    priceItemCode.add(o.getPriceItemCode());
+//                    supplierCode.add(o.getSupplierCode());
 //                    transportCenterCode.add(o.getTransportCenterCode());
 //                    warehouseCode.add(o.getWarehouseCode());
 //                    warehouseBatchNumber.add(o.getWarehouseBatchNumber());
                 }
         );
-        return new QueryProductSkuPriceInfo(dto.getCompanyCode(), skuCode, priceItemCode, supplierCode, transportCenterCode, warehouseCode, warehouseBatchNumber);
+        return new QueryProductSkuPriceInfo(dto.getCompanyCode(), skuCode, priceItemCode, supplierCode, transportCenterCode, warehouseCode, warehouseBatchNumber, priceType);
     }
 
     @Override
