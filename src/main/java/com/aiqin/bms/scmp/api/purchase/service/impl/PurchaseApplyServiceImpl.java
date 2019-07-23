@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
@@ -97,6 +98,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private PurchaseGroupService purchaseGroupService;
     @Resource
     private ProductSkuPurchaseInfoDao productSkuPurchaseInfoDao;
+    @Resource
+    private ProductSkuDao productSkuDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -183,7 +186,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     // 查询新增采购申请单时候的库存商品信息
     private HttpResponse stockProductInfo(PurchaseApplyRequest purchases, PageResData pageResData) {
         // 查询库存，商品， 供应商等信息
-        List<PurchaseApplyDetailResponse> detail = stockDao.purchaseProductList(purchases);
+        List<PurchaseApplyDetailResponse> detail = productSkuDao.purchaseProductList(purchases);
         if (CollectionUtils.isNotEmptyCollection(detail)) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             PurchaseApplyReqVo applyReqVo;
@@ -229,7 +232,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 }
             }
         }
-        Integer count = stockDao.purchaseProductCount(purchases);
+        Integer count = productSkuDao.purchaseProductCount(purchases);
         pageResData.setDataList(detail);
         pageResData.setTotalCount(count);
         return HttpResponse.success(pageResData);

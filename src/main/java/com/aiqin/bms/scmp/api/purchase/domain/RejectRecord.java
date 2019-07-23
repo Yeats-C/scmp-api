@@ -201,4 +201,17 @@ public class RejectRecord {
     @ApiModelProperty("创建人公司名称")
     @JsonProperty("company_name")
     private String companyName;
+
+    public RejectRecord() {
+    }
+
+    public RejectRecord(String rejectRecordId, String contactsPerson, String contactsPersonPhone, String provinceId, String cityId, String districtId,String address) {
+        this.rejectRecordId = rejectRecordId;
+        this.contactsPerson = contactsPerson;
+        this.contactsPersonPhone = contactsPersonPhone;
+        this.provinceId = provinceId;
+        this.cityId = cityId;
+        this.districtId = districtId;
+        this.address = address;
+    }
 }

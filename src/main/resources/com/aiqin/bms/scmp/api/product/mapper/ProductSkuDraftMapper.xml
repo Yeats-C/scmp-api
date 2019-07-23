@@ -757,4 +757,12 @@
       price_model = #{priceModel,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectProductByFolderCode" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List"></include>
+    from
+    product_sku_draft
+    where
+    pic_folder_code = #{picFolderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

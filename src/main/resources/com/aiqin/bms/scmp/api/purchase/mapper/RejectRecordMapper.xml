@@ -126,7 +126,7 @@
       single_count, untaxed_amount, return_count, 
       return_amount, create_by_id, create_by_name, transport_center_code,
       transport_center_name, warehouse_code, warehouse_name,company_name,company_code,
-      settlement_method_code,settlement_method_name,  create_time,  update_time)
+      settlement_method_code,settlement_method_name,  create_time,  update_time, update_by_id, update_by_name,)
     values ( #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR},
       #{dutyPerson,jdbcType=VARCHAR}, #{contactsPerson,jdbcType=VARCHAR}, #{contactsPersonPhone,jdbcType=VARCHAR}, 
       #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=VARCHAR}, 
@@ -141,7 +141,7 @@
       #{transportCenterCode,jdbcType=VARCHAR},#{transportCenterName,jdbcType=VARCHAR},
       #{warehouseCode,jdbcType=VARCHAR},#{warehouseName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{settlementMethodCode,jdbcType=VARCHAR},#{settlementMethodName,jdbcType=VARCHAR},
-       now(),now())
+       now(),now(),#{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
   </insert>
     <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
         insert into reject_record
@@ -242,10 +242,10 @@
             <if test="createByName != null">
                 create_by_name,
             </if>
-            <if test="updateById != null">
+            <if test="createById != null">
                 update_by_id,
             </if>
-            <if test="updateByName != null">
+            <if test="createByName != null">
                 update_by_name,
             </if>
                 create_time,
@@ -348,11 +348,11 @@
             <if test="createByName != null">
                 #{createByName,jdbcType=VARCHAR},
             </if>
-            <if test="updateById != null">
-                #{updateById,jdbcType=VARCHAR},
+            <if test="createById != null">
+                #{createById,jdbcType=VARCHAR},
             </if>
-            <if test="updateByName != null">
-                #{updateByName,jdbcType=VARCHAR},
+            <if test="createByName != null">
+                #{createByName,jdbcType=VARCHAR},
             </if>
              now(),now()
         </trim>
@@ -475,6 +475,24 @@
         update reject_record
         set
         reject_status = #{rejectStatus,jdbcType=BIT},
+        <if test="provinceId != null">
+            province_id  = #{provinceId,jdbcType=VARCHAR},
+        </if>
+        <if test="cityId != null">
+            city_id  = #{cityId,jdbcType=VARCHAR},
+        </if>
+        <if test="districtId != null">
+            district_id = #{districtId,jdbcType=VARCHAR},
+        </if>
+        <if test="address != null">
+            address = #{address,jdbcType=VARCHAR},
+        </if>
+        <if test="contactsPersonPhone != null">
+            contacts_person_phone = #{contactsPersonPhone,jdbcType=VARCHAR},
+        </if>
+        <if test="contactsPerson != null">
+            contacts_person = #{contactsPerson,jdbcType=VARCHAR},
+        </if>
         <if test="transportRemark != null">
             transport_remark = #{transportRemark,jdbcType=VARCHAR},
         </if>

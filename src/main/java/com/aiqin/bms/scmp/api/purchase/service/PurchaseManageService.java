@@ -39,7 +39,7 @@ public interface PurchaseManageService {
 
     HttpResponse purchaseOrderStock(PurchaseStorageRequest purchaseStorage);
 
-    HttpResponse getWarehousing(List<PurchaseOrderProduct> list);
+    HttpResponse getWarehousing(PurchaseStorageRequest purchaseStorageRequest);
 
     HttpResponse reportSku(String purchaseOrderId);
 

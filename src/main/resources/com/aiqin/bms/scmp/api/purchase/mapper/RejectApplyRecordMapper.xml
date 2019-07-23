@@ -93,8 +93,8 @@
     values ( #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{applyType,jdbcType=BIT},
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{applyRecordStatus,jdbcType=BIT}, 
       #{sumSku,jdbcType=INTEGER}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT},  #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR},
-      #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
-      #{updateByName,jdbcType=VARCHAR}, now()
+      #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
+      #{createByName,jdbcType=VARCHAR}, now()
       )
   </insert>
     <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">

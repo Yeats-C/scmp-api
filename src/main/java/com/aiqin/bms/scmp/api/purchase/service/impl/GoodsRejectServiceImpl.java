@@ -7,13 +7,10 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchItemReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
@@ -32,6 +29,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -167,7 +165,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         } catch (Exception e) {
             LOGGER.error("添加退供申请单异常:{}", e);
-            throw new RuntimeException(String.format("添加退供申请单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("添加退供申请单异常:{%s}", e.getMessage()));
         }
         return HttpResponse.success();
     }
@@ -224,7 +222,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             LOGGER.info("修改退供申请详情影响条数:{}", count);
         } catch (Exception e) {
             LOGGER.error("修改退供申请详情影响条数:{}", e.getMessage());
-            throw new RuntimeException(String.format("修改退供申请单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("修改退供申请单异常:{%s}", e.getMessage()));
         }
         return HttpResponse.success();
     }
@@ -385,7 +383,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse addReject(RejectRequest request) {
         try {
-            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_APPLY_CODE);
+            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_CODE);
             RejectRecord rejectRecord = new RejectRecord();
             BeanUtils.copyProperties(request, rejectRecord);
             String rejectCode = "RR" + encodingRule.getNumberingValue();
@@ -467,13 +465,13 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             Boolean stockStatus = stockService.returnSupplyLockStocks(iLockStockBatchReqVO);
             if (!stockStatus) {
                 LOGGER.error("锁定库存异常:{}", rejectRecord.toString());
-                throw new RuntimeException(String.format("锁定库存异常:{%s}", rejectRecord.toString()));
+                throw new GroundRuntimeException(String.format("锁定库存异常:{%s}", rejectRecord.toString()));
             }
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
         } catch (BeansException e) {
             LOGGER.error("新增退供单异常:{}", e.getMessage());
-            throw new RuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
         }
         return HttpResponse.success();
     }
@@ -527,18 +525,16 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
     }
 
     @Transactional
-    public HttpResponse rejectSupplier(String rejectRecordId) {
+    public HttpResponse rejectSupplier(RejectRecord request) {
         try {
-            RejectRecord rejectRecord = rejectRecordDao.selectByRejectId(rejectRecordId);
+            RejectRecord rejectRecord = rejectRecordDao.selectByRejectId(request.getRejectRecordId());
             if (rejectRecord == null) {
                 return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_RECORD);
             }
-            RejectRecord request = new RejectRecord();
-            request.setRejectRecordId(rejectRecordId);
             request.setRejectStatus(RejectRecordStatus.REJECT_STATUS_STOCK);
             Integer count = rejectRecordDao.updateStatus(request);
             LOGGER.info("供应商确认-更改退供申请详情影响条数:{}", count);
-            List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
+            List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(request.getRejectRecordId());
             ReturnSupplyToOutBoundReqVo reqVo = new ReturnSupplyToOutBoundReqVo();
             reqVo.setRejectRecord(rejectRecord);
             reqVo.setRejectRecordDetails(list);
@@ -546,8 +542,9 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             outboundService.returnSupplySave(reqVo);
             return HttpResponse.success();
         } catch (Exception e) {
+
             LOGGER.error("更新退供单异常:{}", e.getMessage());
-            throw new RuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
         }
     }
 
@@ -624,7 +621,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             }
         } catch (Exception e) {
             LOGGER.error("更新退供单异常:{}", e.getMessage());
-            throw new RuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
         }
 
     }
@@ -646,12 +643,12 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             Boolean stockStatus = stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
             if (!stockStatus) {
                 LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
-                throw new RuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
+                throw new GroundRuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
             }
             return HttpResponse.success();
         } catch (RuntimeException e) {
             LOGGER.error("取消-更改退供申请异常:{}", e.getMessage());
-            throw new RuntimeException(String.format("取消-更改退供申请异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException(String.format("取消-更改退供申请异常:{%s}", e.getMessage()));
         }
     }
 
