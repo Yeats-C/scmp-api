@@ -707,12 +707,21 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         }else {
             InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage);
             String s = inboundService.saveInbound(save);
+            order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_6);
+            order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
+            Integer count = purchaseOrderDao.update(order);
+            if(count == 0){
+                LOGGER.error("采购单入库中状态修改失败");
+                return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+            }
+            log(purchaseOrder.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_IN.getCode(),
+                    PurchaseOrderLogEnum.WAREHOUSING_IN.getName() , null);
             if(StringUtils.isBlank(s)){
                 LOGGER.error("生成入库单失败....");
                 return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
             }
             String name = "入库申请单"+ s + "，入库完成";
-            log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
+            log(purchaseOrder.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
                     name , null);
         }
         return HttpResponse.success();

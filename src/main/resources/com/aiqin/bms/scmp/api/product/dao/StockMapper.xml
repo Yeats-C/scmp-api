@@ -1573,17 +1573,13 @@
         LEFT JOIN stock_batch_flow AS sbf ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = sbf.sku_code
         where sb.sku_code = #{stockBatchId, jdbcType=VARCHAR}
     </select>
-
     <select id="selectOneStockBatchInfoByStockBatchIdInfoByPage" resultType="java.lang.Long">
         select count(1) from (
         select
         sb.sku_code
-
         from stock_batch sb
         LEFT JOIN stock_batch_flow AS sbf ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = sbf.sku_code
-        where sb.id = #{stockBatchId, jdbcType=VARCHAR}
-
-        ) as tmp
+        where sb.id = #{stockBatchId, jdbcType=VARCHAR}) as tmp
     </select>
     <select id="purchaseProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
         select s.stock_code as stockCode,s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
