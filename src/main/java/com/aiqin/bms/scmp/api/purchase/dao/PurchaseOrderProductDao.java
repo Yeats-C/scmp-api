@@ -27,5 +27,5 @@ public interface PurchaseOrderProductDao {
 
     List<PurchaseApplyDetailResponse> orderStatusByCount(@Param("skuCode") String skuCode, @Param("transportCenterCode") String transportCenterCode);
 
-    PurchaseOrderProduct selectPreNumAndPraNumBySkuCodeAndSource(@Param("code")String code, @Param("skuCode")String skuCode);
+    PurchaseOrderProduct selectPreNumAndPraNumBySkuCodeAndSource(@Param("code")String code, @Param("skuCode")String skuCode, @Param("id")Long id);
 }

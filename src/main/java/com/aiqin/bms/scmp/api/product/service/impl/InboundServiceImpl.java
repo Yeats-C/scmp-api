@@ -607,11 +607,13 @@ public class InboundServiceImpl implements InboundService {
             PurchaseStorageRequest purchaseStorage = new PurchaseStorageRequest();
             List<PurchaseOrderProduct> purchaseOrderProducts = new ArrayList<>();
             List<StorageResultItemReqVo> storageResultItemReqVos = storageResultReqVo.getItemReqVos();
+            PurchaseOrderProduct purchaseOrderProduct;
             for(StorageResultItemReqVo storageResultItemReqVo : storageResultItemReqVos){
-                PurchaseOrderProduct purchaseOrderProduct = new PurchaseOrderProduct();
+                purchaseOrderProduct = new PurchaseOrderProduct();
                 purchaseOrderProduct.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
                 purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundMainNum().toString()));
                 purchaseOrderProduct.setSkuCode(storageResultItemReqVo.getSkuCode());
+                purchaseOrderProduct.setId(storageResultItemReqVo.getLineNum());
                 purchaseOrderProducts.add(purchaseOrderProduct);
             }
             List<Inbound> inboundList = inboundDao.selectTimeAndSatusBySourchAndNum(storageResultReqVo.getPurchaseCode());

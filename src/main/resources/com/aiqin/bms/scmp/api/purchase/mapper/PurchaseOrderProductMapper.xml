@@ -89,9 +89,6 @@
       <if test="modelNumber != null">
         model_number = #{modelNumber,jdbcType=VARCHAR},
       </if>
-      <if test="productType != null">
-        product_type = #{productType,jdbcType=INTEGER},
-      </if>
       <if test="purchaseWhole != null">
         purchase_whole = #{purchaseWhole,jdbcType=INTEGER},
       </if>
@@ -139,6 +136,9 @@
       </if>
       <if test="skuCode != null">
         and sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="id != null">
+        and id = #{id,jdbcType=BIGINT}
       </if>
     </where>
   </update>
@@ -221,6 +221,8 @@
   </select>
   <select id="selectPreNumAndPraNumBySkuCodeAndSource" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" /> from purchase_order_product
-    where purchase_order_code = #{code, jdbcType=VARCHAR} and sku_code = #{skuCode, jdbcType=VARCHAR}
+    where purchase_order_code = #{code, jdbcType=VARCHAR}
+    and sku_code = #{skuCode, jdbcType=VARCHAR}
+    and id = #{id, jdbcType=VARCHAR}
   </select>
 </mapper>

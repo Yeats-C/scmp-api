@@ -56,4 +56,8 @@ public class PurchaseStorageRequest {
     @ApiModelProperty(value="入库次数")
     @JsonProperty("purchase_num")
     private Integer purchaseNum;
+
+    @ApiModelProperty("行号")
+    @JsonProperty("lineNum")
+    private Long lineNum;
 }
