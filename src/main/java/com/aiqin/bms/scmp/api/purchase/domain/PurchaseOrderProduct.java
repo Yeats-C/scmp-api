@@ -105,6 +105,10 @@ public class PurchaseOrderProduct {
     @JsonProperty("actual_single_count")
     private Integer actualSingleCount;
 
+    @ApiModelProperty(value="厂商SKU编码")
+    @JsonProperty("factory_sku_code")
+    private String factorySkuCode;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

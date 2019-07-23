@@ -85,6 +85,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     private PurchaseApprovalService purchaseApprovalService;
     @Resource
     private ProductSkuPicturesDao productSkuPicturesDao;
+    @Resource
+    private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -329,6 +331,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
                 orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
                 orderProduct.setActualSingleCount(0);
+                orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
                 list.add(orderProduct);
             }
             purchaseOrderProductDao.insertAll(list);
@@ -615,10 +618,6 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         // 入库sku商品
         List<InboundProductReqVo> list = Lists.newArrayList();
         // 查询是否有商品可以入库
-        //PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
-        //request.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
-        //request.setIsPage(1);
-        //List<PurchaseOrderProduct> products = purchaseOrderProductDao.purchaseOrderList(request);
         if(CollectionUtils.isNotEmptyCollection(productList)){
             for(PurchaseOrderProduct product:productList){
                 reqVo = new InboundProductReqVo();
@@ -829,6 +828,11 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         // 查询对应采购数据
         if(CollectionUtils.isNotEmptyCollection(list)){
             for(PurchaseApplyDetailResponse product:list){
+                // 查询厂商sku
+                String factorySkuCode = productSkuSupplyUnitDao.getFactorySkuCode(product.getSkuCode(), product.getSupplierCode());
+                if(StringUtils.isNotBlank(factorySkuCode)){
+                    product.setFactorySkuCode(factorySkuCode);
+                }
                 if(product != null){
                     PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getSkuCode());
                     if(orderProduct != null){
