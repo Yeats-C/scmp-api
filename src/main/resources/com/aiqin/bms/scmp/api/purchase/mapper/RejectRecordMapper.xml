@@ -126,7 +126,7 @@
       single_count, untaxed_amount, return_count, 
       return_amount, create_by_id, create_by_name, transport_center_code,
       transport_center_name, warehouse_code, warehouse_name,company_name,company_code,
-      settlement_method_code,settlement_method_name,  create_time,  update_time, update_by_id, update_by_name,)
+      settlement_method_code,settlement_method_name,  create_time,  update_time, update_by_id, update_by_name)
     values ( #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR},
       #{dutyPerson,jdbcType=VARCHAR}, #{contactsPerson,jdbcType=VARCHAR}, #{contactsPersonPhone,jdbcType=VARCHAR}, 
       #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=VARCHAR}, 
@@ -476,13 +476,22 @@
         set
         reject_status = #{rejectStatus,jdbcType=BIT},
         <if test="provinceId != null">
-            province_id  = #{provinceId,jdbcType=VARCHAR},
+            province_id = #{provinceId,jdbcType=VARCHAR},
+        </if>
+        <if test="provinceName != null">
+            province_name = #{provinceName,jdbcType=VARCHAR},
         </if>
         <if test="cityId != null">
-            city_id  = #{cityId,jdbcType=VARCHAR},
+            city_id = #{cityId,jdbcType=VARCHAR},
+        </if>
+        <if test="cityName != null">
+            city_name = #{cityName,jdbcType=VARCHAR},
         </if>
         <if test="districtId != null">
             district_id = #{districtId,jdbcType=VARCHAR},
+        </if>
+        <if test="districtName != null">
+            district_name = #{districtName,jdbcType=VARCHAR},
         </if>
         <if test="address != null">
             address = #{address,jdbcType=VARCHAR},

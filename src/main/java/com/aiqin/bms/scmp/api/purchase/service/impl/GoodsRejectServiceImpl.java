@@ -465,7 +465,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             Boolean stockStatus = stockService.returnSupplyLockStocks(iLockStockBatchReqVO);
             if (!stockStatus) {
                 LOGGER.error("锁定库存异常:{}", rejectRecord.toString());
-                throw new GroundRuntimeException(String.format("锁定库存异常:{%s}", rejectRecord.toString()));
+                throw new GroundRuntimeException("锁定库存异常 ");
             }
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
