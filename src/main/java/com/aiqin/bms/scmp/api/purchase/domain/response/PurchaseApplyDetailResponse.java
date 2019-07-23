@@ -326,5 +326,9 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("storage_status")
     private Integer storageStatus;
 
+    @ApiModelProperty(value="厂商SKU编码")
+    @JsonProperty("factory_sku_code")
+    private String factorySkuCode;
+
 }
 

@@ -49,4 +49,6 @@ public interface ProductSkuSupplyUnitDao {
     List<ProductSkuSupplyUnitRespVo> selectBySkuCode(String skuCode);
 
     List<ProductSkuSupplyUnitRespVo> getDraftBySkuCodes(List<String> skuCodes);
+
+    String getFactorySkuCode(@Param("skuCode") String skuCode, @Param("supplyUnitCode")String supplyUnitCode);
 }

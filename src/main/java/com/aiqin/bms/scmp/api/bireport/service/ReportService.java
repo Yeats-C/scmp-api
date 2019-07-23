@@ -157,4 +157,10 @@ public interface ReportService {
      * @return
      */
     List<String> selectAllOneCategory();
+
+    // 高库存导出
+    List<HighInventoryRespVo> selectHighInventorys(HighLowInventoryReqVo highLowInventoryReqVo);
+
+    // 低库存导出
+    List<LowInventoryRespVo> selectLowInventorys(HighLowInventoryReqVo highLowInventoryReqVo);
 }

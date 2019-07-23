@@ -184,18 +184,22 @@ public class GoodsRejectController {
     @ApiOperation(value = "供应商确认")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "province_id ", value = "省", type = "String"),
+            @ApiImplicitParam(name = "province_name ", value = "省", type = "String"),
             @ApiImplicitParam(name = "city_id ", value = "市", type = "String"),
+            @ApiImplicitParam(name = "city_name ", value = "市", type = "String"),
             @ApiImplicitParam(name = "district_id", value = "县", type = "String"),
+            @ApiImplicitParam(name = "district_name", value = "县", type = "String"),
             @ApiImplicitParam(name = "address", value = "地址", type = "String"),
             @ApiImplicitParam(name = "contacts_person_phone", value = "联系人电话", type = "String"),
             @ApiImplicitParam(name = "contacts_person", value = "联系人名称", type = "String"),
     })
-    public HttpResponse rejectSupplier(@PathVariable  String reject_record_id, @RequestParam(value = "province_id",required = false) String province_id,
+    public HttpResponse rejectSupplier(@PathVariable  String reject_record_id, @RequestParam(value = "province_id",required = false) String province_id,@RequestParam(value = "province_name",required = false) String province_name,
                                        @RequestParam(value = "city_id",required = false)String city_id ,@RequestParam(value = "district_id",required = false) String district_id,
+                                       @RequestParam(value = "city_name",required = false)String city_name ,@RequestParam(value = "district_name",required = false) String district_name,
                                        @RequestParam(value = "address",required = false)String address, @RequestParam(value = "contacts_person_phone",required = false)String contacts_person_phone,
                                        @RequestParam(value = "contacts_person",required = false)String contacts_person) {
         LOGGER.info("供应商确认请求,reject_record_id:{}", reject_record_id);
-        RejectRecord rejectRecord = new RejectRecord(reject_record_id,contacts_person,contacts_person_phone,province_id,city_id,district_id,address);
+        RejectRecord rejectRecord = new RejectRecord(reject_record_id,contacts_person,contacts_person_phone,province_id,province_name,city_id,city_name,district_id,district_name,address);
         return goodsRejectService.rejectSupplier(rejectRecord);
     }
 

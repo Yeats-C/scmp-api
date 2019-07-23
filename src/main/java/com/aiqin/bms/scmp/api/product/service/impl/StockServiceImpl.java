@@ -374,7 +374,9 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
+            LOGGER.error("调用退供加锁接口失败", e);
             e.printStackTrace();
+            throw new GroundRuntimeException("调用退供加锁接口失败");
         }
         return false;
     }
@@ -421,7 +423,9 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
+            LOGGER.error("调用退供解锁接口失败", e);
             e.printStackTrace();
+            throw new GroundRuntimeException("调用退供解锁接口失败");
         }
         return false;
     }
