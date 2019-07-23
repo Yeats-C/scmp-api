@@ -205,13 +205,18 @@ public class RejectRecord {
     public RejectRecord() {
     }
 
-    public RejectRecord(String rejectRecordId, String contactsPerson, String contactsPersonPhone, String provinceId, String cityId, String districtId,String address) {
-        this.rejectRecordId = rejectRecordId;
+    public RejectRecord(String rejectRecordId,String contactsPerson, String contactsPersonPhone, String provinceId, String provinceName, String cityId, String cityName, String districtId, String districtName, String address) {
         this.contactsPerson = contactsPerson;
+        this.rejectRecordId = rejectRecordId;
         this.contactsPersonPhone = contactsPersonPhone;
         this.provinceId = provinceId;
+        this.provinceName = provinceName;
         this.cityId = cityId;
+        this.cityName = cityName;
         this.districtId = districtId;
+        this.districtName = districtName;
         this.address = address;
     }
+
+
 }
