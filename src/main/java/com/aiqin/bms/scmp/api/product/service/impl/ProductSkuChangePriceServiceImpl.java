@@ -551,7 +551,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     public void saveSaleChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) {
         //处理数据
-        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto);
+        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto,"2");
         //验重
         List<ProductSkuPriceInfo> list = productSkuPriceInfoMapper.checkRepeat(queryVO);
         //skuCode+价格项目+仓库批次号
@@ -632,7 +632,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Transactional(rollbackFor = Exception.class)
     public void savePurchaseChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         //处理数据
-        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto);
+        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto,"1");
         //验重
         List<ProductSkuPriceInfo> list = productSkuPriceInfoMapper.checkRepeat(queryVO);
         Map<String, ProductSkuPriceInfo> infoMap = list.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getSupplierCode(), Function.identity()));
@@ -758,7 +758,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
      * @author NullPointException
      * @date 2019/5/24
      */
-    private QueryProductSkuPriceInfo dealPurchaseChangePriceData(ProductSkuChangePriceDTO dto) {
+    private QueryProductSkuPriceInfo dealPurchaseChangePriceData(ProductSkuChangePriceDTO dto,String priceType) {
         List<ProductSkuChangePriceInfo> infos = dto.getInfos();
         if (CollectionUtils.isEmpty(infos)) {
             throw new BizException(ResultCode.NOT_HAVE_PARAM);
@@ -772,14 +772,14 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         infos.forEach(
                 o -> {
                     skuCode.add(o.getSkuCode());
-                    priceItemCode.add(o.getPriceItemCode());
-                    supplierCode.add(o.getSupplierCode());
+//                    priceItemCode.add(o.getPriceItemCode());
+//                    supplierCode.add(o.getSupplierCode());
 //                    transportCenterCode.add(o.getTransportCenterCode());
 //                    warehouseCode.add(o.getWarehouseCode());
 //                    warehouseBatchNumber.add(o.getWarehouseBatchNumber());
                 }
         );
-        return new QueryProductSkuPriceInfo(dto.getCompanyCode(), skuCode, priceItemCode, supplierCode, transportCenterCode, warehouseCode, warehouseBatchNumber);
+        return new QueryProductSkuPriceInfo(dto.getCompanyCode(), skuCode, priceItemCode, supplierCode, transportCenterCode, warehouseCode, warehouseBatchNumber, priceType);
     }
 
     @Override
