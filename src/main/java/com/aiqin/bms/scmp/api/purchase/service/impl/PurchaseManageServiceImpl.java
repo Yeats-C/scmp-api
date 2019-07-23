@@ -680,8 +680,11 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                 return HttpResponse.failure(ResultCode.UPDATE_ERROR);
             }
             PurchaseOrderProduct purchaseOrderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(
-                    purchaseStorage.getPurchaseOrderCode(), product.getSkuCode(), purchaseStorage.getLineNum());
-            if(purchaseOrderProduct.getSingleCount() - purchaseOrderProduct.getActualSingleCount() > 0){
+                    purchaseStorage.getPurchaseOrderCode(), product.getSkuCode(), product.getId());
+            Integer singleCount = purchaseOrderProduct.getSingleCount() == null ? 0 : purchaseOrderProduct.getSingleCount().intValue();
+            Integer actualSingleCount = purchaseOrderProduct.getActualSingleCount() == null ? 0 : purchaseOrderProduct.getActualSingleCount().intValue();
+
+            if(singleCount - actualSingleCount > 0){
                 Integer code = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseStorage.getPurchaseOrderCode());
                 purchaseStorage.setPurchaseNum(code + 1);
             }
@@ -690,7 +693,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         PurchaseOrder order = new PurchaseOrder();
         order.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderCode());
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
-        if(num < purchaseStorage.getPurchaseNum()){
+        if(num <= purchaseStorage.getPurchaseNum()){
             order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
             order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
             Integer count = purchaseOrderDao.update(order);

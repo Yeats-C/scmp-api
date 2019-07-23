@@ -30,5 +30,5 @@ public class StorageResultItemReqVo {
 
     @ApiModelProperty("行号")
     @JsonProperty("lineNum")
-    private Long lineNum;
+    private Long linenum;
 }
