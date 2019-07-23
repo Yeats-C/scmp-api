@@ -561,6 +561,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //数据对比，分类
         List<ProductSkuChangePriceInfo> noRepeat = dto.getInfos();
         List<ProductSkuChangePriceInfo> repeat = dto.getInfos().stream().filter(o -> Objects.nonNull(infoMap.get(o.getSkuCode() + o.getPriceItemCode()+o.getTransportCenterCode()+o.getWarehouseCode()+o.getWarehouseBatchNumber()+o.getWarehouseBatchNumber()))).collect(Collectors.toList());
+        noRepeat.removeAll(repeat);
         List<ProductSkuPriceInfo> priceInsertInfos = Lists.newArrayList();
         List<ProductSkuChangePriceInfo> infoList = Lists.newArrayList();
         List<ProductSkuPriceInfoLog> logList = Lists.newArrayList();
@@ -599,7 +600,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         if (CollectionUtils.isNotEmpty(repeat)) {
             //处理更新数据
             for (ProductSkuChangePriceInfo productSkuChangePriceInfo : repeat) {
-                ProductSkuPriceInfo priceInfo = infoMap.get(productSkuChangePriceInfo.getSkuCode() + productSkuChangePriceInfo.getSupplierCode());
+                ProductSkuPriceInfo priceInfo = infoMap.get(productSkuChangePriceInfo.getSkuCode() + productSkuChangePriceInfo.getPriceItemCode()+productSkuChangePriceInfo.getTransportCenterCode()+productSkuChangePriceInfo.getWarehouseCode()+productSkuChangePriceInfo.getWarehouseBatchNumber()+productSkuChangePriceInfo.getWarehouseBatchNumber());
                 ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
                 priceInfo.setApplyCode(productSkuChangePriceInfo.getCode());
                 priceInfo.setPriceTax(productSkuChangePriceInfo.getNewPrice());
