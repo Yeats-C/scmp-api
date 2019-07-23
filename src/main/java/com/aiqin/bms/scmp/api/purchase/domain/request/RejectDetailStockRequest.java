@@ -33,6 +33,8 @@ import lombok.Data;
 @Data
 public class RejectDetailStockRequest {
 
+    @ApiModelProperty(value = "id")
+    private String id;
 
     @ApiModelProperty(value = "业务id")
     @JsonProperty("reject_record_detail_id")
