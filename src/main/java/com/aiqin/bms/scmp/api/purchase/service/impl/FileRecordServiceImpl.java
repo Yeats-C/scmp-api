@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.purchase.service.FileRecordService;
 import com.aiqin.bms.scmp.api.supplier.service.impl.FileInfoServiceImpl;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +91,10 @@ public class FileRecordServiceImpl implements FileRecordService {
     public HttpResponse<String> uploadImageFolder(MultipartFile[] folders, String create_by_id, String create_by_name) {
         List<String> fileNames = Arrays.asList("1", "2", "3", "4", "5", "sm_1", "sm_2", "sm_3", "sm_4", "sm_5");
         try {
+            if(folders==null||folders.length==0){
+                LOGGER.error("上传文件为空");
+                throw new GroundRuntimeException("上传文件为空");
+            }
             String url;
             String fileName;
             String folderName = "";
@@ -104,8 +109,11 @@ public class FileRecordServiceImpl implements FileRecordService {
             for (int i = 0; i < folders.length; i++) {
                 multipartFile = folders[i];
                 String[] split = multipartFile.getOriginalFilename().split("/");
+                if (split.length<2) {
+                    LOGGER.error("上传的文件没有文件夹,非法格式!");
+                    return HttpResponse.failureGenerics(ResultCode.REQUIRED_PARAMETER,"上传的文件没有文件夹,非法格式!");
+                }
                 folderName = split[split.length - 2];
-                //todo 优化
                 productSkuDraft = productSkuDraftMapper.selectProductByFolderCode(folderName);
                 if (productSkuDraft == null) {
                     LOGGER.error("通过文件夹编码:{},未查询到商品信息", folderName);
@@ -137,10 +145,14 @@ public class FileRecordServiceImpl implements FileRecordService {
                     productSkuPicDescDraftList.add(productSkuPicDescDraft);
                 }
             }
-            Integer picturesCount = productSkuPicturesDraftMapper.insertAll(productSkuPicturesDraftList);
-            LOGGER.info("sm_1.png对应介绍图,添加条数:{}",picturesCount);
-            Integer picCount = productSkuPicDescDraftMapper.insertAll(productSkuPicDescDraftList);
-            LOGGER.info("1.png对应图片及介绍,添加条数:{}",picCount);
+            if(CollectionUtils.isNotEmpty(productSkuPicturesDraftList)){
+                Integer picturesCount = productSkuPicturesDraftMapper.insertAll(productSkuPicturesDraftList);
+                LOGGER.info("sm_1.png对应介绍图,添加条数:{}",picturesCount);
+            }
+            if(CollectionUtils.isNotEmpty(productSkuPicturesDraftList)) {
+                Integer picCount = productSkuPicDescDraftMapper.insertAll(productSkuPicDescDraftList);
+                LOGGER.info("1.png对应图片及介绍,添加条数:{}",picCount);
+            }
             return HttpResponse.successGenerics(folderName);
         } catch (GroundRuntimeException e) {
             LOGGER.error("导入商品图片信息异常:{}", e.getMessage());

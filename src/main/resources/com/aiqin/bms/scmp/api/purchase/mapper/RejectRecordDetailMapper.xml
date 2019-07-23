@@ -415,6 +415,8 @@
       factory_sku_code as factorySkuCode,
       product_type as productType,
       product_amount as productAmount,
+      actual_count as actualCount,
+      actual_amount as actualAmount,
       sum(product_total_amount) as productTotalAmount,
       sum(actual_count) as actualCount,
       sum(actual_amount) as actualAmount
