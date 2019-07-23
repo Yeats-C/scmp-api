@@ -121,7 +121,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                         if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
                             returnAmount +=  amountSum;
                         }
-                        if(detail.getProductType().equals(Global.PRODUCT_TYPE_2) || detail.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                        if(detail.getProductType().equals(Global.PRODUCT_TYPE_1) || detail.getProductType().equals(Global.PRODUCT_TYPE_0)){
                             // 含税采购金额
                             productTotalAmount += amountSum;
                         }
@@ -162,7 +162,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                     if(apply.getProductType().equals(Global.PRODUCT_TYPE_2)){
                         returnAmount += number * amount;
                     }
-                    if(apply.getProductType().equals(Global.PRODUCT_TYPE_2) || apply.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                    if(apply.getProductType().equals(Global.PRODUCT_TYPE_1) || apply.getProductType().equals(Global.PRODUCT_TYPE_0)){
                         // 含税采购金额
                         productTotalAmount += number * amount;;
                     }
