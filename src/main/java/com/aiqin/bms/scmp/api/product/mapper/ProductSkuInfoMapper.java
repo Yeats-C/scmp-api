@@ -57,4 +57,14 @@ public interface ProductSkuInfoMapper {
      * @date 2019/7/19 18:52
      */
     int checkCategory(String categoryCode);
+    /**
+     * TODO
+     * @author NullPointException
+     * @date 2019/7/21
+     * @param skuNameList
+     * @param companyCode
+     * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo>
+     */
+    @MapKey("skuName")
+    Map<String, ProductSkuInfo> selectBySkuNames(@Param("list") Set<String> skuNameList, @Param("companyCode") String companyCode);
 }

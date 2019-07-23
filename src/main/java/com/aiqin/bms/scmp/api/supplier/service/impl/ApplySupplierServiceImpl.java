@@ -468,6 +468,6 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
      * @return
      */
     private String getFormNO(){
-        return "GYSJT"+new IdSequenceUtils().nextId();
+        return "GYSJT"+IdSequenceUtils.getInstance().nextId();
     }
 }

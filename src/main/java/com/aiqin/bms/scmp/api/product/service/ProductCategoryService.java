@@ -7,6 +7,8 @@ import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @功能说明:品类service
@@ -82,4 +84,13 @@ public interface ProductCategoryService {
      * @date 2019/7/19 20:03
      */
     boolean verifyDisable(String categoryCode);
+    /**
+     * 名字查品类品牌
+     * @author NullPointException
+     * @date 2019/7/21
+     * @param brandNameList
+     * @param companyCode
+     * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.ProductCategory>
+     */
+    Map<String, ProductCategory> selectByCategoryNames(Set<String> brandNameList, String companyCode);
 }

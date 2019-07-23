@@ -9,18 +9,12 @@ import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
-import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -110,7 +104,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         if (Objects.nonNull(errorMsg)) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, errorMsg.toString()));
         }
-        String formNo = "CP" + new IdSequenceUtils().nextId();
+        String formNo = "CP" + IdSequenceUtils.getInstance().nextId();
         reqVO.setFormNo(formNo);
         //获取编码
         synchronized (ProductSkuChangePriceServiceImpl.class){
@@ -451,7 +445,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,null,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
             List<String> area = Lists.newArrayList();
             areaInfo.forEach(o->{
-                o.setCode(priceInfo.getCode());
+                o.setMainCode(priceInfo.getCode());
                 area.add(o.getName());
             });
             log.setAreaInfo(Joiner.on(",").join(area));
@@ -497,7 +491,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),priceInfo.getEffectiveTimeEnd(),1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
             List<String> area = Lists.newArrayList();
             areaInfo.forEach(o->{
-                o.setCode(priceInfo.getCode());
+                o.setMainCode(priceInfo.getCode());
                 area.add(o.getName());
             });
             log.setAreaInfo(Joiner.on(",").join(area));
@@ -557,7 +551,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     public void saveSaleChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) {
         //处理数据
-        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto);
+        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto,"2");
         //验重
         List<ProductSkuPriceInfo> list = productSkuPriceInfoMapper.checkRepeat(queryVO);
         //skuCode+价格项目+仓库批次号
@@ -567,6 +561,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //数据对比，分类
         List<ProductSkuChangePriceInfo> noRepeat = dto.getInfos();
         List<ProductSkuChangePriceInfo> repeat = dto.getInfos().stream().filter(o -> Objects.nonNull(infoMap.get(o.getSkuCode() + o.getPriceItemCode()+o.getTransportCenterCode()+o.getWarehouseCode()+o.getWarehouseBatchNumber()+o.getWarehouseBatchNumber()))).collect(Collectors.toList());
+        noRepeat.removeAll(repeat);
         List<ProductSkuPriceInfo> priceInsertInfos = Lists.newArrayList();
         List<ProductSkuChangePriceInfo> infoList = Lists.newArrayList();
         List<ProductSkuPriceInfoLog> logList = Lists.newArrayList();
@@ -605,7 +600,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         if (CollectionUtils.isNotEmpty(repeat)) {
             //处理更新数据
             for (ProductSkuChangePriceInfo productSkuChangePriceInfo : repeat) {
-                ProductSkuPriceInfo priceInfo = infoMap.get(productSkuChangePriceInfo.getSkuCode() + productSkuChangePriceInfo.getSupplierCode());
+                ProductSkuPriceInfo priceInfo = infoMap.get(productSkuChangePriceInfo.getSkuCode() + productSkuChangePriceInfo.getPriceItemCode()+productSkuChangePriceInfo.getTransportCenterCode()+productSkuChangePriceInfo.getWarehouseCode()+productSkuChangePriceInfo.getWarehouseBatchNumber()+productSkuChangePriceInfo.getWarehouseBatchNumber());
                 ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
                 priceInfo.setApplyCode(productSkuChangePriceInfo.getCode());
                 priceInfo.setPriceTax(productSkuChangePriceInfo.getNewPrice());
@@ -638,7 +633,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Transactional(rollbackFor = Exception.class)
     public void savePurchaseChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         //处理数据
-        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto);
+        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto,"1");
         //验重
         List<ProductSkuPriceInfo> list = productSkuPriceInfoMapper.checkRepeat(queryVO);
         Map<String, ProductSkuPriceInfo> infoMap = list.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getSupplierCode(), Function.identity()));
@@ -667,7 +662,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 info.setBeSynchronize(1);
                 info.setOfficialCode(priceInfo.getCode());
                 priceInsertInfos.add(priceInfo);
-                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,null,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
+                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                 //判断生效日期
                 if (info.getEffectiveTimeStart().after(new Date())) {
                     //未生效的
@@ -693,7 +688,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                 priceInfo.setUpdateTime(new Date());
                 productSkuChangePriceInfo.setOfficialCode(priceInfo.getCode());
-                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),productSkuChangePriceInfo.getEffectiveTimeStart(),null,null,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
+                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),productSkuChangePriceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                 //判断生效日期
                 if (productSkuChangePriceInfo.getEffectiveTimeStart().after(new Date())) {
                     //未生效的
@@ -727,24 +722,24 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         }
         if(CollectionUtils.isNotEmpty(priceUpdateInfos)) {
             int j = productSkuPriceInfoMapper.updateBatch(priceUpdateInfos);
-            if (j != priceUpdateInfos.size()) {
-                log.error("ProductSkuChangePriceServiceImpl--saveData--需要更新的数据条数:[{}], 实际更新数据的条数[{}]", priceUpdateInfos.size(), j);
-                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "更新价格表数据异常！"));
-            }
+//            if (j != priceUpdateInfos.size()) {
+//                log.error("ProductSkuChangePriceServiceImpl--saveData--需要更新的数据条数:[{}], 实际更新数据的条数[{}]", priceUpdateInfos.size(), j);
+//                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "更新价格表数据异常！"));
+//            }
         }
         if(CollectionUtils.isNotEmpty(logList)) {
             int n = productSkuPriceInfoLogMapper.insertBatch(logList);
-            if (n != logList.size()) {
-                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", logList.size(), n);
-                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入日志表数据异常！"));
-            }
+//            if (n != logList.size()) {
+//                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", logList.size(), n);
+//                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入日志表数据异常！"));
+//            }
         }
         if(CollectionUtils.isNotEmpty(areaInfos)) {
             int m = productSkuPriceAreaInfoMapper.insertBatch(areaInfos);
-            if (m != areaInfos.size()) {
-                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", areaInfos.size(), m);
-                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入附表数据异常！"));
-            }
+//            if (m != areaInfos.size()) {
+//                log.error("ProductSkuChangePriceServiceImpl--saveData--需要插入的数据条数:[{}], 实际插入数据的条数[{}]", areaInfos.size(), m);
+//                throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "插入附表数据异常！"));
+//            }
         }
         if(CollectionUtils.isNotEmpty(infoList)) {
             //更新申请表
@@ -764,7 +759,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
      * @author NullPointException
      * @date 2019/5/24
      */
-    private QueryProductSkuPriceInfo dealPurchaseChangePriceData(ProductSkuChangePriceDTO dto) {
+    private QueryProductSkuPriceInfo dealPurchaseChangePriceData(ProductSkuChangePriceDTO dto,String priceType) {
         List<ProductSkuChangePriceInfo> infos = dto.getInfos();
         if (CollectionUtils.isEmpty(infos)) {
             throw new BizException(ResultCode.NOT_HAVE_PARAM);
@@ -785,7 +780,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 //                    warehouseBatchNumber.add(o.getWarehouseBatchNumber());
                 }
         );
-        return new QueryProductSkuPriceInfo(dto.getCompanyCode(), skuCode, priceItemCode, supplierCode, transportCenterCode, warehouseCode, warehouseBatchNumber);
+        return new QueryProductSkuPriceInfo(dto.getCompanyCode(), skuCode, priceItemCode, supplierCode, transportCenterCode, warehouseCode, warehouseBatchNumber, priceType);
     }
 
     @Override

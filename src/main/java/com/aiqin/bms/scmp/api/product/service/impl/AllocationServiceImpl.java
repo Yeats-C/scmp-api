@@ -143,7 +143,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TOCHECK.getStatus());
         allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TOCHECK.getName());
         //获取FormNo
-        String form = allocationTypeEnum.getGenerateCode() + new IdSequenceUtils().nextId();
+        String form = allocationTypeEnum.getGenerateCode() + IdSequenceUtils.getInstance().nextId();
         allocation.setFormNo(form);
         Long k  = ((AllocationService) AopContext.currentProxy()).insertSelective(allocation);
         if(k <= 0){

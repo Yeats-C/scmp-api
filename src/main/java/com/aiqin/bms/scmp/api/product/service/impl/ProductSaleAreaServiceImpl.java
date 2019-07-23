@@ -297,7 +297,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         skuInfoList = BeanCopyUtils.copyList(skuList, ApplyProductSkuSaleArea.class);
         EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SALE_AREA_CODE);
         String code = "SAA" + numberingType.getNumberingValue();
-        String formNo = "SAA" + new IdSequenceUtils().nextId();
+        String formNo = "SAA" + IdSequenceUtils.getInstance().nextId();
         //封装数据
         temps.forEach(o -> {
             o.setCreateBy(currentAuthToken.getPersonName());

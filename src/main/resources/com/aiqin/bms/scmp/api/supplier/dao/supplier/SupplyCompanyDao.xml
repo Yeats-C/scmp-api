@@ -31,6 +31,7 @@
     <result column="supply_name" jdbcType="VARCHAR" property="supplyName" />
     <result column="supply_code" jdbcType="VARCHAR" property="supplyCode"/>
     <result column="supply_type" jdbcType="VARCHAR" property="supplyType" />
+    <result column="supply_type_name" jdbcType="VARCHAR" property="supplyTypeName" />
     <result column="supply_abbreviation" jdbcType="VARCHAR" property="supplyAbbreviation" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
@@ -173,6 +174,7 @@
       sc.supply_name,
       sc.supply_code,
       sc.supply_type,
+      si.supplier_content supply_type_name,
       sc.supply_abbreviation,
       sc.supplier_name,
       sc.supplier_code,
@@ -203,6 +205,7 @@
       sc.direct_supervisor_code,
       sc.direct_supervisor_name
     FROM supply_company sc
+    left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and sc.supply_type = si.supplier_dictionary_value
     WHERE sc.id=#{id,jdbcType=BIGINT}
   </select>
   <select id="checkName" parameterType="java.util.Map" resultType="java.lang.Integer">

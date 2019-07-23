@@ -115,7 +115,17 @@
     from
     product_sku where product_category_code = #{categoryCode}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <select id="selectBySkuNames" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku
+    where company_code = #{companyCode} and
+    sku_name in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku
     where id = #{id,jdbcType=BIGINT}
   </delete>

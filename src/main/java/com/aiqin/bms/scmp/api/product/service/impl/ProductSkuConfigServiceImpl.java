@@ -447,7 +447,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         //获取编码
         EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SKU_CONFIG_CODE);
         String code = numberingType.getNumberingValue().toString();
-        String formNo = "SC" + new IdSequenceUtils().nextId();
+        String formNo = "SC" + IdSequenceUtils.getInstance().nextId();
         Date currentDate = new Date();
         applyProductSkuConfigs.forEach(item->{
             item.setId(null);

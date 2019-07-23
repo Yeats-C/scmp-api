@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.web.advice;
 
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -88,4 +89,20 @@ public class SupplierValidationHandler {
         logger.error(e.getMessage());
         return HttpResponse.failure(e.getMessageId());
     }
+    /**
+     * 系统异常自定义拦截
+     *
+     * @param e
+     * @param
+     * @return
+     */
+    @ExceptionHandler(value=Exception.class)
+    @ResponseBody
+    public HttpResponse handleRException(HttpServletResponse response, Exception e) {
+        response.setStatus(500);
+        logger.error(e.getMessage());
+        e.printStackTrace();
+        return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+    }
+
 }

@@ -34,7 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -267,5 +269,10 @@ public class ProductBrandServiceImpl implements ProductBrandService {
     public List<ProductBrandType> selectByBrandCodes(List<String> codes) {
         log.debug("ProductBrandServiceImpl-selectByBrandCodes,入参是：[{}]", JSONObject.toJSONString(codes));
         return productBrandTypeDao.selectByBrandCodes(codes);
+    }
+
+    @Override
+    public Map<String, ProductBrandType> selectByBrandNames(Set<String> brandNameList, String companyCode) {
+        return productBrandTypeDao.selectByBrandNames(brandNameList,companyCode);
     }
 }

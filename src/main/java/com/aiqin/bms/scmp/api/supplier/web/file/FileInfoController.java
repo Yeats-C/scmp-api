@@ -1,9 +1,10 @@
 package com.aiqin.bms.scmp.api.supplier.web.file;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
+import com.aiqin.bms.scmp.api.util.UploadFileUtil;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -14,9 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 /**
  * @功能说明:
@@ -29,6 +28,9 @@ import java.util.List;
 public class FileInfoController {
     @Autowired
     private FileInfoService fileInfoService;
+
+    @Autowired
+    private UploadFileUtil uploadFileUtil;
 
     @PostMapping("/upload")
     @ApiModelProperty(value = "文件上传")
@@ -59,18 +61,6 @@ public class FileInfoController {
             return HttpResponse.failure(ex.getMessageId());
         }catch (Exception e) {
                 return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR);
-        }
-    }
-    @PostMapping("/multiUpload/pic")
-    @ApiModelProperty(value = "批量图片上传")
-    public HttpResponse<List<String>> uploadFile(@NotEmpty List<MultipartFile> file){
-        try {
-            return HttpResponse.success(fileInfoService.multiUpload(file));
-        } catch (BizException ex) {
-            return HttpResponse.failure(ex.getMessageId());
-        }catch (Exception e) {
-            e.printStackTrace();
-            return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR);
         }
     }
 }
