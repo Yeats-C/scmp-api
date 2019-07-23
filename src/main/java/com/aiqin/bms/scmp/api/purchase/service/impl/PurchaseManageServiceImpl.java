@@ -706,6 +706,7 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         if(num <= purchaseStorage.getPurchaseNum()){
             order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
             order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
+            order.setStorageStatus(Global.STORAGE_STATUS_2);
             Integer count = purchaseOrderDao.update(order);
             if(count == 0){
                 LOGGER.error("采购单入库状态修改失败");
