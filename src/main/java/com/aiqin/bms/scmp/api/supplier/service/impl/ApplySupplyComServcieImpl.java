@@ -141,7 +141,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }
             String applySupplyCompanyCode = insertApplyAndOther(applySupplyCompanyReqDTO);
             //审批流程
-            applySupplyCompanyReqDTO.setFormNo("GYS"+new IdSequenceUtils().nextId());
+            applySupplyCompanyReqDTO.setFormNo("GYS"+IdSequenceUtils.getInstance().nextId());
             workFlow(applySupplyCompanyReqDTO);
             if(applySupplyCompanyCode != null){
                 resultNum=1;
@@ -223,7 +223,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                             "系统错误"));
                 }
             }
-            applySupplyCompanyReqDTO.setFormNo("GYS"+new IdSequenceUtils().nextId());
+            applySupplyCompanyReqDTO.setFormNo("GYS"+IdSequenceUtils.getInstance().nextId());
             //增加文件信息
             applySupplierFileDao.deleteApplySupplierFileByApplyCode(applySupplyCompanyReqDTO.getApplyCode());
             List<SupplierFileReqVO> fileReqVOList = applySupplyCompanyReqVO.getFileReqVOList();

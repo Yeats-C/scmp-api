@@ -47,4 +47,8 @@ public class QueryProductSkuPriceInfo {
      * 批次号集合
      */
     private List<String> warehouseBatchNumber;
+    /**
+     * 价格类型
+     */
+    private String priceType;
 }

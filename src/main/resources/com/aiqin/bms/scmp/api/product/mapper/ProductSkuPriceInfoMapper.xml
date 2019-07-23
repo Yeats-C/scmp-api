@@ -137,6 +137,7 @@
     from product_sku_price_info
     where company_code = #{vo.companyCode}
     and ext_field_5 = 0
+    and price_attribute_code = #{vo.priceType}
     <if test="vo.skuCode != null and vo.skuCode.size>0">
       and sku_code in
       <foreach collection="vo.skuCode" separator="," open="(" close=")" item="item">

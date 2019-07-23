@@ -69,7 +69,7 @@ public class TransportServiceImpl implements TransportService {
     public HttpResponse saveTransport(TransportAddRequest transportAddRequest) {
         Transport transport=new Transport();
         //获取一个运输单号
-        String code = new IdSequenceUtils().nextId()+"";
+        String code = IdSequenceUtils.getInstance().nextId()+"";
         BeanCopyUtils.copy(transportAddRequest,transport);
         transport.setLogisticsFee(transport.getAdditionalLogisticsFee()+transport.getStandardLogisticsFee());
         transport.setTransportCode(code);

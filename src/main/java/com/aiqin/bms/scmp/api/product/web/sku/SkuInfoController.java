@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -152,4 +153,19 @@ public class SkuInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
         }
     }
+
+    @PostMapping("/importSku")
+    @ApiOperation("导入sku")
+    public HttpResponse<List<AddSkuInfoReqVO>> importSku(MultipartFile file){
+        log.info("SkuInfoController---importSku---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
+        try {
+            return HttpResponse.success(skuInfoService.importSku(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
 }

@@ -968,7 +968,7 @@ public class StockServiceImpl implements StockService {
             String lockCode;
             StockFlow stockFlow = new StockFlow();
             BeanCopyUtils.copy(reqVo, stockFlow);
-            long id = new IdSequenceUtils().nextId();
+            long id = IdSequenceUtils.getInstance().nextId();
             lockCode = "LOCK" + id;
 //            stockFlow.setLockCode(lockCode);
             stockFlow.setCreateTime(new Date());
@@ -1046,7 +1046,7 @@ public class StockServiceImpl implements StockService {
                 //设置库存流水期初值
                 StockFlow stockFlow = new StockFlow();
                 stockFlow.setStockCode(stock.getStockCode());
-                stockFlow.setFlowCode("FL" + new IdSequenceUtils().nextId());
+                stockFlow.setFlowCode("FL" + IdSequenceUtils.getInstance().nextId());
                 stockFlow.setOrderCode(stockChangeRequest.getOrderCode());
                 stockFlow.setOrderType(stockChangeRequest.getOrderType());
 //                    stockFlow.setOrderSource();
@@ -1086,7 +1086,7 @@ public class StockServiceImpl implements StockService {
                 Stock stock = new Stock();
                 //设置库存流水期初值
                 StockFlow stockFlow = new StockFlow();
-                stockFlow.setFlowCode("FL" + new IdSequenceUtils().nextId());
+                stockFlow.setFlowCode("FL" + IdSequenceUtils.getInstance().nextId());
                 stockFlow.setOrderCode(stockChangeRequest.getOrderCode());
                 stockFlow.setOrderType(stockChangeRequest.getOrderType());
 //                    stockFlow.setOrderSource();
@@ -1163,7 +1163,7 @@ public class StockServiceImpl implements StockService {
             stock.setPurchaseWayNum(0L);
             stock.setAllocationWayNum(0L);
             stock.setTotalWayNum(0L);
-            stock.setStockCode("ST" + new IdSequenceUtils().nextId());
+            stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
         }
         stock.setNewPurchasePrice(stockVoRequest.getNewPurchasePrice());
         stock.setTaxPrice(stockVoRequest.getNewPurchasePrice());
@@ -1394,7 +1394,7 @@ public class StockServiceImpl implements StockService {
                         // 判断商品skuCode和入库的商品Sku
                         for (StockBatchProductSkuRespVO stockBatchProductSkuRespVO : stockBatchProductSkuRespVOs) {
                             if (stockBatchVoRequest.getSkuCode().equals(stockBatchProductSkuRespVO.getSkuCode())){
-                                stockBatch.setStockBatchCode("SB"+ new IdSequenceUtils().nextId());
+                                stockBatch.setStockBatchCode("SB"+ IdSequenceUtils.getInstance().nextId());
                                 stockBatch.setCompanyCode(stockBatchVoRequest.getCompanyCode());
                                 stockBatch.setCompanyName(stockBatchVoRequest.getCompanyName());
                                 stockBatch.setTransportCenterCode(stockBatchVoRequest.getTransportCenterCode());
@@ -1427,7 +1427,7 @@ public class StockServiceImpl implements StockService {
                                 stockBatchs.add(stockBatch);
                                 // 设置批次库存流水
                                 stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
-                                stockBatchFlow.setFlowBatchCode("FL"+ new IdSequenceUtils().nextId());
+                                stockBatchFlow.setFlowBatchCode("FL"+ IdSequenceUtils.getInstance().nextId());
                                 stockBatchFlow.setBatchCode(stockBatchVoRequest.getBatchCode());
                                 stockBatchFlow.setOrderCode(stockChangeRequest.getOrderCode());
                                 stockBatchFlow.setOrderType(stockChangeRequest.getOrderType());
@@ -1495,7 +1495,7 @@ public class StockServiceImpl implements StockService {
                                 stockBatchs.add(stockBatch);
                                 // 设置批次库存流水
                                 stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
-                                stockBatchFlow.setFlowBatchCode("FL"+ new IdSequenceUtils().nextId());
+                                stockBatchFlow.setFlowBatchCode("FL"+ IdSequenceUtils.getInstance().nextId());
                                 stockBatchFlow.setBatchCode(stockBatchVoRequest.getBatchCode());
                                 stockBatchFlow.setOrderCode(stockChangeRequest.getOrderCode());
                                 stockBatchFlow.setOrderType(stockChangeRequest.getOrderType());
@@ -1743,7 +1743,7 @@ public class StockServiceImpl implements StockService {
                 //设置库存流水期初值
                 StockBatchFlow stockBatchFlow = new StockBatchFlow();
                 stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
-                stockBatchFlow.setFlowBatchCode("FL" + new IdSequenceUtils().nextId());
+                stockBatchFlow.setFlowBatchCode("FL" + IdSequenceUtils.getInstance().nextId());
                 stockBatchFlow.setOrderCode(stockChangeRequest.getOrderCode());
                 stockBatchFlow.setOrderType(stockChangeRequest.getOrderType());
 //                    stockBatchFlow.setOrderSource();
@@ -1779,7 +1779,7 @@ public class StockServiceImpl implements StockService {
                 StockBatch stockBatch = new StockBatch();
                 //设置库存流水期初值
                 StockBatchFlow stockBatchFlow = new StockBatchFlow();
-                stockBatchFlow.setFlowBatchCode("FL" + new IdSequenceUtils().nextId());
+                stockBatchFlow.setFlowBatchCode("FL" + IdSequenceUtils.getInstance().nextId());
                 stockBatchFlow.setBatchCode(stockBatchFlow.getBatchCode());
                 stockBatchFlow.setOrderCode(stockChangeRequest.getOrderCode());
                 stockBatchFlow.setOrderType(stockChangeRequest.getOrderType());
@@ -1857,7 +1857,7 @@ public class StockServiceImpl implements StockService {
             stockBatch.setLockNum(0L);
             stockBatch.setInventoryNum(0L);
             stockBatch.setAvailableNum(0L);
-            stockBatch.setStockBatchCode("SB" + new IdSequenceUtils().nextId());
+            stockBatch.setStockBatchCode("SB" + IdSequenceUtils.getInstance().nextId());
         }
         stockBatch.setTaxRate(stockBatchVoRequest.getTaxRate());
         stockBatch.setNewDelivery(stockBatchVoRequest.getNewDelivery());

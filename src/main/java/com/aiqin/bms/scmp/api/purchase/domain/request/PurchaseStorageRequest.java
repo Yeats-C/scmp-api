@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.request;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportReqVo;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.supplier.domain.request.score.SavePurchaseScoreReqVo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -19,6 +20,10 @@ public class PurchaseStorageRequest {
     @ApiModelProperty(value="采购单id")
     @JsonProperty("purchase_order_id")
     private String purchaseOrderId;
+
+    @ApiModelProperty(value="采购单code")
+    @JsonProperty("purchase_order_code")
+    private String purchaseOrderCode;
 
     @ApiModelProperty(value="质检报告数据")
     @JsonProperty("report_request")
@@ -44,4 +49,15 @@ public class PurchaseStorageRequest {
     @JsonProperty("company_name")
     private String companyName;
 
+    @ApiModelProperty(value="采购单商品集合")
+    @JsonProperty("order_list")
+    private List<PurchaseOrderProduct> orderList;
+
+    @ApiModelProperty(value="入库次数")
+    @JsonProperty("purchase_num")
+    private Integer purchaseNum;
+
+    @ApiModelProperty("行号")
+    @JsonProperty("lineNum")
+    private Long lineNum;
 }

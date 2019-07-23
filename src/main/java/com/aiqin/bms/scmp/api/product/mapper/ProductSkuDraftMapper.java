@@ -46,4 +46,6 @@ public interface ProductSkuDraftMapper {
      * @date 2019/7/19 18:52
      */
     int checkCategory(String categoryCode);
+
+    ProductSkuDraft selectProductByFolderCode(@Param(value = "picFolderCode") String folderName);
 }

@@ -602,7 +602,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
             WorkFlowVO workFlowVO = new WorkFlowVO();
             workFlowVO.setFormUrl(workFlowBaseUrl.applyContractUrl+"?applyType="+applyContractDTO.getApplyType()+"&applyCode="+applyContractDTO.getApplyContractCode()+"&id="+applyContractDTO.getId()+"&itemCode=4"+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
-            workFlowVO.setFormNo("HT"+new IdSequenceUtils().nextId());
+            workFlowVO.setFormNo("HT"+IdSequenceUtils.getInstance().nextId());
             String title = "修改";
             if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applyContractDTO.getApplyType())){
                 title = "新增";
@@ -656,7 +656,6 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         account.setAuditorBy(vo.getApprovalUserName());
         account.setAuditorTime(new Date());
 //        if(account.getApplyStatus().intValue()== ApplyStatus.APPROVAL.getNumber()){
-
             if(vo.getApplyStatus().intValue()== ApplyStatus.APPROVAL_SUCCESS.getNumber()){
 
                 int i = applyContractDao.updateByPrimaryKeySelective(account);
@@ -665,7 +664,6 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 supplierCommonService.getInstance(account.getApplyContractCode()+"", HandleTypeCoce.APPROVAL_SUCCESS.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(), content,null,HandleTypeCoce.APPROVAL_SUCCESS.getName(),vo.getApprovalUserName());
                 if(account.getApplyType()==0) {
                     //更新申请数据
-
                     //通过插入正式数据
                     ContractDTO contractDTO = new ContractDTO();
                     BeanCopyUtils.copy(account,contractDTO);
@@ -718,20 +716,12 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                     }
                     // 查询关联的进货额
                     List<ApplyContractPurchaseVolumeDTO> purchaseLists = applyContractPurchaseVolumeMapperDao.selectByApplyContractPurchaseVolume(account.getApplyContractCode());
-                    try {
-                        List<ContractPurchaseVolumeDTO> list = BeanCopyUtils.copyList(purchaseLists,ContractPurchaseVolumeDTO.class);
-                        list.stream().forEach(purchaselist -> purchaselist.setContractCode(contractDTO.getContractCode()));
-                        int s = contractPurchaseVolumeDao.insertContractPurchaseVolume(list);
-                        if(s > 0){
-                            return "success";
-                        }else {
-                            throw new GroundRuntimeException("合同进货额保存失败");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        throw new GroundRuntimeException("合同进货额保存失败");
-                    }
-
+                   if(CollectionUtils.isNotEmptyCollection(purchaseLists)){
+                       List<ContractPurchaseVolumeDTO> list = BeanCopyUtils.copyList(purchaseLists,ContractPurchaseVolumeDTO.class);
+                       list.stream().forEach(purchaselist -> purchaselist.setContractCode(contractDTO.getContractCode()));
+                       int s = contractPurchaseVolumeDao.insertContractPurchaseVolume(list);
+                   }
+                    return "success";
                 }else {
                     //修改申请
                     try {
@@ -774,7 +764,6 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                         //更新采购组信息
                         //删除旧的信息
                         contractPurchaseGroupMapper.deleteByContractCode(oldContractDTO.getContractCode());
-
                         List<ApplyContractPlanType> applyContractPlanTypelist = applyContractPlanTypeMapper.selectByApplyContratCode(account.getApplyContractCode());
                         if(CollectionUtils.isNotEmptyCollection(applyContractPlanTypelist)){
                             contractService.deletePlanTypeList(oldContractDTO.getContractCode());
@@ -795,28 +784,18 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                             }
                         }
                         //删除旧的关联进货额
-                        if(kp>0)  {
-                            int k = contractPurchaseVolumeDao.deleteByPrimaryKey(oldContractDTO.getContractCode());
-                            if(k>0){
-                                // 查询申请表关联的进货额
-                                List<ApplyContractPurchaseVolumeDTO> purchaseLists = applyContractPurchaseVolumeMapperDao.selectByApplyContractPurchaseVolume(account.getApplyContractCode());
-                                // 转化成数据库访问实体列表
-                                List<ContractPurchaseVolumeDTO> list =BeanCopyUtils.copyList(purchaseLists,ContractPurchaseVolumeDTO.class);
-                                //  设置关联编码
-                                list.stream().forEach(volumeDTO -> volumeDTO.setContractCode(String.valueOf(oldContractDTO.getContractCode())));
-                                // 保存实体
-                                int s = contractPurchaseVolumeDao.insertContractPurchaseVolume(list);
-                                if(s > 0){
-                                    return "success";
-                                }else {
-                                    throw new GroundRuntimeException("合同进货额保存失败");
-                                }
-                            }else{
-                                throw new GroundRuntimeException("合同修改失败");
-                            }
-                        }else {
-                            throw new GroundRuntimeException("合同修改失败");
+                        int k = contractPurchaseVolumeDao.deleteByPrimaryKey(oldContractDTO.getContractCode());
+                        // 查询申请表关联的进货额
+                        List<ApplyContractPurchaseVolumeDTO> purchaseLists = applyContractPurchaseVolumeMapperDao.selectByApplyContractPurchaseVolume(account.getApplyContractCode());
+                        if(CollectionUtils.isNotEmptyCollection(purchaseLists)){
+                            // 转化成数据库访问实体列表
+                            List<ContractPurchaseVolumeDTO> list =BeanCopyUtils.copyList(purchaseLists,ContractPurchaseVolumeDTO.class);
+                            //  设置关联编码
+                            list.stream().forEach(volumeDTO -> volumeDTO.setContractCode(String.valueOf(oldContractDTO.getContractCode())));
+                            // 保存实体
+                            int s = contractPurchaseVolumeDao.insertContractPurchaseVolume(list);
                         }
+                        return "success";
                     }catch (Exception e) {
                         throw new GroundRuntimeException("合同修改失败");
                     }

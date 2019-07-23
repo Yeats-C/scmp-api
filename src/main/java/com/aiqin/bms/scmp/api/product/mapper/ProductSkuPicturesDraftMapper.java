@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPicturesDraft;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface ProductSkuPicturesDraftMapper {
     int updateByPrimaryKey(ProductSkuPicturesDraft record);
 
     Integer delete(List<String> skuCodes);
+
+    Integer insertAll(@Param("list") List<ProductSkuPicturesDraft> productSkuPicturesDraftList);
 }

@@ -7,7 +7,9 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
+import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
@@ -30,14 +32,17 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyUseTagRecordService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
+import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
@@ -47,13 +52,17 @@ import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -158,6 +167,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private ProductSkuSubService productSkuSubService;
     @Autowired
     private ProductCategoryService productCategoryService;
+    @Autowired
+    private SupplyComService supplyCompanyService;
+    @Autowired
+    private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
+    @Autowired
+    private ProductBrandService brandService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO) {
@@ -608,17 +624,18 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if (CollectionUtils.isNotEmpty(saveSkuApplyInfoReqVO.getSkuCodes())){
             productSkuDrafts = productSkuDao.getSkuDraftByCodes(saveSkuApplyInfoReqVO.getSkuCodes());
         }
-        String formNo =  "SP"+ new IdSequenceUtils().nextId();
+        String formNo =  "SP"+ IdSequenceUtils.getInstance().nextId();
         EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
         long code = encodingRule.getNumberingValue();
         List<ApplyProductSku> applyProductSkus = BeanCopyUtils.copyList(productSkuDrafts, ApplyProductSku.class);
         Date currentDate = new Date();
+        String applyBy = getUser().getPersonName();
         applyProductSkus.forEach(item->{
             item.setApplyCode(String.valueOf(code));
             item.setSelectionEffectiveTime(saveSkuApplyInfoReqVO.getSelectionEffectiveTime());
             item.setSelectionEffectiveStartTime(saveSkuApplyInfoReqVO.getSelectionEffectiveStartTime());
             item.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
-            item.setCreateTime(currentDate);
+            item.setUpdateBy(applyBy);
             item.setUpdateTime(currentDate);
             item.setFormNo(formNo);
         });
@@ -1246,6 +1263,111 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         return productSkuInfoMapper.selectBySkuCodes(skuList, companyCode);
     }
 
+    @Override
+    public List<AddSkuInfoReqVO> importSku(MultipartFile file) {
+        try {
+            List<SkuInfoImport> skuInfoImports = ExcelUtil.readExcel(file, SkuInfoImport.class, 1, 0);
+            dataValidation(skuInfoImports);
+            skuInfoImports = skuInfoImports.subList(2, skuInfoImports.size());
+            //取数据
+            //sku名称
+            Set<String> skuNameList = Sets.newHashSet();
+            //sku名称
+            Set<String> supplierList = Sets.newHashSet();
+            //品牌
+            Set<String> brandNameList = Sets.newHashSet();
+            //品类
+            Set<String> categoryNameList = Sets.newHashSet();
+            //字典数据
+            List<String> dicNameList = Lists.newArrayList();
+            //渠道信息
+            Set<String> channelList = Sets.newHashSet();
+            //标签信息
+            Set<String> skuTagList = Sets.newHashSet();
+            skuInfoImports.forEach(o -> {
+                skuNameList.add(o.getSkuName());
+                brandNameList.add(o.getProductBrandName());
+                if (StringUtils.isNotBlank(o.getProductCategoryName())) {
+                    categoryNameList.addAll(Arrays.asList(o.getProductCategoryName().split(",")));
+                }
+                if (StringUtils.isNotBlank(o.getPriceChannelName())) {
+                    channelList.addAll(Arrays.asList(o.getTagName().split(",")));
+                }
+                if (StringUtils.isNotBlank(o.getTagName())) {
+                    skuTagList.addAll(Arrays.asList(o.getTagName().split(",")));
+                }
+            });
+            Map<String, ProductSkuInfo> productSkuMap = Maps.newHashMap();
+            Map<String, SupplyCompany> supplyCompanyMap = Maps.newHashMap();
+            Map<String, ProductBrandType> brandMap = Maps.newHashMap();
+            Map<String, ProductCategory> categoryMap = Maps.newHashMap();
+            Map<String, PriceChannel> channelMap = Maps.newHashMap();
+            Map<String, TagInfo> skuTagMap = Maps.newHashMap();
+            //sku信息
+            if (CollectionUtils.isNotEmpty(skuNameList)) {
+                productSkuMap = selectBySkuNames(skuNameList, getUser().getCompanyCode());
+            }
+            //供应商信息
+            if (CollectionUtils.isNotEmpty(supplierList)) {
+                supplyCompanyMap = supplyCompanyService.selectBySupplyComCodes(supplierList, getUser().getCompanyCode());
+            }
+            //品牌
+            if (CollectionUtils.isNotEmpty(brandNameList)) {
+                brandMap = brandService.selectByBrandNames(brandNameList, getUser().getCompanyCode());
+            }
+            //品类
+            if (CollectionUtils.isNotEmpty(categoryNameList)) {
+                categoryMap = productCategoryService.selectByCategoryNames(brandNameList, getUser().getCompanyCode());
+            }
+            dicNameList.add("供货渠道类别");
+            dicNameList.add("商品属性");
+            dicNameList.add("所属部门");
+            dicNameList.add("结算方式");
+            Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
+            List<AddSkuInfoReqVO> skuInfoList = Lists.newArrayList();
+            Map<String, String> reaptMap = Maps.newHashMap();
+            for (int i = 0; i < skuInfoImports.size(); i++) {
+                //检查信息
+                CheckSku checkSku = new CheckSku(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i))
+                        .checkRepeat() //检查重复
+                        .checkBaseDate() //检查基础数据
+                        .checkInvoice() //检查进销存包装
+                        .checkSettlement() //检查结算信息
+                        .checkSupplier() //检查供应商
+                        .checkPrice() //检查价格
+                        .checkConfig() //检查配置
+                        .checkManufacturer() //检查厂家
+                        .checkPic();//检查图片
+                //返回实体
+                AddSkuInfoReqVO resp = checkSku.getRespVO();
+                skuInfoList.add(resp);
+                reaptMap = checkSku.getReapMap();
+            }
+            return skuInfoList;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_DATA_ERROR);
+        }
+    }
+
+    @Override
+    public Map<String, ProductSkuInfo> selectBySkuNames(Set<String> skuNameList, String companyCode) {
+        return productSkuInfoMapper.selectBySkuNames(skuNameList,companyCode);
+    }
+
+    private void dataValidation( List<SkuInfoImport> skuInfoImports) {
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuInfoImports)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        if (skuInfoImports.size()<3) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        String  head = SkuInfoImport.HEAD;
+        boolean equals = skuInfoImports.get(1).toString().equals(head);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
+    }
+
     private ProductApplyInfoRespVO<ProductSkuApplyVo> dealApplyViewData(List<ProductSkuApplyVo> list) {
         ProductApplyInfoRespVO<ProductSkuApplyVo> resp = new ProductApplyInfoRespVO<>();
         //数据相同默认取第一个
@@ -1267,6 +1389,154 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         resp.setSpuNum(spuCodes.size());
         resp.setData(list);
         return resp;
+    }
+
+    @Data
+    private class CheckSku {
+        AddSkuInfoReqVO resp;
+        Map<String, ProductSkuInfo> productSkuMap;
+        Map<String, SupplyCompany> supplyCompanyMap;
+        Map<String, ProductBrandType> brandMap;
+        Map<String, ProductCategory> categoryMap;
+        Map<String, PriceChannel> channelMap;
+        Map<String, TagInfo> skuTagMap;
+        Map<String, String> repeatMap;
+        SkuInfoImport importVo;
+        List<String> error;
+
+        private CheckSku() {}
+
+        private CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, SkuInfoImport importVo) {
+            this.error = Lists.newArrayList();
+            this.resp = new AddSkuInfoReqVO();
+            this.productSkuMap = productSkuMap;
+            this.supplyCompanyMap = supplyCompanyMap;
+            this.brandMap = brandMap;
+            this.categoryMap = categoryMap;
+            this.channelMap = channelMap;
+            this.skuTagMap = skuTagMap;
+            this.repeatMap = repeatMap;
+            this.importVo = importVo;
+        }
+
+        //检查重复
+        private CheckSku checkRepeat() {
+            return this;
+        }
+
+        //检查基础数据
+        private CheckSku checkBaseDate() {
+            ProductSkuDraft productSkuDraft = BeanCopyUtils.copy(importVo, ProductSkuDraft.class);
+            //类型
+            if (Objects.isNull(importVo.getGoodsGiftsDesc())) {
+                error.add("类型不能为空");
+            }else {
+                StatusTypeCode code = StatusTypeCode.getAll().get(importVo.getGoodsGiftsDesc());
+                if (Objects.isNull(code)) {
+                    error.add("类型值错误，请填写商品或赠品");
+                }else {
+                    productSkuDraft.setGoodsGifts(code.getStatus());
+                }
+            }
+            //sku名称
+            if (Objects.isNull(importVo.getSkuName())) {
+                error.add("SKU名称不能为空");
+            }else {
+                ProductSkuInfo sku = productSkuMap.get(importVo.getSkuName());
+                if (Objects.nonNull(sku)) {
+                    error.add("sku名称已存在");
+                }
+            }
+            //sku简称
+            if (Objects.isNull(importVo.getSkuAbbreviation())) {
+                error.add("SKU简称不能为空");
+            }
+            //品牌
+            if (Objects.isNull(importVo.getProductBrandName())) {
+                error.add("品牌不能为空");
+            }else{
+                ProductBrandType productBrandType = brandMap.get(importVo.getProductBrandName());
+                if (Objects.isNull(productBrandType)) {
+                    error.add("无对应品牌信息");
+                }else {
+                    productSkuDraft.setProductBrandCode(productBrandType.getBrandCode());
+                }
+            }
+            if (Objects.isNull(importVo.getProductCategoryName())) {
+                error.add("品类不能为空");
+            }else {
+                String[] split = importVo.getProductCategoryName().split(",");
+                if (split.length > 4 || split.length <= 0) {
+                    error.add("品类应为四级用\"-\"分割");
+                }
+                boolean flag = true;
+                ProductCategory current = null;
+                for (int i = split.length-1; i <= 0; i--) {
+                    ProductCategory productCategory = categoryMap.get(split[i]);
+                    if (Objects.isNull(productCategory)) {
+                        error.add("无对应名称为"+split[i]+"的品牌信息");
+                        flag = false;
+                        break;
+                    }else {
+                        //不是最后一级
+                        if(i != 0){
+                            //校验上一级名称是否对应
+                        }
+                    }
+                }
+                if (flag) {
+                    productSkuDraft.setProductCategoryCode(categoryMap.get(split[split.length-1]).getProductCategoryCode());
+                    productSkuDraft.setProductCategoryCode(categoryMap.get(split[split.length-1]).getCategoryName());
+                }
+            }
+            this.resp.setProductSkuDraft(productSkuDraft);
+            return this;
+        }
+
+        //检查进销存包装
+        private CheckSku checkInvoice() {
+            return this;
+        }
+
+        //检查结算信息
+        private CheckSku checkSettlement() {
+            return this;
+        }
+
+        //检查供应商
+        private CheckSku checkSupplier() {
+            return this;
+        }
+
+        //检查价格
+        private CheckSku checkPrice() {
+            return this;
+        }
+
+        //检查配置
+        private CheckSku checkConfig() {
+            return this;
+        }
+
+        //检查厂家
+        private CheckSku checkManufacturer() {
+            return this;
+        }
+
+        //检查图片
+        private CheckSku checkPic() {
+            return this;
+        }
+
+        //返回实体
+        private AddSkuInfoReqVO getRespVO() {
+            this.resp.setError(StringUtils.strip(this.error.toString(), "[]"));
+            return this.resp;
+        }
+
+        private Map<String, String> getReapMap() {
+            return this.repeatMap;
+        }
     }
 }
 

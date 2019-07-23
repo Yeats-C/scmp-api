@@ -16,11 +16,12 @@ public  class IdSequenceUtils {
     private long sequenceMask = -1L ^ (-1L << sequenceBits); //4095
     private long lastTimestamp = -1L;
 
-    public IdSequenceUtils() {
+
+    private IdSequenceUtils() {
         this(0L, 0L);
     }
 
-    public IdSequenceUtils(long workerId, long datacenterId) {
+    private IdSequenceUtils(long workerId, long datacenterId) {
         if (workerId > maxWorkerId || workerId < 0) {
             throw new IllegalArgumentException(String.format("业务ID不能大于%d或小于0", maxWorkerId));
         }
@@ -32,6 +33,13 @@ public  class IdSequenceUtils {
         this.datacenterId = datacenterId;
     }
 
+    private static class SingleIdSequenceUtils{
+        private static final IdSequenceUtils instance = new IdSequenceUtils();
+    }
+
+    public static IdSequenceUtils getInstance(){
+        return SingleIdSequenceUtils.instance;
+    }
     /**
      * 调用该方法，获取序列ID
      * @return
@@ -58,8 +66,10 @@ public  class IdSequenceUtils {
         // 最后按照规则拼出ID。
         // 000000000000000000000000000000000000000000 00000 00000 000000000000
         // time datacenterId workerId sequence
-        return ((timestamp - twepoch) << timestampLeftShift) | (datacenterId << datacenterIdShift)
-                | (workerId << workerIdShift) | sequence;
+        return ((timestamp - twepoch) << timestampLeftShift) //
+                | (datacenterId << datacenterIdShift) //
+                | (workerId << workerIdShift) //
+                | sequence;
     }
 
     /**

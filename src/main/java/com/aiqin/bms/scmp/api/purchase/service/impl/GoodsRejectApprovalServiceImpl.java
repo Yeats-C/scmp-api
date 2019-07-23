@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -142,7 +143,7 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
         if (workFlowRespVO.getSuccess()) {
             LOGGER.info("创建退供申请单审批成功:{}",workFlowRespVO.toString());
         } else {
-            throw new BizException(ResultCode.REJECT_RECORD_ERROR);
+            throw new GroundRuntimeException(workFlowRespVO.getMsg());
         }
     }
 

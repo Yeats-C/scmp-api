@@ -11,71 +11,75 @@ import java.util.Date;
 @ApiModel
 @Data
 public class RejectRecordDetail {
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("reject_record_id")
     private String rejectRecordId;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("reject_record_detail_id")
     private String rejectRecordDetailId;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
 
-    @ApiModelProperty(value="条形码")
+    @ApiModelProperty(value = "条形码")
     @JsonProperty("barcode")
     private String barcode;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("sku_code")
     private String skuCode;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("sku_name")
     private String skuName;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("product_id")
     private String productId;
 
-    @ApiModelProperty(value="品类id")
+    @ApiModelProperty(value = "品类id")
     @JsonProperty("category_id")
     private String categoryId;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("category_name")
     private String categoryName;
 
-    @ApiModelProperty(value="品牌id")
+    @ApiModelProperty(value = "品牌id")
     @JsonProperty("brand_id")
     private String brandId;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("brand_name")
     private String brandName;
 
-    @ApiModelProperty(value="商品类型 0赠品 1商品 2实物返回")
+    @ApiModelProperty(value = "商品类型 0赠品 1商品 2实物返回")
     @JsonProperty("product_type")
     private Integer productType;
 
-    @ApiModelProperty(value="规格")
+    @ApiModelProperty(value = "规格")
     @JsonProperty("product_spec")
     private String productSpec;
 
-    @ApiModelProperty(value="颜色编码")
+    @ApiModelProperty(value = "颜色编码")
     @JsonProperty("color_code")
     private String colorCode;
 
-    @ApiModelProperty(value="颜色")
+    @ApiModelProperty(value = "颜色")
     @JsonProperty("color_name")
     private String colorName;
 
-    @ApiModelProperty(value="型号")
+    @ApiModelProperty(value = "厂商sku")
+    @JsonProperty("factory_sku_code")
+    private String factorySkuCode;
+
+    @ApiModelProperty(value = "型号")
     @JsonProperty("model_number")
     private String modelNumber;
 
@@ -83,72 +87,72 @@ public class RejectRecordDetail {
     @JsonProperty("single_count")
     private Integer singleCount;
 
-    @ApiModelProperty(value="单位")
+    @ApiModelProperty(value = "单位")
     @JsonProperty("unit_code")
     private String unitCode;
 
-    @ApiModelProperty(value="单位")
+    @ApiModelProperty(value = "单位")
     @JsonProperty("unit_name")
     private String unitName;
 
-    @ApiModelProperty(value="税率")
+    @ApiModelProperty(value = "税率")
     @JsonProperty("tax_rate")
     private Integer taxRate;
 
-    @ApiModelProperty(value="商品数量")
+    @ApiModelProperty(value = "商品数量")
     @JsonProperty("product_count")
     private Long productCount;
 
-    @ApiModelProperty(value="含税单价")
+    @ApiModelProperty(value = "含税单价")
     @JsonProperty("product_amount")
     private Long productAmount;
 
-    @ApiModelProperty(value="含税总价")
+    @ApiModelProperty(value = "含税总价")
     @JsonProperty("product_total_amount")
     private Long productTotalAmount;
 
-    @ApiModelProperty(value="wms 传回来的实际数量")
+    @ApiModelProperty(value = "wms 传回来的实际数量")
     @JsonProperty("actual_count")
     private Integer actualCount;
 
-    @ApiModelProperty(value="wms 传回来的实际金额")
+    @ApiModelProperty(value = "wms 传回来的实际金额")
     @JsonProperty("actual_amount")
     private Long actualAmount;
 
-    @ApiModelProperty(value="商品批次号")
+    @ApiModelProperty(value = "商品批次号")
     @JsonProperty("batch_no")
     private String batchNo;
 
-    @ApiModelProperty(value="批次备注")
+    @ApiModelProperty(value = "批次备注")
     @JsonProperty("batch_remark")
     private String batchRemark;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty(value="批次生产日期")
+    @ApiModelProperty(value = "批次生产日期")
     @JsonProperty("batch_create_time")
     private Date batchCreateTime;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("create_by_id")
     private String createById;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("create_by_name")
     private String createByName;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("update_by_id")
     private String updateById;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("update_by_name")
     private String updateByName;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("create_time")
     private Date createTime;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value = "")
     @JsonProperty("update_time")
     private Date updateTime;
 

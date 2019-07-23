@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleA
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -213,4 +214,21 @@ public interface SkuInfoService{
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.ProductSku>
      */
     Map<String,ProductSkuInfo> selectBySkuCodes(Set<String> skuList, String companyCode);
+    /**
+     * 商品导入
+     * @author NullPointException
+     * @date 2019/7/21
+     * @param file
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO>
+     */
+    List<AddSkuInfoReqVO> importSku(MultipartFile file);
+    /**
+     * 通过名称查询
+     * @author NullPointException
+     * @date 2019/7/21
+     * @param skuNameList
+     * @param companyCode
+     * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo>
+     */
+    Map<String, ProductSkuInfo> selectBySkuNames(Set<String> skuNameList, String companyCode);
 }

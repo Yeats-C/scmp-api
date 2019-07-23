@@ -89,7 +89,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             //复制对象
             ApplySupplyCompanyAcctReqDTO applySupplyCompanyAcctReqDTO = new ApplySupplyCompanyAcctReqDTO();
             BeanCopyUtils.copy(applySupplyCompanyAcctReqVO, applySupplyCompanyAcctReqDTO);
-            applySupplyCompanyAcctReqDTO.setFormNo("GYSZH"+new IdSequenceUtils().nextId());
+            applySupplyCompanyAcctReqDTO.setFormNo("GYSZH"+IdSequenceUtils.getInstance().nextId());
             resultNum = insertApplyAndLog(applySupplyCompanyAcctReqDTO);
             //调用审批接口
             workFlow(applySupplyCompanyAcctReqDTO);
@@ -237,7 +237,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         s.setId(account.getId());
         s.setApplyStatus((byte) 0);
         s.setApplyType((byte) 2);
-        s.setFormNo("GYSZH"+new IdSequenceUtils().nextId());
+        s.setFormNo("GYSZH"+IdSequenceUtils.getInstance().nextId());
         ((ApplySupplyComAcctService) AopContext.currentProxy()).updateApplyData(s);
         //存日志
         applySupplyCompanyAccountMapper.selectByPrimaryKey(applySupplyCompanyAcctReq.getId());

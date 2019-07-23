@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
-
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatchFlow;
@@ -20,14 +19,11 @@ import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSku
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 public interface StockDao {
 
@@ -131,10 +127,6 @@ public interface StockDao {
     List<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
 
     Long selectOneStockBatchInfoByStockBatchIdInfoByPage(Long stockBatchId);
-
-    List<PurchaseApplyDetailResponse> purchaseProductList(PurchaseApplyRequest purchases);
-
-    Integer purchaseProductCount(PurchaseApplyRequest purchases);
 
     /**
      *

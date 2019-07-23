@@ -9,6 +9,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.ProductBrandRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryProductBrandRespVO;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Description:
@@ -100,4 +102,13 @@ public interface ProductBrandService {
      * @return java.util.List<com.aiqin.mgs.product.api.domain.ProductBrandType>
      */
     List<ProductBrandType> selectByBrandCodes(List<String> codes);
+    /**
+     * 通过名称查询
+     * @author NullPointException
+     * @date 2019/7/21
+     * @param brandNameList
+     * @param companyCode
+     * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.ProductBrandType>
+     */
+    Map<String, ProductBrandType> selectByBrandNames(Set<String> brandNameList, String companyCode);
 }
