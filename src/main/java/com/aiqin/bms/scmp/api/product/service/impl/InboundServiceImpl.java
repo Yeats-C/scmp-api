@@ -607,19 +607,22 @@ public class InboundServiceImpl implements InboundService {
             PurchaseStorageRequest purchaseStorage = new PurchaseStorageRequest();
             List<PurchaseOrderProduct> purchaseOrderProducts = new ArrayList<>();
             List<StorageResultItemReqVo> storageResultItemReqVos = storageResultReqVo.getItemReqVos();
+            PurchaseOrderProduct purchaseOrderProduct;
             for(StorageResultItemReqVo storageResultItemReqVo : storageResultItemReqVos){
-                PurchaseOrderProduct purchaseOrderProduct = new PurchaseOrderProduct();
+                purchaseOrderProduct = new PurchaseOrderProduct();
                 purchaseOrderProduct.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
                 purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundMainNum().toString()));
                 purchaseOrderProduct.setSkuCode(storageResultItemReqVo.getSkuCode());
+                purchaseOrderProduct.setId(storageResultItemReqVo.getLinenum());
                 purchaseOrderProducts.add(purchaseOrderProduct);
             }
             List<Inbound> inboundList = inboundDao.selectTimeAndSatusBySourchAndNum(storageResultReqVo.getPurchaseCode());
             if(CollectionUtils.isNotEmpty(inboundList)){
-                Inbound inbound = inboundList.get(0);
+                Inbound inbound = inboundList.get(inboundList.size()-1);
                 purchaseStorage.setCompanyName(inbound.getCompanyName());
                 purchaseStorage.setCompanyCode(inbound.getCompanyCode());
                 purchaseStorage.setCreateByName(inbound.getCreateBy());
+                purchaseStorage.setPurchaseNum(inbound.getPurchaseNum());
             }
             purchaseStorage.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
             purchaseStorage.setOrderList(purchaseOrderProducts);
