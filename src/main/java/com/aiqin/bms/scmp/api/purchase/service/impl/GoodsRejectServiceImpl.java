@@ -7,13 +7,10 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchItemReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
@@ -127,7 +124,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     @Override
     public HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
-        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup();
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
         if (CollectionUtils.isEmpty(groupVoList)) {
             return HttpResponse.success();
         }
@@ -516,7 +513,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     @Override
     public HttpResponse<PageResData<RejectRecord>> rejectList(RejectQueryRequest rejectApplyQueryRequest) {
-        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup();
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
         if (CollectionUtils.isEmpty(groupVoList)) {
             return HttpResponse.successGenerics(new PageResData<>());
         }
@@ -579,7 +576,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     @Override
     public HttpResponse<RejectResponse> rejectInfo(String rejectRecordCode) {
-        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup();
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
         if (CollectionUtils.isEmpty(groupVoList)) {
             return HttpResponse.success();
         }
