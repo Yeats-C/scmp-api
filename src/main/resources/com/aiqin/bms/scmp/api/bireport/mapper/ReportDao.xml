@@ -726,7 +726,7 @@
             and bsar.supplier_name like concat('%', #{supplierName}, '%')
         </if>
         <if test="transportCenterCode!=null and transportCenterCode!=''">
-            and bsar.logistics_center_code = #{transportCenterCode}
+            and bsar.transport_center_code = #{transportCenterCode}
         </if>
         <if test="categoryCode!=null and categoryCode!=''">
             and bsar.category_code = #{categoryCode}
