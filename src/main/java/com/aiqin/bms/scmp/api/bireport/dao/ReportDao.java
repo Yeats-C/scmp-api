@@ -50,6 +50,7 @@ public interface ReportDao {
     List<SupplierReturnRespVo> selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
     Integer countSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
+    SupplierReturnRespVo sumSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
     /**
      *  新品批次动销率

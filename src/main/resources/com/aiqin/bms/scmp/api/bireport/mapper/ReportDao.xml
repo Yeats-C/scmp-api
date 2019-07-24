@@ -891,6 +891,14 @@
         group by bsr.id
         ) as tmp
     </select>
+    <select id="sumSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierReturnRespVo">
+        select
+        sum(bsr.sum_count) as sumCounts,
+        sum(bsr.sum_amount) as sumAmounts
+        from bi_supplier_return bsr
+        <include refid="select_supplier_return"/>
+    </select>
     <select id="selectNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
         select
