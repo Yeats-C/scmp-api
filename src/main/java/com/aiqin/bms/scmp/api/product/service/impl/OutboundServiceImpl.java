@@ -652,7 +652,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             e.printStackTrace();
         }
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
-        List<OutboundBatch> list = outboundBatchDao.selectByOutboundBatchOderCode(outbound.getOutboundOderCode());
+        List<OutboundProduct> list = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy(), null);
 
         //如果是订单
@@ -683,8 +683,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 List<RejectDetailStockRequest> rejectDetailStockRequests = new ArrayList<>();
                 rejectStockRequest.setRejectRecordCode(outbound.getSourceOderCode());
                 rejectStockRequest.setOutStockTime(new Date());
-                for(OutboundBatch outboundBatch : list){
-                    rejectDetailStockRequest.setActualCount(Integer.parseInt(outboundBatch.getPraQty().toString()) );
+                for(OutboundProduct outboundProduct : list){
+                    rejectDetailStockRequest.setId(outboundProduct.getLinenum());
+                    rejectDetailStockRequest.setActualCount(Integer.parseInt(outboundProduct.getPraOutboundMainNum().toString()) );
                     rejectDetailStockRequests.add(rejectDetailStockRequest);
                 }
                 rejectStockRequest.setDetailList(rejectDetailStockRequests);
