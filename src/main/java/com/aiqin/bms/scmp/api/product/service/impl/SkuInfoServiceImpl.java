@@ -66,6 +66,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.aiqin.bms.scmp.api.util.GetChangeValueUtil.skuHeadMap;
@@ -173,6 +174,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
     @Autowired
     private ProductBrandService brandService;
+    @Autowired
+    private NewProductService newProductService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1274,6 +1277,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             Set<String> skuNameList = Sets.newHashSet();
             //sku名称
             Set<String> supplierList = Sets.newHashSet();
+            //sku名称
+            Set<String> spuName = Sets.newHashSet();
             //品牌
             Set<String> brandNameList = Sets.newHashSet();
             //品类
@@ -1288,7 +1293,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 skuNameList.add(o.getSkuName());
                 brandNameList.add(o.getProductBrandName());
                 if (StringUtils.isNotBlank(o.getProductCategoryName())) {
-                    categoryNameList.addAll(Arrays.asList(o.getProductCategoryName().split(",")));
+                    categoryNameList.addAll(Arrays.asList(o.getProductCategoryName().split("-")));
                 }
                 if (StringUtils.isNotBlank(o.getPriceChannelName())) {
                     channelList.addAll(Arrays.asList(o.getTagName().split(",")));
@@ -1296,13 +1301,16 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (StringUtils.isNotBlank(o.getTagName())) {
                     skuTagList.addAll(Arrays.asList(o.getTagName().split(",")));
                 }
+
             });
             Map<String, ProductSkuInfo> productSkuMap = Maps.newHashMap();
             Map<String, SupplyCompany> supplyCompanyMap = Maps.newHashMap();
             Map<String, ProductBrandType> brandMap = Maps.newHashMap();
-            Map<String, ProductCategory> categoryMap = Maps.newHashMap();
+            List<ProductCategory> categoryList = Lists.newArrayList();
+            Map<String,ProductCategory> categoryMap = Maps.newHashMap();
             Map<String, PriceChannel> channelMap = Maps.newHashMap();
             Map<String, TagInfo> skuTagMap = Maps.newHashMap();
+            Map<String, NewProduct> spuMap = Maps.newHashMap();
             //sku信息
             if (CollectionUtils.isNotEmpty(skuNameList)) {
                 productSkuMap = selectBySkuNames(skuNameList, getUser().getCompanyCode());
@@ -1315,9 +1323,14 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (CollectionUtils.isNotEmpty(brandNameList)) {
                 brandMap = brandService.selectByBrandNames(brandNameList, getUser().getCompanyCode());
             }
+            //品牌
+            if (CollectionUtils.isNotEmpty(spuName)) {
+                spuMap = newProductService.selectBySpuName(spuName, getUser().getCompanyCode());
+            }
             //品类
             if (CollectionUtils.isNotEmpty(categoryNameList)) {
-                categoryMap = productCategoryService.selectByCategoryNames(brandNameList, getUser().getCompanyCode());
+                categoryList = productCategoryService.selectByCategoryNames(categoryNameList, getUser().getCompanyCode());
+                categoryMap = categoryList.stream().collect(Collectors.toMap(o->o.getCategoryName()+","+o.getCategoryLevel(), Function.identity()));
             }
             dicNameList.add("供货渠道类别");
             dicNameList.add("商品属性");
@@ -1328,7 +1341,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             Map<String, String> reaptMap = Maps.newHashMap();
             for (int i = 0; i < skuInfoImports.size(); i++) {
                 //检查信息
-                CheckSku checkSku = new CheckSku(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i))
+                CheckSku checkSku = new CheckSku(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap)
                         .checkRepeat() //检查重复
                         .checkBaseDate() //检查基础数据
                         .checkInvoice() //检查进销存包装
@@ -1342,6 +1355,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 AddSkuInfoReqVO resp = checkSku.getRespVO();
                 skuInfoList.add(resp);
                 reaptMap = checkSku.getReapMap();
+                spuMap = checkSku.getSpuMap();
             }
             return skuInfoList;
         } catch (ExcelException e) {
@@ -1400,13 +1414,14 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         Map<String, ProductCategory> categoryMap;
         Map<String, PriceChannel> channelMap;
         Map<String, TagInfo> skuTagMap;
+        Map<String, NewProduct> spuMap;
         Map<String, String> repeatMap;
         SkuInfoImport importVo;
         List<String> error;
 
         private CheckSku() {}
 
-        private CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, SkuInfoImport importVo) {
+        private CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, SkuInfoImport importVo,Map<String, NewProduct> spuMap) {
             this.error = Lists.newArrayList();
             this.resp = new AddSkuInfoReqVO();
             this.productSkuMap = productSkuMap;
@@ -1417,6 +1432,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             this.skuTagMap = skuTagMap;
             this.repeatMap = repeatMap;
             this.importVo = importVo;
+            this.spuMap = spuMap;
         }
 
         //检查重复
@@ -1465,28 +1481,45 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getProductCategoryName())) {
                 error.add("品类不能为空");
             }else {
-                String[] split = importVo.getProductCategoryName().split(",");
-                if (split.length > 4 || split.length <= 0) {
+                String[] split = importVo.getProductCategoryName().split("-");
+                if (split.length != 4) {
                     error.add("品类应为四级用\"-\"分割");
-                }
-                boolean flag = true;
-                ProductCategory current = null;
-                for (int i = split.length-1; i <= 0; i--) {
-                    ProductCategory productCategory = categoryMap.get(split[i]);
-                    if (Objects.isNull(productCategory)) {
-                        error.add("无对应名称为"+split[i]+"的品牌信息");
-                        flag = false;
-                        break;
-                    }else {
-                        //不是最后一级
-                        if(i != 0){
-                            //校验上一级名称是否对应
+                }else {
+                    boolean flag = true;
+                    ProductCategory current = null;
+                    for (int i = split.length - 1; i >= 0; i--) {
+                        ProductCategory productCategory = categoryMap.get(split[i] + "," + (i + 1));
+                        if (Objects.isNull(productCategory)) {
+                            error.add("无对应名称为" + split[i] + "的品牌信息");
+                            flag = false;
+                            break;
+                        } else {
+                            if (split.length - 1 == i) {
+                                current = productCategory;
+                            } else {
+                                if (!productCategory.getCategoryId().equals(current.getParentId())) {
+                                    error.add("品牌名为" + current.getCategoryName() + "的上级名称不为" + split[i]);
+                                    flag = false;
+                                    break;
+                                } else {
+                                    current = productCategory;
+                                }
+                            }
                         }
                     }
+                    if (flag) {
+                        productSkuDraft.setProductCategoryCode(categoryMap.get(split[split.length-1]+","+4).getCategoryId());
+                        productSkuDraft.setProductCategoryName(categoryMap.get(split[split.length-1]+","+4).getCategoryName());
+                    }
                 }
-                if (flag) {
-                    productSkuDraft.setProductCategoryCode(categoryMap.get(split[split.length-1]).getProductCategoryCode());
-                    productSkuDraft.setProductCategoryCode(categoryMap.get(split[split.length-1]).getCategoryName());
+            }
+            //spu
+            if (Objects.isNull(importVo.getProductName())) {
+                error.add("所属SPU不能为空");
+            }else {
+                NewProduct newProduct = spuMap.get(importVo.getProductName().trim());
+                if (Objects.isNull(newProduct)) {
+                    spuMap.put(importVo.getProductName().trim(),new NewProduct());
                 }
             }
             this.resp.setProductSkuDraft(productSkuDraft);
@@ -1536,6 +1569,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
         private Map<String, String> getReapMap() {
             return this.repeatMap;
+        }
+        private Map<String, NewProduct> getSpuMap() {
+            return this.spuMap;
         }
     }
 }

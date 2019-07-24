@@ -44,6 +44,16 @@
         from product
         where id = #{id,jdbcType=BIGINT}
     </select>
+    <select id="selectBySpuName" parameterType="java.util.List" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where product_name in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+        #{item}
+        and company_code = #{companyCode}
+    </foreach>
+    </select>
     <select id="getProductCode" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>

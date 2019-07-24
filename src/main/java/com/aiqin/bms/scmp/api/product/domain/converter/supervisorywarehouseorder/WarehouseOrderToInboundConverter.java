@@ -12,12 +12,9 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.google.common.collect.Lists;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -102,7 +99,7 @@ public class WarehouseOrderToInboundConverter implements Converter<SupervisoryWa
             batch.setUpdateTime(record.getUpdateTime());
             batch.setLinenum(record.getLineNum().longValue());
             preInboundNum += record.getNum().intValue();
-            preInboundMainNum += record.getNum().intValue();
+            preInboundMainNum += record.getSingleCount().intValue();
             preTaxAmount += record.getProductTotalAmount();
             preNoTaxAmount += Calculate.computeNoTaxPrice(record.getProductTotalAmount().longValue(), record.getTaxRate().longValue());
             list.add(reqVo1);

@@ -118,7 +118,7 @@ public interface Global {
     /**
      *监管仓类型
      */
-    Byte SUPERVISORY_WAREHOUSE_TYPE = Byte.valueOf("3");
+    Byte SUPERVISORY_WAREHOUSE_TYPE = Byte.valueOf("4");
 
     /**
      * 主商品

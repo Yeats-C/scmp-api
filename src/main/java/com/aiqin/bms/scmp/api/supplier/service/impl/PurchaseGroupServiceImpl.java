@@ -313,7 +313,7 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
      * @return
      */
     @Override
-    public List<PurchaseGroupVo> getPurchaseGroup() {
+    public List<PurchaseGroupVo> getPurchaseGroup(String name) {
         try{
             String companyCode = "";
             String personId = "";
@@ -322,7 +322,7 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
                 companyCode = authToken.getCompanyCode();
                 personId = authToken.getPersonId();
             }
-            List<PurchaseGroupVo> list = purchaseGroupDao.getPurchaseGroup(companyCode,personId);
+            List<PurchaseGroupVo> list = purchaseGroupDao.getPurchaseGroup(companyCode,personId,name);
 //            for (PurchaseGroupVo purchaseGroupVo : list) {
 //                //查询未禁用的关联人员
 //                List<PurchaseGroupBuyerDTO> groupBuyerDTOList = purchaseGroupBuyerDao.selectByPurchaseCode(purchaseGroupVo.getPurchaseGroupCode());

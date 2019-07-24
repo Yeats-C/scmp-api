@@ -84,7 +84,7 @@ public interface PurchaseGroupService {
      * 提供采购组接口
      * @return
      */
-    List<PurchaseGroupVo> getPurchaseGroup();
+    List<PurchaseGroupVo> getPurchaseGroup(String name);
 
 
     /**
