@@ -20,6 +20,8 @@ public interface ReportDao {
 
     Integer countSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
+    SupplierArrivalRateRespVo sumSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+
     List<Map> selectSupplierArrivalRateTableCloumnName();
 
     /**
@@ -30,8 +32,6 @@ public interface ReportDao {
     List<GoodsBuySalesRespVo> selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
     Integer countGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
-
-    GoodsBuySalesRespVo sumGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
     List<Map> selectGoodsBuySalesTableCloumnName();
 
@@ -52,6 +52,7 @@ public interface ReportDao {
     List<SupplierReturnRespVo> selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
     Integer countSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
+
     SupplierReturnRespVo sumSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
     /**
