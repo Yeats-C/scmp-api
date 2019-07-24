@@ -86,6 +86,7 @@
         2 as approval_type
       from apply_product_sku_config
       where company_code = #{companyCode}
+      and apply_show = 0
       <if test="createTimeStart != null">
         and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
       </if>

@@ -81,6 +81,17 @@ public class ApplyUseTagRecordServiceImpl implements ApplyUseTagRecordService {
     }
 
     /**
+     * 根据申请使用者编号查询
+     *
+     * @param appUseObjectCode
+     * @return
+     */
+    @Override
+    public List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode(String appUseObjectCode,String tagTypeCode,String useObjectCode) {
+        return applyUseTagRecordMapper.getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode(appUseObjectCode,tagTypeCode,useObjectCode);
+    }
+
+    /**
      * 根据申请使用者编号List查询
      * @param appUseObjectCodes
      * @return
