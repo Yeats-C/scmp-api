@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.dao.test;
 
 import com.aiqin.bms.scmp.api.SpringBootTestContext;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
@@ -50,21 +51,38 @@ public class RejectTest extends SpringBootTestContext {
 
     @Resource
     private GoodsRejectApprovalServiceImpl goodsRejectApprovalService;
+    @Resource
+    private WarehouseDao warehouseDao;
+    @Resource
+    private LogisticsCenterDao logisticsCenterDao;
+
+    /**
+     * 供应商确认
+     */
+    @Test
+    public void rejectSupplier() {
+        RejectRecord request = new RejectRecord();
+        request.setRejectRecordId("BI3A6DE17B116B49FAA6FA00F0BBFF6E59");
+        goodsRejectService.rejectSupplier(request);
+    }
 
     @Test
-    public void finishStock(){
+    public void finishStock() {
         RejectStockRequest request = new RejectStockRequest();
-        request.setRejectRecordCode("RR100059");
+        request.setRejectRecordCode("RR100000");
         request.setOutStockTime(new Date());
         goodsRejectService.finishStock(request);
 
-    }    @Test
-    public void categoryName(){
+    }
+
+    @Test
+    public void categoryName() {
         String categoryName = goodsRejectService.selectCategoryName("103001001001");
         System.out.println(categoryName);
     }
+
     @Test
-    public void rejectApply(){
+    public void rejectApply() {
         RejectApplyHandleRequest rejectApplyQueryRequest = new RejectApplyHandleRequest();
         rejectApplyQueryRequest.setCreateById("10001");
         rejectApplyQueryRequest.setCreateByName("小明");
@@ -154,13 +172,8 @@ public class RejectTest extends SpringBootTestContext {
         goodsRejectService.rejectApply(rejectApplyQueryRequest);
     }
 
-    @Resource
-    private WarehouseDao warehouseDao;
-    @Resource
-    private LogisticsCenterDao logisticsCenterDao;
-
     @Test
-    public void wolf(){
+    public void wolf() {
         LogisticsCenter logisticsCenter = logisticsCenterDao.selectByCenterName("西南");
         System.out.println(logisticsCenter);
         Warehouse warehouse = warehouseDao.selectByWarehouseName("华北销售库");

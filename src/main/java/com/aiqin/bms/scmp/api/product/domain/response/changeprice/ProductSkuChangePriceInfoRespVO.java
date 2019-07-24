@@ -106,6 +106,12 @@ public class ProductSkuChangePriceInfoRespVO {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date productTime;
 
+    @ApiModelProperty("原毛利率")
+    private Long oldGrossProfitMargin = 0L;
+
+    @ApiModelProperty("现毛利率")
+    private Long newGrossProfitMargin = 0L;
+
     @ApiModelProperty("价格项目集合")
     private List<PriceChannelForChangePrice> priceChannelList;
 

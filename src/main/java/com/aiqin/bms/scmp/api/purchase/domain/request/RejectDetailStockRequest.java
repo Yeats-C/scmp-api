@@ -33,10 +33,12 @@ import lombok.Data;
 @Data
 public class RejectDetailStockRequest {
 
+    @ApiModelProperty(value = "id")
+    private Long id;
 
     @ApiModelProperty(value = "业务id")
-    @JsonProperty("reject_apply_record_detail_id")
-    private String rejectApplyRecordDetailId;
+    @JsonProperty("reject_record_detail_id")
+    private String rejectRecordDetailId;
 
     @ApiModelProperty(value="wms 传回来的实际数量")
     @JsonProperty("actual_count")

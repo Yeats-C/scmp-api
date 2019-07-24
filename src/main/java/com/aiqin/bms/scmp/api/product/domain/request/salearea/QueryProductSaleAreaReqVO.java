@@ -22,6 +22,12 @@ public class QueryProductSaleAreaReqVO extends PageReq {
     @ApiModelProperty("sku名称")
     private String skuName;
 
+    @ApiModelProperty("编码")
+    private String code;
+
+    @ApiModelProperty("名称")
+    private String name;
+
     @ApiModelProperty("是否禁用(0禁用1启用)")
     private Integer beDisable;
 
