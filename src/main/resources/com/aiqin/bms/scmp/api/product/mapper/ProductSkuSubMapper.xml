@@ -30,7 +30,9 @@
   <select id="selectBySkuCode" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSubDraftMapper.RespResultMap">
     select
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSubDraftMapper.Resp_Column_List" />
-    from product_sku_sub
+    from product_sku_sub a
+    LEFT JOIN product_sku b ON a.sub_sku_code = b.sku_code
+    LEFT JOIN product_sku_distribution_info c on a.sub_sku_code = c.product_sku_code
     where main_sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

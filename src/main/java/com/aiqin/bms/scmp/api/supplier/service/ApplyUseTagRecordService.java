@@ -48,6 +48,8 @@ public interface ApplyUseTagRecordService {
      */
     List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(String appUseObjectCode,String tagTypeCode);
 
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode(String appUseObjectCode,String tagTypeCode,String useObjectCode);
+
     /**
      * 根据申请使用者编号List查询
      * @param appUseObjectCodes

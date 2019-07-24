@@ -914,7 +914,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         skuRespVo.setProductCategoryCodes(categoryIds);
         detailResp.setProductSkuInfo(skuRespVo);
         //标签信息
-        List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(applyCode,TagTypeCode.SKU.getStatus());
+        List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode(applyCode,TagTypeCode.SKU.getStatus(),skuCode);
         detailResp.setTagInfoList(applyUseTagRecords);
         //SKU渠道信息
         List<ProductSkuChannelRespVo> skuChannelRespVos = productSkuChannelService.getApplyList(skuCode,applyCode);
