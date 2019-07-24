@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
@@ -29,6 +30,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -78,7 +81,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @SuppressWarnings("unchecked")
-public class GoodsRejectServiceImpl implements GoodsRejectService {
+public class GoodsRejectServiceImpl  extends BaseServiceImpl implements GoodsRejectService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
@@ -221,7 +224,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             Integer count = rejectApplyRecordDao.updateByRejectCode(rejectApplyRecord);
             LOGGER.info("修改退供申请详情影响条数:{}", count);
         } catch (Exception e) {
-            LOGGER.error("修改退供申请详情影响条数:{}", e.getMessage());
+            LOGGER.error("修改退供申请详情影响条数:{}", e);
             throw new GroundRuntimeException(String.format("修改退供申请单异常:{%s}", e.getMessage()));
         }
         return HttpResponse.success();
@@ -311,7 +314,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             }
             return HttpResponse.successGenerics(new PageResData<>(errorCount, list));
         } catch (Exception e) {
-            LOGGER.error("退供申请单导入异常:{}", e.getMessage());
+            LOGGER.error("退供申请单导入异常:{}", e);
             return HttpResponse.failure(ResultCode.IMPORT_REJECT_APPLY_ERROR);
         }
     }
@@ -415,7 +418,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                 sumCount += detailResponse.getProductCount();
                 sumSingleCount += detailResponse.getProductCount();
                 sumAmount += detailResponse.getProductTotalAmount();
-                untaxedAmount += detailResponse.getProductTotalAmount();
+                untaxedAmount += detailResponse.getProductTotalAmount() / (100 + detailResponse.getTaxRate());
                 if (detailResponse.getProductType().equals(2)) {
                     returnCount += detailResponse.getProductCount();
                     returnAmount += detailResponse.getProductTotalAmount();
@@ -470,7 +473,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
         } catch (BeansException e) {
-            LOGGER.error("新增退供单异常:{}", e.getMessage());
+            LOGGER.error("新增退供单异常:{}", e);
             throw new GroundRuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
         }
         return HttpResponse.success();
@@ -543,7 +546,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
             return HttpResponse.success();
         } catch (Exception e) {
 
-            LOGGER.error("更新退供单异常:{}", e.getMessage());
+            LOGGER.error("更新退供单异常:{}", e);
             throw new GroundRuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
         }
     }
@@ -645,9 +648,15 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
                 LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
                 throw new GroundRuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
             }
+            WorkFlowVO w = new WorkFlowVO();
+            w.setFormNo(record.getRejectRecordCode());
+            WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
+            if(!workFlowRespVO.getSuccess()){
+                throw new GroundRuntimeException("审批流撤销失败!");
+            }
             return HttpResponse.success();
         } catch (RuntimeException e) {
-            LOGGER.error("取消-更改退供申请异常:{}", e.getMessage());
+            LOGGER.error("取消-更改退供申请异常:{}", e);
             throw new GroundRuntimeException(String.format("取消-更改退供申请异常:{%s}", e.getMessage()));
         }
     }
