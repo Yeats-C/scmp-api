@@ -60,6 +60,13 @@ public class ReportServiceImpl implements ReportService {
     public PageReportResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo) {
         try {
             List<GoodsBuySalesRespVo> goodsBuySalesRespVos = reportDao.selectGoodsBuySales(goodsBuySalesReqVo);
+            for (GoodsBuySalesRespVo goodsBuySalesRespVo : goodsBuySalesRespVos) {
+                goodsBuySalesRespVo.getCategoryCodeOne();
+                goodsBuySalesRespVo.getCategoryCodeTwo();
+                goodsBuySalesRespVo.getCategoryCodeThree();
+
+            }
+
             Integer total = reportDao.countGoodsBuySales(goodsBuySalesReqVo);
             List<Map> maps = reportDao.selectGoodsBuySalesTableCloumnName();
             GoodsBuySalesRespVo goodsBuySalesRespVo = new GoodsBuySalesRespVo();

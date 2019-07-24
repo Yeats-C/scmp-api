@@ -99,4 +99,54 @@ public class SupplyTest  extends SpringBootTestContext  {
         // 退供单 解锁
         stockService.returnSupplyUnLockStocks(reqVO);
     }
+
+    @Test
+    public void test2(){
+        StockChangeRequest stockChangeRequest = new StockChangeRequest();
+        stockChangeRequest.setOperationType(6);
+
+        List<StockVoRequest> stockVoRequests = new ArrayList<>();
+        StockVoRequest stockVoRequest1 = new StockVoRequest();
+        stockVoRequest1.setCompanyCode("");
+        stockVoRequest1.setCompanyName("");
+        stockVoRequest1.setTransportCenterCode("");
+        stockVoRequest1.setTransportCenterName("");
+        stockVoRequest1.setWarehouseCode("");
+        stockVoRequest1.setWarehouseName("");
+        stockVoRequest1.setWarehouseType("");
+        stockVoRequest1.setChangeNum(100L);
+        stockVoRequest1.setSkuCode("123456");
+        stockVoRequest1.setSkuName("惠氏金装爱儿复无乳糖配1");
+        stockVoRequest1.setDocumentType(4);
+        stockVoRequest1.setDocumentNum("采购单");
+        stockVoRequest1.setSourceDocumentType(5);
+        stockVoRequest1.setSourceDocumentNum("生成采购单");
+        stockVoRequest1.setOperator("ch");
+        stockVoRequest1.setRemark("新增库存sku");
+
+        stockVoRequests.add(stockVoRequest1);
+
+        StockVoRequest stockVoRequest2 = new StockVoRequest();
+        stockVoRequest1.setCompanyCode("");
+        stockVoRequest1.setCompanyName("");
+        stockVoRequest1.setTransportCenterCode("");
+        stockVoRequest1.setTransportCenterName("");
+        stockVoRequest1.setWarehouseCode("");
+        stockVoRequest1.setWarehouseName("");
+        stockVoRequest1.setWarehouseType("");
+        stockVoRequest2.setChangeNum(100L);
+        stockVoRequest2.setSkuCode("123457");
+        stockVoRequest2.setSkuName("惠氏金装爱儿复无乳糖配2");
+        stockVoRequest2.setDocumentType(4);
+        stockVoRequest2.setDocumentNum("采购单");
+        stockVoRequest2.setSourceDocumentType(5);
+        stockVoRequest2.setSourceDocumentNum("生成采购单");
+        stockVoRequest2.setOperator("ch");
+        stockVoRequest2.setRemark("新增库存sku");
+        stockVoRequests.add(stockVoRequest2);
+
+        stockChangeRequest.setStockVoRequests(stockVoRequests);
+
+        stockService.changeStock(stockChangeRequest);
+    }
 }
