@@ -40,4 +40,7 @@ public class InboundProductWmsReqVO {
     @JsonProperty("linenum")
     private Long linenum;
 
+    @ApiModelProperty("预计入库数量")
+    @JsonProperty("preInboundNum")
+    private Long preInboundNum;
 }

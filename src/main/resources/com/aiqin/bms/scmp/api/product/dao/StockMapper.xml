@@ -1763,34 +1763,36 @@
             resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo"
             resultMap="QueryStockSkuListResultMap">
         select
-        sb.id,sb.warehouse_code,sb.sku_code,sb.sku_name,ps.product_category_code,ps.product_category_name,ps.product_sort_code,ps.product_sort_name,
-        ps.product_brand_code,ps.product_brand_name,ps.goods_gifts,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,
-        sum(sb.available_num) available_num,s.tax_rate,s.tax_cost
-        from stock_batch sb
-        left join stock s on sb.sku_code = s.sku_code
-        left join product_sku ps on sb.sku_code = ps.sku_code
+        s.id,s.warehouse_code,s.sku_code,s.sku_name,
+        ps.product_category_code,ps.product_category_name,ps.product_sort_code,ps.product_sort_name,
+        ps.product_brand_code,ps.product_brand_name,ps.goods_gifts,
+        ps.spec,ps.color_code,ps.color_name,ps.model_number,ps.unit_code,ps.unit_name,
+        sum(s.available_num) available_num,s.tax_rate,s.tax_cost
+        from stock s
+        left join stock_batch sb on s.sku_code = sb.sku_code
+        left join product_sku ps on s.sku_code = ps.sku_code
         <where>
             1 = 1
             <if test="outTransportCenterCode != null and outTransportCenterCode != ''">
-                and sb.transport_center_code  = #{outTransportCenterCode, jdbcType=VARCHAR}
+                and s.transport_center_code  = #{outTransportCenterCode, jdbcType=VARCHAR}
             </if>
             <if test="outWarehouseCode != null and outWarehouseCode != ''">
-                and sb.warehouse_code  = #{outWarehouseCode, jdbcType=VARCHAR}
+                and s.warehouse_code  = #{outWarehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="procurementSectionCode != null and procurementSectionCode != ''">
-                and ps.procurement_section_code  = #{procurementSectionCode, jdbcType=VARCHAR}
+                and s.purchase_group_code  = #{procurementSectionCode, jdbcType=VARCHAR}
             </if>
             <if test="inTransportCenterCode != null and inTransportCenterCode != ''">
-                and sb.transport_center_code = #{inTransportCenterCode, jdbcType=VARCHAR}
+                and s.transport_center_code = #{inTransportCenterCode, jdbcType=VARCHAR}
             </if>
             <if test="inWarehouseCode != null and inWarehouseCode != ''">
-                and sb.warehouse_code  = #{inWarehouseCode, jdbcType=VARCHAR}
+                and s.warehouse_code  = #{inWarehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="skuCode != null and skuCode != ''">
-                and sb.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR} ,'%')
+                and s.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR} ,'%')
             </if>
             <if test="skuName != null and skuName != ''">
-                and sb.sku_name like concat('%', #{skuName, jdbcType=VARCHAR} ,'%')
+                and s.sku_name like concat('%', #{skuName, jdbcType=VARCHAR} ,'%')
             </if>
             <if test="productBrandCode != null and productBrandCode != ''">
                 and ps.product_brand_code like concat('%', #{productBrandCode, jdbcType=VARCHAR} ,'%')
@@ -1802,7 +1804,7 @@
                 and ps.product_property_code like concat('%', #{productPropertyCode, jdbcType=VARCHAR} ,'%')
             </if>
         </where>
-        group by sb.sku_code
+        group by s.sku_code
     </select>
     <update id="updateStorehouseById" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">

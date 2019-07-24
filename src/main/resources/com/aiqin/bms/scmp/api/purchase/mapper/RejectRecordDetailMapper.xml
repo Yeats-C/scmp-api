@@ -397,7 +397,7 @@
       actual_count = #{actualCount,jdbcType=INTEGER},
       actual_amount = #{actualAmount,jdbcType=BIGINT},
       update_time = now()
-    WHERE  reject_record_detail_id = #{rejectRecordDetailId,jdbcType=VARCHAR}
+    WHERE  id = #{id,jdbcType=VARCHAR}
   </update>
   <select id="selectProductByRejectId" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectRecordDetailResponse" >
     SELECT
