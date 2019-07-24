@@ -62,7 +62,7 @@ public class SuggestReplenishmentRespVo {
 
     @ApiModelProperty("近三月平均日销量")
     @JsonProperty("sales_avg_3_month_num")
-    private Long salesAvg3MonthNum;
+    private Double salesAvg3MonthNum;
 
     @ApiModelProperty("可用库存数量")
     @JsonProperty("available_num")
@@ -74,7 +74,7 @@ public class SuggestReplenishmentRespVo {
 
     @ApiModelProperty("周转天数")
     @JsonProperty("days_turnover")
-    private Long daysTurnover;
+    private Double daysTurnover;
 
     @ApiModelProperty("连续缺货天数")
     @JsonProperty("stockout_days")
@@ -102,15 +102,15 @@ public class SuggestReplenishmentRespVo {
 
     @ApiModelProperty("商品属性编码")
     @JsonProperty("product_property_code")
-    private Long productPropertyCode;
+    private String productPropertyCode;
 
     @ApiModelProperty("商品属性")
     @JsonProperty("product_property_name")
-    private Long productPropertyName;
+    private String productPropertyName;
 
-    @ApiModelProperty("商品属性")
+    @ApiModelProperty("计算时间")
     @JsonProperty("create_time")
-    private Long createTime;
+    private String createTime;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")
