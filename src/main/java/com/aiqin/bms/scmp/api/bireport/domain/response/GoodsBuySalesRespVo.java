@@ -169,6 +169,14 @@ public class GoodsBuySalesRespVo  implements Serializable {
     @JsonProperty("create_time")
     private String createTime;
 
+    @ApiModelProperty("可用库存数量合计")
+    @JsonProperty("available_nums")
+    private Integer availableNums;
+
+    @ApiModelProperty("库存成本合计")
+    @JsonProperty("tax_costs")
+    private Integer taxCosts;
+
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")
     private List<Map> columnList;

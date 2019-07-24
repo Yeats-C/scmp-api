@@ -99,7 +99,7 @@ public class WarehouseOrderToOutboundConverter implements Converter<SupervisoryW
             batch.setUpdateTime(record.getUpdateTime());
             batch.setLineNum(record.getLineNum().longValue());
             preInboundNum += record.getNum().intValue();
-            preInboundMainNum += record.getNum().intValue();
+            preInboundMainNum += record.getSingleCount().intValue();
             preTaxAmount += record.getProductTotalAmount();
             preNoTaxAmount += Calculate.computeNoTaxPrice(record.getProductTotalAmount().longValue(), record.getTaxRate().longValue());
             list.add(reqVo1);

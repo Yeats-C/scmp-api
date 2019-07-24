@@ -31,6 +31,8 @@ public interface ReportDao {
 
     Integer countGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
+    GoodsBuySalesRespVo sumGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
+
     List<Map> selectGoodsBuySalesTableCloumnName();
 
     /**
@@ -50,6 +52,7 @@ public interface ReportDao {
     List<SupplierReturnRespVo> selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
     Integer countSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
+    SupplierReturnRespVo sumSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
     /**
      *  新品批次动销率
@@ -110,7 +113,7 @@ public interface ReportDao {
      * @param brandSaleReqVo
      * @return
      */
-    List<CategorySaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
+    List<BrandSaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
 
     Integer countBrandSale(CategorySaleReqVo brandSaleReqVo);
 

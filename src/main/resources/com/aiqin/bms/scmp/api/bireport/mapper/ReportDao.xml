@@ -806,6 +806,14 @@
         group by bgbs.id
         ) as tmp
     </select>
+    <select id="sumGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        sum(bgbs.available_num) as availableNums,
+        sum(bgbs.tax_cost) as taxCosts
+        from bi_goods_buy_sales bgbs
+        <include refid="select_goods_buy_sales"/>
+    </select>
     <select id="selectGoodsBuySalesTableCloumnName" resultType="java.util.HashMap">
         select
         COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
@@ -890,6 +898,14 @@
         <include refid="select_supplier_return"/>
         group by bsr.id
         ) as tmp
+    </select>
+    <select id="sumSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierReturnRespVo">
+        select
+        sum(bsr.sum_count) as sumCounts,
+        sum(bsr.sum_amount) as sumAmounts
+        from bi_supplier_return bsr
+        <include refid="select_supplier_return"/>
     </select>
     <select id="selectNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
@@ -1130,7 +1146,7 @@
         ) as tmp
     </select>
     <select id="selectBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
-            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.CategorySaleRespVo">
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BrandSaleRespVo">
         select
         bbs.id as id,
         bbs.month as month,

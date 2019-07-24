@@ -168,7 +168,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             }
             if (Objects.nonNull(configMap.get(item.getSkuCode() + item.getTransportCenterCode()))) {
                 //判断是否有审核中的数据
-                if (StatusTypeCode.UPDATE_APPLY.getStatus().equals(configMap.get(item.getSkuCode() + item.getTransportCenterCode()).getApplyStatus())) {
+                if (StatusTypeCode.REVIEW_STATUS.getStatus().equals(configMap.get(item.getSkuCode() + item.getTransportCenterCode()).getApplyStatus())) {
                     error.add("sku编码为"+item.getSkuCode()+"下的仓库名称为"+item.getTransportCenterCode());
                     continue;
                 }
@@ -195,7 +195,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         }
         if (CollectionUtils.isNotEmpty(error)) {
             error.add("有在审批中的数据。请删除数据，重新提交,或者在审批申请页面将重复的数据删除。");
-            throw new BizException(StringUtils.strip(error.toString(),  "[]"));
+            throw new BizException(MessageId.create(Project.SCMP_API, -1, StringUtils.strip(error.toString(), "[]")));
         }else {
             //删除草稿变数据
             deleteByIds(ids);
@@ -220,10 +220,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deleteByIds(List<Long> ids) {
-       int i = draftMapper.deleteByIds(ids);
-        if (i != ids.size()) {
-            log.error("删除临时表数据异常！");
-            throw new BizException(ResultCode.DRAFT_CONFIG_SAVE_ERROR);
+        if (CollectionUtils.isNotEmpty(ids)) {
+            int i = draftMapper.deleteByIds(ids);
+            if (i != ids.size()) {
+                log.error("删除临时表数据异常！");
+                throw new BizException(ResultCode.DRAFT_CONFIG_SAVE_ERROR);
+            }
         }
     }
     /**
@@ -948,7 +950,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     }
 
     @Override
-    public List<SaveSkuConfigReqVo> importData(MultipartFile file) {
+    public List<SaveSkuConfigReqVo> importData(MultipartFile file,String purchaseGroupCode) {
         try {
             List<SkuConfigImport> skuConfigImport = ExcelUtil.readExcel(file, SkuConfigImport.class, 1, 0);
             List<SaveSkuConfigReqVo> list = Lists.newArrayList();
@@ -978,7 +980,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             //k:仓+skuCode v:skuCode
             Map<String,String> skuCodeMap = Maps.newHashMap();
             for (int i = 0; i < skuConfigImport.size(); i++) {
-                SaveSkuConfigReqVo reqVo = validData(productSkuList,centerList,skuCodeMap,skuConfigImport.get(i));
+                SaveSkuConfigReqVo reqVo = validData(productSkuList,centerList,skuCodeMap,skuConfigImport.get(i),purchaseGroupCode);
                 list.add(reqVo);
             }
             return list;
@@ -988,7 +990,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     }
 
     @Override
-    public List<ProductSkuSupplyUnitDraft> importSupplyData(MultipartFile file) {
+    public List<ProductSkuSupplyUnitDraft> importSupplyData(MultipartFile file,String purchaseGroupCode) {
         try {
             List<SkuSupplierImport> skuSupplierImport = ExcelUtil.readExcel(file, SkuSupplierImport.class, 1, 0);
             List<ProductSkuSupplyUnitDraft> list = Lists.newArrayList();
@@ -1018,7 +1020,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             //k:供应商+skuCode v:skuCode
             Map<String,String> skuCodeMap = Maps.newHashMap();
             for (int i = 0; i < skuSupplierImport.size(); i++) {
-                ProductSkuSupplyUnitDraft reqVo = validData2(productSkuMap,supplyCompanyMap,skuCodeMap,dicMap,skuSupplierImport.get(i));
+                ProductSkuSupplyUnitDraft reqVo = validData2(productSkuMap,supplyCompanyMap,skuCodeMap,dicMap,skuSupplierImport.get(i),purchaseGroupCode);
                 list.add(reqVo);
             }
             return list;
@@ -1061,7 +1063,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         return Boolean.TRUE;
     }
 
-    private ProductSkuSupplyUnitDraft validData2(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, String> skuCodeMap, Map<String, SupplierDictionaryInfo> dicMap, SkuSupplierImport skuSupplierImport) {
+    private ProductSkuSupplyUnitDraft validData2(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, String> skuCodeMap, Map<String, SupplierDictionaryInfo> dicMap, SkuSupplierImport skuSupplierImport,String purchaseGroupCode) {
         List<String> errorList = Lists.newArrayList();
         ProductSkuSupplyUnitDraft copy = BeanCopyUtils.copy(skuSupplierImport, ProductSkuSupplyUnitDraft.class);
         String s = skuCodeMap.get(skuSupplierImport.getSupplyUnitCode()+skuSupplierImport.getProductSkuCode());
@@ -1084,6 +1086,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 } else {
                     if (!productSkuInfo.getSkuName().equals(skuSupplierImport.getProductSkuName())) {
                         errorList.add("sku名称与对应的sku编码不一致");
+                    }else {
+                        if(!purchaseGroupCode.equals(productSkuInfo.getProcurementSectionCode())){
+                            errorList.add("该sku所属的采购组不是所选择的采购组");
+                        }
                     }
                 }
             }
@@ -1112,11 +1118,21 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("联营扣点(%)不能为空");
         }else {
             try {
-                long i = Long.parseLong(skuSupplierImport.getJointFranchiseRate());
-                if (i < 0 || i > 100) {
-                    errorList.add("联营扣点(%)应在0-100之间");
+                String[] split = skuSupplierImport.getJointFranchiseRate().split(".");
+                long i;
+                if (split.length >= 2) {
+                    errorList.add("联营扣点(%)格式不正确");
                 }else {
-                    copy.setJointFranchiseRate(i);
+                    if (split.length == 0) {
+                        i = Long.parseLong(skuSupplierImport.getJointFranchiseRate());
+                    }else {
+                        i = Long.parseLong(split[0]+split[1]);
+                    }
+                    if (i < 0 || i > 100) {
+                        errorList.add("联营扣点(%)应在0-100之间");
+                    }else {
+                        copy.setPoint(i*100);
+                    }
                 }
             } catch (NumberFormatException e) {
                 errorList.add("联营扣点(%)格式不正确");
@@ -1127,11 +1143,21 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("返点(%)不能为空");
         }else {
             try {
-                long i = Long.parseLong(skuSupplierImport.getPoint());
-                if (i < 0 || i > 100) {
-                    errorList.add("返点(%)应在0-100之间");
+                String[] split = skuSupplierImport.getPoint().split(".");
+                long i;
+                if (split.length >= 2) {
+                    errorList.add("返点(%)格式不正确");
                 }else {
-                    copy.setPoint(i);
+                    if (split.length == 0) {
+                        i = Long.parseLong(skuSupplierImport.getJointFranchiseRate());
+                    }else {
+                        i = Long.parseLong(split[0]+split[1]);
+                    }
+                    if (i < 0 || i > 100) {
+                        errorList.add("返点(%)应在0-100之间");
+                    }else {
+                        copy.setPoint(i*100);
+                    }
                 }
             } catch (NumberFormatException e) {
                 errorList.add("返点(%)格式不正确");
@@ -1195,7 +1221,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
      * @param configImport 需要校验的实体
      * @return com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo
      */
-    private SaveSkuConfigReqVo validData(Map<String,ProductSkuInfo> productSkuList, Map<String,LogisticsCenterDTO> centerList, Map<String, String> skuCodeMap,SkuConfigImport configImport) {
+    private SaveSkuConfigReqVo validData(Map<String,ProductSkuInfo> productSkuList, Map<String,LogisticsCenterDTO> centerList, Map<String, String> skuCodeMap,SkuConfigImport configImport,String purchaseGroupCode) {
         List<String> errorList = Lists.newArrayList();
         SaveSkuConfigReqVo copy = BeanCopyUtils.copy(configImport, SaveSkuConfigReqVo.class);
         String s = skuCodeMap.get(configImport.getTransportCenterName()+configImport.getSkuCode());
@@ -1205,6 +1231,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             copy.setError(StringUtils.strip(errorList.toString(),"[]"));
             return copy;
         }
+        //
         //sku校验
         if (Objects.isNull(configImport.getSkuCode())) {
             errorList.add("sku编码不能为空");
@@ -1219,8 +1246,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                     if (!productSkuInfo.getSkuName().equals(configImport.getSkuName())) {
                         errorList.add("sku名称与对应的sku编码不一致");
                     }else {
-                        copy.setProductCode(productSkuInfo.getProductCode());
-                        copy.setProductName(productSkuInfo.getProductName());
+                        if(!purchaseGroupCode.equals(productSkuInfo.getProcurementSectionCode())){
+                            errorList.add("该sku所属的采购组不是所选择的采购组");
+                        }else {
+                            copy.setProductCode(productSkuInfo.getProductCode());
+                            copy.setProductName(productSkuInfo.getProductName());
+                        }
                     }
                 }
             }

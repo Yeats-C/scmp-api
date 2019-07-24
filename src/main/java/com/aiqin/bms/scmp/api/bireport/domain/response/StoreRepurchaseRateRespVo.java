@@ -78,7 +78,7 @@ public class StoreRepurchaseRateRespVo {
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")
-    private Integer createTime;
+    private String createTime;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")

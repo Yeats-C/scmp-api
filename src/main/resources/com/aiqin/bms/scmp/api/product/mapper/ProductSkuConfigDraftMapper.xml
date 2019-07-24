@@ -153,7 +153,7 @@
     select
     <include refid="Base_Column_List" />
     from product_sku_config_draft
-    and sku_code in
+    where sku_code in
     <foreach collection="list" open="(" close=")" separator="," item="item">
       #{item.skuCode,jdbcType=VARCHAR}
     </foreach>

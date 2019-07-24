@@ -92,9 +92,9 @@ public class PurchaseGroupController {
      */
     @ApiOperation("采购组外部提供接口")
     @PostMapping("/getPurchaseGroupApi")
-    public HttpResponse<List<PurchaseGroupVo>> getPurchaseGroup(){
+    public HttpResponse<List<PurchaseGroupVo>> getPurchaseGroup(String name){
         try{
-            return HttpResponse.success(purchaseGroupService.getPurchaseGroup());
+            return HttpResponse.success(purchaseGroupService.getPurchaseGroup(name));
         }catch (Exception ex){
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }

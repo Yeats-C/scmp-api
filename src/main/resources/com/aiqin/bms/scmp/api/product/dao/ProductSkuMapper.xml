@@ -1909,7 +1909,9 @@ select a.sku_code              as skuCode,
           ps.color_name colorName,
           ps.model_number modelNumber,
           IFNULL(pspi.base_product_content,1) as baseProductContent,
-          IFNULL(psc.output_tax_rate,0) as taxRate,
+          case when #{orderType} = 2 then
+          IFNULL(psc.output_tax_rate,0)
+          else IFNULL(psc.input_tax_rate,0)  end  taxRate,
           IFNULL(psbp.box_gross_weight,0) boxGrossWeight,
           IFNULL(psbp.net_weight,0) netWeight
         FROM product_sku ps

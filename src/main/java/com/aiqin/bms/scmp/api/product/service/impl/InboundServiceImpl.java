@@ -328,7 +328,8 @@ public class InboundServiceImpl implements InboundService {
                      InboundProductCallBackReqVo inboundProductCallBackReqVo = new InboundProductCallBackReqVo();
                      inboundProductCallBackReqVo.setLinenum(inboundProductWmsReqVO.getLinenum());
                      inboundProductCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
-                     inboundProductCallBackReqVo.setPraInboundMainNum(inboundProductWmsReqVO.getPreInboundMainNum());
+                     //TODO 入库数联改为预计数量的一半
+                     inboundProductCallBackReqVo.setPraInboundMainNum(inboundProductWmsReqVO.getPreInboundMainNum()/2);
                      list.add(inboundProductCallBackReqVo);
                  }
                  inboundCallBackReqVo.setList(list);
@@ -368,7 +369,7 @@ public class InboundServiceImpl implements InboundService {
     public void workFlowCallBack(InboundCallBackReqVo reqVo) {
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -419,8 +420,8 @@ public class InboundServiceImpl implements InboundService {
             InboundProduct inboundProduct = new InboundProduct();
             // 复制旧的sku
             BeanCopyUtils.copy(returnInboundProduct,inboundProduct);
-            inboundProduct.setPraInboundMainNum(inboundProductCallBackReqVo.getPraInboundMainNum());
-            inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundMainNum()/Long.valueOf(inboundProduct.getInboundBaseContent()));
+            inboundProduct.setPraInboundMainNum(inboundProductCallBackReqVo.getPraInboundMainNum()/Long.valueOf(inboundProduct.getInboundBaseContent()));
+            inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundMainNum());
             inboundProduct.setPraTaxPurchaseAmount(inboundProduct.getPreTaxPurchaseAmount());
             inboundProduct.setPraTaxAmount(inboundProduct.getPraTaxPurchaseAmount()*inboundProduct.getPraInboundMainNum());
             // 实际数量
@@ -518,7 +519,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnSource(Long id) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -601,8 +602,12 @@ public class InboundServiceImpl implements InboundService {
     @Override
     @Async("myTaskAsyncPool")
     public void returnPurchase(StorageResultReqVo storageResultReqVo) {
-        log.error("异步回调采购接口");
-        log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultReqVo));
+        try {
+            Thread.sleep(180000);
+        } catch (InterruptedException e) {
+            log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultReqVo));
+            e.printStackTrace();
+        }
         try {
             PurchaseStorageRequest purchaseStorage = new PurchaseStorageRequest();
             List<PurchaseOrderProduct> purchaseOrderProducts = new ArrayList<>();

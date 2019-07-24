@@ -7,7 +7,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -92,5 +91,5 @@ public interface ProductCategoryService {
      * @param companyCode
      * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.ProductCategory>
      */
-    Map<String, ProductCategory> selectByCategoryNames(Set<String> brandNameList, String companyCode);
+    List<ProductCategory> selectByCategoryNames(Set<String> brandNameList, String companyCode);
 }
