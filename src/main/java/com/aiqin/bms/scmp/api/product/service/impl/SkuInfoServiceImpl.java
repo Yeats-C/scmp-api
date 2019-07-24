@@ -1520,8 +1520,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 NewProduct newProduct = spuMap.get(importVo.getProductName().trim());
                 if (Objects.isNull(newProduct)) {
                     spuMap.put(importVo.getProductName().trim(),new NewProduct());
+                }else {
+                    productSkuDraft.setProductCode(newProduct.getProductCode());
                 }
             }
+
             this.resp.setProductSkuDraft(productSkuDraft);
             return this;
         }
