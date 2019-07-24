@@ -29,6 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -152,6 +154,10 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     @Override
     public List<NewProductResponseVO> getPageList(QueryNewProductReqVO queryNewProductReqVO) {
         return newProductMapper.getList(queryNewProductReqVO);
+    }
+   @Override
+    public Map<String,NewProduct> selectBySpuName(Set<String> list, String companyCode) {
+        return newProductMapper.selectBySpuName(list,companyCode);
     }
 
 

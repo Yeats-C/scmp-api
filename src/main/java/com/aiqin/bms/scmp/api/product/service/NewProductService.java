@@ -10,6 +10,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductRespo
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewSkuDetailsResponseVO;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface NewProductService {
 
@@ -33,5 +35,5 @@ public interface NewProductService {
     List<NewProductResponseVO>getPageList(QueryNewProductReqVO queryNewProductReqVO);
 
 
-
+    Map<String,NewProduct> selectBySpuName(Set<String> list, String companyCode);
 }

@@ -125,7 +125,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     @Override
     public HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
-        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup();
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
         if (CollectionUtils.isEmpty(groupVoList)) {
             return HttpResponse.success();
         }
@@ -514,7 +514,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     @Override
     public HttpResponse<PageResData<RejectRecord>> rejectList(RejectQueryRequest rejectApplyQueryRequest) {
-        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup();
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
         if (CollectionUtils.isEmpty(groupVoList)) {
             return HttpResponse.successGenerics(new PageResData<>());
         }
@@ -576,7 +576,7 @@ public class GoodsRejectServiceImpl implements GoodsRejectService {
 
     @Override
     public HttpResponse<RejectResponse> rejectInfo(String rejectRecordCode) {
-        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup();
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
         if (CollectionUtils.isEmpty(groupVoList)) {
             return HttpResponse.success();
         }

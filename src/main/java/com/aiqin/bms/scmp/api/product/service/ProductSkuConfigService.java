@@ -269,7 +269,7 @@ public interface ProductSkuConfigService {
      * @param file
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo>
      */
-    List<SaveSkuConfigReqVo> importData(MultipartFile file);
+    List<SaveSkuConfigReqVo> importData(MultipartFile file,String purchaseGroupCode);
     /**
      * 导入供应商配置
      * @author NullPointException
@@ -277,7 +277,7 @@ public interface ProductSkuConfigService {
      * @param file
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft>
      */
-    List<ProductSkuSupplyUnitDraft> importSupplyData(MultipartFile file);
+    List<ProductSkuSupplyUnitDraft> importSupplyData(MultipartFile file,String purchaseGroupCode);
     /**
      * 供应商配置导入保存
      * @author NullPointException

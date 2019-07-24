@@ -189,8 +189,9 @@ public class ProductSkuController {
      */
     @PostMapping("/supervisoryWarehouse/skuList")
     @ApiOperation("监管仓入库SKU查询")
-    public HttpResponse<BasePage<SupervisoryWarehouseSkuRespVo>> getSupervisoryWarehouse(@RequestBody QuerySkuListReqVO querySkuListReqVO){
+    public HttpResponse<BasePage<SupervisoryWarehouseSkuRespVo>> getSupervisoryWarehouse(@RequestBody QuerySkuListReqVO querySkuListReqVO,@RequestParam(value = "order_type") String orderType){
         try {
+            querySkuListReqVO.setOrderType(orderType);
             return HttpResponse.success(skuService.getSupervisoryWarehouseSku(querySkuListReqVO));
         }  catch (Exception e) {
             e.printStackTrace();

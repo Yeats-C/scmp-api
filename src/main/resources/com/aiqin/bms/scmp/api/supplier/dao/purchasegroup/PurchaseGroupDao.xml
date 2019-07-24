@@ -215,6 +215,9 @@
     <if test="personId != null and personId != '' ">
       and b.buyer_code = #{personId,jdbcType=VARCHAR}
     </if>
+    <if test="name != null and name != ''">
+      and a.purchase_group_name like concat('%', #{name,jdbcType=VARCHAR},'%')
+    </if>
   </select>
 
   <select id="checkName" resultType="java.lang.Integer">

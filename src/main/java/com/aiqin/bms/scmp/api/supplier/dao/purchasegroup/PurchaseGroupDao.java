@@ -54,7 +54,7 @@ public interface PurchaseGroupDao {
      * @param personId
      * @return
      */
-    List<PurchaseGroupVo> getPurchaseGroup(@Param("companyCode") String companyCode, @Param("personId") String personId);
+    List<PurchaseGroupVo> getPurchaseGroup(@Param("companyCode") String companyCode, @Param("personId") String personId,@Param("name") String name);
 
     /**
      * 验证名字是否重复
