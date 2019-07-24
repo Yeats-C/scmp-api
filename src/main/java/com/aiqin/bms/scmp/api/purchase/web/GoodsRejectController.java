@@ -231,9 +231,9 @@ public class GoodsRejectController {
     @GetMapping("/stock/product")
     @ApiOperation(value = "查询退供申请单的商品信息")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "supplier_code", value = "供应商id", type = "String", required = true),
-            @ApiImplicitParam(name = "transport_center_code", value = "仓库", type = "String", required = true),
-            @ApiImplicitParam(name = "warehouse_code", value = "库房", type = "String", required = true),
+            @ApiImplicitParam(name = "supplier_code", value = "供应商id", type = "String"),
+            @ApiImplicitParam(name = "transport_center_code", value = "仓库", type = "String"),
+            @ApiImplicitParam(name = "warehouse_code", value = "库房", type = "String"),
             @ApiImplicitParam(name = "purchase_group_code", value = "采购组 code", type = "String", required = true),
             @ApiImplicitParam(name = "sku_code", value = "sku编号", type = "String"),
             @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
@@ -247,9 +247,9 @@ public class GoodsRejectController {
     public HttpResponse<PageResData<RejectApplyDetailHandleResponse>> rejectStockProduct(@RequestParam(value = "page_no", required = false) Integer page_no, @RequestParam(value = "page_size", required = false) Integer page_size,
                                                                                          @RequestParam(value = "product_property_name", required = false) String product_property_name, @RequestParam(value = "purchase_group_code") String purchase_group_code,
                                                                                          @RequestParam(value = "sku_code", required = false) String sku_code, @RequestParam(value = "sku_name", required = false) String sku_name,
-                                                                                         @RequestParam(value = "transport_center_code") String transport_center_code, @RequestParam(value = "supplier_code") String supplier_code,
+                                                                                         @RequestParam(value = "transport_center_code",required = false) String transport_center_code, @RequestParam(value = "supplier_code",required = false) String supplier_code,
                                                                                          @RequestParam(value = "category_name", required = false) String category_name,@RequestParam(value = "product_property_code", required = false) String product_property_code,
-                                                                                         @RequestParam(value = "warehouse_code") String warehouse_code, @RequestParam(value = "brand_name", required = false) String brand_name) {
+                                                                                         @RequestParam(value = "warehouse_code",required = false) String warehouse_code, @RequestParam(value = "brand_name", required = false) String brand_name) {
         RejectProductRequest rejectQueryRequest = new RejectProductRequest(purchase_group_code, supplier_code, transport_center_code, warehouse_code, sku_code, sku_name, category_name, brand_name, product_property_name,product_property_code);
         rejectQueryRequest.setPageNo(page_no);
         rejectQueryRequest.setPageSize(page_size);

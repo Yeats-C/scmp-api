@@ -81,7 +81,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @SuppressWarnings("unchecked")
-public class GoodsRejectServiceImpl  extends BaseServiceImpl implements GoodsRejectService {
+public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsRejectService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
@@ -179,8 +179,10 @@ public class GoodsRejectServiceImpl  extends BaseServiceImpl implements GoodsRej
     private Integer rejectApplyData(RejectApplyHandleRequest rejectApplyQueryRequest, RejectApplyRecord rejectApplyRecord, String rejectCode) {
         //总退供数量
         Integer sumCount = 0;
-        //总退供金额
+        //普通商品含税金额
         Long sumAmount = 0L;
+        //实物返商品含税金额
+        Long sumReturnAmount = 0L;
         for (RejectApplyDetailHandleRequest detail : rejectApplyQueryRequest.getDetailList()) {
             //详情的id
             detail.setRejectApplyRecordDetailId(IdUtil.uuid());
@@ -194,9 +196,14 @@ public class GoodsRejectServiceImpl  extends BaseServiceImpl implements GoodsRej
             detail.setUpdateByName(rejectApplyRecord.getUpdateByName());
             detail.setProductTotalAmount(detail.getProductAmount() * detail.getProductCount());
             detail.setApplyType(rejectApplyQueryRequest.getApplyType());
-            sumAmount += detail.getProductTotalAmount();
+            if (detail.getProductType().equals(Global.PRODUCT_TYPE_0)) {
+                sumAmount += detail.getProductTotalAmount();
+            } else if (detail.getProductType().equals(Global.PRODUCT_TYPE_2)) {
+                sumReturnAmount += detail.getProductTotalAmount();
+            }
             sumCount += detail.getProductCount();
         }
+        rejectApplyRecord.setSumReturnAmount(sumReturnAmount);
         rejectApplyRecord.setSumAmount(sumAmount);
         rejectApplyRecord.setSumCount(sumCount);
         //添加详情
@@ -651,7 +658,7 @@ public class GoodsRejectServiceImpl  extends BaseServiceImpl implements GoodsRej
             WorkFlowVO w = new WorkFlowVO();
             w.setFormNo(record.getRejectRecordCode());
             WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
-            if(!workFlowRespVO.getSuccess()){
+            if (!workFlowRespVO.getSuccess()) {
                 throw new GroundRuntimeException("审批流撤销失败!");
             }
             return HttpResponse.success();
