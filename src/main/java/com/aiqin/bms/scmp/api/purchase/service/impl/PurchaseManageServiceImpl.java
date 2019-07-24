@@ -638,7 +638,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                     reqVo.setInboundBaseContent(skuPurchaseInfo.getBaseProductContent().toString());
                 }
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
-                reqVo.setPreInboundMainNum(singleCount.longValue());
+                Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
+                reqVo.setPreInboundMainNum(purchaseWhole.longValue());
                 if(purchaseStorage.getPurchaseNum() > 1){
                     Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
                     if(actualSingleCount <= singleCount) {

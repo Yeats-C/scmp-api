@@ -8,6 +8,8 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundItemReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.purchase.dao.OperationLogDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
@@ -130,6 +132,12 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         log.setRemark(remark);
         Integer count = operationLogDao.insert(log);
         LOGGER.info("操作日志", count);
+    }
+
+    // 修改库存在途数
+    private void updateWayNum(PurchaseOrder order){
+        InboundReqVo reqVo = new InboundReqVo();
+        reqVo.setCode(order.getPurchaseOrderCode());
     }
 
 }
