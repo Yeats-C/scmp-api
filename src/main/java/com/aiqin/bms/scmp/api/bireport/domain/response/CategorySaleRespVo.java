@@ -109,7 +109,7 @@ public class CategorySaleRespVo {
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")
-    private Double createTime;
+    private String createTime;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")
