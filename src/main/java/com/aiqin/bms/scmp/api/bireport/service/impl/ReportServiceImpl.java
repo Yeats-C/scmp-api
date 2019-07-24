@@ -55,9 +55,12 @@ public class ReportServiceImpl implements ReportService {
         try {
             List<GoodsBuySalesRespVo> goodsBuySalesRespVos = reportDao.selectGoodsBuySales(goodsBuySalesReqVo);
             Integer total = reportDao.countGoodsBuySales(goodsBuySalesReqVo);
+            GoodsBuySalesRespVo goodsBuySalesRespVoSum = reportDao.sumGoodsBuySales(goodsBuySalesReqVo);
             List<Map> maps = reportDao.selectGoodsBuySalesTableCloumnName();
             GoodsBuySalesRespVo goodsBuySalesRespVo = new GoodsBuySalesRespVo();
             goodsBuySalesRespVo.setColumnList(maps);
+            goodsBuySalesRespVo.setAvailableNums(goodsBuySalesRespVoSum.getAvailableNums());
+            goodsBuySalesRespVo.setTaxCosts(goodsBuySalesRespVoSum.getTaxCosts());
             return new PageReportResData<GoodsBuySalesRespVo>(total,goodsBuySalesRespVos,goodsBuySalesRespVo);
         } catch (Exception ex) {
             log.error("查询批次商品进销存失败");
@@ -255,13 +258,13 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageReportResData selectBrandSale(CategorySaleReqVo brandSaleReqVo) {
         try {
-            List<CategorySaleRespVo> brandSaleRespVo = reportDao.selectBrandSale(brandSaleReqVo);
+            List<BrandSaleRespVo> brandSaleRespVos = reportDao.selectBrandSale(brandSaleReqVo);
             Integer total = reportDao.countBrandSale(brandSaleReqVo);
             String cloumnName = "bi_brand_sale";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
-            CategorySaleRespVo categorySaleRespVo = new CategorySaleRespVo();
-            categorySaleRespVo.setColumnList(maps);
-            return new PageReportResData<CategorySaleRespVo>(total,brandSaleRespVo,categorySaleRespVo);
+            BrandSaleRespVo brandSaleRespVo = new BrandSaleRespVo();
+            brandSaleRespVo.setColumnList(maps);
+            return new PageReportResData<BrandSaleRespVo>(total,brandSaleRespVos,brandSaleRespVo);
         } catch (Exception ex) {
             log.error("品牌促销");
             ex.printStackTrace();

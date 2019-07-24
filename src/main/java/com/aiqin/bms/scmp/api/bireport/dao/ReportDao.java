@@ -31,6 +31,8 @@ public interface ReportDao {
 
     Integer countGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
+    GoodsBuySalesRespVo sumGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
+
     List<Map> selectGoodsBuySalesTableCloumnName();
 
     /**
@@ -111,7 +113,7 @@ public interface ReportDao {
      * @param brandSaleReqVo
      * @return
      */
-    List<CategorySaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
+    List<BrandSaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
 
     Integer countBrandSale(CategorySaleReqVo brandSaleReqVo);
 
