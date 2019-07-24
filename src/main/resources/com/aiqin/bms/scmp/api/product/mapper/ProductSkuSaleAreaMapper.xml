@@ -89,6 +89,12 @@
     <if test="skuName != null and skuName != ''">
       and a.sku_name like CONCAT('%',#{skuName},'%')
     </if>
+    <if test="code != null and code != ''">
+      and c.code like CONCAT('%',#{code},'%')
+    </if>
+    <if test="name != null and name != ''">
+      and c.name like CONCAT('%',#{name},'%')
+    </if>
     <if test="beDisable != null">
       and c.be_disable = #{beDisable}
     </if>

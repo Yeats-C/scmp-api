@@ -20,10 +20,16 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="main_sku_code" jdbcType="VARCHAR" property="mainSkuCode" />
     <result column="main_sku_name" jdbcType="VARCHAR" property="mainSkuName" />
-    <result column="sub_sku_code" jdbcType="VARCHAR" property="subSkuCode" />
-    <result column="sub_sku_name" jdbcType="VARCHAR" property="subSkuName" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="sub_sku_num" jdbcType="INTEGER" property="subSkuNum" />
     <result column="main_product" jdbcType="TINYINT" property="mainProduct" />
+    <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="spec" jdbcType="VARCHAR" property="spec" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -32,7 +38,19 @@
   </sql>
 
   <sql id="Resp_Column_List">
-    id, main_sku_code, main_sku_name, sub_sku_code, sub_sku_name, sub_sku_num, main_product
+    a.id,
+	a.main_sku_code,
+	a.main_sku_name,
+	b.sku_code,
+	b.sku_name,
+	a.sub_sku_num,
+	a.main_product,
+	b.product_property_name,
+	b.product_category_name,
+	b.product_brand_name,
+	b.color_name,
+	b.model_number,
+	c.spec
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -43,8 +61,10 @@
   <select id="selectBySkuCode" parameterType="java.lang.String" resultMap="RespResultMap">
     select
     <include refid="Resp_Column_List" />
-    from product_sku_sub_draft
-    where main_sku_code = #{skuCode,jdbcType=VARCHAR}
+    from product_sku_sub_draft a
+    LEFT JOIN product_sku b ON a.sub_sku_code = b.sku_code
+    LEFT JOIN product_sku_distribution_info c on a.sub_sku_code = c.product_sku_code
+    where a.main_sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
   <select id="selectBySkuCodes" parameterType="java.util.List" resultMap="BaseResultMap">
     select
