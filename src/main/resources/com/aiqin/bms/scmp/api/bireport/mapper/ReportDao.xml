@@ -750,6 +750,17 @@
         where
           table_name = 'bi_supplier_arrival_rate' and table_schema = 'bms_scmp'
     </select>
+    <select id="sumSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
+        select
+        sum(bsar.pre_inbound_num) as preInboundNums,
+        sum(bsar.pre_tax_amount)  as preTaxAmounts,
+        sum(bsar.pra_inbound_num) as praInboundNums,
+        sum(bsar.pra_tax_amount)  as praTaxAmounts,
+        bsar.pra_tax_amount/bsar.pre_tax_amount as praTaxAmountRates
+        from bi_supplier_arrival_rate bsar
+        <include refid="select_supplier_arrival_rate"/>
+    </select>
     <select id="selectGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
         select
@@ -805,14 +816,6 @@
         <include refid="select_goods_buy_sales"/>
         group by bgbs.id
         ) as tmp
-    </select>
-    <select id="sumGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
-            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
-        select
-        sum(bgbs.available_num) as availableNums,
-        sum(bgbs.tax_cost) as taxCosts
-        from bi_goods_buy_sales bgbs
-        <include refid="select_goods_buy_sales"/>
     </select>
     <select id="selectGoodsBuySalesTableCloumnName" resultType="java.util.HashMap">
         select

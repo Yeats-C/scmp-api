@@ -77,6 +77,26 @@ public class SupplierArrivalRateRespVo implements Serializable {
     @JsonProperty("create_time")
     private String createTime;
 
+    @ApiModelProperty("订货数量合计")
+    @JsonProperty("pre_inbound_nums")
+    private String preInboundNums;
+
+    @ApiModelProperty("订货金额合计")
+    @JsonProperty("pre_tax_amounts")
+    private String preTaxAmounts;
+
+    @ApiModelProperty("入库数量合计")
+    @JsonProperty("pra_inbound_nums")
+    private String praInboundNums;
+
+    @ApiModelProperty("入库金额合计")
+    @JsonProperty("pra_tax_amounts")
+    private String praTaxAmounts;
+
+    @ApiModelProperty("入库金额满足率合计")
+    @JsonProperty("pra_tax_amount_rates")
+    private String praTaxAmountRates;
+
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")
     private List<Map> columnList;
