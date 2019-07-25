@@ -16,6 +16,7 @@ import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImportUpdate;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductSaveReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaForSkuReqVO;
@@ -1516,6 +1517,24 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             throw new BizException(ResultCode.IMPORT_DATA_ERROR);
         }
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = ExcelException.class)
+    public Boolean importSkuNewSave(List<AddSkuInfoReqVO> addSkuList, String purchaseGroupCode) {
+        for (AddSkuInfoReqVO reqVO : addSkuList) {
+            if (StringUtils.isBlank(reqVO.getProductSkuDraft().getProductCode())) {
+                //没有品牌信息需要先增加品牌信息
+                synchronized (SkuInfoService.class) {
+                    NewProductSaveReqVO saveReqVO = new NewProductSaveReqVO();
+                    saveReqVO.setProductName(reqVO.getProductSkuDraft().getProductName());
+                    String s = newProductService.insertProduct(saveReqVO);
+                    reqVO.getProductSkuDraft().setProductCode(s);
+                }
+            }
+            saveDraftSkuInfo(reqVO);
+        }
+        return Boolean.TRUE;
     }
 
     private void dataValidation( List<SkuInfoImportNew> skuInfoImports) {

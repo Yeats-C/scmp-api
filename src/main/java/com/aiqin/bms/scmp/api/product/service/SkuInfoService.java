@@ -239,4 +239,12 @@ public interface SkuInfoService{
      * @return
      */
     SkuImportMain importSkuUpdate(MultipartFile file);
+
+    /**
+     * 新增保存
+     * @param addSkuList
+     * @param purchaseGroupCode
+     * @return
+     */
+    Boolean importSkuNewSave(List<AddSkuInfoReqVO> addSkuList, String purchaseGroupCode);
 }
