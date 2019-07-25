@@ -8,6 +8,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.basicprice.PriceChannelRes
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceChannelRespVo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author knight.xie
@@ -76,4 +78,12 @@ public interface PriceChannelService {
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem>
      */
     List<PriceChannelItem> selectByChannelCodes(List<String> codes);
+
+    /**
+     * 通过名称找渠道
+     * @param channelList
+     * @param companyCode
+     * @return
+     */
+    Map<String, PriceChannel> selectByChannelNames(Set<String> channelList, String companyCode);
 }

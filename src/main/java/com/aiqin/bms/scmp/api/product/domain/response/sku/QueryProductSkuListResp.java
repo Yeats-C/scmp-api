@@ -54,4 +54,13 @@ public class QueryProductSkuListResp {
     @ApiModelProperty("类别")
     private String productSort;
 
+    @ApiModelProperty("颜色")
+    private String colorName;
+
+    @ApiModelProperty("型号")
+    private String modelNumber;
+
+    @ApiModelProperty("规格")
+    private String spec;
+
 }

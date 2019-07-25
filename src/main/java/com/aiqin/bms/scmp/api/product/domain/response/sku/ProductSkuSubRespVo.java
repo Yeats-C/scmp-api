@@ -24,15 +24,39 @@ public class ProductSkuSubRespVo {
     @ApiModelProperty("组合SKU名称")
     private String mainSkuName;
 
-    @ApiModelProperty("子SKU编码")
-    private String subSkuCode;
-
-    @ApiModelProperty("子SKU名称")
-    private String subSkuName;
-
     @ApiModelProperty("子SKU数量")
     private Integer subSkuNum;
 
-    @ApiModelProperty("是否组商品(0:不是 1:是)")
+    @ApiModelProperty("是否主商品(0:不是 1:是)")
     private Byte mainProduct;
+
+    @ApiModelProperty("sku编号")
+    private String skuCode;
+
+    @ApiModelProperty("sku名称")
+    private String skuName;
+
+    @ApiModelProperty("所属商品编码")
+    private String productCode;
+
+    @ApiModelProperty("商品名称")
+    private String productName;
+
+    @ApiModelProperty("品类名称")
+    private String productCategoryName;
+
+    @ApiModelProperty("属性名称")
+    private String productPropertyName;
+
+    @ApiModelProperty("品牌名称")
+    private String productBrandName;
+
+    @ApiModelProperty("颜色")
+    private String colorName;
+
+    @ApiModelProperty("型号")
+    private String modelNumber;
+
+    @ApiModelProperty("规格")
+    private String spec;
 }

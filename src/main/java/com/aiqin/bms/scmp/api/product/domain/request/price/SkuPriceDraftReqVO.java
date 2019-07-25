@@ -3,7 +3,9 @@ package com.aiqin.bms.scmp.api.product.domain.request.price;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -15,9 +17,19 @@ import java.util.Date;
  * @time: 10:30
  */
 @ApiModel("sku价格保存")
+@NoArgsConstructor
 @Data
+@AllArgsConstructor
 public class SkuPriceDraftReqVO {
 
+    public SkuPriceDraftReqVO(String priceItemCode, String priceItemName, String priceTypeCode, String priceTypeName, String priceAttributeCode, String priceAttributeName) {
+        this.priceItemCode = priceItemCode;
+        this.priceItemName = priceItemName;
+        this.priceTypeCode = priceTypeCode;
+        this.priceTypeName = priceTypeName;
+        this.priceAttributeCode = priceAttributeCode;
+        this.priceAttributeName = priceAttributeName;
+    }
     @ApiModelProperty(value = "sku编码",hidden = true)
     private String skuCode;
 
@@ -89,4 +101,5 @@ public class SkuPriceDraftReqVO {
 
     @ApiModelProperty(value = "公司编码",hidden = true)
     private String companyName;
+
 }

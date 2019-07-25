@@ -381,6 +381,18 @@ public class TagInfoServiceImpl implements TagInfoService {
     }
 
     /**
+     * 根据使用对象和标签类型查询标签使用记录
+     *
+     * @param useObjectCode
+     * @param tagTypeCode
+     * @return
+     */
+    @Override
+    public List<DetailTagUseRespVo> getUseTagRecordByUseObjectCode2(String useObjectCode, String tagTypeCode) {
+        return useTagRecordMapper.getListByUseObjectCode2(useObjectCode,tagTypeCode);
+    }
+
+    /**
      * 根据来源单号和标签类型查询标签使用记录
      *
      * @param sourceCode
@@ -390,5 +402,10 @@ public class TagInfoServiceImpl implements TagInfoService {
     @Override
     public List<DetailTagUseRespVo> getUseTagRecordBySourceCode(String sourceCode, String tagTypeCode) {
         return useTagRecordMapper.getListBySourceCode(sourceCode,tagTypeCode);
+    }
+
+    @Override
+    public Map<String, TagInfo> selectByTagNames(Set<String> skuTagList, String companyCode) {
+        return tagInfoMapper.selectByTagNames(skuTagList,companyCode);
     }
 }

@@ -290,7 +290,7 @@
       and   a.sku_code  LIKE CONCAT(CONCAT('%',#{skuCode},'%'))
     </if>
     <if test="skuName != null and skuName !=''">
-      and  a.sku_name = #{skuName}
+      and  a.sku_name  LIKE CONCAT(CONCAT('%',#{skuName},'%'))
     </if>
     <if test="supplierCode != null and supplierCode !=''">
       and  a.supplier_code = #{supplierCode}

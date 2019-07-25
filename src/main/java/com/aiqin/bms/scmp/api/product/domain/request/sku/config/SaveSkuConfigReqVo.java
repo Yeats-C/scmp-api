@@ -16,7 +16,13 @@ import java.util.List;
 @ApiModel("保存SKU配置信息VO")
 @Data
 public class SaveSkuConfigReqVo {
+    public SaveSkuConfigReqVo() {
+    }
 
+    public SaveSkuConfigReqVo(String transportCenterCode, String transportCenterName) {
+        this.transportCenterCode = transportCenterCode;
+        this.transportCenterName = transportCenterName;
+    }
     @ApiModelProperty(value = "商品名称",hidden = true)
     private String productCode;
 
@@ -64,4 +70,5 @@ public class SaveSkuConfigReqVo {
 
     @ApiModelProperty("错误信息")
     private String error;
+
 }

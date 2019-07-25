@@ -7,6 +7,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.QueryTagRespVo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author knight.xie
@@ -111,6 +113,14 @@ public interface TagInfoService {
     List<DetailTagUseRespVo> getUseTagRecordByUseObjectCode(String useObjectCode, String tagTypeCode);
 
     /**
+     * 根据使用对象和标签类型查询标签使用记录
+     * @param useObjectCode
+     * @param tagTypeCode
+     * @return
+     */
+    List<DetailTagUseRespVo> getUseTagRecordByUseObjectCode2(String useObjectCode, String tagTypeCode);
+
+    /**
      * 根据来源单号和标签类型查询标签使用记录
      * @param sourceCode
      * @param tagTypeCode
@@ -118,4 +128,11 @@ public interface TagInfoService {
      */
     List<DetailTagUseRespVo> getUseTagRecordBySourceCode(String sourceCode, String tagTypeCode);
 
+    /**
+     * 根据名称查标签
+     * @param skuTagList
+     * @param companyCode
+     * @return
+     */
+    Map<String, TagInfo> selectByTagNames(Set<String> skuTagList, String companyCode);
 }

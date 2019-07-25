@@ -1182,10 +1182,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if (Objects.isNull(skuSupplierImport.getIsDefault())) {
             errorList.add("是否缺省不能为空");
         }else {
-            if (Objects.isNull(Generals.getAll().get(skuSupplierImport.getIsDefault()))) {
+            if (Objects.isNull(DefaultOrNot.getAll().get(skuSupplierImport.getIsDefault()))) {
                 errorList.add("是否缺省不正确，请填写是或者否");
             }else {
-                copy.setIsDefault(Generals.getAll().get(skuSupplierImport.getIsDefault()).getValue());
+                copy.setIsDefault(DefaultOrNot.getAll().get(skuSupplierImport.getIsDefault()).getValue());
             }
         }
         if (CollectionUtils.isNotEmpty(errorList)) {
