@@ -27,6 +27,7 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author: zhao shuai
@@ -146,10 +147,14 @@ public class FileRecordServiceImpl implements FileRecordService {
                 }
             }
             if(CollectionUtils.isNotEmpty(productSkuPicturesDraftList)){
+                Integer picturesDel = productSkuPicturesDraftMapper.delete(productSkuPicturesDraftList.stream().map(ProductSkuPicturesDraft::getProductSkuCode).collect(Collectors.toList()));
+                LOGGER.info("对应介绍图避免添加重复,先进行删除:{}",picturesDel);
                 Integer picturesCount = productSkuPicturesDraftMapper.insertAll(productSkuPicturesDraftList);
                 LOGGER.info("sm_1.png对应介绍图,添加条数:{}",picturesCount);
             }
-            if(CollectionUtils.isNotEmpty(productSkuPicturesDraftList)) {
+            if(CollectionUtils.isNotEmpty(productSkuPicDescDraftList)) {
+                Integer picDel = productSkuPicDescDraftMapper.delete(productSkuPicDescDraftList.stream().map(ProductSkuPicDescDraft::getSkuCode).collect(Collectors.toList()));
+                LOGGER.info("对应图片及介绍,避免添加重复,先进行删除:{}",picDel);
                 Integer picCount = productSkuPicDescDraftMapper.insertAll(productSkuPicDescDraftList);
                 LOGGER.info("1.png对应图片及介绍,添加条数:{}",picCount);
             }

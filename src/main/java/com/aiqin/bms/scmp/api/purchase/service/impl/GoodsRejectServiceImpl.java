@@ -50,7 +50,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -91,7 +93,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     /**
      * 品类code递增长度
      */
-    private static final int categoryAddLength = 3;
+    private static final int categoryAddLength = 2;
 
     @Resource
     private RejectApplyRecordDao rejectApplyRecordDao;
@@ -160,7 +162,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             //处理数据
             rejectApplyRecord.setApplyRecordStatus(0);
             Integer count = this.rejectApplyData(rejectApplyQueryRequest, rejectApplyRecord, rejectCode);
-            //sku数量等于商品列表条数
+            //sku数量
             rejectApplyRecord.setSumSku(count);
             Integer counts = rejectApplyRecordDao.insert(rejectApplyRecord);
             LOGGER.info("添加退供申请影响条数:{}", counts);
@@ -183,6 +185,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         Long sumAmount = 0L;
         //实物返商品含税金额
         Long sumReturnAmount = 0L;
+        Set<String> skuList = new HashSet<>();
         for (RejectApplyDetailHandleRequest detail : rejectApplyQueryRequest.getDetailList()) {
             //详情的id
             detail.setRejectApplyRecordDetailId(IdUtil.uuid());
@@ -202,6 +205,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 sumReturnAmount += detail.getProductTotalAmount();
             }
             sumCount += detail.getProductCount();
+            skuList.add(detail.getSkuCode());
         }
         rejectApplyRecord.setSumReturnAmount(sumReturnAmount);
         rejectApplyRecord.setSumAmount(sumAmount);
@@ -209,7 +213,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         //添加详情
         Integer detailCount = rejectApplyRecordDetailDao.insertAll(rejectApplyQueryRequest.getDetailList());
         LOGGER.info("添加退供申请详情影响条数:{}", detailCount);
-        return detailCount;
+        return CollectionUtils.isEmpty(skuList) ? 0 : skuList.size();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -340,19 +344,48 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     }
 
     @Override
-    public HttpResponse<PageResData<RejectApplyRecordDetail>> rejectApplyDetailInfo(RejectApplyRequest response) {
-        List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByConditionPage(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
-                response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes(), response.getPageSize(), response.getBeginIndex());
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> rejectApplyDetailInfo(RejectApplyRequest request) {
+        List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByConditionPage(request.getSupplierCode(), request.getPurchaseGroupCode(), request.getSettlementMethodCode(),
+                request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes(), request.getPageSize(), request.getBeginIndex());
         RejectApplyDetailHandleResponse rejectApplyDetailHandleResponse;
+        //查询每个商品的库存数量
         for (RejectApplyRecordDetail detailResponse : detailList) {
             rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(detailResponse.getPurchaseGroupCode(), detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode());
             if (rejectApplyDetailHandleResponse != null) {
                 detailResponse.setStockCount(rejectApplyDetailHandleResponse.getStockCount());
             }
         }
-        Integer listCount = rejectApplyRecordDetailDao.listByConditionPageCount(response.getSupplierCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode(),
-                response.getTransportCenterCode(), response.getWarehouseCode(), response.getRejectApplyRecordCodes());
+        Integer listCount = rejectApplyRecordDetailDao.listByConditionPageCount(request.getSupplierCode(), request.getPurchaseGroupCode(), request.getSettlementMethodCode(),
+                request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
         return HttpResponse.successGenerics(new PageResData<>(listCount, detailList));
+    }
+
+    public HttpResponse<List<RejectApplyListResponse>> rejectApplyListInfo(RejectApplyRequest request) {
+        List<RejectApplyListResponse> detailList = rejectApplyRecordDetailDao.applyListByCondition(request.getSupplierCode(), request.getPurchaseGroupCode(), request.getSettlementMethodCode(),
+                request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
+        List<String> codes = new ArrayList<>();
+        Long returnAmount;
+        Long sumAmount;
+        Integer skuCount;
+        for (RejectApplyListResponse rejectApplyListResponse : detailList) {
+            BeanUtils.copyProperties(rejectApplyListResponse,request);
+            codes.add(rejectApplyListResponse.getRejectApplyRecordCode());
+            request.setRejectApplyRecordCodes(codes);
+            //选中sku
+            skuCount = rejectApplyRecordDetailDao.selectSkuCount(request);
+            rejectApplyListResponse.setSumSku(skuCount);
+            //查询实物返金额
+            request.setProductType(Global.PRODUCT_TYPE_2);
+            returnAmount = rejectApplyRecordDetailDao.selectReturnAmount(request);
+            rejectApplyListResponse.setReturnAmount(returnAmount);
+            //查询普通商品金额
+            request.setProductType(Global.PRODUCT_TYPE_0);
+            sumAmount = rejectApplyRecordDetailDao.selectReturnAmount(request);
+            rejectApplyListResponse.setSumAmount(sumAmount);
+            codes.clear();
+        }
+
+        return HttpResponse.successGenerics(detailList);
     }
 
     @Override
@@ -364,11 +397,18 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         List<RejectApplyResponse> list = rejectApplyRecordDetailDao.listForRejectRecord(request);
         SupplyCompany company;
         Long returnAmount;
+        Long sumAmount;
         for (RejectApplyResponse response : list) {
             company = rejectApplyRecordDetailDao.selectSupplyCompany(response.getSupplierCode());
             //查询实物返金额
-            returnAmount = rejectApplyRecordDetailDao.selectReturnAmount(request.getRejectApplyRecordCodes(), response.getSupplierCode(), response.getWarehouseCode(), response.getTransportCenterCode(), response.getPurchaseGroupCode(), response.getSettlementMethodCode());
+            BeanUtils.copyProperties(response,request);
+            request.setProductType(Global.PRODUCT_TYPE_2);
+            returnAmount = rejectApplyRecordDetailDao.selectReturnAmount(request);
             response.setReturnAmount(returnAmount);
+            //查询普通商品金额
+            request.setProductType(Global.PRODUCT_TYPE_0);
+            sumAmount = rejectApplyRecordDetailDao.selectReturnAmount(request);
+            response.setSumAmount(sumAmount);
             if (company != null) {
                 response.setCityId(company.getCityId());
                 response.setAddress(company.getAddress());
@@ -687,7 +727,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         if (StringUtils.isNotBlank(categoryCode)) {
             int s = categoryCode.length() / categoryAddLength;
             for (int i = 0; i < s; i++) {
-                productCategoryResponse = productCategoryDao.selectCategoryLevelByCategoryId(categoryCode.substring(0, (i + 1) * 3));
+                productCategoryResponse = productCategoryDao.selectCategoryLevelByCategoryId(categoryCode.substring(0, (i + 1) * 2));
                 if (productCategoryResponse != null) {
                     stringBuilder.append(productCategoryResponse.getCategoryName());
                     if (i < s - 1) {

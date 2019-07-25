@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.dao.test.reject.AsyncService;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyHandleRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectApprovalServiceImpl;
@@ -13,12 +14,14 @@ import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -55,14 +58,25 @@ public class RejectTest extends SpringBootTestContext {
     @Resource
     private GoodsRejectService goodsRejectService;
     @Resource
-    private GoodsRejectApprovalServiceImpl goodsRejectApprovalService;
-    @Resource
     private WarehouseDao warehouseDao;
     @Resource
     private LogisticsCenterDao logisticsCenterDao;
 
     @Resource
     private AsyncService asyncService;
+
+    @Test
+    public void rejectApplyListInfo(){
+        RejectApplyRequest request = new RejectApplyRequest();
+        request.setRejectApplyRecordCodes(Arrays.asList("RAR100166","RAR100165"));
+        request.setPurchaseGroupCode("1110");
+        request.setTransportCenterCode("1081");
+        request.setWarehouseCode("1071");
+        request.setSettlementMethodCode("123");
+        request.setSupplierCode("10000058");
+        HttpResponse response = goodsRejectService.rejectApplyListInfo(request);
+        System.out.println(response.getData().toString());
+    }
 
     @Test
     public void testAsyncService() {

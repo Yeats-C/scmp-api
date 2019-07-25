@@ -147,6 +147,23 @@
     </foreach>
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
+  <select id="applyListByCondition"   resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyListResponse">
+    select
+      reject_apply_record_code as rejectApplyRecordCode,apply_type as applyType,sum(product_count) as  singleCount
+    from reject_apply_record_detail
+    where
+        apply_record_status =  0
+    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    and reject_apply_record_code in
+    <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
+      #{item}
+    </foreach>
+    group by reject_apply_record_code
+  </select>
   <select id="listByConditionPageCount"   resultType="java.lang.Integer">
     select
      count(1)
@@ -446,7 +463,7 @@
       reject_apply_record_detail
     where
       apply_record_status = 0
-    and product_type = 2
+    and product_type = #{productType,jdbcType=INTEGER}
     and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
     and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
     and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
@@ -456,5 +473,26 @@
     <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
       #{item}
     </foreach>
+  </select>
+  <select id="selectSkuCount" resultType="java.lang.Integer">
+    select
+      count(r.sku_code)
+    from (
+      select
+      distinct sku_code
+      from
+      reject_apply_record_detail
+      where
+      apply_record_status = 0
+      and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+      and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      and reject_apply_record_code in
+      <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
+        #{item}
+      </foreach>
+    ) r
   </select>
 </mapper>
