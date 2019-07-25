@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
@@ -18,7 +17,6 @@ import java.util.Date;
  */
 @ApiModel("sku价格保存")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class SkuPriceDraftReqVO {
 
@@ -101,5 +99,8 @@ public class SkuPriceDraftReqVO {
         this.priceTypeName = priceTypeName;
         this.priceAttributeCode = priceAttributeCode;
         this.priceAttributeName = priceAttributeName;
+    }
+
+    public SkuPriceDraftReqVO() {
     }
 }

@@ -88,6 +88,7 @@ public class SupplyComServiceImpl implements SupplyComService {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 querySupplyComReqVO.setCompanyCode(authToken.getCompanyCode());
+                querySupplyComReqVO.setPersonId(authToken.getPersonId());
             }
             querySupplyComReqVO.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
             querySupplyComReqVO.setSupplyComNameOrShort(name);

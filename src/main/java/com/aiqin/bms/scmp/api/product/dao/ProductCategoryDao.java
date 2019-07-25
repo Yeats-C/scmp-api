@@ -73,6 +73,7 @@ public interface ProductCategoryDao {
      * @return
      */
     ProductCategory getProductCategoryById(@Param("categoryId") String categoryId);
+
     ProductCategory selectByPrimaryKey(Long id);
     /**
      *
