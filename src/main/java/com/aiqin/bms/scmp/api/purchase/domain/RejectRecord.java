@@ -170,11 +170,11 @@ public class RejectRecord {
 
     @ApiModelProperty(value = "实际赠品数量")
     @JsonProperty("actual_gift_count")
-    private Long actualGiftCount;
+    private Integer actualGiftCount;
 
     @ApiModelProperty(value = "实际赠品金额")
     @JsonProperty("actual_gift_amount")
-    private Integer actualGiftAmount;
+    private Long actualGiftAmount;
 
     @ApiModelProperty(value = "实际实物返回数量")
     @JsonProperty("actual_return_count")

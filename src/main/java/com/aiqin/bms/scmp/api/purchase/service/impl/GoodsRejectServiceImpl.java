@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.base.DefaultOrNot;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -49,10 +50,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -485,7 +484,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 }
                 rejectRecordDetail = new RejectRecordDetail();
                 BeanUtils.copyProperties(detailResponse, rejectRecordDetail);
-                rejectRecordDetail.setProductCount(Long.valueOf(detailResponse.getProductCount()));
+                rejectRecordDetail.setProductCount(detailResponse.getProductCount().longValue());
                 rejectRecordDetail.setRejectRecordDetailId(IdUtil.uuid());
                 list.add(rejectRecordDetail);
             }
@@ -673,29 +672,55 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     public void finishStock(RejectStockRequest request) {
         try {
             LOGGER.info("出库完成,更新退供单信息:{}", request.toString());
-            RejectRecord rejectRecord = new RejectRecord();
-            rejectRecord.setRejectRecordCode(request.getRejectRecordCode());
-            rejectRecord.setOutStockTime(request.getOutStockTime());
-            rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_STOCKED);
-            Integer count = rejectRecordDao.updateStatus(rejectRecord);
-            LOGGER.info("更新退供单信息影响条数:{}", count);
+            //总普通商品数量
+            Long productCount = 0L;
+            //总普通商品含税金额
+            Long productAmount = 0L;
+            //总赠品商品数量
+            Long giftCount = 0L;
+            //总赠品商品含税金额
+            Long giftAmount = 0L;
+            //总单品数量
+            Integer sumSingleCount = 0;
+            //总实物返回数量
+            Long returnCount = 0L;
+            //总实物返回金额
+            Long returnAmount = 0L;
             if (CollectionUtils.isNotEmpty(request.getDetailList())) {
-                List<RejectRecordDetail> detailList = rejectRecordDetailDao.selectByRejectDetailIdList(request.getDetailList().stream().map(RejectDetailStockRequest::getRejectRecordDetailId).collect(Collectors.toList()));
-                for (RejectDetailStockRequest detailResponse : request.getDetailList()) {
-                    rejectRecordDetailDao.updateByDetailId(detailResponse);
-//
-//                    if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_2)) {
-//                        returnCount += detailResponse.getProductCount();
-//                        returnAmount += detailResponse.getProductTotalAmount();
-//                    }else if(detailResponse.getProductType().equals(Global.PRODUCT_TYPE_1)){
-//                        giftCount += detailResponse.getProductCount();
-//                        giftAmount += detailResponse.getProductTotalAmount();
-//                    }else if(detailResponse.getProductType().equals(Global.PRODUCT_TYPE_0)){
-//                        productCount += detailResponse.getProductCount();
-//                        productAmount += detailResponse.getProductTotalAmount();
-//                    }
+                List<RejectRecordDetail> detailList = rejectRecordDetailDao.selectByRejectDetailIdList(request.getDetailList().stream().map(RejectDetailStockRequest::getId).collect(Collectors.toList()));
+                Map<Long,RejectDetailStockRequest> map = request.getDetailList().stream().collect(Collectors.toMap(RejectDetailStockRequest::getId, Function.identity(),(k1, k2)->k2));
+                for (RejectRecordDetail detailResponse : detailList) {
+                    RejectDetailStockRequest rejectDetailStockRequest = map.get(detailResponse.getId());
+                    sumSingleCount += rejectDetailStockRequest.getActualCount();
+                    if(rejectDetailStockRequest!=null){
+                        if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_2)) {
+                            returnCount += detailResponse.getProductCount();
+                            returnAmount += detailResponse.getProductTotalAmount();
+                        }else if(detailResponse.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                            productCount += detailResponse.getProductCount();
+                            productAmount += detailResponse.getProductTotalAmount();
+                        }else if(detailResponse.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                            giftCount += detailResponse.getProductCount();
+                            giftAmount += detailResponse.getProductTotalAmount();
+                        }
+                        rejectDetailStockRequest.setActualAmount(rejectDetailStockRequest.getActualCount()*detailResponse.getProductAmount());
+                        rejectRecordDetailDao.updateByDetailId(rejectDetailStockRequest);
+                    }
                 }
             }
+            RejectRecord record = new RejectRecord();
+            record.setRejectRecordCode(request.getRejectRecordCode());
+            record.setOutStockTime(request.getOutStockTime());
+            record.setRejectStatus(RejectRecordStatus.REJECT_STATUS_STOCKED);
+            record.setActualProductAmount(productAmount);
+            record.setActualProductCount(productCount.intValue());
+            record.setActualGiftAmount(giftAmount);
+            record.setActualGiftCount(giftCount.intValue());
+            record.setActualSingleCount(sumSingleCount);
+            record.setActualReturnAmount(returnAmount);
+            record.setActualReturnCount(returnCount.intValue());
+            Integer count = rejectRecordDao.updateStatus(record);
+            LOGGER.info("更新退供单信息影响条数:{}", count);
         } catch (Exception e) {
             LOGGER.error("更新退供单异常:{}", e.getMessage());
             throw new GroundRuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));

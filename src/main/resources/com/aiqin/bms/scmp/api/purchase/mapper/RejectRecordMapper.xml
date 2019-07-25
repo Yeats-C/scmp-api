@@ -531,6 +531,27 @@
         <if test="updateByName != null">
             update_by_name = #{updateByName,jdbcType=VARCHAR},
         </if>
+        <if test="actualProductCount != null">
+            actual_product_count = #{actualProductCount,jdbcType=INTEGER},
+        </if>
+        <if test="actualProductAmount != null">
+            actual_product_amount = #{actualProductAmount,jdbcType=BIGINT},
+        </if>
+        <if test="actualGiftCount != null">
+            actual_gift_count = #{actualGiftCount,jdbcType=INTEGER},
+        </if>
+        <if test="actualGiftAmount != null">
+            actual_gift_amount = #{actualGiftAmount,jdbcType=BIGINT},
+        </if>
+        <if test="actualReturnCount != null">
+            actual_return_count = #{actualReturnCount,jdbcType=INTEGER},
+        </if>
+        <if test="actualReturnAmount != null">
+            actual_return_amount = #{actualReturnAmount,jdbcType=BIGINT},
+        </if>
+        <if test="actualSingleCount != null">
+            actual_single_count = #{actualSingleCount,jdbcType=INTEGER},
+        </if>
         update_time =now()
         <where>
             <if test="rejectRecordId!=null">
