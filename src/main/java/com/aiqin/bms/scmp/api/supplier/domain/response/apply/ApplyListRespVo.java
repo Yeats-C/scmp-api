@@ -26,7 +26,12 @@ public class ApplyListRespVo {
     private String applyType;
 
     public String getApplyType() {
-        return "0".equals(this.applyType)?"1":"2";
+        if("4".equals(this.modelTypeCode)){
+            return "0".equals(this.applyType)?"1":"2";
+        }
+        else {
+            return this.applyType;
+        }
     }
 
     @ApiModelProperty("功能项")

@@ -88,6 +88,7 @@ public class SupplyComServiceImpl implements SupplyComService {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 querySupplyComReqVO.setCompanyCode(authToken.getCompanyCode());
+                querySupplyComReqVO.setPersonId(authToken.getPersonId());
             }
             querySupplyComReqVO.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
             querySupplyComReqVO.setSupplyComNameOrShort(name);
@@ -177,7 +178,7 @@ public class SupplyComServiceImpl implements SupplyComService {
                 List<DeliveryInfoRespVO> deliveryInfoRespVOS = deliveryInfoService.getDeliveryInfoBySupplyCompanyCode(supplyCompanyDetailDTO.getSupplyCode());
                 supplyComDetailRespVO.setDeliveryInfoRespVOS(deliveryInfoRespVOS);
                 //根据供货单位编码查询标签信息
-                List<DetailTagUseRespVo> useTagRecordReqVos = tagInfoService.getUseTagRecordByUseObjectCode(supplyCompanyDetailDTO.getSupplyCode(), TagTypeCode.SUPPLIER.getStatus());
+                List<DetailTagUseRespVo> useTagRecordReqVos = tagInfoService.getUseTagRecordByUseObjectCode2(supplyCompanyDetailDTO.getSupplyCode(), TagTypeCode.SUPPLIER.getStatus());
                 supplyComDetailRespVO.setUseTagRecordReqVos(useTagRecordReqVos);
 
                 List<SupplierFile> supplierFile = supplierFileDao.getSupplierFile(supplyCompanyDetailDTO.getSupplyCode());

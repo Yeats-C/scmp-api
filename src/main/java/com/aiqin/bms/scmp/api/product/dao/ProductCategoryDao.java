@@ -44,7 +44,7 @@ public interface ProductCategoryDao {
      * @param categoryStatus
      * @return
      */
-    List<ProductCategoryRespVO> getProductCategoryList(@Param("categoryStatus") Byte categoryStatus, @Param("companyCode") String companyCode);
+    List<ProductCategoryRespVO> getProductCategoryList(@Param("categoryStatus") Byte categoryStatus, @Param("companyCode") String companyCode, @Param("parentCode") String parentCode);
 
     /**
      * 修改品类记录
@@ -73,6 +73,7 @@ public interface ProductCategoryDao {
      * @return
      */
     ProductCategory getProductCategoryById(@Param("categoryId") String categoryId);
+
     ProductCategory selectByPrimaryKey(Long id);
     /**
      *

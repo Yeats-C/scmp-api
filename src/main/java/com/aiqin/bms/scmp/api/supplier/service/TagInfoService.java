@@ -113,6 +113,14 @@ public interface TagInfoService {
     List<DetailTagUseRespVo> getUseTagRecordByUseObjectCode(String useObjectCode, String tagTypeCode);
 
     /**
+     * 根据使用对象和标签类型查询标签使用记录
+     * @param useObjectCode
+     * @param tagTypeCode
+     * @return
+     */
+    List<DetailTagUseRespVo> getUseTagRecordByUseObjectCode2(String useObjectCode, String tagTypeCode);
+
+    /**
      * 根据来源单号和标签类型查询标签使用记录
      * @param sourceCode
      * @param tagTypeCode

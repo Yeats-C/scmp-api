@@ -847,7 +847,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
             querySupplierReqVO.setCompanyCode(authToken.getCompanyCode());
-            querySupplierReqVO.setApplyBy(authToken.getPersonName());
+            //querySupplierReqVO.setApplyBy(authToken.getPersonName());
         }
         if ("1".equals(querySupplierReqVO.getApplyType())) querySupplierReqVO.setApplyType("0");
         if ("2".equals(querySupplierReqVO.getApplyType())) querySupplierReqVO.setApplyType("1");
