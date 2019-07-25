@@ -171,10 +171,27 @@ public class SkuInfoController {
 
     @PostMapping("/importSkuNewSave")
     @ApiOperation("新增导入sku保存")
-    public HttpResponse<Boolean> importSkuNewSave(List<AddSkuInfoReqVO> addSkuList,String purchaseGroupCode){
+    public HttpResponse<Boolean> importSkuNewSave(@RequestBody List<AddSkuInfoReqVO> addSkuList,
+                                                  @RequestParam String purchaseGroupCode,
+                                                  @RequestParam String purchaseGroupName){
         log.info("SkuInfoController---importSkuNewSave---入参：[{}]", JSON.toJSONString(addSkuList));
         try {
-            return HttpResponse.success(skuInfoService.importSkuNewSave(addSkuList,purchaseGroupCode));
+            return HttpResponse.success(skuInfoService.importSkuNewSave(addSkuList,purchaseGroupCode,purchaseGroupName));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @PostMapping("/importSkuNewUpdate")
+    @ApiOperation("修改导入sku保存")
+    public HttpResponse<Boolean> importSkuNewUpdate(@RequestBody List<AddSkuInfoReqVO> addSkuList,
+                                                    @RequestParam String purchaseGroupCode,
+                                                    @RequestParam String purchaseGroupName){
+        log.info("SkuInfoController---importSkuNewUpdate---入参：[{}]", JSON.toJSONString(addSkuList));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuNewUpdate(addSkuList,purchaseGroupCode,purchaseGroupName));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
