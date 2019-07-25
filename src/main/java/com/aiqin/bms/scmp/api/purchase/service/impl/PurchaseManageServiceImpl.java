@@ -692,7 +692,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
                 reqVo.setCreateTime(Calendar.getInstance().getTime());
                 preInboundNum += reqVo.getPreInboundNum();
-                preInboundMainNum += singleCount;
+                preInboundMainNum += purchaseWhole;
                 preTaxAmount += productTotalAmount;
                 preNoTaxAmount += Calculate.computeNoTaxPrice(productTotalAmount, product.getTaxRate().longValue());
                 list.add(reqVo);
