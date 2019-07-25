@@ -55,7 +55,7 @@ public interface ProductCategoryService {
      * @param categoryStatus
      * @return
      */
-    List<ProductCategoryRespVO> getList(Byte categoryStatus);
+    List<ProductCategoryRespVO> getList(Byte categoryStatus, String parentCode);
 
     /**
      * 根据品类id查询父类集合
@@ -92,4 +92,7 @@ public interface ProductCategoryService {
      * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.ProductCategory>
      */
     List<ProductCategory> selectByCategoryNames(Set<String> brandNameList, String companyCode);
+
+
+
 }
