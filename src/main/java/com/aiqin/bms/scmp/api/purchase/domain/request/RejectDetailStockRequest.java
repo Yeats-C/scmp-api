@@ -48,4 +48,5 @@ public class RejectDetailStockRequest {
     @JsonProperty("actual_amount")
     private Long actualAmount;
 
+
 }

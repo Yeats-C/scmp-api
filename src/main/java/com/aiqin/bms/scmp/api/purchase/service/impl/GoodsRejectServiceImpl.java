@@ -444,31 +444,44 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             rejectRecord.setValidDay(new DateTime(request.getValidDay()).toDate());
             //待审核状态
             rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_AUDIT);
-            //总退供数量
-            Integer sumCount = 0;
-            //含税金额
-            Long sumAmount = 0L;
+            //总普通商品数量
+            Integer productCount = 0;
+            //总普通商品含税金额
+            Long productAmount = 0L;
+            //总赠品商品数量
+            Integer giftCount = 0;
+            //总赠品商品含税金额
+            Long giftAmount = 0L;
             //总单品数量
             Integer sumSingleCount = 0;
-            //未税退供金额
-            Long untaxedAmount = 0L;
             //总实物返回数量
             Integer returnCount = 0;
             //总实物返回金额
             Long returnAmount = 0L;
+            //无税金额
+            Long untaxedAmount = 0L;
             List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByCondition(request.getSupplierCode(), request.getPurchaseGroupCode(), request.getSettlementMethodCode(),
                     request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
             List<RejectRecordDetail> list = new ArrayList<>();
             RejectRecordDetail rejectRecordDetail;
             for (RejectApplyRecordDetail detailResponse : detailList) {
                 //计算总数
-                sumCount += detailResponse.getProductCount();
                 sumSingleCount += detailResponse.getProductCount();
-                sumAmount += detailResponse.getProductTotalAmount();
-                untaxedAmount += detailResponse.getProductTotalAmount() / (100 + detailResponse.getTaxRate());
-                if (detailResponse.getProductType().equals(2)) {
+                //含税金额 总金额/(100%+税率)
+                if(detailResponse.getTaxRate()==null){
+                    untaxedAmount = detailResponse.getProductTotalAmount();
+                }else{
+                    untaxedAmount += detailResponse.getProductTotalAmount() / (100 + detailResponse.getTaxRate());
+                }
+                if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_2)) {
                     returnCount += detailResponse.getProductCount();
                     returnAmount += detailResponse.getProductTotalAmount();
+                }else if(detailResponse.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                     giftCount += detailResponse.getProductCount();
+                    giftAmount += detailResponse.getProductTotalAmount();
+                }else if(detailResponse.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                    productCount += detailResponse.getProductCount();
+                    productAmount += detailResponse.getProductTotalAmount();
                 }
                 rejectRecordDetail = new RejectRecordDetail();
                 BeanUtils.copyProperties(detailResponse, rejectRecordDetail);
@@ -476,12 +489,14 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 rejectRecordDetail.setRejectRecordDetailId(IdUtil.uuid());
                 list.add(rejectRecordDetail);
             }
-            rejectRecord.setSumAmount(sumAmount);
-            rejectRecord.setSumCount(sumCount);
-            rejectRecord.setUntaxedAmount(untaxedAmount);
+            rejectRecord.setProductAmount(productAmount);
+            rejectRecord.setProductCount(productCount);
+            rejectRecord.setGiftAmount(giftAmount);
+            rejectRecord.setGiftCount(giftCount);
             rejectRecord.setSingleCount(sumSingleCount);
             rejectRecord.setReturnAmount(returnAmount);
             rejectRecord.setReturnCount(returnCount);
+            rejectRecord.setUntaxedAmount(untaxedAmount);
             //添加退供单记录
             Integer count = rejectRecordDao.insert(rejectRecord);
             LOGGER.info("添加退供影响条数:{}", count);
@@ -665,8 +680,20 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             Integer count = rejectRecordDao.updateStatus(rejectRecord);
             LOGGER.info("更新退供单信息影响条数:{}", count);
             if (CollectionUtils.isNotEmpty(request.getDetailList())) {
+                List<RejectRecordDetail> detailList = rejectRecordDetailDao.selectByRejectDetailIdList(request.getDetailList().stream().map(RejectDetailStockRequest::getRejectRecordDetailId).collect(Collectors.toList()));
                 for (RejectDetailStockRequest detailResponse : request.getDetailList()) {
                     rejectRecordDetailDao.updateByDetailId(detailResponse);
+//
+//                    if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_2)) {
+//                        returnCount += detailResponse.getProductCount();
+//                        returnAmount += detailResponse.getProductTotalAmount();
+//                    }else if(detailResponse.getProductType().equals(Global.PRODUCT_TYPE_1)){
+//                        giftCount += detailResponse.getProductCount();
+//                        giftAmount += detailResponse.getProductTotalAmount();
+//                    }else if(detailResponse.getProductType().equals(Global.PRODUCT_TYPE_0)){
+//                        productCount += detailResponse.getProductCount();
+//                        productAmount += detailResponse.getProductTotalAmount();
+//                    }
                 }
             }
         } catch (Exception e) {

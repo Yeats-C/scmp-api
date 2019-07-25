@@ -27,4 +27,6 @@ public interface RejectRecordDetailDao {
     List<RejectRecordDetailResponse> selectProductByRejectId(String rejectRecordId);
 
     void updateByDetailId(RejectDetailStockRequest detailResponse);
+
+    List<RejectRecordDetail> selectByRejectDetailIdList(List<String> collect);
 }
