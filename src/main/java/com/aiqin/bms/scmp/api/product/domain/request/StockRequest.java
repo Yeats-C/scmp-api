@@ -93,6 +93,14 @@ public class StockRequest extends PagesRequest {
     @JsonProperty(value = "total_way_finish_num")
     private Long totalWayFinishNum;
 
+    @ApiModelProperty("采购组编码")
+    @JsonProperty(value = "procurement_section_code")
+    private String procurementSectionCode;
+
+    @ApiModelProperty("采购组名称")
+    @JsonProperty(value = "procurement_section_name")
+    private String procurementSectionName;
+
     public String getTransportCenterText() {
         return transportCenterText;
     }
@@ -259,5 +267,21 @@ public class StockRequest extends PagesRequest {
 
     public void setTotalWayFinishNum(Long totalWayFinishNum) {
         this.totalWayFinishNum = totalWayFinishNum;
+    }
+
+    public String getProcurementSectionCode() {
+        return procurementSectionCode;
+    }
+
+    public void setProcurementSectionCode(String procurementSectionCode) {
+        this.procurementSectionCode = procurementSectionCode;
+    }
+
+    public String getProcurementSectionName() {
+        return procurementSectionName;
+    }
+
+    public void setProcurementSectionName(String procurementSectionName) {
+        this.procurementSectionName = procurementSectionName;
     }
 }
