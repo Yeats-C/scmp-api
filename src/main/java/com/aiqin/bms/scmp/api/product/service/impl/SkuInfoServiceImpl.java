@@ -1066,7 +1066,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //渠道
             productSkuChannelService.save(skuCode,applyCode);
             //标签
-            List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(applyCode,TagTypeCode.SKU.getStatus());
+            List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode(applyCode,TagTypeCode.SKU.getStatus(),skuCode);
             if(CollectionUtils.isNotEmpty(applyUseTagRecords)) {
                 List<SaveUseTagRecordReqVo> records = Lists.newArrayList();
                 SaveUseTagRecordReqVo saveUseTagRecordReqVo = new SaveUseTagRecordReqVo();
