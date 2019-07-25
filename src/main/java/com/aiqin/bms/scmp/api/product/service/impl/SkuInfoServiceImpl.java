@@ -2434,12 +2434,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     error.add("联营扣点格式不正确");
                 }
             }
-            //联营扣点
+            //返点
             if (Objects.nonNull(importVo.getPoint())) {
                 try {
-                    supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseLong(importVo.getPoint().trim()));
+                    supplyUnitDraft.setPoint(NumberConvertUtils.stringParseLong(importVo.getPoint().trim()));
                 } catch (Exception e) {
-                    error.add("联营扣点格式不正确");
+                    error.add("返点格式不正确");
                 }
             }
             //厂商SKU编码
