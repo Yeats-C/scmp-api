@@ -63,6 +63,16 @@
     and a.use_object_code = #{useObjectCode,jdbcType=VARCHAR}
     and a.tag_type_code = #{tagTypeCode,jdbcType=VARCHAR}
   </select>
+
+  <select id="getListByUseObjectCode2" resultMap="ListResultMap">
+    select
+      distinct a.tag_code, a.tag_name,b.tag_use_num
+    from use_tag_record a
+    left join tag_info b on a.tag_code = b.tag_code
+    where a.del_flag = 0
+    and a.use_object_code = #{useObjectCode,jdbcType=VARCHAR}
+    and a.tag_type_code = #{tagTypeCode,jdbcType=VARCHAR}
+  </select>
   <select id="getListBySourceCode" resultMap="ListResultMap">
     select
     <include refid="List_Column_List" />

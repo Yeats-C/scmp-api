@@ -104,6 +104,7 @@
     <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
     <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount"/>
     <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount"/>
+    <result column="star_score" jdbcType="BIGINT" property="starScore"/>
   </resultMap>
   <select id="getSupplyCompanyList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO" resultMap="SupplyComListMap">
     SELECT
