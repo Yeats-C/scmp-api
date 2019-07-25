@@ -1028,6 +1028,20 @@
         <include refid="select_negative_margin"/>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
+    <select id="sumNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NegativeMarginRespVo">
+        select
+        sum(bnm.product_num) as productNums,
+        sum(bnm.sales_cost) as salesCosts,
+        sum(bnm.channel_order_amount) as channelOrderAmounts,
+        sum(bnm.channel_order_amount) - sum(bnm.sales_cost) as channelMaoris,
+        sum(bnm.channel_order_amount) - sum(bnm.sales_cost) / sum(bnm.sales_cost) as channelMaoriRates,
+        sum(bnm.distribution_order_amount) as distributionOrderAmounts,
+        (sum(bnm.distribution_order_amount) - sum(bnm.sales_cost)) as distributionMaoris,
+        (sum(bnm.distribution_order_amount) - sum(bnm.sales_cost)) / sum(bnm.sales_cost) as distributionMaoriRates
+        from bi_negative_margin bnm
+        <include refid="select_negative_margin"/>
+    </select>
     <select id="countNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
             resultType="java.lang.Integer">
         select count(1) from (

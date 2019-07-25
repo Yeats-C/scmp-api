@@ -180,11 +180,20 @@ public class ReportServiceImpl implements ReportService {
     public PageReportResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
         try {
             List<NegativeMarginRespVo> negativeMarginRespVos = reportDao.selectNegativeMargin(negativeMarginReqVo);
+            NegativeMarginRespVo negativeMarginRespVoSum = reportDao.sumNegativeMargin(negativeMarginReqVo);
             Integer total = reportDao.countNegativeMargin(negativeMarginReqVo);
             String cloumnName = "bi_negative_margin";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             NegativeMarginRespVo negativeMarginRespVo = new NegativeMarginRespVo();
             negativeMarginRespVo.setColumnList(maps);
+            negativeMarginRespVo.setProductNums(negativeMarginRespVoSum.getProductNums());
+            negativeMarginRespVo.setSalesCosts(negativeMarginRespVoSum.getSalesCosts());
+            negativeMarginRespVo.setChannelOrderAmounts(negativeMarginRespVoSum.getChannelOrderAmounts());
+            negativeMarginRespVo.setChannelMaoris(negativeMarginRespVoSum.getChannelMaoris());
+            negativeMarginRespVo.setChannelMaoriRates(negativeMarginRespVoSum.getChannelMaoriRates());
+            negativeMarginRespVo.setDistributionOrderAmounts(negativeMarginRespVoSum.getDistributionOrderAmounts());
+            negativeMarginRespVo.setDistributionMaoris(negativeMarginRespVoSum.getDistributionMaoris());
+            negativeMarginRespVo.setDistributionMaoriRates(negativeMarginRespVoSum.getDistributionMaoriRates());
             return new PageReportResData<NegativeMarginRespVo>(total,negativeMarginRespVos,negativeMarginRespVo);
         } catch (Exception ex) {
             log.error("查询负毛利失败");
