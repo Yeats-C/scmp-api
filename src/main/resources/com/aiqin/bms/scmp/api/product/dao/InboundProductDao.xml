@@ -36,7 +36,7 @@
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="bar_code" jdbcType="VARCHAR" property="goodsCode" />
-    <result column="pre_inbound_main_num" jdbcType="BIGINT" property="preInboundMainNum" />
+    <result column="pre_inbound_num" jdbcType="BIGINT" property="preInboundNum" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="linenum" jdbcType="BIGINT" property="linenum" />
 
@@ -86,7 +86,7 @@
   </sql>
 
   <sql  id="Base_Column_MmsReq">
-      a.sku_code,a.sku_name,b.bar_code,a.pre_inbound_main_num,a.unit_name,a.linenum
+      a.sku_code,a.sku_name,b.bar_code,a.pre_inbound_num,a.unit_name,a.linenum
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

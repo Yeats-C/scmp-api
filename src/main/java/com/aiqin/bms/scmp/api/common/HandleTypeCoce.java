@@ -235,6 +235,14 @@ public enum  HandleTypeCoce {
     INBOUND_MOVEMENT((byte)195,"移库单待入库"),
     SUCCESS__MOVEMENT((byte)196,"移库单已完成"),
 
+    ADD_CHANGEPRICE((byte)197,"新建变价"),
+    EDIT_CHANGEPRICE((byte)198,"修改变价"),
+    WAIT_CHANGEPRICE((byte)199,"变价待审"),
+    UNDER_CHANGEPRICE((byte)200,"变价审批中"),
+    PASS_CHANGEPRICE((byte)200,"变价审批通过"),
+    NOPASS_CHANGEPRICE((byte)201,"变价审批不通过"),
+    RECOBER_CHANGEPRICE((byte)202,"变价撤销"),
+
     ADD((byte)1000,"新增"),
     UPDATE((byte)10001,"修改"),
     DOWNLOAD((byte)10002,"下载"),

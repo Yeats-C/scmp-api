@@ -28,10 +28,6 @@ public class InboundProductWmsReqVO {
     @ApiModelProperty(value = "商品条码 必填")
     private String goodsCode;
 
-    @ApiModelProperty("预计入库主数量")
-    @JsonProperty("quantity")
-    private Long preInboundMainNum;
-
     @ApiModelProperty("入库单位名称")
     @JsonProperty("packageName")
     private String unitName;

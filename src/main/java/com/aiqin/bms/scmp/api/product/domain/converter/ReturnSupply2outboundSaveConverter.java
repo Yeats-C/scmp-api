@@ -96,13 +96,13 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 //出库时间
 //                order.setOutboundTime(reqVo.getOutboundTime());
                 //预计出库数量
-                outbound.setPreOutboundNum(Long.parseLong(reqVo.getSumCount().toString()));
+                outbound.setPreOutboundNum(Long.parseLong(reqVo.getSingleCount().toString()));
                 //预计主出库数量
                 outbound.setPreMainUnitNum(Long.parseLong(reqVo.getSingleCount().toString()));
                 //预计含税总金额
-                outbound.setPreTaxAmount(reqVo.getSumAmount());
+                outbound.setPreTaxAmount(reqVo.getGiftAmount()+reqVo.getReturnAmount()+reqVo.getProductAmount());
                 //预计无税总金额
-                outbound.setPreAmount(reqVo.getSumAmount());
+                outbound.setPreAmount(reqVo.getUntaxedAmount());
                 //预计税额
 //                outbound.setPreTax(reqVo.getSumAmount()-reqVo.getSumAmount());
                 outbound.setCreateBy(reqVo.getCreateByName());
@@ -177,7 +177,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     }
                 }
                 outbound.setPreAmount(noTaxTotalAmount);
-                outbound.setPreTax(reqVo.getSumAmount() - noTaxTotalAmount);
+                outbound.setPreTax(outbound.getPreTaxAmount() - noTaxTotalAmount);
                 outbound.setList(parts);
                 outbound.setOutboundBatches(batchReqVos);
                 return outbound;

@@ -28,12 +28,21 @@
         <result column="transport_remark" jdbcType="VARCHAR" property="transportRemark"/>
         <result column="transport_url" jdbcType="VARCHAR" property="transportUrl"/>
         <result column="out_stock_time" jdbcType="TIMESTAMP" property="outStockTime"/>
-        <result column="sum_count" jdbcType="INTEGER" property="sumCount"/>
-        <result column="sum_amount" jdbcType="BIGINT" property="sumAmount"/>
+        <result column="product_count" jdbcType="INTEGER" property="productCount"/>
+        <result column="product_amount" jdbcType="BIGINT" property="productAmount"/>
         <result column="single_count" jdbcType="INTEGER" property="singleCount"/>
-        <result column="untaxed_amount" jdbcType="BIGINT" property="untaxedAmount"/>
+        <result column="gift_count" jdbcType="INTEGER" property="giftCount"/>
+        <result column="gift_amount" jdbcType="BIGINT" property="giftAmount"/>
         <result column="return_count" jdbcType="INTEGER" property="returnCount"/>
         <result column="return_amount" jdbcType="BIGINT" property="returnAmount"/>
+        <result column="untaxed_amount" jdbcType="BIGINT" property="untaxedAmount"/>
+        <result column="actual_product_count" jdbcType="INTEGER" property="actualProductCount"/>
+        <result column="actual_product_amount" jdbcType="BIGINT" property="actualProductAmount"/>
+        <result column="actual_single_count" jdbcType="INTEGER" property="actualSingleCount"/>
+        <result column="actual_gift_count" jdbcType="INTEGER" property="actualGiftCount"/>
+        <result column="actual_gift_amount" jdbcType="BIGINT" property="actualGiftAmount"/>
+        <result column="actual_return_count" jdbcType="INTEGER" property="actualReturnCount"/>
+        <result column="actual_return_amount" jdbcType="BIGINT" property="actualReturnAmount"/>
         <result column="create_by_id" jdbcType="VARCHAR" property="createById"/>
         <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
         <result column="update_by_id" jdbcType="VARCHAR" property="updateById"/>
@@ -54,10 +63,11 @@
     province_id, province_name, city_id, city_name, district_id, district_name, address, 
     expect_time, valid_day, dictionary_id, dictionary_name, supplier_code, supplier_name, 
     purchase_group_code, purchase_group_name, reject_status, remark, transport_remark, transport_url,
-    out_stock_time, sum_count, sum_amount, single_count, untaxed_amount, return_count, 
-    return_amount, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
+    out_stock_time, product_count, product_amount, single_count, gift_count,gift_amount, return_count,
+    return_amount, actual_product_count, actual_product_amount, actual_single_count, actual_gift_count,actual_gift_amount, actual_return_count,
+    actual_return_amount,create_by_id, create_by_name, update_by_id, update_by_name, create_time,
     update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name,
-    company_name,company_code
+    company_name,company_code,untaxed_amount
   </sql>
     <sql id="LIST_QUERY">
         <where>
@@ -121,10 +131,12 @@
       address, expect_time, valid_day, 
       dictionary_id, dictionary_name, supplier_code, 
       supplier_name, purchase_group_code, purchase_group_name, 
-      remark, transport_remark,
-      out_stock_time, sum_count, sum_amount, 
-      single_count, untaxed_amount, return_count, 
-      return_amount, create_by_id, create_by_name, transport_center_code,
+      remark, transport_remark,untaxed_amount,
+      out_stock_time, product_count, product_amount, 
+      single_count, gift_count,gift_amount, return_count,
+      return_amount, actual_product_count, actual_product_amount,
+      actual_single_count, actual_gift_count,actual_gift_amount, actual_return_count,
+      actual_return_amount, create_by_id, create_by_name, transport_center_code,
       transport_center_name, warehouse_code, warehouse_name,company_name,company_code,
       settlement_method_code,settlement_method_name,  create_time,  update_time, update_by_id, update_by_name)
     values ( #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR},
@@ -134,10 +146,12 @@
       #{address,jdbcType=VARCHAR}, #{expectTime,jdbcType=TIMESTAMP}, #{validDay,jdbcType=TIMESTAMP}, 
       #{dictionaryId,jdbcType=VARCHAR}, #{dictionaryName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
       #{supplierName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{transportRemark,jdbcType=VARCHAR},
-      #{outStockTime,jdbcType=TIMESTAMP}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT}, 
-      #{singleCount,jdbcType=INTEGER}, #{untaxedAmount,jdbcType=BIGINT}, #{returnCount,jdbcType=INTEGER}, 
-      #{returnAmount,jdbcType=BIGINT}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
+      #{remark,jdbcType=VARCHAR}, #{untaxedAmount,jdbcType=BIGINT},#{transportRemark,jdbcType=VARCHAR},
+      #{outStockTime,jdbcType=TIMESTAMP}, #{productCount,jdbcType=INTEGER}, #{productAmount,jdbcType=BIGINT}, 
+      #{singleCount,jdbcType=INTEGER},#{giftCount,jdbcType=INTEGER}, #{giftAmount,jdbcType=BIGINT}, #{returnCount,jdbcType=INTEGER},
+      #{returnAmount,jdbcType=BIGINT},#{actualProductCount,jdbcType=INTEGER}, #{actualProductAmount,jdbcType=BIGINT},
+      #{actualSingleCount,jdbcType=INTEGER},#{actualGiftCount,jdbcType=INTEGER}, #{actualGiftAmount,jdbcType=BIGINT}, #{actualReturnCount,jdbcType=INTEGER},
+      #{actualReturnAmount,jdbcType=BIGINT}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
       #{transportCenterCode,jdbcType=VARCHAR},#{transportCenterName,jdbcType=VARCHAR},
       #{warehouseCode,jdbcType=VARCHAR},#{warehouseName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{settlementMethodCode,jdbcType=VARCHAR},#{settlementMethodName,jdbcType=VARCHAR},
@@ -218,17 +232,17 @@
             <if test="outStockTime != null">
                 out_stock_time,
             </if>
-            <if test="sumCount != null">
-                sum_count,
+            <if test="productCount != null">
+                product_count,
             </if>
-            <if test="sumAmount != null">
-                sum_amount,
+            <if test="productAmount != null">
+                product_amount,
             </if>
             <if test="singleCount != null">
                 single_count,
             </if>
-            <if test="untaxedAmount != null">
-                untaxed_amount,
+            <if test="giftAmount != null">
+                gift_amount,
             </if>
             <if test="returnCount != null">
                 return_count,
@@ -324,17 +338,17 @@
             <if test="outStockTime != null">
                 #{outStockTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="sumCount != null">
-                #{sumCount,jdbcType=INTEGER},
+            <if test="productCount != null">
+                #{productCount,jdbcType=INTEGER},
             </if>
-            <if test="sumAmount != null">
-                #{sumAmount,jdbcType=BIGINT},
+            <if test="productAmount != null">
+                #{productAmount,jdbcType=BIGINT},
             </if>
             <if test="singleCount != null">
                 #{singleCount,jdbcType=INTEGER},
             </if>
-            <if test="untaxedAmount != null">
-                #{untaxedAmount,jdbcType=BIGINT},
+            <if test="giftAmount != null">
+                #{giftAmount,jdbcType=BIGINT},
             </if>
             <if test="returnCount != null">
                 #{returnCount,jdbcType=INTEGER},
@@ -432,17 +446,17 @@
             <if test="outStockTime != null">
                 out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="sumCount != null">
-                sum_count = #{sumCount,jdbcType=INTEGER},
+            <if test="productCount != null">
+                product_count = #{productCount,jdbcType=INTEGER},
             </if>
-            <if test="sumAmount != null">
-                sum_amount = #{sumAmount,jdbcType=BIGINT},
+            <if test="productAmount != null">
+                product_amount = #{productAmount,jdbcType=BIGINT},
             </if>
             <if test="singleCount != null">
                 single_count = #{singleCount,jdbcType=INTEGER},
             </if>
-            <if test="untaxedAmount != null">
-                untaxed_amount = #{untaxedAmount,jdbcType=BIGINT},
+            <if test="giftAmount != null">
+                gift_amount = #{giftAmount,jdbcType=BIGINT},
             </if>
             <if test="returnCount != null">
                 return_count = #{returnCount,jdbcType=INTEGER},
@@ -516,6 +530,27 @@
         </if>
         <if test="updateByName != null">
             update_by_name = #{updateByName,jdbcType=VARCHAR},
+        </if>
+        <if test="actualProductCount != null">
+            actual_product_count = #{actualProductCount,jdbcType=INTEGER},
+        </if>
+        <if test="actualProductAmount != null">
+            actual_product_amount = #{actualProductAmount,jdbcType=BIGINT},
+        </if>
+        <if test="actualGiftCount != null">
+            actual_gift_count = #{actualGiftCount,jdbcType=INTEGER},
+        </if>
+        <if test="actualGiftAmount != null">
+            actual_gift_amount = #{actualGiftAmount,jdbcType=BIGINT},
+        </if>
+        <if test="actualReturnCount != null">
+            actual_return_count = #{actualReturnCount,jdbcType=INTEGER},
+        </if>
+        <if test="actualReturnAmount != null">
+            actual_return_amount = #{actualReturnAmount,jdbcType=BIGINT},
+        </if>
+        <if test="actualSingleCount != null">
+            actual_single_count = #{actualSingleCount,jdbcType=INTEGER},
         </if>
         update_time =now()
         <where>

@@ -261,4 +261,9 @@ public class SupplyComServiceImpl implements SupplyComService {
     public Map<String, SupplyCompany> selectBySupplyComCodes(Set<String> supplierList,String companyCode) {
         return supplyCompanyMapper.selectBySupplyComCodes(supplierList, companyCode);
     }
+
+    @Override
+    public Map<String, SupplyCompany> selectBySupplyComNames(Set<String> supplierList, String companyCode) {
+        return supplyCompanyMapper.selectBySupplyComNames(supplierList, companyCode);
+    }
 }

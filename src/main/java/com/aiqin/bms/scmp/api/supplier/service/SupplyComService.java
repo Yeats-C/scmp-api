@@ -82,4 +82,6 @@ public interface SupplyComService {
      * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany>
      */
     Map<String, SupplyCompany> selectBySupplyComCodes(Set<String> supplierList,String companyCode);
+
+    Map<String, SupplyCompany> selectBySupplyComNames(Set<String> supplierList, String companyCode);
 }

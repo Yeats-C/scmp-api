@@ -24,4 +24,6 @@ public interface SupplyCompanyMapper {
     int updateStarScore(@Param("supplierCode") String supplierCode, @Param("startScore") BigDecimal startScore);
     @MapKey("supplyCode")
     Map<String, SupplyCompany> selectBySupplyComCodes(@Param("list") Set<String> supplierList, @Param("companyCode") String companyCode);
+    @MapKey("supplyName")
+    Map<String, SupplyCompany> selectBySupplyComNames(@Param("list") Set<String> supplierList, @Param("companyCode") String companyCode);
 }

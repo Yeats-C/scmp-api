@@ -329,7 +329,7 @@ public class InboundServiceImpl implements InboundService {
                      inboundProductCallBackReqVo.setLinenum(inboundProductWmsReqVO.getLinenum());
                      inboundProductCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
                      //TODO 入库数联改为预计数量的一半
-                     inboundProductCallBackReqVo.setPraInboundMainNum(inboundProductWmsReqVO.getPreInboundMainNum()/2);
+                     inboundProductCallBackReqVo.setPraInboundMainNum(inboundProductWmsReqVO.getPreInboundNum()/2);
                      list.add(inboundProductCallBackReqVo);
                  }
                  inboundCallBackReqVo.setList(list);
@@ -369,7 +369,7 @@ public class InboundServiceImpl implements InboundService {
     public void workFlowCallBack(InboundCallBackReqVo reqVo) {
 
         try {
-            Thread.sleep(180000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -519,7 +519,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnSource(Long id) {
         try {
-            Thread.sleep(180000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -603,7 +603,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnPurchase(StorageResultReqVo storageResultReqVo) {
         try {
-            Thread.sleep(180000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultReqVo));
             e.printStackTrace();
@@ -616,7 +616,7 @@ public class InboundServiceImpl implements InboundService {
             for(StorageResultItemReqVo storageResultItemReqVo : storageResultItemReqVos){
                 purchaseOrderProduct = new PurchaseOrderProduct();
                 purchaseOrderProduct.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
-                purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundMainNum().toString()));
+                purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundNum().toString()));
                 purchaseOrderProduct.setSkuCode(storageResultItemReqVo.getSkuCode());
                 purchaseOrderProduct.setId(storageResultItemReqVo.getLinenum());
                 purchaseOrderProducts.add(purchaseOrderProduct);
