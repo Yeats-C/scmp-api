@@ -8,26 +8,35 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
+import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.OperationLogDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import org.omg.PortableInterceptor.ObjectReferenceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -42,6 +51,10 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
     private PurchaseOrderDao purchaseOrderDao;
     @Resource
     private OperationLogDao operationLogDao;
+    @Resource
+    private PurchaseOrderProductDao purchaseOrderProductDao;
+    @Resource
+    private StockService stockService;
 
     /**
      * 审核回调接口
@@ -85,6 +98,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 // 添加审批通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT_ADOPT.getCode(), PurchaseOrderLogEnum.CHECKOUT_ADOPT.getName(), null);
+                this.updateWayNum(order);
             } else if(Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())){
                 // 审批撤销
                 order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_9);
@@ -136,8 +150,31 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
 
     // 修改库存在途数
     private void updateWayNum(PurchaseOrder order){
-        InboundReqVo reqVo = new InboundReqVo();
-        reqVo.setCode(order.getPurchaseOrderCode());
+        StockChangeRequest stock = new StockChangeRequest();
+        stock.setOperationType(6);
+        List<StockVoRequest> list = Lists.newArrayList();
+        StockVoRequest stockVo;
+        // 查询该采购单的商品
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
+        if(CollectionUtils.isNotEmptyCollection(products)){
+            for(PurchaseOrderProduct product:products){
+                stockVo = new StockVoRequest();
+                stockVo.setTransportCenterCode(order.getTransportCenterCode());
+                stockVo.setTransportCenterName(order.getTransportCenterName());
+                stockVo.setWarehouseCode(order.getWarehouseCode());
+                stockVo.setWarehouseName(order.getWarehouseName());
+                stockVo.setOperator(order.getCreateByName());
+                stockVo.setSkuCode(product.getSkuCode());
+                stockVo.setSkuName(product.getSkuName());
+                long singleCount =  product.getSingleCount() == null ? 0 : product.getSingleCount().longValue();
+                stockVo.setChangeNum(singleCount);
+                stockVo.setDocumentNum(order.getPurchaseOrderCode());
+                stockVo.setDocumentType(3);
+                list.add(stockVo);
+            }
+            stock.setStockVoRequests(list);
+            stockService.changeStock(stock);
+        }
     }
 
 }
