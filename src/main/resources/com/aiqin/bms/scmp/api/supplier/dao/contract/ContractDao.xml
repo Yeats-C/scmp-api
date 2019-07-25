@@ -46,6 +46,16 @@
     <result column="contract_type_name" jdbcType="VARCHAR" property="contractTypeName"/>
     <result column="checkout_date" jdbcType="VARCHAR" property="checkoutDate"/>
     <result column="min_amount" jdbcType="BIGINT" property="minAmount"/>
+    <result column="max_amount" jdbcType="BIGINT" property="maxAmount"/>
+    <result column="delivery_cycle" jdbcType="INTEGER" property="deliveryCycle"/>
+    <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+    <result column="discount" jdbcType="BIGINT" property="discount"/>
+    <result column="return_guarantee" jdbcType="TINYINT" property="returnGuarantee"/>
+    <result column="return_guarantee_day" jdbcType="INTEGER" property="returnGuaranteeDay"/>
+    <result column="warranty" jdbcType="BIGINT" property="warranty"/>
+    <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode"/>
+    <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
@@ -55,7 +65,9 @@
     auditor_by, auditor_time, apply_status,company_code,company_name,
     purchasing_group_name,settlement_method_name,early_warn_num,
     pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,
-    direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date,min_amount
+    direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date,min_amount,
+    max_amount,delivery_cycle,tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
+    categories_supply_channels_code,categories_supply_channels_name,remark
   </sql>
 
   <select id="selectBySelectContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo" resultMap="BaseResultMap">

@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 
+import com.aiqin.bms.scmp.api.util.UploadFileUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -49,6 +50,8 @@ public class SupplierServiceImpl implements SupplierService {
     private SupplierFileDao supplierFileDao;
     @Autowired
     private SupplierCommonService supplierCommonService;
+    @Autowired
+    private UploadFileUtil uploadFileUtil;
 
 
     @Override
@@ -128,10 +131,11 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public int addSupplierFileDownLog(DownSupplierFileReq downSupplierFileReq) {
+    public String addSupplierFileDownLog(DownSupplierFileReq downSupplierFileReq) {
         try {
-            supplierCommonService.getInstance(downSupplierFileReq.getSupplierCode(), HandleTypeCoce.DOWNLOAD.getStatus(), ObjectTypeCode.SUPPLIER.getStatus(),HandleTypeCoce.DOWNLOAD_REVOKE_SUPPLIER.getName(),null ,HandleTypeCoce.DOWNLOAD.getName());
-            return 1;
+            String image = uploadFileUtil.downImage(downSupplierFileReq.getFilePath());
+            supplierCommonService.getInstance(downSupplierFileReq.getSupplierCode(), HandleTypeCoce.DOWNLOAD.getStatus(), ObjectTypeCode.SUPPLY_COMPANY.getStatus(),HandleTypeCoce.DOWNLOAD_REVOKE_SUPPLIER.getName(),null ,HandleTypeCoce.DOWNLOAD.getName());
+            return image;
         } catch (BizException e){
             throw new BizException(e.getMessage());
         }
