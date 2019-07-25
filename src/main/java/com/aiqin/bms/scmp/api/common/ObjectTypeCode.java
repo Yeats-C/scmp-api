@@ -52,7 +52,9 @@ public enum  ObjectTypeCode {
     APPLY_SKU_COONFIG((byte)27,"SKU配置申请"),
     INBOUND_ODER((byte)28,"入库单"),
     OUTBOUND_ODER((byte)29,"出库单"),
-    MOVEMENT_ODER((byte)30,"移库单");
+    MOVEMENT_ODER((byte)30,"移库单"),
+    CHANGE_PRICE((byte)31,"变价管理"),
+    ;
     private Byte status;
     private String name;
     ObjectTypeCode(Byte status, String name) {

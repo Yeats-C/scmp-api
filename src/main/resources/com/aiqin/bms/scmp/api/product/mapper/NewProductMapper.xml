@@ -50,9 +50,9 @@
         from product
         where product_name in
         <foreach collection="list" open="(" close=")" separator="," item="item">
-        #{item}
+           #{item}
+        </foreach>
         and company_code = #{companyCode}
-    </foreach>
     </select>
     <select id="getProductCode" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
