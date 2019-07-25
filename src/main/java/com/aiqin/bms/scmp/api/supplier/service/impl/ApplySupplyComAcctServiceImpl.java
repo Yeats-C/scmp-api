@@ -185,9 +185,9 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
                     throw new GroundRuntimeException("审核状态修改失败");
                 }
 
-                String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplyCompanyAcctReqDTO.getCreateBy()).replace("APPLYTYPE", applyTypeTitle);
+                String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplyCompanyAcctReqDTO.getUpdateBy()).replace("APPLYTYPE", applyTypeTitle);
                 //存日志
-                supplierCommonService.getInstance(applySupplyCompanyAcctReqDTO.getApplyCode() + 1 + "", HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, HandleTypeCoce.APPROVAL.getName());
+                supplierCommonService.getInstance(applySupplyCompanyAcctReqDTO.getApplyCode(), HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, HandleTypeCoce.APPROVAL.getName());
             } else {
                 //存调用失败的日志
                 String msg = workFlowRespVO.getMsg();
@@ -212,6 +212,9 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         if (Objects.isNull(supplyCompanyAccount)) {
             log.error("查询供应单位数据失败，传入id是:{}", applySupplyCompanyAcctReq.getId());
             throw new GroundRuntimeException("修改供应单位账户失败");
+        }
+        if(Objects.equals(supplyCompanyAccount.getApplyStatus(),1)){
+            throw new GroundRuntimeException("审批中的数据,不允许修改");
         }
         //首先判断是否是删除操作
         if (Objects.equals(applySupplyCompanyAcctReq.getDelFlag().intValue(), 1)) {
@@ -240,9 +243,8 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         s.setFormNo("GYSZH"+IdSequenceUtils.getInstance().nextId());
         ((ApplySupplyComAcctService) AopContext.currentProxy()).updateApplyData(s);
         //存日志
-        applySupplyCompanyAccountMapper.selectByPrimaryKey(applySupplyCompanyAcctReq.getId());
         String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", s.getUpdateBy()).replace("APPLYTYPE", "修改");
-        supplierCommonService.getInstance(account.getApplyCompanyAccountCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, HandleTypeCoce.PENDING.getName());
+        supplierCommonService.getInstance(supplyCompanyAccount.getApplyCompanyAccountCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, HandleTypeCoce.PENDING.getName());
         //申请表状态更新完成后，再更新正式表
         supplyCompanyAccount.setApplyStatus((byte) 1);
         SupplyCompanyAccountDTO s1 = new SupplyCompanyAccountDTO();
@@ -646,7 +648,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
             querySupplierReqVO.setCompanyCode(authToken.getCompanyCode());
-            querySupplierReqVO.setApplyBy(authToken.getPersonName());
+            //querySupplierReqVO.setApplyBy(authToken.getPersonName());
         }
         return applySupplyCompanyAcctDao.queryApplyList(querySupplierReqVO);
     }
@@ -663,13 +665,13 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             return "false";
         }
         HandleTypeCoce typeCoce = null;
-        SupplyCompanyAccount s = new SupplyCompanyAccount();
         if (account.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
             account.setApplyStatus(vo.getApplyStatus());
             if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 typeCoce = HandleTypeCoce.APPROVAL_SUCCESS;
                 //新增
                 if (account.getApplyType().intValue() == 1) {
+                    SupplyCompanyAccount s = new SupplyCompanyAccount();
                     //通过插入正式数据
                     BeanCopyUtils.copy(account, s);
                     EncodingRule code = encodingRuleDao.getNumberingType("SUPPLY_COM_ACCT_CODE");
@@ -696,7 +698,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
                     s1.setAuditorBy(vo.getApprovalUserName());
                     s1.setAuditorTime(new Date());
                     supplyCompanyAccountMapper.updateByPrimaryKeySelective(s1);
-                    supplierCommonService.getInstance(s.getSupplyCompanyAccountCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SUPPLY_COMPANY_ACCOUNT.getStatus(), HandleTypeCoce.UPDATE_SUPPLY_COMPANY_ACCOUNT.getName(),null, HandleTypeCoce.UPDATE.getName(),account.getUpdateBy());
+                    supplierCommonService.getInstance(account.getSupplyCompanyAccountCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SUPPLY_COMPANY_ACCOUNT.getStatus(), HandleTypeCoce.UPDATE_SUPPLY_COMPANY_ACCOUNT.getName(),null, HandleTypeCoce.UPDATE.getName(),account.getUpdateBy());
                 } else {
                     return "false";
                 }

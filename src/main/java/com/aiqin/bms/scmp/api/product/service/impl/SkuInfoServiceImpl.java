@@ -2011,9 +2011,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 SupplierDictionaryInfo info = dicMap.get(importVo.getSaleUnitName());
                 if (Objects.isNull(info)) {
                     error.add("无对应名称为" + importVo.getSaleUnitName() + "的单位");
-                }else{
+                } else {
                     sale.setUnitCode(info.getSupplierDictionaryValue());
                     sale.setUnitName(info.getSupplierContent());
+                    if (Optional.ofNullable(stock.getUnitCode()).orElse("库存").equals(info.getSupplierDictionaryValue())) {
+                        error.add("销售的单位必须和库存的单位一致");
+                    }
                 }
             }
             //销售基商品含量
@@ -2057,17 +2060,138 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         //检查结算信息
         private CheckSku checkSettlement() {
             ProductSkuCheckoutDraft draft = new ProductSkuCheckoutDraft();
-
+            draft.setSkuCode(this.resp.getProductSkuDraft().getSkuCode());
+            draft.setSkuName(this.resp.getProductSkuDraft().getSkuName());
+            //结算方式
+            if (Objects.isNull(importVo.getSettlementMethodName())) {
+                error.add("结算方式不能为空");
+            }else {
+                SupplierDictionaryInfo info = dicMap.get(importVo.getSettlementMethodName().trim());
+                if (Objects.isNull(info)) {
+                    error.add("未找到改名称对应的结算方式");
+                }else {
+                    draft.setSettlementMethodCode(info.getSupplierContent());
+                    draft.setSettlementMethodCode(info.getSupplierDictionaryValue());
+                }
+            }
+            //进项税率
+            if (Objects.isNull(importVo.getInputTaxRate())) {
+                error.add("进项税率不能为空");
+            }else {
+                try {
+                    draft.setInputTaxRate(NumberConvertUtils.stringParseLong(importVo.getInputTaxRate()));
+                } catch (Exception e) {
+                    error.add("进项税率格式不正确");
+                }
+            }
+            //销项税率
+            if (Objects.isNull(importVo.getOutputTaxRate())) {
+                error.add("销项税率不能为空");
+            }else {
+                try {
+                    draft.setInputTaxRate(NumberConvertUtils.stringParseLong(importVo.getOutputTaxRate()));
+                } catch (Exception e) {
+                    error.add("销项税率格式不正确");
+                }
+            }
+            //积分系数
+            if (Objects.isNull(importVo.getIntegralCoefficient())) {
+                error.add("积分系数不能为空");
+            }else {
+                try {
+                    draft.setInputTaxRate(NumberConvertUtils.stringParseLong(importVo.getIntegralCoefficient()));
+                } catch (Exception e) {
+                    error.add("积分系数格式不正确");
+                }
+            }
+            //物流费奖励比例
+            if (Objects.isNull(importVo.getLogisticsFeeAwardRatio())) {
+                error.add("物流费奖励比例不能为空");
+            }else {
+                try {
+                    draft.setInputTaxRate(NumberConvertUtils.stringParseLong(importVo.getLogisticsFeeAwardRatio()));
+                } catch (Exception e) {
+                    error.add("物流费奖励比例格式不正确");
+                }
+            }
+            this.resp.setProductSkuCheckoutDraft(draft);
             return this;
         }
 
         //检查供应商
         private CheckSku checkSupplier() {
+            List<ProductSkuSupplyUnitDraft> supply = Lists.newArrayList();
+            ProductSkuSupplyUnitDraft supplyUnitDraft = new ProductSkuSupplyUnitDraft();
+            supplyUnitDraft.setIsDefault((byte)1);
+            supplyUnitDraft.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
+            supplyUnitDraft.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
+            //供应商
+            if (Objects.isNull(importVo.getSupplyUnitName())) {
+                error.add("供应商不能为空");
+            }else {
+                SupplyCompany supplyCompany = supplyCompanyMap.get(importVo.getSupplyUnitName().trim());
+                if (Objects.isNull(supplyCompany)) {
+                    error.add("无对应名称的供应商");
+                }else {
+                    String s = repeatMap.get(supplyCompany.getSupplyName() + importVo.getSkuName().trim());
+                    if(StringUtils.isNotBlank(s)){
+                        error.add("sku名称为:" + importVo.getSkuName() + "下的供应商名称为" + supplyCompany.getSupplyName() + "已重复");
+                    }else {
+                        supplyUnitDraft.setSupplyUnitCode(supplyCompany.getSupplyCode());
+                        supplyUnitDraft.setSupplyUnitName(supplyCompany.getSupplyName());
+                        repeatMap.put(supplyCompany.getSupplyName() + importVo.getSkuName().trim(),importVo.getSkuName());
+                    }
+                }
+            }
+            //含税采购价
+            if(Objects.isNull(importVo.getTaxIncludedPrice())){
+                error.add("含税采购价不能为空");
+            }else {
+                try {
+                    supplyUnitDraft.setTaxIncludedPrice(NumberConvertUtils.stringParseLong(importVo.getTaxIncludedPrice()));
+                } catch (Exception e) {
+                    error.add("含税采购价格式不正确");
+                }
+            }
+            //联营扣点
+            if (Objects.nonNull(importVo.getJointFranchiseRate())) {
+                try {
+                    supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseLong(importVo.getJointFranchiseRate().trim()));
+                } catch (Exception e) {
+                    error.add("联营扣点格式不正确");
+                }
+            }
+            //联营扣点
+            if (Objects.nonNull(importVo.getPoint())) {
+                try {
+                    supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseLong(importVo.getPoint().trim()));
+                } catch (Exception e) {
+                    error.add("联营扣点格式不正确");
+                }
+            }
+            //厂商SKU编码
+            if (Objects.nonNull(importVo.getFactorySkuCode())) {
+                supplyUnitDraft.setFactorySkuCode(importVo.getFactorySkuCode().trim());
+            }
+            //供应商供货渠道类别
+            if (Objects.isNull(importVo.getSupplyCategoriesSupplyChannelsName())) {
+                error.add("供应商供货渠道类别不能为空");
+            }else {
+                SupplierDictionaryInfo info = dicMap.get(importVo.getSupplyCategoriesSupplyChannelsName().trim());
+                if (Objects.isNull(info)) {
+                    error.add("未找到对应名称的供应商供货渠道类别");
+                }else {
+                    supplyUnitDraft.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
+                    supplyUnitDraft.setCategoriesSupplyChannelsName(info.getSupplierContent());
+                }
+            }
+            this.resp.setProductSkuSupplyUnitDrafts(supply);
             return this;
         }
 
         //检查价格
         private CheckSku checkPrice() {
+
             return this;
         }
 

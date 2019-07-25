@@ -142,7 +142,7 @@ public class SupplierServiceImpl implements SupplierService {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
             querySupplierReqVO.setCompanyCode(authToken.getCompanyCode());
-            querySupplierReqVO.setApplyBy(authToken.getPersonName());
+            //querySupplierReqVO.setApplyBy(authToken.getPersonName());
         }
         return supplierDao.queryApplyList(querySupplierReqVO);
     }

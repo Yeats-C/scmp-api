@@ -41,7 +41,10 @@ public class ProductCategoryRespVO {
     @ApiModelProperty(value = "图片名称")
     private String pictureName;
 
-    @ApiModelProperty(value = "子节点集合")
+    @ApiModelProperty(value = "是否具有子节点")
+    private Boolean childNode;
+
+    @ApiModelProperty(value = "子节点集合",hidden = true)
     private List<ProductCategoryRespVO> productCategoryRespVOS;
 
 }
