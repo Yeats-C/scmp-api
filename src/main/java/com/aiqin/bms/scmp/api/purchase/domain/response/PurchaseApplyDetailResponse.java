@@ -330,5 +330,13 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("factory_sku_code")
     private String factorySkuCode;
 
+    @ApiModelProperty(value="修改者id")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="创建者")
+    @JsonProperty("create_by_name")
+    private String createByName;
+
 }
 
