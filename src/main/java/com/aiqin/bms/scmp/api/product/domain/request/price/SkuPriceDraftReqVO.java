@@ -17,11 +17,19 @@ import java.util.Date;
  * @time: 10:30
  */
 @ApiModel("sku价格保存")
-@Data
 @NoArgsConstructor
+@Data
 @AllArgsConstructor
 public class SkuPriceDraftReqVO {
 
+    public SkuPriceDraftReqVO(String priceItemCode, String priceItemName, String priceTypeCode, String priceTypeName, String priceAttributeCode, String priceAttributeName) {
+        this.priceItemCode = priceItemCode;
+        this.priceItemName = priceItemName;
+        this.priceTypeCode = priceTypeCode;
+        this.priceTypeName = priceTypeName;
+        this.priceAttributeCode = priceAttributeCode;
+        this.priceAttributeName = priceAttributeName;
+    }
     @ApiModelProperty(value = "sku编码",hidden = true)
     private String skuCode;
 
@@ -94,12 +102,4 @@ public class SkuPriceDraftReqVO {
     @ApiModelProperty(value = "公司编码",hidden = true)
     private String companyName;
 
-    public SkuPriceDraftReqVO(String priceItemCode, String priceItemName, String priceTypeCode, String priceTypeName, String priceAttributeCode, String priceAttributeName) {
-        this.priceItemCode = priceItemCode;
-        this.priceItemName = priceItemName;
-        this.priceTypeCode = priceTypeCode;
-        this.priceTypeName = priceTypeName;
-        this.priceAttributeCode = priceAttributeCode;
-        this.priceAttributeName = priceAttributeName;
-    }
 }

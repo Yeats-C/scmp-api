@@ -12,6 +12,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.manufacturer.Manufacturer
 import com.aiqin.bms.scmp.api.supplier.domain.response.manufacturer.QueryManufacturerResVo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 描述: 制造商service
@@ -80,4 +82,12 @@ public interface ManufacturerService {
 
 
     int  enable(String manufacturerCode, byte enable);
+
+    /**
+     * 通过名称查询
+     * @param manufactureList
+     * @param companyCode
+     * @return
+     */
+    Map<String, Manufacturer> selectByManufactureNames(Set<String> manufactureList, String companyCode);
 }
