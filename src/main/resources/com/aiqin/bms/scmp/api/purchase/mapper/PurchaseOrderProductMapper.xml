@@ -200,10 +200,7 @@
     and sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
   <select id="orderProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
-    select purchase_order_id as purchaseOrderId, purchase_order_code as purchaseOrderCode,
-    sku_code as skuCode, sku_name as skuName, product_type as productType, purchase_whole as purchaseWhole,
-    purchase_single as purchaseSingle, base_product_content as baseProductContent,
-    single_count as singleCount, product_amount as productAmount, product_total_amount as productTotalAmount
+    select <include refid="Base_Column_List"></include>
     from purchase_order_product
     where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
   </select>

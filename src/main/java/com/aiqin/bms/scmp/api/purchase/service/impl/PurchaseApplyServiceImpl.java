@@ -198,11 +198,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     Long priceTax = productSkuPriceInfoMapper.selectPriceTax(product.getSkuCode(), product.getSupplierCode());
                     product.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                 }
-                // 查询采购的到货后周转期
-                ProductSkuConfig cycleInfo = productSkuConfigDao.getCycleInfo(product.getSkuCode(), product.getTransportCenterCode());
-                if(cycleInfo != null){
-                    product.setReceiptTurnover(cycleInfo.getTurnoverPeriodAfterArrival());
-                }
                 // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
                 applyReqVo = new PurchaseApplyReqVo();
                 applyReqVo.setSkuCode(product.getSkuCode());

@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleReq
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyListResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import org.apache.ibatis.annotations.Param;
@@ -41,5 +42,9 @@ public interface RejectApplyRecordDetailDao {
 
     void updateStatus(String rejectApplyCode);
 
-    Long selectReturnAmount(@Param("rejectApplyRecordCodes") List<String> rejectApplyRecordCodes,@Param("supplierCode") String supplierCode,@Param("warehouseCode") String warehouseCode,@Param("transportCenterCode") String transportCenterCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethodCode);
+    Long selectReturnAmount(RejectApplyRequest request);
+
+    List<RejectApplyListResponse> applyListByCondition(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes);
+
+    Integer selectSkuCount(RejectApplyRequest request);
 }

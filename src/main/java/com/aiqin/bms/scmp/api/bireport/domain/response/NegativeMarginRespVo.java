@@ -96,6 +96,38 @@ public class NegativeMarginRespVo {
     @JsonProperty("create_time")
     private String createTime;
 
+    @ApiModelProperty("销售数量合计")
+    @JsonProperty("product_nums")
+    private Integer productNums;
+
+    @ApiModelProperty("销售成本合计")
+    @JsonProperty("sales_costs")
+    private Integer salesCosts;
+
+    @ApiModelProperty("渠道销售金额合计")
+    @JsonProperty("channel_order_amounts")
+    private Integer channelOrderAmounts;
+
+    @ApiModelProperty("渠道毛利额合计")
+    @JsonProperty("channel_maoris")
+    private Integer channelMaoris;
+
+    @ApiModelProperty("渠道毛利率合计")
+    @JsonProperty("channel_maori_rates")
+    private Double channelMaoriRates;
+
+    @ApiModelProperty("分销销售金额合计")
+    @JsonProperty("distribution_order_amounts")
+    private Integer distributionOrderAmounts;
+
+    @ApiModelProperty("分销毛利额合计")
+    @JsonProperty("distribution_maoris")
+    private Integer distributionMaoris;
+
+    @ApiModelProperty("分销毛利率合计")
+    @JsonProperty("distribution_maori_rates")
+    private Double distributionMaoriRates;
+
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")
     private List<Map> columnList;

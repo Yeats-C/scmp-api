@@ -69,6 +69,8 @@ public interface GoodsRejectService {
 
     HttpResponse<PageResData<RejectApplyRecordDetail>> rejectApplyDetailInfo(RejectApplyRequest rejectApplyQueryRequest);
 
+    HttpResponse<List<RejectApplyListResponse>> rejectApplyListInfo(RejectApplyRequest rejectApplyQueryRequest);
+
     HttpResponse rejectCancel(String reject_record_id);
 
     ILockStocksReqVO handleStockParam(List<RejectRecordDetail> detailList, RejectRecord rejectRecord);

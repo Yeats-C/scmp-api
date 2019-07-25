@@ -1,13 +1,10 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.base.ApplyStatus;
-import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
-import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
@@ -77,7 +74,6 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
 
     /**
      * 审核回调接口
-     *
      */
     @Override
     public String workFlowCallback(WorkFlowCallbackVO vo1) {
@@ -98,16 +94,16 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
                 //审批中状态
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_AUDITTING);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
-                LOGGER.info("影响条数:{}",count);
+                LOGGER.info("影响条数:{}", count);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber()) || Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
                 //审批失败或者撤销
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_NO);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
-                LOGGER.info("影响条数:{}",count);
+                LOGGER.info("影响条数:{}", count);
                 //解锁库存
                 List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecord.getRejectRecordId());
                 ILockStocksReqVO iLockStockBatchReqVO = goodsRejectService.handleStockParam(list, record);
-                Boolean stockStatus =stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
+                Boolean stockStatus = stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
                 if (!stockStatus) {
                     LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
                     throw new RuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
@@ -116,7 +112,7 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
                 //审批通过 状态为待供应商确认
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
-                LOGGER.info("影响条数:{}",count);
+                LOGGER.info("影响条数:{}", count);
             }
             return WorkFlowReturn.SUCCESS;
         } catch (Exception e) {
@@ -141,7 +137,7 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
         WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_REFUND);
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {
-            LOGGER.info("创建退供申请单审批成功:{}",workFlowRespVO.toString());
+            LOGGER.info("创建退供申请单审批成功:{}", workFlowRespVO.toString());
         } else {
             throw new GroundRuntimeException(workFlowRespVO.getMsg());
         }

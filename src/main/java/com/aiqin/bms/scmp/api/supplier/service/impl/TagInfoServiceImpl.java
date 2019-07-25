@@ -403,4 +403,9 @@ public class TagInfoServiceImpl implements TagInfoService {
     public List<DetailTagUseRespVo> getUseTagRecordBySourceCode(String sourceCode, String tagTypeCode) {
         return useTagRecordMapper.getListBySourceCode(sourceCode,tagTypeCode);
     }
+
+    @Override
+    public Map<String, TagInfo> selectByTagNames(Set<String> skuTagList, String companyCode) {
+        return tagInfoMapper.selectByTagNames(skuTagList,companyCode);
+    }
 }

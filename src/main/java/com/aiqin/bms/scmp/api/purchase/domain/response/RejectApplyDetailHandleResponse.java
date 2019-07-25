@@ -94,7 +94,7 @@ public class RejectApplyDetailHandleResponse {
     @JsonProperty("product_brand_name")
     private String brandName;
 
-    @ApiModelProperty(value = "商品类型 0赠品 1商品 2实物返回")
+    @ApiModelProperty(value = "商品类型 0商品 1赠品 2实物返")
     @JsonProperty("goods_gifts")
     private Integer productType;
 

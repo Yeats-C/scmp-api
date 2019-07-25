@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.BiSmartReplenishmentDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.BiSmartReplenishment">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="suggested_replenishment_number" jdbcType="VARCHAR" property="suggestedReplenishmentNumber" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sku_code, sku_name, transport_center_code, transport_center_name, warehouse_code,
+    warehouse_name, supplier_code, supplier_name, suggested_replenishment_number, update_time,
+    create_time, create_by_id, create_by_name
+  </sql>
+  <select id="getPurchaseGroup" resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup">
+    SELECT
+    ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName
+    from bi_smart_replenishment bs
+    left join product_sku ps on bs.sku_code = ps.sku_code
+    left join product_sku_supply_unit su on ps.sku_code = su.product_sku_code and su.supply_unit_code = bs.supplier_code
+    left join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
+    left join product_sku_config sc on bs.transport_center_code = sc.transport_center_code and bs.sku_code = sc.sku_code
+    left join stock s on s.sku_code = bs.sku_code and s.warehouse_code = bs.warehouse_code
+    where ps.del_flag = 0 and ps.sku_status = 0
+    <if test="beginTime != null">
+      and bs.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+    </if>
+    <if test="finishTime != null">
+      and bs.create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+    </if>
+    group by ps.procurement_section_code
+  </select>
+  <select id="skuInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct">
+    SELECT
+		bs.sku_code as skuCode, bs.sku_name as skuName, bs.transport_center_code as transportCenterCode,bs.transport_center_name as transportCenterName,
+        bs.warehouse_code as warehouseCode, bs.warehouse_name as warehouseName, bs.supplier_code as supplierCode, bs.supplier_name as supplierName,
+        s.stock_unit_name as stockUnitName,s.inventory_num as stockCount,
+        s.total_way_num as totalWayNum, s.update_time as lastTime, s.new_purchase_price as newPurchasePrice,
+        ps.box_gauge as boxGauge, ps.product_brand_code as brandId,ps.product_brand_name as brandName,
+        ps.product_category_code as categoryId,ps.product_category_name as categoryName, ps.product_property_code as productPropertyCode,
+        ps.product_property_name as productPropertyName,ps.goods_gifts as productType, ps.product_sort_code as productSortCode,
+        ps.product_sort_name as productSortName, ps.color_name as colorName,ps.model_number as modelNumber,
+        ps.product_code as spuCode, ps.product_name as spuName, ps.spec as productSpec,ps.procurement_section_code as purchaseGroupCode,
+        ps.procurement_section_name as purchaseGroupName, pi.base_product_content as baseProductContent, su.factory_sku_code as factorySkuCode
+    from bi_smart_replenishment bs
+    left join product_sku ps on bs.sku_code = ps.sku_code
+    left join product_sku_supply_unit su on ps.sku_code = su.product_sku_code and su.supply_unit_code = bs.supplier_code
+    left join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
+    left join product_sku_config sc on bs.transport_center_code = sc.transport_center_code and bs.sku_code = sc.sku_code
+    left join stock s on s.sku_code = bs.sku_code and s.warehouse_code = bs.warehouse_code
+    where ps.del_flag = 0 and ps.sku_status = 0
+    <if test="beginTime != null">
+      and bs.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+    </if>
+    <if test="finishTime != null">
+      and bs.create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+    </if>
+    and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

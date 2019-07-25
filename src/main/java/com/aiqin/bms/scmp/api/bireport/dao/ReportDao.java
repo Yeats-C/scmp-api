@@ -20,6 +20,8 @@ public interface ReportDao {
 
     Integer countSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
+    SupplierArrivalRateRespVo sumSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+
     List<Map> selectSupplierArrivalRateTableCloumnName();
 
     /**
@@ -51,6 +53,8 @@ public interface ReportDao {
 
     Integer countSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
+    SupplierReturnRespVo sumSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
+
     /**
      *  新品批次动销率
      * @param newProductBatchMovingRateReqVo
@@ -75,6 +79,8 @@ public interface ReportDao {
      * @return
      */
     List<NegativeMarginRespVo> selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
+
+    NegativeMarginRespVo sumNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
 
     Integer countNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
 
@@ -110,7 +116,7 @@ public interface ReportDao {
      * @param brandSaleReqVo
      * @return
      */
-    List<CategorySaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
+    List<BrandSaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
 
     Integer countBrandSale(CategorySaleReqVo brandSaleReqVo);
 

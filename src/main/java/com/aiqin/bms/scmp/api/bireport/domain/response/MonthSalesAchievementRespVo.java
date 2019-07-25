@@ -17,8 +17,8 @@ public class MonthSalesAchievementRespVo {
     private Long id;
 
     @ApiModelProperty("日期")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @JsonProperty("create_time")
+    private String createTime;
 
     @ApiModelProperty("月份")
     @JsonProperty("month")

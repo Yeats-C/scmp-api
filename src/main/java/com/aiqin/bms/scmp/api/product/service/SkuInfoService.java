@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
@@ -221,7 +222,7 @@ public interface SkuInfoService{
      * @param file
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO>
      */
-    List<AddSkuInfoReqVO> importSku(MultipartFile file);
+    SkuImportMain importSkuNew(MultipartFile file);
     /**
      * 通过名称查询
      * @author NullPointException
@@ -231,4 +232,11 @@ public interface SkuInfoService{
      * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo>
      */
     Map<String, ProductSkuInfo> selectBySkuNames(Set<String> skuNameList, String companyCode);
+
+    /**
+     * 修改导入sku
+     * @param file
+     * @return
+     */
+    SkuImportMain importSkuUpdate(MultipartFile file);
 }

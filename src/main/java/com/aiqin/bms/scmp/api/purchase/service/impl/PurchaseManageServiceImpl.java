@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
@@ -12,9 +13,12 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
+import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
+import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
@@ -29,6 +33,9 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierScoreService;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
@@ -49,7 +56,7 @@ import java.util.List;
  * @create: 2019-06-14 17:49
  **/
 @Service
-public class PurchaseManageServiceImpl implements PurchaseManageService {
+public class PurchaseManageServiceImpl extends BaseServiceImpl implements PurchaseManageService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseManageServiceImpl.class);
 
@@ -87,6 +94,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
     private ProductSkuPicturesDao productSkuPicturesDao;
     @Resource
     private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
+    @Resource
+    private StockService stockService;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -375,17 +384,29 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         if(purchaseOrder == null || StringUtils.isBlank(purchaseOrder.getPurchaseOrderId())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        purchaseOrder.setUpdateByName(purchaseOrder.getCreateByName());
-        purchaseOrder.setUpdateById(purchaseOrder.getCreateById());
+        String purchaseOrderId = purchaseOrder.getPurchaseOrderId();
+        String createById = purchaseOrder.getCreateById();
+        String createByName = purchaseOrder.getCreateByName();
+        PurchaseOrder order = purchaseOrderDao.purchaseOrder(purchaseOrderId);
+        if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)){
+            if(order != null && order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)
+                    || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_1)){
+                WorkFlowVO w = new WorkFlowVO();
+                w.setFormNo(order.getPurchaseOrderCode());
+                WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
+                if (!workFlowRespVO.getSuccess()) {
+                    throw new GroundRuntimeException("审批流撤销失败!");
+                }
+            }
+        }
+        purchaseOrder.setUpdateByName(createByName);
+        purchaseOrder.setUpdateById(createById);
         Integer count = purchaseOrderDao.update(purchaseOrder);
         if(count == 0){
             LOGGER.error("变更采购单的状态失败......");
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
         // 添加操作日志
-        String purchaseOrderId = purchaseOrder.getPurchaseOrderId();
-        String createById = purchaseOrder.getCreateById();
-        String createByName = purchaseOrder.getCreateByName();
         PurchaseOrderDetails detail;
         if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_2)){
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STOCK_UP.getCode(),
@@ -414,6 +435,12 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         }else if(purchaseOrder.getStorageStatus() != null && purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STORAGE_STAY.getCode(),
                     PurchaseOrderLogEnum.STORAGE_STAY.getName() , null);
+        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)){
+            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.REVOKE.getCode(),
+                    PurchaseOrderLogEnum.REVOKE.getName() , null);
+        }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+            // 仓储确认判断是否入库完成
+                this.wayNum(order);
         }
         return HttpResponse.success();
     }
@@ -582,6 +609,14 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         String name = "入库申请单"+ s + "，入库完成";
         log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
                 name , null);
+
+        order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_6);
+        order.setStorageStatus(Global.STORAGE_STATUS_1);
+        Integer count1 = purchaseOrderDao.update(order);
+        if(count1 == 0){
+            LOGGER.error("采购单入库中状态修改失败");
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+        }
         return HttpResponse.success();
     }
 
@@ -638,7 +673,8 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                     reqVo.setInboundBaseContent(skuPurchaseInfo.getBaseProductContent().toString());
                 }
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
-                reqVo.setPreInboundMainNum(singleCount.longValue());
+                Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
+                reqVo.setPreInboundMainNum(purchaseWhole.longValue());
                 if(purchaseStorage.getPurchaseNum() > 1){
                     Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
                     if(actualSingleCount <= singleCount) {
@@ -692,7 +728,6 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
                     purchaseStorage.getPurchaseOrderCode(), product.getSkuCode(), product.getId());
             Integer singleCount = purchaseOrderProduct.getSingleCount() == null ? 0 : purchaseOrderProduct.getSingleCount().intValue();
             Integer actualSingleCount = purchaseOrderProduct.getActualSingleCount() == null ? 0 : purchaseOrderProduct.getActualSingleCount().intValue();
-
             if(singleCount - actualSingleCount > 0){
                 Integer code = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseStorage.getPurchaseOrderCode());
                 purchaseStorage.setPurchaseNum(code + 1);
@@ -715,16 +750,13 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             // 添加日志
             log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , "手动");
+            // 仓储确认判断是否入库完成
+            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+                this.wayNum(order);
+            }
         }else {
             InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
             String s = inboundService.saveInbound(save);
-            order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_6);
-            order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
-            Integer count = purchaseOrderDao.update(order);
-            if(count == 0){
-                LOGGER.error("采购单入库中状态修改失败");
-                return HttpResponse.failure(ResultCode.UPDATE_ERROR);
-            }
             log(purchaseOrder.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_IN.getCode(),
                     PurchaseOrderLogEnum.WAREHOUSING_IN.getName() , null);
             if(StringUtils.isBlank(s)){
@@ -734,6 +766,12 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
             String name = "入库申请单"+ s + "，入库完成";
             log(purchaseOrder.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
                     name , null);
+            order.setStorageStatus(Global.STORAGE_STATUS_1);
+            Integer count1 = purchaseOrderDao.update(order);
+            if(count1 == 0){
+                LOGGER.error("采购单入库中状态修改失败");
+                return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+            }
         }
         return HttpResponse.success();
     }
@@ -812,7 +850,41 @@ public class PurchaseManageServiceImpl implements PurchaseManageService {
         // 新增操作日志
         log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.STORAGE_FINISH.getCode(),
                 PurchaseOrderLogEnum.STORAGE_FINISH.getName() , null);
+        // 仓储确认判断是否入库完成
+        if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+            this.wayNum(order);
+        }
         return HttpResponse.success();
+    }
+
+    // 修改库存在途数
+    private void wayNum(PurchaseOrder order){
+        StockChangeRequest stock = new StockChangeRequest();
+        stock.setOperationType(11);
+        List<StockVoRequest> list = Lists.newArrayList();
+        StockVoRequest stockVo;
+        // 查询该采购单的商品
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
+        if(CollectionUtils.isNotEmptyCollection(products)){
+            for(PurchaseOrderProduct product:products){
+                stockVo = new StockVoRequest();
+                stockVo.setTransportCenterCode(order.getTransportCenterCode());
+                stockVo.setTransportCenterName(order.getTransportCenterName());
+                stockVo.setWarehouseCode(order.getWarehouseCode());
+                stockVo.setWarehouseName(order.getWarehouseName());
+                stockVo.setOperator(order.getCreateByName());
+                stockVo.setSkuCode(product.getSkuCode());
+                stockVo.setSkuName(product.getSkuName());
+                long singleCount =  product.getSingleCount() == null ? 0 : product.getSingleCount().longValue();
+                long actualSingleCount =  product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().longValue();
+                stockVo.setChangeNum(singleCount - actualSingleCount);
+                stockVo.setDocumentNum(order.getPurchaseOrderCode());
+                stockVo.setDocumentType(3);
+                list.add(stockVo);
+            }
+            stock.setStockVoRequests(list);
+            stockService.changeStock(stock);
+        }
     }
 
     @Override

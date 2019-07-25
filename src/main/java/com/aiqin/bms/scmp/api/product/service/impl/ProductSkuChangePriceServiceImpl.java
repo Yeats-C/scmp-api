@@ -884,6 +884,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                     list.add(new ProductSkuChangePriceImportRespVO(skuCode, skuName,"sku编码不存在或者已被禁用"));
                     continue;
                 }
+                ProductSkuChangePriceImportRespVO productSkuChangePriceImportRespVO = map.get(skuCode);
+                list.add(productSkuChangePriceImportRespVO);
             }
 
             return list;

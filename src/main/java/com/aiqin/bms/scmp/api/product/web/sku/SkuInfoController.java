@@ -154,12 +154,26 @@ public class SkuInfoController {
         }
     }
 
-    @PostMapping("/importSku")
-    @ApiOperation("导入sku")
-    public HttpResponse<List<AddSkuInfoReqVO>> importSku(MultipartFile file){
-        log.info("SkuInfoController---importSku---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
+    @PostMapping("/importSkuNew")
+    @ApiOperation("新增导入sku")
+    public HttpResponse<List<AddSkuInfoReqVO>> importSkuNew(MultipartFile file){
+        log.info("SkuInfoController---importSkuNew---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
         try {
-            return HttpResponse.success(skuInfoService.importSku(file));
+            return HttpResponse.success(skuInfoService.importSkuNew(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/importSkuUpdate")
+    @ApiOperation("修改导入sku")
+    public HttpResponse<List<AddSkuInfoReqVO>> importSkuUpdate(MultipartFile file){
+        log.info("SkuInfoController---importSkuNew---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuUpdate(file));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
