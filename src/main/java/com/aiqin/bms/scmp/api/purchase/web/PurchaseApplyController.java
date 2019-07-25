@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
+import com.aiqin.bms.scmp.api.purchase.jobs.AutomaticPurchaseService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -28,6 +29,8 @@ public class PurchaseApplyController {
 
     @Resource
     private PurchaseApplyService purchaseApplyService;
+    @Resource
+    private AutomaticPurchaseService automaticPurchaseService;
 
     @GetMapping("/list")
     @ApiOperation("采购申请单列表")
@@ -163,4 +166,9 @@ public class PurchaseApplyController {
         return purchaseApplyService.contrast(list);
     }
 
+    @PostMapping("/automatic/purchase")
+    @ApiOperation("生成自动采购单")
+    public HttpResponse automatic() {
+        return automaticPurchaseService.automaticPurchase();
+    }
 }

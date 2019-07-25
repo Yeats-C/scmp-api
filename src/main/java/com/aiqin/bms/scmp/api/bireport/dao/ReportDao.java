@@ -80,6 +80,8 @@ public interface ReportDao {
      */
     List<NegativeMarginRespVo> selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
 
+    NegativeMarginRespVo sumNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
+
     Integer countNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
 
     /**

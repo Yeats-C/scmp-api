@@ -1079,6 +1079,7 @@ public class StockServiceImpl implements StockService {
                 stockFlow.setAfterAllocationWayNum(stock.getAllocationWayNum());
                 stockFlow.setAfterPurchaseWayNum(stock.getPurchaseWayNum());
                 stockFlow.setAfterTotalWayNum(stock.getTotalWayNum());
+                stockFlow.setCreateBy(stockVoRequest.getOperator());
                 stockFlow.setUpdateBy(stockVoRequest.getOperator());
                 stockFlow.setDocumentNum(stockVoRequest.getDocumentNum());
                 stockFlow.setDocumentType(stockVoRequest.getDocumentType());
@@ -1126,6 +1127,7 @@ public class StockServiceImpl implements StockService {
                 stockFlow.setAfterAllocationWayNum(stock.getAllocationWayNum());
                 stockFlow.setAfterPurchaseWayNum(stock.getPurchaseWayNum());
                 stockFlow.setAfterTotalWayNum(stock.getTotalWayNum());
+                stockFlow.setCreateBy(stockVoRequest.getOperator());
                 stockFlow.setUpdateBy(stockVoRequest.getOperator());
                 stockFlow.setDocumentNum(stockVoRequest.getDocumentNum());
                 stockFlow.setDocumentType(stockVoRequest.getDocumentType());
@@ -1168,6 +1170,8 @@ public class StockServiceImpl implements StockService {
             stock.setAllocationWayNum(0L);
             stock.setTotalWayNum(0L);
             stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
+            stock.setUpdateBy(stockVoRequest.getOperator());
+            stock.setCreateBy(stockVoRequest.getOperator());
         }
         stock.setNewPurchasePrice(stockVoRequest.getNewPurchasePrice());
         stock.setTaxPrice(stockVoRequest.getNewPurchasePrice());
@@ -1228,6 +1232,11 @@ public class StockServiceImpl implements StockService {
             case 10:
                 stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
                 stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
+                break;
+            //只改变采购在途数和在途总数(减订单完成差异价)
+            case 11:
+                stock.setPurchaseWayNum(stock.getPurchaseWayNum() - stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(stock.getTotalWayNum() - stockVoRequest.getChangeNum());
                 break;
             default:
                 return null;
