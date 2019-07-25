@@ -23,12 +23,22 @@ public interface ReportAllDao {
      */
     List<GoodsBuySalesRespVo> selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
+    GoodsBuySalesRespVo selectGoodsSkuNameByCodeOne(@Param("categoryCodeOne") String categoryCodeOne);
+    GoodsBuySalesRespVo selectGoodsSkuNameByCodeTwo(@Param("categoryCodeTwo") String categoryCodeTwo);
+    GoodsBuySalesRespVo selectGoodsSkuNameByCodeThree(@Param("categoryCodeThree") String categoryCodeThree);
+    GoodsBuySalesRespVo selectGoodsSkuNameByCode(@Param("categoryCode") String categoryCode);
+
     /**
      *  赠品进销存
      * @param giftsBuySalesReqVo
      * @return
      */
     List<GiftsBuySalesRespVo> selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
+
+    GiftsBuySalesRespVo selectGiftsSkuNameByCodeOne(@Param("categoryCodeOne") String categoryCodeOne);
+    GiftsBuySalesRespVo selectGiftsSkuNameByCodeTwo(@Param("categoryCodeTwo") String categoryCodeTwo);
+    GiftsBuySalesRespVo selectGiftsSkuNameByCodeThree(@Param("categoryCodeThree") String categoryCodeThree);
+    GiftsBuySalesRespVo selectGiftsSkuNameByCode(@Param("categoryCode") String categoryCode);
 
     /**
      *  供应商退货(退供)
@@ -43,6 +53,11 @@ public interface ReportAllDao {
      * @return
      */
     List<NewProductBatchMovingRateRespVo> selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
+
+    NewProductBatchMovingRateRespVo selectNewProductSkuNameByCodeOne(@Param("categoryCodeOne") String categoryCodeOne);
+    NewProductBatchMovingRateRespVo selectNewProductSkuNameByCodeTwo(@Param("categoryCodeTwo") String categoryCodeTwo);
+    NewProductBatchMovingRateRespVo selectNewProductSkuNameByCodeThree(@Param("categoryCodeThree") String categoryCodeThree);
+    NewProductBatchMovingRateRespVo selectNewProductSkuNameByCode(@Param("categoryCode") String categoryCode);
 
     /**
      *  门店复购率

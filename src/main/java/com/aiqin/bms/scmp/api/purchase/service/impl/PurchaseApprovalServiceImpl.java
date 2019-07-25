@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
@@ -98,7 +99,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 // 添加审批通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT_ADOPT.getCode(), PurchaseOrderLogEnum.CHECKOUT_ADOPT.getName(), null);
-                this.updateWayNum(order);
+                this.updateWayNum(order.getPurchaseOrderId());
             } else if(Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())){
                 // 审批撤销
                 order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_9);
@@ -149,26 +150,26 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
     }
 
     // 修改库存在途数
-    private void updateWayNum(PurchaseOrder order){
+    private void updateWayNum(String purchaseOrderId){
         StockChangeRequest stock = new StockChangeRequest();
         stock.setOperationType(6);
         List<StockVoRequest> list = Lists.newArrayList();
         StockVoRequest stockVo;
         // 查询该采购单的商品
-        List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
+        List<PurchaseApplyDetailResponse> products = purchaseOrderProductDao.orderProductInfoByGroup(purchaseOrderId);
         if(CollectionUtils.isNotEmptyCollection(products)){
-            for(PurchaseOrderProduct product:products){
+            for(PurchaseApplyDetailResponse product:products){
                 stockVo = new StockVoRequest();
-                stockVo.setTransportCenterCode(order.getTransportCenterCode());
-                stockVo.setTransportCenterName(order.getTransportCenterName());
-                stockVo.setWarehouseCode(order.getWarehouseCode());
-                stockVo.setWarehouseName(order.getWarehouseName());
-                stockVo.setOperator(order.getCreateByName());
+                stockVo.setTransportCenterCode(product.getTransportCenterCode());
+                stockVo.setTransportCenterName(product.getTransportCenterName());
+                stockVo.setWarehouseCode(product.getWarehouseCode());
+                stockVo.setWarehouseName(product.getWarehouseName());
+                stockVo.setOperator(product.getCreateByName());
                 stockVo.setSkuCode(product.getSkuCode());
                 stockVo.setSkuName(product.getSkuName());
                 long singleCount =  product.getSingleCount() == null ? 0 : product.getSingleCount().longValue();
                 stockVo.setChangeNum(singleCount);
-                stockVo.setDocumentNum(order.getPurchaseOrderCode());
+                stockVo.setDocumentNum(product.getPurchaseOrderCode());
                 stockVo.setDocumentType(3);
                 list.add(stockVo);
             }

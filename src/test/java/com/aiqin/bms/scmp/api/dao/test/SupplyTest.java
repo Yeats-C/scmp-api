@@ -103,7 +103,7 @@ public class SupplyTest  extends SpringBootTestContext  {
     @Test
     public void test2(){
         StockChangeRequest stockChangeRequest = new StockChangeRequest();
-        stockChangeRequest.setOperationType(11);
+        stockChangeRequest.setOperationType(6);
 
         List<StockVoRequest> stockVoRequests = new ArrayList<>();
         StockVoRequest stockVoRequest1 = new StockVoRequest();

@@ -47,7 +47,18 @@ public class ReportAllServiceImpl implements ReportAllService {
     @Override
     public List<GoodsBuySalesRespVo> selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo) {
         try {
-            return reportAllDao.selectGoodsBuySales(goodsBuySalesReqVo);
+            List<GoodsBuySalesRespVo> goodsBuySalesRespVos = reportAllDao.selectGoodsBuySales(goodsBuySalesReqVo);
+            for (GoodsBuySalesRespVo goodsBuySalesRespVo : goodsBuySalesRespVos) {
+                GoodsBuySalesRespVo goodsBuySalesRespVosOne = reportAllDao.selectGoodsSkuNameByCodeOne(goodsBuySalesRespVo.getCategoryCodeOne());
+                GoodsBuySalesRespVo goodsBuySalesRespVosTwo = reportAllDao.selectGoodsSkuNameByCodeTwo(goodsBuySalesRespVo.getCategoryCodeTwo());
+                GoodsBuySalesRespVo goodsBuySalesRespVosThree = reportAllDao.selectGoodsSkuNameByCodeThree(goodsBuySalesRespVo.getCategoryCodeThree());
+                GoodsBuySalesRespVo goodsBuySalesRespVosFour = reportAllDao.selectGoodsSkuNameByCode(goodsBuySalesRespVo.getCategoryCode());
+                if(goodsBuySalesRespVosOne != null){ goodsBuySalesRespVo.setCategoryNameOne(goodsBuySalesRespVosOne.getCategoryNameOne()); }
+                if(goodsBuySalesRespVosTwo != null){ goodsBuySalesRespVo.setCategoryNameTwo(goodsBuySalesRespVosTwo.getCategoryNameTwo()); }
+                if(goodsBuySalesRespVosThree != null){ goodsBuySalesRespVo.setCategoryNameThree(goodsBuySalesRespVosThree.getCategoryNameThree()); }
+                if(goodsBuySalesRespVosFour != null){goodsBuySalesRespVo.setCategoryName(goodsBuySalesRespVosFour.getCategoryName());}
+            }
+            return goodsBuySalesRespVos;
         } catch (Exception ex) {
             log.error("查询批次商品进销存失败");
             ex.printStackTrace();
@@ -63,7 +74,18 @@ public class ReportAllServiceImpl implements ReportAllService {
     @Override
     public List<GiftsBuySalesRespVo> selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo) {
         try {
-            return reportAllDao.selectGiftsBuySales(giftsBuySalesReqVo);
+            List<GiftsBuySalesRespVo> giftsBuySalesRespVos = reportAllDao.selectGiftsBuySales(giftsBuySalesReqVo);
+            for (GiftsBuySalesRespVo giftsBuySalesRespVo : giftsBuySalesRespVos) {
+                GiftsBuySalesRespVo giftsBuySalesRespVosOne = reportAllDao.selectGiftsSkuNameByCodeOne(giftsBuySalesRespVo.getCategoryCodeOne());
+                GiftsBuySalesRespVo giftsBuySalesRespVosTwo = reportAllDao.selectGiftsSkuNameByCodeTwo(giftsBuySalesRespVo.getCategoryCodeTwo());
+                GiftsBuySalesRespVo giftsBuySalesRespVosThree = reportAllDao.selectGiftsSkuNameByCodeThree(giftsBuySalesRespVo.getCategoryCodeThree());
+                GiftsBuySalesRespVo giftsBuySalesRespVosFour = reportAllDao.selectGiftsSkuNameByCode(giftsBuySalesRespVo.getCategoryCode());
+                if(giftsBuySalesRespVosOne != null){ giftsBuySalesRespVo.setCategoryNameOne(giftsBuySalesRespVosOne.getCategoryNameOne()); }
+                if(giftsBuySalesRespVosTwo != null){ giftsBuySalesRespVo.setCategoryNameTwo(giftsBuySalesRespVosTwo.getCategoryNameTwo()); }
+                if(giftsBuySalesRespVosThree != null){ giftsBuySalesRespVo.setCategoryNameThree(giftsBuySalesRespVosThree.getCategoryNameThree()); }
+                if(giftsBuySalesRespVosFour != null){giftsBuySalesRespVo.setCategoryName(giftsBuySalesRespVosFour.getCategoryName());}
+            }
+            return giftsBuySalesRespVos;
         } catch (Exception ex) {
             log.error("查询赠品进销存失败");
             ex.printStackTrace();
@@ -95,7 +117,18 @@ public class ReportAllServiceImpl implements ReportAllService {
     @Override
     public List<NewProductBatchMovingRateRespVo> selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo) {
         try {
-            return reportAllDao.selectNewProductBatchMovingRate(newProductBatchMovingRateReqVo);
+            List<NewProductBatchMovingRateRespVo> newProductBatchMovingRateRespVos = reportAllDao.selectNewProductBatchMovingRate(newProductBatchMovingRateReqVo);
+            for (NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVo : newProductBatchMovingRateRespVos) {
+                NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVosOne = reportAllDao.selectNewProductSkuNameByCodeOne(newProductBatchMovingRateRespVo.getCategoryCodeOne());
+                NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVosTwo = reportAllDao.selectNewProductSkuNameByCodeTwo(newProductBatchMovingRateRespVo.getCategoryCodeTwo());
+                NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVosThree = reportAllDao.selectNewProductSkuNameByCodeThree(newProductBatchMovingRateRespVo.getCategoryCodeThree());
+                NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVosFour = reportAllDao.selectNewProductSkuNameByCode(newProductBatchMovingRateRespVo.getCategoryCode());
+                if(newProductBatchMovingRateRespVosOne != null){ newProductBatchMovingRateRespVo.setCategoryNameOne(newProductBatchMovingRateRespVosOne.getCategoryNameOne()); }
+                if(newProductBatchMovingRateRespVosTwo != null){ newProductBatchMovingRateRespVo.setCategoryNameTwo(newProductBatchMovingRateRespVosTwo.getCategoryNameTwo()); }
+                if(newProductBatchMovingRateRespVosThree != null){ newProductBatchMovingRateRespVo.setCategoryNameThree(newProductBatchMovingRateRespVosThree.getCategoryNameThree()); }
+                if(newProductBatchMovingRateRespVosFour != null){newProductBatchMovingRateRespVo.setCategoryName(newProductBatchMovingRateRespVosFour.getCategoryName());}
+            }
+            return newProductBatchMovingRateRespVos;
         } catch (Exception ex) {
             log.error("查询新品批次动销率失败");
             ex.printStackTrace();

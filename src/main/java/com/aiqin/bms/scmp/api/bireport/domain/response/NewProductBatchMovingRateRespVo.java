@@ -44,25 +44,37 @@ public class NewProductBatchMovingRateRespVo {
     @JsonProperty("product_sort_name")
     private String productSortName;
 
-    @ApiModelProperty("品类编码")
-    @JsonProperty("category_code")
-    private String categoryCode;
-
     @ApiModelProperty("品类名称")
     @JsonProperty("category_name")
     private String categoryName;
+
+    @ApiModelProperty("品类编码")
+    @JsonProperty("category_code")
+    private String categoryCode;
 
     @ApiModelProperty("一级品类")
     @JsonProperty("category_code_one")
     private String categoryCodeOne;
 
+    @ApiModelProperty("一级品类名称")
+    @JsonProperty("category_name_one")
+    private String categoryNameOne;
+
     @ApiModelProperty("二级品类")
     @JsonProperty("category_code_two")
     private String categoryCodeTwo;
 
+    @ApiModelProperty("二级品类名称")
+    @JsonProperty("category_name_two")
+    private String categoryNameTwo;
+
     @ApiModelProperty("三级品类")
     @JsonProperty("category_code_three")
     private String categoryCodeThree;
+
+    @ApiModelProperty("三级品类名称")
+    @JsonProperty("category_name_three")
+    private String categoryNameThree;
 
     @ApiModelProperty("品牌编码")
     @JsonProperty("product_brand_code")
