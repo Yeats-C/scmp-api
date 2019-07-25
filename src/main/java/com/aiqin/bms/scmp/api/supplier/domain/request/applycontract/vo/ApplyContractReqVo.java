@@ -132,8 +132,46 @@ public class ApplyContractReqVo{
     @ApiModelProperty("最低起订金额")
     private Long minAmount;
 
+    @ApiModelProperty("最高起订金额")
+    private Long maxAmount;
+
+    @ApiModelProperty("送货周期")
+    private Integer deliveryCycle;
+
+    @ApiModelProperty("税率")
+    private Long taxRate;
+
+    @ApiModelProperty("折扣")
+    private Long discount;
+
+    @ApiModelProperty("退换货保证(0保证 1不保证)")
+    private Byte returnGuarantee;
+
+    @ApiModelProperty("退换货保证天数")
+    private Integer returnGuaranteeDay;
+
+    @ApiModelProperty("质保金")
+    private Long warranty;
+
+    @ApiModelProperty("供货渠道编码")
+    private String categoriesSupplyChannelsCode;
+
+    @ApiModelProperty("供货渠道名称")
+    private String categoriesSupplyChannelsName;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+
+
     @ApiModelProperty("采购组")
     private List<ApplyContractPurchaseGroupReqVo> purchaseGroupReqVos;
+
+    @ApiModelProperty("品牌")
+    private List<ApplyContractBrandReqVo> brandReqVos;
+
+    @ApiModelProperty("品类")
+    private List<ApplyContractCategoryReqVo> categoryReqVos;
 
     @ApiModelProperty("进货额")
     @Valid

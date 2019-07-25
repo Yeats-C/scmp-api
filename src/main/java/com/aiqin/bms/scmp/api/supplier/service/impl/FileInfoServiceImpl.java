@@ -76,4 +76,22 @@ public class FileInfoServiceImpl implements FileInfoService {
         }
         return urlList;
     }
+
+    /**
+     * 功能描述: 图片下载
+     *
+     * @param filePath
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/25 19:13
+     */
+    @Override
+    public String down(String filePath) {
+        try {
+            return uploadFileUtil.downImage(filePath);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new BizException(ResultCode.FILE_DOWN_ERROR);
+        }
+    }
 }

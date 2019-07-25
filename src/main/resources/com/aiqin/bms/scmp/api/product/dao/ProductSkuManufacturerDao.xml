@@ -4,6 +4,7 @@
   <resultMap id="DraftMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuManufacturerRespVo">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="manufacturer_name" jdbcType="VARCHAR" property="manufacturerName" />
+    <result column="manufacturer_code" jdbcType="VARCHAR" property="manufacturerCode" />
     <result column="factory_product_number" jdbcType="VARCHAR" property="factoryProductNumber" />
     <result column="is_default" jdbcType="TINYINT" property="isDefault" />
     <result column="address" jdbcType="VARCHAR" property="address" />
@@ -100,14 +101,14 @@
     </foreach>
   </insert>
   <select id="getDraft" parameterType="java.lang.String" resultMap="DraftMap">
-    SELECT id, manufacturer_name,
+    SELECT id, manufacturer_name,manufacturer_code,
     factory_product_number, is_default, address,
     del_flag, create_time, create_by,
     update_time, update_by, product_sku_code,
     product_sku_name FROM product_sku_manufacturer_draft where product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
   <select id="getRespVo" parameterType="java.lang.String" resultMap="DraftMap">
-    SELECT id, manufacturer_name,
+    SELECT id, manufacturer_name,manufacturer_code,
     factory_product_number, is_default, address,
     del_flag, create_time, create_by,
     update_time, update_by, product_sku_code,
@@ -136,7 +137,7 @@
     and apply_code = #{applyCode}
   </select>
   <select id="getApplys" resultMap="DraftMap">
-    SELECT id, manufacturer_name,
+    SELECT id, manufacturer_name,manufacturer_code,
     factory_product_number, is_default, address,
     del_flag, create_time, create_by,
     update_time, update_by, product_sku_code,

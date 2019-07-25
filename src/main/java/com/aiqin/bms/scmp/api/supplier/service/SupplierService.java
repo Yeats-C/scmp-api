@@ -54,7 +54,7 @@ public interface SupplierService {
      * @param downSupplierFileReq
      * @return
      */
-    int addSupplierFileDownLog(DownSupplierFileReq downSupplierFileReq);
+    String addSupplierFileDownLog(DownSupplierFileReq downSupplierFileReq);
 
     /**
      * 供应集团列表查询

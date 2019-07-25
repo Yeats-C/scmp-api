@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.ContractBrandMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractBrand">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="contract_code" jdbcType="VARCHAR" property="contractCode" />
+    <result column="brand_code" jdbcType="VARCHAR" property="brandCode" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, contract_code, brand_code, brand_name, del_flag, create_time, 
+    create_by, update_time, update_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from contract_brand
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByContractCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from contract_brand
+    where contract_code = #{contractCode,jdbcType=VARCHAR}
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from contract_brand
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByContractCode" parameterType="java.lang.String">
+     delete from contract_brand
+     where contract_code = #{contractCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractBrand">
+    insert into contract_brand (id, contract_code, brand_code, 
+      brand_name, del_flag, create_time, 
+      create_by, update_time, update_by
+      )
+    values (#{id,jdbcType=BIGINT}, #{contractCode,jdbcType=VARCHAR}, #{brandCode,jdbcType=VARCHAR}, 
+      #{brandName,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+     insert into contract_brand (contract_code, brand_code,
+      brand_name, del_flag, create_time,
+      create_by, update_time, update_by
+      )
+    values
+    <foreach collection="list" item="t" open="" close="" separator=",">
+      ( #{t.contractCode,jdbcType=VARCHAR}, #{t.brandCode,jdbcType=VARCHAR},
+      #{t.brandName,jdbcType=VARCHAR}, #{t.delFlag,jdbcType=TINYINT}, #{t.createTime,jdbcType=TIMESTAMP},
+      #{t.createBy,jdbcType=VARCHAR}, #{t.updateTime,jdbcType=TIMESTAMP}, #{t.updateBy,jdbcType=VARCHAR}
+      )
+    </foreach>
+
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractBrand">
+    insert into contract_brand
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="contractCode != null">
+        contract_code,
+      </if>
+      <if test="brandCode != null">
+        brand_code,
+      </if>
+      <if test="brandName != null">
+        brand_name,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="contractCode != null">
+        #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="brandCode != null">
+        #{brandCode,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractBrand">
+    update contract_brand
+    <set>
+      <if test="contractCode != null">
+        contract_code = #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="brandCode != null">
+        brand_code = #{brandCode,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractBrand">
+    update contract_brand
+    set contract_code = #{contractCode,jdbcType=VARCHAR},
+      brand_code = #{brandCode,jdbcType=VARCHAR},
+      brand_name = #{brandName,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
