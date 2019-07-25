@@ -107,8 +107,8 @@ public class SupplyTest  extends SpringBootTestContext  {
 
         List<StockVoRequest> stockVoRequests = new ArrayList<>();
         StockVoRequest stockVoRequest1 = new StockVoRequest();
-        stockVoRequest1.setCompanyCode("04");
-        stockVoRequest1.setCompanyName("爱亲");
+      //  stockVoRequest1.setCompanyCode("04");
+     //   stockVoRequest1.setCompanyName("爱亲");
         stockVoRequest1.setTransportCenterCode("1025");
         stockVoRequest1.setTransportCenterName("华北");
         stockVoRequest1.setWarehouseCode("1026");
@@ -127,8 +127,8 @@ public class SupplyTest  extends SpringBootTestContext  {
         stockVoRequests.add(stockVoRequest1);
 
         StockVoRequest stockVoRequest2 = new StockVoRequest();
-        stockVoRequest2.setCompanyCode("04");
-        stockVoRequest2.setCompanyName("爱亲");
+      //  stockVoRequest2.setCompanyCode("04");
+      //  stockVoRequest2.setCompanyName("爱亲");
         stockVoRequest2.setTransportCenterCode("1025");
         stockVoRequest2.setTransportCenterName("华北");
         stockVoRequest2.setWarehouseCode("1026");

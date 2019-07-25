@@ -1275,11 +1275,7 @@
     </update>
     <select id="selectListByCodesAndSkuCode" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include> from stock
-        where company_code in
-        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
-            #{item.companyCode}
-        </foreach>
-        and transport_center_code in
+        where transport_center_code in
         <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
             #{item.transportCenterCode}
         </foreach>
@@ -1903,11 +1899,7 @@
     </select>
     <select id="selectListByCodesAndSkuCodeBatch" resultMap="BaseBatchResultMap">
         select <include refid="Base_Batch_Column_List"></include> from stock_batch
-        where company_code in
-        <foreach collection="stockBatchVoRequest" item="item" open="(" close=")" index="index" separator=",">
-            #{item.companyCode}
-        </foreach>
-        and transport_center_code in
+        where transport_center_code in
         <foreach collection="stockBatchVoRequest" item="item" open="(" close=")" index="index" separator=",">
             #{item.transportCenterCode}
         </foreach>
