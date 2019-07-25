@@ -34,9 +34,15 @@ public class ReportServiceImpl implements ReportService {
         try {
             List<SupplierArrivalRateRespVo> supplierArrivalRateRespVos = reportDao.selectSupplierArrivalRate(supplierArrivalRateReqVo);
             List<Map> maps = reportDao.selectSupplierArrivalRateTableCloumnName();
+            SupplierArrivalRateRespVo supplierArrivalRateRespVoSum = reportDao.sumSupplierArrivalRate(supplierArrivalRateReqVo);
             Integer total = reportDao.countSupplierArrivalRate(supplierArrivalRateReqVo);
             SupplierArrivalRateRespVo supplierArrivalRateRespVo = new SupplierArrivalRateRespVo();
             supplierArrivalRateRespVo.setColumnList(maps);
+            supplierArrivalRateRespVo.setPreInboundNums(supplierArrivalRateRespVoSum.getPreInboundNums());
+            supplierArrivalRateRespVo.setPreTaxAmounts(supplierArrivalRateRespVoSum.getPreTaxAmounts());
+            supplierArrivalRateRespVo.setPraInboundNums(supplierArrivalRateRespVoSum.getPraInboundNums());
+            supplierArrivalRateRespVo.setPraTaxAmounts(supplierArrivalRateRespVoSum.getPraTaxAmounts());
+            supplierArrivalRateRespVo.setPraTaxAmountRates(supplierArrivalRateRespVoSum.getPraTaxAmountRates());
             return new PageReportResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos,supplierArrivalRateRespVo);
         } catch (Exception ex) {
             log.error("查询供应商到货率失败");
@@ -54,6 +60,13 @@ public class ReportServiceImpl implements ReportService {
     public PageReportResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo) {
         try {
             List<GoodsBuySalesRespVo> goodsBuySalesRespVos = reportDao.selectGoodsBuySales(goodsBuySalesReqVo);
+            for (GoodsBuySalesRespVo goodsBuySalesRespVo : goodsBuySalesRespVos) {
+                goodsBuySalesRespVo.getCategoryCodeOne();
+                goodsBuySalesRespVo.getCategoryCodeTwo();
+                goodsBuySalesRespVo.getCategoryCodeThree();
+
+            }
+
             Integer total = reportDao.countGoodsBuySales(goodsBuySalesReqVo);
             List<Map> maps = reportDao.selectGoodsBuySalesTableCloumnName();
             GoodsBuySalesRespVo goodsBuySalesRespVo = new GoodsBuySalesRespVo();
@@ -98,10 +111,13 @@ public class ReportServiceImpl implements ReportService {
         try {
             List<SupplierReturnRespVo> supplierReturnRespVos = reportDao.selectSupplierReturn(supplierReturnReqVo);
             Integer total = reportDao.countSupplierReturn(supplierReturnReqVo);
+            SupplierReturnRespVo supplierReturnRespVoSum = reportDao.sumSupplierReturn(supplierReturnReqVo);
             String cloumnName = "bi_supplier_return";
             List<Map> maps = reportDao.selectTableCloumnName(cloumnName);
             SupplierReturnRespVo supplierReturnRespVo = new SupplierReturnRespVo();
             supplierReturnRespVo.setColumnList(maps);
+            supplierReturnRespVo.setSumCounts(supplierReturnRespVoSum.getSumCounts());
+            supplierReturnRespVo.setSumAmounts(supplierReturnRespVoSum.getSumAmounts());
             return new PageReportResData<SupplierReturnRespVo>(total,supplierReturnRespVos,supplierReturnRespVo);
         } catch (Exception ex) {
             log.error("查询供应商退货失败");
@@ -164,11 +180,20 @@ public class ReportServiceImpl implements ReportService {
     public PageReportResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
         try {
             List<NegativeMarginRespVo> negativeMarginRespVos = reportDao.selectNegativeMargin(negativeMarginReqVo);
+            NegativeMarginRespVo negativeMarginRespVoSum = reportDao.sumNegativeMargin(negativeMarginReqVo);
             Integer total = reportDao.countNegativeMargin(negativeMarginReqVo);
             String cloumnName = "bi_negative_margin";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             NegativeMarginRespVo negativeMarginRespVo = new NegativeMarginRespVo();
             negativeMarginRespVo.setColumnList(maps);
+            negativeMarginRespVo.setProductNums(negativeMarginRespVoSum.getProductNums());
+            negativeMarginRespVo.setSalesCosts(negativeMarginRespVoSum.getSalesCosts());
+            negativeMarginRespVo.setChannelOrderAmounts(negativeMarginRespVoSum.getChannelOrderAmounts());
+            negativeMarginRespVo.setChannelMaoris(negativeMarginRespVoSum.getChannelMaoris());
+            negativeMarginRespVo.setChannelMaoriRates(negativeMarginRespVoSum.getChannelMaoriRates());
+            negativeMarginRespVo.setDistributionOrderAmounts(negativeMarginRespVoSum.getDistributionOrderAmounts());
+            negativeMarginRespVo.setDistributionMaoris(negativeMarginRespVoSum.getDistributionMaoris());
+            negativeMarginRespVo.setDistributionMaoriRates(negativeMarginRespVoSum.getDistributionMaoriRates());
             return new PageReportResData<NegativeMarginRespVo>(total,negativeMarginRespVos,negativeMarginRespVo);
         } catch (Exception ex) {
             log.error("查询负毛利失败");
@@ -252,13 +277,13 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageReportResData selectBrandSale(CategorySaleReqVo brandSaleReqVo) {
         try {
-            List<CategorySaleRespVo> brandSaleRespVo = reportDao.selectBrandSale(brandSaleReqVo);
+            List<BrandSaleRespVo> brandSaleRespVos = reportDao.selectBrandSale(brandSaleReqVo);
             Integer total = reportDao.countBrandSale(brandSaleReqVo);
             String cloumnName = "bi_brand_sale";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
-            CategorySaleRespVo categorySaleRespVo = new CategorySaleRespVo();
-            categorySaleRespVo.setColumnList(maps);
-            return new PageReportResData<CategorySaleRespVo>(total,brandSaleRespVo,categorySaleRespVo);
+            BrandSaleRespVo brandSaleRespVo = new BrandSaleRespVo();
+            brandSaleRespVo.setColumnList(maps);
+            return new PageReportResData<BrandSaleRespVo>(total,brandSaleRespVos,brandSaleRespVo);
         } catch (Exception ex) {
             log.error("品牌促销");
             ex.printStackTrace();

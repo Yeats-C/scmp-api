@@ -80,6 +80,14 @@ public class StockBatchRequest extends PagesRequest {
     @JsonProperty(value = "production_date")
     private String productionDate;
 
+    @ApiModelProperty("采购组编码")
+    @JsonProperty(value = "procurement_section_code")
+    private String procurementSectionCode;
+
+    @ApiModelProperty("采购组名称")
+    @JsonProperty(value = "procurement_section_name")
+    private String procurementSectionName;
+
     public String getCompanyCode() {
         return companyCode;
     }
@@ -144,12 +152,12 @@ public class StockBatchRequest extends PagesRequest {
         this.configStatus = configStatus;
     }
 
-    public String getProductCategoryText() {
-        return productCategoryText;
+    public String getPropertyText() {
+        return propertyText;
     }
 
-    public void setProductCategoryText(String productCategoryText) {
-        this.productCategoryText = productCategoryText;
+    public void setPropertyText(String propertyText) {
+        this.propertyText = propertyText;
     }
 
     public String getBrandText() {
@@ -160,12 +168,12 @@ public class StockBatchRequest extends PagesRequest {
         this.brandText = brandText;
     }
 
-    public String getPropertyText() {
-        return propertyText;
+    public String getProductCategoryText() {
+        return productCategoryText;
     }
 
-    public void setPropertyText(String propertyText) {
-        this.propertyText = propertyText;
+    public void setProductCategoryText(String productCategoryText) {
+        this.productCategoryText = productCategoryText;
     }
 
     public Long getInventoryBeginNum() {
@@ -214,5 +222,21 @@ public class StockBatchRequest extends PagesRequest {
 
     public void setProductionDate(String productionDate) {
         this.productionDate = productionDate;
+    }
+
+    public String getProcurementSectionCode() {
+        return procurementSectionCode;
+    }
+
+    public void setProcurementSectionCode(String procurementSectionCode) {
+        this.procurementSectionCode = procurementSectionCode;
+    }
+
+    public String getProcurementSectionName() {
+        return procurementSectionName;
+    }
+
+    public void setProcurementSectionName(String procurementSectionName) {
+        this.procurementSectionName = procurementSectionName;
     }
 }

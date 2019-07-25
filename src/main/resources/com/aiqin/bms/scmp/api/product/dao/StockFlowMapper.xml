@@ -163,7 +163,7 @@
             #{item.afterTotalWayNum},
             #{item.changeNum},
             #{item.operationType},
-            #{item.createTime},
+            NOW(),
             #{item.createBy},
             NOW(),
             #{item.updateBy},

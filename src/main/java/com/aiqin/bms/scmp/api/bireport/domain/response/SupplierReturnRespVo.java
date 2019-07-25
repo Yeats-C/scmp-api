@@ -84,6 +84,14 @@ public class SupplierReturnRespVo {
     @JsonProperty("create_time")
     private String createTime;
 
+    @ApiModelProperty("退货数量合计")
+    @JsonProperty("sum_counts")
+    private Integer sumCounts;
+
+    @ApiModelProperty("退货金额合计")
+    @JsonProperty("sum_amounts")
+    private Integer sumAmounts;
+
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")
     private List<Map> columnList;

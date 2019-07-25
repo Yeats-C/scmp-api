@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ import java.util.List;
  * <p>
  * 思维方式*热情*能力
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 public class RejectApplyRequest extends PagesRequest {
 
@@ -92,6 +94,10 @@ public class RejectApplyRequest extends PagesRequest {
     @ApiModelProperty(value = "申请单类型:0手动 1自动")
     @JsonProperty("apply_type")
     private Integer applyType;
+
+    @ApiModelProperty(value = "商品类型")
+    @JsonProperty("product_type")
+    private Integer productType;
 
     @ApiModelProperty(value = "商品列表")
     @JsonProperty("detail_list")

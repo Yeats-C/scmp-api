@@ -186,7 +186,39 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public List<ProductCategoryRespVO> getList(Byte categoryStatus, String parentCode) {
+    public List<ProductCategoryRespVO> getList(Byte categoryStatus) {
+        try {
+            String companyCode = "";
+            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+            if(null != authToken){
+                companyCode = authToken.getCompanyCode();
+            }
+            //所有数据集合
+            List<ProductCategoryRespVO> productCategoryRespVOS =productCategoryDao.getProductCategoryList(categoryStatus,companyCode,null);
+            //所有根节点
+            List<ProductCategoryRespVO> parentList = new ArrayList<>();
+            //所有子节点
+            List<ProductCategoryRespVO> childList = new ArrayList<>();
+            productCategoryRespVOS.forEach(item->{
+                if (item.getParentId().equals("0")){
+                    parentList.add(item);
+                } else {
+                    childList.add(item);
+                }
+            });
+
+            parentList.forEach(item->{
+                List<ProductCategoryRespVO> resultList = getChildren(String.valueOf(item.getCategoryId()),childList);
+                item.setProductCategoryRespVOS(resultList);
+            });
+            return parentList;
+        } catch (GroundRuntimeException e){
+            throw new GroundRuntimeException("查询品类失败");
+        }
+    }
+
+    @Override
+    public List<ProductCategoryRespVO> getTree(Byte categoryStatus, String parentCode) {
         try {
             String companyCode = "";
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();

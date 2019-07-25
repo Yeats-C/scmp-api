@@ -68,12 +68,11 @@ public class ProductCategoryController {
     @GetMapping("/list")
     @ApiModelProperty("查询品类")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="categoryStatus",value = "查询全部还是启用,0为启用,4为全部"),
-            @ApiImplicitParam(name="parentId",value = "列表第一次加载parentId=0")
+            @ApiImplicitParam(name="categoryStatus",value = "查询全部还是启用,0为启用,4为全部")
     })
-    public HttpResponse<List<ProductCategoryRespVO>> getProductCategory(Byte categoryStatus,String parentId){
+    public HttpResponse<List<ProductCategoryRespVO>> getProductCategory(Byte categoryStatus){
         try {
-            List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryService.getList(categoryStatus,parentId);
+            List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryService.getList(categoryStatus);
             return HttpResponse.success(productCategoryRespVOS);
         } catch (Exception e){
             return HttpResponse.failure(ResultCode.GET_PRODUCT_CATEGORY_ERROR);
@@ -81,5 +80,19 @@ public class ProductCategoryController {
     }
 
 
+    @GetMapping("/tree")
+    @ApiModelProperty("查询品类")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name="categoryStatus",value = "查询全部还是启用,0为启用,4为全部"),
+            @ApiImplicitParam(name="parentId",value = "列表第一次加载parentId=0")
+    })
+    public HttpResponse<List<ProductCategoryRespVO>> getTree(Byte categoryStatus,String parentId){
+        try {
+            List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryService.getTree(categoryStatus,parentId);
+            return HttpResponse.success(productCategoryRespVOS);
+        } catch (Exception e){
+            return HttpResponse.failure(ResultCode.GET_PRODUCT_CATEGORY_ERROR);
+        }
+    }
 
 }

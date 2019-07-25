@@ -77,13 +77,25 @@ public class GoodsBuySalesRespVo  implements Serializable {
     @JsonProperty("category_code_one")
     private String categoryCodeOne;
 
+    @ApiModelProperty("一级品类名称")
+    @JsonProperty("category_name_one")
+    private String categoryNameOne;
+
     @ApiModelProperty("二级品类")
     @JsonProperty("category_code_two")
     private String categoryCodeTwo;
 
+    @ApiModelProperty("二级品类名称")
+    @JsonProperty("category_name_two")
+    private String categoryNameTwo;
+
     @ApiModelProperty("三级品类")
     @JsonProperty("category_code_three")
     private String categoryCodeThree;
+
+    @ApiModelProperty("三级品类名称")
+    @JsonProperty("category_name_three")
+    private String categoryNameThree;
 
     @ApiModelProperty("品牌code")
     @JsonProperty("product_brand_code")
@@ -168,6 +180,14 @@ public class GoodsBuySalesRespVo  implements Serializable {
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")
     private String createTime;
+
+    @ApiModelProperty("可用库存数量合计")
+    @JsonProperty("available_nums")
+    private Integer availableNums;
+
+    @ApiModelProperty("库存成本合计")
+    @JsonProperty("tax_costs")
+    private Integer taxCosts;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")

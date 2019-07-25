@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import org.joda.time.DateTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,7 +22,7 @@ public class DateUtils {
 
     public static final String  YEAR_FORMAT = "yy";
     public static final String  FORMAT = "yyyy-MM-dd HH:mm:ss";
-
+    public static final String  PATTERN_DATE = "yyyy-MM-dd";
 
     public static String getCurrentDateTime(String format) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
@@ -41,5 +42,17 @@ public class DateUtils {
         } catch (ParseException e) {
             throw new BizException(ResultCode.DATE_CONVERSION_FAILED);
         }
+    }
+
+    /**
+     * 获取所在天的前一天时间<br>
+     */
+    public static String yestedayDate(){
+        Calendar ca = Calendar.getInstance();
+        ca.setTime(new Date());
+        ca.add(Calendar.DATE, -1);
+        Date date = ca.getTime();
+        DateTime dateTime = new DateTime(date);
+        return dateTime.toString(PATTERN_DATE);
     }
 }

@@ -3,10 +3,12 @@ package com.aiqin.bms.scmp.api.purchase.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
 @ApiModel
+@Data
 public class RejectApplyRecord {
     @ApiModelProperty(value = "")
     @JsonProperty("id")
@@ -36,13 +38,17 @@ public class RejectApplyRecord {
     @JsonProperty("sum_sku")
     private Integer sumSku;
 
-    @ApiModelProperty(value = "总退供数量")
+    @ApiModelProperty(value = "单品金额")
     @JsonProperty("sum_count")
     private Integer sumCount;
 
-    @ApiModelProperty(value = "总退供金额")
+    @ApiModelProperty(value = "商品含税金额")
     @JsonProperty("sum_amount")
     private Long sumAmount;
+
+    @ApiModelProperty(value = "实物返商品含税金额")
+    @JsonProperty("sum_return_amount")
+    private Long sumReturnAmount;
 
     @ApiModelProperty(value = "")
     @JsonProperty("create_by_id")
@@ -76,139 +82,4 @@ public class RejectApplyRecord {
     @JsonProperty("company_name")
     private String companyName;
 
-    public String getCompanyCode() {
-        return companyCode;
-    }
-
-    public void setCompanyCode(String companyCode) {
-        this.companyCode = companyCode;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRejectApplyRecordCode() {
-        return rejectApplyRecordCode;
-    }
-
-    public void setRejectApplyRecordCode(String rejectApplyRecordCode) {
-        this.rejectApplyRecordCode = rejectApplyRecordCode;
-    }
-
-    public Integer getApplyType() {
-        return applyType;
-    }
-
-    public void setApplyType(Integer applyType) {
-        this.applyType = applyType;
-    }
-
-    public String getPurchaseGroupCode() {
-        return purchaseGroupCode;
-    }
-
-    public void setPurchaseGroupCode(String purchaseGroupCode) {
-        this.purchaseGroupCode = purchaseGroupCode;
-    }
-
-    public String getPurchaseGroupName() {
-        return purchaseGroupName;
-    }
-
-    public void setPurchaseGroupName(String purchaseGroupName) {
-        this.purchaseGroupName = purchaseGroupName;
-    }
-
-    public Integer getApplyRecordStatus() {
-        return applyRecordStatus;
-    }
-
-    public void setApplyRecordStatus(Integer applyRecordStatus) {
-        this.applyRecordStatus = applyRecordStatus;
-    }
-
-    public Integer getSumSku() {
-        return sumSku;
-    }
-
-    public void setSumSku(Integer sumSku) {
-        this.sumSku = sumSku;
-    }
-
-    public Integer getSumCount() {
-        return sumCount;
-    }
-
-    public void setSumCount(Integer sumCount) {
-        this.sumCount = sumCount;
-    }
-
-    public Long getSumAmount() {
-        return sumAmount;
-    }
-
-    public void setSumAmount(Long sumAmount) {
-        this.sumAmount = sumAmount;
-    }
-
-    public String getCreateById() {
-        return createById;
-    }
-
-    public void setCreateById(String createById) {
-        this.createById = createById;
-    }
-
-    public String getCreateByName() {
-        return createByName;
-    }
-
-    public void setCreateByName(String createByName) {
-        this.createByName = createByName;
-    }
-
-    public String getUpdateById() {
-        return updateById;
-    }
-
-    public void setUpdateById(String updateById) {
-        this.updateById = updateById;
-    }
-
-    public String getUpdateByName() {
-        return updateByName;
-    }
-
-    public void setUpdateByName(String updateByName) {
-        this.updateByName = updateByName;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 }
