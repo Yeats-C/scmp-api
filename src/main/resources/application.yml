@@ -315,13 +315,22 @@ mgs:
             - code: SCMP002006002
               name: 增加
           - code: SCMP002007
-            name: 商品销售区域管理
+            name: 销售区域配置
             link: '/product/saleArea'
             icon: fa-home
             methods:
             - code: SCMP002007001
               name: 查询
             - code: SCMP002007002
+              name: 增加
+          - code: SCMP002009
+            name: 商品销售区域配置
+            link: '/product/productSaleArea'
+            icon: fa-home
+            methods:
+            - code: SCMP002009001
+              name: 查询
+            - code: SCMP002009002
               name: 增加
           - code: SCMP002008
             name: 商品质检报告
@@ -331,15 +340,6 @@ mgs:
             - code: SCMP002008001
               name: 查询
             - code: SCMP002008002
-              name: 增加
-          - code: SCMP002009
-            name: 商品销售区域
-            link: '/product/productSaleArea'
-            icon: fa-home
-            methods:
-            - code: SCMP002009001
-              name: 查询
-            - code: SCMP002009002
               name: 增加
         - code: SCMP007
           name: 价格管理

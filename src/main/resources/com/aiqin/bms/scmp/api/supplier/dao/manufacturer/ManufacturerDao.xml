@@ -338,4 +338,14 @@
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
   </select>
+    <select id="selectByManufactureNames" resultMap="BaseResultMap" parameterType="java.util.List">
+      select
+      <include refid="Base_Column_List" />
+      from manufacturer
+      where company_code = #{companyCode}
+      and name in
+      <foreach collection="list" open="(" close=")" item="item" separator=",">
+        #{item}
+      </foreach>
+    </select>
 </mapper>

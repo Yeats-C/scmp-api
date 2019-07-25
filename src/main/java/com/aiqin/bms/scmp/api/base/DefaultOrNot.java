@@ -16,27 +16,29 @@ import java.util.stream.Collectors;
  * @description TODO
  */
 @Getter
-public enum Generals {
-    YES(Byte.valueOf("0"),"是"),
-    NO(Byte.valueOf("1"),"否"),
+public enum DefaultOrNot {
+    DEFALUT(Byte.valueOf("2"),"是",(byte)1),
+    DEFALUT_NOT(Byte.valueOf("3"),"否",(byte)0),
     ;
     private Byte type;
     private String name;
+    private Byte value;
 
-    Generals(Byte type, String name) {
+    DefaultOrNot(Byte type, String name, Byte value) {
         this.type = type;
         this.name = name;
+        this.value = value;
     }
 
-    public static Generals getByType(Byte type) {
-        for (Generals value : Generals.values()) {
+    public static DefaultOrNot getByType(Byte type) {
+        for (DefaultOrNot value : DefaultOrNot.values()) {
             if(Objects.equals(value.getType(), type)) {
                 return value;
             }
         }
         return null;
     }
-    public static Map<String,Generals> getAll() {
-        return Arrays.stream(values()).collect(Collectors.toMap(Generals::getName, Function.identity(),(k1,k2)->k2));
+    public static Map<String, DefaultOrNot> getAll() {
+        return Arrays.stream(values()).collect(Collectors.toMap(DefaultOrNot::getName, Function.identity(),(k1, k2)->k2));
     }
 }

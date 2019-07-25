@@ -21,7 +21,7 @@ import java.util.List;
  * @date 2018/12/12 0012 17:21
  */
 @RestController
-@Api("品类管理")
+@Api(tags = "品类管理")
 @RequestMapping("/product/category")
 public class ProductCategoryController {
     @Autowired
@@ -68,11 +68,12 @@ public class ProductCategoryController {
     @GetMapping("/list")
     @ApiModelProperty("查询品类")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="categoryStatus",value = "查询全部还是启用,0为启用,4为全部")
+            @ApiImplicitParam(name="categoryStatus",value = "查询全部还是启用,0为启用,4为全部"),
+            @ApiImplicitParam(name="parentId",value = "列表第一次加载parentId=0")
     })
-    public HttpResponse<List<ProductCategoryRespVO>> getProductCategory(Byte categoryStatus){
+    public HttpResponse<List<ProductCategoryRespVO>> getProductCategory(Byte categoryStatus,String parentId){
         try {
-            List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryService.getList(categoryStatus);
+            List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryService.getList(categoryStatus,parentId);
             return HttpResponse.success(productCategoryRespVOS);
         } catch (Exception e){
             return HttpResponse.failure(ResultCode.GET_PRODUCT_CATEGORY_ERROR);

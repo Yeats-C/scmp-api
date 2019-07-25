@@ -89,8 +89,17 @@
       </if>
     </where>
   </select>
-
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectByTagNames" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from tag_info
+      where company_code = #{companyCode}
+      and tag_name in
+      <foreach collection="list" open="(" close=")" item="item" separator=",">
+           #{item}
+      </foreach>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from tag_info
     where id = #{id,jdbcType=BIGINT}
   </delete>

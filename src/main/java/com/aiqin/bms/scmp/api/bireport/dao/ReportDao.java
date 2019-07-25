@@ -31,6 +31,11 @@ public interface ReportDao {
      */
     List<GoodsBuySalesRespVo> selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
+    GoodsBuySalesRespVo selectGoodsSkuNameByCodeOne(@Param("categoryCodeOne") String categoryCodeOne);
+    GoodsBuySalesRespVo selectGoodsSkuNameByCodeTwo(@Param("categoryCodeTwo") String categoryCodeTwo);
+    GoodsBuySalesRespVo selectGoodsSkuNameByCodeThree(@Param("categoryCodeThree") String categoryCodeThree);
+    GoodsBuySalesRespVo selectGoodsSkuNameByCode(@Param("categoryCode") String categoryCode);
+
     Integer countGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo);
 
     List<Map> selectGoodsBuySalesTableCloumnName();
@@ -41,6 +46,11 @@ public interface ReportDao {
      * @return
      */
     List<GiftsBuySalesRespVo> selectGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
+
+    GiftsBuySalesRespVo selectGiftsSkuNameByCodeOne(@Param("categoryCodeOne") String categoryCodeOne);
+    GiftsBuySalesRespVo selectGiftsSkuNameByCodeTwo(@Param("categoryCodeTwo") String categoryCodeTwo);
+    GiftsBuySalesRespVo selectGiftsSkuNameByCodeThree(@Param("categoryCodeThree") String categoryCodeThree);
+    GiftsBuySalesRespVo selectGiftsSkuNameByCode(@Param("categoryCode") String categoryCode);
 
     Integer countGiftsBuySales(GiftsBuySalesReqVo giftsBuySalesReqVo);
 
@@ -61,6 +71,11 @@ public interface ReportDao {
      * @return
      */
     List<NewProductBatchMovingRateRespVo> selectNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
+
+    NewProductBatchMovingRateRespVo selectNewProductSkuNameByCodeOne(@Param("categoryCodeOne") String categoryCodeOne);
+    NewProductBatchMovingRateRespVo selectNewProductSkuNameByCodeTwo(@Param("categoryCodeTwo") String categoryCodeTwo);
+    NewProductBatchMovingRateRespVo selectNewProductSkuNameByCodeThree(@Param("categoryCodeThree") String categoryCodeThree);
+    NewProductBatchMovingRateRespVo selectNewProductSkuNameByCode(@Param("categoryCode") String categoryCode);
 
     Integer countNewProductBatchMovingRate(NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo);
 

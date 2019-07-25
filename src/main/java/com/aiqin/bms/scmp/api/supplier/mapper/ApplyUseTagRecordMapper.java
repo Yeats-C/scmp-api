@@ -54,6 +54,15 @@ public interface ApplyUseTagRecordMapper {
     List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(@Param("appUseObjectCode") String appUseObjectCode, @Param("tagTypeCode") String tagTypeCode);
 
     /**
+     * 根据申请使用者编号查询
+     * @param appUseObjectCode
+     * @return
+     */
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode(@Param("appUseObjectCode") String appUseObjectCode,
+                                                                   @Param("tagTypeCode") String tagTypeCode,
+                                                                   @Param("useObjectCode") String useObjectCode);
+
+    /**
      * 根据申请使用者编号List查询
      * @param appUseObjectCode
      * @return

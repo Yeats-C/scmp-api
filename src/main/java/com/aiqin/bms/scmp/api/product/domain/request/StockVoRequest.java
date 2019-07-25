@@ -72,7 +72,7 @@ public class StockVoRequest {
     @JsonProperty(value = "new_purchase_price")
     private Long newPurchasePrice;
 
-    @ApiModelProperty("单据类型 1出库 2入库")
+    @ApiModelProperty("单据类型 0出库 1入库 2退供 3采购")
     @JsonProperty(value = "document_type")
     private Integer documentType;
 

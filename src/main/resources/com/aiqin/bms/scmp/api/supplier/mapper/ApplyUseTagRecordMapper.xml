@@ -34,6 +34,15 @@
     where apply_use_object_code =#{appUseObjectCode,jdbcType=VARCHAR}
     and tag_type_code = #{tagTypeCode,jdbcType=VARCHAR}
   </select>
+  <select id="getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_use_tag_record
+    where apply_use_object_code =#{appUseObjectCode,jdbcType=VARCHAR}
+    and tag_type_code = #{tagTypeCode,jdbcType=VARCHAR}
+    and use_object_code = #{useObjectCode,jdbcType=VARCHAR}
+  </select>
   <select id="getApplyUseTagRecordByAppUseObjectCodes"
              resultMap="BaseResultMap">
     select

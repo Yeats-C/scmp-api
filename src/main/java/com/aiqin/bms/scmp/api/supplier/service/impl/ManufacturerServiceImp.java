@@ -35,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 描述:
@@ -326,5 +328,10 @@ public class ManufacturerServiceImp  implements ManufacturerService {
             log.error("制造商品牌修改失败");
             throw new GroundRuntimeException("制造商品牌修改失败");
         }
+    }
+
+    @Override
+    public Map<String, Manufacturer> selectByManufactureNames(Set<String> manufactureList, String companyCode) {
+        return manufacturerDao.selectByManufactureNames(manufactureList,companyCode);
     }
 }

@@ -82,7 +82,4 @@ public class AddSkuInfoReqVO {
     @ApiModelProperty(value = "sku质检信息", name = "productSkuInspReports",position = 15)
     @JsonProperty("productSkuInspReports")
     private List<ProductSkuInspReportDraft> productSkuInspReportDrafts;
-
-    @ApiModelProperty("错误信息")
-    private String error;
 }
