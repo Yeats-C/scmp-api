@@ -755,6 +755,50 @@
         from bi_goods_buy_sales bgbs
         <include refid="select_goods_buy_sales"/>
     </select>
+    <select id="selectGoodsSkuNameByCodeOne" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameOne
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeOne != null and categoryCodeOne != ''">
+                and pc.category_id  = #{categoryCodeOne, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGoodsSkuNameByCodeTwo" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameTwo
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeTwo != null and categoryCodeTwo != ''">
+                and pc.category_id  = #{categoryCodeTwo, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGoodsSkuNameByCodeThree" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameThree
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeThree != null and categoryCodeThree != ''">
+                and pc.category_id  = #{categoryCodeThree, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGoodsSkuNameByCode" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        pc.category_name as categoryName
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCode != null and categoryCode != ''">
+                and pc.category_id  = #{categoryCode, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
     <select id="selectGiftsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
         select
@@ -786,6 +830,50 @@
         date_format(bgbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_gifts_buy_sales bgbs
         <include refid="select_gifts_buy_sales"/>
+    </select>
+    <select id="selectGiftsSkuNameByCodeOne" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameOne
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeOne != null and categoryCodeOne != ''">
+                and pc.category_id  = #{categoryCodeOne, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGiftsSkuNameByCodeTwo" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameTwo
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeTwo != null and categoryCodeTwo != ''">
+                and pc.category_id  = #{categoryCodeTwo, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGiftsSkuNameByCodeThree" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameThree
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeThree != null and categoryCodeThree != ''">
+                and pc.category_id  = #{categoryCodeThree, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGiftsSkuNameByCode" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
+        select
+        pc.category_name as categoryName
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCode != null and categoryCode != ''">
+                and pc.category_id  = #{categoryCode, jdbcType=VARCHAR}
+            </if>
+        </where>
     </select>
     <select id="selectSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierReturnRespVo">
@@ -855,6 +943,50 @@
         from bi_new_product_batch_moving_rate bnpbmr
         <include refid="select_new_product_batch_moving_rate"/>
         GROUP by bnpbmr.inbound_time desc
+    </select>
+    <select id="selectNewProductSkuNameByCodeOne" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
+        select
+        pc.category_name as categoryNameOne
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeOne != null and categoryCodeOne != ''">
+                and pc.category_id  = #{categoryCodeOne, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectNewProductSkuNameByCodeTwo" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
+        select
+        pc.category_name as categoryNameTwo
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeTwo != null and categoryCodeTwo != ''">
+                and pc.category_id  = #{categoryCodeTwo, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectNewProductSkuNameByCodeThree" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
+        select
+        pc.category_name as categoryNameThree
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeThree != null and categoryCodeThree != ''">
+                and pc.category_id  = #{categoryCodeThree, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectNewProductSkuNameByCode" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
+        select
+        pc.category_name as categoryName
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCode != null and categoryCode != ''">
+                and pc.category_id  = #{categoryCode, jdbcType=VARCHAR}
+            </if>
+        </where>
     </select>
     <select id="selectStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StoreRepurchaseRateRespVo">
