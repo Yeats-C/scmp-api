@@ -9,10 +9,7 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImport;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImportNew;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImportUpdate;
+import com.aiqin.bms.scmp.api.product.domain.excel.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
@@ -1509,7 +1506,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         .checkBaseDate() //检查基础数据
                         .checkInvoice() //检查进销存包装
                         .checkSettlement() //检查结算信息
-                        .checkSupplier() //检查供应商
+//                        .checkSupplier() //检查供应商
 //                        .checkPrice() //检查价格
 //                        .checkConfig() //检查配置
                         .checkManufacturer() //检查厂家
@@ -1530,9 +1527,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     @Transactional(rollbackFor = ExcelException.class)
-    public Boolean importSkuNewSave(List<AddSkuInfoReqVO> addSkuList, String purchaseGroupCode,String purchaseGroupName) {
+    public Boolean importSkuNewSave(SkuImportReq reqVOs) {
         HashMap<String, String> spuMap = Maps.newHashMap();
-        for (AddSkuInfoReqVO reqVO : addSkuList) {
+        for (AddSkuInfoReqVO reqVO : reqVOs.getAddSkuList()) {
             if (StringUtils.isBlank(reqVO.getProductSkuDraft().getProductCode())) {
                 //判断是否新增了
                 String s1 = spuMap.get(reqVO.getProductSkuDraft().getProductName());
@@ -1549,8 +1546,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     }
                 }
             }
-            reqVO.getProductSkuDraft().setProcurementSectionCode(purchaseGroupCode);
-            reqVO.getProductSkuDraft().setProcurementSectionName(purchaseGroupName);
+            reqVO.getProductSkuDraft().setProcurementSectionCode(reqVOs.getPurchaseGroupCode());
+            reqVO.getProductSkuDraft().setProcurementSectionName(reqVOs.getPurchaseGroupName());
             saveDraftSkuInfo(reqVO);
         }
         return Boolean.TRUE;
@@ -1558,9 +1555,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     @Transactional(rollbackFor = ExcelException.class)
-    public Boolean importSkuNewUpdate(List<AddSkuInfoReqVO> addSkuList, String purchaseGroupCode, String purchaseGroupName) {
+    public Boolean importSkuNewUpdate(SkuImportReq reqVOs) {
         HashMap<String, String> spuMap = Maps.newHashMap();
-        for (AddSkuInfoReqVO reqVO : addSkuList) {
+        for (AddSkuInfoReqVO reqVO : reqVOs.getAddSkuList()) {
             if (StringUtils.isBlank(reqVO.getProductSkuDraft().getProductCode())) {
                 //判断是否新增了
                 String s1 = spuMap.get(reqVO.getProductSkuDraft().getProductName());
@@ -1577,8 +1574,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     }
                 }
             }
-            reqVO.getProductSkuDraft().setProcurementSectionCode(purchaseGroupCode);
-            reqVO.getProductSkuDraft().setProcurementSectionName(purchaseGroupName);
+            reqVO.getProductSkuDraft().setProcurementSectionCode(reqVOs.getPurchaseGroupCode());
+            reqVO.getProductSkuDraft().setProcurementSectionName(reqVOs.getPurchaseGroupName());
             updateDraftSkuInfo(reqVO);
         }
         return Boolean.TRUE;
@@ -1705,11 +1702,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 }else {
                     if (Objects.isNull(importVo.getSkuName())) {
                         error.add("SKU名称不能为空");
-                    } else {
-                        if (!sku.getSkuName().equals(importVo.getSkuName())) {
-                            error.add("sku编码和sku名称不对应");
-                        }
                     }
+//                    else {
+//                        if (!sku.getSkuName().equals(importVo.getSkuName())) {
+//                            error.add("sku编码和sku名称不对应");
+//                        }
+//                    }
                 }
             }
             this.resp.setProductSkuDraft(draft);
@@ -2671,10 +2669,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     draft.setManufacturerCode(manufacturer.getManufacturerCode());
                     draft.setIsDefault((byte)1);
                     //厂方商品编号
-                    if (Objects.isNull(importVo.getFactorySkuCode())) {
+                    if (Objects.isNull(importVo.getFactoryProductNumber())) {
                         error.add("厂方商品编号不能为空");
                     } else {
-                        draft.setFactoryProductNumber(importVo.getFactorySkuCode());
+                        draft.setFactoryProductNumber(importVo.getFactoryProductNumber());
                     }
                     //保修地址
                     if (Objects.isNull(importVo.getAddress())) {
