@@ -128,21 +128,25 @@ public class RejectRecord {
     @JsonProperty("out_stock_time")
     private Date outStockTime;
 
-    @ApiModelProperty(value = "数量")
-    @JsonProperty("sum_count")
-    private Integer sumCount;
+    @ApiModelProperty(value = "普通商品数量")
+    @JsonProperty("product_count")
+    private Integer productCount;
 
-    @ApiModelProperty(value = "退供总金额(含税金额)")
-    @JsonProperty("sum_amount")
-    private Long sumAmount;
+    @ApiModelProperty(value = "普通商品金额")
+    @JsonProperty("product_amount")
+    private Long productAmount;
 
     @ApiModelProperty(value = "单品数量")
     @JsonProperty("single_count")
     private Integer singleCount;
 
-    @ApiModelProperty(value = "未税金额")
-    @JsonProperty("untaxed_amount")
-    private Long untaxedAmount;
+    @ApiModelProperty(value = "赠品数量")
+    @JsonProperty("gift_count")
+    private Integer giftCount;
+
+    @ApiModelProperty(value = "赠品金额")
+    @JsonProperty("gift_amount")
+    private Long giftAmount;
 
     @ApiModelProperty(value = "实物返回数量")
     @JsonProperty("return_count")
@@ -151,6 +155,38 @@ public class RejectRecord {
     @ApiModelProperty(value = "实物返回金额")
     @JsonProperty("return_amount")
     private Long returnAmount;
+
+    @ApiModelProperty(value = "实际普通商品数量")
+    @JsonProperty("actual_product_count")
+    private Integer actualProductCount;
+
+    @ApiModelProperty(value = "实际普通商品金额")
+    @JsonProperty("actual_product_amount")
+    private Long actualProductAmount;
+
+    @ApiModelProperty(value = "实际单品数量")
+    @JsonProperty("actual_single_count")
+    private Integer actualSingleCount;
+
+    @ApiModelProperty(value = "实际赠品数量")
+    @JsonProperty("actual_gift_count")
+    private Integer actualGiftCount;
+
+    @ApiModelProperty(value = "实际赠品金额")
+    @JsonProperty("actual_gift_amount")
+    private Long actualGiftAmount;
+
+    @ApiModelProperty(value = "实际实物返回数量")
+    @JsonProperty("actual_return_count")
+    private Integer actualReturnCount;
+
+    @ApiModelProperty(value = "实际实物返回金额")
+    @JsonProperty("actual_return_amount")
+    private Long actualReturnAmount;
+
+    @ApiModelProperty(value = "未税金额")
+    @JsonProperty("untaxed_amount")
+    private Long untaxedAmount;
 
     @ApiModelProperty(value = "")
     @JsonProperty("create_by_id")

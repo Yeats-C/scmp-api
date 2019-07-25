@@ -4,10 +4,8 @@ import com.aiqin.bms.scmp.api.ScmpApiBootApplication;
 import com.aiqin.bms.scmp.api.SpringBootTestContext;
 import com.aiqin.bms.scmp.api.dao.test.reject.AsyncService;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyHandleRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectApprovalService;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectApprovalServiceImpl;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
@@ -58,6 +56,8 @@ public class RejectTest extends SpringBootTestContext {
     @Resource
     private GoodsRejectService goodsRejectService;
     @Resource
+    private GoodsRejectApprovalService goodsRejectApprovalService;
+    @Resource
     private WarehouseDao warehouseDao;
     @Resource
     private LogisticsCenterDao logisticsCenterDao;
@@ -105,10 +105,20 @@ public class RejectTest extends SpringBootTestContext {
 
     @Test
     public void finishStock() {
-        RejectStockRequest request = new RejectStockRequest();
-        request.setRejectRecordCode("RR100000");
-        request.setOutStockTime(new Date());
-        goodsRejectService.finishStock(request);
+        RejectStockRequest rejectStockRequest = new RejectStockRequest();
+        rejectStockRequest.setRejectRecordCode("RR100016");
+        rejectStockRequest.setOutStockTime(new Date());
+        List<RejectDetailStockRequest> detailList= new ArrayList<>();
+        RejectDetailStockRequest detail= new RejectDetailStockRequest();
+        detail.setId(2L);
+        detail.setActualCount(1);
+        detailList.add(detail);
+        rejectStockRequest.setDetailList(detailList);
+//        RejectDetailStockRequest detail2 = new RejectDetailStockRequest();
+//        detailList.add(detail2);
+
+        goodsRejectService.finishStock(rejectStockRequest);
+
 
     }
 
