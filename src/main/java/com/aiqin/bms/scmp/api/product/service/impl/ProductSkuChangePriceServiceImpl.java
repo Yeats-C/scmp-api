@@ -3,6 +3,8 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.HandleTypeCoce;
+import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
@@ -15,6 +17,7 @@ import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -88,6 +91,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Autowired
     private ProductSkuDao productSkuDao;
 
+    @Autowired
+    private SupplierCommonService supplierCommonService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean save(ProductSkuChangePriceReqVO reqVO) throws Exception {
@@ -114,6 +120,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //判断是否含有区域0否1是
         reqVO.setExtField5(CollectionUtils.isEmpty(reqVO.getAreaList())?0:1);
         saveData(reqVO);
+        //保存日志
+        supplierCommonService.getInstance(reqVO.getCode(), HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.CHANGE_PRICE.getStatus(), HandleTypeCoce.ADD_CHANGEPRICE.getName(), null, HandleTypeCoce.ADD.getName(), getUser().getPersonName());
         if (CommonConstant.SUBMIT.equals(reqVO.getOperation())) {
             callWorkflow(reqVO);
         }
@@ -175,6 +183,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {
             //TODO 这里暂时没有任何操作
+            supplierCommonService.getInstance(reqVO.getCode(), HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.CHANGE_PRICE.getStatus(), HandleTypeCoce.UNDER_CHANGEPRICE.getName(), null, HandleTypeCoce.APPROVAL.getName(), getUser().getPersonName());
         } else {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 97, workFlowRespVO.getMsg()));
         }
@@ -289,6 +298,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         }
         //保存
         updateData(reqVO);
+        supplierCommonService.getInstance(reqVO.getCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.CHANGE_PRICE.getStatus(), HandleTypeCoce.UNDER_CHANGEPRICE.getName(), null, HandleTypeCoce.UPDATE.getName(), getUser().getPersonName());
         //提交
         if (reqVO.getOperation().equals(CommonConstant.SUBMIT)) {
             callWorkflow(reqVO);
@@ -355,11 +365,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //审批驳回
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
             rejection(newVO, dto);
+            supplierCommonService.getInstance(dto.getCode(), HandleTypeCoce.APPROVAL_FAILED.getStatus(), ObjectTypeCode.CHANGE_PRICE.getStatus(), HandleTypeCoce.NOPASS_CHANGEPRICE.getName(), null, HandleTypeCoce.APPROVAL_FAILED.getName(), newVO.getApprovalUserName());
             return WorkFlowReturn.SUCCESS;
         }
         //撤销
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
             cancel(newVO, dto);
+            supplierCommonService.getInstance(dto.getCode(), HandleTypeCoce.REVOKED.getStatus(), ObjectTypeCode.CHANGE_PRICE.getStatus(), HandleTypeCoce.RECOBER_CHANGEPRICE.getName(), null, HandleTypeCoce.REVOKED.getName(), newVO.getApprovalUserName());
             return WorkFlowReturn.SUCCESS;
         }
         //审批通过
@@ -367,6 +379,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             //保存正式数据数据
             dto.setApplyStatus(CommonConstant.EXAMINATION_PASSED);
             saveOfficial(newVO, dto);
+            supplierCommonService.getInstance(dto.getCode(), HandleTypeCoce.APPROVAL_SUCCESS.getStatus(), ObjectTypeCode.CHANGE_PRICE.getStatus(), HandleTypeCoce.PASS_CHANGEPRICE.getName(), null, HandleTypeCoce.APPROVAL_SUCCESS.getName(), newVO.getApprovalUserName());
             return WorkFlowReturn.SUCCESS;
         }
         return WorkFlowReturn.FALSE;
