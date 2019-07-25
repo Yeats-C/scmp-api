@@ -239,6 +239,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         BeanCopyUtils.copy(applySupplyCompanyAcctReq, s);
         s.setId(account.getId());
         s.setApplyStatus((byte) 0);
+        s.setApplyCode(supplyCompanyAccount.getApplyCompanyAccountCode());
         s.setApplyType((byte) 2);
         s.setFormNo("GYSZH"+IdSequenceUtils.getInstance().nextId());
         ((ApplySupplyComAcctService) AopContext.currentProxy()).updateApplyData(s);
