@@ -1653,4 +1653,144 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
         }
     }
+//    private class CheckSupply{
+//
+//        private List<String> error;
+//
+//        private CheckSupply checkSupplyNew(){
+//            if(StringUtils.isBlank(supplierImportNew.getApplySupplyCode())){
+//                error.add("供应商编码不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getApplySupplyName())){
+//                error.add("供应商名称不能为空");
+//            }
+//            return this;
+//        }
+//
+//        private CheckSupply checkSupplyNew(){
+//            if(StringUtils.isBlank(supplierImportNew.getApplySupplyCode())){
+//                error.add("供应商编码不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getApplySupplyName())){
+//                error.add("供应商名称不能为空");
+//            }
+//            return this;
+//        }
+//
+//        private CheckSupply checkSupplyUpdate(){
+//            if(StringUtils.isBlank(supplierImportNew.getApplySupplyCode())){
+//                error.add("供应商编码不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getApplySupplyName())){
+//                error.add("供应商名称不能为空");
+//            }
+//            return this;
+//        }
+//
+//        private CheckSupply checkCommonData(){
+//
+//            if(StringUtils.isBlank(supplierImportNew.getApplySupplyType())){
+//                error.add("供应商类型不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getApplyAbbreviation())){
+//                error.add("简称不能为空");
+//            }
+//            if (StringUtils.isBlank(supplierImportNew.getProvinceName())) {
+//                error.add("省不能为空");
+//            } else {
+//                SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getProvinceName());
+//                if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+//                    if (StringUtils.isBlank(supplierImportNew.getCityName())) {
+//                        error.add("市不能为空");
+//                    }
+//                }
+//                if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+//                    if (StringUtils.isBlank(supplierImportNew.getCityName())) {
+//                        error.add("县不能为空");
+//                    }
+//                }
+//
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getAddress())){
+//                error.add(",");
+//                error.add("详细地址不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getEmail())){
+//                error.add(",");
+//                error.add("邮箱不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getTaxId())){
+//                error.add(",");
+//                error.add("税号不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getRegisteredCapital())){
+//                error.add(",");
+//                error.add("注册资金不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getCorporateRepresentative())){
+//                error.add(",");
+//                error.add("法人代表不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getContactName())){
+//                error.add(",");
+//                error.add("联系人姓名不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getMobilePhone())){
+//                error.add(",");
+//                error.add("手机号不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getMinOrderAmount())){
+//                error.add(",");
+//                error.add("最低订货金额不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getMaxOrderAmount())){
+//                error.add(",");
+//                error.add("最高订货金额不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getSendProvinceName())){
+//                error.add(",");
+//                error.add("发货省不能为空");
+//            }else {
+//                SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getSendProvinceName());
+//                if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+//                    if(StringUtils.isBlank(supplierImportNew.getSendCityName())){
+//                        error.add("发货市不能为空");
+//                    }
+//                }
+//                if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+//                    if(StringUtils.isBlank(supplierImportNew.getSendDistrictName())){
+//                        error.add("发货县不能为空");
+//                    }
+//                }
+//
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getSendingAddress())){
+//                error.add("发货详细地址不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getSendTo())){
+//                error.add("发货至不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getReturnProvinceName())){
+//                error.add("收货省不能为空");
+//            }else {
+//                SpecialArea specialArea = SpecialArea.getAll().get(supplierImportNew.getReturnProvinceName());
+//                if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+//                    if(StringUtils.isBlank(supplierImportNew.getReturnCityName())){
+//                        error.add("收货市不能为空");
+//                    }
+//                }
+//                if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+//                    if(StringUtils.isBlank(supplierImportNew.getReturnDistrictName())){
+//                        error.add("收货县不能为空");
+//                    }
+//                }
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getReturningAddress())){
+//                error.add("收货详细地址不能为空");
+//            }
+//            if(StringUtils.isBlank(supplierImportNew.getReturnTo())){
+//                error.add("收货至不能为空");
+//            }
+//        }
+//    }
 }
