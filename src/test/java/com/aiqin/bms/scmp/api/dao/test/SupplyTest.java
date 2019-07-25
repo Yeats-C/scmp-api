@@ -103,18 +103,18 @@ public class SupplyTest  extends SpringBootTestContext  {
     @Test
     public void test2(){
         StockChangeRequest stockChangeRequest = new StockChangeRequest();
-        stockChangeRequest.setOperationType(6);
+        stockChangeRequest.setOperationType(11);
 
         List<StockVoRequest> stockVoRequests = new ArrayList<>();
         StockVoRequest stockVoRequest1 = new StockVoRequest();
-        stockVoRequest1.setCompanyCode("");
-        stockVoRequest1.setCompanyName("");
-        stockVoRequest1.setTransportCenterCode("");
-        stockVoRequest1.setTransportCenterName("");
-        stockVoRequest1.setWarehouseCode("");
-        stockVoRequest1.setWarehouseName("");
-        stockVoRequest1.setWarehouseType("");
-        stockVoRequest1.setChangeNum(100L);
+        stockVoRequest1.setCompanyCode("04");
+        stockVoRequest1.setCompanyName("爱亲");
+        stockVoRequest1.setTransportCenterCode("1025");
+        stockVoRequest1.setTransportCenterName("华北");
+        stockVoRequest1.setWarehouseCode("1026");
+        stockVoRequest1.setWarehouseName("华北销售库");
+        stockVoRequest1.setWarehouseType("1");
+        stockVoRequest1.setChangeNum(25L);
         stockVoRequest1.setSkuCode("123456");
         stockVoRequest1.setSkuName("惠氏金装爱儿复无乳糖配1");
         stockVoRequest1.setDocumentType(4);
@@ -127,14 +127,14 @@ public class SupplyTest  extends SpringBootTestContext  {
         stockVoRequests.add(stockVoRequest1);
 
         StockVoRequest stockVoRequest2 = new StockVoRequest();
-        stockVoRequest1.setCompanyCode("");
-        stockVoRequest1.setCompanyName("");
-        stockVoRequest1.setTransportCenterCode("");
-        stockVoRequest1.setTransportCenterName("");
-        stockVoRequest1.setWarehouseCode("");
-        stockVoRequest1.setWarehouseName("");
-        stockVoRequest1.setWarehouseType("");
-        stockVoRequest2.setChangeNum(100L);
+        stockVoRequest2.setCompanyCode("04");
+        stockVoRequest2.setCompanyName("爱亲");
+        stockVoRequest2.setTransportCenterCode("1025");
+        stockVoRequest2.setTransportCenterName("华北");
+        stockVoRequest2.setWarehouseCode("1026");
+        stockVoRequest2.setWarehouseName("华北销售库");
+        stockVoRequest2.setWarehouseType("1");
+        stockVoRequest2.setChangeNum(25L);
         stockVoRequest2.setSkuCode("123457");
         stockVoRequest2.setSkuName("惠氏金装爱儿复无乳糖配2");
         stockVoRequest2.setDocumentType(4);

@@ -1176,9 +1176,9 @@
             #{item.stockUnitName},
             #{item.taxPrice},
             #{item.taxRate},
-            #{item.createTime},
+            NOW(),
             #{item.createBy},
-            #{item.updateTime},
+            NOW(),
             #{item.updateBy}
             )
         </foreach>
