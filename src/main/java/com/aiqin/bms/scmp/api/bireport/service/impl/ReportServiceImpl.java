@@ -60,14 +60,17 @@ public class ReportServiceImpl implements ReportService {
     public PageReportResData selectGoodsBuySales(GoodsBuySalesReqVo goodsBuySalesReqVo) {
         try {
             List<GoodsBuySalesRespVo> goodsBuySalesRespVos = reportDao.selectGoodsBuySales(goodsBuySalesReqVo);
-            for (GoodsBuySalesRespVo goodsBuySalesRespVo : goodsBuySalesRespVos) {
-                goodsBuySalesRespVo.getCategoryCodeOne();
-                goodsBuySalesRespVo.getCategoryCodeTwo();
-                goodsBuySalesRespVo.getCategoryCodeThree();
-
-            }
-
             Integer total = reportDao.countGoodsBuySales(goodsBuySalesReqVo);
+            for (GoodsBuySalesRespVo goodsBuySalesRespVo : goodsBuySalesRespVos) {
+                GoodsBuySalesRespVo goodsBuySalesRespVosOne = reportDao.selectGoodsSkuNameByCodeOne(goodsBuySalesRespVo.getCategoryCodeOne());
+                GoodsBuySalesRespVo goodsBuySalesRespVosTwo = reportDao.selectGoodsSkuNameByCodeTwo(goodsBuySalesRespVo.getCategoryCodeTwo());
+                GoodsBuySalesRespVo goodsBuySalesRespVosThree = reportDao.selectGoodsSkuNameByCodeThree(goodsBuySalesRespVo.getCategoryCodeThree());
+                GoodsBuySalesRespVo goodsBuySalesRespVosFour = reportDao.selectGoodsSkuNameByCode(goodsBuySalesRespVo.getCategoryCode());
+                if(goodsBuySalesRespVosOne != null){ goodsBuySalesRespVo.setCategoryNameOne(goodsBuySalesRespVosOne.getCategoryNameOne()); }
+                if(goodsBuySalesRespVosTwo != null){ goodsBuySalesRespVo.setCategoryNameTwo(goodsBuySalesRespVosTwo.getCategoryNameTwo()); }
+                if(goodsBuySalesRespVosThree != null){ goodsBuySalesRespVo.setCategoryNameThree(goodsBuySalesRespVosThree.getCategoryNameThree()); }
+                if(goodsBuySalesRespVosFour != null){goodsBuySalesRespVo.setCategoryName(goodsBuySalesRespVosFour.getCategoryName());}
+            }
             List<Map> maps = reportDao.selectGoodsBuySalesTableCloumnName();
             GoodsBuySalesRespVo goodsBuySalesRespVo = new GoodsBuySalesRespVo();
             goodsBuySalesRespVo.setColumnList(maps);
@@ -89,6 +92,16 @@ public class ReportServiceImpl implements ReportService {
         try {
             List<GiftsBuySalesRespVo> giftsBuySalesRespVos = reportDao.selectGiftsBuySales(giftsBuySalesReqVo);
             Integer total = reportDao.countGiftsBuySales(giftsBuySalesReqVo);
+            for (GiftsBuySalesRespVo giftsBuySalesRespVo : giftsBuySalesRespVos) {
+                GiftsBuySalesRespVo giftsBuySalesRespVosOne = reportDao.selectGiftsSkuNameByCodeOne(giftsBuySalesRespVo.getCategoryCodeOne());
+                GiftsBuySalesRespVo giftsBuySalesRespVosTwo = reportDao.selectGiftsSkuNameByCodeTwo(giftsBuySalesRespVo.getCategoryCodeTwo());
+                GiftsBuySalesRespVo giftsBuySalesRespVosThree = reportDao.selectGiftsSkuNameByCodeThree(giftsBuySalesRespVo.getCategoryCodeThree());
+                GiftsBuySalesRespVo giftsBuySalesRespVosFour = reportDao.selectGiftsSkuNameByCode(giftsBuySalesRespVo.getCategoryCode());
+                if(giftsBuySalesRespVosOne != null){ giftsBuySalesRespVo.setCategoryNameOne(giftsBuySalesRespVosOne.getCategoryNameOne()); }
+                if(giftsBuySalesRespVosTwo != null){ giftsBuySalesRespVo.setCategoryNameTwo(giftsBuySalesRespVosTwo.getCategoryNameTwo()); }
+                if(giftsBuySalesRespVosThree != null){ giftsBuySalesRespVo.setCategoryNameThree(giftsBuySalesRespVosThree.getCategoryNameThree()); }
+                if(giftsBuySalesRespVosFour != null){giftsBuySalesRespVo.setCategoryName(giftsBuySalesRespVosFour.getCategoryName());}
+            }
             String cloumnName = "bi_gifts_buy_sales";
             List<Map> maps = reportDao.selectTableCloumnName(cloumnName);
             GiftsBuySalesRespVo giftsBuySalesRespVo = new GiftsBuySalesRespVo();
@@ -136,6 +149,16 @@ public class ReportServiceImpl implements ReportService {
         try {
             List<NewProductBatchMovingRateRespVo> newProductBatchMovingRateRespVos = reportDao.selectNewProductBatchMovingRate(newProductBatchMovingRateReqVo);
             Integer total = reportDao.countNewProductBatchMovingRate(newProductBatchMovingRateReqVo);
+            for (NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVo : newProductBatchMovingRateRespVos) {
+                NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVosOne = reportDao.selectNewProductSkuNameByCodeOne(newProductBatchMovingRateRespVo.getCategoryCodeOne());
+                NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVosTwo = reportDao.selectNewProductSkuNameByCodeTwo(newProductBatchMovingRateRespVo.getCategoryCodeTwo());
+                NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVosThree = reportDao.selectNewProductSkuNameByCodeThree(newProductBatchMovingRateRespVo.getCategoryCodeThree());
+                NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVosFour = reportDao.selectNewProductSkuNameByCode(newProductBatchMovingRateRespVo.getCategoryCode());
+                if(newProductBatchMovingRateRespVosOne != null){ newProductBatchMovingRateRespVo.setCategoryNameOne(newProductBatchMovingRateRespVosOne.getCategoryNameOne()); }
+                if(newProductBatchMovingRateRespVosTwo != null){ newProductBatchMovingRateRespVo.setCategoryNameTwo(newProductBatchMovingRateRespVosTwo.getCategoryNameTwo()); }
+                if(newProductBatchMovingRateRespVosThree != null){ newProductBatchMovingRateRespVo.setCategoryNameThree(newProductBatchMovingRateRespVosThree.getCategoryNameThree()); }
+                if(newProductBatchMovingRateRespVosFour != null){newProductBatchMovingRateRespVo.setCategoryName(newProductBatchMovingRateRespVosFour.getCategoryName());}
+            }
             String cloumnName = "bi_new_product_batch_moving_rate";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             NewProductBatchMovingRateRespVo newProductBatchMovingRateRespVo = new NewProductBatchMovingRateRespVo();
