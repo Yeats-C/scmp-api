@@ -1,13 +1,11 @@
 package com.aiqin.bms.scmp.api.product.web.sku;
 
-import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
+import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
@@ -16,6 +14,9 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveSkuApplyInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -156,7 +157,7 @@ public class SkuInfoController {
 
     @PostMapping("/importSkuNew")
     @ApiOperation("新增导入sku")
-    public HttpResponse<List<AddSkuInfoReqVO>> importSkuNew(MultipartFile file){
+    public HttpResponse<SkuImportMain> importSkuNew(MultipartFile file){
         log.info("SkuInfoController---importSkuNew---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
         try {
             return HttpResponse.success(skuInfoService.importSkuNew(file));
@@ -168,9 +169,40 @@ public class SkuInfoController {
         }
     }
 
+    @PostMapping("/importSkuNewSave")
+    @ApiOperation("新增导入sku保存")
+    public HttpResponse<Boolean> importSkuNewSave(@RequestBody List<AddSkuInfoReqVO> addSkuList,
+                                                  @RequestParam String purchaseGroupCode,
+                                                  @RequestParam String purchaseGroupName){
+        log.info("SkuInfoController---importSkuNewSave---入参：[{}]", JSON.toJSONString(addSkuList));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuNewSave(addSkuList,purchaseGroupCode,purchaseGroupName));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @PostMapping("/importSkuNewUpdate")
+    @ApiOperation("修改导入sku保存")
+    public HttpResponse<Boolean> importSkuNewUpdate(@RequestBody List<AddSkuInfoReqVO> addSkuList,
+                                                    @RequestParam String purchaseGroupCode,
+                                                    @RequestParam String purchaseGroupName){
+        log.info("SkuInfoController---importSkuNewUpdate---入参：[{}]", JSON.toJSONString(addSkuList));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuNewUpdate(addSkuList,purchaseGroupCode,purchaseGroupName));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @PostMapping("/importSkuUpdate")
     @ApiOperation("修改导入sku")
-    public HttpResponse<List<AddSkuInfoReqVO>> importSkuUpdate(MultipartFile file){
+    public HttpResponse<SkuImportMain> importSkuUpdate(MultipartFile file){
         log.info("SkuInfoController---importSkuNew---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
         try {
             return HttpResponse.success(skuInfoService.importSkuUpdate(file));

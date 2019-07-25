@@ -440,7 +440,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     PurchaseOrderLogEnum.REVOKE.getName() , null);
         }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
             // 仓储确认判断是否入库完成
-                this.wayNum(order);
+                this.wayNum(purchaseOrderId);
         }
         return HttpResponse.success();
     }
@@ -692,7 +692,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
                 reqVo.setCreateTime(Calendar.getInstance().getTime());
                 preInboundNum += reqVo.getPreInboundNum();
-                preInboundMainNum += singleCount;
+                preInboundMainNum += purchaseWhole;
                 preTaxAmount += productTotalAmount;
                 preNoTaxAmount += Calculate.computeNoTaxPrice(productTotalAmount, product.getTaxRate().longValue());
                 list.add(reqVo);
@@ -738,7 +738,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         PurchaseOrder order = new PurchaseOrder();
         order.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderCode());
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
-        if(num <= purchaseStorage.getPurchaseNum()){
+        if(num >= purchaseStorage.getPurchaseNum()){
             order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
             order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
             order.setStorageStatus(Global.STORAGE_STATUS_2);
@@ -752,7 +752,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , "手动");
             // 仓储确认判断是否入库完成
             if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-                this.wayNum(order);
+                this.wayNum(purchaseStorage.getPurchaseOrderId());
             }
         }else {
             InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
@@ -852,33 +852,33 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 PurchaseOrderLogEnum.STORAGE_FINISH.getName() , null);
         // 仓储确认判断是否入库完成
         if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-            this.wayNum(order);
+            this.wayNum(purchaseOrderId);
         }
         return HttpResponse.success();
     }
 
     // 修改库存在途数
-    private void wayNum(PurchaseOrder order){
+    private void wayNum(String purchaseOrderId){
         StockChangeRequest stock = new StockChangeRequest();
         stock.setOperationType(11);
         List<StockVoRequest> list = Lists.newArrayList();
         StockVoRequest stockVo;
         // 查询该采购单的商品
-        List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
+        List<PurchaseApplyDetailResponse> products = purchaseOrderProductDao.orderProductInfoByGroup(purchaseOrderId);
         if(CollectionUtils.isNotEmptyCollection(products)){
-            for(PurchaseOrderProduct product:products){
+            for(PurchaseApplyDetailResponse product:products){
                 stockVo = new StockVoRequest();
-                stockVo.setTransportCenterCode(order.getTransportCenterCode());
-                stockVo.setTransportCenterName(order.getTransportCenterName());
-                stockVo.setWarehouseCode(order.getWarehouseCode());
-                stockVo.setWarehouseName(order.getWarehouseName());
-                stockVo.setOperator(order.getCreateByName());
+                stockVo.setTransportCenterCode(product.getTransportCenterCode());
+                stockVo.setTransportCenterName(product.getTransportCenterName());
+                stockVo.setWarehouseCode(product.getWarehouseCode());
+                stockVo.setWarehouseName(product.getWarehouseName());
+                stockVo.setOperator(product.getCreateByName());
                 stockVo.setSkuCode(product.getSkuCode());
                 stockVo.setSkuName(product.getSkuName());
                 long singleCount =  product.getSingleCount() == null ? 0 : product.getSingleCount().longValue();
                 long actualSingleCount =  product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().longValue();
                 stockVo.setChangeNum(singleCount - actualSingleCount);
-                stockVo.setDocumentNum(order.getPurchaseOrderCode());
+                stockVo.setDocumentNum(product.getPurchaseOrderCode());
                 stockVo.setDocumentType(3);
                 list.add(stockVo);
             }

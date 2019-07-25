@@ -12,4 +12,8 @@ public class NumberConvertUtils {
         temp = temp.multiply(BigDecimal.valueOf(100));
         return temp.longValue();
     }
+    public static BigDecimal stringParseBigDecimal(String s) {
+        BigDecimal temp = BigDecimal.valueOf(Double.valueOf(s));
+        return temp;
+    }
 }
