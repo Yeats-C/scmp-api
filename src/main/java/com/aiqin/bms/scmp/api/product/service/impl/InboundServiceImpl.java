@@ -292,7 +292,7 @@ public class InboundServiceImpl implements InboundService {
         log.error("异步推送给wms");
          // 通过id查询 入库单主体
         try {
-            Thread.sleep(2000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -329,7 +329,8 @@ public class InboundServiceImpl implements InboundService {
                      inboundProductCallBackReqVo.setLinenum(inboundProductWmsReqVO.getLinenum());
                      inboundProductCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
                      //TODO 入库数联改为预计数量的一半
-                     inboundProductCallBackReqVo.setPraInboundMainNum(inboundProductWmsReqVO.getPreInboundNum()/2);
+                     Long num = 10l;
+                     inboundProductCallBackReqVo.setPraInboundMainNum(num);
                      list.add(inboundProductCallBackReqVo);
                  }
                  inboundCallBackReqVo.setList(list);
@@ -369,7 +370,7 @@ public class InboundServiceImpl implements InboundService {
     public void workFlowCallBack(InboundCallBackReqVo reqVo) {
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -519,7 +520,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnSource(Long id) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -603,7 +604,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnPurchase(StorageResultReqVo storageResultReqVo) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultReqVo));
             e.printStackTrace();
