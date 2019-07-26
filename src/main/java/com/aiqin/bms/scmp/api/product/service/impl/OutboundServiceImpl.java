@@ -585,6 +585,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 stockVoRequest.setDocumentType(1);//1出库 2入库
                 stockVoRequest.setSourceDocumentNum(outbound.getSourceOderCode());
                 stockVoRequest.setSourceDocumentType(Integer.parseInt(outbound.getOutboundTypeCode().toString()));
+                stockVoRequest.setOperator(outbound.getUpdateBy());
                 stockVoRequestList.add(stockVoRequest);
             }
             stockChangeRequest.setStockVoRequests(stockVoRequestList);
