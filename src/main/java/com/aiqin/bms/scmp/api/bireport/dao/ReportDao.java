@@ -133,6 +133,8 @@ public interface ReportDao {
      */
     List<BrandSaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
 
+    BrandSaleRespVo sumBrandSale(CategorySaleReqVo brandSaleReqVo);
+
     Integer countBrandSale(CategorySaleReqVo brandSaleReqVo);
 
     /**
@@ -141,6 +143,8 @@ public interface ReportDao {
      * @return
      */
     List<CategorySaleRespVo> selectCategorySale(CategorySaleReqVo categorySaleReqVo);
+
+    CategorySaleRespVo sumCategorySale(CategorySaleReqVo categorySaleReqVo);
 
     Integer countCategorySale(CategorySaleReqVo categorySaleReqVo);
 

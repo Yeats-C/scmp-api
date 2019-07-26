@@ -1328,6 +1328,24 @@
         <include refid="select_brand_sale"/>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
+    <select id="sumBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BrandSaleRespVo">
+        select
+        sum(bbs.channel_current_sale_amount) as channelCurrentSaleAmounts,
+        sum(bbs.channel_previous_sales_amount) as channelPreviousSalesAmounts,
+        sum(bbs.channel_current_gross_margin) as channelCurrentGrossMargins,
+        sum(bbs.channel_previous_gross_margin ) as channelPreviousGrossMargins,
+        sum(bbs.channel_current_sale_amount)/sum(bbs.channel_previous_sales_amount) as channelSaleLinkRatios,
+        sum(bbs.channel_current_gross_margin)/sum(bbs.channel_previous_gross_margin ) as channelGrossMarginLinkRatios,
+        sum(bbs.distribution_current_sale_amount) as distributionCurrentSaleAmounts,
+        sum(bbs.distribution_previous_sales_amount) as distributionPreviousSalesAmounts,
+        sum(bbs.distribution_current_gross_margin) as distributionCurrentGrossMargins,
+        sum(bbs.distribution_previous_gross_margin) as distributionPreviousGrossMargins,
+        sum(bbs.distribution_current_sale_amount)/sum(bbs.distribution_previous_sales_amount) as distributionSaleLinkRatios,
+        sum(bbs.distribution_current_gross_margin)/sum(bbs.distribution_previous_gross_margin) as distributionGrossMarginLinkRatios
+        from bi_brand_sale bbs
+        <include refid="select_brand_sale"/>
+    </select>
     <select id="countBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="java.lang.Integer">
         select count(1) from (
@@ -1369,6 +1387,24 @@
         from bi_category_sale bcs
         <include refid="select_category_sale"/>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="sumCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.CategorySaleRespVo">
+        select
+        sum(bcs.channel_current_sale_amount) as channelCurrentSaleAmounts,
+        sum(bcs.channel_previous_sales_amount) as channelPreviousSalesAmounts,
+        sum(bcs.channel_current_gross_margin) as channelCurrentGrossMargins,
+        sum(bcs.channel_previous_gross_margin ) as channelPreviousGrossMargins,
+        sum(bcs.channel_current_sale_amount)/sum(bcs.channel_previous_sales_amount) as channelSaleLinkRatios,
+        sum(bcs.channel_current_gross_margin)/sum(bcs.channel_previous_gross_margin ) as channelGrossMarginLinkRatios,
+        sum(bcs.distribution_current_sale_amount) as distributionCurrentSaleAmounts,
+        sum(bcs.distribution_previous_sales_amount) as distributionPreviousSalesAmounts,
+        sum(bcs.distribution_current_gross_margin) as distributionCurrentGrossMargins,
+        sum(bcs.distribution_previous_gross_margin) as distributionPreviousGrossMargins,
+        sum(bcs.distribution_current_sale_amount)/sum(bcs.distribution_previous_sales_amount) as distributionSaleLinkRatios,
+        sum(bcs.distribution_current_gross_margin)/sum(bcs.distribution_previous_gross_margin) as distributionGrossMarginLinkRatios
+        from bi_category_sale bcs
+        <include refid="select_category_sale"/>
     </select>
     <select id="countCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="java.lang.Integer">
