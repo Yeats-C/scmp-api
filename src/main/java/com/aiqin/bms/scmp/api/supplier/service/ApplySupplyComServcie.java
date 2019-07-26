@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportResp;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyComDTO;
@@ -107,7 +108,7 @@ public interface ApplySupplyComServcie {
      * @param file
      * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO>
      */
-    List<ApplySupplyCompanyReqVO> dealImport(MultipartFile file);
+    SupplierImportResp dealImport(MultipartFile file);
     /**
      * 修改导入
      * @author NullPointException
@@ -115,5 +116,5 @@ public interface ApplySupplyComServcie {
      * @param file
      * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO>
      */
-    List<ApplySupplyCompanyReqVO> dealImport2(MultipartFile file);
+    SupplierImportResp dealImport2(MultipartFile file);
 }
