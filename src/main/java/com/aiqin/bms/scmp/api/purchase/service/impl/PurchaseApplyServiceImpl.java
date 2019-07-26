@@ -179,7 +179,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     // 查询新增采购申请单时候的库存商品信息
     private HttpResponse stockProductInfo(PurchaseApplyRequest purchases, PageResData pageResData) {
-        long start = System.currentTimeMillis();
         // 查询库存，商品， 供应商等信息
         List<PurchaseApplyDetailResponse> detail = productSkuDao.purchaseProductList(purchases);
         if (CollectionUtils.isNotEmptyCollection(detail)) {
@@ -242,9 +241,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         Integer count = productSkuDao.purchaseProductCount(purchases);
         pageResData.setDataList(detail);
         pageResData.setTotalCount(count);
-        System.err.println("============================");
-        System.err.println("time: " + (System.currentTimeMillis() - start));
-        System.err.println("============================");
         return HttpResponse.success(pageResData);
     }
 
