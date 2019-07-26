@@ -32,7 +32,7 @@
                 and bsar.transport_center_code = #{transportCenterCode}
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bsar.category_code = #{categoryCode}
+                and bsar.category_code like concat(#{categoryCode}, '%')
             </if>
             <if test="categoryName!=null and categoryName!=''">
                 and bsar.category_name like concat('%', #{categoryName}, '%')
@@ -76,7 +76,7 @@
                 and bgbs.category_name like concat('%', #{categoryName}, '%')
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bgbs.category_code=#{categoryCode}
+                and bgbs.category_code like concat(#{categoryCode}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bgbs.product_sort_code=#{productSortCode}
@@ -129,7 +129,7 @@
                 and bgbs.category_name like concat('%', #{categoryName}, '%')
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bgbs.category_code=#{categoryCode}
+                and bgbs.category_code like concat(#{categoryCode}, '%')
             </if>
             <if test="inboundDays!=null and inboundDays!=''">
                 and bgbs.inbound_days=#{inboundDays}
@@ -220,7 +220,7 @@
                 and bnpbmr.supplier_name like concat('%', #{supplierName}, '%')
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bnpbmr.category_code=#{categoryCode}
+                and bnpbmr.category_code like concat(#{categoryCode}, '%')
             </if>
             <if test="categoryName!=null and categoryName!=''">
                 and bnpbmr.category_name like concat('%', #{categoryName}, '%')
@@ -261,7 +261,7 @@
                 and bsrr.district_name like concat('%', #{districtName}, '%')
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bsrr.category_code=#{categoryCode}
+                and bsrr.category_code like concat(#{categoryCode}, '%')
             </if>
             <if test="categoryName!=null and categoryName!=''">
                 and bsrr.category_name like concat('%', #{categoryName}, '%')
@@ -290,7 +290,7 @@
                 and bnm.sku_name like concat('%', #{skuName}, '%')
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bnm.category_code=#{categoryCode}
+                and bnm.category_code like concat(#{categoryCode}, '%')
             </if>
             <if test="categoryName!=null and categoryName!=''">
                 and bnm.category_name like concat('%', #{categoryName}, '%')
@@ -331,7 +331,7 @@
                 and bsr.sku_name like concat('%', #{skuName}, '%')
             </if>
             <if test="productCategoryCode!=null and productCategoryCode!=''">
-                and bsr.product_category_code=#{productCategoryCode}
+                and bsr.product_category_code like concat(#{productCategoryCode}, '%')
             </if>
             <if test="productCategoryName!=null and productCategoryName!=''">
                 and bsr.product_category_name like concat('%', #{productCategoryName}, '%')
@@ -461,7 +461,7 @@
                 and bbe.product_brand_name like concat('%', #{productBrandName}, '%')
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bbe.category_code=#{categoryCode}
+                and bbe.category_code like concat(#{categoryCode}, '%')
             </if>
             <if test="categoryName!=null and categoryName!=''">
                 and bbe.category_name like concat('%', #{categoryName}, '%')
@@ -599,7 +599,7 @@
                 and #{finishCreateTime}
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bmsa.category_code=#{categoryCode}
+                and bmsa.category_code= like concat(#{categoryCode}, '%')
             </if>
             <if test="categoryName!=null and categoryName!=''">
                 and bmsa.category_name like concat('%', #{categoryName}, '%')
@@ -640,7 +640,7 @@
                 and #{finishCreateTime}
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bmcbs.category_code=#{categoryCode}
+                and bmcbs.category_code like concat(#{categoryCode}, '%')
             </if>
             <if test="categoryName!=null and categoryName!=''">
                 and bmcbs.category_name like concat('%', #{categoryName}, '%')
@@ -681,7 +681,7 @@
                 and #{finishCreateTime}
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
-                and bmcgpm.category_code=#{categoryCode}
+                and bmcgpm.category_code like concat(#{categoryCode}, '%')
             </if>
             <if test="categoryName!=null and categoryName!=''">
                 and bmcgpm.category_name like concat('%', #{categoryName}, '%')

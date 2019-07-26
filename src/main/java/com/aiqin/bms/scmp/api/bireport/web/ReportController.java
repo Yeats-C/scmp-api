@@ -471,10 +471,10 @@ public class ReportController {
             @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
             @ApiImplicitParam(name = "product_brand_code", value = "品牌编码", type = "String"),
             @ApiImplicitParam(name = "product_brand_name", value = "品牌", type = "String"),
-            @ApiImplicitParam(name = "supply_code", value = "供应商code", type = "String"),
-            @ApiImplicitParam(name = "supply_name", value = "供应商name", type = "String"),
             @ApiImplicitParam(name = "category_code", value = "品类编码", type = "String"),
             @ApiImplicitParam(name = "category_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "supply_code", value = "供应商code", type = "String"),
+            @ApiImplicitParam(name = "supply_name", value = "供应商name", type = "String"),
             @ApiImplicitParam(name = "procurement_section_code", value = "采购组编码", type = "String"),
             @ApiImplicitParam(name = "procurement_section_name", value = "采购组", type = "String"),
             @ApiImplicitParam(name = "transport_center_code", value = "仓库编码", type = "String"),
@@ -491,10 +491,10 @@ public class ReportController {
             @RequestParam(value = "sku_name", required = false) String skuName,
             @RequestParam(value = "product_brand_code", required = false) String productBrandCode,
             @RequestParam(value = "product_brand_name", required = false) String productBrandName,
-            @RequestParam(value = "supply_code", required = false) String supplyCode,
-            @RequestParam(value = "supply_name", required = false) String supplyName,
             @RequestParam(value = "category_code", required = false) String categoryCode,
             @RequestParam(value = "category_name", required = false) String categoryName,
+            @RequestParam(value = "supply_code", required = false) String supplyCode,
+            @RequestParam(value = "supply_name", required = false) String supplyName,
             @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
             @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
@@ -504,7 +504,7 @@ public class ReportController {
             @RequestParam(value = "big_effect_period_warn_day", required = false) String bigEffectPeriodWarnDay,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        BigEffectReqVo bigEffectReqVo = new BigEffectReqVo(createTime,skuCode,skuName,productBrandCode,productBrandName,supplyCode,supplyName,categoryCode,categoryName,procurementSectionCode,procurementSectionName,transportCenterCode,transportCenterName,warehouseCode,warehouseName,bigEffectPeriodWarnDay);
+        BigEffectReqVo bigEffectReqVo = new BigEffectReqVo(createTime,skuCode,skuName,productBrandCode,productBrandName,categoryCode,categoryName,supplyCode,supplyName,procurementSectionCode,procurementSectionName,transportCenterCode,transportCenterName,warehouseCode,warehouseName,bigEffectPeriodWarnDay);
         bigEffectReqVo.setPageNo(pageNo);
         bigEffectReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectBigEffect(bigEffectReqVo));
