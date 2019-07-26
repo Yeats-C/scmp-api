@@ -180,9 +180,6 @@
       <if test="targetRebate != null">
         target_rebate,
       </if>
-<!--      <if test="planType != null">-->
-<!--        plan_type,-->
-<!--      </if>-->
       <if test="startTime != null">
         start_time,
       </if>
@@ -267,6 +264,36 @@
       <if test="minAmount != null">
         min_amount,
       </if>
+      <if test="maxAmount != null">
+        max_amount,
+      </if>
+      <if test="deliveryCycle != null">
+        delivery_cycle,
+      </if>
+      <if test="taxRate != null">
+        tax_rate,
+      </if>
+      <if test="discount != null">
+        discount,
+      </if>
+      <if test="returnGuarantee != null">
+        return_guarantee,
+      </if>
+      <if test="returnGuaranteeDay != null">
+        return_guarantee_day,
+      </if>
+      <if test="warranty != null">
+        warranty,
+      </if>
+      <if test="categoriesSupplyChannelsCode != null">
+        categories_supply_channels_code,
+      </if>
+      <if test="categoriesSupplyChannelsName != null">
+        categories_supply_channels_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -314,9 +341,6 @@
       <if test="targetRebate != null">
         #{targetRebate,jdbcType=TINYINT},
       </if>
-<!--      <if test="planType != null">-->
-<!--        #{planType,jdbcType=TINYINT},-->
-<!--      </if>-->
       <if test="startTime != null">
         #{startTime,jdbcType=TIMESTAMP},
       </if>
@@ -400,6 +424,36 @@
       </if>
       <if test="minAmount != null">
         #{minAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxAmount != null">
+         #{maxAmount},
+      </if>
+      <if test="deliveryCycle != null">
+       #{deliveryCycle},
+      </if>
+      <if test="taxRate != null">
+        #{taxRate},
+      </if>
+      <if test="discount != null">
+        #{discount},
+      </if>
+      <if test="returnGuarantee != null">
+        #{returnGuarantee},
+      </if>
+      <if test="returnGuaranteeDay != null">
+        #{returnGuaranteeDay},
+      </if>
+      <if test="warranty != null">
+        warranty = #{warranty},
+      </if>
+      <if test="categoriesSupplyChannelsCode != null">
+        #{categoriesSupplyChannelsCode},
+      </if>
+      <if test="categoriesSupplyChannelsName != null">
+        #{categoriesSupplyChannelsName},
+      </if>
+      <if test="remark != null">
+        #{remark},
       </if>
     </trim>
   </insert>
@@ -527,8 +581,38 @@
       <if test="checkoutDate != null">
         checkout_date = #{checkoutDate,jdbcType=VARCHAR},
       </if>
-     <if test="minAmount != null">
+      <if test="minAmount != null">
        min_amount = #{minAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="maxAmount != null">
+        max_amount = #{maxAmount},
+      </if>
+      <if test="deliveryCycle != null">
+        delivery_cycle = #{deliveryCycle},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate},
+      </if>
+      <if test="discount != null">
+        discount = #{discount},
+      </if>
+      <if test="returnGuarantee != null">
+        return_guarantee = #{returnGuarantee},
+      </if>
+      <if test="returnGuaranteeDay != null">
+        return_guarantee_day = #{returnGuaranteeDay},
+      </if>
+      <if test="warranty != null">
+        warranty = #{warranty},
+      </if>
+      <if test="categoriesSupplyChannelsCode != null">
+        categories_supply_channels_code = #{categoriesSupplyChannelsCode},
+      </if>
+      <if test="categoriesSupplyChannelsName != null">
+        categories_supply_channels_name = #{categoriesSupplyChannelsName},
+      </if>
+      <if test="remark != null">
+        remark = #{remark},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

@@ -619,6 +619,8 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
     public int saveBrandList(List<ApplyContractBrand> contractBrands) {
         int k = 0;
         if (CollectionUtils.isNotEmptyCollection(contractBrands)) {
@@ -634,6 +636,8 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
     public int saveCategoryList(List<ApplyContractCategory> contractCategories) {
         int k = 0;
         if (CollectionUtils.isNotEmptyCollection(contractCategories)) {
@@ -695,7 +699,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
      * @return
      */
     @Override
-    @Transactional(rollbackFor = GroundRuntimeException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int deletePurchaseGroups(String applyContractCode) {
         return applyContractPurchaseGroupMapper.deleteByApplyCode(applyContractCode);
     }
@@ -707,6 +711,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteBrands(String applyContractCode) {
         return applyContractBrandMapper.deleteByApplyCode(applyContractCode);
     }
@@ -718,6 +723,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteCategories(String applyContractCode) {
         return applyContractCategoryMapper.deleteByApplyCode(applyContractCode);
     }

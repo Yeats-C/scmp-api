@@ -9,10 +9,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractPurchaseVolumeDao;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractFile;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractPlanType;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractPurchaseGroup;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractPurchaseVolumeDTO;
@@ -22,9 +19,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.*;
-import com.aiqin.bms.scmp.api.supplier.mapper.ContractFileMapper;
-import com.aiqin.bms.scmp.api.supplier.mapper.ContractPlanTypeMapper;
-import com.aiqin.bms.scmp.api.supplier.mapper.ContractPurchaseGroupMapper;
+import com.aiqin.bms.scmp.api.supplier.mapper.*;
 import com.aiqin.bms.scmp.api.supplier.service.ContractService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
@@ -69,10 +64,16 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
     private OperationLogService operationLogService;
 
     @Autowired
-
     private ContractFileMapper contractFileMapper;
+
     @Autowired
     private ContractPlanTypeMapper contractPlanTypeMapper;
+
+    @Autowired
+    private ContractBrandMapper contractBrandMapper;
+
+    @Autowired
+    private ContractCategoryMapper contractCategoryMapper;
 
     /**
      * 分页获取合同列表
@@ -157,32 +158,43 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
     @Override
     public ContractResVo findContractDetail(Long id) {
         ContractResVo contractResVo = new ContractResVo();
-        if (id != null){
+        if (id != null) {
             ContractDTO entity = contractDao.selectByPrimaryKey(id);
-            BeanCopyUtils.copy(entity,contractResVo);
+            BeanCopyUtils.copy(entity, contractResVo);
             List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(contractResVo.getContractCode());
             List<ContractFile> contractFiles = contractFileMapper.selectByContractCode(contractResVo.getContractCode());
             List<ContractPurchaseGroup> contractPurchaseGroups = contractPurchaseGroupMapper.selectByContractCode(contractResVo.getContractCode());
+            List<ContractBrand> contractBrands = contractBrandMapper.selectByContractCode(contractResVo.getContractCode());
+            List<ContractCategory> contractCategories = contractCategoryMapper.selectByContractCode(contractResVo.getContractCode());
             List<ContractPlanType> planTypeList = contractPlanTypeMapper.selectByCode(contractResVo.getContractCode());
             try {
-                if(CollectionUtils.isNotEmptyCollection(purchaseVolume)){
-                    List<ContractPurchaseVolumeResVo>  list =BeanCopyUtils.copyList(purchaseVolume,ContractPurchaseVolumeResVo.class);
+                if (CollectionUtils.isNotEmptyCollection(purchaseVolume)) {
+                    List<ContractPurchaseVolumeResVo> list = BeanCopyUtils.copyList(purchaseVolume, ContractPurchaseVolumeResVo.class);
                     contractResVo.setPurchaseVolumeReqVos(list);
                 }
-                if(CollectionUtils.isNotEmptyCollection(planTypeList)){
-                    List<PlanTypeReqVO>  copyList =BeanCopyUtils.copyList(planTypeList, PlanTypeReqVO.class);
+                if (CollectionUtils.isNotEmptyCollection(planTypeList)) {
+                    List<PlanTypeReqVO> copyList = BeanCopyUtils.copyList(planTypeList, PlanTypeReqVO.class);
                     contractResVo.setPlanTypeList(copyList);
-                }else {
+                } else {
                     contractResVo.setPlanTypeList(Lists.newArrayList());
                 }
-               if(CollectionUtils.isNotEmptyCollection(contractFiles)){
-                   List<ContractFileResVo>  fileResVos = BeanCopyUtils.copyList(contractFiles, ContractFileResVo.class);
-                   contractResVo.setFileResVos(fileResVos);
-               }
-               if(CollectionUtils.isNotEmptyCollection(contractPurchaseGroups)){
-                   List<ContractPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(contractPurchaseGroups, ContractPurchaseGroupResVo.class);
-                   contractResVo.setPurchaseGroupResVos(purchaseGroupResVos);
-               }
+                if (CollectionUtils.isNotEmptyCollection(contractFiles)) {
+                    List<ContractFileResVo> fileResVos = BeanCopyUtils.copyList(contractFiles, ContractFileResVo.class);
+                    contractResVo.setFileResVos(fileResVos);
+                }
+                if (CollectionUtils.isNotEmptyCollection(contractPurchaseGroups)) {
+                    List<ContractPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(contractPurchaseGroups, ContractPurchaseGroupResVo.class);
+                    contractResVo.setPurchaseGroupResVos(purchaseGroupResVos);
+                }
+
+                if (CollectionUtils.isNotEmptyCollection(contractBrands)) {
+                    List<ContractBrandResVo> contractBrandResVos = BeanCopyUtils.copyList(contractBrands, ContractBrandResVo.class);
+                    contractResVo.setBrandResVos(contractBrandResVos);
+                }
+                if (CollectionUtils.isNotEmptyCollection(contractCategories)) {
+                    List<ContractCategoryResVo> contractCategoryResVos = BeanCopyUtils.copyList(contractCategories, ContractCategoryResVo.class);
+                    contractResVo.setCategoryResVos(contractCategoryResVos);
+                }
                 if (null != contractResVo) {
                     //获取操作日志
                     OperationLogVo operationLogVo = new OperationLogVo();
@@ -197,7 +209,7 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
                     }
                     contractResVo.setLogDataList(logDataList);
                     return contractResVo;
-                }else {
+                } else {
                     return null;
                 }
             } catch (Exception e) {
