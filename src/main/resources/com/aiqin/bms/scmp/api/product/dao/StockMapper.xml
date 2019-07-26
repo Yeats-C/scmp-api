@@ -122,6 +122,7 @@
         <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
         <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
+        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
         <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
         <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
         <result column="large_unit" jdbcType="VARCHAR" property="largeUnit"/>
@@ -383,7 +384,7 @@
     <sql id="Query_Stock_Batch_Sku_List">
         sb.id,sb.stock_batch_code,sb.company_code,sb.company_name,sb.transport_center_code,sb.transport_center_name,
         sb.warehouse_code,sb.warehouse_name,sb.warehouse_type,sb.sku_code,sb.sku_name,sb.batch_code,sb.production_date,
-        sb.batch_remark,sb.category_type_code,sb.category_type_name,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,
+        sb.batch_remark,sb.category_type_code,sb.category_type_name,pssi.spec,sb.color_code,sb.color_name,sb.model_number,pssi.unit_code,pssi.unit_name,
         sb.pack,sb.config_status,ps.product_brand_name,sum(sb.inventory_num) as inventory_num,sum(sb.available_num) as available_num,
         sum(sb.lock_num) as lock_num,sb.supplier_code,sb.supplier_name,sb.new_delivery,sb.new_delivery_name,sb.purchase_price
     </sql>
@@ -403,12 +404,13 @@
         st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
         sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.color_code,ps.color_name,ps.model_number,ps.unit_code,ps.product_category_code,ps.product_category_name,
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,ps.product_category_code,ps.product_category_name,
         st.stockup_num,st.stockupfinish_time
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
         left join product_sku_box_packing as psbp on st.sku_code=psbp.product_sku_code
+        left join product_sku_stock_info as pssi on st.sku_code=pssi.product_sku_code
         where 1=1
         <if test="skuCode!=null and skuCode!=''">
             and st.sku_code=#{skuCode}
@@ -838,11 +840,12 @@
         st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
         sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.color_code,ps.color_name,ps.model_number,ps.unit_code,ps.product_category_code,ps.product_category_name
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,ps.product_category_code,ps.product_category_name
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
         left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        left join product_sku_stock_info as pssi on st.sku_code=pssi.product_sku_code
         where 1=1
         <if test="skuCode!=null and skuCode!=''">
             and st.sku_code=#{skuCode}
@@ -991,12 +994,13 @@
         st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
         sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,ps.spec,ps.color_code,ps.color_name,ps.model_number,ps.unit_code,ps.product_category_code,ps.product_category_name,
+        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,ps.product_category_code,ps.product_category_name,
         st.stockup_num,date_format(st.stockupfinish_time, '%Y-%m-%d %H:%i:%s') stockupfinish_time
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
         left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        left join product_sku_stock_info as pssi on st.sku_code=pssi.product_sku_code
         where 1=1
         <if test="skuCode!=null and skuCode!=''">
             and st.sku_code=#{skuCode}
@@ -1481,6 +1485,7 @@
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = sb.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
         left join product_sku_box_packing as psbp on sb.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        left join product_sku_stock_info as pssi on sb.sku_code=pssi.product_sku_code
         where 1=1
         <if test="companyCode!=null and companyCode!=''">
             and sb.company_code like concat('%',#{companyCode},'%')
