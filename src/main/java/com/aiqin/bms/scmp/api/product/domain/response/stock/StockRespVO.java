@@ -134,6 +134,10 @@ public class StockRespVO {
     @JsonProperty(value = "unit_code")
     private String unitCode;
 
+    @ApiModelProperty("单位名称")
+    @JsonProperty(value = "unit_name")
+    private String unitName;
+
     @ApiModelProperty("品类编码")
     @JsonProperty(value = "product_category_code")
     private String productCategoryCode;

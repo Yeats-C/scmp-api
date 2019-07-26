@@ -63,4 +63,17 @@ public class FileInfoController {
                 return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR);
         }
     }
+
+    @PostMapping("/down/pic")
+    @ApiModelProperty(value = "图片下载")
+    public HttpResponse<String> downFile(@NotNull String filePath){
+        try {
+            return HttpResponse.success(fileInfoService.down(filePath));
+        } catch (BizException ex) {
+            return HttpResponse.failure(ex.getMessageId());
+        }catch (Exception e) {
+            return HttpResponse.failure(ResultCode.FILE_DOWN_ERROR);
+        }
+    }
+
 }

@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
@@ -171,12 +172,10 @@ public class SkuInfoController {
 
     @PostMapping("/importSkuNewSave")
     @ApiOperation("新增导入sku保存")
-    public HttpResponse<Boolean> importSkuNewSave(@RequestBody List<AddSkuInfoReqVO> addSkuList,
-                                                  @RequestParam String purchaseGroupCode,
-                                                  @RequestParam String purchaseGroupName){
-        log.info("SkuInfoController---importSkuNewSave---入参：[{}]", JSON.toJSONString(addSkuList));
+    public HttpResponse<Boolean> importSkuNewSave(@RequestBody SkuImportReq reqVO){
+        log.info("SkuInfoController---importSkuNewSave---入参：[{}]", JSON.toJSONString(reqVO));
         try {
-            return HttpResponse.success(skuInfoService.importSkuNewSave(addSkuList,purchaseGroupCode,purchaseGroupName));
+            return HttpResponse.success(skuInfoService.importSkuNewSave(reqVO));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -186,12 +185,10 @@ public class SkuInfoController {
     }
     @PostMapping("/importSkuNewUpdate")
     @ApiOperation("修改导入sku保存")
-    public HttpResponse<Boolean> importSkuNewUpdate(@RequestBody List<AddSkuInfoReqVO> addSkuList,
-                                                    @RequestParam String purchaseGroupCode,
-                                                    @RequestParam String purchaseGroupName){
-        log.info("SkuInfoController---importSkuNewUpdate---入参：[{}]", JSON.toJSONString(addSkuList));
+    public HttpResponse<Boolean> importSkuNewUpdate(@RequestBody SkuImportReq reqVO){
+        log.info("SkuInfoController---importSkuNewUpdate---入参：[{}]", JSON.toJSONString(reqVO));
         try {
-            return HttpResponse.success(skuInfoService.importSkuNewUpdate(addSkuList,purchaseGroupCode,purchaseGroupName));
+            return HttpResponse.success(skuInfoService.importSkuNewUpdate(reqVO));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {

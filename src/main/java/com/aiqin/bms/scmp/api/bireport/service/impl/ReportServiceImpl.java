@@ -38,11 +38,13 @@ public class ReportServiceImpl implements ReportService {
             Integer total = reportDao.countSupplierArrivalRate(supplierArrivalRateReqVo);
             SupplierArrivalRateRespVo supplierArrivalRateRespVo = new SupplierArrivalRateRespVo();
             supplierArrivalRateRespVo.setColumnList(maps);
-            supplierArrivalRateRespVo.setPreInboundNums(supplierArrivalRateRespVoSum.getPreInboundNums());
-            supplierArrivalRateRespVo.setPreTaxAmounts(supplierArrivalRateRespVoSum.getPreTaxAmounts());
-            supplierArrivalRateRespVo.setPraInboundNums(supplierArrivalRateRespVoSum.getPraInboundNums());
-            supplierArrivalRateRespVo.setPraTaxAmounts(supplierArrivalRateRespVoSum.getPraTaxAmounts());
-            supplierArrivalRateRespVo.setPraTaxAmountRates(supplierArrivalRateRespVoSum.getPraTaxAmountRates());
+            if(supplierArrivalRateRespVoSum != null){
+                supplierArrivalRateRespVo.setPreInboundNums(supplierArrivalRateRespVoSum.getPreInboundNums());
+                supplierArrivalRateRespVo.setPreTaxAmounts(supplierArrivalRateRespVoSum.getPreTaxAmounts());
+                supplierArrivalRateRespVo.setPraInboundNums(supplierArrivalRateRespVoSum.getPraInboundNums());
+                supplierArrivalRateRespVo.setPraTaxAmounts(supplierArrivalRateRespVoSum.getPraTaxAmounts());
+                supplierArrivalRateRespVo.setPraTaxAmountRates(supplierArrivalRateRespVoSum.getPraTaxAmountRates());
+            }
             return new PageReportResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos,supplierArrivalRateRespVo);
         } catch (Exception ex) {
             log.error("查询供应商到货率失败");
@@ -129,8 +131,10 @@ public class ReportServiceImpl implements ReportService {
             List<Map> maps = reportDao.selectTableCloumnName(cloumnName);
             SupplierReturnRespVo supplierReturnRespVo = new SupplierReturnRespVo();
             supplierReturnRespVo.setColumnList(maps);
-            supplierReturnRespVo.setSumCounts(supplierReturnRespVoSum.getSumCounts());
-            supplierReturnRespVo.setSumAmounts(supplierReturnRespVoSum.getSumAmounts());
+            if(supplierReturnRespVoSum != null){
+                supplierReturnRespVo.setSumCounts(supplierReturnRespVoSum.getSumCounts());
+                supplierReturnRespVo.setSumAmounts(supplierReturnRespVoSum.getSumAmounts());
+            }
             return new PageReportResData<SupplierReturnRespVo>(total,supplierReturnRespVos,supplierReturnRespVo);
         } catch (Exception ex) {
             log.error("查询供应商退货失败");
@@ -179,7 +183,6 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageReportResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo) {
         try {
-            // PageHelper.startPage(storeRepurchaseRateReqVo.getPageNo(), storeRepurchaseRateReqVo.getPageSize());
             List<StoreRepurchaseRateRespVo> storeRepurchaseRateRespVos = reportDao.selectStoreRepurchaseRate(storeRepurchaseRateReqVo);
             Integer total = reportDao.countStoreRepurchaseRate(storeRepurchaseRateReqVo);
             String cloumnName = "bi_store_repurchase_rate";
@@ -209,14 +212,16 @@ public class ReportServiceImpl implements ReportService {
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             NegativeMarginRespVo negativeMarginRespVo = new NegativeMarginRespVo();
             negativeMarginRespVo.setColumnList(maps);
-            negativeMarginRespVo.setProductNums(negativeMarginRespVoSum.getProductNums());
-            negativeMarginRespVo.setSalesCosts(negativeMarginRespVoSum.getSalesCosts());
-            negativeMarginRespVo.setChannelOrderAmounts(negativeMarginRespVoSum.getChannelOrderAmounts());
-            negativeMarginRespVo.setChannelMaoris(negativeMarginRespVoSum.getChannelMaoris());
-            negativeMarginRespVo.setChannelMaoriRates(negativeMarginRespVoSum.getChannelMaoriRates());
-            negativeMarginRespVo.setDistributionOrderAmounts(negativeMarginRespVoSum.getDistributionOrderAmounts());
-            negativeMarginRespVo.setDistributionMaoris(negativeMarginRespVoSum.getDistributionMaoris());
-            negativeMarginRespVo.setDistributionMaoriRates(negativeMarginRespVoSum.getDistributionMaoriRates());
+            if(negativeMarginRespVoSum != null){
+                negativeMarginRespVo.setProductNums(negativeMarginRespVoSum.getProductNums());
+                negativeMarginRespVo.setSalesCosts(negativeMarginRespVoSum.getSalesCosts());
+                negativeMarginRespVo.setChannelOrderAmounts(negativeMarginRespVoSum.getChannelOrderAmounts());
+                negativeMarginRespVo.setChannelMaoris(negativeMarginRespVoSum.getChannelMaoris());
+                negativeMarginRespVo.setChannelMaoriRates(negativeMarginRespVoSum.getChannelMaoriRates());
+                negativeMarginRespVo.setDistributionOrderAmounts(negativeMarginRespVoSum.getDistributionOrderAmounts());
+                negativeMarginRespVo.setDistributionMaoris(negativeMarginRespVoSum.getDistributionMaoris());
+                negativeMarginRespVo.setDistributionMaoriRates(negativeMarginRespVoSum.getDistributionMaoriRates());
+            }
             return new PageReportResData<NegativeMarginRespVo>(total,negativeMarginRespVos,negativeMarginRespVo);
         } catch (Exception ex) {
             log.error("查询负毛利失败");
@@ -277,7 +282,6 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageReportResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
-            // PageHelper.startPage(highLowInventoryReqVo.getPageNo(), highLowInventoryReqVo.getPageSize());
             List<HighInventoryRespVo> highInventoryRespVos = reportDao.selectHighInventory(highLowInventoryReqVo);
             Integer total = reportDao.countHighInventory(highLowInventoryReqVo);
             String cloumnName = "bi_low_inventory";
@@ -301,11 +305,26 @@ public class ReportServiceImpl implements ReportService {
     public PageReportResData selectBrandSale(CategorySaleReqVo brandSaleReqVo) {
         try {
             List<BrandSaleRespVo> brandSaleRespVos = reportDao.selectBrandSale(brandSaleReqVo);
+            BrandSaleRespVo brandSaleRespVoSum = reportDao.sumBrandSale(brandSaleReqVo);
             Integer total = reportDao.countBrandSale(brandSaleReqVo);
             String cloumnName = "bi_brand_sale";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             BrandSaleRespVo brandSaleRespVo = new BrandSaleRespVo();
             brandSaleRespVo.setColumnList(maps);
+            if(brandSaleRespVoSum != null){
+                brandSaleRespVo.setChannelCurrentSaleAmounts(brandSaleRespVoSum.getChannelCurrentSaleAmounts());
+                brandSaleRespVo.setChannelPreviousSalesAmounts(brandSaleRespVoSum.getChannelPreviousSalesAmounts());
+                brandSaleRespVo.setChannelCurrentGrossMargins(brandSaleRespVoSum.getChannelCurrentGrossMargins());
+                brandSaleRespVo.setChannelPreviousGrossMargins(brandSaleRespVoSum.getChannelPreviousGrossMargins());
+                brandSaleRespVo.setChannelSaleLinkRatios(brandSaleRespVoSum.getChannelSaleLinkRatios());
+                brandSaleRespVo.setChannelGrossMarginLinkRatios(brandSaleRespVoSum.getChannelGrossMarginLinkRatios());
+                brandSaleRespVo.setDistributionCurrentSaleAmounts(brandSaleRespVoSum.getDistributionCurrentSaleAmounts());
+                brandSaleRespVo.setDistributionPreviousSalesAmounts(brandSaleRespVoSum.getDistributionPreviousSalesAmounts());
+                brandSaleRespVo.setDistributionCurrentGrossMargins(brandSaleRespVoSum.getDistributionCurrentGrossMargins());
+                brandSaleRespVo.setDistributionPreviousGrossMargins(brandSaleRespVoSum.getDistributionPreviousGrossMargins());
+                brandSaleRespVo.setDistributionSaleLinkRatios(brandSaleRespVoSum.getDistributionSaleLinkRatios());
+                brandSaleRespVo.setDistributionGrossMarginLinkRatios(brandSaleRespVoSum.getDistributionGrossMarginLinkRatios());
+            }
             return new PageReportResData<BrandSaleRespVo>(total,brandSaleRespVos,brandSaleRespVo);
         } catch (Exception ex) {
             log.error("品牌促销");
@@ -323,11 +342,26 @@ public class ReportServiceImpl implements ReportService {
     public PageReportResData selectCategorySale(CategorySaleReqVo categorySaleReqVo) {
         try {
             List<CategorySaleRespVo> categorySaleRespVos = reportDao.selectCategorySale(categorySaleReqVo);
+            CategorySaleRespVo categorySaleRespVoSum = reportDao.sumCategorySale(categorySaleReqVo);
             Integer total = reportDao.countCategorySale(categorySaleReqVo);
             String cloumnName = "bi_category_sale";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             CategorySaleRespVo categorySaleRespVo = new CategorySaleRespVo();
             categorySaleRespVo.setColumnList(maps);
+            if(categorySaleRespVoSum != null){
+                categorySaleRespVo.setChannelCurrentSaleAmounts(categorySaleRespVoSum.getChannelCurrentSaleAmounts());
+                categorySaleRespVo.setChannelPreviousSalesAmounts(categorySaleRespVoSum.getChannelPreviousSalesAmounts());
+                categorySaleRespVo.setChannelCurrentGrossMargins(categorySaleRespVoSum.getChannelCurrentGrossMargins());
+                categorySaleRespVo.setChannelPreviousGrossMargins(categorySaleRespVoSum.getChannelPreviousGrossMargins());
+                categorySaleRespVo.setChannelSaleLinkRatios(categorySaleRespVoSum.getChannelSaleLinkRatios());
+                categorySaleRespVo.setChannelGrossMarginLinkRatios(categorySaleRespVoSum.getChannelGrossMarginLinkRatios());
+                categorySaleRespVo.setDistributionCurrentSaleAmounts(categorySaleRespVoSum.getDistributionCurrentSaleAmounts());
+                categorySaleRespVo.setDistributionPreviousSalesAmounts(categorySaleRespVoSum.getDistributionPreviousSalesAmounts());
+                categorySaleRespVo.setDistributionCurrentGrossMargins(categorySaleRespVoSum.getDistributionCurrentGrossMargins());
+                categorySaleRespVo.setDistributionPreviousGrossMargins(categorySaleRespVoSum.getDistributionPreviousGrossMargins());
+                categorySaleRespVo.setDistributionSaleLinkRatios(categorySaleRespVoSum.getDistributionSaleLinkRatios());
+                categorySaleRespVo.setDistributionGrossMarginLinkRatios(categorySaleRespVoSum.getDistributionGrossMarginLinkRatios());
+            }
             return new PageReportResData<CategorySaleRespVo>(total,categorySaleRespVos,categorySaleRespVo);
         } catch (Exception ex) {
             log.error("品类促销");

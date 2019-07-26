@@ -71,8 +71,8 @@ public class SupplierController extends SupplierBaseController {
 
     @PostMapping("/down/log")
     @ApiOperation("添加下载记录")
-    public HttpResponse<Integer> addSupplierFileDownLog(@RequestBody DownSupplierFileReq downSupplierFileReq){
-        return HttpResponse.success();
+    public HttpResponse<String> addSupplierFileDownLog(@RequestBody DownSupplierFileReq downSupplierFileReq){
+        return HttpResponse.success(supplierService.addSupplierFileDownLog(downSupplierFileReq));
     }
 
 }

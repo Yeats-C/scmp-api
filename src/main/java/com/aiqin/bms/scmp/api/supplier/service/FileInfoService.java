@@ -35,4 +35,15 @@ public interface FileInfoService {
      * @return java.util.List<java.lang.String>
      */
     List<String> multiUpload(List<MultipartFile> files);
+
+    /**
+     *
+     * 功能描述: 图片下载
+     *
+     * @param filePath
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/25 19:13
+     */
+    String down(String filePath);
 }

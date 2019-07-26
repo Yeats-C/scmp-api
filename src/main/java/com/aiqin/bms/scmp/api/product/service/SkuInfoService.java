@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
@@ -19,9 +20,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProduct
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
-import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -248,8 +247,7 @@ public interface SkuInfoService{
      * @param purchaseGroupCode
      * @return
      */
-    Boolean importSkuNewSave(List<AddSkuInfoReqVO> addSkuList, String purchaseGroupCode,String purchaseGroupName);
+    Boolean importSkuNewSave(SkuImportReq reqVO);
 
-    @Transactional(rollbackFor = ExcelException.class)
-    Boolean importSkuNewUpdate(List<AddSkuInfoReqVO> addSkuList, String purchaseGroupCode, String purchaseGroupName);
+    Boolean importSkuNewUpdate(SkuImportReq reqVO);
 }

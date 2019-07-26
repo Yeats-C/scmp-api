@@ -21,6 +21,9 @@ public class ProductSkuManufacturerRespVo extends CommonBean {
     @ApiModelProperty("生产厂家")
     private String manufacturerName;
 
+    @ApiModelProperty("生产厂家编号")
+    private String manufacturerCode;
+
     @ApiModelProperty("厂方商品编号")
     private String factoryProductNumber;
 
