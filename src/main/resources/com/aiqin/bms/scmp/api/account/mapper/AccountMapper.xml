@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.account.dao.AccountDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.account.domain.Account">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="person_id" jdbcType="VARCHAR" property="personId" />
+    <result column="role_ids" jdbcType="VARCHAR" property="roleIds" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="department_code" jdbcType="VARCHAR" property="departmentCode" />
+    <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="account_status" jdbcType="BIT" property="accountStatus" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="gender" jdbcType="BIT" property="gender" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, account_name, username, person_id, role_ids, supplier_code, supplier_name, company_code, 
+    company_name, department_code, department_name, account_status, mobile, gender, remark, 
+    create_by_id, create_by_name, update_by_id, update_by_name, create_time, update_time
+  </sql>
+  <select id="selectOne" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from account
+    where username = #{username,jdbcType=VARCHAR}
+  </select>
+  <select id="selectLastOne" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from account
+    order by create_time desc
+    limit 1
+  </select>
+  <select id="list"  resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List" />
+    from account
+    <include refid="QUERY_LIST"></include>
+    order by create_time desc
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="listCount"  resultMap="BaseResultMap">
+    select
+      count(1)
+    from account
+    <include refid="QUERY_LIST"></include>
+  </select>
+  <sql id="QUERY_LIST">
+    <where>
+      <if test="supplierName!=null">
+        AND supplier_name = #{supplierName,jdbcType=VARCHAR}
+      </if>
+      <if test="accountName!=null">
+        AND account_name = #{accountName,jdbcType=VARCHAR}
+      </if>
+      <if test="accountStatus!=null">
+        AND account_status = #{accountStatus,jdbcType=BIT}
+      </if>
+      <if test="roleId!=null">
+        AND role_ids like  concat("%",#{roleId,jdbcType=VARCHAR},"%")
+      </if>
+    </where>
+  </sql>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from account
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.account.domain.Account">
+    insert into account ( account_name, username,
+      person_id, role_ids, supplier_code, 
+      supplier_name, company_code, company_name, 
+      department_code, department_name, account_status, 
+      mobile, gender, remark, 
+      create_by_id, create_by_name, update_by_id, 
+      update_by_name, create_time, update_time
+      )
+    values ( #{accountName,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR},
+      #{personId,jdbcType=VARCHAR}, #{roleIds,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
+      #{supplierName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{departmentCode,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR}, #{accountStatus,jdbcType=BIT}, 
+      #{mobile,jdbcType=VARCHAR}, #{gender,jdbcType=BIT}, #{remark,jdbcType=VARCHAR}, 
+      #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{createById,jdbcType=VARCHAR},
+      #{createByName,jdbcType=VARCHAR},now(),now()
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.account.domain.Account">
+    insert into account
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="accountName != null">
+        account_name,
+      </if>
+      <if test="username != null">
+        username,
+      </if>
+      <if test="personId != null">
+        person_id,
+      </if>
+      <if test="roleIds != null">
+        role_ids,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="supplierName != null">
+        supplier_name,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="departmentCode != null">
+        department_code,
+      </if>
+      <if test="departmentName != null">
+        department_name,
+      </if>
+      <if test="accountStatus != null">
+        account_status,
+      </if>
+      <if test="mobile != null">
+        mobile,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createById != null">
+        create_by_id,
+      </if>
+      <if test="createByName != null">
+        create_by_name,
+      </if>
+      <if test="updateById != null">
+        update_by_id,
+      </if>
+      <if test="updateByName != null">
+        update_by_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="accountName != null">
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="personId != null">
+        #{personId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleIds != null">
+        #{roleIds,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentCode != null">
+        #{departmentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentName != null">
+        #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountStatus != null">
+        #{accountStatus,jdbcType=BIT},
+      </if>
+      <if test="mobile != null">
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=BIT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createById != null">
+        #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="createByName != null">
+        #{createByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateById != null">
+        #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        #{updateByName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.account.domain.Account">
+    update account
+    <set>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleIds != null">
+        role_ids = #{roleIds,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentName != null">
+        department_name = #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountStatus != null">
+        account_status = #{accountStatus,jdbcType=BIT},
+      </if>
+      <if test="mobile != null">
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=BIT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+        update_time = now()
+    </set>
+    where  username= #{username,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.account.domain.Account">
+    update account
+    set account_name = #{accountName,jdbcType=VARCHAR},
+      username = #{username,jdbcType=VARCHAR},
+      person_id = #{personId,jdbcType=VARCHAR},
+      role_ids = #{roleIds,jdbcType=VARCHAR},
+      supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      supplier_name = #{supplierName,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      department_code = #{departmentCode,jdbcType=VARCHAR},
+      department_name = #{departmentName,jdbcType=VARCHAR},
+      account_status = #{accountStatus,jdbcType=BIT},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=BIT},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_by_id = #{createById,jdbcType=VARCHAR},
+      create_by_name = #{createByName,jdbcType=VARCHAR},
+      update_by_id = #{updateById,jdbcType=VARCHAR},
+      update_by_name = #{updateByName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
