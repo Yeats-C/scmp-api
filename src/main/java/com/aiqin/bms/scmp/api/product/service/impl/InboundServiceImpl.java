@@ -456,6 +456,7 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setDocumentType(2);//1出库 2入库
             stockVoRequest.setSourceDocumentNum(inbound.getSourceOderCode());
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
+            stockVoRequest.setOperator(inbound.getUpdateBy());
             stockVoRequestList.add(stockVoRequest);
         }
         stockChangeRequest.setStockVoRequests(stockVoRequestList);
