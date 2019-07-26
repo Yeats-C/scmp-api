@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.BiGrossProfitMarginDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.BiGrossProfitMargin">
+    <result column="total_turnover" jdbcType="DECIMAL" property="totalTurnover" />
+    <result column="inventory_cost" jdbcType="DECIMAL" property="inventoryCost" />
+    <result column="gross_profit_margin" jdbcType="DECIMAL" property="grossProfitMargin" />
+    <result column="run_time" jdbcType="DATE" property="runTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    total_turnover, inventory_cost, gross_profit_margin, run_time
+  </sql>
+</mapper>
