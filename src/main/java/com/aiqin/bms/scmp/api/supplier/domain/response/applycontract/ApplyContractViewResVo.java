@@ -128,7 +128,14 @@ public class ApplyContractViewResVo {
     @ApiModelProperty("文件信息")
     private List<ApplyContractFileResVo> fileResVos;
 
+    @ApiModelProperty("采购组")
     private List<ApplyContractPurchaseGroupResVo> purchaseGroupResVos;
+
+    @ApiModelProperty("品牌")
+    private List<ApplyContractBrandResVo> brandReqVos;
+
+    @ApiModelProperty("品类")
+    private List<ApplyContractCategoryResVo> categoryReqVos;
 
     @ApiModelProperty("操作日志列表")
     private List<LogData> logDataList;

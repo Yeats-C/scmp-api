@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.domain.response.applycontract;
 
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractBrandResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractCategoryResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractFileResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseGroupResVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -124,6 +126,14 @@ public class ApplyContractUpdateResVo {
 
     @ApiModelProperty("合同采购组")
     private List<ContractPurchaseGroupResVo> purchaseGroupResVos;
+
+    @ApiModelProperty("品牌")
+    List<ContractBrandResVo> brandResVos;
+
+    @ApiModelProperty("品类")
+    List<ContractCategoryResVo> categoryResVos;
+
+
 
     @ApiModelProperty("文件信息")
     private List<ContractFileResVo> fileResVos;

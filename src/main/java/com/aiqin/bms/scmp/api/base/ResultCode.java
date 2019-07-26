@@ -77,6 +77,7 @@ public interface ResultCode {
 
     //图片上传
     MessageId FILE_EMPTY = MessageId.create(Project.SUPPLIER_API, 48, "传入图片不能为空");
+    MessageId FILE_DOWN_ERROR = MessageId.create(Project.SUPPLIER_API, 48, "图片下载失败");
     MessageId PLEASE_UPLOAD_AN_IMAGE = MessageId.create(Project.SUPPLIER_API, 49, "请上传图片");
 
     MessageId DATA_REPEAT = MessageId.create(Project.SUPPLIER_API, 98, "数据重复，请检查！");

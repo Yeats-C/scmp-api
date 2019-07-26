@@ -1,9 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractFile;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPlanType;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractPurchaseGroup;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.dto.ApplyContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.dto.ApplyContractPurchaseVolumeDTO;
@@ -36,7 +34,7 @@ public interface ApplyContractService{
      */
     int saveApplyContract(ApplyContractReqVo applyContractReqVo);
 
- void savePlanTypeList(List<ApplyContractPlanType> typeList);
+    void savePlanTypeList(List<ApplyContractPlanType> typeList);
 
  /**
      * 查看合同申请详情（新增）
@@ -102,6 +100,22 @@ public interface ApplyContractService{
       */
      int savePurchaseGroupList(List<ApplyContractPurchaseGroup> contractPurchaseGroups);
 
+
+    /**
+     * 批量保存品牌
+     * @param contractBrands
+     * @return
+     */
+    int saveBrandList(List<ApplyContractBrand> contractBrands);
+
+
+    /**
+     * 批量保存品类
+     * @param contractCategories
+     * @return
+     */
+    int saveCategoryList(List<ApplyContractCategory> contractCategories);
+
     /**
      * 跟新申请合同主体
      * @param applyContractDTO
@@ -131,6 +145,20 @@ public interface ApplyContractService{
      * @return
      */
     int deletePurchaseGroups(String applyContractCode);
+
+    /**
+     * 根据关联编码删除品牌
+     * @param applyContractCode
+     * @return
+     */
+    int deleteBrands(String applyContractCode);
+
+    /**
+     * 根据关联编码删除品类
+     * @param applyContractCode
+     * @return
+     */
+    int deleteCategories(String applyContractCode);
 
    /**
     * 审批流接口
