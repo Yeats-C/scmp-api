@@ -45,7 +45,7 @@ public class UploadFileUtil {
         if (base64.startsWith("data:img")) {
             fileType = base64.substring(9, base64.indexOf(";"));
         }
-        if (base64.startsWith("data:file")) {
+        if (base64.startsWith("data:DownPicReqVo")) {
             fileType = base64.substring(10, base64.indexOf(";"));
         }
         String fileName = dir + UUID.randomUUID() + "." + fileType;
@@ -69,7 +69,7 @@ public class UploadFileUtil {
 
     public String uploadFile(MultipartFile file) throws Exception {
         OSSClient ossClient = new OSSClient(endPoint, accessKeyId, accessKeySecret);
-        //String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        //String type = DownPicReqVo.getOriginalFilename().substring(DownPicReqVo.getOriginalFilename().lastIndexOf("."));
         String fileName = dir + file.getOriginalFilename();
         ossClient.putObject(bucketName, fileName, new ByteArrayInputStream(file.getBytes()));
         ossClient.shutdown();
@@ -98,7 +98,7 @@ public class UploadFileUtil {
         OSSClient ossClient = new OSSClient(endPoint, accessKeyId, accessKeySecret);
         // 上传文件流。
         InputStream inputStream = null;
-        //String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        //String type = DownPicReqVo.getOriginalFilename().substring(DownPicReqVo.getOriginalFilename().lastIndexOf("."));
         String fileName = dir + file.getOriginalFilename();
         try {
             inputStream = file.getInputStream();

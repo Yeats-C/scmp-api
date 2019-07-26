@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportReq;
 import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportResp;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
@@ -117,4 +118,32 @@ public interface ApplySupplyComServcie {
      * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO>
      */
     SupplierImportResp dealImport2(MultipartFile file);
+
+    /**
+     *
+     * 功能描述: 新增导入保存
+     *
+     * @param req
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/26 14:40
+     */
+    Boolean importSupplierNewSave(SupplierImportReq req);
+
+
+    /**
+     *
+     * 功能描述: 修改导入保存
+     *
+     * @param req
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/26 14:41
+     */
+    Boolean importSupplierNewUpdate(SupplierImportReq req);
+
+
+
+//    BasePage<SupplyComListRespVO> applyList();
+
 }

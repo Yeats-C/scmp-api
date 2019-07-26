@@ -257,7 +257,7 @@
           resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.BaseResultMap">
     SELECT
     <include refid="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.Base_Column_List"/>
-    from supply_company where supplier_code in
+    from supply_company where supply_code in
     <foreach collection="list" open="(" close=")" separator="," item="item">
       #{item}
     </foreach>

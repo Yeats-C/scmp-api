@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.web.file;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.supplier.domain.request.DownPicReqVo;
 import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
 import com.aiqin.bms.scmp.api.util.UploadFileUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -66,9 +67,9 @@ public class FileInfoController {
 
     @PostMapping("/down/pic")
     @ApiModelProperty(value = "图片下载")
-    public HttpResponse<String> downFile(@NotNull String filePath){
+    public HttpResponse<String> downFile(@RequestBody DownPicReqVo reqVo){
         try {
-            return HttpResponse.success(fileInfoService.down(filePath));
+            return HttpResponse.success(fileInfoService.down(reqVo.getFilePath()));
         } catch (BizException ex) {
             return HttpResponse.failure(ex.getMessageId());
         }catch (Exception e) {
