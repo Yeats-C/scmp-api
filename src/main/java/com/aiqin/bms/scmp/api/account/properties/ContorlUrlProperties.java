@@ -37,5 +37,7 @@ public class ContorlUrlProperties {
 
     private String personAdd;
 
+    private String accountAdd;
+
 }
 
