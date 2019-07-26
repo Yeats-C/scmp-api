@@ -411,7 +411,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_2)){
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STOCK_UP.getCode(),
                     PurchaseOrderLogEnum.STOCK_UP.getName() , null);
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_3)){
+        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)){
             detail = new PurchaseOrderDetails();
             detail.setPurchaseOrderId(purchaseOrderId);
             detail.setDeliveryTime(Calendar.getInstance().getTime());
@@ -612,14 +612,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         String name = "入库申请单"+ s + "，入库完成";
         log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
                 name , null);
-
-        order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_6);
-        order.setStorageStatus(Global.STORAGE_STATUS_1);
-        Integer count1 = purchaseOrderDao.update(order);
-        if(count1 == 0){
-            LOGGER.error("采购单入库中状态修改失败");
-            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
-        }
         return HttpResponse.success();
     }
 
@@ -677,17 +669,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 }
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
+                Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
                 reqVo.setPreInboundMainNum(purchaseWhole.longValue());
-                if(purchaseStorage.getPurchaseNum() > 1){
-                    Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
-                    if(actualSingleCount <= singleCount) {
-                        reqVo.setPreInboundNum(singleCount.longValue() - actualSingleCount.longValue());
-                    }else {
-                        reqVo.setPreInboundNum(Long.valueOf(0));
-                    }
-                }else {
-                    reqVo.setPreInboundNum(singleCount.longValue());
-                }
+                reqVo.setPreInboundNum(singleCount.longValue() - actualSingleCount.longValue());
                 reqVo.setPreTaxPurchaseAmount(product.getProductAmount().longValue());
                 Long productTotalAmount = product.getProductTotalAmount() == null ? 0 : product.getProductTotalAmount().longValue();
                 reqVo.setPreTaxAmount(productTotalAmount);
@@ -708,29 +692,40 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setPreTax(preTaxAmount-preNoTaxAmount);
         save.setRemark(null);
         save.setList(list);
-        PurchaseOrderDetails orderDetail = new PurchaseOrderDetails();
-        orderDetail.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
-        orderDetail.setWarehouseTime(Calendar.getInstance().getTime());
-        orderDetail.setUpdateById(purchaseStorage.getCreateById());
-        orderDetail.setUpdateByName(purchaseStorage.getCreateByName());
-        purchaseOrderDetailsDao.update(orderDetail);
         return save;
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+   // @Transactional(rollbackFor = Exception.class)
     public HttpResponse getWarehousing(PurchaseStorageRequest purchaseStorage){
-        Integer num = purchaseStorage.getPurchaseNum();
         if(purchaseStorage == null || CollectionUtils.isEmptyCollection(purchaseStorage.getOrderList())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        Integer num = purchaseStorage.getPurchaseNum();
+        PurchaseOrder order = new PurchaseOrder();
+        order.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderCode());
+        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
+        order.setStorageStatus(Global.STORAGE_STATUS_1);
+        if(num == 1){
+            order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_6);
+        }
+        order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
+        Integer count = purchaseOrderDao.update(order);
+        if(count == 0){
+            LOGGER.error("采购单入库中状态修改失败");
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
         // 变更采购的入库的实际单品数量
         List<PurchaseOrderProduct> list = purchaseStorage.getOrderList();
         List<PurchaseOrderProduct> productList = Lists.newArrayList();
         for(PurchaseOrderProduct product:list){
             product.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderCode());
-            Integer count = purchaseOrderProductDao.update(product);
-            if(count == 0){
+            PurchaseOrderProduct orderProduct= purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(
+                    purchaseStorage.getPurchaseOrderCode(), product.getSkuCode(), product.getId());
+            Integer actualCount = orderProduct.getActualSingleCount() == null ? 0 : orderProduct.getActualSingleCount().intValue();
+            product.setActualSingleCount(actualCount + product.getActualSingleCount());
+            Integer count1 = purchaseOrderProductDao.update(product);
+            if(count1 == 0){
                 return HttpResponse.failure(ResultCode.UPDATE_ERROR);
             }
             PurchaseOrderProduct purchaseOrderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(
@@ -744,20 +739,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             }
         }
         // 是否入库完成
-        PurchaseOrder order = new PurchaseOrder();
-        order.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderCode());
-        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
         if(purchaseStorage.getPurchaseNum() > num){
             if(num == 1){
-                log(purchaseOrder.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_IN.getCode(),
+                log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_IN.getCode(),
                         PurchaseOrderLogEnum.WAREHOUSING_IN.getName() , null);
-
-            }
-            order.setStorageStatus(Global.STORAGE_STATUS_1);
-            Integer count1 = purchaseOrderDao.update(order);
-            if(count1 == 0){
-                LOGGER.error("采购单入库中状态修改失败");
-                return HttpResponse.failure(ResultCode.UPDATE_ERROR);
             }
             InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
             String s = inboundService.saveInbound(save);
@@ -766,15 +751,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
             }
             String name = "入库申请单"+ s + "，入库完成";
-            log(purchaseOrder.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
+            log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
                     name , null);
         }else {
             order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
             order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
-            order.setStorageStatus(Global.STORAGE_STATUS_2);
-            Integer count = purchaseOrderDao.update(order);
-            if(count == 0){
-                LOGGER.error("采购单入库状态修改失败");
+            Integer count1 = purchaseOrderDao.update(order);
+            if(count1 == 0){
+                LOGGER.error("采购单入库完成状态修改失败");
                 return HttpResponse.failure(ResultCode.UPDATE_ERROR);
             }
             // 添加日志
