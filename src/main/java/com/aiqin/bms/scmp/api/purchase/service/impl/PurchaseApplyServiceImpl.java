@@ -199,10 +199,22 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             Map<String, Long> productTax = new HashMap<>();
             String key;
             for (PurchaseApplyDetailResponse product : detail) {
-                    key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
-                    if (productTax.get(String.format("%s,%s", product.getSkuCode(), product.getSupplierCode())) != null) {
-                        productTax.put(key, productSkuPriceInfoMapper.selectPriceTax(product.getSkuCode(), product.getSupplierCode()));
-                    }
+                key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
+                if (productTax.get(key) == null) {
+                    productTax.put(key, productSkuPriceInfoMapper.selectPriceTax(product.getSkuCode(), product.getSupplierCode()));
+                }
+            }
+
+            Map<String, PurchaseApplyRespVo> purchaseApply = new HashMap<>();
+            for (PurchaseApplyDetailResponse product : detail) {
+                key = String.format("%s,%s,%s", product.getSkuCode(), product.getSupplierCode(), product.getTransportCenterCode());
+                if (purchaseApply.get(key) == null) {
+                    applyReqVo = new PurchaseApplyReqVo();
+                    applyReqVo.setSkuCode(product.getSkuCode());
+                    applyReqVo.setSupplierCode(product.getSupplierCode());
+                    applyReqVo.setTransportCenterCode(product.getTransportCenterCode());
+                    purchaseApply.put(key, replenishmentService.selectPurchaseApplySkuList(applyReqVo));
+                }
             }
 
             for (PurchaseApplyDetailResponse product : detail) {
@@ -216,11 +228,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     product.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                 }
                 // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
-                applyReqVo = new PurchaseApplyReqVo();
-                applyReqVo.setSkuCode(product.getSkuCode());
-                applyReqVo.setSupplierCode(product.getSupplierCode());
-                applyReqVo.setTransportCenterCode(product.getTransportCenterCode());
-                PurchaseApplyRespVo vo = replenishmentService.selectPurchaseApplySkuList(applyReqVo);
+                key = String.format("%s,%s,%s", product.getSkuCode(), product.getSupplierCode(), product.getTransportCenterCode());
+                PurchaseApplyRespVo vo = purchaseApply.get(key);
                 if(vo != null){
                     product.setPurchaseNumber(vo.getAdviceOrders() == null ? 0: vo.getAdviceOrders().intValue());
                     try {
