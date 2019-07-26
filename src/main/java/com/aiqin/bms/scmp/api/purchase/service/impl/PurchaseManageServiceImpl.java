@@ -816,6 +816,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         // 变更采购单的状态
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         purchaseOrder.setPurchaseOrderId(purchaseOrderId);
+        if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
+            purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
+        }
         purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_2);
         purchaseOrder.setUpdateById(storageRequest.getCreateById());
         purchaseOrder.setUpdateByName(storageRequest.getCreateByName());
