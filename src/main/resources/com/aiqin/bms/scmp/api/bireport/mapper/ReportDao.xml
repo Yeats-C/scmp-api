@@ -1458,7 +1458,7 @@
         select
         bms.id as id,
         date_format(bms.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        date_format(bms.month, '%Y-%m') as month,
+        bms.month as month,
         bms.product_sort_code as productSortCode,
         bms.product_sort_name as productSortName,
         bms.order_code as orderCode,
@@ -1496,7 +1496,7 @@
         select
         bmgm.id as id,
         date_format(bmgm.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        date_format(bmgm.month, '%Y-%m') as month,
+        bmgm.month as month,
         bmgm.product_sort_code as productSortCode,
         bmgm.product_sort_name as productSortName,
         bmgm.order_code as orderCode,
@@ -1535,7 +1535,7 @@
         select
         bmsa.id as id,
         date_format(bmsa.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        date_format(bmsa.month, '%Y-%m') as month,
+        bmsa.month as month,
         bmsa.product_sort_code as productSortCode,
         bmsa.product_sort_name as productSortName,
         bmsa.order_code as orderCode,
@@ -1571,7 +1571,7 @@
         select
         bmcbs.id as id,
         date_format(bmcbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        date_format(bmcbs.month, '%Y-%m') as month,
+        bmcbs.month as month,
         bmcbs.cumulative_month as cumulativeMonth,
         bmcbs.product_sort_code as productSortCode,
         bmcbs.product_sort_name as productSortName,
@@ -1612,7 +1612,7 @@
         select
         bmcgpm.id as id,
         date_format(bmcgpm.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        date_format(bmcgpm.month, '%Y-%m') as month,
+        bmcgpm.month as month,
         bmcgpm.cumulative_month as cumulativeMonth,
         bmcgpm.product_sort_code as productSortCode,
         bmcgpm.product_sort_name as productSortName,

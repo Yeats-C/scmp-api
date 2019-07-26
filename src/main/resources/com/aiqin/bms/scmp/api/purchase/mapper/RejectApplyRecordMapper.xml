@@ -46,7 +46,7 @@
                 #{item.purchaseGroupCode,jdbcType=VARCHAR}
             </foreach>
             <if test="rejectApplyRecordCode!=null and rejectApplyRecordCode!=''">
-                and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+                and reject_apply_record_code like concat( #{rejectApplyRecordCode,jdbcType=VARCHAR},'%')
             </if>
             <if test="applyType!=null ">
                 and apply_type = #{applyType,jdbcType=VARCHAR}

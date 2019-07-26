@@ -57,7 +57,7 @@ public class accountTest extends SpringBootTestContext {
 
     @Test
     public void rejectApplyListInfo(){
-        HttpResponse response = accountInfoService.selectRole("11976","bf9208cd083b4d62ba788d9315bd7370");
+        HttpResponse response = accountInfoService.selectRole("11976","635ff2f7a55d4b5baf7d8cf0a974df7f");
     }
 
 
