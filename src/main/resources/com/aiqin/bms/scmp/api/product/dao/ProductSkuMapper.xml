@@ -1958,7 +1958,7 @@ select a.sku_code              as skuCode,
     select s.stock_code as stockCode,sc.transport_center_code as transportCenterCode,sc.transport_center_name as transportCenterName,
     w.warehouse_code as warehouseCode,w.warehouse_name as warehouseName,ps.sku_code as skuCode,ps.sku_name as skuName,
     s.stock_unit_code as stockUnitCode,s.stock_unit_name as stockUnitName,s.inventory_num as stockCount, s.total_way_num as totalWayNum,
-    ps.box_gauge as boxGauge,ps.product_brand_code as brandId,ps.product_brand_name as brandName,
+    CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge,ps.product_brand_code as brandId,ps.product_brand_name as brandName,
     ps.product_category_code as categoryId,ps.product_category_name as categoryName, ps.product_property_code as productPropertyCode,
     ps.product_property_name as productPropertyName,ps.goods_gifts as productType, ps.product_sort_code as productSortCode,
     ps.product_sort_name as productSortName, ps.color_name as colorName,ps.model_number as modelNumber,
@@ -2045,10 +2045,8 @@ select a.sku_code              as skuCode,
     select count(1)
     from product_sku ps
     left join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
-    left join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
     left join product_sku_config sc on sc.sku_code = ps.sku_code
     left join warehouse w on w.logistics_center_code = sc.transport_center_code
-    left join stock s on s.sku_code = ps.sku_code
     <where>
       ps.del_flag = 0 and w.warehouse_type_code = 1
       and sc.config_status = 0
