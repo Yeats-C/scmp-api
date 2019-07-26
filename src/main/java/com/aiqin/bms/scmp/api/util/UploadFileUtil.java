@@ -69,8 +69,8 @@ public class UploadFileUtil {
 
     public String uploadFile(MultipartFile file) throws Exception {
         OSSClient ossClient = new OSSClient(endPoint, accessKeyId, accessKeySecret);
-        String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        String fileName = dir + UUID.randomUUID() + type;
+        //String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileName = dir + file.getOriginalFilename();
         ossClient.putObject(bucketName, fileName, new ByteArrayInputStream(file.getBytes()));
         ossClient.shutdown();
         Date expiration = new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10);
@@ -98,8 +98,8 @@ public class UploadFileUtil {
         OSSClient ossClient = new OSSClient(endPoint, accessKeyId, accessKeySecret);
         // 上传文件流。
         InputStream inputStream = null;
-        String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        String fileName = dir + UUID.randomUUID() + type;
+        //String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileName = dir + file.getOriginalFilename();
         try {
             inputStream = file.getInputStream();
             ossClient.putObject(bucketName,fileName, inputStream);
@@ -185,8 +185,6 @@ public class UploadFileUtil {
                 }
             }
         }
-        String str = new String(org.apache.commons.codec.binary.Base64.encodeBase64(data));
-        System.out.println("str length: " + str.length() + "  str: " + str);
-        return str;
+        return new String(org.apache.commons.codec.binary.Base64.encodeBase64(data));
     }
 }
