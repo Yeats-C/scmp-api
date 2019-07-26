@@ -183,12 +183,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             PurchaseApplyReqVo applyReqVo;
             for (PurchaseApplyDetailResponse product : detail) {
-                if(StringUtils.isNotBlank(product.getSkuCode())){
-                    ProductSkuPurchaseInfo info = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
-                    if(info != null && StringUtils.isNotBlank(info.getUnitName()) && info.getBaseProductContent() != null){
-                        product.setBoxGauge(info.getBaseProductContent().toString().trim()+"/"+info.getUnitName().trim());
-                    }
-                }
+                // 查询品类名称
                 if(StringUtils.isNotBlank(product.getCategoryId())){
                     String categoryName = goodsRejectService.selectCategoryName(product.getCategoryId());
                     product.setCategoryName(categoryName);

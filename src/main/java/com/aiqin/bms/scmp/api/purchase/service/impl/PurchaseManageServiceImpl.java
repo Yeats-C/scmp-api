@@ -738,23 +738,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         PurchaseOrder order = new PurchaseOrder();
         order.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderCode());
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
-        if(num >= purchaseStorage.getPurchaseNum()){
-            order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
-            order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
-            order.setStorageStatus(Global.STORAGE_STATUS_2);
-            Integer count = purchaseOrderDao.update(order);
-            if(count == 0){
-                LOGGER.error("采购单入库状态修改失败");
-                return HttpResponse.failure(ResultCode.UPDATE_ERROR);
-            }
-            // 添加日志
-            log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , "手动");
-            // 仓储确认判断是否入库完成
-            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-                this.wayNum(purchaseStorage.getPurchaseOrderId());
-            }
-        }else {
+        if(purchaseStorage.getPurchaseNum() > num){
             InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
             String s = inboundService.saveInbound(save);
             log(purchaseOrder.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_IN.getCode(),
@@ -771,6 +755,22 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             if(count1 == 0){
                 LOGGER.error("采购单入库中状态修改失败");
                 return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+            }
+        }else {
+            order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
+            order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
+            order.setStorageStatus(Global.STORAGE_STATUS_2);
+            Integer count = purchaseOrderDao.update(order);
+            if(count == 0){
+                LOGGER.error("采购单入库状态修改失败");
+                return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+            }
+            // 添加日志
+            log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , "手动");
+            // 仓储确认判断是否入库完成
+            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+                this.wayNum(purchaseStorage.getPurchaseOrderId());
             }
         }
         return HttpResponse.success();
