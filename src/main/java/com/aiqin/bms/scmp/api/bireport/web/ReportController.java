@@ -103,7 +103,7 @@ public class ReportController {
             @RequestParam(value = "category_name", required = false) String categoryName,
             @RequestParam(value = "category_code", required = false) String categoryCode,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_code", required = false) String productSortName,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "inbound_days", required = false) Integer inboundDays,
             @RequestParam(value = "begin_turnover_days", required = false) Integer beginTurnoverDays,
             @RequestParam(value = "finish_turnover_days", required = false) Integer finishTurnoverDays,
