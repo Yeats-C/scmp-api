@@ -50,7 +50,9 @@ import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: zhao shuai
@@ -182,20 +184,35 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if (CollectionUtils.isNotEmptyCollection(detail)) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             PurchaseApplyReqVo applyReqVo;
+
+            Map<String, String> categoryNames = new HashMap<>();
+            String categoryId;
             for (PurchaseApplyDetailResponse product : detail) {
-                if(StringUtils.isNotBlank(product.getSkuCode())){
-                    ProductSkuPurchaseInfo info = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
-                    if(info != null && StringUtils.isNotBlank(info.getUnitName()) && info.getBaseProductContent() != null){
-                        product.setBoxGauge(info.getBaseProductContent().toString().trim()+"/"+info.getUnitName().trim());
+                categoryId = product.getCategoryId();
+                if(StringUtils.isNotBlank(categoryId)){
+                    if (StringUtils.isBlank(categoryNames.get(categoryId))) {
+                        categoryNames.put(categoryId, goodsRejectService.selectCategoryName(product.getCategoryId()));
                     }
                 }
+            }
+
+            Map<String, Long> productTax = new HashMap<>();
+            String key;
+            for (PurchaseApplyDetailResponse product : detail) {
+                    key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
+                    if (productTax.get(String.format("%s,%s", product.getSkuCode(), product.getSupplierCode())) != null) {
+                        productTax.put(key, productSkuPriceInfoMapper.selectPriceTax(product.getSkuCode(), product.getSupplierCode()));
+                    }
+            }
+
+            for (PurchaseApplyDetailResponse product : detail) {
                 if(StringUtils.isNotBlank(product.getCategoryId())){
-                    String categoryName = goodsRejectService.selectCategoryName(product.getCategoryId());
-                    product.setCategoryName(categoryName);
+                    product.setCategoryName(categoryNames.get(product.getCategoryId()));
                 }
                 // 获取最高采购价(价格管理中供应商的含税价格)
                 if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
-                    Long priceTax = productSkuPriceInfoMapper.selectPriceTax(product.getSkuCode(), product.getSupplierCode());
+                    key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
+                    Long priceTax = productTax.get(key);
                     product.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                 }
                 // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
