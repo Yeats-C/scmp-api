@@ -470,7 +470,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 if(detailResponse.getTaxRate()==null){
                     untaxedAmount = detailResponse.getProductTotalAmount();
                 }else{
-                    untaxedAmount += detailResponse.getProductTotalAmount() / (100 + detailResponse.getTaxRate());
+                    untaxedAmount += detailResponse.getProductTotalAmount()*100 / (100 + detailResponse.getTaxRate());
                 }
                 if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_2)) {
                     returnCount += detailResponse.getProductCount();
