@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.StatusTypeCode;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportResp;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailByCodeRespVO;
@@ -142,7 +143,7 @@ public class SupplyCompanyController extends SupplierBaseController {
     }
     @PostMapping("/import/add")
     @ApiOperation(value = "新增批量导入")
-    public HttpResponse<ApplySupplyCompanyReqVO> importData(MultipartFile file){
+    public HttpResponse<SupplierImportResp> importData(MultipartFile file, String purchaseGroupCode,String purchaseGroupName){
         try {
             return HttpResponse.success(applySupplyComServcie.dealImport(file));
         } catch (BizException e) {
@@ -154,7 +155,7 @@ public class SupplyCompanyController extends SupplierBaseController {
     }
     @PostMapping("/import/update")
     @ApiOperation(value = "修改批量导入")
-    public HttpResponse<ApplySupplyCompanyReqVO> importData2(MultipartFile file){
+    public HttpResponse<SupplierImportResp> importData2(MultipartFile file,String purchaseGroupCode,String purchaseGroupName){
         try {
             return HttpResponse.success(applySupplyComServcie.dealImport2(file));
         } catch (BizException e) {
