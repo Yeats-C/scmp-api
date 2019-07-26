@@ -77,7 +77,7 @@
      a.delivery_days as deliveryDays,
      a.delivery_type as deliveryType
     from delivery_information a
-    left join supplier_dictionary_info b on b.supplier_dictionary_name = '发货至' and a.send_to = b.supplier_dictionary_value
+    left join supplier_dictionary_info b on b.supplier_dictionary_name = '发送至' and a.send_to = b.supplier_dictionary_value
     where supply_company_code = #{supplyCompanyCode,jdbcType=VARCHAR}
   </select>
 </mapper>

@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.domain.request.brand;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ import java.util.Date;
  * @time: 10:27
  */
 @Data
+@ApiModel("商品品牌请求VO")
 public class QueryProductBrandReqVO extends PageReq {
 
     @ApiModelProperty(value = "品牌类型code")

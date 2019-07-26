@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.StatusTypeCode;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportReq;
 import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportResp;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO;
@@ -153,11 +154,39 @@ public class SupplyCompanyController extends SupplierBaseController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @PostMapping("/importSupplierNewSave")
+    @ApiOperation(value = "新增导入保存")
+    public HttpResponse<Boolean> importSupplierNewSave(@RequestBody SupplierImportReq req){
+        try {
+            return HttpResponse.success(applySupplyComServcie.importSupplierNewSave(req));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+
     @PostMapping("/import/update")
     @ApiOperation(value = "修改批量导入")
     public HttpResponse<SupplierImportResp> importData2(MultipartFile file,String purchaseGroupCode,String purchaseGroupName){
         try {
             return HttpResponse.success(applySupplyComServcie.dealImport2(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/importSupplierNewUpdate")
+    @ApiOperation(value = "修改导入保存")
+    public HttpResponse<Boolean> importSupplierNewUpdate(@RequestBody SupplierImportReq req){
+        try {
+            return HttpResponse.success(applySupplyComServcie.importSupplierNewUpdate(req));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {

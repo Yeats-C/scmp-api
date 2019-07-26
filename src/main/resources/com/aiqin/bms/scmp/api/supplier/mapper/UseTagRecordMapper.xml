@@ -35,6 +35,7 @@
     <result column="use_object_name" jdbcType="VARCHAR" property="useObjectName" />
     <result column="tag_type_code" jdbcType="VARCHAR" property="tagTypeCode" />
     <result column="tag_type_name" jdbcType="VARCHAR" property="tagTypeName" />
+    <result column="source_code" jdbcType="VARCHAR" property="sourceCode" />
   </resultMap>
   <sql id="Base_Column_List">
     id, tag_code, tag_name, source_code, use_object_code, use_object_name, tag_type_code, tag_type_name,
@@ -46,7 +47,7 @@
   </sql>
 
   <sql id="UseTag_Column_List">
-    tag_code, tag_name, use_object_code, use_object_name, tag_type_code, tag_type_name
+    tag_code, tag_name, use_object_code, use_object_name, tag_type_code, tag_type_name,source_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
