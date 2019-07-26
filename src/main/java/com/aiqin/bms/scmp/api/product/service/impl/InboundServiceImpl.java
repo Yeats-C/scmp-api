@@ -450,7 +450,7 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSkuCode(inboundProduct.getSkuCode());
             stockVoRequest.setSkuName(inboundProduct.getSkuName());
             //设置更改数量
-            stockVoRequest.setChangeNum(inboundProduct.getPraInboundMainNum());
+            stockVoRequest.setChangeNum(inboundProduct.getPraInboundNum());
 
             stockVoRequest.setDocumentNum(inbound.getInboundOderCode());
             stockVoRequest.setDocumentType(2);//1出库 2入库
