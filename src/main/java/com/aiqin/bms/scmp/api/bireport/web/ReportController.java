@@ -103,7 +103,7 @@ public class ReportController {
             @RequestParam(value = "category_name", required = false) String categoryName,
             @RequestParam(value = "category_code", required = false) String categoryCode,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_code", required = false) String productSortName,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "inbound_days", required = false) Integer inboundDays,
             @RequestParam(value = "begin_turnover_days", required = false) Integer beginTurnoverDays,
             @RequestParam(value = "finish_turnover_days", required = false) Integer finishTurnoverDays,
@@ -154,7 +154,7 @@ public class ReportController {
             @RequestParam(value = "category_code", required = false) String categoryCode,
             @RequestParam(value = "inbound_days", required = false) Integer inboundDays,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_code", required = false) String productSortName,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "begin_inbound_time", required = false) String beginInboundTime,
             @RequestParam(value = "finish_inbound_time", required = false) String finishInboundTime,
             @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
@@ -240,7 +240,7 @@ public class ReportController {
             @RequestParam(value = "begin_channel_maori_rate", required = false) Double beginChannelMaoriRate,
             @RequestParam(value = "finish_channel_maori_rate", required = false) Double finishChannelMaoriRate,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_code", required = false) String productSortName,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
         NewProductBatchMovingRateReqVo newProductBatchMovingRateReqVo = new NewProductBatchMovingRateReqVo(skuCode,skuName,orderCode,orderOriginal,supplierCode,supplierName,categoryCode,categoryName,beginInboundTime,finishInboundTime,batchCode,beginChannelMaoriRate,finishChannelMaoriRate,
@@ -313,7 +313,7 @@ public class ReportController {
             @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
             @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_code", required = false) String productSortName,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
         NegativeMarginReqVo negativeMarginReqVo = new NegativeMarginReqVo(skuCode,skuName,categoryCode,categoryName,productBrandCode,productBrandName,orderCode,orderOriginal,beginCreateTime,finishCreateTime,productSortCode,productSortName);
