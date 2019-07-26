@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.account.dao.AccountDao;
 import com.aiqin.bms.scmp.api.account.domain.Account;
 import com.aiqin.bms.scmp.api.account.domain.Util.CodeUtil;
 import com.aiqin.bms.scmp.api.account.domain.request.AccountRequest;
+import com.aiqin.bms.scmp.api.account.domain.request.ControlAccountRequest;
 import com.aiqin.bms.scmp.api.account.domain.request.PersonRequest;
 import com.aiqin.bms.scmp.api.account.domain.response.AccountResponse;
 import com.aiqin.bms.scmp.api.account.properties.ContorlUrlProperties;
@@ -60,7 +61,14 @@ import java.util.stream.Collectors;
 public class AccountInfoServiceImpl implements AccountInfoService {
 
     private static Logger LOGGER = LoggerFactory.getLogger(AccountInfoServiceImpl.class);
-
+    /**
+     * 公司编码
+     */
+    private static String COMPANY_CODE = "15";
+    /**
+     * 公司名称
+     */
+    private static String COMPANY_NAME = "熙耘供应链供应商集合";
     @Resource
     private AccountDao accountDao;
     @Resource
@@ -73,48 +81,78 @@ public class AccountInfoServiceImpl implements AccountInfoService {
         LOGGER.info("查询供应商账号列表:{}", count);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
-    private PersonRequest handlePerson(Account request){
+
+    private PersonRequest handlePerson(Account request) {
         PersonRequest personRequest = new PersonRequest();
         personRequest.setPersonId(request.getUsername());
-
+        personRequest.setName(request.getAccountName());
+        personRequest.setUserId(request.getUsername());
+        personRequest.setGender(request.getGender());
+        personRequest.setMobile(request.getMobile());
+        personRequest.setMobileType("+86");
+        personRequest.setRemark(request.getRemark());
+        personRequest.setPersonStatus(0);
+        personRequest.setCreateBy(request.getCreateById());
+        //供应商员工类型
+        personRequest.setPersonType(3);
         return personRequest;
+    }
+    private ControlAccountRequest handleAccount(Account request){
+        ControlAccountRequest controlAccountRequest = new ControlAccountRequest();
+        controlAccountRequest.setPassword(request.getPassword());
+        controlAccountRequest.setUsername(request.getUsername());
+        controlAccountRequest.setPersonId(request.getUsername());
+        controlAccountRequest.setPersonName(request.getAccountName());
+        controlAccountRequest.setCompanyCode(COMPANY_CODE);
+        controlAccountRequest.setCompanyName(COMPANY_NAME);
+        controlAccountRequest.setAccountStatus(0);
+        return controlAccountRequest;
     }
     @Override
     public HttpResponse addAccount(AccountRequest request) {
-        if(CollectionUtils.isEmpty(request.getRoleIds())){
+        if (CollectionUtils.isEmpty(request.getRoleIds())) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         Account account = new Account();
-        BeanUtils.copyProperties(request,account);
+        BeanUtils.copyProperties(request, account);
         Account response = accountDao.selectLastOne();
-        String username ="";
-        if(response==null){
-            username = CodeUtil.getCode(CodeUtil.SUPPLIER_PREFIX,"");
-        }else{
-            username = CodeUtil.getCode(CodeUtil.SUPPLIER_PREFIX,response.getUsername());
+        String username = "";
+        if (response == null) {
+            username = CodeUtil.getCode(CodeUtil.SUPPLIER_PREFIX, "");
+        } else {
+            username = CodeUtil.getCode(CodeUtil.SUPPLIER_PREFIX, response.getUsername());
         }
         account.setUsername(username);
         account.setPersonId(username);
+        account.setAccountStatus(0);
         //处理调用的参数
         PersonRequest personRequest = handlePerson(account);
+        ControlAccountRequest accountRequest = handleAccount(account);
         //增加person
-        HttpClient client = HttpClient.post(contorlUrlProperties.getRoleList()).json(personRequest);
+        HttpClient client = HttpClient.post(contorlUrlProperties.getPersonAdd()).json(personRequest);
         HttpResponse httpResponse = client.action().result(HttpResponse.class);
-        if(httpResponse.getCode().equals(MessageId.SUCCESS_CODE)){
-            // todo account表数据
-            // TODO 创建部门
-            // todo 关联角色
-            // 增加供应链关联表
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+            //增加account表数据
+            HttpClient accountClient = HttpClient.post(contorlUrlProperties.getAccountAdd()).json(accountRequest);
+            HttpResponse accountResponse = accountClient.action().result(HttpResponse.class);
+            if (accountResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+                // TODO 创建部门
 
-//        synchronized (this){
-            account.setCompanyCode("00");
-            account.setCompanyName("公司");
-            account.setDepartmentCode("001");
-            account.setDepartmentName("部门");
-            account.setRoleIds(request.getRoleIds().stream().collect(Collectors.joining(",")));
-            Integer count  = accountDao.insert(account);
-            LOGGER.info("添加供应商关联表:{}",count);
-//        }
+
+                // todo 关联角色
+
+
+
+                // 增加供应链关联表
+                account.setCompanyCode(COMPANY_CODE);
+                account.setCompanyName(COMPANY_NAME);
+                account.setDepartmentCode("001");
+                account.setDepartmentName("部门");
+                account.setRoleIds(request.getRoleIds().stream().collect(Collectors.joining(",")));
+                Integer count = accountDao.insert(account);
+                LOGGER.info("添加供应商关联表:{}", count);
+            }
+
         }
 
         return HttpResponse.success();
@@ -156,7 +194,7 @@ public class AccountInfoServiceImpl implements AccountInfoService {
         // todo 修改角色
         // 修改供应链关联表
         Integer count = accountDao.updateByPrimaryKeySelective(account);
-        LOGGER.info("修改供应商关联表:{}",count);
+        LOGGER.info("修改供应商关联表:{}", count);
         return HttpResponse.success();
     }
 
@@ -169,8 +207,8 @@ public class AccountInfoServiceImpl implements AccountInfoService {
             HttpResponse.failureGenerics(ResultCode.NO_HAVE_ACCOUNT, null);
         }
         AccountResponse response = new AccountResponse();
-        BeanUtils.copyProperties(account,response);
-        if(StringUtils.isNotEmpty(account.getRoleIds())){
+        BeanUtils.copyProperties(account, response);
+        if (StringUtils.isNotEmpty(account.getRoleIds())) {
             response.setRoleIds(Arrays.asList(account.getRoleIds().split(",")));
         }
         return HttpResponse.successGenerics(response);
