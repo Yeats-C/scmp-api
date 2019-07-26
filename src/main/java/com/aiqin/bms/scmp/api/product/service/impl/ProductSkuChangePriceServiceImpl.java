@@ -249,6 +249,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     public ProductSkuChangePriceRespVO view(String code) {
         ProductSkuChangePriceRespVO respVO = productSkuChangePriceMapper.selectInfoByCode(code);
+        String formNo = "CP" + IdSequenceUtils.getInstance().nextId();
+        respVO.setFormNo(formNo);
         if (Objects.isNull(respVO)) {
             throw new BizException(ResultCode.CAN_NOT_FIND_CHANGE_PRICE_INFO);
         }

@@ -38,11 +38,13 @@ public class ReportServiceImpl implements ReportService {
             Integer total = reportDao.countSupplierArrivalRate(supplierArrivalRateReqVo);
             SupplierArrivalRateRespVo supplierArrivalRateRespVo = new SupplierArrivalRateRespVo();
             supplierArrivalRateRespVo.setColumnList(maps);
-            supplierArrivalRateRespVo.setPreInboundNums(supplierArrivalRateRespVoSum.getPreInboundNums());
-            supplierArrivalRateRespVo.setPreTaxAmounts(supplierArrivalRateRespVoSum.getPreTaxAmounts());
-            supplierArrivalRateRespVo.setPraInboundNums(supplierArrivalRateRespVoSum.getPraInboundNums());
-            supplierArrivalRateRespVo.setPraTaxAmounts(supplierArrivalRateRespVoSum.getPraTaxAmounts());
-            supplierArrivalRateRespVo.setPraTaxAmountRates(supplierArrivalRateRespVoSum.getPraTaxAmountRates());
+            if(supplierArrivalRateRespVoSum != null){
+                supplierArrivalRateRespVo.setPreInboundNums(supplierArrivalRateRespVoSum.getPreInboundNums());
+                supplierArrivalRateRespVo.setPreTaxAmounts(supplierArrivalRateRespVoSum.getPreTaxAmounts());
+                supplierArrivalRateRespVo.setPraInboundNums(supplierArrivalRateRespVoSum.getPraInboundNums());
+                supplierArrivalRateRespVo.setPraTaxAmounts(supplierArrivalRateRespVoSum.getPraTaxAmounts());
+                supplierArrivalRateRespVo.setPraTaxAmountRates(supplierArrivalRateRespVoSum.getPraTaxAmountRates());
+            }
             return new PageReportResData<SupplierArrivalRateRespVo>(total,supplierArrivalRateRespVos,supplierArrivalRateRespVo);
         } catch (Exception ex) {
             log.error("查询供应商到货率失败");
@@ -129,8 +131,10 @@ public class ReportServiceImpl implements ReportService {
             List<Map> maps = reportDao.selectTableCloumnName(cloumnName);
             SupplierReturnRespVo supplierReturnRespVo = new SupplierReturnRespVo();
             supplierReturnRespVo.setColumnList(maps);
-            supplierReturnRespVo.setSumCounts(supplierReturnRespVoSum.getSumCounts());
-            supplierReturnRespVo.setSumAmounts(supplierReturnRespVoSum.getSumAmounts());
+            if(supplierReturnRespVoSum != null){
+                supplierReturnRespVo.setSumCounts(supplierReturnRespVoSum.getSumCounts());
+                supplierReturnRespVo.setSumAmounts(supplierReturnRespVoSum.getSumAmounts());
+            }
             return new PageReportResData<SupplierReturnRespVo>(total,supplierReturnRespVos,supplierReturnRespVo);
         } catch (Exception ex) {
             log.error("查询供应商退货失败");
@@ -179,7 +183,6 @@ public class ReportServiceImpl implements ReportService {
     @Override
     public PageReportResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo) {
         try {
-            // PageHelper.startPage(storeRepurchaseRateReqVo.getPageNo(), storeRepurchaseRateReqVo.getPageSize());
             List<StoreRepurchaseRateRespVo> storeRepurchaseRateRespVos = reportDao.selectStoreRepurchaseRate(storeRepurchaseRateReqVo);
             Integer total = reportDao.countStoreRepurchaseRate(storeRepurchaseRateReqVo);
             String cloumnName = "bi_store_repurchase_rate";
@@ -209,14 +212,16 @@ public class ReportServiceImpl implements ReportService {
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             NegativeMarginRespVo negativeMarginRespVo = new NegativeMarginRespVo();
             negativeMarginRespVo.setColumnList(maps);
-            negativeMarginRespVo.setProductNums(negativeMarginRespVoSum.getProductNums());
-            negativeMarginRespVo.setSalesCosts(negativeMarginRespVoSum.getSalesCosts());
-            negativeMarginRespVo.setChannelOrderAmounts(negativeMarginRespVoSum.getChannelOrderAmounts());
-            negativeMarginRespVo.setChannelMaoris(negativeMarginRespVoSum.getChannelMaoris());
-            negativeMarginRespVo.setChannelMaoriRates(negativeMarginRespVoSum.getChannelMaoriRates());
-            negativeMarginRespVo.setDistributionOrderAmounts(negativeMarginRespVoSum.getDistributionOrderAmounts());
-            negativeMarginRespVo.setDistributionMaoris(negativeMarginRespVoSum.getDistributionMaoris());
-            negativeMarginRespVo.setDistributionMaoriRates(negativeMarginRespVoSum.getDistributionMaoriRates());
+            if(negativeMarginRespVoSum != null){
+                negativeMarginRespVo.setProductNums(negativeMarginRespVoSum.getProductNums());
+                negativeMarginRespVo.setSalesCosts(negativeMarginRespVoSum.getSalesCosts());
+                negativeMarginRespVo.setChannelOrderAmounts(negativeMarginRespVoSum.getChannelOrderAmounts());
+                negativeMarginRespVo.setChannelMaoris(negativeMarginRespVoSum.getChannelMaoris());
+                negativeMarginRespVo.setChannelMaoriRates(negativeMarginRespVoSum.getChannelMaoriRates());
+                negativeMarginRespVo.setDistributionOrderAmounts(negativeMarginRespVoSum.getDistributionOrderAmounts());
+                negativeMarginRespVo.setDistributionMaoris(negativeMarginRespVoSum.getDistributionMaoris());
+                negativeMarginRespVo.setDistributionMaoriRates(negativeMarginRespVoSum.getDistributionMaoriRates());
+            }
             return new PageReportResData<NegativeMarginRespVo>(total,negativeMarginRespVos,negativeMarginRespVo);
         } catch (Exception ex) {
             log.error("查询负毛利失败");
