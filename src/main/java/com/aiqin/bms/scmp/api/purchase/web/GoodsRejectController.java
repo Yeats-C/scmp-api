@@ -11,7 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -126,7 +125,7 @@ public class GoodsRejectController {
 
     @PostMapping("/apply/info")
     @ApiOperation(value = "查询退供申请单信息去生成退供单")
-    public HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(@Valid @RequestBody RejectApplyRequest rejectApplyRequest) {
+    public HttpResponse<List<RejectApplyResponse>> rejectApplyInfo( @RequestBody RejectApplyRequest rejectApplyRequest) {
         LOGGER.info("查询退供申请单信息去生成退供单请求,rejectRecord:{}", rejectApplyRequest.toString());
         return goodsRejectService.rejectApplyInfo(rejectApplyRequest);
     }
@@ -147,7 +146,7 @@ public class GoodsRejectController {
 
     @PostMapping("/record")
     @ApiOperation(value = "新增退供单记录")
-    public HttpResponse addReject(@Valid @RequestBody RejectRequest request) {
+    public HttpResponse addReject(@RequestBody RejectRequest request) {
         LOGGER.info("新增退供单记录请求,rejectRecord:{}", request.toString());
         return goodsRejectService.addReject(request);
     }
@@ -200,20 +199,20 @@ public class GoodsRejectController {
             @ApiImplicitParam(name = "contacts_person_phone", value = "联系人电话", type = "String"),
             @ApiImplicitParam(name = "contacts_person", value = "联系人名称", type = "String"),
     })
-    public HttpResponse rejectSupplier(@PathVariable  String reject_record_id, @RequestParam(value = "province_id",required = false) String province_id,@RequestParam(value = "province_name",required = false) String province_name,
-                                       @RequestParam(value = "city_id",required = false)String city_id ,@RequestParam(value = "district_id",required = false) String district_id,
-                                       @RequestParam(value = "city_name",required = false)String city_name ,@RequestParam(value = "district_name",required = false) String district_name,
-                                       @RequestParam(value = "address",required = false)String address, @RequestParam(value = "contacts_person_phone",required = false)String contacts_person_phone,
-                                       @RequestParam(value = "contacts_person",required = false)String contacts_person) {
+    public HttpResponse rejectSupplier(@PathVariable String reject_record_id, @RequestParam(value = "province_id", required = false) String province_id, @RequestParam(value = "province_name", required = false) String province_name,
+                                       @RequestParam(value = "city_id", required = false) String city_id, @RequestParam(value = "district_id", required = false) String district_id,
+                                       @RequestParam(value = "city_name", required = false) String city_name, @RequestParam(value = "district_name", required = false) String district_name,
+                                       @RequestParam(value = "address", required = false) String address, @RequestParam(value = "contacts_person_phone", required = false) String contacts_person_phone,
+                                       @RequestParam(value = "contacts_person", required = false) String contacts_person) {
         LOGGER.info("供应商确认请求,reject_record_id:{}", reject_record_id);
-        RejectRecord rejectRecord = new RejectRecord(reject_record_id,contacts_person,contacts_person_phone,province_id,province_name,city_id,city_name,district_id,district_name,address);
+        RejectRecord rejectRecord = new RejectRecord(reject_record_id, contacts_person, contacts_person_phone, province_id, province_name, city_id, city_name, district_id, district_name, address);
         return goodsRejectService.rejectSupplier(rejectRecord);
     }
 
     @PutMapping("/record/transport/{reject_record_id}")
     @ApiOperation(value = "退供发运")
     @ApiImplicitParam(name = "reject_record_id", value = "退供单id", type = "String")
-    public HttpResponse rejectTransport(@PathVariable String reject_record_id, @Valid @RequestBody RejectRecord rejectRecord) {
+    public HttpResponse rejectTransport(@PathVariable String reject_record_id,  @RequestBody RejectRecord rejectRecord) {
         rejectRecord.setRejectRecordId(reject_record_id);
         LOGGER.info("退供发运请求,rejectRecord:{}", rejectRecord.toString());
         return goodsRejectService.rejectTransport(rejectRecord);
@@ -254,10 +253,10 @@ public class GoodsRejectController {
     public HttpResponse<PageResData<RejectApplyDetailHandleResponse>> rejectStockProduct(@RequestParam(value = "page_no", required = false) Integer page_no, @RequestParam(value = "page_size", required = false) Integer page_size,
                                                                                          @RequestParam(value = "product_property_name", required = false) String product_property_name, @RequestParam(value = "purchase_group_code") String purchase_group_code,
                                                                                          @RequestParam(value = "sku_code", required = false) String sku_code, @RequestParam(value = "sku_name", required = false) String sku_name,
-                                                                                         @RequestParam(value = "transport_center_code",required = false) String transport_center_code, @RequestParam(value = "supplier_code",required = false) String supplier_code,
-                                                                                         @RequestParam(value = "category_name", required = false) String category_name,@RequestParam(value = "product_property_code", required = false) String product_property_code,
-                                                                                         @RequestParam(value = "warehouse_code",required = false) String warehouse_code, @RequestParam(value = "brand_name", required = false) String brand_name) {
-        RejectProductRequest rejectQueryRequest = new RejectProductRequest(purchase_group_code, supplier_code, transport_center_code, warehouse_code, sku_code, sku_name, category_name, brand_name, product_property_name,product_property_code);
+                                                                                         @RequestParam(value = "transport_center_code", required = false) String transport_center_code, @RequestParam(value = "supplier_code", required = false) String supplier_code,
+                                                                                         @RequestParam(value = "category_name", required = false) String category_name, @RequestParam(value = "product_property_code", required = false) String product_property_code,
+                                                                                         @RequestParam(value = "warehouse_code", required = false) String warehouse_code, @RequestParam(value = "brand_name", required = false) String brand_name) {
+        RejectProductRequest rejectQueryRequest = new RejectProductRequest(purchase_group_code, supplier_code, transport_center_code, warehouse_code, sku_code, sku_name, category_name, brand_name, product_property_name, product_property_code);
         rejectQueryRequest.setPageNo(page_no);
         rejectQueryRequest.setPageSize(page_size);
         LOGGER.info("查询退供申请单的商品信息,rejectRecord:{}", rejectQueryRequest.toString());
