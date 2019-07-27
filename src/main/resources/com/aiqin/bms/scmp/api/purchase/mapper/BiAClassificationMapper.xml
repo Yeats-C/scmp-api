@@ -2,16 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.BiAClassificationDao">
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.BiAClassification">
+    <result column="id" jdbcType="INTEGER" property="id" />
     <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
     <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
     <result column="available_num" jdbcType="BIGINT" property="availableNum" />
+    <result column="total_available_num" jdbcType="BIGINT" property="totalAvailableNum" />
     <result column="a_classification" jdbcType="DECIMAL" property="aClassification" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="run_time" jdbcType="DATE" property="runTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    product_category_code, product_category_name, available_num, a_classification, create_time, 
+    id, product_category_code, product_category_name, available_num, total_available_num, a_classification, create_time,
     update_time, run_time
   </sql>
+  <select id="aCategoryList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from bi_a_classification where
+    to_char(create_time,'yyyy-MM-dd') = #{data}
+  </select>
 </mapper>

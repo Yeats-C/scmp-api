@@ -11,19 +11,27 @@ import java.util.Date;
 @ApiModel
 @Data
 public class BiGrossProfitMargin {
-    @ApiModelProperty(value="总营业额")
+
+    @JsonProperty("id")
+    private Integer id;
+
+    @ApiModelProperty(value = "总营业额")
     @JsonProperty("total_turnover")
     private BigDecimal totalTurnover;
 
-    @ApiModelProperty(value="库存成本")
+    @ApiModelProperty(value = "库存成本")
     @JsonProperty("inventory_cost")
     private BigDecimal inventoryCost;
 
-    @ApiModelProperty(value="毛利额(总利润)")
+    @ApiModelProperty(value = "毛利额(总利润)")
     @JsonProperty("gross_profit_margin")
     private BigDecimal grossProfitMargin;
 
-    @ApiModelProperty(value="创建时间")
-    @JsonProperty("run_time")
-    private Date runTime;
+    @ApiModelProperty(value = "创建时间")
+    @JsonProperty("create_time")
+    private Date createTime;
+
+    @ApiModelProperty(value = "更新时间")
+    @JsonProperty("update_time")
+    private Date updateTime;
 }
