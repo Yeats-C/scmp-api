@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * @author knight.xie
  * @version 1.0
@@ -35,4 +37,18 @@ public class UseTagRecordReqVo extends CommonBean {
 
     @ApiModelProperty("来源单号")
     private String sourceCode;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        UseTagRecordReqVo that = (UseTagRecordReqVo) o;
+        return Objects.equals(tagCode, that.tagCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), tagCode);
+    }
 }
