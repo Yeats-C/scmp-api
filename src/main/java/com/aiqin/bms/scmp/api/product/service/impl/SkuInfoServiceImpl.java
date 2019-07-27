@@ -1169,7 +1169,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuSalesInfoService.saveList(skuCode,applyCode);
             //结算
             productSkuCheckoutService.saveInfo(skuCode,applyCode);
-            if(null != oldSku){
+            if(null == oldSku){
                 //供应商
                 productSkuSupplyUnitService.saveList(skuCode,applyCode);
                 //供应商产能
