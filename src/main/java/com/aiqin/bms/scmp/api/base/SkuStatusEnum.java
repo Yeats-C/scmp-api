@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @ApiModel("SKU状态(商品配置)枚举")
 @Getter
 public enum SkuStatusEnum {
-    IN_USE(Byte.valueOf("0"),"再用","有一个仓在用，那么商品在用"),
+    IN_USE(Byte.valueOf("0"),"在用","有一个仓在用，那么商品在用"),
     STOP_PURCHASE(Byte.valueOf("1"),"停止进货","所有仓没有在用，有一个仓停止进货，那么商品停止进货"),
     STOP_DISTRIBUTION(Byte.valueOf("2"),"停止配送","所有仓没有在用和停止进货，有一个仓停止配送，那么商品停止配送"),
     STOP_SALES(Byte.valueOf("3"),"停止销售","所有仓没有在用和停止进货和停止配送，那么商品停止销售"),
