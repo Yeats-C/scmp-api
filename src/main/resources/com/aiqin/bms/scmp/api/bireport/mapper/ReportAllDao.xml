@@ -208,10 +208,10 @@
                 and bnpbmr.sku_name like concat('%', #{skuName}, '%')
             </if>
             <if test="orderCode!=null and orderCode!=''">
-                and bnpbmr.order_code=#{orderCode}
+                and bnpbmr.price_channel_code=#{orderCode}
             </if>
             <if test="orderOriginal!=null and orderOriginal!=''">
-                and bnpbmr.order_original like concat('%', #{orderOriginal}, '%')
+                and bnpbmr.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="supplierCode!=null and supplierCode!=''">
                 and bnpbmr.supplier_code=#{supplierCode}
@@ -267,10 +267,10 @@
                 and bsrr.category_name like concat('%', #{categoryName}, '%')
             </if>
             <if test="orderCode!=null and orderCode!=''">
-                and bsrr.order_code=#{orderCode}
+                and bsrr.price_channel_code=#{orderCode}
             </if>
             <if test="orderOriginal!=null and orderOriginal!=''">
-                and bsrr.order_original like concat('%', #{orderOriginal}, '%')
+                and bsrr.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
                 and bsrr.create_time between #{beginCreateTime}
@@ -302,10 +302,10 @@
                 and bnm.product_brand_name like concat('%', #{productBrandName}, '%')
             </if>
             <if test="orderCode!=null and orderCode!=''">
-                and bnm.order_code=#{orderCode}
+                and bnm.price_channel_code=#{orderCode}
             </if>
             <if test="orderOriginal!=null and orderOriginal!=''">
-                and bnm.order_original like concat('%', #{orderOriginal}, '%')
+                and bnm.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
                 and bnm.create_time between #{beginCreateTime}
@@ -409,10 +409,10 @@
                 and bbs.create_time like concat('%', #{createTime}, '%')
             </if>
             <if test="orderCode!=null and orderCode!=''">
-                and bbs.order_code like concat('%', #{orderCode}, '%')
+                and bbs.price_channel_code like concat('%', #{orderCode}, '%')
             </if>
             <if test="orderOriginal!=null and orderOriginal!=''">
-                and bbs.order_original like concat('%', #{orderOriginal}, '%')
+                and bbs.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="departmentCode!=null and departmentCode!=''">
                 and bbs.department_code like concat('%', #{departmentCode}, '%')
@@ -429,10 +429,10 @@
                 and bcs.create_time=#{createTime}
             </if>
             <if test="orderCode!=null and orderCode!=''">
-                and bcs.order_code=#{orderCode}
+                and bcs.price_channel_code=#{orderCode}
             </if>
             <if test="orderOriginal!=null and orderOriginal!=''">
-                and bcs.order_original like concat('%', #{orderOriginal}, '%')
+                and bcs.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="departmentCode!=null and departmentCode!=''">
                 and bcs.department_code=#{departmentCode}
@@ -505,10 +505,10 @@
                 and bms.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="orderCode!=null and orderCode!=''">
-                and bms.order_code=#{orderCode}
+                and bms.price_channel_code=#{orderCode}
             </if>
             <if test="orderOriginal!=null and orderOriginal!=''">
-                and bms.order_original like concat('%', #{orderOriginal}, '%')
+                and bms.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="storeTypeCode!=null and storeTypeCode!=''">
                 and bms.store_type_code=#{storeTypeCode}
@@ -540,10 +540,10 @@
                 and bmgm.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="orderCode!=null and orderCode!=''">
-                and bmgm.order_code=#{orderCode}
+                and bmgm.price_channel_code=#{orderCode}
             </if>
             <if test="orderOriginal!=null and orderOriginal!=''">
-                and bmgm.order_original like concat('%', #{orderOriginal}, '%')
+                and bmgm.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="storeTypeCode!=null and storeTypeCode!=''">
                 and bmgm.store_type_code=#{storeTypeCode}
@@ -575,10 +575,10 @@
                 and bmsa.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="orderCode!=null and orderCode!=''">
-                and bmsa.order_code=#{orderCode}
+                and bmsa.price_channel_code=#{orderCode}
             </if>
             <if test="orderOriginal!=null and orderOriginal!=''">
-                and bmsa.order_original like concat('%', #{orderOriginal}, '%')
+                and bmsa.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="storeTypeCode!=null and storeTypeCode!=''">
                 and bmsa.store_type_code=#{storeTypeCode}
@@ -616,10 +616,10 @@
                 and bmcbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="orderCode!=null and orderCode!=''">
-                and bmcbs.order_code=#{orderCode}
+                and bmcbs.price_channel_code=#{orderCode}
             </if>
             <if test="orderOriginal!=null and orderOriginal!=''">
-                and bmcbs.order_original like concat('%', #{orderOriginal}, '%')
+                and bmcbs.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="storeTypeCode!=null and storeTypeCode!=''">
                 and bmcbs.store_type_code=#{storeTypeCode}
@@ -657,10 +657,10 @@
                 and bmcgpm.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="orderCode!=null and orderCode!=''">
-                and bmcgpm.order_code=#{orderCode}
+                and bmcgpm.price_channel_code=#{orderCode}
             </if>
             <if test="orderOriginal!=null and orderOriginal!=''">
-                and bmcgpm.order_original like concat('%', #{orderOriginal}, '%')
+                and bmcgpm.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="storeTypeCode!=null and storeTypeCode!=''">
                 and bmcgpm.store_type_code=#{storeTypeCode}
@@ -923,8 +923,8 @@
         bnpbmr.tax_cost as taxCost,
         bnpbmr.num as num,
         bnpbmr.sales_costs as salesCosts,
-        bnpbmr.order_code as orderCode,
-        bnpbmr.order_original as orderOriginal,
+        bnpbmr.price_channel_code as orderCode,
+        bnpbmr.price_channel_name as orderOriginal,
         bnpbmr.channel_amount as channelAmount,
         bnpbmr.channel_maori as channelMaori,
         bnpbmr.channel_maori_rate as channelMaoriRate,
@@ -992,8 +992,8 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StoreRepurchaseRateRespVo">
         select
         bsrr.id as id,
-        bsrr.order_code as orderCode,
-        bsrr.order_original as orderOriginal,
+        bsrr.price_channel_code as orderCode,
+        bsrr.price_channel_name as orderOriginal,
         bsrr.province_name as provinceName,
         bsrr.city_name as cityName,
         bsrr.district_name as districtName,
@@ -1015,8 +1015,8 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NegativeMarginRespVo">
         select
         bnm.id as id,
-        bnm.order_code as orderCode,
-        bnm.order_original as orderOriginal,
+        bnm.price_channel_code as orderCode,
+        bnm.price_channel_name as orderOriginal,
         bnm.sku_code as skuCode,
         bnm.sku_name as skuName,
         bnm.category_code as categoryCode,
@@ -1122,8 +1122,8 @@
         bbs.month as month,
         bbs.department_code as departmentCode,
         bbs.department_name as departmentName,
-        bbs.order_code as orderCode,
-        bbs.order_original as orderOriginal,
+        bbs.price_channel_code as orderCode,
+        bbs.price_channel_name as orderOriginal,
         bbs.store_type_code as storeTypeCode,
         bbs.store_type as storeType,
         bbs.data_type_code as dataTypeCode,
@@ -1155,8 +1155,8 @@
         bcs.month as month,
         bcs.department_code as departmentCode,
         bcs.department_name as departmentName,
-        bcs.order_code as orderCode,
-        bcs.order_original as orderOriginal,
+        bcs.price_channel_code as orderCode,
+        bcs.price_channel_name as orderOriginal,
         bcs.store_type_code as storeTypeCode,
         bcs.store_type as storeType,
         bcs.data_type_code as dataTypeCode,
@@ -1213,8 +1213,8 @@
         bms.month as month,
         bms.product_sort_code as productSortCode,
         bms.product_sort_name as productSortName,
-        bms.order_code as orderCode,
-        bms.order_original as orderOriginal,
+        bms.price_channel_code as orderCode,
+        bms.price_channel_name as orderOriginal,
         bms.store_type_code as storeTypeCode,
         bms.store_type as storeType,
         bms.data_type_code as dataTypeCode,
@@ -1240,8 +1240,8 @@
         bmgm.month as month,
         bmgm.product_sort_code as productSortCode,
         bmgm.product_sort_name as productSortName,
-        bmgm.order_code as orderCode,
-        bmgm.order_original as orderOriginal,
+        bmgm.price_channel_code as orderCode,
+        bmgm.price_channel_name as orderOriginal,
         bmgm.store_type_code as storeTypeCode,
         bmgm.store_type as storeType,
         bmgm.data_type_code as dataTypeCode,
@@ -1268,8 +1268,8 @@
         bmsa.month as month,
         bmsa.product_sort_code as productSortCode,
         bmsa.product_sort_name as productSortName,
-        bmsa.order_code as orderCode,
-        bmsa.order_original as orderOriginal,
+        bmsa.price_channel_code as orderCode,
+        bmsa.price_channel_name as orderOriginal,
         bmsa.store_type_code as storeTypeCode,
         bmsa.store_type as storeType,
         bmsa.data_type_code as dataTypeCode,
@@ -1294,8 +1294,8 @@
         bmcbs.cumulative_month as cumulativeMonth,
         bmcbs.product_sort_code as productSortCode,
         bmcbs.product_sort_name as productSortName,
-        bmcbs.order_code as orderCode,
-        bmcbs.order_original as orderOriginal,
+        bmcbs.price_channel_code as orderCode,
+        bmcbs.price_channel_name as orderOriginal,
         bmcbs.store_type_code as storeTypeCode,
         bmcbs.store_type as storeType,
         bmcbs.data_type_code as dataTypeCode,
@@ -1324,8 +1324,8 @@
         bmcgpm.cumulative_month as cumulativeMonth,
         bmcgpm.product_sort_code as productSortCode,
         bmcgpm.product_sort_name as productSortName,
-        bmcgpm.order_code as orderCode,
-        bmcgpm.order_original as orderOriginal,
+        bmcgpm.price_channel_code as orderCode,
+        bmcgpm.price_channel_name as orderOriginal,
         bmcgpm.store_type_code as storeTypeCode,
         bmcgpm.store_type as storeType,
         bmcgpm.data_type_code as dataTypeCode,
