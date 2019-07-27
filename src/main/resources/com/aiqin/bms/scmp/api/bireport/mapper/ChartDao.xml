@@ -7,7 +7,7 @@
         <where>
             1=1
             <if test="createTime!=null and createTime!=''">
-                and bms.create_time like concat('%', #{createTime}, '%')
+                and bms.month like concat('%', #{createTime}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bms.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -45,7 +45,7 @@
         <where>
             1=1
             <if test="createTime!=null and createTime!=''">
-                and bmgm.create_time like concat('%', #{createTime}, '%')
+                and bmgm.month like concat('%', #{createTime}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmgm.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -83,7 +83,7 @@
         <where>
             1=1
             <if test="createTime!=null and createTime!=''">
-                and bmsa.create_time like concat('%', #{createTime}, '%')
+                and bmsa.month like concat('%', #{createTime}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmsa.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -121,7 +121,7 @@
         <where>
             1=1
             <if test="createTime!=null and createTime!=''">
-                and bmcbs.create_time like concat('%', #{createTime}, '%')
+                and bmcbs.month like concat('%', #{createTime}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcbs.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -159,7 +159,7 @@
         <where>
             1=1
             <if test="createTime!=null and createTime!=''">
-                and bmcgpm.create_time like concat('%', #{createTime}, '%')
+                and bmcgpm.month like concat('%', #{createTime}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -199,7 +199,7 @@
         select
         bms.id as id,
         date_format(bms.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        date_format(bms.month, '%Y-%m') as month,
+        bms.month as month,
         bms.product_sort_code as productSortCode,
         bms.product_sort_name as productSortName,
         bms.order_code as orderCode,
@@ -227,7 +227,7 @@
         select
         bmgm.id as id,
         date_format(bmgm.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        date_format(bmgm.month, '%Y-%m') as month,
+        bmgm.month as month,
         bmgm.product_sort_code as productSortCode,
         bmgm.product_sort_name as productSortName,
         bmgm.order_code as orderCode,
@@ -256,7 +256,7 @@
         select
         bmsa.id as id,
         date_format(bmsa.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        date_format(bmsa.month, '%Y-%m') as month,
+        bmsa.month as month,
         bmsa.product_sort_code as productSortCode,
         bmsa.product_sort_name as productSortName,
         bmsa.order_code as orderCode,
@@ -282,7 +282,7 @@
         select
         bmcbs.id as id,
         date_format(bmcbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        date_format(bmcbs.month, '%Y-%m') as month,
+        bmcbs.month as month,
         bmcbs.cumulative_month as cumulativeMonth,
         bmcbs.product_sort_code as productSortCode,
         bmcbs.product_sort_name as productSortName,
@@ -313,7 +313,7 @@
         select
         bmcgpm.id as id,
         date_format(bmcgpm.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        date_format(bmcgpm.month, '%Y-%m') as month,
+        bmcgpm.month as month,
         bmcgpm.cumulative_month as cumulativeMonth,
         bmcgpm.product_sort_code as productSortCode,
         bmcgpm.product_sort_name as productSortName,

@@ -127,4 +127,7 @@ public interface Global {
 
     Byte BYTE_ZERO = Byte.valueOf("0");
     Byte BYTE_ONE = Byte.valueOf("1");
+
+
+
 }
