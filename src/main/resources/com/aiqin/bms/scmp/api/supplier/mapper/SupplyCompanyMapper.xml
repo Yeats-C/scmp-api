@@ -545,4 +545,8 @@
       update supply_company set star_score = #{startScore, jdbcType=DECIMAL}
       where supply_code =#{supplierCode,jdbcType=VARCHAR}
     </update>
+    <update id="updateApplyCodeBySupplyComCode">
+      update supply_company set apply_supply_company_code = #{applyCode, jdbcType=VARCHAR}
+      where supply_code =#{supplyComCode,jdbcType=VARCHAR}
+    </update>
 </mapper>

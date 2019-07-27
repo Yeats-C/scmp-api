@@ -211,7 +211,7 @@ mgs:
               - code: SCMP003002001
                 name: 查询
           - code: SCMP003003
-            name: 供应商结算账号管理
+            name: 供应商账户管理
             link: '/supplier/account'
             icon: fa-home
             methods:

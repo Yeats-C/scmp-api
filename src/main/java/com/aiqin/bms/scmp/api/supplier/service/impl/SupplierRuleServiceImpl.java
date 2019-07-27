@@ -51,6 +51,10 @@ public class SupplierRuleServiceImpl implements SupplierRuleService {
            rule.setAutoReturnGoodsDay(reqVo.getAutoReturnGoodsDay());
            rule.setOrderVolumeCoefficient(reqVo.getOrderVolumeCoefficient());
            rule.setOrderWeightCoefficient(reqVo.getOrderWeightCoefficient());
+           rule.setPurchaseProcessDay(reqVo.getPurchaseProcessDay());
+           rule.setPurchaseProcessReviewDay(reqVo.getPurchaseProcessReviewDay());
+           rule.setPurchaseProcessPaymentDay(reqVo.getPurchaseProcessPaymentDay());
+           rule.setPurchaseProcessSupplierConfirmDay(reqVo.getPurchaseProcessSupplierConfirmDay());
            num = ((SupplierRuleService)AopContext.currentProxy()).update(rule);
         } else {
             DetailRespVo detailRespVo = findRule();
@@ -59,11 +63,19 @@ public class SupplierRuleServiceImpl implements SupplierRuleService {
                 rule.setAutoReturnGoodsDay(reqVo.getAutoReturnGoodsDay());
                 rule.setOrderVolumeCoefficient(reqVo.getOrderVolumeCoefficient());
                 rule.setOrderWeightCoefficient(reqVo.getOrderWeightCoefficient());
+                rule.setPurchaseProcessDay(reqVo.getPurchaseProcessDay());
+                rule.setPurchaseProcessReviewDay(reqVo.getPurchaseProcessReviewDay());
+                rule.setPurchaseProcessPaymentDay(reqVo.getPurchaseProcessPaymentDay());
+                rule.setPurchaseProcessSupplierConfirmDay(reqVo.getPurchaseProcessSupplierConfirmDay());
                 num = ((SupplierRuleService)AopContext.currentProxy()).update(rule);
             }else {
                 rule.setAutoReturnGoodsDay(reqVo.getAutoReturnGoodsDay());
                 rule.setOrderVolumeCoefficient(reqVo.getOrderVolumeCoefficient());
                 rule.setOrderWeightCoefficient(reqVo.getOrderWeightCoefficient());
+                rule.setPurchaseProcessDay(reqVo.getPurchaseProcessDay());
+                rule.setPurchaseProcessReviewDay(reqVo.getPurchaseProcessReviewDay());
+                rule.setPurchaseProcessPaymentDay(reqVo.getPurchaseProcessPaymentDay());
+                rule.setPurchaseProcessSupplierConfirmDay(reqVo.getPurchaseProcessSupplierConfirmDay());
                 num = ((SupplierRuleService)AopContext.currentProxy()).insert(rule);
             }
         }
@@ -89,6 +101,10 @@ public class SupplierRuleServiceImpl implements SupplierRuleService {
             detailRespVo.setAutoReturnGoodsDay(0);
             detailRespVo.setOrderVolumeCoefficient(BigDecimal.ZERO);
             detailRespVo.setOrderWeightCoefficient(BigDecimal.ZERO);
+            detailRespVo.setPurchaseProcessDay(0);
+            detailRespVo.setPurchaseProcessReviewDay(0);
+            detailRespVo.setPurchaseProcessPaymentDay(0);
+            detailRespVo.setPurchaseProcessSupplierConfirmDay(0);
         }
         return detailRespVo;
     }

@@ -126,8 +126,9 @@
       create_time, create_by, del_flag,
       apply_supply_company_code,apply_type,zip_code,purchasing_group_code,form_no,
       purchasing_group_name,tax_id,corporate_representative,registered_capital,
-      enable,update_time,update_by,add_account, company_code,company_name,max_order_amount,min_order_amount,business_license,star_score,
-      direct_supervisor_code,direct_supervisor_name)
+      enable,update_time,update_by,add_account, company_code,company_name,max_order_amount,
+      min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,
+      supply_company_code)
     values ( #{applySupplyName,jdbcType=VARCHAR},#{applySupplyType,jdbcType=VARCHAR},#{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR},
       #{applyAbbreviation,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, 
@@ -141,7 +142,7 @@
       #{registeredCapital, jdbcType=BIGINT},#{enable, jdbcType=TINYINT},#{updateTime,jdbcType=TIMESTAMP},
       #{updateBy,jdbcType=VARCHAR},#{addAccount, jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{maxOrderAmount, jdbcType=BIGINT}, #{minOrderAmount, jdbcType=BIGINT}, #{businessLicense, jdbcType=VARCHAR}, #{starScore, jdbcType=DECIMAL},
-      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR}
+      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{supplyCompanyCode,jdbcType=VARCHAR}
       )
   </insert>
   <select id="getApplyList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplyComReqVO" resultMap="ApplySupplyComListMap">
@@ -162,6 +163,7 @@
       when 2 THEN '审核通过'
       when 3 THEN '审核未通过'
       when 4 THEN '已撤销'
+      when 5 then '待提交'
       ELSE '待审' END apply_status_name,
       a.auditor_by,
       a.auditor_time,
@@ -200,10 +202,10 @@
       and a.apply_status = #{reviewerStatus,jdbcType=TINYINT}
     </if>
     <if test="companyCode != null and companyCode != '' ">
-      and company_code = #{companyCode,jdbcType=VARCHAR}
+      and a.company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
     <if test="applyBy != null and applyBy != '' ">
-      and create_by = #{applyBy,jdbcType=VARCHAR}
+      and a.create_by = #{applyBy,jdbcType=VARCHAR}
     </if>
     order by a.create_time desc
   </select>
@@ -409,6 +411,7 @@
        a.auditor_time as approvalTime
     from apply_supply_company a
     where 1=1
+    and apply_status != 5
     <if test="createTimeStart != null and createTimeStart != ''">
       and a.create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
     </if>
@@ -425,10 +428,10 @@
       and a.apply_status = #{applyStatus}
     </if>
     <if test="companyCode != null and companyCode != '' ">
-      and company_code = #{companyCode,jdbcType=VARCHAR}
+      and  a.company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
     <if test="applyBy != null and applyBy != '' ">
-      and update_by = #{applyBy,jdbcType=VARCHAR}
+      and a.update_by = #{applyBy,jdbcType=VARCHAR}
     </if>
     order by create_time desc
   </select>

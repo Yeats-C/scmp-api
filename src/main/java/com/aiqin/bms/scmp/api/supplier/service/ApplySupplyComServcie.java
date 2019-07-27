@@ -38,7 +38,7 @@ public interface ApplySupplyComServcie {
      * @param applySupplyCompanyReqVO
      * @return
      */
-    int updateApply(ApplySupplyCompanyReqVO applySupplyCompanyReqVO);
+    Long updateApply(ApplySupplyCompanyReqVO applySupplyCompanyReqVO);
 
     /**
      * 调用DAO层修改数据
