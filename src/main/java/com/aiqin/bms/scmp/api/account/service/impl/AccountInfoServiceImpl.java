@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.account.domain.Util.CodeUtil;
 import com.aiqin.bms.scmp.api.account.domain.request.AccountRequest;
 import com.aiqin.bms.scmp.api.account.domain.request.ControlAccountRequest;
 import com.aiqin.bms.scmp.api.account.domain.request.PersonRequest;
+import com.aiqin.bms.scmp.api.account.domain.request.RoleRequest;
 import com.aiqin.bms.scmp.api.account.domain.response.AccountResponse;
 import com.aiqin.bms.scmp.api.account.properties.ContorlUrlProperties;
 import com.aiqin.bms.scmp.api.account.service.AccountInfoService;
@@ -23,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -136,11 +138,21 @@ public class AccountInfoServiceImpl implements AccountInfoService {
             HttpClient accountClient = HttpClient.post(contorlUrlProperties.getAccountAdd()).json(accountRequest);
             HttpResponse accountResponse = accountClient.action().result(HttpResponse.class);
             if (accountResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-                // TODO 创建部门
+                // 创建部门
+                HttpClient depatmentClient = HttpClient.post(contorlUrlProperties.getAccountAdd()).json(accountRequest);
+                HttpResponse departmentResponse = depatmentClient.action().result(HttpResponse.class);
+                if (departmentResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+                    //关联部门
 
 
-                // todo 关联角色
+                    //关联角色
+                    RoleRequest roleRequest = new RoleRequest();
+                    HttpClient roleClient = HttpClient.post(String.format("%s/%s", contorlUrlProperties.getGrantRole(), account.getId())).json(roleRequest);
+                    HttpResponse roleResponse = roleClient.action().result(HttpResponse.class);
+                    if (roleResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
 
+                    }
+                }
 
 
                 // 增加供应链关联表

@@ -39,5 +39,9 @@ public class ContorlUrlProperties {
 
     private String accountAdd;
 
+    private String departmentAdd;
+
+    private String grantRole;
+
 }
 
