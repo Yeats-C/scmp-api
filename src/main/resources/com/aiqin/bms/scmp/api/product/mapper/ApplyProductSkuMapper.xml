@@ -178,6 +178,8 @@
     <result column="product_name" jdbcType="VARCHAR" property="productName"/>
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
     <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode"/>
     <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
     <result column="apply_status" jdbcType="TINYINT" property="applyStatus"/>
@@ -201,6 +203,8 @@
     product_name,
     create_time,
     create_by,
+    update_time,
+    update_by,
     apply_code,
     apply_status,
     form_no,
