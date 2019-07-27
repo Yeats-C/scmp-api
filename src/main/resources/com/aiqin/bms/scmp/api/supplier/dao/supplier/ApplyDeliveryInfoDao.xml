@@ -67,8 +67,13 @@
   </delete>
   <select id="getApplyDeliveryInfo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplyDeliveryInformationMapper.BaseResultMap">
     SELECT
-      <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplyDeliveryInformationMapper.Base_Column_List"/>
-    FROM apply_delivery_information
-    WHERE apply_supply_company_code = #{applySupplyComCode,jdbcType=VARCHAR}
+    a.id,a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by,
+    a.apply_status, a.apply_type, a.auditor_by, a.auditor_time,
+    a.apply_supply_company_code,a.apply_supply_company_name, a.apply_code,
+    b.supplier_content as send_to, a.send_province_id, a.send_province_name, a.send_city_id, a.send_city_name, a.send_district_id,
+    a.send_district_name, a.sending_address, a.delivery_days, a.delivery_type
+    FROM apply_delivery_information a
+    left join supplier_dictionary_info b on b.supplier_dictionary_name = '发送至' and a.send_to = b.supplier_dictionary_value
+    WHERE a.apply_supply_company_code = #{applySupplyComCode,jdbcType=VARCHAR}
   </select>
 </mapper>
