@@ -1612,8 +1612,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         ProductApplyInfoRespVO<ProductSkuApplyVo> resp = new ProductApplyInfoRespVO<>();
         //数据相同默认取第一个
         ProductSkuApplyVo applyVO = list.get(0);
-        resp.setApplyBy(applyVO.getCreateBy());
-        resp.setApplyTime(applyVO.getCreateTime());
+        resp.setApplyBy(applyVO.getUpdateBy());
+        resp.setApplyTime(applyVO.getUpdateTime());
         resp.setApplyStatus(applyVO.getApplyStatus());
         resp.setAuditorBy(applyVO.getAuditorBy());
         resp.setAuditorTime(applyVO.getAuditorTime());

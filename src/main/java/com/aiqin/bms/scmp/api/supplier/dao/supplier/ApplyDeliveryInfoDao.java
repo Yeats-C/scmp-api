@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.dao.supplier;
 
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyDeliveryInformation;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplyDeliveryInfoReqDTO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplyDeliveryInfoRespVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -23,4 +24,5 @@ public interface ApplyDeliveryInfoDao {
 
     int deleteBatch(String applyCode);
 
+    List<ApplyDeliveryInfoRespVO> getApplyDeliveryInfoDetail(String applyCode);
 }

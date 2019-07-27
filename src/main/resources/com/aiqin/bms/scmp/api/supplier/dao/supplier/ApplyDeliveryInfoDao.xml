@@ -67,6 +67,25 @@
   </delete>
   <select id="getApplyDeliveryInfo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplyDeliveryInformationMapper.BaseResultMap">
     SELECT
+      <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplyDeliveryInformationMapper.Base_Column_List"/>
+    FROM apply_delivery_information
+    WHERE apply_supply_company_code = #{applySupplyComCode,jdbcType=VARCHAR}
+  </select>
+  <resultMap id="DetailResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplyDeliveryInfoRespVO">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="send_to" jdbcType="VARCHAR" property="sendTo" />
+    <result column="send_province_id" jdbcType="VARCHAR" property="sendProvinceId" />
+    <result column="send_province_name" jdbcType="VARCHAR" property="sendProvinceName" />
+    <result column="send_city_id" jdbcType="VARCHAR" property="sendCityId" />
+    <result column="send_city_name" jdbcType="VARCHAR" property="sendCityName" />
+    <result column="send_district_id" jdbcType="VARCHAR" property="sendDistrictId" />
+    <result column="send_district_name" jdbcType="VARCHAR" property="sendDistrictName" />
+    <result column="sending_address" jdbcType="VARCHAR" property="sendingAddress" />
+    <result column="delivery_days" jdbcType="BIGINT" property="deliveryDays" />
+    <result column="delivery_type" jdbcType="TINYINT" property="deliveryType" />
+  </resultMap>
+  <select id="getApplyDeliveryInfoDetail" parameterType="java.lang.String" resultMap="DetailResultMap">
+    SELECT
     a.id,a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by,
     a.apply_status, a.apply_type, a.auditor_by, a.auditor_time,
     a.apply_supply_company_code,a.apply_supply_company_name, a.apply_code,

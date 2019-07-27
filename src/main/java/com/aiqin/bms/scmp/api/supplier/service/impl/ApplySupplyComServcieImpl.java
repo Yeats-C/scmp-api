@@ -437,12 +437,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             List<ApplySupplierFile> applySupplierFiles  = applySupplierFileDao.getApplySupplierFile(applyCode);
             applySupplyComDetailRespVO.setApplySupplierFileList(applySupplierFiles);
             //根据供应商申请编码获取发货/退后申请信息
-            List<ApplyDeliveryInformation> applyDeliveryInfo = applyDeliveryInfoDao.getApplyDeliveryInfo(applyCode);
-            List<ApplyDeliveryInfoRespVO> applyDeliveryInfoRespVO =  BeanCopyUtils.copyList(applyDeliveryInfo,ApplyDeliveryInfoRespVO.class);
+            List<ApplyDeliveryInfoRespVO> applyDeliveryInfoRespVO = applyDeliveryInfoDao.getApplyDeliveryInfoDetail(applyCode);
             applySupplyComDetailRespVO.setApplyDeliveryInfoRespVO(applyDeliveryInfoRespVO);
-            //获取标签信息
-//            List<ApplyUseTagRecord> applyUseTagRecordList = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(applyCode);
-//            applySupplyComDetailRespVO.setApplyUseTagRecords(applyUseTagRecordList);
             return applySupplyComDetailRespVO;
         } catch (Exception e) {
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
@@ -453,8 +449,6 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int cancelApply(CancelApplySupplyComReqVO cancelApplySupplyComReqVO) {
         try {
-
-
             ApplySupplyCompany applySupplyCompany2 = applySupplyCompanyMapper.selectByPrimaryKey(cancelApplySupplyComReqVO.getId());
             WorkFlowVO workFlowVO = new WorkFlowVO();
             workFlowVO.setFormNo(applySupplyCompany2.getFormNo());
