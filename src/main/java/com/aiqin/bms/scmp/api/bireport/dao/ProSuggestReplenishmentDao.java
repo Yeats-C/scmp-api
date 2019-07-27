@@ -39,4 +39,10 @@ public interface ProSuggestReplenishmentDao {
      * @return
      */
     List<PurchaseApplyRespVo> selectPurchaseApplySkuList(PurchaseApplyReqVo purchaseApplyReqVo);
+
+    /**
+     *  获取固定规则数量
+     * @return
+     */
+    PurchaseApplyRespVo selectPurchaseRuleNum();
 }
