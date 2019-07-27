@@ -1131,8 +1131,49 @@ public class StockServiceImpl implements StockService {
                 stockFlow.setUpdateBy(stockVoRequest.getOperator());
                 stockFlow.setDocumentNum(stockVoRequest.getDocumentNum());
                 stockFlow.setDocumentType(stockVoRequest.getDocumentType());
+                //1入库
+                if(stockVoRequest.getDocumentType() == 1){
+                    //采购
+                    if(stockVoRequest.getSourceDocumentType() == 1){
+                        stockFlow.setSourceDocumentType(3);
+                    //调拨
+                    }else if(stockVoRequest.getSourceDocumentType() == 2){
+                        stockFlow.setSourceDocumentType(4);
+                    //退货
+                    }else if(stockVoRequest.getSourceDocumentType() == 3){
+                        stockFlow.setSourceDocumentType(5);
+                    //移库
+                    }else if(stockVoRequest.getSourceDocumentType() == 4){
+                        stockFlow.setSourceDocumentType(6);
+                    //监管仓入库
+                    }else if(stockVoRequest.getSourceDocumentType() == 5){
+                        stockFlow.setSourceDocumentType(7);
+                    //报废
+                    }else if(stockVoRequest.getSourceDocumentType() == 6){
+                        stockFlow.setSourceDocumentType(8);
+                    }
+                //0 出库
+                }else if(stockVoRequest.getDocumentType() == 0){
+                    //采购
+                    if(stockVoRequest.getSourceDocumentType() == 1){
+                        stockFlow.setSourceDocumentType(2);
+                    //调拨
+                    }else if(stockVoRequest.getSourceDocumentType() == 2){
+                        stockFlow.setSourceDocumentType(4);
+                    //退货
+                    }else if(stockVoRequest.getSourceDocumentType() == 3){
+                        stockFlow.setSourceDocumentType(10);
+                    //移库
+                    }else if(stockVoRequest.getSourceDocumentType() == 4){
+                        stockFlow.setSourceDocumentType(6);
+                    //监管仓出库
+                    }else if(stockVoRequest.getSourceDocumentType() == 5){
+                        stockFlow.setSourceDocumentType(11);
+                    }
+                }else{
+                    stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
+                }
                 stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
-                stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
                 stockFlow.setRemark(stockVoRequest.getRemark());
                 flows.add(stockFlow);
             }
