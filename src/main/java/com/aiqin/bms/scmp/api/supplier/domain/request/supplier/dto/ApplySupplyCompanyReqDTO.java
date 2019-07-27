@@ -23,16 +23,19 @@ public class ApplySupplyCompanyReqDTO extends CommonBean {
     @ApiModelProperty("主键Id")
     private Long id;
 
-    @ApiModelProperty("申请供应单位名称")
+    @ApiModelProperty("申请供应商名称")
     private String applySupplyName;
 
-    @ApiModelProperty("申请供应单位类型")
+    @ApiModelProperty("供应商编码")
+    private String supplyCompanyCode;
+
+    @ApiModelProperty("申请供应商类型")
     private String applySupplyType;
 
-    @ApiModelProperty("供应商名称")
+    @ApiModelProperty("供应商集团名称")
     private String supplierName;
 
-    @ApiModelProperty("供应商编码")
+    @ApiModelProperty("供应商集团编码")
     private String supplierCode;
 
     @ApiModelProperty("简称")
@@ -83,7 +86,7 @@ public class ApplySupplyCompanyReqDTO extends CommonBean {
     @ApiModelProperty("公司网站")
     private String companyWebsite;
 
-    @ApiModelProperty("申请供应商Code")
+    @ApiModelProperty("申请供应商集团Code")
     private String applySupplierCode;
 
     @ApiModelProperty("申请编号")

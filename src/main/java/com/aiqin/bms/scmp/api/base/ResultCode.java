@@ -267,4 +267,8 @@ public interface ResultCode {
     MessageId FILE_DOWNLOAD_FAILED = MessageId.create(Project.SCMP_API, 1000, "文件下载失败！");
     MessageId APPLY_DATA_EMPTY = MessageId.create(Project.SCMP_API, 1000, "申请列表不能为空！");
 
+    MessageId DELIVERY_RETURN_EMPTY = MessageId.create(Project.SCMP_API, 1000, "发货、退货信息不能为空！");
+    MessageId DELIVERY_EMPTY = MessageId.create(Project.SCMP_API, 1000, "发货信息不能为空！");
+    MessageId RETURN_EMPTY = MessageId.create(Project.SCMP_API, 1000, "退货信息不能为空！");
+
 }

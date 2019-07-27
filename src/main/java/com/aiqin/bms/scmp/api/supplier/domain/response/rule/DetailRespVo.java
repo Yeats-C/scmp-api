@@ -28,4 +28,16 @@ public class DetailRespVo {
 
     @ApiModelProperty("订单重量计算系数")
     private BigDecimal orderWeightCoefficient;
+
+    @ApiModelProperty("采购流程天数")
+    private int purchaseProcessDay;
+
+    @ApiModelProperty("采购流程审核天数")
+    private int purchaseProcessReviewDay;
+
+    @ApiModelProperty("采购流程财务付款天数")
+    private int purchaseProcessPaymentDay;
+
+    @ApiModelProperty("采购流程供应商确认天数")
+    private int purchaseProcessSupplierConfirmDay;
 }

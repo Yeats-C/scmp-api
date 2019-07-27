@@ -84,13 +84,12 @@ public class SupplyCompanyController extends SupplierBaseController {
 
     @PutMapping("/update")
     @ApiOperation("修改供应商")
-    public HttpResponse updateApplySupplyCom(@RequestBody @Validated ApplySupplyCompanyReqVO applySupplyCompanyReqVO){
+    public HttpResponse<Long> updateApplySupplyCom(@RequestBody @Validated ApplySupplyCompanyReqVO applySupplyCompanyReqVO){
         if (null == applySupplyCompanyReqVO.getApplySupplyCode() || applySupplyCompanyReqVO.getApplySupplyCode().isEmpty()){
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,"供应商编码不能为空"));
         }
         try {
-            int i = applySupplyComServcie.updateApply(applySupplyCompanyReqVO);
-            return HttpResponse.success(i);
+            return HttpResponse.success(applySupplyComServcie.updateApply(applySupplyCompanyReqVO));
         } catch (GroundRuntimeException ex) {
             return HttpResponse.failure(MessageId .create(Project.SUPPLIER_API,13,ex.getMessage()));
         } catch (BizException ex) {

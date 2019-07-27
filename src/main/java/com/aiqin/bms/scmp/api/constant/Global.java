@@ -126,5 +126,5 @@ public interface Global {
     Byte MAIN_PRODUCT = Byte.valueOf("1");
 
     Byte BYTE_ZERO = Byte.valueOf("0");
-
+    Byte BYTE_ONE = Byte.valueOf("1");
 }
