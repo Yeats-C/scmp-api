@@ -1659,7 +1659,7 @@ public class StockServiceImpl implements StockService {
             }
             return new PageInfo<QueryStockSkuListRespVo>(queryStockSkuListRespVos);
         } catch (Exception ex) {
-            log.error("查询批次库存商失败");
+            log.error("库房管理新增调拨,移库,报废列表查询");
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
@@ -1942,7 +1942,7 @@ public class StockServiceImpl implements StockService {
             PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
             return new PageInfo<QueryStockSkuListRespVo>(stockDao.queryStockBatch(reqVO));
         } catch (Exception ex) {
-            log.error("查询批次库存商失败");
+            log.error("库房管理新增调拨,移库,报废列表查询导入操作");
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
