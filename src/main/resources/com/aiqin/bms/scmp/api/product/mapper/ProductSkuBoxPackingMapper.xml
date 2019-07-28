@@ -35,7 +35,7 @@
   </delete>
   <delete id="deleteBySkuCode" parameterType="java.lang.String">
     delete from product_sku_box_packing
-    where id = #{skuCode,jdbcType=VARCHAR}
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuBoxPacking">
     insert into product_sku_box_packing (id, large_unit, box_length, 

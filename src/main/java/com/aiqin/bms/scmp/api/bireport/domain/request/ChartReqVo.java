@@ -9,6 +9,10 @@ import lombok.Data;
 @Data
 public class ChartReqVo {
 
+    @ApiModelProperty("时间begin")
+    @JsonProperty("begin_create_time")
+    private String beginCreateTime;
+
     @ApiModelProperty("日期")
     @JsonProperty("create_time")
     private String createTime;

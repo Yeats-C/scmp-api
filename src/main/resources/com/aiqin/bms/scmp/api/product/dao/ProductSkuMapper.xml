@@ -2116,4 +2116,11 @@ select a.sku_code              as skuCode,
       </if>
     </where>
   </select>
+  <select id="contrastPropertySku" resultType="java.lang.String">
+    select sku_code as skuCode
+    from product_sku
+    where product_category_code = #{productCategoryCode,jdbcType=VARCHAR}
+    and product_property_code = '1'
+    group by sku_code
+  </select>
 </mapper>

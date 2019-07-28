@@ -6,41 +6,38 @@
         <result column="skuCode" jdbcType="VARCHAR" property="skuCode" />
     </resultMap>-->
     <select id="selectSuggestReplenishmentByPro" parameterType="java.lang.Integer" resultType="String">
-      select sku_code
-      FROM bi_suggest_replenishment
-      where is_product_property_name = #{proStatus}
+      select basr.sku_code
+      FROM bi_app_suggest_replenishment basr
+      where basr.product_property_code = #{proStatus}
     </select>
     <select id="selectSuggestReplenishmentBySell" parameterType="java.lang.Integer" resultType="String">
-        select sku_code
-        FROM bi_suggest_replenishment
-        where is_product_property_name = #{proStatus}
+        select basr.sku_code
+        FROM bi_app_suggest_replenishment basr
+        where basr.product_property_code = #{proStatus}
     </select>
     <select id="selectOutStockByPro" parameterType="java.lang.Integer" resultType="String">
-        select sku_code
-        FROM bi_suggest_replenishment
-        where is_product_property_name = #{proStatus} AND out_stock_continuous_days <![CDATA[>]]> #{continuousDays}
+        select basr.sku_code
+        FROM bi_app_suggest_replenishment basr
+        where basr.product_property_code = #{proStatus} AND basr.stockout_days <![CDATA[>]]> #{continuousDays}
     </select>
     <select id="selectOutStockBySell" parameterType="java.lang.Integer" resultType="String">
-        select sku_code
-        FROM bi_suggest_replenishment
-        where is_product_property_name = #{proStatus} AND out_stock_continuous_days <![CDATA[>]]> #{continuousDays}
+        select basr.sku_code
+        FROM bi_app_suggest_replenishment basr
+        where basr.product_property_code = #{proStatus} AND basr.stockout_days <![CDATA[>]]> #{continuousDays}
     </select>
     <select id="selectPurchaseApplySkuList"
             parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo">
         select
-        bsr.advice_orders as adviceOrders,
-        bsr.average_amount as averageAmount,
-        bsr.out_stock_affect_money as outStockAffectMoney,
-        bsr.out_stock_continuous_days as outStockContinuousDays,
+        bsr.suggested_order_num as adviceOrders,
+        bsr.sales_avg_3_month_num as averageAmount,
+        bsr.out_stock_affects_amount as outStockAffectMoney,
+        bsr.stock_one_month_days as outStockContinuousDays,
         bsr.available_num as availableNum,
-        bsr.num_order_approved as numOrderApproved,
-        bsr.num_approved_payment as numApprovedPayment,
-        bsr.num_payment_confirm as numPaymentConfirm,
         psc.arrival_cycle as arrivalCycle,
         pssuc.out_put as outPuts,
         pssuc.need_days as needDays
-        FROM bi_suggest_replenishment bsr
+        FROM bi_app_suggest_replenishment bsr
         LEFT JOIN product_sku_config AS psc ON CONVERT(bsr.sku_code USING utf8) COLLATE utf8_unicode_ci  = psc.sku_code AND CONVERT(bsr.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = psc.transport_center_code
         LEFT JOIN product_sku_supply_unit_capacity AS pssuc
           ON CONVERT(bsr.sku_code USING utf8) COLLATE utf8_unicode_ci  = pssuc.product_sku_code
@@ -56,5 +53,14 @@
             and bsr.sku_code=#{skuCode}
         </if>
         order by pssuc.out_put asc
+    </select>
+    <select id="selectPurchaseRuleNum"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo">
+        select
+        sr.purchase_process_review_day as numOrderApproved,
+        sr.purchase_process_payment_day as numApprovedPayment,
+        sr.purchase_process_supplier_confirm_day as numPaymentConfirm
+        FROM supplier_rule sr
+        where sr.company_code = 04
     </select>
 </mapper>

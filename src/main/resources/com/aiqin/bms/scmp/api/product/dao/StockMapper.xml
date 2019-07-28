@@ -1829,7 +1829,7 @@
                 and s.warehouse_code  = #{outWarehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="procurementSectionCode != null and procurementSectionCode != ''">
-                and s.purchase_group_code  = #{procurementSectionCode, jdbcType=VARCHAR}
+                and ps.procurement_section_code  = #{procurementSectionCode, jdbcType=VARCHAR}
             </if>
             <if test="inTransportCenterCode != null and inTransportCenterCode != ''">
                 and s.transport_center_code = #{inTransportCenterCode, jdbcType=VARCHAR}

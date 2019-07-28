@@ -71,6 +71,7 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
      */
     @Override
     public PurchaseApplyRespVo selectPurchaseApplySkuList(PurchaseApplyReqVo purchaseApplyReqVo){
+        PurchaseApplyRespVo purchaseApplyRespVoNum = proSuggestReplenishmentDao.selectPurchaseRuleNum();
         List<PurchaseApplyRespVo> purchaseApplyRespVos = proSuggestReplenishmentDao.selectPurchaseApplySkuList(purchaseApplyReqVo);
         PurchaseApplyRespVo purRespVo = new PurchaseApplyRespVo();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
@@ -79,7 +80,7 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
         for (PurchaseApplyRespVo purchaseApplyRespVo : purchaseApplyRespVos) {
             if (purchaseApplyRespVo.getAdviceOrders() != null & purchaseApplyRespVo.getArrivalCycle() != null & purchaseApplyRespVo.getOutPuts() != null & purchaseApplyRespVo.getNeedDays() != null){
                 if (!(purchaseApplyRespVo.getAdviceOrders() >= purchaseApplyRespVo.getOutPuts())) {
-                    calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVo.getNumOrderApproved().intValue()+purchaseApplyRespVo.getNumApprovedPayment().intValue()+purchaseApplyRespVo.getNumPaymentConfirm().intValue());
+                    calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVoNum.getNumOrderApproved().intValue()+purchaseApplyRespVoNum.getNumApprovedPayment().intValue()+purchaseApplyRespVoNum.getNumPaymentConfirm().intValue());
                     purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
                     purRespVo = purchaseApplyRespVo;
                     flag = false;
@@ -91,7 +92,7 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
             if (purchaseApplyRespVos.size()>0 ){
                 PurchaseApplyRespVo purchaseApplyRespVo = purchaseApplyRespVos.get(purchaseApplyRespVos.size() - 1);
                 if (purchaseApplyRespVo.getAdviceOrders() != null & purchaseApplyRespVo.getArrivalCycle() != null & purchaseApplyRespVo.getOutPuts() != null & purchaseApplyRespVo.getNeedDays() != null){
-                    calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVo.getNumOrderApproved().intValue()+purchaseApplyRespVo.getNumApprovedPayment().intValue()+purchaseApplyRespVo.getNumPaymentConfirm().intValue());
+                    calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVoNum.getNumOrderApproved().intValue()+purchaseApplyRespVoNum.getNumApprovedPayment().intValue()+purchaseApplyRespVoNum.getNumPaymentConfirm().intValue());
                     purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
                     purRespVo = purchaseApplyRespVo;
                 }

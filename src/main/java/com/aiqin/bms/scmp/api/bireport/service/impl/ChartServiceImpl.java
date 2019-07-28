@@ -26,6 +26,8 @@ public class ChartServiceImpl implements ChartService{
     @Override
     public List<MonthlySalesRespVo> selectMonthlySales(ChartReqVo chartReqVo) {
         try {
+            String createTime = chartReqVo.getCreateTime();
+            chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
             List<MonthlySalesRespVo> monthlySalesRespVos = chartDao.selectMonthlySales(chartReqVo);
             return monthlySalesRespVos;
         } catch (Exception ex) {
@@ -43,6 +45,8 @@ public class ChartServiceImpl implements ChartService{
     @Override
     public List<MonthlyGrossMarginRespVo> selectMonthlyGrossMargin(ChartReqVo chartReqVo) {
         try {
+            String createTime = chartReqVo.getCreateTime();
+            chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
             List<MonthlyGrossMarginRespVo> monthlySalesRespVos = chartDao.selectMonthlyGrossMargin(chartReqVo);
             return monthlySalesRespVos;
         } catch (Exception ex) {
@@ -60,6 +64,8 @@ public class ChartServiceImpl implements ChartService{
     @Override
     public List<MonthSalesAchievementRespVo> selectMonthSalesAchievement(ChartReqVo chartReqVo) {
         try {
+            String createTime = chartReqVo.getCreateTime();
+            chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
             List<MonthSalesAchievementRespVo> monthSalesAchievementRespVos = chartDao.selectMonthSalesAchievement(chartReqVo);
             return monthSalesAchievementRespVos;
         } catch (Exception ex) {
@@ -77,6 +83,8 @@ public class ChartServiceImpl implements ChartService{
     @Override
     public List<MonthCumulativeBrandSalesRespVo> selectMonthCumulativeBrandSales(ChartReqVo chartReqVo) {
         try {
+            String createTime = chartReqVo.getCreateTime();
+            chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
             List<MonthCumulativeBrandSalesRespVo> monthCumulativeBrandSalesRespVos = chartDao.selectMonthCumulativeBrandSales(chartReqVo);
             return monthCumulativeBrandSalesRespVos;
         } catch (Exception ex) {
@@ -94,6 +102,8 @@ public class ChartServiceImpl implements ChartService{
     @Override
     public List<MonthCumulativeGrossProfitMarginRespVo> selectMonthCumulativeGrossProfitMargin(ChartReqVo chartReqVo) {
         try {
+            String createTime = chartReqVo.getCreateTime();
+            chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
             List<MonthCumulativeGrossProfitMarginRespVo> monthCumulativeGrossProfitMarginRespVos = chartDao.selectMonthCumulativeGrossProfitMargin(chartReqVo);
             return monthCumulativeGrossProfitMarginRespVos;
         } catch (Exception ex) {

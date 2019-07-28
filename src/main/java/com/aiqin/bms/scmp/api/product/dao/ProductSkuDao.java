@@ -283,4 +283,6 @@ public interface ProductSkuDao {
     List<PurchaseApplyDetailResponse> purchaseProductList(PurchaseApplyRequest purchases);
 
     Integer purchaseProductCount(PurchaseApplyRequest purchases);
+
+    List<String> contrastPropertySku(String productCategoryCode);
 }
