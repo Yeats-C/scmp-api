@@ -51,7 +51,7 @@
         ps.product_category_code as categoryId,ps.product_category_name as categoryName, ps.product_property_code as productPropertyCode,
         ps.product_property_name as productPropertyName,ps.goods_gifts as productType, ps.product_sort_code as productSortCode,
         ps.product_sort_name as productSortName, ps.color_name as colorName,ps.model_number as modelNumber,
-        ps.product_code as spuCode, ps.product_name as spuName, ps.spec as productSpec,ps.procurement_section_code as purchaseGroupCode,
+        ps.product_code as spuCode, ps.product_name as productName, ps.spec as productSpec,ps.procurement_section_code as purchaseGroupCode,
         ps.procurement_section_name as purchaseGroupName, pi.base_product_content as baseProductContent, su.factory_sku_code as factorySkuCode
     from bi_smart_replenishment bs
     inner join product_sku ps on bs.sku_code = ps.sku_code
