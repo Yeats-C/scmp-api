@@ -238,6 +238,10 @@ public class RejectRecord {
     @JsonProperty("company_name")
     private String companyName;
 
+    @ApiModelProperty("供应商评分编号")
+    @JsonProperty("score_code")
+    private String scoreCode;
+
     public RejectRecord() {
     }
 

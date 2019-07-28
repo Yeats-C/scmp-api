@@ -59,6 +59,14 @@ public class Account  {
     @JsonProperty("department_name")
     private String departmentName;
 
+    @ApiModelProperty(value="岗位id")
+    @JsonProperty("position_code")
+    private String positionCode;
+
+    @ApiModelProperty(value="岗位名称")
+    @JsonProperty("position_name")
+    private String positionName;
+
     @ApiModelProperty(value="0 启用 1禁用")
     @JsonProperty("account_status")
     private Integer accountStatus;

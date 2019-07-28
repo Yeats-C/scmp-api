@@ -79,9 +79,11 @@ public class AccountController {
 
     @PostMapping("/")
     @ApiOperation(value = "新增供应商账号")
-    public HttpResponse addAccount(@RequestBody AccountRequest request) {
+    public HttpResponse addAccount(@RequestBody AccountRequest request,HttpServletRequest httpServletRequest) {
         LOGGER.info("新增供应商账号参数:{}", request.toString());
-        return accountInfoService.addAccount(request);
+        String ticket = httpServletRequest.getParameter("ticket");
+        String personId = httpServletRequest.getParameter("person_id");
+        return accountInfoService.addAccount(request,ticket,personId);
     }
 
     @GetMapping("/{username}")

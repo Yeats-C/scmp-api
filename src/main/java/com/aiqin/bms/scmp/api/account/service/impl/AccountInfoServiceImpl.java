@@ -3,12 +3,9 @@ package com.aiqin.bms.scmp.api.account.service.impl;
 import com.aiqin.bms.scmp.api.account.dao.AccountDao;
 import com.aiqin.bms.scmp.api.account.domain.Account;
 import com.aiqin.bms.scmp.api.account.domain.Util.CodeUtil;
-import com.aiqin.bms.scmp.api.account.domain.request.AccountRequest;
-import com.aiqin.bms.scmp.api.account.domain.request.ControlAccountRequest;
-import com.aiqin.bms.scmp.api.account.domain.request.PersonRequest;
-import com.aiqin.bms.scmp.api.account.domain.request.RoleRequest;
+import com.aiqin.bms.scmp.api.account.domain.request.*;
 import com.aiqin.bms.scmp.api.account.domain.response.AccountResponse;
-import com.aiqin.bms.scmp.api.account.properties.ContorlUrlProperties;
+import com.aiqin.bms.scmp.api.account.domain.response.ExternalAccountResponse;
 import com.aiqin.bms.scmp.api.account.service.AccountInfoService;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -19,12 +16,13 @@ import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -73,8 +71,13 @@ public class AccountInfoServiceImpl implements AccountInfoService {
     private static String COMPANY_NAME = "熙耘供应链供应商集合";
     @Resource
     private AccountDao accountDao;
-    @Resource
-    private ContorlUrlProperties contorlUrlProperties;
+
+    @Value("${control.url.account}")
+    private String CONTROL_URL_ACCOUNT;
+    @Value("${control.url.role-list}")
+    private String CONTROL_ROLE_LIST;
+    @Value("${control.url.role-add}")
+    private String CONTROL_ROLE_ADD;
 
     @Override
     public HttpResponse<PageResData<Account>> accountList(AccountRequest request) {
@@ -99,7 +102,8 @@ public class AccountInfoServiceImpl implements AccountInfoService {
         personRequest.setPersonType(3);
         return personRequest;
     }
-    private ControlAccountRequest handleAccount(Account request){
+
+    private ControlAccountRequest handleAccount(Account request) {
         ControlAccountRequest controlAccountRequest = new ControlAccountRequest();
         controlAccountRequest.setPassword(request.getPassword());
         controlAccountRequest.setUsername(request.getUsername());
@@ -110,13 +114,23 @@ public class AccountInfoServiceImpl implements AccountInfoService {
         controlAccountRequest.setAccountStatus(0);
         return controlAccountRequest;
     }
+
     @Override
-    public HttpResponse addAccount(AccountRequest request) {
-        if (CollectionUtils.isEmpty(request.getRoleIds())) {
+    public HttpResponse addAccount(AccountRequest accountRequest, String ticket, String personId) {
+
+        if (CollectionUtils.isEmpty(accountRequest.getRoleIds())) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+
         Account account = new Account();
-        BeanUtils.copyProperties(request, account);
+        account.setSupplierCode(accountRequest.getSupplierCode());
+        Account request = accountDao.selectOne(account);
+        BeanUtils.copyProperties(accountRequest, account);
+        //同一个供应商 使用同一个岗位
+        if (request != null) {
+            account.setPositionName(request.getPositionName());
+            account.setPositionCode(request.getPositionCode());
+        }
         Account response = accountDao.selectLastOne();
         String username = "";
         if (response == null) {
@@ -127,53 +141,44 @@ public class AccountInfoServiceImpl implements AccountInfoService {
         account.setUsername(username);
         account.setPersonId(username);
         account.setAccountStatus(0);
-        //处理调用的参数
-        PersonRequest personRequest = handlePerson(account);
-        ControlAccountRequest accountRequest = handleAccount(account);
-        //增加person
-        HttpClient client = HttpClient.post(contorlUrlProperties.getPersonAdd()).json(personRequest);
+        account.setCompanyCode(COMPANY_CODE);
+        account.setCompanyName(COMPANY_NAME);
+        account.setRoleIds(accountRequest.getRoleIds().stream().collect(Collectors.joining(",")));
+        ExternalAccountRequest externalAccountRequest = new ExternalAccountRequest();
+        BeanUtils.copyProperties(account, externalAccountRequest);
+        //业务类型
+        externalAccountRequest.setBusinessName(accountRequest.getSupplierName());
+        externalAccountRequest.setBusinessType(1);
+        //增加人员信息 部门信息  岗位信息 绑定岗位 增加账号信息
+        HttpClient client = HttpClient.post(CONTROL_URL_ACCOUNT).json(externalAccountRequest).timeout(10000);
         HttpResponse httpResponse = client.action().result(HttpResponse.class);
         if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-            //增加account表数据
-            HttpClient accountClient = HttpClient.post(contorlUrlProperties.getAccountAdd()).json(accountRequest);
-            HttpResponse accountResponse = accountClient.action().result(HttpResponse.class);
-            if (accountResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-                // 创建部门
-                HttpClient depatmentClient = HttpClient.post(contorlUrlProperties.getAccountAdd()).json(accountRequest);
-                HttpResponse departmentResponse = depatmentClient.action().result(HttpResponse.class);
-                if (departmentResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-                    //关联部门
-
-
-                    //关联角色
-                    RoleRequest roleRequest = new RoleRequest();
-                    HttpClient roleClient = HttpClient.post(String.format("%s/%s", contorlUrlProperties.getGrantRole(), account.getId())).json(roleRequest);
-                    HttpResponse roleResponse = roleClient.action().result(HttpResponse.class);
-                    if (roleResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-
-                    }
-                }
-
-
-                // 增加供应链关联表
-                account.setCompanyCode(COMPANY_CODE);
-                account.setCompanyName(COMPANY_NAME);
-                account.setDepartmentCode("001");
-                account.setDepartmentName("部门");
-                account.setRoleIds(request.getRoleIds().stream().collect(Collectors.joining(",")));
+            ExternalAccountResponse externalAccountResponse = JsonUtil.fromJson(JsonUtil.toJson(httpResponse.getData()),ExternalAccountResponse.class);
+            //绑定角色信息
+            RoleRequest roleRequest = new RoleRequest();
+            roleRequest.setRoleId(account.getRoleIds());
+            HttpClient roleClient = HttpClient.post(String.format("%s/%s?ticket=%s&ticketPersonId=%s", CONTROL_ROLE_ADD, externalAccountResponse.getAccountId(),ticket,personId)).json(roleRequest);
+            HttpResponse roleResponse = roleClient.action().result(HttpResponse.class);
+            if (roleResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+                account.setPositionCode(externalAccountResponse.getPositionCode());
+                account.setPositionName(externalAccountResponse.getPositionName());
+                account.setDepartmentName(externalAccountResponse.getDepartmentName());
+                account.setDepartmentCode(externalAccountResponse.getDepartmentCode());
                 Integer count = accountDao.insert(account);
                 LOGGER.info("添加供应商关联表:{}", count);
+            } else {
+                return HttpResponse.failureGenerics(ResultCode.CONTROL_ERROR, roleResponse.getMessage());
             }
-
+        } else {
+            return HttpResponse.failureGenerics(ResultCode.CONTROL_ERROR, httpResponse.getMessage());
         }
-
         return HttpResponse.success();
     }
 
     @Override
     public HttpResponse<List<Role>> selectRole(String personId, String ticket) {
         try {
-            HttpClient client = HttpClient.get(contorlUrlProperties.getRoleList() + "?system_code=smps-system&page_size=1000")
+            HttpClient client = HttpClient.get(CONTROL_ROLE_LIST + "?system_code=smps-system&page_size=1000")
                     .addParameter("ticket", ticket)
                     .addParameter("ticket_person_id", personId);
             HttpResponse response = client.action().result(HttpResponse.class);

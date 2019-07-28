@@ -526,6 +526,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             operationLogDao.insert(new OperationLog(rejectId, 0, "新增退供单", "", request.getCreateById(), request.getCreateByName()));
             //锁定库存
             ILockStocksReqVO iLockStockBatchReqVO = handleStockParam(list, rejectRecord);
+            System.out.println(iLockStockBatchReqVO.toString());
             Boolean stockStatus = stockService.returnSupplyLockStocks(iLockStockBatchReqVO);
             if (!stockStatus) {
                 LOGGER.error("锁定库存异常:{}", rejectRecord.toString());

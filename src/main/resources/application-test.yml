@@ -9,14 +9,17 @@ center:
     url: http://control.api.aiqin.com
   #中控前端
     host: http://control.mgs.aiqin.com
+control:
+  url:
+   # 角色列表
+    role-list: http://127.0.1:9090/role/list
+    # 角色绑定
+    role-add: http://127.0.1:9090/person/account/role
+   # 主控增加人员等接口
+    account: http://127.0.1:9090/external/account
 product:
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
-control:
-  url:
-  # 主控增加人员等接口
-    account-add: http://127.0.0.1:9090/role/list
-
 ground:
   druid:
     url: jdbc:mysql://39.96.85.170:3306/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
