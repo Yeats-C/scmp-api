@@ -4,11 +4,10 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -130,7 +129,7 @@ public class PurchaseManageController {
 
     @GetMapping("/order/amount")
     @ApiOperation("查询采购单-采购数量金额/实际数量金额")
-    public HttpResponse<PurchaseCountAmountResponse> purchaseOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
+    public HttpResponse<PurchaseApplyProductInfoResponse> purchaseOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
         return purchaseManageService.purchaseOrderAmount(purchaseOrderId);
     }
 

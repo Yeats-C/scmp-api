@@ -338,5 +338,8 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("create_by_name")
     private String createByName;
 
+    @ApiModelProperty(value="行号")
+    private Long linenum;
+
 }
 

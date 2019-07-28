@@ -11,15 +11,15 @@ import lombok.Data;
 @Data
 public class PurchaseApplyProductInfoResponse {
 
-    @ApiModelProperty(value="商品采购件数")
+    @ApiModelProperty(value="普通商品件数")
     @JsonProperty("product_piece_sum")
     private Integer productPieceSum;
 
-    @ApiModelProperty(value="商品单品总数")
+    @ApiModelProperty(value="普通商品单品数")
     @JsonProperty("product_single_sum")
     private Integer productSingleSum;
 
-    @ApiModelProperty(value="商品含税总金额")
+    @ApiModelProperty(value="普通商品含税总金额")
     @JsonProperty("product_tax_sum")
     private Integer productTaxSum;
 
@@ -47,7 +47,7 @@ public class PurchaseApplyProductInfoResponse {
     @JsonProperty("gift_tax_sum")
     private Integer giftTaxSum;
 
-    @ApiModelProperty(value="采购件数")
+    @ApiModelProperty(value="总件数")
     @JsonProperty("piece_sum")
     private Integer pieceSum;
 
@@ -58,4 +58,52 @@ public class PurchaseApplyProductInfoResponse {
     @ApiModelProperty(value="含税总金额")
     @JsonProperty("tax_sum")
     private Integer taxSum;
+
+    @ApiModelProperty(value="实际普通商品件数")
+    @JsonProperty("actual_product_piece_sum")
+    private Integer actualProductPieceSum;
+
+    @ApiModelProperty(value="实际普通商品单品数")
+    @JsonProperty("actual_product_single_sum")
+    private Integer actualProductSingleSum;
+
+    @ApiModelProperty(value="实际普通商品含税总金额")
+    @JsonProperty("actual_product_tax_sum")
+    private Integer actualProductTaxSum;
+
+    @ApiModelProperty(value="实际实物采购件数")
+    @JsonProperty("actual_matter_piece_sum")
+    private Integer actualMatterPieceSum;
+
+    @ApiModelProperty(value="实际实物返单品总数")
+    @JsonProperty("actual_matter_single_sum")
+    private Integer actualMatterSingleSum;
+
+    @ApiModelProperty(value="实际实物返含税总金额")
+    @JsonProperty("actual_matter_tax_sum")
+    private Integer actualMatterTaxSum;
+
+    @ApiModelProperty(value="实际赠品采购件数")
+    @JsonProperty("actual_gift_piece_sum")
+    private Integer actualGiftPieceSum;
+
+    @ApiModelProperty(value="实际赠品单品总数")
+    @JsonProperty("actual_gift_single_sum")
+    private Integer actualGiftSingleSum;
+
+    @ApiModelProperty(value="实际赠品含税总金额")
+    @JsonProperty("actual_gift_tax_sum")
+    private Integer actualGiftTaxSum;
+
+    @ApiModelProperty(value="实际总件数")
+    @JsonProperty("actual_piece_sum")
+    private Integer actualPieceSum;
+
+    @ApiModelProperty(value="实际单品总数")
+    @JsonProperty("actual_single_sum")
+    private Integer actualSingleSum;
+
+    @ApiModelProperty(value="实际含税总金额")
+    @JsonProperty("actual_tax_sum")
+    private Integer actualTaxSum;
 }
