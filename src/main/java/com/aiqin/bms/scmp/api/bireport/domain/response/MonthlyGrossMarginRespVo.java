@@ -56,6 +56,14 @@ public class MonthlyGrossMarginRespVo {
     @JsonProperty("data_type")
     private String dataType;
 
+    @ApiModelProperty("销售类型编码")
+    @JsonProperty("sale_type_code")
+    private Integer saleTypeCode;
+
+    @ApiModelProperty("销售类型名称")
+    @JsonProperty("sale_type_name")
+    private String saleTypeName;
+
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_cost")
     private String salesCost;

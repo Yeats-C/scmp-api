@@ -60,6 +60,14 @@ public class MonthCumulativeBrandSalesRespVo {
     @JsonProperty("data_type")
     private String dataType;
 
+    @ApiModelProperty("销售类型编码")
+    @JsonProperty("sale_type_code")
+    private Integer saleTypeCode;
+
+    @ApiModelProperty("销售类型名称")
+    @JsonProperty("sale_type_name")
+    private String saleTypeName;
+
     @ApiModelProperty("品类编码")
     @JsonProperty("category_code")
     private String categoryCode;
