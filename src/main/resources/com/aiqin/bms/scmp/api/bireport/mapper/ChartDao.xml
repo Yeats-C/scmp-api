@@ -241,7 +241,7 @@
         order by bms.id asc
     </select>
     <select id="selectMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo"
-            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlyGrossMarginRespVo">
         select
         bmgm.id as id,
         date_format(bmgm.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
@@ -258,11 +258,13 @@
         bmgm.channel_amount as channelAmount,
         bmgm.channel_maori as channelMaori,
         bmgm.channel_maori_rate as channelMaoriRate,
+        bmgm.channel_last_year_maori_rate as channelLastYearMaoriRate,
         bmgm.channel_compared_same as channelComparedSame,
         bmgm.channel_sequential as channelSequential,
         bmgm.distribution_amount as distributionAmount,
         bmgm.distribution_maori as distributionMaori,
         bmgm.distribution_maori_rate as distributionMaoriRate,
+        bmgm.distribution_last_year_maori_rate as distributionLastYearMaoriRate,
         bmgm.distribution_compared_same as distributionComparedSame,
         bmgm.distribution_sequential as distributionSequential
         from bi_month_gross_margin bmgm
