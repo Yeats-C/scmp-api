@@ -1154,21 +1154,21 @@ public class StockServiceImpl implements StockService {
                     }
                 //0 出库
                 }else if(stockVoRequest.getDocumentType() == 0){
-                    //采购
+                    //退供
                     if(stockVoRequest.getSourceDocumentType() == 1){
                         stockFlow.setSourceDocumentType(2);
                     //调拨
                     }else if(stockVoRequest.getSourceDocumentType() == 2){
                         stockFlow.setSourceDocumentType(4);
-                    //退货
+                    //订单
                     }else if(stockVoRequest.getSourceDocumentType() == 3){
-                        stockFlow.setSourceDocumentType(10);
+                        stockFlow.setSourceDocumentType(9);
                     //移库
                     }else if(stockVoRequest.getSourceDocumentType() == 4){
                         stockFlow.setSourceDocumentType(6);
                     //监管仓出库
                     }else if(stockVoRequest.getSourceDocumentType() == 5){
-                        stockFlow.setSourceDocumentType(11);
+                        stockFlow.setSourceDocumentType(10);
                     }
                 }else{
                     stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());

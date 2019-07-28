@@ -80,7 +80,7 @@ public class StockVoRequest {
     @JsonProperty(value = "document_num")
     private String documentNum;
 
-    @ApiModelProperty("来源单据类型 0出库 1入库 2退供 3采购 4调拨 5退货 6移库 7监管仓入库 8报废 9退供 10订单 11监管仓出库")
+    @ApiModelProperty("来源单据类型 0出库 1入库 2退供 3采购 4调拨 5退货 6移库 7监管仓入库 8报废 9订单 10监管仓出库")
     @JsonProperty(value = "source_document_type")
     private Integer sourceDocumentType;
 
