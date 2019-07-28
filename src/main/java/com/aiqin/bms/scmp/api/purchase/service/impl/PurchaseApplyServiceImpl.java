@@ -45,7 +45,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.swing.*;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -116,7 +115,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 Integer skuCount = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId(), null);
                 apply.setSkuCount(skuCount);
                 apply.setSingleCount(info.getSingleSum());
-                apply.setProductTotalAmount(info.getTaxSum());
+                apply.setProductTotalAmount(info.getProductTaxSum());
                 apply.setReturnAmount(info.getMatterTaxSum());
                 if(apply.getApplyStatus() == 0){
                     Integer count = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId(), Global.PURCHASE_APPLY_STATUS_1);
@@ -375,7 +374,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         PurchaseApplyProductInfoResponse info = new PurchaseApplyProductInfoResponse();
         Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
         Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0;
-        Integer productTaxSum = 0, matterTaxSum = 0, singleSum = 0;
+        Integer productTaxSum = 0, matterTaxSum = 0, giftTaxSum = 0, singleSum = 0;
         if(CollectionUtils.isNotEmptyCollection(products)) {
             for (PurchaseApplyDetailResponse product : products) {
                 // 商品采购件数量
@@ -398,6 +397,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     }else if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
                         giftSingleSum += purchaseWhole;
                         giftSingleSum += singleCount;
+                        giftTaxSum += productPurchaseSum;
                     }else if(product.getProductType().equals(Global.PRODUCT_TYPE_2)){
                         matterPieceSum += purchaseWhole;
                         matterSingleSum += singleCount;
@@ -414,10 +414,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         info.setMatterTaxSum(matterTaxSum);
         info.setGiftPieceSum(giftPieceSum);
         info.setGiftSingleSum(giftSingleSum);
-        info.setGiftTaxSum(0);
+        info.setGiftTaxSum(giftTaxSum);
         info.setPieceSum(productPieceSum + matterPieceSum + giftPieceSum);
         info.setSingleSum(singleSum);
-        info.setTaxSum(productTaxSum);
+        //info.setTaxSum(productTaxSum);
         return info;
     }
 

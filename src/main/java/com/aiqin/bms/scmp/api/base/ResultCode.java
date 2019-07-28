@@ -201,6 +201,7 @@ public interface ResultCode {
     MessageId NO_HAVE_PRODUCT = MessageId.create(Project.PURCHASE_API, 1006, "未查询到文件夹编码对应的商品");
     MessageId NO_HAVE_ACCOUNT = MessageId.create(Project.PURCHASE_API, 1007, "未查询到账号信息");
     MessageId SELECT_ROLE_ERROR = MessageId.create(Project.PURCHASE_API, 1008, "查询角色异常");
+    MessageId CONTROL_ERROR = MessageId.create(Project.PURCHASE_API, 1009, "调用主控系统异常");
 
     //订单
     MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");

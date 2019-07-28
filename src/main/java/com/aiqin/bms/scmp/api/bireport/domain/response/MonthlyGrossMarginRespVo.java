@@ -56,6 +56,14 @@ public class MonthlyGrossMarginRespVo {
     @JsonProperty("data_type")
     private String dataType;
 
+    @ApiModelProperty("销售类型编码")
+    @JsonProperty("sale_type_code")
+    private Integer saleTypeCode;
+
+    @ApiModelProperty("销售类型名称")
+    @JsonProperty("sale_type_name")
+    private String saleTypeName;
+
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_cost")
     private String salesCost;
@@ -71,6 +79,10 @@ public class MonthlyGrossMarginRespVo {
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
     private Double channelMaoriRate;
+
+    @ApiModelProperty("去年渠道毛利率")
+    @JsonProperty("channel_last_year_maori_rate")
+    private Double channelLastYearMaoriRate;
 
     @ApiModelProperty("渠道同比")
     @JsonProperty("channel_compared_same")
@@ -91,6 +103,10 @@ public class MonthlyGrossMarginRespVo {
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")
     private Double distributionMaoriRate;
+
+    @ApiModelProperty("去年分销毛利率")
+    @JsonProperty("distribution_last_year_maori_rate")
+    private Double distributionLastYearMaoriRate;
 
     @ApiModelProperty("分销同比")
     @JsonProperty("distribution_compared_same")

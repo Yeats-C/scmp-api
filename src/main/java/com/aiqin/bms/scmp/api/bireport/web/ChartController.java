@@ -42,8 +42,7 @@ public class ChartController {
             @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "channel_order_amount", value = "渠道销售", type = "String"),
-            @ApiImplicitParam(name = "distribution_order_amount", value = "分销销售", type = "String"),
+            @ApiImplicitParam(name = "sale_type_code", value = "销售类型", type = "Integer"),
     })
     public HttpResponse<List<MonthlySalesRespVo>> selectMonthlySales(
             @RequestParam(value = "create_time", required = false) String createTime,
@@ -55,9 +54,8 @@ public class ChartController {
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "channel_order_amount", required = false) String channelOrderAmount,
-            @RequestParam(value = "distribution_order_amount", required = false) String distributionOrderAmount){
-        ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,channelOrderAmount,distributionOrderAmount);
+            @RequestParam(value = "sale_type_code", required = false) Integer saleTypeCode){
+        ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,saleTypeCode);
         return HttpResponse.success(chartService.selectMonthlySales(chartReqVo));
     }
 
@@ -73,8 +71,7 @@ public class ChartController {
             @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "channel_order_amount", value = "渠道销售", type = "String"),
-            @ApiImplicitParam(name = "distribution_order_amount", value = "分销销售", type = "String"),
+            @ApiImplicitParam(name = "sale_type_code", value = "销售类型", type = "Integer"),
     })
     public HttpResponse<List<MonthlyGrossMarginRespVo>> selectMonthlyGrossMargin(
             @RequestParam(value = "create_time", required = false) String createTime,
@@ -86,9 +83,8 @@ public class ChartController {
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "channel_order_amount", required = false) String channelOrderAmount,
-            @RequestParam(value = "distribution_order_amount", required = false) String distributionOrderAmount){
-        ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,channelOrderAmount,distributionOrderAmount);
+            @RequestParam(value = "sale_type_code", required = false) Integer saleTypeCode){
+        ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,saleTypeCode);
         return HttpResponse.success(chartService.selectMonthlyGrossMargin(chartReqVo));
     }
 
@@ -104,8 +100,7 @@ public class ChartController {
             @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "channel_order_amount", value = "渠道销售", type = "String"),
-            @ApiImplicitParam(name = "distribution_order_amount", value = "分销销售", type = "String"),
+            @ApiImplicitParam(name = "sale_type_code", value = "销售类型", type = "Integer"),
     })
     public HttpResponse<List<MonthSalesAchievementRespVo>> selectMonthSalesAchievement(
             @RequestParam(value = "create_time", required = false) String createTime,
@@ -117,9 +112,8 @@ public class ChartController {
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "channel_order_amount", required = false) String channelOrderAmount,
-            @RequestParam(value = "distribution_order_amount", required = false) String distributionOrderAmount){
-        ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,channelOrderAmount,distributionOrderAmount);
+            @RequestParam(value = "sale_type_code", required = false) Integer saleTypeCode){
+        ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,saleTypeCode);
         return HttpResponse.success(chartService.selectMonthSalesAchievement(chartReqVo));
     }
 
@@ -135,8 +129,7 @@ public class ChartController {
             @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "channel_order_amount", value = "渠道销售", type = "String"),
-            @ApiImplicitParam(name = "distribution_order_amount", value = "分销销售", type = "String"),
+            @ApiImplicitParam(name = "sale_type_code", value = "销售类型", type = "Integer"),
     })
     public HttpResponse<List<MonthCumulativeBrandSalesRespVo>> selectMonthCumulativeBrandSales(
             @RequestParam(value = "create_time", required = false) String createTime,
@@ -148,9 +141,8 @@ public class ChartController {
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "channel_order_amount", required = false) String channelOrderAmount,
-            @RequestParam(value = "distribution_order_amount", required = false) String distributionOrderAmount){
-        ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,channelOrderAmount,distributionOrderAmount);
+            @RequestParam(value = "sale_type_code", required = false) Integer saleTypeCode){
+        ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,saleTypeCode);
         return HttpResponse.success(chartService.selectMonthCumulativeBrandSales(chartReqVo));
     }
 
@@ -166,8 +158,7 @@ public class ChartController {
             @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "channel_order_amount", value = "渠道销售", type = "String"),
-            @ApiImplicitParam(name = "distribution_order_amount", value = "分销销售", type = "String"),
+            @ApiImplicitParam(name = "sale_type_code", value = "销售类型", type = "Integer"),
     })
     public HttpResponse<List<MonthCumulativeGrossProfitMarginRespVo>> selectMonthCumulativeGrossProfitMargin(
             @RequestParam(value = "create_time", required = false) String createTime,
@@ -179,9 +170,8 @@ public class ChartController {
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "channel_order_amount", required = false) String channelOrderAmount,
-            @RequestParam(value = "distribution_order_amount", required = false) String distributionOrderAmount){
-        ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,channelOrderAmount,distributionOrderAmount);
+            @RequestParam(value = "sale_type_code", required = false) Integer saleTypeCode){
+        ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,saleTypeCode);
         return HttpResponse.success(chartService.selectMonthCumulativeGrossProfitMargin(chartReqVo));
     }
 }

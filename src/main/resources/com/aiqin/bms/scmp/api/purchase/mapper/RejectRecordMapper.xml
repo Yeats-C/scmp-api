@@ -57,6 +57,7 @@
         <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
         <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
         <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+        <result column="score_code" jdbcType="VARCHAR" property="scoreCode" />
     </resultMap>
     <sql id="Base_Column_List">
     id, reject_record_id, reject_record_code, duty_person, contacts_person, contacts_person_phone, 
@@ -67,7 +68,7 @@
     return_amount, actual_product_count, actual_product_amount, actual_single_count, actual_gift_count,actual_gift_amount, actual_return_count,
     actual_return_amount,create_by_id, create_by_name, update_by_id, update_by_name, create_time,
     update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name,
-    company_name,company_code,untaxed_amount
+    company_name,company_code,untaxed_amount,score_code
   </sql>
     <sql id="LIST_QUERY">
         <where>
@@ -551,6 +552,9 @@
         </if>
         <if test="actualSingleCount != null">
             actual_single_count = #{actualSingleCount,jdbcType=INTEGER},
+        </if>
+        <if test="scoreCode != null">
+            score_code = #{scoreCode,jdbcType=VARCHAR},
         </if>
         update_time =now()
         <where>

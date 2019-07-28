@@ -60,6 +60,14 @@ public class MonthCumulativeBrandSalesRespVo {
     @JsonProperty("data_type")
     private String dataType;
 
+    @ApiModelProperty("销售类型编码")
+    @JsonProperty("sale_type_code")
+    private Integer saleTypeCode;
+
+    @ApiModelProperty("销售类型名称")
+    @JsonProperty("sale_type_name")
+    private String saleTypeName;
+
     @ApiModelProperty("品类编码")
     @JsonProperty("category_code")
     private String categoryCode;
@@ -76,7 +84,7 @@ public class MonthCumulativeBrandSalesRespVo {
     @JsonProperty("channel_last_year_sales")
     private String channelLastYearSales;
 
-    @ApiModelProperty("上月渠道销售额")
+    @ApiModelProperty("上期渠道销售额")
     @JsonProperty("channel_last_month_sales")
     private String channelLastMonthSales;
 
@@ -96,7 +104,7 @@ public class MonthCumulativeBrandSalesRespVo {
     @JsonProperty("distribution_last_year_sales")
     private String distributionLastYearSales;
 
-    @ApiModelProperty("上月分销销售额")
+    @ApiModelProperty("上期分销销售额")
     @JsonProperty("distribution_last_month_sales")
     private String distributionLastMonthSales;
 

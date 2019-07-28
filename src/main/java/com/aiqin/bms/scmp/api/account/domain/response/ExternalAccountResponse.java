@@ -1,4 +1,8 @@
-package com.aiqin.bms.scmp.api.account.domain.Util;
+package com.aiqin.bms.scmp.api.account.domain.response;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * <p>
@@ -26,23 +30,27 @@ package com.aiqin.bms.scmp.api.account.domain.Util;
  * <p>
  * 思维方式*热情*能力
  */
-public class CodeUtil {
+@Data
+public class ExternalAccountResponse {
 
-    public static String SUPPLIER_PREFIX = "sp";
+    @ApiModelProperty(value = "部门id")
+    @JsonProperty("department_code")
+    private String departmentCode;
 
-    /**
-     *  生成规则编号: 前缀 + 四位编号（从1开始，不够前补0）
-     * @param prefix 前缀
-     * @param code  最新编号
-     * @return
-     */
-    public static String getCode(String prefix, String code){
-        String newCode = prefix+"0001";
-        if(code != null && !code.isEmpty()){
-            int flowCode = Integer.valueOf(code.substring(1,5))+1;
-            newCode = String.format(prefix + "%04d", flowCode);
-        }
-        return newCode;
-    }
+    @ApiModelProperty(value = "部门名称")
+    @JsonProperty("department_name")
+    private String departmentName;
+
+    @ApiModelProperty(value = "岗位id")
+    @JsonProperty("position_code")
+    private String positionCode;
+
+    @ApiModelProperty(value = "岗位名称")
+    @JsonProperty("position_name")
+    private String positionName;
+
+    @ApiModelProperty(value="账号id")
+    @JsonProperty("account_id")
+    private String accountId;
 
 }

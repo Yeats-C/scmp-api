@@ -54,10 +54,10 @@ public class SupplierValidationHandler {
      */
     @ExceptionHandler(value=GroundRuntimeException.class)
     @ResponseBody
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     public HttpResponse handleServiceException(GroundRuntimeException e){
         logger.error(e.getMessage(), e);
-        return HttpResponse.failure(MessageId.create(Project.SUPPLIER_API, 400, e.getMessage()));
+        return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, e.getMessage()));
     }
     /**
      *

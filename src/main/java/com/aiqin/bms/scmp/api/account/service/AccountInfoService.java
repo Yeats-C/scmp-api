@@ -38,11 +38,12 @@ import java.util.List;
 public interface AccountInfoService {
     HttpResponse<PageResData<Account>> accountList(AccountRequest account);
 
-    HttpResponse addAccount(AccountRequest account);
+    HttpResponse addAccount(AccountRequest request, String ticket, String personId);
 
     HttpResponse<List<Role>> selectRole(String personId, String ticket);
 
-    HttpResponse updateAccount(Account account);
+    HttpResponse updateAccount(AccountRequest account, String ticket, String personId);
 
     HttpResponse<AccountResponse> accountInfo(String username);
+
 }

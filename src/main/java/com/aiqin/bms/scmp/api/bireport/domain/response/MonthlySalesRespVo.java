@@ -56,6 +56,14 @@ public class MonthlySalesRespVo {
     @JsonProperty("data_type")
     private String dataType;
 
+    @ApiModelProperty("销售类型编码")
+    @JsonProperty("sale_type_code")
+    private Integer saleTypeCode;
+
+    @ApiModelProperty("销售类型名称")
+    @JsonProperty("sale_type_name")
+    private String saleTypeName;
+
     @ApiModelProperty("渠道销售额")
     @JsonProperty("channel_order_amount")
     private String channelOrderAmount;

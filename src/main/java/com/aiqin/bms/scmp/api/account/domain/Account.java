@@ -15,6 +15,10 @@ public class Account  {
     @JsonProperty("id")
     private Long id;
 
+    @ApiModelProperty(value="账户id")
+    @JsonProperty("account_id")
+    private String accountId;
+
     @ApiModelProperty(value="姓名")
     @JsonProperty("account_name")
     private String accountName;
@@ -59,6 +63,14 @@ public class Account  {
     @JsonProperty("department_name")
     private String departmentName;
 
+    @ApiModelProperty(value="岗位id")
+    @JsonProperty("position_code")
+    private String positionCode;
+
+    @ApiModelProperty(value="岗位名称")
+    @JsonProperty("position_name")
+    private String positionName;
+
     @ApiModelProperty(value="0 启用 1禁用")
     @JsonProperty("account_status")
     private Integer accountStatus;
@@ -99,4 +111,10 @@ public class Account  {
     @JsonProperty("update_time")
     private Date updateTime;
 
+    public Account() {
+    }
+
+    public Account(String username) {
+        this.username = username;
+    }
 }

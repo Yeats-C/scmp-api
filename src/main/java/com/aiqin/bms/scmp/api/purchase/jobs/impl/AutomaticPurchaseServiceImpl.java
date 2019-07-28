@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.jobs.AutomaticPurchaseService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -20,6 +21,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,14 +75,20 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
               purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
               // 查询sku 的相关数据
               List<PurchaseApplyProduct> applyProducts = biSmartReplenishmentDao.skuInfo(beginTime, finishTime, group.getPurchaseGroupCode());
+              PurchaseApplyProduct applyProduct;
+              List<PurchaseApplyProduct> productList = Lists.newArrayList();
               if(CollectionUtils.isNotEmpty(applyProducts)){
                   for(PurchaseApplyProduct product:applyProducts){
-                      product.setProductType(Global.PRODUCT_TYPE_0);
-                      product.setApplyProductId(IdUtil.purchaseId());
-                      product.setPurchaseApplyId(purchaseApply.getPurchaseApplyId());
-                      product.setPurchaseApplyCode(purchaseApplyCode);
-
+                      applyProduct = new PurchaseApplyProduct();
+                      BeanUtils.copyProperties(product, applyProduct);
+                      applyProduct.setCreateByName("系统");
+                      applyProduct.setCreateById("0");
+                      applyProduct.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
+                      applyProduct.setApplyProductStatus(Global.USER_ON);
+                      applyProduct.setProductType(Global.PRODUCT_TYPE_0);
+                      productList.add(applyProduct);
                   }
+                  purchaseApplyProductDao.insertAll(productList);
               }
               encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
               applyList.add(purchaseApply);

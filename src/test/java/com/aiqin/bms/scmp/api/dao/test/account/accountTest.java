@@ -1,27 +1,16 @@
 package com.aiqin.bms.scmp.api.dao.test.account;
 
 import com.aiqin.bms.scmp.api.SpringBootTestContext;
+import com.aiqin.bms.scmp.api.account.domain.request.AccountRequest;
 import com.aiqin.bms.scmp.api.account.service.AccountInfoService;
-import com.aiqin.bms.scmp.api.dao.test.reject.AsyncService;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.request.*;
-import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectApprovalService;
-import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
-import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
-import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * <p>
@@ -58,6 +47,23 @@ public class accountTest extends SpringBootTestContext {
     @Test
     public void rejectApplyListInfo(){
         HttpResponse response = accountInfoService.selectRole("11976","635ff2f7a55d4b5baf7d8cf0a974df7f");
+    }
+
+    @Test
+    public void addAccount(){
+        AccountRequest account =    new AccountRequest();
+        account.setAccountName("123213");
+        account.setCreateById("123213");
+        account.setCreateByName("创建人");
+        account.setGender(1);
+        account.setMobile("123213");
+        account.setPassword("2134123");
+        account.setRemark("123213");
+        account.setRoleIds(Arrays.asList("JS0049","JS0048"));
+        account.setSupplierCode("10000080");
+        account.setSupplierName("XQ供应商0012");
+        HttpResponse response = accountInfoService.addAccount(account, "3f54b58dbe5747c1910930269ad5f8e9","11976");
+        System.out.println(response.getCode());
     }
 
 

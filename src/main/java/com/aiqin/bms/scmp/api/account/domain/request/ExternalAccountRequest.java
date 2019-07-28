@@ -1,13 +1,8 @@
 package com.aiqin.bms.scmp.api.account.domain.request;
 
-import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * <p>
@@ -36,20 +31,27 @@ import java.util.List;
  * 思维方式*热情*能力
  */
 @Data
-@ApiModel("账号")
-public class AccountRequest extends PagesRequest {
+public class ExternalAccountRequest {
 
     @ApiModelProperty(value="姓名")
     @JsonProperty("account_name")
     private String accountName;
 
-    @ApiModelProperty(value="账号")
-    @JsonProperty("username")
-    private String username;
-
     @ApiModelProperty(value="密码")
     @JsonProperty("password")
     private String password;
+
+    @ApiModelProperty(value="登录账号")
+    @JsonProperty("username")
+    private String username;
+
+    @ApiModelProperty(value="")
+    @JsonProperty("person_id")
+    private String personId;
+
+    @ApiModelProperty(value="")
+    @JsonProperty("role_ids")
+    private String roleIds;
 
     @ApiModelProperty(value="供应商id")
     @JsonProperty("supplier_code")
@@ -58,6 +60,22 @@ public class AccountRequest extends PagesRequest {
     @ApiModelProperty(value="供应商名称")
     @JsonProperty("supplier_name")
     private String supplierName;
+
+    @ApiModelProperty(value="岗位id")
+    @JsonProperty("position_code")
+    private String positionCode;
+
+    @ApiModelProperty(value="岗位名称")
+    @JsonProperty("position_name")
+    private String positionName;
+
+    @ApiModelProperty(value="公司id")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty(value="公司名称")
+    @JsonProperty("company_name")
+    private String companyName;
 
     @ApiModelProperty(value="0 启用 1禁用")
     @JsonProperty("account_status")
@@ -91,21 +109,28 @@ public class AccountRequest extends PagesRequest {
     @JsonProperty("update_by_name")
     private String updateByName;
 
-    @ApiModelProperty(value = "角色")
-    @JsonProperty("role_id")
-    private String roleId;
+    @ApiModelProperty(value = "人员类型")
+    @JsonProperty(value = "person_type")
+    private Integer personType;
 
-    @ApiModelProperty(value = "角色集合")
-    @JsonProperty("role_ids")
-    private List<String> roleIds;
+    @ApiModelProperty(value="部门名称")
+    @JsonProperty("department_name")
+    private String departmentName;
 
-    public AccountRequest() {
-    }
+    @ApiModelProperty(value="部门id")
+    @JsonProperty("department_code")
+    private String departmentCode;
 
-    public AccountRequest(String accountName, String roleId, String supplierCode, Integer accountStatus) {
-        this.accountName = accountName;
-        this.roleId = roleId;
-        this.supplierCode = supplierCode;
-        this.accountStatus = accountStatus;
-    }
+    @ApiModelProperty(value="业务人员所属名称,用于创建部门名称,岗位名称")
+    @JsonProperty("business_name")
+    private String businessName;
+
+    @ApiModelProperty(value="业务人员所属(后续使用自己添加),1 供应商平台")
+    @JsonProperty("business_type")
+    private Integer businessType;
+
+    @ApiModelProperty(value="系统code")
+    @JsonProperty("system_code")
+    private String systemCode;
+
 }

@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.List;
 import java.util.Map;
 
-@ApiModel("月累计品类销售情况respVo")
+@ApiModel("月累计品类毛利率情况respVo")
 @Data
 public class MonthCumulativeGrossProfitMarginRespVo {
 
@@ -59,6 +59,14 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     @ApiModelProperty("数据类型name")
     @JsonProperty("data_type")
     private String dataType;
+
+    @ApiModelProperty("销售类型编码")
+    @JsonProperty("sale_type_code")
+    private Integer saleTypeCode;
+
+    @ApiModelProperty("销售类型名称")
+    @JsonProperty("sale_type_name")
+    private String saleTypeName;
 
     @ApiModelProperty("品类编码")
     @JsonProperty("category_code")

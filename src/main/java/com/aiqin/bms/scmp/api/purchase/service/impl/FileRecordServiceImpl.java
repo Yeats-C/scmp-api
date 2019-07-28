@@ -159,7 +159,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                 LOGGER.info("1.png对应图片及介绍,添加条数:{}",picCount);
             }
             return HttpResponse.successGenerics(folderName);
-        } catch (GroundRuntimeException e) {
+        } catch (Exception e) {
             LOGGER.error("导入商品图片信息异常:{}", e.getMessage());
             throw new GroundRuntimeException(String.format("导入商品图片信息异常:%s", e.getMessage()));
         }

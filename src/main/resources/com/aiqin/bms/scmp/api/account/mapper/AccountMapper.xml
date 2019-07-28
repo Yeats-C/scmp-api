@@ -3,6 +3,7 @@
 <mapper namespace="com.aiqin.bms.scmp.api.account.dao.AccountDao">
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.account.domain.Account">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="account_id" jdbcType="VARCHAR" property="accountId" />
     <result column="account_name" jdbcType="VARCHAR" property="accountName" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="person_id" jdbcType="VARCHAR" property="personId" />
@@ -13,6 +14,8 @@
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="department_code" jdbcType="VARCHAR" property="departmentCode" />
     <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+    <result column="position_code" jdbcType="VARCHAR" property="positionCode" />
+    <result column="position_name" jdbcType="VARCHAR" property="positionName" />
     <result column="account_status" jdbcType="BIT" property="accountStatus" />
     <result column="mobile" jdbcType="VARCHAR" property="mobile" />
     <result column="gender" jdbcType="BIT" property="gender" />
@@ -26,14 +29,21 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, account_name, username, person_id, role_ids, supplier_code, supplier_name, company_code, 
-    company_name, department_code, department_name, account_status, mobile, gender, remark, 
-    create_by_id, create_by_name, update_by_id, update_by_name, create_time, update_time
+    company_name, department_code, department_name, account_status, mobile, gender, remark, position_code,position_name,
+    create_by_id, create_by_name, update_by_id, update_by_name, create_time, update_time,account_id
   </sql>
   <select id="selectOne" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from account
-    where username = #{username,jdbcType=VARCHAR}
+    <where>
+      <if test="supplierCode!=null">
+        AND supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="username!=null">
+        AND username = #{username,jdbcType=VARCHAR}
+      </if>
+    </where>
   </select>
   <select id="selectLastOne" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -50,7 +60,7 @@
     order by create_time desc
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
-  <select id="listCount"  resultMap="BaseResultMap">
+  <select id="listCount"  resultType="java.lang.Integer">
     select
       count(1)
     from account
@@ -81,7 +91,7 @@
       person_id, role_ids, supplier_code, 
       supplier_name, company_code, company_name, 
       department_code, department_name, account_status, 
-      mobile, gender, remark, 
+      mobile, gender, remark, position_code,position_name,account_id,
       create_by_id, create_by_name, update_by_id, 
       update_by_name, create_time, update_time
       )
@@ -89,7 +99,7 @@
       #{personId,jdbcType=VARCHAR}, #{roleIds,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
       #{supplierName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
       #{departmentCode,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR}, #{accountStatus,jdbcType=BIT}, 
-      #{mobile,jdbcType=VARCHAR}, #{gender,jdbcType=BIT}, #{remark,jdbcType=VARCHAR}, 
+      #{mobile,jdbcType=VARCHAR}, #{gender,jdbcType=BIT}, #{remark,jdbcType=VARCHAR},  #{positionCode,jdbcType=VARCHAR},  #{positionName,jdbcType=VARCHAR}, #{accountId,jdbcType=VARCHAR},
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{createById,jdbcType=VARCHAR},
       #{createByName,jdbcType=VARCHAR},now(),now()
       )
