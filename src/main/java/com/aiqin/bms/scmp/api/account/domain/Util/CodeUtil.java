@@ -28,7 +28,7 @@ package com.aiqin.bms.scmp.api.account.domain.Util;
  */
 public class CodeUtil {
 
-    public static String SUPPLIER_PREFIX = "S";
+    public static String SUPPLIER_PREFIX = "sp";
 
     /**
      *  生成规则编号: 前缀 + 四位编号（从1开始，不够前补0）
