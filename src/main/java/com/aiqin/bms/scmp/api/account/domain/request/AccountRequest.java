@@ -43,6 +43,10 @@ public class AccountRequest extends PagesRequest {
     @JsonProperty("account_name")
     private String accountName;
 
+    @ApiModelProperty(value="账号")
+    @JsonProperty("username")
+    private String username;
+
     @ApiModelProperty(value="密码")
     @JsonProperty("password")
     private String password;

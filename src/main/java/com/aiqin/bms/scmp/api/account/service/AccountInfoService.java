@@ -6,7 +6,6 @@ import com.aiqin.bms.scmp.api.account.domain.response.AccountResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.account.Role;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public interface AccountInfoService {
 
     HttpResponse<List<Role>> selectRole(String personId, String ticket);
 
-    HttpResponse updateAccount(Account account);
+    HttpResponse updateAccount(AccountRequest account, String ticket, String personId);
 
     HttpResponse<AccountResponse> accountInfo(String username);
 

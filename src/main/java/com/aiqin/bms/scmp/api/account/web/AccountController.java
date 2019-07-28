@@ -82,7 +82,7 @@ public class AccountController {
     public HttpResponse addAccount(@RequestBody AccountRequest request,HttpServletRequest httpServletRequest) {
         LOGGER.info("新增供应商账号参数:{}", request.toString());
         String ticket = httpServletRequest.getParameter("ticket");
-        String personId = httpServletRequest.getParameter("person_id");
+        String personId = httpServletRequest.getParameter("ticket_person_id");
         return accountInfoService.addAccount(request,ticket,personId);
     }
 
@@ -97,10 +97,12 @@ public class AccountController {
     @PutMapping("/{username}")
     @ApiOperation(value = "修改供应商账号")
     @ApiImplicitParam(name = "username", value = "用户名(账号)", type = "String")
-    public HttpResponse updateAccount(@PathVariable String username, @RequestBody Account account) {
-        account.setUsername(username);
-        LOGGER.info("修改供应商账号:{}", account.toString());
-        return accountInfoService.updateAccount(account);
+    public HttpResponse updateAccount(@PathVariable String username, @RequestBody AccountRequest request,HttpServletRequest httpServletRequest) {
+        request.setUsername(username);
+        LOGGER.info("修改供应商账号:{}", request.toString());
+        String ticket = httpServletRequest.getParameter("ticket");
+        String personId = httpServletRequest.getParameter("ticket_person_id");
+        return accountInfoService.updateAccount(request,ticket,personId);
     }
 
     @GetMapping("/role")

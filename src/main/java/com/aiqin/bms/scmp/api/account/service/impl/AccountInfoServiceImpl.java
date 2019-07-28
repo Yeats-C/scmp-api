@@ -3,7 +3,9 @@ package com.aiqin.bms.scmp.api.account.service.impl;
 import com.aiqin.bms.scmp.api.account.dao.AccountDao;
 import com.aiqin.bms.scmp.api.account.domain.Account;
 import com.aiqin.bms.scmp.api.account.domain.Util.CodeUtil;
-import com.aiqin.bms.scmp.api.account.domain.request.*;
+import com.aiqin.bms.scmp.api.account.domain.request.AccountRequest;
+import com.aiqin.bms.scmp.api.account.domain.request.ExternalAccountRequest;
+import com.aiqin.bms.scmp.api.account.domain.request.RoleRequest;
 import com.aiqin.bms.scmp.api.account.domain.response.AccountResponse;
 import com.aiqin.bms.scmp.api.account.domain.response.ExternalAccountResponse;
 import com.aiqin.bms.scmp.api.account.service.AccountInfoService;
@@ -16,7 +18,6 @@ import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -78,6 +79,7 @@ public class AccountInfoServiceImpl implements AccountInfoService {
     private String CONTROL_ROLE_LIST;
     @Value("${control.url.role-add}")
     private String CONTROL_ROLE_ADD;
+    private static String SYSTEM_CODE = "smps-system";
 
     @Override
     public HttpResponse<PageResData<Account>> accountList(AccountRequest request) {
@@ -87,41 +89,11 @@ public class AccountInfoServiceImpl implements AccountInfoService {
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
-    private PersonRequest handlePerson(Account request) {
-        PersonRequest personRequest = new PersonRequest();
-        personRequest.setPersonId(request.getUsername());
-        personRequest.setName(request.getAccountName());
-        personRequest.setUserId(request.getUsername());
-        personRequest.setGender(request.getGender());
-        personRequest.setMobile(request.getMobile());
-        personRequest.setMobileType("+86");
-        personRequest.setRemark(request.getRemark());
-        personRequest.setPersonStatus(0);
-        personRequest.setCreateBy(request.getCreateById());
-        //供应商员工类型
-        personRequest.setPersonType(3);
-        return personRequest;
-    }
-
-    private ControlAccountRequest handleAccount(Account request) {
-        ControlAccountRequest controlAccountRequest = new ControlAccountRequest();
-        controlAccountRequest.setPassword(request.getPassword());
-        controlAccountRequest.setUsername(request.getUsername());
-        controlAccountRequest.setPersonId(request.getUsername());
-        controlAccountRequest.setPersonName(request.getAccountName());
-        controlAccountRequest.setCompanyCode(COMPANY_CODE);
-        controlAccountRequest.setCompanyName(COMPANY_NAME);
-        controlAccountRequest.setAccountStatus(0);
-        return controlAccountRequest;
-    }
-
     @Override
     public HttpResponse addAccount(AccountRequest accountRequest, String ticket, String personId) {
-
         if (CollectionUtils.isEmpty(accountRequest.getRoleIds())) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-
         Account account = new Account();
         account.setSupplierCode(accountRequest.getSupplierCode());
         Account request = accountDao.selectOne(account);
@@ -149,17 +121,19 @@ public class AccountInfoServiceImpl implements AccountInfoService {
         //业务类型
         externalAccountRequest.setBusinessName(accountRequest.getSupplierName());
         externalAccountRequest.setBusinessType(1);
+        externalAccountRequest.setSystemCode(SYSTEM_CODE);
         //增加人员信息 部门信息  岗位信息 绑定岗位 增加账号信息
         HttpClient client = HttpClient.post(CONTROL_URL_ACCOUNT).json(externalAccountRequest).timeout(10000);
         HttpResponse httpResponse = client.action().result(HttpResponse.class);
         if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-            ExternalAccountResponse externalAccountResponse = JsonUtil.fromJson(JsonUtil.toJson(httpResponse.getData()),ExternalAccountResponse.class);
+            ExternalAccountResponse externalAccountResponse = JsonUtil.fromJson(JsonUtil.toJson(httpResponse.getData()), ExternalAccountResponse.class);
             //绑定角色信息
             RoleRequest roleRequest = new RoleRequest();
             roleRequest.setRoleId(account.getRoleIds());
-            HttpClient roleClient = HttpClient.post(String.format("%s/%s?ticket=%s&ticketPersonId=%s", CONTROL_ROLE_ADD, externalAccountResponse.getAccountId(),ticket,personId)).json(roleRequest);
+            HttpClient roleClient = HttpClient.post(String.format("%s/%s?ticket=%s&ticket_person_id=%s", CONTROL_ROLE_ADD, externalAccountResponse.getAccountId(), ticket, personId)).json(roleRequest);
             HttpResponse roleResponse = roleClient.action().result(HttpResponse.class);
             if (roleResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+                account.setAccountId(externalAccountResponse.getAccountId());
                 account.setPositionCode(externalAccountResponse.getPositionCode());
                 account.setPositionName(externalAccountResponse.getPositionName());
                 account.setDepartmentName(externalAccountResponse.getDepartmentName());
@@ -201,14 +175,47 @@ public class AccountInfoServiceImpl implements AccountInfoService {
     }
 
     @Override
-    public HttpResponse updateAccount(Account account) {
+    public HttpResponse updateAccount(AccountRequest request, String ticket, String personId) {
+
+        Account account = new Account();
+        BeanUtils.copyProperties(request,account);
         Account response = accountDao.selectOne(account);
         if (response == null) {
-            HttpResponse.failureGenerics(ResultCode.NO_HAVE_ACCOUNT, null);
+            return HttpResponse.failureGenerics(ResultCode.NO_HAVE_ACCOUNT, null);
         }
-        // todo 修改person
-        // todo 修改account
-        // todo 修改角色
+        ExternalAccountRequest externalAccountRequest = new ExternalAccountRequest();
+        BeanUtils.copyProperties(request, externalAccountRequest);
+        //修改person 修改account 删除原来的角色
+        if(CollectionUtils.isNotEmpty(request.getRoleIds())){
+            String roleIds = request.getRoleIds().stream().collect(Collectors.joining(","));
+            externalAccountRequest.setRoleIds(roleIds);
+            account.setRoleIds(roleIds);
+        }
+        externalAccountRequest.setBusinessName(request.getSupplierName());
+        externalAccountRequest.setPersonId(response.getPersonId());
+        externalAccountRequest.setBusinessType(1);
+        externalAccountRequest.setCompanyCode(COMPANY_CODE);
+        externalAccountRequest.setCompanyName(COMPANY_NAME);
+        externalAccountRequest.setSystemCode(SYSTEM_CODE);
+        HttpClient client = HttpClient.put(CONTROL_URL_ACCOUNT).json(externalAccountRequest).timeout(10000);
+        HttpResponse httpResponse = client.action().result(HttpResponse.class);
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+            if (CollectionUtils.isNotEmpty(request.getRoleIds())) {
+                // 修改角色
+                RoleRequest roleRequest = new RoleRequest();
+                roleRequest.setRoleId(request.getRoleIds().stream().collect(Collectors.joining(",")));
+                HttpClient roleClient = HttpClient.post(String.format("%s/%s?ticket=%s&ticket_person_id=%s", CONTROL_ROLE_ADD, response.getAccountId(), ticket, personId)).json(roleRequest);
+                HttpResponse roleResponse = roleClient.action().result(HttpResponse.class);
+                if (!roleResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+                    LOGGER.error("调用主控查询异常", httpResponse.getMessage());
+                    throw new GroundRuntimeException("调用主控查询异常");
+                }
+            }
+
+        } else {
+            LOGGER.error("调用主控查询异常", httpResponse.getMessage());
+            throw new GroundRuntimeException("调用主控查询异常");
+        }
         // 修改供应链关联表
         Integer count = accountDao.updateByPrimaryKeySelective(account);
         LOGGER.info("修改供应商关联表:{}", count);

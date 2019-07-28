@@ -12,11 +12,11 @@ center:
 control:
   url:
    # 角色列表
-    role-list: http://127.0.1:9090/role/list
+    role-list: http://127.0.0.1:9090/role/list
     # 角色绑定
-    role-add: http://127.0.1:9090/person/account/role
+    role-add: http://127.0.0.1:9090/person/account/role
    # 主控增加人员等接口
-    account: http://127.0.1:9090/external/account
+    account: http://127.0.0.1:9090/external/account
 product:
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com

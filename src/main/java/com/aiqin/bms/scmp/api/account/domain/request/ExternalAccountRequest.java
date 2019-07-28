@@ -129,4 +129,8 @@ public class ExternalAccountRequest {
     @JsonProperty("business_type")
     private Integer businessType;
 
+    @ApiModelProperty(value="系统code")
+    @JsonProperty("system_code")
+    private String systemCode;
+
 }
