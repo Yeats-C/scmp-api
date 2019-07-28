@@ -63,8 +63,8 @@
            a.ext_field_5                        as beContainArea,
            a.purchase_group_name                as purchaseGroupName,
            a.apply_status                       as applyStatus,
-           IFNULL(a.update_by,a.create_by)     as operateBy,
-           IFNULL(a.update_time,a.create_time) as operateTime
+           IFNULL(a.auditor_by,IFNULL(a.update_by,a.create_by))     as operateBy,
+           IFNULL(a.auditor_time,IFNULL(a.update_time,a.create_time)) as operateTime
     from product_sku_change_price a
     where a.company_code = #{companyCode}
     <if test="createTimeStart != null">

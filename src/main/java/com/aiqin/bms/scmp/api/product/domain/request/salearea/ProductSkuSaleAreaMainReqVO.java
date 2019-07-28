@@ -28,8 +28,8 @@ public class ProductSkuSaleAreaMainReqVO {
     @ApiModelProperty("正式限制区域编码")
     private String officialCode;
 
-    @ApiModelProperty("是否禁用(0禁用1启用)")
-    private Integer beDisable;
+    @ApiModelProperty("是否禁用(1禁用0启用)")
+    private Integer beDisable=0;
 
     @ApiModelProperty("创建人")
     private String createBy;
