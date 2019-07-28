@@ -926,6 +926,7 @@ public class StockServiceImpl implements StockService {
                 stock.setStockUnitCode(o.getSaleUnitCode());
                 stock.setStockUnitName(o.getSaleUnitName());
                 stock.setTaxPrice(o.getPrice());
+                stock.setTaxRate(o.getTaxRate());
 //                stock.setBrandCode(o.getProductBrandCode());
 //                stock.setBrandName(o.getProductBrandName());
                 list.add(stock);
