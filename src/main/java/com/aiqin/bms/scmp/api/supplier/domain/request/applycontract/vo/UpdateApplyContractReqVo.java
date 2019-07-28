@@ -35,7 +35,7 @@ public class UpdateApplyContractReqVo {
     private String yearName;
 
     @ApiModelProperty("供货单位名称")
-    @NotEmpty(message = "供货单位名称不能为空")
+//    @NotEmpty(message = "供货单位名称不能为空")
     private String supplierName;
 
     @ApiModelProperty("供货单位编号")

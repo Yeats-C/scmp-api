@@ -70,7 +70,7 @@ public interface ContractDao {
      * @return
      */
 
-    int updateByCode(@Param("applyContractCode") String applyContractCode, @Param("applyStatus") byte applyStatus);
+    int updateByCode(@Param("applyContractCode") String applyContractCode, @Param("applyStatus") byte applyStatus,@Param("newApplyCode") String newApplyCode);
 
 
     List<ContractPurchaseResVo> getContractByMap(Map<String,String> map);
