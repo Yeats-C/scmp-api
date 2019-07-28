@@ -413,7 +413,10 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         ApplyContractDTO applyContractDTO = new ApplyContractDTO();
         BeanCopyUtils.copy(updateApplyContractReqVo,applyContractDTO);
         //设置id
-        applyContractDTO.setId(oldApplyContractDTO.getId());
+//        applyContractDTO.setId(oldApplyContractDTO.getId());
+        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_CONTRACT_CODE+updateApplyContractReqVo.getContractTypeCode());
+        String code = updateApplyContractReqVo.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(encodingRule.getNumberingValue());
+        applyContractDTO.setApplyContractCode(code);
         //申请状态
         applyContractDTO.setApplyStatus(ApplyStatus.PENDING.getNumber());
         //申请类型
@@ -429,7 +432,9 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         applyContractDTO.setPurchasingGroupCode(purchasingGroupCode.toString().substring(0,purchasingGroupCode.toString().length()-1));
         applyContractDTO.setPurchasingGroupName(purchasingGroupName.toString().substring(0,purchasingGroupName.toString().length()-1));
 
-        int k = ((ApplyContractService) AopContext.currentProxy()).updateApplyContractDetails(applyContractDTO);
+        Long k = ((ApplyContractService) AopContext.currentProxy()).insertApplyContractDetails(applyContractDTO);
+        // 更新编码数据中的最大编码
+        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applyContractDTO.getUpdateBy()).replace("APPLYTYPE", "修改");
         supplierCommonService.getInstance(updateApplyContractReqVo.getApplyContractCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(),content ,null,HandleTypeCoce.PENDING.getName());
         if(oldApplyContractDTO.getRebateClause().equals(((byte)1))){
@@ -497,7 +502,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 int mm = ((ApplyContractService) AopContext.currentProxy()).saveCategoryList(applyContractCategories);
             }
         }
-        workFlow(oldApplyContractDTO.getId());
+        workFlow(k);
         // 修改合同状态防止在审核中修改合同
         int  kp = contractDao.updateByCode(updateApplyContractReqVo.getApplyContractCode(),Byte.valueOf("1"));
         return kp;
