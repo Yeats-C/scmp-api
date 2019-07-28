@@ -84,7 +84,7 @@ public class MonthCumulativeBrandSalesRespVo {
     @JsonProperty("channel_last_year_sales")
     private String channelLastYearSales;
 
-    @ApiModelProperty("上月渠道销售额")
+    @ApiModelProperty("上期渠道销售额")
     @JsonProperty("channel_last_month_sales")
     private String channelLastMonthSales;
 
@@ -104,7 +104,7 @@ public class MonthCumulativeBrandSalesRespVo {
     @JsonProperty("distribution_last_year_sales")
     private String distributionLastYearSales;
 
-    @ApiModelProperty("上月分销销售额")
+    @ApiModelProperty("上期分销销售额")
     @JsonProperty("distribution_last_month_sales")
     private String distributionLastMonthSales;
 
