@@ -248,6 +248,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuSubs.forEach(item -> {
                     item.setMainSkuCode(productSkuDraft.getSkuCode());
                     item.setMainSkuName(productSkuDraft.getSkuName());
+                    item.setCreateBy(productSkuDraft.getCreateBy());
+                    item.setUpdateBy(productSkuDraft.getUpdateBy());
+                    item.setCreateTime(productSkuDraft.getCreateTime());
+                    item.setUpdateTime(productSkuDraft.getUpdateTime());
                 });
                 productSkuSubService.insertDraftList(productSkuSubs);
             }
@@ -264,6 +268,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     applyUseTagRecord.setUseObjectName(productSkuDraft.getSkuName());
                     applyUseTagRecord.setTagTypeCode(TagTypeCode.SKU.getStatus());
                     applyUseTagRecord.setTagTypeName(TagTypeCode.SKU.getName());
+                    applyUseTagRecord.setCreateBy(productSkuDraft.getCreateBy());
+                    applyUseTagRecord.setUpdateBy(productSkuDraft.getUpdateBy());
+                    applyUseTagRecord.setCreateTime(productSkuDraft.getCreateTime());
+                    applyUseTagRecord.setUpdateTime(productSkuDraft.getUpdateTime());
                     applyUseTagRecords.add(applyUseTagRecord);
                 });
                 applyUseTagRecordService.saveBatch(applyUseTagRecords);
@@ -274,6 +282,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuChannelDrafts.forEach(item->{
                     item.setSkuCode(productSkuDraft.getSkuCode());
                     item.setSkuName(productSkuDraft.getSkuName());
+                    item.setCreateBy(productSkuDraft.getCreateBy());
+                    item.setUpdateBy(productSkuDraft.getUpdateBy());
+                    item.setCreateTime(productSkuDraft.getCreateTime());
+                    item.setUpdateTime(productSkuDraft.getUpdateTime());
                 });
                 productSkuChannelService.insertDraftList(productSkuChannelDrafts);
             }
@@ -304,6 +316,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuStockInfoDraft.setProductName(productSkuDraft.getProductName());
                     productSkuStockInfoDraft.setBaseProductContent(1);
                     productSkuStockInfoDraft.setZeroRemovalCoefficient(1L);
+                    productSkuStockInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
+                    productSkuStockInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
+                    productSkuStockInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
+                    productSkuStockInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
                     productSkuStockInfoService.insertDraft(productSkuStockInfoDraft);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -323,6 +339,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuPurchaseInfoDraft.setProductSkuName(productSkuDraft.getSkuName());
                     productSkuPurchaseInfoDraft.setProductCode(productSkuDraft.getProductCode());
                     productSkuPurchaseInfoDraft.setProductName(productSkuDraft.getProductName());
+                    productSkuPurchaseInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
+                    productSkuPurchaseInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
+                    productSkuPurchaseInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
+                    productSkuPurchaseInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
                     productSkuPurchaseInfoService.insertDraft(productSkuPurchaseInfoDraft);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -340,6 +360,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         item.setProductSkuName(productSkuDraft.getSkuName());
                         item.setProductName(productSkuDraft.getProductName());
                         item.setProductCode(productSkuDraft.getProductCode());
+                        item.setCreateBy(productSkuDraft.getCreateBy());
+                        item.setUpdateBy(productSkuDraft.getUpdateBy());
+                        item.setCreateTime(productSkuDraft.getCreateTime());
+                        item.setUpdateTime(productSkuDraft.getUpdateTime());
                         item.setBaseProductContent(1);
                         item.setZeroRemovalCoefficient(1L);
                         item.setUsageStatus(StatusTypeCode.USE.getStatus());
@@ -357,6 +381,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuBoxPackingDrafts.forEach(item->{
                     item.setProductSkuCode(productSkuDraft.getSkuCode());
                     item.setProductSkuName(productSkuDraft.getSkuName());
+                    item.setCreateBy(productSkuDraft.getCreateBy());
+                    item.setUpdateBy(productSkuDraft.getUpdateBy());
+                    item.setCreateTime(productSkuDraft.getCreateTime());
+                    item.setUpdateTime(productSkuDraft.getUpdateTime());
                 });
                 productSkuBoxPackingService.insertDraftList(productSkuBoxPackingDrafts);
                 //结算信息
@@ -366,82 +394,96 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     ProductSkuCheckoutDraft productSkuCheckoutDraft = addSkuInfoReqVO.getProductSkuCheckoutDraft();
                     productSkuCheckoutDraft.setSkuCode(productSkuDraft.getSkuCode());
                     productSkuCheckoutDraft.setSkuName(productSkuDraft.getSkuName());
+                    productSkuCheckoutDraft.setCreateBy(productSkuDraft.getCreateBy());
+                    productSkuCheckoutDraft.setUpdateBy(productSkuDraft.getUpdateBy());
+                    productSkuCheckoutDraft.setCreateTime(productSkuDraft.getCreateTime());
+                    productSkuCheckoutDraft.setUpdateTime(productSkuDraft.getUpdateTime());
                     productSkuCheckoutService.insertDraft(productSkuCheckoutDraft);
                     inputTaxRateL = productSkuCheckoutDraft.getInputTaxRate();
                     outputTaxRateL = productSkuCheckoutDraft.getOutputTaxRate();
                     inputTaxRate = new BigDecimal(productSkuCheckoutDraft.getInputTaxRate()).divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
                     outputTaxRate = new BigDecimal(productSkuCheckoutDraft.getOutputTaxRate()).divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
                 }
-                //供应商信息
-                if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuSupplyUnitDrafts())){
-                    List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = addSkuInfoReqVO.getProductSkuSupplyUnitDrafts();
-                    //获取采购价格项目
-                    QueryPriceProjectRespVo purchasePriceProject = priceProjectService.getPurchasePriceProject();
-                    if(null == purchasePriceProject){
-                        throw new BizException(ResultCode.SKU_PURCHASE_PRICE_IS_EMPTY);
-                    }
-                    final BigDecimal finalInputTaxRate = inputTaxRate;
-                    final Long finalInputTaxRateL = inputTaxRateL;
-
-                    List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts = Lists.newArrayList();
-                    productSkuSupplyUnitDrafts.forEach(item->{
-                        item.setProductSkuCode(productSkuDraft.getSkuCode());
-                        item.setProductSkuName(productSkuDraft.getSkuName());
-                        //先把含税金额除以100兑换成元,含税金额/(1+税率) = 未税金额,最终结果*100转换成分,舍弃分以后的数字
-                        Long taxNoPrice = new BigDecimal(item.getTaxIncludedPrice()).divide(new BigDecimal(100)).divide(BigDecimal.ONE.add(finalInputTaxRate),2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)).longValue();
-                        item.setNoTaxPurchasePrice(taxNoPrice);
-                        item.setTaxRate(finalInputTaxRateL);
-                        item.setUsageStatus(StatusTypeCode.USE.getStatus());
-                        if(CollectionUtils.isNotEmpty(item.getProductSkuSupplyUnitCapacityDrafts())){
-                            item.getProductSkuSupplyUnitCapacityDrafts().forEach(item2->{
-                                item2.setProductSkuCode(productSkuDraft.getSkuCode());
-                                item2.setProductSkuName(productSkuDraft.getSkuName());
-                                item2.setSupplyUnitCode(item.getSupplyUnitCode());
-                                item2.setSupplyUnitName(item.getSupplyUnitName());
-                            });
-                            productSkuSupplyUnitCapacityDrafts.addAll(item.getProductSkuSupplyUnitCapacityDrafts());
+                if (!Objects.equals(productSkuDraft.getApplyType(),StatusTypeCode.UPDATE_APPLY.getStatus())) {
+                    //供应商信息
+                    if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuSupplyUnitDrafts())){
+                        List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = addSkuInfoReqVO.getProductSkuSupplyUnitDrafts();
+                        //获取采购价格项目
+                        QueryPriceProjectRespVo purchasePriceProject = priceProjectService.getPurchasePriceProject();
+                        if(null == purchasePriceProject){
+                            throw new BizException(ResultCode.SKU_PURCHASE_PRICE_IS_EMPTY);
                         }
-                        SkuPriceDraftReqVO skuPriceDraftReqVO = new SkuPriceDraftReqVO();
-                        //SKU编码
-                        skuPriceDraftReqVO.setSkuCode(productSkuDraft.getSkuCode());
-                        skuPriceDraftReqVO.setSkuName(productSkuDraft.getSkuName());
-                        //公司
-                        skuPriceDraftReqVO.setCompanyCode(getUser().getCompanyCode());
-                        skuPriceDraftReqVO.setCompanyName(getUser().getCompanyName());
-                        //采购组
-                        skuPriceDraftReqVO.setPurchaseGroupCode(productSkuDraft.getProcurementSectionCode());
-                        skuPriceDraftReqVO.setPurchaseGroupName(productSkuDraft.getProcurementSectionName());
-                        //价格项目信息
-                        skuPriceDraftReqVO.setPriceItemCode(purchasePriceProject.getPriceProjectCode());
-                        skuPriceDraftReqVO.setPriceItemName(purchasePriceProject.getPriceProjectName());
-                        skuPriceDraftReqVO.setPriceTypeCode(purchasePriceProject.getPriceTypeCode());
-                        skuPriceDraftReqVO.setPriceTypeName(purchasePriceProject.getPriceTypeName());
-                        skuPriceDraftReqVO.setPriceAttributeCode(purchasePriceProject.getPriceCategoryCode());
-                        skuPriceDraftReqVO.setPriceAttributeName(purchasePriceProject.getPriceCategoryName());
-                        //税率
-                        skuPriceDraftReqVO.setTax(finalInputTaxRateL);
-                        //未税价
-                        skuPriceDraftReqVO.setPriceNoTax(taxNoPrice);
-                        //含税价
-                        skuPriceDraftReqVO.setPriceTax(item.getTaxIncludedPrice());
-                        //生效时间
-                        skuPriceDraftReqVO.setEffectiveTimeStart(new Date());
-                        //供应商
-                        skuPriceDraftReqVO.setSupplierCode(item.getSupplyUnitCode());
-                        skuPriceDraftReqVO.setSupplierName(item.getSupplyUnitName());
-                        //是否默认
-                        skuPriceDraftReqVO.setBeDefault(item.getIsDefault().intValue());
-                        //创建/修改时间/人
-                        skuPriceDraftReqVO.setCreateBy(getUser().getPersonName());
-                        skuPriceDraftReqVO.setCreateTime(new Date());
-                        skuPriceDraftReqVO.setUpdateBy(getUser().getPersonName());
-                        skuPriceDraftReqVO.setUpdateTime(new Date());
-                        productSkuPrices.add(skuPriceDraftReqVO);
-                    });
-                    productSkuSupplyUnitService.insertDraftList(productSkuSupplyUnitDrafts);
-                    //供应商产能
-                    if (CollectionUtils.isNotEmpty(productSkuSupplyUnitCapacityDrafts)){
-                        productSkuSupplyUnitCapacityService.insertDraftList(productSkuSupplyUnitCapacityDrafts);
+                        final BigDecimal finalInputTaxRate = inputTaxRate;
+                        final Long finalInputTaxRateL = inputTaxRateL;
+
+                        List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts = Lists.newArrayList();
+                        productSkuSupplyUnitDrafts.forEach(item->{
+                            item.setProductSkuCode(productSkuDraft.getSkuCode());
+                            item.setProductSkuName(productSkuDraft.getSkuName());
+                            item.setCreateBy(productSkuDraft.getCreateBy());
+                            item.setUpdateBy(productSkuDraft.getUpdateBy());
+                            item.setCreateTime(productSkuDraft.getCreateTime());
+                            item.setUpdateTime(productSkuDraft.getUpdateTime());
+                            //先把含税金额除以100兑换成元,含税金额/(1+税率) = 未税金额,最终结果*100转换成分,舍弃分以后的数字
+                            Long taxNoPrice = new BigDecimal(item.getTaxIncludedPrice()).divide(new BigDecimal(100)).divide(BigDecimal.ONE.add(finalInputTaxRate),2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)).longValue();
+                            item.setNoTaxPurchasePrice(taxNoPrice);
+                            item.setTaxRate(finalInputTaxRateL);
+                            item.setUsageStatus(StatusTypeCode.USE.getStatus());
+                            if(CollectionUtils.isNotEmpty(item.getProductSkuSupplyUnitCapacityDrafts())){
+                                item.getProductSkuSupplyUnitCapacityDrafts().forEach(item2->{
+                                    item2.setProductSkuCode(productSkuDraft.getSkuCode());
+                                    item2.setProductSkuName(productSkuDraft.getSkuName());
+                                    item2.setSupplyUnitCode(item.getSupplyUnitCode());
+                                    item2.setSupplyUnitName(item.getSupplyUnitName());
+                                    item2.setCreateBy(productSkuDraft.getCreateBy());
+                                    item2.setUpdateBy(productSkuDraft.getUpdateBy());
+                                    item2.setCreateTime(productSkuDraft.getCreateTime());
+                                    item2.setUpdateTime(productSkuDraft.getUpdateTime());
+                                });
+                                productSkuSupplyUnitCapacityDrafts.addAll(item.getProductSkuSupplyUnitCapacityDrafts());
+                            }
+                            SkuPriceDraftReqVO skuPriceDraftReqVO = new SkuPriceDraftReqVO();
+                            //SKU编码
+                            skuPriceDraftReqVO.setSkuCode(productSkuDraft.getSkuCode());
+                            skuPriceDraftReqVO.setSkuName(productSkuDraft.getSkuName());
+                            //公司
+                            skuPriceDraftReqVO.setCompanyCode(getUser().getCompanyCode());
+                            skuPriceDraftReqVO.setCompanyName(getUser().getCompanyName());
+                            //采购组
+                            skuPriceDraftReqVO.setPurchaseGroupCode(productSkuDraft.getProcurementSectionCode());
+                            skuPriceDraftReqVO.setPurchaseGroupName(productSkuDraft.getProcurementSectionName());
+                            //价格项目信息
+                            skuPriceDraftReqVO.setPriceItemCode(purchasePriceProject.getPriceProjectCode());
+                            skuPriceDraftReqVO.setPriceItemName(purchasePriceProject.getPriceProjectName());
+                            skuPriceDraftReqVO.setPriceTypeCode(purchasePriceProject.getPriceTypeCode());
+                            skuPriceDraftReqVO.setPriceTypeName(purchasePriceProject.getPriceTypeName());
+                            skuPriceDraftReqVO.setPriceAttributeCode(purchasePriceProject.getPriceCategoryCode());
+                            skuPriceDraftReqVO.setPriceAttributeName(purchasePriceProject.getPriceCategoryName());
+                            //税率
+                            skuPriceDraftReqVO.setTax(finalInputTaxRateL);
+                            //未税价
+                            skuPriceDraftReqVO.setPriceNoTax(taxNoPrice);
+                            //含税价
+                            skuPriceDraftReqVO.setPriceTax(item.getTaxIncludedPrice());
+                            //生效时间
+                            skuPriceDraftReqVO.setEffectiveTimeStart(new Date());
+                            //供应商
+                            skuPriceDraftReqVO.setSupplierCode(item.getSupplyUnitCode());
+                            skuPriceDraftReqVO.setSupplierName(item.getSupplyUnitName());
+                            //是否默认
+                            skuPriceDraftReqVO.setBeDefault(item.getIsDefault().intValue());
+                            //创建/修改时间/人
+                            skuPriceDraftReqVO.setCreateBy(productSkuDraft.getCreateBy());
+                            skuPriceDraftReqVO.setUpdateBy(productSkuDraft.getUpdateBy());
+                            skuPriceDraftReqVO.setCreateTime(productSkuDraft.getCreateTime());
+                            skuPriceDraftReqVO.setUpdateTime(productSkuDraft.getUpdateTime());
+                            productSkuPrices.add(skuPriceDraftReqVO);
+                        });
+                        productSkuSupplyUnitService.insertDraftList(productSkuSupplyUnitDrafts);
+                        //供应商产能
+                        if (CollectionUtils.isNotEmpty(productSkuSupplyUnitCapacityDrafts)){
+                            productSkuSupplyUnitCapacityService.insertDraftList(productSkuSupplyUnitCapacityDrafts);
+                        }
                     }
                 }
                 //关联商品
@@ -450,6 +492,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuAssociatedGoodsDrafts.forEach(item->{
                         item.setMainSkuCode(productSkuDraft.getSkuCode());
                         item.setMainSkuName(productSkuDraft.getSkuName());
+                        item.setCreateBy(productSkuDraft.getCreateBy());
+                        item.setUpdateBy(productSkuDraft.getUpdateBy());
+                        item.setCreateTime(productSkuDraft.getCreateTime());
+                        item.setUpdateTime(productSkuDraft.getUpdateTime());
                     });
                     productSkuAssociatedGoodsService.insertDraftList(productSkuAssociatedGoodsDrafts);
                 }
@@ -460,6 +506,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         item.setProductSkuCode(productSkuDraft.getSkuCode());
                         item.setProductSkuName(productSkuDraft.getSkuName());
                         item.setUsageStatus(StatusTypeCode.USE.getStatus());
+                        item.setCreateBy(productSkuDraft.getCreateBy());
+                        item.setUpdateBy(productSkuDraft.getUpdateBy());
+                        item.setCreateTime(productSkuDraft.getCreateTime());
+                        item.setUpdateTime(productSkuDraft.getUpdateTime());
                     });
                     productSkuManufacturerService.insertDraftList(productSkuManufacturerDrafts);
                 }
@@ -469,6 +519,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuInspReportDrafts.forEach(item->{
                         item.setSkuCode(productSkuDraft.getSkuCode());
                         item.setSkuName(productSkuDraft.getSkuName());
+                        item.setCreateBy(productSkuDraft.getCreateBy());
+                        item.setUpdateBy(productSkuDraft.getUpdateBy());
+                        item.setCreateTime(productSkuDraft.getCreateTime());
+                        item.setUpdateTime(productSkuDraft.getUpdateTime());
                     });
                     productSkuInspReportService.insertDraftList(productSkuInspReportDrafts);
                 }
@@ -495,52 +549,58 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuDisInfoDraft.setProductSkuName(productSkuDraft.getSkuName());
                 productSkuDisInfoDraft.setProductCode(productSkuDraft.getProductCode());
                 productSkuDisInfoDraft.setProductName(productSkuDraft.getProductName());
+                productSkuDisInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
+                productSkuDisInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
+                productSkuDisInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
+                productSkuDisInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
                 productSkuDisInfoService.insertDraft(productSkuDisInfoDraft);
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
             }
-            //价格
-            if (null != addSkuInfoReqVO.getProductSkuPrices() && addSkuInfoReqVO.getProductSkuPrices().size() > 0){
-                List<SkuPriceDraftReqVO> temps = addSkuInfoReqVO.getProductSkuPrices();
-                final BigDecimal finalOutputTaxRate = outputTaxRate;
-                final Long finalOutputTaxRateL = outputTaxRateL;
-                temps.forEach(item->{
-                    //SKU编码
-                    item.setSkuCode(productSkuDraft.getSkuCode());
-                    item.setSkuName(productSkuDraft.getSkuName());
-                    //公司
-                    item.setCompanyCode(getUser().getCompanyCode());
-                    item.setCompanyName(getUser().getCompanyName());
-                    //采购组
-                    item.setPurchaseGroupCode(productSkuDraft.getProcurementSectionCode());
-                    item.setPurchaseGroupName(productSkuDraft.getProcurementSectionName());
-                    //税率
-                    item.setTax(finalOutputTaxRateL);
-                    //含税价
-                    Long taxIncludedPrice = new BigDecimal(item.getPriceTax()).divide(new BigDecimal(100)).divide(BigDecimal.ONE.add(finalOutputTaxRate),2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)).longValue();
-                    item.setPriceNoTax(taxIncludedPrice);
-                    //创建/修改时间/人
-                    item.setCreateBy(getUser().getPersonName());
-                    item.setCreateTime(new Date());
-                    item.setUpdateBy(getUser().getPersonName());
-                    item.setUpdateTime(new Date());
-                });
-                productSkuPrices.addAll(temps);
-            }
-            if(CollectionUtils.isNotEmpty(productSkuPrices)){
-                productSkuPriceInfoService.saveSkuPriceDraft(productSkuPrices);
-            }
-            //商品配置
-            if (null != addSkuInfoReqVO.getProductSkuConfigs() && addSkuInfoReqVO.getProductSkuConfigs().size() > 0){
-                List<SaveSkuConfigReqVo> productSkuConfigs = addSkuInfoReqVO.getProductSkuConfigs();
-                productSkuConfigs.forEach(item->{
-                    item.setSkuCode(productSkuDraft.getSkuCode());
-                    item.setSkuName(productSkuDraft.getSkuName());
-                    item.setProductName(productSkuDraft.getProductName());
-                    item.setProductCode(productSkuDraft.getProductCode());
-                });
-                productSkuConfigService.insertDraftList(productSkuConfigs);
+            if (!Objects.equals(productSkuDraft.getApplyType(),StatusTypeCode.UPDATE_APPLY.getStatus())) {
+                //价格
+                if (null != addSkuInfoReqVO.getProductSkuPrices() && addSkuInfoReqVO.getProductSkuPrices().size() > 0){
+                    List<SkuPriceDraftReqVO> temps = addSkuInfoReqVO.getProductSkuPrices();
+                    final BigDecimal finalOutputTaxRate = outputTaxRate;
+                    final Long finalOutputTaxRateL = outputTaxRateL;
+                    temps.forEach(item->{
+                        //SKU编码
+                        item.setSkuCode(productSkuDraft.getSkuCode());
+                        item.setSkuName(productSkuDraft.getSkuName());
+                        //公司
+                        item.setCompanyCode(getUser().getCompanyCode());
+                        item.setCompanyName(getUser().getCompanyName());
+                        //采购组
+                        item.setPurchaseGroupCode(productSkuDraft.getProcurementSectionCode());
+                        item.setPurchaseGroupName(productSkuDraft.getProcurementSectionName());
+                        //税率
+                        item.setTax(finalOutputTaxRateL);
+                        //含税价
+                        Long taxIncludedPrice = new BigDecimal(item.getPriceTax()).divide(new BigDecimal(100)).divide(BigDecimal.ONE.add(finalOutputTaxRate),2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)).longValue();
+                        item.setPriceNoTax(taxIncludedPrice);
+                        //创建/修改时间/人
+                        item.setCreateBy(productSkuDraft.getCreateBy());
+                        item.setUpdateBy(productSkuDraft.getUpdateBy());
+                        item.setCreateTime(productSkuDraft.getCreateTime());
+                        item.setUpdateTime(productSkuDraft.getUpdateTime());
+                    });
+                    productSkuPrices.addAll(temps);
+                }
+                if(CollectionUtils.isNotEmpty(productSkuPrices)){
+                    productSkuPriceInfoService.saveSkuPriceDraft(productSkuPrices);
+                }
+                //商品配置
+                if (null != addSkuInfoReqVO.getProductSkuConfigs() && addSkuInfoReqVO.getProductSkuConfigs().size() > 0){
+                    List<SaveSkuConfigReqVo> productSkuConfigs = addSkuInfoReqVO.getProductSkuConfigs();
+                    productSkuConfigs.forEach(item->{
+                        item.setSkuCode(productSkuDraft.getSkuCode());
+                        item.setSkuName(productSkuDraft.getSkuName());
+                        item.setProductName(productSkuDraft.getProductName());
+                        item.setProductCode(productSkuDraft.getProductCode());
+                    });
+                    productSkuConfigService.insertDraftList(productSkuConfigs);
+                }
             }
             //sku图片及介绍
             if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuPicturesDrafts())){
@@ -548,6 +608,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuPicturesDrafts.forEach(item->{
                     item.setProductSkuCode(productSkuDraft.getSkuCode());
                     item.setProductSkuName(productSkuDraft.getSkuName());
+                    item.setCreateBy(productSkuDraft.getCreateBy());
+                    item.setUpdateBy(productSkuDraft.getUpdateBy());
+                    item.setCreateTime(productSkuDraft.getCreateTime());
+                    item.setUpdateTime(productSkuDraft.getUpdateTime());
                 });
                 productSkuPicturesService.insertDraftList(productSkuPicturesDrafts);
             }
@@ -557,6 +621,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuPicDescDrafts.forEach(item-> {
                     item.setSkuCode(productSkuDraft.getSkuCode());
                     item.setSkuName(productSkuDraft.getSkuName());
+                    item.setCreateBy(productSkuDraft.getCreateBy());
+                    item.setUpdateBy(productSkuDraft.getUpdateBy());
+                    item.setCreateTime(productSkuDraft.getCreateTime());
+                    item.setUpdateTime(productSkuDraft.getUpdateTime());
                 });
                 productSkuPicDescService.insertDraftList(productSkuPicDescDrafts);
             }
@@ -566,6 +634,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuFileDrafts.forEach(item->{
                     item.setSkuCode(productSkuDraft.getSkuCode());
                     item.setSkuName(productSkuDraft.getSkuName());
+                    item.setCreateBy(productSkuDraft.getCreateBy());
+                    item.setUpdateBy(productSkuDraft.getUpdateBy());
+                    item.setCreateTime(productSkuDraft.getCreateTime());
+                    item.setUpdateTime(productSkuDraft.getUpdateTime());
                 });
                 productSkuFileService.insertDraftList(productSkuFileDrafts);
             }
@@ -1033,11 +1105,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     public String skuWorkFlowCallback(WorkFlowCallbackVO vo1) {
         //通过编码查询实体
         WorkFlowCallbackVO vo = updateSupStatus(vo1);
+        if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
+            return WorkFlowReturn.SUCCESS;
+        }
         List<ApplyProductSku> applyProductSkus = productSkuDao.getApplySkuByFormNo(vo.getFormNo());
         if(CollectionUtils.isEmpty(applyProductSkus)){
             return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
         }
         String applyCode = applyProductSkus.get(0).getApplyCode();
+        Byte applyStatus = applyProductSkus.get(0).getApplyStatus();
+        //判断查出来的是否是在审批中的数据
+        if(!ApplyStatus.APPROVAL.getNumber().equals(applyStatus)){
+            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "数据异常，不是在审批中的数据！"));
+        }
         Date auditorTime = new Date();
         for (int i =0 ; i < applyProductSkus.size();i++){
             Byte handleTypeCoceStatus;
@@ -1089,12 +1169,14 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuSalesInfoService.saveList(skuCode,applyCode);
             //结算
             productSkuCheckoutService.saveInfo(skuCode,applyCode);
-            //供应商
-            productSkuSupplyUnitService.saveList(skuCode,applyCode);
-            //供应商产能
-            productSkuSupplyUnitCapacityService.saveList(skuCode,applyCode);
-            //配置
-            productSkuConfigService.saveList(vo,skuCode,applyCode);
+            if(null == oldSku){
+                //供应商
+                productSkuSupplyUnitService.saveList(skuCode,applyCode);
+                //供应商产能
+                productSkuSupplyUnitCapacityService.saveList(skuCode,applyCode);
+                //配置
+                productSkuConfigService.saveList(vo,skuCode,applyCode);
+            }
             //关联商品
             productSkuAssociatedGoodsService.saveList(skuCode,applyCode);
             //生产厂家
