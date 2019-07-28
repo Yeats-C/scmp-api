@@ -160,27 +160,33 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
             }
             //根据供应商编码获取供应商申请ID
             ApplySupplier applySupplier = new ApplySupplier();
-            ApplySupplier applySupplierId = applySupplierDao.getApplySupplierBySupplierCode(supplierUpdateReqVO.getSupplierCode());
-            if (null != applySupplierId){
+//            ApplySupplier applySupplierId = applySupplierDao.getApplySupplierBySupplierCode(supplierUpdateReqVO.getSupplierCode());
+//            if (null != applySupplierId){
                 BeanCopyUtils.copy(supplierUpdateReqVO,applySupplier);
+                applySupplier.setAuditorBy(null);
+                applySupplier.setAuditorTime(null);
                 applySupplier.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
                 applySupplier.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
-                applySupplier.setId(applySupplierId.getId());
+                //供应商申请编码
+                EncodingRule encodingRule =encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLIER_CODE);
+                applySupplier.setApplySupplierCode(String.valueOf(encodingRule.getNumberingValue()+1));
+//                applySupplier.setId(applySupplierId.getId());
                 applySupplier.setFormNo(getFormNO());
-            } else {
-                throw new BizException(ResultCode.UPDATE_ERROR);
-            }
+               encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+//            } else {
+//                throw new BizException(ResultCode.UPDATE_ERROR);
+//            }
             //执行修改供应商申请
-            num = ((ApplySupplierService) AopContext.currentProxy()).update(applySupplier);
+            num = ((ApplySupplierService) AopContext.currentProxy()).insert(applySupplier);
             //修改供应商集团申请状态
-            supplierDao.updatetSupplierApplyStatusByCode(supplierUpdateReqVO.getSupplierCode());
+            supplierDao.updatetSupplierApplyStatusByCode(supplierUpdateReqVO.getSupplierCode(),String.valueOf(encodingRule.getNumberingValue()+1));
 
             String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplier.getUpdateBy()).replace("APPLYTYPE", "修改");
             supplierCommonService.getInstance(applySupplier.getApplySupplierCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLIER.getStatus(), content,null,HandleTypeCoce.PENDING.getName());
 
             ApplySupplierReqDTO applySupplierReqDTO = new ApplySupplierReqDTO();
-            BeanCopyUtils.copy(applySupplierId,applySupplierReqDTO);
-            applySupplierReqDTO.setApplySupplierCode(applySupplierId.getApplySupplierCode());
+            BeanCopyUtils.copy(applySupplier,applySupplierReqDTO);
+            applySupplierReqDTO.setApplySupplierCode(applySupplier.getApplySupplierCode());
             applySupplierReqDTO.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
             applySupplierReqDTO.setFormNo(applySupplier.getFormNo());
             applySupplierReqDTO.setDirectSupervisorCode(applySupplier.getDirectSupervisorCode());
@@ -203,6 +209,22 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
             applySupplierReqDTO.setCompanyName(authToken.getCompanyName());
         }
         Long resultNum = applySupplierDao.insertApply(applySupplierReqDTO);
+        if(resultNum > 0){
+            return resultNum;
+        } else {
+            throw new BizException(ResultCode.ADD_ERROR);
+        }
+    }
+    @Override
+    @Transactional(rollbackFor = BizException.class)
+    @Save
+    public int insert(ApplySupplier applySupplierReqDTO) {
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            applySupplierReqDTO.setCompanyCode(authToken.getCompanyCode());
+            applySupplierReqDTO.setCompanyName(authToken.getCompanyName());
+        }
+        int resultNum = applySupplierMapper.insert(applySupplierReqDTO);
         if(resultNum > 0){
             return resultNum;
         } else {

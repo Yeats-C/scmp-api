@@ -68,6 +68,13 @@ public interface ApplySupplierService{
     int cancelApply(CancelApplySupplierReqVO cancelApplySupplierReqVO);
 
     /**
+     * 修改供应商保存
+     * @param applySupplierReqDTO
+     * @return
+     */
+    int insert(ApplySupplier applySupplierReqDTO);
+
+    /**
      * 供应商审批流
      * @param applySupplierReqDTO
      */

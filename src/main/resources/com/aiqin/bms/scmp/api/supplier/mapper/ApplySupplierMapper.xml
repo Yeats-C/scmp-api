@@ -33,18 +33,15 @@
     delete from apply_supplier
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplier">
-    insert into apply_supplier (id, supplier_code, supplier_name, supplier_abbreviation,
-      del_flag, apply_supplier_code, create_time, 
-      create_by, update_time, update_by, form_no,enable
-      )
-    values (#{id,jdbcType=BIGINT}, #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR},
-      #{supplierAbbreviation,jdbcType=VARCHAR},
-      #{delFlag,jdbcType=TINYINT}, #{applySupplierCode,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
-      #{applyStatus,jdbcType=TINYINT}, #{applyType,jdbcType=TINYINT}, #{auditorBy,jdbcType=VARCHAR},
-      #{auditorTime,jdbcType=TIMESTAMP}, #{formNo,jdbcType=VARCHAR}, #{enable,jdbcType=TINYINT}
-      )
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplier">
+     insert into apply_supplier (supplier_name, supplier_abbreviation,del_flag, create_time,create_by,
+            update_time,update_by,apply_supplier_code,apply_type,form_no,enable,company_code,company_name,direct_supervisor_code,direct_supervisor_name)
+    values (#{supplierName}, #{supplierAbbreviation},
+      #{delFlag},#{createTime},#{createBy},
+      #{updateTime},#{updateBy},
+      #{applySupplierCode},#{applyType},#{formNo},
+      #{enable}, #{companyCode},#{companyName},
+      #{directSupervisorCode},#{directSupervisorName})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplier">
     insert into apply_supplier
@@ -206,6 +203,64 @@
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByApplyCodeSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplier">
+    update apply_supplier
+    <set>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierAbbreviation != null">
+        supplier_abbreviation = #{supplierAbbreviation,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="applySupplierCode != null">
+        apply_supplier_code = #{applySupplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+
+      <if test="applyType != null">
+        apply_type = #{applyType,jdbcType=TINYINT},
+      </if>
+      <if test="auditorBy != null">
+        auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      </if>
+      <if test="auditorTime != null">
+        auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="formNo != null">
+        form_no = #{formNo,jdbcType=VARCHAR},
+      </if>
+      <if test="enable != null">
+        enable = #{enable,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorCode != null">
+        direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorName != null">
+        direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where apply_supplier_code = #{applySupplierCode,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplier">
     update apply_supplier
