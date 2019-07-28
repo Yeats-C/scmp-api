@@ -1,13 +1,8 @@
-package com.aiqin.bms.scmp.api.account.service;
+package com.aiqin.bms.scmp.api.account.domain.response;
 
-import com.aiqin.bms.scmp.api.account.domain.Account;
-import com.aiqin.bms.scmp.api.account.domain.request.AccountRequest;
-import com.aiqin.bms.scmp.api.account.domain.response.AccountResponse;
-import com.aiqin.bms.scmp.api.base.PageResData;
-import com.aiqin.bms.scmp.api.supplier.domain.response.account.Role;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 /**
  * <p>
@@ -35,15 +30,27 @@ import java.util.List;
  * <p>
  * 思维方式*热情*能力
  */
-public interface AccountInfoService {
-    HttpResponse<PageResData<Account>> accountList(AccountRequest account);
+@Data
+public class ExternalAccountResponse {
 
-    HttpResponse addAccount(AccountRequest request, String ticket, String personId);
+    @ApiModelProperty(value = "部门id")
+    @JsonProperty("department_code")
+    private String departmentCode;
 
-    HttpResponse<List<Role>> selectRole(String personId, String ticket);
+    @ApiModelProperty(value = "部门名称")
+    @JsonProperty("department_name")
+    private String departmentName;
 
-    HttpResponse updateAccount(AccountRequest account, String ticket, String personId);
+    @ApiModelProperty(value = "岗位id")
+    @JsonProperty("position_code")
+    private String positionCode;
 
-    HttpResponse<AccountResponse> accountInfo(String username);
+    @ApiModelProperty(value = "岗位名称")
+    @JsonProperty("position_name")
+    private String positionName;
+
+    @ApiModelProperty(value="账号id")
+    @JsonProperty("account_id")
+    private String accountId;
 
 }

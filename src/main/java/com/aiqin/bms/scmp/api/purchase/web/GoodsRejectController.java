@@ -137,7 +137,7 @@ public class GoodsRejectController {
         return goodsRejectService.rejectApplyDetailInfo(rejectApplyRequest);
     }
 
-    @PostMapping("/apply/list/detail")
+    @PostMapping("/apply/record/lists")
     @ApiOperation(value = "查询退供申请单详情信息去生成退供单-显示退供申请单的编号列表")
     public HttpResponse<List<RejectApplyListResponse>> rejectApplyListInfo(@RequestBody RejectApplyRequest rejectApplyRequest) {
         LOGGER.info("查询退供申请单详情信息去生成退供单-显示退供申请单的编号列表,rejectApplyRequest:{}", rejectApplyRequest.toString());

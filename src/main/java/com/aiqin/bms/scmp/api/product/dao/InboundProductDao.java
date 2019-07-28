@@ -57,5 +57,4 @@ public interface InboundProductDao {
 
     Integer countPurchaseInfoByPurchaseNum(Inbound inbound);
 
-    List<PurchaseApplyDetailResponse> purchaseInboundProduct(String inboundOderCode);
 }

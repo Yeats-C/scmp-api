@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
 import com.aiqin.bms.scmp.api.base.PagesRequest;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -38,6 +39,7 @@ public class Inbound extends PagesRequest{
     private String sourceOderCode;
 
     @ApiModelProperty("入库时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date inboundTime;
 
     @ApiModelProperty("物流中心编码")

@@ -26,12 +26,13 @@
     SELECT
     ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName
     from bi_smart_replenishment bs
-    left join product_sku ps on bs.sku_code = ps.sku_code
-    left join product_sku_supply_unit su on ps.sku_code = su.product_sku_code and su.supply_unit_code = bs.supplier_code
-    left join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
-    left join product_sku_config sc on bs.transport_center_code = sc.transport_center_code and bs.sku_code = sc.sku_code
+    inner join product_sku ps on bs.sku_code = ps.sku_code
+    inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code and su.supply_unit_code = bs.supplier_code
+    inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
+    inner join product_sku_config sc on bs.transport_center_code = sc.transport_center_code and bs.sku_code = sc.sku_code
     left join stock s on s.sku_code = bs.sku_code and s.warehouse_code = bs.warehouse_code
     where ps.del_flag = 0 and ps.sku_status = 0
+    and and ps.goods_gifts != 2 and sc.config_status = 0
     <if test="beginTime != null">
       and bs.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
     </if>
@@ -53,12 +54,13 @@
         ps.product_code as spuCode, ps.product_name as spuName, ps.spec as productSpec,ps.procurement_section_code as purchaseGroupCode,
         ps.procurement_section_name as purchaseGroupName, pi.base_product_content as baseProductContent, su.factory_sku_code as factorySkuCode
     from bi_smart_replenishment bs
-    left join product_sku ps on bs.sku_code = ps.sku_code
-    left join product_sku_supply_unit su on ps.sku_code = su.product_sku_code and su.supply_unit_code = bs.supplier_code
-    left join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
-    left join product_sku_config sc on bs.transport_center_code = sc.transport_center_code and bs.sku_code = sc.sku_code
+    inner join product_sku ps on bs.sku_code = ps.sku_code
+    inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code and su.supply_unit_code = bs.supplier_code
+    inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
+    inner join product_sku_config sc on bs.transport_center_code = sc.transport_center_code and bs.sku_code = sc.sku_code
     left join stock s on s.sku_code = bs.sku_code and s.warehouse_code = bs.warehouse_code
     where ps.del_flag = 0 and ps.sku_status = 0
+    and and ps.goods_gifts != 2 and sc.config_status = 0
     <if test="beginTime != null">
       and bs.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
     </if>

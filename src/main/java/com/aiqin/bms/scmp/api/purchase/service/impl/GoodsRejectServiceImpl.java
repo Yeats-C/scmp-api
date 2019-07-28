@@ -186,6 +186,9 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         Long sumReturnAmount = 0L;
         Set<String> skuList = new HashSet<>();
         for (RejectApplyDetailHandleRequest detail : rejectApplyQueryRequest.getDetailList()) {
+            if(detail.getProductCount()==0){
+                throw new GroundRuntimeException("退供数量不能为0!");
+            }
             //详情的id
             detail.setRejectApplyRecordDetailId(IdUtil.uuid());
             detail.setRejectApplyRecordCode(rejectCode);
@@ -336,8 +339,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         response.setTransportCenterCode(record[3]);
         response.setWarehouseCode(record[4]);
         response.setBatchNo(record[5]);
+        if(StringUtils.isNotBlank(record[6]))
         response.setProductType(Integer.valueOf(record[6]));
+        if(StringUtils.isNotBlank(record[7]))
         response.setProductCount(Integer.valueOf(record[7]));
+        if(StringUtils.isNotBlank(record[8]))
         response.setProductAmount(Long.valueOf(record[8]));
         response.setErrorReason(errorReason);
     }

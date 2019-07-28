@@ -1,7 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.purchase.domain.FileRecord;
 import com.aiqin.bms.scmp.api.purchase.service.FileRecordService;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -83,6 +85,6 @@ public class FileRecordController {
     @PostMapping("/product/image")
     @ApiOperation("上传商品图片文件")
     public HttpResponse<String> uploadImageFolder(MultipartFile[] folder,String create_by_id,String create_by_name) {
-        return fileRecordService.uploadImageFolder(folder,create_by_id,create_by_name);
+            return fileRecordService.uploadImageFolder(folder,create_by_id,create_by_name);
     }
 }
