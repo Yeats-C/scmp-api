@@ -306,7 +306,7 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("actual_single_count")
     private Integer actualSingleCount;
 
-    @ApiModelProperty(value="实际含税总计")
+    @ApiModelProperty(value="实际含税总价")
     @JsonProperty("actual_tax_sum")
     private Integer actualTaxSum;
 

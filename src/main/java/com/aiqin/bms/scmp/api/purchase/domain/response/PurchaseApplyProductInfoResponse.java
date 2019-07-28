@@ -55,9 +55,9 @@ public class PurchaseApplyProductInfoResponse {
     @JsonProperty("single_sum")
     private Integer singleSum;
 
-    @ApiModelProperty(value="含税总金额")
-    @JsonProperty("tax_sum")
-    private Integer taxSum;
+//    @ApiModelProperty(value="含税总金额")
+//    @JsonProperty("tax_sum")
+//    private Integer taxSum;
 
     @ApiModelProperty(value="实际普通商品件数")
     @JsonProperty("actual_product_piece_sum")
@@ -103,7 +103,7 @@ public class PurchaseApplyProductInfoResponse {
     @JsonProperty("actual_single_sum")
     private Integer actualSingleSum;
 
-    @ApiModelProperty(value="实际含税总金额")
-    @JsonProperty("actual_tax_sum")
-    private Integer actualTaxSum;
+//    @ApiModelProperty(value="实际含税总金额")
+//    @JsonProperty("actual_tax_sum")
+//    private Integer actualTaxSum;
 }

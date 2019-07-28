@@ -802,11 +802,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse<List<Inbound>> receipt(String purchaseOrderId){
-        if(StringUtils.isBlank(purchaseOrderId)){
+    public HttpResponse<List<Inbound>> receipt(String purchaseOrderCode){
+        if(StringUtils.isBlank(purchaseOrderCode)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<Inbound> inbound = inboundDao.selectTimeAndSatusBySourchAndNum(purchaseOrderId);
+        List<Inbound> inbound = inboundDao.selectTimeAndSatusBySourchAndNum(purchaseOrderCode);
         return HttpResponse.success(inbound);
     }
 
@@ -896,14 +896,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse<InboundProduct> receiptProduct(String purchaseOrderId, Integer purchaseNum, Integer pageNo, Integer pageSize){
-        if(StringUtils.isBlank(purchaseOrderId) || purchaseNum == null){
+    public HttpResponse<PurchaseApplyDetailResponse> receiptProduct(String purchaseOrderCode, Integer purchaseNum, Integer pageNo, Integer pageSize){
+        if(StringUtils.isBlank(purchaseOrderCode) || purchaseNum == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         Inbound inbound = new Inbound();
         inbound.setPageSize(pageSize);
         inbound.setPageNo(pageNo);
-        inbound.setSourceOderCode(purchaseOrderId);
+        inbound.setSourceOderCode(purchaseOrderCode);
         inbound.setPurchaseNum(purchaseNum);
         List<PurchaseApplyDetailResponse> list = inboundProductDao.selectPurchaseInfoByPurchaseNum(inbound);
         // 查询对应采购数据
@@ -917,14 +917,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 if(product != null){
                     PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getLinenum());
                     if(orderProduct != null){
+                        Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
+                        Integer baseProductContent = orderProduct.getBaseProductContent() == null ? 0 : orderProduct.getBaseProductContent();
                         BeanUtils.copyProperties(orderProduct, product);
-                        if(product.getActualSingleCount() != null && product.getBaseProductContent() != null){
-                            product.setActualSingleCount(product.getActualSingleCount());
-                            product.setActualTaxSum(product.getActualSingleCount() * product.getBaseProductContent() );
-                        }else {
-                            product.setActualSingleCount(0);
-                            product.setActualTaxSum(0);
-                        }
+                        product.setActualSingleCount(actualSingleCount);
+                        product.setActualTaxSum(actualSingleCount * baseProductContent);
                     }
                 }
             }
