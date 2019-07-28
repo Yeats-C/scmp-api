@@ -23,9 +23,9 @@ import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.PurchaseCountAmountResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -126,12 +126,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         Integer amountSum = number * amount;
                         // 单品数量
                         singleCount += number;
-                        // 实物返金额
                         if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
                             returnAmount +=  amountSum;
                         }
-                        if(detail.getProductType().equals(Global.PRODUCT_TYPE_1) || detail.getProductType().equals(Global.PRODUCT_TYPE_0)){
-                            // 含税采购金额
+                        if(detail.getProductType().equals(Global.PRODUCT_TYPE_1)){
                             productTotalAmount += amountSum;
                         }
                     }
@@ -171,9 +169,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     if(apply.getProductType().equals(Global.PRODUCT_TYPE_2)){
                         returnAmount += number * amount;
                     }
-                    if(apply.getProductType().equals(Global.PRODUCT_TYPE_1) || apply.getProductType().equals(Global.PRODUCT_TYPE_0)){
-                        // 含税采购金额
-                        productTotalAmount += number * amount;;
+                    if(apply.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                        productTotalAmount += number * amount;
                     }
                 }
                 form.setSingleCount(singleCount);
@@ -361,8 +358,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         Integer singleCount = product.getActualSingleCount() == null ? 0:product.getActualSingleCount();
                         Integer productAmount = product.getProductAmount() == null ?0:product.getProductAmount();
                         actualSingleCount += singleCount;
-                        actualTotalAmount += productAmount * singleCount;
-                        if(product.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                        if(product.getProductType().equals(Global.PRODUCT_TYPE_0)) {
+                            actualTotalAmount += productAmount * singleCount;
+                        }
+                        if(product.getProductType().equals(Global.PRODUCT_TYPE_2)) {
                             actualReturnAmount += productAmount * singleCount;
                         }
                     }
@@ -489,14 +488,18 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse<PurchaseCountAmountResponse> purchaseOrderAmount(String purchaseOrderId){
+    public HttpResponse<PurchaseApplyProductInfoResponse> purchaseOrderAmount(String purchaseOrderId){
         if(StringUtils.isBlank(purchaseOrderId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 计算采购单的数量与金额
-        PurchaseCountAmountResponse amountResponse = new PurchaseCountAmountResponse();
-        Integer productCount = 0, singleCount = 0, returnCount = 0;
-        Integer taxAmount = 0, notTaxAmount = 0, returnAmount = 0;
+        PurchaseApplyProductInfoResponse amountResponse = new PurchaseApplyProductInfoResponse();
+        Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
+        Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0;
+        Integer productTaxSum = 0, matterTaxSum = 0, giftTaxSum = 0, singleSum = 0, priceSum = 0;
+        Integer actualProductPieceSum = 0, actualMatterPieceSum = 0, actualGiftPieceSum = 0;
+        Integer actualProductSingleSum= 0, actualMatterSingleSum = 0, actualGiftSingleSum = 0;
+        Integer actualProductTaxSum = 0, actualMatterTaxSum = 0, actualGiftTaxSum = 0, actualSingleSum = 0, actualPriceSum = 0;
         PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
         request.setPurchaseOrderId(purchaseOrderId);
         request.setIsPage(1);
@@ -509,58 +512,64 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 // 包装数量
                 Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
                 Integer amount = order.getProductTotalAmount() == null ? 0 : order.getProductTotalAmount();
-                productCount += purchaseWhole;
-                Integer number = purchaseWhole * packNumber + purchaseSingle;
-                singleCount += number;
-                taxAmount += amount;
-                notTaxAmount += taxAmount/(1 + order.getTaxRate());
-                if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
-                    returnCount += number;
-                    returnAmount += amount;
+                Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
+                singleSum += singleCount;
+                priceSum += purchaseWhole;
+                // 实际
+                Integer actualSingleCount = order.getActualSingleCount() == null ? 0: order.getActualSingleCount();
+                Integer actualWhole = actualSingleCount / packNumber;
+                actualPriceSum += actualWhole;
+                actualSingleSum += actualSingleCount;
+                if(order.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                    productPieceSum += purchaseWhole;
+                    productSingleSum += singleCount;
+                    productTaxSum += amount * singleCount;
+                    actualProductPieceSum += actualWhole;
+                    actualProductSingleSum += actualSingleCount;
+                    actualProductTaxSum += amount * actualSingleCount;
+                }else if(order.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                    matterPieceSum += purchaseWhole;
+                    matterSingleSum += singleCount;
+                    matterTaxSum += amount * singleCount;
+                    actualMatterPieceSum += actualWhole;
+                    actualMatterSingleSum += actualSingleCount;
+                    actualMatterTaxSum += amount * actualSingleCount;
+                }else if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                    giftPieceSum += purchaseWhole;
+                    giftSingleSum += singleCount;
+                    giftTaxSum += amount * singleCount;
+                    actualGiftPieceSum += actualWhole;
+                    actualGiftSingleSum += actualSingleCount;
+                    actualGiftTaxSum += amount * actualSingleCount;
                 }
             }
-            amountResponse.setProductCount(productCount);
-            amountResponse.setSingleCount(singleCount);
-            amountResponse.setReturnCount(returnCount);
-            amountResponse.setTaxAmount(taxAmount);
-            amountResponse.setNotTaxAmount(notTaxAmount);
-            amountResponse.setReturnAmount(returnAmount);
-        }
-        this.actualCountAndAmount(purchaseOrderId);
-        return HttpResponse.success(amountResponse);
-    }
+            // 采购
+            amountResponse.setProductPieceSum(productPieceSum);
+            amountResponse.setProductSingleSum(productSingleSum);
+            amountResponse.setProductTaxSum(productTaxSum);
+            amountResponse.setMatterPieceSum(matterPieceSum);
+            amountResponse.setMatterSingleSum(matterSingleSum);
+            amountResponse.setMatterTaxSum(matterTaxSum);
+            amountResponse.setGiftPieceSum(giftPieceSum);
+            amountResponse.setGiftSingleSum(giftSingleSum);
+            amountResponse.setGiftTaxSum(giftTaxSum);
+            amountResponse.setSingleSum(singleSum);
+            amountResponse.setPieceSum(priceSum);
 
-    // 计算采购的实际数量金额
-    private void actualCountAndAmount(String purchaseOrderId){
-        // 查询所有入库单的商品
-        List<PurchaseApplyDetailResponse> responses = inboundProductDao.purchaseInboundProduct(purchaseOrderId);
-        if(CollectionUtils.isNotEmptyCollection(responses)){
-            PurchaseCountAmountResponse amountResponse = new PurchaseCountAmountResponse();
-            Integer actualProductCount = 0, actualSingleCount = 0, actualReturnCount = 0;
-            Integer actualNotTaxAmount = 0, actualTaxAmount = 0, actualReturnAmount = 0;
-            for(PurchaseApplyDetailResponse product:responses){
-                if(product != null){
-                    PurchaseApplyDetailResponse info = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getSkuCode());
-                    Integer packNumber = info.getBaseProductContent() == null ? 0 : info.getBaseProductContent();
-                    Integer purchaseWhole = info.getPurchaseWhole() == null ? 0 : info.getPurchaseWhole();
-                    Integer singleCount = product.getActualSingleCount() == null ? 0: product.getActualSingleCount();
-                    actualProductCount += purchaseWhole;
-                    actualSingleCount += singleCount;
-                    actualTaxAmount += packNumber * singleCount;
-                    actualNotTaxAmount += actualTaxAmount/(1 + info.getTaxRate());
-                    if(info.getProductType().equals(Global.PRODUCT_TYPE_2)){
-                        actualReturnCount += singleCount;
-                        actualReturnAmount += actualTaxAmount;
-                    }
-                }
-            }
-            amountResponse.setActualProductCount(actualProductCount);
-            amountResponse.setActualSingleCount(actualSingleCount);
-            amountResponse.setActualReturnCount(actualReturnCount);
-            amountResponse.setActualTaxAmount(actualTaxAmount);
-            amountResponse.setActualNotTaxAmount(actualNotTaxAmount);
-            amountResponse.setActualReturnAmount(actualReturnAmount);
+            // 实际
+            amountResponse.setActualProductPieceSum(actualProductPieceSum);
+            amountResponse.setActualProductSingleSum(actualProductSingleSum);
+            amountResponse.setActualProductTaxSum(actualProductTaxSum);
+            amountResponse.setActualMatterPieceSum(actualMatterPieceSum);
+            amountResponse.setActualMatterSingleSum(actualMatterSingleSum);
+            amountResponse.setActualMatterTaxSum(actualMatterTaxSum);
+            amountResponse.setActualGiftPieceSum(actualGiftPieceSum);
+            amountResponse.setActualGiftSingleSum(actualGiftSingleSum);
+            amountResponse.setActualGiftTaxSum(actualGiftTaxSum);
+            amountResponse.setActualPieceSum(actualPriceSum);
+            amountResponse.setActualSingleSum(actualSingleSum);
         }
+        return HttpResponse.success(amountResponse);
     }
 
     @Override
@@ -793,11 +802,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse<List<Inbound>> receipt(String purchaseOrderId){
-        if(StringUtils.isBlank(purchaseOrderId)){
+    public HttpResponse<List<Inbound>> receipt(String purchaseOrderCode){
+        if(StringUtils.isBlank(purchaseOrderCode)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<Inbound> inbound = inboundDao.selectTimeAndSatusBySourchAndNum(purchaseOrderId);
+        List<Inbound> inbound = inboundDao.selectTimeAndSatusBySourchAndNum(purchaseOrderCode);
         return HttpResponse.success(inbound);
     }
 
@@ -887,14 +896,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse<InboundProduct> receiptProduct(String purchaseOrderId, Integer purchaseNum, Integer pageNo, Integer pageSize){
-        if(StringUtils.isBlank(purchaseOrderId) || purchaseNum == null){
+    public HttpResponse<PurchaseApplyDetailResponse> receiptProduct(String purchaseOrderCode, Integer purchaseNum, Integer pageNo, Integer pageSize){
+        if(StringUtils.isBlank(purchaseOrderCode) || purchaseNum == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         Inbound inbound = new Inbound();
         inbound.setPageSize(pageSize);
         inbound.setPageNo(pageNo);
-        inbound.setSourceOderCode(purchaseOrderId);
+        inbound.setSourceOderCode(purchaseOrderCode);
         inbound.setPurchaseNum(purchaseNum);
         List<PurchaseApplyDetailResponse> list = inboundProductDao.selectPurchaseInfoByPurchaseNum(inbound);
         // 查询对应采购数据
@@ -906,16 +915,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     product.setFactorySkuCode(factorySkuCode);
                 }
                 if(product != null){
-                    PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getSkuCode());
+                    PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getLinenum());
                     if(orderProduct != null){
+                        Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
+                        Integer baseProductContent = orderProduct.getBaseProductContent() == null ? 0 : orderProduct.getBaseProductContent();
                         BeanUtils.copyProperties(orderProduct, product);
-                        if(product.getActualSingleCount() != null && product.getBaseProductContent() != null){
-                            product.setActualSingleCount(product.getActualSingleCount());
-                            product.setActualTaxSum(product.getActualSingleCount() * product.getBaseProductContent() );
-                        }else {
-                            product.setActualSingleCount(0);
-                            product.setActualTaxSum(0);
-                        }
+                        product.setActualSingleCount(actualSingleCount);
+                        product.setActualTaxSum(actualSingleCount * baseProductContent);
                     }
                 }
             }

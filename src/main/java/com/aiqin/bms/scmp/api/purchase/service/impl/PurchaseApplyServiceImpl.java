@@ -11,14 +11,10 @@ import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.dao.*;
+import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
@@ -33,11 +29,13 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +45,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author: zhao shuai
@@ -94,6 +89,14 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private ProductSkuPurchaseInfoDao productSkuPurchaseInfoDao;
     @Resource
     private ProductSkuDao productSkuDao;
+    @Resource
+    private BiAClassificationDao biAClassificationDao;
+    @Resource
+    private BiClassificationDao biClassificationDao;
+    @Resource
+    private BiGrossProfitMarginDao biGrossProfitMarginDao;
+    @Resource
+    private BiStockoutDetailDao biStockoutDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -112,7 +115,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 Integer skuCount = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId(), null);
                 apply.setSkuCount(skuCount);
                 apply.setSingleCount(info.getSingleSum());
-                apply.setProductTotalAmount(info.getTaxSum());
+                apply.setProductTotalAmount(info.getProductTaxSum());
                 apply.setReturnAmount(info.getMatterTaxSum());
                 if(apply.getApplyStatus() == 0){
                     Integer count = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId(), Global.PURCHASE_APPLY_STATUS_1);
@@ -371,7 +374,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         PurchaseApplyProductInfoResponse info = new PurchaseApplyProductInfoResponse();
         Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
         Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0;
-        Integer productTaxSum = 0, matterTaxSum = 0, singleSum = 0;
+        Integer productTaxSum = 0, matterTaxSum = 0, giftTaxSum = 0, singleSum = 0;
         if(CollectionUtils.isNotEmptyCollection(products)) {
             for (PurchaseApplyDetailResponse product : products) {
                 // 商品采购件数量
@@ -394,6 +397,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     }else if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
                         giftSingleSum += purchaseWhole;
                         giftSingleSum += singleCount;
+                        giftTaxSum += productPurchaseSum;
                     }else if(product.getProductType().equals(Global.PRODUCT_TYPE_2)){
                         matterPieceSum += purchaseWhole;
                         matterSingleSum += singleCount;
@@ -410,10 +414,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         info.setMatterTaxSum(matterTaxSum);
         info.setGiftPieceSum(giftPieceSum);
         info.setGiftSingleSum(giftSingleSum);
-        info.setGiftTaxSum(0);
+        info.setGiftTaxSum(giftTaxSum);
         info.setPieceSum(productPieceSum + matterPieceSum + giftPieceSum);
         info.setSingleSum(singleSum);
-        info.setTaxSum(productTaxSum);
+        //info.setTaxSum(productTaxSum);
         return info;
     }
 
@@ -650,10 +654,73 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(CollectionUtils.isEmptyCollection(list)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        // 获取昨天时间
+        String data = DateUtils.yestedayDate();
+        String beginTime = data + " 0:00:00";
+        String finishTime = data + " 23:59:59";
+        BigDecimal bigMum = new BigDecimal("0");
+        PurchaseContrastResponse contrast = new PurchaseContrastResponse();
+        // 获取总营业额
+        BiGrossProfitMargin biGrossProfitMargin = biGrossProfitMarginDao.grossProfitMargin(data);
+        if(biGrossProfitMargin != null){
+            contrast.setFrontSumTurnover(biGrossProfitMargin.getTotalTurnover());
+            contrast.setFrontSumProfit(biGrossProfitMargin.getGrossProfitMargin());
+        }else {
+            contrast.setFrontSumTurnover(bigMum);
+            contrast.setFrontSumProfit(bigMum);
+        }
+
         // 查询采购后的信息
-        for(PurchaseApplyProduct product:list){
-            // 计算采购的总营业额
+        //Set<String> setSku = new HashSet<>();
+        List<String> listSku = Lists.newArrayList();
+        if(CollectionUtils.isNotEmptyCollection(list)){
+            for (PurchaseApplyProduct product:list){
+                //setSku.add(product.getSkuCode());
+                listSku.add(product.getSkuCode());
+            }
+            //List<String> sku = new ArrayList<>(setSku);
+            for(PurchaseApplyProduct product:list){
+                // 获取商品爱亲的渠道价
+
+                // 计算采购的总营业额
+
+            }
         }
         return HttpResponse.success();
+    }
+
+    private void stockOut(String beginTime, String finishTime, PurchaseContrastResponse contrast, BigDecimal bigMum,
+                          List<PurchaseApplyProduct> list){
+        // 获取缺货占比
+        List<BiStockoutDetail> stockOuts = biStockoutDao.stockOutList(beginTime, finishTime);
+        //BigDecimal frontShortageRatio = stockOuts.get(0).getStockoutRate() == null ? bigMum : stockOuts.get(0).getStockoutRate();
+        //contrast.setFrontShortageRatio(frontShortageRatio);
+        if(CollectionUtils.isNotEmptyCollection(list)){
+            // 查询总缺货的sku
+            List<String> list1 = biStockoutDao.stockOutBySkuCount();
+
+
+        }else {
+            contrast.setAfterShortageRatio(contrast.getFrontShortageRatio());
+        }
+    }
+
+    // 计算A品占比
+    private void aCategory(String data, PurchaseContrastResponse contrast, List<PurchaseApplyProduct> list,
+                           List<String> listSku){
+        // 查询采购前的A 品占比
+        List<BiAClassification> categoryList = biAClassificationDao.aCategoryList(data);
+        contrast.setFrontCategory(categoryList);
+        if(CollectionUtils.isNotEmptyCollection(categoryList)){
+            int size1 = listSku.size();
+            for (BiAClassification category:categoryList){
+                // 查询品类的A品sku
+                List<String> propertySku = productSkuDao.contrastPropertySku(category.getProductCategoryCode());
+                listSku.removeAll(propertySku);
+                // 该A品此品类的sku数量
+                int size2 = listSku.size();
+                int categoryCount = size1 - size2;
+            }
+        }
     }
 }

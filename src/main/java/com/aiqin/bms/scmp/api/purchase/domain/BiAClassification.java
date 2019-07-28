@@ -11,6 +11,11 @@ import java.util.Date;
 @ApiModel
 @Data
 public class BiAClassification {
+
+    @JsonProperty("id")
+    private Integer id;
+
+    @ApiModelProperty(value="品类编码")
     @JsonProperty("product_category_code")
     private String productCategoryCode;
 
@@ -22,7 +27,11 @@ public class BiAClassification {
     @JsonProperty("available_num")
     private Long availableNum;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="总库存数量")
+    @JsonProperty("total_available_num")
+    private Long totalAvailableNum;
+
+    @ApiModelProperty(value="A品占比")
     @JsonProperty("a_classification")
     private BigDecimal aClassification;
 
@@ -33,9 +42,5 @@ public class BiAClassification {
     @ApiModelProperty(value="更新时间")
     @JsonProperty("update_time")
     private Date updateTime;
-
-    @ApiModelProperty(value="")
-    @JsonProperty("run_time")
-    private Date runTime;
 
 }

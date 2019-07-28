@@ -21,27 +21,22 @@ import java.io.Serializable;
 public class QueryStockSkuListReqVo extends PageReq implements Serializable {
 
     @ApiModelProperty("调出仓库")
-    @NotEmpty(message = "调出仓库不能为空")
     @JsonProperty("out_transport_center_code")
     private String outTransportCenterCode;
 
     @ApiModelProperty("调出库房")
-    @NotEmpty(message = "调出库房不能为空")
     @JsonProperty("out_warehouse_code")
     private String outWarehouseCode;
 
     @ApiModelProperty("采购组")
-    @NotEmpty(message = "采购组不能为空")
     @JsonProperty("procurement_section_code")
     private String procurementSectionCode;
 
     @ApiModelProperty("调入仓库")
-    @NotEmpty(message = "调入仓库不能为空")
     @JsonProperty("in_transport_center_code")
     private String inTransportCenterCode;
 
     @ApiModelProperty("调入库房")
-    @NotEmpty(message = "调入库房不能为空")
     @JsonProperty("in_warehouse_code")
     private String inWarehouseCode;
 
@@ -65,7 +60,7 @@ public class QueryStockSkuListReqVo extends PageReq implements Serializable {
     @JsonProperty("product_property_code")
     private String productPropertyCode;
 
-    public QueryStockSkuListReqVo(@NotEmpty(message = "调出仓库不能为空") String outTransportCenterCode, @NotEmpty(message = "调出库房不能为空") String outWarehouseCode, @NotEmpty(message = "采购组不能为空") String procurementSectionCode, @NotEmpty(message = "调入仓库不能为空") String inTransportCenterCode, @NotEmpty(message = "调入库房不能为空") String inWarehouseCode, String skuCode, String skuName, String productBrandCode, String productCategoryCode, String productPropertyCode) {
+    public QueryStockSkuListReqVo(String outTransportCenterCode, String outWarehouseCode, String procurementSectionCode, String inTransportCenterCode, String inWarehouseCode, String skuCode, String skuName, String productBrandCode, String productCategoryCode, String productPropertyCode) {
         this.outTransportCenterCode = outTransportCenterCode;
         this.outWarehouseCode = outWarehouseCode;
         this.procurementSectionCode = procurementSectionCode;

@@ -196,8 +196,8 @@
     base_product_content as baseProductContent, box_gauge as boxGauge, single_count as singleCount,
     tax_rate as taxRate, product_amount as productAmount, product_total_amount as productTotalAmount
     from purchase_order_product
-    where  purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
-    and sku_code = #{skuCode,jdbcType=VARCHAR}
+    where  purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+    and id = #{id,jdbcType=BIGINT}
   </select>
   <select id="orderProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
     select <include refid="Base_Column_List"></include>

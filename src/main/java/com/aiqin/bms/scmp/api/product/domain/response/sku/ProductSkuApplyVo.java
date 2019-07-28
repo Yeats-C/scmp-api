@@ -55,6 +55,13 @@ public class ProductSkuApplyVo {
     @ApiModelProperty("创建人")
     private String createBy;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
+
     @ApiModelProperty("申请状态")
     private Integer applyStatus;
 
