@@ -118,8 +118,8 @@ public class SupplyTest  extends SpringBootTestContext  {
         stockVoRequest1.setWarehouseType("1");
         stockVoRequest1.setChangeNum(25L);
 
-        stockVoRequest1.setSkuCode("10000000285");
-        stockVoRequest1.setSkuName("贝亲200ml婴儿润肤油IA106");
+        stockVoRequest1.setSkuCode("10000000309");
+        stockVoRequest1.setSkuName("小白熊家用暖奶器HL-0607");
 
         stockVoRequest1.setDocumentType(1);
         stockVoRequest1.setDocumentNum("入库单");
@@ -130,7 +130,7 @@ public class SupplyTest  extends SpringBootTestContext  {
 
         stockVoRequests.add(stockVoRequest1);
 
-        StockVoRequest stockVoRequest2 = new StockVoRequest();
+     /*   StockVoRequest stockVoRequest2 = new StockVoRequest();
         stockVoRequest2.setCompanyCode("04");
         stockVoRequest2.setCompanyName("北京爱亲科技股份有限公司");
         stockVoRequest2.setTransportCenterCode("1026");
@@ -140,8 +140,8 @@ public class SupplyTest  extends SpringBootTestContext  {
         stockVoRequest2.setWarehouseType("1");
         stockVoRequest2.setChangeNum(100L);
 
-        stockVoRequest2.setSkuCode("10000000285");
-        stockVoRequest2.setSkuName("贝亲200ml婴儿润肤油IA106");
+        stockVoRequest2.setSkuCode("10000000205");
+        stockVoRequest2.setSkuName("小鹿比机器人");
 
         stockVoRequest2.setDocumentType(1);
         stockVoRequest2.setDocumentNum("入库单");
@@ -150,6 +150,50 @@ public class SupplyTest  extends SpringBootTestContext  {
         stockVoRequest2.setOperator("ch");
         stockVoRequest2.setRemark("华北华东销售库数据新增");
         stockVoRequests.add(stockVoRequest2);
+
+
+        StockVoRequest stockVoRequest3 = new StockVoRequest();
+        stockVoRequest3.setCompanyCode("04");
+        stockVoRequest3.setCompanyName("北京爱亲科技股份有限公司");
+        stockVoRequest3.setTransportCenterCode("1082");
+        stockVoRequest3.setTransportCenterName("西南仓");
+        stockVoRequest3.setWarehouseCode("1083");
+        stockVoRequest3.setWarehouseName("西南销售库");
+        stockVoRequest3.setWarehouseType("1");
+        stockVoRequest3.setChangeNum(100L);
+
+        stockVoRequest3.setSkuCode("10000000205");
+        stockVoRequest3.setSkuName("小鹿比机器人");
+
+        stockVoRequest3.setDocumentType(1);
+        stockVoRequest3.setDocumentNum("入库单");
+        stockVoRequest3.setSourceDocumentType(1);
+        stockVoRequest3.setSourceDocumentNum("采购单");
+        stockVoRequest3.setOperator("ch");
+        stockVoRequest3.setRemark("西南西南销售库数据新增");
+        stockVoRequests.add(stockVoRequest3);
+
+        StockVoRequest stockVoRequest4 = new StockVoRequest();
+        stockVoRequest4.setCompanyCode("04");
+        stockVoRequest4.setCompanyName("北京爱亲科技股份有限公司");
+        stockVoRequest4.setTransportCenterCode("1085");
+        stockVoRequest4.setTransportCenterName("华中仓");
+        stockVoRequest4.setWarehouseCode("1086");
+        stockVoRequest4.setWarehouseName("华中销售库");
+        stockVoRequest4.setWarehouseType("1");
+        stockVoRequest4.setChangeNum(100L);
+
+        stockVoRequest4.setSkuCode("10000000205");
+        stockVoRequest4.setSkuName("小鹿比机器人");
+
+        stockVoRequest4.setDocumentType(1);
+        stockVoRequest4.setDocumentNum("入库单");
+        stockVoRequest4.setSourceDocumentType(1);
+        stockVoRequest4.setSourceDocumentNum("采购单");
+        stockVoRequest4.setOperator("ch");
+        stockVoRequest4.setRemark("华中华中销售库数据新增");
+        stockVoRequests.add(stockVoRequest4);
+*/
 
         stockChangeRequest.setStockVoRequests(stockVoRequests);
 

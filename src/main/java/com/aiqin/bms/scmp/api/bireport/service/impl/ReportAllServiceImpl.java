@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.service.impl;
 
+import com.aiqin.bms.scmp.api.base.PageImportResData;
 import com.aiqin.bms.scmp.api.base.PageReportResData;
 import com.aiqin.bms.scmp.api.bireport.dao.ReportAllDao;
 import com.aiqin.bms.scmp.api.bireport.dao.ReportDao;
@@ -22,6 +23,9 @@ public class ReportAllServiceImpl implements ReportAllService {
     @Autowired
     private ReportAllDao reportAllDao;
 
+    @Autowired
+    private ReportDao reportDao;
+
 
     /**
      *  供应商到货率
@@ -29,9 +33,11 @@ public class ReportAllServiceImpl implements ReportAllService {
      * @return
      */
     @Override
-    public List<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
+    public PageImportResData<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo) {
         try {
-            return reportAllDao.selectSupplierArrivalRate(supplierArrivalRateReqVo);
+            List<SupplierArrivalRateRespVo> supplierArrivalRateRespVos = reportAllDao.selectSupplierArrivalRate(supplierArrivalRateReqVo);
+            SupplierArrivalRateRespVo supplierArrivalRateRespVo = reportAllDao.sumSupplierArrivalRate(supplierArrivalRateReqVo);
+            return new PageImportResData<>(supplierArrivalRateRespVo,supplierArrivalRateRespVos);
         } catch (Exception ex) {
             log.error("查询供应商到货率失败");
             ex.printStackTrace();
@@ -99,9 +105,11 @@ public class ReportAllServiceImpl implements ReportAllService {
      * @return
      */
     @Override
-    public List<SupplierReturnRespVo> selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo) {
+    public PageImportResData<SupplierReturnRespVo> selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo) {
         try {
-            return reportAllDao.selectSupplierReturn(supplierReturnReqVo);
+            List<SupplierReturnRespVo> supplierReturnRespVos = reportAllDao.selectSupplierReturn(supplierReturnReqVo);
+            SupplierReturnRespVo supplierReturnRespVoSum = reportDao.sumSupplierReturn(supplierReturnReqVo);
+            return new PageImportResData<>(supplierReturnRespVoSum,supplierReturnRespVos);
         } catch (Exception ex) {
             log.error("查询供应商退货失败");
             ex.printStackTrace();
@@ -158,9 +166,11 @@ public class ReportAllServiceImpl implements ReportAllService {
      * @return
      */
     @Override
-    public List<NegativeMarginRespVo> selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
+    public PageImportResData<NegativeMarginRespVo> selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo) {
         try {
-            return reportAllDao.selectNegativeMargin(negativeMarginReqVo);
+            List<NegativeMarginRespVo> negativeMarginRespVos = reportAllDao.selectNegativeMargin(negativeMarginReqVo);
+            NegativeMarginRespVo negativeMarginRespVoSum = reportDao.sumNegativeMargin(negativeMarginReqVo);
+            return new PageImportResData<>(negativeMarginRespVoSum,negativeMarginRespVos);
         } catch (Exception ex) {
             log.error("查询负毛利失败");
             ex.printStackTrace();
@@ -222,9 +232,11 @@ public class ReportAllServiceImpl implements ReportAllService {
      * @return
      */
     @Override
-    public List<CategorySaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo) {
+    public PageImportResData<BrandSaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo) {
         try {
-            return reportAllDao.selectBrandSale(brandSaleReqVo);
+            List<BrandSaleRespVo> brandSaleRespVos = reportAllDao.selectBrandSale(brandSaleReqVo);
+            BrandSaleRespVo brandSaleRespVoSum = reportDao.sumBrandSale(brandSaleReqVo);
+            return new PageImportResData<>(brandSaleRespVoSum,brandSaleRespVos);
         } catch (Exception ex) {
             log.error("品牌促销");
             ex.printStackTrace();
@@ -238,9 +250,11 @@ public class ReportAllServiceImpl implements ReportAllService {
      * @return
      */
     @Override
-    public List<CategorySaleRespVo> selectCategorySale(CategorySaleReqVo categorySaleReqVo) {
+    public PageImportResData<CategorySaleRespVo> selectCategorySale(CategorySaleReqVo categorySaleReqVo) {
         try {
-            return reportAllDao.selectCategorySale(categorySaleReqVo);
+            List<CategorySaleRespVo> categorySaleRespVos = reportAllDao.selectCategorySale(categorySaleReqVo);
+            CategorySaleRespVo categorySaleRespVoSum = reportDao.sumCategorySale(categorySaleReqVo);
+            return new PageImportResData<>(categorySaleRespVoSum,categorySaleRespVos);
         } catch (Exception ex) {
             log.error("品类促销");
             ex.printStackTrace();

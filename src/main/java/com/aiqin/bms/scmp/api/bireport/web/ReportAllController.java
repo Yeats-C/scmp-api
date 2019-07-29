@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.web;
 
+import com.aiqin.bms.scmp.api.base.PageImportResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.aiqin.bms.scmp.api.bireport.service.ReportAllService;
@@ -41,7 +42,7 @@ public class ReportAllController {
             @ApiImplicitParam(name = "begin_inbound_time", value = "时间begin", type = "String"),
             @ApiImplicitParam(name = "finish_inbound_time", value = "时间finish", type = "String"),
     })
-    public HttpResponse<List<SupplierArrivalRateRespVo>> selectSupplierArrivalRate(
+    public HttpResponse<PageImportResData<SupplierArrivalRateRespVo>> selectSupplierArrivalRate(
             @RequestParam(value = "supplier_code", required = false) String supplierCode,
             @RequestParam(value = "supplier_name", required = false) String supplierName,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
@@ -161,7 +162,7 @@ public class ReportAllController {
             @ApiImplicitParam(name = "begin_out_stock_time", value = "时间begin", type = "String"),
             @ApiImplicitParam(name = "finish_out_stock_time", value = "时间finish", type = "String"),
     })
-    public HttpResponse<List<SupplierReturnRespVo>> selectSupplierReturn(
+    public HttpResponse<PageImportResData<SupplierReturnRespVo>> selectSupplierReturn(
             @RequestParam(value = "supplier_code", required = false) String supplierCode,
             @RequestParam(value = "supplier_name", required = false) String supplierName,
             @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
@@ -257,7 +258,7 @@ public class ReportAllController {
             @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
     })
-    public HttpResponse<List<NegativeMarginRespVo>> selectNegativeMargin(
+    public HttpResponse<PageImportResData<NegativeMarginRespVo>> selectNegativeMargin(
             @RequestParam(value = "sku_code", required = false) String skuCode,
             @RequestParam(value = "sku_name", required = false) String skuName,
             @RequestParam(value = "category_code", required = false) String categoryCode,
@@ -356,7 +357,7 @@ public class ReportAllController {
             @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "department_name", value = "所属部门", type = "String"),
     })
-    public HttpResponse<List<BrandSaleRespVo>> selectBrandSale(
+    public HttpResponse<PageImportResData<BrandSaleRespVo>> selectBrandSale(
             @RequestParam(value = "create_time", required = false) String createTime,
             @RequestParam(value = "order_code", required = false) String orderCode,
             @RequestParam(value = "order_original", required = false) String orderOriginal,
@@ -375,7 +376,7 @@ public class ReportAllController {
             @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "department_name", value = "所属部门", type = "String"),
     })
-    public HttpResponse<List<CategorySaleRespVo>> selectCategorySale(
+    public HttpResponse<PageImportResData<CategorySaleRespVo>> selectCategorySale(
             @RequestParam(value = "create_time", required = false) String createTime,
             @RequestParam(value = "order_code", required = false) String orderCode,
             @RequestParam(value = "order_original", required = false) String orderOriginal,

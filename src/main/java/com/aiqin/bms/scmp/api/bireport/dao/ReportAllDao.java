@@ -16,6 +16,8 @@ public interface ReportAllDao {
      */
     List<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
+    SupplierArrivalRateRespVo sumSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+
     /**
      *  批次商品进销存
      * @param goodsBuySalesReqVo
@@ -99,7 +101,7 @@ public interface ReportAllDao {
      * @param brandSaleReqVo
      * @return
      */
-    List<CategorySaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
+    List<BrandSaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
 
     /**
      *  品类促销
