@@ -102,6 +102,8 @@
       <result column="bproduct_time" jdbcType="TIMESTAMP" property="productTime" />
       <result column="bbe_synchronize" jdbcType="INTEGER" property="beSynchronize" />
       <result column="bext_field_6" jdbcType="BIGINT" property="extField6" />
+      <result column="dInput_tax_rate" jdbcType="BIGINT" property="inTax" />
+      <result column="doutput_tax_rate" jdbcType="BIGINT" property="outTax" />
     </collection>
     <collection property="areaInfos" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceAreaInfo">
 <!--      <id column="cid" jdbcType="BIGINT" property="id" />-->
@@ -407,9 +409,12 @@
                c.ext_field_3 cext_field_3,
                c.ext_field_4 cext_field_4,
                c.ext_field_5 cext_field_5,
-               c.ext_field_6 cext_field_6
+               c.ext_field_6 cext_field_6,
+               IFNULL(d.Input_tax_rate,0) dInput_tax_rate,
+               IFNULL(d.output_tax_rate,0) doutput_tax_rate
         from product_sku_change_price a
                  left join product_sku_change_price_info b on a.code = b.code
+                 left join product_sku_checkout d on b.sku_code = d.sku_code
                  left join product_sku_change_price_area_info c on c.main_code = a.code
         where a.form_no = #{formNo}
     </select>
