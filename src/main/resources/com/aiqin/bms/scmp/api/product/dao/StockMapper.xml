@@ -1818,7 +1818,7 @@
         ps.product_category_code,ps.product_category_name,ps.product_sort_code,ps.product_sort_name,
         ps.product_brand_code,ps.product_brand_name,ps.goods_gifts,
         ps.spec,ps.color_code,ps.color_name,ps.model_number,ps.unit_code,ps.unit_name,
-        sum(s.available_num) available_num,s.tax_rate,s.tax_cost
+        sum(s.available_num) available_num,IFNULL(s.tax_rate,0) tax_rate,IFNULL(s.tax_cost,0) tax_cost
         from stock s
         left join stock_batch sb on s.sku_code = sb.sku_code
         left join product_sku ps on s.sku_code = ps.sku_code
@@ -2347,5 +2347,13 @@
         and su.supply_unit_code = #{supplierCode, jdbcType=VARCHAR}
         and s.purchase_group_code = #{purchaseGroupCode, jdbcType=VARCHAR}
     </where>
+    </select>
+    <select id="selectWarehouseTypeBycode" resultType="com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest">
+        select warehouse_type_name as warehouseType
+        FROM warehouse
+        where 1=1
+        <if test="warehouseCode!=null and warehouseCode!=''">
+            AND warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+        </if>
     </select>
 </mapper>
