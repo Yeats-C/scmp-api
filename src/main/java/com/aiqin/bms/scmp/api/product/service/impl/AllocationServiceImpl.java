@@ -653,7 +653,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 String skuName = ExcelUtil.convertNumToString(objects[1]);
                 Long num=0L;
                 try {
-                    String s = ExcelUtil.convertNumToString(objects[2]);
+                    String s = ExcelUtil.convertNumToString(objects[3]);
                     if(StringUtils.isNotBlank(s)){
                         num = Long.valueOf(s);
                     }
