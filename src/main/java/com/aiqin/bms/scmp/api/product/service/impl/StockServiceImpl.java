@@ -1121,6 +1121,7 @@ public class StockServiceImpl implements StockService {
                     break;
                 }
                 //设置库存流水修改后的值
+                stockFlow.setLockStatus(stockChangeRequest.getOperationType());
                 stockFlow.setStockCode(stock.getStockCode());
                 stockFlow.setAfterInventoryNum(stock.getInventoryNum());
                 stockFlow.setAfterLockNum(stock.getLockNum());
@@ -1212,12 +1213,16 @@ public class StockServiceImpl implements StockService {
             stock.setAllocationWayNum(0L);
             stock.setTotalWayNum(0L);
             stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
+            stock.setTaxRate(0L);
+            stock.setTaxCost(0L);
             stock.setUpdateBy(stockVoRequest.getOperator());
             stock.setCreateBy(stockVoRequest.getOperator());
         }
         stock.setNewPurchasePrice(stockVoRequest.getNewPurchasePrice());
         stock.setTaxPrice(stockVoRequest.getNewPurchasePrice());
-        stock.setTaxRate(stockVoRequest.getTaxRate());
+        if (stockVoRequest.getTaxRate() != null){
+            stock.setTaxRate(stockVoRequest.getTaxRate());
+        }
         stock.setNewDelivery(stockVoRequest.getNewDelivery());
         stock.setNewDeliveryName(stockVoRequest.getNewDeliveryName());
         switch (operationType) {

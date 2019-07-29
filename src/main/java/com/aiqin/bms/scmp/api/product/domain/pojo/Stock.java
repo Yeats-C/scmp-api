@@ -178,6 +178,10 @@ public class Stock extends CommonBean {
     @JsonProperty(value = "stockupfinish_time")
     private String stockupfinishTime;
 
+    @ApiModelProperty("昨天含税成本")
+    @JsonProperty(value = "tax_cost")
+    private Long taxCost;
+
     public Long getId() {
         return id;
     }
@@ -512,5 +516,13 @@ public class Stock extends CommonBean {
 
     public void setStockupfinishTime(String stockupfinishTime) {
         this.stockupfinishTime = stockupfinishTime;
+    }
+
+    public Long getTaxCost() {
+        return taxCost;
+    }
+
+    public void setTaxCost(Long taxCost) {
+        this.taxCost = taxCost;
     }
 }
