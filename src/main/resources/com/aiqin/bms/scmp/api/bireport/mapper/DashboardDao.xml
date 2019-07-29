@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.bireport.dao.DashboardDao">
+
+    <select id="selectDashboardDepartAnnualSalesStati" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepartAnnualSalesStatiRespVo">
+        SELECT
+        ddass.id as id,
+        ddass.stat_year as statYear,
+        ddass.channel_costs as channelCosts,
+        ddass.channel_amount as channelAmount,
+        ddass.distribution_amount as distributionAmount,
+        ddass.channel_maori as channelMaori,
+        ddass.distribution_maori as distributionMaori,
+        ddass.sales_budget as salesBudget,
+        ddass.achievement as achievement
+        FROM dashboard_depart_annual_sales_stati ddass
+
+        WHERE
+    </select>
+    <select id="selectDashboardMonthlySalesStati" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiRespVo">
+        SELECT
+        dmss.id as id,
+        dmss.stat_month as statMonth,
+        dmss.channel_costs as channelCosts,
+        dmss.curr_channel_amount as currChannelAmount,
+        dmss.pre_channel_amount as preChannelAmount,
+        dmss.channel_maori as channelMaori,
+        dmss.distribution_amount as distributionAmount,
+        dmss.distribution_maori as distributionMaori,
+        dmss.curr_supplier_content as currSupplierContent,
+        dmss.pre_supplier_content as preSupplierContent,
+        dmss.curr_achieve_rate as currAchieveRate,
+        dmss.pre_achieve_rate as preAchieveRate
+        FROM dashboard_monthly_sales_stati dmss
+
+        WHERE
+    </select>
+    <select id="selectDashboardMonthlySalesStatiAcc" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiAccRespVo">
+        SELECT
+        dmssa.id as id,
+        dmssa.stat_month as statMonth,
+        dmssa.channel_costs as channelCosts,
+        dmssa.curr_channel_amount as currChannelAmount,
+        dmssa.pre_channel_amount as preChannelAmount,
+        dmssa.curr_acc_sum_channel_amount as currAccSumChannelAmount,
+        dmssa.channel_maori as channelMaori,
+        dmssa.acc_sum_channel_maori as accSumChannelMaori,
+        dmssa.distribution_amount as distributionAmount,
+        dmssa.distribution_maori as distributionMaori,
+        dmssa.curr_supplier_content as currSupplierContent,
+        dmssa.pre_supplier_content as preSupplierContent,
+        dmssa.curr_achieve_rate as currAchieveRate,
+        dmssa.pre_achieve_rate as preAchieveRate,
+        dmssa.pre_acc_sum_channel_amount as preAccSumChannelAmount
+        FROM dashboard_monthly_sales_stati_acc dmssa
+
+        WHERE
+    </select>
+
+</mapper>
