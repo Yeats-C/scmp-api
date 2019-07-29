@@ -55,7 +55,6 @@ public class AllocationProductReqVo {
     private String inventoryUnit;
 
     @ApiModelProperty(value = "库存",hidden = true)
-    @NotNull(message = "库存不能为空")
     private Long inventory;
 
     @ApiModelProperty("税率")

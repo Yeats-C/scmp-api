@@ -23,37 +23,47 @@ import java.util.List;
 public class MovementReqVo {
 
     @ApiModelProperty("所属仓库编码")
+    @NotEmpty(message = "所属仓库编码不能为空")
     private String logisticsCenterCode;
 
     @ApiModelProperty("所属仓库名称")
+    @NotEmpty(message = "所属仓库名称不能为空")
     private String logisticsCenterName;
 
     @ApiModelProperty("调出库房编码")
+    @NotEmpty(message = "调出库房编码不能为空")
     private String callOutWarehouseCode;
 
     @ApiModelProperty("调出库房名称")
+    @NotEmpty(message = "调出库房名称不能为空")
     private String callOutWarehouseName;
 
     @ApiModelProperty("调入库房编码")
+    @NotEmpty(message = "调入库房编码不能为空")
     private String callInWarehouseCode;
 
     @ApiModelProperty("调入库房名称")
+    @NotEmpty(message = "调入库房名称不能为空")
     private String callInWarehouseName;
 
     @ApiModelProperty("采购组编码")
+    @NotEmpty(message = "采购组编号不能为空")
     private String purchaseGroupCode;
 
     @ApiModelProperty("采购组名称")
+    @NotEmpty(message = "采购组名称不能为空")
     private String purchaseGroupName;
 
     @ApiModelProperty("负责人")
+    @NotEmpty(message = "负责人不能为空")
     private String principal;
 
     @ApiModelProperty("数量")
+    @NotEmpty(message = "数量不能为空")
     private Long quantity;
 
     @ApiModelProperty("含税总成本单位分(传入时需要乘以100)")
-    @NotNull(message = "含税总成本")
+    @NotNull(message = "含税总成本不能为空")
     private Long totalCostRate;
 
     @ApiModelProperty("直属上级编码")
