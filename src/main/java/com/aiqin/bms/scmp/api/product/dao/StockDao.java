@@ -18,7 +18,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStoc
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse;
 import org.apache.ibatis.annotations.Param;

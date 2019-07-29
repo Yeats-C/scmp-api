@@ -147,7 +147,7 @@
       #{address,jdbcType=VARCHAR}, #{expectTime,jdbcType=TIMESTAMP}, #{validDay,jdbcType=TIMESTAMP}, 
       #{dictionaryId,jdbcType=VARCHAR}, #{dictionaryName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
       #{supplierName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR}, #{untaxedAmount,jdbcType=BIGINT},#{transportRemark,jdbcType=VARCHAR},
+      #{remark,jdbcType=VARCHAR},,#{transportRemark,jdbcType=VARCHAR} #{untaxedAmount,jdbcType=BIGINT},
       #{outStockTime,jdbcType=TIMESTAMP}, #{productCount,jdbcType=INTEGER}, #{productAmount,jdbcType=BIGINT}, 
       #{singleCount,jdbcType=INTEGER},#{giftCount,jdbcType=INTEGER}, #{giftAmount,jdbcType=BIGINT}, #{returnCount,jdbcType=INTEGER},
       #{returnAmount,jdbcType=BIGINT},#{actualProductCount,jdbcType=INTEGER}, #{actualProductAmount,jdbcType=BIGINT},
