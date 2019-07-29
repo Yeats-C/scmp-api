@@ -156,8 +156,9 @@ public class PurchaseApplyController {
                                                            @RequestParam("product_purchase_amount") Integer productPurchaseAmount,
                                                            @RequestParam("sku_code") String skuCode,
                                                            @RequestParam("supplier_code") String supplierCode,
-                                                           @RequestParam("transport_center_code") String transportCenterCode) {
-        return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode);
+                                                           @RequestParam("transport_center_code") String transportCenterCode,
+                                                           @RequestParam("product_count") Integer productCount) {
+        return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode, productCount);
     }
 
     @GetMapping("/product/contrast")
