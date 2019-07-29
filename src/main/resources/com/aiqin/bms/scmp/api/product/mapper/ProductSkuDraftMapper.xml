@@ -766,4 +766,15 @@
     where
     pic_folder_code = #{picFolderCode,jdbcType=VARCHAR}
   </select>
+  <select id="checkName" resultType="java.lang.Integer">
+    select count(*) from
+    product_sku_draft
+    where 1=1
+    <if test="skuCode != null and skuCode != '' ">
+      and sku_code != #{skuCode}
+    </if>
+    <if test="skuName != null and skuName != '' ">
+      and sku_name = #{skuName}
+    </if>
+  </select>
 </mapper>

@@ -83,6 +83,9 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
                     calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVoNum.getNumOrderApproved().intValue()+purchaseApplyRespVoNum.getNumApprovedPayment().intValue()+purchaseApplyRespVoNum.getNumPaymentConfirm().intValue());
                     purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
                     purRespVo = purchaseApplyRespVo;
+                    purRespVo.setNumOrderApproved(purchaseApplyRespVoNum.getNumOrderApproved());
+                    purRespVo.setNumApprovedPayment(purchaseApplyRespVoNum.getNumApprovedPayment());
+                    purRespVo.setNumPaymentConfirm(purchaseApplyRespVoNum.getNumPaymentConfirm());
                     flag = false;
                     break;
                 }

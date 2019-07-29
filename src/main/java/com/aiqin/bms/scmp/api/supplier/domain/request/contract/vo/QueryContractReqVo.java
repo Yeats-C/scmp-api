@@ -48,8 +48,11 @@ public class QueryContractReqVo  extends PageReq {
     @ApiModelProperty("合同结束-结束时间 时间格式:yyyy-MM-dd")
     private String endTimeEnd;
 
-    @ApiModelProperty("到期时间")
-    private Integer dueTime;
+    @ApiModelProperty("到期开始时间")
+    private Integer dueStartTime;
+
+    @ApiModelProperty("到期结束时间")
+    private Integer dueEndTime;
 
     @ApiModelProperty(value = "公司编码", notes = "前端查询接口可以不传,但是其他第三方系统此字段必填", hidden = true)
     private String companyCode;

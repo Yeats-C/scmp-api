@@ -47,5 +47,7 @@ public interface ProductSkuDraftMapper {
      */
     int checkCategory(String categoryCode);
 
+    int checkName(@Param("skuCode") String skuCode,@Param("skuName") String skuName);
+
     ProductSkuDraft selectProductByFolderCode(@Param(value = "picFolderCode") String folderName);
 }
