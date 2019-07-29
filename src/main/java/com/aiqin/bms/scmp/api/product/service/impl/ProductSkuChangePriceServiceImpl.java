@@ -918,4 +918,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             throw new GroundRuntimeException("导入异常");
         }
     }
+
+    @Override
+    public List<PriceJog> getPriceJog(String skuCode){
+        return productSkuPriceInfoMapper.getPriceJog(skuCode,DateUtils.getYear());
+    }
 }
