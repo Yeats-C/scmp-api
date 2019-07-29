@@ -74,9 +74,6 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
         PurchaseApplyRespVo purchaseApplyRespVoNum = proSuggestReplenishmentDao.selectPurchaseRuleNum();
         List<PurchaseApplyRespVo> purchaseApplyRespVos = proSuggestReplenishmentDao.selectPurchaseApplySkuList(purchaseApplyReqVo);
         PurchaseApplyRespVo purRespVo = new PurchaseApplyRespVo();
-        purRespVo.setNumOrderApproved(purchaseApplyRespVoNum.getNumOrderApproved());
-        purRespVo.setNumApprovedPayment(purchaseApplyRespVoNum.getNumApprovedPayment());
-        purRespVo.setNumPaymentConfirm(purchaseApplyRespVoNum.getNumPaymentConfirm());
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         Calendar calendar = Calendar.getInstance();
         Boolean flag = true;
@@ -86,6 +83,9 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
                     calendar.add(Calendar.DATE, purchaseApplyRespVo.getArrivalCycle().intValue()+purchaseApplyRespVo.getNeedDays().intValue()+purchaseApplyRespVoNum.getNumOrderApproved().intValue()+purchaseApplyRespVoNum.getNumApprovedPayment().intValue()+purchaseApplyRespVoNum.getNumPaymentConfirm().intValue());
                     purchaseApplyRespVo.setPredictedArrival(df.format(calendar.getTime()));
                     purRespVo = purchaseApplyRespVo;
+                    purRespVo.setNumOrderApproved(purchaseApplyRespVoNum.getNumOrderApproved());
+                    purRespVo.setNumApprovedPayment(purchaseApplyRespVoNum.getNumApprovedPayment());
+                    purRespVo.setNumPaymentConfirm(purchaseApplyRespVoNum.getNumPaymentConfirm());
                     flag = false;
                     break;
                 }
