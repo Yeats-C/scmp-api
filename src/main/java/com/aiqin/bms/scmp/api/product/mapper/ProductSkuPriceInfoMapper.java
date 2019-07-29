@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuPriceInfo
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceJog;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
@@ -116,4 +117,12 @@ public interface ProductSkuPriceInfoMapper {
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
      */
     List<ProductSkuPriceRespVo> selectBySkuCodeForDraft(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
+
+    /**
+     * 查year内的价格 目前价格是每个月的平均值
+     * @param skuCode
+     * @param year
+     * @return
+     */
+    List<PriceJog> getPriceJog(@Param("skuCode") String skuCode, @Param("year") int year);
 }

@@ -420,10 +420,10 @@ public class InboundServiceImpl implements InboundService {
             InboundProduct inboundProduct = new InboundProduct();
             // 复制旧的sku
             BeanCopyUtils.copy(returnInboundProduct,inboundProduct);
-            inboundProduct.setPraInboundMainNum(inboundProductCallBackReqVo.getPraInboundMainNum()/Long.valueOf(inboundProduct.getInboundBaseContent()));
-            inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundMainNum());
+            inboundProduct.setPraInboundMainNum(inboundProductCallBackReqVo.getPraInboundMainNum());
+            inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundMainNum()/Long.valueOf(inboundProduct.getInboundBaseContent()));
             inboundProduct.setPraTaxPurchaseAmount(inboundProduct.getPreTaxPurchaseAmount());
-            inboundProduct.setPraTaxAmount(inboundProduct.getPraTaxPurchaseAmount()*inboundProduct.getPraInboundMainNum());
+            inboundProduct.setPraTaxAmount(inboundProduct.getPraTaxPurchaseAmount()*inboundProduct.getPraInboundNum());
             // 实际数量
             inbound.setPraInboundNum(inbound.getPraInboundNum()+inboundProduct.getPraInboundNum());
             inbound.setPraMainUnitNum(inbound.getPraMainUnitNum()+inboundProduct.getPraInboundMainNum());
