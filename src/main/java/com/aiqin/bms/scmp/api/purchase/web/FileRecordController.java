@@ -84,7 +84,7 @@ public class FileRecordController {
 
     @PostMapping("/product/image")
     @ApiOperation("上传商品图片文件")
-    public HttpResponse<String> uploadImageFolder(MultipartFile[] folder,String create_by_id,String create_by_name) {
-            return fileRecordService.uploadImageFolder(folder,create_by_id,create_by_name);
+    public HttpResponse<String> uploadImageFolder(MultipartFile[] folder,String create_by_id,String create_by_name,String folder_id) {
+            return fileRecordService.uploadImageFolder(folder,create_by_id,create_by_name,folder_id);
     }
 }

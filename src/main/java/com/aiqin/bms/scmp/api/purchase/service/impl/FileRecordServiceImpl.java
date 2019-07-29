@@ -89,7 +89,7 @@ public class FileRecordServiceImpl implements FileRecordService {
 
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
-    public HttpResponse<String> uploadImageFolder(MultipartFile[] folders, String create_by_id, String create_by_name) {
+    public HttpResponse<String> uploadImageFolder(MultipartFile[] folders, String create_by_id, String create_by_name,String fileId) {
         List<String> fileNames = Arrays.asList("1", "2", "3", "4", "5", "sm_1", "sm_2", "sm_3", "sm_4", "sm_5");
         try {
             if(folders==null||folders.length==0){
@@ -117,7 +117,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                 folderName = split[split.length - 2];
                 productSkuDraft = productSkuDraftMapper.selectProductByFolderCode(folderName);
                 if (productSkuDraft == null) {
-                    LOGGER.error("通过文件夹编码:{},未查询到商品信息", folderName);
+                    LOGGER.error("通过文件夹编码:{},未查询到商品信息", fileId);
                     throw new GroundRuntimeException(String.format("通过文件夹编码:%s,未查询到商品信息", folderName));
                 }
                 fileName = split[split.length - 1];
@@ -158,7 +158,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                 Integer picCount = productSkuPicDescDraftMapper.insertAll(productSkuPicDescDraftList);
                 LOGGER.info("1.png对应图片及介绍,添加条数:{}",picCount);
             }
-            return HttpResponse.successGenerics(folderName);
+            return HttpResponse.successGenerics(fileId);
         } catch (Exception e) {
             LOGGER.error("导入商品图片信息异常:{}", e.getMessage());
             throw new GroundRuntimeException(String.format("导入商品图片信息异常:%s", e.getMessage()));
