@@ -23,11 +23,11 @@ import java.util.List;
 public class ScrapReqVo {
 
     @ApiModelProperty("仓库(物流中心)编号")
-    @NotEmpty(message = "仓库(物流中心)编号不能为空")
+    @NotEmpty(message = "仓库编号不能为空")
     private String logisticsCenterCode;
 
     @ApiModelProperty("仓库(物流中心)名称")
-    @NotEmpty(message = "仓库(物流中心)名称不能为空")
+    @NotEmpty(message = "仓库名称不能为空")
     private String logisticsCenterName;
 
     @ApiModelProperty("库房编码")

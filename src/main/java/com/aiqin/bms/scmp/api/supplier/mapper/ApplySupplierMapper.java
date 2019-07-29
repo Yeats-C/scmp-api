@@ -12,6 +12,7 @@ public interface ApplySupplierMapper {
     ApplySupplier selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(ApplySupplier record);
+    int updateByApplyCodeSelective(ApplySupplier record);
 
     int updateByPrimaryKey(ApplySupplier record);
 }

@@ -705,6 +705,9 @@
       <if test="applyStatus != null">
         apply_status = #{applyStatus,jdbcType=TINYINT},
       </if>
+      <if test="newApplyCode != null">
+        apply_contract_code = #{newApplyCode},
+      </if>
     </set>
     where apply_contract_code = #{applyContractCode,jdbcType=VARCHAR}
   </update>

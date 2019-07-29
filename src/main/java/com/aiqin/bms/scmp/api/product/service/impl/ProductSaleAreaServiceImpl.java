@@ -109,6 +109,9 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         request.setCreateBy(currentAuthToken.getPersonName());
         request.setCompanyName(currentAuthToken.getCompanyName());
         request.setCreateTime(new Date());
+        if (StringUtils.isBlank(request.getCode())) {
+            request.setBeDisable(0);
+        }
         //数据本身验重
         validateRepeat(request);
         //首先申请表中试是否有申请中的数据
@@ -496,7 +499,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
                 log.error("数据为空");
                 throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "更新销售区域正式表数据异常！"));
             }
-            ProductSkuSaleAreaMain newMain = BeanCopyUtils.copy(oldMain, ProductSkuSaleAreaMain.class);
+            ProductSkuSaleAreaMain newMain = BeanCopyUtils.copy(areaDTO, ProductSkuSaleAreaMain.class);
             //设置为生效
             newMain.setBeEffective(1);
             newMain.setCode(oldMain.getCode());
