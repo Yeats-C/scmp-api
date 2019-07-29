@@ -381,6 +381,8 @@
              a.price_type_name        aprice_type_name,
              a.price_attribute_name   aprice_attribute_name,
              a.price_tax              aprice_tax,
+             a.price_no_tax           aprice_no_tax,
+             a.tax                    atax,
              a.purchase_group_name    apurchase_group_name,
              a.warehouse_batch_number awarehouse_batch_number,
              a.transport_center_name  atransport_center_name,

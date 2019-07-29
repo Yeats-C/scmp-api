@@ -212,10 +212,6 @@ public enum  HandleTypeCoce {
 
     //调拨
     ADD_ALLOCATION((byte)179,"调拨单新增"),
-
-
-
-
     FLOW_ALLOCATION((byte)180,"调拨单提交"),
     REVOCATION_ALLOCATION((byte)181,"调拨单撤销"),
     FLOW_SUCCESS_ALLOCATION((byte)182,"调拨单审批通过"),
@@ -242,6 +238,17 @@ public enum  HandleTypeCoce {
     PASS_CHANGEPRICE((byte)200,"变价审批通过"),
     NOPASS_CHANGEPRICE((byte)201,"变价审批不通过"),
     RECOBER_CHANGEPRICE((byte)202,"变价撤销"),
+
+    //报废单
+    ADD_SCRAP((byte)188,"新建报废单"),
+    SUBMIT_SCRAP((byte)189,"提交报废单"),
+    PASS_SCRAP((byte)190,"审批通过报废单"),
+    NOPASS_SCRAP((byte)191,"审批不通过报废单"),
+    RECOBER_SCRAP((byte)192,"撤销报废单"),
+    OUTBOUND_SCRAP((byte)193,"报废单待出库"),
+    SUCCESS_OUT_SCRAP((byte)194,"报废单已出库"),
+    INBOUND_SCRAP((byte)195,"报废单待入库"),
+    SUCCESS__SCRAP((byte)196,"报废单已完成"),
 
     ADD((byte)1000,"新增"),
     UPDATE((byte)10001,"修改"),

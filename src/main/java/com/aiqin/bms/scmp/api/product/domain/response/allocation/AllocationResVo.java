@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.allocation;
 
-import com.aiqin.bms.scmp.api.product.domain.response.LogData;
+import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

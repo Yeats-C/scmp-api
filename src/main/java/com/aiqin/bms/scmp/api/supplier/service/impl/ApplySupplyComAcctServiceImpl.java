@@ -237,21 +237,27 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         //修改数据
         ApplySupplyCompanyAcctReqDTO s = new ApplySupplyCompanyAcctReqDTO();
         BeanCopyUtils.copy(applySupplyCompanyAcctReq, s);
-        s.setId(account.getId());
+//        s.setId(account.getId());
+        s.setId(null);
         s.setApplyStatus((byte) 0);
-        s.setApplyCode(supplyCompanyAccount.getApplyCompanyAccountCode());
+//        s.setApplyCode(supplyCompanyAccount.getApplyCompanyAccountCode());
         s.setApplyType((byte) 2);
         s.setFormNo("GYSZH"+IdSequenceUtils.getInstance().nextId());
-        ((ApplySupplyComAcctService) AopContext.currentProxy()).updateApplyData(s);
+        EncodingRule rule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_ACCT_CODE);
+        s.setApplyCode(String.valueOf(rule.getNumberingValue() + 1));
+        ((ApplySupplyComAcctService) AopContext.currentProxy()).insert(s);
+        encodingRuleService.updateNumberValue(rule.getNumberingValue(), rule.getId());
+//        ((ApplySupplyComAcctService) AopContext.currentProxy()).updateApplyData(s);
         //存日志
         String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", s.getUpdateBy()).replace("APPLYTYPE", "修改");
-        supplierCommonService.getInstance(supplyCompanyAccount.getApplyCompanyAccountCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, HandleTypeCoce.PENDING.getName());
+        supplierCommonService.getInstance(s.getApplyCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, HandleTypeCoce.PENDING.getName());
         //申请表状态更新完成后，再更新正式表
         supplyCompanyAccount.setApplyStatus((byte) 1);
         SupplyCompanyAccountDTO s1 = new SupplyCompanyAccountDTO();
         s1.setId(supplyCompanyAccount.getId());
         s1.setApplyStatus((byte) 1);
         s1.setDelFlag((byte) 0);
+        s1.setApplyCompanyAccountCode(s.getApplyCode());
         int i = ((ApplySupplyComAcctService) AopContext.currentProxy()).updateSupplyStatus(s1);
         workFlow(s);
         return i;
@@ -699,7 +705,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
                     s1.setAuditorBy(vo.getApprovalUserName());
                     s1.setAuditorTime(new Date());
                     supplyCompanyAccountMapper.updateByPrimaryKeySelective(s1);
-                    supplierCommonService.getInstance(account.getSupplyCompanyAccountCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SUPPLY_COMPANY_ACCOUNT.getStatus(), HandleTypeCoce.UPDATE_SUPPLY_COMPANY_ACCOUNT.getName(),null, HandleTypeCoce.UPDATE.getName(),account.getUpdateBy());
+                    supplierCommonService.getInstance(s2.getSupplyCompanyAccountCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SUPPLY_COMPANY_ACCOUNT.getStatus(), HandleTypeCoce.UPDATE_SUPPLY_COMPANY_ACCOUNT.getName(),null, HandleTypeCoce.UPDATE.getName(),account.getUpdateBy());
                 } else {
                     return "false";
                 }

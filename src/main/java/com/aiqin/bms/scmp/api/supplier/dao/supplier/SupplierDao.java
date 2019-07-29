@@ -39,7 +39,7 @@ public interface SupplierDao {
      */
     Supplier getSupplierByApplyCode(String applyCode);
 
-    void updatetSupplierApplyStatusByCode(String supplierCode);
+    void updatetSupplierApplyStatusByCode(@Param("supplierCode") String supplierCode, @Param("applyCode") String applyCode);
 
     List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
 

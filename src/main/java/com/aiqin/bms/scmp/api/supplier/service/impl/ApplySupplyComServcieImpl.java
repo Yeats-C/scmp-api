@@ -41,7 +41,6 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -885,14 +884,16 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 if (CollectionUtils.isEmptyCollection(children1)) {
                     continue;
                 }
-                Map<String, AreaBasic> map1 = Maps.newHashMap();
                 //区
                 for (AreaBasic areaBasic : children1) {
+                    if (areaBasic.getArea_name().equals("郊区")) {
+                        System.out.println(areaBasic.getArea_name());
+                    }
                     AreaInfo info = new AreaInfo(areaBasic.getParent_area_name(),areaBasic.getArea_id(),areaBasic.getArea_name());
-                    map.put(areaBasic.getArea_name(),info);
+                    map.put(datum.getArea_name()+child.getArea_name()+areaBasic.getArea_name(),info);
                 }
                 AreaInfo info = new AreaInfo(child.getParent_area_name(),child.getArea_id(),child.getArea_name());
-                map.put(child.getArea_name(), info);
+                map.put(datum.getArea_name()+child.getArea_name(), info);
             }
             AreaInfo info = new AreaInfo(datum.getParent_area_name(),datum.getArea_id(),datum.getArea_name());
             map.put(datum.getArea_name(), info);
@@ -1163,7 +1164,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     if(StringUtils.isBlank(supplierImport.getSendDistrictName())){
                         error.add("发货县不能为空");
                     }else {
-                        checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.发货省市县);
+                        checkArea(supplierImport.getSendProvinceName(), supplierImport.getSendCityName(), supplierImport.getSendDistrictName(), CheckAreaEnum.发货省市县);
                     }
                 }
 
@@ -1211,7 +1212,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     if(StringUtils.isBlank(supplierImport.getReturnDistrictName())){
                         error.add("收货县不能为空");
                     }else {
-                        checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.退货省市县);
+                        checkArea(supplierImport.getReturnProvinceName(), supplierImport.getReturnCityName(), supplierImport.getReturnDistrictName(), CheckAreaEnum.退货省市县);
                     }
                 }
             }
@@ -1250,23 +1251,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             SpecialArea specialArea = SpecialArea.getAll().get(province);
             if (Objects.nonNull(specialArea)) {
                 if (specialArea.getHasCity()) {
-                    AreaInfo areaInfo = areaTree.get(city);
-                    if(Objects.isNull(areaInfo)){
-                        error.add(checkAreaEnum.getCity());
-                    }else {
-                        if (checkAreaEnum.getType() == 1) {
-                            reqVO.setCityId(areaInfo.getCode());
-                            reqVO.setCityName(city);
-                        } else if (checkAreaEnum.getType() == 2) {
-                            sendVO.setSendCityId(areaInfo.getCode());
-                            sendVO.setSendCityId(city);
-                        } else if (checkAreaEnum.getType() == 3) {
-                            returnVO.setSendCityId(areaInfo.getCode());
-                            returnVO.setSendCityId(city);
-                        }
-                    }
-                    AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
-                    if(Objects.isNull(areaInfo1)|| province.equals(areaInfo.getParentName())){
+                    AreaInfo areaInfo1 = areaTree.get(province);
+                    if(Objects.isNull(areaInfo1)){
                         error.add(checkAreaEnum.getProvince());
                     }else {
                         if (checkAreaEnum.getType() == 1) {
@@ -1280,6 +1266,22 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                             returnVO.setSendProvinceName(province);
                         }
                     }
+                    AreaInfo areaInfo = areaTree.get(province+city);
+                    if(Objects.isNull(areaInfo)||!areaInfo.getParentName().equals(province)){
+                        error.add(checkAreaEnum.getCity());
+                    }else {
+                        if (checkAreaEnum.getType() == 1) {
+                            reqVO.setCityId(areaInfo.getCode());
+                            reqVO.setCityName(city);
+                        } else if (checkAreaEnum.getType() == 2) {
+                            sendVO.setSendCityId(areaInfo.getCode());
+                            sendVO.setSendCityId(city);
+                        } else if (checkAreaEnum.getType() == 3) {
+                            returnVO.setSendCityId(areaInfo.getCode());
+                            returnVO.setSendCityId(city);
+                        }
+                    }
+
                 }else{
                     AreaInfo areaInfo = areaTree.get(province);
                     if(Objects.isNull(areaInfo)){
@@ -1298,10 +1300,39 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     }
                 }
             }else {
-                AreaInfo areaInfo2 = areaTree.get(district);
+                AreaInfo areaInfo1 = areaTree.get(province);
+                if(Objects.isNull(areaInfo1)){
+                    error.add(checkAreaEnum.getProvince());
+                }else {
+                    if (checkAreaEnum.getType() == 1) {
+                        reqVO.setProvinceId(areaInfo1.getCode());
+                        reqVO.setProvinceName(province);
+                    } else if (checkAreaEnum.getType() == 2) {
+                        sendVO.setSendProvinceId(areaInfo1.getCode());
+                        sendVO.setSendProvinceName(province);
+                    } else if (checkAreaEnum.getType() == 3) {
+                        returnVO.setSendProvinceId(areaInfo1.getCode());
+                        returnVO.setSendProvinceName(province);
+                    }
+                }
+                AreaInfo areaInfo = areaTree.get(province+city);
+                if (Objects.isNull(areaInfo)) {
+                    error.add(checkAreaEnum.getCity());
+                } else {
+                    if (checkAreaEnum.getType() == 1) {
+                        reqVO.setCityId(areaInfo.getCode());
+                        reqVO.setCityName(city);
+                    } else if (checkAreaEnum.getType() == 2) {
+                        sendVO.setSendCityId(areaInfo.getCode());
+                        sendVO.setSendCityName(city);
+                    } else if (checkAreaEnum.getType() == 3) {
+                        returnVO.setSendCityId(areaInfo.getCode());
+                        returnVO.setSendCityName(city);
+                    }
+                }
+                AreaInfo areaInfo2 = areaTree.get(province+city+district);
                 if(Objects.isNull(areaInfo2)){
                     error.add(checkAreaEnum.getDis());
-                    return;
                 }else {
                     if (checkAreaEnum.getType() == 1) {
                         reqVO.setDistrictId(areaInfo2.getCode());
@@ -1312,37 +1343,6 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     } else if (checkAreaEnum.getType() == 3) {
                         returnVO.setSendDistrictId(areaInfo2.getCode());
                         returnVO.setSendDistrictName(city);
-                    }
-                }
-                AreaInfo areaInfo = areaTree.get(city);
-                if(Objects.isNull(areaInfo)||!city.equals(areaInfo2.getParentName())){
-                    error.add(checkAreaEnum.getCity());
-                    return;
-                }else {
-                    if (checkAreaEnum.getType() == 1) {
-                        reqVO.setCityId(areaInfo.getCode());
-                        reqVO.setCityName(city);
-                    } else if (checkAreaEnum.getType() == 2) {
-                        sendVO.setSendCityId(areaInfo2.getCode());
-                        sendVO.setSendCityName(city);
-                    } else if (checkAreaEnum.getType() == 3) {
-                        returnVO.setSendCityId(areaInfo2.getCode());
-                        returnVO.setSendCityName(city);
-                    }
-                }
-                AreaInfo areaInfo1 = areaTree.get(areaInfo.getParentName());
-                if(Objects.isNull(areaInfo1)|| !province.equals(areaInfo.getParentName())){
-                    error.add(checkAreaEnum.getProvince());
-                }else {
-                    if (checkAreaEnum.getType() == 1) {
-                        reqVO.setProvinceId(areaInfo.getCode());
-                        reqVO.setProvinceName(province);
-                    } else if (checkAreaEnum.getType() == 2) {
-                        sendVO.setSendProvinceId(areaInfo.getCode());
-                        sendVO.setSendProvinceName(province);
-                    } else if (checkAreaEnum.getType() == 3) {
-                        returnVO.setSendProvinceId(areaInfo.getCode());
-                        returnVO.setSendProvinceName(province);
                     }
                 }
             }

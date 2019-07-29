@@ -28,7 +28,7 @@
     <result column="enable" jdbcType="TINYINT" property="enable" />
   </resultMap>
   <update id="updatetSupplierApplyStatusByCode" parameterType="java.lang.String">
-    update supplier set apply_status = 1 where supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    update supplier set apply_status = 1,apply_supplier_code = #{applyCode} where supplier_code = #{supplierCode,jdbcType=VARCHAR}
   </update>
   <select id="getSupplierList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierReqVO" resultMap="SupplierListMap">
     SELECT

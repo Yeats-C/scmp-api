@@ -1811,7 +1811,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
             //sku简称
             if (Objects.isNull(importVo.getSkuAbbreviation())) {
-                error.add("SKU简称不能为空");
+//                error.add("SKU简称不能为空");
             }
             //品牌
             if (Objects.isNull(importVo.getProductBrandName())) {
@@ -1945,10 +1945,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getManufacturerGuidePrice())) {
                 error.add("厂家指导价不能为空");
             } else {
-                long l = 0;
                 try {
-                    l = Long.parseLong(importVo.getManufacturerGuidePrice());
-                    productSkuDraft.setManufacturerGuidePrice(l);
+                    productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseLong(importVo.getManufacturerGuidePrice()));
                 } catch (NumberFormatException e) {
                     error.add("厂家指导价格式不正确");
                 }
@@ -2421,7 +2419,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             } else {
                 SupplierDictionaryInfo info = dicMap.get(importVo.getSettlementMethodName().trim());
                 if (Objects.isNull(info)) {
-                    error.add("未找到改名称对应的结算方式");
+                    error.add("未找到该名称对应的结算方式");
                 } else {
                     draft.setSettlementMethodCode(info.getSupplierContent());
                     draft.setSettlementMethodCode(info.getSupplierDictionaryValue());
@@ -2452,7 +2450,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("积分系数不能为空");
             } else {
                 try {
-                    draft.setIntegralCoefficient(NumberConvertUtils.stringParseLong(importVo.getIntegralCoefficient()));
+                    draft.setIntegralCoefficient(NumberConvertUtils.stringParseLong(importVo.getIntegralCoefficient())/100);
                 } catch (Exception e) {
                     error.add("积分系数格式不正确");
                 }
@@ -2462,7 +2460,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("物流费奖励比例不能为空");
             } else {
                 try {
-                    draft.setLogisticsFeeAwardRatio(NumberConvertUtils.stringParseBigDecimal(importVo.getLogisticsFeeAwardRatio()));
+                    draft.setLogisticsFeeAwardRatio(NumberConvertUtils.stringParseBigDecimal(importVo.getLogisticsFeeAwardRatio()).multiply(BigDecimal.valueOf(100)));
                 } catch (Exception e) {
                     error.add("物流费奖励比例格式不正确");
                 }
@@ -2772,7 +2770,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         //检查图片
         private CheckSku checkPic() {
             if (Objects.isNull(importVo.getPicFolderCode())) {
-                error.add("图片文件夹编号不能为空");
+//                error.add("图片文件夹编号不能为空");
             }else {
                 this.resp.getProductSkuDraft().setPicFolderCode(importVo.getPicFolderCode().trim());
             }
