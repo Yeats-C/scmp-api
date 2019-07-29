@@ -39,7 +39,7 @@ public class CodeUtil {
     public static String getCode(String prefix, String code){
         String newCode = prefix+"0001";
         if(code != null && !code.isEmpty()){
-            int flowCode = Integer.valueOf(code.substring(1,5))+1;
+            int flowCode = Integer.valueOf(code.substring(2,6))+1;
             newCode = String.format(prefix + "%04d", flowCode);
         }
         return newCode;
