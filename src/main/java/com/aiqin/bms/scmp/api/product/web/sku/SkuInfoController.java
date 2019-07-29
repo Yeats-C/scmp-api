@@ -26,6 +26,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -209,6 +210,20 @@ public class SkuInfoController {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
+    }
+
+    @PostMapping("/exportSku")
+    public void exportSku(HttpServletResponse HttpResponse
+                                           ,List<String> skuCodes){
+        log.info("SkuInfoController---exportSku---入参：[{}]", JSON.toJSONString(skuCodes));
+//        try {
+//            return ExcelUtil.writeExcel(HttpResponse,skuInfoService.exportSku(skuCodes),"商品申请确认模板",null,ExcelTypeEnum.XLSX, ExportSkuInfo.class);
+//        } catch (BizException e) {
+//            return HttpResponse.failure(e.getMessageId());
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+//        }
     }
 
 }
