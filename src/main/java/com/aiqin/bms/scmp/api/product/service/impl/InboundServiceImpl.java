@@ -403,7 +403,6 @@ public class InboundServiceImpl implements InboundService {
         if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.ALLOCATE.getCode())){
              stockChangeRequest.setOperationType(8);
         }else if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.ORDER.getCode())){
-
            stockChangeRequest.setOperationType(10);
         }else if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.MOVEMENT.getCode())){
              // 如果是移库
@@ -457,6 +456,8 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSourceDocumentNum(inbound.getSourceOderCode());
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockVoRequest.setOperator(inbound.getUpdateBy());
+            stockVoRequest.setTaxRate(inbound.getPraTax());
+            stockVoRequest.setNewPurchasePrice(inbound.getPraTaxAmount());
             stockVoRequestList.add(stockVoRequest);
         }
         stockChangeRequest.setStockVoRequests(stockVoRequestList);

@@ -115,6 +115,9 @@ public class AllocationResVo2OutboundReqVoConverter implements Converter<Allocat
                 product.setPreTaxAmount(vo.getTaxAmount());
                 // 设置行号
                 product.setLinenum(vo.getLinenum());
+                product.setOutboundBaseContent("1");
+                product.setOutboundBaseUnit("1");
+
                 totalNoRateAmount += (Calculate.computeNoTaxPrice(vo.getTaxPrice(), vo.getTax())*vo.getQuantity());
                 products.add(product);
             }

@@ -548,8 +548,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     returnOutboundProduct.setTax(returnOutboundProduct.getInputTaxRate());
                 }
                 //设置实际数量，实际数量
-                outboundProduct.setPraOutboundNum(outboundProductCallBackReqVo.getPraOutboundMainNum()/Long.valueOf(returnOutboundProduct.getOutboundBaseContent()));
-                outboundProduct.setPraOutboundMainNum(outboundProductCallBackReqVo.getPraOutboundMainNum());
+                outboundProduct.setPraOutboundNum(outboundProductCallBackReqVo.getPraOutboundMainNum());
+                outboundProduct.setPraOutboundMainNum(outboundProductCallBackReqVo.getPraOutboundMainNum()/Long.valueOf(returnOutboundProduct.getOutboundBaseContent()));
                 //设置实际含税单价，实际含税总价
                 outboundProduct.setPraTaxPurchaseAmount(returnOutboundProduct.getPreTaxPurchaseAmount());
                 outboundProduct.setPraTaxAmount(outboundProduct.getPraOutboundMainNum()*outboundProduct.getPraTaxPurchaseAmount());
@@ -586,6 +586,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 stockVoRequest.setSourceDocumentNum(outbound.getSourceOderCode());
                 stockVoRequest.setSourceDocumentType(Integer.parseInt(outbound.getOutboundTypeCode().toString()));
                 stockVoRequest.setOperator(outbound.getUpdateBy());
+                stockVoRequest.setTaxRate(outbound.getPraTax());
+                stockVoRequest.setNewPurchasePrice(outbound.getPraTaxAmount());
                 stockVoRequestList.add(stockVoRequest);
             }
             stockChangeRequest.setStockVoRequests(stockVoRequestList);

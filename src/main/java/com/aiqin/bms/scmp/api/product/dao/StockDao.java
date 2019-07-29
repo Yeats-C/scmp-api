@@ -18,7 +18,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStoc
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse;
 import org.apache.ibatis.annotations.Param;
@@ -154,9 +153,6 @@ public interface StockDao {
     List<QueryStockSkuListRespVo> selectSkuCodeByQueryBatchCodeList(@Param("warehouseCode") String warehouseCode, @Param("skuCode")  String skuCode);
 
     void updateStorehouseById(@Param("list") List<StockRespVO> stockRespVO);
-
-    PurchaseApplyProduct purchaseBySkuStock(@Param("purchaseGroupCode")String purchaseGroupCode, @Param("skuCode")String skuCode,
-                                            @Param("supplierCode")String supplierCode, @Param("transportCenterCode")String transportCenterCode);
 
     List<StockBatch> selectListByCodesAndSkuCodeBatch(@Param("stockBatchVoRequest") List<StockBatchVoRequest> stockBatchVoRequest);
 
