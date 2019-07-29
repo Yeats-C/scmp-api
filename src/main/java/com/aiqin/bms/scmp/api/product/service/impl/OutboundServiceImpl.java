@@ -586,6 +586,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 stockVoRequest.setSourceDocumentNum(outbound.getSourceOderCode());
                 stockVoRequest.setSourceDocumentType(Integer.parseInt(outbound.getOutboundTypeCode().toString()));
                 stockVoRequest.setOperator(outbound.getUpdateBy());
+                stockVoRequest.setTaxRate(outbound.getPraTax());
+                stockVoRequest.setNewPurchasePrice(outbound.getPraTaxAmount());
                 stockVoRequestList.add(stockVoRequest);
             }
             stockChangeRequest.setStockVoRequests(stockVoRequestList);

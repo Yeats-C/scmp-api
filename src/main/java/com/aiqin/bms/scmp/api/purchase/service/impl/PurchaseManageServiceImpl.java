@@ -533,14 +533,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     actualProductPieceSum += actualWhole;
                     actualProductSingleSum += actualSingleCount;
                     actualProductTaxSum += amount * actualSingleCount;
-                }else if(order.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                }else if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
                     matterPieceSum += purchaseWhole;
                     matterSingleSum += singleCount;
                     matterTaxSum += amount * singleCount;
                     actualMatterPieceSum += actualWhole;
                     actualMatterSingleSum += actualSingleCount;
                     actualMatterTaxSum += amount * actualSingleCount;
-                }else if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                }else if(order.getProductType().equals(Global.PRODUCT_TYPE_1)){
                     giftPieceSum += purchaseWhole;
                     giftSingleSum += singleCount;
                     giftTaxSum += amount * singleCount;

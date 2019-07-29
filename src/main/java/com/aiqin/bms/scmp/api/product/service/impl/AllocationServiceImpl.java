@@ -38,6 +38,7 @@ import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
@@ -655,7 +656,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 String skuName = ExcelUtil.convertNumToString(objects[1]);
                 Long num=0L;
                 try {
-                    String s = ExcelUtil.convertNumToString(objects[2]);
+                    String s = ExcelUtil.convertNumToString(objects[3]);
                     if(StringUtils.isNotBlank(s)){
                         num = Long.valueOf(s);
                     }
@@ -686,15 +687,19 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 }
                 if(num !=null&&num<=allocationItemRespVo.getStockNum()){
                     allocationItemRespVo.setNumber(num);
-                    allocationItemRespVo.setTotalPrice(allocationItemRespVo.getPrice()*num);
+                    allocationItemRespVo.setTotalPrice(allocationItemRespVo.getPrice() * num);
+                }
+                if(allocationItemRespVo == null){
+                    list.add(new AllocationItemRespVo(skuCode, skuName,"该sku没有足够的库存"));
+                    continue;
                 }
                 list.add(allocationItemRespVo);
-                //验证是否存在批次存库
-                if(skuBatchRespVOMap.containsKey(skuCode)){
-                    allocationItemRespVo.setSkuBatchRespVOS(skuBatchRespVOMap.get(skuCode));
-                } else {
-                    allocationItemRespVo.setErrorReason("sku在库房中不存在批次号");
-                }
+//                //验证是否存在批次存库
+//                if(skuBatchRespVOMap.containsKey(skuCode)){
+//                    allocationItemRespVo.setSkuBatchRespVOS(skuBatchRespVOMap.get(skuCode));
+//                } else {
+//                    allocationItemRespVo.setErrorReason("sku在库房中不存在批次号");
+//                }
 
 
             }

@@ -55,4 +55,9 @@ public class DateUtils {
         DateTime dateTime = new DateTime(date);
         return dateTime.toString(PATTERN_DATE);
     }
+
+    public static int getYear() {
+        Calendar sysDate = Calendar.getInstance();
+        return sysDate.get(Calendar.YEAR);
+    }
 }

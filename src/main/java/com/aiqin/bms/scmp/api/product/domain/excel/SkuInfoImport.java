@@ -226,136 +226,136 @@ public class SkuInfoImport{
     @ExcelProperty(index = 51, value = "销售单位")
     private String saleUnitName;
 
-    @ApiModelProperty("基商品含量")
-    @ExcelProperty(index = 52, value = "销售基商品含量")
-    private String saleBaseProductContent;
-
-    @ApiModelProperty("拆零系数")
-    @ExcelProperty(index = 53, value = "销售拆零系数")
-    private String saleZeroRemovalCoefficient;
+//    @ApiModelProperty("基商品含量")
+//    @ExcelProperty(index = 52, value = "销售基商品含量")
+//    private String saleBaseProductContent;
+//
+//    @ApiModelProperty("拆零系数")
+//    @ExcelProperty(index = 53, value = "销售拆零系数")
+//    private String saleZeroRemovalCoefficient;
 
     @ApiModelProperty("条形码")
-    @ExcelProperty(index = 54, value = "销售条形码")
+    @ExcelProperty(index = 52, value = "销售条形码")
     private String saleBarCode;
 
     @ApiModelProperty("描述-门店销售独有")
-    @ExcelProperty(index = 55, value = "销售描述")
+    @ExcelProperty(index = 53, value = "销售描述")
     private String description;
 
     @ApiModelProperty("结算方式名称")
-    @ExcelProperty(index = 56, value = "结算方式")
+    @ExcelProperty(index = 54, value = "结算方式")
     private String settlementMethodName;
 
     @ApiModelProperty("进项税率")
-    @ExcelProperty(index = 57, value = "进项税率")
+    @ExcelProperty(index = 55, value = "进项税率")
     private String inputTaxRate;
 
     @ApiModelProperty("销项税率")
-    @ExcelProperty(index = 58, value = "销项税率")
+    @ExcelProperty(index = 56, value = "销项税率")
     private String outputTaxRate;
 
     @ApiModelProperty("积分系数")
-    @ExcelProperty(index = 59, value = "积分系数")
+    @ExcelProperty(index = 57, value = "积分系数")
     private String integralCoefficient;
 
     @ApiModelProperty("物流费奖励比例")
-    @ExcelProperty(index = 60, value = "物流费奖励比例")
+    @ExcelProperty(index = 58, value = "物流费奖励比例")
     private String logisticsFeeAwardRatio;
 
     @ApiModelProperty("供货单位名称")
-    @ExcelProperty(index = 61, value = "供应商")
+    @ExcelProperty(index = 59, value = "供应商")
     private String supplyUnitName;
 
     @ApiModelProperty("含税进价")
-    @ExcelProperty(index = 62, value = "含税进价")
+    @ExcelProperty(index = 60, value = "含税进价")
     private String taxIncludedPrice;
 
     @ApiModelProperty("联营扣点")
-    @ExcelProperty(index = 63, value = "联营扣点")
+    @ExcelProperty(index = 61, value = "联营扣点")
     private String jointFranchiseRate;
 
     @ApiModelProperty("返点")
-    @ExcelProperty(index = 64, value = "返点")
+    @ExcelProperty(index = 62, value = "返点")
     private String point;
 
     @ApiModelProperty("厂商SKU编码")
-    @ExcelProperty(index = 65, value = "厂商SKU编码")
+    @ExcelProperty(index = 63, value = "厂商SKU编码")
     private String factorySkuCode;
 
     @ApiModelProperty(value ="供应商供货渠道类别")
-    @ExcelProperty(index = 66, value = "供应商供货渠道类别")
+    @ExcelProperty(index = 64, value = "供应商供货渠道类别")
     private String supplyCategoriesSupplyChannelsName;
 
     @ApiModelProperty(value ="爱亲渠道价")
-    @ExcelProperty(index = 67, value = "爱亲渠道价")
+    @ExcelProperty(index = 65, value = "爱亲渠道价")
     private String readyCol67;
 
     @ApiModelProperty(value ="萌贝树渠道价")
-    @ExcelProperty(index = 68, value = "萌贝树渠道价")
+    @ExcelProperty(index = 66, value = "萌贝树渠道价")
     private String readyCol68;
 
     @ApiModelProperty(value ="小红马渠道价")
-    @ExcelProperty(index = 69, value = "小红马渠道价")
+    @ExcelProperty(index = 67, value = "小红马渠道价")
     private String readyCol69;
 
     @ApiModelProperty(value ="爱亲分销价")
-    @ExcelProperty(index = 70, value = "爱亲分销价")
+    @ExcelProperty(index = 68, value = "爱亲分销价")
     private String readyCol70;
 
     @ApiModelProperty(value ="萌贝树分销价")
-    @ExcelProperty(index = 71, value = "萌贝树分销价")
+    @ExcelProperty(index = 69, value = "萌贝树分销价")
     private String readyCol71;
 
     @ApiModelProperty(value ="小红马分销价")
-    @ExcelProperty(index = 72, value = "小红马分销价")
+    @ExcelProperty(index = 70, value = "小红马分销价")
     private String readyCol72;
 
     @ApiModelProperty(value ="爱亲售价")
-    @ExcelProperty(index = 73, value = "爱亲售价")
+    @ExcelProperty(index = 71, value = "爱亲售价")
     private String readyCol73;
 
     @ApiModelProperty(value ="萌贝树售价")
-    @ExcelProperty(index = 74, value = "萌贝树售价")
+    @ExcelProperty(index = 72, value = "萌贝树售价")
     private String readyCol74;
 
     @ApiModelProperty(value ="小红马售价")
-    @ExcelProperty(index = 75, value = "小红马售价")
+    @ExcelProperty(index = 73, value = "小红马售价")
     private String readyCol75;
 
     @ApiModelProperty(value ="华北仓状态")
-    @ExcelProperty(index = 76, value = "华北仓状态")
+    @ExcelProperty(index = 74, value = "华北仓状态")
     private String readyCol76;
 
     @ApiModelProperty(value ="华东仓状态")
-    @ExcelProperty(index = 77, value = "华东仓状态")
+    @ExcelProperty(index = 75, value = "华东仓状态")
     private String readyCol77;
 
     @ApiModelProperty(value ="华南仓状态")
-    @ExcelProperty(index = 78, value = "华南仓状态")
+    @ExcelProperty(index = 76, value = "华南仓状态")
     private String readyCol78;
 
     @ApiModelProperty(value ="西南仓状态")
-    @ExcelProperty(index = 79, value = "西南仓状态")
+    @ExcelProperty(index = 77, value = "西南仓状态")
     private String readyCol79;
 
     @ApiModelProperty(value ="华中仓状态")
-    @ExcelProperty(index = 80, value = "华中仓状态")
+    @ExcelProperty(index = 78, value = "华中仓状态")
     private String readyCol80;
 
     @ApiModelProperty("生产厂家")
-    @ExcelProperty(index = 81, value = "生产厂家")
+    @ExcelProperty(index = 79, value = "生产厂家")
     private String manufacturerName;
 
     @ApiModelProperty("厂方商品编号")
-    @ExcelProperty(index = 82, value = "厂方商品编号")
+    @ExcelProperty(index = 80, value = "厂方商品编号")
     private String factoryProductNumber;
 
     @ApiModelProperty("保修地址")
-    @ExcelProperty(index = 83, value = "保修地址")
+    @ExcelProperty(index = 81, value = "保修地址")
     private String address;
 
     @ApiModelProperty("图片文件夹编号")
-    @ExcelProperty(index = 84, value = "图片文件夹编号")
+    @ExcelProperty(index = 82, value = "图片文件夹编号")
     private String picFolderCode;
 
     @ApiModelProperty("错误原因")
