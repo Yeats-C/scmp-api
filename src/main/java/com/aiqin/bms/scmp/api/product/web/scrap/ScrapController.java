@@ -12,6 +12,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -50,7 +51,7 @@ public class ScrapController {
      */
     @ApiOperation("报废添加")
     @PostMapping("/save")
-    public HttpResponse<Long> save(@RequestBody ScrapReqVo vo) {
+    public HttpResponse<Long> save(@RequestBody @Validated ScrapReqVo vo) {
         try {
             return HttpResponse.success(ScrapService.save(vo));
         } catch (BizException e) {

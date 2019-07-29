@@ -22,11 +22,11 @@ import java.util.List;
 public class AllocationReqVo {
 
     @ApiModelProperty("调出仓库(物流中心)编号")
-    @NotEmpty(message = "调出仓库(物流中心)编号不能为空")
+    @NotEmpty(message = "调出仓库编号不能为空")
     private String callOutLogisticsCenterCode;
 
     @ApiModelProperty("调出仓库(物流中心)名称")
-    @NotEmpty(message = "调出仓库(物流中心)名称不能为空")
+    @NotEmpty(message = "调出仓库名称不能为空")
     private String callOutLogisticsCenterName;
 
     @ApiModelProperty("调出库房编码")
@@ -46,11 +46,11 @@ public class AllocationReqVo {
     private String purchaseGroupName;
 
     @ApiModelProperty("调入仓库(物流中心)编码")
-    @NotEmpty(message = "调入仓库(物流中心)编号不能为空")
+    @NotEmpty(message = "调入仓库编号不能为空")
     private String callInLogisticsCenterCode;
 
     @ApiModelProperty("调入仓库(物流中心)名称")
-    @NotEmpty(message = "调入仓库(物流中心)名称不能为空")
+    @NotEmpty(message = "调入仓库名称不能为空")
     private String callInLogisticsCenterName;
 
     @ApiModelProperty("调入库房编码")
@@ -70,7 +70,7 @@ public class AllocationReqVo {
     private Long quantity;
 
     @ApiModelProperty("含税总成本单位分(传入时需要乘以100)")
-    @NotNull(message = "含税总成本")
+    @NotNull(message = "含税总成本不能为空")
     private Long totalCostRate;
 
     @ApiModelProperty("直属上级编码")
@@ -82,11 +82,9 @@ public class AllocationReqVo {
     private String directSupervisorName;
 
     @ApiModelProperty("承担单位编码")
-    @NotEmpty(message = "承担单位编码不能为空！")
     private String undertakingUnitCode;
 
     @ApiModelProperty("承担单位名称")
-    @NotEmpty(message = "承担单位名称不能为空！")
     private String undertakingUnitName;
 
     @ApiModelProperty("备注")

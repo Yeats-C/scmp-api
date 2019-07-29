@@ -11,6 +11,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -49,7 +50,7 @@ public class MovementController {
      */
     @ApiOperation("移库添加")
     @PostMapping("/save")
-    public HttpResponse<Long> save(@RequestBody MovementReqVo vo) {
+    public HttpResponse<Long> save(@RequestBody @Validated MovementReqVo vo) {
         try {
             return HttpResponse.success(movementService.save(vo));
         } catch (Exception e) {

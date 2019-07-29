@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,7 +64,7 @@ public class AllocationController {
      */
     @ApiOperation("新增调拨单")
     @PostMapping("/save")
-    public HttpResponse<Long> save(@RequestBody  AllocationReqVo vo){
+    public HttpResponse<Long> save(@RequestBody @Validated AllocationReqVo vo){
         try {
             vo.setAllocationType(AllocationTypeEnum.ALLOCATION.getType());
             vo.setAllocationTypeName(AllocationTypeEnum.ALLOCATION.getTypeName());
