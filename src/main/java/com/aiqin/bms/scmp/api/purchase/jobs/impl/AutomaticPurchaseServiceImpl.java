@@ -7,8 +7,6 @@ import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.jobs.AutomaticPurchaseService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;

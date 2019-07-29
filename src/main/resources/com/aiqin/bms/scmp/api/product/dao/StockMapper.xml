@@ -1151,7 +1151,7 @@
         stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,
         warehouse_type,sku_code,sku_name,inventory_num,available_num,lock_num,purchase_way_num,allocation_way_num,total_way_num,
         new_delivery,new_delivery_name,new_purchase_price,purchase_group_code,purchase_group_name,stock_unit_code,stock_unit_name,
-        tax_price,tax_rate,create_time,create_by,update_time,update_by
+        tax_price,tax_rate,tax_cost,create_time,create_by,update_time,update_by
         )
         values
         <foreach collection="list" item="item" index="index" separator=",">
@@ -1181,6 +1181,7 @@
             #{item.stockUnitName},
             #{item.taxPrice},
             #{item.taxRate},
+            #{item.taxCost},
             NOW(),
             #{item.createBy},
             NOW(),
