@@ -5,4 +5,6 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 public interface AutomaticPurchaseService {
 
     HttpResponse automaticPurchase();
+
+    HttpResponse executeWarehousing();
 }

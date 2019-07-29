@@ -31,7 +31,7 @@ public interface PurchaseApplyService {
     HttpResponse purchaseApplyStatus(PurchaseApply purchaseApply);
 
     HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, Integer productPurchaseAmount, String skuCode,
-                                                              String supplierCode, String transportCenterCode);
+                                                              String supplierCode, String transportCenterCode, Integer productCount);
 
     HttpResponse contrast(List<PurchaseApplyProduct> list);
 }
