@@ -1,8 +1,5 @@
 package com.aiqin.bms.scmp.api.constant;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
 /**
  * <p>
  * ━━━━━━神兽出没━━━━━━

@@ -330,7 +330,7 @@ public class InboundServiceImpl implements InboundService {
                      inboundProductCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
                      //TODO 入库数联改为预计数量的一半
                      Long num = 10l;
-                     inboundProductCallBackReqVo.setPraInboundMainNum(num);
+                     inboundProductCallBackReqVo.setPraInboundNum(num);
                      list.add(inboundProductCallBackReqVo);
                  }
                  inboundCallBackReqVo.setList(list);
@@ -403,7 +403,6 @@ public class InboundServiceImpl implements InboundService {
         if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.ALLOCATE.getCode())){
              stockChangeRequest.setOperationType(8);
         }else if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.ORDER.getCode())){
-
            stockChangeRequest.setOperationType(10);
         }else if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.MOVEMENT.getCode())){
              // 如果是移库
@@ -421,10 +420,10 @@ public class InboundServiceImpl implements InboundService {
             InboundProduct inboundProduct = new InboundProduct();
             // 复制旧的sku
             BeanCopyUtils.copy(returnInboundProduct,inboundProduct);
-            inboundProduct.setPraInboundMainNum(inboundProductCallBackReqVo.getPraInboundMainNum()/Long.valueOf(inboundProduct.getInboundBaseContent()));
-            inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundMainNum());
+            inboundProduct.setPraInboundMainNum(inboundProductCallBackReqVo.getPraInboundNum()/Long.valueOf(inboundProduct.getInboundBaseContent()));
+            inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundNum());
             inboundProduct.setPraTaxPurchaseAmount(inboundProduct.getPreTaxPurchaseAmount());
-            inboundProduct.setPraTaxAmount(inboundProduct.getPraTaxPurchaseAmount()*inboundProduct.getPraInboundMainNum());
+            inboundProduct.setPraTaxAmount(inboundProduct.getPraTaxPurchaseAmount()*inboundProduct.getPraInboundNum());
             // 实际数量
             inbound.setPraInboundNum(inbound.getPraInboundNum()+inboundProduct.getPraInboundNum());
             inbound.setPraMainUnitNum(inbound.getPraMainUnitNum()+inboundProduct.getPraInboundMainNum());
@@ -457,6 +456,8 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSourceDocumentNum(inbound.getSourceOderCode());
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockVoRequest.setOperator(inbound.getUpdateBy());
+            stockVoRequest.setTaxRate(inbound.getPraTax());
+            stockVoRequest.setNewPurchasePrice(inbound.getPraTaxAmount());
             stockVoRequestList.add(stockVoRequest);
         }
         stockChangeRequest.setStockVoRequests(stockVoRequestList);
