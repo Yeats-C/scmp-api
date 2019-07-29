@@ -39,6 +39,9 @@ public interface StockDao {
 
     Integer countStorehouseStockInfoByPage(StockRequest stockRequest);
 
+    // 通过库房code查询库存类型name
+    StockVoRequest selectWarehouseTypeBycode(@Param("warehouseCode") String warehouseCode);
+
     /**
      * 查询商品总库存
      * @author gary.diao

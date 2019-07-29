@@ -95,4 +95,11 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
         }
         return HttpResponse.success();
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse executeWarehousing(){
+        // 查询备货确认有前一天（有效期到期，没有入库完成）的数据
+        return HttpResponse.success();
+    }
 }

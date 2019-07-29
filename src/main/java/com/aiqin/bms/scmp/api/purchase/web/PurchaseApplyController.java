@@ -156,8 +156,9 @@ public class PurchaseApplyController {
                                                            @RequestParam("product_purchase_amount") Integer productPurchaseAmount,
                                                            @RequestParam("sku_code") String skuCode,
                                                            @RequestParam("supplier_code") String supplierCode,
-                                                           @RequestParam("transport_center_code") String transportCenterCode) {
-        return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode);
+                                                           @RequestParam("transport_center_code") String transportCenterCode,
+                                                           @RequestParam("product_count") Integer productCount) {
+        return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode, productCount);
     }
 
     @GetMapping("/product/contrast")
@@ -170,5 +171,11 @@ public class PurchaseApplyController {
     @ApiOperation("生成自动采购单")
     public HttpResponse automatic() {
         return automaticPurchaseService.automaticPurchase();
+    }
+
+    @GetMapping("/execute/warehousing")
+    @ApiOperation("定时执行有效期到期入库完成（备货确认开始）")
+    public HttpResponse executeWarehousing() {
+        return automaticPurchaseService.executeWarehousing();
     }
 }

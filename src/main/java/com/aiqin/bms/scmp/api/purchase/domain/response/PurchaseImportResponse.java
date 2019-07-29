@@ -10,7 +10,7 @@ import lombok.Data;
  * @create: 2019-07-06
  **/
 @Data
-public class PurchaseImportResponse extends PurchaseApplyProduct {
+public class PurchaseImportResponse extends PurchaseApplyDetailResponse{
 
     @ApiModelProperty("采购数量")
     @JsonProperty("purchase_count")
@@ -36,7 +36,4 @@ public class PurchaseImportResponse extends PurchaseApplyProduct {
     @JsonProperty("product_total_amount")
     private Integer productTotalAmount;
 
-    @ApiModelProperty(value="税率")
-    @JsonProperty("tax_rate")
-    private Integer taxRate;
 }

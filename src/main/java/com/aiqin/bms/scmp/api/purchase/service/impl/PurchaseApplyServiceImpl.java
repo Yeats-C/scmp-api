@@ -466,7 +466,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 SupplyCompany supplier;
                 LogisticsCenter logisticsCenter;
                 PurchaseImportResponse response ;
-                PurchaseApplyProduct applyProduct;
+                PurchaseApplyDetailResponse applyProduct;
                 PurchaseApplyReqVo applyReqVo;
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                 for (int i = 1; i <= result.length - 1; i++) {
@@ -490,12 +490,12 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         errorCount++;
                         continue;
                     }
-                    applyProduct = stockDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplierCode(), "1028");
-                    if(StringUtils.isNotBlank(applyProduct.getCategoryId())){
-                        String categoryName = goodsRejectService.selectCategoryName(applyProduct.getCategoryId());
-                        applyProduct.setCategoryName(categoryName);
-                    }
+                    applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
                     if(applyProduct != null){
+                        if(StringUtils.isNotBlank(applyProduct.getCategoryId())){
+                            String categoryName = goodsRejectService.selectCategoryName(applyProduct.getCategoryId());
+                            applyProduct.setCategoryName(categoryName);
+                        }
                          // 报表取缺货影响的销售额， 缺货天数， 预测订货件数, 库存周转期
                         applyReqVo = new PurchaseApplyReqVo();
                         applyReqVo.setSkuCode(record[0]);
@@ -512,11 +512,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             applyProduct.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0 : vo.getOutStockAffectMoney().intValue());
                             applyProduct.setShortageDay(vo.getOutStockContinuousDays() == null ? 0 : vo.getOutStockContinuousDays().intValue());
                             applyProduct.setStockTurnover(vo.getArrivalCycle() == null ? 0 : vo.getArrivalCycle().intValue());
-                        }
-                        // 获取到货后周转期
-                        ProductSkuConfig cycleInfo = productSkuConfigDao.getCycleInfo(applyProduct.getSkuCode(), applyProduct.getTransportCenterCode());
-                        if(cycleInfo != null){
-                            applyProduct.setReceiptTurnover(cycleInfo.getTurnoverPeriodAfterArrival());
                         }
                         // 获取最高采购价(价格管理中供应商的含税价格)
                         if (StringUtils.isNotBlank(applyProduct.getSkuCode()) && StringUtils.isNotBlank(applyProduct.getSupplierCode())) {
@@ -538,10 +533,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                              int length = index.length();
                              Integer whole = Integer.valueOf(index.substring(0, index1));
                              Integer single = Integer.valueOf(index.substring(index1 + 1, length));
-                             response.setReturnWhole(whole);
-                             response.setReturnSingle(single);
+                             applyProduct.setReturnWhole(whole);
+                             applyProduct.setReturnSingle(single);
                          }
                         BeanUtils.copyProperties(applyProduct, response);
+                         response.setProductAmount(Integer.valueOf(record[6]));
                     }else{
                         HandleResponse(response, record,"未查询到对应的商品");
                         errorCount++;
@@ -583,9 +579,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     @Override
     public HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, Integer productPurchaseAmount, String skuCode,
-                                                                     String supplierCode, String transportCenterCode){
+                                                                     String supplierCode, String transportCenterCode, Integer productCount){
         if(StringUtils.isBlank(skuCode) || StringUtils.isBlank(supplierCode) || StringUtils.isBlank(transportCenterCode) ||
-            productPurchaseAmount == null || singleCount == null){
+            productPurchaseAmount == null || singleCount == null || productCount == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         PurchaseFlowPathResponse flow = new PurchaseFlowPathResponse();
@@ -596,7 +592,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         PurchaseApplyRespVo vo = replenishmentService.selectPurchaseApplySkuList(applyReqVo);
         flow.setPurchaseCount(singleCount);
         flow.setPurchaseAmount(productPurchaseAmount);
-        flow.setPurchaseAmountSum(singleCount * productPurchaseAmount);
+        flow.setPurchaseAmountSum(productCount * productPurchaseAmount);
         // 查询sku配置信息
         ProductSkuConfig cycleInfo = productSkuConfigDao.getCycleInfo(skuCode, transportCenterCode);
         if(cycleInfo != null){

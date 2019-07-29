@@ -31,6 +31,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.*;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
@@ -285,4 +286,7 @@ public interface ProductSkuDao {
     Integer purchaseProductCount(PurchaseApplyRequest purchases);
 
     List<String> contrastPropertySku(String productCategoryCode);
+
+    PurchaseApplyDetailResponse purchaseBySkuStock(@Param("purchaseGroupCode")String purchaseGroupCode, @Param("skuCode")String skuCode,
+                                            @Param("supplierCode")String supplierCode, @Param("transportCenterCode")String transportCenterCode);
 }

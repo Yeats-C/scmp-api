@@ -173,16 +173,16 @@ public class SupplyTest  extends SpringBootTestContext  {
 10000000278     方广铁盒核桃味磨牙棒90g
 10000000279     方广宝宝营养配方野生鳕鱼肉酥100g
 10000000280     方广宝宝配方营养深海金枪鱼肉酥100g
-	and st.transport_center_code = '1081'
-			and st.warehouse_code = '1071';
-
-			and st.transport_center_code = '1026'
-			and st.warehouse_code = '1029';
-
 10000000281     小白熊高级吸奶器HL0611
 10000000282     雀巢妈妈奶粉900g/听
 10000000283     亨氏乐维滋果汁泥苹果香橙120g
 10000000284     亨氏乐维滋果汁泥苹果黑加仑120g
 10000000285     贝亲200ml婴儿润肤油IA106
+
+and st.transport_center_code = '1081'
+			and st.warehouse_code = '1071';
+
+			and st.transport_center_code = '1026'
+			and st.warehouse_code = '1029';
 
  */
