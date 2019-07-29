@@ -7,10 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChang
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceImportRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -152,6 +149,19 @@ public class ProductSkuChangePriceController {
     public HttpResponse<List<ProductSkuChangePriceImportRespVO>> importProductSkuChangePrice(MultipartFile file, String purchaseGroupCode, String companyCode, String supplyCode){
         ProductSkuChangePriceImportReqVo productSkuChangePriceImportReqVo = new ProductSkuChangePriceImportReqVo(file,purchaseGroupCode,companyCode,supplyCode);
         return HttpResponse.success(productSkuChangePriceService.importProductSkuChangePrice(productSkuChangePriceImportReqVo));
+    }
+
+    @ApiOperation("2年内价格波动数据")
+    @GetMapping("/getPriceJog")
+    public HttpResponse<List<PriceJog>> importProductSkuChangePrice(@RequestParam String skuCode){
+        try {
+            return HttpResponse.success(productSkuChangePriceService.getPriceJog(skuCode));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
     @ApiOperation("测试生成id")
     @PostMapping("/getid")

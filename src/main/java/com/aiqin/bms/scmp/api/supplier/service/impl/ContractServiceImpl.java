@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractPurchaseVolumeDao;
+import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
@@ -39,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @description:合同Service
@@ -74,6 +76,9 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
 
     @Autowired
     private ContractCategoryMapper contractCategoryMapper;
+
+    @Autowired
+    private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
 
     /**
      * 分页获取合同列表
@@ -161,6 +166,14 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
         if (id != null) {
             ContractDTO entity = contractDao.selectByPrimaryKey(id);
             BeanCopyUtils.copy(entity, contractResVo);
+            List<String> dicNameList = Lists.newArrayList();
+            dicNameList.add("结算方式");
+            Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
+            dicMap.forEach((k,v)->{
+                if (Objects.equals(contractResVo.getSettlementMethod().toString(), v.getSupplierDictionaryValue())) {
+                    contractResVo.setSettlementMethodName(v.getSupplierContent());
+                }
+            });
             List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(contractResVo.getContractCode());
             List<ContractFile> contractFiles = contractFileMapper.selectByContractCode(contractResVo.getContractCode());
             List<ContractPurchaseGroup> contractPurchaseGroups = contractPurchaseGroupMapper.selectByContractCode(contractResVo.getContractCode());

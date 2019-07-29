@@ -1954,18 +1954,18 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 }
             }
             //保质期单位
-            if (Objects.isNull(importVo.getQualityDate())) {
+            if (Objects.isNull(importVo.getQualityNumber())) {
                 error.add("保质期单位不能为空");
             } else {
-                QualityTypes type = QualityTypes.getAll().get(importVo.getQualityDate());
+                QualityTypes type = QualityTypes.getAll().get(importVo.getQualityNumber());
                 if (Objects.isNull(type)) {
                     error.add("保质期单位只能是年月天");
                 } else {
-                    productSkuDraft.setQualityDate(type.getType().toString());
+                    productSkuDraft.setQualityNumber(type.getType().toString());
                 }
             }
             //保质天数
-            if (Objects.isNull(importVo.getQualityNumber())) {
+            if (Objects.isNull(importVo.getQualityDate())) {
                 error.add("保质天数不能为空");
             }
             //供货渠道类别
@@ -1987,7 +1987,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("厂家指导价不能为空");
             } else {
                 try {
-                    productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseLong(importVo.getManufacturerGuidePrice()));
+                    productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseLong(importVo.getManufacturerGuidePrice())*100);
                 } catch (NumberFormatException e) {
                     error.add("厂家指导价格式不正确");
                 }
@@ -2194,13 +2194,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     flag = false;
                 }
                 try {
-                    stockBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getStockBoxLength().trim()));
+                    stockBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getStockBoxWidth().trim()));
                 } catch (Exception e) {
                     error.add("库存宽格式不正确");
                     flag = false;
                 }
                 try {
-                    stockBox.setBoxHeight(NumberConvertUtils.stringParseLong(importVo.getStockBoxLength().trim()));
+                    stockBox.setBoxHeight(NumberConvertUtils.stringParseLong(importVo.getStockBoxHeight().trim()));
                 } catch (Exception e) {
                     error.add("库存高格式不正确");
                     flag = false;
@@ -2214,7 +2214,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     error.add("库存毛重格式不正确");
                 }
                 try {
-                    stockBox.setNetWeight(NumberConvertUtils.stringParseLong(importVo.getStockBoxLength()));
+                    stockBox.setNetWeight(NumberConvertUtils.stringParseLong(importVo.getStockNetWeight()));
                 } catch (Exception e) {
                     error.add("库存净重格式不正确");
                 }
@@ -2267,7 +2267,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     flag = false;
                 }
                 try {
-                    purchaseBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxLength().trim()));
+                    purchaseBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxWidth().trim()));
                 } catch (Exception e) {
                     error.add("采购宽格式不正确");
                     flag = false;
@@ -2412,25 +2412,25 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 }
             }
             //销售基商品含量
-            if (Objects.isNull(importVo.getSaleBaseProductContent())) {
-                error.add("销售基商品含量不能为空");
-            } else {
-                try {
-                    sale.setBaseProductContent(Integer.parseInt(importVo.getSaleBaseProductContent()));
-                } catch (Exception e) {
-                    error.add("销售基商品含量不正确");
-                }
-            }
+//            if (Objects.isNull(importVo.getSaleBaseProductContent())) {
+//                error.add("销售基商品含量不能为空");
+//            } else {
+//                try {
+//                    sale.setBaseProductContent(Integer.parseInt(importVo.getSaleBaseProductContent()));
+//                } catch (Exception e) {
+//                    error.add("销售基商品含量不正确");
+//                }
+//            }
             //销售拆零系数
-            if (Objects.isNull(importVo.getSaleZeroRemovalCoefficient())) {
-                error.add("销售拆零系数不能为空");
-            } else {
-                try {
-                    sale.setZeroRemovalCoefficient(Long.parseLong(importVo.getSaleZeroRemovalCoefficient()));
-                } catch (Exception e) {
-                    error.add("销售拆零系数不正确");
-                }
-            }
+//            if (Objects.isNull(importVo.getSaleZeroRemovalCoefficient())) {
+//                error.add("销售拆零系数不能为空");
+//            } else {
+//                try {
+//                    sale.setZeroRemovalCoefficient(Long.parseLong(importVo.getSaleZeroRemovalCoefficient()));
+//                } catch (Exception e) {
+//                    error.add("销售拆零系数不正确");
+//                }
+//            }
             //销售条形码
             if (Objects.isNull(importVo.getSaleBarCode())) {
                 error.add("销售条形码不能为空");

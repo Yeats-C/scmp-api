@@ -203,4 +203,7 @@ public class ProductSkuDraft extends CommonBean {
     @ApiModelProperty(value = "改变内容",hidden = true)
     private String changeContent;
 
+    @ApiModelProperty(value = "来源 0供应链1供应商平台",hidden = true)
+    private Integer originalCode = 0;
+
 }
