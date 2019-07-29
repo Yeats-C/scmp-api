@@ -103,9 +103,9 @@
     <if test="endTimeEnd != null and endTimeEnd != '' ">
       and <![CDATA[ end_time <= #{endTimeEnd} ]]>
     </if>
-    <if test="dueTime != null">
-      and  <![CDATA[ DATEDIFF(now(),end_time) <= #{dueTime}]]>
-      and  <![CDATA[ DATEDIFF(now(),end_time) >= 0]]>
+    <if test="dueStartTime != null and dueEndTime != null">
+      and  <![CDATA[ DATEDIFF(now(),end_time) <= #{dueEndTime}]]>
+      and  <![CDATA[ DATEDIFF(now(),end_time) >= #{dueStartTime}]]>
     </if>
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}

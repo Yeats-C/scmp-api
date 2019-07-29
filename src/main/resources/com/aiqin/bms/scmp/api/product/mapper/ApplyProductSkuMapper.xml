@@ -230,6 +230,18 @@
     apply_product_sku where product_category_code = #{categoryCode}
     and apply_status in (0,1)
   </select>
+
+  <select id="checkName" resultType="java.lang.Integer">
+    select count(*) from
+    apply_product_sku
+    where 1=1
+    <if test="skuCode != null and skuCode != '' ">
+      and sku_code != #{skuCode}
+    </if>
+    <if test="skuName != null and skuName != '' ">
+      and sku_name = #{skuName}
+    </if>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku
     where id = #{id,jdbcType=BIGINT}

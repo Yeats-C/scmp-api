@@ -275,4 +275,9 @@ public interface ResultCode {
     MessageId DELIVERY_EMPTY = MessageId.create(Project.SCMP_API, 1000, "发货信息不能为空！");
     MessageId RETURN_EMPTY = MessageId.create(Project.SCMP_API, 1000, "退货信息不能为空！");
 
+
+    MessageId SKU_NAME_EXISTS = MessageId.create(Project.SCMP_API, 1000, "SKU名称已经存在！");
+
+
+
 }

@@ -341,5 +341,9 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="行号")
     private Long linenum;
 
+    @ApiModelProperty(value="错误原因")
+    @JsonProperty("error_info")
+    private String errorInfo;
+
 }
 

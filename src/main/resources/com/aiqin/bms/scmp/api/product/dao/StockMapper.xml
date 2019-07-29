@@ -2323,31 +2323,6 @@
             </foreach>
         </if>
     </select>
-    <select id="purchaseBySkuStock" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct">
-    select
-    s.sku_code as skuCode, s.sku_name as skuName, su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName,
-    s.transport_center_code as transportCenterCode, s.transport_center_name as transportCenterName,
-    ps.box_gauge as boxGauge, s.stock_unit_code as stockUnitCode, s.stock_unit_name as stockUnitName,
-    s.inventory_num as stockCount, s.total_way_num as totalWayNum, ps.product_brand_code as brandId,
-    ps.product_brand_name as brandName, ps.product_category_code as categoryId, ps.product_category_name as categoryName,
-    ps.spec as productSpec, ps.color_code as colorCode, ps.color_name as colorName, ps.model_number as modelNumber,
-    ps.product_sort_code as productSortCode, ps.product_sort_name as productSortName,
-    s.purchase_group_code as purchaseGroupCode, s.purchase_group_name as purchaseGroupName,
-    pi.base_product_content as baseProductContent, s.tax_rate as taxRate
-    from stock s
-    inner join product_sku_supply_unit su
-    on s.sku_code = su.product_sku_code
-    inner join product_sku_purchase_info pi
-    on s.sku_code = pi.product_sku_code
-    inner join product_sku ps
-    on s.sku_code = ps.sku_code
-    <where>
-        s.sku_code = #{skuCode, jdbcType=VARCHAR}
-        and s.transport_center_code = #{transportCenterCode, jdbcType=VARCHAR}
-        and su.supply_unit_code = #{supplierCode, jdbcType=VARCHAR}
-        and s.purchase_group_code = #{purchaseGroupCode, jdbcType=VARCHAR}
-    </where>
-    </select>
     <select id="selectWarehouseTypeBycode" resultType="com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest">
         select warehouse_type_name as warehouseType
         FROM warehouse
