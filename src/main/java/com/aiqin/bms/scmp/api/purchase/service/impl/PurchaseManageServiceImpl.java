@@ -129,7 +129,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
                             returnAmount +=  amountSum;
                         }
-                        if(detail.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                        if(detail.getProductType().equals(Global.PRODUCT_TYPE_0)){
                             productTotalAmount += amountSum;
                         }
                     }
@@ -169,7 +169,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     if(apply.getProductType().equals(Global.PRODUCT_TYPE_2)){
                         returnAmount += number * amount;
                     }
-                    if(apply.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                    if(apply.getProductType().equals(Global.PRODUCT_TYPE_0)){
                         productTotalAmount += number * amount;
                     }
                 }
@@ -352,23 +352,29 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             for(PurchaseOrderResponse order:list){
                 // 计算实际单品数量，实际含税采购金额， 实际实物返金额
                 Integer actualSingleCount = 0, actualTotalAmount = 0, actualReturnAmount = 0;
+                Integer productTotalAmount = 0, returnAmount = 0;
                 List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
                 if(CollectionUtils.isNotEmptyCollection(orderProducts)){
                     for(PurchaseOrderProduct product:orderProducts){
-                        Integer singleCount = product.getActualSingleCount() == null ? 0:product.getActualSingleCount();
+                        Integer singleCount = product.getSingleCount() == null ? 0:product.getSingleCount();
+                        Integer actualSingle = product.getActualSingleCount() == null ? 0:product.getActualSingleCount();
                         Integer productAmount = product.getProductAmount() == null ?0:product.getProductAmount();
-                        actualSingleCount += singleCount;
+                        actualSingleCount += actualSingle;
                         if(product.getProductType().equals(Global.PRODUCT_TYPE_0)) {
-                            actualTotalAmount += productAmount * singleCount;
+                            actualTotalAmount += productAmount * actualSingle;
+                            productTotalAmount += productAmount * singleCount;
                         }
                         if(product.getProductType().equals(Global.PRODUCT_TYPE_2)) {
-                            actualReturnAmount += productAmount * singleCount;
+                            actualReturnAmount += productAmount * actualSingle;
+                            returnAmount += productAmount * singleCount;
                         }
                     }
                 }
                 order.setActualSingleCount(actualSingleCount);
                 order.setActualTotalAmount(actualTotalAmount);
                 order.setActualReturnAmount(actualReturnAmount);
+                order.setReturnAmount(returnAmount);
+                order.setProductTotalAmount(productTotalAmount);
             }
         }
         Integer count = purchaseOrderDao.purchaseOrderCount(purchaseApplyRequest);
@@ -511,7 +517,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseSingle = order.getPurchaseSingle() == null ? 0 : order.getPurchaseSingle();
                 // 包装数量
                 Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
-                Integer amount = order.getProductTotalAmount() == null ? 0 : order.getProductTotalAmount();
+                Integer amount = order.getProductAmount() == null ? 0 : order.getProductAmount();
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
                 singleSum += singleCount;
                 priceSum += purchaseWhole;
@@ -663,7 +669,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setSkuCode(product.getSkuCode());
                 reqVo.setSkuName(product.getSkuName());
                 ProductSkuPictures productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(product.getSkuCode());
-                reqVo.setPictureUrl(productSkuPicture.getProductPicturePath());
+                if(productSkuPicture != null && StringUtils.isNotBlank(productSkuPicture.getProductPicturePath())){
+                    reqVo.setPictureUrl(productSkuPicture.getProductPicturePath());
+                }
                 reqVo.setNorms(product.getProductSpec());
                 reqVo.setColorName(product.getColorName());
                 reqVo.setColorCode(null);
@@ -701,6 +709,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setPreTax(preTaxAmount-preNoTaxAmount);
         save.setRemark(null);
         save.setList(list);
+        log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_IN.getCode(),
+                PurchaseOrderLogEnum.WAREHOUSING_IN.getName() , null);
         return save;
     }
 
@@ -749,10 +759,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         // 是否入库完成
         if(purchaseStorage.getPurchaseNum() > num){
-            if(num == 1){
-                log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_IN.getCode(),
-                        PurchaseOrderLogEnum.WAREHOUSING_IN.getName() , null);
-            }
             InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
             String s = inboundService.saveInbound(save);
             if(StringUtils.isBlank(s)){

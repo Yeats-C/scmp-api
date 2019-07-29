@@ -68,11 +68,11 @@
   </select>
   <sql id="QUERY_LIST">
     <where>
-      <if test="supplierName!=null">
-        AND supplier_name = #{supplierName,jdbcType=VARCHAR}
+      <if test="supplierCode!=null">
+        AND supplier_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
       <if test="accountName!=null">
-        AND account_name = #{accountName,jdbcType=VARCHAR}
+        AND account_name like concat(#{accountName,jdbcType=VARCHAR},'%')
       </if>
       <if test="accountStatus!=null">
         AND account_status = #{accountStatus,jdbcType=BIT}

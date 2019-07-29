@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,11 +78,11 @@ public class AccountController {
 
     @PostMapping("/")
     @ApiOperation(value = "新增供应商账号")
-    public HttpResponse addAccount(@RequestBody AccountRequest request,HttpServletRequest httpServletRequest) {
+    public HttpResponse addAccount(@RequestBody AccountRequest request, HttpServletRequest httpServletRequest) {
         LOGGER.info("新增供应商账号参数:{}", request.toString());
         String ticket = httpServletRequest.getParameter("ticket");
         String personId = httpServletRequest.getParameter("ticket_person_id");
-        return accountInfoService.addAccount(request,ticket,personId);
+        return accountInfoService.addAccount(request, ticket, personId);
     }
 
     @GetMapping("/{username}")
@@ -97,12 +96,12 @@ public class AccountController {
     @PutMapping("/{username}")
     @ApiOperation(value = "修改供应商账号")
     @ApiImplicitParam(name = "username", value = "用户名(账号)", type = "String")
-    public HttpResponse updateAccount(@PathVariable String username, @RequestBody AccountRequest request,HttpServletRequest httpServletRequest) {
+    public HttpResponse updateAccount(@PathVariable String username, @RequestBody AccountRequest request, HttpServletRequest httpServletRequest) {
         request.setUsername(username);
         LOGGER.info("修改供应商账号:{}", request.toString());
         String ticket = httpServletRequest.getParameter("ticket");
         String personId = httpServletRequest.getParameter("ticket_person_id");
-        return accountInfoService.updateAccount(request,ticket,personId);
+        return accountInfoService.updateAccount(request, ticket, personId);
     }
 
     @GetMapping("/role")
@@ -111,8 +110,8 @@ public class AccountController {
         String personId = request.getParameter("ticket_person_id");
         String ticket = request.getParameter("ticket");
         LOGGER.info("查询角色,ticket:{},personId:{}", ticket, personId);
-        if(StringUtils.isBlank(ticket)||StringUtils.isBlank(personId)){
-            return HttpResponse.failureGenerics(ResultCode.REQUIRED_PARAMETER,null);
+        if (StringUtils.isBlank(ticket) || StringUtils.isBlank(personId)) {
+            return HttpResponse.failureGenerics(ResultCode.REQUIRED_PARAMETER, null);
         }
         return accountInfoService.selectRole(personId, ticket);
     }
