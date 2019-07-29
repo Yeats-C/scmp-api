@@ -10,10 +10,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChang
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceImportRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
@@ -241,4 +238,11 @@ public interface ProductSkuChangePriceService {
      * 采购变价批量导入
      */
     List<ProductSkuChangePriceImportRespVO> importProductSkuChangePrice(ProductSkuChangePriceImportReqVo reqVo);
+
+    /**
+     * 获得2年内的价格数据
+     * @param skuCode
+     * @return
+     */
+    List<PriceJog> getPriceJog(String skuCode);
 }
