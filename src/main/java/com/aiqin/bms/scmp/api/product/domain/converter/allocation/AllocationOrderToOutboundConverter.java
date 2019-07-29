@@ -38,7 +38,7 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
 
     @Override
     public OutboundReqVo convert(AllocationDTO order) {
-        WarehouseResVo warehouseByCode = warehouseService.getWarehouseByCode(order.getCallInWarehouseCode());
+        WarehouseResVo warehouseByCode = warehouseService.getWarehouseByCode(order.getCallOutWarehouseCode());
         OutboundReqVo outboundReqVo = new OutboundReqVo();
         outboundReqVo.setCompanyCode(order.getCompanyCode());
         outboundReqVo.setCompanyName(order.getCompanyName());

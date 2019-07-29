@@ -71,4 +71,6 @@ public interface ApplyProductSkuMapper {
      * @date 2019/7/19 18:52
      */
     int checkCategory(String categoryCode);
+
+    int checkName(@Param("skuCode") String skuCode,@Param("skuName") String skuName);
 }

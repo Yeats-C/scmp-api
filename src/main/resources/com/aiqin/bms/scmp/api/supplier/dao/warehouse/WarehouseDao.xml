@@ -346,7 +346,7 @@
     select
     <include refid="Base_Column_List" />
     from warehouse
-    where warehouse_code = #{warehouseCode,jdbcType=VARCHAR} and enable=1
+    where warehouse_code = #{warehouseCode,jdbcType=VARCHAR} and enable=0
   </select>
 
   <select id="getWarehouseByLogisticsCenterCode" parameterType="java.lang.String" resultMap="BaseResultMap">

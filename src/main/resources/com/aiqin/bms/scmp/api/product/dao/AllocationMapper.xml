@@ -465,6 +465,8 @@
     <result column="callout_warehouse_name" jdbcType="VARCHAR" property="callOutWarehouseName" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="callin_logistics_center_code" jdbcType="VARCHAR" property="callInLogisticsCenterCode" />
+    <result column="callin_logistics_center_name" jdbcType="VARCHAR" property="callInLogisticsCenterName" />
     <result column="callin_warehouse_code" jdbcType="VARCHAR" property="callInWarehouseCode" />
     <result column="callin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
     <result column="principal" jdbcType="VARCHAR" property="principal" />
