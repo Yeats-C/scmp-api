@@ -548,8 +548,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     returnOutboundProduct.setTax(returnOutboundProduct.getInputTaxRate());
                 }
                 //设置实际数量，实际数量
-                outboundProduct.setPraOutboundNum(outboundProductCallBackReqVo.getPraOutboundMainNum());
-                outboundProduct.setPraOutboundMainNum(outboundProductCallBackReqVo.getPraOutboundMainNum()/Long.valueOf(returnOutboundProduct.getOutboundBaseContent()));
+                outboundProduct.setPraOutboundNum(outboundProductCallBackReqVo.getPraOutboundMainNum()/Long.valueOf(returnOutboundProduct.getOutboundBaseContent()));
+                outboundProduct.setPraOutboundMainNum(outboundProductCallBackReqVo.getPraOutboundMainNum());
                 //设置实际含税单价，实际含税总价
                 outboundProduct.setPraTaxPurchaseAmount(returnOutboundProduct.getPreTaxPurchaseAmount());
                 outboundProduct.setPraTaxAmount(outboundProduct.getPraOutboundMainNum()*outboundProduct.getPraTaxPurchaseAmount());
