@@ -118,6 +118,19 @@ public class ProductSkuChangePriceInfo {
     @ApiModelProperty("扩展字段6")
     private Long extField6;
 
+    @ApiModelProperty("原毛利率")
+    private Long oldGrossProfitMargin;
+
+    @ApiModelProperty("现毛利率")
+    private Long newGrossProfitMargin;
+
+    @ApiModelProperty("进项税率")
+    private Long inTax;
+
+    @ApiModelProperty("销项税率")
+    private Long outTax;
+
+
     public Long getId() {
         return id;
     }
@@ -412,5 +425,37 @@ public class ProductSkuChangePriceInfo {
 
     public void setExtField6(Long extField6) {
         this.extField6 = extField6;
+    }
+
+    public Long getOldGrossProfitMargin() {
+        return oldGrossProfitMargin;
+    }
+
+    public void setOldGrossProfitMargin(Long oldGrossProfitMargin) {
+        this.oldGrossProfitMargin = oldGrossProfitMargin;
+    }
+
+    public Long getNewGrossProfitMargin() {
+        return newGrossProfitMargin;
+    }
+
+    public void setNewGrossProfitMargin(Long newGrossProfitMargin) {
+        this.newGrossProfitMargin = newGrossProfitMargin;
+    }
+
+    public Long getInTax() {
+        return inTax;
+    }
+
+    public void setInTax(Long inTax) {
+        this.inTax = inTax;
+    }
+
+    public Long getOutTax() {
+        return outTax;
+    }
+
+    public void setOutTax(Long outTax) {
+        this.outTax = outTax;
     }
 }
