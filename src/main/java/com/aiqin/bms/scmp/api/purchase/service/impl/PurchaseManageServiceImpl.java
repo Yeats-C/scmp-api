@@ -511,7 +511,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseSingle = order.getPurchaseSingle() == null ? 0 : order.getPurchaseSingle();
                 // 包装数量
                 Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
-                Integer amount = order.getProductTotalAmount() == null ? 0 : order.getProductTotalAmount();
+                Integer amount = order.getProductAmount() == null ? 0 : order.getProductAmount();
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
                 singleSum += singleCount;
                 priceSum += purchaseWhole;
