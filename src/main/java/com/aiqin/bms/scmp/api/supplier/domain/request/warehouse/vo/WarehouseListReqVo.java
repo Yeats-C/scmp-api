@@ -26,7 +26,7 @@ public class WarehouseListReqVo {
     @JsonProperty("city_code")
     private String cityCode;
 
-    @ApiModelProperty("仓库类型编码 0 大效期库 1 销售库  2  退货库  3 销售库 大效期库  null 查询全部")
+    @ApiModelProperty("仓库类型编码 1销售库 2特卖库 3残品库 4监管库  null查询全部")
     @JsonProperty("warehouse_type_code")
     private Byte warehouseTypeCode;
 

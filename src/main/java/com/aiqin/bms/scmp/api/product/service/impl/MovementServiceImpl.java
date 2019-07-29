@@ -7,11 +7,9 @@ import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
-import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
@@ -19,7 +17,9 @@ import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.product.service.MovementService;
-import com.aiqin.bms.scmp.api.product.service.ProductOperationLogService;
+import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
+import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,7 +63,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     private AllocationProductBatchMapper allocationProductBatchMapper;
 
     @Autowired
-    private ProductOperationLogService productOperationLogService;
+    private OperationLogService operationLogService;
     /**
      * 移库列表搜索
      * @param vo 列表搜索实体
@@ -129,8 +130,12 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             operationLogVo.setPageSize(100);
             operationLogVo.setObjectType(ObjectTypeCode.ALLOCATION.getStatus());
             operationLogVo.setObjectId(movementResVo.getMovementCode());
-            List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
-            movementResVo.setLogDataList(pageList);
+            BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo,62);
+            List<LogData> logDataList = new ArrayList<>();
+            if (null != pageList.getDataList() && pageList.getDataList().size() > 0){
+                logDataList = pageList.getDataList();
+            }
+            movementResVo.setLogDataList(logDataList);
         }
         return  movementResVo;
     }

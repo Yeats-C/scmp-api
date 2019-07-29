@@ -355,11 +355,8 @@
     from warehouse
     where logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
     and enable=0
-    <if test="warehouseTypeCode != null and warehouseTypeCode !=3">
+    <if test="warehouseTypeCode != null">
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
-    </if>
-    <if test="warehouseTypeCode == '3'">
-      and warehouse_type_code != '2'
     </if>
   </select>
   <select id="getWarehouseApi" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo" resultMap="BaseResultMap">
@@ -398,6 +395,16 @@
     from warehouse
     where
     warehouse_name = #{warehouseName,jdbcType=VARCHAR}
+  </select>
 
+  <select id="getWarehouseByLogisticsCenterCodeAndNotExistsType" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from warehouse
+    where logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
+    and enable=0
+    <if test="warehouseTypeCode != null ">
+      and warehouse_type_code != #{warehouseTypeCode,jdbcType=TINYINT}
+    </if>
   </select>
 </mapper>
