@@ -330,7 +330,7 @@ public class InboundServiceImpl implements InboundService {
                      inboundProductCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
                      //TODO 入库数联改为预计数量的一半
                      Long num = 10l;
-                     inboundProductCallBackReqVo.setPraInboundMainNum(num);
+                     inboundProductCallBackReqVo.setPraInboundNum(num);
                      list.add(inboundProductCallBackReqVo);
                  }
                  inboundCallBackReqVo.setList(list);
@@ -420,10 +420,10 @@ public class InboundServiceImpl implements InboundService {
             InboundProduct inboundProduct = new InboundProduct();
             // 复制旧的sku
             BeanCopyUtils.copy(returnInboundProduct,inboundProduct);
-            inboundProduct.setPraInboundMainNum(inboundProductCallBackReqVo.getPraInboundMainNum()/Long.valueOf(inboundProduct.getInboundBaseContent()));
-            inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundMainNum());
+            inboundProduct.setPraInboundMainNum(inboundProductCallBackReqVo.getPraInboundNum()/Long.valueOf(inboundProduct.getInboundBaseContent()));
+            inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundNum());
             inboundProduct.setPraTaxPurchaseAmount(inboundProduct.getPreTaxPurchaseAmount());
-            inboundProduct.setPraTaxAmount(inboundProduct.getPraTaxPurchaseAmount()*inboundProduct.getPraInboundMainNum());
+            inboundProduct.setPraTaxAmount(inboundProduct.getPraTaxPurchaseAmount()*inboundProduct.getPraInboundNum());
             // 实际数量
             inbound.setPraInboundNum(inbound.getPraInboundNum()+inboundProduct.getPraInboundNum());
             inbound.setPraMainUnitNum(inbound.getPraMainUnitNum()+inboundProduct.getPraInboundMainNum());
