@@ -108,4 +108,15 @@
     from product_sku_sales_info
     where product_sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
+
+  <select id="productSkuSalesInfoDao" resultType="java.lang.String">
+    select
+    distinct
+    sales_code
+    from apply_product_sku_sales_info
+    where sales_code in
+    <foreach collection="list" item="salesCode" separator="," close=")" open="(">
+      #{salesCode}
+    </foreach>
+  </select>
 </mapper>

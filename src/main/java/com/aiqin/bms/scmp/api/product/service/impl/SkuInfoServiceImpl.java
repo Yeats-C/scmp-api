@@ -90,8 +90,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Autowired
     private ProductSkuDraftMapper productSkuDraftMapper;
     @Autowired
-    private ProductSkuPriceService productSkuPriceService;
-    @Autowired
     private ProductSkuConfigService productSkuConfigService;
     @Autowired
     private ProductSkuFileService productSkuFileService;
@@ -120,37 +118,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Autowired
     private ProductSkuDao productSkuDao;
     @Autowired
-    private ProductSkuCheckoutDao productSkuCheckoutDao;
-    @Autowired
-    private ProductSkuPicturesDao productSkuPicturesDao;
-    @Autowired
-    private ProductSkuPriceDao productSkuPriceDao;
-    @Autowired
-    private ProductSkuPicDescDao productSkuPicDescDao;
-    @Autowired
-    private ProductSkuPurchaseInfoDao productSkuPurchaseInfoDao;
-    @Autowired
-    private ProductSkuDisInfoDao productSkuDisInfoDao;
-    @Autowired
-    private ProductSkuBoxPackingDao productSkuBoxPackingDao;
-    @Autowired
-    private ProductSkuSalesInfoDao productSkuSalesInfoDao;
-    @Autowired
-    private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
-    @Autowired
-    private ProductSkuManufacturerDao productSkuManufacturerDao;
-    @Autowired
-    private ProductSkuFileDao productSkuFileDao;
-    @Autowired
     private ApplyProductSkuMapper applyProductSkuMapper;
     @Autowired
-    private ProductSkuInspReportDao productSkuInspReportDao;
-    @Autowired
     private ProductCommonService productCommonService;
-    @Autowired
-    private ProductDao productDao;
-    @Autowired
-    private ApplyProductService applyProductService;
     @Autowired
     private WorkFlowBaseUrl workFlowBaseUrl;
     @Autowired
@@ -389,6 +359,16 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 List<PurchaseSaleStockReqVo> storeSaleList = purchaseSaleStockReqVos.stream().filter(item-> Objects.equals(StatusTypeCode.STORE_SALE.getStatus(),item.getType())).collect(Collectors.toList());
                 if(CollectionUtils.isEmpty(storeSaleList)){
                     throw new BizException(ResultCode.STORE_SALE_EMPTY);
+                }
+                //验证输入的条形码是否重复
+                List<String> salesCodes = storeSaleList.stream().map(item -> item.getSalesCode()).distinct().collect(Collectors.toList());
+                if (storeSaleList.size() != salesCodes.size()) {
+                    throw new BizException(MessageId.create(Project.SCMP_API, 69, "门店销售的条形码有重复,请重新输入"));
+                }
+                //验证输入的条形码是否在数据库中存在
+                List<String> salesCodeTmps = productSkuSalesInfoService.checkSalesCodes(salesCodes);
+                if(CollectionUtils.isNotEmpty(salesCodeTmps)){
+                    throw new BizException(MessageId.create(Project.SCMP_API, 69,  "条形码["+StringUtils.join(salesCodeTmps, ",")+"],在数据库中存在相同条形码"));
                 }
                 try {
                     List<ProductSkuSalesInfoDraft> productSkuSalesInfoDrafts = BeanCopyUtils.copyList(storeSaleList,ProductSkuSalesInfoDraft.class);
@@ -2224,13 +2204,22 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuDraft.setProductSortCode(dic.getSupplierDictionaryValue());
                 }
             }
+            boolean flag1 = false;
+            boolean flag2 = false;
             //颜色
-            if (Objects.isNull(importVo.getColorName())) {
-                error.add("颜色不能为空");
+            if (Objects.nonNull(importVo.getColorName())) {
+//                error.add("颜色不能为空");
+                flag1 = true;
             }
             //型号
-            if (Objects.isNull(importVo.getModelNumber())) {
-                error.add("型号不能为空");
+            if (Objects.nonNull(importVo.getModelNumber())) {
+//                error.add("型号不能为空");
+                flag2 = true;
+            }
+            if (flag1&&flag2) {
+                error.add("颜色和型号只能填写一个");
+            } else if(!(flag1 || flag2)){
+                error.add("颜色和型号必须填写一个");
             }
             //是否管理保质期
             if (Objects.isNull(importVo.getQualityAssuranceManagementDesc())) {
@@ -2499,12 +2488,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight());
                 }
                 try {
-                    stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseLong(importVo.getStockBoxLength().trim()));
+                    stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim()));
                 } catch (Exception e) {
                     error.add("库存毛重格式不正确");
                 }
                 try {
-                    stockBox.setNetWeight(NumberConvertUtils.stringParseLong(importVo.getStockNetWeight()));
+                    stockBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockNetWeight()));
                 } catch (Exception e) {
                     error.add("库存净重格式不正确");
                 }
@@ -2572,12 +2561,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight());
                 }
                 try {
-                    purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxGrossWeight().trim()));
+                    purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
                 } catch (Exception e) {
                     error.add("采购毛重格式不正确");
                 }
                 try {
-                    purchaseBox.setNetWeight(NumberConvertUtils.stringParseLong(importVo.getPurchaseNetWeight()));
+                    purchaseBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseNetWeight()));
                 } catch (Exception e) {
                     error.add("采购净重格式不正确");
                 }

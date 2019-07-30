@@ -9,8 +9,8 @@
     <result column="box_width" jdbcType="BIGINT" property="boxWidth" />
     <result column="box_height" jdbcType="BIGINT" property="boxHeight" />
     <result column="box_volume" jdbcType="BIGINT" property="boxVolume" />
-    <result column="box_gross_weight" jdbcType="BIGINT" property="boxGrossWeight" />
-    <result column="net_weight" jdbcType="BIGINT" property="netWeight" />
+    <result column="box_gross_weight" jdbcType="DECIMAL" property="boxGrossWeight" />
+    <result column="net_weight" jdbcType="DECIMAL" property="netWeight" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
     <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
@@ -72,10 +72,10 @@
     <foreach collection="applyProductSkuBoxPackings" item="item" index="index" separator=",">
       (#{item.largeUnit,jdbcType=VARCHAR}, #{item.boxLength,jdbcType=BIGINT},
       #{item.boxWidth,jdbcType=BIGINT}, #{item.boxHeight,jdbcType=BIGINT}, #{item.boxVolume,jdbcType=BIGINT},
-      #{item.boxGrossWeight,jdbcType=BIGINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.productSkuCode,jdbcType=VARCHAR},
+      #{item.boxGrossWeight,jdbcType=DECIMAL}, #{item.delFlag,jdbcType=TINYINT}, #{item.productSkuCode,jdbcType=VARCHAR},
       #{item.productSkuName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
-      #{item.netWeight,jdbcType=BIGINT}, #{item.unitCode,jdbcType=VARCHAR}
+      #{item.netWeight,jdbcType=DECIMAL}, #{item.unitCode,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>
@@ -90,10 +90,10 @@
     <foreach collection="productSkuBoxPackings" item="item" index="index" separator=",">
       (#{item.largeUnit,jdbcType=VARCHAR}, #{item.boxLength,jdbcType=BIGINT},
       #{item.boxWidth,jdbcType=BIGINT}, #{item.boxHeight,jdbcType=BIGINT}, #{item.boxVolume,jdbcType=BIGINT},
-      #{item.boxGrossWeight,jdbcType=BIGINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.productSkuCode,jdbcType=VARCHAR},
+      #{item.boxGrossWeight,jdbcType=DECIMAL}, #{item.delFlag,jdbcType=TINYINT}, #{item.productSkuCode,jdbcType=VARCHAR},
       #{item.productSkuName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
-      #{item.netWeight,jdbcType=BIGINT}, #{item.unitCode,jdbcType=VARCHAR}
+      #{item.netWeight,jdbcType=DECIMAL}, #{item.unitCode,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

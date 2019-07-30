@@ -271,4 +271,25 @@
           #{item}
       </foreach>
     </select>
+
+  <select id="checkName" resultType="java.lang.String">
+    select
+    distinct
+    category_name
+    from product_category
+    where company_code = #{companyCode}
+    and category_name  in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="checkNameByNameAndCode" resultType="java.lang.Integer">
+    select
+    count(*)
+    from product_category
+    where company_code = #{companyCode}
+    and category_name  = #{categoryName}
+    and category_id != #{categoryId}
+  </select>
 </mapper>

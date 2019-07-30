@@ -60,4 +60,15 @@ public interface ProductSkuSalesInfoService {
      * @date 2019/7/8 17:26
      */
     List<PurchaseSaleStockRespVo> getList(String skuCode);
+
+    /**
+     *
+     * 功能描述: 检查销售条形码是否存在
+     *
+     * @param salesCodes
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/30 18:33
+     */
+    List<String> checkSalesCodes(List<String> salesCodes);
 }

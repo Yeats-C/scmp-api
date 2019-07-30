@@ -86,4 +86,8 @@ public interface ProductCategoryDao {
      */
     int selectSubCategoryEnableCount(String categoryId);
     List<ProductCategory> selectByCategoryNames(@Param("list") Set<String> brandNameList, @Param("companyCode") String companyCode);
+
+    List<String> checkName(@Param("list") List<String> sameLevelNameList, @Param("companyCode") String companyCode);
+
+    int checkNameByNameAndCode(@Param("categoryName") String categoryName, @Param("categoryId") String categoryId, @Param("companyCode") String companyCode);
 }
