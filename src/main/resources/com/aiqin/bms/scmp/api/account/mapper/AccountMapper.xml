@@ -57,7 +57,7 @@
       <include refid="Base_Column_List" />
     from account
     <include refid="QUERY_LIST"></include>
-    order by create_time desc
+    order by update_time desc
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
   <select id="listCount"  resultType="java.lang.Integer">
