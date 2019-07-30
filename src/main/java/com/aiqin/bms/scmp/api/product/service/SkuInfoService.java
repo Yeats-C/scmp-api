@@ -23,6 +23,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -250,4 +251,6 @@ public interface SkuInfoService{
     Boolean importSkuNewSave(SkuImportReq reqVO);
 
     Boolean importSkuNewUpdate(SkuImportReq reqVO);
+
+    Boolean exportSku(List<String> skuCodes, HttpServletResponse resp);
 }

@@ -45,6 +45,7 @@ import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
 import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
+import com.aiqin.bms.scmp.api.util.excel.utils.StyleExcelHandler;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
@@ -52,12 +53,16 @@ import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
@@ -66,6 +71,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
@@ -79,6 +87,7 @@ import static com.aiqin.bms.scmp.api.util.GetChangeValueUtil.skuHeadMap;
  * @date: 2019/1/28 0028 15:44
  */
 @Service
+@Slf4j
 public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoService {
     @Autowired
     private ProductSkuDraftMapper productSkuDraftMapper;
@@ -1702,6 +1711,37 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             updateDraftSkuInfo(reqVO);
         }
         return Boolean.TRUE;
+    }
+
+    @Override
+    public Boolean exportSku( List<String> skuCodes, HttpServletResponse resp) {
+        try {
+            List<ExportSkuInfo> list = productSkuDraftMapper.exportSku(skuCodes);
+            StyleExcelHandler handler = new StyleExcelHandler();
+            ExcelWriter writer = new ExcelWriter(null, getOutputStream("商品申请确认模板",resp,ExcelTypeEnum.XLSX), ExcelTypeEnum.XLSX, true, handler);
+            Sheet sheet1 = new Sheet(1, 1, ExportSkuInfo.class, "商品申请确认模板", null);
+            sheet1.setAutoWidth(true);
+            writer.write(list ,sheet1);
+            writer.finish();
+            return Boolean.TRUE;
+        } catch (ExcelException e) {
+            log.error(e.getMessage(),e);
+            throw new BizException(ResultCode.EXPORT_FAILED);
+        }
+    }
+    /**
+     * 导出文件时为Writer生成OutputStream
+     */
+    private static OutputStream getOutputStream(String fileName, HttpServletResponse response, ExcelTypeEnum excelTypeEnum) throws ExcelException{
+        //创建本地文件
+        String filePath = fileName + excelTypeEnum.getValue();
+        try {
+            fileName = new String(filePath.getBytes(), "ISO-8859-1");
+            response.addHeader("Content-Disposition", "filename=" + fileName);
+            return response.getOutputStream();
+        } catch (IOException e) {
+            throw new ExcelException("创建文件失败！");
+        }
     }
 
     private void dataValidation( List<SkuInfoImportNew> skuInfoImports) {
