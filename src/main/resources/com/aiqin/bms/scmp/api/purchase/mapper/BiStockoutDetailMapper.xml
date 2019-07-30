@@ -12,7 +12,7 @@
   <sql id="Base_Column_List">
     sku_code, sku_name, is_stockout
   </sql>
-  <select id="stockOutDetail" resultMap="java.lang.String">
+  <select id="stockOutDetail" resultType="java.lang.String">
     select sku_code as skuCode
     from bi_stockout_detail where
     is_stockout = 0
