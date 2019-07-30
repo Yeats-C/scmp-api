@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -31,6 +32,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 描述: 采购管理组service实现层
@@ -358,5 +361,10 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
         HttpClient orderOperationClient = HttpClient.get(url).addParameters(pair1,pair2,pair3,pair4,pair5,pair6);
         HttpResponse orderDto = orderOperationClient.action().result(HttpResponse.class);
         return orderDto;
+    }
+
+    @Override
+    public Map<String, PurchaseGroup> selectByNames(Set<String> purchaseGroupList, String companyCode) {
+        return purchaseGroupDao.selectByNames(purchaseGroupList,companyCode);
     }
 }

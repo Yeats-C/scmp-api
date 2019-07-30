@@ -1965,7 +1965,7 @@ select a.sku_code              as skuCode,
   <select id="purchaseProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select s.stock_code as stockCode,sc.transport_center_code as transportCenterCode,sc.transport_center_name as transportCenterName,
     w.warehouse_code as warehouseCode,w.warehouse_name as warehouseName,ps.sku_code as skuCode,ps.sku_name as skuName,
-    ss.unit_code as stockUnitCode,ss.unit_name as stockUnitName,s.inventory_num as stockCount, s.total_way_num as totalWayNum,
+    ss.unit_name as stockUnitName,s.inventory_num as stockCount, s.total_way_num as totalWayNum,
     ps.product_brand_code as brandId,ps.product_brand_name as brandName,
     ps.product_category_code as categoryId,ps.product_category_name as categoryName, ps.product_property_code as productPropertyCode,
     ps.product_property_name as productPropertyName,ps.goods_gifts as productType, ps.product_sort_code as productSortCode,
@@ -2159,5 +2159,15 @@ select a.sku_code              as skuCode,
       and su.supply_unit_code = #{supplierCode, jdbcType=VARCHAR}
       and ps.procurement_section_code = #{purchaseGroupCode, jdbcType=VARCHAR}
     </where>
+  </select>
+
+  <select id="selectInfoByImport" parameterType="com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo"
+          resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.BaseResultMap">
+    SELECT * FROM product_sku where company_code  =  #{companyCode, jdbcType=VARCHAR}
+    and procurement_section_code = #{purchaseGroupCode, jdbcType=VARCHAR}
+    and sku_code in
+    <foreach collection="skuCodeList" item="item" index="index" separator="," close=")" open="(">
+      #{item, jdbcType=VARCHAR}
+    </foreach>
   </select>
 </mapper>

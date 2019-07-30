@@ -51,7 +51,7 @@ import javax.sql.DataSource;
  * @author heroin.nee@gmail.com
  */
 @Configuration
-@ComponentScan(basePackages = {"com.aiqin.bms","com.aiqin.mgs"})
+@ComponentScan(basePackages = {"com.aiqin.bms","com.aiqin.mgs","com.aiqin.platform"})
 @GroundBoot
 @GroundDataSource
 @EnableTransactionManagement

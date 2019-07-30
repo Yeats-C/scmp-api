@@ -187,7 +187,7 @@ public class ExportExcelReportLow {
             }
 
 
-
+/*
             // 全国本周
             if ("1".equals(lowInventoryRespVo.getWarehouseTypeCode())) {
                 if (StringUtils.isNotBlank(lowInventoryRespVo.getTotalSkuNum())) {
@@ -296,7 +296,7 @@ public class ExportExcelReportLow {
                 } else {
                     row03.createCell(20).setCellValue("");
                 }
-            }
+            }*/
             System.err.println(lists.get(0));
             System.err.println(lists.get(1));
         }

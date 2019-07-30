@@ -185,9 +185,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         // 查询库存，商品， 供应商等信息
         List<PurchaseApplyDetailResponse> detail = productSkuDao.purchaseProductList(purchases);
         if (CollectionUtils.isNotEmptyCollection(detail)) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
             PurchaseApplyReqVo applyReqVo;
-
             Map<String, String> categoryNames = new HashMap<>();
             String categoryId;
             for (PurchaseApplyDetailResponse product : detail) {
@@ -235,13 +233,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 PurchaseApplyRespVo vo = purchaseApply.get(key);
                 if(vo != null){
                     product.setPurchaseNumber(vo.getAdviceOrders() == null ? 0: vo.getAdviceOrders().intValue());
-                    try {
-                        if(StringUtils.isNotBlank(vo.getPredictedArrival())){
-                            Date parse = formatter.parse(vo.getPredictedArrival());
-                            product.setReceiptTime(parse);
-                        }
-                    }catch (Exception e){
-                        LOGGER.error("转换时间失败");
+                    if(StringUtils.isNotBlank(vo.getPredictedArrival())){
+                        product.setReceiptTime(DateUtils.getDate(vo.getPredictedArrival()));
                     }
                     product.setSalesVolume(vo.getAverageAmount() == null ? 0: vo.getAverageAmount().intValue() * 90);
                     product.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0: vo.getOutStockAffectMoney().intValue());

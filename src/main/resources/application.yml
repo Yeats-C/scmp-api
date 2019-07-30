@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8023
 spring:
   profiles:
     active: ${profile.name}
@@ -34,6 +34,8 @@ logging:
 image:
   upload:
     path: D:\\images\\
+activiti:
+  host: http://localhost
 marker:
   info:
     url: http://market.api.aiqin.com/
@@ -97,7 +99,7 @@ mgs:
       - code: SCMP001
         name: 基础资料管理
         link: ''
-        icon: icon-scm-ziliao
+        icon: icon-aq-jichuziliao
         resources:
           - code: SCMP001001
             name: 字典管理
@@ -192,7 +194,7 @@ mgs:
       - code: SCMP003
         name: 供应商管理
         link: ''
-        icon: icon-scm-ziliao
+        icon: icon-aq-gongyingshang
         resources:
           - code: SCMP003001
             name: 供应商管理
@@ -256,7 +258,7 @@ mgs:
       - code: SCMP002
         name: 商品管理
         link: ''
-        icon: icon-scm-shangpin
+        icon: icon-aq-shangping
         resources:
           - code: SCMP002001
             name: 品类管理
@@ -344,7 +346,7 @@ mgs:
       - code: SCMP007
         name: 价格管理
         link: ''
-        icon: icon-scm-price1
+        icon: icon-aq-jiage
         resources:
           - code: SCMP007001
             name: 价格查询
@@ -365,7 +367,7 @@ mgs:
       - code: SCMP004
         name: 库存管理
         link: ''
-        icon: icon-scm-kucun
+        icon: icon-aq-kucun
         resources:
           - code: SCMP004001
             name: 中央库存管理
@@ -398,7 +400,7 @@ mgs:
       - code: SCMP005
         name: 采购管理
         link: ''
-        icon: icon-scm-caigou
+        icon: icon-aq-caigou
         resources:
           - code: SCMP005003
             name: 采购申请单管理
@@ -435,7 +437,7 @@ mgs:
       - code: SCMP006
         name: 销售管理
         link: ''
-        icon: icon-scm-xiaoshou
+        icon: icon-aq-xiaoshou
         resources:
           - code: SCMP006001
             name: 订单管理
@@ -496,7 +498,7 @@ mgs:
       - code: SCMP008
         name: 库房管理
         link: ''
-        icon: icon-scm-kufang
+        icon: icon-aq-kufang
         resources:
           - code: SCMP008001
             name: 监管仓开单
@@ -569,7 +571,7 @@ mgs:
       - code: SCMP009
         name: 运输管理
         link: ''
-        icon: icon-scm-kufang
+        icon: icon-aq-yunshu
         resources:
           - code: SCMP009001
             name: 发运管理
@@ -592,7 +594,7 @@ mgs:
       - code: SCMP010
         name: 报表
         link: ''
-        icon: icon-scm-ziliao
+        icon: icon-aq-baobiao
         resources:
           - code: SCMP010001
             name: 供应商到到货率
@@ -723,7 +725,7 @@ mgs:
       - code: SCMP011
         name: 图表
         link: ''
-        icon: icon-scm-ziliao
+        icon: icon-aq-tubiao
         resources:
           - code: SCMP011001
             name: 月销售情况
@@ -760,3 +762,7 @@ mgs:
             methods:
               - code: SCMP011001005001
                 name: 查询
+      - code: SCMP012
+        name: 审批管理
+        link: '/approve/list'
+        icon: icon-aq-shenpi

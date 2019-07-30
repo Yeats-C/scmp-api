@@ -36,9 +36,6 @@
             <if test="dataType!=null and dataType!=''">
                 and bms.data_type like concat('%', #{dataType}, '%')
             </if>
-            <if test="saleTypeCode!=null and saleTypeCode!=''">
-                and bms.sale_type_code like concat('%', #{saleTypeCode}, '%')
-            </if>
         </where>
     </sql>
     <sql id="select_monthly_gross_margin">
@@ -74,9 +71,7 @@
             <if test="dataType!=null and dataType!=''">
                 and bmgm.data_type like concat('%', #{dataType}, '%')
             </if>
-            <if test="saleTypeCode!=null and saleTypeCode!=''">
-                and bmgm.sale_type_code like concat('%', #{saleTypeCode}, '%')
-            </if>
+
         </where>
     </sql>
     <sql id="select_month_sales_achievement">
@@ -112,9 +107,7 @@
             <if test="dataType!=null and dataType!=''">
                 and bmsa.data_type like concat('%', #{dataType}, '%')
             </if>
-            <if test="saleTypeCode!=null and saleTypeCode!=''">
-                and bmsa.sale_type_code like concat('%', #{saleTypeCode}, '%')
-            </if>
+
         </where>
     </sql>
     <sql id="select_month_cumulative_brand_sales">
@@ -150,9 +143,7 @@
             <if test="dataType!=null and dataType!=''">
                 and bmcbs.data_type like concat('%', #{dataType}, '%')
             </if>
-            <if test="saleTypeCode!=null and saleTypeCode!=''">
-                and bmcbs.sale_type_code like concat('%', #{saleTypeCode}, '%')
-            </if>
+
         </where>
     </sql>
     <sql id="select_month_cumulative_gross_profit_margin">
@@ -191,9 +182,7 @@
             <if test="dataType!=null and dataType!=''">
                 and bmcgpm.data_type like concat('%', #{dataType}, '%')
             </if>
-            <if test="saleTypeCode!=null and saleTypeCode!=''">
-                and bmcgpm.sale_type_code like concat('%', #{saleTypeCode}, '%')
-            </if>
+
         </where>
     </sql>
 
@@ -211,8 +200,6 @@
         bms.store_type as storeType,
         bms.data_type_code as dataTypeCode,
         bms.data_type as dataType,
-        bms.sale_type_code as saleTypeCode,
-        bms.sale_type_name as saleTypeName,
         bms.channel_order_amount as channelOrderAmount,
         bms.channel_last_year_sales as channelLastYearSales,
         bms.channel_last_month_sales as channelLastMonthSales,
@@ -241,8 +228,6 @@
         bmgm.store_type as storeType,
         bmgm.data_type_code as dataTypeCode,
         bmgm.data_type as dataType,
-        bmgm.sale_type_code as saleTypeCode,
-        bmgm.sale_type_name as saleTypeName,
         bmgm.sales_cost as salesCost,
         bmgm.channel_amount as channelAmount,
         bmgm.channel_maori as channelMaori,
@@ -274,8 +259,6 @@
         bmsa.store_type as storeType,
         bmsa.data_type_code as dataTypeCode,
         bmsa.data_type as dataType,
-        bmsa.sale_type_code as saleTypeCode,
-        bmsa.sale_type_name as saleTypeName,
         bmsa.category_code as categoryCode,
         bmsa.category_name as categoryName,
         bmsa.channel_amount as channelAmount,
@@ -303,8 +286,6 @@
         bmcbs.store_type as storeType,
         bmcbs.data_type_code as dataTypeCode,
         bmcbs.data_type as dataType,
-        bmcbs.sale_type_code as saleTypeCode,
-        bmcbs.sale_type_name as saleTypeName,
         bmcbs.category_code as categoryCode,
         bmcbs.category_name as categoryName,
         bmcbs.channel_sales as channelSales,
@@ -336,8 +317,6 @@
         bmcgpm.store_type as storeType,
         bmcgpm.data_type_code as dataTypeCode,
         bmcgpm.data_type as dataType,
-        bmcgpm.sale_type_code as saleTypeCode,
-        bmcgpm.sale_type_name as saleTypeName,
         bmcgpm.category_code as categoryCode,
         bmcgpm.category_name as categoryName,
         bmcgpm.sales_cost as salesCost,

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupBuyerDTO;
@@ -13,6 +14,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGro
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.QueryPurchaseGroupResVo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 描述:  采购组管理service层
@@ -92,4 +95,12 @@ public interface PurchaseGroupService {
      * @return
      */
     HttpResponse getPurchaseGroupBuyerList(UserPositionsRequest userPositionsRequest);
+
+    /**
+     * 通过名称获取采购组集合
+     * @param purchaseGroupList
+     * @param companyCode
+     * @return
+     */
+    Map<String, PurchaseGroup> selectByNames(Set<String> purchaseGroupList, String companyCode);
 }
