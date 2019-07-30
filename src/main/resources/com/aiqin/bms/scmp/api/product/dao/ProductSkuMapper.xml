@@ -2152,4 +2152,14 @@ select a.sku_code              as skuCode,
       and ps.procurement_section_code = #{purchaseGroupCode, jdbcType=VARCHAR}
     </where>
   </select>
+
+  <select id="selectInfoByImport" parameterType="com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo"
+          resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.BaseResultMap">
+    SELECT * FROM product_sku where company_code  =  #{companyCode, jdbcType=VARCHAR}
+    and procurement_section_code = #{purchaseGroupCode, jdbcType=VARCHAR}
+    and sku_code in
+    <foreach collection="skuCodeList" item="item" index="index" separator="," close=")" open="(">
+      #{item, jdbcType=VARCHAR}
+    </foreach>
+  </select>
 </mapper>

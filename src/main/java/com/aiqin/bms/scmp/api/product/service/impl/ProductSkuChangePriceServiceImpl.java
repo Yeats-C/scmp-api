@@ -45,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -657,7 +658,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Transactional(rollbackFor = Exception.class)
     public void savePurchaseChangePrice(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         //处理数据
-        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto,"1");
+        QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto, "1");
         //验重
         List<ProductSkuPriceInfo> list = productSkuPriceInfoMapper.checkRepeat(queryVO);
         Map<String, ProductSkuPriceInfo> infoMap = list.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getSupplierCode(), Function.identity()));
@@ -875,26 +876,21 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             //移除表头数据
             codes.remove(0);
             //调用接口获取sku的详细数据
-            List<ProductSkuInfo> productSkuInfoList = productSkuDao.getSkuInfoByCodeList(codes);
+            ProductSkuChangePriceImportRequest productSkuChangePriceImportRequest = new ProductSkuChangePriceImportRequest();
+            productSkuChangePriceImportRequest.setCompanyCode(reqVo.getCompanyCode());
+            productSkuChangePriceImportRequest.setPurchaseGroupCode(reqVo.getPurchaseGroupCode());
+            productSkuChangePriceImportRequest.setSkuCodeList(codes);
+            List<ProductSkuInfo> productSkuInfoList = productSkuDao.selectInfoByImport(productSkuChangePriceImportRequest);
             List<ProductSkuChangePriceImportRespVO> data =JSON.parseArray(JsonUtil.toJson(productSkuInfoList),ProductSkuChangePriceImportRespVO.class);
             //key为sku编码
             Map<String, ProductSkuChangePriceImportRespVO> map = data.stream().collect(Collectors.toMap(ProductSkuChangePriceImportRespVO::getSkuCode, Function.identity()));
             //错误信息
             for(int i=1;i<excel.size();i++){
                 Object[] objects = excel.get(i);
-                String skuCode =String.valueOf(objects[0]);
+                String skuCode = String.valueOf(objects[0]);
                 String skuName = ExcelUtil.convertNumToString(objects[1]);
-                Long num=0L;
-                try {
-                    String s = ExcelUtil.convertNumToString(objects[2]);
-                    if(StringUtils.isNotBlank(s)){
-                        num = Long.valueOf(s);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    list.add(new ProductSkuChangePriceImportRespVO(skuCode,skuName, "数量数据格式错误"));
-                    continue;
-                }
+                String supplyCode = String.valueOf(objects[2]);
+                String supplyName = ExcelUtil.convertNumToString(objects[3]);
                 //验证是否重复导入
                 if(null!=skuCode){
                     List<String> skus =list.stream().map(ProductSkuChangePriceImportRespVO::getSkuCode).collect(Collectors.toList());
@@ -903,12 +899,39 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                         continue;
                     }
                 }
-                //验证该编码是否存在
+                // 验证该编码是否存在
                 if(Objects.isNull(map.get(skuCode))){
                     list.add(new ProductSkuChangePriceImportRespVO(skuCode, skuName,"sku编码不存在或者已被禁用"));
                     continue;
                 }
                 ProductSkuChangePriceImportRespVO productSkuChangePriceImportRespVO = map.get(skuCode);
+                if(Objects.isNull(objects[5])){
+                    list.add(new ProductSkuChangePriceImportRespVO(skuCode, skuName, "生效日期为空！"));
+                    continue;
+                }else{
+                    if(StringUtils.isBlank(objects[5].toString())){
+                        list.add(new ProductSkuChangePriceImportRespVO(skuCode, skuName, "生效日期为空！"));
+                        continue;
+                    }else {
+                        Date time = new SimpleDateFormat("yyyy-MM-dd").parse(objects[5].toString());
+                        productSkuChangePriceImportRespVO.setEffectiveTimeStart(time);
+                        productSkuChangePriceImportRespVO.setEffectiveTimeEnd(time);
+                    }
+                }
+                if(Objects.isNull(objects[4])){
+                    list.add(new ProductSkuChangePriceImportRespVO(skuCode, skuName, "价格为空！"));
+                    continue;
+                }else{
+                    if(StringUtils.isBlank(objects[4].toString())){
+                        list.add(new ProductSkuChangePriceImportRespVO(skuCode, skuName, "价格为空！"));
+                        continue;
+                    }else {
+                        Long price = Long.parseLong(String.valueOf(objects[4]));
+                        productSkuChangePriceImportRespVO.setPurchasePriceNew(price);
+                    }
+                }
+                productSkuChangePriceImportRespVO.setSupplierCode(supplyCode);
+                productSkuChangePriceImportRespVO.setSupplierName(supplyName);
                 list.add(productSkuChangePriceImportRespVO);
             }
 
