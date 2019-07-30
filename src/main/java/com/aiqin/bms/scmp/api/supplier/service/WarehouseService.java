@@ -95,4 +95,15 @@ public interface WarehouseService {
      */
     WarehouseResVo getWarehouseTypeByLogisticsCenterCode(String logisticsCenterCode, Byte warehouseTypeCode);
 
-    }
+    /**
+     *
+     * 功能描述: 通过物流中心编码以及库房类型查询不在库房类型外所有库房
+     *
+     * @param logisticsCenterCode
+     * @param warehouseTypeCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/29 21:45
+     */
+    List<WarehouseResVo> getWarehouseByLogisticsCenterCodeAndNotExistsType(String logisticsCenterCode, Byte warehouseTypeCode);
+}
