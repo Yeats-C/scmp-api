@@ -2,22 +2,54 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.BiAClassificationDao">
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.BiAClassification">
-    <result column="id" jdbcType="INTEGER" property="id" />
-    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
-    <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
-    <result column="available_num" jdbcType="BIGINT" property="availableNum" />
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="milk_num" jdbcType="BIGINT" property="milkNum" />
+    <result column="side_dish_num" jdbcType="BIGINT" property="sideDishNum" />
+    <result column="health_care_products_num" jdbcType="BIGINT" property="healthCareProductsNum" />
+    <result column="diaper_num" jdbcType="BIGINT" property="diaperNum" />
+    <result column="products_num" jdbcType="BIGINT" property="productsNum" />
+    <result column="occupy_home_num" jdbcType="BIGINT" property="occupyHomeNum" />
+    <result column="feed_products_num" jdbcType="BIGINT" property="feedProductsNum" />
+    <result column="lathe_chair_num" jdbcType="BIGINT" property="latheChairNum" />
+    <result column="toy_num" jdbcType="BIGINT" property="toyNum" />
+    <result column="books_video_souvenirs_num" jdbcType="BIGINT" property="booksVideoSouvenirsNum" />
+    <result column="cotton_goods_num" jdbcType="BIGINT" property="cottonGoodsNum" />
+    <result column="gifts_num" jdbcType="BIGINT" property="giftsNum" />
+    <result column="material_num" jdbcType="BIGINT" property="materialNum" />
+    <result column="de_ming_ju_num" jdbcType="BIGINT" property="deMingJuNum" />
+    <result column="other_num" jdbcType="BIGINT" property="otherNum" />
     <result column="total_available_num" jdbcType="BIGINT" property="totalAvailableNum" />
-    <result column="a_classification" jdbcType="DECIMAL" property="aClassification" />
+    <result column="milk_rate" jdbcType="DECIMAL" property="milkRate" />
+    <result column="side_dish_rate" jdbcType="DECIMAL" property="sideDishRate" />
+    <result column="health_care_products_rate" jdbcType="DECIMAL" property="healthCareProductsRate" />
+    <result column="diaper_rate" jdbcType="DECIMAL" property="diaperRate" />
+    <result column="products_rate" jdbcType="DECIMAL" property="productsRate" />
+    <result column="occupy_home_rate" jdbcType="DECIMAL" property="occupyHomeRate" />
+    <result column="feed_products_rate" jdbcType="DECIMAL" property="feedProductsRate" />
+    <result column="lathe_chair_rate" jdbcType="DECIMAL" property="latheChairRate" />
+    <result column="toy_rate" jdbcType="DECIMAL" property="toyRate" />
+    <result column="books_video_souvenirs_rate" jdbcType="DECIMAL" property="booksVideoSouvenirsRate" />
+    <result column="cotton_goods_rate" jdbcType="DECIMAL" property="cottonGoodsRate" />
+    <result column="gifts_rate" jdbcType="DECIMAL" property="giftsRate" />
+    <result column="material_rate" jdbcType="DECIMAL" property="materialRate" />
+    <result column="de_ming_ju_rate" jdbcType="DECIMAL" property="deMingJuRate" />
+    <result column="other_rate" jdbcType="DECIMAL" property="otherRate" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, product_category_code, product_category_name, available_num, total_available_num, a_classification, create_time,
-    update_time, run_time
+    id, milk_num, side_dish_num, health_care_products_num, diaper_num, products_num, 
+    occupy_home_num, feed_products_num, lathe_chair_num, toy_num, books_video_souvenirs_num, 
+    cotton_goods_num, gifts_num, material_num, de_ming_ju_num, other_num, total_available_num, 
+    milk_rate, side_dish_rate, health_care_products_rate, diaper_rate, products_rate, 
+    occupy_home_rate, feed_products_rate, lathe_chair_rate, toy_rate, books_video_souvenirs_rate, 
+    cotton_goods_rate, gifts_rate, material_rate, de_ming_ju_rate, other_rate, create_time, 
+    update_time
   </sql>
-  <select id="aCategoryList" resultMap="BaseResultMap">
+  <select id="aCategoryInfo" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>
-    from bi_a_classification where
-    to_char(create_time,'yyyy-MM-dd') = #{data}
+    from bi_a_classification
+    where create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+    and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
   </select>
 </mapper>

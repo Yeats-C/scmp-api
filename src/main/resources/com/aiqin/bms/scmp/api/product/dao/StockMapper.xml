@@ -527,35 +527,21 @@
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
 
-    <select id="selectOneStockInfoByStockId" parameterType="java.lang.Long"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
+    <select id="selectOneStockInfoByStockId" parameterType="java.lang.String"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo">
         select
-        st.id,st.stock_code,
-        st.company_code,st.company_name,
-        st.transport_center_code,st.transport_center_name,
-        st.warehouse_code,st.warehouse_name,st.warehouse_type,
-        st.sku_code,st.sku_name,st.inventory_num,st.available_num,
-        st.lock_num,st.purchase_way_num,st.allocation_way_num,
-        st.total_way_num,st.new_delivery,st.new_delivery_name,
-        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,
-        st.stock_unit_code,st.stock_unit_name,st.tax_price,st.tax_rate,
-        st.create_time,st.create_by,
-        psc.config_status,
-        ps.product_brand_name,
-        ps.unit_code,ps.product_category_code,ps.product_category_name,psbp.large_unit,
-        pssi.spec,st.tax_cost,
-        sf.lock_status,sf.document_type,sf.document_num,sf.source_document_type,
-        sf.source_document_num,date_format(sf.update_time, '%Y-%m-%d %H:%i:%s') as update_time,sf.update_by,sf.remark,sf.change_num
-        from stock as st
-
-        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
-        AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
-        left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
-        left join product_sku_stock_info as pssi on st.sku_code=CONVERT(pssi.product_sku_code USING utf8) COLLATE utf8_unicode_ci
-        left join stock_flow as sf on st.sku_code=CONVERT(sf.sku_code USING utf8) COLLATE utf8_unicode_ci
-
-        where st.id = #{stockId, jdbcType=VARCHAR}
+        sf.id as id,
+        sf.lock_status as lockStatus,
+        sf.change_num as changeNum,
+        sf.document_type as documentType,
+        sf.document_num as documentNum,
+        sf.source_document_type as sourceDocumentType,
+        sf.source_document_num as sourceDocumentNum,
+        date_format(sf.update_time, '%Y-%m-%d %H:%i:%s') as updateTime,
+        sf.update_by as updateBy,
+        sf.remark as remark
+        from stock_flow as sf
+        where sf.stock_code = #{stockCode, jdbcType=VARCHAR}
         order by sf.update_time DESC
     </select>
 
