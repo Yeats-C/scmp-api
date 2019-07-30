@@ -132,7 +132,7 @@ public class OrderInfo {
     @ApiModelProperty("支付日期")
     private Date paymentTime;
 
-    @ApiModelProperty("支付日期")
+    @ApiModelProperty("发运时间")
     private Date transportTime;
 
     @ApiModelProperty("发货时间")

@@ -45,6 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -539,7 +540,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             }
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
-        } catch (BeansException e) {
+        }catch (Exception e) {
             LOGGER.error("新增退供单异常:{}", e);
             throw new GroundRuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
         }
@@ -618,7 +619,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         }
     }
 
-    @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse rejectTransport(RejectRecord rejectRecord) {
         RejectRecord record = rejectRecordDao.selectByRejectId(rejectRecord.getRejectRecordId());
         if (record == null) {
@@ -674,7 +675,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     /**
      * 出库完成,更新退供单 出库时间 退供单状态
      */
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void finishStock(RejectStockRequest request) {
         try {
             LOGGER.info("出库完成,更新退供单信息:{}", request.toString());
@@ -734,6 +735,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
 
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse rejectCancel(String rejectRecordId) {
         try {
             RejectRecord record = rejectRecordDao.selectByRejectId(rejectRecordId);
@@ -751,7 +753,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             Boolean stockStatus = stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
             if (!stockStatus) {
                 LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
-                throw new GroundRuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
+                throw new GroundRuntimeException("解锁库存异常");
             }
             WorkFlowVO w = new WorkFlowVO();
             w.setFormNo(record.getRejectRecordCode());
