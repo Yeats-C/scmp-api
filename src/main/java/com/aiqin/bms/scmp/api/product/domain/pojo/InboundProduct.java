@@ -90,4 +90,7 @@ public class InboundProduct {
     @ApiModelProperty("行号")
     private Long linenum;
 
+    @ApiModelProperty("进销税率")
+    private Integer taxRate;
+
 }
