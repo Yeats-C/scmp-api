@@ -687,8 +687,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
                 Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
-                reqVo.setPreInboundMainNum(purchaseWhole.longValue());
-                reqVo.setPreInboundNum(singleCount.longValue() - actualSingleCount.longValue());
+                reqVo.setPreInboundMainNum(singleCount.longValue() - actualSingleCount.longValue());
+                reqVo.setPreInboundNum(purchaseWhole.longValue());
                 reqVo.setPreTaxPurchaseAmount(product.getProductAmount().longValue());
                 Long productTotalAmount = product.getProductTotalAmount() == null ? 0 : product.getProductTotalAmount().longValue();
                 reqVo.setPreTaxAmount(productTotalAmount);
