@@ -160,7 +160,7 @@
         </if>
     </select>
   <select id="getMaxCategoryIdByParentId" parameterType="java.lang.String" resultType="java.lang.String">
-    SELECT MAX(category_id) FROM product_category  WHERE parent_id=#{parentId,jdbcType=VARCHAR}
+    SELECT MAX(category_id) FROM product_category  WHERE parent_id=#{parentId,jdbcType=VARCHAR} and category_id != '99'
   </select>
   <select id="getMaxChildNodeByCategoryId" parameterType="java.lang.String" resultType="java.lang.String">
     SELECT
