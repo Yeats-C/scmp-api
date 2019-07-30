@@ -200,9 +200,11 @@ public class ReportAllServiceImpl implements ReportAllService {
      * @return
      */
     @Override
-    public List<LowInventoryRespVo> selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
+    public PageImportResData<LowInventoryRespVo> selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
-            return reportAllDao.selectLowInventory(highLowInventoryReqVo);
+            List<LowInventoryRespVo> lowInventoryRespVos = reportAllDao.selectLowInventory(highLowInventoryReqVo);
+            LowInventoryRespVo lowInventoryRespVoSum = reportDao.sumLowInventory(highLowInventoryReqVo);
+            return new PageImportResData<>(lowInventoryRespVoSum,lowInventoryRespVos);
         } catch (Exception ex) {
             log.error("查询低库存失败");
             ex.printStackTrace();
@@ -216,9 +218,11 @@ public class ReportAllServiceImpl implements ReportAllService {
      * @return
      */
     @Override
-    public List<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
+    public PageImportResData<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
-            return reportAllDao.selectHighInventory(highLowInventoryReqVo);
+            List<HighInventoryRespVo> highInventoryRespVos = reportAllDao.selectHighInventory(highLowInventoryReqVo);
+            HighInventoryRespVo highInventoryRespVoSum = reportDao.sumHighInventory(highLowInventoryReqVo);
+            return new PageImportResData<>(highInventoryRespVoSum,highInventoryRespVos);
         } catch (Exception ex) {
             log.error("查询高库存失败");
             ex.printStackTrace();

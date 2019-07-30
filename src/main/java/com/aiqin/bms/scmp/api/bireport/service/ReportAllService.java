@@ -70,14 +70,14 @@ public interface ReportAllService {
      * @param highLowInventoryReqVo
      * @return
      */
-    List<LowInventoryRespVo> selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+    PageImportResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
      *  高库存
      * @param highLowInventoryReqVo
      * @return
      */
-    List<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+    PageImportResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
      *  品牌促销

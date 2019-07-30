@@ -40,41 +40,77 @@ public class LowInventoryRespVo {
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
 
-    @ApiModelProperty("商品编码")
-    @JsonProperty("sku_code")
-    private String skuCode;
+    @ApiModelProperty("上周全国合计_总SKU数量")
+    @JsonProperty("szqg_total_sku_num")
+    private Long szqgTotalSkuNum;
 
-    @ApiModelProperty("商品名称")
-    @JsonProperty("sku_name")
-    private String skuName;
+    @ApiModelProperty("上周全国合计_低库存SKU数量")
+    @JsonProperty("szqg_low_sku_num")
+    private Long szqgLowSkuNum;
 
-    @ApiModelProperty("仓位类型名称编码")
-    @JsonProperty("warehouse_type_code")
-    private String warehouseTypeCode;
+    @ApiModelProperty("上周全国合计_低库存占比")
+    @JsonProperty("szqg_low_inventory_ratio")
+    private Double szqgLowInventoryRatio;
 
-    @ApiModelProperty("仓位类型名称(库房)")
-    @JsonProperty("warehouse_type_name")
-    private String warehouseTypeName;
+    @ApiModelProperty("本周全国合计_总SKU数量")
+    @JsonProperty("bzqg_total_sku_num")
+    private Long bzqgTotalSkuNum;
 
-    @ApiModelProperty("上周全国合计")
-    @JsonProperty("lastweek_total_national")
-    private String lastweekTotalNational;
+    @ApiModelProperty("本周全国合计_低库存SKU数量")
+    @JsonProperty("bzqg_low_sku_num")
+    private Long bzqgLowSkuNum;
 
-    @ApiModelProperty("本周全国合计")
-    @JsonProperty("thisweek_total_national")
-    private String thisweekTotalNational;
+    @ApiModelProperty("本周全国合计_低库存占比")
+    @JsonProperty("bzqg_low_inventory_ratio")
+    private Double bzqgLowInventoryRatio;
 
-    @ApiModelProperty("总sku数量")
-    @JsonProperty("total_sku_num")
-    private String totalSkuNum;
+    @ApiModelProperty("华北仓_总SKU数量")
+    @JsonProperty("hb_total_sku_num")
+    private Long hbTotalSkuNum;
 
-    @ApiModelProperty("低库存sku数")
-    @JsonProperty("low_inventory_num")
-    private String lowInventoryNum;
+    @ApiModelProperty("华北仓_低库存SKU数量")
+    @JsonProperty("hb_low_sku_num")
+    private Long hbLowSkuNum;
 
-    @ApiModelProperty("低库存占比")
-    @JsonProperty("low_inventory_ratio")
-    private Double lowInventoryRatio;
+    @ApiModelProperty("华北仓_低库存占比")
+    @JsonProperty("hb_low_inventory_ratio")
+    private Double hbLowInventoryRatio;
+
+    @ApiModelProperty("华南仓_总SKU数量")
+    @JsonProperty("hn_total_sku_num")
+    private Long hnTotalSkuNum;
+
+    @ApiModelProperty("华南仓_低库存SKU数量")
+    @JsonProperty("hn_low_sku_num")
+    private Long hnLowSkuNum;
+
+    @ApiModelProperty("华南仓_低库存占比")
+    @JsonProperty("hn_low_inventory_ratio")
+    private Double hnLowInventoryRatio;
+
+    @ApiModelProperty("西南仓_总SKU数量")
+    @JsonProperty("xn_total_sku_num")
+    private Long xnTotalSkuNum;
+
+    @ApiModelProperty("西南仓_低库存SKU数量")
+    @JsonProperty("xn_low_sku_num")
+    private Long xnLowSkuNum;
+
+    @ApiModelProperty("西南仓_低库存占比")
+    @JsonProperty("xn_low_inventory_ratio")
+    private Double xnLowInventoryRatio;
+
+    @ApiModelProperty("华东仓_总SKU数量")
+    @JsonProperty("hd_total_sku_num")
+    private Long hdTotalSkuNum;
+
+    @ApiModelProperty("华东仓_低库存SKU数量")
+    @JsonProperty("hd_low_sku_num")
+    private Long hdLowSkuNum;
+
+    @ApiModelProperty("华东仓_低库存占比")
+    @JsonProperty("hd_low_inventory_ratio")
+    private Double hdLowInventoryRatio;
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")

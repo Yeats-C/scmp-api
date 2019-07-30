@@ -360,10 +360,10 @@
         <where>
             1=1
             <if test="procurementSectionCode!=null and procurementSectionCode!=''">
-                and bli.procurement_section_code=#{procurementSectionCode}
+                and bli.purchase_group_code=#{procurementSectionCode}
             </if>
             <if test="procurementSectionName!=null and procurementSectionName!=''">
-                and bli.procurement_section_name like concat('%', #{procurementSectionName}, '%')
+                and bli.purchase_group_name like concat('%', #{procurementSectionName}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bli.product_sort_code=#{productSortCode}
@@ -383,10 +383,10 @@
         <where>
             1=1
             <if test="procurementSectionCode!=null and procurementSectionCode!=''">
-                and bhi.procurement_section_code=#{procurementSectionCode}
+                and bhi.purchase_group_code=#{procurementSectionCode}
             </if>
             <if test="procurementSectionName!=null and procurementSectionName!=''">
-                and bhi.procurement_section_name like concat('%', #{procurementSectionName}, '%')
+                and bhi.purchase_group_name like concat('%', #{procurementSectionName}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bhi.product_sort_code=#{productSortCode}
@@ -1232,23 +1232,57 @@
         bli.id as id,
         bli.product_sort_code as productSortCode,
         bli.product_sort_name as productSortName,
-        bli.procurement_section_code as procurementSectionCode,
-        bli.procurement_section_name as procurementSectionName,
+        bli.purchase_group_code as procurementSectionCode,
+        bli.purchase_group_name as procurementSectionName,
         bli.responsible_person_code as responsiblePersonCode,
         bli.responsible_person_name as responsiblePersonName,
-        bli.sku_code as skuCode,
-        bli.sku_name as skuName,
-        bli.warehouse_type_code as warehouseTypeCode,
-        bli.warehouse_type_name as warehouseTypeName,
-        bli.lastweek_total_national as lastweekTotalNational,
-        bli.thisweek_total_national as thisweekTotalNational,
-        bli.total_sku_num as totalSkuNum,
-        bli.low_inventory_num as lowInventoryNum,
-        bli.low_inventory_ratio as low_Inventory_ratio,
+        bli.szqg_total_sku_num as szqgTotalSkuNum,
+        bli.szqg_low_sku_num as szqgLowSkuNum,
+        bli.szqg_low_inventory_ratio as szqgLowInventoryRatio,
+        bli.bzqg_total_sku_num as bzqgTotalSkuNum,
+        bli.bzqg_low_sku_num as bzqgLowSkuNum,
+        bli.bzqg_low_inventory_ratio as bzqgLowInventoryRatio,
+        bli.hb_total_sku_num as hbTotalSkuNum,
+        bli.hb_low_sku_num as hbLowSkuNum,
+        bli.hb_low_inventory_ratio as hbLowInventoryRatio,
+        bli.hn_total_sku_num as hnTotalSkuNum,
+        bli.hn_low_sku_num as hnLowSkuNum,
+        bli.hn_low_inventory_ratio as hnLowInventoryRatio,
+        bli.xn_total_sku_num as xnTotalSkuNum,
+        bli.xn_low_sku_num as xnLowSkuNum,
+        bli.xn_low_inventory_ratio as xnLowInventoryRatio,
+        bli.hd_total_sku_num as hdTotalSkuNum,
+        bli.hd_low_sku_num as hdLowSkuNum,
+        bli.hd_low_inventory_ratio as hdLowInventoryRatio,
         date_format(bli.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_low_inventory bli
         <include refid="select_low_inventory"/>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="sumLowInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.LowInventoryRespVo">
+        select
+        sum(bli.szqg_total_sku_num) as szqgTotalSkuNum,
+        sum(bli.szqg_low_sku_num) as szqgLowSkuNum,
+        sum(bli.szqg_total_sku_num)/sum(bli.szqg_low_sku_num) as szqgLowInventoryRatio,
+        sum(bli.bzqg_total_sku_num) as bzqgTotalSkuNum,
+        sum(bli.bzqg_low_sku_num) as bzqgLowSkuNum,
+        sum(bli.bzqg_total_sku_num)/sum(bli.bzqg_low_sku_num) as bzqgLowInventoryRatio,
+        sum(bli.hb_total_sku_num) as hbTotalSkuNum,
+        sum(bli.hb_low_sku_num) as hbLowSkuNum,
+        sum(bli.hb_total_sku_num)/sum(bli.hb_low_sku_num) as hbLowInventoryRatio,
+        sum(bli.hn_total_sku_num) as hnTotalSkuNum,
+        sum(bli.hn_low_sku_num) as hnLowSkuNum,
+        sum(bli.hn_total_sku_num)/sum(bli.hn_low_sku_num) as hnLowInventoryRatio,
+        sum(bli.xn_total_sku_num) as xnTotalSkuNum,
+        sum(bli.xn_low_sku_num) as xnLowSkuNum,
+        sum(bli.xn_total_sku_num)/sum(bli.xn_low_sku_num) as xnLowInventoryRatio,
+        sum(bli.hd_total_sku_num) as hdTotalSkuNum,
+        sum(bli.hd_low_sku_num) as hdLowSkuNum,
+        sum(bli.hd_total_sku_num)/sum(bli.hd_low_sku_num) as hdLowInventoryRatio
+        from bi_low_inventory bli
+        <include refid="select_low_inventory"/>
+
     </select>
     <select id="countLowInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="java.lang.Integer">
@@ -1266,23 +1300,57 @@
         bhi.id as id,
         bhi.product_sort_code as productSortCode,
         bhi.product_sort_name as productSortName,
-        bhi.procurement_section_code as procurementSectionCode,
-        bhi.procurement_section_name as procurementSectionName,
+        bhi.purchase_group_code as procurementSectionCode,
+        bhi.purchase_group_name as procurementSectionName,
         bhi.responsible_person_code as responsiblePersonCode,
         bhi.responsible_person_name as responsiblePersonName,
-        bhi.sku_code as skuCode,
-        bhi.sku_name as skuName,
-        bhi.warehouse_type_code as warehouseTypeCode,
-        bhi.warehouse_type_name as warehouseTypeName,
-        bhi.lastweek_total_national as lastweekTotalNational,
-        bhi.thisweek_total_national as thisweekTotalNational,
-        bhi.high_inventory_amount as highInventoryAmount,
-        bhi.inventory_total_amount as inventoryTotalAmount,
-        bhi.high_inventory_ratio as highInventoryRatio,
+        bhi.szqg_high_inventory_amount as szqgHighInventoryAmount,
+        bhi.szqg_total_inventory_amount as szqgTotalInventoryAmount,
+        bhi.szqg_rate as szqgRate,
+        bhi.bzqg_high_inventory_amount as bzqgHighInventoryAmount,
+        bhi.bzqg_total_inventory_amount as bzqgTotalInventoryAmount,
+        bhi.bzqg_rate as bzqgRate,
+        bhi.hb_high_inventory_amount as hbHighInventoryAmount,
+        bhi.hb_total_inventory_amount as hbTotalInventoryAmount,
+        bhi.hb_rate as hbRate,
+        bhi.hn_high_inventory_amount as hnHighInventoryAmount,
+        bhi.hn_total_inventory_amount as hnTotalInventoryAmount,
+        bhi.hn_rate as hnRate,
+        bhi.xn_high_inventory_amount as xnHighInventoryAmount,
+        bhi.xn_total_inventory_amount as xnTotalInventoryAmount,
+        bhi.xn_rate as xnRate,
+        bhi.hd_high_inventory_amount as hdHhighInventoryAmount,
+        bhi.hd_total_inventory_amount as hdTotalInventoryAmount,
+        bhi.hd_rate as hdRate,
         date_format(bhi.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_high_inventory bhi
         <include refid="select_high_inventory"/>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="sumHighInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.HighInventoryRespVo">
+        select
+        sum(bhi.szqg_high_inventory_amount) as szqgHighInventoryAmount,
+        sum(bhi.szqg_total_inventory_amount) as szqgTotalInventoryAmount,
+        sum(bhi.szqg_high_inventory_amount)/sum(bhi.szqg_total_inventory_amount) as szqgRate,
+        sum(bhi.bzqg_high_inventory_amount) as bzqgHighInventoryAmount,
+        sum(bhi.bzqg_total_inventory_amount) as bzqgTotalInventoryAmount,
+        sum(bhi.bzqg_high_inventory_amount)/sum(bhi.bzqg_total_inventory_amount) as bzqgRate,
+        sum(bhi.hb_high_inventory_amount) as hbHighInventoryAmount,
+        sum(bhi.hb_total_inventory_amount) as hbTotalInventoryAmount,
+        sum(bhi.hb_high_inventory_amount)/sum(bhi.hb_total_inventory_amount) as hbRate,
+        sum(bhi.hn_high_inventory_amount) as hnHighInventoryAmount,
+        sum(bhi.hn_total_inventory_amount) as hnTotalInventoryAmount,
+        sum(bhi.hn_high_inventory_amount)/sum(bhi.hn_total_inventory_amount) as hnRate,
+        sum(bhi.xn_high_inventory_amount) as xnHighInventoryAmount,
+        sum(bhi.xn_total_inventory_amount) as xnTotalInventoryAmount,
+        sum(bhi.xn_high_inventory_amount)/sum(bhi.xn_total_inventory_amount) as xnRate,
+        sum(bhi.hd_high_inventory_amount) as hdHhighInventoryAmount,
+        sum(bhi.hd_total_inventory_amount) as hdTotalInventoryAmount,
+        sum(bhi.hd_high_inventory_amount)/sum(bhi.hd_total_inventory_amount) as hdRate
+        from bi_high_inventory bhi
+        <include refid="select_high_inventory"/>
+
     </select>
     <select id="countHighInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="java.lang.Integer">

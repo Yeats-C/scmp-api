@@ -314,7 +314,7 @@ public class ReportAllController {
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
     })
-    public HttpResponse<List<LowInventoryRespVo>> selectLowInventory(
+    public HttpResponse<PageImportResData<LowInventoryRespVo>> selectLowInventory(
             @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
             @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
             @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
@@ -336,7 +336,7 @@ public class ReportAllController {
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
             @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
     })
-    public HttpResponse<List<HighInventoryRespVo>> selectHighInventory(
+    public HttpResponse<PageImportResData<HighInventoryRespVo>> selectHighInventory(
             @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
             @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
             @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
