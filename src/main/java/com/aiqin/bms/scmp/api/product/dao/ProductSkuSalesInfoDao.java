@@ -41,4 +41,6 @@ public interface ProductSkuSalesInfoDao {
     List<ApplyProductSkuSalesInfo> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     List<PurchaseSaleStockRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+
+    List<String> productSkuSalesInfoDao(List<String> salesCodes);
 }

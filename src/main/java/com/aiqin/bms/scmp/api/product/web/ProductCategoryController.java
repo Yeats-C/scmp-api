@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryAddReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO;
@@ -32,6 +33,8 @@ public class ProductCategoryController {
         try {
             productCategoryService.saveProductCategory(productCategoryAddReqVO);
             return HttpResponse.success();
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
         } catch (Exception e){
             return HttpResponse.failure(ResultCode.ADD_PRODUCT_CATEGORY_ERROR);
         }
@@ -43,10 +46,11 @@ public class ProductCategoryController {
         try {
             Integer num = productCategoryService.updateProductCategory(productCategoryReqVO);
             return HttpResponse.success(num);
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        } catch (GroundRuntimeException e){
+            return HttpResponse.failure(MessageId.create(Project.PRODUCT_API, -1, e.getMessage()));
         } catch (Exception e){
-            if(e instanceof GroundRuntimeException){
-                return HttpResponse.failure(MessageId.create(Project.PRODUCT_API, -1, e.getMessage()));
-            }
             return HttpResponse.failure(ResultCode.UPDATE_PRODUCT_CATEGORY_ERROR);
         }
     }
