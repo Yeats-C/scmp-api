@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
 import java.text.ParseException;
@@ -59,5 +60,18 @@ public class DateUtils {
     public static int getYear() {
         Calendar sysDate = Calendar.getInstance();
         return sysDate.get(Calendar.YEAR);
+    }
+
+    public static Date getDate(String time) {
+        Date parse = null;
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat(PATTERN_DATE);
+            if(StringUtils.isNotBlank(time)){
+                parse = formatter.parse(time);
+            }
+        }catch (Exception e){
+            throw new BizException(ResultCode.DATE_CONVERSION_FAILED);
+        }
+        return parse;
     }
 }
