@@ -212,18 +212,18 @@ public class SkuInfoController {
         }
     }
 
-    @PostMapping("/exportSku")
-    public void exportSku(HttpServletResponse HttpResponse
-                                           ,List<String> skuCodes){
+    @GetMapping("/exportSku")
+    public HttpResponse<Boolean> exportSku(HttpServletResponse resp
+                                           ,@RequestParam(value = "skuCodes")List<String> skuCodes){
         log.info("SkuInfoController---exportSku---入参：[{}]", JSON.toJSONString(skuCodes));
-//        try {
-//            return ExcelUtil.writeExcel(HttpResponse,skuInfoService.exportSku(skuCodes),"商品申请确认模板",null,ExcelTypeEnum.XLSX, ExportSkuInfo.class);
-//        } catch (BizException e) {
-//            return HttpResponse.failure(e.getMessageId());
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-//        }
+        try {
+            return HttpResponse.success(skuInfoService.exportSku(skuCodes,resp));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
 }
