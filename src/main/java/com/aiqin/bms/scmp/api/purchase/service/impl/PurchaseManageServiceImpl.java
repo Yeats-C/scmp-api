@@ -115,7 +115,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 apply.setApplyIds(applyIds);
                 List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(apply);
                 // 计算sku数量，单品数量，含税采购金额，实物返金额
-                Integer singleCount = 0, productTotalAmount = 0, returnAmount = 0;
+                Integer singleCount = 0, productTotalAmount = 0, returnAmount = 0, wholeCount = 0;
                 if(CollectionUtils.isNotEmptyCollection(details)){
                     for(PurchaseApplyDetailResponse detail:details){
                         Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
@@ -126,6 +126,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         Integer amountSum = number * amount;
                         // 单品数量
                         singleCount += number;
+                        wholeCount += purchaseWhole;
                         if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
                             returnAmount +=  amountSum;
                         }
@@ -138,8 +139,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 form.setReturnAmount(returnAmount);
                 form.setSingleCount(singleCount);
                 // sku数量
-                Integer skuCount = purchaseApplyProductDao.formSkuCount(apply);
-                form.setSkuCount(skuCount);
+                //Integer skuCount = purchaseApplyProductDao.formSkuCount(apply);
+                form.setSkuCount(wholeCount);
             }
         }
         return HttpResponse.success(purchaseForms);
@@ -698,7 +699,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setTaxRate(product.getTaxRate());
                 preInboundNum += reqVo.getPreInboundNum();
                 preInboundMainNum += purchaseWhole;
-                preTaxAmount += productTotalAmount;
+                if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                    preTaxAmount += 0;
+                }else {
+                    preTaxAmount += productTotalAmount;
+                }
                 preNoTaxAmount += Calculate.computeNoTaxPrice(productTotalAmount, product.getTaxRate().longValue());
                 list.add(reqVo);
             }
