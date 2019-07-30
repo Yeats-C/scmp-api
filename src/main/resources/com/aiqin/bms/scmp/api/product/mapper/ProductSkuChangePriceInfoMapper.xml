@@ -90,7 +90,7 @@
     <if test="applyStatus != null and applyStatus !=''">
       and apply_status = #{applyStatus}
     </if>
-    <if test="beContainArea != null and beContainArea !=''">
+    <if test="beContainArea != null">
       and ext_field_5 = #{beContainArea}
     </if>
     order by a.create_time desc

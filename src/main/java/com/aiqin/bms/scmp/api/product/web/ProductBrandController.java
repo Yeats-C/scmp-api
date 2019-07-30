@@ -12,7 +12,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -117,7 +118,9 @@ public class ProductBrandController {
     @ApiOperation(value = "通过编码集合获取品牌列表")
     public HttpResponse<List<ProductBrandType>> selectByBrandCodes(String codes) {
         try {
-            List<ProductBrandType> list = productBrandService.selectByBrandCodes(Lists.newArrayList(Lists.newArrayList(codes.split(","))));
+            Set<String> list = Sets.newHashSet();
+            list.add(codes);
+            productBrandService.selectByBrandNames(list,"04");
             return HttpResponse.success(list);
         }catch (Exception e){
             log.error(e.getMessage());

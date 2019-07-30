@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMain;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMainDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaMainRespVO;
 import org.apache.ibatis.annotations.Param;
@@ -44,4 +45,11 @@ public interface ProductSkuSaleAreaMainDraftMapper {
      * @return int
      */
     int deleteDraftBatchByCodes(@Param("items") List<String> codes);
+
+    /**
+     * 通过名称判重
+     * @param name
+     * @return
+     */
+    List<ProductSkuSaleAreaMain> selectByName(String name);
 }
