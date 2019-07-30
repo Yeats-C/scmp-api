@@ -50,6 +50,9 @@ public class SkuInfoImport{
     @ExcelProperty(index = 7, value = "所属部门")
     private String productSortName;
 
+    @ApiModelProperty("采购组名称")
+    private String procurementSectionName;
+
     @ApiModelProperty("颜色名称")
     @ExcelProperty(index = 8, value = "颜色")
     private String colorName;
@@ -261,6 +264,10 @@ public class SkuInfoImport{
     @ApiModelProperty("物流费奖励比例")
     @ExcelProperty(index = 58, value = "物流费奖励比例")
     private String logisticsFeeAwardRatio;
+
+    @ApiModelProperty("供货单位编码")
+    @ExcelProperty(index = 59, value = "供应商")
+    private String supplyUnitCode;
 
     @ApiModelProperty("供货单位名称")
     @ExcelProperty(index = 59, value = "供应商")

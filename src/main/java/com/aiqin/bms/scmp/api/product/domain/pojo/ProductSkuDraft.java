@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 
 @ApiModel("SKU临时表信息")
@@ -203,7 +205,15 @@ public class ProductSkuDraft extends CommonBean {
     @ApiModelProperty(value = "改变内容",hidden = true)
     private String changeContent;
 
+    @ApiModelProperty(value = "修改人")
+    private String updateBy;
+
+    @ApiModelProperty("供应商信息")
+    private List<ProductSkuSupplyUnitDraft> supplyList;
+
     @ApiModelProperty(value = "来源 0供应链1供应商平台",hidden = true)
     private Integer originalCode = 0;
+
+
 
 }

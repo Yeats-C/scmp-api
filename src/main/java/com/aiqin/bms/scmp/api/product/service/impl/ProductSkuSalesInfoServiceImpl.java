@@ -140,4 +140,19 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
     public List<PurchaseSaleStockRespVo> getList(String skuCode) {
         return productSkuSalesInfoDao.getRespVoBySkuCode(skuCode);
     }
+
+    /**
+     * 功能描述: 检查销售条形码是否存在
+     *
+     * @param salesCodes
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/30 18:33
+     */
+    @Override
+    public List<String> checkSalesCodes(List<String> salesCodes) {
+        return productSkuSalesInfoDao.productSkuSalesInfoDao(salesCodes);
+    }
 }
+
+

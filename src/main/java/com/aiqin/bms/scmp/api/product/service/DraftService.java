@@ -1,8 +1,12 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.DetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.SaveReqVo;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author knight.xie
@@ -40,4 +44,12 @@ public interface DraftService {
      * @return
      */
     HttpResponse<Integer> save(SaveReqVo reqVo);
+
+    /**
+     * 通过编码查询
+     * @param skuNameList
+     * @param companyCode
+     * @return
+     */
+    Map<String, ProductSkuDraft> selectBySkuCode(Set<String> skuNameList, String companyCode);
 }

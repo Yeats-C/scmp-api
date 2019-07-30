@@ -236,4 +236,13 @@
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
   </select>
+    <select id="selectByNames" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from purchase_group
+      where company_code = #{companyCode} and purchase_group_name in
+      <foreach collection="list" open="(" close=")" item="item" separator=",">
+           #{item}
+      </foreach>
+    </select>
 </mapper>

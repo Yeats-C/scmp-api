@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.common.ApprovalTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.DetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.SaveReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.ApplySaleAreaReqVO;
@@ -13,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplySkuConfigRe
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaMainRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -27,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author knight.xie
@@ -50,6 +53,8 @@ public class DraftServiceImpl implements DraftService {
 
     @Autowired
     private ProductSkuConfigService productSkuConfigService;
+    @Autowired
+    private ProductSkuDraftMapper productSkuDraftMapper;
 
 
     /**
@@ -186,5 +191,10 @@ public class DraftServiceImpl implements DraftService {
             productSaleAreaService.addSaleAreaApply(saleAreaReqVO);
         }
         return HttpResponse.success(1);
+    }
+
+    @Override
+    public Map<String, ProductSkuDraft> selectBySkuCode(Set<String> skuNameList, String companyCode) {
+        return productSkuDraftMapper.selectBySkuCode(skuNameList,companyCode);
     }
 }

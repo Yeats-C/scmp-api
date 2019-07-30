@@ -9,8 +9,9 @@ import lombok.Data;
 @Data
 @ApiModel("sku导出模板")
 public class ExportSkuInfo extends BaseRowModel {
+    public static final String HEAD = "";
     @ApiModelProperty("sku编码")
-    @ExcelProperty(index = 0, value = {"基本信息","SKU编码"})
+    @ExcelProperty(index = 0, value = {"基本信息","SKU编号"})
     private String skuCode;
 
     @ApiModelProperty("商品/赠品(0:商品，1:赠品 2:组合商品)")
@@ -58,7 +59,7 @@ public class ExportSkuInfo extends BaseRowModel {
     private String modelNumber;
 
     @ApiModelProperty("保质管理（0:管理 1:不管理）")
-    @ExcelProperty(index = 12, value = {"基本信息","保质管理"})
+    @ExcelProperty(index = 12, value = {"基本信息","是否管理保质期"})
     private String qualityAssuranceManagementDesc;
 
     @ApiModelProperty("保质日期")
@@ -262,19 +263,19 @@ public class ExportSkuInfo extends BaseRowModel {
     private String supplyUnitName;
 
     @ApiModelProperty("含税进价")
-    @ExcelProperty(index = 63, value = {"供应商信息","含税进价"})
+    @ExcelProperty(index = 63, value = {"供应商信息","含税采购价"})
     private String taxIncludedPrice;
 
     @ApiModelProperty("联营扣点")
-    @ExcelProperty(index = 64, value = {"供应商信息","联营扣点"})
+    @ExcelProperty(index = 64, value = {"供应商信息","联营返点(%)"})
     private String jointFranchiseRate;
 
     @ApiModelProperty("返点")
-    @ExcelProperty(index = 65, value = {"供应商信息","返点"})
+    @ExcelProperty(index = 65, value = {"供应商信息","返点(%)"})
     private String point;
 
     @ApiModelProperty("厂商SKU编码")
-    @ExcelProperty(index = 66, value = {"供应商信息","厂商SKU编码"})
+    @ExcelProperty(index = 66, value = {"供应商信息","厂商SKU编号"})
     private String factorySkuCode;
 
     @ApiModelProperty(value ="供应商供货渠道类别")
