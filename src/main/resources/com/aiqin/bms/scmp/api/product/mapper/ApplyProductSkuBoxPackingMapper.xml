@@ -8,7 +8,7 @@
     <result column="box_width" jdbcType="BIGINT" property="boxWidth" />
     <result column="box_height" jdbcType="BIGINT" property="boxHeight" />
     <result column="box_volume" jdbcType="BIGINT" property="boxVolume" />
-    <result column="box_gross_weight" jdbcType="BIGINT" property="boxGrossWeight" />
+    <result column="box_gross_weight" jdbcType="DECIMAL" property="boxGrossWeight" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
     <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
@@ -18,7 +18,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
-    <result column="net_weight" jdbcType="BIGINT" property="netWeight" />
+    <result column="net_weight" jdbcType="DECIMAL" property="netWeight" />
   </resultMap>
   <sql id="Base_Column_List">
     id, large_unit, box_length, box_width, box_height, box_volume, box_gross_weight, 
