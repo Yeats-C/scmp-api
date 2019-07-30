@@ -17,6 +17,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRe
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse;
@@ -51,7 +52,7 @@ public interface StockDao {
 
     Integer countStockSumInfoByPage(StockRequest stockRequest);
 
-    List<StockRespVO> selectOneStockInfoByStockId(Long stockId);
+    List<StockFlowRespVo> selectOneStockInfoByStockId(@Param("stockCode") String stockCode);
 
     Long selectOneStockInfoByStockIdInfoByPage(Long stockId);
 

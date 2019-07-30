@@ -97,7 +97,7 @@ public class StockFlow extends CommonBean {
     @JsonProperty(value = "operation_type")
     private Integer operationType;
 
-    @ApiModelProperty("状态(锁状态-1加库存2锁定库存3减库存并解锁4解锁库存5减库存6锁定库存转移7加并锁定库存)")
+    @ApiModelProperty("状态")
     @JsonProperty(value = "lock_status")
     private Integer lockStatus;
 

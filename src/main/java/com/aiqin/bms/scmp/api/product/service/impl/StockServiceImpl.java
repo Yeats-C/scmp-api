@@ -25,6 +25,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStock
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
@@ -210,14 +211,14 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public PageInfo<StockRespVO> selectOneStockInfoByStockId(Long stockId,Integer page_no,Integer page_size) {
+    public PageInfo<StockFlowRespVo> selectOneStockInfoByStockId(String stockCode, Integer page_no, Integer page_size) {
         try {
             LOGGER.info("根据stockId查询单个stock信息");
             PageHelper.startPage(page_no, page_size);
             // List<StockRespVO> stockRespVOs = stockDao.selectOneStockInfoByStockId(stockId);
             // Long total = stockDao.selectOneStockInfoByStockIdInfoByPage(stockId);
             // new PageResData<>(total.intValue(), stockRespVOs);
-            return new PageInfo<>(stockDao.selectOneStockInfoByStockId(stockId));
+            return new PageInfo<>(stockDao.selectOneStockInfoByStockId(stockCode));
         } catch (Exception e) {
             LOGGER.error("根据stockId查询单个stock信息失败", e);
             throw new GroundRuntimeException(e.getMessage());
