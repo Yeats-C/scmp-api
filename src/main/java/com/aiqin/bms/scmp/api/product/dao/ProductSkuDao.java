@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.product.domain.SkuWarehouseStockNum;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaForSkuReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
@@ -289,4 +290,6 @@ public interface ProductSkuDao {
 
     PurchaseApplyDetailResponse purchaseBySkuStock(@Param("purchaseGroupCode")String purchaseGroupCode, @Param("skuCode")String skuCode,
                                             @Param("supplierCode")String supplierCode, @Param("transportCenterCode")String transportCenterCode);
+
+    List<ProductSkuInfo> selectInfoByImport(ProductSkuChangePriceImportRequest productSkuChangePriceImportRequest);
 }

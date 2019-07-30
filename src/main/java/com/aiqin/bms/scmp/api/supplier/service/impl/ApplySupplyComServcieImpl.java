@@ -1245,6 +1245,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     error.add("收货天数格式不正确");
                 }
             }
+            sendVO.setDeliveryType((byte) 0);
+            returnVO.setDeliveryType((byte) 1);
             return this;
         }
         private void checkArea(String province, String city, String district,CheckAreaEnum checkAreaEnum) {

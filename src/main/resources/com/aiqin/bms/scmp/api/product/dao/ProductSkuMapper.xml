@@ -870,7 +870,7 @@
       ELSE '其他' END on_sale_name,
       a.product_property_name,
       a.product_brand_name,
-      a.product_category_name,
+      CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) product_category_name,
       a.create_by,
       a.create_time,
       a.product_sort_name,
@@ -880,7 +880,15 @@
     FROM
       product_sku a
       LEFT JOIN product_sku_distribution_info c on a.sku_code = c.product_sku_code
-      WHERE a.del_flag=0
+      LEFT JOIN product_category lv4
+      on lv4.category_id = a.product_category_code
+      LEFT JOIN product_category lv3
+      on lv3.category_id = lv4.parent_id
+      LEFT JOIN product_category lv2
+      on lv2.category_id = lv3.parent_id
+      LEFT JOIN product_category lv1
+      on lv1.category_id = lv2.parent_id
+    WHERE a.del_flag=0
       <if test="skuCode!=null and skuCode!=''">
         AND a.sku_code LIKE CONCAT('%',#{skuCode,jdbcType=VARCHAR},'%')
       </if>
@@ -2151,5 +2159,15 @@ select a.sku_code              as skuCode,
       and su.supply_unit_code = #{supplierCode, jdbcType=VARCHAR}
       and ps.procurement_section_code = #{purchaseGroupCode, jdbcType=VARCHAR}
     </where>
+  </select>
+
+  <select id="selectInfoByImport" parameterType="com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo"
+          resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.BaseResultMap">
+    SELECT * FROM product_sku where company_code  =  #{companyCode, jdbcType=VARCHAR}
+    and procurement_section_code = #{purchaseGroupCode, jdbcType=VARCHAR}
+    and sku_code in
+    <foreach collection="skuCodeList" item="item" index="index" separator="," close=")" open="(">
+      #{item, jdbcType=VARCHAR}
+    </foreach>
   </select>
 </mapper>

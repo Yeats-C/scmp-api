@@ -777,4 +777,321 @@
       and sku_name = #{skuName}
     </if>
   </select>
+    <select id="exportSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.ExportSkuInfo">
+              select a.*,
+               group_concat(b.price_channel_name) priceChannelName,
+               group_concat(c.tag_name) tagName
+        from (select a.sku_code skuCode,
+               case
+                   when a.goods_gifts = 0
+                       then '商品'
+                   when a.goods_gifts = 1
+                       then '赠品'
+                   else null
+                   end
+                          goodsGiftsDesc,
+               a.sku_name skuName,
+               a.sku_abbreviation skuAbbreviation,
+               a.product_brand_name productBrandName,
+               a.product_category_name productCategoryName,
+               a.product_name productName,
+               a.product_property_name productPropertyName,
+               a.product_sort_name productSortName,
+               a.procurement_section_name procurement_section_name,
+               a.color_name colorName,
+               a.model_number modelNumber,
+               case when a.quality_assurance_management = 0 then '管理'
+                    when a.quality_assurance_management = 1 then '不管理'
+                    else null
+                   end
+                   qualityAssuranceManagementDesc,
+               a.quality_number qualityDate,
+               a.quality_date qualityNumber,
+               a.categories_supply_channels_name categoriesSupplyChannelsName,
+               a.mnemonic_code mnemonicCode,
+               a.manufacturer_guide_price manufacturerGuidePrice,
+               a.applicable_month_age applicableMonthAge,
+               case when a.seasonal_goods = 0 then '是'
+                    when a.seasonal_goods = 1 then '否'
+                    else null
+                   end
+                   seasonalGoodsDesc,
+               a.warehouse_type_name warehouseTypeName,
+               case when a.structural_goods = 0 then '是'
+                    when a.structural_goods = 1 then '否'
+                    else null
+                   end
+                   structuralGoodsDesc,
+               a.use_time useTime,
+               case when a.inventory_model = 0 then '有库存销售'
+                    when a.inventory_model = 1 then '无库存销售'
+                    else null
+                   end
+                   inventoryModelDesc,
+               case when a.unique_code = 0 then '是'
+                    when a.unique_code = 1 then '否'
+                    else null
+                   end
+                   uniqueCodeDesc,
+               a.remark remark,
+               d.spec stockSpec,
+               d.unit_name stockUnitName,
+               e.box_length stockBoxLength,
+               e.box_width stockBoxWidth,
+               e.box_height stockBoxHeight,
+               e.box_gross_weight stockBoxGrossWeight,
+               e.net_weight stockNetWeight,
+               d.bar_code stockBarCode,
+               f.spec purchaseSpec,
+               f.unit_name purchaseUnitName,
+               g.box_length purchaseBoxLength,
+               g.box_width purchaseBoxWidth,
+               g.box_height purchaseBoxHeight,
+               g.box_gross_weight purchaseBoxGrossWeight,
+               g.net_weight purchaseNetWeight,
+               f.base_product_content purchaseBaseProductContent,
+               f.zero_removal_coefficient purchaseZeroRemovalCoefficient,
+               f.purchase_code purchaseBarCode,
+               h.spec distributionSpec,
+               h.unit_name distributionUnitName,
+               h.base_product_content distributionBaseProductContent,
+               h.zero_removal_coefficient distributionZeroRemovalCoefficient,
+               h.delivery_code distributionBarCode,
+               h.max_order_num maxOrderNum,
+               i.spec saleSpec,
+               d.unit_name saleUnitName,
+               i.sales_code saleBarCode,
+               i.description description,
+               j.settlement_method_code settlementMethodName,
+               j.Input_tax_rate inputTaxRate,
+               j.output_tax_rate outputTaxRate,
+               j.Integral_coefficient integralCoefficient,
+               j.logistics_fee_award_ratio logisticsFeeAwardRatio,
+               k.supply_unit_code supplyUnitCode,
+               k.supply_unit_name supplyUnitName,
+               k.tax_included_price taxIncludedPrice,
+               k.joint_franchise_rate jointFranchiseRate,
+               k.point point,
+               k.factory_sku_code factorySkuCode,
+               k.categories_supply_channels_name supplyCategoriesSupplyChannelsName
+        from product_sku_draft a
+                 left join product_sku_stock_info_draft d
+                           on a.sku_code = d.product_sku_code
+                 left join product_sku_box_packing_draft e
+                           on e.unit_code = d.unit_code
+                 left join product_sku_purchase_info_draft f
+                           on f.product_sku_code = a.sku_code
+                 left join product_sku_box_packing_draft g
+                           on g.unit_code = f.unit_code
+                 left join product_sku_distribution_info_draft h
+                           on h.product_sku_code = a.sku_code
+                 left join product_sku_sales_info_draft i
+                           on a.sku_code = i.product_sku_code
+                 left join product_sku_checkout_draft j
+                           on a.sku_code = j.sku_code
+                 left join product_sku_supply_unit_draft k
+                           on k.product_sku_code = j.sku_code and k.update_by = a.update_by
+          where  a.goods_gifts != 2 and a.sku_code in
+          <foreach collection="list" open="(" close=")" item="item" separator=",">
+            #{item}
+          </foreach>
+        group by a.sku_code) a
+        left join product_sku_channel_draft b
+               on a.skuCode = b.sku_code
+        left join use_tag_record c
+               on a.skuCode = c.source_code
+        group by a.skuCode
+    </select>
+  <resultMap id="selectBySkuCode" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft">
+
+    <id column="aid" jdbcType="BIGINT" property="id" />
+    <result column="aproduct_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="aproduct_name" jdbcType="VARCHAR" property="productName" />
+    <result column="aproduct_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+    <result column="aproduct_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+    <result column="asku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="aspec" jdbcType="VARCHAR" property="spec" />
+    <result column="aunit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="asku_status" jdbcType="TINYINT" property="skuStatus" />
+    <result column="adel_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="aproduct_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
+    <result column="aproduct_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+    <result column="aproduct_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+    <result column="aproduct_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="asku_abbreviation" jdbcType="VARCHAR" property="skuAbbreviation" />
+    <result column="acolor_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="acolor_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="amodel_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="aunit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="aquality_assurance_management" jdbcType="TINYINT" property="qualityAssuranceManagement" />
+    <result column="aproduct_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="aproduct_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="aquality_number" jdbcType="VARCHAR" property="qualityNumber" />
+    <result column="aquality_date" jdbcType="VARCHAR" property="qualityDate" />
+    <result column="amanagement_style_code" jdbcType="VARCHAR" property="managementStyleCode" />
+    <result column="amanagement_style_name" jdbcType="VARCHAR" property="managementStyleName" />
+    <result column="acategories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+    <result column="aon_sale" jdbcType="TINYINT" property="onSale" />
+    <result column="acategories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+    <result column="abox_gauge" jdbcType="VARCHAR" property="boxGauge" />
+    <result column="aapplicable_month_age" jdbcType="VARCHAR" property="applicableMonthAge" />
+    <result column="apoint" jdbcType="VARCHAR" property="point" />
+    <result column="abar_code" jdbcType="VARCHAR" property="barCode" />
+    <result column="amnemonic_code" jdbcType="VARCHAR" property="mnemonicCode" />
+    <result column="aselection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime" />
+    <result column="aselection_effective_start_time" jdbcType="TIMESTAMP" property="selectionEffectiveStartTime" />
+    <result column="aselection_effective_end_time" jdbcType="TIMESTAMP" property="selectionEffectiveEndTime" />
+    <result column="acreate_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="acreate_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="aupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="aupdate_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="agoods_gifts" jdbcType="TINYINT" property="goodsGifts" />
+    <result column="aspu_code" jdbcType="VARCHAR" property="spuCode" />
+    <result column="alogo" jdbcType="VARCHAR" property="logo" />
+    <result column="aimages" jdbcType="VARCHAR" property="images" />
+    <result column="aitro_images" jdbcType="VARCHAR" property="itroImages" />
+    <result column="asku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="ais_main_push" jdbcType="TINYINT" property="isMainPush" />
+    <result column="anew_product" jdbcType="TINYINT" property="newProduct" />
+    <result column="amanufacturer_guide_price" jdbcType="BIGINT" property="manufacturerGuidePrice" />
+    <result column="azero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
+    <result column="aprocurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode" />
+    <result column="aprocurement_section_name" jdbcType="VARCHAR" property="procurementSectionName" />
+    <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="aseasonal_goods" jdbcType="TINYINT" property="seasonalGoods" />
+    <result column="awarehouse_type_code" jdbcType="VARCHAR" property="warehouseTypeCode" />
+    <result column="awarehouse_type_name" jdbcType="VARCHAR" property="warehouseTypeName" />
+    <result column="astructural_goods" jdbcType="TINYINT" property="structuralGoods" />
+    <result column="aapply_type" jdbcType="TINYINT" property="applyType" />
+    <result column="aapply_type_name" jdbcType="VARCHAR" property="applyTypeName" />
+    <result column="ause_time" jdbcType="INTEGER" property="useTime" />
+    <result column="aunique_code" jdbcType="TINYINT" property="uniqueCode" />
+    <result column="ainventory_model" jdbcType="TINYINT" property="inventoryModel" />
+    <result column="ainventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
+    <result column="aprice_model" jdbcType="TINYINT" property="priceModel" />
+    <result column="achange_content" jdbcType="VARCHAR" property="changeContent" />
+    <result column="apic_folder_code" jdbcType="VARCHAR" property="picFolderCode" />
+    <collection property="supplyList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft">
+      <id column="bid" jdbcType="BIGINT" property="id" />
+      <result column="bsupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
+      <result column="bsupply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
+      <result column="bno_tax_purchase_price" jdbcType="BIGINT" property="noTaxPurchasePrice" />
+      <result column="btax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
+      <result column="bjoint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
+      <result column="bpoint" jdbcType="BIGINT" property="point" />
+      <result column="btax_rate" jdbcType="BIGINT" property="taxRate" />
+      <result column="bfactory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
+      <result column="bis_default" jdbcType="TINYINT" property="isDefault" />
+      <result column="bdel_flag" jdbcType="TINYINT" property="delFlag" />
+      <result column="bcreate_time" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="bcreate_by" jdbcType="VARCHAR" property="createBy" />
+      <result column="bupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+      <result column="bupdate_by" jdbcType="VARCHAR" property="updateBy" />
+      <result column="bproduct_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
+      <result column="busage_status" jdbcType="TINYINT" property="usageStatus" />
+      <result column="bproduct_sku_name" jdbcType="VARCHAR" property="productSkuName" />
+      <result column="bcategories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+      <result column="bcategories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+    </collection>
+  </resultMap>
+  <select id="selectBySkuCode" resultMap="selectBySkuCode" >
+        select a.id aid,
+               a.product_code aproduct_code,
+               a.product_name aproduct_name,
+               a.product_category_code aproduct_category_code,
+               a.product_category_name aproduct_category_name,
+               a.sku_code asku_code,
+               a.spec aspec,
+               a.unit_code aunit_code,
+               a.sku_status asku_status,
+               a.del_flag adel_flag,
+               a.product_property_code aproduct_property_code,
+               a.product_property_name aproduct_property_name,
+               a.product_brand_code aproduct_brand_code,
+               a.product_brand_name aproduct_brand_name,
+               a.sku_abbreviation asku_abbreviation,
+               a.color_code acolor_code,
+               a.color_name acolor_name,
+               a.model_number amodel_number,
+               a.unit_name aunit_name,
+               a.quality_assurance_management aquality_assurance_management,
+               a.product_sort_code aproduct_sort_code,
+               a.product_sort_name aproduct_sort_name,
+               a.quality_number aquality_number,
+               a.quality_date aquality_date,
+               a.management_style_code amanagement_style_code,
+               a.management_style_name amanagement_style_name,
+               a.categories_supply_channels_code acategories_supply_channels_code,
+               a.on_sale aon_sale,
+               a.categories_supply_channels_name acategories_supply_channels_name,
+               a.box_gauge abox_gauge,
+               a.applicable_month_age aapplicable_month_age,
+               a.point apoint,
+               a.bar_code abar_code,
+               a.mnemonic_code amnemonic_code,
+               a.selection_effective_time aselection_effective_time,
+               a.selection_effective_start_time aselection_effective_start_time,
+               a.selection_effective_end_time aselection_effective_end_time,
+               a.create_time acreate_time,
+               a.create_by acreate_by,
+               a.update_time aupdate_time,
+               a.update_by aupdate_by,
+               a.goods_gifts agoods_gifts,
+               a.spu_code aspu_code,
+               a.logo alogo,
+               a.images aimages,
+               a.itro_images aitro_images,
+               a.sku_name asku_name,
+               a.is_main_push ais_main_push,
+               a.new_product anew_product,
+               a.manufacturer_guide_price amanufacturer_guide_price,
+               a.zero_removal_coefficient azero_removal_coefficient,
+               a.procurement_section_code aprocurement_section_code,
+               a.procurement_section_name aprocurement_section_name,
+               a.seasonal_goods aseasonal_goods,
+               a.remark aremark,
+               a.warehouse_type_code awarehouse_type_code,
+               a.warehouse_type_name awarehouse_type_name,
+               a.structural_goods astructural_goods,
+               a.company_code acompany_code,
+               a.company_name acompany_name,
+               a.apply_type aapply_type,
+               a.apply_type_name aapply_type_name,
+               a.use_time ause_time,
+               a.unique_code aunique_code,
+               a.inventory_model ainventory_model,
+               a.inventory_allocation ainventory_allocation,
+               a.price_model aprice_model,
+               a.change_content achange_content,
+               a.pic_folder_code apic_folder_code,
+               a.original_code aoriginal_code,
+               b.id bid,
+               b.supply_unit_code bsupply_unit_code,
+               b.supply_unit_name bsupply_unit_name,
+               b.no_tax_purchase_price bno_tax_purchase_price,
+               b.tax_included_price btax_included_price,
+               b.joint_franchise_rate bjoint_franchise_rate,
+               b.point bpoint,
+               b.is_default bis_default,
+               b.del_flag bdel_flag,
+               b.create_time bcreate_time,
+               b.create_by bcreate_by,
+               b.update_time bupdate_time,
+               b.update_by bupdate_by,
+               b.product_sku_code bproduct_sku_code,
+               b.usage_status busage_status,
+               b.product_sku_name bproduct_sku_name,
+               b.categories_supply_channels_code bcategories_supply_channels_code,
+               b.categories_supply_channels_name bcategories_supply_channels_name,
+               b.tax_rate btax_rate,
+               b.factory_sku_code bfactory_sku_code
+        from product_sku_draft a
+                 left join product_sku_supply_unit_draft b
+                           on a.sku_code = b.product_sku_code and a.update_by = b.update_by
+        where a.company_code = #{companyCode} and sku_code in
+            <foreach collection="list" open="(" close=")" item="item" separator=",">
+                 #{item}
+            </foreach>
+  </select>
 </mapper>

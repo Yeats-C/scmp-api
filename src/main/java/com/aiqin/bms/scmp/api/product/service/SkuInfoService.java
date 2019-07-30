@@ -23,6 +23,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -150,6 +151,8 @@ public interface SkuInfoService{
      */
     Integer deleteProductSkuDraft(List<String> skuCodes);
 
+    Integer deleteProductSkuDraftForPlatform(List<String> skuCodes);
+
     /**
      * 根据商品编码获取SKU临时数据
      * @param productCode
@@ -224,6 +227,9 @@ public interface SkuInfoService{
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO>
      */
     SkuImportMain importSkuNew(MultipartFile file);
+
+    SkuImportMain importSkuForSupplyPlatform(MultipartFile file);
+
     /**
      * 通过名称查询
      * @author NullPointException
@@ -250,4 +256,10 @@ public interface SkuInfoService{
     Boolean importSkuNewSave(SkuImportReq reqVO);
 
     Boolean importSkuNewUpdate(SkuImportReq reqVO);
+
+    Boolean exportSku(List<String> skuCodes, HttpServletResponse resp);
+
+    Boolean importSkuUpdateForSupplyPlatform(SkuImportReq reqVO);
+
+    int saveDraftSkuInfoForPlatform(AddSkuInfoReqVO reqVO);
 }
