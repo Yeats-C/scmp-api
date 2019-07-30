@@ -170,6 +170,19 @@ public class SkuInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+    @PostMapping("/importSkuForSupplyPlatform")
+    @ApiOperation("新增导入sku")
+    public HttpResponse<SkuImportMain> importSkuForSupplyPlatform(MultipartFile file){
+        log.info("SkuInfoController---importSkuForSupplyPlatform---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuForSupplyPlatform(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
     @PostMapping("/importSkuNewSave")
     @ApiOperation("新增导入sku保存")
@@ -184,6 +197,22 @@ public class SkuInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @PostMapping("/importSkuUpdateForSupplyPlatform")
+    @ApiOperation("申请确认导入")
+    public HttpResponse<Boolean> importSkuUpdateForSupplyPlatform(@RequestBody SkuImportReq reqVO){
+        log.info("SkuInfoController---importSkuNewSave---入参：[{}]", JSON.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuUpdateForSupplyPlatform(reqVO));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+
     @PostMapping("/importSkuNewUpdate")
     @ApiOperation("修改导入sku保存")
     public HttpResponse<Boolean> importSkuNewUpdate(@RequestBody SkuImportReq reqVO){
