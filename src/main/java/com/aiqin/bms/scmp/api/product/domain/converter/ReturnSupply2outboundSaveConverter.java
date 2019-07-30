@@ -63,16 +63,16 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
 
             if(null != reqVo){
                 OutboundReqVo outbound = new OutboundReqVo();
-                outbound.setProvinceCode(supplyComDetailByCodeRespVO.getProvinceId());
-                outbound.setProvinceName(supplyComDetailByCodeRespVO.getProvinceName());
-                outbound.setCityCode(supplyComDetailByCodeRespVO.getCityId());
-                outbound.setCityName(supplyComDetailByCodeRespVO.getCityName());
-                outbound.setCountyCode(supplyComDetailByCodeRespVO.getDistrictId());
-                outbound.setCountyName(supplyComDetailByCodeRespVO.getDistrictName());
-                outbound.setConsignee(supplyComDetailByCodeRespVO.getContactName());
-                outbound.setConsigneeNumber(supplyComDetailByCodeRespVO.getMobilePhone());
+                outbound.setProvinceCode(reqVo.getProvinceId());
+                outbound.setProvinceName(reqVo.getProvinceName());
+                outbound.setCityCode(reqVo.getCityId());
+                outbound.setCityName(reqVo.getCityName());
+                outbound.setCountyCode(reqVo.getDistrictId());
+                outbound.setCountyName(reqVo.getDistrictName());
+                outbound.setConsignee(reqVo.getContactsPerson());
+                outbound.setConsigneeNumber(reqVo.getContactsPersonPhone());
                 outbound.setConsigneeRate(supplyComDetailByCodeRespVO.getZipCode());
-                outbound.setDetailedAddress(supplyComDetailByCodeRespVO.getAddress());
+                outbound.setDetailedAddress(reqVo.getAddress());
                 //公司
                 outbound.setCompanyCode(reqVo.getCompanyCode());
                 outbound.setCompanyName(reqVo.getCompanyName());

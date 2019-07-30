@@ -67,11 +67,9 @@ public class ScrapReqVo {
     private String directSupervisorName;
 
     @ApiModelProperty("承担单位编码")
-    @NotEmpty(message = "承担单位编码不能为空！")
     private String undertakingUnitCode;
 
     @ApiModelProperty("承担单位名称")
-    @NotEmpty(message = "承担单位名称不能为空！")
     private String undertakingUnitName;
 
     @ApiModelProperty("备注")

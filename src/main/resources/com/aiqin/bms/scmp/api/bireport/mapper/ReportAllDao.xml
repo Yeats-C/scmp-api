@@ -360,10 +360,10 @@
         <where>
             1=1
             <if test="procurementSectionCode!=null and procurementSectionCode!=''">
-                and bli.procurement_section_code=#{procurementSectionCode}
+                and bli.purchase_group_code=#{procurementSectionCode}
             </if>
             <if test="procurementSectionName!=null and procurementSectionName!=''">
-                and bli.procurement_section_name like concat('%', #{procurementSectionName}, '%')
+                and bli.purchase_group_name like concat('%', #{procurementSectionName}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bli.product_sort_code=#{productSortCode}
@@ -383,10 +383,10 @@
         <where>
             1=1
             <if test="procurementSectionCode!=null and procurementSectionCode!=''">
-                and bhi.procurement_section_code=#{procurementSectionCode}
+                and bhi.purchase_group_code=#{procurementSectionCode}
             </if>
             <if test="procurementSectionName!=null and procurementSectionName!=''">
-                and bhi.procurement_section_name like concat('%', #{procurementSectionName}, '%')
+                and bhi.purchase_group_name like concat('%', #{procurementSectionName}, '%')
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bhi.product_sort_code=#{productSortCode}
@@ -707,6 +707,17 @@
         date_format(bsar.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
         bsar.responsible_person_code as responsiblePersonCode,
         bsar.responsible_person_name as responsiblePersonName
+        from bi_supplier_arrival_rate bsar
+        <include refid="select_supplier_arrival_rate"/>
+    </select>
+    <select id="sumSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
+        select
+        sum(bsar.pre_inbound_num) as preInboundNums,
+        sum(bsar.pre_tax_amount)  as preTaxAmounts,
+        sum(bsar.pra_inbound_num) as praInboundNums,
+        sum(bsar.pra_tax_amount)  as praTaxAmounts,
+        bsar.pra_tax_amount/bsar.pre_tax_amount as praTaxAmountRates
         from bi_supplier_arrival_rate bsar
         <include refid="select_supplier_arrival_rate"/>
     </select>
@@ -1075,19 +1086,28 @@
         bli.id as id,
         bli.product_sort_code as productSortCode,
         bli.product_sort_name as productSortName,
-        bli.procurement_section_code as procurementSectionCode,
-        bli.procurement_section_name as procurementSectionName,
+        bli.purchase_group_code as procurementSectionCode,
+        bli.purchase_group_name as procurementSectionName,
         bli.responsible_person_code as responsiblePersonCode,
         bli.responsible_person_name as responsiblePersonName,
-        bli.sku_code as skuCode,
-        bli.sku_name as skuName,
-        bli.warehouse_type_code as warehouseTypeCode,
-        bli.warehouse_type_name as warehouseTypeName,
-        bli.lastweek_total_national as lastweekTotalNational,
-        bli.thisweek_total_national as thisweekTotalNational,
-        bli.total_sku_num as totalSkuNum,
-        bli.low_inventory_num as lowInventoryNum,
-        bli.low_inventory_ratio as low_Inventory_ratio,
+        bli.szqg_total_sku_num as szqgTotalSkuNum,
+        bli.szqg_low_sku_num as szqgLowSkuNum,
+        bli.szqg_low_inventory_ratio as szqgLowInventoryRatio,
+        bli.bzqg_total_sku_num as bzqgTotalSkuNum,
+        bli.bzqg_low_sku_num as bzqgLowSkuNum,
+        bli.bzqg_low_inventory_ratio as bzqgLowInventoryRatio,
+        bli.hb_total_sku_num as hbTotalSkuNum,
+        bli.hb_low_sku_num as hbLowSkuNum,
+        bli.hb_low_inventory_ratio as hbLowInventoryRatio,
+        bli.hn_total_sku_num as hnTotalSkuNum,
+        bli.hn_low_sku_num as hnLowSkuNum,
+        bli.hn_low_inventory_ratio as hnLowInventoryRatio,
+        bli.xn_total_sku_num as xnTotalSkuNum,
+        bli.xn_low_sku_num as xnLowSkuNum,
+        bli.xn_low_inventory_ratio as xnLowInventoryRatio,
+        bli.hd_total_sku_num as hdTotalSkuNum,
+        bli.hd_low_sku_num as hdLowSkuNum,
+        bli.hd_low_inventory_ratio as hdLowInventoryRatio,
         date_format(bli.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_low_inventory bli
         <include refid="select_low_inventory"/>
@@ -1098,19 +1118,28 @@
         bhi.id as id,
         bhi.product_sort_code as productSortCode,
         bhi.product_sort_name as productSortName,
-        bhi.procurement_section_code as procurementSectionCode,
-        bhi.procurement_section_name as procurementSectionName,
+        bhi.purchase_group_code as procurementSectionCode,
+        bhi.purchase_group_name as procurementSectionName,
         bhi.responsible_person_code as responsiblePersonCode,
         bhi.responsible_person_name as responsiblePersonName,
-        bhi.sku_code as skuCode,
-        bhi.sku_name as skuName,
-        bhi.warehouse_type_code as warehouseTypeCode,
-        bhi.warehouse_type_name as warehouseTypeName,
-        bhi.lastweek_total_national as lastweekTotalNational,
-        bhi.thisweek_total_national as thisweekTotalNational,
-        bhi.high_inventory_amount as highInventoryAmount,
-        bhi.inventory_total_amount as inventoryTotalAmount,
-        bhi.high_inventory_ratio as highInventoryRatio,
+        bhi.szqg_high_inventory_amount as szqgHighInventoryAmount,
+        bhi.szqg_total_inventory_amount as szqgTotalInventoryAmount,
+        bhi.szqg_rate as szqgRate,
+        bhi.bzqg_high_inventory_amount as bzqgHighInventoryAmount,
+        bhi.bzqg_total_inventory_amount as bzqgTotalInventoryAmount,
+        bhi.bzqg_rate as bzqgRate,
+        bhi.hb_high_inventory_amount as hbHighInventoryAmount,
+        bhi.hb_total_inventory_amount as hbTotalInventoryAmount,
+        bhi.hb_rate as hbRate,
+        bhi.hn_high_inventory_amount as hnHighInventoryAmount,
+        bhi.hn_total_inventory_amount as hnTotalInventoryAmount,
+        bhi.hn_rate as hnRate,
+        bhi.xn_high_inventory_amount as xnHighInventoryAmount,
+        bhi.xn_total_inventory_amount as xnTotalInventoryAmount,
+        bhi.xn_rate as xnRate,
+        bhi.hd_high_inventory_amount as hdHhighInventoryAmount,
+        bhi.hd_total_inventory_amount as hdTotalInventoryAmount,
+        bhi.hd_rate as hdRate,
         date_format(bhi.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_high_inventory bhi
         <include refid="select_high_inventory"/>
@@ -1219,8 +1248,6 @@
         bms.store_type as storeType,
         bms.data_type_code as dataTypeCode,
         bms.data_type as dataType,
-        bms.sale_type_code as saleTypeCode,
-        bms.sale_type_name as saleTypeName,
         bms.channel_order_amount as channelOrderAmount,
         bms.channel_last_year_sales as channelLastYearSales,
         bms.channel_last_month_sales as channelLastMonthSales,
@@ -1248,8 +1275,6 @@
         bmgm.store_type as storeType,
         bmgm.data_type_code as dataTypeCode,
         bmgm.data_type as dataType,
-        bmgm.sale_type_code as saleTypeCode,
-        bmgm.sale_type_name as saleTypeName,
         bmgm.sales_cost as salesCost,
         bmgm.channel_amount as channelAmount,
         bmgm.channel_maori as channelMaori,
@@ -1280,8 +1305,6 @@
         bmsa.store_type as storeType,
         bmsa.data_type_code as dataTypeCode,
         bmsa.data_type as dataType,
-        bmsa.sale_type_code as saleTypeCode,
-        bmsa.sale_type_name as saleTypeName,
         bmsa.category_code as categoryCode,
         bmsa.category_name as categoryName,
         bmsa.channel_amount as channelAmount,
@@ -1308,8 +1331,6 @@
         bmcbs.store_type as storeType,
         bmcbs.data_type_code as dataTypeCode,
         bmcbs.data_type as dataType,
-        bmcbs.sale_type_code as saleTypeCode,
-        bmcbs.sale_type_name as saleTypeName,
         bmcbs.category_code as categoryCode,
         bmcbs.category_name as categoryName,
         bmcbs.channel_sales as channelSales,
@@ -1340,8 +1361,6 @@
         bmcgpm.store_type as storeType,
         bmcgpm.data_type_code as dataTypeCode,
         bmcgpm.data_type as dataType,
-        bmcgpm.sale_type_code as saleTypeCode,
-        bmcgpm.sale_type_name as saleTypeName,
         bmcgpm.category_code as categoryCode,
         bmcgpm.category_name as categoryName,
         bmcgpm.sales_cost as salesCost,

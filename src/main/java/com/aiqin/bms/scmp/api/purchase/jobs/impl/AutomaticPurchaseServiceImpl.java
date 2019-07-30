@@ -1,12 +1,16 @@
 package com.aiqin.bms.scmp.api.purchase.jobs.impl;
 
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.purchase.dao.BiSmartReplenishmentDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.jobs.AutomaticPurchaseService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
@@ -20,11 +24,14 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: zhao shuai
@@ -43,9 +50,16 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
     private PurchaseApplyDao purchaseApplyDao;
     @Resource
     private PurchaseApplyProductDao purchaseApplyProductDao;
+    @Resource
+    private PurchaseOrderDao purchaseOrderDao;
+
+    @Scheduled(cron = "0 0 1 * * ?") // 每天00:05 执行一次执行
+    public void automatic(){
+        this.automaticPurchase();
+    }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse automaticPurchase(){
         // 获取前一天的时间
         String date = DateUtils.yestedayDate();
@@ -66,10 +80,11 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
               purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
               purchaseApply.setPurchaseGroupCode(group.getPurchaseGroupCode());
               purchaseApply.setPurchaseGroupName(group.getPurchaseGroupName());
+              purchaseApply.setCreateByName("系统");
+              purchaseApply.setCreateById("0");
               // 生成申请采购单号
               EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
               String purchaseApplyCode = "CS" + String.valueOf(encodingRule.getNumberingValue());
-              LOGGER.info(purchaseApplyCode + "------------采购单号-----------"+ group.getPurchaseGroupCode());
               purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
               // 查询sku 的相关数据
               List<PurchaseApplyProduct> applyProducts = biSmartReplenishmentDao.skuInfo(beginTime, finishTime, group.getPurchaseGroupCode());
@@ -79,11 +94,37 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
                   for(PurchaseApplyProduct product:applyProducts){
                       applyProduct = new PurchaseApplyProduct();
                       BeanUtils.copyProperties(product, applyProduct);
+                      applyProduct.setApplyProductId(IdUtil.purchaseId());
+                      applyProduct.setPurchaseApplyId(purchaseApply.getPurchaseApplyId());
+                      applyProduct.setPurchaseApplyCode(purchaseApply.getPurchaseApplyCode());
+                      applyProduct.setProductType(Global.PRODUCT_TYPE_0);
+                      Integer price  = product.getNewPurchasePrice() == null ? 0 : product.getNewPurchasePrice();
+                      applyProduct.setProductPurchaseAmount(price);
+                      applyProduct.setNewPurchasePrice(price);
                       applyProduct.setCreateByName("系统");
                       applyProduct.setCreateById("0");
                       applyProduct.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
                       applyProduct.setApplyProductStatus(Global.USER_ON);
-                      applyProduct.setProductType(Global.PRODUCT_TYPE_0);
+                      // 获取最高采购价(价格管理中供应商的含税价格)
+                      String key;
+                      Map<String, Long> productTax = new HashMap<>();
+                      if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
+                          key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
+                          Long priceTax = productTax.get(key);
+                          applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
+                      }
+                      // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
+                      Map<String, PurchaseApplyRespVo> purchase = new HashMap<>();
+                      key = String.format("%s,%s,%s", product.getSkuCode(), product.getSupplierCode(), product.getTransportCenterCode());
+                      PurchaseApplyRespVo vo = purchase.get(key);
+                      if(vo != null){
+                          applyProduct.setPurchaseNumber(vo.getAdviceOrders() == null ? 0: vo.getAdviceOrders().intValue());
+                          applyProduct.setReceiptTime(DateUtils.getDate(vo.getPredictedArrival()));
+                          applyProduct.setSalesVolume(vo.getAverageAmount() == null ? 0: vo.getAverageAmount().intValue() * 90);
+                          applyProduct.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0: vo.getOutStockAffectMoney().intValue());
+                          applyProduct.setShortageDay(vo.getOutStockContinuousDays() == null ? 0: vo.getOutStockContinuousDays().intValue());
+                          applyProduct.setStockTurnover(vo.getArrivalCycle() == null ? 0: vo.getArrivalCycle().intValue());
+                      }
                       productList.add(applyProduct);
                   }
                   purchaseApplyProductDao.insertAll(productList);
@@ -96,10 +137,32 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
         return HttpResponse.success();
     }
 
+    @Scheduled(cron = "0 5 0 * * ?")  //  每天00:05 执行一次执行
+    public void execute(){
+        this.executeWarehousing();
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse executeWarehousing(){
         // 查询备货确认有前一天（有效期到期，没有入库完成）的数据
+        // 获取前一天的时间
+        String date = DateUtils.yestedayDate();
+        String beginTime = date + " 00:00:00";
+        String finishTime = date + " 23:59:59";
+        List<PurchaseApplyDetailResponse> details = purchaseOrderDao.orderByExecuteWarehousing(beginTime, finishTime);
+        if(CollectionUtils.isNotEmpty(details)){
+            PurchaseOrder purchaseOrder = new PurchaseOrder();
+            for(PurchaseApplyDetailResponse order:details){
+                purchaseOrder.setPurchaseOrderId(order.getPurchaseOrderId());
+                if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+                    purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
+                }else {
+                    purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
+                }
+                purchaseOrderDao.update(purchaseOrder);
+            }
+        }
         return HttpResponse.success();
     }
 }

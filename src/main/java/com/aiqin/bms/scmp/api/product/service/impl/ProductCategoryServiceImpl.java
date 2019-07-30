@@ -62,7 +62,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 //获取当前同类最大分类id
                 String maxCategoryId = productCategoryDao.getMaxCategoryIdByParentId(String.valueOf(productCategoryAddReqVO.getParentId()));
                 if (null == maxCategoryId){
-                    categoryId = (long)100;
+                    categoryId = (long)0;
                 } else {
                     categoryId = Long.valueOf(maxCategoryId);
                 }
@@ -71,8 +71,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 Long categoryId1 = categoryId;
                 for (ProductCategoryReqVO item : sameList) {
                     ProductCategoryReqDTO productCategoryReqDTO = new ProductCategoryReqDTO();
-                    categoryId1 = categoryId1 + 1;
-                    item.setCategoryId(String.valueOf(categoryId1));
+                    String code = getCode(categoryId1, item.getCategoryLevel());
+                    categoryId1 = Long.parseLong(code);
+                    item.setCategoryId(code);
                     //复制对象属性值
                     BeanCopyUtils.copy(item, productCategoryReqDTO);
                     productCategoryReqDTO.setCompanyCode(finalCompanyCode);
@@ -83,10 +84,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             if (productCategoryAddReqVO.getLowerLevelList().size() > 0){
                 //同级分类集合
                 List<ProductCategoryReqVO> lowerLevelList = productCategoryAddReqVO.getLowerLevelList();
-                String maxChildCategoryId = productCategoryDao.getMaxChildNodeByCategoryId(String.valueOf(productCategoryAddReqVO.getCurrentCategoryId()));
+                String maxChildCategoryId = productCategoryDao.getMaxChildNodeByCategoryId(productCategoryAddReqVO.getCurrentCategoryId());
                 String childCategoryId;
                 if (null == maxChildCategoryId){
-                    childCategoryId = String.valueOf(productCategoryAddReqVO.getCurrentCategoryId())+"000";
+                    childCategoryId = String.valueOf(productCategoryAddReqVO.getCurrentCategoryId())+"00";
                 } else {
                     childCategoryId = maxChildCategoryId;
                 }
@@ -95,8 +96,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
                 Long childCaIdLong = Long.valueOf(childCategoryId);
                 for (ProductCategoryReqVO item : lowerLevelList) {
                     ProductCategoryReqDTO productCategoryReqDTO = new ProductCategoryReqDTO();
-                    childCaIdLong = childCaIdLong + 1;
-                    item.setCategoryId(String.valueOf(childCaIdLong));
+                    String code = getCode(childCaIdLong, item.getCategoryLevel());
+                    childCaIdLong = Long.parseLong(code);
+                    item.setCategoryId(code);
                     //复制对象属性值
                     BeanCopyUtils.copy(item, productCategoryReqDTO);
                     productCategoryReqDTO.setCompanyCode(finalCompanyCode);
@@ -366,5 +368,28 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             });
         }
         return productCategories;
+    }
+
+    private String getCode(Long categoryId, Byte currentLevel){
+        categoryId = categoryId +1;
+        String code = categoryId.toString();
+        if(Objects.equals(Byte.valueOf("1"),currentLevel)){
+            if(categoryId < 10L ) {
+                code = "0"+categoryId;
+            }
+        } else if(Objects.equals(Byte.valueOf("2"),currentLevel)){
+            if(categoryId < 1000L ) {
+                code = "0"+categoryId;
+            }
+        } else if(Objects.equals(Byte.valueOf("3"),currentLevel)){
+            if(categoryId < 100000L ) {
+                code = "0"+categoryId;
+            }
+        } else if(Objects.equals(Byte.valueOf("4"),currentLevel)){
+            if(categoryId < 10000000L ) {
+                code = "0"+categoryId;
+            }
+        }
+        return code;
     }
 }

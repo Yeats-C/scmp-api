@@ -188,7 +188,7 @@ public class ExportExcelReportHigh {
                 row03.createCell(2).setCellValue("");
             }
 
-
+/*
 
              // 全国上周
             if ("1".equals(highInventoryRespVo.getWarehouseTypeCode())) {
@@ -298,7 +298,7 @@ public class ExportExcelReportHigh {
                 } else {
                     row03.createCell(20).setCellValue("");
                 }
-            }
+            }*/
         }
         return workbook;
     }

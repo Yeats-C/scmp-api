@@ -279,5 +279,5 @@ public interface ResultCode {
     MessageId SKU_NAME_EXISTS = MessageId.create(Project.SCMP_API, 1000, "SKU名称已经存在！");
 
 
-
+    MessageId EXPORT_FAILED = MessageId.create(Project.SCMP_API, 1000, "导出失败！");
 }

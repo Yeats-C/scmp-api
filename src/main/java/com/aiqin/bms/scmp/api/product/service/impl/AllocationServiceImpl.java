@@ -524,7 +524,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     HandleTypeCoce.APPROVAL_SUCCESS.getStatus(),
                     ObjectTypeCode.ALLOCATION.getStatus(),
                     content, null,
-                    HandleTypeCoce.APPROVAL_SUCCESS.getName()
+                    HandleTypeCoce.APPROVAL_SUCCESS.getName(),
+                    vo.getApprovalUserName()
             );
             //审批成功
             //生成出库单并且返回出库单编码
@@ -557,7 +558,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             } else {
                 content2 = HandleTypeCoce.OUTBOUND_SCRAP.getName();
             }
-            supplierCommonService.getInstance(allocation.getAllocationCode()+"", AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), content2,null, AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
+            supplierCommonService.getInstance(allocation.getAllocationCode()+"", AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), content2,null, AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName(),vo.getApprovalUserName());
             return "success";
         }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
 
@@ -567,7 +568,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     HandleTypeCoce.APPROVAL_FAILED.getStatus(),
                     ObjectTypeCode.ALLOCATION.getStatus(),
                     content, null,
-                    HandleTypeCoce.APPROVAL_SUCCESS.getName()
+                    HandleTypeCoce.APPROVAL_SUCCESS.getName(),
+                    vo.getApprovalUserName()
             );
             // 审核不通过
             //  通过编码查询sku
@@ -593,7 +595,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     HandleTypeCoce.REVOKED.getStatus(),
                     ObjectTypeCode.ALLOCATION.getStatus(),
                     content, null,
-                    HandleTypeCoce.REVOKED.getName()
+                    HandleTypeCoce.REVOKED.getName(),
+                    vo.getApprovalUserName()
             );
 //            StockChangeRequest stockChangeRequest = new StockChangeRequest();
 //            stockChangeRequest.setOperationType(3);

@@ -59,7 +59,7 @@ public class MovementReqVo {
     private String principal;
 
     @ApiModelProperty("数量")
-    @NotEmpty(message = "数量不能为空")
+    @NotNull(message = "数量不能为空")
     private Long quantity;
 
     @ApiModelProperty("含税总成本单位分(传入时需要乘以100)")
@@ -75,11 +75,9 @@ public class MovementReqVo {
     private String directSupervisorName;
 
     @ApiModelProperty("承担单位编码")
-    @NotEmpty(message = "承担单位编码不能为空！")
     private String undertakingUnitCode;
 
     @ApiModelProperty("承担单位名称")
-    @NotEmpty(message = "承担单位名称不能为空！")
     private String undertakingUnitName;
 
     @ApiModelProperty("备注")
