@@ -2204,13 +2204,22 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuDraft.setProductSortCode(dic.getSupplierDictionaryValue());
                 }
             }
+            boolean flag1 = false;
+            boolean flag2 = false;
             //颜色
-            if (Objects.isNull(importVo.getColorName())) {
-                error.add("颜色不能为空");
+            if (Objects.nonNull(importVo.getColorName())) {
+//                error.add("颜色不能为空");
+                flag1 = true;
             }
             //型号
-            if (Objects.isNull(importVo.getModelNumber())) {
-                error.add("型号不能为空");
+            if (Objects.nonNull(importVo.getModelNumber())) {
+//                error.add("型号不能为空");
+                flag2 = true;
+            }
+            if (flag1&&flag2) {
+                error.add("颜色和型号只能填写一个");
+            } else if(!(flag1 || flag2)){
+                error.add("颜色和型号必须填写一个");
             }
             //是否管理保质期
             if (Objects.isNull(importVo.getQualityAssuranceManagementDesc())) {
