@@ -115,6 +115,8 @@ public interface ReportDao {
      */
     List<LowInventoryRespVo> selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
+    LowInventoryRespVo sumLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+
     Integer countLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
@@ -123,6 +125,8 @@ public interface ReportDao {
      * @return
      */
     List<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+
+    HighInventoryRespVo sumHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     Integer countHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 

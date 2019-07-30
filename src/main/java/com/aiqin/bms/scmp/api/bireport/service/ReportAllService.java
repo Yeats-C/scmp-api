@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.service;
 
+import com.aiqin.bms.scmp.api.base.PageImportResData;
 import com.aiqin.bms.scmp.api.base.PageReportResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
@@ -13,7 +14,7 @@ public interface ReportAllService {
      * @param supplierArrivalRateReqVo
      * @return
      */
-    List<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
+    PageImportResData<SupplierArrivalRateRespVo> selectSupplierArrivalRate(SupplierArrivalRateReqVo supplierArrivalRateReqVo);
 
     /**
      *  批次商品进销存
@@ -34,7 +35,7 @@ public interface ReportAllService {
      * @param supplierReturnReqVo
      * @return
      */
-    List<SupplierReturnRespVo> selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
+    PageImportResData selectSupplierReturn(SupplierReturnReqVo supplierReturnReqVo);
 
     /**
      *  新品批次动销率
@@ -55,7 +56,7 @@ public interface ReportAllService {
      * @param negativeMarginReqVo
      * @return
      */
-    List<NegativeMarginRespVo> selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
+    PageImportResData selectNegativeMargin(NegativeMarginReqVo negativeMarginReqVo);
 
     /**
      *  建议补货
@@ -69,28 +70,28 @@ public interface ReportAllService {
      * @param highLowInventoryReqVo
      * @return
      */
-    List<LowInventoryRespVo> selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+    PageImportResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
      *  高库存
      * @param highLowInventoryReqVo
      * @return
      */
-    List<HighInventoryRespVo> selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
+    PageImportResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo);
 
     /**
      *  品牌促销
      * @param brandSaleReqVo
      * @return
      */
-    List<CategorySaleRespVo> selectBrandSale(CategorySaleReqVo brandSaleReqVo);
+    PageImportResData selectBrandSale(CategorySaleReqVo brandSaleReqVo);
 
     /**
      *  品类促销
      * @param categorySaleReqVo
      * @return
      */
-    List<CategorySaleRespVo> selectCategorySale(CategorySaleReqVo categorySaleReqVo);
+    PageImportResData selectCategorySale(CategorySaleReqVo categorySaleReqVo);
 
     /**
      *  大效期

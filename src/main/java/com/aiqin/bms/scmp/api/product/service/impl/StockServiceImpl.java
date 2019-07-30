@@ -1172,8 +1172,6 @@ public class StockServiceImpl implements StockService {
                     }else if(stockVoRequest.getSourceDocumentType() == 5){
                         stockFlow.setSourceDocumentType(10);
                     }
-                }else{
-                    stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
                 }
                 stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
                 stockFlow.setRemark(stockVoRequest.getRemark());

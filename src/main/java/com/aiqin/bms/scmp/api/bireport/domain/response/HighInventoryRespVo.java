@@ -40,41 +40,77 @@ public class HighInventoryRespVo {
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
 
-    @ApiModelProperty("商品编码")
-    @JsonProperty("sku_code")
-    private String skuCode;
+    @ApiModelProperty("上周全国合计_高库存金额")
+    @JsonProperty("szqg_high_inventory_amount")
+    private Long szqgHighInventoryAmount;
 
-    @ApiModelProperty("商品名称")
-    @JsonProperty("sku_name")
-    private String skuName;
+    @ApiModelProperty("上周全国合计_库存总金额")
+    @JsonProperty("szqg_total_inventory_amount")
+    private Long szqgTotalInventoryAmount;
 
-    @ApiModelProperty("仓位类型名称编码")
-    @JsonProperty("warehouse_type_code")
-    private String warehouseTypeCode;
+    @ApiModelProperty("上周全国合计_高库存占比")
+    @JsonProperty("szqg_rate")
+    private Double szqgRate;
 
-    @ApiModelProperty("仓位类型名称(库房)")
-    @JsonProperty("warehouse_type_name")
-    private String warehouseTypeName;
+    @ApiModelProperty("本周全国合计_高库存金额")
+    @JsonProperty("bzqg_high_inventory_amount")
+    private Long bzqgHighInventoryAmount;
 
-    @ApiModelProperty("上周全国合计")
-    @JsonProperty("lastweek_total_national")
-    private String lastweekTotalNational;
+    @ApiModelProperty("本周全国合计_库存总金额")
+    @JsonProperty("bzqg_total_inventory_amount")
+    private Long bzqgTotalInventoryAmount;
 
-    @ApiModelProperty("本周全国合计")
-    @JsonProperty("thisweek_total_national")
-    private String thisweekTotalNational;
+    @ApiModelProperty("本周全国合计_高库存占比")
+    @JsonProperty("bzqg_rate")
+    private Double bzqgRate;
 
-    @ApiModelProperty("高库存金额")
-    @JsonProperty("high_inventory_amount")
-    private String highInventoryAmount;
+    @ApiModelProperty("华北仓_高库存金额")
+    @JsonProperty("hb_high_inventory_amount")
+    private Long hbHighInventoryAmount;
 
-    @ApiModelProperty("库存总金额")
-    @JsonProperty("inventory_total_amount")
-    private String inventoryTotalAmount;
+    @ApiModelProperty("华北仓_库存总金额")
+    @JsonProperty("hb_total_inventory_amount")
+    private Long hbTotalInventoryAmount;
 
-    @ApiModelProperty("高库存占比")
-    @JsonProperty("high_inventory_ratio")
-    private Double highInventoryRatio;
+    @ApiModelProperty("华北仓_高库存占比")
+    @JsonProperty("hb_rate")
+    private Double hbRate;
+
+    @ApiModelProperty("华南仓_高库存金额")
+    @JsonProperty("hn_high_inventory_amount")
+    private Long hnHighInventoryAmount;
+
+    @ApiModelProperty("华南仓_库存总金额")
+    @JsonProperty("hn_total_inventory_amount")
+    private Long hnTotalInventoryAmount;
+
+    @ApiModelProperty("华南仓_高库存占比")
+    @JsonProperty("hn_rate")
+    private Double hnRate;
+
+    @ApiModelProperty("西南仓_高库存金额")
+    @JsonProperty("xn_high_inventory_amount")
+    private Long xnHighInventoryAmount;
+
+    @ApiModelProperty("西南仓_库存总金额")
+    @JsonProperty("xn_total_inventory_amount")
+    private Long xnTotalInventoryAmount;
+
+    @ApiModelProperty("西南仓_高库存占比")
+    @JsonProperty("xn_rate")
+    private Double xnRate;
+
+    @ApiModelProperty("华东仓_高库存金额")
+    @JsonProperty("hd_high_inventory_amount")
+    private Long hdHhighInventoryAmount;
+
+    @ApiModelProperty("华东仓_库存总金额")
+    @JsonProperty("hd_total_inventory_amount")
+    private Long hdTotalInventoryAmount;
+
+    @ApiModelProperty("华东仓_高库存占比")
+    @JsonProperty("hd_rate")
+    private Double hdRate;
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")

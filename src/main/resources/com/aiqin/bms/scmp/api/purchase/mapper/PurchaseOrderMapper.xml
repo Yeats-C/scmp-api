@@ -209,4 +209,13 @@
      select <include refid="Base_Column_List"></include>
      from purchase_order where purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
   </select>
+  <select id="orderByExecuteWarehousing" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+    select d.valid_time as validTime, o.purchase_order_id as purchaseOrderId, o.purchase_order_code as purchaseOrderCode,
+    o.purchase_order_status as purchaseOrderStatus, o.storage_status as storageStatus
+    from purchase_order o
+    inner join purchase_order_details d on o.purchase_order_id = d.purchase_order_id
+    where o.purchase_order_status in(3, 4, 5, 6)
+    and d.valid_time &gt;= #{beginTime,jdbcType=VARCHAR}
+    and d.valid_time &lt;= #{finishTime,jdbcType=VARCHAR}
+  </select>
 </mapper>

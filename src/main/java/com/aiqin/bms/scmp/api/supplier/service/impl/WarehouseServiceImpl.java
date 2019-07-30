@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -268,12 +269,18 @@ public class WarehouseServiceImpl implements WarehouseService {
      */
     @Override
     public WarehouseResVo getWarehouseTypeByLogisticsCenterCode(String logisticsCenterCode, Byte warehouseTypeCode) {
-        WarehouseResVo warehouseResVo = new WarehouseResVo();
-         WarehouseDTO dtoList = warehouseDao.getWarehouseTypeByLogisticsCenterCode(logisticsCenterCode, warehouseTypeCode);
-         if(null == dtoList){
-             return null;
-         }
-        BeanCopyUtils.copy(dtoList,warehouseResVo);
-        return warehouseResVo;
+        List<WarehouseDTO> dtoList = warehouseDao.getWarehouseTypeByLogisticsCenterCode(logisticsCenterCode, warehouseTypeCode);
+        if(CollectionUtils.isEmptyCollection(dtoList)){
+            WarehouseResVo warehouseResVo = new WarehouseResVo();
+            BeanCopyUtils.copy(dtoList.get(0),warehouseResVo);
+            return warehouseResVo;
+        }
+        return null;
+    }
+
+    @Override
+    public List<WarehouseResVo> getWarehouseByLogisticsCenterCodeAndNotExistsType(String logisticsCenterCode, Byte warehouseTypeCode) {
+        List<WarehouseDTO> dtoList = warehouseDao.getWarehouseByLogisticsCenterCodeAndNotExistsType(logisticsCenterCode, warehouseTypeCode);
+        return BeanCopyUtils.copyList(dtoList,WarehouseResVo.class);
     }
 }

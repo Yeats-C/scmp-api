@@ -134,10 +134,20 @@ public class WarehouseController {
      * @return
      */
     @ApiOperation("通过物流中心编码以及库房类型查询库房")
-    @GetMapping("/getWarehouseTypeByLogisticsCenterCode")
-    public HttpResponse<WarehouseResVo> getWarehouseTypeByLogisticsCenterCode(@RequestParam  @ApiParam( value = "传入物流中心编码" ,required = true) String logisticsCenterCode,@RequestParam  @ApiParam( value = "仓库类型编码  0 大效期。1销售，2是退货" ,required = true) Byte warehouseTypeCode){
+    @GetMapping("/getWarehouseByLogisticsCenterCodeAndType")
+    public HttpResponse<WarehouseResVo> getWarehouseTypeByLogisticsCenterCode(@RequestParam  @ApiParam( value = "传入物流中心编码" ,required = true) String logisticsCenterCode,@RequestParam  @ApiParam( value = "仓库类型编码  1销售库 2特卖库 3残品库 4监管库" ,required = true) Byte warehouseTypeCode){
         try {
             return HttpResponse.success(warehouseService.getWarehouseTypeByLogisticsCenterCode(logisticsCenterCode,warehouseTypeCode));
+        }catch (Exception ex){
+            return HttpResponse.failure(ResultCode.SEARCH_ERROR);
+        }
+    }
+
+    @ApiOperation("通过物流中心编码以及库房类型查询不在库房类型外所有库房")
+    @GetMapping("/getWarehouseByLogisticsCenterCodeAndNotExistsType")
+    public HttpResponse<List<WarehouseResVo>> getWarehouseByLogisticsCenterCodeAndNotExistsType(@RequestParam  @ApiParam( value = "传入物流中心编码" ,required = true) String logisticsCenterCode,@RequestParam  @ApiParam( value = "仓库类型编码  1销售库 2特卖库 3残品库 4监管库" ,required = true) Byte warehouseTypeCode){
+        try {
+            return HttpResponse.success(warehouseService.getWarehouseByLogisticsCenterCodeAndNotExistsType(logisticsCenterCode,warehouseTypeCode));
         }catch (Exception ex){
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
         }

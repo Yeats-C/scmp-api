@@ -261,11 +261,32 @@ public class ReportServiceImpl implements ReportService {
     public PageReportResData selectLowInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
             List<LowInventoryRespVo> lowInventoryRespVos = reportDao.selectLowInventory(highLowInventoryReqVo);
+            LowInventoryRespVo lowInventoryRespVoSum = reportDao.sumLowInventory(highLowInventoryReqVo);
             Integer total = reportDao.countLowInventory(highLowInventoryReqVo);
             String cloumnName = "bi_low_inventory";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             LowInventoryRespVo lowInventoryRespVo = new LowInventoryRespVo();
             lowInventoryRespVo.setColumnList(maps);
+            if (lowInventoryRespVoSum != null){
+                lowInventoryRespVo.setSzqgTotalSkuNum(lowInventoryRespVoSum.getSzqgTotalSkuNum());
+                lowInventoryRespVo.setSzqgLowSkuNum(lowInventoryRespVoSum.getSzqgLowSkuNum());
+                lowInventoryRespVo.setSzqgLowInventoryRatio(lowInventoryRespVoSum.getSzqgLowInventoryRatio());
+                lowInventoryRespVo.setBzqgTotalSkuNum(lowInventoryRespVoSum.getBzqgTotalSkuNum());
+                lowInventoryRespVo.setBzqgLowSkuNum(lowInventoryRespVoSum.getBzqgLowSkuNum());
+                lowInventoryRespVo.setBzqgLowInventoryRatio(lowInventoryRespVoSum.getBzqgLowInventoryRatio());
+                lowInventoryRespVo.setHbTotalSkuNum(lowInventoryRespVoSum.getHbTotalSkuNum());
+                lowInventoryRespVo.setHbLowSkuNum(lowInventoryRespVoSum.getHbLowSkuNum());
+                lowInventoryRespVo.setHbLowInventoryRatio(lowInventoryRespVoSum.getHbLowInventoryRatio());
+                lowInventoryRespVo.setHnTotalSkuNum(lowInventoryRespVoSum.getHnTotalSkuNum());
+                lowInventoryRespVo.setHnLowSkuNum(lowInventoryRespVoSum.getHnLowSkuNum());
+                lowInventoryRespVo.setHnLowInventoryRatio(lowInventoryRespVoSum.getHnLowInventoryRatio());
+                lowInventoryRespVo.setXnTotalSkuNum(lowInventoryRespVoSum.getXnTotalSkuNum());
+                lowInventoryRespVo.setXnLowSkuNum(lowInventoryRespVoSum.getXnLowSkuNum());
+                lowInventoryRespVo.setXnLowInventoryRatio(lowInventoryRespVoSum.getXnLowInventoryRatio());
+                lowInventoryRespVo.setHdTotalSkuNum(lowInventoryRespVoSum.getHdTotalSkuNum());
+                lowInventoryRespVo.setHdLowSkuNum(lowInventoryRespVoSum.getHdLowSkuNum());
+                lowInventoryRespVo.setHdLowInventoryRatio(lowInventoryRespVoSum.getHdLowInventoryRatio());
+            }
             return new PageReportResData<LowInventoryRespVo>(total,lowInventoryRespVos,lowInventoryRespVo);
         } catch (Exception ex) {
             log.error("查询低库存失败");
@@ -283,11 +304,33 @@ public class ReportServiceImpl implements ReportService {
     public PageReportResData selectHighInventory(HighLowInventoryReqVo highLowInventoryReqVo) {
         try {
             List<HighInventoryRespVo> highInventoryRespVos = reportDao.selectHighInventory(highLowInventoryReqVo);
+            HighInventoryRespVo highInventoryRespVoSum = reportDao.sumHighInventory(highLowInventoryReqVo);
             Integer total = reportDao.countHighInventory(highLowInventoryReqVo);
             String cloumnName = "bi_low_inventory";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             HighInventoryRespVo highInventoryRespVo = new HighInventoryRespVo();
             highInventoryRespVo.setColumnList(maps);
+            if(highInventoryRespVoSum != null){
+                highInventoryRespVo.setSzqgHighInventoryAmount(highInventoryRespVoSum.getSzqgHighInventoryAmount());
+                highInventoryRespVo.setSzqgTotalInventoryAmount(highInventoryRespVoSum.getSzqgTotalInventoryAmount());
+                highInventoryRespVo.setSzqgRate(highInventoryRespVoSum.getSzqgRate());
+                highInventoryRespVo.setBzqgHighInventoryAmount(highInventoryRespVoSum.getBzqgHighInventoryAmount());
+                highInventoryRespVo.setBzqgTotalInventoryAmount(highInventoryRespVoSum.getBzqgTotalInventoryAmount());
+                highInventoryRespVo.setBzqgRate(highInventoryRespVoSum.getBzqgRate());
+                highInventoryRespVo.setHbHighInventoryAmount(highInventoryRespVoSum.getHbHighInventoryAmount());
+                highInventoryRespVo.setHbTotalInventoryAmount(highInventoryRespVoSum.getHbTotalInventoryAmount());
+                highInventoryRespVo.setHbRate(highInventoryRespVoSum.getHbRate());
+                highInventoryRespVo.setHnHighInventoryAmount(highInventoryRespVoSum.getHnHighInventoryAmount());
+                highInventoryRespVo.setHnTotalInventoryAmount(highInventoryRespVoSum.getHnTotalInventoryAmount());
+                highInventoryRespVo.setHnRate(highInventoryRespVoSum.getHnRate());
+                highInventoryRespVo.setXnHighInventoryAmount(highInventoryRespVoSum.getXnHighInventoryAmount());
+                highInventoryRespVo.setXnTotalInventoryAmount(highInventoryRespVoSum.getXnTotalInventoryAmount());
+                highInventoryRespVo.setXnRate(highInventoryRespVoSum.getXnRate());
+                highInventoryRespVo.setHdHhighInventoryAmount(highInventoryRespVoSum.getHdHhighInventoryAmount());
+                highInventoryRespVo.setHdTotalInventoryAmount(highInventoryRespVoSum.getHdTotalInventoryAmount());
+                highInventoryRespVo.setHdRate(highInventoryRespVoSum.getHdRate());
+
+            }
             return new PageReportResData<HighInventoryRespVo>(total,highInventoryRespVos,highInventoryRespVo);
         } catch (Exception ex) {
             log.error("查询高库存失败");
