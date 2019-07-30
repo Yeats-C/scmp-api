@@ -2204,13 +2204,22 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuDraft.setProductSortCode(dic.getSupplierDictionaryValue());
                 }
             }
+            boolean flag1 = false;
+            boolean flag2 = false;
             //颜色
-            if (Objects.isNull(importVo.getColorName())) {
-                error.add("颜色不能为空");
+            if (Objects.nonNull(importVo.getColorName())) {
+//                error.add("颜色不能为空");
+                flag1 = true;
             }
             //型号
-            if (Objects.isNull(importVo.getModelNumber())) {
-                error.add("型号不能为空");
+            if (Objects.nonNull(importVo.getModelNumber())) {
+//                error.add("型号不能为空");
+                flag2 = true;
+            }
+            if (flag1&&flag2) {
+                error.add("颜色和型号只能填写一个");
+            } else if(!(flag1 || flag2)){
+                error.add("颜色和型号必须填写一个");
             }
             //是否管理保质期
             if (Objects.isNull(importVo.getQualityAssuranceManagementDesc())) {
@@ -2222,22 +2231,26 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 } else {
                     productSkuDraft.setQualityAssuranceManagement(e.getType());
                 }
-            }
-            //保质期单位
-            if (Objects.isNull(importVo.getQualityNumber())) {
-                error.add("保质期单位不能为空");
-            } else {
-                QualityTypes type = QualityTypes.getAll().get(importVo.getQualityNumber());
-                if (Objects.isNull(type)) {
-                    error.add("保质期单位只能是年月天");
-                } else {
-                    productSkuDraft.setQualityNumber(type.getType().toString());
+                if (e.getType().equals((byte) 0)) {
+                    //管理
+                    //保质期单位
+                    if (Objects.isNull(importVo.getQualityNumber())) {
+                        error.add("保质期单位不能为空");
+                    } else {
+                        QualityTypes type = QualityTypes.getAll().get(importVo.getQualityDate());
+                        if (Objects.isNull(type)) {
+                            error.add("保质期单位只能是年月天");
+                        } else {
+                            productSkuDraft.setQualityNumber(type.getType().toString());
+                        }
+                    }
+                    //保质天数
+                    if (Objects.isNull(importVo.getQualityDate())) {
+                        error.add("保质天数不能为空");
+                    }
                 }
             }
-            //保质天数
-            if (Objects.isNull(importVo.getQualityDate())) {
-                error.add("保质天数不能为空");
-            }
+
             //供货渠道类别
             if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
                 error.add("供货渠道类别不能为空");
