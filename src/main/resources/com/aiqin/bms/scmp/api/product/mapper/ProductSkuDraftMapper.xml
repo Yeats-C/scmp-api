@@ -777,4 +777,129 @@
       and sku_name = #{skuName}
     </if>
   </select>
+    <select id="exportSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.ExportSkuInfo">
+              select a.*,
+               group_concat(b.price_channel_name) priceChannelName,
+               group_concat(c.tag_name) tagName
+        from (select a.sku_code skuCode,
+               case
+                   when a.goods_gifts = 0
+                       then '商品'
+                   when a.goods_gifts = 1
+                       then '赠品'
+                   else null
+                   end
+                          goodsGiftsDesc,
+               a.sku_name skuName,
+               a.sku_abbreviation skuAbbreviation,
+               a.product_brand_name productBrandName,
+               a.product_category_name productCategoryName,
+               a.product_name productName,
+               a.product_property_name productPropertyName,
+               a.product_sort_name productSortName,
+               a.procurement_section_name procurement_section_name,
+               a.color_name colorName,
+               a.model_number modelNumber,
+               case when a.quality_assurance_management = 0 then '管理'
+                    when a.quality_assurance_management = 1 then '不管理'
+                    else null
+                   end
+                   qualityAssuranceManagementDesc,
+               a.quality_number qualityDate,
+               a.quality_date qualityNumber,
+               a.categories_supply_channels_name categoriesSupplyChannelsName,
+               a.mnemonic_code mnemonicCode,
+               a.manufacturer_guide_price manufacturerGuidePrice,
+               a.applicable_month_age applicableMonthAge,
+               case when a.seasonal_goods = 0 then '是'
+                    when a.seasonal_goods = 1 then '否'
+                    else null
+                   end
+                   seasonalGoodsDesc,
+               a.warehouse_type_name warehouseTypeName,
+               case when a.structural_goods = 0 then '是'
+                    when a.structural_goods = 1 then '否'
+                    else null
+                   end
+                   structuralGoodsDesc,
+               a.use_time useTime,
+               case when a.inventory_model = 0 then '有库存销售'
+                    when a.inventory_model = 1 then '无库存销售'
+                    else null
+                   end
+                   inventoryModelDesc,
+               case when a.unique_code = 0 then '是'
+                    when a.unique_code = 1 then '否'
+                    else null
+                   end
+                   uniqueCodeDesc,
+               a.remark remark,
+               d.spec stockSpec,
+               d.unit_name stockUnitName,
+               e.box_length stockBoxLength,
+               e.box_width stockBoxWidth,
+               e.box_height stockBoxHeight,
+               e.box_gross_weight stockBoxGrossWeight,
+               e.net_weight stockNetWeight,
+               d.bar_code stockBarCode,
+               f.spec purchaseSpec,
+               f.unit_name purchaseUnitName,
+               g.box_length purchaseBoxLength,
+               g.box_width purchaseBoxWidth,
+               g.box_height purchaseBoxHeight,
+               g.box_gross_weight purchaseBoxGrossWeight,
+               g.net_weight purchaseNetWeight,
+               f.base_product_content purchaseBaseProductContent,
+               f.zero_removal_coefficient purchaseZeroRemovalCoefficient,
+               f.purchase_code purchaseBarCode,
+               h.spec distributionSpec,
+               h.unit_name distributionUnitName,
+               h.base_product_content distributionBaseProductContent,
+               h.zero_removal_coefficient distributionZeroRemovalCoefficient,
+               h.delivery_code distributionBarCode,
+               h.max_order_num maxOrderNum,
+               i.spec saleSpec,
+               d.unit_name saleUnitName,
+               i.sales_code saleBarCode,
+               i.description description,
+               j.settlement_method_code settlementMethodName,
+               j.Input_tax_rate inputTaxRate,
+               j.output_tax_rate outputTaxRate,
+               j.Integral_coefficient integralCoefficient,
+               j.logistics_fee_award_ratio logisticsFeeAwardRatio,
+               k.supply_unit_code supplyUnitCode,
+               k.supply_unit_name supplyUnitName,
+               k.tax_included_price taxIncludedPrice,
+               k.joint_franchise_rate jointFranchiseRate,
+               k.point point,
+               k.factory_sku_code factorySkuCode,
+               k.categories_supply_channels_name supplyCategoriesSupplyChannelsName
+        from product_sku_draft a
+                 left join product_sku_stock_info_draft d
+                           on a.sku_code = d.product_sku_code
+                 left join product_sku_box_packing_draft e
+                           on e.unit_code = d.unit_code
+                 left join product_sku_purchase_info_draft f
+                           on f.product_sku_code = a.sku_code
+                 left join product_sku_box_packing_draft g
+                           on g.unit_code = f.unit_code
+                 left join product_sku_distribution_info_draft h
+                           on h.product_sku_code = a.sku_code
+                 left join product_sku_sales_info_draft i
+                           on a.sku_code = i.product_sku_code
+                 left join product_sku_checkout_draft j
+                           on a.sku_code = j.sku_code
+                 left join product_sku_supply_unit_draft k
+                           on k.product_sku_code = j.sku_code and k.update_by = a.update_by
+          where  a.goods_gifts != 2 and a.sku_code in
+          <foreach collection="list" open="(" close=")" item="item" separator=",">
+            #{item}
+          </foreach>
+        group by a.sku_code) a
+        left join product_sku_channel_draft b
+               on a.skuCode = b.sku_code
+        left join use_tag_record c
+               on a.skuCode = c.source_code
+        group by a.skuCode
+    </select>
 </mapper>
