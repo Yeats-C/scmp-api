@@ -114,6 +114,15 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         }
         //数据本身验重
         validateRepeat(request);
+        //验证名称
+        List<ProductSkuSaleAreaMain> draftName = productSkuSaleAreaMainDraftMapper.selectByName(request.getName());
+        if (CollectionUtils.isNotEmpty(draftName)) {
+            throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"名称重复保存失败"));
+        }
+        List<ProductSkuSaleAreaMain> applyName = applyProductSkuSaleAreaMainMapper.selectByName(request.getName());
+        if (CollectionUtils.isNotEmpty(applyName)) {
+            throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"名称重复保存失败"));
+        }
         //首先申请表中试是否有申请中的数据
         if(Objects.nonNull(request.getOfficialCode())){
            ApplyProductSkuSaleAreaMain apply =  applyProductSkuSaleAreaMainMapper.selectByOfficialCode(ApplyStatus.APPROVAL.getNumber().intValue(),request.getOfficialCode());
