@@ -84,5 +84,5 @@ public class AddSkuInfoReqVO {
     private List<ProductSkuInspReportDraft> productSkuInspReportDrafts;
 
     @ApiModelProperty(value = "标志位,判断是否需要校验包装信息（导入不是必填项）",hidden = true)
-    private Boolean boxFlag;
+    private Boolean boxFlag = true;
 }

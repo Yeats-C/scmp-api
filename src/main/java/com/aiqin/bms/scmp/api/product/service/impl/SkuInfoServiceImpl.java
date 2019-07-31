@@ -391,19 +391,21 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
                 }
                 //获取包装信息
-                if (CollectionUtils.isEmpty(addSkuInfoReqVO.getProductSkuBoxPackingDrafts())){
+                if (addSkuInfoReqVO.getBoxFlag() && CollectionUtils.isEmpty(addSkuInfoReqVO.getProductSkuBoxPackingDrafts())){
                     throw new BizException(ResultCode.BOX_PACKING_EMPTY);
                 }
                 List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts = addSkuInfoReqVO.getProductSkuBoxPackingDrafts();
-                productSkuBoxPackingDrafts.forEach(item->{
-                    item.setProductSkuCode(productSkuDraft.getSkuCode());
-                    item.setProductSkuName(productSkuDraft.getSkuName());
-                    item.setCreateBy(productSkuDraft.getCreateBy());
-                    item.setUpdateBy(productSkuDraft.getUpdateBy());
-                    item.setCreateTime(productSkuDraft.getCreateTime());
-                    item.setUpdateTime(productSkuDraft.getUpdateTime());
-                });
-                productSkuBoxPackingService.insertDraftList(productSkuBoxPackingDrafts);
+                if(CollectionUtils.isNotEmpty(productSkuBoxPackingDrafts)){
+                    productSkuBoxPackingDrafts.forEach(item->{
+                        item.setProductSkuCode(productSkuDraft.getSkuCode());
+                        item.setProductSkuName(productSkuDraft.getSkuName());
+                        item.setCreateBy(productSkuDraft.getCreateBy());
+                        item.setUpdateBy(productSkuDraft.getUpdateBy());
+                        item.setCreateTime(productSkuDraft.getCreateTime());
+                        item.setUpdateTime(productSkuDraft.getUpdateTime());
+                    });
+                    productSkuBoxPackingService.insertDraftList(productSkuBoxPackingDrafts);
+                }
                 //结算信息
                 BigDecimal inputTaxRate = BigDecimal.ONE;
                 Long inputTaxRateL = 100L;
