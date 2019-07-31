@@ -444,7 +444,7 @@
         #{returnGuaranteeDay},
       </if>
       <if test="warranty != null">
-        warranty = #{warranty},
+        #{warranty},
       </if>
       <if test="categoriesSupplyChannelsCode != null">
         #{categoriesSupplyChannelsCode},

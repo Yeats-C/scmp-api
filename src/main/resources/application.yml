@@ -1,5 +1,5 @@
 server:
-  port: 8023
+  port: 80
 spring:
   profiles:
     active: ${profile.name}
