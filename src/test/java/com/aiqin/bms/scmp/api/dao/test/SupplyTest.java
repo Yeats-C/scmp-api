@@ -63,47 +63,43 @@ public class SupplyTest  extends SpringBootTestContext  {
     public void test1(){
         ILockStocksReqVO reqVO = new ILockStocksReqVO();
         reqVO.setCompanyCode("04");
-        reqVO.setTransportCenterCode("1025");
-        reqVO.setWarehouseCode("1026");
-        reqVO.setPurchaseGroupCode("1044");
+        reqVO.setTransportCenterCode("1085");
+        reqVO.setWarehouseCode("1086");
+        reqVO.setPurchaseGroupCode("1114");
 
         List<ILockStocksItemReqVo> itemReqVos = new ArrayList<>();
         ILockStocksItemReqVo itemReqVo1 = new ILockStocksItemReqVo();
-        itemReqVo1.setNum(100L);
-        itemReqVo1.setSkuCode("295110");
-        itemReqVo1.setSkuName("惠氏金装爱儿复无乳糖配");
+        itemReqVo1.setNum(1L);
+        itemReqVo1.setSkuCode("10000000330");
+        itemReqVo1.setSkuName("请别使用");
         itemReqVo1.setDocumentType(2);
-        itemReqVo1.setDocumentNum("111111111");
-        itemReqVo1.setSourceDocumentType(3);
-        itemReqVo1.setSourceDocumentNum("222222222");
-        itemReqVo1.setOperator("AAA");
-        itemReqVo1.setRemark("退供生成单");
+        itemReqVo1.setDocumentNum("TGD123456789");
+        itemReqVo1.setOperator("ch");
+        itemReqVo1.setRemark("退供单生成");
 
         itemReqVos.add(itemReqVo1);
 
-        ILockStocksItemReqVo itemReqVo11 = new ILockStocksItemReqVo();
+        /*ILockStocksItemReqVo itemReqVo11 = new ILockStocksItemReqVo();
         itemReqVo11.setNum(100L);
         itemReqVo11.setSkuCode("1002");
         itemReqVo11.setSkuName("惠氏金装爱儿复无乳糖配");
         itemReqVo11.setDocumentType(2);
-        itemReqVo11.setDocumentNum("111111111");
-        itemReqVo11.setSourceDocumentType(3);
-        itemReqVo11.setSourceDocumentNum("222222222");
-        itemReqVo11.setOperator("BBB");
-        itemReqVo11.setRemark("退供生成单");
-        itemReqVos.add(itemReqVo11);
+        itemReqVo11.setDocumentNum("TGD123456789");
+        itemReqVo11.setOperator("ch");
+        itemReqVo11.setRemark("退供单生成");
+        itemReqVos.add(itemReqVo11);*/
 
         reqVO.setItemReqVos(itemReqVos);
         // 生成退供单 加锁
-        // stockService.returnSupplyLockStocks(reqVO);
+         stockService.returnSupplyLockStocks(reqVO);
         // 退供单 解锁
-        stockService.returnSupplyUnLockStocks(reqVO);
+        //stockService.returnSupplyUnLockStocks(reqVO);
     }
 
     @Test
     public void test2(){
         StockChangeRequest stockChangeRequest = new StockChangeRequest();
-        stockChangeRequest.setOperationType(6);
+        stockChangeRequest.setOperationType(9);
 
         List<StockVoRequest> stockVoRequests = new ArrayList<>();
 
@@ -115,11 +111,11 @@ public class SupplyTest  extends SpringBootTestContext  {
         stockVoRequest1.setTransportCenterName("华北仓");
         stockVoRequest1.setWarehouseCode("1071");
         stockVoRequest1.setWarehouseName("华北销售库");
-        stockVoRequest1.setWarehouseType("1");
-        stockVoRequest1.setChangeNum(25L);
+       // stockVoRequest1.setWarehouseType("1");
+        stockVoRequest1.setChangeNum(3L);
 
-        stockVoRequest1.setSkuCode("10000000309");
-        stockVoRequest1.setSkuName("小白熊家用暖奶器HL-0607");
+        stockVoRequest1.setSkuCode("10000000205");
+        stockVoRequest1.setSkuName("小鹿比机器人");
 
         stockVoRequest1.setDocumentType(1);
         stockVoRequest1.setDocumentNum("入库单");

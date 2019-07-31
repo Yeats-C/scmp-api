@@ -52,7 +52,7 @@ public class StockVoRequest {
     @JsonProperty(value = "purchase_group_name")
     private String purchaseGroupName;
 
-    @ApiModelProperty("备品含税金额")
+    @ApiModelProperty("税率")
     @JsonProperty(value = "tax_rate")
     private Long taxRate;
 

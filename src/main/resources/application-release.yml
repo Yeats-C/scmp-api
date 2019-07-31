@@ -10,14 +10,6 @@ center:
     #url: http://39.106.215.2:9003
   #中控前端
     host: http://control.mgs.aiqin.com
-control:
-  url:
-   # 角色列表
-    role-list: http://control.api.aiqin.com/role/list
-   # 主控增加人员等接口
-    account: http://control.api.aiqin.com/external/account
-    # 角色绑定
-    role-add: http://control.api.aiqin.com/person/account/role
 product:
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
@@ -26,20 +18,6 @@ ground:
     url: jdbc:mysql://rm-2zeela0dj4k34987s.mysql.rds.aliyuncs.com/mgs_supplier_release?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
     username: supplier_write
     password: D80SjZXnBLJxZLEZyf(x)vi
-    initialSize: 5
-    minIdle: 3
-    maxActive: 40
-    maxWait: 6000000
-    timeBetweenEvictionRunsMillis: 600000
-    minEvictableIdleTimeMillis: 300000
-    filters: stat,slf4j
-    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=50000
-    web-stat-filter:
-      enabled: true
-      url-pattern: /*
-#      exclusions: *.js,*.gif,*.jpg,*.png,*.css,*.ico,*.map,/druid/*
-      session-stat-enable: false
-      profile-enable: true
 oss:
   end:
     point: http://oss-cn-qingdao.aliyuncs.com

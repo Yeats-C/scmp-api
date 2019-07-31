@@ -1,10 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.BiAClassification;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
 public interface BiAClassificationDao {
 
-    List<BiAClassification> aCategoryList(String data);
+    BiAClassification aCategoryInfo(@Param("beginTime") String beginTime, @Param("finishTime")String finishTime);
 }

@@ -1,12 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
-import com.aiqin.bms.scmp.api.purchase.domain.BiStockoutDetail;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface BiStockoutDetailDao {
 
-    List<BiStockoutDetail> stockOutList(String beginTime, String finishTime);
+    List<String> stockOutDetail(@Param("beginTime") String beginTime, @Param("finishTime") String finishTime);
 
-    List<String> stockOutBySkuCount();
 }

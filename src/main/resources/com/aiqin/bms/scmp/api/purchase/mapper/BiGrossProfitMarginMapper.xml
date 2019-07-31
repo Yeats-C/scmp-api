@@ -10,11 +10,12 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, total_turnover, inventory_cost, gross_profit_margin, create_time, update_time
+    total_turnover, inventory_cost, gross_profit_margin
   </sql>
   <select id="grossProfitMargin" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>
     from bi_gross_profit_margin where
-    to_char(create_time,'yyyy-MM-dd') = #{data}
+    create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+    and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
   </select>
 </mapper>

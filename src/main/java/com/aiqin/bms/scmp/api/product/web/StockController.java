@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.web;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
@@ -75,10 +76,10 @@ public class StockController {
 
     @GetMapping("/search/one/info")
     @ApiOperation(value = "根据stockId查询单个stock信息")
-    public HttpResponse<List<StockRespVO>> selectOneStockInfoByStockId(@RequestParam(value = "stock_id") Long stockId,
-                                                                       @RequestParam(value = "page_no", required = false) Integer page_no,
-                                                                       @RequestParam(value = "page_size", required = false) Integer page_size) {
-        return HttpResponse.success(stockService.selectOneStockInfoByStockId(stockId,page_no,page_size));
+    public HttpResponse<List<StockFlowRespVo>> selectOneStockInfoByStockId(@RequestParam(value = "stock_code") String stockCode,
+                                                                           @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                           @RequestParam(value = "page_size", required = false) Integer page_size) {
+        return HttpResponse.success(stockService.selectOneStockInfoByStockId(stockCode,page_no,page_size));
     }
 
     @PostMapping("/search/sku/page")

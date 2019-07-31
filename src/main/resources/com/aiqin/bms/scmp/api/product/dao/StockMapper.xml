@@ -47,6 +47,9 @@
         <result column="bad_num" jdbcType="BIGINT" property="badNum"/>
         <result column="bad_lock_num" jdbcType="BIGINT" property="badLockNum"/>
         <result column="bad_way_num" jdbcType="BIGINT" property="badWayNum"/>
+        <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
+        <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
+        <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
     </resultMap>
     <resultMap id="BaseBatchResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -527,35 +530,21 @@
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
 
-    <select id="selectOneStockInfoByStockId" parameterType="java.lang.Long"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
+    <select id="selectOneStockInfoByStockId" parameterType="java.lang.String"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo">
         select
-        st.id,st.stock_code,
-        st.company_code,st.company_name,
-        st.transport_center_code,st.transport_center_name,
-        st.warehouse_code,st.warehouse_name,st.warehouse_type,
-        st.sku_code,st.sku_name,st.inventory_num,st.available_num,
-        st.lock_num,st.purchase_way_num,st.allocation_way_num,
-        st.total_way_num,st.new_delivery,st.new_delivery_name,
-        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,
-        st.stock_unit_code,st.stock_unit_name,st.tax_price,st.tax_rate,
-        st.create_time,st.create_by,
-        psc.config_status,
-        ps.product_brand_name,
-        ps.unit_code,ps.product_category_code,ps.product_category_name,psbp.large_unit,
-        pssi.spec,st.tax_cost,
-        sf.lock_status,sf.document_type,sf.document_num,sf.source_document_type,
-        sf.source_document_num,date_format(sf.update_time, '%Y-%m-%d %H:%i:%s') as update_time,sf.update_by,sf.remark,sf.change_num
-        from stock as st
-
-        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
-        AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
-        left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
-        left join product_sku_stock_info as pssi on st.sku_code=CONVERT(pssi.product_sku_code USING utf8) COLLATE utf8_unicode_ci
-        left join stock_flow as sf on st.sku_code=CONVERT(sf.sku_code USING utf8) COLLATE utf8_unicode_ci
-
-        where st.id = #{stockId, jdbcType=VARCHAR}
+        sf.id as id,
+        sf.lock_status as lockStatus,
+        sf.change_num as changeNum,
+        sf.document_type as documentType,
+        sf.document_num as documentNum,
+        sf.source_document_type as sourceDocumentType,
+        sf.source_document_num as sourceDocumentNum,
+        date_format(sf.update_time, '%Y-%m-%d %H:%i:%s') as updateTime,
+        sf.update_by as updateBy,
+        sf.remark as remark
+        from stock_flow as sf
+        where sf.stock_code = #{stockCode, jdbcType=VARCHAR}
         order by sf.update_time DESC
     </select>
 
@@ -1638,8 +1627,8 @@
     <select id="rejectProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
         select
         s.tax_cost as productCost, su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName,
-        ps.unit_code as unitCode,ps.unit_name as unitName,s.available_num as stockCount,s.tax_rate as taxRate,
-        ps.color_code as colorCode,ps.color_name as colorName,ps.model_number as modelNumber,ps.spec as productSpec,
+        psi.unit_code as unitCode,psi.unit_name as unitName,s.available_num as stockCount,s.tax_rate as taxRate,
+        ps.color_code as colorCode,ps.color_name as colorName,ps.model_number as modelNumber,psi.spec as productSpec,
         ps.product_brand_code as brandId,ps.product_brand_name as brandName,ps.goods_gifts as productType,
         ps.bar_code as barcode,ps.product_category_code as categoryId,ps.product_category_name as categoryName,
         s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
@@ -1650,6 +1639,7 @@
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code
+        inner join product_sku_stock_info psi on s.sku_code = psi.product_sku_code
         <where>
             ps.del_flag = 0
             <if test="transportCenterCode != null">
@@ -1669,8 +1659,8 @@
     <select id="rejectProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
         select
         s.tax_cost as productCost, su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName,
-        psdi.unit_code as unitCode,psdi.unit_name as unitName,s.available_num as stockCount,psc.Input_tax_rate as taxRate,
-        ps.color_code as colorCode,ps.color_name as colorName,ps.model_number as modelNumber,ps.spec as productSpec,
+        psi.unit_code as unitCode,psi.unit_name as unitName,s.available_num as stockCount,psc.Input_tax_rate as taxRate,
+        ps.color_code as colorCode,ps.color_name as colorName,ps.model_number as modelNumber,psi.spec as productSpec,
         ps.product_brand_code as brandId,ps.product_brand_name as brandName,ps.goods_gifts as productType,
         ps.bar_code as barcode,ps.product_category_code as categoryId,ps.product_category_name as categoryName,
         s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
@@ -1681,7 +1671,7 @@
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code
-        left join product_sku_distribution_info psdi on s.sku_code = psdi.product_sku_code
+        inner join product_sku_stock_info psi on s.sku_code = psi.product_sku_code
         <include refid="REJECT_QUERY_SQL"></include>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
@@ -1817,11 +1807,12 @@
         s.id,s.warehouse_code,s.sku_code,s.sku_name,
         ps.product_category_code,ps.product_category_name,ps.product_sort_code,ps.product_sort_name,
         ps.product_brand_code,ps.product_brand_name,ps.goods_gifts,
-        ps.spec,ps.color_code,ps.color_name,ps.model_number,ps.unit_code,ps.unit_name,
+        pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,
         sum(s.available_num) available_num,IFNULL(s.tax_rate,0) tax_rate,IFNULL(s.tax_cost,0) tax_cost
         from stock s
         left join stock_batch sb on s.sku_code = sb.sku_code
         left join product_sku ps on s.sku_code = ps.sku_code
+        left join product_sku_stock_info pssi on s.sku_code = pssi.product_sku_code
         <where>
             1 = 1
             <if test="outTransportCenterCode != null and outTransportCenterCode != ''">

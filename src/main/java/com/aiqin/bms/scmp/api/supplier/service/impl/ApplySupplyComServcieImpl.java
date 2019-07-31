@@ -483,9 +483,14 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         applySupplyCompanyReqDTO.setApplyCode(String.valueOf(encodingRule.getNumberingValue()+1));
         //新增供货单位申请
         Long resultNum =((ApplySupplyComServcie)AopContext.currentProxy()).insert(applySupplyCompanyReqDTO);
-        String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplyCompanyReqDTO.getCreateBy()).replace("APPLYTYPE", "新增");
+        ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(applySupplyCompanyReqDTO.getApplyStatus());
+        String content =applyStatus.getContent().replace("CREATEBY", applySupplyCompanyReqDTO.getCreateBy()).replace("APPLYTYPE", "新增");
+        HandleTypeCoce handleTypeCoce = HandleTypeCoce.PENDING;
+        if(Objects.equals(applyStatus,ApplyStatus.PENDING_SUBMISSION)){
+            handleTypeCoce = HandleTypeCoce.PENDING_SUBMISSION;
+        }
         //存日志
-        supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,HandleTypeCoce.PENDING.getName());
+        supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"",handleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,handleTypeCoce.getName());
         //修改编码
         encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         //发货信息
@@ -1176,11 +1181,10 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                             SupplyCompany supplyCompany = supplyCompanyNames.get(supplierImport.getApplySupplyName().trim());
                             if (Objects.nonNull(supplyCompany)) {
                                 error.add("供应商名称重复");
-                            }else {
-                                reqVO.setApplySupplyCode(supplyCompany1.getSupplyCode());
-                                reqVO.setApplySupplyName(supplierImport.getApplySupplyName().trim());
                             }
                         }
+                        reqVO.setApplySupplyCode(supplyCompany1.getSupplyCode());
+                        reqVO.setApplySupplyName(supplierImport.getApplySupplyName().trim());
                     }
                 }
             }
@@ -1252,17 +1256,17 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }
             //邮编
             if(StringUtils.isNotBlank(supplierImport.getZipCode())){
-                reqVO.setFax(supplierImport.getZipCode().trim());
+                reqVO.setZipCode(supplierImport.getZipCode().trim());
             }
             //邮箱
             if(StringUtils.isBlank(supplierImport.getEmail())){
                 error.add("邮箱不能为空");
             }else {
-                reqVO.setAddress(supplierImport.getEmail().trim());
+                reqVO.setEmail(supplierImport.getEmail().trim());
             }
             //公司网址
             if(StringUtils.isNotBlank(supplierImport.getCompanyWebsite())){
-                reqVO.setFax(supplierImport.getCompanyWebsite().trim());
+                reqVO.setCompanyWebsite(supplierImport.getCompanyWebsite().trim());
             }
             //税号
             if(StringUtils.isBlank(supplierImport.getTaxId())){
@@ -1296,6 +1300,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }else {
                 if(!Constraint.ckCountNum(11,supplierImport.getMobilePhone())){
                     error.add("手机号码格式不正确");
+                } else {
+                    reqVO.setMobilePhone(supplierImport.getMobilePhone());
                 }
             }
             boolean flag = true;
@@ -1311,8 +1317,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 try {
                     String minOrderAmount = supplierImport.getMinOrderAmount();
                     String maxOrderAmount = supplierImport.getMaxOrderAmount();
-                    long l = Long.parseLong(minOrderAmount);
-                    long l2 = Long.parseLong(maxOrderAmount);
+                    long l = NumberConvertUtils.stringParseLong(minOrderAmount);
+                    long l2 = NumberConvertUtils.stringParseLong(maxOrderAmount);
                     if(l<0){
                         error.add("最小起订金额不能小于0");
                     }
@@ -1417,7 +1423,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 try {
                     String deliveryDays = supplierImport.getReturnDays();
                     if (StringUtils.isNotBlank(deliveryDays)) {
-                        sendVO.setDeliveryDays(Long.valueOf(deliveryDays));
+                        returnVO.setDeliveryDays(Long.valueOf(deliveryDays));
                     }
                 } catch (NumberFormatException e) {
                     error.add("收货天数格式不正确");

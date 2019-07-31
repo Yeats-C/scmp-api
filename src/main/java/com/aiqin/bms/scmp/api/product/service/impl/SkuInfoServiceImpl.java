@@ -855,7 +855,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         //分销
         purchaseSaleStocks.addAll(productSkuDisInfoService.getDraftList(skuCode));
-        detailResp.setPurchaseSaleStocks(purchaseSaleStocks);
+        detailResp.setPurchaseSaleStocks(purchaseSaleStocks.stream().sorted(Comparator.comparing(PurchaseSaleStockRespVo :: getType)).collect(Collectors.toList()));
         //sku图片及介绍
         detailResp.setProductSkuPictures(productSkuPicturesService.getDraftList(skuCode));
         //sku商品说明
@@ -924,7 +924,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
         //分销
         purchaseSaleStocks.addAll(productSkuDisInfoService.getList(skuCode));
-        detailResp.setPurchaseSaleStocks(purchaseSaleStocks);
+        //进销存排序
+        detailResp.setPurchaseSaleStocks(purchaseSaleStocks.stream().sorted(Comparator.comparing(PurchaseSaleStockRespVo :: getType)).collect(Collectors.toList()));
         //sku图片及介绍
         detailResp.setProductSkuPictures(productSkuPicturesService.getList(skuCode));
         //sku商品说明
@@ -951,6 +952,16 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if(null != authToken){
                 querySkuListReqVO.setCompanyCode(authToken.getCompanyCode());
                 querySkuListReqVO.setPersonId(authToken.getPersonId());
+            }
+            if(CollectionUtils.isNotEmpty(querySkuListReqVO.getProductCategoryCodes())){
+                try {
+                    querySkuListReqVO.setProductCategoryLv1Code(querySkuListReqVO.getProductCategoryCodes().get(0));
+                    querySkuListReqVO.setProductCategoryLv2Code(querySkuListReqVO.getProductCategoryCodes().get(1));
+                    querySkuListReqVO.setProductCategoryLv3Code(querySkuListReqVO.getProductCategoryCodes().get(2));
+                    querySkuListReqVO.setProductCategoryLv4Code(querySkuListReqVO.getProductCategoryCodes().get(3));
+                } catch (Exception e) {
+                    log.info("不做处理,让程序继续执行下去");
+                }
             }
             PageHelper.startPage(querySkuListReqVO.getPageNo(),querySkuListReqVO.getPageSize());
             List<QueryProductSkuListResp> queryProductSkuListResps = productSkuDao.querySkuList(querySkuListReqVO);
@@ -1050,7 +1061,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         //分销
         purchaseSaleStocks.addAll(productSkuDisInfoService.getApplyList(skuCode,applyCode));
-        detailResp.setPurchaseSaleStocks(purchaseSaleStocks);
+        detailResp.setPurchaseSaleStocks(purchaseSaleStocks.stream().sorted(Comparator.comparing(PurchaseSaleStockRespVo :: getType)).collect(Collectors.toList()));
         //sku图片及介绍
         detailResp.setProductSkuPictures(productSkuPicturesService.getApply(skuCode,applyCode));
         //sku商品说明
@@ -1342,6 +1353,16 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     public BasePage<QuerySkuInfoRespVO> getSkuListByQueryVO(QuerySkuInfoReqVO vo){
         PageHelper.startPage(vo.getPageNo(),vo.getPageSize());
+        if(CollectionUtils.isNotEmpty(vo.getProductCategoryCodes())){
+            try {
+                vo.setProductCategoryLv1Code(vo.getProductCategoryCodes().get(0));
+                vo.setProductCategoryLv2Code(vo.getProductCategoryCodes().get(1));
+                vo.setProductCategoryLv3Code(vo.getProductCategoryCodes().get(2));
+                vo.setProductCategoryLv4Code(vo.getProductCategoryCodes().get(3));
+            } catch (Exception e) {
+                log.info("不做处理,让程序继续执行下去");
+            }
+        }
         List<QuerySkuInfoRespVO> list = getSkuListByQueryNoPage(vo);
         return PageUtil.getPageList(vo.getPageNo(),list);
     }

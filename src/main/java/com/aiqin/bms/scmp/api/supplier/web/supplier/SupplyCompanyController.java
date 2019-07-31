@@ -161,7 +161,10 @@ public class SupplyCompanyController extends SupplierBaseController {
             return HttpResponse.success(applySupplyComServcie.importSupplierNewSave(req));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
-        } catch (Exception e) {
+        } catch (GroundRuntimeException e) {
+
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API,999,e.getMessage()));
+        }catch (Exception e) {
             log.error(e.getMessage(),e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }

@@ -115,7 +115,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 apply.setApplyIds(applyIds);
                 List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(apply);
                 // 计算sku数量，单品数量，含税采购金额，实物返金额
-                Integer singleCount = 0, productTotalAmount = 0, returnAmount = 0;
+                Integer singleCount = 0, productTotalAmount = 0, returnAmount = 0, wholeCount = 0;
                 if(CollectionUtils.isNotEmptyCollection(details)){
                     for(PurchaseApplyDetailResponse detail:details){
                         Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
@@ -126,6 +126,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         Integer amountSum = number * amount;
                         // 单品数量
                         singleCount += number;
+                        wholeCount += purchaseWhole;
                         if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
                             returnAmount +=  amountSum;
                         }
@@ -138,8 +139,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 form.setReturnAmount(returnAmount);
                 form.setSingleCount(singleCount);
                 // sku数量
-                Integer skuCount = purchaseApplyProductDao.formSkuCount(apply);
-                form.setSkuCount(skuCount);
+                //Integer skuCount = purchaseApplyProductDao.formSkuCount(apply);
+                form.setSkuCount(wholeCount);
             }
         }
         return HttpResponse.success(purchaseForms);
@@ -624,9 +625,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             LOGGER.error("生成入库单失败....");
             return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
         }
-        String name = "入库申请单"+ s + "，入库完成";
-        log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
-                name , null);
         return HttpResponse.success();
     }
 
@@ -687,17 +685,22 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
                 Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
-                reqVo.setPreInboundMainNum(purchaseWhole.longValue());
-                reqVo.setPreInboundNum(singleCount.longValue() - actualSingleCount.longValue());
+                reqVo.setPreInboundMainNum(singleCount.longValue() - actualSingleCount.longValue());
+                reqVo.setPreInboundNum(purchaseWhole.longValue());
                 reqVo.setPreTaxPurchaseAmount(product.getProductAmount().longValue());
                 Long productTotalAmount = product.getProductTotalAmount() == null ? 0 : product.getProductTotalAmount().longValue();
                 reqVo.setPreTaxAmount(productTotalAmount);
                 reqVo.setLinenum(product.getId());
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
                 reqVo.setCreateTime(Calendar.getInstance().getTime());
-                preInboundNum += reqVo.getPreInboundNum();
-                preInboundMainNum += purchaseWhole;
-                preTaxAmount += productTotalAmount;
+                reqVo.setTaxRate(product.getTaxRate());
+                preInboundMainNum += reqVo.getPreInboundMainNum();
+                preInboundNum += purchaseWhole;
+                if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                    preTaxAmount += 0;
+                }else {
+                    preTaxAmount += productTotalAmount;
+                }
                 preNoTaxAmount += Calculate.computeNoTaxPrice(productTotalAmount, product.getTaxRate().longValue());
                 list.add(reqVo);
             }
@@ -709,8 +712,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setPreTax(preTaxAmount-preNoTaxAmount);
         save.setRemark(null);
         save.setList(list);
-        log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_IN.getCode(),
-                PurchaseOrderLogEnum.WAREHOUSING_IN.getName() , null);
         return save;
     }
 
@@ -765,9 +766,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 LOGGER.error("生成入库单失败....");
                 return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
             }
-            String name = "入库申请单"+ s + "，入库完成";
-            log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
-                    name , null);
         }else {
             order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
             order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
@@ -778,7 +776,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             }
             // 添加日志
             log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , "手动");
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
             // 仓储确认判断是否入库完成
             if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
                 this.wayNum(purchaseStorage.getPurchaseOrderId());

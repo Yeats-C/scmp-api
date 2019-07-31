@@ -60,9 +60,9 @@
         <result column="score_code" jdbcType="VARCHAR" property="scoreCode" />
     </resultMap>
     <sql id="Base_Column_List">
-    id, reject_record_id, reject_record_code, duty_person, contacts_person, contacts_person_phone, 
-    province_id, province_name, city_id, city_name, district_id, district_name, address, 
-    expect_time, valid_day, dictionary_id, dictionary_name, supplier_code, supplier_name, 
+    id, reject_record_id, reject_record_code, duty_person, contacts_person, contacts_person_phone,
+    province_id, province_name, city_id, city_name, district_id, district_name, address,
+    expect_time, valid_day, dictionary_id, dictionary_name, supplier_code, supplier_name,
     purchase_group_code, purchase_group_name, reject_status, remark, transport_remark, transport_url,
     out_stock_time, product_count, product_amount, single_count, gift_count,gift_amount, return_count,
     return_amount, actual_product_count, actual_product_amount, actual_single_count, actual_gift_count,actual_gift_amount, actual_return_count,
@@ -85,8 +85,10 @@
             <if test="rejectStatus!=null ">
                 and reject_status = #{rejectStatus,jdbcType=VARCHAR}
             </if>
-            <if test="beginTime!=null and finishTime!=null">
+            <if test="beginTime!=null  ">
                 and create_time <![CDATA[ >=]]>  #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="  finishTime!=null">
                 and create_time <![CDATA[ <=]]>  #{finishTime,jdbcType=VARCHAR}
             </if>
             <if test="transportCenterCode!=null ">

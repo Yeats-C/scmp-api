@@ -29,6 +29,9 @@ public class ProductSkuChangePriceImportRespVO {
     @ApiModelProperty("是否默认(0否1是)")
     private Integer beDefault;
 
+    @ApiModelProperty("价格项目名称")
+    private String priceProjectName;
+
     @ApiModelProperty("开始生效时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date effectiveTimeStart;
@@ -40,12 +43,23 @@ public class ProductSkuChangePriceImportRespVO {
     @ApiModelProperty("新的含税采购价")
     private Long purchasePriceNew;
 
+    @ApiModelProperty("调价原因")
+    private String reason;
+
     @ApiModelProperty("错误原因")
     private String errorReason;
 
-    public ProductSkuChangePriceImportRespVO(String skuCode, String skuName, String errorReason) {
+    public ProductSkuChangePriceImportRespVO(String skuCode, String skuName, String supplierCode, String supplierName, Integer beDefault, String priceProjectName, Date effectiveTimeStart, Date effectiveTimeEnd, Long purchasePriceNew, String reason, String errorReason) {
         this.skuCode = skuCode;
         this.skuName = skuName;
+        this.supplierCode = supplierCode;
+        this.supplierName = supplierName;
+        this.beDefault = beDefault;
+        this.priceProjectName = priceProjectName;
+        this.effectiveTimeStart = effectiveTimeStart;
+        this.effectiveTimeEnd = effectiveTimeEnd;
+        this.purchasePriceNew = purchasePriceNew;
+        this.reason = reason;
         this.errorReason = errorReason;
     }
 
