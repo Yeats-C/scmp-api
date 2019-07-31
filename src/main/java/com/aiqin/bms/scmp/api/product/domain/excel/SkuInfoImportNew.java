@@ -17,7 +17,7 @@ import lombok.Data;
 @ApiModel("sku新增导入实体")
 public class SkuInfoImportNew extends BaseRowModel {
 
-    public static final String HEAD = "SkuInfoImportNew(goodsGiftsDesc=类型, skuName=SKU名称, skuAbbreviation=SKU简称, productBrandName=品牌, productCategoryName=品类, productName=所属SPU, productPropertyName=商品属性, productSortName=所属部门, colorName=颜色, modelNumber=型号, qualityAssuranceManagementDesc=是否管理保质期, qualityDate=保质期单位, qualityNumber=保质天数, categoriesSupplyChannelsName=供货渠道类别, mnemonicCode=助记码, manufacturerGuidePrice=厂商指导价, applicableMonthAge=适用起始月龄, seasonalGoodsDesc=是否季节商品, warehouseTypeName=仓位类型, structuralGoodsDesc=结构性商品, useTime=使用时长, inventoryModelDesc=库存模式, uniqueCodeDesc=唯一码管理, priceChannelName=覆盖渠道, tagName=商品标签, remark=商品备注, stockSpec=库存规格, stockUnitName=库存单位, stockBoxLength=库存长, stockBoxWidth=库存宽, stockBoxHeight=库存高, stockBoxGrossWeight=库存毛重, stockNetWeight=库存净重, stockBarCode=库存条形码, purchaseSpec=采购规格, purchaseUnitName=采购单位, purchaseBoxLength=采购长, purchaseBoxWidth=采购宽, purchaseBoxHeight=采购高, purchaseBoxGrossWeight=采购毛重, purchaseNetWeight=采购净重, purchaseBaseProductContent=采购基商品含量, purchaseZeroRemovalCoefficient=采购拆零系数, purchaseBarCode=采购条形码, distributionSpec=分销规格, distributionUnitName=分销单位, distributionBaseProductContent=分销基商品含量, distributionZeroRemovalCoefficient=分销拆零系数, distributionBarCode=分销条形码, maxOrderNum=最大订购数量, saleSpec=销售规格, saleUnitName=销售单位, saleBarCode=销售条形码, description=销售描述, settlementMethodName=结算方式, inputTaxRate=进项税率, outputTaxRate=销项税率, integralCoefficient=积分系数, logisticsFeeAwardRatio=物流费奖励比例, supplyUnitName=供应商, taxIncludedPrice=含税采购价, jointFranchiseRate=联营扣点, point=返点, factorySkuCode=厂商SKU编号, supplyCategoriesSupplyChannelsName=供应商供货渠道类别, readyCol67=爱亲渠道价, readyCol68=萌贝树渠道价, readyCol69=小红马渠道价, readyCol70=爱亲分销价, readyCol71=萌贝树分销价, readyCol72=小红马分销价, readyCol73=爱亲售价, readyCol74=萌贝树售价, readyCol75=小红马售价, readyCol76=华北仓状态, readyCol77=华东仓状态, readyCol78=华南仓状态, readyCol79=西南仓状态, readyCol80=华中仓状态, manufacturerName=生产厂家, factoryProductNumber=厂方商品编号, address=保修地址, picFolderCode=图片文件夹编号)";
+    public static final String HEAD = "SkuInfoImportNew(goodsGiftsDesc=类型, skuName=SKU名称, skuAbbreviation=SKU简称, productBrandName=品牌, productCategoryName=品类, productName=所属SPU, productPropertyName=商品属性, productSortName=所属部门, colorName=颜色, modelNumber=型号, qualityAssuranceManagementDesc=是否管理保质期, qualityNumber=保质期单位, qualityDate=保质天数, categoriesSupplyChannelsName=供货渠道类别, mnemonicCode=助记码, manufacturerGuidePrice=厂商指导价, applicableMonthAge=适用起始月龄, seasonalGoodsDesc=是否季节商品, warehouseTypeName=仓位类型, structuralGoodsDesc=结构性商品, useTime=使用时长, inventoryModelDesc=库存模式, uniqueCodeDesc=唯一码管理, priceChannelName=覆盖渠道, tagName=商品标签, remark=商品备注, stockSpec=库存规格, stockUnitName=库存单位, stockBoxLength=库存长, stockBoxWidth=库存宽, stockBoxHeight=库存高, stockBoxGrossWeight=库存毛重, stockNetWeight=库存净重, stockBarCode=库存条形码, purchaseSpec=采购规格, purchaseUnitName=采购单位, purchaseBoxLength=采购长, purchaseBoxWidth=采购宽, purchaseBoxHeight=采购高, purchaseBoxGrossWeight=采购毛重, purchaseNetWeight=采购净重, purchaseBaseProductContent=采购基商品含量, purchaseZeroRemovalCoefficient=采购拆零系数, purchaseBarCode=采购条形码, distributionSpec=分销规格, distributionUnitName=分销单位, distributionBaseProductContent=分销基商品含量, distributionZeroRemovalCoefficient=分销拆零系数, distributionBarCode=分销条形码, maxOrderNum=最大订购数量, saleSpec=销售规格, saleUnitName=销售单位, saleBarCode=销售条形码, description=销售描述, settlementMethodName=结算方式, inputTaxRate=进项税率, outputTaxRate=销项税率, integralCoefficient=积分系数, logisticsFeeAwardRatio=物流费奖励比例, supplyUnitName=供应商, taxIncludedPrice=含税采购价, jointFranchiseRate=联营扣点, point=返点, factorySkuCode=厂商SKU编号, supplyCategoriesSupplyChannelsName=供应商供货渠道类别, readyCol67=爱亲渠道价, readyCol68=萌贝树渠道价, readyCol69=小红马渠道价, readyCol70=爱亲分销价, readyCol71=萌贝树分销价, readyCol72=小红马分销价, readyCol73=爱亲售价, readyCol74=萌贝树售价, readyCol75=小红马售价, readyCol76=华北仓状态, readyCol77=华东仓状态, readyCol78=华南仓状态, readyCol79=西南仓状态, readyCol80=华中仓状态, manufacturerName=生产厂家, factoryProductNumber=厂方商品编号, address=保修地址, picFolderCode=图片文件夹编号)";
 
     @ApiModelProperty("商品/赠品(0:商品，1:赠品 2:组合商品)")
     @ExcelProperty(index = 0, value = "类型")
@@ -65,11 +65,11 @@ public class SkuInfoImportNew extends BaseRowModel {
 
     @ApiModelProperty("保质日期")
     @ExcelProperty(index = 11, value = "保质期单位")
-    private String qualityDate;
+    private String qualityNumber;
 
     @ApiModelProperty("保质数量")
     @ExcelProperty(index = 12, value = "保质天数")
-    private String qualityNumber;
+    private String qualityDate;
 
     @ApiModelProperty("供货渠道类别名称")
     @ExcelProperty(index = 13, value = "供货渠道类别")
