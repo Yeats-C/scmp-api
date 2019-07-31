@@ -99,7 +99,7 @@ public class SupplyTest  extends SpringBootTestContext  {
     @Test
     public void test2(){
         StockChangeRequest stockChangeRequest = new StockChangeRequest();
-        stockChangeRequest.setOperationType(6);
+        stockChangeRequest.setOperationType(9);
 
         List<StockVoRequest> stockVoRequests = new ArrayList<>();
 
@@ -111,11 +111,11 @@ public class SupplyTest  extends SpringBootTestContext  {
         stockVoRequest1.setTransportCenterName("华北仓");
         stockVoRequest1.setWarehouseCode("1071");
         stockVoRequest1.setWarehouseName("华北销售库");
-        stockVoRequest1.setWarehouseType("1");
-        stockVoRequest1.setChangeNum(25L);
+       // stockVoRequest1.setWarehouseType("1");
+        stockVoRequest1.setChangeNum(3L);
 
-        stockVoRequest1.setSkuCode("10000000309");
-        stockVoRequest1.setSkuName("小白熊家用暖奶器HL-0607");
+        stockVoRequest1.setSkuCode("10000000205");
+        stockVoRequest1.setSkuName("小鹿比机器人");
 
         stockVoRequest1.setDocumentType(1);
         stockVoRequest1.setDocumentNum("入库单");

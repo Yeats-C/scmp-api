@@ -1,11 +1,7 @@
 package com.aiqin.bms.scmp.api.bireport.web;
 
-import com.aiqin.bms.scmp.api.bireport.domain.request.dashboard.DashboardDepartAnnualSalesStatiReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.request.dashboard.DashboardMonthlySalesStatiAccReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.request.dashboard.DashboardMonthlySalesStatiReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepartAnnualSalesStatiRespVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiAccRespVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiRespVo;
+import com.aiqin.bms.scmp.api.bireport.domain.request.dashboard.*;
+import com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.*;
 import com.aiqin.bms.scmp.api.bireport.service.DashboardService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -54,5 +50,19 @@ public class DashboardController {
     public HttpResponse<List<DashboardMonthlySalesStatiAccRespVo>> selectDashboardMonthlySalesStatiAcc(){
         DashboardMonthlySalesStatiAccReqVo dashboardMonthlySalesStatiAccReqVo = new DashboardMonthlySalesStatiAccReqVo();
         return HttpResponse.success(dashboardService.selectDashboardMonthlySalesStatiAcc(dashboardMonthlySalesStatiAccReqVo));
+    }
+
+    @GetMapping("/dashboard/monthly/loss/amount")
+    @ApiOperation("月亏损")
+    public HttpResponse<List<DashboardMonthlyLossAmountRespVo>> selectDashboardMonthlyLossAmount(){
+        DashboardMonthlyLossAmountReqVo dashboardMonthlyLossAmountReqVo = new DashboardMonthlyLossAmountReqVo();
+        return HttpResponse.success(dashboardService.selectDashboardMonthlyLossAmount(dashboardMonthlyLossAmountReqVo));
+    }
+
+    @GetMapping("/dashboard/dep/monthly/homocyclic/ratio")
+    @ApiOperation("当月部门销售同环比")
+    public HttpResponse<List<DashboardDepMonthlyHomocyclicRatioRespVo>> selectDashboardDepMonthlyHomocyclicRatio(){
+        DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo = new DashboardDepMonthlyHomocyclicRatioReqVo();
+        return HttpResponse.success(dashboardService.selectDashboardDepMonthlyHomocyclicRatio(dashboardDepMonthlyHomocyclicRatioReqVo));
     }
 }

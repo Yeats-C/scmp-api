@@ -56,5 +56,34 @@
 
         WHERE
     </select>
-
+    <select id="selectDashboardMonthlyLossAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlyLossAmountRespVo">
+      SELECT
+      dmla.id as id,
+      dmla.stat_month as statMonth,
+      dmla.defective_effect_amount_monthly as defectiveEffectAmountMonthly,
+      dmla.defective_effect_amount_acc as defectiveEffectAmountAcc,
+      dmla.stockout_effect_amount_monthly as stockoutEffectAmountMonthly,
+      dmla.stockout_effect_amount_acc as stockoutEffectAmountAcc,
+      dmla.monthly_loss_amount as monthlyLossAmount
+      FROM dashboard_monthly_loss_amount dmla
+      WHERE
+    </select>
+    <select id="selectDashboardDepMonthlyHomocyclicRatio" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
+      SELECT
+      ddmhr.id as id,
+      ddmhr.stat_month as statMonth,
+      ddmhr.product_sort_code as productSortCode,
+      ddmhr.product_sort_name as productSortName,
+      ddmhr.channel_costs as channelCosts,
+      ddmhr.channel_sales_amount as channelSalesAmount,
+      ddmhr.channel_sales_yearonyear as channelSalesYearonyear,
+      ddmhr.channel_sales_link_relative as channelSalesLinkRelative,
+      ddmhr.channel_margin as channelMargin,
+      ddmhr.channel_margin_yearonyear as channelMarginYearonyear,
+      ddmhr.channel_margin_link_relative as channelMarginLinkRelative,
+      ddmhr.distribution_sales_amount as distributionSalesAmount,
+      ddmhr.distribution_margin as distributionMargin
+      FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
+      WHERE
+    </select>
 </mapper>
