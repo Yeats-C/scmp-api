@@ -39,7 +39,7 @@ public class Inbound extends PagesRequest{
     private String sourceOderCode;
 
     @ApiModelProperty("入库时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date inboundTime;
 
     @ApiModelProperty("物流中心编码")
