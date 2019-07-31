@@ -49,7 +49,7 @@
       #{item.productSkuCode,jdbcType=VARCHAR},
       #{item.productSkuName,jdbcType=VARCHAR},
       0,
-      0,
+      #{item.mainPicture,jdbcType=VARCHAR},
       #{item.createBy,jdbcType=VARCHAR},
       #{item.createBy,jdbcType=VARCHAR},
       now(),

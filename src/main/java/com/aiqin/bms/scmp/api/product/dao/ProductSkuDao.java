@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
+import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.SkuWarehouseStockNum;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
@@ -292,4 +293,6 @@ public interface ProductSkuDao {
                                             @Param("supplierCode")String supplierCode, @Param("transportCenterCode")String transportCenterCode);
 
     List<ProductSkuInfo> selectInfoByImport(ProductSkuChangePriceImportRequest productSkuChangePriceImportRequest);
+
+    ProductSku selectSkuInfo(String skuCode);
 }

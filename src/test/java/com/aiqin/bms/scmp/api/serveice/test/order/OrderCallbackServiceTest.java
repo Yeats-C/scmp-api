@@ -1,12 +1,15 @@
 package com.aiqin.bms.scmp.api.serveice.test.order;
 
+import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import org.junit.Test;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -41,7 +44,7 @@ public class OrderCallbackServiceTest {
     private OrderCallbackService orderCallbackService;
 
     @Test
-    public void outboundOrder(){
+    public void outboundOrder() {
 
         OutboundRequest request = new OutboundRequest();
         request.setOrderCode("o123123");
@@ -58,11 +61,35 @@ public class OrderCallbackServiceTest {
         request.setWarehouseName("库房..名称");
         request.setTransportCenterName("仓库");
         request.setSupplierName("供应商");
-        request.setProductNum(10L);
+        request.setProductNum(200L);
         request.setPaymentTime(new Date());
+        request.setTransportTime(new Date());
+        request.setDeliveryTime(new Date());
+        request.setReceivingTime(new Date());
+        request.setOperatorTime(new Date());
+        request.setOperatorCode("1111");
+        request.setCustomerCode("222");
+        request.setCustomerName("名称");
+        request.setConsignee("张三");
+        request.setConsigneePhone("185411544564");
+        request.setProvinceCode("001");
+        request.setProvinceName("省");
+        request.setCityCode("001");
+        request.setCityName("市");
+        request.setDistrictCode("001");
+        request.setDistrictName("区");
+        request.setDetailAddress("详细地址");
+        request.setProductChannelTotalAmount(2000L);
 
-
-
+        List<OutboundDetailRequest> detail = new ArrayList<>();
+        OutboundDetailRequest outboundDetailRequest = new OutboundDetailRequest();
+        outboundDetailRequest.setProductLineNum(1L);
+        outboundDetailRequest.setSkuCode("10000000321");
+        outboundDetailRequest.setChannelUnitPrice(10L);
+        outboundDetailRequest.setNum(200L);
+        outboundDetailRequest.setActualDeliverNum(200L);
+        detail.add(outboundDetailRequest);
+        request.setDetail(detail);
 
 
         orderCallbackService.outboundOrder(request);
