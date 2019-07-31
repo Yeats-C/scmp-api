@@ -28,6 +28,8 @@ public interface ChartDao {
      */
     List<MonthSalesAchievementRespVo> selectMonthSalesAchievement(ChartReqVo chartReqVo);
 
+    MonthSalesAchievementRespVo sumMonthSalesAchievement(ChartReqVo chartReqVo);
+
     /**
      *  月累计品类销售情况
      * @param chartReqVo
