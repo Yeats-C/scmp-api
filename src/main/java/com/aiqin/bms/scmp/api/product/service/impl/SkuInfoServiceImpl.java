@@ -855,7 +855,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         //分销
         purchaseSaleStocks.addAll(productSkuDisInfoService.getDraftList(skuCode));
-        detailResp.setPurchaseSaleStocks(purchaseSaleStocks);
+        detailResp.setPurchaseSaleStocks(purchaseSaleStocks.stream().sorted(Comparator.comparing(PurchaseSaleStockRespVo :: getType)).collect(Collectors.toList()));
         //sku图片及介绍
         detailResp.setProductSkuPictures(productSkuPicturesService.getDraftList(skuCode));
         //sku商品说明
@@ -924,7 +924,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
         //分销
         purchaseSaleStocks.addAll(productSkuDisInfoService.getList(skuCode));
-        detailResp.setPurchaseSaleStocks(purchaseSaleStocks);
+        //进销存排序
+        detailResp.setPurchaseSaleStocks(purchaseSaleStocks.stream().sorted(Comparator.comparing(PurchaseSaleStockRespVo :: getType)).collect(Collectors.toList()));
         //sku图片及介绍
         detailResp.setProductSkuPictures(productSkuPicturesService.getList(skuCode));
         //sku商品说明
@@ -1060,7 +1061,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         //分销
         purchaseSaleStocks.addAll(productSkuDisInfoService.getApplyList(skuCode,applyCode));
-        detailResp.setPurchaseSaleStocks(purchaseSaleStocks);
+        detailResp.setPurchaseSaleStocks(purchaseSaleStocks.stream().sorted(Comparator.comparing(PurchaseSaleStockRespVo :: getType)).collect(Collectors.toList()));
         //sku图片及介绍
         detailResp.setProductSkuPictures(productSkuPicturesService.getApply(skuCode,applyCode));
         //sku商品说明
