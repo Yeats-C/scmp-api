@@ -50,7 +50,20 @@ public class OrderCallbackServiceTest {
 //        request.setBeException(0);
         request.setPaymentStatus(0);
 //        request.setBeLock(0);
-//        request.setOrderType();
+        request.setOrderType("1");
+        request.setOrderCategory("1");
+//        request.setPaymentType("");
+//        request.setBeException(1);
+        request.setOrderOriginal("小红马");
+        request.setWarehouseName("库房..名称");
+        request.setTransportCenterName("仓库");
+        request.setSupplierName("供应商");
+        request.setProductNum(10L);
+        request.setPaymentTime(new Date());
+
+
+
+
 
         orderCallbackService.outboundOrder(request);
 
