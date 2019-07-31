@@ -170,7 +170,6 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @SaveList
     public int insertBatch(List<ProductSkuChannel> list) {
         return mapper.insertBatch(list);
     }

@@ -95,7 +95,6 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     }
 
     @Override
-    @SaveList
     @Transactional(rollbackFor = BizException.class)
     public int insertList(List<ProductSkuInspReport> productSkuInspReports) {
         int num = productSkuInspReportDao.insertInspReportList(productSkuInspReports);

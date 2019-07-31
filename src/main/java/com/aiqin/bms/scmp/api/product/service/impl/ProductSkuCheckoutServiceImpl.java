@@ -104,7 +104,6 @@ public class ProductSkuCheckoutServiceImpl implements ProductSkuCheckoutService 
     }
 
     @Override
-    @Save
     @Transactional(rollbackFor = BizException.class)
     public int insert(ProductSkuCheckout productSkuCheckout) {
         int num = productSkuCheckoutMapper.insertSelective(productSkuCheckout);
@@ -112,7 +111,6 @@ public class ProductSkuCheckoutServiceImpl implements ProductSkuCheckoutService 
     }
 
     @Override
-    @Update
     @Transactional(rollbackFor = BizException.class)
     public int update(ProductSkuCheckout productSkuCheckout) {
         int num = productSkuCheckoutMapper.updateByPrimaryKeySelective(productSkuCheckout);
