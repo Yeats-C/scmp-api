@@ -625,9 +625,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             LOGGER.error("生成入库单失败....");
             return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
         }
-        String name = "入库申请单"+ s + "，入库完成";
-        log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
-                name , null);
         return HttpResponse.success();
     }
 
@@ -715,8 +712,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setPreTax(preTaxAmount-preNoTaxAmount);
         save.setRemark(null);
         save.setList(list);
-        log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_IN.getCode(),
-                PurchaseOrderLogEnum.WAREHOUSING_IN.getName() , null);
         return save;
     }
 
@@ -771,9 +766,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 LOGGER.error("生成入库单失败....");
                 return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
             }
-            String name = "入库申请单"+ s + "，入库完成";
-            log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
-                    name , null);
         }else {
             order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
             order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
@@ -784,7 +776,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             }
             // 添加日志
             log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , "手动");
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
             // 仓储确认判断是否入库完成
             if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
                 this.wayNum(purchaseStorage.getPurchaseOrderId());

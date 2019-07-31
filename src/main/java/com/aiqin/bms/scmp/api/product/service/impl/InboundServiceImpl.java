@@ -17,6 +17,9 @@ import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
+import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
@@ -96,6 +99,9 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     @Lazy(true)
     private PurchaseManageService purchaseManageService;
+
+    @Autowired
+    private PurchaseOrderDao purchaseOrderDao;
     /**
      * 分页查询以及列表搜索
      * @param vo
@@ -351,6 +357,18 @@ public class InboundServiceImpl implements InboundService {
                  //保存日志
                  productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.PULL_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), code, HandleTypeCoce.PULL_INBOUND_ODER.getName(), new Date(), inbound.getCreateBy(), null);
 
+                if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode() )){
+                    OperationLog operationLog = new OperationLog();
+                    PurchaseOrder purchaseOrder = new PurchaseOrder();
+                    purchaseOrder.setPurchaseGroupCode(inbound.getSourceOderCode());
+                    purchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+                    operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
+                    operationLog.setCreateByName(inbound.getCreateBy());
+                    operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
+                    operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
+                    purchaseManageService.addLog(operationLog);
+                }
+
                  //调用回调接口
                  inboundService.workFlowCallBack(inboundCallBackReqVo);
 
@@ -358,7 +376,7 @@ public class InboundServiceImpl implements InboundService {
                  return ;
 //             }else{
 //                 throw new RuntimeException("入库单传入wms失败");}
-        }catch (Exception e){
+             }catch (Exception e){
              e.printStackTrace();
              log.error(e.getMessage());
              throw new RuntimeException("入库单传入wms失败");
@@ -460,7 +478,7 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setDocumentType(1);//0出库 1入库 2退供 3采购
             stockVoRequest.setSourceDocumentNum(inbound.getSourceOderCode());
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
-            stockVoRequest.setOperator(inbound.getUpdateBy());
+            stockVoRequest.setOperator(inbound.getCreateBy());
 //            stockVoRequest.setTaxRate(inboundProduct.getTaxRate().longValue());
             stockVoRequest.setNewPurchasePrice(inboundProduct.getPraTaxPurchaseAmount());
             stockVoRequest.setNewDelivery(inbound.getSupplierCode());
@@ -493,6 +511,18 @@ public class InboundServiceImpl implements InboundService {
 //        stockChangeRequest.setStockBatchVoRequest(stockBatchVoRequestList);
         //保存日志
         productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.RETURN_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),reqVo,HandleTypeCoce.RETURN_INBOUND_ODER.getName(),new Date(),inbound.getCreateBy(), null);
+
+        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode() )){
+            OperationLog operationLog = new OperationLog();
+            PurchaseOrder purchaseOrder = new PurchaseOrder();
+            purchaseOrder.setPurchaseGroupCode(inbound.getSourceOderCode());
+            purchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+            operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
+            operationLog.setCreateByName(inbound.getCreateBy());
+            operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_IN.getCode());
+            operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库中");
+            purchaseManageService.addLog(operationLog);
+        }
 
         try {
             HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
@@ -559,6 +589,17 @@ public class InboundServiceImpl implements InboundService {
                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
                int k = inboundDao.updateByPrimaryKeySelective(inbound);
 
+               if(inbound.getInboundTypeCode().toString().equals(InboundTypeEnum.RETURN_SUPPLY)){
+                   OperationLog operationLog = new OperationLog();
+                   PurchaseOrder purchaseOrder = new PurchaseOrder();
+                   purchaseOrder.setPurchaseGroupCode(inbound.getSourceOderCode());
+                   purchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+                   operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
+                   operationLog.setCreateByName(inbound.getCreateBy());
+                   operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode());
+                   operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库完成");
+                   purchaseManageService.addLog(operationLog);
+               }
            }catch (Exception e){
                e.printStackTrace();
                log.error(e.getMessage());
@@ -626,7 +667,7 @@ public class InboundServiceImpl implements InboundService {
             for(StorageResultItemReqVo storageResultItemReqVo : storageResultItemReqVos){
                 purchaseOrderProduct = new PurchaseOrderProduct();
                 purchaseOrderProduct.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
-                purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundNum().toString()));
+                purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundMainNum().toString()));
                 purchaseOrderProduct.setSkuCode(storageResultItemReqVo.getSkuCode());
                 purchaseOrderProduct.setId(storageResultItemReqVo.getLinenum());
                 purchaseOrderProducts.add(purchaseOrderProduct);
