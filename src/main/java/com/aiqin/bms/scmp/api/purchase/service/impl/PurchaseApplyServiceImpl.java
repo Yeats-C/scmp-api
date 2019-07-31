@@ -470,18 +470,21 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             StringUtils.isBlank(record[3]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[5]) || StringUtils.isBlank(record[6])) {
                         HandleResponse(response, record,"导入的数据不全");
                         errorCount++;
+                        list.add(response);
                         continue;
                     }
                     supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                     if(supplier==null){
                         HandleResponse(response, record,"未查询到供应商信息");
                         errorCount++;
+                        list.add(response);
                         continue;
                     }
                     logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
                     if(logisticsCenter==null){
                         HandleResponse(response, record,"未查询到仓库信息");
                         errorCount++;
+                        list.add(response);
                         continue;
                     }
                     applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
@@ -553,7 +556,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         response.setTransportCenterName(record[3]);
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
-        response.setProductPurchaseAmount(Integer.valueOf(record[6]));
+        if(StringUtils.isNotBlank(record[6] )){
+            response.setProductPurchaseAmount(Integer.valueOf(record[6]));
+        }
         response.setErrorInfo(errorReason);
     }
 
