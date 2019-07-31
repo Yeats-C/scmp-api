@@ -2802,7 +2802,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("积分系数不能为空");
             } else {
                 try {
-                    draft.setIntegralCoefficient(NumberConvertUtils.stringParseLong(importVo.getIntegralCoefficient()));
+                    draft.setIntegralCoefficient(Long.parseLong(importVo.getIntegralCoefficient()));
                 } catch (Exception e) {
                     error.add("积分系数格式不正确");
                 }
