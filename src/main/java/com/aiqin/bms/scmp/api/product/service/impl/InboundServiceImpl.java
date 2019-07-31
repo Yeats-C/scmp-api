@@ -481,7 +481,7 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSourceDocumentNum(inbound.getSourceOderCode());
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockVoRequest.setOperator(inbound.getCreateBy());
-//            stockVoRequest.setTaxRate(inboundProduct.getTaxRate().longValue());
+            stockVoRequest.setTaxRate(inboundProduct.getTaxRate().longValue());
             stockVoRequest.setNewPurchasePrice(inboundProduct.getPraTaxPurchaseAmount());
             stockVoRequest.setNewDelivery(inbound.getSupplierCode());
             stockVoRequest.setNewDeliveryName(inbound.getSupplierName());
