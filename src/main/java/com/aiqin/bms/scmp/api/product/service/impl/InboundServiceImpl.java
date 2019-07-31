@@ -626,7 +626,7 @@ public class InboundServiceImpl implements InboundService {
             for(StorageResultItemReqVo storageResultItemReqVo : storageResultItemReqVos){
                 purchaseOrderProduct = new PurchaseOrderProduct();
                 purchaseOrderProduct.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
-                purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundNum().toString()));
+                purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundMainNum().toString()));
                 purchaseOrderProduct.setSkuCode(storageResultItemReqVo.getSkuCode());
                 purchaseOrderProduct.setId(storageResultItemReqVo.getLinenum());
                 purchaseOrderProducts.add(purchaseOrderProduct);
