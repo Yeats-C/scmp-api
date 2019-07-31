@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
@@ -78,7 +79,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderWeightCoefficient = detailRespVo.getOrderWeightCoefficient();
             orderVolumeCoefficient = detailRespVo.getOrderVolumeCoefficient();
         }
-        ProductSku productSku;
+        OrderProductSkuResponse productSku;
         List<OrderInfoItem> detailList = new ArrayList<>();
         OrderInfoItem orderInfoItem;
         for (OutboundDetailRequest outboundDetailRequest : request.getDetail()) {
@@ -88,8 +89,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             productSku = productSkuDao.selectSkuInfo(outboundDetailRequest.getSkuCode());
             if(productSku!=null){
                 orderInfoItem.setSkuName(productSku.getProductName());
-                orderInfoItem.setPictureUrl(productSku.getImages());
-//                orderInfoItem.setColorCode(productSku);
+                orderInfoItem.setPictureUrl(productSku.getPictureUrl());
+                orderInfoItem.setColorCode(productSku.getColorCode());
+                orderInfoItem.setColorName(productSku.getProductName());
+                orderInfoItem.setSpec(productSku.getSpec());
+                orderInfoItem.setModel(productSku.getModel());
             }
 
             detailList.add(orderInfoItem);

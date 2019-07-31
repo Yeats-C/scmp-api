@@ -36,6 +36,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.store.*;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -294,5 +295,5 @@ public interface ProductSkuDao {
 
     List<ProductSkuInfo> selectInfoByImport(ProductSkuChangePriceImportRequest productSkuChangePriceImportRequest);
 
-    ProductSku selectSkuInfo(String skuCode);
+    OrderProductSkuResponse selectSkuInfo(String skuCode);
 }
