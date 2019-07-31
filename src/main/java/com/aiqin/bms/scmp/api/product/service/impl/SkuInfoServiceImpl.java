@@ -2231,22 +2231,26 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 } else {
                     productSkuDraft.setQualityAssuranceManagement(e.getType());
                 }
-            }
-            //保质期单位
-            if (Objects.isNull(importVo.getQualityNumber())) {
-                error.add("保质期单位不能为空");
-            } else {
-                QualityTypes type = QualityTypes.getAll().get(importVo.getQualityNumber());
-                if (Objects.isNull(type)) {
-                    error.add("保质期单位只能是年月天");
-                } else {
-                    productSkuDraft.setQualityNumber(type.getType().toString());
+                if (e.getType().equals((byte) 0)) {
+                    //管理
+                    //保质期单位
+                    if (Objects.isNull(importVo.getQualityNumber())) {
+                        error.add("保质期单位不能为空");
+                    } else {
+                        QualityTypes type = QualityTypes.getAll().get(importVo.getQualityDate());
+                        if (Objects.isNull(type)) {
+                            error.add("保质期单位只能是年月天");
+                        } else {
+                            productSkuDraft.setQualityNumber(type.getType().toString());
+                        }
+                    }
+                    //保质天数
+                    if (Objects.isNull(importVo.getQualityDate())) {
+                        error.add("保质天数不能为空");
+                    }
                 }
             }
-            //保质天数
-            if (Objects.isNull(importVo.getQualityDate())) {
-                error.add("保质天数不能为空");
-            }
+
             //供货渠道类别
             if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
                 error.add("供货渠道类别不能为空");

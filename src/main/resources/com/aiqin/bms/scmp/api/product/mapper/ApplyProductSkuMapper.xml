@@ -191,30 +191,38 @@
   </resultMap>
   <select id="selectByApplyCode" resultMap="selectByApplyCode">
     select
-    apply_type,
-    apply_type_name,
-    sku_code,
-    sku_name,
-    product_brand_code,
-    product_brand_name,
-    product_category_code,
-    product_category_name,
-    product_code,
-    product_name,
-    create_time,
-    create_by,
-    update_time,
-    update_by,
-    apply_code,
-    apply_status,
-    form_no,
-    auditor_by,
-    auditor_time,
-    selection_effective_time,
-    selection_effective_start_time,
-    change_content
-    from apply_product_sku
-    where apply_code = #{applyCode}
+    a.apply_type,
+    a.apply_type_name,
+    a.sku_code,
+    a.sku_name,
+    a.product_brand_code,
+    a.product_brand_name,
+    a.product_category_code,
+    CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) product_category_name,
+    a.product_code,
+    a.product_name,
+    a.create_time,
+    a.create_by,
+    a.update_time,
+    a.update_by,
+    a.apply_code,
+    a.apply_status,
+    a.form_no,
+    a.auditor_by,
+    a.auditor_time,
+    a.selection_effective_time,
+    a.selection_effective_start_time,
+    a.change_content
+    from apply_product_sku a
+    LEFT JOIN product_category lv4
+    on lv4.category_id = a.product_category_code
+    LEFT JOIN product_category lv3
+    on lv3.category_id = lv4.parent_id
+    LEFT JOIN product_category lv2
+    on lv2.category_id = lv3.parent_id
+    LEFT JOIN product_category lv1
+    on lv1.category_id = lv2.parent_id
+    where a.apply_code = #{applyCode}
   </select>
   <select id="checkBrand" resultType="java.lang.Integer">
     select
