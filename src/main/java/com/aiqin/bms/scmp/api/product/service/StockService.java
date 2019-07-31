@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -97,10 +98,10 @@ public interface StockService {
     /**
      * 根据stockid查询单个库存信息
      *
-     * @param stockId
+     * @param stockCode
      * @return
      */
-    PageInfo<StockRespVO> selectOneStockInfoByStockId(Long stockId,Integer page_no,Integer page_size);
+    PageInfo<StockFlowRespVo> selectOneStockInfoByStockId(String stockCode, Integer page_no, Integer page_size);
 
 
     /**

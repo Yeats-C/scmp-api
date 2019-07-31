@@ -88,6 +88,10 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     @JsonProperty("channel_last_maori_rate")
     private Double channelLastMaoriRate;
 
+    @ApiModelProperty("去年渠道毛利率")
+    @JsonProperty("last_year_channel_maori_rate")
+    private Double lastYearChannelMaoriRate;
+
     @ApiModelProperty("渠道同比")
     @JsonProperty("channel_compared_same")
     private String channelComparedSame;
@@ -111,6 +115,10 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     @ApiModelProperty("上期分销毛利率")
     @JsonProperty("distribution_last_maori_rate")
     private Double distributionLastMaoriRate;
+
+    @ApiModelProperty("去年分销毛利率")
+    @JsonProperty("last_year_distribution_maori_rate")
+    private Double lastYearDistributionMaoriRate;
 
     @ApiModelProperty("分销同比")
     @JsonProperty("distribution_compared_same")

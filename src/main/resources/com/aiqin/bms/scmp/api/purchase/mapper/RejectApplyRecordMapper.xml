@@ -57,8 +57,10 @@
             <if test="applyRecordStatus!=null ">
                 and apply_record_status = #{applyRecordStatus,jdbcType=VARCHAR}
             </if>
-            <if test="beginTime!=null and finishTime!=null">
+            <if test="beginTime!=null  ">
                 and create_time <![CDATA[ >=]]>  #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="  finishTime!=null">
                 and create_time <![CDATA[ <=]]>  #{finishTime,jdbcType=VARCHAR}
             </if>
         </where>

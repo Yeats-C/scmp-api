@@ -10,6 +10,12 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, total_stock_num, out_stock_num, out_stock_rate, create_time, update_time
+    total_stock_num, out_stock_num, out_stock_rate
   </sql>
+  <select id="stockOutRateInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from bi_stockout_rate
+    where create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+    and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+  </select>
 </mapper>
