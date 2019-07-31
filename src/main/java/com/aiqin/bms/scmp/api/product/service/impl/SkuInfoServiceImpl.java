@@ -2263,7 +2263,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     if (Objects.isNull(importVo.getQualityNumber())) {
                         error.add("保质期单位不能为空");
                     } else {
-                        QualityTypes type = QualityTypes.getAll().get(importVo.getQualityDate());
+                        QualityTypes type = QualityTypes.getAll().get(importVo.getQualityNumber());
                         if (Objects.isNull(type)) {
                             error.add("保质期单位只能是年月天");
                         } else {
@@ -2273,6 +2273,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     //保质天数
                     if (Objects.isNull(importVo.getQualityDate())) {
                         error.add("保质天数不能为空");
+                    }else {
+                        productSkuDraft.setQualityDate(Integer.parseInt(importVo.getQualityDate())+"");
                     }
                 }
             }
@@ -2515,7 +2517,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     flag = false;
                 }
                 if (flag) {
-                    stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight());
+                    stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight()/10000);
                 }
                 try {
                     stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim()));
@@ -2566,8 +2568,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 ProductSkuBoxPackingDraft purchaseBox = new ProductSkuBoxPackingDraft();
                 purchaseBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
                 purchaseBox.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
-                purchaseBox.setLargeUnit(stock.getUnitName());
-                purchaseBox.setUnitCode(stock.getUnitCode());
+                purchaseBox.setLargeUnit(purchase.getUnitName());
+                purchaseBox.setUnitCode(purchase.getUnitCode());
                 boolean flag = true;
                 try {
                     purchaseBox.setBoxLength(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxLength().trim()));
@@ -2800,7 +2802,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("积分系数不能为空");
             } else {
                 try {
-                    draft.setIntegralCoefficient(NumberConvertUtils.stringParseLong(importVo.getIntegralCoefficient())/100);
+                    draft.setIntegralCoefficient(NumberConvertUtils.stringParseLong(importVo.getIntegralCoefficient()));
                 } catch (Exception e) {
                     error.add("积分系数格式不正确");
                 }
