@@ -100,25 +100,34 @@
   <select id="getProductSkuDraftByCompanyCode"
           resultType="com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo">
      select
-        apply_type as applyType,
-        apply_type_name as applyTypeName,
-        sku_code as code,
-        sku_name as name,
-        procurement_section_code as purchaseGroupCode,
-        procurement_section_name as purchaseGroupName,
-        product_brand_code as productBrandCode,
-        product_brand_name as productBrandName,
-        product_category_code as productCategoryCode,
-        product_category_name as productCategoryName,
-        product_code as productCode,
-        product_name as productName,
-        create_time as createTime,
-        create_by as createBy,
-        pic_folder_code as picFolderCode,
-        change_content as changeContent,
-        original_code as originalCode
-    from product_sku_draft where company_code = #{companyCode,jdbcType=VARCHAR}
-    and procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+       a.apply_type as applyType,
+       a.apply_type_name as applyTypeName,
+       a.sku_code as code,
+       a.sku_name as name,
+       a.procurement_section_code as purchaseGroupCode,
+       a.procurement_section_name as purchaseGroupName,
+       a.product_brand_code as productBrandCode,
+       a.product_brand_name as productBrandName,
+       a.product_category_code as productCategoryCode,
+       CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) as productCategoryName,
+       a.product_code as productCode,
+       a.product_name as productName,
+       a.create_time as createTime,
+       a.create_by as createBy,
+       a.pic_folder_code as picFolderCode,
+       a.change_content as changeContent,
+       a.original_code as originalCode
+    from product_sku_draft a
+    LEFT JOIN product_category lv4
+      on lv4.category_id = a.product_category_code
+    LEFT JOIN product_category lv3
+      on lv3.category_id = lv4.parent_id
+    LEFT JOIN product_category lv2
+      on lv2.category_id = lv3.parent_id
+    LEFT JOIN product_category lv1
+      on lv1.category_id = lv2.parent_id
+    where a.company_code = #{companyCode,jdbcType=VARCHAR}
+    and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
   </select>
   <select id="getProductSkuDraftByProductCode" parameterType="java.lang.String" resultMap="BaseResultMap">
     select

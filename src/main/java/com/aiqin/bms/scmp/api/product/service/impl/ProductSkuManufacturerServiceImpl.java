@@ -42,7 +42,6 @@ public class ProductSkuManufacturerServiceImpl implements ProductSkuManufacturer
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    @SaveList
     public int insertList(List<ProductSkuManufacturer> productSkuManufacturers) {
         int num = productSkuManufacturerDao.insertList(productSkuManufacturers);
         return num;
