@@ -40,7 +40,7 @@
       purchase_process_review_day as purchaseProcessReviewDay,
       purchase_process_payment_day as purchaseProcessPaymentDay,
       purchase_process_supplier_confirm_day as purchaseProcessSupplierConfirmDay,
-      purchase_process_day as purchaseProcessDay,
+      purchase_process_day as purchaseProcessDay
     from supplier_rule
     where company_code = #{companyCode,jdbcType=VARCHAR}
   </select>
