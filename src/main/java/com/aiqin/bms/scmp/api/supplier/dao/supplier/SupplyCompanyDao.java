@@ -29,6 +29,12 @@ public interface SupplyCompanyDao {
      * @return
      */
     SupplyCompanyDetailDTO getSupplyComDetail(Long id);
+    /**
+     * 根据ID获取供货单位及结算,收货信息
+     * @param id
+     * @return
+     */
+    SupplyCompanyDetailDTO getApplySupplyComDetail(Long id);
 
     /**
      * 根据编码名称校验是否重复

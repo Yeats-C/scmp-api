@@ -25,5 +25,7 @@ public interface DeliveryInfoDao {
 
     List<DeliveryInfoRespVO> getDeliveryInfoBySupplyCompanyCode(String supplyCompanyCode);
 
+    List<DeliveryInfoRespVO> getDeliveryInfoByApplyCompanyCode(String supplyCompanyCode);
+
     int deleteDeliveryInfoBySupplyCompanyCode(String SupplyCompanyCode);
 }

@@ -1806,8 +1806,8 @@ select a.sku_code              as skuCode,
     <resultMap id="selectDirectSupplierBySkuCodes" type="com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO">
       <result property="skuCode" column="skuCode"/>
       <collection property="supplierList" ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaSupplierInfo">
-        <result column="directDeliverySupplierCode" property="directDeliverySupplierCode"/>
-        <result column="directDeliverySupplierName" property="directDeliverySupplierName"/>
+        <result column="supplierCode" property="directDeliverySupplierCode"/>
+        <result column="supplierName" property="directDeliverySupplierName"/>
       </collection>
     </resultMap>
     <select id="selectDirectSupplierBySkuCodes" resultMap="selectDirectSupplierBySkuCodes">
@@ -1817,7 +1817,7 @@ select a.sku_code              as skuCode,
                from product_sku a
         left join product_sku_supply_unit b
         on a.sku_code = b.product_sku_code
-        where b.categories_supply_channels_code = 1 and a.sku_code in
+        where b.categories_supply_channels_code = 2 and a.sku_code in
         <foreach collection="items" open="(" close=")" separator="," item="item">
           #{item}
         </foreach>

@@ -18,6 +18,9 @@ public class SupplyCompanyDetailDTO {
     @ApiModelProperty("供应商编号")
     private String supplyCode;
 
+    @ApiModelProperty("申请修改时需要展示的供应商编码")
+    private String formalCode;
+
     @ApiModelProperty("所属集团名称")
     private String supplierName;
 

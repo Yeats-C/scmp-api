@@ -4,12 +4,15 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportReq;
 import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportResp;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.request.QueryApplySupplyListComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyComDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyCompanyReqDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.CancelApplySupplyComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplyComReqVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.ApplyComDetailRespVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.ApplySupplyComApplyListRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComListRespVO;
@@ -142,6 +145,23 @@ public interface ApplySupplyComServcie {
      */
     Boolean importSupplierNewUpdate(SupplierImportReq req);
 
+    /**
+     * 查申请数据
+     * @param queryApplySupplyComReqVO
+     * @return
+     */
+    BasePage<ApplySupplyComApplyListRespVO> applyList(QueryApplySupplyListComReqVO queryApplySupplyComReqVO);
+
+    /**
+     * 查询申请信息
+     * @param id
+     * @return
+     */
+    ApplyComDetailRespVO applyView(Long id,String statusTypeCode);
+
+    Boolean editApply(ApplySupplyCompanyReqVO applySupplyCompanyReqVO);
+
+    int insertData(ApplySupplyCompany applySupplyCompany);
 
 
 //    BasePage<SupplyComListRespVO> applyList();

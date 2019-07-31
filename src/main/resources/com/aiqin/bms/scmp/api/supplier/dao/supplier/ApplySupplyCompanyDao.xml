@@ -435,4 +435,47 @@
     </if>
     order by create_time desc
   </select>
+  <select id="applyList"
+          resultType="com.aiqin.bms.scmp.api.supplier.domain.response.ApplySupplyComApplyListRespVO">
+      select a.id,
+             a.apply_supply_company_code applyCode,
+             a.supply_company_code supplyCode,
+             a.apply_supply_name applySupplyName,
+             a.supplier_name supplierName,
+             a.contact_name contactName,
+             a.mobile_phone mobilePhone,
+             a.purchasing_group_name purchaseGroupName,
+             a.update_by updateBy,
+             a.update_time updateTime,
+             a.province_name provinceName,
+             a.city_name cityName,
+             a.district_name districtName
+      from apply_supply_company a
+      where 1=1 and a.company_code = #{companyCode} and a.apply_status = 5
+    <if test="supplyCode != null and supplyCode != '' ">
+      and a.supply_company_code like concat('%',#{supplyCode},'%')
+    </if>
+    <if test="supplyName != null and supplyName != ''">
+      and a.apply_supply_name  like concat('%',supplyName},'%')
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != '' ">
+      and  a.purchasing_group_Code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != '' ">
+      and  a.purchasing_group_Name like concat('%',#{purchaseGroupName},'%')
+    </if>
+    <if test="provinceId!=null and provinceId!=''">
+      and a.province_id =#{provinceId,jdbcType=VARCHAR}
+    </if>
+    <if test="cityId!=null and cityId!=''">
+      and a.city_id =#{cityId,jdbcType=VARCHAR}
+    </if>
+    <if test="districtId!=null and districtId!=''">
+      and a.district_id =#{districtId,jdbcType=VARCHAR}
+    </if>
+    <if test="personId != null and personId != '' ">
+      and a.purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+    </if>
+    order by create_time desc
+  </select>
 </mapper>

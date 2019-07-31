@@ -9,4 +9,11 @@ public interface ApplySupplyCompanyMapper {
     int updateByPrimaryKeySelective(ApplySupplyCompany record);
 
     int updateByPrimaryKey(ApplySupplyCompany record);
+
+    ApplySupplyCompany selectByCode(String applySupplyCode);
+
+    int insert(ApplySupplyCompany applySupplyCompany);
+
+    int delectById(Long id);
+
 }
