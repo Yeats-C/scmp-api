@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.service.impl;
 
+import com.aiqin.bms.scmp.api.base.PageImportResData;
 import com.aiqin.bms.scmp.api.bireport.dao.ChartDao;
 import com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
@@ -66,14 +67,15 @@ public class ChartServiceImpl implements ChartService{
      * @return
      */
     @Override
-    public List<MonthSalesAchievementRespVo> selectMonthSalesAchievement(ChartReqVo chartReqVo) {
+    public PageImportResData<MonthSalesAchievementRespVo> selectMonthSalesAchievement(ChartReqVo chartReqVo) {
         try {
             String createTime = chartReqVo.getCreateTime();
             if(createTime != null){
                 chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
             }
             List<MonthSalesAchievementRespVo> monthSalesAchievementRespVos = chartDao.selectMonthSalesAchievement(chartReqVo);
-            return monthSalesAchievementRespVos;
+            MonthSalesAchievementRespVo monthSalesAchievementSum = chartDao.sumMonthSalesAchievement(chartReqVo);
+            return new PageImportResData<>(monthSalesAchievementSum,monthSalesAchievementRespVos);
         } catch (Exception ex) {
             log.error("月销售达成情况");
             ex.printStackTrace();

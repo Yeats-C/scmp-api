@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.service;
 
+import com.aiqin.bms.scmp.api.base.PageImportResData;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo;
@@ -29,7 +30,7 @@ public interface ChartService {
      * @param chartReqVo
      * @return
      */
-    List<MonthSalesAchievementRespVo> selectMonthSalesAchievement(ChartReqVo chartReqVo);
+    PageImportResData selectMonthSalesAchievement(ChartReqVo chartReqVo);
 
     /**
      *  月累计品类销售情况

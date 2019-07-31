@@ -271,6 +271,19 @@
         <include refid="select_month_sales_achievement"/>
         order by bmsa.id asc
     </select>
+    <select id="sumMonthSalesAchievement" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthSalesAchievementRespVo">
+        SELECT
+        bmsa.id as id,
+        SUM(bmsa.channel_amount) as channelAmount,
+        SUM(bmsa.channel_budget) as channelBudget,
+        SUM(bmsa.channel_amount)/SUM(bmsa.channel_budget) as channelYieldRate,
+        SUM(bmsa.distribution_amount) as distributionAmount,
+        SUM(bmsa.distribution_budget) as distributionBudget,
+        SUM(bmsa.distribution_amount)/SUM(bmsa.distribution_budget) as distributionYieldRate
+        from bi_month_sales_achievement bmsa
+        <include refid="select_month_sales_achievement"/>
+        order by bmsa.id asc
+    </select>
     <select id="selectMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeBrandSalesRespVo">
         select
