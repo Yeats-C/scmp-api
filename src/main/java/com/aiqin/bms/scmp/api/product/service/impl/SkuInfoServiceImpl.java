@@ -1818,6 +1818,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     }
                 }
             }
+
             reqVO.getProductSkuDraft().setProcurementSectionCode(reqVOs.getPurchaseGroupCode());
             reqVO.getProductSkuDraft().setProcurementSectionName(reqVOs.getPurchaseGroupName());
             saveDraftSkuInfo(reqVO);
