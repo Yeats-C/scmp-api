@@ -767,4 +767,9 @@ public class InboundServiceImpl implements InboundService {
         }
     }
 
+    @Override
+    public void repealOrder(String orderId, String createById, String createByName){
+        //TODO wms发送撤销订单
+    }
+
 }
