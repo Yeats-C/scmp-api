@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.web;
 
+import com.aiqin.bms.scmp.api.base.PageImportResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.aiqin.bms.scmp.api.bireport.service.ChartService;
@@ -102,7 +103,7 @@ public class ChartController {
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
             @ApiImplicitParam(name = "sale_type_code", value = "销售类型", type = "Integer"),
     })
-    public HttpResponse<List<MonthSalesAchievementRespVo>> selectMonthSalesAchievement(
+    public HttpResponse<PageImportResData<MonthSalesAchievementRespVo>> selectMonthSalesAchievement(
             @RequestParam(value = "create_time", required = false) String createTime,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
             @RequestParam(value = "product_sort_name", required = false) String productSortName,

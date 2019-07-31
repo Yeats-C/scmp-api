@@ -1627,8 +1627,8 @@
     <select id="rejectProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
         select
         s.tax_cost as productCost, su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName,
-        ps.unit_code as unitCode,ps.unit_name as unitName,s.available_num as stockCount,s.tax_rate as taxRate,
-        ps.color_code as colorCode,ps.color_name as colorName,ps.model_number as modelNumber,ps.spec as productSpec,
+        psi.unit_code as unitCode,psi.unit_name as unitName,s.available_num as stockCount,s.tax_rate as taxRate,
+        ps.color_code as colorCode,ps.color_name as colorName,ps.model_number as modelNumber,psi.spec as productSpec,
         ps.product_brand_code as brandId,ps.product_brand_name as brandName,ps.goods_gifts as productType,
         ps.bar_code as barcode,ps.product_category_code as categoryId,ps.product_category_name as categoryName,
         s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
@@ -1639,6 +1639,7 @@
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code
+        inner join product_sku_stock_info psi on s.sku_code = psi.product_sku_code
         <where>
             ps.del_flag = 0
             <if test="transportCenterCode != null">
@@ -1658,8 +1659,8 @@
     <select id="rejectProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
         select
         s.tax_cost as productCost, su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName,
-        psdi.unit_code as unitCode,psdi.unit_name as unitName,s.available_num as stockCount,psc.Input_tax_rate as taxRate,
-        ps.color_code as colorCode,ps.color_name as colorName,ps.model_number as modelNumber,ps.spec as productSpec,
+        psi.unit_code as unitCode,psi.unit_name as unitName,s.available_num as stockCount,psc.Input_tax_rate as taxRate,
+        ps.color_code as colorCode,ps.color_name as colorName,ps.model_number as modelNumber,psi.spec as productSpec,
         ps.product_brand_code as brandId,ps.product_brand_name as brandName,ps.goods_gifts as productType,
         ps.bar_code as barcode,ps.product_category_code as categoryId,ps.product_category_name as categoryName,
         s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
@@ -1670,7 +1671,7 @@
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code
-        left join product_sku_distribution_info psdi on s.sku_code = psdi.product_sku_code
+        inner join product_sku_stock_info psi on s.sku_code = psi.product_sku_code
         <include refid="REJECT_QUERY_SQL"></include>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>

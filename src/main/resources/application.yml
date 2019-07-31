@@ -21,6 +21,14 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 20MB
+control:
+  url:
+   # 角色列表
+    role-list: http://control.api.aiqin.com/role/list
+    # 角色绑定
+    role-add: http://control.api.aiqin.com/person/account/role
+   # 主控增加人员等接口
+    account: http://control.api.aiqin.com/external/account
 mybatis:
   mapper-locations: classpath*:/com/aiqin/bms/scmp/api/*/dao/*.xml,classpath*:/com/aiqin/bms/scmp/api/*/mapper/*.xml
   #实体扫描，多个package用逗号或者分号分隔
