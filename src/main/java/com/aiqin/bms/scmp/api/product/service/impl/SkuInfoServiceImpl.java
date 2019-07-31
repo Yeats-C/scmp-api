@@ -1818,7 +1818,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     }
                 }
             }
-
+            reqVO.setBoxFlag(false);
             reqVO.getProductSkuDraft().setProcurementSectionCode(reqVOs.getPurchaseGroupCode());
             reqVO.getProductSkuDraft().setProcurementSectionName(reqVOs.getPurchaseGroupName());
             saveDraftSkuInfo(reqVO);
@@ -1848,6 +1848,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     }
                 }
             }
+            reqVO.setBoxFlag(false);
             reqVO.getProductSkuDraft().setProcurementSectionCode(reqVOs.getPurchaseGroupCode());
             reqVO.getProductSkuDraft().setProcurementSectionName(reqVOs.getPurchaseGroupName());
             updateDraftSkuInfo(reqVO);
@@ -1893,6 +1894,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     }
                 }
             }
+            reqVO.setBoxFlag(false);
             saveDraftSkuInfoForPlatform(reqVO);
         }
         return Boolean.TRUE;
