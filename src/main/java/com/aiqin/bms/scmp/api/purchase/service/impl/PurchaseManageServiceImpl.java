@@ -697,8 +697,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
                 reqVo.setCreateTime(Calendar.getInstance().getTime());
                 reqVo.setTaxRate(product.getTaxRate());
-                preInboundNum += reqVo.getPreInboundNum();
-                preInboundMainNum += purchaseWhole;
+                preInboundMainNum += reqVo.getPreInboundMainNum();
+                preInboundNum += purchaseWhole;
                 if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
                     preTaxAmount += 0;
                 }else {
