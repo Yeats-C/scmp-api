@@ -1,16 +1,12 @@
-package com.aiqin.bms.scmp.api.purchase.service.impl;
+package com.aiqin.bms.scmp.api.serveice.test.order;
 
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
-import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.junit.Test;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 /**
  * <p>
@@ -39,25 +35,39 @@ import javax.annotation.Resource;
  * 思维方式*热情*能力
  */
 @Service
-public class OrderCallbackServiceImpl implements OrderCallbackService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(OrderCallbackServiceImpl.class);
+public class OrderCallbackServiceTest {
 
     @Resource
-    private OrderInfoMapper orderInfoMapper;
+    private OrderCallbackService orderCallbackService;
 
-    @Override
-    public HttpResponse outboundOrder(OutboundRequest request) {
-        OrderInfo orderInfo = new OrderInfo();
+    @Test
+    public void outboundOrder(){
+
+        OutboundRequest request = new OutboundRequest();
+        request.setOrderCode("o123123");
+        request.setCreateDate(new Date());
+        request.setOrderStatus(12);
+//        request.setBeException(0);
+        request.setPaymentStatus(0);
+//        request.setBeLock(0);
+        request.setOrderType("1");
+        request.setOrderCategory("1");
+//        request.setPaymentType("");
+//        request.setBeException(1);
+        request.setOrderOriginal("小红马");
+        request.setWarehouseName("库房..名称");
+        request.setTransportCenterName("仓库");
+        request.setSupplierName("供应商");
+        request.setProductNum(10L);
+        request.setPaymentTime(new Date());
 
 
-        Integer count = orderInfoMapper.insert(orderInfo);
-        LOGGER.info("添加订单:{}",count);
-        return HttpResponse.success();
+
+
+
+        orderCallbackService.outboundOrder(request);
+
     }
 
-    @Override
-    public HttpResponse returnOrder(ReturnRequest request) {
-        return null;
-    }
+
 }

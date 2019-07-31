@@ -324,12 +324,14 @@
         bmcgpm.channel_maori as channelMaori,
         bmcgpm.channel_maori_rate as channelMaoriRate,
         bmcgpm.channel_last_maori_rate as channelLastMaoriRate,
+        bmcgpm.last_year_channel_maori_rate as lastYearChannelMaoriRate,
         bmcgpm.channel_compared_same as channelComparedSame,
         bmcgpm.channel_sequential as channelSequential,
         bmcgpm.distribution_amount as distributionAmount,
         bmcgpm.distribution_maori as distributionMaori,
         bmcgpm.distribution_maori_rate as distributionMaoriRate,
         bmcgpm.distribution_last_maori_rate as distributionLastMaoriRate,
+        bmcgpm.last_year_distribution_maori_rate as lastYearDistributionMaoriRate,
         bmcgpm.distribution_compared_same as distributionComparedSame,
         bmcgpm.distribution_sequential as distributionSequential
         from bi_month_cumulative_gross_profit_margin bmcgpm

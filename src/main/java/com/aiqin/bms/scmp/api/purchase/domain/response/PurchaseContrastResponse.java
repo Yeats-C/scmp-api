@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response;
 
 import com.aiqin.bms.scmp.api.purchase.domain.BiAClassification;
+import com.aiqin.bms.scmp.api.purchase.domain.BiClassification;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,12 +41,26 @@ public class PurchaseContrastResponse {
     private BigDecimal afterShortageRatio;
 
     @ApiModelProperty(value="采购前_A品占比")
-    @JsonProperty("front_category")
-    private List<BiAClassification> frontCategory;
+    @JsonProperty("front_a_category")
+    private BiAClassification frontACategory;
 
     @ApiModelProperty(value="采购后_A品占比")
+    @JsonProperty("after_a_category")
+    private BiAClassification afterACategory;
+
+    @ApiModelProperty(value="采购前_分类占比")
+    @JsonProperty("front_category")
+    private BiClassification frontCategory;
+
+    @ApiModelProperty(value="采购后_分类占比")
     @JsonProperty("after_category")
-    private List<BiAClassification> afterCategory;
+    private BiClassification afterCategory;
+
+    private String beginTime;
+
+    private String finishTime;
+
+    private BigDecimal bigMum;
 
 }
 

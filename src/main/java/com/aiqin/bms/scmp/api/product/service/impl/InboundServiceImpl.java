@@ -34,6 +34,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -292,7 +293,7 @@ public class InboundServiceImpl implements InboundService {
         log.error("异步推送给wms");
          // 通过id查询 入库单主体
         try {
-            Thread.sleep(120000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -370,7 +371,7 @@ public class InboundServiceImpl implements InboundService {
     public void workFlowCallBack(InboundCallBackReqVo reqVo) {
 
         try {
-            Thread.sleep(120000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -421,16 +422,20 @@ public class InboundServiceImpl implements InboundService {
             // 复制旧的sku
             BeanCopyUtils.copy(returnInboundProduct,inboundProduct);
             inboundProduct.setPraInboundMainNum(inboundProductCallBackReqVo.getPraInboundMainNum());
-            inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundMainNum()/Long.valueOf(inboundProduct.getInboundBaseContent()));
+            inboundProduct.setPraInboundNum(inboundProductCallBackReqVo.getPraInboundMainNum() / Long.valueOf(inboundProduct.getInboundBaseContent()));
+            //实际含税进价
             inboundProduct.setPraTaxPurchaseAmount(inboundProduct.getPreTaxPurchaseAmount());
-            inboundProduct.setPraTaxAmount(inboundProduct.getPraTaxPurchaseAmount()*inboundProduct.getPraInboundNum());
+            //单个SKU的实际含税金额
+            inboundProduct.setPraTaxAmount(inboundProduct.getPraTaxPurchaseAmount() * inboundProduct.getPraInboundMainNum());
             // 实际数量
             inbound.setPraInboundNum(inbound.getPraInboundNum()+inboundProduct.getPraInboundNum());
-            inbound.setPraMainUnitNum(inbound.getPraMainUnitNum()+inboundProduct.getPraInboundMainNum());
+            inbound.setPraMainUnitNum(inbound.getPraMainUnitNum() + inboundProduct.getPraInboundMainNum());
             //实际含税总金额
-            inbound.setPraTaxAmount(inbound.getPraTaxAmount()+inboundProduct.getPraTaxAmount());
+            inbound.setPraTaxAmount(inbound.getPraTaxAmount() + inboundProduct.getPraTaxAmount());
 
             inbound.setPraAmount(inbound.getPraAmount()+ Calculate.computeNoTaxPrice(inboundProduct.getPraTaxPurchaseAmount(),returnInboundProduct.getTax())*inboundProduct.getPraInboundMainNum());
+            //实际税额
+            inbound.setPraTax(inbound.getPraTaxAmount()-inbound.getPraAmount());
 
             //更新sku编号
             inboundProductDao.updateByPrimaryKeySelective(inboundProduct);
@@ -449,15 +454,17 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSkuCode(inboundProduct.getSkuCode());
             stockVoRequest.setSkuName(inboundProduct.getSkuName());
             //设置更改数量
-            stockVoRequest.setChangeNum(inboundProduct.getPraInboundNum());
+            stockVoRequest.setChangeNum(inboundProduct.getPraInboundMainNum());
 
             stockVoRequest.setDocumentNum(inbound.getInboundOderCode());
             stockVoRequest.setDocumentType(1);//0出库 1入库 2退供 3采购
             stockVoRequest.setSourceDocumentNum(inbound.getSourceOderCode());
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockVoRequest.setOperator(inbound.getUpdateBy());
-            stockVoRequest.setTaxRate(inbound.getPraTax());
-            stockVoRequest.setNewPurchasePrice(inbound.getPraTaxAmount());
+//            stockVoRequest.setTaxRate(inboundProduct.getTaxRate().longValue());
+            stockVoRequest.setNewPurchasePrice(inboundProduct.getPraTaxPurchaseAmount());
+            stockVoRequest.setNewDelivery(inbound.getSupplierCode());
+            stockVoRequest.setNewDeliveryName(inbound.getSupplierName());
             stockVoRequestList.add(stockVoRequest);
         }
         stockChangeRequest.setStockVoRequests(stockVoRequestList);
@@ -522,7 +529,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnSource(Long id) {
         try {
-            Thread.sleep(120000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -606,7 +613,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnPurchase(StorageResultReqVo storageResultReqVo) {
         try {
-            Thread.sleep(120000);
+            Thread.sleep(180000);
         } catch (InterruptedException e) {
             log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultReqVo));
             e.printStackTrace();

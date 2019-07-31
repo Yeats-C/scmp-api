@@ -15,6 +15,7 @@
   <select id="grossProfitMargin" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>
     from bi_gross_profit_margin where
-    to_char(create_time,'yyyy-MM-dd') = #{data}
+    create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+    and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
   </select>
 </mapper>
