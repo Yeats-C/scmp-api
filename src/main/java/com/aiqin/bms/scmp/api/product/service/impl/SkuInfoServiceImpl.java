@@ -366,7 +366,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     throw new BizException(MessageId.create(Project.SCMP_API, 69, "门店销售的条形码有重复,请重新输入"));
                 }
                 //验证输入的条形码是否在数据库中存在
-                List<String> salesCodeTmps = productSkuSalesInfoService.checkSalesCodes(salesCodes);
+                List<String> salesCodeTmps = productSkuSalesInfoService.checkSalesCodes(salesCodes,productSkuDraft.getSkuCode());
                 if(CollectionUtils.isNotEmpty(salesCodeTmps)){
                     throw new BizException(MessageId.create(Project.SCMP_API, 69,  "条形码["+StringUtils.join(salesCodeTmps, ",")+"],在数据库中存在相同条形码"));
                 }

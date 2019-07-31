@@ -118,5 +118,8 @@
     <foreach collection="list" item="salesCode" separator="," close=")" open="(">
       #{salesCode}
     </foreach>
+    <if test="skuCode != null and skuCode != '' ">
+      and product_sku_code != #{skuCode}
+    </if>
   </select>
 </mapper>
