@@ -52,4 +52,6 @@ public interface OrderInfoItemMapper {
      * @return int
      */
     int updateBatchNumById(List<DeliveryReqVO> reqVO);
+
+    Integer insertList(List<OrderInfoItem> list);
 }
