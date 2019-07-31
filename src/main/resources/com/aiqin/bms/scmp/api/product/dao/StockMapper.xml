@@ -47,6 +47,9 @@
         <result column="bad_num" jdbcType="BIGINT" property="badNum"/>
         <result column="bad_lock_num" jdbcType="BIGINT" property="badLockNum"/>
         <result column="bad_way_num" jdbcType="BIGINT" property="badWayNum"/>
+        <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
+        <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
+        <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
     </resultMap>
     <resultMap id="BaseBatchResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -1803,11 +1806,12 @@
         s.id,s.warehouse_code,s.sku_code,s.sku_name,
         ps.product_category_code,ps.product_category_name,ps.product_sort_code,ps.product_sort_name,
         ps.product_brand_code,ps.product_brand_name,ps.goods_gifts,
-        ps.spec,ps.color_code,ps.color_name,ps.model_number,ps.unit_code,ps.unit_name,
+        pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,
         sum(s.available_num) available_num,IFNULL(s.tax_rate,0) tax_rate,IFNULL(s.tax_cost,0) tax_cost
         from stock s
         left join stock_batch sb on s.sku_code = sb.sku_code
         left join product_sku ps on s.sku_code = ps.sku_code
+        left join product_sku_stock_info pssi on s.sku_code = pssi.product_sku_code
         <where>
             1 = 1
             <if test="outTransportCenterCode != null and outTransportCenterCode != ''">
