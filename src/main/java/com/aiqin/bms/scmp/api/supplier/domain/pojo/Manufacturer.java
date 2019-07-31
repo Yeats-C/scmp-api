@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("制造商")
@@ -27,7 +28,7 @@ public class Manufacturer extends CommonBean {
     private String legalPerson;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("公司注册号")
     private String registrationNumber;
@@ -126,11 +127,11 @@ public class Manufacturer extends CommonBean {
         this.legalPerson = legalPerson == null ? null : legalPerson.trim();
     }
 
-    public Long getRegisteredCapital() {
+    public BigDecimal getRegisteredCapital() {
         return registeredCapital;
     }
 
-    public void setRegisteredCapital(Long registeredCapital) {
+    public void setRegisteredCapital(BigDecimal registeredCapital) {
         this.registeredCapital = registeredCapital;
     }
 

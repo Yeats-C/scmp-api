@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class ManufacturerUpdateReqVo{
     private String legalPerson;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("公司注册号")
     private String registrationNumber;
