@@ -30,4 +30,6 @@ public class supplierInfoVO {
     private Boolean beDefault;
     @ApiModelProperty("原毛利率")
     private Long oldGrossProfitMargin = 0L;
+    @ApiModelProperty("成本")
+    private Long taxCost=0L;
 }
