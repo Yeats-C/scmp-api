@@ -8,7 +8,7 @@
     <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
     <result column="mobile_phone" jdbcType="VARCHAR" property="mobilePhone" />
     <result column="legal_person" jdbcType="VARCHAR" property="legalPerson" />
-    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital" />
+    <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital" />
     <result column="registration_number" jdbcType="VARCHAR" property="registrationNumber" />
     <result column="unionPay_number" jdbcType="VARCHAR" property="unionpayNumber" />
     <result column="bank_number" jdbcType="VARCHAR" property="bankNumber" />
@@ -71,7 +71,7 @@
       )
     values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{placeOrigin,jdbcType=VARCHAR}, 
       #{contactName,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{legalPerson,jdbcType=VARCHAR}, 
-      #{registeredCapital,jdbcType=BIGINT}, #{registrationNumber,jdbcType=VARCHAR}, #{unionpayNumber,jdbcType=VARCHAR}, 
+      #{registeredCapital,jdbcType=DECIMAL}, #{registrationNumber,jdbcType=VARCHAR}, #{unionpayNumber,jdbcType=VARCHAR},
       #{bankNumber,jdbcType=VARCHAR}, #{bankAccount,jdbcType=VARCHAR}, #{accountOpeningBranch,jdbcType=VARCHAR}, 
       #{accountName,jdbcType=VARCHAR}, #{account,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, 
       #{enable,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{manufacturerCode,jdbcType=VARCHAR}, 
@@ -172,7 +172,7 @@
         #{legalPerson,jdbcType=VARCHAR},
       </if>
       <if test="registeredCapital != null">
-        #{registeredCapital,jdbcType=BIGINT},
+        #{registeredCapital,jdbcType=DECIMAL},
       </if>
       <if test="registrationNumber != null">
         #{registrationNumber,jdbcType=VARCHAR},
@@ -243,7 +243,7 @@
         legal_person = #{legalPerson,jdbcType=VARCHAR},
       </if>
       <if test="registeredCapital != null">
-        registered_capital = #{registeredCapital,jdbcType=BIGINT},
+        registered_capital = #{registeredCapital,jdbcType=DECIMAL},
       </if>
       <if test="registrationNumber != null">
         registration_number = #{registrationNumber,jdbcType=VARCHAR},
@@ -297,7 +297,7 @@
       contact_name = #{contactName,jdbcType=VARCHAR},
       mobile_phone = #{mobilePhone,jdbcType=VARCHAR},
       legal_person = #{legalPerson,jdbcType=VARCHAR},
-      registered_capital = #{registeredCapital,jdbcType=BIGINT},
+      registered_capital = #{registeredCapital,jdbcType=DECIMAL},
       registration_number = #{registrationNumber,jdbcType=VARCHAR},
       unionPay_number = #{unionpayNumber,jdbcType=VARCHAR},
       bank_number = #{bankNumber,jdbcType=VARCHAR},
