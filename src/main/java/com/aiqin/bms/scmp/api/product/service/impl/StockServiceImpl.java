@@ -1125,8 +1125,8 @@ public class StockServiceImpl implements StockService {
                         stockFlow.setSourceDocumentType(10);
                     }
                 }
-                stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
-                stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
+               // stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
+               // stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
                 stockFlow.setRemark(stockVoRequest.getRemark());
                 flows.add(stockFlow);
             } else {
@@ -1214,8 +1214,8 @@ public class StockServiceImpl implements StockService {
                         stockFlow.setSourceDocumentType(10);
                     }
                 }
-                stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
-                stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
+              //  stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
+              //  stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
                 stockFlow.setRemark(stockVoRequest.getRemark());
                 flows.add(stockFlow);
             }
