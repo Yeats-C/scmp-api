@@ -73,7 +73,7 @@
     purchase_max as purchaseMax, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
     shortage_number as shortageNumber, shortage_day as shortageDay, stock_turnover as stockTurnover,
     receipt_turnover as receiptTurnover, error_info as errorInfo, purchase_apply_code as purchaseApplyCode,
-    factory_sku_code as factorySkuCode
+    factory_sku_code as factorySkuCode, product_property_code as productPropertyCode, product_property_name as productPropertyName
   </sql>
   <insert id="insert">
     insert into purchase_apply_product (apply_product_id, purchase_apply_id, purchase_apply_code,
@@ -250,7 +250,22 @@
     where apply_product_id = #{applyProductId,jdbcType=VARCHAR}
   </update>
   <select id="applyProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
-    select <include refid="Base_Column_List"></include> from purchase_apply_product
+    select
+    apply_product_id as applyProductId, purchase_apply_id as purchaseApplyId, sku_code as skuCode, sku_name as skuName,
+    spu_code as spuCode, product_name as productName, warehouse_code as warehouseCode, warehouse_name as warehouseName, supplier_code as supplierCode,
+    supplier_name as supplierName, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
+    transport_center_code as transportCenterCode, transport_center_name as transportCenterName, purchase_group_code as purchaseGroupCode,
+    purchase_group_name as purchaseGroupName, product_sort_code as productSortCode, product_sort_name as productSortName,
+    brand_id as brandId, brand_name as brandName, category_id as categoryId, category_name as categoryName,
+    product_type as productType, product_purchase_amount as productPurchaseAmount, new_purchase_price as newPurchasePrice,
+    purchase_whole as purchaseWhole, purchase_single as purchaseSingle, stock_unit_name as stockUnitName,
+    stock_count as stockCount, total_way_num as totalWayNum, last_time as lastTime, sales_volume as salesVolume,
+    base_product_content as baseProductContent, box_gauge as boxGauge, purchase_number as purchaseNumber, receipt_time as receiptTime,
+    purchase_max as purchaseMax, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
+    shortage_number as shortageNumber, shortage_day as shortageDay, stock_turnover as stockTurnover,
+    receipt_turnover as receiptTurnover, error_info as errorInfo, purchase_apply_code as purchaseApplyCode,
+    factory_sku_code as factorySkuCode, product_property_code as productPropertyCode, product_property_name as productPropertyName
+    from purchase_apply_product
     <where>
       apply_product_status = 1
       <if test="supplierCode != null">
@@ -416,7 +431,8 @@
     product_sort_code as productSortCode, product_sort_name as productSortName, brand_id as brandId, brand_name as brandName,
     category_id as categoryId, category_name as categoryName, new_purchase_price as newPurchasePrice,
     last_time as lastTime, sales_volume as salesVolume, purchase_number as purchaseNumber, receipt_time as receiptTime,
-    purchase_max as purchaseMax, product_spec as productSpec, color_name as colorName, model_number as modelNumber
+    purchase_max as purchaseMax, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
+    product_property_code as productPropertyCode, product_property_name as productPropertyName
     from purchase_apply_product
     where apply_product_status = 1
     and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}

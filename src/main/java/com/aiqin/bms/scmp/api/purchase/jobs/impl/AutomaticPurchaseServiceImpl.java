@@ -21,6 +21,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,10 +63,10 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse automaticPurchase(){
-        // 获取前一天的时间
-        String date = DateUtils.yestedayDate();
-        String beginTime = date + " 00:00:00";
-        String finishTime = date + " 23:59:59";
+        DateTime dateTime = new DateTime(Calendar.getInstance().getTime());
+        String data = dateTime.toString("yyyy-MM-dd");
+        String beginTime = data + " 00:00:00";
+        String finishTime = data + " 23:59:59";
         // 查询采购组
         List<PurchaseApply> applyList = Lists.newArrayList();
         PurchaseApply purchaseApply;

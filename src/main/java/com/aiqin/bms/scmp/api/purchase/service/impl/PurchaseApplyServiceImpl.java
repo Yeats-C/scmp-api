@@ -36,6 +36,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.omg.CORBA.Object;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,8 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
 /**
  * @author: zhao shuai
@@ -637,12 +640,12 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     @Override
-    public HttpResponse contrast(List<PurchaseApplyDetailResponse> list){
+    public HttpResponse<PurchaseContrastResponse> contrast(List<PurchaseApplyDetailResponse> list){
         if(CollectionUtils.isEmptyCollection(list)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        // 获取昨天时间
-        String data = DateUtils.yestedayDate();
+        DateTime dateTime = new DateTime(Calendar.getInstance().getTime());
+        String data = dateTime.toString("yyyy-MM-dd");
         String beginTime = data + " 00:00:00";
         String finishTime = data + " 23:59:59";
         BigDecimal bigMum = new BigDecimal("0");
@@ -660,14 +663,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             contrast.setFrontSumProfit(bigMum);
         }
         // 查询采购后的总营业额/总利润
-        //Set<String> setSku = new HashSet<>();
         List<String> listSku = Lists.newArrayList();
         if(CollectionUtils.isNotEmptyCollection(list)){
             for (PurchaseApplyDetailResponse product:list){
-                //setSku.add(product.getSkuCode());
                 listSku.add(product.getSkuCode());
             }
-            //List<String> sku = new ArrayList<>(setSku);
             Integer afterSumTurnover = 0, afterSumProfit = 0;
             for(PurchaseApplyDetailResponse product:list){
                 // 计算采购的总营业额
@@ -678,14 +678,18 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 afterSumProfit += singleCount * priceMax - totalAmount;
             }
             contrast.setAfterSumTurnover(contrast.getFrontSumTurnover().add(new BigDecimal(afterSumTurnover)));
-            contrast.setAfterSumProfit(contrast.getAfterSumProfit().add(new BigDecimal(afterSumProfit)));
+            contrast.setAfterSumProfit(contrast.getFrontSumProfit().add(new BigDecimal(afterSumProfit)));
         }else {
             contrast.setAfterSumTurnover(contrast.getFrontSumTurnover());
             contrast.setAfterSumProfit(contrast.getAfterSumProfit());
         }
         // 缺货占比
         this.stockOut(contrast, listSku);
-        return HttpResponse.success();
+        // A品占比
+        this.aCategory(contrast, list);
+        // 分类占比
+        this.category(contrast, list);
+        return HttpResponse.success(contrast);
     }
 
     // 计算采购前后的缺货占比
@@ -694,8 +698,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         BiStockoutRate biStockoutRate = biStockoutRateDao.stockOutRateInfo(contrast.getBeginTime(), contrast.getFinishTime());
         if(biStockoutRate == null){
             contrast.setFrontShortageRatio(contrast.getBigMum());
-            biStockoutRate.setOutStockNum(0L);
-            biStockoutRate.setTotalStockNum(0L);
         }else {
             contrast.setFrontShortageRatio(biStockoutRate.getOutStockRate());
         }
@@ -706,13 +708,14 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(CollectionUtils.isNotEmptyCollection(detailSku)){
             detailSku.removeAll(listSku);
             long count2 = count1 - detailSku.size();
-            BigDecimal bigNum1 = new BigDecimal(biStockoutRate.getTotalStockNum() + listSku.size());
-            BigDecimal bigNum2 = new BigDecimal(biStockoutRate.getOutStockNum() - count2);
-            contrast.setAfterShortageRatio(bigNum1.divide(bigNum2));
+            Long totalStockNum  = biStockoutRate.getTotalStockNum() == null ? 0 : biStockoutRate.getTotalStockNum();
+            Long outStockNum  = biStockoutRate.getOutStockNum() == null ? 0 : biStockoutRate.getOutStockNum();
+            BigDecimal bigNum1 = new BigDecimal(totalStockNum + listSku.size());
+            BigDecimal bigNum2 = new BigDecimal(outStockNum - count2);
+            contrast.setAfterShortageRatio(bigNum2.divide(bigNum1, 4 , ROUND_HALF_DOWN));
         }else {
             contrast.setAfterShortageRatio(contrast.getFrontShortageRatio());
         }
-
     }
 
     // 计算采购前后的A品占比
@@ -724,17 +727,37 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(CollectionUtils.isEmptyCollection(list)){
             contrast.setAfterACategory(aCategoryInfo);
         }else {
-            BiAClassification aClassification = new BiAClassification();
+            BiAClassification aClassification = contrast.getFrontACategory();
             for(PurchaseApplyDetailResponse detail:list){
                 if(!detail.getProductPropertyCode().equals(1)){
                     continue;
                 }
-
+                aClassification = this.productCategory(detail, aClassification);
             }
+            // 总可用数量
+            long totalNum = aCategoryInfo.getTotalAvailableNum() == null ? 0 : aCategoryInfo.getTotalAvailableNum();
+            long num = totalNum + list.size();
+            // 计算采购后的A品占比
+            BiAClassification aClass = new BiAClassification();
+            aClass.setMilkRate(new BigDecimal(aClassification.getMilkNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setSideDishRate(new BigDecimal(aClassification.getSideDishNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setHealthCareProductsRate(new BigDecimal(aClassification.getHealthCareProductsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setDiaperRate(new BigDecimal(aClassification.getDiaperNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setProductsRate(new BigDecimal(aClassification.getProductsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setOccupyHomeRate(new BigDecimal(aClassification.getOccupyHomeNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setFeedProductsRate(new BigDecimal(aClassification.getFeedProductsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setLatheChairRate(new BigDecimal(aClassification.getLatheChairNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setToyRate(new BigDecimal(aClassification.getToyNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setBooksVideoSouvenirsRate(new BigDecimal(aClassification.getBooksVideoSouvenirsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setCottonGoodsRate(new BigDecimal(aClassification.getCottonGoodsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setGiftsRate(new BigDecimal(aClassification.getGiftsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setMaterialRate(new BigDecimal(aClassification.getMaterialNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setDeMingJuRate(new BigDecimal(aClassification.getDeMingJuNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            contrast.setAfterACategory(aClass);
         }
     }
 
-    private void productCategory(PurchaseApplyDetailResponse detail, BiAClassification aClassification){
+    private BiAClassification productCategory(PurchaseApplyDetailResponse detail, BiAClassification aClassification){
         // 获取商品类别
         if(StringUtils.isNotBlank(detail.getCategoryId())){
             Integer count = Integer.valueOf(detail.getCategoryId().substring(0, 2));
@@ -801,6 +824,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     break;
             }
         }
+        return aClassification;
     }
 
     // 计算采购前后的分类占比
@@ -808,5 +832,34 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         // 查询采购前的分类占比
         BiClassification categoryInfo = biClassificationDao.categoryInfo(contrast.getBeginTime(), contrast.getFinishTime());
         contrast.setFrontCategory(categoryInfo);
+        // 计算采购后的分类占比
+        if(CollectionUtils.isEmptyCollection(list)){
+            contrast.setAfterCategory(categoryInfo);
+        }else {
+            BiAClassification aClassification = contrast.getFrontACategory();
+            for(PurchaseApplyDetailResponse detail:list){
+                aClassification = this.productCategory(detail, aClassification);
+            }
+            // 总可用数量
+            long totalNum = categoryInfo.getTotalAvailableNum() == null ? 0 : categoryInfo.getTotalAvailableNum();
+            long num = totalNum + list.size();
+            // 计算采购后的A品占比
+            BiClassification aClass = new BiClassification();
+            aClass.setMilkRate(new BigDecimal(aClassification.getMilkNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setSideDishRate(new BigDecimal(aClassification.getSideDishNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setHealthCareProductsRate(new BigDecimal(aClassification.getHealthCareProductsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setDiaperRate(new BigDecimal(aClassification.getDiaperNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setProductsRate(new BigDecimal(aClassification.getProductsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setOccupyHomeRate(new BigDecimal(aClassification.getOccupyHomeNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setFeedProductsRate(new BigDecimal(aClassification.getFeedProductsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setLatheChairRate(new BigDecimal(aClassification.getLatheChairNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setToyRate(new BigDecimal(aClassification.getToyNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setBooksVideoSouvenirsRate(new BigDecimal(aClassification.getBooksVideoSouvenirsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setCottonGoodsRate(new BigDecimal(aClassification.getCottonGoodsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setGiftsRate(new BigDecimal(aClassification.getGiftsNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setMaterialRate(new BigDecimal(aClassification.getMaterialNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            aClass.setDeMingJuRate(new BigDecimal(aClassification.getDeMingJuNum()).divide(new BigDecimal(num),4, ROUND_HALF_DOWN));
+            contrast.setAfterCategory(aClass);
+        }
     }
 }
