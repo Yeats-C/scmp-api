@@ -155,9 +155,6 @@
             <if test="createTime!=null and createTime!=''">
                 and #{createTime}
             </if>
-            <if test="createTime!=null and createTime!=''">
-                and bmcgpm.month like concat('%', #{createTime}, '%')
-            </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
             </if>
