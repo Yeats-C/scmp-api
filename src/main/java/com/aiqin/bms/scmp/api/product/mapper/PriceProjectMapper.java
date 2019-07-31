@@ -23,4 +23,6 @@ public interface PriceProjectMapper {
     List<QueryPriceProjectRespVo> getList(QueryPriceProjectReqVo reqVo);
 
     Integer checkName(@Param("name") String name, @Param("id") Long id, @Param("companyCode") String companyCode);
+
+    List<PriceProject> selectInfoByImport(@Param("priceTypeCode")Integer priceTypeCode, @Param("nameList")List<String> nameList);
 }

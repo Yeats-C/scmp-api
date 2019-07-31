@@ -10,7 +10,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, total_turnover, inventory_cost, gross_profit_margin, create_time, update_time
+    total_turnover, inventory_cost, gross_profit_margin
   </sql>
   <select id="grossProfitMargin" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>

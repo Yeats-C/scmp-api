@@ -51,12 +51,6 @@ public class FileRecordServiceImpl implements FileRecordService {
     @Resource
     private FileInfoServiceImpl fileInfoService;
 
-    public static void main(String[] args) {
-        String ss = "ss/sd/ff/ss.gg";
-        System.out.println(ss.substring(0, ss.indexOf(".")));
-
-    }
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse deleteFile(FileRecord fileRecord) {
@@ -129,6 +123,12 @@ public class FileRecordServiceImpl implements FileRecordService {
                 LOGGER.info("fileName:{},folderName:{},url:{}", fileName, folderName, url);
                 if (fileName.contains("sm_")) {
                     productSkuPicturesDraft = new ProductSkuPicturesDraft();
+                    if(fileName.equals("sm_1")){
+                        //默认设置1主图
+                        productSkuPicturesDraft.setMainPicture((byte)1);
+                    }else{
+                        productSkuPicturesDraft.setMainPicture((byte)0);
+                    }
                     productSkuPicturesDraft.setProductPicturePath(url);
                     productSkuPicturesDraft.setProductPictureName(fileName);
                     productSkuPicturesDraft.setProductSkuCode(productSkuDraft.getSkuCode());

@@ -9,14 +9,6 @@ center:
     url: http://control.api.aiqin.com
   #中控前端
     host: http://control.mgs.aiqin.com
-control:
-  url:
-   # 角色列表
-    role-list: http://control.api.aiqin.com/role/list
-    # 角色绑定
-    role-add: http://control.api.aiqin.com/person/account/role
-   # 主控增加人员等接口
-    account: http://control.api.aiqin.com/external/account
 product:
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
@@ -25,20 +17,6 @@ ground:
     url: jdbc:mysql://qa-001:3306/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
     username: scmp_write
     password: nCUdR4jBQPVnSDVTSxFaA
-    initialSize: 5
-    minIdle: 3
-    maxActive: 40
-    maxWait: 6000000
-    timeBetweenEvictionRunsMillis: 600000
-    minEvictableIdleTimeMillis: 300000
-    filters: stat,slf4j
-    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=50000
-    web-stat-filter:
-      enabled: true
-      url-pattern: /*
-#      exclusions: *.js,*.gif,*.jpg,*.png,*.css,*.ico,*.map,/druid/*
-      session-stat-enable: false
-      profile-enable: true
 oss:
   end:
     point: http://oss-cn-beijing.aliyuncs.com
