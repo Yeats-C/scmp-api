@@ -360,13 +360,15 @@ public class InboundServiceImpl implements InboundService {
                 if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode() )){
                     OperationLog operationLog = new OperationLog();
                     PurchaseOrder purchaseOrder = new PurchaseOrder();
-                    purchaseOrder.setPurchaseGroupCode(inbound.getSourceOderCode());
-                    purchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-                    operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
-                    operationLog.setCreateByName(inbound.getCreateBy());
-                    operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
-                    operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
-                    purchaseManageService.addLog(operationLog);
+                    purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
+                    PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+                    if(resultPurchaseOrder != null){
+                        operationLog.setOperationId(resultPurchaseOrder.getPurchaseOrderId());
+                        operationLog.setCreateByName(inbound.getCreateBy());
+                        operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
+                        operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
+                        purchaseManageService.addLog(operationLog);
+                    }
                 }
 
                  //调用回调接口
@@ -515,13 +517,15 @@ public class InboundServiceImpl implements InboundService {
         if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode() )){
             OperationLog operationLog = new OperationLog();
             PurchaseOrder purchaseOrder = new PurchaseOrder();
-            purchaseOrder.setPurchaseGroupCode(inbound.getSourceOderCode());
-            purchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-            operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
-            operationLog.setCreateByName(inbound.getCreateBy());
-            operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_IN.getCode());
-            operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库中");
-            purchaseManageService.addLog(operationLog);
+            purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
+            PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+            if(resultPurchaseOrder != null) {
+                operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
+                operationLog.setCreateByName(inbound.getCreateBy());
+                operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_IN.getCode());
+                operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库中");
+                purchaseManageService.addLog(operationLog);
+            }
         }
 
         try {
@@ -592,13 +596,15 @@ public class InboundServiceImpl implements InboundService {
                if(inbound.getInboundTypeCode().toString().equals(InboundTypeEnum.RETURN_SUPPLY)){
                    OperationLog operationLog = new OperationLog();
                    PurchaseOrder purchaseOrder = new PurchaseOrder();
-                   purchaseOrder.setPurchaseGroupCode(inbound.getSourceOderCode());
-                   purchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-                   operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
-                   operationLog.setCreateByName(inbound.getCreateBy());
-                   operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode());
-                   operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库完成");
-                   purchaseManageService.addLog(operationLog);
+                   purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
+                   PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+                   if(resultPurchaseOrder != null) {
+                       operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
+                       operationLog.setCreateByName(inbound.getCreateBy());
+                       operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode());
+                       operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库完成");
+                       purchaseManageService.addLog(operationLog);
+                   }
                }
            }catch (Exception e){
                e.printStackTrace();

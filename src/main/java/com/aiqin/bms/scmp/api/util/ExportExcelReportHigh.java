@@ -188,117 +188,109 @@ public class ExportExcelReportHigh {
                 row03.createCell(2).setCellValue("");
             }
 
-/*
-
-             // 全国上周
-            if ("1".equals(highInventoryRespVo.getWarehouseTypeCode())) {
-                if (StringUtils.isNotBlank(highInventoryRespVo.getHighInventoryAmount())) {
-                    row03.createCell(3).setCellValue(highInventoryRespVo.getHighInventoryAmount());
-                } else {
-                    row03.createCell(3).setCellValue("");
-                }
-                if (StringUtils.isNotBlank(highInventoryRespVo.getInventoryTotalAmount())) {
-                    row03.createCell(4).setCellValue(highInventoryRespVo.getInventoryTotalAmount());
-                } else {
-                    row03.createCell(4).setCellValue("");
-                }
-                if (highInventoryRespVo.getHighInventoryRatio() != null) {
-                    row03.createCell(5).setCellValue(highInventoryRespVo.getHighInventoryRatio());
-                } else {
-                    row03.createCell(5).setCellValue("");
-                }
+            // 全国上周
+            if (highInventoryRespVo.getSzqgHighInventoryAmount() != null) {
+                row03.createCell(3).setCellValue(highInventoryRespVo.getSzqgHighInventoryAmount());
+            } else {
+                row03.createCell(3).setCellValue("");
             }
+            if (highInventoryRespVo.getSzqgTotalInventoryAmount() != null) {
+                row03.createCell(4).setCellValue(highInventoryRespVo.getSzqgTotalInventoryAmount());
+            } else {
+                row03.createCell(4).setCellValue("");
+            }
+            if (highInventoryRespVo.getSzqgRate() != null) {
+                row03.createCell(5).setCellValue(highInventoryRespVo.getSzqgRate());
+            } else {
+                row03.createCell(5).setCellValue("");
+            }
+
+
             // 全国本周
-            if ("2".equals(highInventoryRespVo.getWarehouseTypeCode())) {
-                if (StringUtils.isNotBlank(highInventoryRespVo.getHighInventoryAmount())) {
-                    row03.createCell(6).setCellValue(highInventoryRespVo.getHighInventoryAmount());
-                } else {
-                    row03.createCell(6).setCellValue("");
-                }
-                if (StringUtils.isNotBlank(highInventoryRespVo.getInventoryTotalAmount())) {
-                    row03.createCell(7).setCellValue(highInventoryRespVo.getInventoryTotalAmount());
-                } else {
-                    row03.createCell(7).setCellValue("");
-                }
-                if (highInventoryRespVo.getHighInventoryRatio() != null) {
-                    row03.createCell(8).setCellValue(highInventoryRespVo.getHighInventoryRatio());
-                } else {
-                    row03.createCell(8).setCellValue("");
-                }
+            if (highInventoryRespVo.getBzqgHighInventoryAmount() != null) {
+                row03.createCell(6).setCellValue(highInventoryRespVo.getBzqgHighInventoryAmount());
+            } else {
+                row03.createCell(6).setCellValue("");
+            }
+            if (highInventoryRespVo.getBzqgTotalInventoryAmount() != null) {
+                row03.createCell(7).setCellValue(highInventoryRespVo.getBzqgTotalInventoryAmount());
+            } else {
+                row03.createCell(7).setCellValue("");
+            }
+            if (highInventoryRespVo.getBzqgRate() != null) {
+                row03.createCell(8).setCellValue(highInventoryRespVo.getBzqgRate());
+            } else {
+                row03.createCell(8).setCellValue("");
             }
 
-            //仓1
-            if ("3".equals(highInventoryRespVo.getWarehouseTypeCode())) {
-                if (StringUtils.isNotBlank(highInventoryRespVo.getHighInventoryAmount())) {
-                    row03.createCell(9).setCellValue(highInventoryRespVo.getHighInventoryAmount());
-                } else {
-                    row03.createCell(9).setCellValue("");
-                }
-                if (StringUtils.isNotBlank(highInventoryRespVo.getInventoryTotalAmount())) {
-                    row03.createCell(10).setCellValue(highInventoryRespVo.getInventoryTotalAmount());
-                } else {
-                    row03.createCell(10).setCellValue("");
-                }
-                if (highInventoryRespVo.getHighInventoryRatio() != null) {
-                    row03.createCell(11).setCellValue(highInventoryRespVo.getHighInventoryRatio());
-                } else {
-                    row03.createCell(11).setCellValue("");
-                }
+            // 华北仓
+            if (highInventoryRespVo.getHbHighInventoryAmount() != null) {
+                row03.createCell(9).setCellValue(highInventoryRespVo.getHbHighInventoryAmount());
+            } else {
+                row03.createCell(9).setCellValue("");
             }
-            //仓2
-            if ("4".equals(highInventoryRespVo.getWarehouseTypeCode())) {
-                if (StringUtils.isNotBlank(highInventoryRespVo.getHighInventoryAmount())) {
-                    row03.createCell(12).setCellValue(highInventoryRespVo.getHighInventoryAmount());
-                } else {
-                    row03.createCell(12).setCellValue("");
-                }
-                if (StringUtils.isNotBlank(highInventoryRespVo.getInventoryTotalAmount())) {
-                    row03.createCell(13).setCellValue(highInventoryRespVo.getInventoryTotalAmount());
-                } else {
-                    row03.createCell(13).setCellValue("");
-                }
-                if (highInventoryRespVo.getHighInventoryRatio() != null) {
-                    row03.createCell(14).setCellValue(highInventoryRespVo.getHighInventoryRatio());
-                } else {
-                    row03.createCell(14).setCellValue("");
-                }
+            if (highInventoryRespVo.getHbTotalInventoryAmount() != null) {
+                row03.createCell(10).setCellValue(highInventoryRespVo.getHbTotalInventoryAmount());
+            } else {
+                row03.createCell(10).setCellValue("");
             }
-            //仓3
-            if ("5".equals(highInventoryRespVo.getWarehouseTypeCode())) {
-                if (StringUtils.isNotBlank(highInventoryRespVo.getHighInventoryAmount())) {
-                    row03.createCell(15).setCellValue(highInventoryRespVo.getHighInventoryAmount());
-                } else {
-                    row03.createCell(15).setCellValue("");
-                }
-                if (StringUtils.isNotBlank(highInventoryRespVo.getInventoryTotalAmount())) {
-                    row03.createCell(16).setCellValue(highInventoryRespVo.getInventoryTotalAmount());
-                } else {
-                    row03.createCell(16).setCellValue("");
-                }
-                if (highInventoryRespVo.getHighInventoryRatio() != null) {
-                    row03.createCell(17).setCellValue(highInventoryRespVo.getHighInventoryRatio());
-                } else {
-                    row03.createCell(17).setCellValue("");
-                }
+            if (highInventoryRespVo.getHbRate() != null) {
+                row03.createCell(11).setCellValue(highInventoryRespVo.getHbRate());
+            } else {
+                row03.createCell(11).setCellValue("");
             }
-            //仓4
-            if ("6".equals(highInventoryRespVo.getWarehouseTypeCode())) {
-                if (StringUtils.isNotBlank(highInventoryRespVo.getHighInventoryAmount())) {
-                    row03.createCell(18).setCellValue(highInventoryRespVo.getHighInventoryAmount());
-                } else {
-                    row03.createCell(18).setCellValue("");
-                }
-                if (StringUtils.isNotBlank(highInventoryRespVo.getInventoryTotalAmount())) {
-                    row03.createCell(19).setCellValue(highInventoryRespVo.getInventoryTotalAmount());
-                } else {
-                    row03.createCell(19).setCellValue("");
-                }
-                if (highInventoryRespVo.getHighInventoryRatio() != null) {
-                    row03.createCell(20).setCellValue(highInventoryRespVo.getHighInventoryRatio());
-                } else {
-                    row03.createCell(20).setCellValue("");
-                }
-            }*/
+
+            // 华南仓
+            if (highInventoryRespVo.getHnHighInventoryAmount() != null) {
+                row03.createCell(12).setCellValue(highInventoryRespVo.getHnHighInventoryAmount());
+            } else {
+                row03.createCell(12).setCellValue("");
+            }
+            if (highInventoryRespVo.getHnTotalInventoryAmount() != null) {
+                row03.createCell(13).setCellValue(highInventoryRespVo.getHnTotalInventoryAmount());
+            } else {
+                row03.createCell(13).setCellValue("");
+            }
+            if (highInventoryRespVo.getHnRate() != null) {
+                row03.createCell(14).setCellValue(highInventoryRespVo.getHnRate());
+            } else {
+                row03.createCell(14).setCellValue("");
+            }
+
+            // 西南仓
+            if (highInventoryRespVo.getXnHighInventoryAmount() != null) {
+                row03.createCell(15).setCellValue(highInventoryRespVo.getXnHighInventoryAmount());
+            } else {
+                row03.createCell(15).setCellValue("");
+            }
+            if (highInventoryRespVo.getXnTotalInventoryAmount() != null) {
+                row03.createCell(16).setCellValue(highInventoryRespVo.getXnTotalInventoryAmount());
+            } else {
+                row03.createCell(16).setCellValue("");
+            }
+            if (highInventoryRespVo.getXnRate() != null) {
+                row03.createCell(17).setCellValue(highInventoryRespVo.getXnRate());
+            } else {
+                row03.createCell(17).setCellValue("");
+            }
+
+            // 华东仓
+            if (highInventoryRespVo.getHdHhighInventoryAmount() != null) {
+                row03.createCell(18).setCellValue(highInventoryRespVo.getHdHhighInventoryAmount());
+            } else {
+                row03.createCell(18).setCellValue("");
+            }
+            if (highInventoryRespVo.getHdTotalInventoryAmount() != null) {
+                row03.createCell(19).setCellValue(highInventoryRespVo.getHdTotalInventoryAmount());
+            } else {
+                row03.createCell(19).setCellValue("");
+            }
+            if (highInventoryRespVo.getHdRate() != null) {
+                row03.createCell(20).setCellValue(highInventoryRespVo.getHdRate());
+            } else {
+                row03.createCell(20).setCellValue("");
+            }
+
         }
         return workbook;
     }

@@ -723,13 +723,9 @@ public class ReportController {
             XSSFWorkbook wb = ExportExcelReportHigh.exportData(highInventoryRespVo);
             String excelName = "高库存数据导出";
             response.reset();
-            // response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-            // response.setCharacterEncoding("UTF-8");
-            // response.addHeader("Content-Disposition", "attachment;fileName=" + new String(excelName.getBytes("UTF-8"), "iso-8859-1"));
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/vnd.ms-excel");
-            response.setHeader("content-disposition",
-                    "attachment;filename=" + new String(excelName.getBytes("utf-8"),"ISO-8859-1" )+ ".xlsx");
+            response.addHeader("Content-Disposition", "attachment;fileName=" + new String(excelName.getBytes("UTF-8"), "iso-8859-1"));
             OutputStream os = response.getOutputStream();
             wb.write(os);
             os.flush();
@@ -747,13 +743,9 @@ public class ReportController {
             XSSFWorkbook wb = ExportExcelReportLow.exportData(lowInventoryRespVo);
             String excelName = "低库存数据导出";
             response.reset();
-            // response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-            // response.setCharacterEncoding("UTF-8");
-            // response.addHeader("Content-Disposition", "attachment;fileName=" + new String(excelName.getBytes("UTF-8"), "iso-8859-1"));
+            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/vnd.ms-excel");
-            response.setHeader("content-disposition",
-                    "attachment;filename=" + new String(excelName.getBytes("utf-8"),"ISO-8859-1" )+ ".xlsx");
+            response.addHeader("Content-Disposition", "attachment;fileName=" + new String(excelName.getBytes("UTF-8"), "iso-8859-1"));
             OutputStream os = response.getOutputStream();
             wb.write(os);
             os.flush();
