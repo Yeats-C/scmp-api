@@ -51,12 +51,6 @@ public class FileRecordServiceImpl implements FileRecordService {
     @Resource
     private FileInfoServiceImpl fileInfoService;
 
-    public static void main(String[] args) {
-        String ss = "ss/sd/ff/ss.gg";
-        System.out.println(ss.substring(0, ss.indexOf(".")));
-
-    }
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse deleteFile(FileRecord fileRecord) {

@@ -19,20 +19,6 @@ ground:
     url: jdbc:mysql://39.96.85.170:3306/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
     username: scmp_write
     password: nCUdR4jBQPVnSDVTSxFaA
-    initialSize: 5
-    minIdle: 3
-    maxActive: 40
-    maxWait: 6000000
-    timeBetweenEvictionRunsMillis: 600000
-    minEvictableIdleTimeMillis: 300000
-    filters: stat,slf4j
-    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=50000
-    web-stat-filter:
-      enabled: true
-      url-pattern: /*
-#      exclusions: *.js,*.gif,*.jpg,*.png,*.css,*.ico,*.map,/druid/*
-      session-stat-enable: false
-      profile-enable: true
 oss:
   end:
     point: http://oss-cn-beijing.aliyuncs.com

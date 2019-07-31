@@ -35,22 +35,29 @@ public class OrderProductSkuResponse {
     @ApiModelProperty("商品名称")
     private String productName;
 
-//    @ApiModelProperty("商品名称")
-//    private String productName;
-//
-//    @ApiModelProperty("商品名称")
-//    private String productName;
-//
-//    @ApiModelProperty("商品名称")
-//    private String productName;
-//
-//    @ApiModelProperty("商品名称")
-//    private String productName;
+    @ApiModelProperty("图片地址")
+    private String pictureUrl;
 
+    @ApiModelProperty("规格")
+    private String spec;
 
+    @ApiModelProperty("颜色名称")
+    private String colorName;
 
+    @ApiModelProperty("颜色编码")
+    private String colorCode;
 
+    @ApiModelProperty("型号")
+    private String model;
 
+    @ApiModelProperty("拆零系数")
+    private Integer zeroDisassemblyCoefficient;
+
+    @ApiModelProperty("商品单位code")
+    private String unitCode;
+
+    @ApiModelProperty("商品单位")
+    private String unitName;
 
 
 }
