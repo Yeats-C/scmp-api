@@ -966,7 +966,9 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
             //根据供货单位code获取相应的三张申请表id
             applySupplyCompany.setId(s.getId());
+            applySupplyCompany.setFormNo(s.getFormNo());
             applySupplyCompany.setSupplyCompanyCode(s.getSupplyCompanyCode());
+            applySupplyCompany.setApplySupplyCompanyCode(s.getApplySupplyCompanyCode());
             if(Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 applySupplyCompany.setApplyStatus(ApplyStatus.PENDING_SUBMISSION.getNumber());
             } else {
@@ -1010,10 +1012,18 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 });
                 applySupplierFileService.copySaveInfo(fileReqVOList);
             }
-            applySupplyCompanyMapper.delectById(id);
+            int i = applySupplyCompanyMapper.delectById(id);
+            if(i==0){
+                throw new GroundRuntimeException("修改失败");
+            }
             applySupplyCompany.setDelFlag((byte) 0);
+            applySupplyCompany.setId(null);
             ((ApplySupplyComServcie)AopContext.currentProxy()).insertData(applySupplyCompany);
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
+                applySupplyCompanyReqDTO.setDirectSupervisorCode(applySupplyCompanyReqVO.getDirectSupervisorCode());
+                applySupplyCompanyReqDTO.setDirectSupervisorName(applySupplyCompanyReqVO.getDirectSupervisorName());
+                applySupplyCompanyReqDTO.setFormNo(applySupplyCompany.getFormNo());
+                applySupplyCompanyReqDTO.setId(applySupplyCompany.getId());
                 workFlow(applySupplyCompanyReqDTO);
             }
         } catch (Exception e){
