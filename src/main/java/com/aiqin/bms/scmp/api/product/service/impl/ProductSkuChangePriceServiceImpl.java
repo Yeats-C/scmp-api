@@ -1206,7 +1206,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     public List<QuerySkuInfoRespVOForIm> importForSalePrice(MultipartFile file, String purchaseGroupCode, String changePriceType) {
         try {
-            List<SalePriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, SalePriceImport.class, 1, 0);
+            List<SalePriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, SalePriceImport.class, 2, 0);
             dataValidation2(imports);
             imports = imports.subList(1, imports.size());
             Set<String> set = Sets.newHashSet();
@@ -1245,7 +1245,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     public List<QuerySkuInfoRespVOForIm> importForTemporaryPrice(MultipartFile file, String purchaseGroupCode, String changePriceType) {
         try {
-            List<TemporaryPriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, TemporaryPriceImport.class, 1, 0);
+            List<TemporaryPriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, TemporaryPriceImport.class, 3, 0);
             dataValidation3(imports);
             imports = imports.subList(1, imports.size());
             Set<String> set = Sets.newHashSet();
