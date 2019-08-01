@@ -34,6 +34,9 @@ public class QueryApplyReqVo extends PageReq {
     @ApiModelProperty("申请编号")
     private String applyCode;
 
+    @ApiModelProperty("流程编码")
+    private String formNo;
+
     @ApiModelProperty("申请状态 0:待审 1:审核中 2:审核通过 3:审核未通过 4:已撤销")
     private String applyStatus;
 
