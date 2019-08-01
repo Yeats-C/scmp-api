@@ -10,7 +10,6 @@ import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
-import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
@@ -30,6 +29,8 @@ import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
+import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierScoreService;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -96,6 +97,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
     @Resource
     private StockService stockService;
+    @Resource
+    private PurchaseGroupService purchaseGroupService;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -347,6 +350,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
 
     @Override
     public HttpResponse<List<PurchaseOrderResponse>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest){
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+            return HttpResponse.success();
+        }
+        purchaseApplyRequest.setGroupList(groupVoList);
         PageResData pageResData = new PageResData();
         List<PurchaseOrderResponse> list = purchaseOrderDao.purchaseOrderList(purchaseApplyRequest);
         if(CollectionUtils.isNotEmptyCollection(list)){
