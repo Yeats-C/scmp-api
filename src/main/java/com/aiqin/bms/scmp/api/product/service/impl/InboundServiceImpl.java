@@ -299,7 +299,7 @@ public class InboundServiceImpl implements InboundService {
         log.error("异步推送给wms");
          // 通过id查询 入库单主体
         try {
-            Thread.sleep(180000);
+            Thread.sleep(60000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -392,7 +392,7 @@ public class InboundServiceImpl implements InboundService {
     public void workFlowCallBack(InboundCallBackReqVo reqVo) {
 
         try {
-            Thread.sleep(180000);
+            Thread.sleep(60000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -482,7 +482,7 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSourceDocumentNum(inbound.getSourceOderCode());
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockVoRequest.setOperator(inbound.getCreateBy());
-            stockVoRequest.setTaxRate(inboundProduct.getTaxRate().longValue());
+            stockVoRequest.setTaxRate(returnInboundProduct.getTax());
             stockVoRequest.setNewPurchasePrice(inboundProduct.getPraTaxPurchaseAmount());
             stockVoRequest.setNewDelivery(inbound.getSupplierCode());
             stockVoRequest.setNewDeliveryName(inbound.getSupplierName());
@@ -565,7 +565,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnSource(Long id) {
         try {
-            Thread.sleep(180000);
+            Thread.sleep(60000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -661,7 +661,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnPurchase(StorageResultReqVo storageResultReqVo) {
         try {
-            Thread.sleep(180000);
+            Thread.sleep(60000);
         } catch (InterruptedException e) {
             log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultReqVo));
             e.printStackTrace();
