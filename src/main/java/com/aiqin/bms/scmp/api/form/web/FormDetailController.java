@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.form.web;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.platform.flows.client.domain.FormDetailRequest;
 import com.aiqin.platform.flows.client.service.FormDetailService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +20,12 @@ public class FormDetailController {
 
     @Resource
     private FormDetailService formDetailService;
+
+    @GetMapping("/task")
+    @ApiOperation("获取任务相关信息")
+    HttpResponse goTaskOperateForm(@RequestBody FormDetailRequest request) {
+        return formDetailService.goTaskOperateForm(request);
+    }
 
     @GetMapping("/key/{form_no}")
     @ApiOperation("根据表单编号获取流程定义key")
