@@ -553,7 +553,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         ILockStocksReqVO.setTransportCenterCode(rejectRecord.getTransportCenterCode());
         ILockStocksReqVO.setWarehouseCode(rejectRecord.getWarehouseCode());
         ILockStocksReqVO.setPurchaseGroupCode(rejectRecord.getPurchaseGroupCode());
-        ILockStocksReqVO.setOperator(rejectRecord.getCreateByName());
         List<ILockStocksItemReqVo> list = new ArrayList<>();
         ILockStocksItemReqVo itemReqVo;
         for (RejectRecordDetail detail : detailList) {
