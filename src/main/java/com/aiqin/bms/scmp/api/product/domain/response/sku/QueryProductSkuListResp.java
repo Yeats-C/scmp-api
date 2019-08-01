@@ -63,4 +63,7 @@ public class QueryProductSkuListResp {
     @ApiModelProperty("规格")
     private String spec;
 
+    @ApiModelProperty("采购组名称")
+    private String purchaseGroupName;
+
 }

@@ -242,11 +242,10 @@ public class SkuInfoController {
     }
 
     @GetMapping("/exportSku")
-    public HttpResponse<Boolean> exportSku(HttpServletResponse resp
-                                           ,@RequestParam(value = "skuCodes")List<String> skuCodes){
-        log.info("SkuInfoController---exportSku---入参：[{}]", JSON.toJSONString(skuCodes));
+    public HttpResponse<Boolean> exportSku(HttpServletResponse resp){
+        log.info("SkuInfoController---exportSku---入参：[{}]");
         try {
-            return HttpResponse.success(skuInfoService.exportSku(skuCodes,resp));
+            return HttpResponse.success(skuInfoService.exportSku(resp));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {

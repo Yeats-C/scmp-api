@@ -364,7 +364,7 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
     }
 
     @Override
-    public Map<String, PurchaseGroup> selectByNames(Set<String> purchaseGroupList, String companyCode) {
+    public Map<String, PurchaseGroupDTO> selectByNames(Set<String> purchaseGroupList, String companyCode) {
         return purchaseGroupDao.selectByNames(purchaseGroupList,companyCode);
     }
 }

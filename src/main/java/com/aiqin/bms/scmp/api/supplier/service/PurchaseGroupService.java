@@ -1,7 +1,5 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupBuyerDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
@@ -12,6 +10,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.UserPosit
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.QueryPurchaseGroupResVo;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -102,5 +101,5 @@ public interface PurchaseGroupService {
      * @param companyCode
      * @return
      */
-    Map<String, PurchaseGroup> selectByNames(Set<String> purchaseGroupList, String companyCode);
+    Map<String, PurchaseGroupDTO> selectByNames(Set<String> purchaseGroupList, String companyCode);
 }

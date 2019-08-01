@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class TemporaryPriceImport extends BaseRowModel {
-    public static final String HEAD = "";
+    public static final String HEAD = "TemporaryPriceImport(skuCode=SKU编号, skuName=SKU名称, priceItemName=价格项目, effectiveTimeStart=生效时间, effectiveTimeEnd=失效时间, temporaryPrice=临时含税价, warehouseBatchName=仓库批次号, changePriceReasonName=调价原因)";
 
     @ApiModelProperty("sku编码")
     @ExcelProperty(index = 0, value = "sku编码")

@@ -257,7 +257,7 @@ public interface SkuInfoService{
 
     Boolean importSkuNewUpdate(SkuImportReq reqVO);
 
-    Boolean exportSku(List<String> skuCodes, HttpServletResponse resp);
+    Boolean exportSku(HttpServletResponse resp);
 
     Boolean importSkuUpdateForSupplyPlatform(SkuImportReq reqVO);
 

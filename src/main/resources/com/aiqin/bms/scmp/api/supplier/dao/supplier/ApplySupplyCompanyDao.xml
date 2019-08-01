@@ -408,10 +408,11 @@
        a.update_by as applyBy,
        a.update_time as applyTime,
        a.auditor_by as approvalBy,
-       a.auditor_time as approvalTime
+       a.auditor_time as approvalTime,
+       a.form_no as formNo
     from apply_supply_company a
     where 1=1
-    and apply_status != 5
+    and a.apply_status != 5
     <if test="createTimeStart != null and createTimeStart != ''">
       and a.create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
     </if>
@@ -432,6 +433,9 @@
     </if>
     <if test="applyBy != null and applyBy != '' ">
       and a.update_by = #{applyBy,jdbcType=VARCHAR}
+    </if>
+    <if test="formNo != null  and formNo != '' " >
+      and a.form_no like concat('%', #{formNo,jdbcType=VARCHAR},'%')
     </if>
     order by create_time desc
   </select>
