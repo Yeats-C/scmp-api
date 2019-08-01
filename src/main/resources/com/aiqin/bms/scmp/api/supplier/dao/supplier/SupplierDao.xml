@@ -112,6 +112,9 @@
       <if test="applyBy != null and applyBy != '' ">
         and update_by = #{applyBy,jdbcType=VARCHAR}
       </if>
+      <if test="formNo != null  and formNo != '' " >
+        and form_no like concat('%', #{formNo,jdbcType=VARCHAR},'%')
+      </if>
       order by apply_supplier_code desc
     </select>
   <select id="selectBySupplierName" resultMap="BaseResultMap" >
