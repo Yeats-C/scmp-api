@@ -22,6 +22,9 @@ public class ApplyListRespVo {
     @ApiModelProperty("申请编码")
     private String applyCode;
 
+    @ApiModelProperty("流程编号")
+    private String formNo;
+
     @ApiModelProperty("申请类型")
     private String applyType;
 
