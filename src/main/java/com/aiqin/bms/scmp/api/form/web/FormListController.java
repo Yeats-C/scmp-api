@@ -47,7 +47,7 @@ public class FormListController {
 
     @GetMapping("/count")
     @ApiOperation("查询数量")
-    HttpResponse findTaskListCount(@RequestParam("person_id") String personId, @RequestParam("process_key") String processKey) {
+    HttpResponse findTaskListCount(@RequestParam("person_id") String personId, @RequestParam(value = "process_key", required = false) String processKey) {
         return formListService.findTaskListCount(personId, "2", processKey);
     }
 
