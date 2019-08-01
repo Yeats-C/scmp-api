@@ -553,6 +553,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         ILockStocksReqVO.setTransportCenterCode(rejectRecord.getTransportCenterCode());
         ILockStocksReqVO.setWarehouseCode(rejectRecord.getWarehouseCode());
         ILockStocksReqVO.setPurchaseGroupCode(rejectRecord.getPurchaseGroupCode());
+        ILockStocksReqVO.setOperator(rejectRecord.getCreateByName());
         List<ILockStocksItemReqVo> list = new ArrayList<>();
         ILockStocksItemReqVo itemReqVo;
         for (RejectRecordDetail detail : detailList) {
@@ -563,7 +564,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             itemReqVo.setDocumentType(2);
             itemReqVo.setDocumentNum(detail.getRejectRecordCode());
             itemReqVo.setRemark(rejectRecord.getRemark());
-            itemReqVo.setOperator(rejectRecord.getUpdateByName());
+            itemReqVo.setOperator(rejectRecord.getCreateByName());
             list.add(itemReqVo);
         }
         ILockStocksReqVO.setItemReqVos(list);

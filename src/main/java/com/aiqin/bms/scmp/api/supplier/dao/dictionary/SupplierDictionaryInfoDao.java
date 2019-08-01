@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.dao.dictionary;
 
+import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryInfoResponseVO;
 import org.apache.ibatis.annotations.MapKey;
@@ -36,4 +37,6 @@ public interface SupplierDictionaryInfoDao {
      */
     @MapKey("supplierContent")
     Map<String,SupplierDictionaryInfo> selectByName(@Param("list") List<String> dicName, @Param("companyCode") String companyCode);
+
+    List<InnerValue> allList();
 }

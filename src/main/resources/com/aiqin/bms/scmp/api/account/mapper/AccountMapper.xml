@@ -12,6 +12,8 @@
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="create_by_company_code" jdbcType="VARCHAR" property="createByCompanyCode" />
+    <result column="create_by_company_name" jdbcType="VARCHAR" property="createByCompanyName" />
     <result column="department_code" jdbcType="VARCHAR" property="departmentCode" />
     <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
     <result column="position_code" jdbcType="VARCHAR" property="positionCode" />
@@ -30,7 +32,7 @@
   <sql id="Base_Column_List">
     id, account_name, username, person_id, role_ids, supplier_code, supplier_name, company_code, 
     company_name, department_code, department_name, account_status, mobile, gender, remark, position_code,position_name,
-    create_by_id, create_by_name, update_by_id, update_by_name, create_time, update_time,account_id
+    create_by_id, create_by_name, update_by_id, update_by_name, create_time, update_time,account_id,create_by_company_code,create_by_company_name
   </sql>
   <select id="selectOne" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
@@ -42,6 +44,9 @@
       </if>
       <if test="username!=null">
         AND username = #{username,jdbcType=VARCHAR}
+      </if>
+      <if test="createByCompanyCode!=null">
+        AND create_by_company_code = #{createByCompanyCode,jdbcType=VARCHAR}
       </if>
     </where>
   </select>
@@ -90,7 +95,7 @@
     insert into account ( account_name, username,
       person_id, role_ids, supplier_code, 
       supplier_name, company_code, company_name, 
-      department_code, department_name, account_status, 
+      department_code, department_name, account_status, create_by_company_code,create_by_company_name,
       mobile, gender, remark, position_code,position_name,account_id,
       create_by_id, create_by_name, update_by_id, 
       update_by_name, create_time, update_time
@@ -98,7 +103,7 @@
     values ( #{accountName,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR},
       #{personId,jdbcType=VARCHAR}, #{roleIds,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
       #{supplierName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
-      #{departmentCode,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR}, #{accountStatus,jdbcType=BIT}, 
+      #{departmentCode,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR}, #{accountStatus,jdbcType=BIT},  #{createByCompanyCode,jdbcType=VARCHAR}, #{createByCompanyName,jdbcType=VARCHAR},
       #{mobile,jdbcType=VARCHAR}, #{gender,jdbcType=BIT}, #{remark,jdbcType=VARCHAR},  #{positionCode,jdbcType=VARCHAR},  #{positionName,jdbcType=VARCHAR}, #{accountId,jdbcType=VARCHAR},
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{createById,jdbcType=VARCHAR},
       #{createByName,jdbcType=VARCHAR},now(),now()

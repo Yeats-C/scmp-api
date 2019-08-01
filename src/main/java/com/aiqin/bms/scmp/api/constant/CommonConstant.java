@@ -50,4 +50,11 @@ public interface CommonConstant {
     Integer NEW_PRODUCT = 1;
     Integer DEFECTIVE = 2;
     String CREATE_OUTBOUND_FAILED = "生成出库单失败，请重试";
+
+    /**
+     * 订单支付状态
+     */
+    Integer TO_BE_PAID = 1;
+
+    Integer PAID = 2;
 }
