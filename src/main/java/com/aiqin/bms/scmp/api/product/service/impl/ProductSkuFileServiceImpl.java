@@ -39,7 +39,6 @@ public class ProductSkuFileServiceImpl implements ProductSkuFileService {
     }
 
     @Override
-    @SaveList
     @Transactional(rollbackFor = BizException.class)
     public int insertList(List<ProductSkuFile> productSkuFiles) {
         int num = productSkuFileDao.insertList(productSkuFiles);
@@ -90,6 +89,7 @@ public class ProductSkuFileServiceImpl implements ProductSkuFileService {
                 BeanCopyUtils.copy(item,productSkuFile);
                 productSkuFiles.add(productSkuFile);
             });
+
             if (null != oldSkuFiles && oldSkuFiles.size() > 0){
                 //如果以前存在记录则先删除再新增
                 productSkuFileDao.deleteList(skuCode);

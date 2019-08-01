@@ -86,7 +86,6 @@ public class ProductSkuBoxPackingServiceImpl implements ProductSkuBoxPackingServ
     }
 
     @Override
-    @SaveList
     @Transactional(rollbackFor = BizException.class)
     public int insertList(List<ProductSkuBoxPacking> productSkuBoxPackings) {
         int num = productSkuBoxPackingDao.insertBoxList(productSkuBoxPackings);
