@@ -43,7 +43,7 @@ image:
   upload:
     path: D:\\images\\
 activiti:
-  host: http://localhost
+  host: http://flows.aiqin.com
 marker:
   info:
     url: http://market.api.aiqin.com/

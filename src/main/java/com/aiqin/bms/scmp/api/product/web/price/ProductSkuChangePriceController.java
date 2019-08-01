@@ -144,8 +144,20 @@ public class ProductSkuChangePriceController {
         }
     }
 
+    @ApiOperation("采购价导入")
+    @PostMapping("/importForPurchasePrice")
+    public HttpResponse<List<QuerySkuInfoRespVOForIm>> importForPurchasePrice(MultipartFile file, String purchaseGroupCode,String changePriceType){
+        try {
+            return HttpResponse.success(productSkuChangePriceService.importForPurchasePrice(file,purchaseGroupCode,changePriceType));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
 
-
+    }
 
     @ApiOperation("导入商品信息")
     @PostMapping("/importProductSkuChangePrice")
