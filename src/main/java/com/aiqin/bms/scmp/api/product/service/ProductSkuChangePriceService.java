@@ -247,6 +247,8 @@ public interface ProductSkuChangePriceService {
      */
     List<PriceJog> getPriceJog(String skuCode);
 
+    List<QuerySkuInfoRespVOForIm> importForChangePrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
+
     /**
      * 采购价导入
      * @param file
@@ -254,4 +256,8 @@ public interface ProductSkuChangePriceService {
      * @return
      */
     List<QuerySkuInfoRespVOForIm> importForPurchasePrice(MultipartFile file, String purchaseGroupCode,String changePriceType);
+
+    List<QuerySkuInfoRespVOForIm> importForSalePrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
+
+    List<QuerySkuInfoRespVOForIm> importForTemporaryPrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
 }

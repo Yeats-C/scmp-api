@@ -51,4 +51,10 @@ public class FormListController {
         return formListService.findTaskListCount(personId, "2", processKey);
     }
 
+    @GetMapping("/process")
+    @ApiOperation("审批类型列表")
+    HttpResponse getProcessListByType() {
+        return formListService.getProcessListByType(2);
+    }
+
 }

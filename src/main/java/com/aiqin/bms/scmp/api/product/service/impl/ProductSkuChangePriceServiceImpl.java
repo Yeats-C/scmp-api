@@ -12,6 +12,8 @@ import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.domain.excel.PriceImport;
 import com.aiqin.bms.scmp.api.product.domain.excel.PurchasePriceImport;
+import com.aiqin.bms.scmp.api.product.domain.excel.SalePriceImport;
+import com.aiqin.bms.scmp.api.product.domain.excel.TemporaryPriceImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
@@ -1149,7 +1151,19 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     public List<PriceJog> getPriceJog(String skuCode){
         return productSkuPriceInfoMapper.getPriceJog(skuCode,DateUtils.getYear());
     }
-
+    @Override
+    public List<QuerySkuInfoRespVOForIm> importForChangePrice(MultipartFile file, String purchaseGroupCode, String changePriceType){
+        if (changePriceType.equals(CommonConstant.PURCHASE_CHANGE_PRICE)) {
+            return importForPurchasePrice(file, purchaseGroupCode, changePriceType);
+        }
+        if (changePriceType.equals(CommonConstant.SALE_CHANGE_PRICE)) {
+            return importForSalePrice(file, purchaseGroupCode, changePriceType);
+        }
+        if (changePriceType.equals(CommonConstant.TEMPORARY_CHANGE_PRICE)) {
+            return importForTemporaryPrice(file, purchaseGroupCode, changePriceType);
+        }
+        return Lists.newArrayList();
+    }
     @Override
     public List<QuerySkuInfoRespVOForIm> importForPurchasePrice(MultipartFile file, String purchaseGroupCode,String changePriceType) {
         try {
@@ -1189,6 +1203,85 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         }
     }
 
+    @Override
+    public List<QuerySkuInfoRespVOForIm> importForSalePrice(MultipartFile file, String purchaseGroupCode, String changePriceType) {
+        try {
+            List<SalePriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, SalePriceImport.class, 2, 0);
+            dataValidation2(imports);
+            imports = imports.subList(1, imports.size());
+            Set<String> set = Sets.newHashSet();
+            imports.forEach(o->{
+                set.add(o.getSkuCode());
+            });
+            QuerySkuInfoReqVO querySkuInfoReqVO = new QuerySkuInfoReqVO();
+            querySkuInfoReqVO.setChangePriceType(CommonConstant.PURCHASE_CHANGE_PRICE);
+            querySkuInfoReqVO.setSkuCodes(new ArrayList<>(set));
+            querySkuInfoReqVO.setPurchaseGroupCode(purchaseGroupCode);
+            querySkuInfoReqVO.setCompanyCode(getUser().getCompanyCode());
+            List<QuerySkuInfoRespVO> queryNoPage = skuInfoService.getSkuListByQueryNoPage(querySkuInfoReqVO);
+            List<String> s = Lists.newArrayList();
+            s.add("调价原因");
+            Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(s, getUser().getCompanyCode());
+            Map<String, QuerySkuInfoRespVO> queryNoPageMap = queryNoPage.stream().collect(Collectors.toMap(QuerySkuInfoRespVO::getSkuCode, Function.identity(), (k1, k2) -> k2));
+            List<QuerySkuInfoRespVOForIm> list = Lists.newArrayList();
+            Map<String,String> repeatMap = Maps.newHashMap();
+            for (int i = 0; i < imports.size(); i++) {
+                CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap)
+                        .checkSkuInfo()//检查sku信息
+                        .checkPriceItem()//检查价格项目
+                        .checkSalePrice()//检查销售
+                        .checkEffectiveTimeStart()//检查生效时间
+                        .checkChangeReason()//调价原因
+                        ;
+                list.add(checkChangePrice.getData());
+                repeatMap = checkChangePrice.getRepeatMap();
+            }
+            return list;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_DATA_ERROR);
+        }
+    }
+
+    @Override
+    public List<QuerySkuInfoRespVOForIm> importForTemporaryPrice(MultipartFile file, String purchaseGroupCode, String changePriceType) {
+        try {
+            List<TemporaryPriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, TemporaryPriceImport.class, 3, 0);
+            dataValidation3(imports);
+            imports = imports.subList(1, imports.size());
+            Set<String> set = Sets.newHashSet();
+            imports.forEach(o->{
+                set.add(o.getSkuCode());
+            });
+            QuerySkuInfoReqVO querySkuInfoReqVO = new QuerySkuInfoReqVO();
+            querySkuInfoReqVO.setChangePriceType(CommonConstant.PURCHASE_CHANGE_PRICE);
+            querySkuInfoReqVO.setSkuCodes(new ArrayList<>(set));
+            querySkuInfoReqVO.setPurchaseGroupCode(purchaseGroupCode);
+            querySkuInfoReqVO.setCompanyCode(getUser().getCompanyCode());
+            List<QuerySkuInfoRespVO> queryNoPage = skuInfoService.getSkuListByQueryNoPage(querySkuInfoReqVO);
+            List<String> s = Lists.newArrayList();
+            s.add("调价原因");
+            Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(s, getUser().getCompanyCode());
+            Map<String, QuerySkuInfoRespVO> queryNoPageMap = queryNoPage.stream().collect(Collectors.toMap(QuerySkuInfoRespVO::getSkuCode, Function.identity(), (k1, k2) -> k2));
+            List<QuerySkuInfoRespVOForIm> list = Lists.newArrayList();
+            Map<String,String> repeatMap = Maps.newHashMap();
+            for (int i = 0; i < imports.size(); i++) {
+                CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap)
+                        .checkSkuInfo()//检查sku信息
+                        .checkPriceItem()//检查价格项目
+                        .checkTemporaryPrice()//检查临时价
+                        .checkEffectiveTimeStart()//检查生效时间
+                        .checkEffectiveTimeEnd()//检查失效时间
+                        .checkChangeReason()//调价原因
+                        ;
+                list.add(checkChangePrice.getData());
+                repeatMap = checkChangePrice.getRepeatMap();
+            }
+            return list;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_DATA_ERROR);
+        }
+    }
+
     /**
      * 校验数据和表头
      * @param skuInfoImports
@@ -1201,6 +1294,40 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
         }
         String  head = PurchasePriceImport.HEAD;
+        boolean equals = skuInfoImports.get(0).toString().equals(head);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
+    }
+    /**
+     * 校验数据和表头
+     * @param skuInfoImports
+     */
+    private void dataValidation2( List<SalePriceImport> skuInfoImports) {
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuInfoImports)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        if (skuInfoImports.size()<2) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        String  head = SalePriceImport.HEAD;
+        boolean equals = skuInfoImports.get(0).toString().equals(head);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
+    }
+    /**
+     * 校验数据和表头
+     * @param skuInfoImports
+     */
+    private void dataValidation3( List<TemporaryPriceImport> skuInfoImports) {
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuInfoImports)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        if (skuInfoImports.size()<2) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        String  head = TemporaryPriceImport.HEAD;
         boolean equals = skuInfoImports.get(0).toString().equals(head);
         if(!equals){
             throw new BizException(ResultCode.IMPORT_HEDE_ERROR);

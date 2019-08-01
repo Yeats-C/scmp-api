@@ -148,7 +148,7 @@ public class ProductSkuChangePriceController {
     @PostMapping("/importForPurchasePrice")
     public HttpResponse<List<QuerySkuInfoRespVOForIm>> importForPurchasePrice(MultipartFile file, String purchaseGroupCode,String changePriceType){
         try {
-            return HttpResponse.success(productSkuChangePriceService.importForPurchasePrice(file,purchaseGroupCode,changePriceType));
+            return HttpResponse.success(productSkuChangePriceService.importForChangePrice(file,purchaseGroupCode,changePriceType));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
             return HttpResponse.failure(e.getMessageId());
