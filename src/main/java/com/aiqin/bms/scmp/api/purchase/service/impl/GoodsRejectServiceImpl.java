@@ -493,6 +493,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 BeanUtils.copyProperties(detailResponse, rejectRecordDetail);
                 rejectRecordDetail.setProductCount(detailResponse.getProductCount().longValue());
                 rejectRecordDetail.setRejectRecordDetailId(IdUtil.uuid());
+                rejectRecordDetail.setRejectRecordCode(rejectCode);
                 list.add(rejectRecordDetail);
             }
             rejectRecord.setProductAmount(productAmount);
@@ -553,7 +554,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         ILockStocksReqVO.setTransportCenterCode(rejectRecord.getTransportCenterCode());
         ILockStocksReqVO.setWarehouseCode(rejectRecord.getWarehouseCode());
         ILockStocksReqVO.setPurchaseGroupCode(rejectRecord.getPurchaseGroupCode());
-        ILockStocksReqVO.setOperator(rejectRecord.getCreateByName());
         List<ILockStocksItemReqVo> list = new ArrayList<>();
         ILockStocksItemReqVo itemReqVo;
         for (RejectRecordDetail detail : detailList) {
