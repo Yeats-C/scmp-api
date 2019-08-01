@@ -40,7 +40,6 @@ public class ProductSkuPicDescServiceImpl implements ProductSkuPicDescService {
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    @SaveList
     public int insertList(List<ProductSkuPicDesc> productSkuPicDescs) {
         int num = productSkuPicDescDao.insertList(productSkuPicDescs);
         return num;

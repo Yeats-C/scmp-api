@@ -367,6 +367,7 @@ public class InboundServiceImpl implements InboundService {
                         operationLog.setCreateByName(inbound.getCreateBy());
                         operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
                         operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
+                        operationLog.setCreateTime(new Date());
                         purchaseManageService.addLog(operationLog);
                     }
                 }
@@ -481,7 +482,7 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSourceDocumentNum(inbound.getSourceOderCode());
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockVoRequest.setOperator(inbound.getCreateBy());
-//            stockVoRequest.setTaxRate(inboundProduct.getTaxRate().longValue());
+            stockVoRequest.setTaxRate(inboundProduct.getTaxRate().longValue());
             stockVoRequest.setNewPurchasePrice(inboundProduct.getPraTaxPurchaseAmount());
             stockVoRequest.setNewDelivery(inbound.getSupplierCode());
             stockVoRequest.setNewDeliveryName(inbound.getSupplierName());
@@ -524,6 +525,7 @@ public class InboundServiceImpl implements InboundService {
                 operationLog.setCreateByName(inbound.getCreateBy());
                 operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_IN.getCode());
                 operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库中");
+                operationLog.setCreateTime(new Date());
                 purchaseManageService.addLog(operationLog);
             }
         }
@@ -593,18 +595,17 @@ public class InboundServiceImpl implements InboundService {
                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
                int k = inboundDao.updateByPrimaryKeySelective(inbound);
 
-               if(inbound.getInboundTypeCode().toString().equals(InboundTypeEnum.RETURN_SUPPLY)){
-                   OperationLog operationLog = new OperationLog();
-                   PurchaseOrder purchaseOrder = new PurchaseOrder();
-                   purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
-                   PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-                   if(resultPurchaseOrder != null) {
-                       operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
-                       operationLog.setCreateByName(inbound.getCreateBy());
-                       operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode());
-                       operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库完成");
-                       purchaseManageService.addLog(operationLog);
-                   }
+               OperationLog operationLog = new OperationLog();
+               PurchaseOrder purchaseOrder = new PurchaseOrder();
+               purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
+               PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+               if(resultPurchaseOrder != null) {
+                   operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
+                   operationLog.setCreateByName(inbound.getCreateBy());
+                   operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode());
+                   operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库完成");
+                   operationLog.setCreateTime(new Date());
+                   purchaseManageService.addLog(operationLog);
                }
            }catch (Exception e){
                e.printStackTrace();

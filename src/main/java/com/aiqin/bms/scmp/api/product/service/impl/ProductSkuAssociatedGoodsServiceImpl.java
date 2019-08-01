@@ -177,7 +177,6 @@ public class ProductSkuAssociatedGoodsServiceImpl implements ProductSkuAssociate
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @SaveList
     public int insertBatch(List<ProductSkuAssociatedGoods> list) {
         return mapper.insertBatch(list);
     }

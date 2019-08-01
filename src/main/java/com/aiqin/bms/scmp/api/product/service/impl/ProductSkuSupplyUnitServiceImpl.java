@@ -42,7 +42,6 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
     }
 
     @Override
-    @SaveList
     @Transactional(rollbackFor = Exception.class)
     public int insertList(List<ProductSkuSupplyUnit> productSkuSupplyUnits) {
         int num = productSkuSupplyUnitDao.insertList(productSkuSupplyUnits);

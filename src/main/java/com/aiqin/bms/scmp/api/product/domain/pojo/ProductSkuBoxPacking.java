@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("整箱商品包装")
 @Data
 public class ProductSkuBoxPacking extends CommonBean {
@@ -30,10 +32,10 @@ public class ProductSkuBoxPacking extends CommonBean {
     private Long boxVolume;
 
     @ApiModelProperty("毛重")
-    private Long boxGrossWeight;
+    private BigDecimal boxGrossWeight;
 
     @ApiModelProperty("净重")
-    private Long netWeight;
+    private BigDecimal netWeight;
 
     @ApiModelProperty("商品sku code")
     private String productSkuCode;

@@ -134,7 +134,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     outboundProduct.setUnitCode(item.getUnitCode());
                     outboundProduct.setUnitName(item.getUnitName());
                     //进货规格
-//                    outboundProduct.setPurchaseNorms(iLockStockItemReqVo.getPurchaseNorms());
+                    outboundProduct.setOutboundNorms(item.getProductSpec());
                     //预计出库数量
                     outboundProduct.setPreOutboundNum(item.getProductCount());
                     //预计含税进价

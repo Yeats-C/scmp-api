@@ -1257,14 +1257,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     public List<ProductSkuDraftRespVo> getProductSkuDraftsByCompanyCode(String companyCode,String personId) {
         List<ProductSkuDraftRespVo> productSkuDraftByCompanyCode = productSkuDraftMapper.getProductSkuDraftByCompanyCode(companyCode, personId);
-        productSkuDraftByCompanyCode.forEach(item->{
-            //查询所有父节点
-            List<ProductCategory> parentCategoryList = productCategoryService.getParentCategoryList(item.getProductCategoryCode());
-            List<ProductCategory> parentCategoryList2 = parentCategoryList.stream().sorted(Comparator.comparing(ProductCategory :: getCategoryId)).collect(Collectors.toList());
-            List<String> categoryNames = parentCategoryList2.stream().map(ProductCategory :: getCategoryName).collect(Collectors.toList());
-            String categoryName = StringUtils.join(categoryNames, "-") + "-" + item.getProductCategoryName();
-            item.setProductCategoryName(categoryName);
-        });
         return productSkuDraftByCompanyCode;
     }
 

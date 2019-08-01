@@ -100,12 +100,14 @@ public class ProductSkuDisInfoServiceImpl implements ProductSkuDisInfoService {
     }
 
     @Override
+    @Transactional(rollbackFor = BizException.class)
     public int insert(ProductSkuDistributionInfo productSkuDistributionInfo) {
         int num = productSkuDistributionInfoMapper.insertSelective(productSkuDistributionInfo);
         return  num;
     }
 
     @Override
+    @Transactional(rollbackFor = BizException.class)
     public int update(ProductSkuDistributionInfo productSkuDistributionInfo) {
         int num = productSkuDistributionInfoMapper.updateByPrimaryKeySelective(productSkuDistributionInfo);
         return num;
