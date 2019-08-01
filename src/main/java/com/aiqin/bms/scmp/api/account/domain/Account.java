@@ -55,6 +55,14 @@ public class Account  {
     @JsonProperty("company_name")
     private String companyName;
 
+    @ApiModelProperty(value="创建人公司id")
+    @JsonProperty("create_by_company_code")
+    private String createByCompanyCode;
+
+    @ApiModelProperty(value="创建人公司名称")
+    @JsonProperty("create_by_company_name")
+    private String createByCompanyName;
+
     @ApiModelProperty(value="部门id")
     @JsonProperty("department_code")
     private String departmentCode;

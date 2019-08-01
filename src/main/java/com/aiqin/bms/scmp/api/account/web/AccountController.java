@@ -60,6 +60,8 @@ public class AccountController {
     @ApiOperation(value = "查询供应商账号列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "supplier_code", value = "供应商编码", type = "String"),
+            @ApiImplicitParam(name = "create_by_company_code", value = "创建人的公司code", type = "String"),
+            @ApiImplicitParam(name = "supplier_code", value = "供应商编码", type = "String"),
             @ApiImplicitParam(name = "account_name", value = "姓名", type = "String"),
             @ApiImplicitParam(name = "role_id", value = "角色id", type = "String"),
             @ApiImplicitParam(name = "account_status", value = "状态 0 启用 1禁用", type = "Integer"),
@@ -68,8 +70,9 @@ public class AccountController {
     })
     public HttpResponse<PageResData<Account>> accountList(@RequestParam(value = "page_no", required = false) Integer page_no, @RequestParam(value = "page_size", required = false) Integer page_size,
                                                           @RequestParam(value = "supplier_code", required = false) String supplier_code, @RequestParam(value = "role_id", required = false) String role_id,
+                                                          @RequestParam(value = "create_by_company_code", required = false) String create_by_company_code,
                                                           @RequestParam(value = "account_status", required = false) Integer account_status, @RequestParam(value = "account_name", required = false) String accountName) {
-        AccountRequest request = new AccountRequest(accountName, role_id, supplier_code, account_status);
+        AccountRequest request = new AccountRequest(accountName, role_id, supplier_code, account_status,create_by_company_code);
         request.setPageNo(page_no);
         request.setPageSize(page_size);
         LOGGER.info("查询供应商账号列表参数:{}", request.toString());

@@ -164,4 +164,10 @@
       supplier_dictionary_code=#{code,jdbcType=VARCHAR}
     </if>
   </update>
+  <select id="allList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue">
+    select
+     distinct concat(supplier_dictionary_code,supplier_content) as name,supplier_dictionary_info_code as value
+    from supplier_dictionary_info
+    where supplier_dictionary_code in ('244','243','242')
+  </select>
 </mapper>

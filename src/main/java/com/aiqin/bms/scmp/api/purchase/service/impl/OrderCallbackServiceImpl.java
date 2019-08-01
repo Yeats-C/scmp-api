@@ -1,16 +1,20 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.constant.DictionaryEnum;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
-import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
+import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.rule.DetailRespVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplierRuleMapper;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -18,11 +22,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -66,11 +74,33 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private SupplierRuleMapper supplierRuleMapper;
     @Resource
     private ProductSkuDao productSkuDao;
+    @Resource
+    private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
+
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse outboundOrder(OutboundRequest request) {
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(request, orderInfo);
         DetailRespVo detailRespVo = supplierRuleMapper.findByCompanyCode(COMPANY_CODE);
+        //取字典表数据
+        List<InnerValue> dictionaryInfoList = supplierDictionaryInfoDao.allList();
+        Map<String, InnerValue> dictionaryInfoMap = dictionaryInfoList.stream().collect(Collectors.toMap(InnerValue::getName,innerValue -> innerValue));
+        //支付方式
+        if (dictionaryInfoMap.containsKey(DictionaryEnum.PAY_TYPE.getCode() + request.getPaymentType())) {
+            orderInfo.setPaymentTypeCode(dictionaryInfoMap.get(DictionaryEnum.PAY_TYPE.getCode() + request.getPaymentType()).getValue());
+            orderInfo.setPaymentType(request.getPaymentType());
+        }
+        //订单类别
+        if (dictionaryInfoMap.containsKey(DictionaryEnum.ORDER_CATEGORY.getCode() + request.getOrderCategory())) {
+            orderInfo.setOrderCategoryCode(dictionaryInfoMap.get(DictionaryEnum.ORDER_CATEGORY.getCode() + request.getOrderCategory()).getValue());
+            orderInfo.setOrderCategory(request.getOrderCategory());
+        }
+        //订单类型
+        if (dictionaryInfoMap.containsKey(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType())) {
+            orderInfo.setOrderType(dictionaryInfoMap.get(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType()).getValue());
+            orderInfo.setOrderType(request.getOrderType());
+        }
         //订单体积计算系数
         BigDecimal orderVolumeCoefficient = new BigDecimal(1);
         //订单重量计算系数
@@ -82,26 +112,43 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         OrderProductSkuResponse productSku;
         List<OrderInfoItem> detailList = new ArrayList<>();
         OrderInfoItem orderInfoItem;
+        //总体积
+        Long sumBoxVolume = 0L;
+        //总重量
+        Long sumBoxGrossWeight = 0L;
         for (OutboundDetailRequest outboundDetailRequest : request.getDetail()) {
             //查询商品信息
             orderInfoItem = new OrderInfoItem();
-            BeanUtils.copyProperties(outboundDetailRequest,orderInfoItem);
             productSku = productSkuDao.selectSkuInfo(outboundDetailRequest.getSkuCode());
-            if(productSku!=null){
+            if (productSku != null) {
+                BeanUtils.copyProperties(productSku, orderInfoItem);
                 orderInfoItem.setSkuName(productSku.getProductName());
-                orderInfoItem.setPictureUrl(productSku.getPictureUrl());
-                orderInfoItem.setColorCode(productSku.getColorCode());
-                orderInfoItem.setColorName(productSku.getProductName());
-                orderInfoItem.setSpec(productSku.getSpec());
-                orderInfoItem.setModel(productSku.getModel());
+                //(sku体积*数量)的合计*系数
+                sumBoxVolume += new BigDecimal(outboundDetailRequest.getNum())
+                        .multiply(productSku.getBoxVolume())
+                        .multiply(orderVolumeCoefficient).longValue();
+                //(sku重量*数量)的合计*系数
+                sumBoxGrossWeight += new BigDecimal(outboundDetailRequest.getNum())
+                        .multiply(productSku.getBoxGrossWeight())
+                        .multiply(orderWeightCoefficient).longValue();
             }
-
+            orderInfoItem.setNum(outboundDetailRequest.getNum());
+            orderInfoItem.setProductLineNum(outboundDetailRequest.getProductLineNum());
+            orderInfoItem.setSkuCode(outboundDetailRequest.getSkuCode());
+            orderInfoItem.setChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
+            orderInfoItem.setActualDeliverNum(outboundDetailRequest.getActualDeliverNum());
+            orderInfoItem.setTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice() * outboundDetailRequest.getNum());
+            orderInfoItem.setOrderCode(orderInfo.getOrderCode());
             detailList.add(orderInfoItem);
         }
+        //已支付
+        orderInfo.setPaymentStatus(CommonConstant.PAID);
+        orderInfo.setVolume(sumBoxVolume);
+        orderInfo.setWeight(sumBoxGrossWeight);
         Integer count = orderInfoMapper.insert(orderInfo);
-        Integer detailCount = orderInfoItemMapper.insertList(detailList);
-
         LOGGER.info("添加订单:{}", count);
+        Integer detailCount = orderInfoItemMapper.insertList(detailList);
+        LOGGER.info("添加订单详情:{}", detailCount);
         return HttpResponse.success();
     }
 

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.serveice.test.order;
 
+import com.aiqin.bms.scmp.api.SpringBootTestContext;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
@@ -38,7 +39,7 @@ import java.util.List;
  * 思维方式*热情*能力
  */
 @Service
-public class OrderCallbackServiceTest {
+public class OrderCallbackServiceTest extends SpringBootTestContext {
 
     @Resource
     private OrderCallbackService orderCallbackService;
@@ -53,8 +54,8 @@ public class OrderCallbackServiceTest {
 //        request.setBeException(0);
         request.setPaymentStatus(0);
 //        request.setBeLock(0);
-        request.setOrderType("1");
-        request.setOrderCategory("1");
+        request.setOrderType("直送");
+        request.setOrderCategory("正常补货");
 //        request.setPaymentType("");
 //        request.setBeException(1);
         request.setOrderOriginal("小红马");
@@ -71,7 +72,7 @@ public class OrderCallbackServiceTest {
         request.setCustomerCode("222");
         request.setCustomerName("名称");
         request.setConsignee("张三");
-        request.setConsigneePhone("185411544564");
+        request.setConsigneePhone("18514263652");
         request.setProvinceCode("001");
         request.setProvinceName("省");
         request.setCityCode("001");
@@ -84,7 +85,7 @@ public class OrderCallbackServiceTest {
         List<OutboundDetailRequest> detail = new ArrayList<>();
         OutboundDetailRequest outboundDetailRequest = new OutboundDetailRequest();
         outboundDetailRequest.setProductLineNum(1L);
-        outboundDetailRequest.setSkuCode("10000000321");
+        outboundDetailRequest.setSkuCode("10000000201");
         outboundDetailRequest.setChannelUnitPrice(10L);
         outboundDetailRequest.setNum(200L);
         outboundDetailRequest.setActualDeliverNum(200L);
