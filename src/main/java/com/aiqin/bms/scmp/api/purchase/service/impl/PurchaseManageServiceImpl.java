@@ -455,6 +455,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
             // 仓储确认判断是否入库完成
                 this.wayNum(purchaseOrderId);
+            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
@@ -792,6 +794,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             // 仓储确认判断是否入库完成
             if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
                 this.wayNum(purchaseStorage.getPurchaseOrderId());
+                log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                        PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
             }
         }
         return HttpResponse.success();
@@ -880,6 +884,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         // 仓储确认判断是否入库完成
         if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
             this.wayNum(purchaseOrderId);
+            log(purchaseOrderId,storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
         }
         return HttpResponse.success();
     }
