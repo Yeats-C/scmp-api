@@ -1214,7 +1214,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 set.add(o.getSkuCode());
             });
             QuerySkuInfoReqVO querySkuInfoReqVO = new QuerySkuInfoReqVO();
-            querySkuInfoReqVO.setChangePriceType(CommonConstant.PURCHASE_CHANGE_PRICE);
+            querySkuInfoReqVO.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
             querySkuInfoReqVO.setSkuCodes(new ArrayList<>(set));
             querySkuInfoReqVO.setPurchaseGroupCode(purchaseGroupCode);
             querySkuInfoReqVO.setCompanyCode(getUser().getCompanyCode());
@@ -1253,7 +1253,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 set.add(o.getSkuCode());
             });
             QuerySkuInfoReqVO querySkuInfoReqVO = new QuerySkuInfoReqVO();
-            querySkuInfoReqVO.setChangePriceType(CommonConstant.PURCHASE_CHANGE_PRICE);
+            querySkuInfoReqVO.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
             querySkuInfoReqVO.setSkuCodes(new ArrayList<>(set));
             querySkuInfoReqVO.setPurchaseGroupCode(purchaseGroupCode);
             querySkuInfoReqVO.setCompanyCode(getUser().getCompanyCode());
