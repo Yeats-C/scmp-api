@@ -1080,7 +1080,7 @@
         and a.ext_field_5 = 0 and a.price_attribute_code in (1,2)
   </select>
     <select id="getPriceJog" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceJog">
-        select DATE_FORMAT(a.create_time, '%Y-%m') month,
+        select DATE_FORMAT(a.create_time, '%Y/%m') month,
                ROUND(avg(a.price_tax),0) price ,
                sku_code skuCode
                 from
@@ -1100,7 +1100,7 @@
                  WHERE
                  p.price_attribute_code = 1 and DATE_FORMAT(p.create_time, '%Y') in(#{year},#{year}-1)
                 ) a
-        where sku_code = #{skuCode}
-        GROUP BY DATE_FORMAT(create_time, '%Y-%m'),sku_code;
+        where a.sku_code = #{skuCode}
+        GROUP BY DATE_FORMAT(create_time, '%Y/%m'),sku_code order by create_time;
     </select>
 </mapper>
