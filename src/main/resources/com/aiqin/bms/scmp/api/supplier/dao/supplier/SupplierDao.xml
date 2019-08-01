@@ -84,7 +84,8 @@
       a.update_by as applyBy,
       a.update_time as applyTime,
       a.auditor_by as approvalBy,
-      a.auditor_time as approvalTime
+      a.auditor_time as approvalTime,
+      a.form_no as formNo
       from apply_supplier a
       where 1=1
       <if test="createTimeStart != null and createTimeStart != '' ">
