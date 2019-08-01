@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @ApiModel("sku导出模板")
 public class ExportSkuInfo extends BaseRowModel {
-    public static final String HEAD = "";
+    public static final String HEAD = "ExportSkuInfo(skuCode=SKU编号, goodsGiftsDesc=类型, skuName=SKU名称, skuAbbreviation=SKU简称, productBrandName=品牌, productCategoryName=品类, productName=所属SPU, productPropertyName=商品属性, productSortName=所属部门, procurementSectionName=采购组, colorName=颜色, modelNumber=型号, qualityAssuranceManagementDesc=是否管理保质期, qualityDate=保质期单位, qualityNumber=保质天数, categoriesSupplyChannelsName=供货渠道类别, mnemonicCode=助记码, manufacturerGuidePrice=厂家指导价, applicableMonthAge=适用起始月龄, seasonalGoodsDesc=是否季节商品, warehouseTypeName=仓位类型, structuralGoodsDesc=结构性商品, useTime=使用时长, inventoryModelDesc=库存模式, uniqueCodeDesc=唯一码管理, priceChannelName=覆盖渠道, tagName=商品标签, remark=商品备注, stockSpec=库存规格, stockUnitName=库存单位, stockBoxLength=库存长, stockBoxWidth=库存宽, stockBoxHeight=库存高, stockBoxGrossWeight=库存毛重, stockNetWeight=库存净重, stockBarCode=库存条形码, purchaseSpec=采购规格, purchaseUnitName=采购单位, purchaseBoxLength=采购长, purchaseBoxWidth=采购宽, purchaseBoxHeight=采购高, purchaseBoxGrossWeight=采购毛重, purchaseNetWeight=采购净重, purchaseBaseProductContent=采购基商品含量, purchaseZeroRemovalCoefficient=采购拆零系数, purchaseBarCode=采购条形码, distributionSpec=分销规格, distributionUnitName=分销单位, distributionBaseProductContent=分销基商品含量, distributionZeroRemovalCoefficient=分销拆零系数, distributionBarCode=分销条形码, maxOrderNum=最大订购数, saleSpec=销售规格, saleUnitName=销售单位, saleBarCode=销售条形码, description=销售描述, settlementMethodName=结算方式, inputTaxRate=进项税率, outputTaxRate=销项税率, integralCoefficient=积分系数, logisticsFeeAwardRatio=物流费奖励比例, supplyUnitCode=供应商编码, supplyUnitName=供应商名称, taxIncludedPrice=含税采购价, jointFranchiseRate=联营返点(%), point=返点(%), factorySkuCode=厂商SKU编号, supplyCategoriesSupplyChannelsName=供应商供货渠道类别)";
     @ApiModelProperty("sku编码")
     @ExcelProperty(index = 0, value = {"基本信息","SKU编号"})
     private String skuCode;
@@ -48,7 +48,7 @@ public class ExportSkuInfo extends BaseRowModel {
 
     @ApiModelProperty("采购组")
     @ExcelProperty(index = 9, value = {"基本信息","采购组"})
-    private String procurement_section_name;
+    private String procurementSectionName;
 
     @ApiModelProperty("颜色名称")
     @ExcelProperty(index = 10, value = {"基本信息","颜色"})

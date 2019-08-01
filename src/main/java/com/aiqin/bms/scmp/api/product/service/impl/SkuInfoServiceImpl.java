@@ -36,6 +36,7 @@ import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
+import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
@@ -1577,7 +1578,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //厂家制造商
             Set<String> manufactureList = Sets.newHashSet();
             skuInfoImports.forEach(o -> {
-                skuNameList.add(o.getSkuName());
+                skuNameList.add(o.getSkuCode());
                 brandNameList.add(o.getProductBrandName());
                 supplierList.add(o.getSupplyUnitName());
                 if (StringUtils.isNotBlank(o.getProductCategoryName())) {
@@ -1595,6 +1596,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (StringUtils.isNotBlank(o.getProductName())) {
                     spuName.add(o.getProductName());
                 }
+                if (StringUtils.isNotBlank(o.getProductName())) {
+                    purchaseGroupList.add(o.getProcurementSectionName());
+                }
 
             });
             Map<String, ProductSkuInfo> productSkuMap = Maps.newHashMap();
@@ -1607,7 +1611,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             Map<String, TagInfo> skuTagMap = Maps.newHashMap();
             Map<String, NewProduct> spuMap = Maps.newHashMap();
             Map<String, Manufacturer> manufactureMap = Maps.newHashMap();
-            Map<String, PurchaseGroup> purchaseGroupMap = Maps.newHashMap();
+            Map<String, PurchaseGroupDTO> purchaseGroupMap = Maps.newHashMap();
             //sku信息
             if (CollectionUtils.isNotEmpty(skuNameList)) {
                 productSkuMap = selectBySkuCodes(skuNameList, getUser().getCompanyCode());
@@ -1660,7 +1664,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 //检查信息
                 CheckSku checkSku = new CheckSku(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,productSkuDraftMap,purchaseGroupMap)
                         .checkRepeat() //检查重复
-                        .checkSKuUpdate() //修改检查sku
+                        .checkSKuUpdate1() //修改检查sku
                         .checkBaseDate() //检查基础数据
                         .checkPurchaseGroup()//检查采购组
                         .checkInvoice() //检查进销存包装
@@ -1872,9 +1876,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    public Boolean exportSku( List<String> skuCodes, HttpServletResponse resp) {
+    public Boolean exportSku(HttpServletResponse resp) {
         try {
-            List<ExportSkuInfo> list = productSkuDraftMapper.exportSku(skuCodes);
+            List<ExportSkuInfo> list = productSkuDraftMapper.exportSku();
             StyleExcelHandler handler = new StyleExcelHandler();
             ExcelWriter writer = new ExcelWriter(null, getOutputStream("商品申请确认模板",resp,ExcelTypeEnum.XLSX), ExcelTypeEnum.XLSX, true, handler);
             Sheet sheet1 = new Sheet(1, 1, ExportSkuInfo.class, "商品申请确认模板", null);
@@ -2041,7 +2045,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         Map<String, SupplierDictionaryInfo> dicMap;
         Map<String, Manufacturer> manufactureMap;
         Map<String, ProductSkuDraft> productSkuDraftMap;
-        Map<String,PurchaseGroup> purchaseGroupMap;
+        Map<String, PurchaseGroupDTO> purchaseGroupMap;
 
         private CheckSku() {
         }
@@ -2062,7 +2066,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             this.manufactureMap = manufactureMap;
         }
 
-        public CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> reaptMap, ExportSkuInfo importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, ProductSkuDraft> productSkuDraftMap,Map<String,PurchaseGroup> purchaseGroupMap) {
+        public CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> reaptMap, ExportSkuInfo importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, ProductSkuDraft> productSkuDraftMap,Map<String,PurchaseGroupDTO> purchaseGroupMap) {
             this.error = Lists.newArrayList();
             this.resp = new AddSkuInfoReqVO();
             this.productSkuMap = productSkuMap;
@@ -2071,11 +2075,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             this.categoryMap = categoryMap;
             this.channelMap = channelMap;
             this.skuTagMap = skuTagMap;
-            this.repeatMap = repeatMap;
+            this.repeatMap = reaptMap;
             this.importVo = BeanCopyUtils.copy(importVo,SkuInfoImport.class);
             this.spuMap = spuMap;
             this.dicMap = dicMap;
-            this.manufactureMap = manufactureMap;
+//            this.manufactureMap = manufactureMap;
             this.productSkuDraftMap = productSkuDraftMap;
             this.purchaseGroupMap = purchaseGroupMap;
         }
@@ -2107,6 +2111,32 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("sku编码不能为空");
             }else {
                 ProductSkuInfo sku = productSkuMap.get(importVo.getSkuCode());
+                //sku名称
+                if (Objects.isNull(sku)) {
+                    error.add("无对应的sku编码");
+                }else {
+                    if (Objects.isNull(importVo.getSkuName())) {
+                        error.add("SKU名称不能为空");
+                    }
+//                    else {
+//                        if (!sku.getSkuName().equals(importVo.getSkuName())) {
+//                            error.add("sku编码和sku名称不对应");
+//                        }
+//                    }
+                }
+            }
+            this.resp.setProductSkuDraft(draft);
+            return this;
+        }
+
+        //供应商平台数据导入修改检查sku
+        private CheckSku checkSKuUpdate1() {
+            ProductSkuDraft draft = BeanCopyUtils.copy(importVo, ProductSkuDraft.class);
+            //sku编码
+            if (Objects.isNull(importVo.getSkuCode())) {
+                error.add("sku编码不能为空");
+            }else {
+                ProductSkuDraft sku = productSkuDraftMap.get(importVo.getSkuCode());
                 //sku名称
                 if (Objects.isNull(sku)) {
                     error.add("无对应的sku编码");
@@ -2765,7 +2795,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (Objects.isNull(info)) {
                     error.add("未找到该名称对应的结算方式");
                 } else {
-                    draft.setSettlementMethodCode(info.getSupplierContent());
+                    draft.setSettlementMethodName(info.getSupplierContent());
                     draft.setSettlementMethodCode(info.getSupplierDictionaryValue());
                 }
             }
@@ -3227,7 +3257,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getProcurementSectionName())) {
                 error.add("采购组不能为空");
             }else {
-                PurchaseGroup purchaseGroup = purchaseGroupMap.get(importVo.getProcurementSectionName());
+                PurchaseGroupDTO purchaseGroup = purchaseGroupMap.get(importVo.getProcurementSectionName());
                 if (Objects.isNull(purchaseGroup)) {
                     error.add("无对应名称的采购组");
                 }else {

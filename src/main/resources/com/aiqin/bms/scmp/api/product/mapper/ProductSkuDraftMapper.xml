@@ -802,11 +802,12 @@
                a.sku_name skuName,
                a.sku_abbreviation skuAbbreviation,
                a.product_brand_name productBrandName,
-               a.product_category_name productCategoryName,
+               CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) as productCategoryName,
+--                a.product_category_name productCategoryName,
                a.product_name productName,
                a.product_property_name productPropertyName,
                a.product_sort_name productSortName,
-               a.procurement_section_name procurement_section_name,
+               a.procurement_section_name procurementSectionName,
                a.color_name colorName,
                a.model_number modelNumber,
                case when a.quality_assurance_management = 0 then '管理'
@@ -818,7 +819,7 @@
                a.quality_date qualityNumber,
                a.categories_supply_channels_name categoriesSupplyChannelsName,
                a.mnemonic_code mnemonicCode,
-               a.manufacturer_guide_price manufacturerGuidePrice,
+               a.manufacturer_guide_price/100 manufacturerGuidePrice,
                a.applicable_month_age applicableMonthAge,
                case when a.seasonal_goods = 0 then '是'
                     when a.seasonal_goods = 1 then '否'
@@ -845,17 +846,17 @@
                a.remark remark,
                d.spec stockSpec,
                d.unit_name stockUnitName,
-               e.box_length stockBoxLength,
-               e.box_width stockBoxWidth,
-               e.box_height stockBoxHeight,
+               e.box_length/100 stockBoxLength,
+               e.box_width/100 stockBoxWidth,
+               e.box_height/100 stockBoxHeight,
                e.box_gross_weight stockBoxGrossWeight,
                e.net_weight stockNetWeight,
                d.bar_code stockBarCode,
                f.spec purchaseSpec,
                f.unit_name purchaseUnitName,
-               g.box_length purchaseBoxLength,
-               g.box_width purchaseBoxWidth,
-               g.box_height purchaseBoxHeight,
+               g.box_length/100 purchaseBoxLength,
+               g.box_width/100 purchaseBoxWidth,
+               g.box_height/100 purchaseBoxHeight,
                g.box_gross_weight purchaseBoxGrossWeight,
                g.net_weight purchaseNetWeight,
                f.base_product_content purchaseBaseProductContent,
@@ -871,16 +872,16 @@
                d.unit_name saleUnitName,
                i.sales_code saleBarCode,
                i.description description,
-               j.settlement_method_code settlementMethodName,
-               j.Input_tax_rate inputTaxRate,
-               j.output_tax_rate outputTaxRate,
+               j.settlement_method_name settlementMethodName,
+               j.Input_tax_rate/100 inputTaxRate,
+               j.output_tax_rate/100 outputTaxRate,
                j.Integral_coefficient integralCoefficient,
                j.logistics_fee_award_ratio logisticsFeeAwardRatio,
                k.supply_unit_code supplyUnitCode,
                k.supply_unit_name supplyUnitName,
-               k.tax_included_price taxIncludedPrice,
-               k.joint_franchise_rate jointFranchiseRate,
-               k.point point,
+               k.tax_included_price/100 taxIncludedPrice,
+               k.joint_franchise_rate/100 jointFranchiseRate,
+               k.point/100 point,
                k.factory_sku_code factorySkuCode,
                k.categories_supply_channels_name supplyCategoriesSupplyChannelsName
         from product_sku_draft a
@@ -900,10 +901,15 @@
                            on a.sku_code = j.sku_code
                  left join product_sku_supply_unit_draft k
                            on k.product_sku_code = j.sku_code and k.update_by = a.update_by
-          where  a.goods_gifts != 2 and a.sku_code in
-          <foreach collection="list" open="(" close=")" item="item" separator=",">
-            #{item}
-          </foreach>
+                 LEFT JOIN product_category lv4
+                           on lv4.category_id = a.product_category_code
+                           LEFT JOIN product_category lv3
+                           on lv3.category_id = lv4.parent_id
+                           LEFT JOIN product_category lv2
+                           on lv2.category_id = lv3.parent_id
+                           LEFT JOIN product_category lv1
+                           on lv1.category_id = lv2.parent_id
+          where a.original_code = 1 and  a.goods_gifts != 2
         group by a.sku_code) a
         left join product_sku_channel_draft b
                on a.skuCode = b.sku_code
