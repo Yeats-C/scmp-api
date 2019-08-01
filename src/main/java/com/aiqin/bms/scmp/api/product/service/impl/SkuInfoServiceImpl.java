@@ -1329,9 +1329,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         productSkuDisInfoService.deleteDrafts(skuCodes);
         productSkuSalesInfoService.deleteDrafts(skuCodes);
         productSkuBoxPackingService.deleteDrafts(skuCodes);
+        productSkuChannelService.deleteDrafts(skuCodes);
         productSkuCheckoutService.deleteDrafts(skuCodes);
         applyUseTagRecordService.deletes(skuCodes);
-        productSkuConfigService.deleteDraftBySkuCodes(skuCodes);
         return deleteNum;
     }
 
@@ -1934,7 +1934,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         Set<String> sets = Sets.newHashSet();
         skuCodes.add(reqVO.getProductSkuDraft().getSkuCode());
         sets.add(reqVO.getProductSkuDraft().getSkuCode());
-        ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraftForPlatform(skuCodes);
         //查询该调sku对应的供应商信息
         Map<String, ProductSkuDraft> stringProductSkuDraftMap = draftService.selectBySkuCode(sets, getUser().getCompanyCode());
         ProductSkuDraft draft = stringProductSkuDraftMap.get(reqVO.getProductSkuDraft().getSkuCode());
@@ -1945,6 +1944,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<Long> list = Lists.newArrayList();
         list.add(unitDraft.getId());
         productSkuSupplyUnitDraftMapper.deleteDraftByIds(list);
+        ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraftForPlatform(skuCodes);
+        reqVO.getProductSkuSupplyUnitDrafts().get(0).setIsDefault(unitDraft.getIsDefault());
         return  ((SkuInfoService)AopContext.currentProxy()).saveDraftSkuInfo(reqVO);
     }
 
