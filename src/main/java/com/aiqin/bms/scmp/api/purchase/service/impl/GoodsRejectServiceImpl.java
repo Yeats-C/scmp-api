@@ -493,6 +493,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 BeanUtils.copyProperties(detailResponse, rejectRecordDetail);
                 rejectRecordDetail.setProductCount(detailResponse.getProductCount().longValue());
                 rejectRecordDetail.setRejectRecordDetailId(IdUtil.uuid());
+                rejectRecordDetail.setRejectRecordCode(rejectCode);
                 list.add(rejectRecordDetail);
             }
             rejectRecord.setProductAmount(productAmount);
