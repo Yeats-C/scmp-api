@@ -24,6 +24,12 @@ public interface SupplierFileDao {
      * @return
      */
     List<SupplierFile> getSupplierFile(String code);
+    /**
+         * 根据编码获取文件列表
+         * @param code
+         * @return
+         */
+    List<SupplierFile> getApplySupplierFile(String code);
 
     /**
      * 根据供应商编码删除文件

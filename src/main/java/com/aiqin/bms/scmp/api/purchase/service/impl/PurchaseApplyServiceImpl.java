@@ -36,6 +36,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.omg.CORBA.Object;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,8 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
 /**
  * @author: zhao shuai
@@ -467,18 +470,21 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             StringUtils.isBlank(record[3]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[5]) || StringUtils.isBlank(record[6])) {
                         HandleResponse(response, record,"导入的数据不全");
                         errorCount++;
+                        list.add(response);
                         continue;
                     }
                     supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                     if(supplier==null){
                         HandleResponse(response, record,"未查询到供应商信息");
                         errorCount++;
+                        list.add(response);
                         continue;
                     }
                     logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
                     if(logisticsCenter==null){
                         HandleResponse(response, record,"未查询到仓库信息");
                         errorCount++;
+                        list.add(response);
                         continue;
                     }
                     applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
@@ -550,7 +556,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         response.setTransportCenterName(record[3]);
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
-        response.setProductPurchaseAmount(Integer.valueOf(record[6]));
+        if(StringUtils.isNotBlank(record[6] )){
+            response.setProductPurchaseAmount(Integer.valueOf(record[6]));
+        }
         response.setErrorInfo(errorReason);
     }
 
@@ -637,12 +645,12 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     @Override
-    public HttpResponse contrast(List<PurchaseApplyDetailResponse> list){
+    public HttpResponse<PurchaseContrastResponse> contrast(List<PurchaseApplyDetailResponse> list){
         if(CollectionUtils.isEmptyCollection(list)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        // 获取昨天时间
-        String data = DateUtils.yestedayDate();
+        DateTime dateTime = new DateTime(Calendar.getInstance().getTime());
+        String data = dateTime.toString("yyyy-MM-dd");
         String beginTime = data + " 00:00:00";
         String finishTime = data + " 23:59:59";
         BigDecimal bigMum = new BigDecimal("0");
@@ -660,32 +668,33 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             contrast.setFrontSumProfit(bigMum);
         }
         // 查询采购后的总营业额/总利润
-        //Set<String> setSku = new HashSet<>();
         List<String> listSku = Lists.newArrayList();
         if(CollectionUtils.isNotEmptyCollection(list)){
             for (PurchaseApplyDetailResponse product:list){
-                //setSku.add(product.getSkuCode());
                 listSku.add(product.getSkuCode());
             }
-            //List<String> sku = new ArrayList<>(setSku);
             Integer afterSumTurnover = 0, afterSumProfit = 0;
             for(PurchaseApplyDetailResponse product:list){
                 // 计算采购的总营业额
-                Integer totalAmount = product.getProductTotalAmount() == null ? 0 : product.getProductTotalAmount();
+                Integer totalAmount = product.getProductPurchaseSum()== null ? 0 : product.getProductPurchaseSum();
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer priceMax = product.getPurchaseMax() == null ? 0 : product.getPurchaseMax();
                 afterSumTurnover += totalAmount;
                 afterSumProfit += singleCount * priceMax - totalAmount;
             }
-            contrast.setAfterSumTurnover(contrast.getFrontSumTurnover().add(new BigDecimal(afterSumTurnover)));
-            contrast.setAfterSumProfit(contrast.getAfterSumProfit().add(new BigDecimal(afterSumProfit)));
+            contrast.setAfterSumTurnover(new BigDecimal(afterSumTurnover));
+            contrast.setAfterSumProfit(new BigDecimal(afterSumProfit));
         }else {
-            contrast.setAfterSumTurnover(contrast.getFrontSumTurnover());
-            contrast.setAfterSumProfit(contrast.getAfterSumProfit());
+            contrast.setAfterSumTurnover(bigMum);
+            contrast.setAfterSumProfit(bigMum);
         }
         // 缺货占比
         this.stockOut(contrast, listSku);
-        return HttpResponse.success();
+        // A品占比
+        this.aCategory(contrast, list);
+        // 分类占比
+        this.category(contrast, list);
+        return HttpResponse.success(contrast);
     }
 
     // 计算采购前后的缺货占比
@@ -694,8 +703,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         BiStockoutRate biStockoutRate = biStockoutRateDao.stockOutRateInfo(contrast.getBeginTime(), contrast.getFinishTime());
         if(biStockoutRate == null){
             contrast.setFrontShortageRatio(contrast.getBigMum());
-            biStockoutRate.setOutStockNum(0L);
-            biStockoutRate.setTotalStockNum(0L);
         }else {
             contrast.setFrontShortageRatio(biStockoutRate.getOutStockRate());
         }
@@ -706,13 +713,14 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(CollectionUtils.isNotEmptyCollection(detailSku)){
             detailSku.removeAll(listSku);
             long count2 = count1 - detailSku.size();
-            BigDecimal bigNum1 = new BigDecimal(biStockoutRate.getTotalStockNum() + listSku.size());
-            BigDecimal bigNum2 = new BigDecimal(biStockoutRate.getOutStockNum() - count2);
-            contrast.setAfterShortageRatio(bigNum1.divide(bigNum2));
+            Long totalStockNum  = biStockoutRate.getTotalStockNum() == null ? 0 : biStockoutRate.getTotalStockNum();
+            Long outStockNum  = biStockoutRate.getOutStockNum() == null ? 0 : biStockoutRate.getOutStockNum();
+            BigDecimal bigNum1 = new BigDecimal(totalStockNum + listSku.size());
+            BigDecimal bigNum2 = new BigDecimal(outStockNum - count2);
+            contrast.setAfterShortageRatio(bigNum2.divide(bigNum1, 4 , ROUND_HALF_DOWN));
         }else {
             contrast.setAfterShortageRatio(contrast.getFrontShortageRatio());
         }
-
     }
 
     // 计算采购前后的A品占比
@@ -724,17 +732,18 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(CollectionUtils.isEmptyCollection(list)){
             contrast.setAfterACategory(aCategoryInfo);
         }else {
-            BiAClassification aClassification = new BiAClassification();
+            BiAClassification aClassification = contrast.getFrontACategory();
             for(PurchaseApplyDetailResponse detail:list){
-                if(!detail.getProductPropertyCode().equals(1)){
+                if(detail == null || StringUtils.isBlank(detail.getProductPropertyCode()) || !detail.getProductPropertyCode().equals(1)){
                     continue;
                 }
-
+                aClassification = this.productCategory(detail, aClassification);
             }
+            contrast.setAfterACategory(aClassification);
         }
     }
 
-    private void productCategory(PurchaseApplyDetailResponse detail, BiAClassification aClassification){
+    private BiAClassification productCategory(PurchaseApplyDetailResponse detail, BiAClassification aClassification){
         // 获取商品类别
         if(StringUtils.isNotBlank(detail.getCategoryId())){
             Integer count = Integer.valueOf(detail.getCategoryId().substring(0, 2));
@@ -801,6 +810,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     break;
             }
         }
+        return aClassification;
     }
 
     // 计算采购前后的分类占比
@@ -808,5 +818,20 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         // 查询采购前的分类占比
         BiClassification categoryInfo = biClassificationDao.categoryInfo(contrast.getBeginTime(), contrast.getFinishTime());
         contrast.setFrontCategory(categoryInfo);
+        // 计算采购后的分类占比
+        if(CollectionUtils.isEmptyCollection(list)){
+            contrast.setAfterCategory(categoryInfo);
+        }else {
+            BiAClassification aClassification = contrast.getFrontACategory();
+            for(PurchaseApplyDetailResponse detail:list){
+                if(detail == null){
+                    continue;
+                }
+                aClassification = this.productCategory(detail, aClassification);
+            }
+            BiClassification aClass = new BiClassification();
+            BeanUtils.copyProperties(aClassification, aClass);
+            contrast.setAfterCategory(aClass);
+        }
     }
 }

@@ -29,6 +29,7 @@
   <resultMap id="SupplyComDetailMap" type="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompanyDetailDTO">
     <result column="id" jdbcType="BIGINT" property="supplyComId" />
     <result column="supply_name" jdbcType="VARCHAR" property="supplyName" />
+    <result column="formal_code" jdbcType="VARCHAR" property="formalCode" />
     <result column="supply_code" jdbcType="VARCHAR" property="supplyCode"/>
     <result column="supply_type" jdbcType="VARCHAR" property="supplyType" />
     <result column="supply_type_name" jdbcType="VARCHAR" property="supplyTypeName" />
@@ -209,6 +210,47 @@
     left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and sc.supply_type = si.supplier_dictionary_value
     WHERE sc.id=#{id,jdbcType=BIGINT}
   </select>
+  <select id="getApplySupplyComDetail" parameterType="java.lang.Long" resultMap="SupplyComDetailMap">
+    SELECT
+      sc.id,
+      sc.supply_company_code formal_code,
+      sc.apply_supply_name supply_name,
+      sc.apply_supply_company_code supply_code,
+      sc.apply_supply_type supply_type,
+      si.supplier_content supply_type_name,
+      sc.apply_abbreviation supply_abbreviation,
+      sc.supplier_name,
+      sc.supplier_code,
+      sc.province_id,
+      sc.province_name,
+      sc.city_id,
+      sc.city_name,
+      sc.district_id,
+      sc.district_name,
+      sc.address,
+      sc.contact_name,
+      sc.mobile_phone,
+      sc.phone,
+      sc.fax,
+      sc.email,
+      sc.company_website,
+      sc.purchasing_group_code supply_purchasing_group_code,
+	  sc.purchasing_group_name supply_purchasing_group_name,
+      sc.zip_code,
+      sc.tax_id,
+      sc.corporate_representative,
+      sc.registered_capital,
+      sc.enable,
+      sc.min_order_amount,
+      sc.max_order_amount,
+      sc.business_license,
+      sc.star_score,
+      sc.direct_supervisor_code,
+      sc.direct_supervisor_name
+    FROM apply_supply_company sc
+    left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and sc.apply_supply_type = si.supplier_dictionary_value
+    WHERE sc.id=#{id,jdbcType=BIGINT}
+  </select>
   <select id="checkName" parameterType="java.util.Map" resultType="java.lang.Integer">
     SELECT COUNT(1) from supply_company WHERE del_flag=0
     <if test="name != null">
@@ -245,8 +287,8 @@
     <select id="selectByCompanyNameList"
             resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.BaseResultMap">
       SELECT
-      <include refid="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.Base_Column_List"/>
-      from supply_company where supply_name in
+      apply_supply_name as supply_name
+      from apply_supply_company where apply_supply_name in
       <foreach collection="list" open="(" close=")" separator="," item="item">
         #{item}
       </foreach>

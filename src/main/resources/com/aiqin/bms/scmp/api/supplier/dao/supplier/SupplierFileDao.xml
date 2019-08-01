@@ -30,6 +30,21 @@
   <select id="getSupplierFile" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT * from supplier_file WHERE del_flag =0 AND supplier_code=#{code,jdbcType=VARCHAR}
   </select>
+  <select id="getApplySupplierFile" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+      a.id,
+      a.apply_type,
+      a.file_path,
+      a.del_flag,
+      a.apply_supplier_name supplier_name,
+      a.file_name,
+      a.create_time,
+      a.create_by,
+      a.update_time,
+      a.update_by,
+      a.apply_supplier_code supplier_code
+    from apply_supplier_file a WHERE del_flag =0 AND a.apply_supplier_code=#{code,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteFile" parameterType="java.lang.String">
     DELETE FROM supplier_file WHERE supplier_code=#{supplierCode,jdbcType=VARCHAR}
   </delete>

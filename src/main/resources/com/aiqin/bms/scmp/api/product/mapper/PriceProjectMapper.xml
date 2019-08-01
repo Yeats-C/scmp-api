@@ -288,4 +288,12 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectInfoByImport" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from price_project where price_type_code = #{priceTypeCode, jdbcType = VARCHAR}
+    and price_project_name in
+    <foreach collection="nameList" item="item" index="index" separator="," close=")" open="(">
+      #{item, jdbcType=VARCHAR}
+    </foreach>
+  </select>
 </mapper>

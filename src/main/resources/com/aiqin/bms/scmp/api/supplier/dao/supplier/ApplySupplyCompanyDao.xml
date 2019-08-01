@@ -128,7 +128,7 @@
       purchasing_group_name,tax_id,corporate_representative,registered_capital,
       enable,update_time,update_by,add_account, company_code,company_name,max_order_amount,
       min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,
-      supply_company_code)
+      supply_company_code,apply_status)
     values ( #{applySupplyName,jdbcType=VARCHAR},#{applySupplyType,jdbcType=VARCHAR},#{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR},
       #{applyAbbreviation,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, 
@@ -142,7 +142,7 @@
       #{registeredCapital, jdbcType=BIGINT},#{enable, jdbcType=TINYINT},#{updateTime,jdbcType=TIMESTAMP},
       #{updateBy,jdbcType=VARCHAR},#{addAccount, jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{maxOrderAmount, jdbcType=BIGINT}, #{minOrderAmount, jdbcType=BIGINT}, #{businessLicense, jdbcType=VARCHAR}, #{starScore, jdbcType=DECIMAL},
-      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{supplyCompanyCode,jdbcType=VARCHAR}
+      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{supplyCompanyCode,jdbcType=VARCHAR},#{applyStatus,jdbcType=TINYINT}
       )
   </insert>
   <select id="getApplyList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplyComReqVO" resultMap="ApplySupplyComListMap">
@@ -432,6 +432,49 @@
     </if>
     <if test="applyBy != null and applyBy != '' ">
       and a.update_by = #{applyBy,jdbcType=VARCHAR}
+    </if>
+    order by create_time desc
+  </select>
+  <select id="applyList"
+          resultType="com.aiqin.bms.scmp.api.supplier.domain.response.ApplySupplyComApplyListRespVO">
+      select a.id,
+             a.apply_supply_company_code applyCode,
+             a.supply_company_code supplyCode,
+             a.apply_supply_name applySupplyName,
+             a.supplier_name supplierName,
+             a.contact_name contactName,
+             a.mobile_phone mobilePhone,
+             a.purchasing_group_name purchaseGroupName,
+             a.update_by updateBy,
+             a.update_time updateTime,
+             a.province_name provinceName,
+             a.city_name cityName,
+             a.district_name districtName
+      from apply_supply_company a
+      where 1=1 and a.company_code = #{companyCode} and a.apply_status = 5
+    <if test="supplyCode != null and supplyCode != '' ">
+      and a.supply_company_code like concat('%',#{supplyCode},'%')
+    </if>
+    <if test="supplyName != null and supplyName != ''">
+      and a.apply_supply_name  like concat('%',supplyName},'%')
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != '' ">
+      and  a.purchasing_group_Code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != '' ">
+      and  a.purchasing_group_Name like concat('%',#{purchaseGroupName},'%')
+    </if>
+    <if test="provinceId!=null and provinceId!=''">
+      and a.province_id =#{provinceId,jdbcType=VARCHAR}
+    </if>
+    <if test="cityId!=null and cityId!=''">
+      and a.city_id =#{cityId,jdbcType=VARCHAR}
+    </if>
+    <if test="districtId!=null and districtId!=''">
+      and a.district_id =#{districtId,jdbcType=VARCHAR}
+    </if>
+    <if test="personId != null and personId != '' ">
+      and a.purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
     </if>
     order by create_time desc
   </select>

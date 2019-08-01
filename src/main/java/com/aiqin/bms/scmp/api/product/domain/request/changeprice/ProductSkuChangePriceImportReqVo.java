@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * Created by 爱亲 on 2019/7/19.
  */
@@ -21,14 +23,15 @@ public class ProductSkuChangePriceImportReqVo {
     @ApiModelProperty("公司编码")
     private String companyCode;
 
-    @ApiModelProperty(value = "供应单位编码",hidden = true)
-    private String supplyCode;
+    @ApiModelProperty("变价类型")
+    private Integer changePriceType;
 
-    public ProductSkuChangePriceImportReqVo(MultipartFile file, String purchaseGroupCode, String companyCode, String supplyCode) {
+
+    public ProductSkuChangePriceImportReqVo(MultipartFile file, String purchaseGroupCode, String companyCode, Integer changePriceType) {
         this.file = file;
         this.purchaseGroupCode = purchaseGroupCode;
         this.companyCode = companyCode;
-        this.supplyCode = supplyCode;
+        this.changePriceType = changePriceType;
     }
 
     public ProductSkuChangePriceImportReqVo() {

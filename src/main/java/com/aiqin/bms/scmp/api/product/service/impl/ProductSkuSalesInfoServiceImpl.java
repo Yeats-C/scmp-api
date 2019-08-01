@@ -41,7 +41,6 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    @SaveList
     public int insertList(List<ProductSkuSalesInfo> productSkuSalesInfos) {
         int num = productSkuSalesInfoDao.insertList(productSkuSalesInfos);
         return num;
@@ -150,8 +149,8 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
      * @date 2019/7/30 18:33
      */
     @Override
-    public List<String> checkSalesCodes(List<String> salesCodes) {
-        return productSkuSalesInfoDao.productSkuSalesInfoDao(salesCodes);
+    public List<String> checkSalesCodes(List<String> salesCodes,String skuCode) {
+        return productSkuSalesInfoDao.productSkuSalesInfoDao(salesCodes,skuCode);
     }
 }
 

@@ -93,4 +93,9 @@ public class InboundProduct {
     @ApiModelProperty("进销税率")
     private Integer taxRate;
 
+    @ApiModelProperty(value="品牌id")
+    private String brandId;
+
+    @ApiModelProperty(value="品牌名称")
+    private String brandName;
 }

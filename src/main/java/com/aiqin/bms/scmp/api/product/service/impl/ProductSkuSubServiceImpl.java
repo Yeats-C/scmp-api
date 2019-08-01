@@ -162,7 +162,6 @@ public class ProductSkuSubServiceImpl implements ProductSkuSubService {
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @SaveList
     public int insertBatch(List<ProductSkuSub> list) {
         return mapper.insertBatch(list);
     }

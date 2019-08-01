@@ -82,4 +82,7 @@ public class AddSkuInfoReqVO {
     @ApiModelProperty(value = "sku质检信息", name = "productSkuInspReports",position = 15)
     @JsonProperty("productSkuInspReports")
     private List<ProductSkuInspReportDraft> productSkuInspReportDrafts;
+
+    @ApiModelProperty(value = "标志位,判断是否需要校验包装信息（导入不是必填项）",hidden = true)
+    private Boolean boxFlag = true;
 }

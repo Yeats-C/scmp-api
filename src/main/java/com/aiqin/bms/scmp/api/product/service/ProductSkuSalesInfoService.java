@@ -70,5 +70,5 @@ public interface ProductSkuSalesInfoService {
      * @auther knight.xie
      * @date 2019/7/30 18:33
      */
-    List<String> checkSalesCodes(List<String> salesCodes);
+    List<String> checkSalesCodes(List<String> salesCodes,String skuCode);
 }

@@ -3,7 +3,6 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.SaveList;
-import com.aiqin.bms.scmp.api.common.Update;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPurchaseInfo;
@@ -105,7 +104,6 @@ public class ProductSkuPurchaseInfoServiceImpl implements ProductSkuPurchaseInfo
     }
 
     @Override
-    @Update
     @Transactional(rollbackFor = BizException.class)
     public int update(ProductSkuPurchaseInfo productSkuPurchaseInfo) {
         int num = productSkuPurchaseInfoMapper.updateByPrimaryKeySelective(productSkuPurchaseInfo);
@@ -113,7 +111,6 @@ public class ProductSkuPurchaseInfoServiceImpl implements ProductSkuPurchaseInfo
     }
 
     @Override
-    @Save
     @Transactional(rollbackFor = BizException.class)
     public int insert(ProductSkuPurchaseInfo productSkuPurchaseInfo) {
         int num = productSkuPurchaseInfoMapper.insertSelective(productSkuPurchaseInfo);
