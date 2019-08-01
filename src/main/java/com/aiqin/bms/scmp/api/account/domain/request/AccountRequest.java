@@ -43,6 +43,10 @@ public class AccountRequest extends PagesRequest {
     @JsonProperty("create_by_company_code")
     private String createByCompanyCode;
 
+    @ApiModelProperty(value="创建人公司name")
+    @JsonProperty("create_by_company_name")
+    private String createByCompanyName;
+
     @ApiModelProperty(value="姓名")
     @JsonProperty("account_name")
     private String accountName;
