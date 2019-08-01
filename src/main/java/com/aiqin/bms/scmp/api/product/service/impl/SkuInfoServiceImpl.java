@@ -1931,10 +1931,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         reqVO.getProductSkuDraft().setApplyType(skuRespVo.getApplyType());
         reqVO.getProductSkuDraft().setApplyTypeName(skuRespVo.getApplyTypeName());
         List<String> skuCodes = Lists.newArrayList();
+        Set<String> sets = Sets.newHashSet();
         skuCodes.add(reqVO.getProductSkuDraft().getSkuCode());
+        sets.add(reqVO.getProductSkuDraft().getSkuCode());
         ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraftForPlatform(skuCodes);
         //查询该调sku对应的供应商信息
-        Map<String, ProductSkuDraft> stringProductSkuDraftMap = draftService.selectBySkuCode(new HashSet(skuCodes), getUser().getCompanyCode());
+        Map<String, ProductSkuDraft> stringProductSkuDraftMap = draftService.selectBySkuCode(sets, getUser().getCompanyCode());
         ProductSkuDraft draft = stringProductSkuDraftMap.get(reqVO.getProductSkuDraft().getSkuCode());
         if (Objects.isNull(draft) || CollectionUtils.isEmpty(draft.getSupplyList())||draft.getSupplyList().size()!=1) {
             throw new BizException(ResultCode.IMPORT_DATA_ERROR);
