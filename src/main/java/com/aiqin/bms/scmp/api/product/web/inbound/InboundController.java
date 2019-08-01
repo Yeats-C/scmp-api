@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.web.inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
+import com.aiqin.bms.scmp.api.product.service.impl.InboundServiceImpl;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -128,5 +129,19 @@ public class InboundController {
 //                                                                      @RequestParam(value = "page_size", required = false)Integer pageSize,
 //                                                                      @RequestParam(value = "page_no", required = false)Integer pageNo){
 //        return inboundService.selectPurchaseInfoByPurchaseNum(new Inbound(sourceOderCode, purchaseNum, pageSize, pageNo));
+//    }
+
+
+//    @ApiOperation("pushWms")
+//    @GetMapping("/pushWms")
+//    public HttpResponse pushWms(String code, InboundServiceImpl inboundService){
+//        try {
+//            inboundService.pushWms(code, inboundService);
+//            return HttpResponse.success();
+//        } catch (Exception e) {
+//            log.error("入库单回调接口错误实体是:[{}]", code);
+//            e.printStackTrace();
+//            return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
+//        }
 //    }
 }

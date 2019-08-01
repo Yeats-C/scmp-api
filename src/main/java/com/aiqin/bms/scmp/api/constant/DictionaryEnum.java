@@ -1,9 +1,8 @@
-package com.aiqin.bms.scmp.api.purchase.domain.response.order;
+package com.aiqin.bms.scmp.api.constant;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
-
-import java.math.BigDecimal;
+import lombok.Getter;
 
 /**
  * <p>
@@ -31,40 +30,21 @@ import java.math.BigDecimal;
  * <p>
  * 思维方式*热情*能力
  */
-@Data
-public class OrderProductSkuResponse {
+@ApiModel("字典表数据")
+@Getter
+public enum DictionaryEnum {
 
-    @ApiModelProperty("商品名称")
-    private String productName;
+    PAY_TYPE("244","支付方式"),
+    ORDER_CATEGORY("243","订单类别"),
+    ORDER_TYPE("242","订单类型");
 
-    @ApiModelProperty("图片地址")
-    private String pictureUrl;
+    private String code;
+    private String name;
 
-    @ApiModelProperty("规格")
-    private String spec;
+    DictionaryEnum(String code, String name) {
+        this.code = code;
+        this.name = name;
+    }
 
-    @ApiModelProperty("颜色名称")
-    private String colorName;
-
-    @ApiModelProperty("颜色编码")
-    private String colorCode;
-
-    @ApiModelProperty("型号")
-    private String model;
-
-    @ApiModelProperty("拆零系数")
-    private Integer zeroDisassemblyCoefficient;
-
-    @ApiModelProperty("商品单位code")
-    private String unitCode;
-
-    @ApiModelProperty("商品单位")
-    private String unitName;
-
-    @ApiModelProperty("体积")
-    private BigDecimal boxVolume;
-
-    @ApiModelProperty("重量")
-    private BigDecimal boxGrossWeight;
 
 }

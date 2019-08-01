@@ -39,6 +39,14 @@ import java.util.List;
 @ApiModel("账号")
 public class AccountRequest extends PagesRequest {
 
+    @ApiModelProperty(value="创建人公司id")
+    @JsonProperty("create_by_company_code")
+    private String createByCompanyCode;
+
+    @ApiModelProperty(value="创建人公司name")
+    @JsonProperty("create_by_company_name")
+    private String createByCompanyName;
+
     @ApiModelProperty(value="姓名")
     @JsonProperty("account_name")
     private String accountName;
@@ -102,10 +110,11 @@ public class AccountRequest extends PagesRequest {
     public AccountRequest() {
     }
 
-    public AccountRequest(String accountName, String roleId, String supplierCode, Integer accountStatus) {
+    public AccountRequest(String accountName, String roleId, String supplierCode, Integer accountStatus,String createByCompanyCode) {
         this.accountName = accountName;
         this.roleId = roleId;
         this.supplierCode = supplierCode;
         this.accountStatus = accountStatus;
+        this.createByCompanyCode = createByCompanyCode;
     }
 }
