@@ -966,7 +966,9 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
             //根据供货单位code获取相应的三张申请表id
             applySupplyCompany.setId(s.getId());
+            applySupplyCompany.setFormNo(s.getFormNo());
             applySupplyCompany.setSupplyCompanyCode(s.getSupplyCompanyCode());
+            applySupplyCompany.setApplySupplyCompanyCode(s.getApplySupplyCompanyCode());
             if(Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 applySupplyCompany.setApplyStatus(ApplyStatus.PENDING_SUBMISSION.getNumber());
             } else {
@@ -1010,10 +1012,18 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 });
                 applySupplierFileService.copySaveInfo(fileReqVOList);
             }
-            applySupplyCompanyMapper.delectById(id);
+            int i = applySupplyCompanyMapper.delectById(id);
+            if(i==0){
+                throw new GroundRuntimeException("修改失败");
+            }
             applySupplyCompany.setDelFlag((byte) 0);
+            applySupplyCompany.setId(null);
             ((ApplySupplyComServcie)AopContext.currentProxy()).insertData(applySupplyCompany);
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
+                applySupplyCompanyReqDTO.setDirectSupervisorCode(applySupplyCompanyReqVO.getDirectSupervisorCode());
+                applySupplyCompanyReqDTO.setDirectSupervisorName(applySupplyCompanyReqVO.getDirectSupervisorName());
+                applySupplyCompanyReqDTO.setFormNo(applySupplyCompany.getFormNo());
+                applySupplyCompanyReqDTO.setId(applySupplyCompany.getId());
                 workFlow(applySupplyCompanyReqDTO);
             }
         } catch (Exception e){
@@ -1058,28 +1068,25 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         for (AreaBasic datum : data) {
             //省
             List<AreaBasic> children = datum.getChildren();
+            AreaInfo info = new AreaInfo(datum.getParent_area_name(),datum.getArea_id(),datum.getArea_name());
+            map.put(datum.getArea_name(), info);
             if (CollectionUtils.isEmptyCollection(children)) {
                 continue;
             }
             //市
             for (AreaBasic child : children) {
+                AreaInfo info1 = new AreaInfo(child.getParent_area_name(),child.getArea_id(),child.getArea_name());
+                map.put(datum.getArea_name()+child.getArea_name(), info1);
                 List<AreaBasic> children1 = child.getChildren();
                 if (CollectionUtils.isEmptyCollection(children1)) {
                     continue;
                 }
                 //区
                 for (AreaBasic areaBasic : children1) {
-                    if (areaBasic.getArea_name().equals("郊区")) {
-                        System.out.println(areaBasic.getArea_name());
-                    }
-                    AreaInfo info = new AreaInfo(areaBasic.getParent_area_name(),areaBasic.getArea_id(),areaBasic.getArea_name());
-                    map.put(datum.getArea_name()+child.getArea_name()+areaBasic.getArea_name(),info);
+                    AreaInfo info2 = new AreaInfo(areaBasic.getParent_area_name(),areaBasic.getArea_id(),areaBasic.getArea_name());
+                    map.put(datum.getArea_name()+child.getArea_name()+areaBasic.getArea_name(),info2);
                 }
-                AreaInfo info = new AreaInfo(child.getParent_area_name(),child.getArea_id(),child.getArea_name());
-                map.put(datum.getArea_name()+child.getArea_name(), info);
             }
-            AreaInfo info = new AreaInfo(datum.getParent_area_name(),datum.getArea_id(),datum.getArea_name());
-            map.put(datum.getArea_name(), info);
         }
         return map;
     }
@@ -1238,6 +1245,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
                     if (StringUtils.isBlank(supplierImport.getCityName())) {
                         error.add("市不能为空");
+                    }else {
+                        checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.普通省市县);
                     }
                 }
                 if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
@@ -1342,6 +1351,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
                     if(StringUtils.isBlank(supplierImport.getSendCityName())){
                         error.add("发货市不能为空");
+                    }else {
+                        checkArea(supplierImport.getSendProvinceName(), supplierImport.getSendCityName(), supplierImport.getSendDistrictName(), CheckAreaEnum.发货省市县);
                     }
                 }
                 if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
@@ -1390,6 +1401,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
                     if(StringUtils.isBlank(supplierImport.getReturnCityName())){
                         error.add("收货市不能为空");
+                    }else {
+                        checkArea(supplierImport.getReturnProvinceName(), supplierImport.getReturnCityName(), supplierImport.getReturnDistrictName(), CheckAreaEnum.退货省市县);
                     }
                 }
                 if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {

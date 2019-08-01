@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSku
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -245,4 +246,18 @@ public interface ProductSkuChangePriceService {
      * @return
      */
     List<PriceJog> getPriceJog(String skuCode);
+
+    List<QuerySkuInfoRespVOForIm> importForChangePrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
+
+    /**
+     * 采购价导入
+     * @param file
+     * @param purchaseGroupCode
+     * @return
+     */
+    List<QuerySkuInfoRespVOForIm> importForPurchasePrice(MultipartFile file, String purchaseGroupCode,String changePriceType);
+
+    List<QuerySkuInfoRespVOForIm> importForSalePrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
+
+    List<QuerySkuInfoRespVOForIm> importForTemporaryPrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
 }

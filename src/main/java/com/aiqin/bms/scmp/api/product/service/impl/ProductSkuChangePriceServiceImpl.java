@@ -10,6 +10,10 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
+import com.aiqin.bms.scmp.api.product.domain.excel.PriceImport;
+import com.aiqin.bms.scmp.api.product.domain.excel.PurchasePriceImport;
+import com.aiqin.bms.scmp.api.product.domain.excel.SalePriceImport;
+import com.aiqin.bms.scmp.api.product.domain.excel.TemporaryPriceImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
@@ -17,11 +21,14 @@ import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogBean;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
@@ -36,14 +43,18 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -102,6 +113,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Autowired
     private PriceProjectMapper priceProjectMapper;
+    @Autowired
+    private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1137,5 +1150,436 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     public List<PriceJog> getPriceJog(String skuCode){
         return productSkuPriceInfoMapper.getPriceJog(skuCode,DateUtils.getYear());
+    }
+    @Override
+    public List<QuerySkuInfoRespVOForIm> importForChangePrice(MultipartFile file, String purchaseGroupCode, String changePriceType){
+        if (changePriceType.equals(CommonConstant.PURCHASE_CHANGE_PRICE)) {
+            return importForPurchasePrice(file, purchaseGroupCode, changePriceType);
+        }
+        if (changePriceType.equals(CommonConstant.SALE_CHANGE_PRICE)) {
+            return importForSalePrice(file, purchaseGroupCode, changePriceType);
+        }
+        if (changePriceType.equals(CommonConstant.TEMPORARY_CHANGE_PRICE)) {
+            return importForTemporaryPrice(file, purchaseGroupCode, changePriceType);
+        }
+        return Lists.newArrayList();
+    }
+    @Override
+    public List<QuerySkuInfoRespVOForIm> importForPurchasePrice(MultipartFile file, String purchaseGroupCode,String changePriceType) {
+        try {
+            List<PurchasePriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, PurchasePriceImport.class, 1, 0);
+            dataValidation(imports);
+            imports = imports.subList(1, imports.size());
+            Set<String> set = Sets.newHashSet();
+            imports.forEach(o->{
+                set.add(o.getSkuCode());
+            });
+            QuerySkuInfoReqVO querySkuInfoReqVO = new QuerySkuInfoReqVO();
+            querySkuInfoReqVO.setChangePriceType(CommonConstant.PURCHASE_CHANGE_PRICE);
+            querySkuInfoReqVO.setSkuCodes(new ArrayList<>(set));
+            querySkuInfoReqVO.setPurchaseGroupCode(purchaseGroupCode);
+            querySkuInfoReqVO.setCompanyCode(getUser().getCompanyCode());
+            List<QuerySkuInfoRespVO> queryNoPage = skuInfoService.getSkuListByQueryNoPage(querySkuInfoReqVO);
+            List<String> s = Lists.newArrayList();
+            s.add("调价原因");
+            Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(s, getUser().getCompanyCode());
+            Map<String, QuerySkuInfoRespVO> queryNoPageMap = queryNoPage.stream().collect(Collectors.toMap(QuerySkuInfoRespVO::getSkuCode, Function.identity(), (k1, k2) -> k2));
+            List<QuerySkuInfoRespVOForIm> list = Lists.newArrayList();
+            Map<String,String> repeatMap = Maps.newHashMap();
+            for (int i = 0; i < imports.size(); i++) {
+                 CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap)
+                         .checkSkuInfo()//检查sku信息
+                         .checkSupplier()//检查供应商信息
+                         .checkPriceItemForPurchase()//补充采购的价格项目数据
+                         .checkPurchasePrice()
+                         .checkEffectiveTimeStart()
+                         ;
+                 list.add(checkChangePrice.getData());
+                repeatMap = checkChangePrice.getRepeatMap();
+            }
+            return list;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_DATA_ERROR);
+        }
+    }
+
+    @Override
+    public List<QuerySkuInfoRespVOForIm> importForSalePrice(MultipartFile file, String purchaseGroupCode, String changePriceType) {
+        try {
+            List<SalePriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, SalePriceImport.class, 2, 0);
+            dataValidation2(imports);
+            imports = imports.subList(1, imports.size());
+            Set<String> set = Sets.newHashSet();
+            imports.forEach(o->{
+                set.add(o.getSkuCode());
+            });
+            QuerySkuInfoReqVO querySkuInfoReqVO = new QuerySkuInfoReqVO();
+            querySkuInfoReqVO.setChangePriceType(CommonConstant.PURCHASE_CHANGE_PRICE);
+            querySkuInfoReqVO.setSkuCodes(new ArrayList<>(set));
+            querySkuInfoReqVO.setPurchaseGroupCode(purchaseGroupCode);
+            querySkuInfoReqVO.setCompanyCode(getUser().getCompanyCode());
+            List<QuerySkuInfoRespVO> queryNoPage = skuInfoService.getSkuListByQueryNoPage(querySkuInfoReqVO);
+            List<String> s = Lists.newArrayList();
+            s.add("调价原因");
+            Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(s, getUser().getCompanyCode());
+            Map<String, QuerySkuInfoRespVO> queryNoPageMap = queryNoPage.stream().collect(Collectors.toMap(QuerySkuInfoRespVO::getSkuCode, Function.identity(), (k1, k2) -> k2));
+            List<QuerySkuInfoRespVOForIm> list = Lists.newArrayList();
+            Map<String,String> repeatMap = Maps.newHashMap();
+            for (int i = 0; i < imports.size(); i++) {
+                CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap)
+                        .checkSkuInfo()//检查sku信息
+                        .checkPriceItem()//检查价格项目
+                        .checkSalePrice()//检查销售
+                        .checkEffectiveTimeStart()//检查生效时间
+                        .checkChangeReason()//调价原因
+                        ;
+                list.add(checkChangePrice.getData());
+                repeatMap = checkChangePrice.getRepeatMap();
+            }
+            return list;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_DATA_ERROR);
+        }
+    }
+
+    @Override
+    public List<QuerySkuInfoRespVOForIm> importForTemporaryPrice(MultipartFile file, String purchaseGroupCode, String changePriceType) {
+        try {
+            List<TemporaryPriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, TemporaryPriceImport.class, 3, 0);
+            dataValidation3(imports);
+            imports = imports.subList(1, imports.size());
+            Set<String> set = Sets.newHashSet();
+            imports.forEach(o->{
+                set.add(o.getSkuCode());
+            });
+            QuerySkuInfoReqVO querySkuInfoReqVO = new QuerySkuInfoReqVO();
+            querySkuInfoReqVO.setChangePriceType(CommonConstant.PURCHASE_CHANGE_PRICE);
+            querySkuInfoReqVO.setSkuCodes(new ArrayList<>(set));
+            querySkuInfoReqVO.setPurchaseGroupCode(purchaseGroupCode);
+            querySkuInfoReqVO.setCompanyCode(getUser().getCompanyCode());
+            List<QuerySkuInfoRespVO> queryNoPage = skuInfoService.getSkuListByQueryNoPage(querySkuInfoReqVO);
+            List<String> s = Lists.newArrayList();
+            s.add("调价原因");
+            Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(s, getUser().getCompanyCode());
+            Map<String, QuerySkuInfoRespVO> queryNoPageMap = queryNoPage.stream().collect(Collectors.toMap(QuerySkuInfoRespVO::getSkuCode, Function.identity(), (k1, k2) -> k2));
+            List<QuerySkuInfoRespVOForIm> list = Lists.newArrayList();
+            Map<String,String> repeatMap = Maps.newHashMap();
+            for (int i = 0; i < imports.size(); i++) {
+                CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap)
+                        .checkSkuInfo()//检查sku信息
+                        .checkPriceItem()//检查价格项目
+                        .checkTemporaryPrice()//检查临时价
+                        .checkEffectiveTimeStart()//检查生效时间
+                        .checkEffectiveTimeEnd()//检查失效时间
+                        .checkChangeReason()//调价原因
+                        ;
+                list.add(checkChangePrice.getData());
+                repeatMap = checkChangePrice.getRepeatMap();
+            }
+            return list;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_DATA_ERROR);
+        }
+    }
+
+    /**
+     * 校验数据和表头
+     * @param skuInfoImports
+     */
+    private void dataValidation( List<PurchasePriceImport> skuInfoImports) {
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuInfoImports)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        if (skuInfoImports.size()<2) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        String  head = PurchasePriceImport.HEAD;
+        boolean equals = skuInfoImports.get(0).toString().equals(head);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
+    }
+    /**
+     * 校验数据和表头
+     * @param skuInfoImports
+     */
+    private void dataValidation2( List<SalePriceImport> skuInfoImports) {
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuInfoImports)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        if (skuInfoImports.size()<2) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        String  head = SalePriceImport.HEAD;
+        boolean equals = skuInfoImports.get(0).toString().equals(head);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
+    }
+    /**
+     * 校验数据和表头
+     * @param skuInfoImports
+     */
+    private void dataValidation3( List<TemporaryPriceImport> skuInfoImports) {
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuInfoImports)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        if (skuInfoImports.size()<2) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        String  head = TemporaryPriceImport.HEAD;
+        boolean equals = skuInfoImports.get(0).toString().equals(head);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
+    }
+    @Getter(AccessLevel.PRIVATE)
+    private class CheckChangePrice {
+        private Map<String,QuerySkuInfoRespVO> queryNoPage;
+        private PriceImport anImport;
+        private Map<String,String> repeatMap;
+        private List<String> error;
+        private QuerySkuInfoRespVOForIm resp;
+        private Map<String, SupplierDictionaryInfo> dicMap;
+        private CheckChangePrice(Map<String,QuerySkuInfoRespVO> queryNoPage, Object purchasePriceImport,Map<String,String> repeatMap,Map<String, SupplierDictionaryInfo> dicMap) {
+            this.queryNoPage = queryNoPage;
+            this.anImport = BeanCopyUtils.copy(purchasePriceImport,PriceImport.class);
+            this.repeatMap = repeatMap;
+            this.error = Lists.newArrayList();
+            this.resp = new QuerySkuInfoRespVOForIm();
+            this.dicMap = dicMap;
+        }
+        //校验sku信息
+        private CheckChangePrice checkSkuInfo(){
+            if (StringUtils.isBlank(anImport.getSkuCode())) {
+                error.add("SKU编码不能为为空");
+            }else {
+                QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+                if (Objects.isNull(querySkuInfoRespVO)) {
+                    resp.setSkuCode(anImport.getSkuCode().trim());
+                    error.add("无对应的SKU编码数据或该SKU不属于所选采购组");
+                }else {
+                    if (StringUtils.isBlank(anImport.getSkuName())) {
+                        error.add("SKU名称不能为空");
+                    }else {
+                        if (!anImport.getSkuName().equals(querySkuInfoRespVO.getSkuName())) {
+                            resp.setSkuName(anImport.getSkuName().trim());
+                            error.add("SKU编码和SKU名称无法对应");
+                        }else {
+                            resp.setSkuCode(querySkuInfoRespVO.getSkuCode());
+                            resp.setSkuName(querySkuInfoRespVO.getSkuName());
+                        }
+                    }
+                }
+            }
+            return this;
+        }
+        //检查供应商
+        private CheckChangePrice checkSupplier(){
+            if (CollectionUtils.isEmpty(error)) {
+                QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+                Map<String, supplierInfoVO> collect = querySkuInfoRespVO.getSupplierInfoVOS().stream().collect(Collectors.toMap(supplierInfoVO::getSupplierCode, Function.identity(), (k1, k2) -> k2));
+                if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyMap(collect)) {
+                    error.add("该sku下未含有供应商信息");
+                }else {
+                    if(StringUtils.isBlank(anImport.getSupplierCode())){
+                        error.add("供应商编码不能为空");
+                    }else {
+                        supplierInfoVO vo = collect.get(anImport.getSupplierCode().trim());
+                        if (Objects.isNull(vo)) {
+                            this.resp.setSupplierCode(anImport.getSupplierCode().trim());
+                            error.add("无法找到对应编码的供应商");
+                        }else {
+                            if (StringUtils.isBlank(anImport.getSupplierName())) {
+                                error.add("供应商名称不能为为空");
+                            }else {
+                                if(!vo.getSupplierName().equals(anImport.getSupplierName())){
+                                    this.resp.setSupplierName(anImport.getSupplierName().trim());
+                                    error.add("供应商编码和名称不对应");
+                                }else {
+                                    this.resp.setSupplierCode(vo.getSupplierCode());
+                                    this.resp.setSupplierName(vo.getSupplierName());
+                                    this.resp.setPurchasePriceOld(vo.getPurchasePriceOld());
+                                    this.resp.setPurchasePriceNewest(vo.getPurchasePriceNewest());
+                                    this.resp.setBeDefault(vo.getBeDefault()?1:0);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return this;
+        }
+        //检查采购价
+        private CheckChangePrice checkPurchasePrice(){
+            if (StringUtils.isNotBlank(anImport.getPurchasePriceNew())) {
+                try {
+                    this.resp.setPurchasePriceNew(NumberConvertUtils.stringParseLong(anImport.getPurchasePriceNew().trim()));
+                } catch (Exception e) {
+                    error.add("采购价格式不正确");
+                }
+            }
+            return this;
+        }
+
+        //检查含税价
+        private CheckChangePrice checkSalePrice(){
+            if (StringUtils.isNotBlank(anImport.getNewPrice())) {
+                try {
+                    this.resp.setNewPrice(NumberConvertUtils.stringParseLong(anImport.getNewPrice().trim()));
+                } catch (Exception e) {
+                    error.add("含税价格式不正确");
+                }
+            }
+            return this;
+        }
+
+        //检查临时含税价
+        private CheckChangePrice checkTemporaryPrice(){
+            if (StringUtils.isNotBlank(anImport.getTemporaryPrice())) {
+                try {
+                    this.resp.setTemporaryPrice(NumberConvertUtils.stringParseLong(anImport.getTemporaryPrice().trim()));
+                } catch (Exception e) {
+                    error.add("临时含税价格式不正确");
+                }
+            }
+            return this;
+        }
+        //检查生效日期
+        private CheckChangePrice checkEffectiveTimeStart(){
+            if (StringUtils.isNotBlank(anImport.getEffectiveTimeStart())) {
+                try {
+                    this.resp.setEffectiveTimeStart(DateUtils.toDate(anImport.getEffectiveTimeStart().trim()));
+                } catch (Exception e) {
+                    error.add("生效时间格式不正确");
+                }
+            }
+            return this;
+        }
+
+        //检查失效日期
+        private CheckChangePrice checkEffectiveTimeEnd(){
+            if (StringUtils.isNotBlank(anImport.getEffectiveTimeEnd())) {
+                try {
+                    this.resp.setEffectiveTimeEnd(DateUtils.toDate(anImport.getEffectiveTimeEnd().trim()));
+                } catch (Exception e) {
+                    error.add("失效时间格式不正确");
+                }
+            }
+            return this;
+        }
+
+        //检查价格项目
+        private CheckChangePrice checkPriceItem(){
+            if (StringUtils.isBlank(anImport.getPriceItemName())) {
+                error.add("价格项目不能为空");
+            }else {
+                if (CollectionUtils.isEmpty(error)) {
+                    QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+                    Map<String, PriceChannelForChangePrice> collect = querySkuInfoRespVO.getPriceChannelList().stream().collect(Collectors.toMap(PriceChannelForChangePrice::getPriceItemName, Function.identity(), (k1, k2) -> k2));
+                    if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyMap(collect)) {
+                        this.resp.setPriceItemName(anImport.getPriceItemName().trim());
+                        error.add("未找到对应的价格项目信息");
+                    }else {
+                        PriceChannelForChangePrice item = collect.get(anImport.getPriceItemName().trim());
+                        if (Objects.isNull(item)) {
+                            this.resp.setPriceItemName(anImport.getPriceItemName().trim());
+                            error.add("未找到对应名称的价格项目");
+                        }else {
+                            this.resp.setPriceItemCode(item.getPriceItemCode());
+                            this.resp.setPriceItemName(item.getPriceItemName());
+                            this.resp.setPriceTypeCode(item.getPriceTypeCode());
+                            this.resp.setPriceTypeName(item.getPriceTypeCode());
+                            this.resp.setPriceAttributeCode(item.getPriceAttributeCode());
+                            this.resp.setPriceAttributeName(item.getPriceAttributeCode());
+                            this.resp.setOldPrice(item.getOldPrice());
+                            this.resp.setOldGrossProfitMargin(item.getOldGrossProfitMargin());
+                        }
+                    }
+                }
+            }
+            return this;
+        }
+        //采购补充价格项目信息
+        private CheckChangePrice checkPriceItemForPurchase(){
+            QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+            List<PriceChannelForChangePrice> collect = querySkuInfoRespVO.getPriceChannelList();
+            if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(collect)||collect.size()>1) {
+                error.add("该sku的采购价格项目异常");
+            }else{
+                //默认只有一条
+                PriceChannelForChangePrice item = collect.get(0);
+                this.resp.setPriceTypeCode(item.getPriceTypeCode());
+                this.resp.setPriceTypeName(item.getPriceTypeCode());
+                this.resp.setPriceItemCode(item.getPriceItemCode());
+                this.resp.setPriceItemName(item.getPriceItemName());
+                this.resp.setPriceAttributeCode(item.getPriceAttributeCode());
+                this.resp.setPriceAttributeName(item.getPriceAttributeCode());
+            }
+            return this;
+        }
+        //检查批次号
+        private CheckChangePrice checkBatch(){
+            if (StringUtils.isNotBlank(anImport.getWarehouseBatchName())) {
+                if (CollectionUtils.isEmpty(error)) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+                    Map<String, BatchInfo> collect = querySkuInfoRespVO.getBatchList().stream().collect(Collectors.toMap(o -> o.getTransportCenterName()+"-" + o.getWarehouseName()+"-"+ o.getWarehouseBatchName()+"-" + sdf.format(o.getProductTime()), Function.identity(), (k1, k2) -> k2));
+                    if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyMap(collect)) {
+                        error.add("未找到批次信息");
+                    }else {
+                        BatchInfo item = collect.get(anImport.getWarehouseBatchName().trim());
+                        if (Objects.isNull(item)) {
+                            this.resp.setWarehouseBatchName(anImport.getWarehouseBatchName().trim());
+                            error.add("未找到对应名称的批次信息");
+                        }else {
+                            this.resp.setTransportCenterName(item.getTransportCenterName());
+                            this.resp.setTransportCenterCode(item.getTransportCenterCode());
+                            this.resp.setWarehouseCode(item.getWarehouseCode());
+                            this.resp.setWarehouseName(item.getWarehouseName());
+                            this.resp.setWarehouseBatchNumber(item.getWarehouseBatchNumber());
+                            this.resp.setProductTime(item.getProductTime());
+                            this.resp.setBatchRemark(item.getBatchRemark());
+
+                        }
+                    }
+                }
+            }
+            return this;
+        }
+        //调价原因
+        private CheckChangePrice checkChangeReason(){
+            if (StringUtils.isNotBlank(anImport.getChangePriceReasonName())) {
+                SupplierDictionaryInfo info = dicMap.get(anImport.getChangePriceReasonName().trim());
+                if (Objects.isNull(info)) {
+                    this.resp.setChangePriceReasonName(anImport.getChangePriceReasonName().trim());
+                    error.add("未找到对应名称的调价原因");
+                }else {
+                    this.resp.setChangePriceReasonCode(info.getSupplierDictionaryValue());
+                    this.resp.setChangePriceReasonName(info.getSupplierContent());
+                }
+            }
+            return this;
+        }
+        //获取数据
+        private QuerySkuInfoRespVOForIm getData(){
+            String s = repeatMap.get(resp.getSkuCode() + resp.getPriceItemName() + resp.getSupplierCode() + resp.getWarehouseBatchName());
+            if(StringUtils.isNotBlank(s)){
+                error.add("该条数据与其他数据重复");
+            }
+            if (CollectionUtils.isNotEmpty(error)) {
+                resp.setError(StringUtils.strip(error.toString(),"[]"));
+                return this.resp;
+            }else {
+                QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(resp.getSkuCode());
+                //补充需要的数据
+                this.resp.setBatchList(querySkuInfoRespVO.getBatchList());
+                this.resp.setSupplierInfoVOS(querySkuInfoRespVO.getSupplierInfoVOS());
+                this.resp.setPriceChannelList(querySkuInfoRespVO.getPriceChannelList());
+            }
+            repeatMap.put(resp.getSkuCode() + resp.getPriceItemName() + resp.getSupplierCode() + resp.getWarehouseBatchName(),"检查重复数据");
+            return resp;
+        }
+
     }
 }
