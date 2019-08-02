@@ -2323,7 +2323,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("厂家指导价不能为空");
             } else {
                 try {
-                    productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseLong(importVo.getManufacturerGuidePrice())*100);
+                    productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseLong(importVo.getManufacturerGuidePrice()));
                 } catch (NumberFormatException e) {
                     error.add("厂家指导价格式不正确");
                 }
@@ -2589,45 +2589,47 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 }
             }
             //采购包装信息
-            if (Objects.nonNull(importVo.getPurchaseBoxLength())) {
-                ProductSkuBoxPackingDraft purchaseBox = new ProductSkuBoxPackingDraft();
-                purchaseBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
-                purchaseBox.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
-                purchaseBox.setLargeUnit(purchase.getUnitName());
-                purchaseBox.setUnitCode(purchase.getUnitCode());
-                boolean flag = true;
-                try {
-                    purchaseBox.setBoxLength(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxLength().trim()));
-                } catch (Exception e) {
-                    error.add("采购长格式不正确");
-                    flag = false;
+            if (!importVo.getStockUnitName().equals(importVo.getPurchaseUnitName())) {
+                if (Objects.nonNull(importVo.getPurchaseBoxLength())) {
+                    ProductSkuBoxPackingDraft purchaseBox = new ProductSkuBoxPackingDraft();
+                    purchaseBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
+                    purchaseBox.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
+                    purchaseBox.setLargeUnit(purchase.getUnitName());
+                    purchaseBox.setUnitCode(purchase.getUnitCode());
+                    boolean flag = true;
+                    try {
+                        purchaseBox.setBoxLength(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxLength().trim()));
+                    } catch (Exception e) {
+                        error.add("采购长格式不正确");
+                        flag = false;
+                    }
+                    try {
+                        purchaseBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxWidth().trim()));
+                    } catch (Exception e) {
+                        error.add("采购宽格式不正确");
+                        flag = false;
+                    }
+                    try {
+                        purchaseBox.setBoxHeight(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxHeight().trim()));
+                    } catch (Exception e) {
+                        error.add("采购高格式不正确");
+                        flag = false;
+                    }
+                    if (flag) {
+                        purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight());
+                    }
+                    try {
+                        purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
+                    } catch (Exception e) {
+                        error.add("采购毛重格式不正确");
+                    }
+                    try {
+                        purchaseBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseNetWeight()));
+                    } catch (Exception e) {
+                        error.add("采购净重格式不正确");
+                    }
+                    productSkuBoxPackingDrafts.add(purchaseBox);
                 }
-                try {
-                    purchaseBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxWidth().trim()));
-                } catch (Exception e) {
-                    error.add("采购宽格式不正确");
-                    flag = false;
-                }
-                try {
-                    purchaseBox.setBoxHeight(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxHeight().trim()));
-                } catch (Exception e) {
-                    error.add("采购高格式不正确");
-                    flag = false;
-                }
-                if (flag) {
-                    purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight());
-                }
-                try {
-                    purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
-                } catch (Exception e) {
-                    error.add("采购毛重格式不正确");
-                }
-                try {
-                    purchaseBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseNetWeight()));
-                } catch (Exception e) {
-                    error.add("采购净重格式不正确");
-                }
-                productSkuBoxPackingDrafts.add(purchaseBox);
             }
             //采购基商品含量
             if (Objects.isNull(importVo.getPurchaseBaseProductContent())) {
