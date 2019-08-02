@@ -60,7 +60,7 @@ public interface ProductSkuDraftMapper {
      * @param skuCodes
      * @return
      */
-    List<ExportSkuInfo> exportSku(@Param("list") List<String> skuCodes);
+    List<ExportSkuInfo> exportSku();
     @MapKey("skuCode")
     Map<String, ProductSkuDraft> selectBySkuCode(@Param("list") Set<String> skuNameList, @Param("companyCode") String companyCode);
 }

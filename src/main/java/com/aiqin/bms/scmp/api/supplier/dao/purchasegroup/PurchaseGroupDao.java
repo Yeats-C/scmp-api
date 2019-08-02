@@ -1,7 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.dao.purchasegroup;
 
 
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.QueryPurchaseGroupReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
@@ -69,5 +68,5 @@ public interface PurchaseGroupDao {
      */
     Integer checkName(@Param("purchaseGroupName") String purchaseGroupName, @Param("id") Long id, @Param("companyCode") String companyCode);
     @MapKey("purchaseGroupName")
-    Map<String, PurchaseGroup> selectByNames(@Param("list") Set<String> purchaseGroupList, @Param("companyCode") String companyCode);
+    Map<String, PurchaseGroupDTO> selectByNames(@Param("list") Set<String> purchaseGroupList, @Param("companyCode") String companyCode);
 }

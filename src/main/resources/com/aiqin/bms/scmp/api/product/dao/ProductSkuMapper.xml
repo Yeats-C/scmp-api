@@ -197,7 +197,6 @@
     <result column="itro_images" jdbcType="VARCHAR" property="itroImages" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
   </resultMap>
-
   <resultMap id="QuerySkuListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp">
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
@@ -214,6 +213,7 @@
     <result column="color_name" jdbcType="VARCHAR" property="colorName" />
     <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
     <result column="spec" jdbcType="VARCHAR" property="spec" />
+    <result column="procurement_section_name" jdbcType="VARCHAR" property="purchaseGroupName" />
   </resultMap>
   <resultMap id="QueryApplySkuListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.QuerySkuApplyListResp">
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
@@ -876,7 +876,8 @@
       a.product_sort_name,
       a.color_name,
       a.model_number,
-      c.spec
+      c.spec,
+      a.procurement_section_name
     FROM
       product_sku a
       LEFT JOIN product_sku_distribution_info c on a.sku_code = c.product_sku_code
