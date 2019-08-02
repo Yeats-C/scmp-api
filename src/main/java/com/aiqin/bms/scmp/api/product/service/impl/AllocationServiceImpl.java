@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToInboundConverter;
@@ -103,16 +104,19 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
     @Autowired
     private InboundService inboundService;
+
     @Autowired
     private StockService stockService;
-
 
     @Autowired
     private WarehouseService supplierApiService;
 
+    @Autowired
+    private ProductSkuPicturesDao productSkuPicturesDao;
 
     @Autowired
     private OutboundService outboundService;
+
     @Autowired
     private WarehouseService warehouseService;
 
@@ -540,10 +544,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             String outboundCode = null;
             String inboundCode = null;
             AllocationTypeEnum enumByType = AllocationTypeEnum.getAllocationTypeEnumByType(allocation.getAllocationType());
-            OutboundReqVo convert = new AllocationOrderToOutboundConverter(warehouseService, enumByType).convert(allocation);
+            OutboundReqVo convert = new AllocationOrderToOutboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
             outboundCode =outboundService.save(convert);
             if(!AllocationTypeEnum.SCRAP.getType().equals(allocation.getAllocationType())){
-                InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType).convert(allocation);
+                InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
                 inboundCode = inboundService.saveInbound(convert1);
             }
 //            String outboundOderCode = createOutbound(allocation.getId());

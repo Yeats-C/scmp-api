@@ -29,4 +29,12 @@ public class PurchaseApplyProductRequest {
     @ApiModelProperty(value="创建者")
     @JsonProperty("create_by_name")
     private String createByName;
+
+    @ApiModelProperty(value="修改者id")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="修改者")
+    @JsonProperty("update_by_name")
+    private String updateByName;
 }

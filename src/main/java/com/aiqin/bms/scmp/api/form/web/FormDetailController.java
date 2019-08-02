@@ -23,8 +23,9 @@ public class FormDetailController {
 
     @GetMapping("/task")
     @ApiOperation("获取任务相关信息")
-    HttpResponse goTaskOperateForm(@RequestBody FormDetailRequest request) {
-        return formDetailService.goTaskOperateForm(request);
+    HttpResponse goTaskOperateForm(@RequestParam("form_no") String formNo,
+                                   @RequestParam("person_id") String personId) {
+        return formDetailService.goTaskOperateFormScmp(formNo, personId);
     }
 
     @GetMapping("/key/{form_no}")
