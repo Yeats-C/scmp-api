@@ -648,19 +648,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
 
     @Override
     public HttpResponse<RejectResponse> rejectInfo(String rejectRecordCode) {
-        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
-        if (CollectionUtils.isEmpty(groupVoList)) {
-            return HttpResponse.success();
-        }
-        List<String> groupIdList = groupVoList.stream().map(PurchaseGroupVo::getPurchaseGroupCode).collect(Collectors.toList());
         RejectResponse rejectResponse = new RejectResponse();
         RejectRecord rejectRecord = rejectRecordDao.selectByRejectCode(rejectRecordCode);
-        if (rejectRecord == null) {
-            return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_RECORD);
-        } else if (!groupIdList.contains(rejectRecord.getPurchaseGroupCode())) {
-            //没有权限查询详情
-            return HttpResponse.failure(ResultCode.JURISDICTION_ERROR);
-        }
         BeanUtils.copyProperties(rejectRecord, rejectResponse);
         List<RejectRecordDetail> batchList = rejectRecordDetailDao.selectByRejectId(rejectRecord.getRejectRecordId());
         List<RejectRecordDetailResponse> productList = rejectRecordDetailDao.selectProductByRejectId(rejectRecord.getRejectRecordId());

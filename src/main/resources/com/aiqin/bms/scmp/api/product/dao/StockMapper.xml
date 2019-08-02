@@ -1359,6 +1359,9 @@
                 <if test="item.taxPrice!=null">
                     tax_price=#{item.taxPrice},
                 </if>
+                <if test="item.taxRate!=null">
+                    tax_rate=#{item.taxRate},
+                </if>
                 <if test="item.createTime!=null">
                     create_time=#{item.createTime},
                 </if>

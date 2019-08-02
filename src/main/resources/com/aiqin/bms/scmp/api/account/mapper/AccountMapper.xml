@@ -49,6 +49,7 @@
         AND create_by_company_code = #{createByCompanyCode,jdbcType=VARCHAR}
       </if>
     </where>
+    limit 1
   </select>
   <select id="selectLastOne" parameterType="java.lang.String" resultMap="BaseResultMap">
     select

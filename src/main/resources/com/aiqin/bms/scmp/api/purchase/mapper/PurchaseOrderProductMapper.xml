@@ -159,9 +159,6 @@
     <where>
       purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
     </where>
-    <if test="isPage == 0">
-      LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-    </if>
   </select>
   <insert id="insertAll">
     insert into purchase_order_product (order_product_id, purchase_order_id,
