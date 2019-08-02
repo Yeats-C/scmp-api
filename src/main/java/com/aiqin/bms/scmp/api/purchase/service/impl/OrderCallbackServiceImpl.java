@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.constant.DictionaryEnum;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
@@ -163,6 +164,29 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
     @Override
     public HttpResponse returnOrder(ReturnRequest request) {
-        return null;
+        //操作时间 签收时间 等于回单时间
+        request.setReceivingTime(new DateTime(new Long(request.getReceiptTime())).toDate());
+        request.setOperatorTime(request.getReceivingTime());
+        //支付时间 发运时间 发货时间 等于创建时间
+        request.setCreateDate(new DateTime(new Long(request.getCreateTime())).toDate());
+        request.setDeliveryTime(request.getCreateDate());
+        ReturnOrderInfo returnOrderInfo = new ReturnOrderInfo();
+        BeanUtils.copyProperties(request, returnOrderInfo);
+        DetailRespVo detailRespVo = supplierRuleMapper.findByCompanyCode(COMPANY_CODE);
+        //取字典表数据
+        List<InnerValue> dictionaryInfoList = supplierDictionaryInfoDao.allList();
+        Map<String, InnerValue> dictionaryInfoMap = dictionaryInfoList.stream().collect(Collectors.toMap(InnerValue::getName,innerValue -> innerValue));
+        //支付方式
+        if (dictionaryInfoMap.containsKey(DictionaryEnum.PAY_TYPE.getCode() + request.getPaymentType())) {
+            returnOrderInfo.setPaymentTypeCode(dictionaryInfoMap.get(DictionaryEnum.PAY_TYPE.getCode() + request.getPaymentType()).getValue());
+            returnOrderInfo.setPaymentType(request.getPaymentType());
+        }
+        //订单类型
+        if (dictionaryInfoMap.containsKey(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType())) {
+            returnOrderInfo.setOrderType(dictionaryInfoMap.get(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType()).getValue());
+            returnOrderInfo.setOrderType(request.getOrderType());
+        }
+
+        return HttpResponse.success();
     }
 }

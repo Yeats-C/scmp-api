@@ -133,4 +133,10 @@ public class ReturnRequest {
 
     @ApiModelProperty("商品详情")
     List<ReturnDetailRequest> detailRequestList;
+
+    @ApiModelProperty(value="回单确认时间")
+    private String receiptTime;
+
+    @ApiModelProperty(value="创建时间")
+    private String createTime ;
 }
