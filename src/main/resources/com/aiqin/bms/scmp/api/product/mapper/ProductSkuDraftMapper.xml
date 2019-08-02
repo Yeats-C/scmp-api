@@ -128,7 +128,7 @@
       on lv1.category_id = lv2.parent_id
     where a.company_code = #{companyCode,jdbcType=VARCHAR}
     and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
-    order by update_time desc
+    order by a.update_time desc
   </select>
   <select id="getProductSkuDraftByProductCode" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
