@@ -593,6 +593,8 @@ public class InboundServiceImpl implements InboundService {
                // 将入库单状态修改为完成
                inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+
+               inbound.setInboundTime(new Date());
                int k = inboundDao.updateByPrimaryKeySelective(inbound);
 
                OperationLog operationLog = new OperationLog();
