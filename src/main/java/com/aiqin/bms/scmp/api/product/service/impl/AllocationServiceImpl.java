@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToInboundConverter;
@@ -13,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
@@ -38,7 +40,6 @@ import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.*;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
@@ -47,6 +48,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.json.JsonUtil;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -55,11 +57,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -100,16 +104,19 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
     @Autowired
     private InboundService inboundService;
+
     @Autowired
     private StockService stockService;
-
 
     @Autowired
     private WarehouseService supplierApiService;
 
+    @Autowired
+    private ProductSkuPicturesDao productSkuPicturesDao;
 
     @Autowired
     private OutboundService outboundService;
+
     @Autowired
     private WarehouseService warehouseService;
 
@@ -176,10 +183,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
              List<AllocationProduct> products = productbatchTransProduct(list);
              ((AllocationService) AopContext.currentProxy()).saveList(products);
              //TODO 库存锁定
-            /* StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
              stockChangeRequest.setOperationType(1);
              stockChangeRequest.setOrderCode(allocation.getAllocationCode());
-             List<StockVoRequest> list1 = allocationProductTransStock(allocation,list);
+             List<AllocationProductBatchResVo>list2 = BeanCopyUtils.copyList(list, AllocationProductBatchResVo.class);
+             List<StockVoRequest> list1 = allocationProductTransStock(allocation,list2);
              stockChangeRequest.setStockVoRequests(list1);
              // 调用锁定库存数
              HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
@@ -187,8 +195,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
              }else{
                  log.error(httpResponse.getMessage());
-                 throw  new GroundRuntimeException("库存操作失败");
-             }*/
+                 throw  new BizException(ResultCode.STOCK_LOCK_ERROR);
+             }
              //调用审批流
              workFlow(k,form);
              return  k;
@@ -339,7 +347,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     }
 
 
-    @Async("myTaskAsyncPool")
+//    @Async("myTaskAsyncPool")
     public void workFlow(Long id,String formNo) {
         Allocation allocation1 = allocationMapper.selectByPrimaryKey(id);
         log.info("AllocationServiceImplProduct-workFlow-传入参数是：[{}]", JSON.toJSONString(id));
@@ -459,9 +467,9 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     private List<StockVoRequest> allocationProductTransStock(Allocation allocation, List<AllocationProductBatchResVo> products) {
         List<StockVoRequest> stockVoRequests = Lists.newArrayList();
         if(CollectionUtils.isNotEmptyCollection(products)){
-            StockVoRequest stockVoRequest = null;
+//            StockVoRequest stockVoRequest = null;
             for (AllocationProductBatchResVo allocationProduct : products) {
-                stockVoRequest = new StockVoRequest();
+                StockVoRequest stockVoRequest = new StockVoRequest();
                 // 设置公司名称编码
                 stockVoRequest.setCompanyCode(allocation.getCompanyCode());
                 stockVoRequest.setCompanyName(allocation.getCompanyName());
@@ -478,6 +486,9 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
                 stockVoRequest.setSkuName(allocationProduct.getSkuName());
                 stockVoRequest.setChangeNum(allocationProduct.getQuantity());
+                //设置类型
+                stockVoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+                stockVoRequest.setDocumentNum(allocation.getAllocationCode());
                 stockVoRequests.add(stockVoRequest);
             }
         }
@@ -533,10 +544,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             String outboundCode = null;
             String inboundCode = null;
             AllocationTypeEnum enumByType = AllocationTypeEnum.getAllocationTypeEnumByType(allocation.getAllocationType());
-            OutboundReqVo convert = new AllocationOrderToOutboundConverter(warehouseService, enumByType).convert(allocation);
+            OutboundReqVo convert = new AllocationOrderToOutboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
             outboundCode =outboundService.save(convert);
             if(!AllocationTypeEnum.SCRAP.getType().equals(allocation.getAllocationType())){
-                InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType).convert(allocation);
+                InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
                 inboundCode = inboundService.saveInbound(convert1);
             }
 //            String outboundOderCode = createOutbound(allocation.getId());

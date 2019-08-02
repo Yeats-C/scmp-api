@@ -152,6 +152,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         //校验是否有申请中的数据
         List<ProductSkuConfig> officials = productSkuConfigMapper.selectByVo(configReqVos);
         Map<String, ProductSkuConfig> configMap = officials.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getTransportCenterCode(), Function.identity(), (k1, k2) -> k2));
+        Map<String, ProductSkuConfig> configSkuMap = officials.stream().collect(Collectors.toMap(ProductSkuConfig::getSkuCode, Function.identity(), (k1, k2) -> k2));
         //草稿表的中的数据
         List<ProductSkuConfigDraft> drafts = draftMapper.getListBySkuVo(configReqVos);
         Map<String, ProductSkuConfigDraft> draftMap = drafts.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getTransportCenterCode(), Function.identity(), (k1, k2) -> k2));
@@ -177,10 +178,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             BeanCopyUtils.copy(item,draft);
             draft.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
             draft.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
-            synchronized (ProductSkuConfigServiceImpl.class) {
-                String code = getCode("", EncodingRuleType.SKU_CONFIG_CODE);
-                draft.setConfigCode(code);
-            }
+//            synchronized (ProductSkuConfigServiceImpl.class) {
+//                String code = getCode("", EncodingRuleType.SKU_CONFIG_CODE);
+//                draft.setConfigCode(code);
+//            }
+            draft.setConfigCode(configSkuMap.get(draft.getSkuCode()).getConfigCode());
             draft.setCompanyCode(getUser().getCompanyCode());
             draft.setCompanyName(getUser().getCompanyName());
             draft.setCreateBy(getUser().getPersonName());

@@ -2,9 +2,11 @@ package com.aiqin.bms.scmp.api.product.domain.converter.allocation;
 
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
@@ -32,9 +34,12 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
 
     private AllocationTypeEnum allocationTypeEnum;
 
-    public AllocationOrderToInboundConverter (WarehouseService warehouseService,AllocationTypeEnum allocationTypeEnum) {
+    private ProductSkuPicturesDao productSkuPicturesDao;
+
+    public AllocationOrderToInboundConverter (WarehouseService warehouseService,AllocationTypeEnum allocationTypeEnum,ProductSkuPicturesDao productSkuPicturesDao) {
         this.warehouseService = warehouseService;
         this.allocationTypeEnum = allocationTypeEnum;
+        this.productSkuPicturesDao = productSkuPicturesDao;
     }
     @Override
     public InboundReqSave convert(AllocationDTO order) {
@@ -78,11 +83,17 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
         Long preTaxAmount = 0L;
         Long preNoTaxAmount = 0L;
         List<AllocationProduct> records = order.getProducts();
+        ProductSkuPictures productSkuPicture = null;
         for (AllocationProduct record : records) {
             InboundProductReqVo reqVo1 = new InboundProductReqVo();
+            productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(record.getSkuCode());
             reqVo1.setSkuCode(record.getSkuCode());
             reqVo1.setSkuName(record.getSkuName());
-            reqVo1.setPictureUrl(null);
+            if(null != productSkuPicture){
+                reqVo1.setPictureUrl(productSkuPicture.getProductPicturePath());
+            } else {
+                reqVo1.setPictureUrl(null);
+            }
             reqVo1.setNorms(record.getSpecification());
             reqVo1.setColorName(record.getColor());
             reqVo1.setColorCode(null);
@@ -90,7 +101,8 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
             reqVo1.setUnitCode(null);
             reqVo1.setUnitName(record.getUnit());
             reqVo1.setInboundNorms(record.getSpecification());
-            reqVo1.setInboundBaseContent(null);
+            //由于调拨/移库/报废 是库存信息,故基商品含量默认为1
+            reqVo1.setInboundBaseContent("1");
             reqVo1.setPreInboundNum(record.getQuantity().longValue());
             reqVo1.setPreInboundMainNum(record.getQuantity().longValue());
             reqVo1.setPreTaxPurchaseAmount(record.getTaxPrice().longValue());

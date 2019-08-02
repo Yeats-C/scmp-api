@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.web.allocation;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
@@ -69,7 +70,9 @@ public class AllocationController {
             vo.setAllocationType(AllocationTypeEnum.ALLOCATION.getType());
             vo.setAllocationTypeName(AllocationTypeEnum.ALLOCATION.getTypeName());
             return HttpResponse.success(allocationService.save(vo));
-        }catch (Exception ex){
+        }catch (BizException ex){
+            return HttpResponse.failure(ex.getMessageId());
+        } catch (Exception ex){
             ex.printStackTrace();
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_ADD_ERROR);
         }

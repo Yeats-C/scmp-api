@@ -521,7 +521,7 @@ public class InboundServiceImpl implements InboundService {
             purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
             PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
             if(resultPurchaseOrder != null) {
-                operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
+                operationLog.setOperationId(resultPurchaseOrder.getPurchaseOrderId());
                 operationLog.setCreateByName(inbound.getCreateBy());
                 operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_IN.getCode());
                 operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库中");
@@ -593,6 +593,8 @@ public class InboundServiceImpl implements InboundService {
                // 将入库单状态修改为完成
                inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+
+               inbound.setInboundTime(new Date());
                int k = inboundDao.updateByPrimaryKeySelective(inbound);
 
                OperationLog operationLog = new OperationLog();
@@ -600,7 +602,7 @@ public class InboundServiceImpl implements InboundService {
                purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
                PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
                if(resultPurchaseOrder != null) {
-                   operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
+                   operationLog.setOperationId(resultPurchaseOrder.getPurchaseOrderId());
                    operationLog.setCreateByName(inbound.getCreateBy());
                    operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode());
                    operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库完成");

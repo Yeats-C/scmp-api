@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  */
 public class NumberConvertUtils {
     public static Long stringParseLong(String s) {
-        BigDecimal temp = BigDecimal.valueOf(Double.valueOf(s));
+        BigDecimal temp = new BigDecimal(s);
         temp = temp.multiply(BigDecimal.valueOf(100));
         return temp.longValue();
     }
@@ -16,4 +16,5 @@ public class NumberConvertUtils {
         BigDecimal temp = BigDecimal.valueOf(Double.valueOf(s));
         return temp;
     }
+
 }
