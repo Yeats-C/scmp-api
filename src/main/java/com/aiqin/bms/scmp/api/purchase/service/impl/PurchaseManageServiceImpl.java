@@ -99,6 +99,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private StockService stockService;
     @Resource
     private PurchaseGroupService purchaseGroupService;
+    @Resource
+    private PurchaseInspectionReportDao purchaseInspectionReportDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -454,7 +456,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     PurchaseOrderLogEnum.REVOKE.getName() , null);
         }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
             // 仓储确认判断是否入库完成
-                this.wayNum(purchaseOrderId);
+                this.wayNum(purchaseOrderId, createById, createByName);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
@@ -789,11 +791,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 return HttpResponse.failure(ResultCode.UPDATE_ERROR);
             }
             // 添加日志
-            log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+            log(purchaseStorage.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
             // 仓储确认判断是否入库完成
             if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-                this.wayNum(purchaseStorage.getPurchaseOrderId());
+                this.wayNum(purchaseStorage.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName());
                 log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                         PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
             }
@@ -883,15 +885,22 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 PurchaseOrderLogEnum.STORAGE_FINISH.getName() , null);
         // 仓储确认判断是否入库完成
         if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-            this.wayNum(purchaseOrderId);
-            log(purchaseOrderId,storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
+            this.wayNum(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName());
         }
         return HttpResponse.success();
     }
 
     // 修改库存在途数
-    private void wayNum(String purchaseOrderId){
+    private void wayNum(String purchaseOrderId, String id, String name){
+        log(purchaseOrderId, id, name, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
+        // 添加入库完成时间
+        PurchaseOrderDetails detail = new PurchaseOrderDetails();
+        detail.setPurchaseOrderId(purchaseOrderId);
+        detail.setWarehouseTime(Calendar.getInstance().getTime());
+        detail.setUpdateByName(id);
+        detail.setUpdateById(name);
+        purchaseOrderDetailsDao.update(detail);
         StockChangeRequest stock = new StockChangeRequest();
         stock.setOperationType(11);
         List<StockVoRequest> list = Lists.newArrayList();
@@ -963,5 +972,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         operationLogDao.insert(operationLog);
         return HttpResponse.success();
+    }
+
+    @Override
+    public HttpResponse<PurchaseInspectionReport> inspectionReport(String purchaseOrderId, String skuCode, String productionDate){
+       if(StringUtils.isBlank(purchaseOrderId) || StringUtils.isBlank(skuCode) || StringUtils.isBlank(productionDate)){
+           return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+       }
+        PurchaseInspectionReport inspectionReport = purchaseInspectionReportDao.inspectionReportInfo(purchaseOrderId, skuCode, productionDate);
+        return HttpResponse.success(inspectionReport);
     }
 }
