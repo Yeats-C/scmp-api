@@ -35,4 +35,6 @@ public interface PriceChannelMapper {
      */
     @MapKey("priceChannelName")
     Map<String, PriceChannel> selectByChannelNames(@Param("list") Set<String> channelList, @Param("companyCode") String companyCode);
+
+    PriceChannel selectByChannelName(String orderOriginal);
 }
