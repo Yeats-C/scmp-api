@@ -263,6 +263,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         if (file == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        List<String> productTypeList = Arrays.asList("商品","赠品","实物返");
+
         try {
             String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
             if (result.length < 2) {
@@ -314,8 +316,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 if (rejectApplyDetailHandleResponse != null) {
                     BeanUtils.copyProperties(rejectApplyDetailHandleResponse, response);
                     response.setProductCount(new Double(record[7]).intValue());
-                    response.setProductAmount(Long.valueOf(record[8]));
-                    response.setProductTotalAmount(Long.valueOf(record[8]) * Long.valueOf(record[7]));
+                    response.setProductAmount(Long.valueOf(record[8])*100);
+                    if(productTypeList.contains(record[6])){
+                        response.setProductType(productTypeList.indexOf(record[6]));
+                    }
+                    response.setProductTotalAmount(Long.valueOf(record[8]) * Long.valueOf(record[7])*100);
                     if (rejectApplyDetailHandleResponse.getStockCount() < Integer.valueOf(record[7])) {
                         response.setErrorReason("可用库存数量小于销售数量");
                         errorCount++;
