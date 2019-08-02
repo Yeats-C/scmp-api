@@ -129,6 +129,10 @@
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id
     <where>
+      o.purchase_group_code in
+      <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+        #{item.purchaseGroupCode,jdbcType=VARCHAR}
+      </foreach>
       <if test="beginTime != null">
         and o.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
       </if>
@@ -165,39 +169,41 @@
   </select>
   <select id="purchaseOrderCount" resultType="java.lang.Integer">
     select count(1)
-    from purchase_order o
-    inner join purchase_order_details d
-    on o.purchase_order_id = d.purchase_order_id
+    from purchase_order
     <where>
+      purchase_group_code in
+      <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+        #{item.purchaseGroupCode,jdbcType=VARCHAR}
+      </foreach>
       <if test="beginTime != null">
-        and o.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
       </if>
       <if test="finishTime != null">
-        and o.create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
       </if>
       <if test="purchaseOrderCode != null">
-        and o.purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+        and purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
       </if>
       <if test="purchaseGroupCode != null">
-        and o.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+        and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
       <if test="supplierCode != null">
-        and o.supplier_code = #{supplierCode,jdbcType=VARCHAR}
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
       <if test="transportCenterCode != null">
-        and o.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
       </if>
       <if test="warehouseCode != null">
-        and o.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+        and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
       </if>
       <if test="purchaseOrderStatus != null">
-        and o.purchase_order_status = #{purchaseOrderStatus,jdbcType=INTEGER}
+        and purchase_order_status = #{purchaseOrderStatus,jdbcType=INTEGER}
       </if>
       <if test="storageStatus != null">
-        and o.storage_status = #{storageStatus,jdbcType=INTEGER}
+        and storage_status = #{storageStatus,jdbcType=INTEGER}
       </if>
       <if test="purchaseMode != null">
-        and o.purchase_mode = #{purchaseMode,jdbcType=INTEGER}
+        and purchase_mode = #{purchaseMode,jdbcType=INTEGER}
       </if>
     </where>
   </select>

@@ -41,14 +41,14 @@ public class OutboundRequest {
     @ApiModelProperty("创建时间")
     private Date createDate;
 
-    @ApiModelProperty("传入值 交易全部完成")
-    private Integer orderStatus;
+    @ApiModelProperty("传入值 12 交易全部完成")
+    private Integer orderStatus = 12;
 
     @ApiModelProperty("是否是异常订单(0否1是)")
     private Integer beException = 0;
 
-    @ApiModelProperty("支付状态")
-    private Integer paymentStatus;
+    @ApiModelProperty("订单支付状态 1 未支付 2 已支付")
+    private Integer paymentStatus = 2;
 
     @ApiModelProperty("是否锁定(0否1是）")
     private Integer beLock = 0;
@@ -148,5 +148,12 @@ public class OutboundRequest {
 
     @ApiModelProperty(value = "商品详情")
     private List<OutboundDetailRequest> detail;
+
+    @ApiModelProperty(value = "回单确认时间")
+    private String receiptTime;
+
+    @ApiModelProperty(value = "创建时间")
+    private String createTime;
+
 
 }

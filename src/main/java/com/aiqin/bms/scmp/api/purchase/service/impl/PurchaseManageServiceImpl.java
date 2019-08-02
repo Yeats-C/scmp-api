@@ -10,7 +10,6 @@ import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
-import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
@@ -30,6 +29,8 @@ import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
+import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierScoreService;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -96,6 +97,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
     @Resource
     private StockService stockService;
+    @Resource
+    private PurchaseGroupService purchaseGroupService;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -347,6 +350,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
 
     @Override
     public HttpResponse<List<PurchaseOrderResponse>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest){
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+            return HttpResponse.success();
+        }
+        purchaseApplyRequest.setGroupList(groupVoList);
         PageResData pageResData = new PageResData();
         List<PurchaseOrderResponse> list = purchaseOrderDao.purchaseOrderList(purchaseApplyRequest);
         if(CollectionUtils.isNotEmptyCollection(list)){
@@ -447,6 +455,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
             // 仓储确认判断是否入库完成
                 this.wayNum(purchaseOrderId);
+            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
@@ -685,6 +695,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
                 Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
+                Integer baseProductContent = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent().intValue();
+                if(actualSingleCount > 0 && baseProductContent > 0){
+                    purchaseWhole = purchaseWhole - actualSingleCount / baseProductContent;
+                }
                 reqVo.setPreInboundMainNum(singleCount.longValue() - actualSingleCount.longValue());
                 reqVo.setPreInboundNum(purchaseWhole.longValue());
                 reqVo.setPreTaxPurchaseAmount(product.getProductAmount().longValue());
@@ -780,6 +794,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             // 仓储确认判断是否入库完成
             if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
                 this.wayNum(purchaseStorage.getPurchaseOrderId());
+                log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                        PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
             }
         }
         return HttpResponse.success();
@@ -868,6 +884,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         // 仓储确认判断是否入库完成
         if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
             this.wayNum(purchaseOrderId);
+            log(purchaseOrderId,storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
         }
         return HttpResponse.success();
     }
