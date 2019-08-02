@@ -289,11 +289,13 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             purchaseApplyId = applyProductRequest.getPurchaseApplyId();
             PurchaseApply purchaseApply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
             purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
-            purchaseApply.setUpdateByName(applyProductRequest.getCreateByName());
-            purchaseApply.setUpdateById(applyProductRequest.getCreateById());
+            purchaseApply.setUpdateByName(applyProductRequest.getUpdateByName());
+            purchaseApply.setUpdateById(applyProductRequest.getUpdateById());
             purchaseApplyDao.update(purchaseApply);
             purchaseApplyCode = purchaseApply.getPurchaseApplyCode();
             purchaseApplyProductDao.delete(purchaseApplyId);
+            applyProductRequest.setCreateById(applyProductRequest.getUpdateById());
+            applyProductRequest.setCreateByName(applyProductRequest.getUpdateByName());
         }else {
             // 生成采购申请单id
             purchaseApplyId = IdUtil.purchaseId();
