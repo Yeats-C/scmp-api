@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
  * @author ch
  * @description 报表
  */
+@CrossOrigin
 @RestController
 @Api(tags = "报表接口")
 @RequestMapping("/report")
@@ -742,10 +744,12 @@ public class ReportController {
             List<LowInventoryRespVo> lowInventoryRespVo = reportService.selectLowInventorys(highLowInventoryReqVo);
             XSSFWorkbook wb = ExportExcelReportLow.exportData(lowInventoryRespVo);
             String excelName = "低库存数据导出";
+          //  excelName = URLEncoder.encode(excelName,"UTF-8");
             response.reset();
             response.setContentType("application/vnd.ms-excel;charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
-            response.addHeader("Content-Disposition", "attachment;fileName=" + new String(excelName.getBytes("UTF-8"), "iso-8859-1"));
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Content-Disposition", "attachment;fileName=" + new String(excelName.getBytes("iso-8859-1"), "UTF-8"));
             OutputStream os = response.getOutputStream();
             wb.write(os);
             os.flush();
