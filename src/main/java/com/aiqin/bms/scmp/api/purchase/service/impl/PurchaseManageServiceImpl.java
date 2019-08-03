@@ -10,12 +10,15 @@ import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
@@ -846,9 +849,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         // 变更采购单的状态
         PurchaseOrder purchaseOrder = new PurchaseOrder();
-        if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
-            purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
-        }
         purchaseOrder.setPurchaseOrderId(purchaseOrderId);
         if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
             purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
@@ -862,8 +862,44 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
         // 保存质检报告
-        if(CollectionUtils.isNotEmptyCollection(storageRequest.getReportRequest())){
-            productSkuInspReportDao.insertInspReportList(storageRequest.getReportRequest());
+        if(CollectionUtils.isNotEmptyCollection(storageRequest.getInspectionReport())){
+            List<PurchaseInspectionReport> purchaseInspectionReports = purchaseInspectionReportDao.inspectionReportInfo(purchaseOrderId);
+            if(CollectionUtils.isNotEmptyCollection(purchaseInspectionReports)){
+                PurchaseInspectionReport report = new PurchaseInspectionReport();
+                report.setPurchaseOrderId(purchaseOrderId);
+                report.setStatus(Global.USER_OFF);
+                report.setUpdateById(storageRequest.getCreateById());
+                report.setUpdateByName(storageRequest.getCreateByName());
+                purchaseInspectionReportDao.update(report);
+            }
+            purchaseInspectionReportDao.insertAll(storageRequest.getInspectionReport());
+            // 替换商品的对应sku与日期的质检报告
+            List<PurchaseInspectionReport> inspection = storageRequest.getInspectionReport();
+            ProductSkuInspReport inspReport;
+            List<ProductSkuInspReport> productSkuInspReportList = Lists.newArrayList();
+            QueryProductSkuInspReportReqVo vo;
+            for(PurchaseInspectionReport pir:inspection){
+                // 判断商品的质检报告是否存在， 存在根据sku与生产日期更新上传路径，否则新增
+                vo = new QueryProductSkuInspReportReqVo();
+                vo.setSkuCode(pir.getSkuCode());
+                vo.setProductionDate(pir.getProductionDate());
+                List<ProductSkuInspReportRespVo> list = productSkuInspReportDao.getListBySkuCodeAndProductDate(vo);
+                inspReport = new ProductSkuInspReport();
+                inspReport.setSkuCode(pir.getSkuCode());
+                inspReport.setProductionDate(pir.getProductionDate());
+                if(list.size() > 0){
+                    inspReport.setUpdateBy(storageRequest.getCreateByName());
+                    productSkuInspReportDao.updateInspection(inspReport);
+                }else {
+                    inspReport.setSkuName(pir.getSkuName());
+                    inspReport.setInspectionReportPath(pir.getInspectionReportPath());
+                    inspReport.setCreateBy(storageRequest.getCreateByName());
+                    productSkuInspReportList.add(inspReport);
+                }
+            }
+            if(CollectionUtils.isNotEmptyCollection(productSkuInspReportList)){
+                productSkuInspReportDao.insertInspReportList(productSkuInspReportList);
+            }
         }
         // 保存供应商评分
         if(storageRequest.getScoreRequest() != null){
@@ -975,11 +1011,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse<PurchaseInspectionReport> inspectionReport(String purchaseOrderId, String skuCode, String productionDate){
-       if(StringUtils.isBlank(purchaseOrderId) || StringUtils.isBlank(skuCode) || StringUtils.isBlank(productionDate)){
+    public HttpResponse<PurchaseInspectionReport> inspectionReport(String purchaseOrderId){
+       if(StringUtils.isBlank(purchaseOrderId)){
            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
        }
-        PurchaseInspectionReport inspectionReport = purchaseInspectionReportDao.inspectionReportInfo(purchaseOrderId, skuCode, productionDate);
+        List<PurchaseInspectionReport> inspectionReport = purchaseInspectionReportDao.inspectionReportInfo(purchaseOrderId);
         return HttpResponse.success(inspectionReport);
     }
 }

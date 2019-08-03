@@ -21,32 +21,20 @@
     sku_code, sku_name, purchase_order_id, inspection_report_name, inspection_report_path, production_date,
     status, create_time, create_by_id, create_by_name
   </sql>
-  <delete id="delete">
-    delete from purchase_inspection_report
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert">
-    insert into purchase_inspection_report (sku_code, sku_name,
-      purchase_order_id, inspection_report_name, 
-      inspection_report_path, production_date, status, create_time,
-      create_by_id, create_by_name)
-    values (#{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR},
-      #{purchaseOrderId,jdbcType=VARCHAR}, #{inspectionReportName,jdbcType=VARCHAR}, 
-      #{inspectionReportPath,jdbcType=VARCHAR}, #{productionDate,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, now(),
-      #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
+  <insert id="insertAll" parameterType="java.util.List">
+    insert into purchase_inspection_report (sku_code, sku_name, purchase_order_id, inspection_report_name,
+      inspection_report_path, production_date, create_time, create_by_id, create_by_name)
+    values
+    <foreach collection="list" item="item" index="" separator=",">
+    (#{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.purchaseOrderId,jdbcType=VARCHAR}, #{item.inspectionReportName,jdbcType=VARCHAR},
+      #{item.inspectionReportPath,jdbcType=VARCHAR}, #{item.productionDate,jdbcType=TIMESTAMP}, now(),
+      #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
+    </foreach>
   </insert>
   <update id="update">
     update purchase_inspection_report
     <set>
-      <if test="skuCode != null">
-        sku_code = #{skuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="skuName != null">
-        sku_name = #{skuName,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderId != null">
-        purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR},
-      </if>
       <if test="inspectionReportName != null">
         inspection_report_name = #{inspectionReportName,jdbcType=VARCHAR},
       </if>
@@ -67,13 +55,11 @@
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
   </update>
   <select id="inspectionReportInfo" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include> from
     purchase_inspection_report
-    where  sku_code = #{skuCode,jdbcType=VARCHAR}
-    and production_date = #{productionDate,jdbcType=VARCHAR}
-    and purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+    where status = 1 and purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
   </select>
 </mapper>

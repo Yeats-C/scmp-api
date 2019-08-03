@@ -50,5 +50,5 @@ public interface PurchaseManageService {
 
     HttpResponse addLog(OperationLog operationLog);
 
-    HttpResponse<PurchaseInspectionReport> inspectionReport(String purchaseOrderId, String skuCode, String productionDate);
+    HttpResponse<PurchaseInspectionReport> inspectionReport(String purchaseOrderId);
 }
