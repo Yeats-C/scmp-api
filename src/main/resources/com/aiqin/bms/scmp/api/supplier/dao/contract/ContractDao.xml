@@ -692,10 +692,13 @@
       LEFT JOIN purchase_group_buyer c on b.purchasing_group_code = c.purchase_group_code
       where 1=1
       <if test="companyCode != null and companyCode !='' ">
-        and company_code = #{companyCode}
+        and a.company_code = #{companyCode}
       </if>
       <if test="personId != null and personId != '' ">
         and c.buyer_code = #{personId}
+      </if>
+      <if test="supplierCode != null and supplierCode != '' ">
+        and a.supplier_code = #{supplierCode}
       </if>
     </select>
 

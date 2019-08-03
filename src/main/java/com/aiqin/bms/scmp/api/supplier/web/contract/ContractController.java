@@ -125,4 +125,14 @@ public class ContractController {
         }
     }
 
+    @ApiOperation("查询当人所属公司和供应商的合同")
+    @PostMapping("/getContractBySupplierCode")
+    public  HttpResponse<List<ContractPurchaseResVo>> getContractBySupplierCode(@RequestParam  @ApiParam( value = "供应商编码 必填" ,required =true) String supplierCode){
+        try {
+            return HttpResponse.success(contractService.getContractBySupplierCode(supplierCode));
+        }catch (Exception ex){
+            return HttpResponse.failure(ResultCode.SEARCH_ERROR);
+        }
+    }
+
 }
