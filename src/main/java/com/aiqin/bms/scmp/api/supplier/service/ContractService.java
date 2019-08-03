@@ -114,4 +114,18 @@ public interface ContractService {
      * @date 2019/7/1 20:16
      */
     List<ContractPurchaseResVo> getContractByPurchaseGroup();
+
+
+    /**
+     *
+     * 功能描述: 根据供应商查询合同
+     *
+     * @param supplierCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/3 12:11
+     */
+    List<ContractPurchaseResVo> getContractBySupplierCode(String supplierCode);
+
+
 }
