@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.request.changeprice;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -24,9 +25,11 @@ public class QueryProductSkuChangePriceReqVO extends PageReq {
     private String name;
 
     @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTimeStart;
 
     @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTimeEnd;
 
     @ApiModelProperty("变价类型编码")

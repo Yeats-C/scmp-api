@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseInspectionReport;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
@@ -175,6 +176,12 @@ public class PurchaseManageController {
     @ApiOperation("添加采购单-操作日志")
     public HttpResponse addLog(@RequestBody OperationLog operationLog) {
         return purchaseManageService.addLog(operationLog);
+    }
+
+    @GetMapping("/purchase/inspection/report")
+    @ApiOperation("查询采购单对应的质检报告")
+    public HttpResponse<PurchaseInspectionReport> inspectionReport(@RequestParam("purchase_order_id") String purchaseOrderId) {
+        return purchaseManageService.inspectionReport(purchaseOrderId);
     }
 
 }

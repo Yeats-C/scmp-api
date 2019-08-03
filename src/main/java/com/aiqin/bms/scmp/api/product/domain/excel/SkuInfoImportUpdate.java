@@ -13,7 +13,7 @@ import lombok.Data;
 @ApiModel("sku修改导入实体")
 public class SkuInfoImportUpdate extends BaseRowModel {
 
-    public static final String HEAD = "SkuInfoImportUpdate(skuCode=SKU编号, goodsGiftsDesc=类型, skuName=SKU名称, skuAbbreviation=SKU简称, productBrandName=品牌, productCategoryName=品类, productName=所属SPU, productPropertyName=商品属性, productSortName=所属部门, colorName=颜色, modelNumber=型号, qualityAssuranceManagementDesc=是否管理保质期, qualityNumber=保质期单位, qualityDate=保质天数, categoriesSupplyChannelsName=供货渠道类别, mnemonicCode=助记码, manufacturerGuidePrice=厂商指导价, applicableMonthAge=适用起始月龄, seasonalGoodsDesc=是否季节商品, warehouseTypeName=仓位类型, structuralGoodsDesc=结构性商品, useTime=使用时长, inventoryModelDesc=库存模式, uniqueCodeDesc=唯一码管理, priceChannelName=覆盖渠道, tagName=商品标签, remark=商品备注, stockSpec=库存规格, stockUnitName=库存单位, stockBoxLength=库存长, stockBoxWidth=库存宽, stockBoxHeight=库存高, stockBoxGrossWeight=库存毛重, stockNetWeight=库存净重, stockBarCode=库存条形码, purchaseSpec=采购规格, purchaseUnitName=采购单位, purchaseBoxLength=采购长, purchaseBoxWidth=采购宽, purchaseBoxHeight=采购高, purchaseBoxGrossWeight=采购毛重, purchaseNetWeight=采购净重, purchaseBaseProductContent=采购基商品含量, purchaseZeroRemovalCoefficient=采购拆零系数, purchaseBarCode=采购条形码, distributionSpec=分销规格, distributionUnitName=分销单位, distributionBaseProductContent=分销基商品含量, distributionZeroRemovalCoefficient=分销拆零系数, distributionBarCode=分销条形码, maxOrderNum=最大订购数量, saleSpec=销售规格, saleUnitName=销售单位, saleBaseProductContent=销售基商品含量, saleZeroRemovalCoefficient=销售拆零系数, saleBarCode=销售条形码, description=销售描述, settlementMethodName=结算方式, inputTaxRate=进项税率, outputTaxRate=销项税率, integralCoefficient=积分系数, logisticsFeeAwardRatio=物流费奖励比例, manufacturerName=生产厂家, factoryProductNumber=厂方商品编号, address=保修地址, picFolderCode=图片文件夹编号)";
+    public static final String HEAD = "SkuInfoImportUpdate(skuCode=SKU编号, goodsGiftsDesc=类型, skuName=SKU名称, skuAbbreviation=SKU简称, productBrandName=品牌, productCategoryName=品类, productName=所属SPU, productPropertyName=商品属性, productSortName=所属部门, colorName=颜色, modelNumber=型号, qualityAssuranceManagementDesc=是否管理保质期, qualityNumber=保质期单位, qualityDate=保质天数, categoriesSupplyChannelsName=供货渠道类别, mnemonicCode=助记码, manufacturerGuidePrice=厂商指导价, applicableMonthAge=适用起始月龄, seasonalGoodsDesc=是否季节商品, warehouseTypeName=仓位类型, structuralGoodsDesc=结构性商品, useTime=使用时长, inventoryModelDesc=库存模式, uniqueCodeDesc=唯一码管理, priceChannelName=覆盖渠道, tagName=商品标签, remark=商品备注, stockSpec=库存规格, stockUnitName=库存单位, stockBoxLength=库存长, stockBoxWidth=库存宽, stockBoxHeight=库存高, stockBoxGrossWeight=库存毛重, stockNetWeight=库存净重, stockBarCode=库存条形码, purchaseSpec=采购规格, purchaseUnitName=采购单位, purchaseBoxLength=采购长, purchaseBoxWidth=采购宽, purchaseBoxHeight=采购高, purchaseBoxGrossWeight=采购毛重, purchaseNetWeight=采购净重, purchaseBaseProductContent=采购基商品含量, purchaseZeroRemovalCoefficient=采购拆零系数, purchaseBarCode=采购条形码, distributionSpec=分销规格, distributionUnitName=分销单位, distributionBaseProductContent=分销基商品含量, distributionZeroRemovalCoefficient=分销拆零系数, distributionBarCode=分销条形码, maxOrderNum=最大订购数量, saleSpec=销售规格, saleUnitName=销售单位, saleBarCode=销售条形码, description=销售描述, settlementMethodName=结算方式, inputTaxRate=进项税率, outputTaxRate=销项税率, integralCoefficient=积分系数, logisticsFeeAwardRatio=物流费奖励比例, manufacturerName=生产厂家, factoryProductNumber=厂方商品编号, address=保修地址, picFolderCode=图片文件夹编号)";
 
     @ApiModelProperty("sku编码")
     @ExcelProperty(index = 0, value = "SKU编码")
@@ -227,56 +227,56 @@ public class SkuInfoImportUpdate extends BaseRowModel {
     @ExcelProperty(index = 52, value = "销售单位")
     private String saleUnitName;
 
-    @ApiModelProperty("基商品含量")
-    @ExcelProperty(index = 53, value = "销售基商品含量")
-    private String saleBaseProductContent;
-
-    @ApiModelProperty("拆零系数")
-    @ExcelProperty(index = 54, value = "销售拆零系数")
-    private String saleZeroRemovalCoefficient;
+//    @ApiModelProperty("基商品含量")
+//    @ExcelProperty(index = 53, value = "销售基商品含量")
+//    private String saleBaseProductContent;
+//
+//    @ApiModelProperty("拆零系数")
+//    @ExcelProperty(index = 54, value = "销售拆零系数")
+//    private String saleZeroRemovalCoefficient;
 
     @ApiModelProperty("条形码")
-    @ExcelProperty(index = 55, value = "销售条形码")
+    @ExcelProperty(index = 53, value = "销售条形码")
     private String saleBarCode;
 
     @ApiModelProperty("描述-门店销售独有")
-    @ExcelProperty(index = 56, value = "销售描述")
+    @ExcelProperty(index = 54, value = "销售描述")
     private String description;
 
     @ApiModelProperty("结算方式名称")
-    @ExcelProperty(index = 57, value = "结算方式")
+    @ExcelProperty(index = 55, value = "结算方式")
     private String settlementMethodName;
 
     @ApiModelProperty("进项税率")
-    @ExcelProperty(index = 58, value = "进项税率")
+    @ExcelProperty(index = 56, value = "进项税率")
     private String inputTaxRate;
 
     @ApiModelProperty("销项税率")
-    @ExcelProperty(index = 59, value = "销项税率")
+    @ExcelProperty(index = 57, value = "销项税率")
     private String outputTaxRate;
 
     @ApiModelProperty("积分系数")
-    @ExcelProperty(index = 60, value = "积分系数")
+    @ExcelProperty(index = 58, value = "积分系数")
     private String integralCoefficient;
 
     @ApiModelProperty("物流费奖励比例")
-    @ExcelProperty(index = 61, value = "物流费奖励比例")
+    @ExcelProperty(index = 59, value = "物流费奖励比例")
     private String logisticsFeeAwardRatio;
 
     @ApiModelProperty("生产厂家")
-    @ExcelProperty(index = 62, value = "生产厂家")
+    @ExcelProperty(index = 60, value = "生产厂家")
     private String manufacturerName;
 
     @ApiModelProperty("厂方商品编号")
-    @ExcelProperty(index = 63, value = "厂方商品编号")
+    @ExcelProperty(index = 61, value = "厂方商品编号")
     private String factoryProductNumber;
 
     @ApiModelProperty("保修地址")
-    @ExcelProperty(index = 64, value = "保修地址")
+    @ExcelProperty(index = 62, value = "保修地址")
     private String address;
 
     @ApiModelProperty("图片文件夹编号")
-    @ExcelProperty(index = 65, value = "图片文件夹编号")
+    @ExcelProperty(index = 63, value = "图片文件夹编号")
     private String picFolderCode;
 
 }

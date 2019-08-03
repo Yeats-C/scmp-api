@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseInspectionReportDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseInspectionReport">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="purchase_order_id" jdbcType="VARCHAR" property="purchaseOrderId" />
+    <result column="inspection_report_name" jdbcType="VARCHAR" property="inspectionReportName" />
+    <result column="inspection_report_path" jdbcType="VARCHAR" property="inspectionReportPath" />
+    <result column="production_date" jdbcType="TIMESTAMP" property="productionDate" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sku_code, sku_name, purchase_order_id, inspection_report_name, inspection_report_path, production_date,
+    status, create_time, create_by_id, create_by_name
+  </sql>
+  <insert id="insertAll" parameterType="java.util.List">
+    insert into purchase_inspection_report (sku_code, sku_name, purchase_order_id, inspection_report_name,
+      inspection_report_path, production_date, create_time, create_by_id, create_by_name)
+    values
+    <foreach collection="list" item="item" index="" separator=",">
+    (#{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.purchaseOrderId,jdbcType=VARCHAR}, #{item.inspectionReportName,jdbcType=VARCHAR},
+      #{item.inspectionReportPath,jdbcType=VARCHAR}, #{item.productionDate,jdbcType=TIMESTAMP}, now(),
+      #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <update id="update">
+    update purchase_inspection_report
+    <set>
+      <if test="inspectionReportName != null">
+        inspection_report_name = #{inspectionReportName,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionReportPath != null">
+        inspection_report_path = #{inspectionReportPath,jdbcType=VARCHAR},
+      </if>
+      <if test="productionDate != null">
+        production_date = #{productionDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      update_time = now(),
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+  </update>
+  <select id="inspectionReportInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include> from
+    purchase_inspection_report
+    where status = 1 and purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+  </select>
+</mapper>

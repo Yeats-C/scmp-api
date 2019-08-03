@@ -284,6 +284,14 @@
     where
       supply_name = #{supplyName,jdbcType=VARCHAR}
   </select>
+  <select id="selectBySupplierCode" resultMap="BaseResultMap" >
+   select
+      supply_code , supply_name
+    from
+      supply_company
+    where
+      supply_code = #{supplyCode,jdbcType=VARCHAR}
+  </select>
     <select id="selectByCompanyNameList"
             resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.BaseResultMap">
       SELECT
