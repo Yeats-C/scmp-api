@@ -447,4 +447,21 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
 
         return contractDao.getContractByMap(map);
     }
+
+    /**
+     * 功能描述: 根据供应商查询合同
+     *
+     * @param supplierCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/3 12:11
+     */
+    @Override
+    public List<ContractPurchaseResVo> getContractBySupplierCode(String supplierCode) {
+        Map<String,String> map = Maps.newHashMap();
+        AuthToken user = getUser();
+        map.put("companyCode",user.getCompanyCode());
+        map.put("supplierCode",supplierCode);
+        return contractDao.getContractByMap(map);
+    }
 }
