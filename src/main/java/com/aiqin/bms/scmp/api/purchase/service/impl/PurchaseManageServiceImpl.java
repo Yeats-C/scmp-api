@@ -51,9 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author: zhao shuai
@@ -123,9 +121,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 apply.setApplyIds(applyIds);
                 List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(apply);
                 // 计算sku数量，单品数量，含税采购金额，实物返金额
-                Integer singleCount = 0, productTotalAmount = 0, returnAmount = 0, wholeCount = 0;
+                Integer singleCount = 0, productTotalAmount = 0, returnAmount = 0, wholeCount = 0, giftTaxSum= 0;
                 if(CollectionUtils.isNotEmptyCollection(details)){
+                    Set<Integer> setType = new HashSet<>();
                     for(PurchaseApplyDetailResponse detail:details){
+                        setType.add(detail.getApplyType());
                         Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
                         Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
                         Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
@@ -137,15 +137,32 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         wholeCount += purchaseWhole;
                         if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
                             returnAmount +=  amountSum;
-                        }
-                        if(detail.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                        }else if(detail.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                            giftTaxSum += amountSum;
+                        }else if(detail.getProductType().equals(Global.PRODUCT_TYPE_0)){
                             productTotalAmount += amountSum;
+                        }
+                    }
+                    if(setType != null){
+                        if(setType.size() == 2){
+                            form.setApplyTypeForm("手动/自动");
+                        }else {
+                            String type = "";
+                            for (Integer i:setType){
+                                if(i == 0){
+                                    type = "手动";
+                                }else {
+                                    type = "自动";
+                                }
+                            }
+                            form.setApplyTypeForm(type);
                         }
                     }
                 }
                 form.setProductTotalAmount(productTotalAmount);
                 form.setReturnAmount(returnAmount);
                 form.setSingleCount(singleCount);
+                form.setGiftTaxSum(giftTaxSum);
                 // sku数量
                 //Integer skuCount = purchaseApplyProductDao.formSkuCount(apply);
                 form.setSkuCount(wholeCount);
@@ -365,8 +382,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         if(CollectionUtils.isNotEmptyCollection(list)){
             for(PurchaseOrderResponse order:list){
                 // 计算实际单品数量，实际含税采购金额， 实际实物返金额
-                Integer actualSingleCount = 0, actualTotalAmount = 0, actualReturnAmount = 0;
-                Integer productTotalAmount = 0, returnAmount = 0;
+                Integer actualSingleCount = 0, actualTotalAmount = 0, actualReturnAmount = 0, actualGiftTaxSum = 0;
+                Integer productTotalAmount = 0, returnAmount = 0, giftTaxSum = 0;
                 List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
                 if(CollectionUtils.isNotEmptyCollection(orderProducts)){
                     for(PurchaseOrderProduct product:orderProducts){
@@ -382,6 +399,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                             actualReturnAmount += productAmount * actualSingle;
                             returnAmount += productAmount * singleCount;
                         }
+                        if(product.getProductType().equals(Global.PRODUCT_TYPE_1)) {
+                            actualGiftTaxSum += productAmount * actualSingle;
+                            giftTaxSum += productAmount * singleCount;
+                        }
                     }
                 }
                 order.setActualSingleCount(actualSingleCount);
@@ -389,6 +410,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 order.setActualReturnAmount(actualReturnAmount);
                 order.setReturnAmount(returnAmount);
                 order.setProductTotalAmount(productTotalAmount);
+                order.setActualGiftTaxSum(actualGiftTaxSum);
+                order.setGiftTaxSum(giftTaxSum);
             }
         }
         Integer count = purchaseOrderDao.purchaseOrderCount(purchaseApplyRequest);
@@ -463,6 +486,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
+            // 手动入库完成 撤销未完成的入库单
+            //inboundService.repealOrder(order.getPurchaseOrderCode(), createById, createByName);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , null);
         }

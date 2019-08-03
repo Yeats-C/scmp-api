@@ -345,5 +345,8 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("error_info")
     private String errorInfo;
 
+    @ApiModelProperty(value="采购申请类型 0 手动 1自动")
+    @JsonProperty("apply_type")
+    private Integer applyType;
 }
 

@@ -57,7 +57,8 @@
     select
     purchase_apply_id as purchaseApplyId, purchase_apply_code as purchaseApplyCode, apply_type as applyType,
     apply_status as applyStatus, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
-    create_time as createTime, create_by_id as createById, create_by_name as createByName
+    create_time as createTime, create_by_id as createById, create_by_name as createByName,
+    update_by_id as updateById, update_by_name as updateByName
     from purchase_apply
     <where>
       purchase_group_code in

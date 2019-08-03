@@ -118,6 +118,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 apply.setSingleCount(info.getSingleSum());
                 apply.setProductTotalAmount(info.getProductTaxSum());
                 apply.setReturnAmount(info.getMatterTaxSum());
+                apply.setGiftTaxSum(info.getGiftTaxSum());
                 if(apply.getApplyStatus() == 0){
                     Integer count = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId(), Global.PURCHASE_APPLY_STATUS_1);
                     apply.setSubmitStatus(count > 0 ? 0 : 1);
