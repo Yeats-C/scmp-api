@@ -17,6 +17,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
@@ -72,6 +74,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
      * 宁波熙耘
      */
     private final static String COMPANY_CODE = "09";
+    private final static String COMPANY_NAME = "宁波熙耘";
     @Resource
     private OrderInfoMapper orderInfoMapper;
     @Resource
@@ -86,6 +89,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private SupplyCompanyDao supplyCompanyDao;
     @Resource
     private PriceChannelMapper priceChannelMapper;
+    @Resource
+    private ReturnOrderInfoMapper returnOrderInfoMapper;
+    @Resource
+    private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -163,6 +170,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         orderInfo.setPaymentStatus(CommonConstant.PAID);
         orderInfo.setVolume(sumBoxVolume);
         orderInfo.setWeight(sumBoxGrossWeight);
+        orderInfo.setCompanyCode(COMPANY_CODE);
+        orderInfo.setCompanyName(COMPANY_NAME);
         //供应商
         SupplyCompany supplyCompany =supplyCompanyDao.selectBySupplierCode(request.getSupplierCode());
         if(supplyCompany!=null){
@@ -181,6 +190,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse returnOrder(ReturnRequest request) {
         //操作时间 签收时间 等于回单时间
         request.setReceivingTime(new DateTime(new Long(request.getReceiptTime())).toDate());
@@ -242,13 +252,18 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             returnOrderInfoItem.setNum(returnDetailRequest.getActualDeliverNum());
             returnOrderInfoItem.setAmount(returnDetailRequest.getChannelUnitPrice() * returnDetailRequest.getNum());
             returnOrderInfoItem.setReturnOrderCode(returnOrderInfo.getOrderCode());
+            returnOrderInfoItem.setCompanyCode(COMPANY_CODE);
+            returnOrderInfoItem.setCompanyName(COMPANY_NAME);
             detailList.add(returnOrderInfoItem);
         }
 //        wwreturnOrderInfo.setVolume(sumBoxVolume);
         returnOrderInfo.setWeight(sumBoxGrossWeight);
-
-
-
+        returnOrderInfo.setCompanyCode(COMPANY_CODE);
+        returnOrderInfo.setCompanyName(COMPANY_NAME);
+        Integer count = returnOrderInfoMapper.insertSelective(returnOrderInfo);
+        LOGGER.info("添加退货单:{}",count);
+        Integer detailCount = returnOrderInfoItemMapper.insertList(detailList);
+        LOGGER.info("添加退货单详情:{}",detailCount);
         return HttpResponse.success();
     }
 }

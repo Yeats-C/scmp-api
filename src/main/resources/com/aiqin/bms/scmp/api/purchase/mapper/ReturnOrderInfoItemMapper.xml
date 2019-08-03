@@ -68,6 +68,50 @@
       #{actualInboundNum,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}
       )
   </insert>
+  <insert id="insertList" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem">
+    insert into return_order_info_item ( return_order_code, sku_code,
+      sku_name, picture_url, spec,
+      spec_code, color_name, color_code,
+      model, model_code, base_product_content,
+      unit_code, unit_name, zero_disassembly_coefficient,
+      give_promotion, batch_number, price,
+      num, amount, activity_code,
+      product_line_num, promotion_line_num, product_status,
+      actual_inbound_num, company_name, company_code
+      )
+    values
+    <foreach collection="list" item="item"   separator=",">
+    (
+      #{item.returnOrderCode,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR},
+      #{item.pictureUrl,jdbcType=VARCHAR},
+      #{item.spec,jdbcType=VARCHAR},
+      #{item.specCode,jdbcType=VARCHAR},
+      #{item.colorName,jdbcType=VARCHAR},
+      #{item.colorCode,jdbcType=VARCHAR},
+      #{item.model,jdbcType=VARCHAR},
+      #{item.modelCode,jdbcType=VARCHAR},
+      #{item.baseProductContent,jdbcType=INTEGER},
+      #{item.unitCode,jdbcType=VARCHAR},
+      #{item.unitName,jdbcType=VARCHAR},
+      #{item.zeroDisassemblyCoefficient,jdbcType=INTEGER},
+      #{item.givePromotion,jdbcType=INTEGER},
+      #{item.batchNumber,jdbcType=VARCHAR},
+      #{item.price,jdbcType=BIGINT},
+      #{item.num,jdbcType=BIGINT},
+      #{item.amount,jdbcType=BIGINT},
+      #{item.activityCode,jdbcType=VARCHAR},
+      #{item.productLineNum,jdbcType=BIGINT},
+      #{item.promotionLineNum,jdbcType=BIGINT},
+      #{item.productStatus,jdbcType=INTEGER},
+      #{item.actualInboundNum,jdbcType=INTEGER},
+      #{item.companyName,jdbcType=VARCHAR},
+      #{item.companyCode,jdbcType=VARCHAR}
+      )
+    </foreach>
+
+  </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem">
     insert into return_order_info_item
     <trim prefix="(" suffix=")" suffixOverrides=",">

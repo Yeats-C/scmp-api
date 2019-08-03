@@ -61,5 +61,6 @@
     select <include refid="Base_Column_List"></include> from
     purchase_inspection_report
     where status = 1 and purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+    order by create_time desc
   </select>
 </mapper>
