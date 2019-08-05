@@ -44,11 +44,11 @@
         purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
       </if>
       update_time = now(),
-      <if test="createById != null">
-        create_by_id = #{createById,jdbcType=VARCHAR},
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
       <if test="updateByName != null">
-        update_by_name = #{updateByName,jdbcType=VARCHAR},
+        update_by_name = #{updateByName,jdbcType=VARCHAR}
       </if>
     </set>
     where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
@@ -58,7 +58,7 @@
     purchase_apply_id as purchaseApplyId, purchase_apply_code as purchaseApplyCode, apply_type as applyType,
     apply_status as applyStatus, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
     create_time as createTime, create_by_id as createById, create_by_name as createByName,
-    update_by_id as updateById, update_by_name as updateByName
+    update_by_id as updateById, update_by_name as updateByName, update_time as updateTime
     from purchase_apply
     <where>
       purchase_group_code in

@@ -96,4 +96,7 @@ public class OutboundProductResVo {
 
     @ApiModelProperty("行号")
     private Long linenum;
+
+    @ApiModelProperty("税率")
+    private Long tax;
 }
