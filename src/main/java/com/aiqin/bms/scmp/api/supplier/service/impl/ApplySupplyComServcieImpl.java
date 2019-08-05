@@ -1474,10 +1474,10 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                             reqVO.setCityName(city);
                         } else if (checkAreaEnum.getType() == 2) {
                             sendVO.setSendCityId(areaInfo.getCode());
-                            sendVO.setSendCityId(city);
+                            sendVO.setSendCityName(city);
                         } else if (checkAreaEnum.getType() == 3) {
                             returnVO.setSendCityId(areaInfo.getCode());
-                            returnVO.setSendCityId(city);
+                            returnVO.setSendCityName(city);
                         }
                     }
 
