@@ -94,7 +94,7 @@ public class ApplySupplyCompanyReqVO {
     private String corporateRepresentative;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("邮编")
     private String zipCode;
