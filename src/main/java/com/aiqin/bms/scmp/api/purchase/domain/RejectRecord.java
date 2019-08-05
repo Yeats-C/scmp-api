@@ -11,7 +11,7 @@ import java.util.Date;
 
 @ApiModel
 @Data
-public class RejectRecord {
+public class RejectRecord extends ApplyRejectRecord{
     @ApiModelProperty(value = "")
     @JsonProperty("id")
     private Long id;
@@ -23,6 +23,10 @@ public class RejectRecord {
     @ApiModelProperty(value = "")
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
+
+    @ApiModelProperty(value = "")
+    @JsonProperty("approval_code")
+    private String approvalCode;
 
     @ApiModelProperty(value = "商品 结算方式")
     @JsonProperty("settlement_method_code")
