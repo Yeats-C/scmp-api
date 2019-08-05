@@ -341,6 +341,10 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="行号")
     private Long linenum;
 
+    @ApiModelProperty(value="修改者")
+    @JsonProperty("update_by_name")
+    private String updateByName;
+
     @ApiModelProperty(value="错误原因")
     @JsonProperty("error_info")
     private String errorInfo;
@@ -372,5 +376,9 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="月结付款期")
     @JsonProperty("month_time")
     private Integer monthTime;
+
+    @ApiModelProperty(value="备注")
+    @JsonProperty("remark")
+    private String remark;
 }
 
