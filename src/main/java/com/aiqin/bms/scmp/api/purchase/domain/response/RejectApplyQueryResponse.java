@@ -69,6 +69,10 @@ public class RejectApplyQueryResponse {
     @JsonProperty("sum_return_amount")
     private Long sumReturnAmount;
 
+    @ApiModelProperty(value="赠品含税金额")
+    @JsonProperty("sum_gift_amount")
+    private Long sumGiftAmount;
+
     @ApiModelProperty(value="创建人")
     @JsonProperty("create_by_name")
     private String createByName;

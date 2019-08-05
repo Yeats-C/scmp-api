@@ -256,7 +256,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             returnOrderInfoItem.setCompanyName(COMPANY_NAME);
             detailList.add(returnOrderInfoItem);
         }
-//        wwreturnOrderInfo.setVolume(sumBoxVolume);
+        returnOrderInfo.setVolume(sumBoxVolume);
         returnOrderInfo.setWeight(sumBoxGrossWeight);
         returnOrderInfo.setCompanyCode(COMPANY_CODE);
         returnOrderInfo.setCompanyName(COMPANY_NAME);

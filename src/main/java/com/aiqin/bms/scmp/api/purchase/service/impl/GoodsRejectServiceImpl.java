@@ -186,6 +186,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         Long sumAmount = 0L;
         //实物返商品含税金额
         Long sumReturnAmount = 0L;
+        //赠品含税金额
+        Long sumGiftAmount = 0L;
         Set<String> skuList = new HashSet<>();
         for (RejectApplyDetailHandleRequest detail : rejectApplyQueryRequest.getDetailList()) {
             if (detail.getProductCount() == 0) {
@@ -207,6 +209,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 sumAmount += detail.getProductTotalAmount();
             } else if (detail.getProductType().equals(Global.PRODUCT_TYPE_2)) {
                 sumReturnAmount += detail.getProductTotalAmount();
+            } else if (detail.getProductType().equals(Global.PRODUCT_TYPE_1)) {
+                sumGiftAmount += detail.getProductTotalAmount();
             }
             sumCount += detail.getProductCount();
             skuList.add(detail.getSkuCode());
@@ -214,6 +218,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         rejectApplyRecord.setSumReturnAmount(sumReturnAmount);
         rejectApplyRecord.setSumAmount(sumAmount);
         rejectApplyRecord.setSumCount(sumCount);
+        rejectApplyRecord.setSumGiftAmount(sumGiftAmount);
         //添加详情
         Integer detailCount = rejectApplyRecordDetailDao.insertAll(rejectApplyQueryRequest.getDetailList());
         LOGGER.info("添加退供申请详情影响条数:{}", detailCount);
