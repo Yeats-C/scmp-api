@@ -742,10 +742,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 preInboundNum += purchaseWhole;
                 if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
                     preTaxAmount += 0;
+                    preNoTaxAmount += 0;
                 }else {
                     preTaxAmount += productTotalAmount;
+                    preNoTaxAmount += Calculate.computeNoTaxPrice(productTotalAmount, product.getTaxRate().longValue());
                 }
-                preNoTaxAmount += Calculate.computeNoTaxPrice(productTotalAmount, product.getTaxRate().longValue());
                 list.add(reqVo);
             }
         }
