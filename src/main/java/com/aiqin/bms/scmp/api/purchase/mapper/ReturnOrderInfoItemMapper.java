@@ -35,4 +35,6 @@ public interface ReturnOrderInfoItemMapper {
      * @return int
      */
     int updateActualInboundNumByIdAndReturnOrderCode(@Param("items") List<ReturnReceiptReqVO> reqVO);
+
+    Integer insertList(List<ReturnOrderInfoItem> list);
 }

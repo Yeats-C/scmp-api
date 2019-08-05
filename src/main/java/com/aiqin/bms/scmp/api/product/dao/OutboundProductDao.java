@@ -55,4 +55,6 @@ public interface OutboundProductDao {
      * @param linenum
      */
     ReturnOutboundProduct selectByLinenum(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
+
+    List<ReturnOutboundProduct> selectTax(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode);
 }

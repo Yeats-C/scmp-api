@@ -21,5 +21,7 @@ public class ContractFile extends CommonBean {
     @ApiModelProperty("文件名称")
     private String fileName;
 
+    @ApiModelProperty("文件编号")
+    private String fileCode;
 
 }

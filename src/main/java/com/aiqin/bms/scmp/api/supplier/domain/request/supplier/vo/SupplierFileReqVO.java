@@ -37,6 +37,9 @@ public class SupplierFileReqVO {
     @ApiModelProperty("文件名称")
     private String fileName;
 
+    @ApiModelProperty("文件编码")
+    private String fileCode;
+
     @ApiModelProperty("创建时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;

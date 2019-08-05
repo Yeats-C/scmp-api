@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -180,10 +181,13 @@ public class PurchaseManageController {
 
     @GetMapping("/purchase/inspection/report")
     @ApiOperation("查询采购单对应的质检报告")
-    public HttpResponse<PurchaseInspectionReport> inspectionReport(@RequestParam("purchase_order_id") String purchaseOrderId,
-                                                                 @RequestParam("sku_code") String skuCode,
-                                                                 @RequestParam(value = "production_date", required = false) String productionDate) {
-        return purchaseManageService.inspectionReport(purchaseOrderId, skuCode, productionDate);
+    public HttpResponse<PurchaseInspectionReport> inspectionReport(@RequestParam("purchase_order_id") String purchaseOrderId) {
+        return purchaseManageService.inspectionReport(purchaseOrderId);
     }
 
+    @GetMapping("/sku/supply")
+    @ApiOperation("查询sku对应的供应商")
+    public HttpResponse<PurchaseFormResponse> skuSupply(@RequestParam("sku_code") String skuCode) {
+        return purchaseManageService.skuSupply(skuCode);
+    }
 }

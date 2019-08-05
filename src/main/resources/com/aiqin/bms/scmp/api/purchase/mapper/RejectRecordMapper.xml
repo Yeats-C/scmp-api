@@ -5,6 +5,7 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="reject_record_id" jdbcType="VARCHAR" property="rejectRecordId"/>
         <result column="reject_record_code" jdbcType="VARCHAR" property="rejectRecordCode"/>
+        <result column="approval_code" jdbcType="VARCHAR" property="approvalCode"/>
         <result column="duty_person" jdbcType="VARCHAR" property="dutyPerson"/>
         <result column="contacts_person" jdbcType="VARCHAR" property="contactsPerson"/>
         <result column="contacts_person_phone" jdbcType="VARCHAR" property="contactsPersonPhone"/>
@@ -68,7 +69,7 @@
     return_amount, actual_product_count, actual_product_amount, actual_single_count, actual_gift_count,actual_gift_amount, actual_return_count,
     actual_return_amount,create_by_id, create_by_name, update_by_id, update_by_name, create_time,
     update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name,
-    company_name,company_code,untaxed_amount,score_code
+    company_name,company_code,untaxed_amount,score_code,approval_code
   </sql>
     <sql id="LIST_QUERY">
         <where>

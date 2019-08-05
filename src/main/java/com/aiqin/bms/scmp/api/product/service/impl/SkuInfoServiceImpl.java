@@ -1208,11 +1208,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuSalesInfoService.saveList(skuCode,applyCode);
             //结算
             productSkuCheckoutService.saveInfo(skuCode,applyCode);
+            //供应商
+            productSkuSupplyUnitService.saveList(skuCode,applyCode);
+            //供应商产能
+            productSkuSupplyUnitCapacityService.saveList(skuCode,applyCode);
             if(null == oldSku){
-                //供应商
-                productSkuSupplyUnitService.saveList(skuCode,applyCode);
-                //供应商产能
-                productSkuSupplyUnitCapacityService.saveList(skuCode,applyCode);
                 //配置
                 productSkuConfigService.saveList(vo,skuCode,applyCode);
             }
@@ -2545,7 +2545,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight()/10000);
                 }
                 try {
-                    stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim()));
+                    stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
                 } catch (Exception e) {
                     error.add("库存毛重格式不正确");
                 }

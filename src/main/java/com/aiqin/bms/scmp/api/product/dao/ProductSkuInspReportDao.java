@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRe
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.InspectionReportRespVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,5 +50,9 @@ public interface ProductSkuInspReportDao {
     int insertDraftList(@Param("productSkuInspReportDrafts") List<ProductSkuInspReportDraft> productSkuInspReportDrafts);
 
     List<ProductSkuInspReportRespVo> getList(String skuCode);
+
     List<ProductSkuInspReportRespVo> getListBySkuCodeAndProductDate(QueryProductSkuInspReportReqVo reportReqVo);
+
+    Integer updateInspection(ProductSkuInspReport productSkuInspReport);
+
 }

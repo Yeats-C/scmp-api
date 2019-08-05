@@ -29,4 +29,6 @@ public interface SupplyCompanyMapper {
     Map<String, SupplyCompany> selectBySupplyComCodes(@Param("list") Set<String> supplierList, @Param("companyCode") String companyCode);
     @MapKey("supplyName")
     Map<String, SupplyCompany> selectBySupplyComNames(@Param("list") Set<String> supplierList, @Param("companyCode") String companyCode);
+
+    SupplyCompany selectBySupplyComCode(@Param("supplyCompanyCode") String supplyCompanyCode, @Param("companyCode") String companyCode);
 }

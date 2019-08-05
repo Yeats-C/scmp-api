@@ -95,6 +95,11 @@ public class PurchaseOrderResponse {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @ApiModelProperty(value="修改时间")
+    @JsonProperty("update_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
     @ApiModelProperty(value="创建者")
     @JsonProperty("create_by_name")
     private String createByName;
@@ -120,4 +125,24 @@ public class PurchaseOrderResponse {
     @JsonProperty("valid_time")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date validTime;
+
+    @ApiModelProperty(value="创建者id")
+    @JsonProperty("create_by_id")
+    private String createById;
+
+    @ApiModelProperty(value="修改者id")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="修改者")
+    @JsonProperty("update_by_name")
+    private String updateByName;
+
+    @ApiModelProperty(value="赠品含税金额")
+    @JsonProperty("gift_tax_sum")
+    private Integer giftTaxSum;
+
+    @ApiModelProperty(value="实际赠品含税金额")
+    @JsonProperty("actual_gift_tax_sum")
+    private Integer actualGiftTaxSum;
 }

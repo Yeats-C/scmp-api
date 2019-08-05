@@ -63,6 +63,10 @@ public interface SupplyCompanyDao {
      */
     SupplyCompany selectBySupplierName(String supplyName);
     /**
+     * 根据供应商CODE查询供应商信息 (DL销售回调使用)
+     */
+    SupplyCompany selectBySupplierCode(String supplyCode);
+    /**
      * 根据名称查询
      * @author NullPointException
      * @date 2019/7/16
@@ -73,4 +77,6 @@ public interface SupplyCompanyDao {
     Map<String,SupplyCompany> selectByCompanyNameList(@Param("list") List<String> companyNameList, @Param("companyCode") String companyCode);
     @MapKey("supplyCode")
     Map<String, SupplyCompany> selectByCompanyCodeList(@Param("list") List<String> companyCodeList, @Param("companyCode") String companyCode);
+
+    SupplyCompany selectAddress(String supplyCode);
 }

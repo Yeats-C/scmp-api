@@ -25,4 +25,8 @@ public class ApplyContractFileReqVo {
     @ApiModelProperty("文件名称")
     @NotNull(message = "文件名称不能为空")
     private String fileName;
+
+    @ApiModelProperty("文件编号")
+    @NotNull(message = "文件编号不能为空")
+    private String fileCode;
 }

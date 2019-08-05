@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
@@ -50,5 +51,7 @@ public interface PurchaseManageService {
 
     HttpResponse addLog(OperationLog operationLog);
 
-    HttpResponse<PurchaseInspectionReport> inspectionReport(String purchaseOrderId, String skuCode, String productionDate);
+    HttpResponse<PurchaseInspectionReport> inspectionReport(String purchaseOrderId);
+
+    HttpResponse<PurchaseFormResponse> skuSupply(String skuCode);
 }

@@ -23,6 +23,9 @@ public class SupplierFileReqDTO extends CommonBean {
     @ApiModelProperty("文件名称")
     private String fileName;
 
+    @ApiModelProperty("文件编码")
+    private String fileCode;
+
     @ApiModelProperty("申请供应商名称")
     private String applySupplierName;
 

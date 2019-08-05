@@ -70,4 +70,21 @@ public class PurchaseApplyResponse {
     @ApiModelProperty(value="是否可以部分提交  0.是 1.否")
     @JsonProperty("submit_status")
     private Integer submitStatus;
+
+    @ApiModelProperty(value="修改者id")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="修改者")
+    @JsonProperty("update_by_name")
+    private String updateByName;
+
+    @ApiModelProperty(value="赠品含税总金额")
+    @JsonProperty("gift_tax_sum")
+    private Integer giftTaxSum;
+
+    @ApiModelProperty(value="修改时间")
+    @JsonProperty("update_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 }

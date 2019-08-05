@@ -50,6 +50,10 @@ public class RejectApplyRecord {
     @JsonProperty("sum_return_amount")
     private Long sumReturnAmount;
 
+    @ApiModelProperty(value = "赠品含税金额")
+    @JsonProperty("sum_gift_amount")
+    private Long sumGiftAmount;
+
     @ApiModelProperty(value = "")
     @JsonProperty("create_by_id")
     private String createById;

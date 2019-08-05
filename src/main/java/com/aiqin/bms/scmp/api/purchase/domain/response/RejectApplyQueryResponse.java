@@ -69,6 +69,10 @@ public class RejectApplyQueryResponse {
     @JsonProperty("sum_return_amount")
     private Long sumReturnAmount;
 
+    @ApiModelProperty(value="赠品含税金额")
+    @JsonProperty("sum_gift_amount")
+    private Long sumGiftAmount;
+
     @ApiModelProperty(value="创建人")
     @JsonProperty("create_by_name")
     private String createByName;
@@ -77,6 +81,15 @@ public class RejectApplyQueryResponse {
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;
+
+    @ApiModelProperty(value="编辑人")
+    @JsonProperty("update_by_name")
+    private String updateByName;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value="编辑时间")
+    @JsonProperty("update_time")
+    private Date updateTime;
 
     @ApiModelProperty(value="商品批次列表")
     @JsonProperty("detail_list")

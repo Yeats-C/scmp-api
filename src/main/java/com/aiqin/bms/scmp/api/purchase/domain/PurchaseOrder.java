@@ -97,6 +97,18 @@ public class PurchaseOrder {
     @JsonProperty("cancel_remark")
     private String cancelRemark;
 
+    @ApiModelProperty(value="采购单的类型（手动，自动）")
+    @JsonProperty("apply_type_form")
+    private String applyTypeForm;
+
+    @ApiModelProperty(value="关联审批单")
+    @JsonProperty("approval_code")
+    private String approvalCode;
+
+    @ApiModelProperty(value="赠品含税金额")
+    @JsonProperty("gift_tax_sum")
+    private Integer giftTaxSum;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

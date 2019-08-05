@@ -193,6 +193,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             //复制对象
             ApplySupplyCompanyReqDTO applySupplyCompany = new ApplySupplyCompanyReqDTO();
             BeanCopyUtils.copy(applySupplyCompanyReqVO,applySupplyCompany);
+            SupplyCompany s = supplyCompanyMapper.selectBySupplyComCode(applySupplyCompany.getSupplyCompanyCode(),getUser().getCompanyCode());
             //正式供应商编码
             applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
             //供货单位申请编码
@@ -200,6 +201,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             applySupplyCompany.setApplyCode(String.valueOf(encodingRule.getNumberingValue()+1));
             if(Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 applySupplyCompany.setApplyStatus(ApplyStatus.PENDING_SUBMISSION.getNumber());
+                applySupplyCompany.setEnable(s.getEnable());
             } else {
                 applySupplyCompany.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
                 applySupplyCompany.setFormNo("GYS"+IdSequenceUtils.getInstance().nextId());
@@ -577,6 +579,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     supplyCompany.setSupplyAbbreviation(applySupplyCompany.getApplyAbbreviation());
                     supplyCompany.setSupplyCode(oldSupplyCompany.getSupplyCode());
                     supplyCompany.setSupplyType(applySupplyCompany.getApplySupplyType());
+                    supplyCompany.setStarScore(oldSupplyCompany.getStarScore());
                     handleTypeCoce = HandleTypeCoce.UPDATE;
                     content = HandleTypeCoce.UPDATE_SUPPLY_COMPANY.getName();
                     supplyCompanyMapper.updateByPrimaryKey(supplyCompany);
@@ -1288,7 +1291,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 error.add("注册资金不能为空");
             }else {
                 try {
-                    reqVO.setRegisteredCapital(Long.parseLong(supplierImport.getRegisteredCapital()));
+                    reqVO.setRegisteredCapital(NumberConvertUtils.stringParseBigDecimal(supplierImport.getRegisteredCapital()));
                 } catch (NumberFormatException e) {
                     error.add("注册资金格式不正确");
                 }
@@ -1474,10 +1477,10 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                             reqVO.setCityName(city);
                         } else if (checkAreaEnum.getType() == 2) {
                             sendVO.setSendCityId(areaInfo.getCode());
-                            sendVO.setSendCityId(city);
+                            sendVO.setSendCityName(city);
                         } else if (checkAreaEnum.getType() == 3) {
                             returnVO.setSendCityId(areaInfo.getCode());
-                            returnVO.setSendCityId(city);
+                            returnVO.setSendCityName(city);
                         }
                     }
 

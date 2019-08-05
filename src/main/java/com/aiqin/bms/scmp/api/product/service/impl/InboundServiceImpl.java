@@ -24,7 +24,9 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
@@ -50,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @Classname: InboundServiceImpl
@@ -102,6 +105,9 @@ public class InboundServiceImpl implements InboundService {
 
     @Autowired
     private PurchaseOrderDao purchaseOrderDao;
+
+    @Autowired
+    private SupplyCompanyDao supplyCompanyDao;
     /**
      * 分页查询以及列表搜索
      * @param vo
@@ -183,28 +189,47 @@ public class InboundServiceImpl implements InboundService {
      */
     @Override
     public InboundResVo view(Long id) {
-            InboundResVo inboundResVo = new InboundResVo();
-            Inbound inbound =inboundDao.selectByPrimaryKey(id);
-            BeanCopyUtils.copy(inbound,inboundResVo);
-            List<InboundProduct> list = inboundProductDao.selectByInboundOderCode(inboundResVo.getInboundOderCode());
-            try {
-                inboundResVo.setList(BeanCopyUtils.copyList(list, InboundProductResVo.class));
-                if (null != inboundResVo) {
-                    //获取操作日志
-                    OperationLogVo operationLogVo = new OperationLogVo();
-                    operationLogVo.setPageNo(1);
-                    operationLogVo.setPageSize(100);
-                    operationLogVo.setObjectType(ObjectTypeCode.INBOUND_ODER.getStatus());
-                    operationLogVo.setObjectId(inboundResVo.getInboundOderCode());
-                    List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
-                    pageList.stream().forEach(logData -> logData.setStatus(inbound.getInboundStatusName()));
-                    inboundResVo.setLogDataList(pageList);
-                }
-                return inboundResVo;
-            } catch (Exception e) {
-                log.error("sku查询类型转化错误", e);
-                throw new GroundRuntimeException(e.getMessage());
+        InboundResVo inboundResVo = new InboundResVo();
+        Inbound inbound =inboundDao.selectByPrimaryKey(id);
+        BeanCopyUtils.copy(inbound,inboundResVo);
+        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
+            String supplyCode = inbound.getSupplierCode();
+            SupplyCompany supplyCompany = supplyCompanyDao.selectAddress(supplyCode);
+            inboundResVo.setProvinceCode(supplyCompany.getProvinceId());
+            inboundResVo.setProvinceName(supplyCompany.getProvinceName());
+            inboundResVo.setCityCode(supplyCompany.getCityId());
+            inboundResVo.setCityName(supplyCompany.getCityName());
+            inboundResVo.setCountyCode(supplyCompany.getDistrictId());
+            inboundResVo.setCountyName(supplyCompany.getDistrictName());
+            inboundResVo.setDetailedAddress(supplyCompany.getAddress());
+            inboundResVo.setShipper(supplyCompany.getContactName());
+            inboundResVo.setShipperNumber(supplyCompany.getMobilePhone());
+            inboundResVo.setShipperRate(supplyCompany.getZipCode());
+        }
+        List<InboundProduct> list = inboundProductDao.selectByInboundOderCode(inboundResVo.getInboundOderCode());
+        try {
+            list.stream().forEach(inboundProduct -> {
+                List<ReturnInboundProduct> returnInboundProductList = inboundProductDao.selectTax(inboundResVo.getInboundOderCode(), inboundProduct.getSkuCode());
+                ReturnInboundProduct returnInboundProduct = returnInboundProductList.get(0);
+                inboundProduct.setTax(returnInboundProduct.getTax());
+            });
+            inboundResVo.setList(BeanCopyUtils.copyList(list, InboundProductResVo.class));
+            if (null != inboundResVo) {
+                //获取操作日志
+                OperationLogVo operationLogVo = new OperationLogVo();
+                operationLogVo.setPageNo(1);
+                operationLogVo.setPageSize(100);
+                operationLogVo.setObjectType(ObjectTypeCode.INBOUND_ODER.getStatus());
+                operationLogVo.setObjectId(inboundResVo.getInboundOderCode());
+                List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
+                pageList.stream().forEach(logData -> logData.setStatus(inbound.getInboundStatusName()));
+                inboundResVo.setLogDataList(pageList);
             }
+            return inboundResVo;
+        } catch (Exception e) {
+            log.error("sku查询类型转化错误", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
     }
 
 
@@ -454,7 +479,7 @@ public class InboundServiceImpl implements InboundService {
             //实际含税总金额
             inbound.setPraTaxAmount(inbound.getPraTaxAmount() + inboundProduct.getPraTaxAmount());
 
-            inbound.setPraAmount(inbound.getPraAmount()+ Calculate.computeNoTaxPrice(inboundProduct.getPraTaxPurchaseAmount(),returnInboundProduct.getTax())*inboundProduct.getPraInboundMainNum());
+            inbound.setPraAmount(inbound.getPraAmount()+ Calculate.computeNoTaxPrice(inboundProduct.getPraTaxAmount(),returnInboundProduct.getTax()));
             //实际税额
             inbound.setPraTax(inbound.getPraTaxAmount()-inbound.getPraAmount());
 
