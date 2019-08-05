@@ -63,6 +63,16 @@ public class QueryInboundResVo extends PageReq {
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
+    @ApiModelProperty("更新时间")
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
+    private Date updateTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @ApiModelProperty("更新人")
+    private String updateBy;
+
     @ApiModelProperty("预计入库数量")
     private Long preInboundNum;
 
