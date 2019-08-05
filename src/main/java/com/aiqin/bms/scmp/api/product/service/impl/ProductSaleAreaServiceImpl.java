@@ -698,10 +698,12 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         List<String> collect = vo.getSkuList().stream().map(QueryProductSaleAreaRespVO::getSkuCode).distinct().collect(Collectors.toList());
         //查询直送供应商
         List<QueryProductSaleAreaRespVO> temp = skuInfoService.selectDirectSupplierBySkuCodes(collect);
-        Map<String, QueryProductSaleAreaRespVO> map = temp.stream().collect(Collectors.toMap(QueryProductSaleAreaRespVO::getSkuCode, Function.identity()));
-        vo.getSkuList().forEach(o->{
-            o.setSupplierList(map.get(o.getSkuCode()).getSupplierList());
-        });
+        if(CollectionUtils.isNotEmpty(temp)){
+            Map<String, QueryProductSaleAreaRespVO> map = temp.stream().collect(Collectors.toMap(QueryProductSaleAreaRespVO::getSkuCode, Function.identity()));
+            vo.getSkuList().forEach(o->{
+                o.setSupplierList(map.get(o.getSkuCode()).getSupplierList());
+            });
+        }
         return vo;
     }
 
