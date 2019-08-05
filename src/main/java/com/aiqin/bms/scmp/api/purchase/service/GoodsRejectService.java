@@ -78,4 +78,6 @@ public interface GoodsRejectService {
     HttpResponse<PageResData<RejectApplyDetailHandleResponse>> rejectStockProduct(RejectProductRequest rejectQueryRequest);
 
     String selectCategoryName(String categoryCode);
+
+    HttpResponse<RejectResponse> applyRejectInfo(String approvalCode);
 }

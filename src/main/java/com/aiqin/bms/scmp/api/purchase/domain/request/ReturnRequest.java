@@ -139,4 +139,7 @@ public class ReturnRequest {
 
     @ApiModelProperty(value="创建时间")
     private String createTime ;
+
+    @ApiModelProperty(value = "渠道")
+    private String deptName;
 }

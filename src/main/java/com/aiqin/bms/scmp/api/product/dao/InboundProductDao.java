@@ -57,4 +57,6 @@ public interface InboundProductDao {
 
     Integer countPurchaseInfoByPurchaseNum(Inbound inbound);
 
+    List<ReturnInboundProduct> selectTax(@Param("inboundOderCode") String inboundOderCode, @Param("skuCode") String skuCode);
+
 }

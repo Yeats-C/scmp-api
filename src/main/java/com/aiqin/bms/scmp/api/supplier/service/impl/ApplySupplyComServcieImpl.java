@@ -579,6 +579,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     supplyCompany.setSupplyAbbreviation(applySupplyCompany.getApplyAbbreviation());
                     supplyCompany.setSupplyCode(oldSupplyCompany.getSupplyCode());
                     supplyCompany.setSupplyType(applySupplyCompany.getApplySupplyType());
+                    supplyCompany.setStarScore(oldSupplyCompany.getStarScore());
                     handleTypeCoce = HandleTypeCoce.UPDATE;
                     content = HandleTypeCoce.UPDATE_SUPPLY_COMPANY.getName();
                     supplyCompanyMapper.updateByPrimaryKey(supplyCompany);

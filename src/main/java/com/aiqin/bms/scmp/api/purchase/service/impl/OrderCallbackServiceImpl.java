@@ -26,6 +26,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.response.rule.DetailRespVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplierRuleMapper;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -172,20 +173,22 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         orderInfo.setWeight(sumBoxGrossWeight);
         orderInfo.setCompanyCode(COMPANY_CODE);
         orderInfo.setCompanyName(COMPANY_NAME);
-        //供应商
-        SupplyCompany supplyCompany =supplyCompanyDao.selectBySupplierCode(request.getSupplierCode());
-        if(supplyCompany!=null){
-            orderInfo.setSupplierName(supplyCompany.getSupplierName());
+        if(StringUtils.isNotBlank(request.getSupplierCode())) {
+            //供应商
+            SupplyCompany supplyCompany = supplyCompanyDao.selectBySupplierCode(request.getSupplierCode());
+            if (supplyCompany != null) {
+                orderInfo.setSupplierName(supplyCompany.getSupplierName());
+            }
         }
         //渠道
         PriceChannel priceChannel = priceChannelMapper.selectByChannelName(request.getOrderOriginal());
         if(priceChannel!=null){
             orderInfo.setOrderOriginal(priceChannel.getPriceChannelCode());
         }
-        Integer count = orderInfoMapper.insert(orderInfo);
-        LOGGER.info("添加订单:{}", count);
-        Integer detailCount = orderInfoItemMapper.insertList(detailList);
-        LOGGER.info("添加订单详情:{}", detailCount);
+//        Integer count = orderInfoMapper.insert(orderInfo);
+//        LOGGER.info("添加订单:{}", count);
+//        Integer detailCount = orderInfoItemMapper.insertList(detailList);
+//        LOGGER.info("添加订单详情:{}", detailCount);
         return HttpResponse.success();
     }
 
@@ -256,10 +259,22 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             returnOrderInfoItem.setCompanyName(COMPANY_NAME);
             detailList.add(returnOrderInfoItem);
         }
-//        wwreturnOrderInfo.setVolume(sumBoxVolume);
+        returnOrderInfo.setVolume(sumBoxVolume);
         returnOrderInfo.setWeight(sumBoxGrossWeight);
         returnOrderInfo.setCompanyCode(COMPANY_CODE);
         returnOrderInfo.setCompanyName(COMPANY_NAME);
+        if(StringUtils.isNotBlank(request.getSupplierCode())){
+            //供应商
+            SupplyCompany supplyCompany =supplyCompanyDao.selectBySupplierCode(request.getSupplierCode());
+            if(supplyCompany!=null){
+                returnOrderInfo.setSupplierName(supplyCompany.getSupplierName());
+            }
+        }
+//        渠道
+//        PriceChannel priceChannel = priceChannelMapper.selectByChannelName(request.getDeptName());
+//        if(priceChannel!=null){
+//            returnOrderInfo.setOrderOriginal(priceChannel.getPriceChannelCode());
+//        }
         Integer count = returnOrderInfoMapper.insertSelective(returnOrderInfo);
         LOGGER.info("添加退货单:{}",count);
         Integer detailCount = returnOrderInfoItemMapper.insertList(detailList);

@@ -493,4 +493,11 @@
       </if>
     </where>
   </select>
+  <select id="selectTax"  resultMap="BaseResultLinenumMap">
+    select
+    <include refid="Base_Column_ByLinenum" />
+    from inbound_product  a left JOIN product_sku_checkout b on a.sku_code = b.sku_code
+    where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+    and a.sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

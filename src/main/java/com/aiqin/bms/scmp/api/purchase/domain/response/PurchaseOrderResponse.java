@@ -95,6 +95,11 @@ public class PurchaseOrderResponse {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @ApiModelProperty(value="修改时间")
+    @JsonProperty("update_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
     @ApiModelProperty(value="创建者")
     @JsonProperty("create_by_name")
     private String createByName;
