@@ -121,5 +121,7 @@ public class StockFlow extends CommonBean {
     @JsonProperty(value = "remark")
     private String remark;
 
-
+    @ApiModelProperty("库存成本")
+    @JsonProperty(value = "stock_cost")
+    private String stockCost;
 }

@@ -9,10 +9,7 @@ import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
@@ -703,6 +700,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         // 查询是否有商品可以入库
         if(CollectionUtils.isNotEmptyCollection(productList)){
             for(PurchaseOrderProduct product:productList){
+                Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
+                Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
+                if(singleCount - actualSingleCount == 0){
+                    continue;
+                }
                 reqVo = new InboundProductReqVo();
                 reqVo.setSkuCode(product.getSkuCode());
                 reqVo.setSkuName(product.getSkuName());
@@ -722,10 +724,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     reqVo.setInboundBaseUnit(skuPurchaseInfo.getZeroRemovalCoefficient().toString());
                     reqVo.setInboundBaseContent(skuPurchaseInfo.getBaseProductContent().toString());
                 }
-                Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
-                Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
                 Integer baseProductContent = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent().intValue();
+                Integer amount = product.getProductAmount() == null ? 0 : product.getProductAmount();
                 if(actualSingleCount > 0 && baseProductContent > 0){
                     purchaseWhole = purchaseWhole - actualSingleCount / baseProductContent;
                 }
@@ -744,8 +745,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     preTaxAmount += 0;
                     preNoTaxAmount += 0;
                 }else {
-                    preTaxAmount += productTotalAmount;
-                    preNoTaxAmount += Calculate.computeNoTaxPrice(productTotalAmount, product.getTaxRate().longValue());
+                    Integer totalAmount = amount * (singleCount - actualSingleCount);
+                    preTaxAmount += totalAmount.longValue();
+                    preNoTaxAmount += Calculate.computeNoTaxPrice(totalAmount.longValue(), product.getTaxRate().longValue());
                 }
                 list.add(reqVo);
             }
@@ -1043,5 +1045,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
        }
         List<PurchaseInspectionReport> inspectionReport = purchaseInspectionReportDao.inspectionReportInfo(purchaseOrderId);
         return HttpResponse.success(inspectionReport);
+    }
+
+    @Override
+    public HttpResponse<PurchaseFormResponse> skuSupply(String skuCode){
+        if(StringUtils.isBlank(skuCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        List<PurchaseFormResponse> purchaseFormResponses = productSkuSupplyUnitDao.supplyList(skuCode);
+        return HttpResponse.success(purchaseFormResponses);
     }
 }
