@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -184,4 +185,9 @@ public class PurchaseManageController {
         return purchaseManageService.inspectionReport(purchaseOrderId);
     }
 
+    @GetMapping("/sku/supply")
+    @ApiOperation("查询sku对应的供应商")
+    public HttpResponse<PurchaseFormResponse> skuSupply(@RequestParam("sku_code") String skuCode) {
+        return purchaseManageService.skuSupply(skuCode);
+    }
 }
