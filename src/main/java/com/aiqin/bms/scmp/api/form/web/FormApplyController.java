@@ -25,7 +25,6 @@ public class FormApplyController {
     @PostMapping("/apply")
     @ApiOperation("测试提交")
     HttpResponse apply(@RequestBody FormApplyRequest request) {
-        request.setProcessKey(FormProcessKey.PARAM_TEST);
         return formApplyService.submitActBaseProcess(request);
     }
 
