@@ -20,7 +20,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
@@ -186,8 +185,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             StockChangeRequest stockChangeRequest = new StockChangeRequest();
              stockChangeRequest.setOperationType(1);
              stockChangeRequest.setOrderCode(allocation.getAllocationCode());
-             List<AllocationProductBatchResVo>list2 = BeanCopyUtils.copyList(list, AllocationProductBatchResVo.class);
-             List<StockVoRequest> list1 = allocationProductTransStock(allocation,list2);
+             List<StockVoRequest> list1 = allocationProductTransStock(allocation,products);
              stockChangeRequest.setStockVoRequests(list1);
              // 调用锁定库存数
              HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
@@ -464,11 +462,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         }
     }
 
-    private List<StockVoRequest> allocationProductTransStock(Allocation allocation, List<AllocationProductBatchResVo> products) {
+    private List<StockVoRequest> allocationProductTransStock(Allocation allocation, List<AllocationProduct> products) {
         List<StockVoRequest> stockVoRequests = Lists.newArrayList();
         if(CollectionUtils.isNotEmptyCollection(products)){
 //            StockVoRequest stockVoRequest = null;
-            for (AllocationProductBatchResVo allocationProduct : products) {
+            for (AllocationProduct allocationProduct : products) {
                 StockVoRequest stockVoRequest = new StockVoRequest();
                 // 设置公司名称编码
                 stockVoRequest.setCompanyCode(allocation.getCompanyCode());
@@ -550,6 +548,15 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
                 inboundCode = inboundService.saveInbound(convert1);
             }
+            //调拨 增加在途数
+            if(AllocationTypeEnum.ALLOCATION.getType().equals(allocation.getAllocationType())){
+                StockChangeRequest stockChangeRequest = new StockChangeRequest();
+                stockChangeRequest.setOperationType(7);
+                stockChangeRequest.setOrderCode(allocation.getAllocationCode());
+                List<StockVoRequest> list1 = allocationProductTransStock(allocation,allocation.getProducts());
+                stockChangeRequest.setStockVoRequests(list1);
+                stockService.changeStock(stockChangeRequest);
+            }
 //            String outboundOderCode = createOutbound(allocation.getId());
             oldAllocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus());
             oldAllocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
@@ -570,6 +577,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 content2 = HandleTypeCoce.OUTBOUND_SCRAP.getName();
             }
             supplierCommonService.getInstance(allocation.getAllocationCode()+"", AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), content2,null, AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName(),vo.getApprovalUserName());
+
             return "success";
         }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
 
@@ -585,11 +593,12 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             // 审核不通过
             //  通过编码查询sku
             // 解锁被锁的sku 编码
-//            StockChangeRequest stockChangeRequest = new StockChangeRequest();
-//            stockChangeRequest.setOperationType(3);
-//            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
-//            List<StockVoRequest> list1 = allocationProductTransStock(allocation,list);
-//            stockChangeRequest.setStockVoRequests(list1);
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            stockChangeRequest.setOperationType(3);
+            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
+            List<StockVoRequest> list1 = allocationProductTransStock(allocation,allocation.getProducts());
+            stockChangeRequest.setStockVoRequests(list1);
+            stockService.changeStock(stockChangeRequest);
             oldAllocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_REJECTED.getStatus());
             oldAllocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_REJECTED.getName());
             //更新状态
@@ -609,11 +618,12 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     HandleTypeCoce.REVOKED.getName(),
                     vo.getApprovalUserName()
             );
-//            StockChangeRequest stockChangeRequest = new StockChangeRequest();
-//            stockChangeRequest.setOperationType(3);
-//            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
-//            List<StockVoRequest> list1 = allocationProductTransStock(allocation,list);
-//            stockChangeRequest.setStockVoRequests(list1);
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            stockChangeRequest.setOperationType(3);
+            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
+            List<StockVoRequest> list1 = allocationProductTransStock(allocation,allocation.getProducts());
+            stockChangeRequest.setStockVoRequests(list1);
+            stockService.changeStock(stockChangeRequest);
             return "success";
         } else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
             //审批中
