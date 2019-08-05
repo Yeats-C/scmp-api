@@ -54,7 +54,7 @@
     <result column="zip_code" jdbcType="VARCHAR" property="zipCode" />
     <result column="tax_id" jdbcType="VARCHAR" property="taxId" />
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
-    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital" />
+    <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital" />
     <result column="enable" jdbcType="TINYINT" property="enable" />
     <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
     <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />

@@ -110,7 +110,7 @@ public class ApplySupplyComDetailDTO {
     private String corporateRepresentative;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("公司网址")
     private String companyWebsite;
