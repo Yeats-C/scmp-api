@@ -135,6 +135,9 @@ public class ReturnOrderInfo {
     @ApiModelProperty("重量")
     private Long weight;
 
+    @ApiModelProperty("体积")
+    private Long volume;
+
     @ApiModelProperty("发货时间")
     private Date deliveryTime;
 
