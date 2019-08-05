@@ -77,4 +77,6 @@ public interface SupplyCompanyDao {
     Map<String,SupplyCompany> selectByCompanyNameList(@Param("list") List<String> companyNameList, @Param("companyCode") String companyCode);
     @MapKey("supplyCode")
     Map<String, SupplyCompany> selectByCompanyCodeList(@Param("list") List<String> companyCodeList, @Param("companyCode") String companyCode);
+
+    SupplyCompany selectAddress(String supplyCode);
 }

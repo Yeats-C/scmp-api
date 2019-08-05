@@ -24,7 +24,9 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
@@ -103,6 +105,9 @@ public class InboundServiceImpl implements InboundService {
 
     @Autowired
     private PurchaseOrderDao purchaseOrderDao;
+
+    @Autowired
+    private SupplyCompanyDao supplyCompanyDao;
     /**
      * 分页查询以及列表搜索
      * @param vo
@@ -186,10 +191,21 @@ public class InboundServiceImpl implements InboundService {
     public InboundResVo view(Long id) {
         InboundResVo inboundResVo = new InboundResVo();
         Inbound inbound =inboundDao.selectByPrimaryKey(id);
-        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
-
-        }
         BeanCopyUtils.copy(inbound,inboundResVo);
+        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
+            String supplyCode = inbound.getSupplierCode();
+            SupplyCompany supplyCompany = supplyCompanyDao.selectAddress(supplyCode);
+            inboundResVo.setProvinceCode(supplyCompany.getProvinceId());
+            inboundResVo.setProvinceName(supplyCompany.getProvinceName());
+            inboundResVo.setCityCode(supplyCompany.getCityId());
+            inboundResVo.setCityName(supplyCompany.getCityName());
+            inboundResVo.setCountyCode(supplyCompany.getDistrictId());
+            inboundResVo.setCountyName(supplyCompany.getDistrictName());
+            inboundResVo.setDetailedAddress(supplyCompany.getAddress());
+            inboundResVo.setShipper(supplyCompany.getContactName());
+            inboundResVo.setShipperNumber(supplyCompany.getMobilePhone());
+            inboundResVo.setShipperRate(supplyCompany.getZipCode());
+        }
         List<InboundProduct> list = inboundProductDao.selectByInboundOderCode(inboundResVo.getInboundOderCode());
         try {
             list.stream().forEach(inboundProduct -> {
