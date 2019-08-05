@@ -348,5 +348,29 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="采购申请类型 0 手动 1自动")
     @JsonProperty("apply_type")
     private Integer applyType;
+
+    @ApiModelProperty(value="付款方式  0.预付款  1.货到付款 2.月结 3.实销实结")
+    @JsonProperty("payment_type")
+    private Integer paymentType;
+
+    @ApiModelProperty(value="预付款金额")
+    @JsonProperty("advance_payment")
+    private Integer advancePayment;
+
+    @ApiModelProperty(value="到付金额")
+    @JsonProperty("amount_payable")
+    private Integer amountPayable;
+
+    @ApiModelProperty(value="月结金额")
+    @JsonProperty("month_amount")
+    private Integer monthAmount;
+
+    @ApiModelProperty(value="到付付款期")
+    @JsonProperty("payable_time")
+    private Integer payableTime;
+
+    @ApiModelProperty(value="月结付款期")
+    @JsonProperty("month_time")
+    private Integer monthTime;
 }
 

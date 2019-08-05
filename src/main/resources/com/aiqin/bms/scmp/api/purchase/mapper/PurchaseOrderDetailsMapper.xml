@@ -179,7 +179,10 @@
     o.settlement_method_name as settlementMethodName, d.contact_person as contactPerson, d.mobile,
     d.delivery_time as deliveryTime, d.warehouse_time as warehouseTime, d.update_time as updateTime,
     d.order_type as orderType, d.order_code as orderCode, o.cancel_reason as cancelReason, o.cancel_remark as cancelRemark,
-    d.score_code as scoreCode, o.storage_status as storageStatus, o.supplier_code as supplierCode, o.supplier_name as supplierName
+    d.score_code as scoreCode, o.storage_status as storageStatus, o.supplier_code as supplierCode, o.supplier_name as supplierName,
+    o.update_time as updateTime, o.update_by_id as updateById, o.update_by_name as updateByName, d.payment_type as paymentType,
+    d.advance_payment as advancePayment, d.amount_payable as amountPayable, d.month_amount as monthAmount,
+    d.payable_time as payableTime, d.month_time as monthTime
     from purchase_order o
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id
