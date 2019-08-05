@@ -537,7 +537,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                              applyProduct.setReturnSingle(single);
                          }
                         BeanUtils.copyProperties(applyProduct, response);
-                         response.setProductAmount(Integer.valueOf(record[6]));
+                        if(StringUtils.isBlank((record[6]))){
+                            response.setProductPurchaseAmount(0);
+                        }else {
+                            response.setProductPurchaseAmount(Integer.valueOf(record[6]) * 100);
+                        }
                     }else{
                         HandleResponse(response, record,"未查询到对应的商品");
                         errorCount++;

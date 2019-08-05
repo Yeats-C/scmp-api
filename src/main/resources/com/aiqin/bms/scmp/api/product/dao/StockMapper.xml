@@ -148,17 +148,11 @@
         <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
         <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
         <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
-        <result column="lock_status" jdbcType="VARCHAR" property="lockStatus"/>
-        <result column="document_type" jdbcType="BIGINT" property="documentType"/>
-        <result column="document_num" jdbcType="VARCHAR" property="documentNum"/>
-        <result column="source_document_type" jdbcType="BIGINT" property="sourceDocumentType"/>
-        <result column="source_document_num" jdbcType="VARCHAR" property="sourceDocumentNum"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="VARCHAR" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
-        <result column="remark" jdbcType="VARCHAR" property="remark"/>
-        <result column="change_num" jdbcType="VARCHAR" property="changeNum"/>
-        <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
-        <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
+
     </resultMap>
     <resultMap id="StockBatchRespMap" type="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -409,7 +403,7 @@
         sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
         st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name,
-        st.stockup_num,st.stockupfinish_time
+        st.stockup_num,st.stockupfinish_time,date_format(st.create_time, '%Y-%m-%d %H:%i:%s') create_time,st.create_by,date_format(st.update_time, '%Y-%m-%d %H:%i:%s') update_time,st.update_by
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
@@ -825,12 +819,12 @@
     <select id="selectTransportStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         select
-        st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,
-        st.warehouse_code,st.warehouse_name,st.warehouse_type,
-        st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,sum(st.purchase_way_num) as purchase_way_num,
-        sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,st.new_delivery_name,
-        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name
+        st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,st.warehouse_code,st.warehouse_name,
+        st.warehouse_type,st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,
+        sum(st.purchase_way_num) as purchase_way_num,sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,
+        st.new_delivery_name,st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,st.stock_unit_name,
+        st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,
+        ps.product_category_code,ps.product_category_name,date_format(st.create_time, '%Y-%m-%d %H:%i:%s') create_time,st.create_by,date_format(st.update_time, '%Y-%m-%d %H:%i:%s') update_time,st.update_by
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
@@ -985,7 +979,8 @@
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
         st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.product_brand_name,ps.color_code,ps.color_name,
         ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name,
-        st.stockup_num,date_format(st.stockupfinish_time, '%Y-%m-%d %H:%i:%s') stockupfinish_time
+        st.stockup_num,date_format(st.stockupfinish_time, '%Y-%m-%d %H:%i:%s') stockupfinish_time,
+        date_format(st.create_time, '%Y-%m-%d %H:%i:%s') create_time,st.create_by,date_format(st.update_time, '%Y-%m-%d %H:%i:%s') update_time,st.update_by
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code

@@ -130,7 +130,7 @@
     d.expect_arrival_time as expectArrivalTime, d.valid_time as validTime, o.create_time as createTime,
     o.purchase_group_code as purchaseGroupCode, o.purchase_group_name as purchaseGroupName, o.purchase_mode as purchaseMode,
     o.supplier_code as supplierCode, o.supplier_name as supplierName, o.create_by_id as createById, o.create_by_name as createByName,
-    o.update_by_id as updateById, o.update_by_name as updateByName, o.gift_tax_sum as giftTaxSum
+    o.update_by_id as updateById, o.update_by_name as updateByName, o.gift_tax_sum as giftTaxSum, o.update_time as updateTime
     from purchase_order o
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id

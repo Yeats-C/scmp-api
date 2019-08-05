@@ -226,42 +226,23 @@ public class StockRespVO {
     @JsonProperty(value = "tax_cost")
     private Long taxCost;
 
-    // 库房详情
-    @ApiModelProperty("状态(锁状态-后补)")
-    @JsonProperty(value = "lock_status")
-    private Long lockStatus;
+    @ApiModelProperty("创建时间")
+    @JsonProperty(value = "create_time")
+    private String createTime;
 
-    @ApiModelProperty("变动数(修改数)")
-    @JsonProperty(value = "change_num")
-    private Long changeNum;
+    @ApiModelProperty("创建人")
+    @JsonProperty(value = "create_by")
+    private String createBy;
 
-    @ApiModelProperty("单据类型")
-    @JsonProperty(value = "document_type")
-    private Integer documentType;
-
-    @ApiModelProperty("单据号")
-    @JsonProperty(value = "document_num")
-    private String documentNum;
-
-    @ApiModelProperty("来源单据类型")
-    @JsonProperty(value = "source_document_type")
-    private Integer sourceDocumentType;
-
-    @ApiModelProperty("来源单据号")
-    @JsonProperty(value = "source_document_num")
-    private String sourceDocumentNum;
-
-    @ApiModelProperty("操作时间")
+    @ApiModelProperty("更新时间")
     @JsonProperty(value = "update_time")
     private String updateTime;
 
-    @ApiModelProperty("操作人")
+    @ApiModelProperty("更新人")
     @JsonProperty(value = "update_by")
     private String updateBy;
 
-    @ApiModelProperty("商品备注")
-    @JsonProperty(value = "remark")
-    private String remark;
+
 
 
     public Long getId() {
@@ -688,52 +669,36 @@ public class StockRespVO {
         this.taxCost = taxCost;
     }
 
-    public Long getLockStatus() {
-        return lockStatus;
+    public String getUnitName() {
+        return unitName;
     }
 
-    public void setLockStatus(Long lockStatus) {
-        this.lockStatus = lockStatus;
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
     }
 
-    public Long getChangeNum() {
-        return changeNum;
+    public String getBaseProductContent() {
+        return baseProductContent;
     }
 
-    public void setChangeNum(Long changeNum) {
-        this.changeNum = changeNum;
+    public void setBaseProductContent(String baseProductContent) {
+        this.baseProductContent = baseProductContent;
     }
 
-    public Integer getDocumentType() {
-        return documentType;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setDocumentType(Integer documentType) {
-        this.documentType = documentType;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
-    public String getDocumentNum() {
-        return documentNum;
+    public String getCreateBy() {
+        return createBy;
     }
 
-    public void setDocumentNum(String documentNum) {
-        this.documentNum = documentNum;
-    }
-
-    public Integer getSourceDocumentType() {
-        return sourceDocumentType;
-    }
-
-    public void setSourceDocumentType(Integer sourceDocumentType) {
-        this.sourceDocumentType = sourceDocumentType;
-    }
-
-    public String getSourceDocumentNum() {
-        return sourceDocumentNum;
-    }
-
-    public void setSourceDocumentNum(String sourceDocumentNum) {
-        this.sourceDocumentNum = sourceDocumentNum;
+    public void setCreateBy(String createBy) {
+        this.createBy = createBy;
     }
 
     public String getUpdateTime() {
@@ -750,13 +715,5 @@ public class StockRespVO {
 
     public void setUpdateBy(String updateBy) {
         this.updateBy = updateBy;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
     }
 }
