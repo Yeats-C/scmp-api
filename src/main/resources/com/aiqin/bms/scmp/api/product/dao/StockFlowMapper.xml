@@ -137,7 +137,8 @@
         document_num,
         source_document_type,
         source_document_num,
-        remark
+        remark,
+        stock_cost
         )
         values
         <foreach collection="stockFlows" item="item" index="index" separator=",">
@@ -173,6 +174,7 @@
             #{item.sourceDocumentType},
             #{item.sourceDocumentNum},
             #{item.remark}
+            #{item.stockCost}
         )
         </foreach>
     </insert>
