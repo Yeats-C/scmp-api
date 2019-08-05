@@ -116,7 +116,7 @@
       #{supplyCode,jdbcType=VARCHAR}, #{applySupplyCompanyCode,jdbcType=VARCHAR}, #{auditorBy,jdbcType=VARCHAR}, 
       #{auditorTime,jdbcType=TIMESTAMP}, #{applyStatus,jdbcType=TINYINT}, #{supplierName,jdbcType=VARCHAR}, 
       #{purchasingGroupCode,jdbcType=VARCHAR}, #{zipCode,jdbcType=VARCHAR}, #{purchasingGroupName,jdbcType=VARCHAR},
-      #{taxId,jdbcType=VARCHAR}, #{corporateRepresentative,jdbcType=VARCHAR}, #{registeredCapital,jdbcType=BIGINT},
+      #{taxId,jdbcType=VARCHAR}, #{corporateRepresentative,jdbcType=VARCHAR}, #{registeredCapital,jdbcType=DECIMAL},
       #{enable,jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{maxOrderAmount,jdbcType=BIGINT}, #{minOrderAmount,jdbcType=BIGINT},#{businessLicense, jdbcType=VARCHAR},
       #{starScore, jdbcType=DECIMAL}, #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR})
@@ -538,7 +538,7 @@
       purchasing_group_name = #{purchasingGroupName,jdbcType=VARCHAR},
       tax_id = #{taxId,jdbcType=VARCHAR},
       corporate_representative = #{corporateRepresentative,jdbcType=VARCHAR},
-      registered_capital = #{registeredCapital,jdbcType=BIGINT},
+      registered_capital = #{registeredCapital,jdbcType=DECIMAL},
       enable = #{enable,jdbcType=TINYINT},
       max_order_amount = #{maxOrderAmount,jdbcType=BIGINT},
       min_order_amount = #{minOrderAmount,jdbcType=BIGINT},

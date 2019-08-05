@@ -94,7 +94,7 @@ public class SupplyCompanyDetailDTO {
     private String corporateRepresentative;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("是否禁用")
     private Byte enable;
