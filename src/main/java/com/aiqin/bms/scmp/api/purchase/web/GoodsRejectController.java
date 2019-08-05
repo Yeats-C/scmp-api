@@ -263,5 +263,11 @@ public class GoodsRejectController {
         return goodsRejectService.rejectStockProduct(rejectQueryRequest);
     }
 
-
+    @GetMapping("/record/approval/{approval_code}")
+    @ApiOperation(value = "通过审批关联查询退供单详情")
+    @ApiImplicitParam(name = "approval_code", value = "审批单code", type = "String")
+    public HttpResponse<RejectResponse> applyRejectInfo(@PathVariable String approval_code) {
+        LOGGER.info("查询退供单详情请求,reject_record_code:{}", approval_code);
+        return goodsRejectService.applyRejectInfo(approval_code);
+    }
 }
