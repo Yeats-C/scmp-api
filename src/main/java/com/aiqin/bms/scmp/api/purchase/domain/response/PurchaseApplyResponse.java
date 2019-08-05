@@ -82,4 +82,9 @@ public class PurchaseApplyResponse {
     @ApiModelProperty(value="赠品含税总金额")
     @JsonProperty("gift_tax_sum")
     private Integer giftTaxSum;
+
+    @ApiModelProperty(value="修改时间")
+    @JsonProperty("update_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 }

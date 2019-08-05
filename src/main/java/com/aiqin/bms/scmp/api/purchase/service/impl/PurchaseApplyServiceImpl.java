@@ -540,7 +540,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         if(StringUtils.isBlank((record[6]))){
                             response.setProductPurchaseAmount(0);
                         }else {
-                            response.setProductPurchaseAmount(Integer.valueOf(record[6]) * 100);
+                            Integer value = Integer.valueOf(record[6]);
+                            response.setProductPurchaseAmount(value * 100);
                         }
                     }else{
                         HandleResponse(response, record,"未查询到对应的商品");

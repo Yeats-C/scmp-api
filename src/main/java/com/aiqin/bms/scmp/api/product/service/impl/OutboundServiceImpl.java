@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductToOutboundVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationToOutboundVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.ReturnInboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
@@ -352,6 +353,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         BeanCopyUtils.copy(outbound,outboundResVo);
         if(null!=outboundResVo){
             List<OutboundProduct> list = outboundProductDao.selectByOutboundOderCode(outboundResVo.getOutboundOderCode());
+            list.stream().forEach(outboundProduct -> {
+                List<ReturnOutboundProduct> returnOutboundProductList = outboundProductDao.selectTax(outboundResVo.getOutboundOderCode(), outboundProduct.getSkuCode());
+                ReturnOutboundProduct returnOutboundProduct = returnOutboundProductList.get(0);
+                outboundProduct.setTax(returnOutboundProduct.getInputTaxRate());
+            });
             try{
                 outboundResVo.setList(BeanCopyUtils.copyList(list, OutboundProductResVo.class));
                 if (null != outboundResVo) {

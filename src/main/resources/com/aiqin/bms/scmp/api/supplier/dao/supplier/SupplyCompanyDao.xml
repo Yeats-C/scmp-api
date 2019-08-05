@@ -313,4 +313,19 @@
     </foreach>
     and company_code = #{companyCode,jdbcType=VARCHAR}
   </select>
+
+  <select id="selectAddress" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+      province_id,
+      province_name,
+      city_id,
+      city_name,
+      district_id,
+      district_name,
+      address,
+      contact_name,
+      mobile_phone,
+      zip_code
+    from supply_company where supply_code = #{supplyCode, jdbcType=VARCHAR}
+  </select>
 </mapper>

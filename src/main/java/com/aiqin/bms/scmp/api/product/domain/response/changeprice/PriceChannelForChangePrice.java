@@ -57,7 +57,7 @@ public class PriceChannelForChangePrice {
     private Long avgTaxCost;
 
     public Long getOldGrossProfitMargin() {
-        if (Objects.isNull(this.oldPrice)||Objects.isNull(this.taxCost)) {
+        if (Objects.isNull(this.oldPrice)||Objects.isNull(this.taxCost)||this.taxCost==0) {
             return 0L;
         }
         this.avgTaxCost = taxCost;

@@ -505,4 +505,11 @@
       and a.linenum = #{linenum,jdbcType=BIGINT}
     </if>
   </select>
+  <select id="selectTax"  resultMap="BaseResultReturnOutboundProductMap">
+    select
+    <include refid="Base_Column_ReturnOutboundProduct" />
+    from outbound_product  a left JOIN product_sku_checkout b on a.sku_code = b.sku_code
+    where a.outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
+    and a.sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
 </mapper>
