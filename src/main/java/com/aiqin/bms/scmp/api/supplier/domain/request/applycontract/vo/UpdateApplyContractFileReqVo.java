@@ -32,6 +32,10 @@ public class UpdateApplyContractFileReqVo {
     @NotNull(message = "文件名称不能为空")
     private String fileName;
 
+    @ApiModelProperty("文件编码")
+    @NotNull(message = "文件编码不能为空")
+    private String fileCode;
+
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     private Date createTime;

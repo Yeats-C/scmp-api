@@ -179,8 +179,6 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         }
         applyContractDTO.setPurchasingGroupCode(purchasingGroupCode.toString().substring(0,purchasingGroupCode.toString().length()-1));
         applyContractDTO.setPurchasingGroupName(purchasingGroupName.toString().substring(0,purchasingGroupName.toString().length()-1));
-
-
         //保存合同申请主体
         Long k = ((ApplyContractService) AopContext.currentProxy()).insertApplyContractDetails(applyContractDTO);
         //将id set到实体里面
@@ -253,7 +251,6 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         if (i != typeList.size()) {
             throw new BizException(ResultCode.SAVE_PLAN_TYPE_FAILED);
         }
-
     }
 
 
