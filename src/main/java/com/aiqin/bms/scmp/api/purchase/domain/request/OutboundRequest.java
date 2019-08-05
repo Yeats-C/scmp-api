@@ -155,5 +155,10 @@ public class OutboundRequest {
     @ApiModelProperty(value = "创建时间")
     private String createTime;
 
+    @ApiModelProperty(value = "创建人名称")
+    private String createByName;
+
+    @ApiModelProperty(value = "创建人Id")
+    private String createById;
 
 }
