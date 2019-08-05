@@ -838,7 +838,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo">
-    insert into return_order_info (id, return_order_code, order_code, 
+    insert into return_order_info (id, return_order_code, order_code,
       create_date, order_type, order_type_code, 
       return_order_type, return_order_type_code, payment_status, 
       be_lock, lock_reason, be_exception, 
@@ -858,7 +858,7 @@
       company_name, transport_company_code, transport_company, 
       transport_number, return_reason_code, return_reason_content,
       remake)
-    values (#{id,jdbcType=BIGINT}, #{returnOrderCode,jdbcType=VARCHAR}, #{orderCode,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{returnOrderCode,jdbcType=VARCHAR}, #{orderCode,jdbcType=VARCHAR},
       #{createDate,jdbcType=TIMESTAMP}, #{orderType,jdbcType=VARCHAR}, #{orderTypeCode,jdbcType=INTEGER}, 
       #{returnOrderType,jdbcType=VARCHAR}, #{returnOrderTypeCode,jdbcType=INTEGER}, #{paymentStatus,jdbcType=INTEGER}, 
       #{beLock,jdbcType=INTEGER}, #{lockReason,jdbcType=VARCHAR}, #{beException,jdbcType=INTEGER}, 
@@ -882,9 +882,6 @@
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo">
     insert into return_order_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="returnOrderCode != null">
         return_order_code,
       </if>
@@ -1055,9 +1052,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="returnOrderCode != null">
         #{returnOrderCode,jdbcType=VARCHAR},
       </if>

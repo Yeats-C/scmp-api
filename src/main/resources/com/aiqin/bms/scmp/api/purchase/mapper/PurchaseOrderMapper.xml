@@ -24,6 +24,9 @@
     <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
     <result column="cancel_reason" jdbcType="VARCHAR" property="cancelReason" />
     <result column="cancel_remark" jdbcType="VARCHAR" property="cancelRemark" />
+    <result column="apply_type_form" jdbcType="VARCHAR" property="applyTypeForm" />
+    <result column="approval_code" jdbcType="VARCHAR" property="approvalCode" />
+    <result column="gift_tax_sum" jdbcType="INTEGER" property="giftTaxSum" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
@@ -36,14 +39,15 @@
     purchase_group_code, purchase_group_name, warehouse_code, warehouse_name, supplier_code, 
     supplier_name, info_status, purchase_order_status, storage_status, single_count, 
     product_total_amount, return_amount, purchase_mode, settlement_method_code, settlement_method_name,
-    cancel_reason, cancel_remark, create_time, create_by_id, create_by_name
+    cancel_reason, cancel_remark, create_time, create_by_id, create_by_name, apply_type_form, approval_code,
+    gift_tax_sum
   </sql>
   <insert id="insert">
     insert into purchase_order (purchase_order_id, purchase_order_code,
       transport_center_code, transport_center_name, purchase_group_code, purchase_group_name, warehouse_code,
       warehouse_name, supplier_code, supplier_name, info_status, purchase_order_status, storage_status,
       single_count, product_total_amount, return_amount, purchase_mode, settlement_method_code, settlement_method_name,
-      create_time, create_by_id, create_by_name)
+      create_time, create_by_id, create_by_name, apply_type_form, approval_code, gift_tax_sum)
     values (#{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR},
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, 
@@ -51,7 +55,8 @@
       #{infoStatus,jdbcType=INTEGER}, #{purchaseOrderStatus,jdbcType=INTEGER}, #{storageStatus,jdbcType=INTEGER}, 
       #{singleCount,jdbcType=INTEGER}, #{productTotalAmount,jdbcType=INTEGER}, #{returnAmount,jdbcType=INTEGER}, 
       #{purchaseMode,jdbcType=INTEGER}, #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR},
-      now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
+      now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{applyTypeForm,jdbcType=VARCHAR},
+      #{approvalCode,jdbcType=VARCHAR}, #{giftTaxSum,jdbcType=INTEGER})
   </insert>
   <update id="update">
     update purchase_order
@@ -124,7 +129,8 @@
     o.single_count as singleCount, o.product_total_amount as productTotalAmount, o.return_amount as returnAmount,
     d.expect_arrival_time as expectArrivalTime, d.valid_time as validTime, o.create_time as createTime,
     o.purchase_group_code as purchaseGroupCode, o.purchase_group_name as purchaseGroupName, o.purchase_mode as purchaseMode,
-    o.supplier_code as supplierCode, o.supplier_name as supplierName
+    o.supplier_code as supplierCode, o.supplier_name as supplierName, o.create_by_id as createById, o.create_by_name as createByName,
+    o.update_by_id as updateById, o.update_by_name as updateByName, o.gift_tax_sum as giftTaxSum
     from purchase_order o
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id

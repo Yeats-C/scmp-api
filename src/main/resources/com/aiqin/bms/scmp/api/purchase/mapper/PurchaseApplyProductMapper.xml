@@ -491,9 +491,8 @@
     a.transport_center_code as transportCenterCode, a.transport_center_name as transportCenterName,
     a.purchase_group_code as purchaseGroupCode,a.purchase_group_name as purchaseGroupName,
     s.settlement_method_code as settlementMethodCode, s.settlement_method_name as settlementMethodName
-    from purchase_apply_product a inner join
-    product_sku_checkout s on
-    a.sku_code = s.sku_code
+    from purchase_apply_product a
+    inner join product_sku_checkout s on a.sku_code = s.sku_code
     WHERE a.apply_product_status = 1 and a.info_status = 0
     and a.purchase_apply_id in
     <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
@@ -511,10 +510,10 @@
     a.stock_unit_name as stockUnitName, s.Input_tax_rate as taxRate, a.product_type as productType,
     a.brand_id as brandId, a.brand_name as brandName, a.category_id as categoryId, a.category_name as categoryName,
     s.settlement_method_code as settlementMethodCode, s.settlement_method_name as settlementMethodName,
-    a.sku_name as skuName, a.box_gauge as boxGauge
-    from purchase_apply_product a inner join
-    product_sku_checkout s on
-    a.sku_code = s.sku_code
+    a.sku_name as skuName, a.box_gauge as boxGauge, pa.apply_type as applyType
+    from purchase_apply_product a
+    inner join product_sku_checkout s on a.sku_code = s.sku_code
+    inner join purchase_apply pa on pa.purchase_apply_id = a.purchase_apply_id
     <where>
       a.apply_product_status = 1 and  a.info_status = 0
       <if test="supplierCode != null">

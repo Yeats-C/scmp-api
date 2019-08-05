@@ -77,8 +77,6 @@
       now(), #{item.createBy,jdbcType=VARCHAR})
     </foreach>
   </insert>
-
-
     <insert id="insertDraftList" parameterType="java.util.List">
       insert into product_sku_inspection_report_draft (sku_code, sku_name,
       production_date, inspection_report_path,
@@ -91,7 +89,6 @@
         #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
         #{item.updateBy,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT})
       </foreach>
-
     </insert>
     <select id="getInfo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInspReportMapper.BaseResultMap">
     SELECT * from product_sku_inspection_report where del_flag = 0 and sku_code=#{skuCode,jdbcType=VARCHAR}
@@ -150,4 +147,18 @@
     DELETE FROM  product_sku_inspection_report
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <update id="updateInspection">
+    update product_sku_inspection_report
+    <set>
+      <if test="inspectionReportPath != null">
+        inspection_report_path = #{inspectionReportPath,jdbcType=VARCHAR},
+      </if>
+      update_time = now(),
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and production_date = #{productionDate,jdbcType=TIMESTAMP}
+  </update>
 </mapper>

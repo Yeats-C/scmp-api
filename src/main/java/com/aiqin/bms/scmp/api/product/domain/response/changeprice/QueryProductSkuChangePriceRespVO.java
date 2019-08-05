@@ -28,6 +28,8 @@ public class QueryProductSkuChangePriceRespVO {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @ApiModelProperty("创建人")
+    private String createBy;
     @ApiModelProperty("变价类型名称")
     private String changePriceName;
 

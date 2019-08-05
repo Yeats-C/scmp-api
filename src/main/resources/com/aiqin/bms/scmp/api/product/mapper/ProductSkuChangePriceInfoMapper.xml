@@ -61,6 +61,7 @@
     select a.code                               as code,
            a.name                               as name,
            a.create_time                        as createTime,
+           a.create_by                          as createBy,
            a.change_price_name                  as changePriceName,
            a.ext_field_5                        as beContainArea,
            a.purchase_group_name                as purchaseGroupName,
