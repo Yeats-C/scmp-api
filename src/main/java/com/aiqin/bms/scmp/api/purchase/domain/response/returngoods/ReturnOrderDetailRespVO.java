@@ -113,6 +113,9 @@ public class ReturnOrderDetailRespVO {
     @ApiModelProperty("重量")
     private Long weight;
 
+    @ApiModelProperty("体积")
+    private Long volume;
+
     @ApiModelProperty("发货时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deliveryTime;

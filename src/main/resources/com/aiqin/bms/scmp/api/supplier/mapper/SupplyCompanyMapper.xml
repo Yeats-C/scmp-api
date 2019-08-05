@@ -80,6 +80,13 @@
       #{item}
     </foreach>
   </select>
+  <select id="selectBySupplyComCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from supply_company
+    where company_code = #{companyCode}
+    and supply_code = #{supplyCompanyCode}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from supply_company
     where id = #{id,jdbcType=BIGINT}
