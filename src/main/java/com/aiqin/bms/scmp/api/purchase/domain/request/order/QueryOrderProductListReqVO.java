@@ -20,11 +20,11 @@ import java.util.Date;
 public class QueryOrderProductListReqVO extends PageReq {
 
     @ApiModelProperty(value = "创建时间从")
-    @JsonFormat(timezone = "GTM+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDateStart;
 
     @ApiModelProperty(value = "创建时间到")
-    @JsonFormat(timezone = "GTM+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDateEnd;
 
     @ApiModelProperty("物流中心编码")

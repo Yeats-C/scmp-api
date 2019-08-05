@@ -35,11 +35,11 @@ public class QueryProductBrandReqVO extends PageReq {
     private String brandInitials;
 
     @ApiModelProperty(value = "创建时间从")
-    @JsonFormat(timezone = "GTM+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDateStart;
 
     @ApiModelProperty(value = "创建时间到")
-    @JsonFormat(timezone = "GTM+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDateEnd;
 
     @ApiModelProperty(value = "公司编码", notes = "前端查询接口可以不传,但是其他第三方系统此字段必填")
