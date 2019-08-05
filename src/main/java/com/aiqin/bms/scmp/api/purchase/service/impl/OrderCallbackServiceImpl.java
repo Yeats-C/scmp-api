@@ -22,7 +22,9 @@ import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.response.rule.DetailRespVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplierRuleMapper;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -94,6 +96,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private ReturnOrderInfoMapper returnOrderInfoMapper;
     @Resource
     private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
+    @Resource
+    private WarehouseDao warehouseDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)

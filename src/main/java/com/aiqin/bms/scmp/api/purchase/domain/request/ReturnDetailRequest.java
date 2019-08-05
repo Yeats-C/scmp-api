@@ -45,4 +45,16 @@ public class ReturnDetailRequest {
 
     @ApiModelProperty("实发数量")
     private Long actualDeliverNum;
+
+    @ApiModelProperty("仓库名称")
+    private String warehouseName;
+
+    @ApiModelProperty("仓库编码")
+    private String warehouseCode ;
+
+    @ApiModelProperty("物流中心名称")
+    private String transportCenterName;
+
+    @ApiModelProperty("物流中心编码")
+    private String transportCenterCode;
 }

@@ -24,7 +24,7 @@ public class RejectRecord extends ApplyRejectRecord{
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "审批关联单据号")
     @JsonProperty("approval_code")
     private String approvalCode;
 
