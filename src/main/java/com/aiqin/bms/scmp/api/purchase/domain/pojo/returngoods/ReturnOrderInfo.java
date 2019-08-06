@@ -138,9 +138,6 @@ public class ReturnOrderInfo {
     @ApiModelProperty("重量")
     private Long weight;
 
-    @ApiModelProperty("体积")
-    private Long volume;
-
     @ApiModelProperty("发货时间")
     private Date deliveryTime;
 
@@ -182,4 +179,55 @@ public class ReturnOrderInfo {
 
     @ApiModelProperty("备注")
     private String remake;
+
+    @ApiModelProperty("处理办法（1退货退款2仅退货）")
+    private Integer treatmentMethod;
+
+    @ApiModelProperty("来源名称")
+    private String orderOriginalName;
+
+    @ApiModelProperty("来源编码")
+    private String orderOriginal;
+
+    @ApiModelProperty("创建人编码")
+    private String createById;
+
+    @ApiModelProperty("创建人名称")
+    private String createByName;
+
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("修改人编码")
+    private String updateById;
+
+    @ApiModelProperty("修改人名称")
+    private String updateByName;
+
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty("体积")
+    private String volume;
+
+    @ApiModelProperty("实际重量")
+    private Long actualWeight;
+
+    @ApiModelProperty("实际退货数量")
+    private Long actualProductNum;
+
+    @ApiModelProperty("实际体积")
+    private Long actualVolume;
+
+    @ApiModelProperty("实际分销价")
+    private Long actualProductTotalAmount;
+
+    @ApiModelProperty("实际退货金额")
+    private Long actualReturnOrderAmount;
+
+    @ApiModelProperty("渠道总金额")
+    private Long productChannelTotalAmount;
+
+    @ApiModelProperty("实际渠道总金额")
+    private Long actualProductChannelTotalAmount;
 }
