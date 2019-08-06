@@ -196,6 +196,16 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             //正式供应商编码
             applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
             SupplyCompany s = supplyCompanyMapper.selectBySupplyComCode(applySupplyCompany.getSupplyCompanyCode(),getUser().getCompanyCode());
+            List<String> codes = Lists.newArrayList();
+            codes.add(applySupplyCompanyReqVO.getApplySupplyCode());
+            List<ApplySupplyCompany> applySupplyCompanies = applySupplyCompanyMapper.selectBySupplyCode(codes, getUser().getCompanyCode(),ApplyStatus.APPROVAL.getNumber());
+            List<ApplySupplyCompany> forImportList = applySupplyCompanyMapper.selectBySupplyCode(codes, getUser().getCompanyCode(),ApplyStatus.PENDING_SUBMISSION.getNumber());
+            if (CollectionUtils.isNotEmptyCollection(applySupplyCompanies)) {
+               //如果有审批中的数据  直接报错
+                throw new BizException(MessageId.create(Project.PRODUCT_API, 998, "供应商编号为"+applySupplyCompany.getSupplyCompanyCode()+"已有在审核中的数据,无法提交"));
+            }
+            //正式供应商编码
+            applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
             //供货单位申请编码
             EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_CODE);
             applySupplyCompany.setApplyCode(String.valueOf(encodingRule.getNumberingValue()+1));
@@ -253,6 +263,9 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
                 });
                 applySupplierFileService.copySaveInfo(fileReqVOList);
+            }
+            if (CollectionUtils.isNotEmptyCollection(forImportList)) {
+                applySupplyCompanyMapper.delectByIds(forImportList.stream().map(ApplySupplyCompany::getId).collect(Collectors.toList()));
             }
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 workFlow(applySupplyCompany);
