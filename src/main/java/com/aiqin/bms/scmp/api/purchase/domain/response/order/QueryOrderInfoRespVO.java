@@ -168,6 +168,20 @@ public class QueryOrderInfoRespVO {
     @ApiModelProperty("订单类别编码")
     private String orderCategoryCode;
 
+    @ApiModelProperty("创建人")
+    private String createByName;
+
+    @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    @ApiModelProperty("修改人")
+    private String updateByName;
+
+    @ApiModelProperty("修改时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
     @ApiModelProperty("减免比例")
     private Integer logisticsRemissionRatio;
 

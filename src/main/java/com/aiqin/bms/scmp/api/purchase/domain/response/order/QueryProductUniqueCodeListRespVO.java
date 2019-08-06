@@ -67,6 +67,20 @@ public class QueryProductUniqueCodeListRespVO {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
+    @ApiModelProperty("创建人")
+    private String createByName;
+
+    @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    @ApiModelProperty("修改人")
+    private String updateByName;
+
+    @ApiModelProperty("修改时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
     @ApiModelProperty("状态")
     private Integer status;
 }

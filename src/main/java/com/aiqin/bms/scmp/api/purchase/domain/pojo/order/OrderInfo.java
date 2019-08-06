@@ -203,4 +203,22 @@ public class OrderInfo {
 
     @ApiModelProperty("公司编码")
     private String companyCode;
+
+    @ApiModelProperty("创建人")
+    private String createByName;
+
+    @ApiModelProperty("创建人编码")
+    private String createById;
+
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("修改人")
+    private String updateByName;
+
+    @ApiModelProperty("修改人编码")
+    private String updateById;
+
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
 }
