@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.account.domain.response;
 
+import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -68,8 +70,35 @@ public class AccountResponse {
     @JsonProperty("remark")
     private String remark;
 
-
     @ApiModelProperty(value = "角色集合")
     @JsonProperty("role_ids")
     private List<String> roleIds;
+
+    @ApiModelProperty(value="")
+    @JsonProperty("create_by_id")
+    private String createById;
+
+    @ApiModelProperty(value="")
+    @JsonProperty("create_by_name")
+    private String createByName;
+
+    @ApiModelProperty(value="")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="")
+    @JsonProperty("update_by_name")
+    private String updateByName;
+
+    @ApiModelProperty(value="")
+    @JsonProperty("create_time")
+    private Date createTime;
+
+    @ApiModelProperty(value="")
+    @JsonProperty("update_time")
+    private Date updateTime;
+
+    @ApiModelProperty(value="日志")
+    @JsonProperty("operation_log_list")
+    private  List<OperationLog> operationLogList;
 }

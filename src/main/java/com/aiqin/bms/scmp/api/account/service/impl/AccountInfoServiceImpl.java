@@ -11,6 +11,8 @@ import com.aiqin.bms.scmp.api.account.domain.response.ExternalAccountResponse;
 import com.aiqin.bms.scmp.api.account.service.AccountInfoService;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.purchase.dao.OperationLogDao;
+import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.supplier.domain.response.account.Role;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
@@ -72,7 +74,8 @@ public class AccountInfoServiceImpl implements AccountInfoService {
     private static String COMPANY_NAME = "熙耘供应链供应商集合";
     @Resource
     private AccountDao accountDao;
-
+    @Resource
+    private OperationLogDao operationLogDao;
     @Value("${control.url.account}")
     private String CONTROL_URL_ACCOUNT;
     @Value("${control.url.role-list}")
@@ -140,6 +143,8 @@ public class AccountInfoServiceImpl implements AccountInfoService {
                 account.setDepartmentCode(externalAccountResponse.getDepartmentCode());
                 Integer count = accountDao.insert(account);
                 LOGGER.info("添加供应商关联表:{}", count);
+                //增加操作记录 操作状态  : 0 新增 1 修改 2 下载
+                operationLogDao.insert(new OperationLog(account.getUsername(), 0, "新增账号", "", account.getCreateById(), account.getCreateByName()));
             } else {
                 return HttpResponse.failureGenerics(ResultCode.CONTROL_ERROR, roleResponse.getMessage());
             }
@@ -219,6 +224,8 @@ public class AccountInfoServiceImpl implements AccountInfoService {
         // 修改供应链关联表
         Integer count = accountDao.updateByPrimaryKeySelective(account);
         LOGGER.info("修改供应商关联表:{}", count);
+        //增加操作记录 操作状态  : 0 新增 1 修改 2 下载
+        operationLogDao.insert(new OperationLog(account.getUsername(), 1, "修改账号", "", account.getUpdateById(), account.getUpdateByName()));
         return HttpResponse.success();
     }
 
@@ -235,6 +242,8 @@ public class AccountInfoServiceImpl implements AccountInfoService {
         if (StringUtils.isNotEmpty(account.getRoleIds())) {
             response.setRoleIds(Arrays.asList(account.getRoleIds().split(",")));
         }
+        List<OperationLog> operationLogList = operationLogDao.list(account.getUsername());
+        response.setOperationLogList(operationLogList);
         return HttpResponse.successGenerics(response);
     }
 }
