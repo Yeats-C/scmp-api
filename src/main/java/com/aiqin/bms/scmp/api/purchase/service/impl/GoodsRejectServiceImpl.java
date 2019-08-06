@@ -644,6 +644,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_RECORD);
         }
         rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_TRANSPORTED);
+        //因为都调用一个dao,所以传入时间
+        rejectRecord.setDeliveryTime(new Date());
         Integer count = rejectRecordDao.updateStatus(rejectRecord);
         LOGGER.info("退供发运-更改退供申请详情影响条数:{}", count);
         return HttpResponse.success();
@@ -658,6 +660,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         RejectRecord rejectRecord = new RejectRecord();
         rejectRecord.setRejectRecordId(rejectRecordId);
         rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_FINISH);
+        //因为都调用一个dao,所以传入时间
+        rejectRecord.setFinishTime(new Date());
         Integer count = rejectRecordDao.updateStatus(rejectRecord);
         LOGGER.info("退供完成-更改退供申请详情影响条数:{}", count);
         return HttpResponse.success();
