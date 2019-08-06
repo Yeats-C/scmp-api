@@ -14,8 +14,6 @@
         ddass.sales_budget as salesBudget,
         ddass.achievement as achievement
         FROM dashboard_depart_annual_sales_stati ddass
-
-        WHERE
     </select>
     <select id="selectDashboardMonthlySalesStati" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiRespVo">
         SELECT
@@ -32,8 +30,6 @@
         dmss.curr_achieve_rate as currAchieveRate,
         dmss.pre_achieve_rate as preAchieveRate
         FROM dashboard_monthly_sales_stati dmss
-
-        WHERE
     </select>
     <select id="selectDashboardMonthlySalesStatiAcc" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiAccRespVo">
         SELECT
@@ -53,8 +49,6 @@
         dmssa.pre_achieve_rate as preAchieveRate,
         dmssa.pre_acc_sum_channel_amount as preAccSumChannelAmount
         FROM dashboard_monthly_sales_stati_acc dmssa
-
-        WHERE
     </select>
     <select id="selectDashboardMonthlyLossAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlyLossAmountRespVo">
       SELECT
@@ -66,7 +60,6 @@
       dmla.stockout_effect_amount_acc as stockoutEffectAmountAcc,
       dmla.monthly_loss_amount as monthlyLossAmount
       FROM dashboard_monthly_loss_amount dmla
-      WHERE
     </select>
     <select id="selectDashboardDepMonthlyHomocyclicRatio" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
       SELECT
@@ -84,6 +77,55 @@
       ddmhr.distribution_sales_amount as distributionSalesAmount,
       ddmhr.distribution_margin as distributionMargin
       FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
-      WHERE
+    </select>
+    <select id="selectDashboardAllKindsLossRatio" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardAllKindsLossRatioRespVo">
+        SELECT
+        daklr.id as id,
+        daklr.stat_year as statYear,
+        daklr.defective_effect_amount as defectiveEffectAmount,
+        daklr.stockout_sales_amount as stockoutSalesAmount,
+        daklr.defective_effect_ratio as defectiveEffectRatio,
+        daklr.stockout_ratio as stockoutRatio
+        FROM dashboard_all_kinds_loss_ratio daklr
+    </select>
+    <select id="selectDashboardDepCateProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepProperSalesAmountRespVo">
+        SELECT
+        ddcpsa.id as id,
+        ddcpsa.stat_month as statMonth,
+        ddcpsa.product_sort_code as productSortCode,
+        ddcpsa.product_sort_name as productSortName,
+        ddcpsa.product_category_code as productCategoryCode,
+        ddcpsa.product_category_name as productCategoryName,
+        ddcpsa.product_property_code as productPropertyCode,
+        ddcpsa.product_property_name as productPropertyName,
+        ddcpsa.channel_costs as channelCosts,
+        ddcpsa.channel_sales_amount as channelSalesAmount,
+        ddcpsa.channel_sales_yearonyear as channelSalesYearonyear,
+        ddcpsa.channel_sales_link_relative as channelSalesLinkRelative,
+        ddcpsa.distribution_sales_amount as distributionSalesAmount,
+        ddcpsa.channel_margin as channelMargin,
+        ddcpsa.channel_margin_yearonyear as channelMarginYearonyear,
+        ddcpsa.channel_margin_link_relative as channelMarginLinkRelative,
+        ddcpsa.distribution_margin as distributionMargin
+        FROM dashboard_dep_cate_proper_sales_amount ddcpsa
+    </select>
+    <select id="selectDashboardDepProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateProperSalesAmountRespVo">
+        SELECT
+        ddpsa.id as id,
+        ddpsa.stat_month as statMonth,
+        ddpsa.product_sort_code as productSortCode,
+        ddpsa.product_sort_name as productSortName,
+        ddpsa.product_property_code as productPropertyCode,
+        ddpsa.product_property_name as productPropertyName,
+        ddpsa.channel_costs as channelCosts,
+        ddpsa.channel_sales_amount as channelSalesAmount,
+        ddpsa.channel_sales_yearonyear as channelSalesYearonyear,
+        ddpsa.channel_sales_link_relative as channelSalesLinkRelative,
+        ddpsa.distribution_sales_amount as distributionSalesAmount,
+        ddpsa.channel_margin as channelMargin,
+        ddpsa.channel_margin_yearonyear as channelMarginYearonyear,
+        ddpsa.channel_margin_link_relative as channelMarginLinkRelative,
+        ddpsa.distribution_margin as distributionMargin
+        FROM dashboard_dep_proper_sales_amount ddpsa
     </select>
 </mapper>

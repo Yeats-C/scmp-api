@@ -173,7 +173,7 @@
             #{item.documentNum},
             #{item.sourceDocumentType},
             #{item.sourceDocumentNum},
-            #{item.remark}
+            #{item.remark},
             #{item.stockCost}
         )
         </foreach>
