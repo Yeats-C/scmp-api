@@ -208,7 +208,6 @@ public class GoodsRejectController {
                                        @RequestParam(value = "contacts_person", required = false) String contacts_person,@RequestParam(value = "create_by_company_code", required = false) String create_by_company_code) {
         LOGGER.info("供应商确认请求,reject_record_id:{}", reject_record_id);
         RejectRecord rejectRecord = new RejectRecord(reject_record_id, contacts_person, contacts_person_phone, province_id, province_name, city_id, city_name, district_id, district_name, address);
-
         return goodsRejectService.rejectSupplier(rejectRecord,create_by_company_code);
     }
 
