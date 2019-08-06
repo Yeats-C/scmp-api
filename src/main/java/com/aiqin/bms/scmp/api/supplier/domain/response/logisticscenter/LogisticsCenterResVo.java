@@ -30,6 +30,9 @@ public class LogisticsCenterResVo {
     @ApiModelProperty("启用禁用状态")
     private Byte enable;
 
+    @ApiModelProperty("排序")
+    private Integer logisticsCenterOrder;
+
     @ApiModelProperty("物流中心服务范围")
     List<LogisticsCenterAreaResVo> logisticsCenterAreaResVos;
 }

@@ -24,6 +24,9 @@ public class LogisticsCenterReqVo {
     @NotEmpty(message = "物流中心名称不能为空")
     private String logisticsCenterName;
 
+    @ApiModelProperty("排序")
+    private Integer logisticsCenterOrder;
+
     @ApiModelProperty("服务范围")
     @Valid
     private List<LogisticsCenterAreaReqVo> logisticsCenterAreaReqVos;

@@ -30,6 +30,9 @@ public class PurchaseGroupReqVo {
     @ApiModelProperty("负责人名称")
     private String responsiblePersonName;
 
+    @ApiModelProperty("排序")
+    private Integer purchaseGroupOrder;
+
     @ApiModelProperty("采购组人员")
     @Valid
     List<PurchaseGroupBuyerReqVo> groupBuyerReqVoList;

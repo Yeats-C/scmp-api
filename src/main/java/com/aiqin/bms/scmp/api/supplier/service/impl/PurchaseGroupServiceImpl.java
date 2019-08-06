@@ -1,18 +1,15 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.http.HttpClient;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupBuyerDao;
-import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupBuyerDao;
+import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.EnabledSave;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupBuyerDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.PurchaseGroupReqVo;
@@ -21,7 +18,13 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.UpdatePur
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.UserPositionsRequest;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.*;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
-import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.util.AuthToken;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.message.BasicNameValuePair;
@@ -366,5 +369,19 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
     @Override
     public Map<String, PurchaseGroupDTO> selectByNames(Set<String> purchaseGroupList, String companyCode) {
         return purchaseGroupDao.selectByNames(purchaseGroupList,companyCode);
+    }
+
+    /**
+     * 功能描述: 启用/禁用
+     *
+     * @param enabledSave
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/6 21:46
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer enabled(EnabledSave enabledSave) {
+        return purchaseGroupDao.enable(enabledSave);
     }
 }

@@ -47,4 +47,7 @@ public class QueryWarehouseResVo {
 
     @ApiModelProperty("修改人")
     private String updateBy;
+
+    @ApiModelProperty("排序")
+    private Integer warehouseOrder;
 }
