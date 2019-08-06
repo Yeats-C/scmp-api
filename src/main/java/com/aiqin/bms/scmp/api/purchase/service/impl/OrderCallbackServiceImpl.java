@@ -227,7 +227,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 //        LOGGER.info("添加订单详情:{}", detailCount);
         //生成出库单
         OutboundReqVo convert = new OrderInfoToOutboundConverter(skuService,supplyComService).convert(orderInfo);
-        outboundRecord(convert);
+        // 出库单号
+        String outboundOderCode  = outboundRecord(convert);
         //直接减库存
 
 
@@ -241,7 +242,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
      * @param
      * @return
      */
-    private void outboundRecord(OutboundReqVo stockReqVO) {
+    private String outboundRecord(OutboundReqVo stockReqVO) {
         //编码生成
         EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
         Outbound outbound = new Outbound();
@@ -260,6 +261,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         // 保存日志
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), stockReqVO, HandleTypeCoce.ADD_OUTBOUND_ODER.getName(), new Date(), stockReqVO.getCreateBy(), stockReqVO.getRemark());
+
+        return outboundOderCode;
     }
 
     @Override
