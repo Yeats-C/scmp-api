@@ -20,7 +20,7 @@ public enum PurchaseOrderLogEnum {
     WAREHOUSING_IN(8,"入库申请单，入库中"), // 入库中
     WAREHOUSING_FINISH(9,"入库申请单，入库完成"), // 入库完成
     ORDER_WAREHOUSING_FINISH(10,"采购单入库完成"), // 入库完成
-    PURCHASE_FINISH(1,"采购单采购完成"),  // 采购完成
+    PURCHASE_FINISH(11,"采购单采购完成"),  // 采购完成
     REVOKE(12,"采购单撤销"), // 撤销
     CHECKOUT_NOT(13,"采购单审核不通过"), // 审核不通过
     STORAGE_STAY(14,"采购单仓储确认中"), // 仓储状态：确认中

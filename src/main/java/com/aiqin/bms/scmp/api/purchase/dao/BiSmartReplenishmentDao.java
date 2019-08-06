@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
+import com.aiqin.bms.scmp.api.purchase.domain.BiSmartReplenishment;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup;
 import org.apache.ibatis.annotations.Param;
@@ -13,4 +14,6 @@ public interface BiSmartReplenishmentDao {
     List<PurchaseApplyProduct>  skuInfo(@Param("beginTime") String beginTime,
                                         @Param("finishTime") String finishTime,
                                         @Param("purchaseGroupCode") String purchaseGroupCode);
+
+    Integer insertAll(@Param("list") List<BiSmartReplenishment> list);
 }

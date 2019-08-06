@@ -95,4 +95,8 @@ public class StockVoRequest {
     @ApiModelProperty("商品备注")
     @JsonProperty(value = "remark")
     private String remark;
+
+    @ApiModelProperty("库存成本")
+    @JsonProperty(value = "stock_cost")
+    private String stockCost;
 }

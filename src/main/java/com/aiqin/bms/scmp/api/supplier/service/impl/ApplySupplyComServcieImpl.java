@@ -193,6 +193,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             //复制对象
             ApplySupplyCompanyReqDTO applySupplyCompany = new ApplySupplyCompanyReqDTO();
             BeanCopyUtils.copy(applySupplyCompanyReqVO,applySupplyCompany);
+            //正式供应商编码
             applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
             SupplyCompany s = supplyCompanyMapper.selectBySupplyComCode(applySupplyCompany.getSupplyCompanyCode(),getUser().getCompanyCode());
             List<String> codes = Lists.newArrayList();

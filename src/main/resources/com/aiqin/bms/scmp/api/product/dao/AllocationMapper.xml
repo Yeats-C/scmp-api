@@ -38,7 +38,7 @@
     <result column="allocation_type_name" jdbcType="VARCHAR" property="allocationTypeName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, allocation_code, callout_logistics_center_code,
+      id, allocation_code, callout_logistics_center_code,
       callout_logistics_center_name, callout_warehouse_code,
       callout_warehouse_name, purchase_group_code,
       purchase_group_name, callin_logistics_center_code,
@@ -52,12 +52,138 @@
       undertaking_unit_code,undertaking_unit_name,remark,allocation_type,
       allocation_type_name
   </sql>
-
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from allocation
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getAllocationDetailById"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo">
+    select
+      a.id,
+      a.allocation_code allocationCode,
+      a.callout_logistics_center_code callOutLogisticsCenterCode,
+      a.callout_logistics_center_name callOutLogisticsCenterName,
+      a.callout_warehouse_code callOutWarehouseCode,
+      a.callout_warehouse_name callOutWarehouseName,
+      a.purchase_group_code purchaseGroupCode,
+      a.purchase_group_name purchaseGroupName,
+      a.callin_logistics_center_code callInLogisticsCenterCode,
+      a.callin_logistics_center_name callInLogisticsCenterName,
+      a.callin_warehouse_code callInWarehouseCode,
+      a.callin_warehouse_name callInWarehouseName,
+      a.principal,
+      a.quantity,
+      a.total_cost_rate totalCostRate,
+      a.outbound_oder_code outboundOderCode,
+      a.inbound_oder_code inboundOderCode,
+      a.allocation_status_code allocationStatusCode,
+      a.allocation_status_name allocationStatusName,
+      a.del_flag delFlag,
+      a.create_time createTime,
+      a.create_by createBy,
+      a.update_time updateTime,
+      a.update_by updateBy,
+      a.form_no formNo,
+      a.company_code companyCode,
+      a.company_name companyName,
+      a.direct_supervisor_code directSupervisorCode,
+      a.direct_supervisor_name directSupervisorName,
+      a.undertaking_unit_code undertakingUnitCode,
+      a.undertaking_unit_name undertakingUnitName,
+      a.remark,
+      a.allocation_type allocationType,
+      a.allocation_type_name allocationTypeName,
+      b.pra_main_unit_num callOutQuantity,
+      b.pra_tax_amount callOutTotalCostRate,
+      c.pra_main_unit_num callInQuantity,
+      c.pra_tax_amount callInTotalCostRate
+    from allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    LEFT JOIN inbound c ON a.inbound_oder_code = c.inbound_oder_code
+    where a.id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getMoveDetailById"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo">
+    select
+      a.id,
+      a.allocation_code movementCode,
+      a.callout_logistics_center_code logisticsCenterCode,
+      a.callout_logistics_center_name logisticsCenterName,
+      a.callout_warehouse_code callOutWarehouseCode,
+      a.callout_warehouse_name callOutWarehouseName,
+      a.purchase_group_code purchaseGroupCode,
+      a.purchase_group_name purchaseGroupName,
+      a.callin_warehouse_code callInWarehouseCode,
+      a.callin_warehouse_name callInWarehouseName,
+      a.principal,
+      a.quantity,
+      a.total_cost_rate totalCostRate,
+      a.outbound_oder_code outboundOderCode,
+      a.inbound_oder_code inboundOderCode,
+      a.allocation_status_code movementStatusCode,
+      a.allocation_status_name movementStatusName,
+      a.del_flag delFlag,
+      a.create_time createTime,
+      a.create_by createBy,
+      a.update_time updateTime,
+      a.update_by updateBy,
+      a.form_no formNo,
+      a.company_code companyCode,
+      a.company_name companyName,
+      a.direct_supervisor_code directSupervisorCode,
+      a.direct_supervisor_name directSupervisorName,
+      a.undertaking_unit_code undertakingUnitCode,
+      a.undertaking_unit_name undertakingUnitName,
+      a.remark,
+      b.pra_main_unit_num callOutQuantity,
+      b.pra_tax_amount callOutTotalCostRate,
+      c.pra_main_unit_num callInQuantity,
+      c.pra_tax_amount callInTotalCostRate
+    from allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    LEFT JOIN inbound c ON a.inbound_oder_code = c.inbound_oder_code
+    where a.id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getScrapDetailById"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo">
+    select
+      a.id,
+      a.allocation_code scrapCode,
+      a.callout_logistics_center_code logisticsCenterCode,
+      a.callout_logistics_center_name logisticsCenterName,
+      a.callout_warehouse_code warehouseCode,
+      a.callout_warehouse_name warehouseName,
+      a.purchase_group_code purchaseGroupCode,
+      a.purchase_group_name purchaseGroupName,
+      a.principal,
+      a.quantity,
+      a.total_cost_rate totalCostRate,
+      a.outbound_oder_code outboundOderCode,
+      a.inbound_oder_code inboundOderCode,
+      a.allocation_status_code scrapStatusCode,
+      a.allocation_status_name scrapStatusName,
+      a.del_flag delFlag,
+      a.create_time createTime,
+      a.create_by createBy,
+      a.update_time updateTime,
+      a.update_by updateBy,
+      a.form_no formNo,
+      a.company_code companyCode,
+      a.company_name companyName,
+      a.direct_supervisor_code directSupervisorCode,
+      a.direct_supervisor_name directSupervisorName,
+      a.undertaking_unit_code undertakingUnitCode,
+      a.undertaking_unit_name undertakingUnitName,
+      a.remark,
+      b.pra_main_unit_num callOutQuantity,
+      b.pra_tax_amount callOutTotalCostRate
+    from allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    where a.id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from allocation
@@ -456,6 +582,20 @@
     from allocation
     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
   </select>
+
+  <sql id="Allocation_Column_List">
+      a.id, a.allocation_code, a.callout_logistics_center_code,
+      a.callout_logistics_center_name, a.callout_warehouse_code,
+      a.callout_warehouse_name, a.purchase_group_code,
+      a.purchase_group_name, a.callin_logistics_center_code,
+      a.callin_logistics_center_name, a.callin_warehouse_code,
+      a.callin_warehouse_name, a.principal, a.quantity,
+      a.total_cost_rate, a.outbound_oder_code, a.inbound_oder_code,
+      a.allocation_status_code, a.allocation_status_name,
+      a.del_flag, a.create_time, a.create_by,
+      a.update_time, a.update_by ,a.form_no,a.company_code,a.company_name,
+      b.pra_main_unit_num as callout_quantity,c.pra_main_unit_num as callin_quantity
+  </sql>
   <resultMap id="AllocationResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="allocation_code" jdbcType="VARCHAR" property="allocationCode" />
@@ -471,6 +611,8 @@
     <result column="callin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
     <result column="principal" jdbcType="VARCHAR" property="principal" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
+    <result column="callin_quantity" jdbcType="BIGINT" property="callInQuantity" />
     <result column="total_cost_rate" jdbcType="BIGINT" property="taxRefundAmount" />
     <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
     <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
@@ -487,61 +629,75 @@
   </resultMap>
   <select id="getList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo" resultMap="AllocationResultMap">
     select
-    <include refid="Base_Column_List"/>
-    FROM allocation
+    <include refid="Allocation_Column_List"/>
+    FROM allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    LEFT JOIN inbound c ON a.inbound_oder_code = c.inbound_oder_code
     where
     1=1
     <if test="createStartTime != null ">
-      AND create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
+      AND a.create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
     </if>
     <if test="createEndTime != null">
-      AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
+      AND a.create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
     </if>
     <if test="allocationCode != null and allocationCode != '' ">
-      AND allocation_code LIKE CONCAT(CONCAT('%',#{allocationCode},'%'))
+      AND a.allocation_code LIKE CONCAT(CONCAT('%',#{allocationCode},'%'))
     </if>
     <if test="allocationStatusCode != null">
-      AND allocation_status_code = #{allocationStatusCode}
+      AND a.allocation_status_code = #{allocationStatusCode}
     </if>
     <if test="callOutLogisticsCenterName != null and callOutLogisticsCenterName != ''">
-      AND callout_logistics_center_name LIKE CONCAT('%',#{callOutLogisticsCenterName},'%')
+      AND a.callout_logistics_center_name LIKE CONCAT('%',#{callOutLogisticsCenterName},'%')
     </if>
     <if test="callOutLogisticsCenterCode != null and callOutLogisticsCenterCode != ''">
-      AND callout_logistics_center_code = #{callOutLogisticsCenterCode}
+      AND a.callout_logistics_center_code = #{callOutLogisticsCenterCode}
     </if>
     <if test="callOutWarehouseName != null and callOutWarehouseName != '' ">
-      AND callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
+      AND a.callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
     </if>
     <if test="callOutWarehouseCode != null and callOutWarehouseCode != '' ">
-      AND callout_warehouse_code = #{callOutWarehouseCode}
+      AND a.callout_warehouse_code = #{callOutWarehouseCode}
     </if>
     <if test="outboundOderCode != null and outboundOderCode != ''">
-      AND outbound_oder_code LIKE  CONCAT('%',#{outboundOderCode},'%')
+      AND a.outbound_oder_code LIKE  CONCAT('%',#{outboundOderCode},'%')
     </if>
     <if test="callInLogisticsCenterName != null and callInLogisticsCenterName != ''">
-      AND callin_logistics_center_name LIKE  CONCAT('%',#{callInLogisticsCenterName},'%')
+      AND a.callin_logistics_center_name LIKE  CONCAT('%',#{callInLogisticsCenterName},'%')
     </if>
     <if test="callInLogisticsCenterCode != null and callInLogisticsCenterCode != ''">
-      AND callin_logistics_center_code =  #{callInLogisticsCenterCode}
+      AND a.callin_logistics_center_code =  #{callInLogisticsCenterCode}
     </if>
     <if test="callInWarehouseName != null and callInWarehouseName != '' ">
-      AND callin_warehouse_name LIKE  CONCAT('%',#{callInWarehouseName},'%')
+      AND a.callin_warehouse_name LIKE  CONCAT('%',#{callInWarehouseName},'%')
     </if>
     <if test="callInWarehouseCode != null and callInWarehouseCode != '' ">
-      AND callin_warehouse_code =  #{callInWarehouseCode}
+      AND a.callin_warehouse_code =  #{callInWarehouseCode}
     </if>
     <if test="inboundOderCode != null and inboundOderCode != ''">
-      AND inbound_oder_code LIKE  CONCAT('%',#{inboundOderCode},'%')
+      AND a.inbound_oder_code LIKE  CONCAT('%',#{inboundOderCode},'%')
     </if>
     <if test="companyCode != null and companyCode != ''">
-      AND company_code = #{companyCode}
+      AND a.company_code = #{companyCode}
     </if>
     <if test="allocationType != null">
-      and allocation_type = #{allocationType}
+      and a.allocation_type = #{allocationType}
     </if>
-    order by create_time desc
+    order by a.create_time desc
   </select>
 
+  <sql id="Move_Column_List">
+      a.id, a.allocation_code, a.callout_logistics_center_code,
+      a.callout_logistics_center_name, a.callout_warehouse_code,
+      a.callout_warehouse_name, a.purchase_group_code,
+      a.purchase_group_name, a.callin_warehouse_code,
+      a.callin_warehouse_name, a.principal, a.quantity,
+      a.total_cost_rate, a.outbound_oder_code, a.inbound_oder_code,
+      a.allocation_status_code, a.allocation_status_name,
+      a.del_flag, a.create_time, a.create_by,
+      a.update_time, a.update_by ,a.form_no,a.company_code,a.company_name,
+      b.pra_main_unit_num as callout_quantity,c.pra_main_unit_num as callin_quantity
+  </sql>
   <resultMap id="MoveResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="allocation_code" jdbcType="VARCHAR" property="movementCode" />
@@ -555,6 +711,8 @@
     <result column="callin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
     <result column="principal" jdbcType="VARCHAR" property="principal" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
+    <result column="callin_quantity" jdbcType="BIGINT" property="callInQuantity" />
     <result column="total_cost_rate" jdbcType="BIGINT" property="taxInventoryCost" />
     <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
     <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
@@ -571,61 +729,74 @@
   </resultMap>
   <select id="getMoveList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo" resultMap="MoveResultMap">
     select
-    <include refid="Base_Column_List"/>
-    FROM allocation
+    <include refid="Move_Column_List"/>
+    FROM allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    LEFT JOIN inbound c ON a.inbound_oder_code = c.inbound_oder_code
     where
     1=1
     <if test="createStartTime != null ">
-      AND create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
+      AND a.create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
     </if>
     <if test="createEndTime != null">
-      AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
+      AND a.create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
     </if>
     <if test="movementCode != null and movementCode != '' ">
-      AND allocation_code LIKE CONCAT(CONCAT('%',#{movementCode},'%'))
+      AND a.allocation_code LIKE CONCAT(CONCAT('%',#{movementCode},'%'))
     </if>
     <if test="movementStatusCode != null">
-      AND allocation_status_code = #{movementStatusCode}
+      AND a.allocation_status_code = #{movementStatusCode}
     </if>
     <if test="logisticsCenterName != null and logisticsCenterName != ''">
-      AND callout_logistics_center_name LIKE CONCAT('%',#{logisticsCenterName},'%')
+      AND a.callout_logistics_center_name LIKE CONCAT('%',#{logisticsCenterName},'%')
     </if>
     <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
-      AND callout_logistics_center_code = #{logisticsCenterCode}
+      AND a.callout_logistics_center_code = #{logisticsCenterCode}
     </if>
     <if test="callOutWarehouseName != null and callOutWarehouseName != '' ">
-      AND callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
+      AND a.callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
     </if>
     <if test="callOutWarehouseCode != null and callOutWarehouseCode != '' ">
-      AND callout_warehouse_code = #{callOutWarehouseCode}
+      AND a.callout_warehouse_code = #{callOutWarehouseCode}
     </if>
     <if test="outboundOderCode != null and outboundOderCode != ''">
-      AND outbound_oder_code LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
+      AND a.outbound_oder_code LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
     </if>
     <if test="logisticsCenterName != null and logisticsCenterName != ''">
-      AND callin_logistics_center_name LIKE  CONCAT('%',#{logisticsCenterName},'%')
+      AND a.callin_logistics_center_name LIKE  CONCAT('%',#{logisticsCenterName},'%')
     </if>
     <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
-      AND callin_logistics_center_code =  #{logisticsCenterCode}
+      AND a.callin_logistics_center_code =  #{logisticsCenterCode}
     </if>
     <if test="callInWarehouseName != null and callInWarehouseName != '' ">
-      AND callin_warehouse_name LIKE  CONCAT('%',#{callInWarehouseName},'%')
+      AND a.callin_warehouse_name LIKE  CONCAT('%',#{callInWarehouseName},'%')
     </if>
     <if test="callInWarehouseCode != null and callInWarehouseCode != '' ">
-      AND callin_warehouse_code =  #{callInWarehouseCode}
+      AND a.callin_warehouse_code =  #{callInWarehouseCode}
     </if>
     <if test="inboundOderCode != null and inboundOderCode != ''">
-      AND inbound_oder_code LIKE  CONCAT('%',#{inboundOderCode},'%')
+      AND a.inbound_oder_code LIKE  CONCAT('%',#{inboundOderCode},'%')
     </if>
     <if test="companyCode != null and companyCode != ''">
-      AND company_code = #{companyCode}
+      AND a.company_code = #{companyCode}
     </if>
     <if test="allocationType != null">
-      and allocation_type = #{allocationType}
+      and a.allocation_type = #{allocationType}
     </if>
-    order by create_time desc
+    order by a.create_time desc
   </select>
 
+  <sql id="Scrap_Column_List">
+      a.id, a.allocation_code, a.callout_logistics_center_code,
+      a.callout_logistics_center_name, a.callout_warehouse_code,
+      a.callout_warehouse_name, a.purchase_group_code,
+      a.purchase_group_name,  a.principal, a.quantity,
+      a.total_cost_rate, a.outbound_oder_code, a.inbound_oder_code,
+      a.allocation_status_code, a.allocation_status_name,
+      a.del_flag, a.create_time, a.create_by,
+      a.update_time, a.update_by ,a.form_no,a.company_code,a.company_name,
+      b.pra_main_unit_num as callout_quantity,b.pra_tax_amount as callout_tax_amount
+  </sql>
   <resultMap id="ScrapResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="allocation_code" jdbcType="VARCHAR" property="scrapCode" />
@@ -637,7 +808,9 @@
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="principal" jdbcType="VARCHAR" property="principal" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
     <result column="total_cost_rate" jdbcType="BIGINT" property="taxInventoryCost" />
+    <result column="callout_tax_amount" jdbcType="BIGINT" property="callOutTaxAmount" />
     <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
     <result column="allocation_status_code" jdbcType="TINYINT" property="scrapStatusCode" />
     <result column="allocation_status_name" jdbcType="VARCHAR" property="scrapStatusName" />
@@ -652,56 +825,57 @@
   </resultMap>
   <select id="getScrapList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo" resultMap="ScrapResultMap">
     select
-    <include refid="Base_Column_List"/>
-    FROM allocation
+    <include refid="Scrap_Column_List"/>
+    FROM allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
     where
     1=1
     <if test="createStartTime != null ">
-      AND create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
+      AND a.create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
     </if>
     <if test="createEndTime != null">
-      AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
+      AND a.create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
     </if>
     <if test="scrapCode != null and scrapCode != '' ">
-      AND allocation_code LIKE CONCAT('%',#{scrapCode},'%')
+      AND a.allocation_code LIKE CONCAT('%',#{scrapCode},'%')
     </if>
     <if test="scrapStatusCode != null">
-      AND allocation_status_code = #{scrapStatusCode}
+      AND a.allocation_status_code = #{scrapStatusCode}
     </if>
     <if test="logisticsCenterName != null and logisticsCenterName != ''">
-      AND callout_logistics_center_name LIKE CONCAT('%',#{logisticsCenterName},'%')
+      AND a.callout_logistics_center_name LIKE CONCAT('%',#{logisticsCenterName},'%')
     </if>
     <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
-      AND callout_logistics_center_code = #{logisticsCenterCode}
+      AND a.callout_logistics_center_code = #{logisticsCenterCode}
     </if>
     <if test="warehouseName != null and warehouseName != '' ">
-      AND callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
+      AND a.callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
     </if>
     <if test="warehouseCode != null and warehouseCode != '' ">
-      AND callout_warehouse_code = #{warehouseCode}
+      AND a.callout_warehouse_code = #{warehouseCode}
     </if>
     <if test="outboundOderCode != null and outboundOderCode != ''">
-      AND outbound_oder_code LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
+      AND a.outbound_oder_code LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
     </if>
     <if test="logisticsCenterName != null and logisticsCenterName != ''">
-      AND callin_logistics_center_name LIKE  CONCAT('%',#{logisticsCenterName},'%')
+      AND a.callin_logistics_center_name LIKE  CONCAT('%',#{logisticsCenterName},'%')
     </if>
     <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
-      AND callin_logistics_center_code =  #{logisticsCenterCode}
+      AND a.callin_logistics_center_code =  #{logisticsCenterCode}
     </if>
     <if test="warehouseName != null and warehouseName != '' ">
-      AND callin_warehouse_name LIKE  CONCAT('%',#{warehouseName},'%')
+      AND a.callin_warehouse_name LIKE  CONCAT('%',#{warehouseName},'%')
     </if>
     <if test="warehouseCode != null and warehouseCode != '' ">
-      AND callin_warehouse_code =  #{warehouseCode}
+      AND a.callin_warehouse_code =  #{warehouseCode}
     </if>
     <if test="companyCode != null and companyCode != ''">
-      AND company_code = #{companyCode}
+      AND a.company_code = #{companyCode}
     </if>
     <if test="allocationType != null">
-      and allocation_type = #{allocationType}
+      and a.allocation_type = #{allocationType}
     </if>
-    order by create_time desc
+    order by a.create_time desc
   </select>
   <resultMap id="selectByFormNO1" type="com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO">
         <id column="aid" jdbcType="BIGINT" property="id" />

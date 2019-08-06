@@ -3,18 +3,17 @@ package com.aiqin.bms.scmp.api.purchase.jobs.impl;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.purchase.dao.BiSmartReplenishmentDao;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitCapacityMapper;
+import com.aiqin.bms.scmp.api.purchase.dao.*;
+import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.jobs.AutomaticPurchaseService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup;
+import com.aiqin.bms.scmp.api.supplier.domain.response.rule.DetailRespVo;
+import com.aiqin.bms.scmp.api.supplier.mapper.SupplierRuleMapper;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -54,17 +53,25 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
     private PurchaseApplyProductDao purchaseApplyProductDao;
     @Resource
     private PurchaseOrderDao purchaseOrderDao;
+    @Resource
+    private BiAutomaticOrderDao biAutomaticOrderDao;
+    @Resource
+    private SupplierRuleMapper supplierRuleDao;
+    @Resource
+    private ProductSkuSupplyUnitCapacityMapper productSkuSupplyUnitCapacityDao;
+    @Resource
+    private PurchaseOrderDetailsDao purchaseOrderDetailsDao;
 
-    @Scheduled(cron = "0 0 1 * * ?") // 每天00:05 执行一次执行
+    @Scheduled(cron = "0 0 2 1 * ?")   //每月1号的0:10:00执行
     public void automatic(){
-        this.automaticPurchase();
+        DateTime dateTime = new DateTime(Calendar.getInstance().getTime());
+        String data = dateTime.toString("yyyy-MM-dd");
+        this.automaticPurchase(data);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse automaticPurchase(){
-        DateTime dateTime = new DateTime(Calendar.getInstance().getTime());
-        String data = dateTime.toString("yyyy-MM-dd");
+    public HttpResponse automaticPurchase(String data){
         String beginTime = data + " 00:00:00";
         String finishTime = data + " 23:59:59";
         // 查询采购组
@@ -155,15 +162,116 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
         List<PurchaseApplyDetailResponse> details = purchaseOrderDao.orderByExecuteWarehousing(beginTime, finishTime);
         if(CollectionUtils.isNotEmpty(details)){
             PurchaseOrder purchaseOrder = new PurchaseOrder();
+            PurchaseOrderDetails detail;
             for(PurchaseApplyDetailResponse order:details){
                 purchaseOrder.setPurchaseOrderId(order.getPurchaseOrderId());
                 if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
                     purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
                 }else {
                     purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
+                    // 添加入库完成时间
+                    detail = new PurchaseOrderDetails();
+                    detail.setPurchaseOrderId(order.getPurchaseOrderId());
+                    detail.setWarehouseTime(Calendar.getInstance().getTime());
+                    detail.setUpdateByName("有效期到期，自动执行");
+                    detail.setUpdateById("0");
+                    purchaseOrderDetailsDao.update(detail);
                 }
                 purchaseOrderDao.update(purchaseOrder);
             }
+        }
+        return HttpResponse.success();
+    }
+
+    @Scheduled(cron = "0 10 0 1 * ?")   //每月1号的0:10:00执行
+    public void intellectPurchase(){
+        // 获取当前月时间
+        String months = DateUtils.getMonths();
+        this.intellect(months);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse intellect(String months){
+        // 查询智能下单的sku
+        List<BiAutomaticOrder> orderList = biAutomaticOrderDao.automaticOrderList(months);
+        if(CollectionUtils.isNotEmpty(orderList)){
+            // 计算审核天数
+            DetailRespVo rule = supplierRuleDao.findByCompanyCode("01");
+            Integer checkDay;
+            if(rule != null){
+                checkDay = rule.getPurchaseProcessReviewDay() + rule.getPurchaseProcessPaymentDay() + rule.getPurchaseProcessSupplierConfirmDay();
+            }else {
+                checkDay = 0;
+            }
+            List<BiSmartReplenishment> list = Lists.newArrayList();
+            BiSmartReplenishment smartReplenishment;
+            for(BiAutomaticOrder order:orderList){
+                // 判断库存天数与订货周期
+                Integer forecastCount = 0;
+                // 库存天数
+                Integer inventoryDays = order.getInventoryDays() == null ? 0 : order.getInventoryDays();
+                // 订货周期
+                Integer orderCycle = order.getOrderCycle() == null ? 0 : order.getOrderCycle();
+                // 方案3 （最大上限）
+                Integer caseThree = order.getCaseThree() == null ? 0 : order.getCaseThree();
+                // 方案2
+                Integer caseTwo = order.getCaseTwo() == null ? 0 : order.getCaseTwo();
+                // 方案1
+                Integer caseOne = order.getCaseOne() == null ? 0 : order.getCaseOne();
+                if(inventoryDays > orderCycle){
+                    if(caseThree < caseOne){
+                        forecastCount = caseThree;
+                    }else {
+                        forecastCount = caseOne;
+                    }
+                }else {
+                    // 计算产能天数
+                    List<ProductSkuSupplyUnitCapacity> capacities = productSkuSupplyUnitCapacityDao.selectSupplyCapacityInfo(order.getSupplierCode(), order.getSkuCode());
+                    if(CollectionUtils.isEmpty(capacities)){
+                        LOGGER.info("未获取该sku的产能" + order.getSkuCode());
+                        continue;
+                     }
+                     Integer capacityDay = 0;
+                     for(ProductSkuSupplyUnitCapacity capacity:capacities){
+                         Integer outPut = capacity.getOutPut() == null ? 0 : capacity.getOutPut().intValue();
+                         if(outPut - caseOne >= 0){
+                             capacityDay = capacity.getNeedDays().intValue();
+                             break;
+                         }
+                     }
+                    // 到货周期
+                    Integer arrivalCycle = order.getArrivalCycle() == null ? 0 : order.getArrivalCycle();
+                    Integer day1 = checkDay + arrivalCycle + capacityDay;
+                    if(day1 > inventoryDays){
+                        if(caseTwo <= caseThree){
+                            forecastCount = caseTwo;
+                        }else {
+                            forecastCount = caseThree;
+                        }
+                    }else {
+                        if(caseOne <= caseThree){
+                            forecastCount = caseOne;
+                        }else {
+                            forecastCount = caseThree;
+                        }
+                    }
+                }
+                smartReplenishment = new BiSmartReplenishment();
+                smartReplenishment.setSkuCode(order.getSkuCode());
+                smartReplenishment.setSkuName(order.getSkuName());
+                smartReplenishment.setTransportCenterCode(order.getTransportCenterCode());
+                smartReplenishment.setTransportCenterName(order.getTransportCenterName());
+                smartReplenishment.setWarehouseCode(order.getWarehouseCode());
+                smartReplenishment.setWarehouseName(order.getWarehouseName());
+                smartReplenishment.setSupplierCode(order.getSupplierCode());
+                smartReplenishment.setSupplierName(order.getSupplierName());
+                smartReplenishment.setSuggestedReplenishmentNumber(forecastCount);
+                smartReplenishment.setCreateById("0");
+                smartReplenishment.setCreateByName("系统");
+                list.add(smartReplenishment);
+            }
+            biSmartReplenishmentDao.insertAll(list);
         }
         return HttpResponse.success();
     }

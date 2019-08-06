@@ -6,9 +6,12 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo;
 
 import java.util.List;
 
@@ -43,6 +46,12 @@ public interface AllocationMapper {
      */
     Allocation selectByPrimaryKey(Long id);
 
+
+    AllocationResVo getAllocationDetailById(Long id);
+
+    MovementResVo getMoveDetailById(Long id);
+
+    ScrapResVo getScrapDetailById(Long id);
 
     /**
      * 有选择的更新
