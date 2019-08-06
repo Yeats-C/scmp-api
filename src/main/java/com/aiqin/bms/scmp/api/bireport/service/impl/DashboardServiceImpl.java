@@ -48,4 +48,10 @@ public class DashboardServiceImpl implements DashboardService{
     public List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo) {
         return dashboardDao.selectDashboardDepMonthlyHomocyclicRatio(dashboardDepMonthlyHomocyclicRatioReqVo);
     }
+
+    // 今年各亏损占比
+    @Override
+    public List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio(DashboardAllKindsLossRatioReqVo dashboardAllKindsLossRatioReqVo) {
+        return dashboardDao.selectDashboardAllKindsLossRatio(dashboardAllKindsLossRatioReqVo);
+    }
 }

@@ -86,4 +86,15 @@
       FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
       WHERE
     </select>
+    <select id="selectDashboardAllKindsLossRatio" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardAllKindsLossRatioRespVo">
+        SELECT
+        daklr.id as id,
+        daklr.stat_year as statYear,
+        daklr.defective_effect_amount as defectiveEffectAmount,
+        daklr.stockout_sales_amount as stockoutSalesAmount,
+        daklr.defective_effect_ratio as defectiveEffectRatio,
+        daklr.stockout_ratio as stockoutRatio
+        FROM dashboard_all_kinds_loss_ratio daklr
+        WHERE
+    </select>
 </mapper>

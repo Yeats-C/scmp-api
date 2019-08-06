@@ -65,4 +65,11 @@ public class DashboardController {
         DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo = new DashboardDepMonthlyHomocyclicRatioReqVo();
         return HttpResponse.success(dashboardService.selectDashboardDepMonthlyHomocyclicRatio(dashboardDepMonthlyHomocyclicRatioReqVo));
     }
+
+    @GetMapping("/dashboard/all/kinds/loss/ratio")
+    @ApiOperation("今年各亏损占比")
+    public HttpResponse<List<DashboardAllKindsLossRatioRespVo>> selectDashboardAllKindsLossRatio(){
+        DashboardAllKindsLossRatioReqVo dashboardAllKindsLossRatioReqVo = new DashboardAllKindsLossRatioReqVo();
+        return HttpResponse.success(dashboardService.selectDashboardAllKindsLossRatio(dashboardAllKindsLossRatioReqVo));
+    }
 }
