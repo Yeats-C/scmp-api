@@ -1,13 +1,10 @@
 package com.aiqin.bms.scmp.api.dao.test.reject;
 
-import com.aiqin.bms.scmp.api.ScmpApiBootApplication;
 import com.aiqin.bms.scmp.api.SpringBootTestContext;
-import com.aiqin.bms.scmp.api.dao.test.reject.AsyncService;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectApprovalService;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
-import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectApprovalServiceImpl;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
@@ -100,7 +97,7 @@ public class RejectTest extends SpringBootTestContext {
     public void rejectSupplier() {
         RejectRecord request = new RejectRecord();
         request.setRejectRecordId("BI3A6DE17B116B49FAA6FA00F0BBFF6E59");
-        goodsRejectService.rejectSupplier(request);
+        goodsRejectService.rejectSupplier(request, create_by_company_code);
     }
 
     @Test
