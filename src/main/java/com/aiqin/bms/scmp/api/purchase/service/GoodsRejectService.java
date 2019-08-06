@@ -51,7 +51,7 @@ public interface GoodsRejectService {
 
     HttpResponse<PageResData<RejectRecord>> rejectList(RejectQueryRequest rejectApplyQueryRequest);
 
-    HttpResponse rejectSupplier(RejectRecord rejectApplyQueryRequest);
+    HttpResponse rejectSupplier(RejectRecord rejectApplyQueryRequest, String create_by_company_code);
 
     HttpResponse<RejectResponse> rejectInfo(String rejectApplyQueryRequest);
 
