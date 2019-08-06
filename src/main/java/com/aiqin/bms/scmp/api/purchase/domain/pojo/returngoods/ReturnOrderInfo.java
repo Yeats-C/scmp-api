@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @ApiModel("退货订单主表")
 @Data
@@ -212,9 +213,6 @@ public class ReturnOrderInfo {
 
     @ApiModelProperty("修改时间")
     private Date updateTime;
-
-    @ApiModelProperty("体积")
-    private String volume;
 
     @ApiModelProperty("实际重量")
     private Long actualWeight;
