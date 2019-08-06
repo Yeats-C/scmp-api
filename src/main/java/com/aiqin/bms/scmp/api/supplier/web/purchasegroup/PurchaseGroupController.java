@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.supplier.web.purchasegroup;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.EnabledSave;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.PurchaseGroupReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.QueryPurchaseGroupReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.UpdatePurchaseGroupReqVo;
@@ -11,10 +11,10 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGro
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.QueryPurchaseGroupResVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -111,4 +111,14 @@ public class PurchaseGroupController {
         return purchaseGroupService.getPurchaseGroupBuyerList(userPositionsRequest);
     }
 
+    @PutMapping("/enabled")
+    @ApiOperation("启用或禁止")
+    public HttpResponse<Integer> enabledSupplierDictionary(@RequestBody @Validated EnabledSave enabledSave) {
+        try {
+            return HttpResponse.success(purchaseGroupService.enabled(enabledSave));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 }

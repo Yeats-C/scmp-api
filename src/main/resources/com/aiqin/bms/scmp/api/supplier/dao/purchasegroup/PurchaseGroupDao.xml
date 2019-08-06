@@ -6,6 +6,7 @@
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="enable" jdbcType="TINYINT" property="enable" />
+    <result column="purchase_group_order" jdbcType="INTEGER" property="purchaseGroupOrder" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -16,7 +17,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, purchase_group_code, purchase_group_name, enable, del_flag, create_by, create_time, 
-    update_by, update_time, responsible_person_code, responsible_person_name
+    update_by, update_time, responsible_person_code, responsible_person_name,purchase_group_order
   </sql>
 
   <select id="selectByPurchaseGroup" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.QueryPurchaseGroupReqVo" resultMap="BaseResultMap">
@@ -37,7 +38,7 @@
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
-    order by create_time desc
+    order by purchase_group_order desc,create_time desc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -101,6 +102,9 @@
       <if test="responsiblePersonName != null">
         responsible_person_name,
       </if>
+      <if test="purchaseGroupOrder != null">
+        purchase_group_order,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -142,6 +146,9 @@
       <if test="responsiblePersonName != null">
         #{responsiblePersonName,jdbcType=VARCHAR},
       </if>
+      <if test="purchaseGroupOrder != null">
+        #{purchaseGroupOrder,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO">
@@ -177,7 +184,15 @@
       <if test="responsiblePersonName != null">
         responsible_person_name = #{responsiblePersonName,jdbcType=VARCHAR},
       </if>
+      <if test="purchaseGroupOrder != null">
+        purchase_group_order = #{purchaseGroupOrder,jdbcType=INTEGER},
+      </if>
     </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="enable">
+    update purchase_group
+    set enable = #{status,jdbcType=TINYINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <!--<update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.scmp.domain.request.purchasegroup.dto.PurchaseGroupDTO">-->
@@ -218,6 +233,7 @@
     <if test="name != null and name != ''">
       and a.purchase_group_name like concat('%', #{name,jdbcType=VARCHAR},'%')
     </if>
+    order by a.purchase_group_order desc,a.create_time desc
   </select>
 
   <select id="checkName" resultType="java.lang.Integer">

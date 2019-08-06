@@ -74,4 +74,6 @@ public class WarehouseDTO extends CommonBean {
     @ApiModelProperty("公司名称")
     private String companyName;
 
+    @ApiModelProperty("排序")
+    private Integer warehouseOrder;
 }

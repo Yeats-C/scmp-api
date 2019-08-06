@@ -33,4 +33,7 @@ public class UpdateTagReqVo {
 
     @ApiModelProperty("启用禁用状态 0:启用 1:禁用")
     private Byte enable;
+
+    @ApiModelProperty("标签分类")
+    private String classify;
 }
