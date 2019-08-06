@@ -1364,7 +1364,7 @@
                     create_by=#{item.createBy},
                 </if>
                 <if test="item.updateTime!=null">
-                    update_time=#{item.updateTime},
+                    update_time=NOW(),
                 </if>
                 <if test="item.updateBy!=null and item.updateBy!=''">
                     update_by=#{item.updateBy},

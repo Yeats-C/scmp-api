@@ -109,6 +109,10 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         request.setCreateBy(currentAuthToken.getPersonName());
         request.setCompanyName(currentAuthToken.getCompanyName());
         request.setCreateTime(new Date());
+        if (StringUtils.isNotBlank(request.getOfficialCode())) {
+            request.setUpdateBy(currentAuthToken.getPersonName());
+            request.setUpdateTime(new Date());
+        }
         if (StringUtils.isBlank(request.getCode())) {
             request.setBeDisable(0);
         }
@@ -512,6 +516,8 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             //设置为生效
             newMain.setBeEffective(1);
             newMain.setCode(oldMain.getCode());
+            newMain.setCreateBy(oldMain.getCreateBy());
+            newMain.setCreateTime(oldMain.getCreateTime());
             main.add(newMain);
             List<ProductSkuSaleArea> saleAreas = BeanCopyUtils.copyList(areaDTO.getSkuList(), ProductSkuSaleArea.class);
             saleAreas.forEach(o->o.setCode(oldMain.getCode()));
@@ -698,10 +704,12 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         List<String> collect = vo.getSkuList().stream().map(QueryProductSaleAreaRespVO::getSkuCode).distinct().collect(Collectors.toList());
         //查询直送供应商
         List<QueryProductSaleAreaRespVO> temp = skuInfoService.selectDirectSupplierBySkuCodes(collect);
-        Map<String, QueryProductSaleAreaRespVO> map = temp.stream().collect(Collectors.toMap(QueryProductSaleAreaRespVO::getSkuCode, Function.identity()));
-        vo.getSkuList().forEach(o->{
-            o.setSupplierList(map.get(o.getSkuCode()).getSupplierList());
-        });
+        if(CollectionUtils.isNotEmpty(temp)){
+            Map<String, QueryProductSaleAreaRespVO> map = temp.stream().collect(Collectors.toMap(QueryProductSaleAreaRespVO::getSkuCode, Function.identity()));
+            vo.getSkuList().forEach(o->{
+                o.setSupplierList(map.get(o.getSkuCode()).getSupplierList());
+            });
+        }
         return vo;
     }
 

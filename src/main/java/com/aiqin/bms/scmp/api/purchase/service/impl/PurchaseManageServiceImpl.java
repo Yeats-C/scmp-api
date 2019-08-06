@@ -9,10 +9,7 @@ import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
@@ -482,12 +479,19 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     PurchaseOrderLogEnum.REVOKE.getName(), order.getApplyTypeForm());
         }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
             // 仓储确认判断是否入库完成
-                this.wayNum(purchaseOrderId, createById, createByName, order.getApplyTypeForm());
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
+            this.wayNum(purchaseOrderId);
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
+            // 添加入库完成时间
+            detail = new PurchaseOrderDetails();
+            detail.setPurchaseOrderId(purchaseOrderId);
+            detail.setWarehouseTime(Calendar.getInstance().getTime());
+            detail.setUpdateByName(createById);
+            detail.setUpdateById(createByName);
+            purchaseOrderDetailsDao.update(detail);
             // 手动入库完成 撤销未完成的入库单
-            //inboundService.repealOrder(order.getPurchaseOrderCode(), createById, createByName);
+            inboundService.repealOrder(order.getPurchaseOrderCode(), createById, createByName);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
         }
@@ -703,6 +707,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         // 查询是否有商品可以入库
         if(CollectionUtils.isNotEmptyCollection(productList)){
             for(PurchaseOrderProduct product:productList){
+                Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
+                Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
+                if(singleCount - actualSingleCount == 0){
+                    continue;
+                }
                 reqVo = new InboundProductReqVo();
                 reqVo.setSkuCode(product.getSkuCode());
                 reqVo.setSkuName(product.getSkuName());
@@ -722,10 +731,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     reqVo.setInboundBaseUnit(skuPurchaseInfo.getZeroRemovalCoefficient().toString());
                     reqVo.setInboundBaseContent(skuPurchaseInfo.getBaseProductContent().toString());
                 }
-                Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
-                Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
                 Integer baseProductContent = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent().intValue();
+                Integer amount = product.getProductAmount() == null ? 0 : product.getProductAmount();
                 if(actualSingleCount > 0 && baseProductContent > 0){
                     purchaseWhole = purchaseWhole - actualSingleCount / baseProductContent;
                 }
@@ -740,13 +748,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setTaxRate(product.getTaxRate());
                 preInboundMainNum += reqVo.getPreInboundMainNum();
                 preInboundNum += purchaseWhole;
-                if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
-                    preTaxAmount += 0;
-                    preNoTaxAmount += 0;
-                }else {
-                    preTaxAmount += productTotalAmount;
-                    preNoTaxAmount += Calculate.computeNoTaxPrice(productTotalAmount, product.getTaxRate().longValue());
-                }
+                Integer totalAmount = amount * (singleCount - actualSingleCount);
+                preTaxAmount += totalAmount.longValue();
+                preNoTaxAmount += Calculate.computeNoTaxPrice(totalAmount.longValue(), product.getTaxRate().longValue());
                 list.add(reqVo);
             }
         }
@@ -819,14 +823,18 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 LOGGER.error("采购单入库完成状态修改失败");
                 return HttpResponse.failure(ResultCode.UPDATE_ERROR);
             }
-            // 添加日志
-            log(purchaseStorage.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), purchaseOrder.getApplyTypeForm());
+            // 添加入库完成时间
+            PurchaseOrderDetails detail = new PurchaseOrderDetails();
+            detail.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
+            detail.setWarehouseTime(Calendar.getInstance().getTime());
+            detail.setUpdateByName(purchaseStorage.getCreateById());
+            detail.setUpdateById(purchaseStorage.getCreateByName());
+            purchaseOrderDetailsDao.update(detail);
+            log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , purchaseOrder.getApplyTypeForm());
             // 仓储确认判断是否入库完成
             if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-                this.wayNum(purchaseStorage.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), purchaseOrder.getApplyTypeForm());
-                log(purchaseStorage.getPurchaseOrderId(), list.get(0).getCreateById(), list.get(0).getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                        PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , purchaseOrder.getApplyTypeForm());
+                this.wayNum(purchaseStorage.getPurchaseOrderId());
             }
         }
         return HttpResponse.success();
@@ -947,22 +955,15 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 PurchaseOrderLogEnum.STORAGE_FINISH.getName() , order.getApplyTypeForm());
         // 仓储确认判断是否入库完成
         if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-            this.wayNum(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), order.getApplyTypeForm());
+            log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
+                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , order.getApplyTypeForm());
+            this.wayNum(purchaseOrderId);
         }
         return HttpResponse.success();
     }
 
     // 修改库存在途数
-    private void wayNum(String purchaseOrderId, String id, String name, String applyForm){
-        log(purchaseOrderId, id, name, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , applyForm);
-        // 添加入库完成时间
-        PurchaseOrderDetails detail = new PurchaseOrderDetails();
-        detail.setPurchaseOrderId(purchaseOrderId);
-        detail.setWarehouseTime(Calendar.getInstance().getTime());
-        detail.setUpdateByName(id);
-        detail.setUpdateById(name);
-        purchaseOrderDetailsDao.update(detail);
+    private void wayNum(String purchaseOrderId){
         StockChangeRequest stock = new StockChangeRequest();
         stock.setOperationType(11);
         List<StockVoRequest> list = Lists.newArrayList();
@@ -1043,5 +1044,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
        }
         List<PurchaseInspectionReport> inspectionReport = purchaseInspectionReportDao.inspectionReportInfo(purchaseOrderId);
         return HttpResponse.success(inspectionReport);
+    }
+
+    @Override
+    public HttpResponse<PurchaseFormResponse> skuSupply(String skuCode){
+        if(StringUtils.isBlank(skuCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        List<PurchaseFormResponse> purchaseFormResponses = productSkuSupplyUnitDao.supplyList(skuCode);
+        return HttpResponse.success(purchaseFormResponses);
     }
 }

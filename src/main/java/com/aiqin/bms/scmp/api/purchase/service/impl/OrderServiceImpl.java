@@ -82,10 +82,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<OrderInfo> orders = Lists.newCopyOnWriteArrayList();
         reqVOs.parallelStream().forEach(o->{
             OrderInfo info = BeanCopyUtils.copy(o, OrderInfo.class);
-            info.setCreateDate(date);
-            info.setOperator(CommonConstant.SYSTEM_AUTO);
-            info.setOperatorCode(CommonConstant.SYSTEM_AUTO_CODE);
-            info.setOperatorTime(date);
+//            info.setCreateDate(date);
+//            info.setOperator(CommonConstant.SYSTEM_AUTO);
+//            info.setOperatorCode(CommonConstant.SYSTEM_AUTO_CODE);
+//            info.setOperatorTime(date);
             orders.add(info);
             List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(o.getProductList(), OrderInfoItem.class);
             orderItems.addAll(orderItem);

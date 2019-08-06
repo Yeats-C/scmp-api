@@ -92,6 +92,9 @@ public class OutboundRequest {
     @ApiModelProperty("商品数量")
     private Long productNum;
 
+    @ApiModelProperty("预计商品数量")
+    private Long preProductNum;
+
     @ApiModelProperty("支付日期")
     private Date paymentTime;
 
@@ -106,6 +109,9 @@ public class OutboundRequest {
 
     @ApiModelProperty("操作人编码")
     private String operatorCode;
+
+    @ApiModelProperty("操作人名称")
+    private String operatorName;
 
     @ApiModelProperty("操作时间")
     private Date operatorTime;
@@ -155,5 +161,13 @@ public class OutboundRequest {
     @ApiModelProperty(value = "创建时间")
     private String createTime;
 
+    @ApiModelProperty(value = "创建人名称")
+    private String createByName;
+
+    @ApiModelProperty(value = "创建人Id")
+    private String createById;
+
+    @ApiModelProperty(value = "备注")
+    private String remark;
 
 }

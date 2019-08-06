@@ -12,9 +12,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.ApplySupplyComApplyListRe
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComListRespVO;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComServcie;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,11 +49,10 @@ public class ApplySupplyComController {
     public HttpResponse<Boolean> editApply(@RequestBody @Validated ApplySupplyCompanyReqVO applySupplyCompanyReqVO){
         try {
             return HttpResponse.success(applySupplyComServcie.editApply(applySupplyCompanyReqVO));
-        } catch (GroundRuntimeException ex) {
-            return HttpResponse.failure(MessageId.create(Project.SUPPLIER_API,13,ex.getMessage()));
         } catch (BizException ex) {
             return HttpResponse.failure(ex.getMessageId());
         } catch (Exception e) {
+            e.printStackTrace();
             return HttpResponse.failure(ResultCode.ADD_ERROR);
         }
     }

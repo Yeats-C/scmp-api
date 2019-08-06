@@ -38,7 +38,7 @@
     <result column="purchasing_group_name" jdbcType="VARCHAR" property="purchasingGroupName"/>
     <result column="tax_id" jdbcType="VARCHAR" property="taxId"/>
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative"/>
-    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital"/>
+    <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital"/>
     <result column="enable" jdbcType="TINYINT" property="enable"/>
     <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
     <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
@@ -66,6 +66,12 @@
   <delete id="delectById">
     delete from apply_supply_company where id = #{id}
   </delete>
+  <delete id="delectByIds" parameterType="java.util.List">
+    delete from apply_supply_company where id in
+    <foreach collection="list" open="(" close=")" item="item" separator=",">
+         #{item}
+    </foreach>
+  </delete>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
@@ -78,7 +84,16 @@
       from apply_supply_company
       where apply_supply_company_code = #{applySupplyCode}
     </select>
-    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany">
+    <select id="selectBySupplyCode" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from apply_supply_company
+      where company_code = #{companyCode} and apply_status = #{applyStatus} and supply_company_code in
+      <foreach collection="list" open="(" close=")" item="item" separator=",">
+           #{item}
+      </foreach>
+    </select>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany">
     update apply_supply_company
     <set>
       <if test="applySupplyName != null">

@@ -384,9 +384,9 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="selectByChannelName">
+  <select id="selectByChannelName" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannel">
     select
-    price_channel_code , price_channel_name
+    price_channel_code as priceChannelCode , price_channel_name as priceChannelName
     from price_channel
     where
      price_channel_name = #{priceChannelName,jdbcType=VARCHAR}

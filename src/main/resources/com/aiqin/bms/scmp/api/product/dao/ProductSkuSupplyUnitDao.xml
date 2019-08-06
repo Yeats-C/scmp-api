@@ -299,4 +299,10 @@
       where product_sku_code = #{skuCode,jdbcType=VARCHAR}
       and supply_unit_code = #{supplyUnitCode,jdbcType=VARCHAR}
   </select>
+  <select id="supplyList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse">
+      select supply_unit_code as supplierCode, supply_unit_name as supplierName,
+      product_sku_code as skuCode, product_sku_name as skuName
+      from product_sku_supply_unit
+      where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

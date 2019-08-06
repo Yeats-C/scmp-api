@@ -83,7 +83,7 @@
     <result column="supply_purchasing_group_name" jdbcType="VARCHAR" property="supplyPurchasingGroupName" />
     <result column="tax_id" jdbcType="VARCHAR" property="taxId" />
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
-    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital" />
+    <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital" />
     <result column="company_website" jdbcType="VARCHAR" property="companyWebsite" />
     <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
     <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />
@@ -139,7 +139,7 @@
       #{applyCode,jdbcType=VARCHAR},#{applyType,jdbcType=TINYINT},
       #{zipCode,jdbcType=VARCHAR},#{purchasingGroupCode,jdbcType=VARCHAR},#{formNo,jdbcType=VARCHAR},
       #{purchasingGroupName, jdbcType=VARCHAR},#{taxId, jdbcType=VARCHAR},#{corporateRepresentative, jdbcType=VARCHAR},
-      #{registeredCapital, jdbcType=BIGINT},#{enable, jdbcType=TINYINT},#{updateTime,jdbcType=TIMESTAMP},
+      #{registeredCapital, jdbcType=DECIMAL},#{enable, jdbcType=TINYINT},#{updateTime,jdbcType=TIMESTAMP},
       #{updateBy,jdbcType=VARCHAR},#{addAccount, jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{maxOrderAmount, jdbcType=BIGINT}, #{minOrderAmount, jdbcType=BIGINT}, #{businessLicense, jdbcType=VARCHAR}, #{starScore, jdbcType=DECIMAL},
       #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{supplyCompanyCode,jdbcType=VARCHAR},#{applyStatus,jdbcType=TINYINT}

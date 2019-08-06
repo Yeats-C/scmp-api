@@ -6,7 +6,6 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.scrap.ScrapReqVo;
@@ -112,19 +111,10 @@ public class ScrapServiceImpl extends BaseServiceImpl implements ScrapService, W
      */
     @Override
     public ScrapResVo view(Long id) {
-        ScrapResVo scrapResVo = new ScrapResVo();
-        Allocation allocation = allocationMapper.selectByPrimaryKey(id);
-        if(null == allocation){
+        ScrapResVo scrapResVo = allocationMapper.getScrapDetailById(id);
+        if(null == scrapResVo){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
-        BeanCopyUtils.copy(allocation,scrapResVo);
-        scrapResVo.setLogisticsCenterCode(allocation.getCallOutLogisticsCenterCode());
-        scrapResVo.setLogisticsCenterName(allocation.getCallOutLogisticsCenterName());
-        scrapResVo.setWarehouseCode(allocation.getCallOutWarehouseCode());
-        scrapResVo.setWarehouseName(allocation.getCallOutWarehouseName());
-        scrapResVo.setScrapCode(allocation.getAllocationCode());
-        scrapResVo.setScrapStatusCode(allocation.getAllocationStatusCode());
-        scrapResVo.setScrapStatusName(allocation.getAllocationStatusName());
         scrapResVo.setSkuList(allocationProductMapper.selectByAllocationCode(scrapResVo.getScrapCode()));
         scrapResVo.setBatchSkuList(allocationProductBatchMapper.selectByAllocationCode(scrapResVo.getScrapCode()));
         // 获取日志

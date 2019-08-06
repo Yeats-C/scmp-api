@@ -58,8 +58,20 @@ public class MovementResVo {
     @ApiModelProperty("数量")
     private Long quantity;
 
-    @ApiModelProperty("含税库存成本")
-    private Long totalCostRate;
+    @ApiModelProperty("出库数量")
+    private Long callOutQuantity;
+
+    @ApiModelProperty("入库数量")
+    private Long  callInQuantity;
+
+    @ApiModelProperty("含税总价")
+    private Long taxAmount;
+
+    @ApiModelProperty("出库含税总成本")
+    private Long callOutTaxAmount;
+
+    @ApiModelProperty("入库含税总成本")
+    private Long callInTaxAmount;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;

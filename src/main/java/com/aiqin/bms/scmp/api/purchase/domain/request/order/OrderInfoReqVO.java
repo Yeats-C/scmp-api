@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -163,6 +164,26 @@ public class OrderInfoReqVO {
 
     @ApiModelProperty("减免比例")
     private Integer logisticsRemissionRatio;
+
+    @ApiModelProperty("创建人")
+    private String createByName;
+
+    @ApiModelProperty("创建人编码")
+    private String createById;
+
+    @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
+
+    @ApiModelProperty("修改人")
+    private String updateByName;
+
+    @ApiModelProperty("修改人编码")
+    private String updateById;
+
+    @ApiModelProperty("修改时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 
     @ApiModelProperty("公司名称")
     @NotNull(message = "companyName can not be null！")

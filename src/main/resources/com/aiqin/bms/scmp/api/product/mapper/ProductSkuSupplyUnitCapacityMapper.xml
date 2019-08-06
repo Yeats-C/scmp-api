@@ -211,4 +211,11 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectSupplyCapacityInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include> from
+    product_sku_supply_unit_capacity
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+    and supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
+    order by out_put asc
+  </select>
 </mapper>

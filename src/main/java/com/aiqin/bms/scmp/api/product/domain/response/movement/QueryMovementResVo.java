@@ -54,6 +54,12 @@ public class QueryMovementResVo {
     @ApiModelProperty("数量")
     private Long quantity;
 
+    @ApiModelProperty("出库数量")
+    private Long callOutQuantity;
+
+    @ApiModelProperty("入库数量")
+    private Long  callInQuantity;
+
     @ApiModelProperty("含税库存成本，展示时需要除以100")
     private Long taxInventoryCost;
 

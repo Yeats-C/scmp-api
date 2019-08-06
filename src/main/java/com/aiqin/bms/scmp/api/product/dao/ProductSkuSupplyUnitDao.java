@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -51,4 +52,6 @@ public interface ProductSkuSupplyUnitDao {
     List<ProductSkuSupplyUnitRespVo> getDraftBySkuCodes(List<String> skuCodes);
 
     String getFactorySkuCode(@Param("skuCode") String skuCode, @Param("supplyUnitCode")String supplyUnitCode);
+
+    List<PurchaseFormResponse> supplyList(String skuCode);
 }

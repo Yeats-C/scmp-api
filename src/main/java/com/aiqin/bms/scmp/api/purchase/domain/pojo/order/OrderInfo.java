@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @ApiModel("订单主表")
 @Data
@@ -203,4 +204,31 @@ public class OrderInfo {
 
     @ApiModelProperty("公司编码")
     private String companyCode;
+
+    @ApiModelProperty("创建人")
+    private String createByName;
+
+    @ApiModelProperty("创建人编码")
+    private String createById;
+
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("修改人")
+    private String updateByName;
+
+    @ApiModelProperty("修改人编码")
+    private String updateById;
+
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    /**以下字段为了dl回调销售单生成出库单和库存变动需要*/
+
+    @ApiModelProperty("预计商品数量")
+    private Long preProductNum;
+
+    @ApiModelProperty("订单详情")
+    private List<OrderInfoItem> detailList;
+
 }
