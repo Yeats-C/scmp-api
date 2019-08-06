@@ -610,7 +610,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     }
 
     @Transactional
-    public HttpResponse rejectSupplier(RejectRecord request) {
+    public HttpResponse rejectSupplier(RejectRecord request, String create_by_company_code) {
         try {
             RejectRecord rejectRecord = rejectRecordDao.selectByRejectId(request.getRejectRecordId());
             if (rejectRecord == null) {
@@ -621,6 +621,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             LOGGER.info("供应商确认-更改退供申请详情影响条数:{}", count);
             List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(request.getRejectRecordId());
             ReturnSupplyToOutBoundReqVo reqVo = new ReturnSupplyToOutBoundReqVo();
+            //为了判断公司
+            if(StringUtils.isNotBlank(create_by_company_code)){
+                rejectRecord.setCompanyCode(create_by_company_code);
+            }
             reqVo.setRejectRecord(rejectRecord);
             reqVo.setRejectRecordDetails(list);
             LOGGER.info("调用退供出库:{}", request);

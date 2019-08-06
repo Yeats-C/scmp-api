@@ -67,7 +67,6 @@ public class FileRecordController {
         OutputStream outputStream = null;
         try {
             response.setContentType("text/plain;charset=utf-8");
-            response.setHeader("Content-Type", "multipart/form-data");
             response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".xlsx");
             // 循环取出流中的数据
             String excelPath = request.getSession().getServletContext().getRealPath("/WEB-INF/template/" + fileName + ".xlsx");
