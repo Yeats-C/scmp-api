@@ -31,6 +31,14 @@
     unit, classes, `type`, tax, tax_price, quantity, tax_amount,
     del_flag, create_time, create_by, update_time, update_by, picture_url, line_num
   </sql>
+
+  <sql id="Allocation_Column_List">
+    a.id, a.allocation_code, a.sku_code, a.sku_name, a.category, a.brand, a.color, a.specification, a.model,
+    a.unit, a.classes, a.`type`, a.tax, a.tax_price, a.quantity, a.tax_amount,
+    a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by, a.picture_url, a.line_num,
+    c.pra_outbound_main_num callout_quantity,c.pra_tax_amount callout_tax_amount,
+    d.pra_inbound_main_num callin_quantity,d.pra_tax_amount callin_tax_amount
+  </sql>
   <resultMap id="ListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo">
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
@@ -45,7 +53,11 @@
     <result column="tax" jdbcType="BIGINT" property="tax" />
     <result column="tax_price" jdbcType="BIGINT" property="taxPrice" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
+    <result column="callin_quantity" jdbcType="BIGINT" property="callInQuantity" />
     <result column="tax_amount" jdbcType="BIGINT" property="taxAmount" />
+    <result column="callout_tax_amount" jdbcType="BIGINT" property="callOutTaxAmount" />
+    <result column="callin_tax_amount" jdbcType="BIGINT" property="callInTaxAmount" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
@@ -56,9 +68,14 @@
   </resultMap>
   <select id="selectByAllocationCode" parameterType="java.lang.String" resultMap="ListResultMap">
     select 
-    <include refid="Base_Column_List" />
-    from allocation_product
-    where allocation_code = #{allocationCode,jdbcType=VARCHAR}
+    <include refid="Allocation_Column_List" />
+    from allocation_product a
+    LEFT JOIN allocation b ON a.allocation_code = b.allocation_code
+    LEFT JOIN outbound_product c ON b.outbound_oder_code = c.outbound_oder_code
+    AND a.sku_code = c.sku_code
+    LEFT JOIN inbound_product d ON b.inbound_oder_code = d.inbound_oder_code
+    AND a.sku_code = d.sku_code
+    where a.allocation_code = #{allocationCode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from allocation_product

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.allocation;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -51,6 +52,12 @@ public class QueryAllocationResVo {
     @ApiModelProperty("数量")
     private Long quantity;
 
+    @ApiModelProperty("出库数量")
+    private Long callOutQuantity;
+
+    @ApiModelProperty("入库数量")
+    private Long  callInQuantity;
+
     @ApiModelProperty("采购组编码")
     private String purchaseGroupCode;
 
@@ -76,12 +83,14 @@ public class QueryAllocationResVo {
     private Byte delFlag;
 
     @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty("创建人")
     private String createBy;
 
     @ApiModelProperty("更新时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @ApiModelProperty("更新人")

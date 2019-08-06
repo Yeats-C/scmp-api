@@ -64,8 +64,20 @@ public class AllocationProductResVo {
     @ApiModelProperty("数量")
     private Long quantity;
 
+    @ApiModelProperty("出库数量")
+    private Long callOutQuantity;
+
+    @ApiModelProperty("入库数量")
+    private Long  callInQuantity;
+
     @ApiModelProperty("含税总价")
     private Long taxAmount;
+
+    @ApiModelProperty("出库含税总成本")
+    private Long callOutTaxAmount;
+
+    @ApiModelProperty("入库含税总成本")
+    private Long callInTaxAmount;
 
     @ApiModelProperty("删除标记，0未删除 1已删除")
     private Byte delFlag;
@@ -81,7 +93,6 @@ public class AllocationProductResVo {
 
     @ApiModelProperty("更新人")
     private String updateBy;
-
 
     @ApiModelProperty("图片地址")
     private String pictureUrl;

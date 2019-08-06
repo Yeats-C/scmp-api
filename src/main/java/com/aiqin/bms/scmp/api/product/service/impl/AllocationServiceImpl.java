@@ -233,12 +233,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
      */
     @Override
     public AllocationResVo view(Long id) {
-        AllocationResVo allocationResVo = new AllocationResVo();
-        Allocation allocation = allocationMapper.selectByPrimaryKey(id);
-        if(null == allocation){
+        AllocationResVo allocationResVo = allocationMapper.getAllocationDetailById(id);
+        if(null == allocationResVo){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
-        BeanCopyUtils.copy(allocation,allocationResVo);
         allocationResVo.setSkuList(allocationProductMapper.selectByAllocationCode(allocationResVo.getAllocationCode()));
         allocationResVo.setBatchSkuList(allocationProductBatchMapper.selectByAllocationCode(allocationResVo.getAllocationCode()));
         // 获取日志

@@ -53,8 +53,14 @@ public class ScrapResVo {
     @ApiModelProperty("数量")
     private Long quantity;
 
+    @ApiModelProperty("数量")
+    private Long callOutQuantity;
+
     @ApiModelProperty("含税总成本")
     private Long totalCostRate;
+
+    @ApiModelProperty("含税总成本")
+    private Long callOutTotalCostRate;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
