@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @ApiModel("退货订单主表")
 @Data
@@ -182,4 +183,7 @@ public class ReturnOrderInfo {
 
     @ApiModelProperty("备注")
     private String remake;
+
+    @ApiModelProperty("商品详情")
+    private List<ReturnOrderInfoItem> detailList;
 }

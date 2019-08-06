@@ -110,6 +110,9 @@ public class OutboundRequest {
     @ApiModelProperty("操作人编码")
     private String operatorCode;
 
+    @ApiModelProperty("操作人名称")
+    private String operatorName;
+
     @ApiModelProperty("操作时间")
     private Date operatorTime;
 
