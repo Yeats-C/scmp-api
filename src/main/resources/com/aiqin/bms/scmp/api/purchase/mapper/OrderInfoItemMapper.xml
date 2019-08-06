@@ -62,7 +62,11 @@
       b.warehouse_name warehouseName,
       a.give_promotion givePromotion,
       b.create_date createDate,
-      '1' as status
+      '1' as status,
+      b.create_by_name createByName,
+      b.create_time createTime,
+      b.update_by_name updateByName,
+      b.update_time updateTime
       from order_info_item a
       left join order_info b
       on a.order_code = b.order_code
@@ -113,7 +117,11 @@
              b.warehouse_name warehouse_name,
              a.give_promotion givePromotion,
              b.create_date createDate,
-             '1' as status
+             '1' as status,
+             b.create_by_name createByName,
+             b.create_time createTime,
+             b.update_by_name updateByName,
+             b.update_time updateTime
       from order_info_item a
                left join order_info b
                          on a.order_code = b.order_code
