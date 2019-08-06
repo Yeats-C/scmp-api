@@ -24,6 +24,7 @@ public class DateUtils {
     public static final String  YEAR_FORMAT = "yy";
     public static final String  FORMAT = "yyyy-MM-dd HH:mm:ss";
     public static final String  PATTERN_DATE = "yyyy-MM-dd";
+    public static final String  MONTH_TIME = "yyyy-MM";
 
     public static String getCurrentDateTime(String format) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
@@ -73,5 +74,18 @@ public class DateUtils {
             throw new BizException(ResultCode.DATE_CONVERSION_FAILED);
         }
         return parse;
+    }
+
+    /**
+     * 获取当前月
+     * @return
+     */
+    public static String getMonths() {
+        SimpleDateFormat sdf = new SimpleDateFormat(MONTH_TIME);
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        //c.add(Calendar.MONTH, -i);
+        Date m = c.getTime();
+        return sdf.format(m);
     }
 }

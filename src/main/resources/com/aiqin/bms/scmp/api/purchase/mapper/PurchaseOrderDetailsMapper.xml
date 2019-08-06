@@ -155,12 +155,9 @@
       <if test="scoreCode != null">
         score_code = #{scoreCode,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
       update_time = now(),
-      <if test="createById != null">
-        create_by_id = #{createById,jdbcType=VARCHAR},
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
       <if test="updateByName != null">
         update_by_name = #{updateByName,jdbcType=VARCHAR},

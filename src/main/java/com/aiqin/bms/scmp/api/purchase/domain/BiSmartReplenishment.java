@@ -48,7 +48,7 @@ public class BiSmartReplenishment {
 
     @ApiModelProperty(value="建议补货数")
     @JsonProperty("suggested_replenishment_number")
-    private String suggestedReplenishmentNumber;
+    private Integer suggestedReplenishmentNumber;
 
     @ApiModelProperty(value="更新时间")
     @JsonProperty("update_time")

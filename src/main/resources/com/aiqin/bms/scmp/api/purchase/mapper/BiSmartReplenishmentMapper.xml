@@ -11,7 +11,7 @@
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
-    <result column="suggested_replenishment_number" jdbcType="VARCHAR" property="suggestedReplenishmentNumber" />
+    <result column="suggested_replenishment_number" jdbcType="INTEGER" property="suggestedReplenishmentNumber" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
@@ -68,4 +68,15 @@
     </if>
     and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
   </select>
+  <insert id="insertAll">
+    insert into bi_smart_replenishment (sku_code, sku_name, transport_center_code, transport_center_name, warehouse_code,
+        warehouse_name, supplier_code, supplier_name, suggested_replenishment_number, create_time, create_by_id, create_by_name)
+    values
+    <foreach collection="list" item="item" index="" separator=",">
+    ( #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.transportCenterCode,jdbcType=VARCHAR},
+      #{item.transportCenterName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehousName,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, #{suggestedReplenishmentNumber,jdbcType=INTEGER},
+      now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
 </mapper>
