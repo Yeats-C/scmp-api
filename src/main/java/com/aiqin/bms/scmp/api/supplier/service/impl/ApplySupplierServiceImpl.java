@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.form.service.FormApplyService;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.*;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplier;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
@@ -90,6 +91,9 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
     private SupplierFileDao supplierFileDao;
     @Autowired
     private SupplyCompanyDao supplyCompanyDao;
+
+    @Autowired
+    private FormApplyService formApplyService;
 
     @Override
     @Transactional(rollbackFor = BizException.class)
@@ -235,7 +239,29 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void workFlow(ApplySupplierReqDTO applySupplierReqDTO) {
+//        FormApplyRequest formApplyRequest = new FormApplyRequest();
+//        formApplyRequest.setFormNo(applySupplierReqDTO.getFormNo());
+//        formApplyRequest.setProcessKey(WorkFlow.APPLY_SUPPLIER.getKey());
+//        formApplyRequest.setAuditPersonId(applySupplierReqDTO.getDirectSupervisorCode());
+//        formApplyRequest.setFormUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_SUPPLIER.getNum());
+//        formApplyRequest.setFormUrl(workFlowBaseUrl.applySupplierGroupUrl + "?applyType=" + applySupplierReqDTO.getApplyType() + "&applyCode=" + applySupplierReqDTO.getApplySupplierCode() + "&id=" + applySupplierReqDTO.getId() + "&itemCode=2" + "&" + workFlowBaseUrl.authority);
+//        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+//        formApplyRequest.setPersonId(currentAuthToken.getPersonId());
+//        String applyTypeTitle = "新增";
+//        if (StatusTypeCode.ADD_APPLY.getStatus().equals(applySupplierReqDTO.getApplyType())) {
+//            applyTypeTitle = "新增";
+//        } else {
+//            applyTypeTitle = "修改";
+//        }
+//        formApplyRequest.setTitle(applyTypeTitle + applySupplierReqDTO.getSupplierName() + "申请");
+//        HttpResponse httpResponse = formApplyService.submitActBaseProcess(formApplyRequest);
+//        if(Objects.equals(httpResponse.getCode(),"0")){
+//
+//        }else{
+//            throw new BizException(httpResponse.getMessage());
+//        }
         try {
+
             WorkFlowVO workFlowVO = new WorkFlowVO();
             workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierGroupUrl+"?applyType="+applySupplierReqDTO.getApplyType()+"&applyCode="+applySupplierReqDTO.getApplySupplierCode()+"&id="+applySupplierReqDTO.getId()+"&itemCode=2"+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);

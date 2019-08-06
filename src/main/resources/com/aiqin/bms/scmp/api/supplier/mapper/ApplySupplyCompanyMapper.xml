@@ -38,7 +38,7 @@
     <result column="purchasing_group_name" jdbcType="VARCHAR" property="purchasingGroupName"/>
     <result column="tax_id" jdbcType="VARCHAR" property="taxId"/>
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative"/>
-    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital"/>
+    <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital"/>
     <result column="enable" jdbcType="TINYINT" property="enable"/>
     <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
     <result column="company_name" jdbcType="VARCHAR" property="companyName"/>

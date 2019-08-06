@@ -290,6 +290,10 @@
   <resultMap id="selectDetailByCode" type="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaForOfficialMainRespVO">
     <result column="acode"  property="code" />
     <result column="aname"  property="name" />
+    <result column="acreate_by"  property="createBy" />
+    <result column="acreate_time"  property="createTime" />
+    <result column="aupdate_by"  property="updateBy" />
+    <result column="aupdate_time"  property="updateTime" />
     <result column="abe_disable"  property="beDisable" />
     <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO">
       <result column="bsku_code"  property="skuCode" />
@@ -319,6 +323,10 @@
              a.code acode,
              a.name aname,
              a.be_disable abe_disable,
+             a.create_by acreate_by,
+             a.create_time acreate_time,
+             a.update_by aupdate_by,
+             a.update_time aupdate_time,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
              e.color_name bcolorName,
