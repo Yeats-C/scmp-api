@@ -6,7 +6,6 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
@@ -109,17 +108,10 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
      */
     @Override
     public MovementResVo view(Long id) {
-        MovementResVo movementResVo = new MovementResVo();
-        Allocation allocation = allocationMapper.selectByPrimaryKey(id);
-        if(null == allocation){
+        MovementResVo movementResVo = allocationMapper.getMoveDetailById(id);
+        if(null == movementResVo){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
-        BeanCopyUtils.copy(allocation,movementResVo);
-        movementResVo.setMovementCode(allocation.getAllocationCode());
-        movementResVo.setMovementStatusCode(allocation.getAllocationStatusCode());
-        movementResVo.setMovementStatusName(allocation.getAllocationStatusName());
-        movementResVo.setLogisticsCenterCode(allocation.getCallInLogisticsCenterCode());
-        movementResVo.setLogisticsCenterName(allocation.getCallInLogisticsCenterName());
         movementResVo.setSkuList(allocationProductMapper.selectByAllocationCode(movementResVo.getMovementCode()));
         movementResVo.setBatchSkuList(allocationProductBatchMapper.selectByAllocationCode(movementResVo.getMovementCode()));
         // 获取日志
