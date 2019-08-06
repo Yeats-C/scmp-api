@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface ProductSkuSupplyUnitCapacityMapper {
     int insertBatch(List<ProductSkuSupplyUnitCapacity> capacities);
 
     int deleteDraftsByVos(List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts);
+
+    List<ProductSkuSupplyUnitCapacity> selectSupplyCapacityInfo(@Param("supplierCode") String supplierCode, @Param("skuCode")String skuCode);
 }

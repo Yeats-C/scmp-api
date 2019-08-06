@@ -4,6 +4,8 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundBatchReqVo;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailByCodeRespVO;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -42,11 +44,11 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
 //    }
     private SkuService skuService;
 
-    private SupplyComService supplyComService;
+    private SupplyCompanyDao supplyCompanyDao;
 
-    public ReturnSupply2outboundSaveConverter(SkuService skuService, SupplyComService supplyComService) {
+    public ReturnSupply2outboundSaveConverter(SkuService skuService, SupplyCompanyDao supplyCompanyDao) {
         this.skuService = skuService;
-        this.supplyComService = supplyComService;
+        this.supplyCompanyDao = supplyCompanyDao;
     }
 
     @Override
@@ -56,10 +58,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
             if(CollectionUtils.isEmpty(reqMainVo.getRejectRecordDetails())){
                 throw new BizException("出库单保存请求vo的商品项集合不能为空");
             }
-            SupplyComDetailByCodeRespVO supplyComDetailByCodeRespVO = supplyComService.detailByCode(reqVo.getSupplierCode());
-            if(Objects.isNull(supplyComDetailByCodeRespVO)){
-                throw new GroundRuntimeException("获取供货单位信息失败");
-            }
+            SupplyCompany supplyCompany = supplyCompanyDao.detailByCode(reqVo.getSupplierCode(), reqVo.getCompanyCode());
 
             if(null != reqVo){
                 OutboundReqVo outbound = new OutboundReqVo();
@@ -71,7 +70,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 outbound.setCountyName(reqVo.getDistrictName());
                 outbound.setConsignee(reqVo.getContactsPerson());
                 outbound.setConsigneeNumber(reqVo.getContactsPersonPhone());
-                outbound.setConsigneeRate(supplyComDetailByCodeRespVO.getZipCode());
+                outbound.setConsigneeRate(supplyCompany.getZipCode());
                 outbound.setDetailedAddress(reqVo.getAddress());
                 //公司
                 outbound.setCompanyCode(reqVo.getCompanyCode());

@@ -24,7 +24,7 @@ public class RejectRecord extends ApplyRejectRecord{
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "审批关联单据号")
     @JsonProperty("approval_code")
     private String approvalCode;
 
@@ -245,6 +245,16 @@ public class RejectRecord extends ApplyRejectRecord{
     @ApiModelProperty("供应商评分编号")
     @JsonProperty("score_code")
     private String scoreCode;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "发运时间")
+    @JsonProperty("delivery_time")
+    private Date deliveryTime;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value = "完成时间")
+    @JsonProperty("finish_time")
+    private Date finishTime;
 
     public RejectRecord() {
     }

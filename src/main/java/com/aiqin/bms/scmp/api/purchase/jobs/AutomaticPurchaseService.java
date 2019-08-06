@@ -4,7 +4,9 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 public interface AutomaticPurchaseService {
 
-    HttpResponse automaticPurchase();
+    HttpResponse automaticPurchase(String data);
 
     HttpResponse executeWarehousing();
+
+    HttpResponse intellect(String months);
 }

@@ -746,10 +746,9 @@ public class ReportController {
             String excelName = "低库存数据导出";
           //  excelName = URLEncoder.encode(excelName,"UTF-8");
             response.reset();
-            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-            response.setCharacterEncoding("UTF-8");
-            response.setHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Content-Disposition", "attachment;fileName=" + new String(excelName.getBytes("iso-8859-1"), "UTF-8"));
+            response.setContentType("application/x-xls;charset=UTF-8");
+            response.setCharacterEncoding("utf-8");
+            response.setHeader("content-disposition", "attachment;filename=" + new String(excelName.getBytes(), "ISO8859-1") + ".xls" );
             OutputStream os = response.getOutputStream();
             wb.write(os);
             os.flush();

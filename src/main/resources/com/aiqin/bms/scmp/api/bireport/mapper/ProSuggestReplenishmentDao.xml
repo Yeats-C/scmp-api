@@ -61,6 +61,6 @@
         sr.purchase_process_payment_day as numApprovedPayment,
         sr.purchase_process_supplier_confirm_day as numPaymentConfirm
         FROM supplier_rule sr
-        where sr.company_code = 04
+        where sr.company_code = 01
     </select>
 </mapper>
