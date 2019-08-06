@@ -54,14 +54,9 @@ public class FormApplyServiceImpl implements FormApplyService {
             paramVO.setVariables(map);
         }
         log.info("调用审批流发起申请,request={}", paramVO);
-        ActBaseProcessEntity actBaseProcessEntity = formApplyCommonService.submitActBaseProcessScmp(paramVO);
-        log.info("调用审批流发起申请返回结果,result={}", actBaseProcessEntity);
-        if (actBaseProcessEntity != null) {
-            log.info("发起申请成功,request={}", paramVO);
-            return HttpResponse.success();
-        }
-        log.error("发起申请失败,request={}", paramVO);
-        return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        HttpResponse response = formApplyCommonService.submitActBaseProcessScmp(paramVO);
+        log.info("调用审批流发起申请返回结果,result={}", response);
+        return response;
     }
 
     @Override
