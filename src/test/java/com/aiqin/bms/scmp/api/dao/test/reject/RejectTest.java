@@ -97,7 +97,7 @@ public class RejectTest extends SpringBootTestContext {
     public void rejectSupplier() {
         RejectRecord request = new RejectRecord();
         request.setRejectRecordId("BI3A6DE17B116B49FAA6FA00F0BBFF6E59");
-        goodsRejectService.rejectSupplier(request, create_by_company_code);
+        goodsRejectService.rejectSupplier(request, "");
     }
 
     @Test
