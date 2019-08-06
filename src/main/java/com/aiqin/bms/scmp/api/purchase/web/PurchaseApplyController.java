@@ -171,13 +171,19 @@ public class PurchaseApplyController {
 
     @PostMapping("/automatic/purchase")
     @ApiOperation("生成自动采购单")
-    public HttpResponse automatic() {
-        return automaticPurchaseService.automaticPurchase();
+    public HttpResponse automatic(@RequestParam("data")String data) {
+        return automaticPurchaseService.automaticPurchase(data);
     }
 
     @GetMapping("/execute/warehousing")
     @ApiOperation("定时执行有效期到期入库完成（备货确认开始）")
     public HttpResponse executeWarehousing() {
         return automaticPurchaseService.executeWarehousing();
+    }
+
+    @GetMapping("/intellect/purchase")
+    @ApiOperation("智能采购-生成建议补货数(yy-mmmm)")
+    public HttpResponse intellect(@RequestParam("months") String months) {
+        return automaticPurchaseService.intellect(months);
     }
 }

@@ -48,8 +48,14 @@ public class QueryScrapResVo {
     @ApiModelProperty("数量")
     private Long quantity;
 
+    @ApiModelProperty("出库数量")
+    private Long callOutQuantity;
+
     @ApiModelProperty("含税库存成本，展示时需要除以100")
     private Long taxInventoryCost;
+
+    @ApiModelProperty("实际出库库存成本，展示时需要除以100")
+    private Long callOutTaxAmount;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;

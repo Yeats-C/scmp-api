@@ -30,4 +30,9 @@
     large_inventory_warn_day, basic_inventory_day, case_one, case_two, case_three, supplier_name, 
     supplier_code, create_date, create_time
   </sql>
+  <select id="automaticOrderList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from bi_automatic_order
+    where create_time like CONCAT('',#{months},'%')
+  </select>
 </mapper>
