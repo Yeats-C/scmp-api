@@ -89,10 +89,10 @@ public class AccountController {
     }
 
     @GetMapping("/{username}")
-    @ApiOperation(value = "查询供应详情")
+    @ApiOperation(value = "查询供应商账号详情")
     @ApiImplicitParam(name = "username", value = "用户名(账号)", type = "String")
     public HttpResponse<AccountResponse> accountInfo(@PathVariable String username) {
-        LOGGER.info("查询供应详情username:{}", username);
+        LOGGER.info("查询供应商账号详情username:{}", username);
         return accountInfoService.accountInfo(username);
     }
 
