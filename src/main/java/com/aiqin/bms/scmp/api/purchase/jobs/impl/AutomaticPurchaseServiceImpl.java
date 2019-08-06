@@ -200,7 +200,7 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
             DetailRespVo rule = supplierRuleDao.findByCompanyCode("01");
             Integer checkDay;
             if(rule != null){
-                checkDay = rule.getPurchaseProcessDay() + rule.getPurchaseProcessPaymentDay() + rule.getPurchaseProcessSupplierConfirmDay();
+                checkDay = rule.getPurchaseProcessReviewDay() + rule.getPurchaseProcessPaymentDay() + rule.getPurchaseProcessSupplierConfirmDay();
             }else {
                 checkDay = 0;
             }

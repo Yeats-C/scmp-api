@@ -33,6 +33,6 @@
   <select id="automaticOrderList" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>
     from bi_automatic_order
-    where order_year_month = #{orderYearMonth,jdbcType=VARCHAR}
+    where create_time like CONCAT('',#{months},'%')
   </select>
 </mapper>

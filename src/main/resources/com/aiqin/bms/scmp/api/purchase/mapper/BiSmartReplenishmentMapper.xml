@@ -74,8 +74,8 @@
     values
     <foreach collection="list" item="item" index="" separator=",">
     ( #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.transportCenterCode,jdbcType=VARCHAR},
-      #{item.transportCenterName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehousName,jdbcType=VARCHAR},
-      #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, #{suggestedReplenishmentNumber,jdbcType=INTEGER},
+      #{item.transportCenterName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, #{item.suggestedReplenishmentNumber,jdbcType=INTEGER},
       now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
     </foreach>
   </insert>
