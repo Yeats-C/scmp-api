@@ -54,4 +54,19 @@ public class DashboardServiceImpl implements DashboardService{
     public List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio(DashboardAllKindsLossRatioReqVo dashboardAllKindsLossRatioReqVo) {
         return dashboardDao.selectDashboardAllKindsLossRatio(dashboardAllKindsLossRatioReqVo);
     }
+
+    // 当月各部门品类属性下的销售情况
+    public List<DashboardDepCateProperSalesAmountRespVo> selectDashboardDepCateProperSalesAmount(DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo){
+        return dashboardDao.selectDashboardDepCateProperSalesAmount(dashboardDepCateProperSalesAmountReqVo);
+    }
+
+    // 当月各部门属性下的销售情况
+    public List<DashboardDepProperSalesAmountRespVo> selectDashboardDepProperSalesAmount(DashboardDepProperSalesAmountReqVo dashboardDepProperSalesAmountReqVo){
+        return dashboardDao.selectDashboardDepProperSalesAmount(dashboardDepProperSalesAmountReqVo);
+    }
+
+    // 当月各部门品类下的销售情况
+    public List<DashboardDepCateSalesAmountRespVo> selectDashboardDepCateSalesAmount(DashboardDepCateSalesAmountReqVo dashboardDepCateSalesAmountReqVo){
+        return dashboardDao.selectDashboardDepCateSalesAmount(dashboardDepCateSalesAmountReqVo);
+    }
 }

@@ -72,4 +72,25 @@ public class DashboardController {
         DashboardAllKindsLossRatioReqVo dashboardAllKindsLossRatioReqVo = new DashboardAllKindsLossRatioReqVo();
         return HttpResponse.success(dashboardService.selectDashboardAllKindsLossRatio(dashboardAllKindsLossRatioReqVo));
     }
+
+    @GetMapping("/dashboard/dep/cate/proper/sales/amount")
+    @ApiOperation("当月各部门品类属性下的销售情况")
+    public HttpResponse<List<DashboardDepCateProperSalesAmountRespVo>> selectDashboardDepCateProperSalesAmount(){
+        DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo = new DashboardDepCateProperSalesAmountReqVo();
+        return HttpResponse.success(dashboardService.selectDashboardDepCateProperSalesAmount(dashboardDepCateProperSalesAmountReqVo));
+    }
+
+    @GetMapping("/dashboard/dep/proper/sales/amount")
+    @ApiOperation("当月各部门属性下的销售情况")
+    public HttpResponse<List<DashboardDepProperSalesAmountRespVo>> selectDashboardDepProperSalesAmount(){
+        DashboardDepProperSalesAmountReqVo dashboardDepProperSalesAmountReqVo = new DashboardDepProperSalesAmountReqVo();
+        return HttpResponse.success(dashboardService.selectDashboardDepProperSalesAmount(dashboardDepProperSalesAmountReqVo));
+    }
+
+    @GetMapping("/dashboard/dep/cate/sales/amount")
+    @ApiOperation("当月各部门品类下的销售情况")
+    public HttpResponse<List<DashboardDepCateSalesAmountRespVo>> selectDashboardDepCateSalesAmount(){
+        DashboardDepCateSalesAmountReqVo dashboardDepCateSalesAmountReqVo = new DashboardDepCateSalesAmountReqVo();
+        return HttpResponse.success(dashboardService.selectDashboardDepCateSalesAmount(dashboardDepCateSalesAmountReqVo));
+    }
 }
