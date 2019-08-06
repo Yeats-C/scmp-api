@@ -47,6 +47,9 @@ public class QueryPurchaseGroupResVo {
     @ApiModelProperty("修改人")
     private String updateBy;
 
+    @ApiModelProperty("排序")
+    private Integer purchaseGroupOrder;
+
     @ApiModelProperty("关联人员List")
     private List<QueryPurchaseGroupBuyerResVo> buyerResVoList;
 

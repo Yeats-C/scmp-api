@@ -30,6 +30,9 @@ public class PurchaseGroupResVo {
     @ApiModelProperty("启用禁用状态")
     private Byte enable;
 
+    @ApiModelProperty("排序")
+    private Integer purchaseGroupOrder;
+
     @ApiModelProperty("采购组专员")
     private List<PurchaseGroupBuyerResVo> groupBuyerResVos;
 

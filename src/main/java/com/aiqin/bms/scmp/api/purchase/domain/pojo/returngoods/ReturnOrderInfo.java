@@ -138,6 +138,9 @@ public class ReturnOrderInfo {
     @ApiModelProperty("重量")
     private Long weight;
 
+    @ApiModelProperty("体积")
+    private Long volume;
+
     @ApiModelProperty("发货时间")
     private Date deliveryTime;
 
@@ -179,6 +182,9 @@ public class ReturnOrderInfo {
 
     @ApiModelProperty("备注")
     private String remake;
+
+    @ApiModelProperty("商品详情")
+    private List<ReturnOrderInfoItem> detailList;
 
     @ApiModelProperty("处理办法（1退货退款2仅退货）")
     private Integer treatmentMethod;
