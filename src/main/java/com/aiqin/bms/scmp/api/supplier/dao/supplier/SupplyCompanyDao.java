@@ -79,4 +79,12 @@ public interface SupplyCompanyDao {
     Map<String, SupplyCompany> selectByCompanyCodeList(@Param("list") List<String> companyCodeList, @Param("companyCode") String companyCode);
 
     SupplyCompany selectAddress(String supplyCode);
+
+    /**
+     * 更新申请编码
+     * @param supplyCompanyCode
+     * @param applySupplyCompanyCode
+     * @return
+     */
+    int updateApplyCode(@Param("supplyCompanyCode") String supplyCompanyCode, @Param("applySupplyCompanyCode") String applySupplyCompanyCode);
 }

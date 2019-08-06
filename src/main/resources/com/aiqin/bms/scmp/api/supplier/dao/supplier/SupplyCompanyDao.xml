@@ -107,6 +107,9 @@
     <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount"/>
     <result column="star_score" jdbcType="BIGINT" property="starScore"/>
   </resultMap>
+  <update id="updateApplyCode">
+    update supply_company set  apply_supply_company_code = #{applySupplyCompanyCode} where supply_code = #{supplyCompanyCode}
+  </update>
   <select id="getSupplyCompanyList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO" resultMap="SupplyComListMap">
     SELECT
       id,
