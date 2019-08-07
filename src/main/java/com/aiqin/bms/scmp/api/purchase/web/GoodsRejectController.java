@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -198,15 +199,16 @@ public class GoodsRejectController {
             @ApiImplicitParam(name = "address", value = "地址", type = "String"),
             @ApiImplicitParam(name = "contacts_person_phone", value = "联系人电话", type = "String"),
             @ApiImplicitParam(name = "contacts_person", value = "联系人名称", type = "String"),
+            @ApiImplicitParam(name = "create_by_company_code", value = "创建人公司code", type = "String"),
     })
     public HttpResponse rejectSupplier(@PathVariable String reject_record_id, @RequestParam(value = "province_id", required = false) String province_id, @RequestParam(value = "province_name", required = false) String province_name,
                                        @RequestParam(value = "city_id", required = false) String city_id, @RequestParam(value = "district_id", required = false) String district_id,
                                        @RequestParam(value = "city_name", required = false) String city_name, @RequestParam(value = "district_name", required = false) String district_name,
                                        @RequestParam(value = "address", required = false) String address, @RequestParam(value = "contacts_person_phone", required = false) String contacts_person_phone,
-                                       @RequestParam(value = "contacts_person", required = false) String contacts_person) {
+                                       @RequestParam(value = "contacts_person", required = false) String contacts_person,@RequestParam(value = "create_by_company_code", required = false) String create_by_company_code) {
         LOGGER.info("供应商确认请求,reject_record_id:{}", reject_record_id);
         RejectRecord rejectRecord = new RejectRecord(reject_record_id, contacts_person, contacts_person_phone, province_id, province_name, city_id, city_name, district_id, district_name, address);
-        return goodsRejectService.rejectSupplier(rejectRecord);
+        return goodsRejectService.rejectSupplier(rejectRecord,create_by_company_code);
     }
 
     @PutMapping("/record/transport/{reject_record_id}")

@@ -113,7 +113,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Autowired
     @Lazy(true)
     private GoodsRejectService goodsRejectService;
-
     @Autowired
     private SupplyCompanyDao supplyCompanyDao;
     @Autowired

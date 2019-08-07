@@ -99,6 +99,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private PurchaseGroupService purchaseGroupService;
     @Resource
     private PurchaseInspectionReportDao purchaseInspectionReportDao;
+    @Resource
+    private ApplyPurchaseOrderDao applyPurchaseOrderDao;
+    @Resource
+    private ApplyPurchaseOrderDetailsDao applyPurchaseOrderDetailsDao;
+    @Resource
+    private ApplyPurchaseOrderProductDao applyPurchaseOrderProductDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -248,7 +254,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         PurchaseOrder purchaseOrder = purchaseOrderRequest.getPurchaseOrder();
         purchaseOrder.setPurchaseOrderId(purchaseId);
         String purchaseProductCode = "CG" + String.valueOf(encodingRule.getNumberingValue());
-        purchaseOrder.setPurchaseOrderId(purchaseId);
         purchaseOrder.setPurchaseOrderCode(purchaseProductCode);
         purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
@@ -259,6 +264,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         // 添加采购单
         Integer orderCount = purchaseOrderDao.insert(purchaseOrder);
         if(orderCount > 0){
+            // 添加采购单的审批日志
+            applyPurchaseOrderDao.insert(purchaseOrder);
             // 添加操作日志
             log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
                     PurchaseOrderLogEnum.INSERT_ORDER.getCode(), PurchaseOrderLogEnum.INSERT_ORDER.getName(), purchaseOrder.getApplyTypeForm());
@@ -273,6 +280,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             details.setDetailsStatus(Global.USER_ON);
             details.setOrderType("配送");
             purchaseOrderDetailsDao.insert(details);
+            // 添加采购单审批的详情
+            applyPurchaseOrderDetailsDao.insert(details);
             // 添加商品列表
             PurchaseFormRequest form = new PurchaseFormRequest();
             if(CollectionUtils.isNotEmptyCollection(purchaseOrderRequest.getApplyIds())){
@@ -325,7 +334,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(form);
         // 提交采购单页面商品列表
         if (CollectionUtils.isNotEmptyCollection(details)) {
-            List<PurchaseOrderProduct> list = new ArrayList<>();
+            List<PurchaseOrderProduct> list = Lists.newArrayList();
             PurchaseOrderProduct orderProduct = null;
             for (PurchaseApplyDetailResponse detail : details) {
                 orderProduct = new PurchaseOrderProduct();
@@ -364,6 +373,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 list.add(orderProduct);
             }
             purchaseOrderProductDao.insertAll(list);
+            // 添加采购单商品的审批记录
+            applyPurchaseOrderProductDao.insertAll(list);
         }
     }
 

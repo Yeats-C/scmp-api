@@ -71,4 +71,7 @@ public class WarehouseReqVo {
     @NotEmpty(message = "联系电话不能为空")
     private String phone;
 
+    @ApiModelProperty("排序")
+    private Integer warehouseOrder;
+
 }

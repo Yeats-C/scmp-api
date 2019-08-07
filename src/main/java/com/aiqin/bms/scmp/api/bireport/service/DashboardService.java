@@ -8,16 +8,16 @@ import java.util.List;
 public interface DashboardService {
 
     // 年销售情况（部门）
-    List<DashboardDepartAnnualSalesStatiRespVo> selectDashboardDepartAnnualSalesStati(DashboardDepartAnnualSalesStatiReqVo dashboardDepartAnnualSalesStatiReqVo);
+    List<DashboardDepartAnnualSalesStatiRespVo> selectDashboardDepartAnnualSalesStati();
 
     // 月销售情况（不累计）
-    List<DashboardMonthlySalesStatiRespVo> selectDashboardMonthlySalesStati(DashboardMonthlySalesStatiReqVo dashboardMonthlySalesStatiReqVo);
+    List<DashboardMonthlySalesStatiRespVo> selectDashboardMonthlySalesStati();
 
     // 月销售情况（月累计）
-    List<DashboardMonthlySalesStatiAccRespVo> selectDashboardMonthlySalesStatiAcc(DashboardMonthlySalesStatiAccReqVo dashboardMonthlySalesStatiAccReqVo);
+    List<DashboardMonthlySalesStatiAccRespVo> selectDashboardMonthlySalesStatiAcc();
 
     // 月亏损
-    List<DashboardMonthlyLossAmountRespVo> selectDashboardMonthlyLossAmount(DashboardMonthlyLossAmountReqVo dashboardMonthlyLossAmountReqVo);
+    List<DashboardMonthlyLossAmountRespVo> selectDashboardMonthlyLossAmount();
 
     // 当月部门销售同环比
     List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo);

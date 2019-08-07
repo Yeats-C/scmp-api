@@ -50,6 +50,8 @@
         <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime"/>
+        <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime"/>
         <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
         <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
         <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
@@ -69,7 +71,7 @@
     return_amount, actual_product_count, actual_product_amount, actual_single_count, actual_gift_count,actual_gift_amount, actual_return_count,
     actual_return_amount,create_by_id, create_by_name, update_by_id, update_by_name, create_time,
     update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name,
-    company_name,company_code,untaxed_amount,score_code,approval_code
+    company_name,company_code,untaxed_amount,score_code,approval_code,delivery_time,finish_time
   </sql>
     <sql id="LIST_QUERY">
         <where>
@@ -558,6 +560,12 @@
         </if>
         <if test="scoreCode != null">
             score_code = #{scoreCode,jdbcType=VARCHAR},
+        </if>
+        <if test="deliveryTime != null">
+            delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="finishTime != null">
+            finish_time = #{finishTime,jdbcType=TIMESTAMP},
         </if>
         update_time =now()
         <where>

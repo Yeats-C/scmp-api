@@ -36,6 +36,9 @@ public class UpdateLogisticsCenterReqVo {
     @NotNull(message = "启用禁用状态能为空")
     private Byte enable;
 
+    @ApiModelProperty("排序")
+    private Integer logisticsCenterOrder;
+
     @ApiModelProperty("服务区范围")
     @Valid
     private List<UpdateLogisticsCenterAreaReqVo> logisticsCenterAreaReqVoList;

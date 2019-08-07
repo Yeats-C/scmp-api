@@ -29,6 +29,9 @@ public class PurchaseGroupDTO extends CommonBean {
     @ApiModelProperty("禁用启用状态，0是禁用，1是未禁用")
     private Byte enable;
 
+    @ApiModelProperty("排序")
+    private Integer purchaseGroupOrder;
+
     @ApiModelProperty("公司编码")
     private String companyCode;
 
