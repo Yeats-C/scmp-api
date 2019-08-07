@@ -128,6 +128,9 @@ public class ReturnRequest {
     @ApiModelProperty("操作人")
     private String operator;
 
+    @ApiModelProperty("操作人编码")
+    private String operatorCode;
+
     @ApiModelProperty("操作时间")
     private Date operatorTime;
 
