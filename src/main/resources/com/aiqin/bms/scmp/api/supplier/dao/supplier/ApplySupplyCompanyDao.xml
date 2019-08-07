@@ -56,6 +56,7 @@
     <result column="apply_supply_name" jdbcType="VARCHAR" property="applySupplyName" />
     <result column="supply_company_code" jdbcType="VARCHAR" property="applySupplyCode" />
     <result column="apply_supply_type" jdbcType="VARCHAR" property="applySupplyType" />
+    <result column="apply_supply_type_name" jdbcType="VARCHAR" property="applySupplyTypeName" />
     <result column="supply_abbreviation" jdbcType="VARCHAR" property="supplyAbbreviation" />
     <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
     <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
@@ -243,6 +244,7 @@
       a.supplier_code,
       a.supplier_name,
       a.apply_supply_type,
+      si.supplier_content apply_supply_type_name,
       a.apply_abbreviation supply_abbreviation,
       a.province_id,
       a.province_name,
@@ -276,6 +278,7 @@
       a.direct_supervisor_name
     FROM
 	   apply_supply_company a
+	  left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and a.apply_supply_type = si.supplier_dictionary_value
     where a.apply_supply_company_code=#{applyCode,jdbcType=VARCHAR}
   </select>
   <update id="updateApply" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyCompanyReqDTO">

@@ -40,6 +40,8 @@
         <result column="sum_gift_amount" jdbcType="BIGINT" property="sumGiftAmount"/>
         <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="LIST_QUERY">
         <where>

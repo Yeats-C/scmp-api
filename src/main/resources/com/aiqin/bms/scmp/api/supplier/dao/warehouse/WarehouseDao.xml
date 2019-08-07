@@ -52,6 +52,12 @@
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
+    <if test="warehouseTypeName != null and warehouseTypeName != '' ">
+      and warehouse_type_name = #{warehouseTypeName,jdbcType=VARCHAR}
+    </if>
+    <if test="warehouseTypeCode != null and warehouseTypeCode != '' ">
+      and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
+    </if>
     order by create_time desc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">

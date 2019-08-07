@@ -180,7 +180,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
              List<AllocationProduct> products = productbatchTransProduct(list);
              ((AllocationService) AopContext.currentProxy()).saveList(products);
              //TODO 库存锁定
-            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+             StockChangeRequest stockChangeRequest = new StockChangeRequest();
              stockChangeRequest.setOperationType(1);
              stockChangeRequest.setOrderCode(allocation.getAllocationCode());
              allocation.setUpdateBy(getUser().getPersonName());

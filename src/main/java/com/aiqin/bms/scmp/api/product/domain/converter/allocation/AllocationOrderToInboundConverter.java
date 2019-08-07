@@ -103,6 +103,7 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
             reqVo1.setInboundNorms(record.getSpecification());
             //由于调拨/移库/报废 是库存信息,故基商品含量默认为1
             reqVo1.setInboundBaseContent("1");
+            reqVo1.setInboundBaseUnit("1");
             reqVo1.setPreInboundNum(record.getQuantity().longValue());
             reqVo1.setPreInboundMainNum(record.getQuantity().longValue());
             reqVo1.setPreTaxPurchaseAmount(record.getTaxPrice().longValue());

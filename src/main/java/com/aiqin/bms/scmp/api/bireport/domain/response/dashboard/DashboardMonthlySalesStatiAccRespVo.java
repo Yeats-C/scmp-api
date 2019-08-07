@@ -13,45 +13,57 @@ public class DashboardMonthlySalesStatiAccRespVo {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("年月")
+    @ApiModelProperty("年")
+    @JsonProperty("stat_year")
+    private String statYear;
+
+    @ApiModelProperty("月")
     @JsonProperty("stat_month")
     private String statMonth;
+
+    @ApiModelProperty("部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
 
     @ApiModelProperty("渠道成本")
     @JsonProperty("channel_costs")
     private Integer channelCosts;
 
     @ApiModelProperty("当前渠道销售额")
-    @JsonProperty("curr_channel_amount")
-    private Integer currChannelAmount;
+    @JsonProperty("channel_amount")
+    private Integer channelAmount;
 
     @ApiModelProperty("同比渠道销售额")
     @JsonProperty("pre_channel_amount")
     private Integer preChannelAmount;
 
     @ApiModelProperty("当前渠道累计额")
-    @JsonProperty("curr_acc_sum_channel_amount")
-    private Integer currAccSumChannelAmount;
+    @JsonProperty("acc_sum_channel_amount")
+    private Integer accSumChannelAmount;
+
+    @ApiModelProperty("同比渠道累计额")
+    @JsonProperty("pre_acc_sum_channel_amount")
+    private Integer preAccSumChannelAmount;
 
     @ApiModelProperty("渠道毛利")
-    @JsonProperty("channel_maori")
-    private Integer channelMaori;
+    @JsonProperty("channel_margin")
+    private Integer channelMargin;
 
     @ApiModelProperty("渠道累计毛利额")
-    @JsonProperty("acc_sum_channel_maori")
-    private Integer accSumChannelMaori;
+    @JsonProperty("acc_sum_channel_margin")
+    private Integer accSumChannelMargin;
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_amount")
     private Integer distributionAmount;
 
     @ApiModelProperty("分销毛利额")
-    @JsonProperty("distribution_maori")
-    private Integer distributionMaori;
+    @JsonProperty("distribution_margin")
+    private Integer distributionMargin;
 
     @ApiModelProperty("当月预算额")
-    @JsonProperty("curr_supplier_content")
-    private Integer currSupplierContent;
+    @JsonProperty("supplier_content")
+    private Integer supplierContent;
 
     @ApiModelProperty("同比预算额")
     @JsonProperty("pre_supplier_content")
@@ -64,9 +76,5 @@ public class DashboardMonthlySalesStatiAccRespVo {
     @ApiModelProperty("同比达成率")
     @JsonProperty("pre_achieve_rate")
     private String preAchieveRate;
-
-    @ApiModelProperty("同比渠道累计额")
-    @JsonProperty("pre_acc_sum_channel_amount")
-    private Integer preAccSumChannelAmount;
 
 }

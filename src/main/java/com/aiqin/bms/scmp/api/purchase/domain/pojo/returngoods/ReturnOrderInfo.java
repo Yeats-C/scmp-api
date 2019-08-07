@@ -234,4 +234,10 @@ public class ReturnOrderInfo {
 
     @ApiModelProperty("实际渠道总金额")
     private Long actualProductChannelTotalAmount;
+
+    /**以下字段为了dl回调销售单生成出库单和库存变动需要*/
+
+    @ApiModelProperty(value = "预计退货数量")
+    private Long preProductNum;
+
 }

@@ -34,29 +34,25 @@ public class DashboardController {
     @GetMapping("/dashboard/depart/annual/sales/stati")
     @ApiOperation("年销售情况(部门)")
     public HttpResponse<List<DashboardDepartAnnualSalesStatiRespVo>> selectDashboardDepartAnnualSalesStati(){
-        DashboardDepartAnnualSalesStatiReqVo dashboardDepartAnnualSalesStatiReqVo = new DashboardDepartAnnualSalesStatiReqVo();
-        return HttpResponse.success(dashboardService.selectDashboardDepartAnnualSalesStati(dashboardDepartAnnualSalesStatiReqVo));
+        return HttpResponse.success(dashboardService.selectDashboardDepartAnnualSalesStati());
     }
 
     @GetMapping("/dashboard/monthly/sales/stati")
     @ApiOperation("月销售情况（不累计）")
     public HttpResponse<List<DashboardMonthlySalesStatiRespVo>> selectDashboardMonthlySalesStati(){
-        DashboardMonthlySalesStatiReqVo dashboardMonthlySalesStatiReqVo = new DashboardMonthlySalesStatiReqVo();
-        return HttpResponse.success(dashboardService.selectDashboardMonthlySalesStati(dashboardMonthlySalesStatiReqVo));
+        return HttpResponse.success(dashboardService.selectDashboardMonthlySalesStati());
     }
 
     @GetMapping("/dashboard/monthly/sales/stati/acc")
     @ApiOperation("月销售情况（月累计）")
     public HttpResponse<List<DashboardMonthlySalesStatiAccRespVo>> selectDashboardMonthlySalesStatiAcc(){
-        DashboardMonthlySalesStatiAccReqVo dashboardMonthlySalesStatiAccReqVo = new DashboardMonthlySalesStatiAccReqVo();
-        return HttpResponse.success(dashboardService.selectDashboardMonthlySalesStatiAcc(dashboardMonthlySalesStatiAccReqVo));
+        return HttpResponse.success(dashboardService.selectDashboardMonthlySalesStatiAcc());
     }
 
     @GetMapping("/dashboard/monthly/loss/amount")
     @ApiOperation("月亏损")
     public HttpResponse<List<DashboardMonthlyLossAmountRespVo>> selectDashboardMonthlyLossAmount(){
-        DashboardMonthlyLossAmountReqVo dashboardMonthlyLossAmountReqVo = new DashboardMonthlyLossAmountReqVo();
-        return HttpResponse.success(dashboardService.selectDashboardMonthlyLossAmount(dashboardMonthlyLossAmountReqVo));
+        return HttpResponse.success(dashboardService.selectDashboardMonthlyLossAmount());
     }
 
     @GetMapping("/dashboard/dep/monthly/homocyclic/ratio")

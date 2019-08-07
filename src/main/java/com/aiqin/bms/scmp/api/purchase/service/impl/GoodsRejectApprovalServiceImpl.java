@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.purchase.dao.ApplyRejectRecordDao;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDetailDao;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
@@ -71,6 +72,8 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
     private GoodsRejectServiceImpl goodsRejectService;
     @Resource
     private RejectRecordDetailDao rejectRecordDetailDao;
+    @Resource
+    private ApplyRejectRecordDao applyRejectRecordDao;
 
     /**
      * 审核回调接口
@@ -95,11 +98,15 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_AUDITTING);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
                 LOGGER.info("影响条数:{}", count);
+                Integer counts = applyRejectRecordDao.updateStatus(rejectRecord);
+                LOGGER.info("影响条数:{}", counts);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber()) || Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
                 //审批失败或者撤销
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_NO);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
                 LOGGER.info("影响条数:{}", count);
+                Integer counts = applyRejectRecordDao.updateStatus(rejectRecord);
+                LOGGER.info("影响条数:{}", counts);
                 //解锁库存
                 List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecord.getRejectRecordId());
                 ILockStocksReqVO iLockStockBatchReqVO = goodsRejectService.handleStockParam(list, record);
@@ -113,6 +120,8 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
                 rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
                 Integer count = rejectRecordDao.updateStatus(rejectRecord);
                 LOGGER.info("影响条数:{}", count);
+                Integer counts = applyRejectRecordDao.updateStatus(rejectRecord);
+                LOGGER.info("影响条数:{}", counts);
             }
             return WorkFlowReturn.SUCCESS;
         } catch (Exception e) {

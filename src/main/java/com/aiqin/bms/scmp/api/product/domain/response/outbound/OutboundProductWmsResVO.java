@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * @Classname: InboundProductWmsReqVO
  * 描述:WMS传入入库单sku实体
@@ -18,26 +20,13 @@ import lombok.Data;
 public class OutboundProductWmsResVO {
 
     @ApiModelProperty("sku编号")
-    @JsonProperty("goodsId")
-    private String skuCode;
-
-    @ApiModelProperty("sku名称")
-    @JsonProperty("goodsName")
-    private String skuName;
-
-    @ApiModelProperty(value = "商品条码 必填")
-    private String goodsCode;
+    public String skuCode;
 
     @ApiModelProperty("预计入库主数量")
-    @JsonProperty("quantity")
-    private Long preInboundMainNum;
-
-    @ApiModelProperty("入库单位名称")
-    @JsonProperty("packageName")
-    private String unitName;
+    public Long preInboundMainNum;
 
     @ApiModelProperty("行号")
     @JsonProperty("linenum")
-    private Long linenum;
+    public Long linenum;
 
 }

@@ -130,7 +130,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
-    insert into reject_record (reject_record_id, reject_record_code,
+    insert into reject_record (reject_record_id, reject_record_code,approval_code,
       duty_person, contacts_person, contacts_person_phone, 
       province_id, province_name, city_id, 
       city_name, district_id, district_name, 
@@ -145,7 +145,7 @@
       actual_return_amount, create_by_id, create_by_name, transport_center_code,
       transport_center_name, warehouse_code, warehouse_name,company_name,company_code,
       settlement_method_code,settlement_method_name,  create_time,  update_time, update_by_id, update_by_name)
-    values ( #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR},
+    values ( #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR}, #{approvalCode,jdbcType=VARCHAR},
       #{dutyPerson,jdbcType=VARCHAR}, #{contactsPerson,jdbcType=VARCHAR}, #{contactsPersonPhone,jdbcType=VARCHAR}, 
       #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=VARCHAR}, 
       #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, #{districtName,jdbcType=VARCHAR}, 

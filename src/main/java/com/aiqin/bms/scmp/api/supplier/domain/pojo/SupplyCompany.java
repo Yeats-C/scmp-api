@@ -117,7 +117,7 @@ public class SupplyCompany extends CommonBean {
     private String corporateRepresentative;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("是否禁用")
     private Byte enable;
@@ -145,4 +145,25 @@ public class SupplyCompany extends CommonBean {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
+
+    @ApiModelProperty("省id")
+    private String sendProvinceId;
+
+    @ApiModelProperty("省")
+    private String sendProvinceName;
+
+    @ApiModelProperty("市id")
+    private String sendCityId;
+
+    @ApiModelProperty("市")
+    private String sendCityName;
+
+    @ApiModelProperty("区县id")
+    private String sendDistrictId;
+
+    @ApiModelProperty("区县")
+    private String sendDistrictName;
+
+    @ApiModelProperty("发送地址")
+    private String sendingAddress;
 }

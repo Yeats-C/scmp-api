@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,7 +9,7 @@ import java.util.Date;
 
 @ApiModel
 @Data
-public class PurchaseOrderDetails {
+public class ApplyPurchaseOrderDetails {
     @JsonProperty("id")
     private Long id;
 
@@ -55,12 +54,10 @@ public class PurchaseOrderDetails {
     private String mobile;
 
     @ApiModelProperty(value="预计到货时间")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @JsonProperty("expect_arrival_time")
     private Date expectArrivalTime;
 
     @ApiModelProperty(value="有效期")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     @JsonProperty("valid_time")
     private Date validTime;
 
@@ -152,19 +149,19 @@ public class PurchaseOrderDetails {
     @JsonProperty("update_time")
     private Date updateTime;
 
-    @ApiModelProperty(value="创建者id")
+    @ApiModelProperty(value="创建人id")
     @JsonProperty("create_by_id")
     private String createById;
 
-    @ApiModelProperty(value="修改者id")
+    @ApiModelProperty(value="修改人id")
     @JsonProperty("update_by_id")
     private String updateById;
 
-    @ApiModelProperty(value="创建者")
+    @ApiModelProperty(value="创建人名称")
     @JsonProperty("create_by_name")
     private String createByName;
 
-    @ApiModelProperty(value="修改者")
+    @ApiModelProperty(value="修改人名称")
     @JsonProperty("update_by_name")
     private String updateByName;
 
