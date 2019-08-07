@@ -123,5 +123,5 @@ public class StockFlow extends CommonBean {
 
     @ApiModelProperty("库存成本")
     @JsonProperty(value = "stock_cost")
-    private String stockCost;
+    private Long stockCost;
 }

@@ -13,10 +13,6 @@ public class ApplyPurchaseOrder {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty(value="采购审批单id")
-    @JsonProperty("apply_purchase_order_id")
-    private String applyPurchaseOrderId;
-
     @ApiModelProperty(value="采购单id")
     @JsonProperty("purchase_order_id")
     private String purchaseOrderId;
