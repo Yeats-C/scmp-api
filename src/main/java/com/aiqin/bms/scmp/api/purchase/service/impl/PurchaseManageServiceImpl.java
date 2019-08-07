@@ -470,15 +470,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             purchaseOrderDetailsDao.update(detail);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.DELIVER_GOODS.getCode(),
                     PurchaseOrderLogEnum.DELIVER_GOODS.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
-            detail = new PurchaseOrderDetails();
-            detail.setPurchaseOrderId(purchaseOrderId);
-            detail.setWarehouseTime(Calendar.getInstance().getTime());
-            detail.setUpdateById(createById);
-            detail.setUpdateByName(createByName);
-            purchaseOrderDetailsDao.update(detail);
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_5)){
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode(),
                     PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getName(), order.getApplyTypeForm());
