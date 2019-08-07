@@ -193,13 +193,13 @@ public class InboundServiceImpl implements InboundService {
         if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
             String supplyCode = inbound.getSupplierCode();
             SupplyCompany supplyCompany = supplyCompanyDao.selectAddress(supplyCode);
-            inboundResVo.setProvinceCode(supplyCompany.getProvinceId());
-            inboundResVo.setProvinceName(supplyCompany.getProvinceName());
-            inboundResVo.setCityCode(supplyCompany.getCityId());
-            inboundResVo.setCityName(supplyCompany.getCityName());
-            inboundResVo.setCountyCode(supplyCompany.getDistrictId());
-            inboundResVo.setCountyName(supplyCompany.getDistrictName());
-            inboundResVo.setDetailedAddress(supplyCompany.getAddress());
+            inboundResVo.setProvinceCode(supplyCompany.getSendProvinceId());
+            inboundResVo.setProvinceName(supplyCompany.getSendProvinceName());
+            inboundResVo.setCityCode(supplyCompany.getSendCityId());
+            inboundResVo.setCityName(supplyCompany.getSendCityName());
+            inboundResVo.setCountyCode(supplyCompany.getSendDistrictId());
+            inboundResVo.setCountyName(supplyCompany.getSendDistrictName());
+            inboundResVo.setDetailedAddress(supplyCompany.getSendingAddress());
             inboundResVo.setShipper(supplyCompany.getContactName());
             inboundResVo.setShipperNumber(supplyCompany.getMobilePhone());
             inboundResVo.setShipperRate(supplyCompany.getZipCode());
