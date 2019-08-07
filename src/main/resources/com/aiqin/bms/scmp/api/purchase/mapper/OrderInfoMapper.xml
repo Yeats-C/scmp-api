@@ -235,6 +235,12 @@
       <result column="bproduct_line_num" jdbcType="BIGINT" property="productLineNum" />
       <result column="bpromotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
       <result column="breturn_num" jdbcType="BIGINT" property="returnNum" />
+      <result column="bchannel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
+      <result column="btotal_channel_price" jdbcType="INTEGER" property="totalChannelPrice" />
+      <result column="bactual_channel_unit_price" jdbcType="BIGINT" property="actualChannelUnitPrice" />
+      <result column="bactual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
+      <result column="bactual_amount" jdbcType="BIGINT" property="actualAmount" />
+      <result column="bactual_price" jdbcType="BIGINT" property="actualPrice" />
     </collection>
     <collection property="logs" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoLogRespVO">
       <result column="cstatus" jdbcType="INTEGER" property="status" />
@@ -333,6 +339,12 @@
              b.product_line_num bproduct_line_num,
              b.promotion_line_num bpromotion_line_num,
              b.return_num breturn_num,
+             b.channel_unit_price bchannel_unit_price,
+             b.total_channel_price btotal_channel_price,
+             b.actual_channel_unit_price bactual_channel_unit_price,
+             b.actual_total_channel_price bactual_total_channel_price,
+             b.actual_amount bactual_amount,
+             b.actual_price bactual_price,
              c.status cstatus,
              c.status_desc cstatus_desc,
              c.content ccontent,
