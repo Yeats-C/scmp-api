@@ -151,6 +151,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         request.setOperatorTime(request.getReceivingTime());
         //支付时间 发运时间 发货时间 等于创建时间
         request.setCreateDate(new DateTime(new Long(request.getCreateTime())).toDate());
+        request.setCreateTime(new DateTime(request.getCreateDate()).toString());
         request.setPaymentTime(request.getCreateDate());
         request.setTransportTime(request.getCreateDate());
         request.setDeliveryTime(request.getCreateDate());
@@ -213,17 +214,24 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderInfoItem.setChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
             orderInfoItem.setTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice() * outboundDetailRequest.getNum());
             orderInfoItem.setOrderCode(orderInfo.getOrderCode());
+            orderInfoItem.setActualChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
+            orderInfoItem.setActualTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice()*outboundDetailRequest.getActualDeliverNum());
             detailList.add(orderInfoItem);
         }
         //已支付
         orderInfo.setPaymentStatus(CommonConstant.PAID);
         orderInfo.setVolume(sumBoxVolume);
         orderInfo.setWeight(sumBoxGrossWeight);
+        orderInfo.setActualVolume(sumBoxVolume);
+        orderInfo.setActualWeight(sumBoxGrossWeight);
         orderInfo.setCompanyCode(COMPANY_CODE);
         orderInfo.setCompanyName(COMPANY_NAME);
         orderInfo.setOperator(request.getOperatorName());
         orderInfo.setUpdateById(request.getOperatorCode());
         orderInfo.setUpdateByName(request.getOperatorName());
+        orderInfo.setActualProductChannelTotalAmount(request.getProductChannelTotalAmount());
+        orderInfo.setActualOrderAmount(request.getProductChannelTotalAmount());
+        orderInfo.setActualProductNum(request.getProductNum());
         if (StringUtils.isNotBlank(request.getSupplierCode())) {
             //供应商
             SupplyCompany supplyCompany = supplyCompanyDao.selectBySupplierCode(request.getSupplierCode());
