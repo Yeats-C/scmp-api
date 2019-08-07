@@ -1314,7 +1314,7 @@ public class StockServiceImpl implements StockService {
             //只改变调拨在途和在途总数
             case 7:
                 stock.setAllocationWayNum(stock.getAllocationWayNum() + stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getAllocationWayNum() + stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(stock.getTotalWayNum() + stockVoRequest.getChangeNum());
                 break;
             //调拨在途变成可用及库存数
             case 8:
