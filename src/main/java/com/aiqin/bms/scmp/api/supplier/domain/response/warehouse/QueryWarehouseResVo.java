@@ -50,4 +50,10 @@ public class QueryWarehouseResVo {
 
     @ApiModelProperty("排序")
     private Integer warehouseOrder;
+
+    @ApiModelProperty("仓库类型名称")
+    private String warehouseTypeName;
+
+    @ApiModelProperty("仓库类型编码")
+    private Byte warehouseTypeCode;
 }

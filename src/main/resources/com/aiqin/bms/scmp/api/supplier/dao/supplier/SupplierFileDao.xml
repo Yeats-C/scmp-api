@@ -36,6 +36,7 @@
       a.id,
       a.apply_type,
       a.file_path,
+      a.file_code,
       a.del_flag,
       a.apply_supplier_name supplier_name,
       a.file_name,

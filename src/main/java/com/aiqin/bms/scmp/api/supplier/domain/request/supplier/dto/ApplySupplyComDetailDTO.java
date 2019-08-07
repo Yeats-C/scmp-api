@@ -48,6 +48,8 @@ public class ApplySupplyComDetailDTO {
 
     @ApiModelProperty("申请供货单位类型")
     private String applySupplyType;
+    @ApiModelProperty("申请供货单位类型名称")
+    private String applySupplyTypeName;
 
     @ApiModelProperty("所属供应商编码")
     private String supplierCode;

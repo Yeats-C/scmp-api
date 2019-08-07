@@ -29,6 +29,12 @@ public class QueryWarehouseReqVo extends PageReq {
     @ApiModelProperty("物流中心名称")
     private String logisticsCenterName;
 
+    @ApiModelProperty("仓库类型名称")
+    private String warehouseTypeName;
+
+    @ApiModelProperty("仓库类型编码")
+    private Byte warehouseTypeCode;
+
     @ApiModelProperty(value = "公司编码", notes = "前端查询接口可以不传,但是其他第三方系统此字段必填", hidden = true)
     private String companyCode;
 }
