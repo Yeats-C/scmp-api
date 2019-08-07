@@ -151,11 +151,11 @@ public class GoodsBuySalesRespVo  implements Serializable {
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")
-    private Integer turnoverDays;
+    private Long turnoverDays;
 
     @ApiModelProperty("已经入库天数")
     @JsonProperty("inbound_days")
-    private Integer inboundDays;
+    private Long inboundDays;
 
     @ApiModelProperty("商品状态")
     @JsonProperty("config_status")
@@ -183,11 +183,11 @@ public class GoodsBuySalesRespVo  implements Serializable {
 
     @ApiModelProperty("可用库存数量合计")
     @JsonProperty("available_nums")
-    private Integer availableNums;
+    private Long availableNums;
 
     @ApiModelProperty("库存成本合计")
     @JsonProperty("tax_costs")
-    private Integer taxCosts;
+    private Long taxCosts;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")

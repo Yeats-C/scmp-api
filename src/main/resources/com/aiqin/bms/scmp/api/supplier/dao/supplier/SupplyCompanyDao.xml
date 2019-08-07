@@ -106,6 +106,13 @@
     <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount"/>
     <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount"/>
     <result column="star_score" jdbcType="BIGINT" property="starScore"/>
+    <result column="send_province_id" jdbcType="VARCHAR" property="sendProvinceId" />
+    <result column="send_province_name" jdbcType="VARCHAR" property="sendProvinceName" />
+    <result column="send_city_id" jdbcType="VARCHAR" property="sendCityId" />
+    <result column="send_city_name" jdbcType="VARCHAR" property="sendCityName" />
+    <result column="send_district_id" jdbcType="VARCHAR" property="sendDistrictId" />
+    <result column="send_district_name" jdbcType="VARCHAR" property="sendDistrictName" />
+    <result column="sending_address" jdbcType="VARCHAR" property="sendingAddress" />
   </resultMap>
   <update id="updateApplyCode">
     update supply_company set  apply_supply_company_code = #{applySupplyCompanyCode} where supply_code = #{supplyCompanyCode}
@@ -319,16 +326,18 @@
 
   <select id="selectAddress" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
-      province_id,
-      province_name,
-      city_id,
-      city_name,
-      district_id,
-      district_name,
-      address,
-      contact_name,
-      mobile_phone,
-      zip_code
-    from supply_company where supply_code = #{supplyCode, jdbcType=VARCHAR}
+      b.send_province_id,
+      b.send_province_name,
+      b.send_city_id,
+      b.send_city_name,
+      b.send_district_id,
+      b.send_district_name,
+      b.sending_address,
+      a.contact_name,
+      a.mobile_phone,
+      a.zip_code
+    from supply_company a
+    left join delivery_information b on a.supply_code = b.supply_company_code
+    where a.supply_code = #{supplyCode, jdbcType=VARCHAR} and b.delivery_type = 0
   </select>
 </mapper>

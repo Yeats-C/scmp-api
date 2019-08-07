@@ -66,11 +66,11 @@ public class MonthSalesAchievementRespVo {
 
     @ApiModelProperty("渠道销售额")
     @JsonProperty("channel_amount")
-    private Integer channelAmount;
+    private Long channelAmount;
 
     @ApiModelProperty("渠道预算额")
     @JsonProperty("channel_budget")
-    private Integer channelBudget;
+    private Long channelBudget;
 
     @ApiModelProperty("渠道达成率")
     @JsonProperty("channel_yield_rate")
@@ -78,11 +78,11 @@ public class MonthSalesAchievementRespVo {
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_amount")
-    private Integer distributionlAmount;
+    private Long distributionlAmount;
 
     @ApiModelProperty("分销预算额")
     @JsonProperty("distribution_budget")
-    private Integer distributionbBudget;
+    private Long distributionbBudget;
 
     @ApiModelProperty("分销达成率")
     @JsonProperty("distribution_yield_rate")

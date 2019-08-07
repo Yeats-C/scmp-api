@@ -70,44 +70,43 @@ public class MonthCumulativeBrandSalesRespVo {
 
     @ApiModelProperty("渠道销售额")
     @JsonProperty("channel_sales")
-    private String channelSales;
+    private Long channelSales;
 
     @ApiModelProperty("去年同期渠道销售额")
     @JsonProperty("channel_last_year_sales")
-    private String channelLastYearSales;
+    private Long channelLastYearSales;
 
     @ApiModelProperty("上期渠道销售额")
     @JsonProperty("channel_last_month_sales")
-    private String channelLastMonthSales;
+    private Long channelLastMonthSales;
 
     @ApiModelProperty("渠道同比")
     @JsonProperty("channel_compared_same")
-    private String channelComparedSame;
+    private Double channelComparedSame;
 
     @ApiModelProperty("渠道环比")
     @JsonProperty("channel_sequential")
-    private String channelSequential;
+    private Double channelSequential;
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_sales")
-    private String distributionSales;
+    private Long distributionSales;
 
     @ApiModelProperty("去年同期分销销售额")
     @JsonProperty("distribution_last_year_sales")
-    private String distributionLastYearSales;
+    private Long distributionLastYearSales;
 
     @ApiModelProperty("上期分销销售额")
     @JsonProperty("distribution_last_month_sales")
-    private String distributionLastMonthSales;
+    private Long distributionLastMonthSales;
 
     @ApiModelProperty("分销同比")
     @JsonProperty("distribution_compared_same")
-    private String distributionComparedSame;
+    private Double distributionComparedSame;
 
     @ApiModelProperty("分销环比")
     @JsonProperty("distribution_sequential")
-    private String distributionSequential;
-
+    private Double distributionSequential;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")

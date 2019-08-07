@@ -74,11 +74,11 @@ public class MonthCumulativeGrossProfitMarginRespVo {
 
     @ApiModelProperty("渠道销售额")
     @JsonProperty("channel_amount")
-    private String channelAmount;
+    private Long channelAmount;
 
     @ApiModelProperty("渠道毛利额")
     @JsonProperty("channel_maori")
-    private String channelMaori;
+    private Long channelMaori;
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
@@ -94,19 +94,19 @@ public class MonthCumulativeGrossProfitMarginRespVo {
 
     @ApiModelProperty("渠道同比")
     @JsonProperty("channel_compared_same")
-    private String channelComparedSame;
+    private Double channelComparedSame;
 
     @ApiModelProperty("渠道环比")
     @JsonProperty("channel_sequential")
-    private String channelSequential;
+    private Double channelSequential;
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_amount")
-    private String distributionAmount;
+    private Long distributionAmount;
 
     @ApiModelProperty("分销毛利额")
     @JsonProperty("distribution_maori")
-    private String distributionMaori;
+    private Long distributionMaori;
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")
@@ -122,12 +122,11 @@ public class MonthCumulativeGrossProfitMarginRespVo {
 
     @ApiModelProperty("分销同比")
     @JsonProperty("distribution_compared_same")
-    private String distributionComparedSame;
+    private Double distributionComparedSame;
 
     @ApiModelProperty("分销环比")
     @JsonProperty("distribution_sequential")
-    private String distributionSequential;
-
+    private Double distributionSequential;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")

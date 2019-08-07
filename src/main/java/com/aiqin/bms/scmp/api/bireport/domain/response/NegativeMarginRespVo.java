@@ -50,19 +50,19 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("销售数量")
     @JsonProperty("product_num")
-    private Integer productNum;
+    private Long productNum;
 
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_cost")
-    private Integer salesCost;
+    private Long salesCost;
 
     @ApiModelProperty("渠道销售金额")
     @JsonProperty("channel_order_amount")
-    private Integer channelOrderAmount;
+    private Long channelOrderAmount;
 
     @ApiModelProperty("渠道毛利额")
     @JsonProperty("channel_maori")
-    private Integer channelMaori;
+    private Long channelMaori;
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
@@ -70,11 +70,11 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("分销销售金额")
     @JsonProperty("distribution_order_amount")
-    private Integer distributionOrderAmount;
+    private Long distributionOrderAmount;
 
     @ApiModelProperty("分销毛利额")
     @JsonProperty("distribution_maori")
-    private Integer distributionMaori;
+    private Long distributionMaori;
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")
@@ -98,19 +98,19 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("销售数量合计")
     @JsonProperty("product_nums")
-    private Integer productNums;
+    private Long productNums;
 
     @ApiModelProperty("销售成本合计")
     @JsonProperty("sales_costs")
-    private Integer salesCosts;
+    private Long salesCosts;
 
     @ApiModelProperty("渠道销售金额合计")
     @JsonProperty("channel_order_amounts")
-    private Integer channelOrderAmounts;
+    private Long channelOrderAmounts;
 
     @ApiModelProperty("渠道毛利额合计")
     @JsonProperty("channel_maoris")
-    private Integer channelMaoris;
+    private Long channelMaoris;
 
     @ApiModelProperty("渠道毛利率合计")
     @JsonProperty("channel_maori_rates")
@@ -118,11 +118,11 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("分销销售金额合计")
     @JsonProperty("distribution_order_amounts")
-    private Integer distributionOrderAmounts;
+    private Long distributionOrderAmounts;
 
     @ApiModelProperty("分销毛利额合计")
     @JsonProperty("distribution_maoris")
-    private Integer distributionMaoris;
+    private Long distributionMaoris;
 
     @ApiModelProperty("分销毛利率合计")
     @JsonProperty("distribution_maori_rates")

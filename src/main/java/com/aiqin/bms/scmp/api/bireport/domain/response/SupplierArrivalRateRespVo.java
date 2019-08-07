@@ -47,23 +47,23 @@ public class SupplierArrivalRateRespVo implements Serializable {
 
     @ApiModelProperty("订货数量")
     @JsonProperty("pre_inbound_num")
-    private String preInboundNum;
+    private Long preInboundNum;
 
     @ApiModelProperty("订货金额")
     @JsonProperty("pre_tax_amount")
-    private String preTaxAmount;
+    private Long preTaxAmount;
 
     @ApiModelProperty("入库数量")
     @JsonProperty("pra_inbound_num")
-    private String praInboundNum;
+    private Long praInboundNum;
 
     @ApiModelProperty("入库金额")
     @JsonProperty("pra_tax_amount")
-    private String praTaxAmount;
+    private Long praTaxAmount;
 
     @ApiModelProperty("入库金额满足率")
     @JsonProperty("pra_tax_amount_rate")
-    private String praTaxAmountRate;
+    private Double praTaxAmountRate;
 
     @ApiModelProperty("采购组负责人")
     @JsonProperty("responsible_person_name")
@@ -83,19 +83,19 @@ public class SupplierArrivalRateRespVo implements Serializable {
 
     @ApiModelProperty("订货金额合计")
     @JsonProperty("pre_tax_amounts")
-    private String preTaxAmounts;
+    private Long preTaxAmounts;
 
     @ApiModelProperty("入库数量合计")
     @JsonProperty("pra_inbound_nums")
-    private String praInboundNums;
+    private Long praInboundNums;
 
     @ApiModelProperty("入库金额合计")
     @JsonProperty("pra_tax_amounts")
-    private String praTaxAmounts;
+    private Long praTaxAmounts;
 
     @ApiModelProperty("入库金额满足率合计")
     @JsonProperty("pra_tax_amount_rates")
-    private String praTaxAmountRates;
+    private Double praTaxAmountRates;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")
