@@ -17,7 +17,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
-import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundProductWmsResVO;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
@@ -49,11 +48,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @Classname: InboundServiceImpl
@@ -402,17 +396,19 @@ public class InboundServiceImpl implements InboundService {
 
 
 //                          //调用回调接口
-                            this.workFlowCallBack(inboundCallBackReqVo);
+//                            this.workFlowCallBack(inboundCallBackReqVo);
                         }
 //                    }
 //                }else {
 //                    throw new RuntimeException("入库单传入wms失败");
 //                }
-                log.error("推送保存日志修改状态,应该在回调接口前面执行");
-                return ;
-            }else{
-                 throw new RuntimeException("入库单传入wms失败");
+                        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode() )) {
+                            //记录调拨待入库
+                            supplierCommonService.getInstance(inbound.getSourceOderCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
+                        }
+                            log.error("推送保存日志修改状态,应该在回调接口前面执行");
             }
+            inboundService.workFlowCallBack(inboundCallBackReqVo);
         }catch (Exception e){
              e.printStackTrace();
              log.error(e.getMessage());
@@ -749,7 +745,7 @@ public class InboundServiceImpl implements InboundService {
 
         try {
 //                productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__ALLOCATION.getName());
-            supplierCommonService.getInstance(allocationCode + "", AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), null, null, AllocationEnum.ALLOCATION_TYPE_FINISHED.getName(), "系统自动");
+            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS__ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
                 Allocation allocation = allocationMapper.selectByCode(allocationCode);
                 //设置调拨状态
                 allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());

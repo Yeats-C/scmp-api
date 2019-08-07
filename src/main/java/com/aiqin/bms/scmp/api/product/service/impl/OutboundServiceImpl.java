@@ -28,6 +28,7 @@ import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
@@ -114,6 +115,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     private WarehouseService warehouseService;
     @Autowired
     private ProductSkuPicturesDao productSkuPicturesDao;
+    @Autowired
+    private SupplierCommonService supplierCommonService;
 
     /**
      * 分页查询以及搜索
@@ -726,7 +729,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus());
                 allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
 
-                productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.SUCCESS_OUTBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocation.getAllocationCode() ,HandleTypeCoce.SUCCESS_OUTBOUND_ALLOCATION.getName());
+//                productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.SUCCESS_OUTBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocation.getAllocationCode() ,HandleTypeCoce.SUCCESS_OUTBOUND_ALLOCATION.getName());
+                supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS_OUTBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
 
                 //跟新调拨单状态
                 int k = allocationMapper.updateByPrimaryKeySelective(allocation);
@@ -821,7 +825,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             AllocationToOutboundVo allocationResVo =  new AllocationToOutboundVo();
             AllocationDTO allocation = allocationMapper.selectByFormNO1(id);
             BeanCopyUtils.copy(allocation,allocationResVo);
-            productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.INBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),id ,HandleTypeCoce.INBOUND_ALLOCATION.getName());
+//            productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.INBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),id ,HandleTypeCoce.INBOUND_ALLOCATION.getName());
 
             List<AllocationProductToOutboundVo> list = allocationProductBatchMapper.selectByPictureUrlAllocationCode(allocation.getAllocationCode());
             allocationResVo.setSkuList(list);
@@ -867,7 +871,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             // 调用锁定库存数
             HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
             if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
-
+                supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
             }else{
                 log.error(httpResponse.getMessage());
                 throw  new GroundRuntimeException("库存操作失败");
