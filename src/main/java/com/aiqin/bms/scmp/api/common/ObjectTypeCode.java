@@ -54,6 +54,7 @@ public enum  ObjectTypeCode {
     OUTBOUND_ODER((byte)29,"出库单"),
     MOVEMENT_ODER((byte)30,"移库单"),
     CHANGE_PRICE((byte)31,"变价管理"),
+    SALE_AREA((byte)32,"销售区域"),
     ;
     private Byte status;
     private String name;
