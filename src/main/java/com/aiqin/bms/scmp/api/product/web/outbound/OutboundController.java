@@ -119,4 +119,17 @@ public class OutboundController {
                                                                   @RequestParam(value = "page_no", required = false)Integer pageNo){
         return outboundService.selectOutboundBatchInfoByOutboundOderCode(new OutboundBatch(outboundOderCode, pageSize, pageNo));
     }
+
+    @ApiOperation("pushWms")
+    @GetMapping("/pushWms")
+    public HttpResponse pushWms(String code){
+        try {
+            outboundService.pushWms(code);
+            return HttpResponse.success();
+        } catch (Exception e) {
+            log.error("入库单回调接口错误实体是:[{}]", code);
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
+        }
+    }
 }

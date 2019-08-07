@@ -282,7 +282,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="供应商发货时间")
     @JsonProperty("delivery_time")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deliveryTime;
 
     @ApiModelProperty(value="入库完成时间")

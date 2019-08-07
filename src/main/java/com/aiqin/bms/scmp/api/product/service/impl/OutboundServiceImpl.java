@@ -52,10 +52,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 描述:
@@ -235,7 +232,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             //  调用推送接口
             OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            outboundService.pushWms(outbound.getOutboundOderCode(),outboundService);
+            outboundService.pushWms(outbound.getOutboundOderCode());
             // 跟新数据库状态
             return j;
         } catch (Exception e) {
@@ -284,7 +281,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             //  调用推送接口
             OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            outboundService.pushWms(outbound.getOutboundOderCode(),outboundService);
+            outboundService.pushWms(outbound.getOutboundOderCode());
 
             return outboundOderCode;
 
@@ -428,8 +425,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Override
     @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
-    public void pushWms(String  code,OutboundServiceImpl inboundService){
+    public void pushWms(String  code){
         log.error("异步推送给wms");
+        String url = "";
         // 通过id查询 入库单主体
         try {
             Thread.sleep(2000);
@@ -441,24 +439,35 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         BeanCopyUtils.copy(outbound,outboundWmsReqVO);
         List<OutboundProductWmsResVO> outboundProductWmsReqVOs =  outboundProductDao.selectMmsReqByOutboundOderCode(outbound.getOutboundOderCode());
 
+        //去重
+        Set<OutboundProductWmsResVO> OutboundProductWmsResVOSet = new HashSet<>(outboundProductWmsReqVOs);
+        outboundProductWmsReqVOs.clear();
+        outboundProductWmsReqVOs.addAll(OutboundProductWmsResVOSet);
+        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
 //        List<OutboundBatchWmsResVO> outboundBatchWmsResVOs = outboundBatchDao.selectOutboundBatchWmsResponse(outbound.getOutboundOderCode());
 //        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
 //        outboundWmsReqVO.setOutboundBatchWmsResVOs(outboundBatchWmsResVOs);
         try{
-//            String url =urlConfig.WMS_API_URL+"/deppon/save/outbound";
+//            if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
+//                String createById = outboundDao.selectCreateById(outbound.getOutboundOderCode());
+//                outboundWmsReqVO.setCreateById(createById);
+//                url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
+//                log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
+//            }
 //            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO));
 //
 //            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
 //            String hello= JSON.toJSONString(orderDto.getData());
 //            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
 //            ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
+//
 //            if("0".equals(orderDto.getCode())){
-
-                // 设置wms编号
+//
+//                 //设置wms编号
 //                outbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
-                //设置入库状态
-//                outbound1.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-//                outbound1.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
+//                //设置入库状态
+//                outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+//                outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
                 // 跟新数据库
                 int s = outboundDao.updateByPrimaryKeySelective(outbound);
                 OutboundCallBackReqVo outboundCallBackReqVo = new OutboundCallBackReqVo();
@@ -491,7 +500,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 //            }else{ throw new RuntimeException("入库单传入wms失败");}
         }catch (Exception e){
             e.printStackTrace();
-            throw new RuntimeException("入库单传入wms失败");
+            throw new RuntimeException("出库单传入wms失败");
         }
     }
     /**
