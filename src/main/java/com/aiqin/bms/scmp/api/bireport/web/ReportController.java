@@ -754,6 +754,7 @@ public class ReportController {
             XSSFWorkbook wb = ExportExcelReportHigh.exportData(highInventoryRespVo);
             String excelName = "高库存数据导出";
             response.reset();
+            response.setContentType("application/octet-stream;charset=utf-8");
             response.setHeader("Access-Control-Allow-Origin", "*");
             response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(excelName, "UTF-8") + ".xlsx");
 
@@ -810,8 +811,9 @@ public class ReportController {
             String excelName = "低库存数据导出";
           //  excelName = URLEncoder.encode(excelName,"UTF-8");
             response.reset();
-            response.setCharacterEncoding("utf-8");
-            response.setHeader("content-disposition", "attachment;filename=" + URLEncoder.encode(excelName, "UTF-8") + ".xls" );
+            response.setContentType("application/octet-stream;charset=utf-8");
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(excelName, "UTF-8") + ".xlsx");
             OutputStream os = response.getOutputStream();
             wb.write(os);
             os.flush();
