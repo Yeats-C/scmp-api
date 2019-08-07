@@ -514,6 +514,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             rejectRecord.setSingleCount(sumSingleCount);
             rejectRecord.setReturnAmount(returnAmount);
             rejectRecord.setReturnCount(returnCount);
+            rejectRecord.setApprovalCode(rejectCode);
             rejectRecord.setUntaxedAmount(untaxedAmount);
             //添加退供单记录
             Integer count = rejectRecordDao.insert(rejectRecord);

@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.mapper.PriceChannelMapper;
@@ -396,8 +397,18 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             returnOrderInfoItem.setProductLineNum(returnDetailRequest.getProductLineNum());
             returnOrderInfoItem.setSkuCode(returnDetailRequest.getSkuCode());
             returnOrderInfoItem.setPrice(returnDetailRequest.getChannelUnitPrice());
+            //渠道价格
+            returnOrderInfoItem.setChannelUnitPrice(returnDetailRequest.getChannelUnitPrice());
+            returnOrderInfoItem.setTotalChannelPrice(returnDetailRequest.getChannelUnitPrice()*returnDetailRequest.getActualDeliverNum());
+            //实际渠道价格
+            returnOrderInfoItem.setActualChannelUnitPrice(returnDetailRequest.getChannelUnitPrice());
+            returnOrderInfoItem.setActualTotalChannelPrice(returnDetailRequest.getChannelUnitPrice()*returnDetailRequest.getActualDeliverNum());
             returnOrderInfoItem.setActualInboundNum(returnDetailRequest.getActualDeliverNum().intValue());
             returnOrderInfoItem.setAmount(returnDetailRequest.getChannelUnitPrice() * returnDetailRequest.getActualDeliverNum());
+            //实际单价
+            returnOrderInfoItem.setActualAmount(returnDetailRequest.getChannelUnitPrice());
+            //实际总价
+            returnOrderInfoItem.setActualPrice(returnDetailRequest.getChannelUnitPrice() * returnDetailRequest.getActualDeliverNum());
             returnOrderInfoItem.setCompanyCode(COMPANY_CODE);
             returnOrderInfoItem.setCompanyName(COMPANY_NAME);
             returnOrderInfoItem.setWarehouseCode(returnDetailRequest.getWarehouseCode());
@@ -439,15 +450,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             StockChangeRequest stockChangeRequest = new StockChangeRequest();
             //操作类型 直接加库存 10
             stockChangeRequest.setOperationType(10);
-            List<StockVoRequest> list = handleInboundStockData(returnOrderInfo, inboundOderCode);
+            List<StockVoRequest> list = handleInboundStockData(returnOrderInfo, inboundOderCode,inboundReqSave);
             stockChangeRequest.setStockVoRequests(list);
             HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                 throw new GroundRuntimeException("dl回调   加库存异常");
             }
         }
-        //直接加库存
-
 
         return HttpResponse.success();
     }
@@ -457,27 +466,28 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
      *
      * @param returnOrderInfo
      * @param inboundOderCode
+     * @param inboundReqSave
      * @return
      */
-    private List<StockVoRequest> handleInboundStockData(ReturnOrderInfo returnOrderInfo, String inboundOderCode) {
+    private List<StockVoRequest> handleInboundStockData(ReturnOrderInfo returnOrderInfo, String inboundOderCode,InboundReqSave inboundReqSave) {
         List<StockVoRequest> list = Lists.newArrayList();
         String companyCode = returnOrderInfo.getCompanyCode();
         String transportCenterCode = returnOrderInfo.getTransportCenterCode();
         String warehouseCode = returnOrderInfo.getWarehouseCode();
         StockVoRequest stockVoRequest;
-        for (ReturnOrderInfoItem itemReqVo : returnOrderInfo.getDetailList()) {
+        for (InboundProductReqVo itemReqVo : inboundReqSave.getList()) {
             stockVoRequest = new StockVoRequest();
             stockVoRequest.setTransportCenterCode(transportCenterCode);
             stockVoRequest.setCompanyCode(companyCode);
             stockVoRequest.setWarehouseCode(warehouseCode);
             //库存是主单位数量 退供基商品含量默认是1
-            stockVoRequest.setChangeNum(itemReqVo.getActualInboundNum().longValue());
+            stockVoRequest.setChangeNum(itemReqVo.getPraInboundNum());
             stockVoRequest.setSkuCode(itemReqVo.getSkuCode());
             stockVoRequest.setSkuName(itemReqVo.getSkuName());
             stockVoRequest.setDocumentType(0);
             stockVoRequest.setDocumentNum(inboundOderCode);
             stockVoRequest.setSourceDocumentType((int) OutboundTypeEnum.ORDER.getCode());
-            stockVoRequest.setSourceDocumentNum(itemReqVo.getReturnOrderCode());
+            stockVoRequest.setSourceDocumentNum(returnOrderInfo.getReturnOrderCode());
             stockVoRequest.setOperator(returnOrderInfo.getCreateById());
             list.add(stockVoRequest);
         }
