@@ -5,20 +5,19 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
-import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2InboundReqVoConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.OrderVo2OutBoundConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupply2outboundSaveConverter;
+import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToInboundConverter;
+import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductToOutboundVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationToOutboundVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.ReturnInboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
-import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
@@ -29,16 +28,12 @@ import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
-import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
-import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -52,10 +47,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 描述:
@@ -120,6 +112,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     private SupplyCompanyDao supplyCompanyDao;
     @Autowired
     private WarehouseService warehouseService;
+    @Autowired
+    private ProductSkuPicturesDao productSkuPicturesDao;
 
     /**
      * 分页查询以及搜索
@@ -235,7 +229,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             //  调用推送接口
             OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            outboundService.pushWms(outbound.getOutboundOderCode(),outboundService);
+            outboundService.pushWms(outbound.getOutboundOderCode());
             // 跟新数据库状态
             return j;
         } catch (Exception e) {
@@ -284,7 +278,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             //  调用推送接口
             OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            outboundService.pushWms(outbound.getOutboundOderCode(),outboundService);
+            outboundService.pushWms(outbound.getOutboundOderCode());
 
             return outboundOderCode;
 
@@ -428,8 +422,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Override
     @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
-    public void pushWms(String  code,OutboundServiceImpl inboundService){
+    public void pushWms(String  code){
         log.error("异步推送给wms");
+        String url = "";
         // 通过id查询 入库单主体
         try {
             Thread.sleep(2000);
@@ -441,24 +436,35 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         BeanCopyUtils.copy(outbound,outboundWmsReqVO);
         List<OutboundProductWmsResVO> outboundProductWmsReqVOs =  outboundProductDao.selectMmsReqByOutboundOderCode(outbound.getOutboundOderCode());
 
+        //去重
+        Set<OutboundProductWmsResVO> OutboundProductWmsResVOSet = new HashSet<>(outboundProductWmsReqVOs);
+        outboundProductWmsReqVOs.clear();
+        outboundProductWmsReqVOs.addAll(OutboundProductWmsResVOSet);
+        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
 //        List<OutboundBatchWmsResVO> outboundBatchWmsResVOs = outboundBatchDao.selectOutboundBatchWmsResponse(outbound.getOutboundOderCode());
 //        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
 //        outboundWmsReqVO.setOutboundBatchWmsResVOs(outboundBatchWmsResVOs);
         try{
-//            String url =urlConfig.WMS_API_URL+"/deppon/save/outbound";
+//            if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
+//                String createById = outboundDao.selectCreateById(outbound.getOutboundOderCode());
+//                outboundWmsReqVO.setCreateById(createById);
+//                url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
+//                log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
+//            }
 //            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO));
 //
 //            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
 //            String hello= JSON.toJSONString(orderDto.getData());
 //            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
 //            ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
+//
 //            if("0".equals(orderDto.getCode())){
-
-                // 设置wms编号
+//
+//                 //设置wms编号
 //                outbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
-                //设置入库状态
-//                outbound1.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-//                outbound1.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
+//                //设置入库状态
+//                outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+//                outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
                 // 跟新数据库
                 int s = outboundDao.updateByPrimaryKeySelective(outbound);
                 OutboundCallBackReqVo outboundCallBackReqVo = new OutboundCallBackReqVo();
@@ -491,7 +497,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 //            }else{ throw new RuntimeException("入库单传入wms失败");}
         }catch (Exception e){
             e.printStackTrace();
-            throw new RuntimeException("入库单传入wms失败");
+            throw new RuntimeException("出库单传入wms失败");
         }
     }
     /**
@@ -725,7 +731,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 //跟新调拨单状态
                 int k = allocationMapper.updateByPrimaryKeySelective(allocation);
                 //生成入库单
-                createInbound(allocation.getId());
+                createInbound(allocation.getFormNo());
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new GroundRuntimeException("调拨单更改出库状态失败");
@@ -810,18 +816,20 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     }
 
     @Override
-    public void createInbound(Long id) {
+    public void createInbound(String id) {
         try {
             AllocationToOutboundVo allocationResVo =  new AllocationToOutboundVo();
-            Allocation allocation = allocationMapper.selectByPrimaryKey(id);
+            AllocationDTO allocation = allocationMapper.selectByFormNO1(id);
             BeanCopyUtils.copy(allocation,allocationResVo);
             productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.INBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),id ,HandleTypeCoce.INBOUND_ALLOCATION.getName());
 
             List<AllocationProductToOutboundVo> list = allocationProductBatchMapper.selectByPictureUrlAllocationCode(allocation.getAllocationCode());
             allocationResVo.setSkuList(list);
             // 转化成出库单
-            InboundReqSave convert =  new AllocationResVo2InboundReqVoConverter(warehouseService).convert(allocationResVo);
-            String inboundOderCode = inboundService.saveInbound(convert);
+//            InboundReqSave convert =  new AllocationResVo2InboundReqVoConverter(warehouseService).convert(allocationResVo);
+            AllocationTypeEnum enumByType = AllocationTypeEnum.getAllocationTypeEnumByType(allocation.getAllocationType());
+            InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
+            String inboundOderCode = inboundService.saveInbound(convert1);
             //更改调拨在途数
 
             StockChangeRequest stockChangeRequest = new StockChangeRequest();
@@ -830,18 +838,29 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             // stockChangeRequest.setOrderType();
             List<StockVoRequest> list1 = new ArrayList<>();
             for (AllocationProductToOutboundVo allocationProduct : list) {
-                StockVoRequest  stockVoRequest = new StockVoRequest();
+                StockVoRequest stockVoRequest = new StockVoRequest();
+                // 设置公司名称编码
                 stockVoRequest.setCompanyCode(allocation.getCompanyCode());
                 stockVoRequest.setCompanyName(allocation.getCompanyName());
+                // 设置物流中心名称编码
+                //如果改在途数，需要设置为入库的仓库
                 stockVoRequest.setTransportCenterCode(allocation.getCallInLogisticsCenterCode());
                 stockVoRequest.setTransportCenterName(allocation.getCallInLogisticsCenterName());
+                //设置库房名称编码
                 stockVoRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
                 stockVoRequest.setWarehouseName(allocation.getCallInWarehouseName());
+                //设置采购组编码名称
                 stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
                 stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
+                //设置sku编号名称
                 stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
                 stockVoRequest.setSkuName(allocationProduct.getSkuName());
                 stockVoRequest.setChangeNum(allocationProduct.getQuantity());
+                //设置类型
+                stockVoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+                stockVoRequest.setDocumentNum(allocation.getAllocationCode());
+                stockVoRequest.setOperator(allocation.getUpdateBy());
+                stockVoRequest.setRemark(allocation.getRemark());
                 list1.add(stockVoRequest);
             }
             stockChangeRequest.setStockVoRequests(list1);

@@ -130,7 +130,8 @@
     d.expect_arrival_time as expectArrivalTime, d.valid_time as validTime, o.create_time as createTime,
     o.purchase_group_code as purchaseGroupCode, o.purchase_group_name as purchaseGroupName, o.purchase_mode as purchaseMode,
     o.supplier_code as supplierCode, o.supplier_name as supplierName, o.create_by_id as createById, o.create_by_name as createByName,
-    o.update_by_id as updateById, o.update_by_name as updateByName, o.gift_tax_sum as giftTaxSum, o.update_time as updateTime
+    o.update_by_id as updateById, o.update_by_name as updateByName, o.gift_tax_sum as giftTaxSum, o.update_time as updateTime,
+    o.approval_code as approvalCode
     from purchase_order o
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id
@@ -168,6 +169,9 @@
       </if>
       <if test="purchaseMode != null">
         and o.purchase_mode = #{purchaseMode,jdbcType=INTEGER}
+      </if>
+      <if test="approvalCode != null">
+        and o.approval_code = #{approvalCode,jdbcType=VARCHAR}
       </if>
     </where>
     order by o.create_time desc
@@ -211,6 +215,9 @@
       <if test="purchaseMode != null">
         and purchase_mode = #{purchaseMode,jdbcType=INTEGER}
       </if>
+      <if test="approvalCode != null">
+        and approval_code = #{approvalCode,jdbcType=VARCHAR}
+      </if>
     </where>
   </select>
   <select id="purchaseOrder"  resultMap="BaseResultMap">
@@ -223,7 +230,7 @@
   </select>
   <select id="orderByExecuteWarehousing" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select d.valid_time as validTime, o.purchase_order_id as purchaseOrderId, o.purchase_order_code as purchaseOrderCode,
-    o.purchase_order_status as purchaseOrderStatus, o.storage_status as storageStatus
+    o.purchase_order_status as purchaseOrderStatus, o.storage_status as storageStatus, o.apply_type_form as applyTypeForm
     from purchase_order o
     inner join purchase_order_details d on o.purchase_order_id = d.purchase_order_id
     where o.purchase_order_status in(3, 4, 5, 6)

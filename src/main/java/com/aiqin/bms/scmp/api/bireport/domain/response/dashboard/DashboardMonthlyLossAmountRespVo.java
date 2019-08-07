@@ -13,13 +13,17 @@ public class DashboardMonthlyLossAmountRespVo {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("年月")
+    @ApiModelProperty("年")
+    @JsonProperty("stat_year")
+    private String statYear;
+
+    @ApiModelProperty("月")
     @JsonProperty("stat_month")
     private String statMonth;
 
     @ApiModelProperty("次品影响金额")
-    @JsonProperty("defective_effect_amount_monthly")
-    private Long defectiveEffectAmountMonthly;
+    @JsonProperty("defective_effect_amount")
+    private Long defectiveEffectAmount;
 
     @ApiModelProperty("次品影响金额累计值")
     @JsonProperty("defective_effect_amount_acc")

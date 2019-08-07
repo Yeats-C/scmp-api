@@ -105,4 +105,13 @@ public class ReturnOrderInfoItem {
 
     @ApiModelProperty("实际总价")
     private Long actualPrice;
+
+    /**以下字段为了dl回调销售单生成出库单和库存变动需要*/
+
+    @ApiModelProperty("仓库名称")
+    private String warehouseName;
+
+    @ApiModelProperty("仓库编码")
+    private String warehouseCode;
+
 }

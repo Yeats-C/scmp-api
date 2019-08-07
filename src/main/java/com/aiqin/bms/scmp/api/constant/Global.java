@@ -89,7 +89,9 @@ public interface Global {
     Integer PRODUCT_TYPE_2 = 2;
 
     /**
-     * 采购申请单类型 0 手动 1自动 , 0  待提交 1 已完成 2 部分完成 仓储状态 0.未开始  1.确认中 2.完成
+     * 采购申请单类型 0 手动 1自动 ,
+     * 是否提交  待提交 1 已完成 2 部分完成
+     * 仓储状态 0.未开始  1.确认中 2.完成
      */
     Integer PURCHASE_APPLY_TYPE_0 = 0;
     Integer PURCHASE_APPLY_TYPE_1 = 1;

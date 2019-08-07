@@ -1,18 +1,17 @@
-package com.aiqin.bms.scmp.api.purchase.domain.response;
+package com.aiqin.bms.scmp.api.purchase.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
 
-/**
- * @author: zhao shuai
- * @create: 2019-06-28
- **/
+@ApiModel
 @Data
-public class PurchaseOrderResponse {
+public class ApplyPurchaseOrder {
+    @JsonProperty("id")
+    private Long id;
 
     @ApiModelProperty(value="采购单id")
     @JsonProperty("purchase_order_id")
@@ -66,15 +65,15 @@ public class PurchaseOrderResponse {
     @JsonProperty("storage_status")
     private Integer storageStatus;
 
-    @ApiModelProperty(value="单品数量")
+    @ApiModelProperty(value="最小单位数量")
     @JsonProperty("single_count")
     private Integer singleCount;
 
-    @ApiModelProperty(value="含税采购金额")
+    @ApiModelProperty(value="商品含税金额")
     @JsonProperty("product_total_amount")
     private Integer productTotalAmount;
 
-    @ApiModelProperty(value="实物返金额")
+    @ApiModelProperty(value="实物返含税金额")
     @JsonProperty("return_amount")
     private Integer returnAmount;
 
@@ -90,63 +89,48 @@ public class PurchaseOrderResponse {
     @JsonProperty("settlement_method_name")
     private String settlementMethodName;
 
-    @ApiModelProperty(value="创建时间")
-    @JsonProperty("create_time")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createTime;
+    @ApiModelProperty(value="取消原因")
+    @JsonProperty("cancel_reason")
+    private String cancelReason;
 
-    @ApiModelProperty(value="修改时间")
-    @JsonProperty("update_time")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date updateTime;
+    @ApiModelProperty(value="取消备注")
+    @JsonProperty("cancel_remark")
+    private String cancelRemark;
 
-    @ApiModelProperty(value="创建者")
-    @JsonProperty("create_by_name")
-    private String createByName;
+    @ApiModelProperty(value="采购单的类型（手动，自动）")
+    @JsonProperty("apply_type_form")
+    private String applyTypeForm;
 
-    @ApiModelProperty(value="实际单品数量")
-    @JsonProperty("actual_single_count")
-    private Integer actualSingleCount;
-
-    @ApiModelProperty(value="实际含税采购金额")
-    @JsonProperty("actual_total_amount")
-    private Integer actualTotalAmount;
-
-    @ApiModelProperty(value="实际实物返金额")
-    @JsonProperty("actual_return_amount")
-    private Integer actualReturnAmount;
-
-    @ApiModelProperty(value="预计到货时间")
-    @JsonProperty("expect_arrival_time")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
-    private Date expectArrivalTime;
-
-    @ApiModelProperty(value="有效期")
-    @JsonProperty("valid_time")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
-    private Date validTime;
-
-    @ApiModelProperty(value="创建者id")
-    @JsonProperty("create_by_id")
-    private String createById;
-
-    @ApiModelProperty(value="修改者id")
-    @JsonProperty("update_by_id")
-    private String updateById;
-
-    @ApiModelProperty(value="修改者")
-    @JsonProperty("update_by_name")
-    private String updateByName;
+    @ApiModelProperty(value="关联审批单")
+    @JsonProperty("approval_code")
+    private String approvalCode;
 
     @ApiModelProperty(value="赠品含税金额")
     @JsonProperty("gift_tax_sum")
     private Integer giftTaxSum;
 
-    @ApiModelProperty(value="实际赠品含税金额")
-    @JsonProperty("actual_gift_tax_sum")
-    private Integer actualGiftTaxSum;
+    @ApiModelProperty(value="创建时间")
+    @JsonProperty("create_time")
+    private Date createTime;
 
-    @ApiModelProperty(value="关联审批单")
-    @JsonProperty("approval_code")
-    private String approvalCode;
+    @ApiModelProperty(value="修改时间")
+    @JsonProperty("update_time")
+    private Date updateTime;
+
+    @ApiModelProperty(value="创建人id")
+    @JsonProperty("create_by_id")
+    private String createById;
+
+    @ApiModelProperty(value="修改人id")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="创建人名称")
+    @JsonProperty("create_by_name")
+    private String createByName;
+
+    @ApiModelProperty(value="修改人名称")
+    @JsonProperty("update_by_name")
+    private String updateByName;
+
 }

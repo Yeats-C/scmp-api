@@ -6,60 +6,76 @@
         SELECT
         ddass.id as id,
         ddass.stat_year as statYear,
+        ddass.product_sort_name as productSortName,
         ddass.channel_costs as channelCosts,
         ddass.channel_amount as channelAmount,
         ddass.distribution_amount as distributionAmount,
-        ddass.channel_maori as channelMaori,
-        ddass.distribution_maori as distributionMaori,
+        ddass.channel_margin as channelMargin,
+        ddass.distribution_margin as distributionMargin,
         ddass.sales_budget as salesBudget,
-        ddass.achievement as achievement
+        ddass.achieve_rate as achieveRate
         FROM dashboard_depart_annual_sales_stati ddass
+        WHERE 1=1
+        <if test="fiveYearStr!=null and fiveYearStr!=''">
+            and ddass.stat_year between #{fiveYearStr}
+        </if>
+        <if test="oneYearStr!=null and oneYearStr!=''">
+            and #{oneYearStr}
+        </if>
     </select>
     <select id="selectDashboardMonthlySalesStati" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiRespVo">
         SELECT
         dmss.id as id,
+        dmss.stat_year as statYear,
         dmss.stat_month as statMonth,
+        dmss.product_sort_name as productSortName,
         dmss.channel_costs as channelCosts,
-        dmss.curr_channel_amount as currChannelAmount,
+        dmss.channel_amount as ChannelAmount,
         dmss.pre_channel_amount as preChannelAmount,
-        dmss.channel_maori as channelMaori,
+        dmss.channel_margin as channelMargin,
         dmss.distribution_amount as distributionAmount,
-        dmss.distribution_maori as distributionMaori,
-        dmss.curr_supplier_content as currSupplierContent,
+        dmss.distribution_margin as distributionMargin,
+        dmss.supplier_content as supplierContent,
         dmss.pre_supplier_content as preSupplierContent,
         dmss.curr_achieve_rate as currAchieveRate,
         dmss.pre_achieve_rate as preAchieveRate
         FROM dashboard_monthly_sales_stati dmss
+        where dmss.stat_year = #{oneYearStr}
     </select>
     <select id="selectDashboardMonthlySalesStatiAcc" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiAccRespVo">
         SELECT
         dmssa.id as id,
+        dmssa.stat_year as statYear,
         dmssa.stat_month as statMonth,
+        dmssa.product_sort_name as productSortName,
         dmssa.channel_costs as channelCosts,
-        dmssa.curr_channel_amount as currChannelAmount,
+        dmssa.channel_amount as channelAmount,
         dmssa.pre_channel_amount as preChannelAmount,
-        dmssa.curr_acc_sum_channel_amount as currAccSumChannelAmount,
-        dmssa.channel_maori as channelMaori,
-        dmssa.acc_sum_channel_maori as accSumChannelMaori,
+        dmssa.acc_sum_channel_amount as accSumChannelAmount,
+        dmssa.pre_acc_sum_channel_amount as preAccSumChannelAmount,
+        dmssa.channel_margin as channelMargin,
+        dmssa.acc_sum_channel_margin as accSumChannelMargin,
         dmssa.distribution_amount as distributionAmount,
-        dmssa.distribution_maori as distributionMaori,
-        dmssa.curr_supplier_content as currSupplierContent,
+        dmssa.distribution_margin as distributionMargin,
+        dmssa.supplier_content as supplierContent,
         dmssa.pre_supplier_content as preSupplierContent,
         dmssa.curr_achieve_rate as currAchieveRate,
-        dmssa.pre_achieve_rate as preAchieveRate,
-        dmssa.pre_acc_sum_channel_amount as preAccSumChannelAmount
+        dmssa.pre_achieve_rate as preAchieveRate
         FROM dashboard_monthly_sales_stati_acc dmssa
+        where dmssa.stat_year = #{oneYearStr}
     </select>
     <select id="selectDashboardMonthlyLossAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlyLossAmountRespVo">
       SELECT
       dmla.id as id,
+      dmla.stat_year as statYear,
       dmla.stat_month as statMonth,
-      dmla.defective_effect_amount_monthly as defectiveEffectAmountMonthly,
+      dmla.defective_effect_amount as defectiveEffectAmount,
       dmla.defective_effect_amount_acc as defectiveEffectAmountAcc,
       dmla.stockout_effect_amount_monthly as stockoutEffectAmountMonthly,
       dmla.stockout_effect_amount_acc as stockoutEffectAmountAcc,
       dmla.monthly_loss_amount as monthlyLossAmount
       FROM dashboard_monthly_loss_amount dmla
+      where dmla.stat_year = #{oneYearStr}
     </select>
     <select id="selectDashboardDepMonthlyHomocyclicRatio" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
       SELECT

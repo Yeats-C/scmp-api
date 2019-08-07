@@ -49,4 +49,6 @@ public interface OutboundDao {
      * @return int
      */
     int insertBatch(List<Outbound> list);
+
+    String selectCreateById(String outboundOderCode);
 }

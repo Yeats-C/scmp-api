@@ -99,6 +99,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private PurchaseGroupService purchaseGroupService;
     @Resource
     private PurchaseInspectionReportDao purchaseInspectionReportDao;
+    @Resource
+    private ApplyPurchaseOrderDao applyPurchaseOrderDao;
+    @Resource
+    private ApplyPurchaseOrderDetailsDao applyPurchaseOrderDetailsDao;
+    @Resource
+    private ApplyPurchaseOrderProductDao applyPurchaseOrderProductDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -248,8 +254,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         PurchaseOrder purchaseOrder = purchaseOrderRequest.getPurchaseOrder();
         purchaseOrder.setPurchaseOrderId(purchaseId);
         String purchaseProductCode = "CG" + String.valueOf(encodingRule.getNumberingValue());
-        purchaseOrder.setPurchaseOrderId(purchaseId);
         purchaseOrder.setPurchaseOrderCode(purchaseProductCode);
+        purchaseOrder.setApprovalCode(purchaseProductCode);
         purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_0);
@@ -259,6 +265,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         // 添加采购单
         Integer orderCount = purchaseOrderDao.insert(purchaseOrder);
         if(orderCount > 0){
+            // 添加采购单的审批日志
+            applyPurchaseOrderDao.insert(purchaseOrder);
             // 添加操作日志
             log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
                     PurchaseOrderLogEnum.INSERT_ORDER.getCode(), PurchaseOrderLogEnum.INSERT_ORDER.getName(), purchaseOrder.getApplyTypeForm());
@@ -273,6 +281,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             details.setDetailsStatus(Global.USER_ON);
             details.setOrderType("配送");
             purchaseOrderDetailsDao.insert(details);
+            // 添加采购单审批的详情
+            applyPurchaseOrderDetailsDao.insert(details);
             // 添加商品列表
             PurchaseFormRequest form = new PurchaseFormRequest();
             if(CollectionUtils.isNotEmptyCollection(purchaseOrderRequest.getApplyIds())){
@@ -325,7 +335,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(form);
         // 提交采购单页面商品列表
         if (CollectionUtils.isNotEmptyCollection(details)) {
-            List<PurchaseOrderProduct> list = new ArrayList<>();
+            List<PurchaseOrderProduct> list = Lists.newArrayList();
             PurchaseOrderProduct orderProduct = null;
             for (PurchaseApplyDetailResponse detail : details) {
                 orderProduct = new PurchaseOrderProduct();
@@ -364,6 +374,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 list.add(orderProduct);
             }
             purchaseOrderProductDao.insertAll(list);
+            // 添加采购单商品的审批记录
+            applyPurchaseOrderProductDao.insertAll(list);
         }
     }
 
@@ -447,10 +459,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         // 添加操作日志
         PurchaseOrderDetails detail;
-        if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_2)){
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STOCK_UP.getCode(),
-                    PurchaseOrderLogEnum.STOCK_UP.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)){
+        if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)){
+            // 开始发货
             detail = new PurchaseOrderDetails();
             detail.setPurchaseOrderId(purchaseOrderId);
             detail.setDeliveryTime(Calendar.getInstance().getTime());
@@ -459,29 +469,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             purchaseOrderDetailsDao.update(detail);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.DELIVER_GOODS.getCode(),
                     PurchaseOrderLogEnum.DELIVER_GOODS.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
-            detail = new PurchaseOrderDetails();
-            detail.setPurchaseOrderId(purchaseOrderId);
-            detail.setWarehouseTime(Calendar.getInstance().getTime());
-            detail.setUpdateById(createById);
-            detail.setUpdateByName(createByName);
-            purchaseOrderDetailsDao.update(detail);
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_5)){
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode(),
-                    PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getStorageStatus() != null && purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STORAGE_STAY.getCode(),
-                    PurchaseOrderLogEnum.STORAGE_STAY.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)){
+        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)) {
+            // 取消
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.REVOKE.getCode(),
                     PurchaseOrderLogEnum.REVOKE.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-            // 仓储确认判断是否入库完成
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
-            this.wayNum(purchaseOrderId);
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
             // 添加入库完成时间
             detail = new PurchaseOrderDetails();
@@ -494,6 +485,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             inboundService.repealOrder(order.getPurchaseOrderCode(), createById, createByName);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
+            if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+                log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
+                        PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), order.getApplyTypeForm());
+            }
         }
         return HttpResponse.success();
     }
@@ -833,7 +828,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , purchaseOrder.getApplyTypeForm());
             // 仓储确认判断是否入库完成
-            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+                log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
+                        PurchaseOrderLogEnum.PURCHASE_FINISH.getName() , purchaseOrder.getApplyTypeForm());
                 this.wayNum(purchaseStorage.getPurchaseOrderId());
             }
         }
@@ -954,9 +951,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.STORAGE_FINISH.getCode(),
                 PurchaseOrderLogEnum.STORAGE_FINISH.getName() , order.getApplyTypeForm());
         // 仓储确认判断是否入库完成
-        if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-            log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , order.getApplyTypeForm());
+        if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
+            log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
+                    PurchaseOrderLogEnum.PURCHASE_FINISH.getName() , order.getApplyTypeForm());
             this.wayNum(purchaseOrderId);
         }
         return HttpResponse.success();
@@ -1053,5 +1050,82 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         List<PurchaseFormResponse> purchaseFormResponses = productSkuSupplyUnitDao.supplyList(skuCode);
         return HttpResponse.success(purchaseFormResponses);
+    }
+
+    @Override
+    public HttpResponse<PurchaseApplyDetailResponse> applyDetails(String purchaseOrderCode){
+        if(StringUtils.isBlank(purchaseOrderCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        PurchaseApplyDetailResponse detail = applyPurchaseOrderDetailsDao.applyOrderDetails(purchaseOrderCode);
+        return HttpResponse.success(detail);
+    }
+
+    @Override
+    public HttpResponse applyOrderProduct(PurchaseOrderProductRequest request){
+        if(StringUtils.isBlank(request.getPurchaseOrderId())){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        PageResData pageResData = new PageResData();
+        List<ApplyPurchaseOrderProduct> list = applyPurchaseOrderProductDao.applyPurchaseOrderList(request);
+        Integer count = applyPurchaseOrderProductDao.applyPurchaseOrderCount(request);
+        pageResData.setDataList(list);
+        pageResData.setTotalCount(count);
+        return HttpResponse.success(pageResData);
+    }
+
+    @Override
+    public HttpResponse<PurchaseApplyProductInfoResponse>  applyOrderAmount(String purchaseOrderId){
+        if(StringUtils.isBlank(purchaseOrderId)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 计算采购单的数量与金额
+        PurchaseApplyProductInfoResponse amountResponse = new PurchaseApplyProductInfoResponse();
+        Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
+        Integer productSingleSum = 0, matterSingleSum = 0, giftSingleSum = 0;
+        Integer productTaxSum = 0, matterTaxSum = 0, giftTaxSum = 0, singleSum = 0, priceSum = 0;
+        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
+        request.setPurchaseOrderId(purchaseOrderId);
+        request.setIsPage(1);
+        List<ApplyPurchaseOrderProduct> orderProducts = applyPurchaseOrderProductDao.applyPurchaseOrderList(request);
+        if(CollectionUtils.isNotEmptyCollection(orderProducts)){
+            for(ApplyPurchaseOrderProduct order:orderProducts){
+                // 商品采购件数量
+                Integer purchaseWhole = order.getPurchaseWhole() == null ? 0 : order.getPurchaseWhole();
+                Integer purchaseSingle = order.getPurchaseSingle() == null ? 0 : order.getPurchaseSingle();
+                // 包装数量
+                Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
+                Integer amount = order.getProductAmount() == null ? 0 : order.getProductAmount();
+                Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
+                singleSum += singleCount;
+                priceSum += purchaseWhole;
+                if(order.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                    productPieceSum += purchaseWhole;
+                    productSingleSum += singleCount;
+                    productTaxSum += amount * singleCount;
+                }else if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                    matterPieceSum += purchaseWhole;
+                    matterSingleSum += singleCount;
+                    matterTaxSum += amount * singleCount;
+                }else if(order.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                    giftPieceSum += purchaseWhole;
+                    giftSingleSum += singleCount;
+                    giftTaxSum += amount * singleCount;
+                }
+            }
+            // 采购
+            amountResponse.setProductPieceSum(productPieceSum);
+            amountResponse.setProductSingleSum(productSingleSum);
+            amountResponse.setProductTaxSum(productTaxSum);
+            amountResponse.setMatterPieceSum(matterPieceSum);
+            amountResponse.setMatterSingleSum(matterSingleSum);
+            amountResponse.setMatterTaxSum(matterTaxSum);
+            amountResponse.setGiftPieceSum(giftPieceSum);
+            amountResponse.setGiftSingleSum(giftSingleSum);
+            amountResponse.setGiftTaxSum(giftTaxSum);
+            amountResponse.setSingleSum(singleSum);
+            amountResponse.setPieceSum(priceSum);
+        }
+        return HttpResponse.success(amountResponse);
     }
 }

@@ -718,4 +718,92 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateStatus" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
+    update reject_record
+    set
+    reject_status = #{rejectStatus,jdbcType=BIT},
+    <if test="provinceId != null">
+      province_id = #{provinceId,jdbcType=VARCHAR},
+    </if>
+    <if test="provinceName != null">
+      province_name = #{provinceName,jdbcType=VARCHAR},
+    </if>
+    <if test="cityId != null">
+      city_id = #{cityId,jdbcType=VARCHAR},
+    </if>
+    <if test="cityName != null">
+      city_name = #{cityName,jdbcType=VARCHAR},
+    </if>
+    <if test="districtId != null">
+      district_id = #{districtId,jdbcType=VARCHAR},
+    </if>
+    <if test="districtName != null">
+      district_name = #{districtName,jdbcType=VARCHAR},
+    </if>
+    <if test="address != null">
+      address = #{address,jdbcType=VARCHAR},
+    </if>
+    <if test="contactsPersonPhone != null">
+      contacts_person_phone = #{contactsPersonPhone,jdbcType=VARCHAR},
+    </if>
+    <if test="contactsPerson != null">
+      contacts_person = #{contactsPerson,jdbcType=VARCHAR},
+    </if>
+    <if test="transportRemark != null">
+      transport_remark = #{transportRemark,jdbcType=VARCHAR},
+    </if>
+    <if test="transportUrl != null">
+      transport_url = #{transportUrl,jdbcType=VARCHAR},
+    </if>
+    <if test="outStockTime != null">
+      out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
+    </if>
+    <if test="updateById != null">
+      update_by_id = #{updateById,jdbcType=VARCHAR},
+    </if>
+    <if test="updateByName != null">
+      update_by_name = #{updateByName,jdbcType=VARCHAR},
+    </if>
+    <if test="actualProductCount != null">
+      actual_product_count = #{actualProductCount,jdbcType=INTEGER},
+    </if>
+    <if test="actualProductAmount != null">
+      actual_product_amount = #{actualProductAmount,jdbcType=BIGINT},
+    </if>
+    <if test="actualGiftCount != null">
+      actual_gift_count = #{actualGiftCount,jdbcType=INTEGER},
+    </if>
+    <if test="actualGiftAmount != null">
+      actual_gift_amount = #{actualGiftAmount,jdbcType=BIGINT},
+    </if>
+    <if test="actualReturnCount != null">
+      actual_return_count = #{actualReturnCount,jdbcType=INTEGER},
+    </if>
+    <if test="actualReturnAmount != null">
+      actual_return_amount = #{actualReturnAmount,jdbcType=BIGINT},
+    </if>
+    <if test="actualSingleCount != null">
+      actual_single_count = #{actualSingleCount,jdbcType=INTEGER},
+    </if>
+    <if test="scoreCode != null">
+      score_code = #{scoreCode,jdbcType=VARCHAR},
+    </if>
+    <if test="deliveryTime != null">
+      delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
+    </if>
+    <if test="finishTime != null">
+      finish_time = #{finishTime,jdbcType=TIMESTAMP},
+    </if>
+    update_time =now()
+    <where>
+      <if test="rejectRecordId!=null">
+        and reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
+      </if>
+      <if test="rejectRecordCode!=null">
+        and reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+
+
+  </update>
 </mapper>

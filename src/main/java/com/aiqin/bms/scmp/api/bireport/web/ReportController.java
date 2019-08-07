@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.PageReportResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.aiqin.bms.scmp.api.bireport.service.ReportService;
+import com.aiqin.bms.scmp.api.purchase.web.FileRecordController;
 import com.aiqin.bms.scmp.api.util.ExportExcelReportHigh;
 import com.aiqin.bms.scmp.api.util.ExportExcelReportLow;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -13,15 +14,21 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ch
@@ -717,43 +724,102 @@ public class ReportController {
         return HttpResponse.success(reportService.selectAllOneCategory());
     }
 
-    @PostMapping("/excel/high")
+    private static final Logger LOGGER = LoggerFactory.getLogger(FileRecordController.class);
+
+    @GetMapping("/excel/high")
     @ApiOperation("高库存导出")
-    public void exportProductHigh(@RequestBody HighLowInventoryReqVo highLowInventoryReqVo, HttpServletResponse response) throws IOException {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "procurement_section_code", value = "采购组编码", type = "String"),
+            @ApiImplicitParam(name = "procurement_section_name", value = "采购组", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public void exportProductHigh( @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
+                                   @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
+                                   @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+                                   @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+                                   @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+                                   @RequestParam(value = "product_sort_name", required = false) String productSortName,
+                                   @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                   @RequestParam(value = "page_size", required = false) Integer pageSize, HttpServletResponse response) throws IOException {
+        OutputStream outputStream = null;
         try {
+            HighLowInventoryReqVo highLowInventoryReqVo = new HighLowInventoryReqVo(procurementSectionCode,procurementSectionName,beginCreateTime,finishCreateTime,productSortCode,
+                    productSortName);
             List<HighInventoryRespVo> highInventoryRespVo = reportService.selectHighInventorys(highLowInventoryReqVo);
             XSSFWorkbook wb = ExportExcelReportHigh.exportData(highInventoryRespVo);
             String excelName = "高库存数据导出";
             response.reset();
-            response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-            response.setCharacterEncoding("UTF-8");
-            response.addHeader("Content-Disposition", "attachment;fileName=" + new String(excelName.getBytes("UTF-8"), "iso-8859-1"));
-            OutputStream os = response.getOutputStream();
+            response.setContentType("application/octet-stream;charset=utf-8");
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(excelName, "UTF-8") + ".xlsx");
+
+            ServletOutputStream os = response.getOutputStream();
             wb.write(os);
             os.flush();
             os.close();
+            /*Map<String, String> map = System.getenv();
+            String userName = map.get("USERNAME");// 获取用户名
+            // 创建一个文件
+            File file = new File("C:/Users/"+ userName + "/Downloads" + highLowInventoryReqVo.getFileName());
+            try {
+                file.createNewFile();
+                // 将excel内容存盘
+                FileOutputStream stream = FileUtils.openOutputStream(file);
+                wb.write(stream);
+                stream.close();
+            } catch (Exception e) {
+                LOGGER.error("导出数据异常,message:{},cause:{}", e.getMessage(), e.getCause());
+            }
+            */
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
     }
 
-    @PostMapping("/excel/low")
+    @GetMapping("/excel/low")
     @ApiOperation("低库存导出")
-    public void exportProductLow(@RequestBody HighLowInventoryReqVo highLowInventoryReqVo, HttpServletResponse response) throws IOException {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "procurement_section_code", value = "采购组编码", type = "String"),
+            @ApiImplicitParam(name = "procurement_section_name", value = "采购组", type = "String"),
+            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
+            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+    })
+    public void exportProductLow(@RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
+                                 @RequestParam(value = "procurement_section_name", required = false) String procurementSectionName,
+                                 @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
+                                 @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+                                 @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+                                 @RequestParam(value = "product_sort_name", required = false) String productSortName,
+                                 @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                 @RequestParam(value = "page_size", required = false) Integer pageSize, HttpServletResponse response) throws IOException {
+        OutputStream outputStream = null;
         try {
+            HighLowInventoryReqVo highLowInventoryReqVo = new HighLowInventoryReqVo(procurementSectionCode,procurementSectionName,beginCreateTime,finishCreateTime,productSortCode,
+                    productSortName);
             List<LowInventoryRespVo> lowInventoryRespVo = reportService.selectLowInventorys(highLowInventoryReqVo);
             XSSFWorkbook wb = ExportExcelReportLow.exportData(lowInventoryRespVo);
             String excelName = "低库存数据导出";
           //  excelName = URLEncoder.encode(excelName,"UTF-8");
             response.reset();
-            response.setContentType("application/x-xls;charset=UTF-8");
-            response.setCharacterEncoding("utf-8");
-            response.setHeader("content-disposition", "attachment;filename=" + new String(excelName.getBytes(), "ISO8859-1") + ".xls" );
+            response.setContentType("application/octet-stream;charset=utf-8");
+            response.setHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(excelName, "UTF-8") + ".xlsx");
             OutputStream os = response.getOutputStream();
             wb.write(os);
             os.flush();
             os.close();
         } catch (Exception ex) {
+            ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
     }

@@ -111,7 +111,7 @@ public interface OutboundService {
      * @param id
      * @return
      */
-    void pushWms(String Code, OutboundServiceImpl inboundService);
+    void pushWms(String Code);
 
     /**
      * 出库单回调接口
@@ -144,7 +144,7 @@ public interface OutboundService {
      * 调拨生成入库单并且改变在途数
      * @param id
      */
-    void createInbound(Long id);
+    void createInbound(String formNo);
 
 
 

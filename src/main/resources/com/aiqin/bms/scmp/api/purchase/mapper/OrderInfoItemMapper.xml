@@ -585,16 +585,21 @@
     insert into order_info_item (order_code, sku_code,
     sku_name, picture_url, spec,color_name, color_code,model,  unit_code,
     unit_name, zero_disassembly_coefficient, num,product_line_num,
-    channel_unit_price,total_channel_price, company_name,company_code)
+    channel_unit_price,total_channel_price, company_name,company_code,   actual_channel_unit_price,
+    actual_total_channel_price, actual_amount, actual_price)
     values
     <foreach collection="list" item="item" separator="," close="" open="">
-      (#{item.orderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
+      (
+      #{item.orderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR}, #{item.pictureUrl,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR},
       #{item.colorName,jdbcType=VARCHAR}, #{item.colorCode,jdbcType=VARCHAR},
       #{item.model,jdbcType=VARCHAR},  #{item.unitCode,jdbcType=VARCHAR},
       #{item.unitName,jdbcType=VARCHAR}, #{item.zeroDisassemblyCoefficient,jdbcType=INTEGER}, #{item.num,jdbcType=BIGINT},
       #{item.productLineNum,jdbcType=BIGINT},#{item.channelUnitPrice,jdbcType=BIGINT},#{item.totalChannelPrice,jdbcType=BIGINT},
-      #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR})
+      #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR},
+      #{item.actualChannelUnitPrice,jdbcType=VARCHAR}, #{item.actualTotalChannelPrice,jdbcType=VARCHAR},
+      #{item.actualAmount,jdbcType=VARCHAR}, #{item.actualPrice,jdbcType=VARCHAR}
+      )
     </foreach>
   </insert>
 </mapper>

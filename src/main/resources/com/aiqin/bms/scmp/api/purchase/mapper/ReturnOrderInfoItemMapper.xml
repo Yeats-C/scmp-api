@@ -89,7 +89,8 @@
       give_promotion, batch_number, price,
       num, amount, activity_code,
       product_line_num, promotion_line_num, product_status,
-      actual_inbound_num, company_name, company_code
+      actual_inbound_num, company_name, company_code,  channel_unit_price, total_channel_price, actual_channel_unit_price, actual_total_channel_price,
+      actual_amount, actual_price
       )
     values
     <foreach collection="list" item="item"   separator=",">
@@ -119,7 +120,13 @@
       #{item.productStatus,jdbcType=INTEGER},
       #{item.actualInboundNum,jdbcType=INTEGER},
       #{item.companyName,jdbcType=VARCHAR},
-      #{item.companyCode,jdbcType=VARCHAR}
+      #{item.companyCode,jdbcType=VARCHAR},
+      #{item.channelUnitPrice,jdbcType=VARCHAR},
+      #{item.totalChannelPrice,jdbcType=VARCHAR},
+      #{item.actualChannelUnitPrice,jdbcType=VARCHAR},
+      #{item.actualTotalChannelPrice,jdbcType=VARCHAR},
+      #{item.actualAmount,jdbcType=VARCHAR},
+      #{item.actualPrice,jdbcType=VARCHAR}
       )
     </foreach>
 

@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.jobs.impl;
 
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
+import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitCapacityMapper;
@@ -61,6 +62,8 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
     private ProductSkuSupplyUnitCapacityMapper productSkuSupplyUnitCapacityDao;
     @Resource
     private PurchaseOrderDetailsDao purchaseOrderDetailsDao;
+    @Resource
+    private OperationLogDao operationLogDao;
 
     @Scheduled(cron = "0 0 2 1 * ?")   //每月1号的0:10:00执行
     public void automatic(){
@@ -178,6 +181,21 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
                     purchaseOrderDetailsDao.update(detail);
                 }
                 purchaseOrderDao.update(purchaseOrder);
+                if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
+                    OperationLog log = new OperationLog();
+                    log.setOperationId(order.getPurchaseOrderId());
+                    log.setOperationType(PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode());
+                    log.setOperationContent(PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName());
+                    log.setRemark(order.getApplyTypeForm());
+                    log.setCreateById("0");
+                    log.setCreateByName("有效期到期，自动执行");
+                    operationLogDao.insert(log);
+                    if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+                        log.setOperationType(PurchaseOrderLogEnum.PURCHASE_FINISH.getCode());
+                        log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_FINISH.getName());
+                        operationLogDao.insert(log);
+                    }
+                }
             }
         }
         return HttpResponse.success();

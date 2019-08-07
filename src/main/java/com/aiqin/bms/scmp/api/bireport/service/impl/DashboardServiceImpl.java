@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.bireport.dao.DashboardDao;
 import com.aiqin.bms.scmp.api.bireport.domain.request.dashboard.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.*;
 import com.aiqin.bms.scmp.api.bireport.service.DashboardService;
+import com.aiqin.bms.scmp.api.util.DayUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,28 +20,31 @@ public class DashboardServiceImpl implements DashboardService{
 
     // 年销售情况（部门）
     @Override
-    public List<DashboardDepartAnnualSalesStatiRespVo> selectDashboardDepartAnnualSalesStati(DashboardDepartAnnualSalesStatiReqVo dashboardDepartAnnualSalesStatiReqVo) {
-
-        return dashboardDao.selectDashboardDepartAnnualSalesStati(dashboardDepartAnnualSalesStatiReqVo);
+    public List<DashboardDepartAnnualSalesStatiRespVo> selectDashboardDepartAnnualSalesStati() {
+        String fiveYearStr = DayUtil.getYearStr(-5);
+        String oneYearStr = DayUtil.getYearStr(0);
+        return dashboardDao.selectDashboardDepartAnnualSalesStati(fiveYearStr,oneYearStr);
     }
 
     // 月销售情况（不累计）
     @Override
-    public List<DashboardMonthlySalesStatiRespVo> selectDashboardMonthlySalesStati(DashboardMonthlySalesStatiReqVo dashboardMonthlySalesStatiReqVo) {
-
-        return dashboardDao.selectDashboardMonthlySalesStati(dashboardMonthlySalesStatiReqVo);
+    public List<DashboardMonthlySalesStatiRespVo> selectDashboardMonthlySalesStati() {
+        String oneYearStr = DayUtil.getYearStr(0);
+        return dashboardDao.selectDashboardMonthlySalesStati(oneYearStr);
     }
 
     // 月销售情况（月累计）
     @Override
-    public List<DashboardMonthlySalesStatiAccRespVo> selectDashboardMonthlySalesStatiAcc(DashboardMonthlySalesStatiAccReqVo dashboardMonthlySalesStatiAccReqVo) {
-        return dashboardDao.selectDashboardMonthlySalesStatiAcc(dashboardMonthlySalesStatiAccReqVo);
+    public List<DashboardMonthlySalesStatiAccRespVo> selectDashboardMonthlySalesStatiAcc() {
+        String oneYearStr = DayUtil.getYearStr(0);
+        return dashboardDao.selectDashboardMonthlySalesStatiAcc(oneYearStr);
     }
 
     // 月亏损
     @Override
-    public List<DashboardMonthlyLossAmountRespVo> selectDashboardMonthlyLossAmount(DashboardMonthlyLossAmountReqVo dashboardMonthlyLossAmountReqVo) {
-        return dashboardDao.selectDashboardMonthlyLossAmount(dashboardMonthlyLossAmountReqVo);
+    public List<DashboardMonthlyLossAmountRespVo> selectDashboardMonthlyLossAmount() {
+        String oneYearStr = DayUtil.getYearStr(0);
+        return dashboardDao.selectDashboardMonthlyLossAmount(oneYearStr);
     }
 
     // 当月部门销售同环比

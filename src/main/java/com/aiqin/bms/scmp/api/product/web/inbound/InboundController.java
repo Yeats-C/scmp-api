@@ -134,9 +134,9 @@ public class InboundController {
 
 //    @ApiOperation("pushWms")
 //    @GetMapping("/pushWms")
-//    public HttpResponse pushWms(String code, InboundServiceImpl inboundService){
+//    public HttpResponse pushWms(String code){
 //        try {
-//            inboundService.pushWms(code, inboundService);
+//            inboundService.pushWms(code);
 //            return HttpResponse.success();
 //        } catch (Exception e) {
 //            log.error("入库单回调接口错误实体是:[{}]", code);
