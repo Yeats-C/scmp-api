@@ -3,7 +3,6 @@
 <mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.ApplyPurchaseOrderDao">
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.ApplyPurchaseOrder">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="apply_purchase_order_id" jdbcType="VARCHAR" property="applyPurchaseOrderId" />
     <result column="purchase_order_id" jdbcType="VARCHAR" property="purchaseOrderId" />
     <result column="purchase_order_code" jdbcType="VARCHAR" property="purchaseOrderCode" />
     <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
@@ -14,13 +13,13 @@
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
-    <result column="info_status" jdbcType="BIT" property="infoStatus" />
-    <result column="purchase_order_status" jdbcType="BIT" property="purchaseOrderStatus" />
-    <result column="storage_status" jdbcType="BIT" property="storageStatus" />
+    <result column="info_status" jdbcType="INTEGER" property="infoStatus" />
+    <result column="purchase_order_status" jdbcType="INTEGER" property="purchaseOrderStatus" />
+    <result column="storage_status" jdbcType="INTEGER" property="storageStatus" />
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
     <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
     <result column="return_amount" jdbcType="INTEGER" property="returnAmount" />
-    <result column="purchase_mode" jdbcType="BIT" property="purchaseMode" />
+    <result column="purchase_mode" jdbcType="INTEGER" property="purchaseMode" />
     <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
     <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
     <result column="cancel_reason" jdbcType="VARCHAR" property="cancelReason" />
@@ -36,7 +35,7 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, apply_purchase_order_id, purchase_order_id, purchase_order_code, transport_center_code, 
+    id, purchase_order_id, purchase_order_code, transport_center_code,
     transport_center_name, purchase_group_code, purchase_group_name, warehouse_code, 
     warehouse_name, supplier_code, supplier_name, info_status, purchase_order_status, 
     storage_status, single_count, product_total_amount, return_amount, purchase_mode, 
@@ -45,37 +44,27 @@
     create_by_name, update_by_name
   </sql>
   <insert id="insert">
-    insert into apply_purchase_order (id, apply_purchase_order_id, purchase_order_id, 
-      purchase_order_code, transport_center_code, 
-      transport_center_name, purchase_group_code, 
-      purchase_group_name, warehouse_code, warehouse_name, 
-      supplier_code, supplier_name, info_status, 
-      purchase_order_status, storage_status, single_count, 
-      product_total_amount, return_amount, purchase_mode, 
-      settlement_method_code, settlement_method_name, 
-      cancel_reason, cancel_remark, apply_type_form, 
-      approval_code, gift_tax_sum, create_time, 
-      update_time, create_by_id, update_by_id, 
-      create_by_name, update_by_name)
-    values (#{id,jdbcType=BIGINT}, #{applyPurchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderId,jdbcType=VARCHAR}, 
+    insert into apply_purchase_order (purchase_order_id,
+      purchase_order_code, transport_center_code, transport_center_name, purchase_group_code,
+      purchase_group_name, warehouse_code, warehouse_name, supplier_code, supplier_name, info_status,
+      purchase_order_status, storage_status, single_count, product_total_amount, return_amount, purchase_mode,
+      settlement_method_code, settlement_method_name, cancel_reason, cancel_remark, apply_type_form,
+      approval_code, gift_tax_sum, create_time, create_by_id, create_by_name)
+    values (#{purchaseOrderId,jdbcType=VARCHAR},
       #{purchaseOrderCode,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, 
       #{transportCenterName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
       #{purchaseGroupName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, 
-      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{infoStatus,jdbcType=BIT}, 
-      #{purchaseOrderStatus,jdbcType=BIT}, #{storageStatus,jdbcType=BIT}, #{singleCount,jdbcType=INTEGER}, 
-      #{productTotalAmount,jdbcType=INTEGER}, #{returnAmount,jdbcType=INTEGER}, #{purchaseMode,jdbcType=BIT}, 
+      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{infoStatus,jdbcType=INTEGER}, 
+      #{purchaseOrderStatus,jdbcType=INTEGER}, #{storageStatus,jdbcType=INTEGER}, #{singleCount,jdbcType=INTEGER}, 
+      #{productTotalAmount,jdbcType=INTEGER}, #{returnAmount,jdbcType=INTEGER}, #{purchaseMode,jdbcType=INTEGER}, 
       #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR}, 
       #{cancelReason,jdbcType=VARCHAR}, #{cancelRemark,jdbcType=VARCHAR}, #{applyTypeForm,jdbcType=VARCHAR}, 
-      #{approvalCode,jdbcType=VARCHAR}, #{giftTaxSum,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{createById,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
-      #{createByName,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR})
+      #{approvalCode,jdbcType=VARCHAR}, #{giftTaxSum,jdbcType=INTEGER}, now(), #{createById,jdbcType=VARCHAR},
+      #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update apply_purchase_order
     <set>
-      <if test="applyPurchaseOrderId != null">
-        apply_purchase_order_id = #{applyPurchaseOrderId,jdbcType=VARCHAR},
-      </if>
       <if test="purchaseOrderId != null">
         purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR},
       </if>
@@ -107,13 +96,13 @@
         supplier_name = #{supplierName,jdbcType=VARCHAR},
       </if>
       <if test="infoStatus != null">
-        info_status = #{infoStatus,jdbcType=BIT},
+        info_status = #{infoStatus,jdbcType=INTEGER},
       </if>
       <if test="purchaseOrderStatus != null">
-        purchase_order_status = #{purchaseOrderStatus,jdbcType=BIT},
+        purchase_order_status = #{purchaseOrderStatus,jdbcType=INTEGER},
       </if>
       <if test="storageStatus != null">
-        storage_status = #{storageStatus,jdbcType=BIT},
+        storage_status = #{storageStatus,jdbcType=INTEGER},
       </if>
       <if test="singleCount != null">
         single_count = #{singleCount,jdbcType=INTEGER},
@@ -125,7 +114,7 @@
         return_amount = #{returnAmount,jdbcType=INTEGER},
       </if>
       <if test="purchaseMode != null">
-        purchase_mode = #{purchaseMode,jdbcType=BIT},
+        purchase_mode = #{purchaseMode,jdbcType=INTEGER},
       </if>
       <if test="settlementMethodCode != null">
         settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
