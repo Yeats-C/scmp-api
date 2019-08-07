@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.EnabledSave;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupBuyerDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.PurchaseGroupReqVo;
@@ -102,4 +103,15 @@ public interface PurchaseGroupService {
      * @return
      */
     Map<String, PurchaseGroupDTO> selectByNames(Set<String> purchaseGroupList, String companyCode);
+
+    /**
+     *
+     * 功能描述: 启用/禁用
+     *
+     * @param enabledSave
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/6 21:46
+     */
+    Integer enabled(EnabledSave enabledSave);
 }

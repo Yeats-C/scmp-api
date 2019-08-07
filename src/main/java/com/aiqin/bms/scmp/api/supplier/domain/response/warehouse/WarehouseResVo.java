@@ -66,4 +66,7 @@ public class WarehouseResVo {
 
     @ApiModelProperty("启用禁用状态")
     private Byte enable;
+
+    @ApiModelProperty("排序")
+    private Integer warehouseOrder;
 }

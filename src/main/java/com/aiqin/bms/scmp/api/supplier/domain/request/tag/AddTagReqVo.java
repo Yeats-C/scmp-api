@@ -24,4 +24,7 @@ public class AddTagReqVo {
 
     @ApiModelProperty("标签类型名称  从供应商字典表里面取")
     private String tagTypeName;
+
+    @ApiModelProperty("标签分类")
+    private String classify;
 }

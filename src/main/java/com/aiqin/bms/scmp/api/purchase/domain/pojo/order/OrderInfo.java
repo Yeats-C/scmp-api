@@ -223,6 +223,27 @@ public class OrderInfo {
     @ApiModelProperty("修改时间")
     private Date updateTime;
 
+    @ApiModelProperty("实际渠道总价")
+    private Long actualProductChannelTotalAmount;
+
+    @ApiModelProperty("实际订单金额")
+    private Long actualOrderAmount;
+
+    @ApiModelProperty("实际发货数量")
+    private Long actualProductNum;
+
+    @ApiModelProperty("订单来源名称")
+    private Long orderOriginalName;
+
+    @ApiModelProperty("实际重量")
+    private Long actualWeight;
+
+    @ApiModelProperty("实际体积")
+    private Long actualVolume;
+
+    @ApiModelProperty("实际分销总价")
+    private Long actualProductTotalAmount;
+
     /**以下字段为了dl回调销售单生成出库单和库存变动需要*/
 
     @ApiModelProperty("预计商品数量")

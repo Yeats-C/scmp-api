@@ -65,6 +65,9 @@ public class QueryTagRespVo {
     @ApiModelProperty("标签使用次数")
     private Integer tagUseNum;
 
+    @ApiModelProperty("标签分类")
+    private String classify;
+
     @ApiModelProperty("标签使用记录")
     List<DetailTagUseRespVo> tagUseRespVos;
 
@@ -80,4 +83,6 @@ public class QueryTagRespVo {
             this.enableName = StatusTypeCode.DIS_ABLE.getName();
         }
     }
+
+
 }

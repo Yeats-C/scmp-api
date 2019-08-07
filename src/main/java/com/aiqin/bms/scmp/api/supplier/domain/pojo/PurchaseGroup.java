@@ -4,10 +4,12 @@ package com.aiqin.bms.scmp.api.supplier.domain.pojo;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
 @ApiModel("采购组主表")
+@Data
 public class PurchaseGroup extends CommonBean {
     @ApiModelProperty("主键")
     private Long id;
@@ -36,75 +38,6 @@ public class PurchaseGroup extends CommonBean {
     @ApiModelProperty("修改时间")
     private Date updateTime;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPurchaseGroupCode() {
-        return purchaseGroupCode;
-    }
-
-    public void setPurchaseGroupCode(String purchaseGroupCode) {
-        this.purchaseGroupCode = purchaseGroupCode == null ? null : purchaseGroupCode.trim();
-    }
-
-    public String getPurchaseGroupName() {
-        return purchaseGroupName;
-    }
-
-    public void setPurchaseGroupName(String purchaseGroupName) {
-        this.purchaseGroupName = purchaseGroupName == null ? null : purchaseGroupName.trim();
-    }
-
-    public Byte getEnable() {
-        return enable;
-    }
-
-    public void setEnable(Byte enable) {
-        this.enable = enable;
-    }
-
-    public Byte getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(Byte delFlag) {
-        this.delFlag = delFlag;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy == null ? null : createBy.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy == null ? null : updateBy.trim();
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
+    @ApiModelProperty("排序")
+    private Integer purchaseGroupOrder;
 }

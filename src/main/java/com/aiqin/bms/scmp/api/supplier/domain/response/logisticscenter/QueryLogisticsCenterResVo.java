@@ -30,6 +30,7 @@ public class QueryLogisticsCenterResVo {
 
     @ApiModelProperty("启用禁用状态")
     private Byte enable;
+
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     private Date createTime;
@@ -43,4 +44,7 @@ public class QueryLogisticsCenterResVo {
 
     @ApiModelProperty("修改人")
     private String updateBy;
+
+    @ApiModelProperty("排序")
+    private Integer logisticsCenterOrder;
 }
