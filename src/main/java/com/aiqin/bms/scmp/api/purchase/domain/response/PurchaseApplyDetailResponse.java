@@ -380,5 +380,9 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="备注")
     @JsonProperty("remark")
     private String remark;
+
+    @ApiModelProperty(value="采购单的类型（手动，自动）")
+    @JsonProperty("apply_type_form")
+    private String applyTypeForm;
 }
 

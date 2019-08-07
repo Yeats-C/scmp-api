@@ -255,6 +255,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         purchaseOrder.setPurchaseOrderId(purchaseId);
         String purchaseProductCode = "CG" + String.valueOf(encodingRule.getNumberingValue());
         purchaseOrder.setPurchaseOrderCode(purchaseProductCode);
+        purchaseOrder.setApprovalCode(purchaseProductCode);
         purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_0);
@@ -458,10 +459,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         // 添加操作日志
         PurchaseOrderDetails detail;
-        if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_2)){
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STOCK_UP.getCode(),
-                    PurchaseOrderLogEnum.STOCK_UP.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)){
+        if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)){
+            // 开始发货
             detail = new PurchaseOrderDetails();
             detail.setPurchaseOrderId(purchaseOrderId);
             detail.setDeliveryTime(Calendar.getInstance().getTime());
@@ -470,20 +469,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             purchaseOrderDetailsDao.update(detail);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.DELIVER_GOODS.getCode(),
                     PurchaseOrderLogEnum.DELIVER_GOODS.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_5)){
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode(),
-                    PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getStorageStatus() != null && purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.STORAGE_STAY.getCode(),
-                    PurchaseOrderLogEnum.STORAGE_STAY.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)){
+        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)) {
+            // 取消
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.REVOKE.getCode(),
                     PurchaseOrderLogEnum.REVOKE.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-            // 仓储确认判断是否入库完成
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
-            this.wayNum(purchaseOrderId);
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
             // 添加入库完成时间
             detail = new PurchaseOrderDetails();
@@ -496,6 +485,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             inboundService.repealOrder(order.getPurchaseOrderCode(), createById, createByName);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
+            if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+                log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
+                        PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), order.getApplyTypeForm());
+            }
         }
         return HttpResponse.success();
     }
@@ -836,6 +829,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , purchaseOrder.getApplyTypeForm());
             // 仓储确认判断是否入库完成
             if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+                log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
+                        PurchaseOrderLogEnum.PURCHASE_FINISH.getName() , purchaseOrder.getApplyTypeForm());
                 this.wayNum(purchaseStorage.getPurchaseOrderId());
             }
         }
@@ -957,8 +952,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 PurchaseOrderLogEnum.STORAGE_FINISH.getName() , order.getApplyTypeForm());
         // 仓储确认判断是否入库完成
         if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
-            log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , order.getApplyTypeForm());
+            log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
+                    PurchaseOrderLogEnum.PURCHASE_FINISH.getName() , order.getApplyTypeForm());
             this.wayNum(purchaseOrderId);
         }
         return HttpResponse.success();
