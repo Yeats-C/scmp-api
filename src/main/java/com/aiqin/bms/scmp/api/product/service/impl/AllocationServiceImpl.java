@@ -7,7 +7,6 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
-import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToInboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToOutboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
@@ -17,7 +16,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
@@ -185,6 +183,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             StockChangeRequest stockChangeRequest = new StockChangeRequest();
              stockChangeRequest.setOperationType(1);
              stockChangeRequest.setOrderCode(allocation.getAllocationCode());
+             allocation.setUpdateBy(getUser().getPersonName());
              List<StockVoRequest> list1 = allocationProductTransStock(allocation,products);
              stockChangeRequest.setStockVoRequests(list1);
              // 调用锁定库存数
@@ -470,11 +469,20 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 stockVoRequest.setCompanyCode(allocation.getCompanyCode());
                 stockVoRequest.setCompanyName(allocation.getCompanyName());
                 // 设置物流中心名称编码
-                stockVoRequest.setTransportCenterCode(allocation.getCallOutLogisticsCenterCode());
-                stockVoRequest.setTransportCenterName(allocation.getCallOutLogisticsCenterName());
-                //设置库房名称编码
-                stockVoRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
-                stockVoRequest.setWarehouseName(allocation.getCallOutWarehouseName());
+                //如果改在途数，需要设置为入库的仓库
+                 if(allocation.getFlag()){
+                    stockVoRequest.setTransportCenterCode(allocation.getCallOutLogisticsCenterCode());
+                    stockVoRequest.setTransportCenterName(allocation.getCallOutLogisticsCenterName());
+                    //设置库房名称编码
+                    stockVoRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
+                    stockVoRequest.setWarehouseName(allocation.getCallOutWarehouseName());
+                 }else {
+                     stockVoRequest.setTransportCenterCode(allocation.getCallInLogisticsCenterCode());
+                     stockVoRequest.setTransportCenterName(allocation.getCallInLogisticsCenterName());
+                     //设置库房名称编码
+                     stockVoRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
+                     stockVoRequest.setWarehouseName(allocation.getCallInWarehouseName());
+                 }
                 //设置采购组编码名称
                 stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
                 stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
@@ -485,6 +493,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 //设置类型
                 stockVoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
                 stockVoRequest.setDocumentNum(allocation.getAllocationCode());
+                stockVoRequest.setOperator(allocation.getUpdateBy());
+                stockVoRequest.setRemark(allocation.getRemark());
                 stockVoRequests.add(stockVoRequest);
             }
         }
@@ -523,6 +533,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         // 通过流水编码查询调拨单实体
         Allocation oldAllocation = new Allocation();
         AllocationDTO allocation  = allocationMapper.selectByFormNO1(vo1.getFormNo());
+        allocation.setUpdateBy(vo1.getApprovalUserName());
         oldAllocation.setId(allocation.getId());
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             String content = ApplyStatus.APPROVAL_SUCCESS.getContent().replace("CREATEBY", allocation.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
@@ -538,28 +549,29 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             //生成出库单并且返回出库单编码
             //生成入库单
             String outboundCode = null;
-            String inboundCode = null;
+//            String inboundCode = null;
             AllocationTypeEnum enumByType = AllocationTypeEnum.getAllocationTypeEnumByType(allocation.getAllocationType());
             OutboundReqVo convert = new AllocationOrderToOutboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
             outboundCode =outboundService.save(convert);
-            if(!AllocationTypeEnum.SCRAP.getType().equals(allocation.getAllocationType())){
-                InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
-                inboundCode = inboundService.saveInbound(convert1);
-            }
+//            if(!AllocationTypeEnum.SCRAP.getType().equals(allocation.getAllocationType())){
+//                InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
+////                inboundCode = inboundService.saveInbound(convert1);
+//            }
             //调拨 增加在途数
-            if(AllocationTypeEnum.ALLOCATION.getType().equals(allocation.getAllocationType())){
-                StockChangeRequest stockChangeRequest = new StockChangeRequest();
-                stockChangeRequest.setOperationType(7);
-                stockChangeRequest.setOrderCode(allocation.getAllocationCode());
-                List<StockVoRequest> list1 = allocationProductTransStock(allocation,allocation.getProducts());
-                stockChangeRequest.setStockVoRequests(list1);
-                stockService.changeStock(stockChangeRequest);
-            }
+//            if(AllocationTypeEnum.ALLOCATION.getType().equals(allocation.getAllocationType())){
+//                allocation.setFlag(false);
+//                StockChangeRequest stockChangeRequest = new StockChangeRequest();
+//                stockChangeRequest.setOperationType(7);
+//                stockChangeRequest.setOrderCode(allocation.getAllocationCode());
+//                List<StockVoRequest> list1 = allocationProductTransStock(allocation,allocation.getProducts());
+//                stockChangeRequest.setStockVoRequests(list1);
+//                stockService.changeStock(stockChangeRequest);
+//            }
 //            String outboundOderCode = createOutbound(allocation.getId());
             oldAllocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus());
             oldAllocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
             oldAllocation.setOutboundOderCode(outboundCode);
-            oldAllocation.setInboundOderCode(inboundCode);
+//            oldAllocation.setInboundOderCode(inboundCode);
             //更新审核状态
             int  k = ((AllocationService)AopContext.currentProxy()).updateByPrimaryKeySelective(oldAllocation);
             if(k!=1){

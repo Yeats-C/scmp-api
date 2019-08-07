@@ -9,11 +9,13 @@ import com.aiqin.bms.scmp.api.product.dao.MovementDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
-import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
+import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
-import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
@@ -27,21 +29,18 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
-import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.aop.framework.AopContext;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
@@ -52,7 +51,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @Classname: InboundServiceImpl
@@ -108,6 +106,9 @@ public class InboundServiceImpl implements InboundService {
 
     @Autowired
     private SupplyCompanyDao supplyCompanyDao;
+    @Autowired
+    private SupplierCommonService supplierCommonService;
+
     /**
      * 分页查询以及列表搜索
      * @param vo
@@ -737,8 +738,8 @@ public class InboundServiceImpl implements InboundService {
     public void inBoundReturn(String allocationCode) {
 
         try {
-                productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__ALLOCATION.getName());
-
+//                productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__ALLOCATION.getName());
+            supplierCommonService.getInstance(allocationCode + "", AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), null, null, AllocationEnum.ALLOCATION_TYPE_FINISHED.getName(), "系统自动");
                 Allocation allocation = allocationMapper.selectByCode(allocationCode);
                 //设置调拨状态
                 allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());

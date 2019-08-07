@@ -48,7 +48,7 @@
     from apply_product_sku_sale_area a
     left join apply_product_sku_sale_area_main b
     on a.code = b.code
-    where b.apply_status = 1 and sku_code in
+    where b.apply_status = 1 and b.company_code = #{companyCode} and sku_code in
     <foreach collection="items" item="item" open="(" close=")" separator=",">
        #{item}
     </foreach>

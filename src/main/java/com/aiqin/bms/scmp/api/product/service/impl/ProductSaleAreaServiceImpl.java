@@ -157,7 +157,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, sb.toString()));
         }
         //判断申请表中是否有该条数据
-        List<ApplyProductSkuSaleArea> applyRepeat = applyProductSkuSaleAreaMapper.selectBySkuCodes(skuCodes);
+        List<ApplyProductSkuSaleArea> applyRepeat = applyProductSkuSaleAreaMapper.selectBySkuCodes(skuCodes,getUser().getCompanyCode());
         StringBuilder sb2 = new StringBuilder();
         //key:skuCode+供货渠道编码+供应商编码
         Map<String, ApplyProductSkuSaleArea> applyRepeatMap = applyRepeat.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""), Function.identity()));
@@ -677,6 +677,10 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         if(Objects.isNull(vo)){
             throw new BizException(MessageId.create(Project.PRODUCT_API,98,"数据异常，无法查询到该数据"));
         }
+        //日志
+        OperationLogBean operationLogBean = new OperationLogBean(code, null, ObjectTypeCode.SALE_AREA.getStatus(), null, null);
+        List<LogData> log = operationLogService.selectListByVO(operationLogBean);
+        vo.setLogData(log);
         return vo;
     }
 
@@ -728,10 +732,6 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
                 }
             });
         }
-        //日志
-        OperationLogBean operationLogBean = new OperationLogBean(code, null, ObjectTypeCode.SALE_AREA.getStatus(), null, null);
-        List<LogData> log = operationLogService.selectListByVO(operationLogBean);
-        vo.setLogData(log);
         return vo;
     }
 
