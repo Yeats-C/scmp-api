@@ -8,8 +8,6 @@ import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.DictionaryEnum;
 import com.aiqin.bms.scmp.api.product.dao.*;
-import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2InboundReqVoConverter;
-import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
@@ -20,7 +18,7 @@ import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.converter.OrderInfoToOutboundConverter;
-import com.aiqin.bms.scmp.api.purchase.domain.converter.ReturnInfoToOutboundConverter;
+import com.aiqin.bms.scmp.api.purchase.domain.converter.ReturnInfoToInboundConverter;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
@@ -137,6 +135,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Resource
     private InboundProductDao inboundProductDao;
 
+    /**
+     * 销售出库接口
+     * @param request
+     * @return
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse outboundOrder(OutboundRequest request) {
@@ -285,7 +288,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
         return list;
     }
-
     /**
      * 销售出库生成出库单
      *
@@ -314,6 +316,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
         return outboundOderCode;
     }
+
+    /**
+     * 销售退货接口
+     * @param request
+     * @return
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse returnOrder(ReturnRequest request) {
@@ -374,7 +382,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             returnOrderInfoItem.setProductLineNum(returnDetailRequest.getProductLineNum());
             returnOrderInfoItem.setSkuCode(returnDetailRequest.getSkuCode());
             returnOrderInfoItem.setPrice(returnDetailRequest.getChannelUnitPrice());
-            returnOrderInfoItem.setNum(returnDetailRequest.getActualDeliverNum());
+            returnOrderInfoItem.setActualInboundNum(returnDetailRequest.getActualDeliverNum().intValue());
             returnOrderInfoItem.setAmount(returnDetailRequest.getChannelUnitPrice() * returnDetailRequest.getNum());
             returnOrderInfoItem.setReturnOrderCode(returnOrderInfo.getOrderCode());
             returnOrderInfoItem.setCompanyCode(COMPANY_CODE);
@@ -397,13 +405,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 //        if(priceChannel!=null){
 //            returnOrderInfo.setOrderOriginal(priceChannel.getPriceChannelCode());
 //        }
-        Integer count = returnOrderInfoMapper.insertSelective(returnOrderInfo);
-        LOGGER.info("添加退货单:{}", count);
-        Integer detailCount = returnOrderInfoItemMapper.insertList(detailList);
-        LOGGER.info("添加退货单详情:{}", detailCount);
-
+//        Integer count = returnOrderInfoMapper.insertSelective(returnOrderInfo);
+//        LOGGER.info("添加退货单:{}", count);
+//        Integer detailCount = returnOrderInfoItemMapper.insertList(detailList);
+//        LOGGER.info("添加退货单详情:{}", detailCount);
+        returnOrderInfo.setDetailList(detailList);
         //入库单生成
-        InboundReqSave convert = new ReturnInfoToOutboundConverter(skuService).convert(returnOrderInfo);
+        List<InboundReqSave> convert = new ReturnInfoToInboundConverter(skuService).convert(returnOrderInfo);
 
         //直接加库存
 

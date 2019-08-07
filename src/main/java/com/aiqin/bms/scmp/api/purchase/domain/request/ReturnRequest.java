@@ -142,4 +142,7 @@ public class ReturnRequest {
 
     @ApiModelProperty(value = "渠道")
     private String deptName;
+
+    @ApiModelProperty(value = "预计退货数量")
+    private Long preProductNum;
 }

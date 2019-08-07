@@ -186,4 +186,10 @@ public class ReturnOrderInfo {
 
     @ApiModelProperty("商品详情")
     private List<ReturnOrderInfoItem> detailList;
+
+    /**以下字段为了dl回调销售单生成出库单和库存变动需要*/
+
+    @ApiModelProperty(value = "预计退货数量")
+    private Long preProductNum;
+
 }

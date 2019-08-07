@@ -17,4 +17,6 @@ public interface ApplyRejectRecordDao {
     int updateByPrimaryKey(ApplyRejectRecord record);
 
     ApplyRejectRecord selectByRejectCode(String approvalCode);
+
+    Integer updateStatus(RejectRecord rejectRecord);
 }
