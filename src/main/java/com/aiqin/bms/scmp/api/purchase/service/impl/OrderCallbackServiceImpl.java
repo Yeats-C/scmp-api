@@ -28,6 +28,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
@@ -469,6 +471,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         return HttpResponse.success();
     }
 
+
+
     /**
      * 销售入库处理库存参数
      *
@@ -502,6 +506,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         return list;
     }
 
+    /**
+     * 销售入库生成入库单
+     *
+     * @param
+     * @return
+     */
     private String inboundRecord(InboundReqSave reqVo) {
         // 入库单转化主体保存实体
         Inbound inbound = new Inbound();
@@ -524,5 +534,43 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), reqVo, HandleTypeCoce.ADD_INBOUND_ODER.getName(), new Date(), reqVo.getCreateBy(), reqVo.getRemark());
 
         return inbound.getInboundOderCode();
+    }
+
+    /**
+     * 调拨回调
+     *
+     * @param
+     * @return
+     */
+    @Override
+    public HttpResponse transfersOrder(TransfersRequest request) {
+
+        //添加调拨单
+
+        //添加调拨单详情
+
+        //添加记录
+
+        //出入库记录
+
+        //库存变动操作
+
+        return null;
+    }
+
+    /**
+     * 报损报溢回调
+     *
+     * @param
+     * @return
+     */
+    @Override
+    public HttpResponse profitLossOrder(ProfitLossRequest request) {
+
+        //添加损溢记录
+
+        //库存变动操作
+
+        return null;
     }
 }

@@ -1,10 +1,6 @@
-package com.aiqin.bms.scmp.api.purchase.service;
+package com.aiqin.bms.scmp.api.purchase.domain.request.callback;
 
-import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
+import lombok.Data;
 
 /**
  * <p>
@@ -32,12 +28,6 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
  * <p>
  * 思维方式*热情*能力
  */
-public interface OrderCallbackService {
-    HttpResponse outboundOrder(OutboundRequest request);
-
-    HttpResponse returnOrder(ReturnRequest request);
-
-    HttpResponse transfersOrder(TransfersRequest request);
-
-    HttpResponse profitLossOrder(ProfitLossRequest request);
+@Data
+public class TransfersRequest {
 }

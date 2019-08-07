@@ -1,9 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.web.order;
 
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyListResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.web.GoodsRejectController;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * <p>
@@ -66,5 +65,17 @@ public class OrderCallbackController {
         return orderCallbackService.returnOrder(request);
     }
 
+    @PostMapping("/transfers")
+    @ApiOperation(value = "调拨回调")
+    public HttpResponse transfersOrder(@RequestBody TransfersRequest request) {
+        LOGGER.info("调拨回调,request:{}", request.toString());
+        return orderCallbackService.transfersOrder(request);
+    }
 
+    @PostMapping("/profitloss")
+    @ApiOperation(value = "报损报溢回传")
+    public HttpResponse profitLossOrder(@RequestBody ProfitLossRequest request) {
+        LOGGER.info("报损报溢回传,request:{}", request.toString());
+        return orderCallbackService.profitLossOrder(request);
+    }
 }
