@@ -83,4 +83,16 @@ public class QueryOrderInfoItemRespVO {
 
     @ApiModelProperty("退货数量")
     private Long returnNum;
+
+    @ApiModelProperty("实际渠道单价")
+    private Long actualChannelUnitPrice;
+
+    @ApiModelProperty("实际渠道总价")
+    private Long actualTotalChannelPrice;
+
+    @ApiModelProperty("实际分销总价")
+    private Long actualAmount;
+
+    @ApiModelProperty("实际分销单价")
+    private Long actualPrice;
 }

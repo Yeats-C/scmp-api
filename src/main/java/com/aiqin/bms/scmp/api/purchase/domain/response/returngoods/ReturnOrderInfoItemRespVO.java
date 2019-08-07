@@ -73,4 +73,22 @@ public class ReturnOrderInfoItemRespVO {
 
     @ApiModelProperty("商品状态1新品2残品")
     private Integer productStatus;
+
+    @ApiModelProperty("渠道单价")
+    private Long channelUnitPrice;
+
+    @ApiModelProperty("渠道总价")
+    private Long totalChannelPrice;
+
+    @ApiModelProperty("实际渠道单价")
+    private Long actualChannelUnitPrice;
+
+    @ApiModelProperty("实际渠道总价")
+    private Long actualTotalChannelPrice;
+
+    @ApiModelProperty("实际单价")
+    private Long actualAmount;
+
+    @ApiModelProperty("实际总价")
+    private Long actualPrice;
 }

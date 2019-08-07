@@ -28,17 +28,22 @@
     <result column="product_line_num" jdbcType="BIGINT" property="productLineNum" />
     <result column="promotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
     <result column="return_num" jdbcType="BIGINT" property="returnNum" />
-    <result column="channel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
-    <result column="total_channel_price" jdbcType="BIGINT" property="totalChannelPrice" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="channel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
+    <result column="total_channel_price" jdbcType="INTEGER" property="totalChannelPrice" />
+    <result column="actual_channel_unit_price" jdbcType="BIGINT" property="actualChannelUnitPrice" />
+    <result column="actual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
+    <result column="actual_amount" jdbcType="BIGINT" property="actualAmount" />
+    <result column="actual_price" jdbcType="BIGINT" property="actualPrice" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name, color_code, 
     model, model_code, unit_code, unit_name, zero_disassembly_coefficient, give_promotion, 
     batch_number, price, num, amount, activity_apportionment, preferential_allocation, 
-    actual_deliver_num, activity_code, product_line_num, promotion_line_num, return_num, channel_unit_price,total_channel_price,
-    company_name, company_code
+    actual_deliver_num, activity_code, product_line_num, promotion_line_num, return_num,
+    company_name, company_code, channel_unit_price, total_channel_price, actual_channel_unit_price,
+    actual_total_channel_price, actual_amount, actual_price
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -48,7 +53,7 @@
   </select>
     <select id="selectOrderProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO">
       select
-      b.order_original orderOriginal,
+      b.order_original_name orderOriginal,
       b.customer_name customerName,
       b.customer_code customerCode,
       a.sku_name skuName,
@@ -72,10 +77,10 @@
       on a.order_code = b.order_code
       where b.company_code = #{companyCode}
       <if test="createDateStart != null">
-        and b.create_date &gt;=#{createDateStart,jdbcType=TIMESTAMP}
+        and b.create_time &gt;=#{createDateStart,jdbcType=TIMESTAMP}
       </if>
       <if test="createDateEnd != null">
-        and b.create_date &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
+        and b.create_time &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
       </if>
       <if test="transportCenterCode != null and transportCenterCode != ''">
         and b.transport_center_code = #{transportCenterCode}
@@ -102,7 +107,7 @@
     <select id="selectproductUniqueCodeList"
             resultType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO">
       select
-             b.order_original orderOriginal,
+             b.order_original_name orderOriginal,
              b.customer_name customerName,
              b.customer_code customerCode,
              1 as uniqueCode,
@@ -127,10 +132,10 @@
                          on a.order_code = b.order_code
       where b.company_code = #{companyCode}
       <if test="createDateStart != null">
-        and b.create_date &gt;=#{createDateStart,jdbcType=TIMESTAMP}
+        and b.create_time &gt;=#{createDateStart,jdbcType=TIMESTAMP}
       </if>
       <if test="createDateEnd != null">
-        and b.create_date &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
+        and b.create_time &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
       </if>
       <if test="transportCenterCode != null and transportCenterCode != ''">
         and b.transport_center_code = #{transportCenterCode}
@@ -163,25 +168,29 @@
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
     insert into order_info_item (id, order_code, sku_code,
-      sku_name, picture_url, spec, 
-      spec_code, color_name, color_code, 
-      model, model_code, unit_code, 
-      unit_name, zero_disassembly_coefficient, give_promotion, 
-      batch_number, price, num, 
-      amount, activity_apportionment, preferential_allocation, 
-      actual_deliver_num, activity_code, product_line_num, 
-      promotion_line_num, return_num, channel_unit_price,total_channel_price,company_name,
-      company_code)
-    values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
-      #{skuName,jdbcType=VARCHAR}, #{pictureUrl,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, 
-      #{specCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR}, 
-      #{model,jdbcType=VARCHAR}, #{modelCode,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR}, 
-      #{unitName,jdbcType=VARCHAR}, #{zeroDisassemblyCoefficient,jdbcType=INTEGER}, #{givePromotion,jdbcType=INTEGER}, 
-      #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=BIGINT}, #{num,jdbcType=BIGINT}, 
-      #{amount,jdbcType=BIGINT}, #{activityApportionment,jdbcType=BIGINT}, #{preferentialAllocation,jdbcType=BIGINT}, 
-      #{actualDeliverNum,jdbcType=BIGINT}, #{activityCode,jdbcType=VARCHAR}, #{productLineNum,jdbcType=BIGINT}, 
-      #{promotionLineNum,jdbcType=BIGINT}, #{returnNum,jdbcType=BIGINT},#{channelUnitPrice,jdbcType=BIGINT},#{totalChannelPrice,jdbcType=BIGINT}, #{companyName,jdbcType=VARCHAR},
-      #{companyCode,jdbcType=VARCHAR})
+      sku_name, picture_url, spec,
+      spec_code, color_name, color_code,
+      model, model_code, unit_code,
+      unit_name, zero_disassembly_coefficient, give_promotion,
+      batch_number, price, num,
+      amount, activity_apportionment, preferential_allocation,
+      actual_deliver_num, activity_code, product_line_num,
+      promotion_line_num, return_num, company_name,
+      company_code, channel_unit_price, total_channel_price,
+      actual_channel_unit_price, actual_total_channel_price,
+      actual_amount, actual_price)
+    values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
+      #{skuName,jdbcType=VARCHAR}, #{pictureUrl,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR},
+      #{specCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR},
+      #{model,jdbcType=VARCHAR}, #{modelCode,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR},
+      #{unitName,jdbcType=VARCHAR}, #{zeroDisassemblyCoefficient,jdbcType=INTEGER}, #{givePromotion,jdbcType=INTEGER},
+      #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=BIGINT}, #{num,jdbcType=BIGINT},
+      #{amount,jdbcType=BIGINT}, #{activityApportionment,jdbcType=BIGINT}, #{preferentialAllocation,jdbcType=BIGINT},
+      #{actualDeliverNum,jdbcType=BIGINT}, #{activityCode,jdbcType=VARCHAR}, #{productLineNum,jdbcType=BIGINT},
+      #{promotionLineNum,jdbcType=BIGINT}, #{returnNum,jdbcType=BIGINT}, #{companyName,jdbcType=VARCHAR},
+      #{companyCode,jdbcType=VARCHAR}, #{channelUnitPrice,jdbcType=BIGINT}, #{totalChannelPrice,jdbcType=INTEGER},
+      #{actualChannelUnitPrice,jdbcType=BIGINT}, #{actualTotalChannelPrice,jdbcType=BIGINT},
+      #{actualAmount,jdbcType=BIGINT}, #{actualPrice,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
     insert into order_info_item
@@ -264,17 +273,29 @@
       <if test="returnNum != null">
         return_num,
       </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
       <if test="channelUnitPrice != null">
         channel_unit_price,
       </if>
       <if test="totalChannelPrice != null">
         total_channel_price,
       </if>
-      <if test="companyName != null">
-        company_name,
+      <if test="actualChannelUnitPrice != null">
+        actual_channel_unit_price,
       </if>
-      <if test="companyCode != null">
-        company_code,
+      <if test="actualTotalChannelPrice != null">
+        actual_total_channel_price,
+      </if>
+      <if test="actualAmount != null">
+        actual_amount,
+      </if>
+      <if test="actualPrice != null">
+        actual_price,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -356,17 +377,29 @@
       <if test="returnNum != null">
         #{returnNum,jdbcType=BIGINT},
       </if>
-      <if test="channelUnitPrice != null">
-        #{channelUnitPrice,jdbcType=BIGINT},
-      </if>
-      <if test="totalChannelPrice != null">
-        #{totalChannelPrice,jdbcType=BIGINT},
-      </if>
       <if test="companyName != null">
         #{companyName,jdbcType=VARCHAR},
       </if>
       <if test="companyCode != null">
         #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUnitPrice != null">
+        #{channelUnitPrice,jdbcType=BIGINT},
+      </if>
+      <if test="totalChannelPrice != null">
+        #{totalChannelPrice,jdbcType=INTEGER},
+      </if>
+      <if test="actualChannelUnitPrice != null">
+        #{actualChannelUnitPrice,jdbcType=BIGINT},
+      </if>
+      <if test="actualTotalChannelPrice != null">
+        #{actualTotalChannelPrice,jdbcType=BIGINT},
+      </if>
+      <if test="actualAmount != null">
+        #{actualAmount,jdbcType=BIGINT},
+      </if>
+      <if test="actualPrice != null">
+        #{actualPrice,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -379,10 +412,12 @@
       batch_number, price, num,
       amount, activity_apportionment, preferential_allocation,
       actual_deliver_num, activity_code, product_line_num,
-      promotion_line_num, return_num,channel_unit_price,total_channel_price, company_name,
-      company_code)
+      promotion_line_num, return_num, company_name,
+      company_code, channel_unit_price, total_channel_price,
+      actual_channel_unit_price, actual_total_channel_price,
+      actual_amount, actual_price)
     values
-    <foreach collection="list" item="item" separator="," close="" open="">
+    <foreach collection="list" open="" close="" item="item" separator=",">
     (#{item.id,jdbcType=BIGINT}, #{item.orderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR}, #{item.pictureUrl,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR},
       #{item.specCode,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.colorCode,jdbcType=VARCHAR},
@@ -391,8 +426,10 @@
       #{item.batchNumber,jdbcType=VARCHAR}, #{item.price,jdbcType=BIGINT}, #{item.num,jdbcType=BIGINT},
       #{item.amount,jdbcType=BIGINT}, #{item.activityApportionment,jdbcType=BIGINT}, #{item.preferentialAllocation,jdbcType=BIGINT},
       #{item.actualDeliverNum,jdbcType=BIGINT}, #{item.activityCode,jdbcType=VARCHAR}, #{item.productLineNum,jdbcType=BIGINT},
-      #{item.promotionLineNum,jdbcType=BIGINT}, #{item.returnNum,jdbcType=BIGINT},#{item.channelUnitPrice,jdbcType=BIGINT},#{item.totalChannelPrice,jdbcType=BIGINT},  #{item.companyName,jdbcType=VARCHAR},
-      #{item.companyCode,jdbcType=VARCHAR})
+      #{item.promotionLineNum,jdbcType=BIGINT}, #{item.returnNum,jdbcType=BIGINT}, #{item.companyName,jdbcType=VARCHAR},
+      #{item.companyCode,jdbcType=VARCHAR}, #{item.channelUnitPrice,jdbcType=BIGINT}, #{item.totalChannelPrice,jdbcType=INTEGER},
+      #{item.actualChannelUnitPrice,jdbcType=BIGINT}, #{item.actualTotalChannelPrice,jdbcType=BIGINT},
+      #{item.actualAmount,jdbcType=BIGINT}, #{item.actualPrice,jdbcType=BIGINT})
     </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
@@ -473,17 +510,29 @@
       <if test="returnNum != null">
         return_num = #{returnNum,jdbcType=BIGINT},
       </if>
-      <if test="channelUnitPrice != null">
-        channel_unit_price =  #{channelUnitPrice,jdbcType=BIGINT},
-      </if>
-      <if test="totalChannelPrice != null">
-        total_channel_price = #{totalChannelPrice,jdbcType=BIGINT},
-      </if>
       <if test="companyName != null">
         company_name = #{companyName,jdbcType=VARCHAR},
       </if>
       <if test="companyCode != null">
         company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="channelUnitPrice != null">
+        channel_unit_price = #{channelUnitPrice,jdbcType=BIGINT},
+      </if>
+      <if test="totalChannelPrice != null">
+        total_channel_price = #{totalChannelPrice,jdbcType=INTEGER},
+      </if>
+      <if test="actualChannelUnitPrice != null">
+        actual_channel_unit_price = #{actualChannelUnitPrice,jdbcType=BIGINT},
+      </if>
+      <if test="actualTotalChannelPrice != null">
+        actual_total_channel_price = #{actualTotalChannelPrice,jdbcType=BIGINT},
+      </if>
+      <if test="actualAmount != null">
+        actual_amount = #{actualAmount,jdbcType=BIGINT},
+      </if>
+      <if test="actualPrice != null">
+        actual_price = #{actualPrice,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -515,10 +564,14 @@
       product_line_num = #{productLineNum,jdbcType=BIGINT},
       promotion_line_num = #{promotionLineNum,jdbcType=BIGINT},
       return_num = #{returnNum,jdbcType=BIGINT},
-      channel_unit_price =  #{channelUnitPrice,jdbcType=BIGINT},
-      total_channel_price = #{totalChannelPrice,jdbcType=BIGINT},
       company_name = #{companyName,jdbcType=VARCHAR},
-      company_code = #{companyCode,jdbcType=VARCHAR}
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      channel_unit_price = #{channelUnitPrice,jdbcType=BIGINT},
+      total_channel_price = #{totalChannelPrice,jdbcType=INTEGER},
+      actual_channel_unit_price = #{actualChannelUnitPrice,jdbcType=BIGINT},
+      actual_total_channel_price = #{actualTotalChannelPrice,jdbcType=BIGINT},
+      actual_amount = #{actualAmount,jdbcType=BIGINT},
+      actual_price = #{actualPrice,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="updateBatchNumById" parameterType="java.util.List">
