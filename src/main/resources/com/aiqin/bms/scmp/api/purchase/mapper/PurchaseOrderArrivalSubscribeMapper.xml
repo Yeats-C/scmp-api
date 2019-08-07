@@ -40,6 +40,9 @@
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
   </resultMap>
   <sql id="Base_Column_List">
     id, purchase_order_code, inbound_oder_code, arrival_subscribe_time, license_plate, 
@@ -54,7 +57,7 @@
     d.license_plate,d.arrival_subscribe_time,d.driver_name,d.phone_mobile,
     d.remark,b.expect_arrival_time,b.valid_time,c.pre_inbound_num,
     c.pre_tax_amount,a.purchase_group_code,a.purchase_group_name,d.create_time,
-    d.create_by, d.update_time
+    d.create_by, d.update_time,d.update_by
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
