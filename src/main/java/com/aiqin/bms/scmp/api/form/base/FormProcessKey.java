@@ -74,5 +74,14 @@ public interface FormProcessKey {
      */
     String APPLY_SALE_AREA = PREFIX + "APPLY_SALE_AREA";
 
+    /**
+     * 报废工作流
+     */
+    String APPLY_SKU_SCRAP = PREFIX + "APPLY_SKU_SCRAP";
+
+    /**
+     * 移库工作流
+     */
+    String APPLY_MOVE_LIBRARY = PREFIX + "APPLY_MOVE_LIBRARY";
 
 }
