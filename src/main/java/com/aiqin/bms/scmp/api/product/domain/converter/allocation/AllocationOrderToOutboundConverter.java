@@ -89,6 +89,7 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
             } else {
                 reqVo1.setPictureUrl( null);
             }
+
             reqVo1.setSkuCode(record.getSkuCode());
             reqVo1.setSkuName(record.getSkuName());
             reqVo1.setNorms(record.getSpecification());
@@ -100,6 +101,7 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
             reqVo1.setOutboundNorms(record.getSpecification());
             //由于调拨/移库/报废 是库存信息,故基商品含量默认为1
             reqVo1.setOutboundBaseContent("1");
+            reqVo1.setOutboundBaseUnit("1");
             reqVo1.setPreOutboundNum(record.getQuantity().longValue());
             reqVo1.setPreOutboundMainNum(record.getQuantity().longValue());
             reqVo1.setPreTaxPurchaseAmount(record.getTaxPrice().longValue());

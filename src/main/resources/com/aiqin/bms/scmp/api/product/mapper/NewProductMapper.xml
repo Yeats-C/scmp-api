@@ -455,7 +455,8 @@
         SELECT
         pro.id,pro.product_code as productCode,pro.product_name as productName,
         COUNT(pku.id) as skuNumber,pro.update_time as updateTime,
-        pro.update_by as updateBy,pro.bar_code as barCode
+        pro.update_by as updateBy,pro.create_time as createTime,
+        pro.create_by as createBy,pro.bar_code as barCode
         FROM product pro LEFT JOIN product_sku pku on pro.product_code=pku.product_code
         WHERE pro.del_flag=0
         <if test="createTimeStart != null">
