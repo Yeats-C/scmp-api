@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.salearea;
 
+import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -50,4 +51,7 @@ public class ProductSaleAreaForOfficialMainRespVO {
 
     @ApiModelProperty("渠道信息")
     private List<ProductSaleAreaChannelRespVO> channelList;
+
+    @ApiModelProperty("区域详情")
+    List<LogData> logData;
 }

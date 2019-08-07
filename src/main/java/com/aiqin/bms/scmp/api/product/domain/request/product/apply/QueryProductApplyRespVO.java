@@ -21,6 +21,9 @@ public class QueryProductApplyRespVO {
     @ApiModelProperty("申请编码")
     private String code;
 
+    @ApiModelProperty("流程编号")
+    private String formNo;
+
     @ApiModelProperty("审批类型")
     private Integer approvalType;
 
@@ -40,4 +43,11 @@ public class QueryProductApplyRespVO {
 
     @ApiModelProperty("申请状态")
     private Integer applyStatus;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
+
+    @ApiModelProperty("修改时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
 }

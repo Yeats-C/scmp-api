@@ -3,9 +3,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.api.store.StoreApi;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
-import com.aiqin.bms.scmp.api.common.ApplyType;
-import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
+import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
@@ -23,6 +21,10 @@ import com.aiqin.bms.scmp.api.product.service.ProductSaleAreaService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogBean;
+import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
+import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
@@ -101,6 +103,11 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     private AreaBasicService areaBasicService;
     @Autowired
     private StoreApi storeApi;
+    @Autowired
+    private SupplierCommonService supplierCommonService;
+    @Autowired
+    private OperationLogService operationLogService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean addSaleAreaDraft(ProductSkuSaleAreaMainReqVO request) throws Exception {
@@ -332,6 +339,8 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         deleteDraftBatchByCodes(dtos,skuList,areaList,channelList);
         //更新编码
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+        //存日志
+        supplierCommonService.getInstance(formNo, HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.WAIT_SALE_AREA.getName(), null, HandleTypeCoce.PENDING.getName(), getUser().getPersonName());
         //调用审批的接口
         workFlow(formNo, code, currentAuthToken.getPersonName(),reqVO.getDirectSupervisorCode());
         return true;
@@ -398,6 +407,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {
             //TODO 这里暂时没有任何操作
+            supplierCommonService.getInstance(formNo, HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.UNDER_SALE_AREA.getName(), null, HandleTypeCoce.APPROVAL.getName(), getUser().getPersonName());
         } else {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, workFlowRespVO.getMsg()));
         }
@@ -425,10 +435,12 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //审批驳回
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
             approvalRejection(newVO, list);
+            supplierCommonService.getInstance(newVO.getFormNo(), HandleTypeCoce.APPROVAL_FAILED.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.NOPASS_SALE_AREA.getName(), null, HandleTypeCoce.APPROVAL_FAILED.getName(), newVO.getApprovalUserName());
             return WorkFlowReturn.SUCCESS;
         }
         //撤销
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
+            supplierCommonService.getInstance(newVO.getFormNo(), HandleTypeCoce.REVOKED.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.RECOBER_SALE_AREA.getName(), null, HandleTypeCoce.REVOKED.getName(), newVO.getApprovalUserName());
             cancel(newVO, list);
             return WorkFlowReturn.SUCCESS;
         }
@@ -441,6 +453,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
                 log.error(e.getMessage(),e);
                 return WorkFlowReturn.FALSE;
             }
+            supplierCommonService.getInstance(newVO.getFormNo(), HandleTypeCoce.APPROVAL_SUCCESS.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.PASS_SALE_AREA.getName(), null, HandleTypeCoce.APPROVAL_SUCCESS.getName(), newVO.getApprovalUserName());
             return WorkFlowReturn.SUCCESS;
         }
         return WorkFlowReturn.FALSE;
@@ -516,6 +529,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             //设置为生效
             newMain.setBeEffective(1);
             newMain.setCode(oldMain.getCode());
+            supplierCommonService.getInstance(oldMain.getCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.EDIT_SALE_AREA.getName(), null, HandleTypeCoce.UPDATE.getName(), newVO.getApprovalUserName());
             newMain.setCreateBy(oldMain.getCreateBy());
             newMain.setCreateTime(oldMain.getCreateTime());
             main.add(newMain);
@@ -575,6 +589,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //组装数据
         for (ApplyProductSkuSaleAreaMainDTO mainDTO : addList) {
             ProductSkuSaleAreaMain saleAreaMain = BeanCopyUtils.copy(mainDTO, ProductSkuSaleAreaMain.class);
+            supplierCommonService.getInstance(mainDTO.getCode(), HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.ADD_SALE_AREA.getName(), null, HandleTypeCoce.ADD.getName(),newVO.getApprovalUserName() );
             saleAreaMain.setBeEffective(flag ?1:0);
             main.add(saleAreaMain);
             skuList.addAll(BeanCopyUtils.copyList(mainDTO.getSkuList(),ProductSkuSaleArea.class));
@@ -707,9 +722,16 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         if(CollectionUtils.isNotEmpty(temp)){
             Map<String, QueryProductSaleAreaRespVO> map = temp.stream().collect(Collectors.toMap(QueryProductSaleAreaRespVO::getSkuCode, Function.identity()));
             vo.getSkuList().forEach(o->{
-                o.setSupplierList(map.get(o.getSkuCode()).getSupplierList());
+                QueryProductSaleAreaRespVO queryProductSaleAreaRespVO = map.get(o.getSkuCode());
+                if (Objects.nonNull(queryProductSaleAreaRespVO)) {
+                    o.setSupplierList(queryProductSaleAreaRespVO.getSupplierList());
+                }
             });
         }
+        //日志
+        OperationLogBean operationLogBean = new OperationLogBean(code, null, ObjectTypeCode.SALE_AREA.getStatus(), null, null);
+        List<LogData> log = operationLogService.selectListByVO(operationLogBean);
+        vo.setLogData(log);
         return vo;
     }
 
