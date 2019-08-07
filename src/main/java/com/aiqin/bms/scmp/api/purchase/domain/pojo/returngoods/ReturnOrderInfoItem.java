@@ -58,13 +58,13 @@ public class ReturnOrderInfoItem {
     @ApiModelProperty("批次号")
     private String batchNumber;
 
-    @ApiModelProperty("单价")
+    @ApiModelProperty("分销单价")
     private Long price;
 
     @ApiModelProperty("数量")
     private Long num;
 
-    @ApiModelProperty("总价")
+    @ApiModelProperty("分销总价")
     private Long amount;
 
     @ApiModelProperty("活动编码(多个，隔开）")
@@ -88,6 +88,24 @@ public class ReturnOrderInfoItem {
     @ApiModelProperty("公司编码")
     private String companyCode;
 
+    @ApiModelProperty("渠道单价")
+    private Long channelUnitPrice;
+
+    @ApiModelProperty("渠道总价")
+    private Long totalChannelPrice;
+
+    @ApiModelProperty("实际渠道单价")
+    private Long actualChannelUnitPrice;
+
+    @ApiModelProperty("实际渠道总价")
+    private Long actualTotalChannelPrice;
+
+    @ApiModelProperty("实际单价")
+    private Long actualAmount;
+
+    @ApiModelProperty("实际总价")
+    private Long actualPrice;
+
     /**以下字段为了dl回调销售单生成出库单和库存变动需要*/
 
     @ApiModelProperty("仓库名称")
@@ -95,6 +113,5 @@ public class ReturnOrderInfoItem {
 
     @ApiModelProperty("仓库编码")
     private String warehouseCode;
-
 
 }

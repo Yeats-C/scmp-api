@@ -55,13 +55,13 @@ public class OrderInfoItem {
     @ApiModelProperty("批次号")
     private String batchNumber;
 
-    @ApiModelProperty("单价")
+    @ApiModelProperty("分销单价")
     private Long price;
 
     @ApiModelProperty("数量")
     private Long num;
 
-    @ApiModelProperty("总价")
+    @ApiModelProperty("分销总价")
     private Long amount;
 
     @ApiModelProperty("活动分摊")
@@ -85,17 +85,27 @@ public class OrderInfoItem {
     @ApiModelProperty("退货数量")
     private Long returnNum;
 
-    @ApiModelProperty("渠道单价")
-    private Long channelUnitPrice;
-
-    @ApiModelProperty("渠道总价")
-    private Long totalChannelPrice;
-
     @ApiModelProperty("公司名称")
     private String companyName;
 
     @ApiModelProperty("公司编码")
     private String companyCode;
 
+    @ApiModelProperty("渠道单价")
+    private Long channelUnitPrice;
 
+    @ApiModelProperty("渠道总价")
+    private Long totalChannelPrice;
+
+    @ApiModelProperty("实际渠道单价")
+    private Long actualChannelUnitPrice;
+
+    @ApiModelProperty("实际渠道总价")
+    private Long actualTotalChannelPrice;
+
+    @ApiModelProperty("实际分销总价")
+    private Long actualAmount;
+
+    @ApiModelProperty("实际分销单价")
+    private Long actualPrice;
 }

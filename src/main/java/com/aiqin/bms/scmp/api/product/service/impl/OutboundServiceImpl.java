@@ -448,26 +448,26 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 //        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
 //        outboundWmsReqVO.setOutboundBatchWmsResVOs(outboundBatchWmsResVOs);
         try{
-            if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
-                String createById = outboundDao.selectCreateById(outbound.getOutboundOderCode());
-                outboundWmsReqVO.setCreateById(createById);
-                url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
-                log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
-            }
-            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO));
-
-            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-            String hello= JSON.toJSONString(orderDto.getData());
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
-
-            if("0".equals(orderDto.getCode())){
-
-                 //设置wms编号
-                outbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
-                //设置入库状态
-                outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-                outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
+//            if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
+//                String createById = outboundDao.selectCreateById(outbound.getOutboundOderCode());
+//                outboundWmsReqVO.setCreateById(createById);
+//                url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
+//                log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
+//            }
+//            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO));
+//
+//            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+//            String hello= JSON.toJSONString(orderDto.getData());
+//            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+//            ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
+//
+//            if("0".equals(orderDto.getCode())){
+//
+//                 //设置wms编号
+//                outbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
+//                //设置入库状态
+//                outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+//                outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
                 // 跟新数据库
                 int s = outboundDao.updateByPrimaryKeySelective(outbound);
                 OutboundCallBackReqVo outboundCallBackReqVo = new OutboundCallBackReqVo();
@@ -497,9 +497,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
                 workFlowCallBack(outboundCallBackReqVo);
                 return ;
-            }else{
-                throw new RuntimeException("出库单传入wms失败");
-            }
+//            }else{ throw new RuntimeException("入库单传入wms失败");}
         }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException("出库单传入wms失败");

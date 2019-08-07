@@ -190,4 +190,28 @@ public class PurchaseManageController {
     public HttpResponse<PurchaseFormResponse> skuSupply(@RequestParam("sku_code") String skuCode) {
         return purchaseManageService.skuSupply(skuCode);
     }
+
+    @GetMapping("/order/details/apply")
+    @ApiOperation("查询采购单审批详情")
+    public HttpResponse<PurchaseApplyDetailResponse> applyDetails(@RequestParam("purchase_order_code") String purchaseOrderCode) {
+        return purchaseManageService.applyDetails(purchaseOrderCode);
+    }
+
+    @GetMapping("/order/product/apply")
+    @ApiOperation("查询采购单商品审批信息")
+    public HttpResponse applyOrderProduct(@RequestParam("purchase_order_id") String purchaseOrderId,
+                                          @RequestParam(value = "is_page", required = false) Integer isPage,
+                                          @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                          @RequestParam(value = "page_size", required = false) Integer pageSize) {
+        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest(purchaseOrderId, isPage);
+        request.setPageSize(pageSize);
+        request.setPageNo(pageNo);
+        return purchaseManageService.applyOrderProduct(request);
+    }
+
+    @GetMapping("/order/amount/apply")
+    @ApiOperation("查询采购单-审批采购数量金额")
+    public HttpResponse<PurchaseApplyProductInfoResponse> applyOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
+        return purchaseManageService.applyOrderAmount(purchaseOrderId);
+    }
 }
