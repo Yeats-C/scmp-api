@@ -39,7 +39,6 @@ public class AllocationResVo2InboundReqVoConverter implements Converter<Allocati
     public InboundReqSave convert(AllocationToOutboundVo source) {
             InboundReqSave outbound = new InboundReqSave();
 
-        try {
             WarehouseResVo warehouseByCode = warehouseService.getWarehouseByCode(source.getCalloutWarehouseCode());
             if(Objects.isNull(warehouseByCode)){
                 throw new GroundRuntimeException("调拨查询联系人信息失败");
@@ -120,9 +119,6 @@ public class AllocationResVo2InboundReqVoConverter implements Converter<Allocati
             outbound.setList(products);
             outbound.setPreAmount(totalNoRateAmount);
             outbound.setPreTax(source.getTaxRefundAmount()-totalNoRateAmount);
-        }catch (Exception e){
-            throw new GroundRuntimeException("调拨vo转为出库失败！");
-        }
-        return outbound;
+            return outbound;
     }
 }

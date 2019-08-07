@@ -1,9 +1,9 @@
 package com.aiqin.bms.scmp.api.base.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
@@ -15,7 +15,13 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.platform.flows.client.constant.FormUpdateUrlType;
+import com.aiqin.platform.flows.client.domain.vo.StartProcessParamVO;
+import com.aiqin.platform.flows.client.service.FormApplyCommonService;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +39,9 @@ public class BaseServiceImpl implements BaseService {
 
     @Autowired
     private EncodingRuleDao encodingRuleDao;
+
+    @Autowired
+    private FormApplyCommonService formApplyCommonService;
 
     @Override
     public AuthToken getUser(){
@@ -52,40 +61,72 @@ public class BaseServiceImpl implements BaseService {
     @Override
     public WorkFlowRespVO callWorkFlowApi(WorkFlowVO vo, WorkFlow workFlow) {
        log.info("BaseServiceImpl-callWorkFlowApi-工作流vo是：[{}],枚举是：[{}]", JSON.toJSONString(vo),JSON.toJSONString(workFlow));
-        vo.setKey(workFlow.getKey());
-        if(StringUtils.isEmpty(vo.getTitle())){
-            vo.setTitle(workFlow.getTitle());
-        }
-        vo.setTimeStamp(System.currentTimeMillis()+"");
-        vo.setTicket(UUID.randomUUID().toString());
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        vo.setUsername(currentAuthToken.getPersonId());
-        vo.setCurrentPositionCode(currentAuthToken.getPositionCode());
-        //调用审批的接口
-        Map<String, Object> stringObjectMap = objectToMap(vo);
-        String s = stringObjectMap.toString() + urlConfig.ENCRYPTION_KEY;
-        vo.setSign(MD5Utils.getMD5(s).toUpperCase());
-        try {
-            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.get(urlConfig.WORKFLOW_URL));
-            httpClient.addParameter("s", JSON.toJSONString(vo));
-            log.info("调用审批流传入的参数是:[{}]",s);
-            String result1 = httpClient.action().result();
-            log.info("审批流返回数据:{}",result1);
-            if(result1.startsWith("{")){
-                return JSON.parseObject(result1,WorkFlowRespVO.class);
-            }else {
-                log.info("审批接口数据返回错误，数据是：{}", result1);
-                WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
-                workFlowRespVO.setSuccess(false);
-                workFlowRespVO.setMsg("审批接口数据返回错误");
-                return workFlowRespVO;
-            }
-        } catch (Exception e) {
-            WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
-            workFlowRespVO.setSuccess(false);
-            workFlowRespVO.setMsg("调用审批接口失败");
-            return workFlowRespVO;
+        StartProcessParamVO paramVO = new StartProcessParamVO();
+        paramVO.setCostType(workFlow.getKey());
+        paramVO.setFormType(workFlow.getKey());
+        paramVO.setCurrentUser(currentAuthToken.getPersonId());
+        paramVO.setFormNo(vo.getFormNo());
+        paramVO.setTitle(StringUtils.isNotBlank(vo.getTitle()) ? vo.getTitle() : workFlow.getTitle());
+        paramVO.setRemark(null);
+        paramVO.setFormUrl(vo.getFormUrl());
+        paramVO.setFormUpdateUrl(vo.getUpdateUrl());
+        paramVO.setFormUpdateUrlType(FormUpdateUrlType.HTTP);
+        paramVO.setReceiptType(2); // 2代表供应链
+        paramVO.setSignTicket(IdUtil.uuid());
+        if (StringUtils.isNotBlank(vo.getVariables())) {
+            JSONObject jsonObject = JSONObject.parseObject(vo.getVariables());
+            Map<String, Object> map = new HashMap<>();
+            map.put("auditPersonId", jsonObject.getString("auditPersonId"));
+            paramVO.setVariables(map);
         }
+        log.info("调用审批流发起申请,request={}", paramVO);
+        HttpResponse response = formApplyCommonService.submitActBaseProcessScmp(paramVO);
+        log.info("调用审批流发起申请返回结果,result={}", response);
+        WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
+        if(Objects.equals(response.getCode(),"0")){
+            workFlowRespVO.setSuccess(true);
+        } else {
+            workFlowRespVO.setSuccess(false);
+            workFlowRespVO.setMsg(response.getMessage());
+        }
+        return workFlowRespVO;
+
+
+//        vo.setKey(workFlow.getKey());
+//        if(StringUtils.isEmpty(vo.getTitle())){
+//            vo.setTitle(workFlow.getTitle());
+//        }
+//        vo.setTimeStamp(System.currentTimeMillis()+"");
+//        vo.setTicket(UUID.randomUUID().toString());
+//
+//        vo.setUsername(currentAuthToken.getPersonId());
+//        vo.setCurrentPositionCode(currentAuthToken.getPositionCode());
+//        //调用审批的接口
+//        Map<String, Object> stringObjectMap = objectToMap(vo);
+//        String s = stringObjectMap.toString() + urlConfig.ENCRYPTION_KEY;
+//        vo.setSign(MD5Utils.getMD5(s).toUpperCase());
+//        try {
+//            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.get(urlConfig.WORKFLOW_URL));
+//            httpClient.addParameter("s", JSON.toJSONString(vo));
+//            log.info("调用审批流传入的参数是:[{}]",s);
+//            String result1 = httpClient.action().result();
+//            log.info("审批流返回数据:{}",result1);
+//            if(result1.startsWith("{")){
+//                return JSON.parseObject(result1,WorkFlowRespVO.class);
+//            }else {
+//                log.info("审批接口数据返回错误，数据是：{}", result1);
+//                WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
+//                workFlowRespVO.setSuccess(false);
+//                workFlowRespVO.setMsg("审批接口数据返回错误");
+//                return workFlowRespVO;
+//            }
+//        } catch (Exception e) {
+//            WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
+//            workFlowRespVO.setSuccess(false);
+//            workFlowRespVO.setMsg("调用审批接口失败");
+//            return workFlowRespVO;
+//        }
     }
 
     /**

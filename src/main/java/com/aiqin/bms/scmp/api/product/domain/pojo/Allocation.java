@@ -94,4 +94,7 @@ public class Allocation extends CommonBean {
 
     @ApiModelProperty("调拨类型(1:调拨 2:移库 3:报废)")
     private String allocationTypeName;
+
+    @ApiModelProperty("是否是调出仓库")
+    private Boolean flag = Boolean.TRUE;
 }
