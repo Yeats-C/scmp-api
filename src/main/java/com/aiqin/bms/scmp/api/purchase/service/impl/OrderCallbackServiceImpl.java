@@ -233,6 +233,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         PriceChannel priceChannel = priceChannelMapper.selectByChannelName(request.getOrderOriginal());
         if (priceChannel != null) {
             orderInfo.setOrderOriginal(priceChannel.getPriceChannelCode());
+            orderInfo.setOrderOriginalName(priceChannel.getPriceChannelName());
         }
         orderInfo.setDetailList(detailList);
         Integer count = orderInfoMapper.insert(orderInfo);
@@ -347,6 +348,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             returnOrderInfo.setOrderType(dictionaryInfoMap.get(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType()).getValue());
             returnOrderInfo.setOrderType(request.getOrderType());
         }
+        //渠道
+        PriceChannel priceChannel = priceChannelMapper.selectByChannelName(request.getDeptName());
+        if (priceChannel != null) {
+            returnOrderInfo.setOrderOriginal(priceChannel.getPriceChannelCode());
+            returnOrderInfo.setOrderOriginalName(priceChannel.getPriceChannelName());
+        }
         //订单体积计算系数
         BigDecimal orderVolumeCoefficient = new BigDecimal(1);
         //订单重量计算系数
@@ -383,10 +390,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             returnOrderInfoItem.setSkuCode(returnDetailRequest.getSkuCode());
             returnOrderInfoItem.setPrice(returnDetailRequest.getChannelUnitPrice());
             returnOrderInfoItem.setActualInboundNum(returnDetailRequest.getActualDeliverNum().intValue());
-            returnOrderInfoItem.setAmount(returnDetailRequest.getChannelUnitPrice() * returnDetailRequest.getNum());
+            returnOrderInfoItem.setAmount(returnDetailRequest.getChannelUnitPrice() * returnDetailRequest.getActualDeliverNum());
             returnOrderInfoItem.setReturnOrderCode(returnOrderInfo.getOrderCode());
             returnOrderInfoItem.setCompanyCode(COMPANY_CODE);
             returnOrderInfoItem.setCompanyName(COMPANY_NAME);
+            returnOrderInfoItem.setWarehouseCode(returnDetailRequest.getWarehouseCode());
+            returnOrderInfoItem.setWarehouseName(returnDetailRequest.getWarehouseName());
             detailList.add(returnOrderInfoItem);
         }
         returnOrderInfo.setVolume(sumBoxVolume);
@@ -405,14 +414,16 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 //        if(priceChannel!=null){
 //            returnOrderInfo.setOrderOriginal(priceChannel.getPriceChannelCode());
 //        }
-//        Integer count = returnOrderInfoMapper.insertSelective(returnOrderInfo);
-//        LOGGER.info("添加退货单:{}", count);
-//        Integer detailCount = returnOrderInfoItemMapper.insertList(detailList);
-//        LOGGER.info("添加退货单详情:{}", detailCount);
+        Integer count = returnOrderInfoMapper.insertSelective(returnOrderInfo);
+        LOGGER.info("添加退货单:{}", count);
+        Integer detailCount = returnOrderInfoItemMapper.insertList(detailList);
+        LOGGER.info("添加退货单详情:{}", detailCount);
         returnOrderInfo.setDetailList(detailList);
         //入库单生成
-        List<InboundReqSave> convert = new ReturnInfoToInboundConverter(skuService).convert(returnOrderInfo);
-
+//        List<InboundReqSave> convert = new ReturnInfoToInboundConverter(skuService).convert(returnOrderInfo);
+//        for (InboundReqSave inboundReqSave : convert) {
+//            this.inboundRecord(inboundReqSave);
+//        }
         //直接加库存
 
 
@@ -429,17 +440,14 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         //插入入库单主表
         int insert = inboundDao.insert(inbound);
         LOGGER.info("插入入库单主表返回结果:{}", insert);
-
         //  转化入库单sku实体
         List<InboundProduct> list =BeanCopyUtils.copyList(reqVo.getList(), InboundProduct.class);
         list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
         //插入入库单商品表
         int insertProducts=inboundProductDao.insertBatch(list);
         LOGGER.info("插入入库单商品表返回结果:{}", insertProducts);
-
         //更新编码表
         encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
-
         // 保存日志
         productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),reqVo,HandleTypeCoce.ADD_INBOUND_ODER.getName(),new Date(),reqVo.getCreateBy(), reqVo.getRemark());
 

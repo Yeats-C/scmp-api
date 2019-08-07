@@ -233,7 +233,7 @@ public class OrderInfo {
     private Long actualProductNum;
 
     @ApiModelProperty("订单来源名称")
-    private Long orderOriginalName;
+    private String orderOriginalName;
 
     @ApiModelProperty("实际重量")
     private Long actualWeight;

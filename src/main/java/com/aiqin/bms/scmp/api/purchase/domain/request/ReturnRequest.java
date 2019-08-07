@@ -48,7 +48,7 @@ public class ReturnRequest {
     private String orderType ;
 
     @ApiModelProperty("订单状态,完成")
-    private Integer orderStatus;
+    private Integer orderStatus = 12;
 
     @ApiModelProperty("支付状态 0未支付1已支付")
     private Integer paymentStatus = 1;
@@ -60,7 +60,7 @@ public class ReturnRequest {
     private String warehouseName;
 
     @ApiModelProperty("仓库编码")
-    private String warehouseCode;
+    private String warehouseCode ;
 
     @ApiModelProperty("物流中心名称")
     private String transportCenterName;
@@ -107,6 +107,9 @@ public class ReturnRequest {
     @ApiModelProperty("详细地址")
     private String detailAddress;
 
+    @ApiModelProperty("地址")
+    private String address;
+
     @ApiModelProperty("支付方式")
     private String paymentType = "转账";
 
@@ -132,13 +135,19 @@ public class ReturnRequest {
     private String returnReasonContent = "退货退款";
 
     @ApiModelProperty("商品详情")
-    List<ReturnDetailRequest> detailRequestList;
+    private List<ReturnDetailRequest> detailRequestList;
 
     @ApiModelProperty(value="回单确认时间")
     private String receiptTime;
 
     @ApiModelProperty(value="创建时间")
     private String createTime ;
+
+    @ApiModelProperty(value = "创建人名称")
+    private String createByName;
+
+    @ApiModelProperty(value = "创建人Id")
+    private String createById;
 
     @ApiModelProperty(value = "渠道")
     private String deptName;
