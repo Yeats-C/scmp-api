@@ -1065,4 +1065,81 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         List<PurchaseFormResponse> purchaseFormResponses = productSkuSupplyUnitDao.supplyList(skuCode);
         return HttpResponse.success(purchaseFormResponses);
     }
+
+    @Override
+    public HttpResponse<PurchaseApplyDetailResponse> applyDetails(String purchaseOrderCode){
+        if(StringUtils.isBlank(purchaseOrderCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        PurchaseApplyDetailResponse detail = applyPurchaseOrderDetailsDao.applyOrderDetails(purchaseOrderCode);
+        return HttpResponse.success(detail);
+    }
+
+    @Override
+    public HttpResponse applyOrderProduct(PurchaseOrderProductRequest request){
+        if(StringUtils.isBlank(request.getPurchaseOrderId())){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        PageResData pageResData = new PageResData();
+        List<ApplyPurchaseOrderProduct> list = applyPurchaseOrderProductDao.applyPurchaseOrderList(request);
+        Integer count = applyPurchaseOrderProductDao.applyPurchaseOrderCount(request);
+        pageResData.setDataList(list);
+        pageResData.setTotalCount(count);
+        return HttpResponse.success(pageResData);
+    }
+
+    @Override
+    public HttpResponse<PurchaseApplyProductInfoResponse>  applyOrderAmount(String purchaseOrderId){
+        if(StringUtils.isBlank(purchaseOrderId)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 计算采购单的数量与金额
+        PurchaseApplyProductInfoResponse amountResponse = new PurchaseApplyProductInfoResponse();
+        Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
+        Integer productSingleSum = 0, matterSingleSum = 0, giftSingleSum = 0;
+        Integer productTaxSum = 0, matterTaxSum = 0, giftTaxSum = 0, singleSum = 0, priceSum = 0;
+        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
+        request.setPurchaseOrderId(purchaseOrderId);
+        request.setIsPage(1);
+        List<ApplyPurchaseOrderProduct> orderProducts = applyPurchaseOrderProductDao.applyPurchaseOrderList(request);
+        if(CollectionUtils.isNotEmptyCollection(orderProducts)){
+            for(ApplyPurchaseOrderProduct order:orderProducts){
+                // 商品采购件数量
+                Integer purchaseWhole = order.getPurchaseWhole() == null ? 0 : order.getPurchaseWhole();
+                Integer purchaseSingle = order.getPurchaseSingle() == null ? 0 : order.getPurchaseSingle();
+                // 包装数量
+                Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
+                Integer amount = order.getProductAmount() == null ? 0 : order.getProductAmount();
+                Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
+                singleSum += singleCount;
+                priceSum += purchaseWhole;
+                if(order.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                    productPieceSum += purchaseWhole;
+                    productSingleSum += singleCount;
+                    productTaxSum += amount * singleCount;
+                }else if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                    matterPieceSum += purchaseWhole;
+                    matterSingleSum += singleCount;
+                    matterTaxSum += amount * singleCount;
+                }else if(order.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                    giftPieceSum += purchaseWhole;
+                    giftSingleSum += singleCount;
+                    giftTaxSum += amount * singleCount;
+                }
+            }
+            // 采购
+            amountResponse.setProductPieceSum(productPieceSum);
+            amountResponse.setProductSingleSum(productSingleSum);
+            amountResponse.setProductTaxSum(productTaxSum);
+            amountResponse.setMatterPieceSum(matterPieceSum);
+            amountResponse.setMatterSingleSum(matterSingleSum);
+            amountResponse.setMatterTaxSum(matterTaxSum);
+            amountResponse.setGiftPieceSum(giftPieceSum);
+            amountResponse.setGiftSingleSum(giftSingleSum);
+            amountResponse.setGiftTaxSum(giftTaxSum);
+            amountResponse.setSingleSum(singleSum);
+            amountResponse.setPieceSum(priceSum);
+        }
+        return HttpResponse.success(amountResponse);
+    }
 }
