@@ -76,7 +76,7 @@
       <result column="actual_product_channel_total_amount" jdbcType="BIGINT" property="actualProductChannelTotalAmount" />
       <result column="actual_order_amount" jdbcType="BIGINT" property="actualOrderAmount" />
       <result column="actual_product_num" jdbcType="BIGINT" property="actualProductNum" />
-      <result column="order_original_name" jdbcType="BIGINT" property="orderOriginalName" />
+      <result column="order_original_name" jdbcType="VARCHAR" property="orderOriginalName" />
       <result column="actual_weight" jdbcType="BIGINT" property="actualWeight" />
       <result column="actual_volume" jdbcType="BIGINT" property="actualVolume" />
       <result column="actual_product_total_amount" jdbcType="BIGINT" property="actualProductTotalAmount" />
@@ -207,7 +207,7 @@
     <result column="aactual_product_channel_total_amount" jdbcType="BIGINT" property="actualProductChannelTotalAmount" />
     <result column="aactual_order_amount" jdbcType="BIGINT" property="actualOrderAmount" />
     <result column="aactual_product_num" jdbcType="BIGINT" property="actualProductNum" />
-    <result column="aorder_original_name" jdbcType="BIGINT" property="orderOriginalName" />
+    <result column="aorder_original_name" jdbcType="VARCHAR" property="orderOriginalName" />
     <result column="aactual_weight" jdbcType="BIGINT" property="actualWeight" />
     <result column="aactual_volume" jdbcType="BIGINT" property="actualVolume" />
     <result column="aactual_product_total_amount" jdbcType="BIGINT" property="actualProductTotalAmount" />
@@ -235,6 +235,12 @@
       <result column="bproduct_line_num" jdbcType="BIGINT" property="productLineNum" />
       <result column="bpromotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
       <result column="breturn_num" jdbcType="BIGINT" property="returnNum" />
+      <result column="bchannel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
+      <result column="btotal_channel_price" jdbcType="INTEGER" property="totalChannelPrice" />
+      <result column="bactual_channel_unit_price" jdbcType="BIGINT" property="actualChannelUnitPrice" />
+      <result column="bactual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
+      <result column="bactual_amount" jdbcType="BIGINT" property="actualAmount" />
+      <result column="bactual_price" jdbcType="BIGINT" property="actualPrice" />
     </collection>
     <collection property="logs" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoLogRespVO">
       <result column="cstatus" jdbcType="INTEGER" property="status" />
@@ -333,6 +339,12 @@
              b.product_line_num bproduct_line_num,
              b.promotion_line_num bpromotion_line_num,
              b.return_num breturn_num,
+             b.channel_unit_price bchannel_unit_price,
+             b.total_channel_price btotal_channel_price,
+             b.actual_channel_unit_price bactual_channel_unit_price,
+             b.actual_total_channel_price bactual_total_channel_price,
+             b.actual_amount bactual_amount,
+             b.actual_price bactual_price,
              c.status cstatus,
              c.status_desc cstatus_desc,
              c.content ccontent,
@@ -417,7 +429,7 @@
       #{orderCategoryCode,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{createById,jdbcType=VARCHAR},
       #{createTime,jdbcType=TIMESTAMP}, #{updateByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR},
       #{updateTime,jdbcType=TIMESTAMP}, #{actualProductChannelTotalAmount,jdbcType=BIGINT},
-      #{actualOrderAmount,jdbcType=BIGINT}, #{actualProductNum,jdbcType=BIGINT}, #{orderOriginalName,jdbcType=BIGINT},
+      #{actualOrderAmount,jdbcType=BIGINT}, #{actualProductNum,jdbcType=BIGINT}, #{orderOriginalName,jdbcType=VARCHAR},
       #{actualWeight,jdbcType=BIGINT}, #{actualVolume,jdbcType=BIGINT}, #{actualProductTotalAmount,jdbcType=BIGINT}
       )
   </insert>
@@ -883,7 +895,7 @@
               #{actualProductNum,jdbcType=BIGINT},
           </if>
           <if test="orderOriginalName != null">
-              #{orderOriginalName,jdbcType=BIGINT},
+              #{orderOriginalName,jdbcType=VARCHAR},
           </if>
           <if test="actualWeight != null">
               #{actualWeight,jdbcType=BIGINT},
@@ -952,7 +964,7 @@
       #{item.orderCategoryCode,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR}, #{item.createById,jdbcType=VARCHAR},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateByName,jdbcType=VARCHAR}, #{item.updateById,jdbcType=VARCHAR},
       #{item.updateTime,jdbcType=TIMESTAMP}, #{item.actualProductChannelTotalAmount,jdbcType=BIGINT},
-      #{item.actualOrderAmount,jdbcType=BIGINT}, #{item.actualProductNum,jdbcType=BIGINT}, #{item.orderOriginalName,jdbcType=BIGINT},
+      #{item.actualOrderAmount,jdbcType=BIGINT}, #{item.actualProductNum,jdbcType=BIGINT}, #{item.orderOriginalName,jdbcType=VARCHAR},
       #{item.actualWeight,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=BIGINT}
       )
     </foreach>
@@ -1180,7 +1192,7 @@
                 actual_product_num = #{actualProductNum,jdbcType=BIGINT},
             </if>
             <if test="orderOriginalName != null">
-                order_original_name = #{orderOriginalName,jdbcType=BIGINT},
+                order_original_name = #{orderOriginalName,jdbcType=VARCHAR},
             </if>
             <if test="actualWeight != null">
                 actual_weight = #{actualWeight,jdbcType=BIGINT},
@@ -1269,7 +1281,7 @@ update order_info
       actual_product_channel_total_amount = #{actualProductChannelTotalAmount,jdbcType=BIGINT},
       actual_order_amount = #{actualOrderAmount,jdbcType=BIGINT},
       actual_product_num = #{actualProductNum,jdbcType=BIGINT},
-      order_original_name = #{orderOriginalName,jdbcType=BIGINT},
+      order_original_name = #{orderOriginalName,jdbcType=VARCHAR},
       actual_weight = #{actualWeight,jdbcType=BIGINT},
       actual_volume = #{actualVolume,jdbcType=BIGINT},
       actual_product_total_amount = #{actualProductTotalAmount,jdbcType=BIGINT}
@@ -1350,7 +1362,7 @@ update order_info
       actual_product_channel_total_amount = #{actualProductChannelTotalAmount,jdbcType=BIGINT},
       actual_order_amount = #{actualOrderAmount,jdbcType=BIGINT},
       actual_product_num = #{actualProductNum,jdbcType=BIGINT},
-      order_original_name = #{orderOriginalName,jdbcType=BIGINT},
+      order_original_name = #{orderOriginalName,jdbcType=VARCHAR},
       actual_weight = #{actualWeight,jdbcType=BIGINT},
       actual_volume = #{actualVolume,jdbcType=BIGINT},
       actual_product_total_amount = #{actualProductTotalAmount,jdbcType=BIGINT}

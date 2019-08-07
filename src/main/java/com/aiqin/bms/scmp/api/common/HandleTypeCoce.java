@@ -239,6 +239,14 @@ public enum  HandleTypeCoce {
     NOPASS_CHANGEPRICE((byte)201,"变价审批不通过"),
     RECOBER_CHANGEPRICE((byte)202,"变价撤销"),
 
+    ADD_SALE_AREA((byte)203,"新建销售区域"),
+    EDIT_SALE_AREA((byte)204,"修改销售区域"),
+    WAIT_SALE_AREA((byte)205,"销售区域待审"),
+    UNDER_SALE_AREA((byte)206,"销售区域审批中"),
+    PASS_SALE_AREA((byte)207,"销售区域审批通过"),
+    NOPASS_SALE_AREA((byte)208,"销售区域审批不通过"),
+    RECOBER_SALE_AREA((byte)209,"销售区域撤销"),
+
     //报废单
     ADD_SCRAP((byte)188,"新建报废单"),
     SUBMIT_SCRAP((byte)189,"提交报废单"),

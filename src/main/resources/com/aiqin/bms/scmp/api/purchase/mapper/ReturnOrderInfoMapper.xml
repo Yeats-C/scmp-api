@@ -235,6 +235,12 @@
         <result column="bpromotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
         <result column="bproduct_status" jdbcType="INTEGER" property="productStatus" />
         <result column="bactual_inbound_num" jdbcType="INTEGER" property="actualInboundNum" />
+        <result column="bchannel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
+        <result column="btotal_channel_price" jdbcType="BIGINT" property="totalChannelPrice" />
+        <result column="bactual_channel_unit_price" jdbcType="BIGINT" property="actualChannelUnitPrice" />
+        <result column="bactual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
+        <result column="bactual_amount" jdbcType="BIGINT" property="actualAmount" />
+        <result column="bactual_price" jdbcType="BIGINT" property="actualPrice" />
     </collection>
   </resultMap>
   <select id="selectReturnOrderDetail" resultMap="selectReturnOrderDetail">
@@ -338,7 +344,13 @@
                b.product_status bproduct_status,
                b.actual_inbound_num bactual_inbound_num,
                b.company_name bcompany_name,
-               b.company_code bcompany_code
+               b.company_code bcompany_code,
+               b.channel_unit_price bchannel_unit_price,
+               b.total_channel_price btotal_channel_price,
+               b.actual_channel_unit_price bactual_channel_unit_price,
+               b.actual_total_channel_price bactual_total_channel_price,
+               b.actual_amount bactual_amount,
+               b.actual_price bactual_price
         from return_order_info a
                  left join return_order_info_item b
                            on a.return_order_code = b.return_order_code
@@ -451,24 +463,30 @@
     <result column="aproduct_channel_total_amount" jdbcType="BIGINT" property="productChannelTotalAmount" />
     <result column="aactual_product_channel_total_amount" jdbcType="BIGINT" property="actualProductChannelTotalAmount" />
     <collection property="itemList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoForInspectionItemRespVO">
-      <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
-      <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-      <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl" />
-      <result column="spec" jdbcType="VARCHAR" property="spec" />
-      <result column="color_name" jdbcType="VARCHAR" property="colorName" />
-      <result column="model" jdbcType="VARCHAR" property="model" />
-      <result column="base_product_content" jdbcType="INTEGER" property="baseProductContent" />
-      <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
-      <result column="zero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
-      <result column="give_promotion" jdbcType="INTEGER" property="givePromotion" />
-      <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
-      <result column="price" jdbcType="BIGINT" property="price" />
-      <result column="num" jdbcType="BIGINT" property="num" />
-      <result column="amount" jdbcType="BIGINT" property="amount" />
-      <result column="activity_code" jdbcType="VARCHAR" property="activityCode" />
-      <result column="product_line_num" jdbcType="BIGINT" property="productLineNum" />
-      <result column="promotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
-      <result column="product_status" jdbcType="INTEGER" property="productStatus" />
+      <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
+      <result column="bsku_name" jdbcType="VARCHAR" property="skuName" />
+      <result column="bpicture_url" jdbcType="VARCHAR" property="pictureUrl" />
+      <result column="bspec" jdbcType="VARCHAR" property="spec" />
+      <result column="bcolor_name" jdbcType="VARCHAR" property="colorName" />
+      <result column="bmodel" jdbcType="VARCHAR" property="model" />
+      <result column="bbase_product_content" jdbcType="INTEGER" property="baseProductContent" />
+      <result column="bunit_name" jdbcType="VARCHAR" property="unitName" />
+      <result column="bzero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
+      <result column="bgive_promotion" jdbcType="INTEGER" property="givePromotion" />
+      <result column="bbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+      <result column="bprice" jdbcType="BIGINT" property="price" />
+      <result column="bnum" jdbcType="BIGINT" property="num" />
+      <result column="bamount" jdbcType="BIGINT" property="amount" />
+      <result column="bactivity_code" jdbcType="VARCHAR" property="activityCode" />
+      <result column="bproduct_line_num" jdbcType="BIGINT" property="productLineNum" />
+      <result column="bpromotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
+      <result column="bproduct_status" jdbcType="INTEGER" property="productStatus" />
+      <result column="bchannel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
+      <result column="btotal_channel_price" jdbcType="BIGINT" property="totalChannelPrice" />
+      <result column="bactual_channel_unit_price" jdbcType="BIGINT" property="actualChannelUnitPrice" />
+      <result column="bactual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
+      <result column="bactual_amount" jdbcType="BIGINT" property="actualAmount" />
+      <result column="bactual_price" jdbcType="BIGINT" property="actualPrice" />
     </collection>
   </resultMap>
     <select id="selectInspectionDetail" resultMap="selectInspectionDetail">
@@ -531,7 +549,13 @@
              b.activity_code bactivity_code,
              b.product_line_num bproduct_line_num,
              b.promotion_line_num bpromotion_line_num,
-             b.product_status bproduct_status
+             b.product_status bproduct_status,
+             b.channel_unit_price bchannel_unit_price,
+             b.total_channel_price btotal_channel_price,
+             b.actual_channel_unit_price bactual_channel_unit_price,
+             b.actual_total_channel_price bactual_total_channel_price,
+             b.actual_amount bactual_amount,
+             b.actual_price bactual_price
       from return_order_info a
                left join return_order_info_item b
                          on a.return_order_code = b.return_order_code
@@ -640,6 +664,12 @@
       <result column="bproduct_line_num" jdbcType="BIGINT" property="productLineNum" />
       <result column="bpromotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
       <result column="bproduct_status" jdbcType="INTEGER" property="productStatus" />
+      <result column="bchannel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
+      <result column="btotal_channel_price" jdbcType="BIGINT" property="totalChannelPrice" />
+      <result column="bactual_channel_unit_price" jdbcType="BIGINT" property="actualChannelUnitPrice" />
+      <result column="bactual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
+      <result column="bactual_amount" jdbcType="BIGINT" property="actualAmount" />
+      <result column="bactual_price" jdbcType="BIGINT" property="actualPrice" />
     </collection>
     <collection property="inspectionItemList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoInspectionItemRespVO">
       <result column="csku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -723,6 +753,12 @@
                b.product_line_num bproduct_line_num,
                b.promotion_line_num bpromotion_line_num,
                b.product_status bproduct_status,
+               b.channel_unit_price bchannel_unit_price,
+               b.total_channel_price btotal_channel_price,
+               b.actual_channel_unit_price bactual_channel_unit_price,
+               b.actual_total_channel_price bactual_total_channel_price,
+               b.actual_amount bactual_amount,
+               b.actual_price bactual_price,
                c.sku_code csku_code,
                c.sku_name csku_name,
                c.picture_url cpicture_url,
@@ -841,6 +877,12 @@
             <result column="bactual_inbound_num" jdbcType="INTEGER" property="actualInboundNum" />
             <result column="bcompany_name" jdbcType="VARCHAR" property="companyName" />
             <result column="bcompany_code" jdbcType="VARCHAR" property="companyCode" />
+            <result column="bchannel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
+            <result column="btotal_channel_price" jdbcType="BIGINT" property="totalChannelPrice" />
+            <result column="bactual_channel_unit_price" jdbcType="BIGINT" property="actualChannelUnitPrice" />
+            <result column="bactual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
+            <result column="bactual_amount" jdbcType="BIGINT" property="actualAmount" />
+            <result column="bactual_price" jdbcType="BIGINT" property="actualPrice" />
         </collection>
     </resultMap>
     <select id="selectByCode" resultMap="selectByCode">
@@ -944,7 +986,13 @@
                    b.product_status bproduct_status,
                    b.actual_inbound_num bactual_inbound_num,
                    b.company_name bcompany_name,
-                   b.company_code bcompany_code
+                   b.company_code bcompany_code,
+                   b.channel_unit_price bchannel_unit_price,
+                   b.total_channel_price btotal_channel_price,
+                   b.actual_channel_unit_price bactual_channel_unit_price,
+                   b.actual_total_channel_price bactual_total_channel_price,
+                   b.actual_amount bactual_amount,
+                   b.actual_price bactual_price
             from return_order_info a
                      left join return_order_info_item b on a.return_order_code = b.return_order_code
             where a.return_order_code = #{code}
