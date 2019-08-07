@@ -17,6 +17,10 @@ public class DashboardDepartAnnualSalesStatiRespVo {
     @JsonProperty("stat_year")
     private String statYear;
 
+    @ApiModelProperty("部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
+
     @ApiModelProperty("渠道成本")
     @JsonProperty("channel_costs")
     private Long channelCosts;
@@ -30,19 +34,19 @@ public class DashboardDepartAnnualSalesStatiRespVo {
     private Long distributionAmount;
 
     @ApiModelProperty("渠道毛利")
-    @JsonProperty("channel_maori")
-    private Long channelMaori;
+    @JsonProperty("channel_margin")
+    private Long channelMargin;
 
     @ApiModelProperty("分销毛利")
-    @JsonProperty("distribution_maori")
-    private Long distributionMaori;
+    @JsonProperty("distribution_margin")
+    private Long distributionMargin;
 
     @ApiModelProperty("销售预算")
     @JsonProperty("sales_budget")
     private Long salesBudget;
 
     @ApiModelProperty("销售达成率")
-    @JsonProperty("achievement")
-    private Double achievement;
+    @JsonProperty("achieve_rate")
+    private Double achieveRate;
 
 }

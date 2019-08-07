@@ -6,13 +6,14 @@
         SELECT
         ddass.id as id,
         ddass.stat_year as statYear,
+        ddass.product_sort_name as productSortName,
         ddass.channel_costs as channelCosts,
         ddass.channel_amount as channelAmount,
         ddass.distribution_amount as distributionAmount,
-        ddass.channel_maori as channelMaori,
-        ddass.distribution_maori as distributionMaori,
+        ddass.channel_margin as channelMargin,
+        ddass.distribution_margin as distributionMargin,
         ddass.sales_budget as salesBudget,
-        ddass.achievement as achievement
+        ddass.achieve_rate as achieveRate
         FROM dashboard_depart_annual_sales_stati ddass
         WHERE 1=1
         <if test="fiveYearStr!=null and fiveYearStr!=''">
