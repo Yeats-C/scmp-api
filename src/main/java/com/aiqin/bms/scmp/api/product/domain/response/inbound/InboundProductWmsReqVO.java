@@ -18,25 +18,14 @@ import lombok.Data;
 public class InboundProductWmsReqVO {
 
     @ApiModelProperty("sku编号")
-    @JsonProperty("goodsId")
     private String skuCode;
 
-    @ApiModelProperty("sku名称")
-    @JsonProperty("goodsName")
-    private String skuName;
-
-    @ApiModelProperty(value = "商品条码 必填")
-    private String goodsCode;
-
-    @ApiModelProperty("入库单位名称")
-    @JsonProperty("packageName")
-    private String unitName;
-
     @ApiModelProperty("行号")
-    @JsonProperty("linenum")
     private Long linenum;
 
     @ApiModelProperty("预计入库数量")
-    @JsonProperty("preInboundNum")
-    private Long preInboundNum;
+    private Long preInboundMainNum;
+
+    @ApiModelProperty("0商品 1赠品 2实物返回")
+    private int productType;
 }

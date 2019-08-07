@@ -111,7 +111,7 @@ public interface OutboundService {
      * @param id
      * @return
      */
-    void pushWms(String Code, OutboundServiceImpl inboundService);
+    void pushWms(String Code);
 
     /**
      * 出库单回调接口

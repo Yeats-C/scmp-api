@@ -33,10 +33,7 @@
   <resultMap id="MmsReq" type="com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundProductWmsResVO">
 
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
-    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-    <result column="bar_code" jdbcType="VARCHAR" property="goodsCode" />
     <result column="pre_outbound_main_num" jdbcType="BIGINT" property="preInboundMainNum" />
-    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="linenum" jdbcType="BIGINT" property="linenum" />
 
   </resultMap>
@@ -87,7 +84,7 @@
     a.update_by, a.update_time,a.linenum,b.output_tax_rate,b.Input_tax_rate
   </sql>
   <sql  id="Base_Column_MmsReq">
-      a.sku_code,a.sku_name,b.bar_code,a.pre_outbound_main_num,a.unit_name,a.linenum
+      a.sku_code,a.sku_name,a.pre_outbound_main_num,a.unit_name,a.linenum
   </sql>
   <sql id="Base_Column_List_2">
     a.id,  a.sku_code
@@ -491,8 +488,10 @@
   <select id="selectMmsReqByOutboundOderCode" parameterType="java.lang.String" resultMap="MmsReq">
     select
     <include refid="Base_Column_MmsReq" />
-    from outbound_product a left join product_sku b on a.sku_code = b.sku_code
-    where outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
+    from outbound_product a
+    left join outbound b on b.outbound_oder_code = a.outbound_oder_code
+    left join reject_record_detail c on a.sku_code = c.sku_code and b.source_oder_code = c.reject_record_code
+    where a.outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
   </select>
 
   <select id="selectByLinenum"  resultMap="BaseResultReturnOutboundProductMap">

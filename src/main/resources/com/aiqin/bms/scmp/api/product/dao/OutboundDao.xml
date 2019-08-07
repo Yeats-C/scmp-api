@@ -674,4 +674,8 @@
     where
     source_oder_code = #{sourceOrderCode, jdbcType=VARCHAR}
   </update>
+  <select id="selectCreateById" resultType="java.lang.String">
+    select b.create_by_id from outbound a left join reject_record b on a.source_oder_code = b.reject_record_code
+    where a.outbound_oder_code = #{outboundOderCode, jdbcType=VARCHAR}
+  </select>
 </mapper>

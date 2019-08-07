@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.inbound;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,60 +21,36 @@ import java.util.List;
 @ApiModel("WMS传入入库单实体")
 public class InboundWmsReqVO {
 
-    @ApiModelProperty("公司编码")
-    private String companyCode;
+    @ApiModelProperty("入库单号")
+    private String inboundOderCode;
 
-    @ApiModelProperty("公司名称")
-    private String companyName;
+    @ApiModelProperty("入库id")
+    private Long id;
 
-    @ApiModelProperty("入库类型编码")
-    private Integer inboundTypeCode;
+    @ApiModelProperty("供货单位编码")
+    private String supplierCode;
 
-    @ApiModelProperty("库房名称")
-    @JsonProperty("belongWarehouse")
-    private String warehouseName;
+    @ApiModelProperty("供货单位名称")
+    private String supplierName;
+
+    @ApiModelProperty("库房编码")
+    private String warehouseCode;
+
+    @ApiModelProperty("创建人")
+    private String createById;
+
+    @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime;
 
     @ApiModelProperty("预计到货时间")
-    @JsonProperty("estimatedDate")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date preArrivalTime;
 
-    @ApiModelProperty("发货人")
-    @JsonProperty("consignor")
-    private String shipper;
-
-    @ApiModelProperty("发货人电话")
-    @JsonProperty("consignorCellphone")
-    private String shipperNumber;
-
-
-    @ApiModelProperty(value = "国家")
-    private String country ="中国";
-
-    @ApiModelProperty("省编码")
-    @JsonProperty("province")
-    private String provinceName;
-
-    @ApiModelProperty("市名称")
-    @JsonProperty("city")
-    private String cityName;
-
-    @ApiModelProperty("区名称")
-    @JsonProperty("county")
-    private String countyName;
-
-    @ApiModelProperty("详细地址")
-    @JsonProperty("street")
-    private String detailedAddress;
-
-    @ApiModelProperty(value = "更新标志 必填 1-新增；2、更新")
-    private String addorupdate ="1";
+    @ApiModelProperty("预计主单位数量")
+    private Long preMainUnitNum;
 
     @ApiModelProperty(value = "明细信息 必填")
     private List<InboundProductWmsReqVO>  list;
 
-    @ApiModelProperty(value = "sku批次 ")
-    private List<InboundBatchWmsReqVO> inboundBatchWmsReqVOs;
-
-    @ApiModelProperty(value = "业务模式 必填 1、自提出库；2、运输出库")
-    private String businessType ="2";
 }
