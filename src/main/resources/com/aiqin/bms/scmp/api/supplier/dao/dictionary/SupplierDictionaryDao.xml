@@ -36,13 +36,16 @@
             and create_time &lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
         </if>
         <if test="createBy != null and createBy !=''">
-            and create_by LIKE CONCAT(CONCAT('%',#{createBy},'%'))
+            and create_by LIKE CONCAT('%',#{createBy},'%')
         </if>
         <if test="updateBy != null and updateBy !=''">
-            and update_by LIKE CONCAT(CONCAT('%',#{updateBy},'%'))
+            and update_by LIKE CONCAT('%',#{updateBy},'%')
         </if>
         <if test="dictionaryName != null and dictionaryName !=''">
-            and supplier_dictionary_name LIKE CONCAT(CONCAT('%',#{dictionaryName},'%'))
+            and supplier_dictionary_name LIKE CONCAT('%',#{dictionaryName},'%')
+        </if>
+        <if test="dictionaryCode != null and dictionaryCode !=''">
+            and supplier_dictionary_code LIKE CONCAT('%',#{dictionaryCode},'%')
         </if>
 <!--        <if test="dictionaryType != null and dictionaryType !=''">-->
 <!--            and supplier_type = #{dictionaryType}-->

@@ -145,4 +145,8 @@ public class PurchaseOrderResponse {
     @ApiModelProperty(value="实际赠品含税金额")
     @JsonProperty("actual_gift_tax_sum")
     private Integer actualGiftTaxSum;
+
+    @ApiModelProperty(value="关联审批单")
+    @JsonProperty("approval_code")
+    private String approvalCode;
 }

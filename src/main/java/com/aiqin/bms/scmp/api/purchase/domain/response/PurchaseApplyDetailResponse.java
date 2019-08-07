@@ -353,9 +353,13 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("apply_type")
     private Integer applyType;
 
-    @ApiModelProperty(value="付款方式  0.预付款  1.货到付款 2.月结 3.实销实结")
-    @JsonProperty("payment_type")
-    private Integer paymentType;
+    @ApiModelProperty(value="付款方式编码")
+    @JsonProperty("payment_code")
+    private String paymentCode;
+
+    @ApiModelProperty(value="付款方式名称")
+    @JsonProperty("payment_name")
+    private String paymentName;
 
     @ApiModelProperty(value="预付款金额")
     @JsonProperty("advance_payment")
@@ -380,5 +384,9 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="备注")
     @JsonProperty("remark")
     private String remark;
+
+    @ApiModelProperty(value="采购单的类型（手动，自动）")
+    @JsonProperty("apply_type_form")
+    private String applyTypeForm;
 }
 

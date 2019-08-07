@@ -69,9 +69,13 @@ public class ApplyPurchaseOrderDetails {
     @JsonProperty("direct_supervisor_name")
     private String directSupervisorName;
 
-    @ApiModelProperty(value="付款方式  0.预付款  1.货到付款 2.月结 3.实销实结")
-    @JsonProperty("payment_type")
-    private Integer paymentType;
+    @ApiModelProperty(value="付款方式编码")
+    @JsonProperty("payment_code")
+    private String paymentCode;
+
+    @ApiModelProperty(value="付款方式名称")
+    @JsonProperty("payment_name")
+    private String paymentName;
 
     @ApiModelProperty(value="预付款金额")
     @JsonProperty("advance_payment")

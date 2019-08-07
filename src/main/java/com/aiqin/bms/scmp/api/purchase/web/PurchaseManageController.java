@@ -83,10 +83,11 @@ public class PurchaseManageController {
                                                                       @RequestParam(value = "purchase_order_status", required = false) Integer purchaseOrderStatus,
                                                                       @RequestParam(value = "storage_status", required = false) Integer storageStatus,
                                                                       @RequestParam(value = "purchase_mode", required = false) Integer purchaseMode,
+                                                                      @RequestParam(value = "approval_code", required = false) String approvalCode,
                                                                       @RequestParam(value = "page_no", required = false) Integer pageNo,
                                                                       @RequestParam(value = "page_size", required = false) Integer pageSize) {
         PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseGroupCode, beginTime, finishTime, supplierCode,
-                transportCenterCode, purchaseOrderCode, warehouseCode, purchaseOrderStatus, storageStatus, purchaseMode);
+                transportCenterCode, purchaseOrderCode, warehouseCode, purchaseOrderStatus, storageStatus, purchaseMode, approvalCode);
         purchaseApplyRequest.setPageSize(pageSize);
         purchaseApplyRequest.setPageNo(pageNo);
         return purchaseManageService.purchaseOrderList(purchaseApplyRequest);

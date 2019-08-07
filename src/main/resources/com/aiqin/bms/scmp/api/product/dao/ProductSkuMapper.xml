@@ -208,6 +208,8 @@
     <result column="on_sale_name" jdbcType="VARCHAR" property="onSale" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="sale_price" jdbcType="BIGINT" property="skuPrice"/>
     <result column="product_sort_name" jdbcType="BIGINT" property="productSort"/>
     <result column="color_name" jdbcType="VARCHAR" property="colorName" />
@@ -873,6 +875,8 @@
       CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) product_category_name,
       a.create_by,
       a.create_time,
+      a.update_by,
+      a.update_time,
       a.product_sort_name,
       a.color_name,
       a.model_number,

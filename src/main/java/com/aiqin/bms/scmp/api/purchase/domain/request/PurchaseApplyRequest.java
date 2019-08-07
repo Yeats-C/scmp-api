@@ -146,6 +146,10 @@ public class PurchaseApplyRequest extends PagesRequest {
     @ApiModelProperty(value="不需要传的参数")
     private List<PurchaseGroupVo> groupList;
 
+    @ApiModelProperty(value="关联审批单")
+    @JsonProperty("approval_code")
+    private String approvalCode;
+
     public PurchaseApplyRequest() {
     }
 
@@ -160,7 +164,8 @@ public class PurchaseApplyRequest extends PagesRequest {
 
     public PurchaseApplyRequest(String purchaseApplyId, String purchaseGroupCode, String skuCode, String skuName, String spuCode, String productName,
                                 String supplierCode, String transportCenterCode, String brandId, String brandName, String categoryId, String categoryName,
-                                String productPropertyCode, String productPropertyName,Integer aReplenishType, Integer productReplenishType, Integer aShortageType, Integer productShortageType) {
+                                String productPropertyCode, String productPropertyName,Integer aReplenishType, Integer productReplenishType, Integer aShortageType,
+                                Integer productShortageType) {
         this.purchaseApplyId = purchaseApplyId;
         this.purchaseGroupCode = purchaseGroupCode;
         this.skuCode = skuCode;
@@ -183,7 +188,7 @@ public class PurchaseApplyRequest extends PagesRequest {
 
     public PurchaseApplyRequest(String purchaseGroupCode, String beginTime, String finishTime, String supplierCode,
                                 String transportCenterCode, String purchaseOrderCode, String warehouseCode,
-                                Integer purchaseOrderStatus, Integer storageStatus, Integer purchaseMode) {
+                                Integer purchaseOrderStatus, Integer storageStatus, Integer purchaseMode, String approvalCode) {
         this.purchaseGroupCode = purchaseGroupCode;
         this.beginTime = beginTime;
         this.finishTime = finishTime;
@@ -194,5 +199,6 @@ public class PurchaseApplyRequest extends PagesRequest {
         this.purchaseOrderStatus = purchaseOrderStatus;
         this.storageStatus = storageStatus;
         this.purchaseMode = purchaseMode;
+        this.approvalCode = approvalCode;
     }
 }

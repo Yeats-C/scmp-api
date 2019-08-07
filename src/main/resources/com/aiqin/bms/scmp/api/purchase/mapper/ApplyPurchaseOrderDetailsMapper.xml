@@ -17,7 +17,8 @@
     <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode" />
     <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
-    <result column="payment_type" jdbcType="INTEGER" property="paymentType" />
+    <result column="payment_code" jdbcType="VARCHAR" property="paymentCode" />
+    <result column="payment_name" jdbcType="VARCHAR" property="paymentName" />
     <result column="advance_payment" jdbcType="INTEGER" property="advancePayment" />
     <result column="amount_payable" jdbcType="INTEGER" property="amountPayable" />
     <result column="month_amount" jdbcType="INTEGER" property="monthAmount" />
@@ -45,7 +46,7 @@
     id, purchase_details_id, purchase_order_id, purchase_order_code,
     account_code, account_name, contract_code, contract_name, charge_person, contact_person, 
     mobile, expect_arrival_time, valid_time, direct_supervisor_code, direct_supervisor_name, 
-    payment_type, advance_payment, amount_payable, month_amount, payable_time, month_time, 
+    payment_code, payment_name, advance_payment, amount_payable, month_amount, payable_time, month_time,
     receipt, receipt_address, delivery, delivery_address, delivery_time, warehouse_time, 
     remark, details_status, order_code, order_type, score_code, create_time, update_time, 
     create_by_id, update_by_id, create_by_name, update_by_name
@@ -54,7 +55,7 @@
     insert into apply_purchase_order_details (purchase_details_id,
       purchase_order_id, purchase_order_code, account_code, account_name, contract_code, contract_name,
       charge_person, contact_person, mobile, expect_arrival_time, valid_time, direct_supervisor_code,
-      direct_supervisor_name, payment_type, advance_payment, amount_payable, month_amount, payable_time,
+      direct_supervisor_name, payment_code, payment_name, advance_payment, amount_payable, month_amount, payable_time,
       month_time, receipt, receipt_address, delivery, delivery_address, delivery_time,
       warehouse_time, remark, details_status, order_code, order_type, score_code,
       create_time, create_by_id, create_by_name)
@@ -63,7 +64,7 @@
       #{accountName,jdbcType=VARCHAR}, #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR}, 
       #{chargePerson,jdbcType=VARCHAR}, #{contactPerson,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
       #{expectArrivalTime,jdbcType=TIMESTAMP}, #{validTime,jdbcType=TIMESTAMP}, #{directSupervisorCode,jdbcType=VARCHAR}, 
-      #{directSupervisorName,jdbcType=VARCHAR}, #{paymentType,jdbcType=INTEGER}, #{advancePayment,jdbcType=INTEGER}, 
+      #{directSupervisorName,jdbcType=VARCHAR}, #{paymentCode,jdbcType=VARCHAR}, #{paymentName,jdbcType=VARCHAR}, #{advancePayment,jdbcType=INTEGER},
       #{amountPayable,jdbcType=INTEGER}, #{monthAmount,jdbcType=INTEGER}, #{payableTime,jdbcType=INTEGER}, 
       #{monthTime,jdbcType=INTEGER}, #{receipt,jdbcType=VARCHAR}, #{receiptAddress,jdbcType=VARCHAR}, 
       #{delivery,jdbcType=VARCHAR}, #{deliveryAddress,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, 
@@ -116,8 +117,11 @@
       <if test="directSupervisorName != null">
         direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
       </if>
-      <if test="paymentType != null">
-        payment_type = #{paymentType,jdbcType=INTEGER},
+      <if test="paymentCode != null">
+        payment_code = #{paymentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentName != null">
+        payment_name = #{paymentName,jdbcType=VARCHAR},
       </if>
       <if test="advancePayment != null">
         advance_payment = #{advancePayment,jdbcType=INTEGER},
@@ -200,9 +204,10 @@
     d.delivery_time as deliveryTime, d.warehouse_time as warehouseTime, d.update_time as updateTime,
     d.order_type as orderType, d.order_code as orderCode, o.cancel_reason as cancelReason, o.cancel_remark as cancelRemark,
     d.score_code as scoreCode, o.storage_status as storageStatus, o.supplier_code as supplierCode, o.supplier_name as supplierName,
-    o.update_time as updateTime, o.update_by_id as updateById, o.update_by_name as updateByName, d.payment_type as paymentType,
+    o.update_time as updateTime, o.update_by_id as updateById, o.update_by_name as updateByName, d.payment_code as paymentCode,
     d.advance_payment as advancePayment, d.amount_payable as amountPayable, d.month_amount as monthAmount,
-    d.payable_time as payableTime, d.month_time as monthTime, d.remark, o.create_by_name as createByName
+    d.payable_time as payableTime, d.month_time as monthTime, d.remark, o.create_by_name as createByName,
+    d.payment_name as paymentName
     from apply_purchase_order o
     inner join apply_purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id
