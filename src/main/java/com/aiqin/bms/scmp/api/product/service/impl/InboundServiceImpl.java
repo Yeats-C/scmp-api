@@ -391,6 +391,7 @@ public class InboundServiceImpl implements InboundService {
                             operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
                             operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
                             operationLog.setCreateTime(new Date());
+                            operationLog.setRemark(resultPurchaseOrder.getApplyTypeForm());
                             purchaseManageService.addLog(operationLog);
 
 
@@ -553,6 +554,7 @@ public class InboundServiceImpl implements InboundService {
                 operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_IN.getCode());
                 operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库中");
                 operationLog.setCreateTime(new Date());
+                operationLog.setRemark(resultPurchaseOrder.getApplyTypeForm());
                 purchaseManageService.addLog(operationLog);
             }
         }
@@ -634,6 +636,7 @@ public class InboundServiceImpl implements InboundService {
                    operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_FINISH.getCode());
                    operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，入库完成");
                    operationLog.setCreateTime(new Date());
+                   operationLog.setRemark(resultPurchaseOrder.getApplyTypeForm());
                    purchaseManageService.addLog(operationLog);
                }
            }catch (Exception e){

@@ -828,7 +828,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , purchaseOrder.getApplyTypeForm());
             // 仓储确认判断是否入库完成
-            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
                 log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                         PurchaseOrderLogEnum.PURCHASE_FINISH.getName() , purchaseOrder.getApplyTypeForm());
                 this.wayNum(purchaseStorage.getPurchaseOrderId());
@@ -951,7 +951,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.STORAGE_FINISH.getCode(),
                 PurchaseOrderLogEnum.STORAGE_FINISH.getName() , order.getApplyTypeForm());
         // 仓储确认判断是否入库完成
-        if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+        if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
             log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                     PurchaseOrderLogEnum.PURCHASE_FINISH.getName() , order.getApplyTypeForm());
             this.wayNum(purchaseOrderId);
