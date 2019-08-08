@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderDetailsDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.apply.ApplyPurchaseOrderDetails">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="purchase_details_id" jdbcType="VARCHAR" property="purchaseDetailsId" />
+    <result column="purchase_order_id" jdbcType="VARCHAR" property="purchaseOrderId" />
+    <result column="purchase_order_code" jdbcType="VARCHAR" property="purchaseOrderCode" />
+    <result column="account_code" jdbcType="VARCHAR" property="accountCode" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="contract_code" jdbcType="VARCHAR" property="contractCode" />
+    <result column="contract_name" jdbcType="VARCHAR" property="contractName" />
+    <result column="charge_person" jdbcType="VARCHAR" property="chargePerson" />
+    <result column="contact_person" jdbcType="VARCHAR" property="contactPerson" />
+    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+    <result column="expect_arrival_time" jdbcType="TIMESTAMP" property="expectArrivalTime" />
+    <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
+    <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode" />
+    <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
+    <result column="payment_code" jdbcType="VARCHAR" property="paymentCode" />
+    <result column="payment_name" jdbcType="VARCHAR" property="paymentName" />
+    <result column="advance_payment" jdbcType="INTEGER" property="advancePayment" />
+    <result column="amount_payable" jdbcType="INTEGER" property="amountPayable" />
+    <result column="month_amount" jdbcType="INTEGER" property="monthAmount" />
+    <result column="payable_time" jdbcType="INTEGER" property="payableTime" />
+    <result column="month_time" jdbcType="INTEGER" property="monthTime" />
+    <result column="receipt" jdbcType="VARCHAR" property="receipt" />
+    <result column="receipt_address" jdbcType="VARCHAR" property="receiptAddress" />
+    <result column="delivery" jdbcType="VARCHAR" property="delivery" />
+    <result column="delivery_address" jdbcType="VARCHAR" property="deliveryAddress" />
+    <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
+    <result column="warehouse_time" jdbcType="TIMESTAMP" property="warehouseTime" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="details_status" jdbcType="INTEGER" property="detailsStatus" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="order_type" jdbcType="VARCHAR" property="orderType" />
+    <result column="score_code" jdbcType="VARCHAR" property="scoreCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, purchase_details_id, purchase_order_id, purchase_order_code,
+    account_code, account_name, contract_code, contract_name, charge_person, contact_person, 
+    mobile, expect_arrival_time, valid_time, direct_supervisor_code, direct_supervisor_name, 
+    payment_code, payment_name, advance_payment, amount_payable, month_amount, payable_time, month_time,
+    receipt, receipt_address, delivery, delivery_address, delivery_time, warehouse_time, 
+    remark, details_status, order_code, order_type, score_code, create_time, update_time, 
+    create_by_id, update_by_id, create_by_name, update_by_name
+  </sql>
+  <insert id="insert">
+    insert into apply_purchase_order_details (purchase_details_id,
+      purchase_order_id, purchase_order_code, account_code, account_name, contract_code, contract_name,
+      charge_person, contact_person, mobile, expect_arrival_time, valid_time, direct_supervisor_code,
+      direct_supervisor_name, payment_code, payment_name, advance_payment, amount_payable, month_amount, payable_time,
+      month_time, receipt, receipt_address, delivery, delivery_address, delivery_time,
+      warehouse_time, remark, details_status, order_code, order_type, score_code,
+      create_time, create_by_id, create_by_name)
+    values (#{purchaseDetailsId,jdbcType=VARCHAR},
+      #{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR}, #{accountCode,jdbcType=VARCHAR}, 
+      #{accountName,jdbcType=VARCHAR}, #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR}, 
+      #{chargePerson,jdbcType=VARCHAR}, #{contactPerson,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
+      #{expectArrivalTime,jdbcType=TIMESTAMP}, #{validTime,jdbcType=TIMESTAMP}, #{directSupervisorCode,jdbcType=VARCHAR}, 
+      #{directSupervisorName,jdbcType=VARCHAR}, #{paymentCode,jdbcType=VARCHAR}, #{paymentName,jdbcType=VARCHAR}, #{advancePayment,jdbcType=INTEGER},
+      #{amountPayable,jdbcType=INTEGER}, #{monthAmount,jdbcType=INTEGER}, #{payableTime,jdbcType=INTEGER}, 
+      #{monthTime,jdbcType=INTEGER}, #{receipt,jdbcType=VARCHAR}, #{receiptAddress,jdbcType=VARCHAR}, 
+      #{delivery,jdbcType=VARCHAR}, #{deliveryAddress,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, 
+      #{warehouseTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{detailsStatus,jdbcType=INTEGER}, 
+      #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR}, #{scoreCode,jdbcType=VARCHAR}, 
+      now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
+  </insert>
+  <select id="applyOrderDetails" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+    select o.purchase_order_id as purchaseOrderId, o.purchase_order_code as purchaseOrderCode,
+    o.warehouse_code as warehouseCode, o.warehouse_name as warehouseName, o.transport_center_code as transportCenterCode,
+    o.transport_center_name as transportCenterName, o.purchase_order_status as purchaseOrderStatus,
+    d.expect_arrival_time as expectArrivalTime, d.valid_time as validTime, o.create_time as createTime,
+    o.purchase_group_code as purchaseGroupCode, o.purchase_group_name as purchaseGroupName, o.purchase_mode as purchaseMode,
+    d.charge_person as chargePerson, d.contract_code as contractCode, d.contract_name as contractName,
+    d.account_code as accountCode, d.account_name as accountName, o.settlement_method_code as settlementMethodCode,
+    o.settlement_method_name as settlementMethodName, d.contact_person as contactPerson, d.mobile,
+    d.delivery_time as deliveryTime, d.warehouse_time as warehouseTime, d.update_time as updateTime,
+    d.order_type as orderType, d.order_code as orderCode, o.cancel_reason as cancelReason, o.cancel_remark as cancelRemark,
+    d.score_code as scoreCode, o.storage_status as storageStatus, o.supplier_code as supplierCode, o.supplier_name as supplierName,
+    o.update_time as updateTime, o.update_by_id as updateById, o.update_by_name as updateByName, d.payment_code as paymentCode,
+    d.advance_payment as advancePayment, d.amount_payable as amountPayable, d.month_amount as monthAmount,
+    d.payable_time as payableTime, d.month_time as monthTime, d.remark, o.create_by_name as createByName,
+    d.payment_name as paymentName
+    from apply_purchase_order o
+    inner join apply_purchase_order_details d
+    on o.purchase_order_id = d.purchase_order_id
+    <where>
+      o.purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+    </where>
+  </select>
+</mapper>

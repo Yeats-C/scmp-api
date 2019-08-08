@@ -19,7 +19,11 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRe
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
+import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderDao;
+import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderDetailsDao;
+import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.apply.ApplyPurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;

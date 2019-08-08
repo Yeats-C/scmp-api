@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.aiqin.bms.scmp.api.purchase.domain.apply.ApplyRejectRecord;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +12,7 @@ import java.util.Date;
 
 @ApiModel
 @Data
-public class RejectRecord extends ApplyRejectRecord{
+public class RejectRecord extends ApplyRejectRecord {
     @ApiModelProperty(value = "")
     @JsonProperty("id")
     private Long id;

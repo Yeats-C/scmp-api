@@ -11,7 +11,7 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.purchase.dao.ApplyPurchaseOrderDao;
+import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.dao.OperationLogDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
