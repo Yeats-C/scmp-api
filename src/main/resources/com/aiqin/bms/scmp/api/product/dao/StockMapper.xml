@@ -529,7 +529,7 @@
         select
         sf.id as id,
         sf.lock_status as lockStatus,
-        sf.change_num as changeNum,
+        SUM(sf.change_num) as changeNum,
         sf.document_type as documentType,
         sf.document_num as documentNum,
         sf.source_document_type as sourceDocumentType,
@@ -539,6 +539,7 @@
         sf.remark as remark
         from stock_flow as sf
         where sf.stock_code = #{stockCode, jdbcType=VARCHAR}
+        GROUP BY sf.sku_code,sf.document_num
         order by sf.update_time DESC
     </select>
 
