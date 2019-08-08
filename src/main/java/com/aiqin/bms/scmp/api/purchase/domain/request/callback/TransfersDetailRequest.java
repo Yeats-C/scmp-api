@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.callback;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -30,4 +31,13 @@ import lombok.Data;
  */
 @Data
 public class TransfersDetailRequest {
+
+    @ApiModelProperty("sku编号")
+    private String skuCode;
+
+    @ApiModelProperty("数量")
+    private Long quantity;
+
+    @ApiModelProperty("行号")
+    private Long lineNum;
 }

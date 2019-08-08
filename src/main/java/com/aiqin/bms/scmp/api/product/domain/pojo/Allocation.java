@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 @ApiModel("调拨主表")
 @Data
 public class Allocation extends CommonBean {
@@ -94,4 +96,6 @@ public class Allocation extends CommonBean {
 
     @ApiModelProperty("调拨类型(1:调拨 2:移库 3:报废)")
     private String allocationTypeName;
+
+    private List<AllocationProduct> detailList;
 }
