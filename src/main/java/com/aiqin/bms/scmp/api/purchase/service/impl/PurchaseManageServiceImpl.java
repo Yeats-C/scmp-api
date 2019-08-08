@@ -19,11 +19,11 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRe
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
-import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderDao;
-import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderDetailsDao;
-import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderProductDao;
+import com.aiqin.bms.scmp.api.purchase.dao.ApplyPurchaseOrderDao;
+import com.aiqin.bms.scmp.api.purchase.dao.ApplyPurchaseOrderDetailsDao;
+import com.aiqin.bms.scmp.api.purchase.dao.ApplyPurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
-import com.aiqin.bms.scmp.api.purchase.domain.apply.ApplyPurchaseOrderProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.ApplyPurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
@@ -457,11 +457,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 applyPurchaseOrderDao.update(purchaseOrder);
             }
         }
-        Integer count = purchaseOrderDao.update(purchaseOrder);
-        if(count == 0){
-            LOGGER.error("变更采购单的状态失败......");
-            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
-        }
         // 添加操作日志
         PurchaseOrderDetails detail;
         if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)){
@@ -493,7 +488,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
                 log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                         PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), order.getApplyTypeForm());
+                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
             }
+        }
+        Integer count = purchaseOrderDao.update(purchaseOrder);
+        if(count == 0){
+            LOGGER.error("变更采购单的状态失败......");
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
         return HttpResponse.success();
     }
@@ -809,6 +810,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         // 是否入库完成
         if(purchaseStorage.getPurchaseNum() > num){
+            if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) || purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_8) ){
+                return HttpResponse.success();
+            }
             InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
             String s = inboundService.saveInbound(save);
             if(StringUtils.isBlank(s)){

@@ -747,15 +747,15 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode() )){
             // 如果是移库
             try {
-                Movement allocation =movementDao .selectByCode(outbound.getSourceOderCode());
+                Allocation allocation =allocationMapper .selectByCode(outbound.getSourceOderCode());
                 //设置调拨状态
-                allocation.setMovementStatusCode(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus());
-                allocation.setMovementStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
+                allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus());
+                allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
 
-                productCommonService.getInstance(allocation.getMovementCode(), HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),allocation.getMovementCode() ,HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getName());
+                productCommonService.getInstance(allocation.getAllocationCode(), HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),allocation.getAllocationCode() ,HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getName());
 
                 //跟新调拨单状态
-                int k = movementDao.updateByPrimaryKeySelective(allocation);
+                int k = allocationMapper.updateByPrimaryKeySelective(allocation);
                 //生成入库单
                 movementCreateInbound(allocation.getId());
             } catch (Exception e) {
@@ -824,7 +824,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         try {
             AllocationToOutboundVo allocationResVo =  new AllocationToOutboundVo();
             AllocationDTO allocation = allocationMapper.selectByFormNO1(id);
-            BeanCopyUtils.copy(allocation,allocationResVo);
+            BeanCopyUtils.copy(allocation, allocationResVo);
 //            productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.INBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),id ,HandleTypeCoce.INBOUND_ALLOCATION.getName());
 
             List<AllocationProductToOutboundVo> list = allocationProductBatchMapper.selectByPictureUrlAllocationCode(allocation.getAllocationCode());

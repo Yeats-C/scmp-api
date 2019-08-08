@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.BiAutomaticOrderDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.BiAutomaticOrder">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_year_month" jdbcType="VARCHAR" property="orderYearMonth" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="inventory_days" jdbcType="INTEGER" property="inventoryDays" />
+    <result column="day_num" jdbcType="INTEGER" property="dayNum" />
+    <result column="arrival_cycle" jdbcType="INTEGER" property="arrivalCycle" />
+    <result column="order_cycle" jdbcType="INTEGER" property="orderCycle" />
+    <result column="large_inventory_warn_day" jdbcType="INTEGER" property="largeInventoryWarnDay" />
+    <result column="basic_inventory_day" jdbcType="INTEGER" property="basicInventoryDay" />
+    <result column="case_one" jdbcType="INTEGER" property="caseOne" />
+    <result column="case_two" jdbcType="INTEGER" property="caseTwo" />
+    <result column="case_three" jdbcType="INTEGER" property="caseThree" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_year_month, sku_code, sku_name, transport_center_code, transport_center_name, 
+    warehouse_code, warehouse_name, inventory_days, day_num, arrival_cycle, order_cycle, 
+    large_inventory_warn_day, basic_inventory_day, case_one, case_two, case_three, supplier_name, 
+    supplier_code, create_date, create_time
+  </sql>
+  <select id="automaticOrderList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from bi_automatic_order
+    where create_time like CONCAT('',#{months},'%')
+  </select>
+</mapper>

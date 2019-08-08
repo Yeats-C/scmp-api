@@ -7,7 +7,7 @@ import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyRejectRecordDao;
+import com.aiqin.bms.scmp.api.purchase.dao.ApplyRejectRecordDao;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDetailDao;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
