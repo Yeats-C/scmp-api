@@ -231,4 +231,16 @@
 		inner join purchase_order o on p.purchase_order_id = o.purchase_order_id
     where o.purchase_order_id = #{purchaseOrderId, jdbcType=VARCHAR} GROUP BY o.transport_center_code, o.warehouse_code, p.sku_code
   </select>
+  <select id="purchaseOrderDetailList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+    select
+    order_product_id as orderProductId, purchase_order_id as purchaseOrderId, purchase_order_code as purchaseOrderCode,
+    sku_code as skuCode, sku_name as skuName, brand_id as brandId, brand_name as brandName, category_id as categoryId,
+    category_name as categoryName, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
+    product_type as productType, purchase_whole as purchaseWhole, purchase_single as purchaseSingle,
+    base_product_content as baseProductContent, box_gauge as boxGauge, single_count as singleCount,
+    tax_rate as taxRate, product_amount as productAmount, product_total_amount as productTotalAmount,
+    stock_count as stockCount, actual_single_count as actualSingleCount, factory_sku_code as factorySkuCode
+    from purchase_order_product
+    where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+  </select>
 </mapper>

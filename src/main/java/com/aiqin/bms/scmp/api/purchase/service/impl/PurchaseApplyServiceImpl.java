@@ -12,14 +12,14 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
-import com.aiqin.bms.scmp.api.purchase.dao.bi.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
-import com.aiqin.bms.scmp.api.purchase.domain.bi.BiAClassification;
-import com.aiqin.bms.scmp.api.purchase.domain.bi.BiClassification;
-import com.aiqin.bms.scmp.api.purchase.domain.bi.BiGrossProfitMargin;
-import com.aiqin.bms.scmp.api.purchase.domain.bi.BiStockoutRate;
+import com.aiqin.bms.scmp.api.purchase.domain.BiAClassification;
+import com.aiqin.bms.scmp.api.purchase.domain.BiClassification;
+import com.aiqin.bms.scmp.api.purchase.domain.BiGrossProfitMargin;
+import com.aiqin.bms.scmp.api.purchase.domain.BiStockoutRate;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
@@ -52,6 +52,7 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
@@ -844,5 +845,27 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             BeanUtils.copyProperties(aClassification, aClass);
             contrast.setAfterCategory(aClass);
         }
+    }
+
+    @Override
+    public HttpResponse<PurchaseNewContrastResponse> purchaseContrast(PurchaseNewContrastRequest contrastRequest){
+        if(contrastRequest == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        List<PurchaseApplyDetailResponse> list;
+        if(StringUtils.isNotBlank(contrastRequest.getPurchaseOrderId())){
+            // 查询采购单对应的商品信息
+            list = purchaseOrderProductDao.purchaseOrderDetailList(contrastRequest.getPurchaseOrderId());
+        }else {
+            list = contrastRequest.getProductList();
+        }
+        List<PurchaseApplyDetailResponse> details =
+                list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
+                        () -> new TreeSet<>(Comparator.comparing(o -> o.getSkuCode() + "#" + o.getTransportCenterCode()
+                        +  "#" + o.getWarehouseCode()))),
+                        ArrayList::new));
+
+
+        return HttpResponse.success();
     }
 }

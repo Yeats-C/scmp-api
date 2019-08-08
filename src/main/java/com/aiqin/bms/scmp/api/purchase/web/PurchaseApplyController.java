@@ -1,12 +1,12 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseContrastResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastResponse;
 import com.aiqin.bms.scmp.api.purchase.jobs.AutomaticPurchaseService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -163,11 +163,11 @@ public class PurchaseApplyController {
         return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode, productCount);
     }
 
-    @PostMapping("/product/contrast")
-    @ApiOperation("查询采购对比信息")
-    public HttpResponse<PurchaseContrastResponse> contrast(@RequestBody List<PurchaseApplyDetailResponse> list) {
-        return purchaseApplyService.contrast(list);
-    }
+//    @PostMapping("/product/contrast")
+//    @ApiOperation("查询采购对比信息")
+//    public HttpResponse<PurchaseContrastResponse> contrast(@RequestBody List<PurchaseApplyDetailResponse> list) {
+//        return purchaseApplyService.contrast(list);
+//    }
 
     @PostMapping("/automatic/purchase")
     @ApiOperation("生成自动采购单")
@@ -185,5 +185,11 @@ public class PurchaseApplyController {
     @ApiOperation("智能采购-生成建议补货数(yy-mmmm)")
     public HttpResponse intellect(@RequestParam("months") String months) {
         return automaticPurchaseService.intellect(months);
+    }
+
+    @PostMapping("/product/contrast/new")
+    @ApiOperation("查询采购对比信息")
+    public HttpResponse<PurchaseNewContrastResponse> purchaseContrast(@RequestBody PurchaseNewContrastRequest contrastRequest) {
+        return purchaseApplyService.purchaseContrast(contrastRequest);
     }
 }
