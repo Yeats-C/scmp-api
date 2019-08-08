@@ -296,4 +296,6 @@ public interface ProductSkuDao {
     List<ProductSkuInfo> selectInfoByImport(ProductSkuChangePriceImportRequest productSkuChangePriceImportRequest);
 
     OrderProductSkuResponse selectSkuInfo(String skuCode);
+
+    List<OrderProductSkuResponse> selectSkuInfoList(List<String> list);
 }

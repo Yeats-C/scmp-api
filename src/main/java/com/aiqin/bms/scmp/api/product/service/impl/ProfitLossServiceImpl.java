@@ -70,7 +70,7 @@ public class ProfitLossServiceImpl implements ProfitLossService {
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
         BeanCopyUtils.copy(profitLoss,respVo);
-        respVo.setOrderTypeName(respVo.getOrderType() == 0 ? "报损" : "报益");
+        respVo.setOrderTypeName(respVo.getOrderType() == 0 ? "报损" : "报溢");
         List<ProfitLossProduct> products = productMapper.getListByOrderCode(respVo.getOrderCode());
         if(CollectionUtils.isNotEmptyCollection(products)){
             List<ProfitLossProductRespVo> profitLossProductRespVos = BeanCopyUtils.copyList(products, ProfitLossProductRespVo.class);

@@ -57,4 +57,9 @@ public interface OutboundProductDao {
     ReturnOutboundProduct selectByLinenum(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
 
     List<ReturnOutboundProduct> selectTax(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode);
+
+    /**
+     * 回显出库库存成本
+     */
+    Integer updateStockCost(@Param("productStockCost")Long productStockCost, @Param("outboundOderCode")String outboundOderCode, @Param("skuCode")String skuCode);
 }

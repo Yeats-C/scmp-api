@@ -1,13 +1,12 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response;
 
-import com.aiqin.bms.scmp.api.purchase.domain.BiAClassification;
-import com.aiqin.bms.scmp.api.purchase.domain.BiClassification;
+import com.aiqin.bms.scmp.api.purchase.domain.bi.BiAClassification;
+import com.aiqin.bms.scmp.api.purchase.domain.bi.BiClassification;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * @author: zhao shuai

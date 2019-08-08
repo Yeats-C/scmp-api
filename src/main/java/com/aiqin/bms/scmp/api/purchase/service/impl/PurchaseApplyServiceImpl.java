@@ -8,12 +8,16 @@ import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseAppl
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
-import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
+import com.aiqin.bms.scmp.api.purchase.dao.bi.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.bi.BiAClassification;
+import com.aiqin.bms.scmp.api.purchase.domain.bi.BiClassification;
+import com.aiqin.bms.scmp.api.purchase.domain.bi.BiGrossProfitMargin;
+import com.aiqin.bms.scmp.api.purchase.domain.bi.BiStockoutRate;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
