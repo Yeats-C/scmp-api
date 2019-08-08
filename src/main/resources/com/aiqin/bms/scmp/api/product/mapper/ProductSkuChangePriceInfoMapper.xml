@@ -57,44 +57,89 @@
     from product_sku_change_price_info
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectListByQueryVO" parameterType="com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO">
-    select a.code                               as code,
-           a.name                               as name,
-           a.create_time                        as createTime,
-           a.create_by                          as createBy,
-           a.change_price_name                  as changePriceName,
-           a.ext_field_5                        as beContainArea,
-           a.purchase_group_name                as purchaseGroupName,
-           a.apply_status                       as applyStatus,
-           IFNULL(a.auditor_by,IFNULL(a.update_by,a.create_by))     as operateBy,
-           IFNULL(a.auditor_time,IFNULL(a.update_time,a.create_time)) as operateTime
+  <select id="selectListByQueryVOCount" parameterType="com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO" resultType="java.lang.Long">
+    select a.id
     from product_sku_change_price a
+    left join product_sku_change_price_info b
+    on a.code = b.code
     where a.company_code = #{companyCode}
     <if test="createTimeStart != null">
-      and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+      and a.create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="flag != null">
+      and a.apply_status != 5
     </if>
     <if test="createTimeEnd != null">
-      and create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+      and a.create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
     </if>
     <if test="code != null and code !=''">
-      and code LIKE CONCAT(CONCAT('%',#{code},'%'))
+      and a.code LIKE CONCAT('%',#{code},'%')
     </if>
     <if test="name != null and name !=''">
-      and name LIKE CONCAT(CONCAT('%',#{name},'%'))
+      and a.name LIKE CONCAT('%',#{name},'%')
+    </if>
+    <if test="skuCode != null and skuCode !=''">
+      and b.sku_code LIKE CONCAT('%',#{skuCode},'%')
+    </if>
+    <if test="skuName != null and skuName !=''">
+      and b.sku_name LIKE CONCAT('%',#{skuName},'%')
     </if>
     <if test="changePriceType != null and changePriceType !=''">
-      and change_price_type = #{changePriceType}
+      and a.change_price_type = #{changePriceType}
     </if>
     <if test="purchaseGroupCode != null and purchaseGroupCode !=''">
-      and purchase_group_code = #{purchaseGroupCode}
+      and a.purchase_group_code = #{purchaseGroupCode}
     </if>
     <if test="applyStatus != null and applyStatus !=''">
-      and apply_status = #{applyStatus}
+      and a.apply_status = #{applyStatus}
     </if>
     <if test="beContainArea != null">
-      and ext_field_5 = #{beContainArea}
+      and a.ext_field_5 = #{beContainArea}
     </if>
+    group by a.id
     order by a.create_time desc
+  </select>
+  <resultMap id="selectListByQueryVO" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO">
+    <result column="code" property="code"/>
+    <result column="name" property="name"/>
+    <result column="createTime" property="createTime"/>
+    <result column="createBy" property="createBy"/>
+    <result column="changePriceName" property="changePriceName"/>
+    <result column="beContainArea" property="beContainArea"/>
+    <result column="purchaseGroupName" property="purchaseGroupName"/>
+    <result column="applyStatus" property="applyStatus"/>
+    <result column="createBy" property="createBy"/>
+    <result column="createTime" property="createTime"/>
+    <result column="updateBy" property="updateBy"/>
+    <result column="updateTime" property="updateTime"/>
+    <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo">
+      <result column="skuCode" property="skuCode"/>
+      <result column="skuName" property="skuName"/>
+    </collection>
+  </resultMap>
+  <select id="selectListByQueryVO" parameterType="java.util.List" resultMap="selectListByQueryVO">
+    select a.code                        as code,
+    a.name                               as name,
+    a.create_time                        as createTime,
+    a.create_by                          as createBy,
+    a.change_price_name                  as changePriceName,
+    a.ext_field_5                        as beContainArea,
+    a.purchase_group_name                as purchaseGroupName,
+    a.apply_status                       as applyStatus,
+    a.create_by                          as createBy,
+    a.create_time                        as createTime,
+    a.update_by                          as updateBy,
+    a.update_time                        as updateTime,
+    a.purchase_group_name                as purchaseGroupName,
+    b.sku_code                           as skuCode,
+    b.sku_name                           as skuName
+    from product_sku_change_price a
+    left join product_sku_change_price_info b
+    on a.code = b.code
+    where a.id in
+    <foreach collection="list" open="(" close=")" item="item" separator=",">
+         #{item}
+    </foreach>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_change_price_info

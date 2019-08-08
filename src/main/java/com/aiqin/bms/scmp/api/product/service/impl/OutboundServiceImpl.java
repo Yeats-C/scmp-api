@@ -752,12 +752,12 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus());
                 allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
 
-                productCommonService.getInstance(allocation.getAllocationCode(), HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),allocation.getAllocationCode() ,HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getName());
-
+//                productCommonService.getInstance(allocation.getAllocationCode(), HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),allocation.getAllocationCode() ,HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getName());
+                supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(), HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
                 //跟新调拨单状态
                 int k = allocationMapper.updateByPrimaryKeySelective(allocation);
                 //生成入库单
-                movementCreateInbound(allocation.getId());
+                movementCreateInbound(allocation.getFormNo());
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new GroundRuntimeException("调拨单更改出库状态失败");
@@ -891,58 +891,65 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      * @param id
      */
     @Override
-    public void movementCreateInbound(Long id) {
-//        try {
-//            MovementResVo allocationResVo =  new MovementResVo();
-//            Movement allocation = movementDao.selectByPrimaryKey(id);
-//            BeanCopyUtils.copy(allocation,allocationResVo);
-//            productCommonService.getInstance(allocation.getMovementCode()+"", HandleTypeCoce.INBOUND_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),id ,HandleTypeCoce.INBOUND_MOVEMENT.getName());
-//
-//            List<MovementProduct> list = movementProductDao.selectDetailByCode(allocation.getMovementCode());
-//                allocationResVo.setList(BeanCopyUtils.copyList(list, MovementProductResVo.class));
-//
-//            // 转化成出库单
-//            InboundReqSave convert =  new MovementResVo2InboundReqVoConverter(supplierApiService).convert(allocationResVo);
-//            String inboundOderCode = inboundService.saveInbound(convert);
-//            //更改调拨在途数
-//
+    public void movementCreateInbound(String id) {
+            AllocationToOutboundVo allocationResVo =  new AllocationToOutboundVo();
+            AllocationDTO allocation = allocationMapper.selectByFormNO1(id);
+            BeanCopyUtils.copy(allocation, allocationResVo);
+//            productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.INBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),id ,HandleTypeCoce.INBOUND_ALLOCATION.getName());
+
+            List<AllocationProductToOutboundVo> list = allocationProductBatchMapper.selectByPictureUrlAllocationCode(allocation.getAllocationCode());
+            allocationResVo.setSkuList(list);
+            // 转化成出库单
+//            InboundReqSave convert =  new AllocationResVo2InboundReqVoConverter(warehouseService).convert(allocationResVo);
+            AllocationTypeEnum enumByType = AllocationTypeEnum.getAllocationTypeEnumByType(allocation.getAllocationType());
+            InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
+            String inboundOderCode = inboundService.saveInbound(convert1);
+            //更改调拨在途数
+            allocation.setInboundOderCode(inboundOderCode);
+            allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_INBOUND.getStatus());
+            allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_INBOUND.getName());
+            allocationMapper.updateByPrimaryKeySelective(allocation);
+
 //            StockChangeRequest stockChangeRequest = new StockChangeRequest();
 //            stockChangeRequest.setOperationType(7);
-//            stockChangeRequest.setOrderCode(allocation.getMovementCode());
+//            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
 //            // stockChangeRequest.setOrderType();
 //            List<StockVoRequest> list1 = new ArrayList<>();
-//            for (MovementProductResVo allocationProduct : allocationResVo.getList()) {
-//                StockVoRequest  stockVoRequest = new StockVoRequest();
+//            for (AllocationProductToOutboundVo allocationProduct : list) {
+//                StockVoRequest stockVoRequest = new StockVoRequest();
+//                // 设置公司名称编码
 //                stockVoRequest.setCompanyCode(allocation.getCompanyCode());
 //                stockVoRequest.setCompanyName(allocation.getCompanyName());
-//                stockVoRequest.setTransportCenterCode(allocation.getLogisticsCenterCode());
-//                stockVoRequest.setTransportCenterName(allocation.getLogisticsCenterName());
-//                stockVoRequest.setWarehouseCode(allocation.getCallinWarehouseCode());
-//                stockVoRequest.setWarehouseName(allocation.getCallinWarehouseName());
+//                // 设置物流中心名称编码
+//                //如果改在途数，需要设置为入库的仓库
+//                stockVoRequest.setTransportCenterCode(allocation.getCallInLogisticsCenterCode());
+//                stockVoRequest.setTransportCenterName(allocation.getCallInLogisticsCenterName());
+//                //设置库房名称编码
+//                stockVoRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
+//                stockVoRequest.setWarehouseName(allocation.getCallInWarehouseName());
+//                //设置采购组编码名称
 //                stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
 //                stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
+//                //设置sku编号名称
 //                stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
 //                stockVoRequest.setSkuName(allocationProduct.getSkuName());
 //                stockVoRequest.setChangeNum(allocationProduct.getQuantity());
+//                //设置类型
+//                stockVoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+//                stockVoRequest.setDocumentNum(allocation.getAllocationCode());
+//                stockVoRequest.setOperator(allocation.getUpdateBy());
+//                stockVoRequest.setRemark(allocation.getRemark());
 //                list1.add(stockVoRequest);
 //            }
 //            stockChangeRequest.setStockVoRequests(list1);
 //            // 调用锁定库存数
 //            HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
 //            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
-//
+//                supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(), HandleTypeCoce.INBOUND_MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
 //            }else{
 //                log.error(httpResponse.getMessage());
 //                throw  new GroundRuntimeException("库存操作失败");
 //            }
-//            allocation.setInboundOderCode(inboundOderCode);
-//            allocation.setMovementStatusCode(AllocationEnum.ALLOCATION_TYPE_INBOUND.getStatus());
-//            allocation.setMovementStatusName(AllocationEnum.ALLOCATION_TYPE_INBOUND.getName());
-//            movementDao.updateByPrimaryKeySelective(allocation);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            throw  new GroundRuntimeException("保存出库单失败");
-//        }
     }
     
     @Override

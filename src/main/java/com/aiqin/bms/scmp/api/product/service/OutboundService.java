@@ -13,8 +13,10 @@ import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRe
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.QueryOutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
-import com.aiqin.bms.scmp.api.product.service.impl.OutboundServiceImpl;
+import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundResponse;
+import com.aiqin.bms.scmp.api.product.domain.response.outbound.QueryOutboundResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.outbound.SupplyOrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
@@ -153,7 +155,7 @@ public interface OutboundService {
      * 移库生成入库单并且改变在途数
      * @param id
      */
-    void movementCreateInbound(Long id);
+    void movementCreateInbound(String formNo);
 
     HttpResponse selectOutboundBatchInfoByOutboundOderCode(OutboundBatch outboundBatch);
     /**
