@@ -40,7 +40,6 @@ import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
-import com.github.pagehelper.PageHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -365,11 +364,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
     @Override
     public BasePage<QueryProductSkuChangePriceRespVO> list(QueryProductSkuChangePriceReqVO reqVO) {
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
-        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
-        List<QueryProductSkuChangePriceRespVO> list = productSkuChangePriceInfoMapper.selectListByQueryVO(reqVO);
-        return PageUtil.getPageList(reqVO.getPageNo(),list);
+        reqVO.setCompanyCode(getUser().getCompanyCode());
+        List<Long> ids = productSkuChangePriceInfoMapper.selectListByQueryVOCount(reqVO);
+        if(CollectionUtils.isEmpty(ids)){
+            return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
+        }
+        List<QueryProductSkuChangePriceRespVO> list = productSkuChangePriceInfoMapper.selectListByQueryVO(PageUtil.myPage(ids, reqVO));
+        return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),ids.size(),list);
     }
 
     @Override
@@ -1206,7 +1207,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     public List<QuerySkuInfoRespVOForIm> importForSalePrice(MultipartFile file, String purchaseGroupCode, String changePriceType) {
         try {
-            List<SalePriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, SalePriceImport.class, 2, 0);
+            List<SalePriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, SalePriceImport.class, 1, 0);
             dataValidation2(imports);
             imports = imports.subList(1, imports.size());
             Set<String> set = Sets.newHashSet();
@@ -1245,7 +1246,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Override
     public List<QuerySkuInfoRespVOForIm> importForTemporaryPrice(MultipartFile file, String purchaseGroupCode, String changePriceType) {
         try {
-            List<TemporaryPriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, TemporaryPriceImport.class, 3, 0);
+            List<TemporaryPriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, TemporaryPriceImport.class, 1, 0);
             dataValidation3(imports);
             imports = imports.subList(1, imports.size());
             Set<String> set = Sets.newHashSet();

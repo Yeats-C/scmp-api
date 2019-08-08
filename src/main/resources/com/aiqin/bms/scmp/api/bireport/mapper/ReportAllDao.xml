@@ -1322,7 +1322,6 @@
         bmcbs.id as id,
         date_format(bmcbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
         bmcbs.month as month,
-        bmcbs.cumulative_month as cumulativeMonth,
         bmcbs.product_sort_code as productSortCode,
         bmcbs.product_sort_name as productSortName,
         bmcbs.price_channel_code as orderCode,
