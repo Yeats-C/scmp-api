@@ -62,4 +62,7 @@ public class ProfitLossProduct extends CommonBean {
 
     @ApiModelProperty("行号")
     private Long lineNum;
+
+    @ApiModelProperty("原因")
+    private String reason;
 }
