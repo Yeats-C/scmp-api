@@ -792,15 +792,15 @@ public class InboundServiceImpl implements InboundService {
         try {
             productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__MOVEMENT.getName());
 
-            Movement allocation = movementDao.selectByCode(allocationCode);
+            Allocation allocation = allocationMapper.selectByCode(allocationCode);
             //设置调拨状态
-            allocation.setMovementStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
-            allocation.setMovementStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
+            allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
+            allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
             //跟新调拨单状态
-            int k = movementDao.updateByPrimaryKeySelective(allocation);
+            int k = allocationMapper.updateByPrimaryKeySelective(allocation);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new GroundRuntimeException("调拨单更改入库状态失败");
+            throw new GroundRuntimeException("移库单更改入库状态失败");
         }
     }
 
