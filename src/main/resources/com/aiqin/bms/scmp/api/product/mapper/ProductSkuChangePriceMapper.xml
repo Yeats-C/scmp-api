@@ -142,6 +142,10 @@
     <result column="aform_no" jdbcType="VARCHAR" property="formNo" />
     <result column="aapply_status" jdbcType="INTEGER" property="applyStatus" />
     <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <collection property="infoList" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceInfoRespVO">
       <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
       <result column="bsku_name" jdbcType="VARCHAR" property="skuName" />
@@ -281,6 +285,10 @@
              a.form_no aform_no,
              a.apply_status aapply_status,
              a.company_code acompany_code,
+             a.create_by acreate_by,
+             a.create_time acreate_time,
+             a.update_by aupdate_by,
+             a.update_time aupdate_time,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
              b.purchase_price_newest bpurchase_price_newest,
