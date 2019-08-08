@@ -57,10 +57,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -535,6 +532,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         AllocationDTO allocation  = allocationMapper.selectByFormNO1(vo1.getFormNo());
         allocation.setUpdateBy(vo.getApprovalUserName());
         oldAllocation.setId(allocation.getId());
+        oldAllocation.setUpdateBy(vo.getApprovalUserName());
+        oldAllocation.setUpdateTime(new Date());
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             String content = ApplyStatus.APPROVAL_SUCCESS.getContent().replace("CREATEBY", allocation.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
             supplierCommonService.getInstance(
