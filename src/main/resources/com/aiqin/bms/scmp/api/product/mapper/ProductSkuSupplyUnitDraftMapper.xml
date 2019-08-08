@@ -61,7 +61,8 @@
     </foreach>
   </delete>
 
-
-
+  <delete id="deleteDraftById" parameterType="java.util.List">
+    delete from product_sku_supply_unit_draft where id = #{id,jdbcType=BIGINT}
+  </delete>
 
 </mapper>

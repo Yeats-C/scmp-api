@@ -70,6 +70,8 @@ public interface ProductSkuSupplyUnitService {
      */
     int deleteDraftByIds(List<Long> ids);
 
+    Integer deleteDraftById(Long id);
+
     /**
      *
      * 功能描述: 获取申请数据

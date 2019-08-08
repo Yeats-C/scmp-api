@@ -280,4 +280,6 @@ public interface ResultCode {
 
 
     MessageId EXPORT_FAILED = MessageId.create(Project.SCMP_API, 1000, "导出失败！");
+
+    MessageId OBJECT_EMPTY_BY_FORMNO = MessageId.create(Project.SCMP_API, 1000, "根据formNo未找到对应的信息");
 }
