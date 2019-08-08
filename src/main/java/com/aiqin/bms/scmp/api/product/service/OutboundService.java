@@ -144,7 +144,7 @@ public interface OutboundService {
      * 调拨生成入库单并且改变在途数
      * @param id
      */
-    void createInbound(Long id);
+    void createInbound(String formNo);
 
 
 
