@@ -54,27 +54,27 @@ public class StoreRepurchaseRateRespVo {
 
     @ApiModelProperty("销售数量")
     @JsonProperty("product_num")
-    private Integer productNum;
+    private Long productNum;
 
     @ApiModelProperty("渠道销售金额")
     @JsonProperty("channel_order_amount")
-    private Integer channelOrderAmount;
+    private Long channelOrderAmount;
 
     @ApiModelProperty("分销销售金额")
     @JsonProperty("distribution_order_amount")
-    private Integer distributionOrderAmount;
+    private Long distributionOrderAmount;
 
     @ApiModelProperty("购物频次")
     @JsonProperty("shopping_frequency")
-    private Integer shoppingFrequency;
+    private Long shoppingFrequency;
 
     @ApiModelProperty("复购率")
     @JsonProperty("after_buy_rate")
-    private Integer afterBuyRate;
+    private Double afterBuyRate;
 
     @ApiModelProperty("月份")
     @JsonProperty("months")
-    private Integer months;
+    private String months;
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")

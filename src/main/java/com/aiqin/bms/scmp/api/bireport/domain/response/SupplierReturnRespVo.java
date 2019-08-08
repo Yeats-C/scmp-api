@@ -46,11 +46,11 @@ public class SupplierReturnRespVo {
 
     @ApiModelProperty("退货数量")
     @JsonProperty("sum_count")
-    private Integer sumCount;
+    private Long sumCount;
 
     @ApiModelProperty("退货金额")
     @JsonProperty("sum_amount")
-    private Integer sumAmount;
+    private Long sumAmount;
 
     @ApiModelProperty("退货单日期")
     @JsonProperty("return_goods_create_time")
@@ -86,11 +86,11 @@ public class SupplierReturnRespVo {
 
     @ApiModelProperty("退货数量合计")
     @JsonProperty("sum_counts")
-    private Integer sumCounts;
+    private Long sumCounts;
 
     @ApiModelProperty("退货金额合计")
     @JsonProperty("sum_amounts")
-    private Integer sumAmounts;
+    private Long sumAmounts;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")

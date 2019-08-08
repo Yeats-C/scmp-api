@@ -11,8 +11,6 @@ public interface ApplyPurchaseOrderProductDao {
 
     Integer insertAll(@Param("list") List<PurchaseOrderProduct> record);
 
-    Integer update(ApplyPurchaseOrderProduct record);
-
     List<ApplyPurchaseOrderProduct> applyPurchaseOrderList(PurchaseOrderProductRequest request);
 
     Integer applyPurchaseOrderCount(PurchaseOrderProductRequest request);

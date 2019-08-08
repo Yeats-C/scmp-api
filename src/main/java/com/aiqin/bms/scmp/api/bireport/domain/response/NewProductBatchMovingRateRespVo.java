@@ -86,27 +86,27 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("含税进价")
     @JsonProperty("purchase_price")
-    private Integer purchasePrice;
+    private Long purchasePrice;
 
     @ApiModelProperty("厂商指导价")
     @JsonProperty("manufacturer_guide_price")
-    private Integer manufacturerGuidePrice;
+    private Long manufacturerGuidePrice;
 
     @ApiModelProperty("库存数量")
     @JsonProperty("available_num")
-    private Integer availableNum;
+    private Long availableNum;
 
     @ApiModelProperty("库存成本")
     @JsonProperty("tax_cost")
-    private Integer taxCost;
+    private Long taxCost;
 
     @ApiModelProperty("销售数量")
     @JsonProperty("num")
-    private Integer num;
+    private Long num;
 
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_costs")
-    private Integer salesCosts;
+    private Long salesCosts;
 
     @ApiModelProperty("销售渠道code")
     @JsonProperty("order_code")
@@ -118,11 +118,11 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("渠道销售金额")
     @JsonProperty("channel_amount")
-    private Integer channelAmount;
+    private Long channelAmount;
 
     @ApiModelProperty("渠道毛利额")
     @JsonProperty("channel_maori")
-    private Integer channelMaori;
+    private Long channelMaori;
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
@@ -130,11 +130,11 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("分销销售成本")
     @JsonProperty("distribution_sales_costs")
-    private Integer distributionSalesCosts;
+    private Long distributionSalesCosts;
 
     @ApiModelProperty("分销毛利额")
     @JsonProperty("distribution_maori")
-    private Integer distributionMaori;
+    private Long distributionMaori;
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")
@@ -146,11 +146,11 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("近一个月销售成本")
     @JsonProperty("sales_coses_one_month")
-    private Integer salesCosesOneMonth;
+    private Long salesCosesOneMonth;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")
-    private String turnoverDays;
+    private Long turnoverDays;
 
     @ApiModelProperty("第一次入库时间")
     @JsonProperty("inbound_time")
@@ -158,7 +158,7 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("已经入库天数")
     @JsonProperty("inbound_days")
-    private Integer inboundDays;
+    private Long inboundDays;
 
     @ApiModelProperty("商品状态")
     @JsonProperty("config_status")

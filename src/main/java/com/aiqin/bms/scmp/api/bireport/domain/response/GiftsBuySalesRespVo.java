@@ -95,19 +95,19 @@ public class GiftsBuySalesRespVo  implements Serializable {
 
     @ApiModelProperty("库存数量")
     @JsonProperty("available_num")
-    private Integer availableNum;
+    private Long availableNum;
 
     @ApiModelProperty("近一个月销售数量")
     @JsonProperty("sales_num_one_month")
-    private Integer salesNumOneMonth;
+    private Long salesNumOneMonth;
 
     @ApiModelProperty("近一个月销售金额")
     @JsonProperty("sales_money_one_month")
-    private Integer salesMoneyOneMonth;
+    private Long salesMoneyOneMonth;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")
-    private Integer turnoverDays;
+    private Long turnoverDays;
 
     @ApiModelProperty("采购组负责人编码")
     @JsonProperty("responsible_person_code")
@@ -123,7 +123,7 @@ public class GiftsBuySalesRespVo  implements Serializable {
 
     @ApiModelProperty("已经入库天数")
     @JsonProperty("inbound_days")
-    private Integer inboundDays;
+    private Long inboundDays;
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")

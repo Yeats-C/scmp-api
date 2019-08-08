@@ -65,97 +65,20 @@
   <update id="update">
     update apply_purchase_order
     <set>
-      <if test="purchaseOrderId != null">
-        purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseOrderCode != null">
-        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR},
-      </if>
-      <if test="transportCenterCode != null">
-        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
-      </if>
-      <if test="transportCenterName != null">
-        transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseGroupCode != null">
-        purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
-      </if>
-      <if test="purchaseGroupName != null">
-        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
-      </if>
-      <if test="warehouseCode != null">
-        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
-      </if>
-      <if test="warehouseName != null">
-        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
-      </if>
-      <if test="supplierCode != null">
-        supplier_code = #{supplierCode,jdbcType=VARCHAR},
-      </if>
-      <if test="supplierName != null">
-        supplier_name = #{supplierName,jdbcType=VARCHAR},
-      </if>
-      <if test="infoStatus != null">
-        info_status = #{infoStatus,jdbcType=INTEGER},
-      </if>
       <if test="purchaseOrderStatus != null">
         purchase_order_status = #{purchaseOrderStatus,jdbcType=INTEGER},
       </if>
       <if test="storageStatus != null">
         storage_status = #{storageStatus,jdbcType=INTEGER},
       </if>
-      <if test="singleCount != null">
-        single_count = #{singleCount,jdbcType=INTEGER},
-      </if>
-      <if test="productTotalAmount != null">
-        product_total_amount = #{productTotalAmount,jdbcType=INTEGER},
-      </if>
-      <if test="returnAmount != null">
-        return_amount = #{returnAmount,jdbcType=INTEGER},
-      </if>
-      <if test="purchaseMode != null">
-        purchase_mode = #{purchaseMode,jdbcType=INTEGER},
-      </if>
-      <if test="settlementMethodCode != null">
-        settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
-      </if>
-      <if test="settlementMethodName != null">
-        settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
-      </if>
-      <if test="cancelReason != null">
-        cancel_reason = #{cancelReason,jdbcType=VARCHAR},
-      </if>
-      <if test="cancelRemark != null">
-        cancel_remark = #{cancelRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="applyTypeForm != null">
-        apply_type_form = #{applyTypeForm,jdbcType=VARCHAR},
-      </if>
-      <if test="approvalCode != null">
-        approval_code = #{approvalCode,jdbcType=VARCHAR},
-      </if>
-      <if test="giftTaxSum != null">
-        gift_tax_sum = #{giftTaxSum,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createById != null">
-        create_by_id = #{createById,jdbcType=VARCHAR},
-      </if>
+      update_time = now(),
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
-      <if test="createByName != null">
-        create_by_name = #{createByName,jdbcType=VARCHAR},
-      </if>
       <if test="updateByName != null">
-        update_by_name = #{updateByName,jdbcType=VARCHAR},
+        update_by_name = #{updateByName,jdbcType=VARCHAR}
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
   </update>
 </mapper>
