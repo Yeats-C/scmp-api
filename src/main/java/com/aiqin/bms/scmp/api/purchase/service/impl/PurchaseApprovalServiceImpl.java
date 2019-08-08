@@ -10,15 +10,13 @@ import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundItemReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.purchase.dao.ApplyPurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.dao.OperationLogDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -30,7 +28,6 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
-import org.omg.PortableInterceptor.ObjectReferenceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -56,6 +53,8 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
     private PurchaseOrderProductDao purchaseOrderProductDao;
     @Resource
     private StockService stockService;
+    @Resource
+    private ApplyPurchaseOrderDao applyPurchaseOrderDao;
 
     /**
      * 审核回调接口
@@ -68,6 +67,9 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
             PurchaseOrder purchaseOrder = new PurchaseOrder();
             purchaseOrder.setPurchaseOrderCode(vo1.getFormNo());
             PurchaseOrder order = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+            purchaseOrder.setPurchaseOrderId(order.getPurchaseOrderId());
+            purchaseOrder.setUpdateById(vo1.getApprovalUserCode());
+            purchaseOrder.setUpdateByName(vo1.getApprovalUserName());
             if(order == null){
                 LOGGER.info("采购单为空");
                 return WorkFlowReturn.FALSE;
@@ -78,32 +80,37 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
 
             if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
                 //审批失败
-                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_10);
-                Integer count = purchaseOrderDao.update(order);
+                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_10);
+                Integer count = purchaseOrderDao.update(purchaseOrder);
+                applyPurchaseOrderDao.update(purchaseOrder);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT_NOT.getCode(), PurchaseOrderLogEnum.CHECKOUT_NOT.getName(), null);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
                 // 审批中
-                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_1);
-                Integer count = purchaseOrderDao.update(order);
+                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_1);
+                Integer count = purchaseOrderDao.update(purchaseOrder);
+                applyPurchaseOrderDao.update(purchaseOrder);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批中操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT.getCode(), PurchaseOrderLogEnum.CHECKOUT.getName(), null);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 //审批成功
-                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_2);
-                Integer count = purchaseOrderDao.update(order);
+                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_2);
+                Integer count = purchaseOrderDao.update(purchaseOrder);
+                applyPurchaseOrderDao.update(purchaseOrder);
+                LOGGER.info("影响条数:{}",count);
                 // 添加审批通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT_ADOPT.getCode(), PurchaseOrderLogEnum.CHECKOUT_ADOPT.getName(), null);
                 this.updateWayNum(order.getPurchaseOrderId());
             } else if(Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())){
                 // 审批撤销
-                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_9);
-                Integer count = purchaseOrderDao.update(order);
+                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_9);
+                Integer count = purchaseOrderDao.update(purchaseOrder);
+                applyPurchaseOrderDao.update(purchaseOrder);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),

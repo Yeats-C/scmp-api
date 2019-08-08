@@ -287,7 +287,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="入库完成时间")
     @JsonProperty("warehouse_time")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date warehouseTime;
 
     @ApiModelProperty(value="取消原因")

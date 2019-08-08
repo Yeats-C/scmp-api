@@ -113,11 +113,11 @@
         cancel_remark = #{cancelRemark,jdbcType=VARCHAR},
       </if>
       update_time = now(),
-      <if test="createById != null">
-        create_by_id = #{createById,jdbcType=VARCHAR},
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
       <if test="updateByName != null">
-        update_by_name = #{updateByName,jdbcType=VARCHAR},
+        update_by_name = #{updateByName,jdbcType=VARCHAR}
       </if>
     </set>
     where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
