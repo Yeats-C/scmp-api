@@ -52,4 +52,7 @@ public class QueryProductSkuChangePriceReqVO extends PageReq {
 
     @ApiModelProperty("sku名称")
     private String skuName;
+
+    @ApiModelProperty("标记不查供应商平台添加的")
+    private Boolean flag;
 }

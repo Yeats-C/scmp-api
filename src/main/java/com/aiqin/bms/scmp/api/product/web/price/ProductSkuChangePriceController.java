@@ -95,6 +95,7 @@ public class ProductSkuChangePriceController {
     public HttpResponse<BasePage<QueryProductSkuChangePriceRespVO>> list(@RequestBody QueryProductSkuChangePriceReqVO reqVO) {
         log.info("ProductSkuChangePriceController---list---入参：[{}]", JSONObject.toJSONString(reqVO));
         try {
+            reqVO.setFlag(true);
             return HttpResponse.success(productSkuChangePriceService.list(reqVO));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
