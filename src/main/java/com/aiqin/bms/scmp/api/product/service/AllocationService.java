@@ -118,4 +118,15 @@ public interface AllocationService extends BaseService {
      * @return
      */
     List<AllocationItemRespVo> importAllocationSku(AllocationImportSkuReqVo reqVo);
+
+    /**
+     *
+     * 功能描述: 根据formNo获取主键ID
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/8 19:38
+     */
+    Long getIdByFormNo(String formNo);
 }
