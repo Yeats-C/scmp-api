@@ -11,6 +11,8 @@ public interface ProductSkuSupplyUnitDraftMapper {
     List<ProductSkuSupplyUnitDraft> selectByIds(List<Long> ids);
 
     int deleteDraftByIds(List<Long> ids);
+
+    int deleteDraftById(Long id);
     /**
      * 通过vo查找数据
      * @author NullPointException

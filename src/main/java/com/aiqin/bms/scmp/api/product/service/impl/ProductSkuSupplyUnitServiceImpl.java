@@ -157,6 +157,11 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
         return draftMapper.deleteDraftByIds(ids);
     }
 
+    @Override
+    public Integer deleteDraftById(Long id) {
+        return draftMapper.deleteDraftById(id);
+    }
+
     /**
      * 功能描述: 获取申请数据
      *
