@@ -209,6 +209,7 @@
                 sum_count = #{sumCount,jdbcType=INTEGER},
                 sum_amount = #{sumAmount,jdbcType=BIGINT},
                 sum_return_amount = #{sumReturnAmount,jdbcType=BIGINT},
+                sum_gift_amount = #{sumGiftAmount,jdbcType=BIGINT},
                 update_by_id = #{updateById,jdbcType=VARCHAR},
                 update_by_name = #{updateByName,jdbcType=VARCHAR},
                 update_time = now()
