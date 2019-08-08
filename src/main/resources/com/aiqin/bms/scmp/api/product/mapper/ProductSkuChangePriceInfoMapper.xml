@@ -112,6 +112,7 @@
     <result column="createTime" property="createTime"/>
     <result column="updateBy" property="updateBy"/>
     <result column="updateTime" property="updateTime"/>
+    <result column="formNo" property="formNo"/>
     <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo">
       <result column="skuCode" property="skuCode"/>
       <result column="skuName" property="skuName"/>
@@ -132,7 +133,8 @@
     a.update_time                        as updateTime,
     a.purchase_group_name                as purchaseGroupName,
     b.sku_code                           as skuCode,
-    b.sku_name                           as skuName
+    b.sku_name                           as skuName,
+    a.form_no                            as formNo
     from product_sku_change_price a
     left join product_sku_change_price_info b
     on a.code = b.code

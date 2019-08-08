@@ -666,12 +666,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             LOGGER.error("此采购单没有商品");
             return HttpResponse.failure(ResultCode.PRODUCT_NO_EXISTS);
         }
-//        InboundReqSave reqSave = this.InboundReqSave(purchaseOrder, purchaseStorage, products);
-//        String s = inboundService.saveInbound(reqSave);
-//        if(StringUtils.isBlank(s)){
-//            LOGGER.error("生成入库单失败....");
-//            return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
-//        }
+        InboundReqSave reqSave = this.InboundReqSave(purchaseOrder, purchaseStorage, products);
+        String s = inboundService.saveInbound(reqSave);
+        if(StringUtils.isBlank(s)){
+            LOGGER.error("生成入库单失败....");
+            return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
+        }
         return HttpResponse.success();
     }
 
