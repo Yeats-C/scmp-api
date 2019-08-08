@@ -11,7 +11,7 @@ import java.util.Date;
 
 @ApiModel
 @Data
-public class RejectRecord extends ApplyRejectRecord{
+public class RejectRecord extends ApplyRejectRecord {
     @ApiModelProperty(value = "")
     @JsonProperty("id")
     private Long id;

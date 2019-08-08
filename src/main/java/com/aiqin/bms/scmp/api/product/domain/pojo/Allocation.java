@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 @ApiModel("调拨主表")
 @Data
 public class Allocation extends CommonBean {
@@ -97,4 +99,8 @@ public class Allocation extends CommonBean {
 
     @ApiModelProperty("是否是调出仓库")
     private Boolean flag = Boolean.TRUE;
+
+    /** 以下是dl回调需要用的字段*/
+
+    private List<AllocationProduct> detailList;
 }
