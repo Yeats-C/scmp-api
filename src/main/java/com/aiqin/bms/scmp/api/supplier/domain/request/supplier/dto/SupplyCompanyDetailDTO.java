@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @功能说明: 供货单位详情，包括结算和收货信息
@@ -116,5 +118,19 @@ public class SupplyCompanyDetailDTO {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
 
 }

@@ -78,6 +78,20 @@ public class ApplySupplyComAcctInfo2RespVO {
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
+
     public String getApplyType() {
         return applyType;
     }
