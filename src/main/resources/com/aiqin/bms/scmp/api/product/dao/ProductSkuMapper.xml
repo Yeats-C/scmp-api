@@ -2218,6 +2218,7 @@ select a.sku_code              as skuCode,
     </where>
   </select>
 
+
   <select id="selectInfoByImport" parameterType="com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo"
           resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.BaseResultMap">
     SELECT * FROM product_sku where company_code  =  #{companyCode, jdbcType=VARCHAR}
@@ -2228,6 +2229,7 @@ select a.sku_code              as skuCode,
     </foreach>
   </select>
   <resultMap id="ORDER_PRODUCT_RESULTMAP" type="com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse">
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="productName" />
     <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
     <result column="color_name" jdbcType="VARCHAR" property="colorName" />
@@ -2240,9 +2242,10 @@ select a.sku_code              as skuCode,
     <result column="box_gross_weight" jdbcType="DECIMAL" property="boxGrossWeight" />
     <result column="product_picture_path" jdbcType="VARCHAR" property="pictureUrl" />
   </resultMap>
+
   <select id="selectSkuInfo" resultMap="ORDER_PRODUCT_RESULTMAP">
      select
-		ps.sku_name ,ps.color_code,ps.color_name,ps.model_number,psdi.spec,psdi.unit_code,psdi.unit_name,
+		ps.sku_code,ps.sku_name ,ps.color_code,ps.color_name,ps.model_number,psdi.spec,psdi.unit_code,psdi.unit_name,
 		psdi.zero_removal_coefficient,psbp.box_volume,psbp.box_gross_weight,psp.product_picture_path
       from
       product_sku as ps
@@ -2251,5 +2254,22 @@ select a.sku_code              as skuCode,
       left JOIN product_sku_pictures  as psp on psp.product_sku_code = ps.sku_code
       where psp.main_picture = 1
       and ps.sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
+    select
+    ps.sku_code,ps.sku_name ,ps.color_code,ps.color_name,ps.model_number,psdi.spec,psdi.unit_code,psdi.unit_name,
+    psdi.zero_removal_coefficient,psbp.box_volume,psbp.box_gross_weight,psp.product_picture_path
+    from
+    product_sku as ps
+    left JOIN product_sku_distribution_info  as psdi on psdi.product_sku_code = ps.sku_code
+    left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code
+    left JOIN product_sku_pictures  as psp on psp.product_sku_code = ps.sku_code
+    where psp.main_picture = 1
+    and ps.sku_code   in(
+    <foreach collection="list" item="skuCode" separator=",">
+      #{skuCode,jdbcType=VARCHAR}
+    </foreach>
+    )
   </select>
 </mapper>

@@ -60,16 +60,16 @@ public enum WorkFlow {
     /**
      * 商品变价申请工作流
      */
-    VARIABLE_PRICE(12,"变价管理流程","SCMP_VARIABLE_PRICE"),
+    VARIABLE_PRICE(12,"变价管理流程","SCMP_APPLY_VARIABLE_PRICE"),
     /**
      * 移库审批工作流
      */
-    MOVEMENT_ODER(13,"移库审批流","SCMP_MOVE_LIBRARY"),
+    MOVEMENT_ODER(13,"移库审批流","SCMP_APPLY_MOVE_LIBRARY"),
 
     /**
      * 报废审批工作流
      */
-    SCRAP(15,"报废审批流","SCMP_SKU_SCRAP"),
+    SCRAP(15,"报废审批流","SCMP_APPLY_SKU_SCRAP"),
 
     /**
      * 商品销售区域申请工作流

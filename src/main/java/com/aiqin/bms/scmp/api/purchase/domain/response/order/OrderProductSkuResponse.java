@@ -34,6 +34,9 @@ import java.math.BigDecimal;
 @Data
 public class OrderProductSkuResponse {
 
+    @ApiModelProperty("商品sku")
+    private String skuCode;
+
     @ApiModelProperty("商品名称")
     private String productName;
 
