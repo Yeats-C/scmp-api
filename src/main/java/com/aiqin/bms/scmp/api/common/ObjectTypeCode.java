@@ -55,6 +55,7 @@ public enum  ObjectTypeCode {
     MOVEMENT_ODER((byte)30,"移库单"),
     CHANGE_PRICE((byte)31,"变价管理"),
     SALE_AREA((byte)32,"销售区域"),
+    SCRAP((byte) 33,"报废")
     ;
     private Byte status;
     private String name;
