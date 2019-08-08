@@ -855,7 +855,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         List<PurchaseApplyDetailResponse> list;
         if(StringUtils.isNotBlank(contrastRequest.getPurchaseOrderId())){
             // 查询采购单对应的商品信息
-            list = purchaseOrderProductDao.purchaseOrderDetailList(contrastRequest.getPurchaseOrderId());
+            list = purchaseOrderProductDao.orderProductList(contrastRequest.getPurchaseOrderId());
         }else {
             list = contrastRequest.getProductList();
         }
@@ -864,7 +864,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         () -> new TreeSet<>(Comparator.comparing(o -> o.getSkuCode() + "#" + o.getTransportCenterCode()
                         +  "#" + o.getWarehouseCode()))),
                         ArrayList::new));
-
+        LOGGER.info("--------------------------------------"+details);
 
         return HttpResponse.success();
     }

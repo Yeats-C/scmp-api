@@ -31,5 +31,5 @@ public interface PurchaseOrderProductDao {
 
     List<PurchaseApplyDetailResponse> orderProductInfoByGroup(String purchaseOrderId);
 
-    List<PurchaseApplyDetailResponse> purchaseOrderDetailList(String purchaseOrderId);
+    List<PurchaseApplyDetailResponse> orderProductList(String purchaseOrderId);
 }
