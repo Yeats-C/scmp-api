@@ -1131,7 +1131,7 @@ public class StockServiceImpl implements StockService {
                     stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
                     // stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
                     stockFlow.setRemark(stockVoRequest.getRemark());
-                    stockFlow.setStockCost(stockVoRequest.getStockCost());
+                    stockFlow.setStockCost(stockVoRequest.getNewPurchasePrice());
                     flows.add(stockFlow);
                 } else {
                     Stock stock = new Stock();
@@ -1221,7 +1221,7 @@ public class StockServiceImpl implements StockService {
                     stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
                     //  stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
                     stockFlow.setRemark(stockVoRequest.getRemark());
-                    stockFlow.setStockCost(stockVoRequest.getStockCost());
+                    stockFlow.setStockCost(stockVoRequest.getNewPurchasePrice());
                     flows.add(stockFlow);
                 }
             }
