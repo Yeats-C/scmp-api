@@ -25,11 +25,12 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl" />
     <result column="line_num" jdbcType="BIGINT" property="lineNum" />
+    <result column="reason" jdbcType="VARCHAR" property="reason" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_code, sku_code, sku_name, category, brand, color, specification, model, 
     unit, classes, type, tax, tax_price, quantity, tax_amount, del_flag, create_time, 
-    create_by, update_time, update_by, picture_url, line_num
+    create_by, update_time, update_by, picture_url, line_num, reason
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -55,7 +56,7 @@
       tax, tax_price, quantity, 
       tax_amount, del_flag, create_time, 
       create_by, update_time, update_by, 
-      picture_url, line_num)
+      picture_url, line_num,reason)
     values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR}, 
       #{color,jdbcType=VARCHAR}, #{specification,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, 
@@ -63,7 +64,7 @@
       #{tax,jdbcType=BIGINT}, #{taxPrice,jdbcType=BIGINT}, #{quantity,jdbcType=BIGINT}, 
       #{taxAmount,jdbcType=BIGINT}, #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
-      #{pictureUrl,jdbcType=VARCHAR}, #{lineNum,jdbcType=BIGINT})
+      #{pictureUrl,jdbcType=VARCHAR}, #{lineNum,jdbcType=BIGINT}, #{reason,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProduct">
     insert into profit_loss_product
@@ -137,6 +138,9 @@
       <if test="lineNum != null">
         line_num,
       </if>
+      <if test="reason != null">
+        reason,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -207,6 +211,9 @@
       </if>
       <if test="lineNum != null">
         #{lineNum,jdbcType=BIGINT},
+      </if>
+      <if test="reason != null">
+        #{reason,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -279,6 +286,9 @@
       <if test="lineNum != null">
         line_num = #{lineNum,jdbcType=BIGINT},
       </if>
+      <if test="reason != null">
+        reason = #{reason,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -305,7 +315,8 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
       picture_url = #{pictureUrl,jdbcType=VARCHAR},
-      line_num = #{lineNum,jdbcType=BIGINT}
+      line_num = #{lineNum,jdbcType=BIGINT},
+      reason = #{reason,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

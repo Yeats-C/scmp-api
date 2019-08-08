@@ -53,4 +53,7 @@ public class ProfitLossProductRespVo {
     @ApiModelProperty("含税总成本")
     private Long taxAmount;
 
+    @ApiModelProperty("原因")
+    private String reason;
+
 }
