@@ -24,7 +24,7 @@ public interface ApplyProductSkuSaleAreaMapper {
      * @param skuCodes
      * @return java.util.List<com.aiqin.mgs.product.api.domain.pojo.ApplyProductSkuSaleArea>
      */
-    List<ApplyProductSkuSaleArea> selectBySkuCodes(@Param("items") List<String> skuCodes);
+    List<ApplyProductSkuSaleArea> selectBySkuCodes(@Param("items") List<String> skuCodes,@Param("companyCode") String companyCode);
     /**
      * 批量保存
      * @author NullPointException

@@ -21,7 +21,7 @@ public class DashboardServiceImpl implements DashboardService{
     // 年销售情况（部门）
     @Override
     public List<DashboardDepartAnnualSalesStatiRespVo> selectDashboardDepartAnnualSalesStati() {
-        String fiveYearStr = DayUtil.getYearStr(-5);
+        String fiveYearStr = DayUtil.getYearStr(-4);
         String oneYearStr = DayUtil.getYearStr(0);
         return dashboardDao.selectDashboardDepartAnnualSalesStati(fiveYearStr,oneYearStr);
     }

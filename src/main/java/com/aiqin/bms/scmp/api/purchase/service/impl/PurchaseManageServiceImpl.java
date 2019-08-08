@@ -19,7 +19,11 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRe
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
+import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderDao;
+import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderDetailsDao;
+import com.aiqin.bms.scmp.api.purchase.dao.apply.ApplyPurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.apply.ApplyPurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
@@ -439,6 +443,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         String createById = purchaseOrder.getCreateById();
         String createByName = purchaseOrder.getCreateByName();
         PurchaseOrder order = purchaseOrderDao.purchaseOrder(purchaseOrderId);
+        purchaseOrder.setUpdateByName(createByName);
+        purchaseOrder.setUpdateById(createById);
         if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)){
             if(order != null && order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)
                     || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_1)){
@@ -448,10 +454,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 if (!workFlowRespVO.getSuccess()) {
                     throw new GroundRuntimeException("审批流撤销失败!");
                 }
+                applyPurchaseOrderDao.update(purchaseOrder);
             }
         }
-        purchaseOrder.setUpdateByName(createByName);
-        purchaseOrder.setUpdateById(createById);
         Integer count = purchaseOrderDao.update(purchaseOrder);
         if(count == 0){
             LOGGER.error("变更采购单的状态失败......");
@@ -969,6 +974,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         List<PurchaseApplyDetailResponse> products = purchaseOrderProductDao.orderProductInfoByGroup(purchaseOrderId);
         if(CollectionUtils.isNotEmptyCollection(products)){
             for(PurchaseApplyDetailResponse product:products){
+                long singleCount =  product.getSingleCount() == null ? 0 : product.getSingleCount().longValue();
+                long actualSingleCount =  product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().longValue();
+                if(singleCount - actualSingleCount == 0){
+                    continue;
+                }
                 stockVo = new StockVoRequest();
                 stockVo.setTransportCenterCode(product.getTransportCenterCode());
                 stockVo.setTransportCenterName(product.getTransportCenterName());
@@ -977,8 +987,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 stockVo.setOperator(product.getCreateByName());
                 stockVo.setSkuCode(product.getSkuCode());
                 stockVo.setSkuName(product.getSkuName());
-                long singleCount =  product.getSingleCount() == null ? 0 : product.getSingleCount().longValue();
-                long actualSingleCount =  product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().longValue();
                 stockVo.setChangeNum(singleCount - actualSingleCount);
                 stockVo.setDocumentNum(product.getPurchaseOrderCode());
                 stockVo.setDocumentType(3);

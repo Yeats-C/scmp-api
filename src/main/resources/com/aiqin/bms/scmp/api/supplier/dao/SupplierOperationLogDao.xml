@@ -92,7 +92,7 @@
     <if test="objectId !=null and objectId!=''">
       AND object_id =#{objectId}
     </if>
-    order by id desc
+    order by create_time desc
   </select>
   <select id="getList" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.LogData">
     SELECT

@@ -56,10 +56,21 @@ public class DetailProfitLossRespVo {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @ApiModelProperty("创建人")
+    private String createBy;
+
     @ApiModelProperty("修改时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    @ApiModelProperty("修改人")
+    private String updateBy;
+
+    @ApiModelProperty("订单状态")
+    private String orderStatusCode;
+
+    @ApiModelProperty("订单状态名称")
+    private String orderStatusName;
 
     @ApiModelProperty("商品列表")
     private List<ProfitLossProductRespVo> products;

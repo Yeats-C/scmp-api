@@ -511,4 +511,16 @@
     where a.outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
     and a.sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
+
+  <update id="updateStockCost">
+    update outbound_product set product_stock_cost = #{productStockCost, jdbcType=BIGINT}
+    <where> 1=1
+      <if test="outboundOderCode != null">
+        and outbound_oder_code = #{outboundOderCode, jdbcType=VARCHAR}
+      </if>
+      <if test="skuCode != null">
+        and sku_code = #{skuCode, jdbcType=VARCHAR}
+      </if>
+    </where>
+  </update>
 </mapper>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.bi.BiStockoutRateDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.bi.BiStockoutRate">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="total_stock_num" jdbcType="BIGINT" property="totalStockNum" />
+    <result column="out_stock_num" jdbcType="BIGINT" property="outStockNum" />
+    <result column="out_stock_rate" jdbcType="DECIMAL" property="outStockRate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    total_stock_num, out_stock_num, out_stock_rate
+  </sql>
+  <select id="stockOutRateInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from bi_stockout_rate
+    where create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+    and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+  </select>
+</mapper>
