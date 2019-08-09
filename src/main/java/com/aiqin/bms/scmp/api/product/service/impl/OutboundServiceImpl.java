@@ -363,13 +363,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 ReturnOutboundProduct returnOutboundProduct = returnOutboundProductList.get(0);
                 outboundProduct.setTax(returnOutboundProduct.getInputTaxRate());
 
-                if(outboundProduct.getPraOutboundNum() == 0 || Objects.isNull(outboundProduct.getPraOutboundNum())){
+                if(Objects.isNull(outboundProduct.getPraOutboundNum()) || outboundProduct.getPraOutboundNum() == 0){
                     outboundProduct.setPraSingleCount(outboundProduct.getPraOutboundMainNum());
                 }else{
                     outboundProduct.setPraSingleCount(outboundProduct.getPraOutboundMainNum() % outboundProduct.getPraOutboundNum());
                 }
 
-                if(outboundProduct.getPreOutboundNum() == 0 || Objects.isNull(outboundProduct.getPreOutboundNum())){
+                if(Objects.isNull(outboundProduct.getPreOutboundNum()) || outboundProduct.getPreOutboundNum() == 0){
                     outboundProduct.setPreSingleCount(outboundProduct.getPreOutboundMainNum());
                 }else{
                     outboundProduct.setPreSingleCount(outboundProduct.getPreOutboundMainNum()%outboundProduct.getPreOutboundNum());
