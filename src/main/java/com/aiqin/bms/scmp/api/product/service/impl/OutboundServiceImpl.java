@@ -766,6 +766,20 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
             int k = outboundDao.updateByPrimaryKeySelective(outbound);
 
+        }else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.scrap.getCode() )){
+            // 如果是报废
+                Allocation allocation =allocationMapper .selectByCode(outbound.getSourceOderCode());
+                //设置调拨状态
+                allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getStatus());
+                allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getName());
+
+//                productCommonService.getInstance(allocation.getAllocationCode(), HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),allocation.getAllocationCode() ,HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getName());
+                supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_SCRAP.getStatus(), ObjectTypeCode.SCRAP.getStatus(), HandleTypeCoce.SUCCESS__SCRAP.getName(), null, HandleTypeCoce.ADD_SCRAP.getName(), "系统自动");
+                //跟新调拨单状态
+                int k1 = allocationMapper.updateByPrimaryKeySelective(allocation);
+                outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
+                outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+                int k = outboundDao.updateByPrimaryKeySelective(outbound);
         }else{
             throw new GroundRuntimeException("无法回传匹配类型");
         }

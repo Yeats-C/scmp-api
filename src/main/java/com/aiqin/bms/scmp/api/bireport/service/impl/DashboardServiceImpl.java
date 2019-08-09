@@ -28,9 +28,8 @@ public class DashboardServiceImpl implements DashboardService{
 
     // 月销售情况（不累计）
     @Override
-    public List<DashboardMonthlySalesStatiRespVo> selectDashboardMonthlySalesStati() {
-        String oneYearStr = DayUtil.getYearStr(0);
-        return dashboardDao.selectDashboardMonthlySalesStati(oneYearStr);
+    public List<DashboardMonthlySalesStatiRespVo> selectDashboardMonthlySalesStati(DashboardMonthlySalesStatiReqVo dashboardMonthlySalesStatiReqVo) {
+        return dashboardDao.selectDashboardMonthlySalesStati(dashboardMonthlySalesStatiReqVo);
     }
 
     // 月销售情况（月累计）
@@ -49,14 +48,16 @@ public class DashboardServiceImpl implements DashboardService{
 
     // 当月部门销售同环比
     @Override
-    public List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo) {
-        return dashboardDao.selectDashboardDepMonthlyHomocyclicRatio(dashboardDepMonthlyHomocyclicRatioReqVo);
+    public List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio() {
+        String oneMonthStr = DayUtil.getMonthStr();
+        return dashboardDao.selectDashboardDepMonthlyHomocyclicRatio(oneMonthStr);
     }
 
     // 今年各亏损占比
     @Override
-    public List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio(DashboardAllKindsLossRatioReqVo dashboardAllKindsLossRatioReqVo) {
-        return dashboardDao.selectDashboardAllKindsLossRatio(dashboardAllKindsLossRatioReqVo);
+    public List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio() {
+        String oneYearStr = DayUtil.getYearStr(0);
+        return dashboardDao.selectDashboardAllKindsLossRatio(oneYearStr);
     }
 
     // 当月各部门品类属性下的销售情况

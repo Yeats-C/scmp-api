@@ -1804,7 +1804,7 @@ select a.sku_code              as skuCode,
                  on a.sku_code = d.product_sku_code
        left join product_sku_price_info e
                  on a.sku_code = e.sku_code and d.supply_unit_code = e.supplier_code
-       left join stock g
+       left join (select new_delivery,sku_code,max(id), new_purchase_price from stock group by new_delivery,sku_code) g
                  on g.new_delivery = supply_unit_code and a.sku_code = g.sku_code
        left join price_project f
                  on f.price_category_code = #{changePriceType} and f.price_project_enable = 0 and f.company_code =#{companyCode}
