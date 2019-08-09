@@ -60,7 +60,8 @@ public class ApplyController extends SupplierBaseController {
         }
     }
 
-    @PostMapping("/supplier/getInfoByFormNo")
+    @PostMapping("/getInfoByFormNo")
+    @ApiOperation("根据formNo获取情接口请求")
     public HttpResponse<DetailRequestRespVo> getInfoByFormNo(@RequestBody @Validated RequsetParamReqVo requsetParamReqVo){
         return HttpResponse.successGenerics(applyService.getRequsetParam(requsetParamReqVo));
     }
