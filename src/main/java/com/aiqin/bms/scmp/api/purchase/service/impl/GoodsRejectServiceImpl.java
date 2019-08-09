@@ -15,7 +15,10 @@ import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
+import com.aiqin.bms.scmp.api.purchase.dao.ApplyRejectRecordDao;
+import com.aiqin.bms.scmp.api.purchase.dao.ApplyRejectRecordDetailDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.ApplyRejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
@@ -31,6 +34,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGro
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -622,7 +626,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(request.getRejectRecordId());
             ReturnSupplyToOutBoundReqVo reqVo = new ReturnSupplyToOutBoundReqVo();
             //为了判断公司
-            if (StringUtils.isNotBlank(create_by_company_code)) {
+            if(StringUtils.isNotBlank(create_by_company_code)){
                 rejectRecord.setCompanyCode(create_by_company_code);
             }
             reqVo.setRejectRecord(rejectRecord);
@@ -766,10 +770,13 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
                 throw new GroundRuntimeException("解锁库存异常");
             }
-            if (record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDIT) || record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDITTING)) {
+            if(record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDIT)||record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDITTING)){
                 WorkFlowVO w = new WorkFlowVO();
-                w.setFormNo(record.getApprovalCode());
-                cancelWorkFlow(w);
+                w.setFormNo(record.getRejectRecordCode());
+                WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
+                if (!workFlowRespVO.getSuccess()) {
+                    throw new GroundRuntimeException("审批流撤销失败!");
+                }
             }
             return HttpResponse.success();
         } catch (RuntimeException e) {
