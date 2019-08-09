@@ -55,7 +55,7 @@ public class DashboardServiceImpl implements DashboardService{
 
     // 今年各亏损占比
     @Override
-    public List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio() {
+    public DashboardAllKindsLossRatioRespVo selectDashboardAllKindsLossRatio() {
         String oneYearStr = DayUtil.getYearStr(0);
         return dashboardDao.selectDashboardAllKindsLossRatio(oneYearStr);
     }
