@@ -62,6 +62,9 @@ public class ReturnOrderDetailRespVO {
     @ApiModelProperty("客户名称")
     private String customerName;
 
+    @ApiModelProperty("客户名称")
+    private String customerCode;
+
     @ApiModelProperty("收货人")
     private String consignee;
 

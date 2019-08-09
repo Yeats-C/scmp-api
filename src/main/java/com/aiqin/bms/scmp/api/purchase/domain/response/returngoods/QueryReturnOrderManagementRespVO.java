@@ -49,11 +49,23 @@ public class QueryReturnOrderManagementRespVO {
     @ApiModelProperty("商品数量")
     private Long productNum;
 
-    @ApiModelProperty("商品总金额")
+    @ApiModelProperty("分销总金额")
     private Long productTotalAmount;
 
     @ApiModelProperty("退货金额")
     private Long returnOrderAmount;
+
+    @ApiModelProperty("实际退货数量")
+    private Long actualProductNum;
+
+    @ApiModelProperty("实际渠道总金额")
+    private Long actualProductChannelTotalAmount;
+
+    @ApiModelProperty("实际分销总金额")
+    private Long actualProductTotalAmount;
+
+    @ApiModelProperty("渠道总金额")
+    private Long productChannelTotalAmount;
 
     @ApiModelProperty("创建人名称")
     private String createByName;
@@ -66,4 +78,6 @@ public class QueryReturnOrderManagementRespVO {
 
     @ApiModelProperty("修改时间")
     private Date updateTime;
+
+
 }
