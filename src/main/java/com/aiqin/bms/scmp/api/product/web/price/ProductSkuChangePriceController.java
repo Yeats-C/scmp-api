@@ -106,7 +106,7 @@ public class ProductSkuChangePriceController {
         }
     }
 
-    @PostMapping("edit/list")
+    @PostMapping("/edit/list")
     @ApiOperation("供应商变价列表")
     public HttpResponse<BasePage<QueryProductSkuChangePriceRespVO>> listForEdit(@RequestBody QueryProductSkuChangePriceReqVO reqVO) {
         log.info("ProductSkuChangePriceController---list---入参：[{}]", JSONObject.toJSONString(reqVO));

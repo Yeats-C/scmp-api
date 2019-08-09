@@ -24,6 +24,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractBrandResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractCategoryResVo;
@@ -1038,6 +1039,27 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         if ("2".equals(querySupplierReqVO.getApplyType())) querySupplierReqVO.setApplyType("1");
         return applyContractDao.queryApplyList(querySupplierReqVO);
 
+    }
+
+    /**
+     * 功能描述: 返回详情接口请求参数
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/9 14:41
+     */
+    @Override
+    public DetailRequestRespVo getInfoByForm(String formNo) {
+        ApplyContractDTO contractDTO = applyContractDao.selectByFormNO(formNo);
+        if(null == contractDTO){
+            throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
+        }
+        DetailRequestRespVo detailRequestRespVo = new DetailRequestRespVo();
+        detailRequestRespVo.setApplyCode(contractDTO.getApplyContractCode());
+        detailRequestRespVo.setId(contractDTO.getId());
+        detailRequestRespVo.setItemCode("4");
+        return detailRequestRespVo;
     }
 
     private String fillZero(Long code){

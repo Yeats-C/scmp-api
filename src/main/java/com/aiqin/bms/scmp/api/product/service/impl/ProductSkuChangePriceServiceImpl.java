@@ -599,7 +599,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //skuCode+价格项目+仓库批次号
         Map<String, ProductSkuPriceInfo> infoMap = list.stream().collect(Collectors.toMap(
                 o -> o.getSkuCode() + o.getPriceItemCode()+o.getTransportCenterCode()+o.getWarehouseCode()+o.getWarehouseBatchNumber()+o.getWarehouseBatchNumber(),
-                Function.identity()));
+                Function.identity(),(k1,k2)->k2));
         //数据对比，分类
         List<ProductSkuChangePriceInfo> noRepeat = dto.getInfos();
         List<ProductSkuChangePriceInfo> repeat = dto.getInfos().stream().filter(o -> Objects.nonNull(infoMap.get(o.getSkuCode() + o.getPriceItemCode()+o.getTransportCenterCode()+o.getWarehouseCode()+o.getWarehouseBatchNumber()+o.getWarehouseBatchNumber()))).collect(Collectors.toList());
@@ -678,7 +678,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         QueryProductSkuPriceInfo queryVO = dealPurchaseChangePriceData(dto, "1");
         //验重
         List<ProductSkuPriceInfo> list = productSkuPriceInfoMapper.checkRepeat(queryVO);
-        Map<String, ProductSkuPriceInfo> infoMap = list.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getSupplierCode(), Function.identity()));
+        Map<String, ProductSkuPriceInfo> infoMap = list.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getSupplierCode(), Function.identity(),(k1,k2)->k2));
         //数据对比，分类
         List<ProductSkuChangePriceInfo> noRepeat = dto.getInfos();
         List<ProductSkuChangePriceInfo> repeat = dto.getInfos().stream().filter(o -> Objects.nonNull(infoMap.get(o.getSkuCode() + o.getSupplierCode()))).collect(Collectors.toList());

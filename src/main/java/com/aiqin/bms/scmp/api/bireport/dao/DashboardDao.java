@@ -12,7 +12,7 @@ public interface DashboardDao {
     List<DashboardDepartAnnualSalesStatiRespVo> selectDashboardDepartAnnualSalesStati(@Param("fiveYearStr") String fiveYearStr,@Param("oneYearStr") String oneYearStr);
 
     // 月销售情况（不累计）
-    List<DashboardMonthlySalesStatiRespVo> selectDashboardMonthlySalesStati(@Param("oneYearStr") String oneYearStr);
+    List<DashboardMonthlySalesStatiRespVo> selectDashboardMonthlySalesStati(DashboardMonthlySalesStatiReqVo dashboardMonthlySalesStatiReqVo);
 
     // 月销售情况（月累计）
     List<DashboardMonthlySalesStatiAccRespVo> selectDashboardMonthlySalesStatiAcc(@Param("oneYearStr") String oneYearStr);
@@ -21,10 +21,10 @@ public interface DashboardDao {
     List<DashboardMonthlyLossAmountRespVo> selectDashboardMonthlyLossAmount(@Param("oneYearStr") String oneYearStr);
 
     // 当月部门销售同环比
-    List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo);
+    List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio(@Param("oneMonthStr") String oneMonthStr);
 
     // 今年各亏损占比
-    List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio(DashboardAllKindsLossRatioReqVo dashboardAllKindsLossRatioReqVo);
+    List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio(@Param("oneYearStr") String oneYearStr);
 
     // 当月各部门品类属性下的销售情况
     List<DashboardDepCateProperSalesAmountRespVo> selectDashboardDepCateProperSalesAmount(DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo);

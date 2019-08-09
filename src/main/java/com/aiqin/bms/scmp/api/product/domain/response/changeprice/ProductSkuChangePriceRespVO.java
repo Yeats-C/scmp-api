@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -62,6 +63,18 @@ public class ProductSkuChangePriceRespVO {
 
     @ApiModelProperty("公司编码")
     private String companyCode;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @ApiModelProperty("创建人")
+    private Date createTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
+
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
 
     @ApiModelProperty("列表数据")
     List<ProductSkuChangePriceInfoRespVO> infoList;

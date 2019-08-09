@@ -1,13 +1,15 @@
 package com.aiqin.bms.scmp.api.supplier.web.supplier;
 
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.supplier.service.ApplyService;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.DetailApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.apply.RequsetParamReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
+import com.aiqin.bms.scmp.api.supplier.service.ApplyService;
 import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +58,11 @@ public class ApplyController extends SupplierBaseController {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.CANCEL_ERROR);
         }
+    }
+
+    @PostMapping("/getInfoByFormNo")
+    @ApiOperation("根据formNo获取情接口请求")
+    public HttpResponse<DetailRequestRespVo> getInfoByFormNo(@RequestBody @Validated RequsetParamReqVo requsetParamReqVo){
+        return HttpResponse.successGenerics(applyService.getRequsetParam(requsetParamReqVo));
     }
 }

@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplier
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplierReqDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.*;
 import com.aiqin.bms.scmp.api.supplier.mapper.*;
 import com.aiqin.bms.scmp.api.supplier.service.*;
@@ -306,6 +307,26 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
         }
     }
 
+    /**
+     * 功能描述: 返回详情接口请求参数
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/9 14:41
+     */
+    @Override
+    public DetailRequestRespVo getInfoByForm(String formNo) {
+        ApplySupplier applySupplier = applySupplierDao.selectByFormNO(formNo);
+        if(null == applySupplier){
+            throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
+        }
+        DetailRequestRespVo detailRequestRespVo = new DetailRequestRespVo();
+        detailRequestRespVo.setApplyCode(applySupplier.getApplySupplierCode());
+        detailRequestRespVo.setId(applySupplier.getId());
+        detailRequestRespVo.setItemCode("2");
+        return detailRequestRespVo;
+    }
 
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)

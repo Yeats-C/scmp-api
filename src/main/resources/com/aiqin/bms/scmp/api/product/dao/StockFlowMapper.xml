@@ -65,7 +65,8 @@
         id,stock_code,flow_code,order_code,order_type,order_source,sku_code,sku_name,
         before_inventory_num,after_inventory_num,before_available_num,after_available_num,before_lock_num,
         after_lock_num,before_purchase_way_num,after_purchase_way_num,before_allocation_way_num,after_allocation_way_num,
-        before_total_way_num,after_total_way_num,change_num,operation_type,create_time,create_by,update_time,update_by
+        before_total_way_num,after_total_way_num,change_num,operation_type,create_time,create_by,update_time,update_by,
+        lock_status,document_type,document_num,source_document_type,source_document_num,remark,stock_cost
     </sql>
     
     <sql id="Stock_Column">
@@ -178,5 +179,22 @@
         )
         </foreach>
     </insert>
-
+    <select id="selectFlowByStockSku" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow">
+      SELECT
+        <include refid="Base_Column_List"></include>
+      FROM stock_flow
+      where update_time LIKE concat(#{yesterday, jdbcType=VARCHAR}, '%') and stock_code = #{stockCode}
+      ORDER BY update_time asc
+    </select>
+    <update id="updateStockCost">
+        update stock_flow set stock_cost = #{stockCost}
+        <where> 1=1
+            <if test="documentNum != null">
+                and document_num = #{documentNum}
+            </if>
+            <if test="skuCode != null">
+                and sku_code = #{skuCode}
+            </if>
+        </where>
+    </update>
 </mapper>
