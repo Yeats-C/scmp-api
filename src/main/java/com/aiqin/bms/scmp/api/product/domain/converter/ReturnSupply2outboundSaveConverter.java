@@ -128,20 +128,19 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     outboundProduct.setPictureUrl(map2.get(item.getSkuCode()).getPicUrl());
                     //规格
                     outboundProduct.setNorms(map2.get(item.getSkuCode()).getSpec());
-                    outboundProduct.setOutboundNorms(map2.get(item.getSkuCode()).getSpec());
                     //单位
-                    outboundProduct.setUnitCode(item.getUnitCode());
-                    outboundProduct.setUnitName(item.getUnitName());
+                    outboundProduct.setUnitCode(map2.get(item.getSkuCode()).getUnitCode());
+                    outboundProduct.setUnitName(map2.get(item.getSkuCode()).getUnitName());
                     //进货规格
-                    outboundProduct.setOutboundNorms(item.getProductSpec());
+                    outboundProduct.setOutboundNorms(map2.get(item.getSkuCode()).getSpec());
                     //预计出库数量
                     outboundProduct.setPreOutboundNum(item.getProductCount());
                     //预计含税进价
                     outboundProduct.setPreTaxPurchaseAmount(item.getProductAmount());
                     //预计含税总价
                     outboundProduct.setPreTaxAmount(item.getProductTotalAmount());
-                    outboundProduct.setColorCode(item.getColorCode());
-                    outboundProduct.setColorName(item.getColorName());
+                    outboundProduct.setColorCode(map2.get(item.getSkuCode()).getColorCode());
+                    outboundProduct.setColorName(map2.get(item.getSkuCode()).getColorName());
                     outboundProduct.setCreateBy(outbound.getCreateBy());
                     outboundProduct.setUpdateBy(outbound.getUpdateBy());
                     outboundProduct.setPreOutboundMainNum(item.getProductCount());

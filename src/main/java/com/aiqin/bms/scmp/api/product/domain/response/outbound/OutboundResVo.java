@@ -147,6 +147,9 @@ public class OutboundResVo  {
     @ApiModelProperty("更新时间")
     private Date updateTime;
 
+    @ApiModelProperty("备注")
+    private String remark;
+
     @ApiModelProperty("sku列表")
     private List<OutboundProductResVo> list;
 
