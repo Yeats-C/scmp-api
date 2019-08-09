@@ -35,6 +35,9 @@ import java.util.List;
 @Data
 public class TransfersRequest {
 
+    @ApiModelProperty("类型: 1调拨 2移库")
+    private Integer transfersType;
+
     @ApiModelProperty("调拨单编号")
     private String allocationCode;
 

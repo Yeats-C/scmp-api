@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.base.MsgStatus;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
@@ -12,12 +13,14 @@ import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
 import com.aiqin.bms.scmp.api.product.mapper.PriceChannelMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.purchase.domain.converter.AllocationToOutboundConverter;
 import com.aiqin.bms.scmp.api.purchase.domain.converter.OrderInfoToOutboundConverter;
 import com.aiqin.bms.scmp.api.purchase.domain.converter.ReturnInfoToInboundConverter;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
@@ -285,15 +288,14 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
      */
     private List<StockVoRequest> handleOutStockData(OrderInfo orderInfo, String outboundOderCode) {
         List<StockVoRequest> list = Lists.newArrayList();
-        String companyCode = orderInfo.getCompanyCode();
-        String transportCenterCode = orderInfo.getTransportCenterCode();
-        String warehouseCode = orderInfo.getWarehouseCode();
         StockVoRequest stockVoRequest;
         for (OrderInfoItem itemReqVo : orderInfo.getDetailList()) {
             stockVoRequest = new StockVoRequest();
-            stockVoRequest.setCompanyCode(companyCode);
-            stockVoRequest.setTransportCenterCode(transportCenterCode);
-            stockVoRequest.setWarehouseCode(warehouseCode);
+            BeanUtils.copyProperties(itemReqVo, stockVoRequest);
+            stockVoRequest.setTransportCenterCode(orderInfo.getTransportCenterCode());
+            stockVoRequest.setTransportCenterName(orderInfo.getTransportCenterName());
+            stockVoRequest.setWarehouseCode(orderInfo.getWarehouseCode());
+            stockVoRequest.setWarehouseName(orderInfo.getWarehouseName());
             //没有采购组
 //            stockVoRequest.setPurchaseGroupCode(purchaseGroupCode);
             //库存是主单位数量 退供基商品含量默认是1
@@ -489,15 +491,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
      */
     private List<StockVoRequest> handleInboundStockData(ReturnOrderInfo returnOrderInfo, String inboundOderCode, InboundReqSave inboundReqSave) {
         List<StockVoRequest> list = Lists.newArrayList();
-        String companyCode = returnOrderInfo.getCompanyCode();
-        String transportCenterCode = returnOrderInfo.getTransportCenterCode();
-        String warehouseCode = returnOrderInfo.getWarehouseCode();
         StockVoRequest stockVoRequest;
         for (InboundProductReqVo itemReqVo : inboundReqSave.getList()) {
             stockVoRequest = new StockVoRequest();
-            stockVoRequest.setTransportCenterCode(transportCenterCode);
-            stockVoRequest.setCompanyCode(companyCode);
-            stockVoRequest.setWarehouseCode(warehouseCode);
+            BeanUtils.copyProperties(returnOrderInfo, stockVoRequest);
+            stockVoRequest.setWarehouseCode(inboundReqSave.getWarehouseCode());
+            stockVoRequest.setWarehouseName(inboundReqSave.getWarehouseName());
             //库存是主单位数量 退供基商品含量默认是1
             stockVoRequest.setChangeNum(itemReqVo.getPraInboundNum());
             stockVoRequest.setSkuCode(itemReqVo.getSkuCode());
@@ -551,49 +550,174 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse transfersOrder(TransfersRequest request) {
-
-        System.out.println(request.toString());
+        byte type;
+        String typeName;
+        String inboundOderCode = "";
+        String outboundOderCode = "";
+        if (request.getTransfersType().equals(1)) {
+            //调拨
+            type = AllocationTypeEnum.ALLOCATION.getType();
+            typeName = AllocationTypeEnum.ALLOCATION.getTypeName();
+        } else {
+            //移库
+            type = AllocationTypeEnum.MOVE.getType();
+            typeName = AllocationTypeEnum.MOVE.getTypeName();
+        }
         //添加调拨单
         //添加调拨单详情
         Allocation allocation = new Allocation();
-        BeanUtils.copyProperties(request,allocation);
+        BeanUtils.copyProperties(request, allocation);
         allocation.setCompanyCode(COMPANY_CODE);
         allocation.setCompanyName(COMPANY_NAME);
         allocation.setCreateBy(request.getCreateByName());
         allocation.setCreateTime(new DateTime(new Long(request.getCreateTime())).toDate());
         allocation.setUpdateBy(request.getUpdateByName());
         allocation.setUpdateTime(new DateTime(new Long(request.getReceiptTime())).toDate());
-        allocationInsert(allocation);
+        allocationInsert(allocation, type, typeName);
+        //调拨生成出库单
+        OutboundReqVo convert = new AllocationToOutboundConverter(skuService).convert(allocation);
+        if (request.getTransfersType().equals(1)) {
+            //调拨才有出库 出库单号
+            outboundOderCode = outboundRecord(convert);
+        }
+        //调拨直接减库存
+        StockChangeRequest stockChangeRequest = new StockChangeRequest();
+        //操作类型 直接减库存 4
+        stockChangeRequest.setOperationType(4);
+        List<StockVoRequest> list = handleAllocationStockData(allocation.getDetailList(), allocation.getCompanyCode(), allocation.getCompanyName(), allocation.getCallOutLogisticsCenterCode()
+                , allocation.getCallOutLogisticsCenterName(), allocation.getCallOutWarehouseCode(), allocation.getCallOutWarehouseName(), allocation.getAllocationCode(), outboundOderCode);
+        stockChangeRequest.setStockVoRequests(list);
+        HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+        if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+            throw new GroundRuntimeException("dl回调    减库存异常");
+        }
+        //调拨生成入库单
+        InboundReqSave inboundReqSave = handleTransferInbound(allocation);
+        if (request.getTransfersType().equals(1)) {
+            inboundOderCode = inboundRecord(inboundReqSave);
+        }
+        //直接加库存
+        StockChangeRequest stockRequest = new StockChangeRequest();
+        //操作类型 直接加库存 10
+        stockRequest.setOperationType(10);
+        List<StockVoRequest> inboundList = handleAllocationStockData(allocation.getDetailList(), allocation.getCompanyCode(), allocation.getCompanyName(), allocation.getCallInLogisticsCenterCode()
+                , allocation.getCallInLogisticsCenterName(), allocation.getCallInWarehouseCode(), allocation.getCallInWarehouseName(), allocation.getAllocationCode(), inboundOderCode);
+        stockRequest.setStockVoRequests(inboundList);
+        HttpResponse stockResponse = stockService.changeStock(stockRequest);
+        if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
+            throw new GroundRuntimeException("dl回调   加库存异常");
+        }
+        return HttpResponse.success();
+    }
 
-        //添加记录
+    /**
+     * 调拨入库单参数处理
+     *
+     * @param allocation
+     * @return
+     */
+    public InboundReqSave handleTransferInbound(Allocation allocation) {
+        List<String> skuCodes = allocation.getDetailList().stream().map(AllocationProduct::getSkuCode).collect(Collectors.toList());
+        Map<String, PurchaseItemRespVo> map = skuService.getSalesSkuList(skuCodes).stream().collect(Collectors.toMap(PurchaseItemRespVo::getSkuCode, Function.identity(), (k1, k2) -> k2));
+        InboundProductReqVo product;
+        InboundReqSave inbound = new InboundReqSave();
+        List<InboundProductReqVo> products = Lists.newArrayList();
+        //实际入库数量
+        inbound.setPraInboundNum(allocation.getQuantity());
+        //实际入库主数量
+        inbound.setPraMainUnitNum(allocation.getQuantity());
+        //预计入库数量
+        inbound.setPreInboundNum(allocation.getQuantity());
+        //预计入库主数量
+        inbound.setPreMainUnitNum(allocation.getQuantity());
+        //入库类型
+        inbound.setInboundTypeCode(InboundTypeEnum.ORDER.getCode());
+        inbound.setInboundTypeName(InboundTypeEnum.ORDER.getName());
+        //入库状态
+        inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
+        inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+        //公司编码
+        inbound.setCompanyCode(allocation.getCompanyCode());
+        inbound.setCompanyName(allocation.getCompanyName());
+        inbound.setInboundTime(allocation.getUpdateTime());
+        inbound.setShipper(allocation.getUpdateBy());
+        //来源单据号
+        inbound.setSourceOderCode(allocation.getAllocationCode());
+        //物流中心编码
+        inbound.setLogisticsCenterCode(allocation.getCallInLogisticsCenterCode());
+        inbound.setLogisticsCenterName(allocation.getCallInLogisticsCenterName());
+        //预计到货时间
+        inbound.setPreArrivalTime(allocation.getUpdateTime());
+        inbound.setCreateTime(allocation.getCreateTime());
+        inbound.setWarehouseCode(allocation.getCallInWarehouseCode());
+        inbound.setWarehouseName(allocation.getCallInWarehouseName());
+        //创建人
+        inbound.setCreateBy(allocation.getCreateBy());
+        for (AllocationProduct allocationProduct : allocation.getDetailList()) {
+            product = new InboundProductReqVo();
+            product.setPreInboundMainNum(allocationProduct.getQuantity());
+            product.setPreInboundNum(allocationProduct.getQuantity());
+            product.setPraInboundMainNum(allocationProduct.getQuantity());
+            product.setPraInboundNum(allocationProduct.getQuantity());
+            //规格.
+            product.setNorms(map.get(allocationProduct.getSkuCode()).getSpec());
+            product.setInboundNorms(allocationProduct.getSpecification());
+            product.setCreateBy(allocation.getCreateBy());
+            product.setCreateTime(allocation.getCreateTime());
+            products.add(product);
+        }
+        inbound.setList(products);
+        return inbound;
+    }
 
-        //出入库记录
-
-        //库存变动操作
-
-        return null;
+    private List<StockVoRequest> handleAllocationStockData(List<AllocationProduct> productList, String companyCode, String companyName, String logisticsCenterCode, String logisticsCenterName,
+                                                           String outWarehouseCode, String outWarehouseName, String allocationCode, String outboundOderCode) {
+        List<StockVoRequest> list = Lists.newArrayList();
+        StockVoRequest stockVoRequest;
+        for (AllocationProduct itemReqVo : productList) {
+            stockVoRequest = new StockVoRequest();
+            stockVoRequest.setCompanyCode(companyCode);
+            stockVoRequest.setCompanyName(companyName);
+            stockVoRequest.setTransportCenterCode(logisticsCenterCode);
+            stockVoRequest.setTransportCenterName(logisticsCenterName);
+            stockVoRequest.setWarehouseCode(outWarehouseCode);
+            stockVoRequest.setWarehouseName(outWarehouseName);
+            //库存是主单位数量 退供基商品含量默认是1
+            stockVoRequest.setChangeNum(itemReqVo.getLineNum());
+            stockVoRequest.setSkuCode(itemReqVo.getSkuCode());
+            stockVoRequest.setSkuName(itemReqVo.getSkuName());
+            stockVoRequest.setDocumentType(0);
+            stockVoRequest.setDocumentNum(outboundOderCode);
+            stockVoRequest.setSourceDocumentType((int) OutboundTypeEnum.ORDER.getCode());
+            stockVoRequest.setSourceDocumentNum(allocationCode);
+            stockVoRequest.setOperator(itemReqVo.getCreateBy());
+            list.add(stockVoRequest);
+        }
+        return list;
     }
 
     /**
      * 调拨单添加
      */
-    private void allocationInsert(Allocation allocation) {
+    private void allocationInsert(Allocation allocation, byte type, String typeName) {
         // 获取编码
         String content = HandleTypeCoce.ADD_ALLOCATION.getName();
         //保存日志
-        supplierCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),content ,null,HandleTypeCoce.ADD.getName());
+        supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), content, null, HandleTypeCoce.ADD.getName());
         //设置状态(已完成)
         allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
         allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
+        allocation.setAllocationType(type);
+        allocation.setAllocationTypeName(typeName);
         allocationMapper.insertSelective(allocation);
         List<String> skuList = allocation.getDetailList().stream().map(AllocationProduct::getSkuCode).collect(Collectors.toList());
         List<OrderProductSkuResponse> productSkuList = productSkuDao.selectSkuInfoList(skuList);
-        Map<String,OrderProductSkuResponse> productSkuMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode,Function.identity()));
+        Map<String, OrderProductSkuResponse> productSkuMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
         OrderProductSkuResponse orderProductSkuResponse;
         List<AllocationProduct> allocationProductList = Lists.newArrayList();
         for (AllocationProduct allocationProduct : allocation.getDetailList()) {
             orderProductSkuResponse = productSkuMap.get(allocationProduct.getSkuCode());
-            if(orderProductSkuResponse!=null){
+            if (orderProductSkuResponse != null) {
                 allocationProduct.setSkuName(orderProductSkuResponse.getProductName());
                 allocationProduct.setPictureUrl(orderProductSkuResponse.getPictureUrl());
                 allocationProduct.setSpecification(orderProductSkuResponse.getSpec());
@@ -603,6 +727,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
             allocationProduct.setAllocationCode(allocation.getAllocationCode());
             allocationProduct.setCreateBy(allocation.getCreateBy());
+            allocationProduct.setCreateTime(allocation.getCreateTime());
+            allocationProduct.setUpdateTime(allocation.getUpdateTime());
             allocationProduct.setUpdateBy(allocation.getUpdateBy());
             allocationProductList.add(allocationProduct);
         }

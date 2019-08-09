@@ -33,14 +33,6 @@ public class DashboardDepCateSalesAmountRespVo {
     @JsonProperty("product_category_name")
     private String productCategoryName;
 
-    @ApiModelProperty("商品属性编码")
-    @JsonProperty("product_property_code")
-    private String productPropertyCode;
-
-    @ApiModelProperty("商品属性ABC品")
-    @JsonProperty("product_property_name")
-    private String productPropertyName;
-
     @ApiModelProperty("渠道成本")
     @JsonProperty("channel_costs")
     private Long channelCosts;

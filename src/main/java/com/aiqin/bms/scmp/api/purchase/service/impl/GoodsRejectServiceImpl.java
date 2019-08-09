@@ -770,11 +770,13 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
                 throw new GroundRuntimeException("解锁库存异常");
             }
-            WorkFlowVO w = new WorkFlowVO();
-            w.setFormNo(record.getRejectRecordCode());
-            WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
-            if (!workFlowRespVO.getSuccess()) {
-                throw new GroundRuntimeException("审批流撤销失败!");
+            if(record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDIT)||record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDITTING)){
+                WorkFlowVO w = new WorkFlowVO();
+                w.setFormNo(record.getRejectRecordCode());
+                WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
+                if (!workFlowRespVO.getSuccess()) {
+                    throw new GroundRuntimeException("审批流撤销失败!");
+                }
             }
             return HttpResponse.success();
         } catch (RuntimeException e) {
