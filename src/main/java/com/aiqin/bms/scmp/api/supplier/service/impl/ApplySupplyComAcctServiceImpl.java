@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupp
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierComAcctReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.*;
 import com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyAccountMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyAccountMapper;
@@ -658,6 +659,27 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             //querySupplierReqVO.setApplyBy(authToken.getPersonName());
         }
         return applySupplyCompanyAcctDao.queryApplyList(querySupplierReqVO);
+    }
+
+    /**
+     * 功能描述: 返回详情接口请求参数
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/9 14:41
+     */
+    @Override
+    public DetailRequestRespVo getInfoByForm(String formNo) {
+        ApplySupplyCompanyAccount account = applySupplyCompanyAccountMapper.selectByFormNO(formNo);
+        if(null == account){
+            throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
+        }
+        DetailRequestRespVo detailRequestRespVo = new DetailRequestRespVo();
+        detailRequestRespVo.setApplyCode(account.getApplyCompanyAccountCode());
+        detailRequestRespVo.setId(account.getId());
+        detailRequestRespVo.setItemCode("3");
+        return detailRequestRespVo;
     }
 
     @Override

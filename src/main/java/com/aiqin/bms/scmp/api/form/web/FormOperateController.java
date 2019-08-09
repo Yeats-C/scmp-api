@@ -53,6 +53,12 @@ public class FormOperateController {
         return formOperateService.saveToCancel(request);
     }
 
+    @PostMapping("/cancel/common")
+    @ApiOperation("根据单号撤销")
+    HttpResponse commonCancel(@RequestParam("form_no") String formNo, @RequestParam("person_id") String personId) {
+        return formOperateService.commonCancel(formNo, personId);
+    }
+
     @PostMapping("/back")
     @ApiOperation("回退")
     HttpResponse saveTurnBack(@RequestBody FormBackRequest request) {

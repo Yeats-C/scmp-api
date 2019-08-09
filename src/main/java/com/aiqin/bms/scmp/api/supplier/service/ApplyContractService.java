@@ -9,7 +9,10 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.ApplyCont
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.QueryApplyContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.UpdateApplyContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
-import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.*;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.ApplyContractUpdateResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.ApplyContractViewResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.QueryApplyContractResVo;
 
 import java.util.List;
 
@@ -173,5 +176,15 @@ public interface ApplyContractService{
   */
  List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
 
+    /**
+     *
+     * 功能描述: 返回详情接口请求参数
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/9 14:41
+     */
+    DetailRequestRespVo getInfoByForm(String formNo);
 
 }

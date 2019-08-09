@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
+import com.aiqin.bms.scmp.api.supplier.domain.request.apply.RequsetParamReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
@@ -125,4 +127,25 @@ public class ApplyServiceImpl implements ApplyService {
         }
     }
 
+    @Override
+    public DetailRequestRespVo getRequsetParam(RequsetParamReqVo requsetParamReqVo) {
+        DetailRequestRespVo respVo;
+        switch (requsetParamReqVo.getItemCode()){
+            case "1":
+                respVo = applySupplyComServcie.getInfoByForm(requsetParamReqVo.getFormNo());
+                break;
+            case "2":
+                respVo = applySupplierService.getInfoByForm(requsetParamReqVo.getFormNo());
+                break;
+            case "3":
+                respVo = applySupplyComAcctService.getInfoByForm(requsetParamReqVo.getFormNo());
+                break;
+            case "4":
+                respVo = applyContractService.getInfoByForm(requsetParamReqVo.getFormNo());
+                break;
+            default:
+                throw new GroundRuntimeException("请选择功能项");
+        }
+        return respVo;
+    }
 }
