@@ -2229,6 +2229,7 @@ select a.sku_code              as skuCode,
     </foreach>
   </select>
   <resultMap id="ORDER_PRODUCT_RESULTMAP" type="com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse">
+    <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="productName" />
     <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
@@ -2245,8 +2246,7 @@ select a.sku_code              as skuCode,
 
   <select id="selectSkuInfo" resultMap="ORDER_PRODUCT_RESULTMAP">
      select
-		ps.sku_code,ps.sku_name ,ps.color_code,ps.color_name,ps.model_number,psdi.spec,psdi.unit_code,psdi.unit_name,
-		psdi.zero_removal_coefficient,psbp.box_volume,psbp.box_gross_weight,psp.product_picture_path
+        <include refid="SELECT_SKU_SQL"/>
       from
       product_sku as ps
       left JOIN product_sku_distribution_info  as psdi on psdi.product_sku_code = ps.sku_code
@@ -2255,12 +2255,14 @@ select a.sku_code              as skuCode,
       where psp.main_picture = 1
       and ps.sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
-
+  <sql id="SELECT_SKU_SQL">
+        ps.goods_gifts as product_type,ps.sku_code,ps.sku_name ,ps.color_code,ps.color_name,ps.model_number,psdi.spec,psdi.unit_code,psdi.unit_name,
+    psdi.zero_removal_coefficient,psbp.box_volume,psbp.box_gross_weight,psp.product_picture_path
+  </sql>
   <select id="selectSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
     select
-    ps.sku_code,ps.sku_name ,ps.color_code,ps.color_name,ps.model_number,psdi.spec,psdi.unit_code,psdi.unit_name,
-    psdi.zero_removal_coefficient,psbp.box_volume,psbp.box_gross_weight,psp.product_picture_path
-    from
+    <include refid="SELECT_SKU_SQL"/>
+   from
     product_sku as ps
     left JOIN product_sku_distribution_info  as psdi on psdi.product_sku_code = ps.sku_code
     left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code
