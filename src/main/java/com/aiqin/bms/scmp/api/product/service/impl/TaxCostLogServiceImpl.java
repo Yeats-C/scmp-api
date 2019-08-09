@@ -124,36 +124,36 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
                         TaxCostLog yesterdayLog = taxCostLogDao.selectByTaxDate(yesterday, st.getWarehouseCode(), st.getSkuCode());
                         // 采购
                         if (yesterdayLog.getTaxCost() == null){
-                            you(st, yesterday, log, stockFlow);
+                            noCost(st, yesterday, log, stockFlow);
                         }else{
-                            no(st, yesterday, stockFlow, yesterdayLog);
+                            cost(st, yesterday, stockFlow, yesterdayLog);
                         }
                     }else if (stockFlow.getSourceDocumentType() == 4){
                         // 前一天数据
                         TaxCostLog yesterdayLog = taxCostLogDao.selectByTaxDate(yesterday, st.getWarehouseCode(), st.getSkuCode());
                         // 调拨
                         if (yesterdayLog.getTaxCost() == null){
-                            you(st, yesterday, log, stockFlow);
+                            noCost(st, yesterday, log, stockFlow);
                         }else {
-                            no(st, yesterday, stockFlow, yesterdayLog);
+                            cost(st, yesterday, stockFlow, yesterdayLog);
                         }
                     }else if (stockFlow.getSourceDocumentType() == 5){
                         // 退货
                         // 前一天数据
                         TaxCostLog yesterdayLog = taxCostLogDao.selectByTaxDate(yesterday, st.getWarehouseCode(), st.getSkuCode());
                         if (yesterdayLog.getTaxCost() == null){
-                            you(st, yesterday, log, stockFlow);
+                            noCost(st, yesterday, log, stockFlow);
                         }else{
-                            no(st, yesterday, stockFlow, yesterdayLog);
+                            cost(st, yesterday, stockFlow, yesterdayLog);
                         }
                     }else if (stockFlow.getSourceDocumentType() == 6){
                         // 前一天数据
                         TaxCostLog yesterdayLog = taxCostLogDao.selectByTaxDate(yesterday, st.getWarehouseCode(), st.getSkuCode());
                         // 移库
                         if (yesterdayLog.getTaxCost() == null){
-                            you(st, yesterday, log, stockFlow);
+                            noCost(st, yesterday, log, stockFlow);
                         }else{
-                            no(st, yesterday, stockFlow, yesterdayLog);
+                            cost(st, yesterday, stockFlow, yesterdayLog);
                         }
                     }
                     // 监管仓入库7  报废8
@@ -186,7 +186,7 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
         }
     }
 
-    private void no(Stock st, String yesterday, StockFlow stockFlow, TaxCostLog yesterdayLog) {
+    private void cost(Stock st, String yesterday, StockFlow stockFlow, TaxCostLog yesterdayLog) {
         // ==null 说明当天没有采购入库操作，拿前天的数据去算，!=null 说明当天已经有入库操作了，那当前的数据去算
         // 上次的正品含税总成本
         long total = yesterdayLog.getStockNum() * yesterdayLog.getTaxCost();
@@ -205,7 +205,7 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
         common(taxCost,yesterdayLog.getTaxCost(),st,yesterday,changeNum,num);
     }
 
-    private void you(Stock st, String yesterday, TaxCostLog log, StockFlow stockFlow) {
+    private void noCost(Stock st, String yesterday, TaxCostLog log, StockFlow stockFlow) {
         // 前天的正品含税总成本
         long total = log.getStockNum() * log.getTaxCost();
         // 本次的采购入库总成本
