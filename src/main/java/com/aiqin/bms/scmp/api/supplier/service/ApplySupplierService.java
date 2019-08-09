@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplierR
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.CancelApplySupplierReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplierReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierUpdateReqVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplierDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplierListRespVO;
 
@@ -79,5 +80,16 @@ public interface ApplySupplierService{
      * @param applySupplierReqDTO
      */
     void workFlow(ApplySupplierReqDTO applySupplierReqDTO);
+
+    /**
+     *
+     * 功能描述: 返回详情接口请求参数
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/9 14:41
+     */
+    DetailRequestRespVo getInfoByForm(String formNo);
 
 }
