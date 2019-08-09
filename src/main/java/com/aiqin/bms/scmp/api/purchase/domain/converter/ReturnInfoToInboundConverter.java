@@ -44,7 +44,6 @@ import java.util.stream.Collectors;
  * <p>
  * 思维方式*热情*能力
  */
-@Component
 public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, List<InboundReqSave>> {
 
     private SkuService skuService;

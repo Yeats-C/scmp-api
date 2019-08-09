@@ -74,22 +74,57 @@ public class DashboardController {
 
     @GetMapping("/dashboard/dep/cate/proper/sales/amount")
     @ApiOperation("当月各部门品类属性下的销售情况")
-    public HttpResponse<List<DashboardDepCateProperSalesAmountRespVo>> selectDashboardDepCateProperSalesAmount(){
-        DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo = new DashboardDepCateProperSalesAmountReqVo();
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "stat_month", value = "年月", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "部门", type = "String"),
+    })
+    public HttpResponse<List<DashboardDepCateProperSalesAmountRespVo>> selectDashboardDepCateProperSalesAmount(@RequestParam(value = "stat_month", required = false) String statMonth,
+                                                                                                               @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+                                                                                                               @RequestParam(value = "product_sort_name", required = false) String productSortName){
+        DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo = new DashboardDepCateProperSalesAmountReqVo(statMonth,productSortCode,productSortName);
         return HttpResponse.success(dashboardService.selectDashboardDepCateProperSalesAmount(dashboardDepCateProperSalesAmountReqVo));
     }
 
     @GetMapping("/dashboard/dep/proper/sales/amount")
     @ApiOperation("当月各部门属性下的销售情况")
-    public HttpResponse<List<DashboardDepProperSalesAmountRespVo>> selectDashboardDepProperSalesAmount(){
-        DashboardDepProperSalesAmountReqVo dashboardDepProperSalesAmountReqVo = new DashboardDepProperSalesAmountReqVo();
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "stat_month", value = "年月", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "部门", type = "String"),
+    })
+    public HttpResponse<List<DashboardDepProperSalesAmountRespVo>> selectDashboardDepProperSalesAmount(@RequestParam(value = "stat_month", required = false) String statMonth,
+                                                                                                       @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+                                                                                                       @RequestParam(value = "product_sort_name", required = false) String productSortName){
+        DashboardDepProperSalesAmountReqVo dashboardDepProperSalesAmountReqVo = new DashboardDepProperSalesAmountReqVo(statMonth,productSortCode,productSortName);
         return HttpResponse.success(dashboardService.selectDashboardDepProperSalesAmount(dashboardDepProperSalesAmountReqVo));
     }
 
     @GetMapping("/dashboard/dep/cate/sales/amount")
     @ApiOperation("当月各部门品类下的销售情况")
-    public HttpResponse<List<DashboardDepCateSalesAmountRespVo>> selectDashboardDepCateSalesAmount(){
-        DashboardDepCateSalesAmountReqVo dashboardDepCateSalesAmountReqVo = new DashboardDepCateSalesAmountReqVo();
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "stat_month", value = "年月", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "部门", type = "String"),
+    })
+    public HttpResponse<List<DashboardDepCateSalesAmountRespVo>> selectDashboardDepCateSalesAmount(@RequestParam(value = "stat_month", required = false) String statMonth,
+                                                                                                   @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+                                                                                                   @RequestParam(value = "product_sort_name", required = false) String productSortName){
+        DashboardDepCateSalesAmountReqVo dashboardDepCateSalesAmountReqVo = new DashboardDepCateSalesAmountReqVo(statMonth,productSortCode,productSortName);
         return HttpResponse.success(dashboardService.selectDashboardDepCateSalesAmount(dashboardDepCateSalesAmountReqVo));
+    }
+
+    @GetMapping("/dashboard/dep/monthly/homocyclic/ratio/list")
+    @ApiOperation("当月部门销售同环比(带条件)")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "stat_month", value = "年月", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "部门", type = "String"),
+    })
+    public HttpResponse<List<DashboardDepMonthlyHomocyclicRatioRespVo>> selectDashboardDepMonthlyHomocyclicRatioList(@RequestParam(value = "stat_month", required = false) String statMonth,
+                                                                                                                     @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+                                                                                                                     @RequestParam(value = "product_sort_name", required = false) String productSortName){
+        DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo = new DashboardDepMonthlyHomocyclicRatioReqVo(statMonth,productSortCode,productSortName);
+        return HttpResponse.success(dashboardService.selectDashboardDepMonthlyHomocyclicRatioList(dashboardDepMonthlyHomocyclicRatioReqVo));
     }
 }

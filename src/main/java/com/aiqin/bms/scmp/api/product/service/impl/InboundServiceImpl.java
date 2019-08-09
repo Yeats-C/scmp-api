@@ -210,6 +210,17 @@ public class InboundServiceImpl implements InboundService {
                 List<ReturnInboundProduct> returnInboundProductList = inboundProductDao.selectTax(inboundResVo.getInboundOderCode(), inboundProduct.getSkuCode());
                 ReturnInboundProduct returnInboundProduct = returnInboundProductList.get(0);
                 inboundProduct.setTax(returnInboundProduct.getTax());
+                if(inboundProduct.getPraInboundNum() == 0 || Objects.isNull(inboundProduct.getPraInboundNum())){
+                    inboundProduct.setPraSingleCount(inboundProduct.getPraInboundMainNum());
+                }else{
+                    inboundProduct.setPraSingleCount(inboundProduct.getPraInboundMainNum() % inboundProduct.getPraInboundNum());
+                }
+
+                if(inboundProduct.getPreInboundNum() == 0 || Objects.isNull(inboundProduct.getPreInboundNum())){
+                    inboundProduct.setPreSingleCount(inboundProduct.getPreInboundMainNum());
+                }else{
+                    inboundProduct.setPreSingleCount(inboundProduct.getPreInboundMainNum()%inboundProduct.getPreInboundNum());
+                }
             });
             inboundResVo.setList(BeanCopyUtils.copyList(list, InboundProductResVo.class));
             if (null != inboundResVo) {
