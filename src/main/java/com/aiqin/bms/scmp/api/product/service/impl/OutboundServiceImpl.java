@@ -540,6 +540,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         log.info(" 出库单回传实体为 ：[{}]" + reqVo);
         try{ // 根据入库单编号查询旧的入库单主体
 
+//            Outbound outbound = outboundDao.selectById(reqVo.getId().toString());
+
             Outbound outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
 
             //保存日志
