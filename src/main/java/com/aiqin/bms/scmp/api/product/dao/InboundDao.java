@@ -46,4 +46,6 @@ public interface InboundDao {
     List<Inbound> selectTimeAndSatusBySourchAndNum(@Param("sourceOderCode")String sourceOderCode);
 
     String selectCreateById(String inboundOderCode);
+
+    Inbound selectById(String id);
 }
