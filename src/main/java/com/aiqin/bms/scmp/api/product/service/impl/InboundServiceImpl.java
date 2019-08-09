@@ -332,12 +332,6 @@ public class InboundServiceImpl implements InboundService {
         BeanCopyUtils.copy(inbound, inboundWmsReqVO);
         List<InboundProductWmsReqVO> inboundProductWmsReqVOS =  inboundProductDao.selectMmsReqByInboundOderCode(inbound.getInboundOderCode());
 
-        //去重
-        Set<InboundProductWmsReqVO> inboundProductWmsResVOSet = new HashSet<>(inboundProductWmsReqVOS);
-        inboundProductWmsReqVOS.clear();
-        inboundProductWmsReqVOS.addAll(inboundProductWmsResVOSet);
-        inboundWmsReqVO.setList(inboundProductWmsReqVOS);
-
 //        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVos = new ArrayList<>();
         try{
 //            if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
