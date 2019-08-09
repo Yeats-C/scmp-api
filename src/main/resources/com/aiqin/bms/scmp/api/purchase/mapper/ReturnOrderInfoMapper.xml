@@ -112,10 +112,14 @@
              a.product_num productNum,
              a.product_total_amount productTotalAmount,
              a.return_order_amount returnOrderAmount,
-             a.create_by_name acreate_by_name,
-             a.create_time acreate_time,
-             a.update_time aupdate_time,
-             a.update_by_name aupdate_by_name
+             a.create_by_name createByName,
+             a.create_time createTime,
+             a.update_time updateTime,
+             a.update_by_name updateByName,
+             a.actual_product_num actualProductNum,
+             a.actual_product_channel_total_amount actualProductChannelTotalAmount,
+             a.actual_product_total_amount actualProductTotalAmount,
+             a.product_channel_total_amount productChannelTotalAmount
       from return_order_info a
                left join return_order_info_item b
       on a.return_order_code = b.return_order_code
@@ -170,6 +174,7 @@
     <result column="awarehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="asupplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="acustomer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="acustomer_code" jdbcType="VARCHAR" property="customerCode" />
     <result column="aconsignee" jdbcType="VARCHAR" property="consignee" />
     <result column="aconsignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
     <result column="aaddress" jdbcType="VARCHAR" property="address" />
@@ -418,6 +423,7 @@
     <result column="awarehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
     <result column="asupplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="acustomer_name" jdbcType="VARCHAR" property="customerName" />
+    <result column="acustomer_code" jdbcType="VARCHAR" property="customerCode" />
     <result column="aconsignee" jdbcType="VARCHAR" property="consignee" />
     <result column="aconsignee_phone" jdbcType="VARCHAR" property="consigneePhone" />
     <result column="aaddress" jdbcType="VARCHAR" property="address" />
@@ -502,6 +508,7 @@
              a.warehouse_code awarehouse_code,
              a.district_name adistrict_name,
              a.customer_name acustomer_name,
+             a.customer_code acustomer_code,
              a.consignee aconsignee,
              a.consignee_phone aconsignee_phone,
              a.province_name aprovince_name,

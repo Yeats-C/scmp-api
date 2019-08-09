@@ -22,4 +22,13 @@ public  class DayUtil {
         SimpleDateFormat sf = new SimpleDateFormat("yyyy");
         return sf.format(date);
     }
+
+    public static String getMonthStr(){
+        Calendar ca = Calendar.getInstance();
+        ca.setTime(new Date());
+        ca.get((Calendar.MONTH) + 1);
+        Date date = ca.getTime();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM");
+        return sf.format(date);
+    }
 }
