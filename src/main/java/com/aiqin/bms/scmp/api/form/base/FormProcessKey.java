@@ -84,4 +84,9 @@ public interface FormProcessKey {
      */
     String APPLY_MOVE_LIBRARY = PREFIX + "APPLY_MOVE_LIBRARY";
 
+    /**
+     * 商品变价申请工作流
+     */
+    String APPLY_VARIABLE_PRICE = PREFIX + "APPLY_VARIABLE_PRICE";
+
 }

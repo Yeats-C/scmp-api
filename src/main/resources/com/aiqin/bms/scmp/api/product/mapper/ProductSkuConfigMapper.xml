@@ -98,6 +98,10 @@
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
     <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
     <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
@@ -119,7 +123,11 @@
       product_category_name,
       categories_supply_channels_code,
       categories_supply_channels_name,
-      goods_gifts
+      goods_gifts,
+      create_time,
+      create_by,
+      update_by,
+      update_time
     from product_sku
     where sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>

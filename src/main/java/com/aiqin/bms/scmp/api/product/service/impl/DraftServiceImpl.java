@@ -55,6 +55,8 @@ public class DraftServiceImpl implements DraftService {
     private ProductSkuConfigService productSkuConfigService;
     @Autowired
     private ProductSkuDraftMapper productSkuDraftMapper;
+    @Autowired
+    private ProductSkuSupplyUnitService productSkuSupplyUnitService;
 
 
     /**
@@ -144,7 +146,7 @@ public class DraftServiceImpl implements DraftService {
                 if(Objects.equals(reqVo.getConfigType(),DetailReqVo.DEL_CONFIG)){
                     productSkuConfigService.deleteDraftById(reqVo.getId());
                 } else if (Objects.equals(reqVo.getConfigType(),DetailReqVo.DEL_SUPPLIER)) {
-                    productSkuConfigService.deleteDraftById(reqVo.getId());
+                    productSkuSupplyUnitService.deleteDraftById(reqVo.getId());
                 }
             }
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {

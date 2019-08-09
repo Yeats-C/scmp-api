@@ -30,4 +30,6 @@ public interface PurchaseOrderProductDao {
     PurchaseOrderProduct selectPreNumAndPraNumBySkuCodeAndSource(@Param("code")String code, @Param("skuCode")String skuCode, @Param("id")Long id);
 
     List<PurchaseApplyDetailResponse> orderProductInfoByGroup(String purchaseOrderId);
+
+    List<PurchaseApplyDetailResponse> orderProductList(String purchaseOrderId);
 }

@@ -25,6 +25,10 @@
     <result column="city_name" jdbcType="VARCHAR" property="cityName" />
     <result column="district_id" jdbcType="VARCHAR" property="districtId" />
     <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
   </resultMap>
   <resultMap id="SupplyComDetailMap" type="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompanyDetailDTO">
     <result column="id" jdbcType="BIGINT" property="supplyComId" />
@@ -62,7 +66,10 @@
     <result column="star_score" jdbcType="DECIMAL" property="starScore" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
     <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName"/>
-
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
   </resultMap>
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -215,7 +222,11 @@
       sc.business_license,
       sc.star_score,
       sc.direct_supervisor_code,
-      sc.direct_supervisor_name
+      sc.direct_supervisor_name,
+      sc.create_time,
+      sc.create_by,
+      sc.update_time,
+      sc.update_by
     FROM supply_company sc
     left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and sc.supply_type = si.supplier_dictionary_value
     WHERE sc.id=#{id,jdbcType=BIGINT}

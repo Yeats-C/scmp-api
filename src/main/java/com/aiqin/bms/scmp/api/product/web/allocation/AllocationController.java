@@ -136,4 +136,10 @@ public class AllocationController {
         AllocationImportSkuReqVo allocationImportSkuReqVo = new AllocationImportSkuReqVo(file,transportCenterCode,warehouseCode,purchaseGroupCode);
         return HttpResponse.success(allocationService.importAllocationSku(allocationImportSkuReqVo));
     }
+
+    @GetMapping("/getIdByFormNo")
+    @ApiOperation("根据formNo获取主键ID")
+    public HttpResponse<Long> getIdByFormNo(@RequestParam String formNo){
+        return HttpResponse.success(allocationService.getIdByFormNo(formNo));
+    }
 }

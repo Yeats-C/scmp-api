@@ -11,7 +11,7 @@ public interface DashboardService {
     List<DashboardDepartAnnualSalesStatiRespVo> selectDashboardDepartAnnualSalesStati();
 
     // 月销售情况（不累计）
-    List<DashboardMonthlySalesStatiRespVo> selectDashboardMonthlySalesStati();
+    List<DashboardMonthlySalesStatiRespVo> selectDashboardMonthlySalesStati(DashboardMonthlySalesStatiReqVo dashboardMonthlySalesStatiReqVo);
 
     // 月销售情况（月累计）
     List<DashboardMonthlySalesStatiAccRespVo> selectDashboardMonthlySalesStatiAcc();
@@ -20,10 +20,10 @@ public interface DashboardService {
     List<DashboardMonthlyLossAmountRespVo> selectDashboardMonthlyLossAmount();
 
     // 当月部门销售同环比
-    List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo);
+    List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio();
 
     // 今年各亏损占比
-    List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio(DashboardAllKindsLossRatioReqVo dashboardAllKindsLossRatioReqVo);
+    List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio();
 
     // 当月各部门品类属性下的销售情况
     List<DashboardDepCateProperSalesAmountRespVo> selectDashboardDepCateProperSalesAmount(DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo);
@@ -33,4 +33,7 @@ public interface DashboardService {
 
     // 当月各部门品类下的销售情况
     List<DashboardDepCateSalesAmountRespVo> selectDashboardDepCateSalesAmount(DashboardDepCateSalesAmountReqVo dashboardDepCateSalesAmountReqVo);
+
+    // 当月部门销售同环比(带条件)
+    List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatioList(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo);
 }

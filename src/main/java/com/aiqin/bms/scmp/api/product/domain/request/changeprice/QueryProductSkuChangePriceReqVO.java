@@ -46,4 +46,13 @@ public class QueryProductSkuChangePriceReqVO extends PageReq {
 
     @ApiModelProperty("是否含有区域0否1是")
     private Integer beContainArea;
+
+    @ApiModelProperty("sku编码")
+    private String skuCode;
+
+    @ApiModelProperty("sku名称")
+    private String skuName;
+
+    @ApiModelProperty("标记不查供应商平台添加的")
+    private Boolean flag;
 }

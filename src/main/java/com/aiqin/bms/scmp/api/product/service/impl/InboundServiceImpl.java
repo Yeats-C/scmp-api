@@ -210,6 +210,17 @@ public class InboundServiceImpl implements InboundService {
                 List<ReturnInboundProduct> returnInboundProductList = inboundProductDao.selectTax(inboundResVo.getInboundOderCode(), inboundProduct.getSkuCode());
                 ReturnInboundProduct returnInboundProduct = returnInboundProductList.get(0);
                 inboundProduct.setTax(returnInboundProduct.getTax());
+                if(inboundProduct.getPraInboundNum() == 0 || Objects.isNull(inboundProduct.getPraInboundNum())){
+                    inboundProduct.setPraSingleCount(inboundProduct.getPraInboundMainNum());
+                }else{
+                    inboundProduct.setPraSingleCount(inboundProduct.getPraInboundMainNum() % inboundProduct.getPraInboundNum());
+                }
+
+                if(inboundProduct.getPreInboundNum() == 0 || Objects.isNull(inboundProduct.getPreInboundNum())){
+                    inboundProduct.setPreSingleCount(inboundProduct.getPreInboundMainNum());
+                }else{
+                    inboundProduct.setPreSingleCount(inboundProduct.getPreInboundMainNum()%inboundProduct.getPreInboundNum());
+                }
             });
             inboundResVo.setList(BeanCopyUtils.copyList(list, InboundProductResVo.class));
             if (null != inboundResVo) {
@@ -331,12 +342,6 @@ public class InboundServiceImpl implements InboundService {
         InboundWmsReqVO inboundWmsReqVO = new InboundWmsReqVO();
         BeanCopyUtils.copy(inbound, inboundWmsReqVO);
         List<InboundProductWmsReqVO> inboundProductWmsReqVOS =  inboundProductDao.selectMmsReqByInboundOderCode(inbound.getInboundOderCode());
-
-        //去重
-        Set<InboundProductWmsReqVO> inboundProductWmsResVOSet = new HashSet<>(inboundProductWmsReqVOS);
-        inboundProductWmsReqVOS.clear();
-        inboundProductWmsReqVOS.addAll(inboundProductWmsResVOSet);
-        inboundWmsReqVO.setList(inboundProductWmsReqVOS);
 
 //        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVos = new ArrayList<>();
         try{
@@ -790,17 +795,17 @@ public class InboundServiceImpl implements InboundService {
     public void inBoundReturnMovement(String allocationCode) {
 
         try {
-            productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__MOVEMENT.getName());
-
-            Movement allocation = movementDao.selectByCode(allocationCode);
+//            productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__MOVEMENT.getName());
+            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(), HandleTypeCoce.SUCCESS__MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
+            Allocation allocation = allocationMapper.selectByCode(allocationCode);
             //设置调拨状态
-            allocation.setMovementStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
-            allocation.setMovementStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
+            allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
+            allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
             //跟新调拨单状态
-            int k = movementDao.updateByPrimaryKeySelective(allocation);
+            int k = allocationMapper.updateByPrimaryKeySelective(allocation);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new GroundRuntimeException("调拨单更改入库状态失败");
+            throw new GroundRuntimeException("移库单更改入库状态失败");
         }
     }
 

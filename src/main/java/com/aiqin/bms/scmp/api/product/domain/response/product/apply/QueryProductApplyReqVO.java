@@ -40,6 +40,9 @@ public class QueryProductApplyReqVO extends PageReq {
     @ApiModelProperty("sku名称")
     private String skuName;
 
+    @ApiModelProperty("申请单号")
+    private String formNo;
+
     @ApiModelProperty("公司编码")
     private String companyCode;
 }

@@ -31,12 +31,19 @@ public class SupplierListRespVO {
     @ApiModelProperty("是否禁用")
     private String enable;
 
-    @ApiModelProperty("创建人")
+    @ApiModelProperty("更新人")
     private String updateBy;
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty("创建时间")
+    @ApiModelProperty("更新时间")
     private Date updateTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date createTime;
 
     @ApiModelProperty("下属公司数量")
     private Long subSupplierCompanyCount;

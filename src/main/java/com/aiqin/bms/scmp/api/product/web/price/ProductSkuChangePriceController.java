@@ -95,6 +95,24 @@ public class ProductSkuChangePriceController {
     public HttpResponse<BasePage<QueryProductSkuChangePriceRespVO>> list(@RequestBody QueryProductSkuChangePriceReqVO reqVO) {
         log.info("ProductSkuChangePriceController---list---入参：[{}]", JSONObject.toJSONString(reqVO));
         try {
+            reqVO.setFlag(true);
+            return HttpResponse.success(productSkuChangePriceService.list(reqVO));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/edit/list")
+    @ApiOperation("供应商变价列表")
+    public HttpResponse<BasePage<QueryProductSkuChangePriceRespVO>> listForEdit(@RequestBody QueryProductSkuChangePriceReqVO reqVO) {
+        log.info("ProductSkuChangePriceController---list---入参：[{}]", JSONObject.toJSONString(reqVO));
+        try {
+            //默认查状态为5的，5是供应商提交过来的。可以编辑
+            reqVO.setApplyStatus(5);
             return HttpResponse.success(productSkuChangePriceService.list(reqVO));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());

@@ -57,10 +57,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -533,8 +530,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         // 通过流水编码查询调拨单实体
         Allocation oldAllocation = new Allocation();
         AllocationDTO allocation  = allocationMapper.selectByFormNO1(vo1.getFormNo());
-        allocation.setUpdateBy(vo1.getApprovalUserName());
+        allocation.setUpdateBy(vo.getApprovalUserName());
         oldAllocation.setId(allocation.getId());
+        oldAllocation.setUpdateBy(vo.getApprovalUserName());
+        oldAllocation.setUpdateTime(new Date());
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             String content = ApplyStatus.APPROVAL_SUCCESS.getContent().replace("CREATEBY", allocation.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
             supplierCommonService.getInstance(
@@ -739,5 +738,22 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             e.printStackTrace();
             throw new GroundRuntimeException("导入异常");
         }
+    }
+
+    /**
+     * 功能描述: 根据formNo获取主键ID
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/8 19:38
+     */
+    @Override
+    public Long getIdByFormNo(String formNo) {
+        AllocationDTO allocation  = allocationMapper.selectByFormNO1(formNo);
+        if(null == allocation){
+            throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
+        }
+        return allocation.getId();
     }
 }
