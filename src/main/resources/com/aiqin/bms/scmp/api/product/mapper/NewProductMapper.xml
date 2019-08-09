@@ -481,7 +481,8 @@
         SELECT
         id,sku_code as skuCode,sku_name as skuName,product_sort_name as productSortName,
         product_property_name as productPropertyName,product_category_name as productCategoryName,
-        product_brand_name as productBrandName,create_time as createTime,create_by as createBy
+        product_brand_name as productBrandName,create_time as createTime,create_by as createBy,
+        update_time as updateTime,update_by as updateBy
         FROM product_sku psu WHERE psu.del_flag=0
         <if test="productCode!=null and productCode!=''">
             AND product_code=#{productCode,jdbcType=VARCHAR}

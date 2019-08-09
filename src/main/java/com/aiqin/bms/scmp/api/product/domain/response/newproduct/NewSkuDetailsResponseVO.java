@@ -32,4 +32,11 @@ public class NewSkuDetailsResponseVO {
     @ApiModelProperty("创建人")
     private String createBy;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date updateTime;
+
+    @ApiModelProperty("创建人")
+    private String updateBy;
+
 }

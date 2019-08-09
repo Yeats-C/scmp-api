@@ -55,6 +55,9 @@ public class QueryProductSkuChangePriceRespVO {
     @ApiModelProperty("操作人")
     private String operateBy;
 
+    @ApiModelProperty("流程编号")
+    private String formNo;
+
     @ApiModelProperty("操作时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date operateTime;
