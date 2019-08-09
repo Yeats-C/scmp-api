@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCom
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplierComAcctReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierComAcctReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComAcctInfo2RespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.QueryApplySupplierComAcctRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.QuerySupplierComAcctRespVo;
@@ -179,4 +180,16 @@ public interface ApplySupplyComAcctService{
      * @return
      */
     List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
+
+
+    /**
+     *
+     * 功能描述: 返回详情接口请求参数
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/9 14:41
+     */
+    DetailRequestRespVo getInfoByForm(String formNo);
 }
