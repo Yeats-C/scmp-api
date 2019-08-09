@@ -24,7 +24,7 @@ public interface DashboardDao {
     List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio(@Param("oneMonthStr") String oneMonthStr);
 
     // 今年各亏损占比
-    List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio(@Param("oneYearStr") String oneYearStr);
+    DashboardAllKindsLossRatioRespVo selectDashboardAllKindsLossRatio(@Param("oneYearStr") String oneYearStr);
 
     // 当月各部门品类属性下的销售情况
     List<DashboardDepCateProperSalesAmountRespVo> selectDashboardDepCateProperSalesAmount(DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo);

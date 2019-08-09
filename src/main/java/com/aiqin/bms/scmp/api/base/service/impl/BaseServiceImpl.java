@@ -16,18 +16,22 @@ import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.platform.flows.client.constant.FormUpdateUrlType;
 import com.aiqin.platform.flows.client.domain.vo.StartProcessParamVO;
 import com.aiqin.platform.flows.client.service.FormApplyCommonService;
+import com.aiqin.platform.flows.client.service.FormOperateService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -42,6 +46,8 @@ public class BaseServiceImpl implements BaseService {
 
     @Autowired
     private FormApplyCommonService formApplyCommonService;
+    @Resource
+    private FormOperateService formOperateService;
 
     @Override
     public AuthToken getUser(){
@@ -208,38 +214,16 @@ public class BaseServiceImpl implements BaseService {
     @Override
     public WorkFlowRespVO cancelWorkFlow(WorkFlowVO vo){
         log.info("BaseServiceImpl-cancelWorkFlow-工作流vo是：[{}]",JSON.toJSONString(vo));
-//        vo.setTimeStamp(System.currentTimeMillis()+"");
-        //TODO 从登陆人拿，目前暂时拿不到，现在先写死
-        vo.setTicket(UUID.randomUUID().toString());
-//        vo.setUsername(urlConfig.USER_NAME_KEY);
-//        vo.setCurrentPositionCode(urlConfig.CURRENT_POSITION_CODE_KEY);
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        vo.setUsername(currentAuthToken.getPersonId());
-        vo.setCurrentPositionCode(currentAuthToken.getPositionCode());
-        //调用审批的接口
-        Map<String, Object> stringObjectMap = objectToMap(vo);
-        String s = stringObjectMap.toString() + urlConfig.ENCRYPTION_KEY;
-        vo.setSign(MD5Utils.getMD5(s).toUpperCase());
-        //设置返回vo
+        HttpResponse httpResponse = formOperateService.commonCancel(vo.getFormNo(), currentAuthToken.getPersonId());
         WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
-        try {
-            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.get(urlConfig.WORKFLOW_CANCEL_URL));
-            httpClient.addParameter("s", JSON.toJSONString(vo));
-            log.info("调用审批流传入的参数是:[{}]",s);
-            String result1 = httpClient.action().result();
-            if(result1.startsWith("{")){
-                return JSON.parseObject(result1,WorkFlowRespVO.class);
-            }else {
-                log.info("审批接口数据返回错误，数据是：{}", result1);
-                workFlowRespVO.setSuccess(false);
-                workFlowRespVO.setMsg("审批接口数据返回错误");
-                return workFlowRespVO;
-            }
-        } catch (Exception e) {
-            workFlowRespVO.setSuccess(false);
-            workFlowRespVO.setMsg("调用审批接口失败");
-            return workFlowRespVO;
+        if(httpResponse.getCode().equals(MessageId.SUCCESS_CODE)){
+            workFlowRespVO.setSuccess(Boolean.TRUE);
+        }else {
+            workFlowRespVO.setSuccess(Boolean.FALSE);
+            workFlowRespVO.setMsg(httpResponse.getMessage());
         }
+        return workFlowRespVO;
     }
 
     @Override
