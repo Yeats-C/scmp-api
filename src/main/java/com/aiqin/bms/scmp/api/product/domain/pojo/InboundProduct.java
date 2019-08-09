@@ -98,4 +98,10 @@ public class InboundProduct {
 
     @ApiModelProperty(value="品牌名称")
     private String brandName;
+
+    @ApiModelProperty(value = "实际零数 展示用")
+    private Long praSingleCount;
+
+    @ApiModelProperty(value = "预计零数 展示用")
+    private Long preSingleCount;
 }
