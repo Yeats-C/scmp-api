@@ -453,7 +453,7 @@
     <include refid="Base_Column_MmsReq" />
     from inbound_product a
     left join inbound b on b.inbound_oder_code = a.inbound_oder_code
-    left join purchase_order_product c on a.sku_code = c.sku_code and b.source_oder_code = c.purchase_order_code
+    left join purchase_order_product c on a.linenum = c.id and b.source_oder_code = c.purchase_order_code
     where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
 
