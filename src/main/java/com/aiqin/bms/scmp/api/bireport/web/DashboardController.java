@@ -68,7 +68,7 @@ public class DashboardController {
 
     @GetMapping("/dashboard/all/kinds/loss/ratio")
     @ApiOperation("今年各亏损占比")
-    public HttpResponse<List<DashboardAllKindsLossRatioRespVo>> selectDashboardAllKindsLossRatio(){
+    public HttpResponse<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio(){
         return HttpResponse.success(dashboardService.selectDashboardAllKindsLossRatio());
     }
 

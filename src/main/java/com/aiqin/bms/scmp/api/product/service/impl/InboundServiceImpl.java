@@ -434,6 +434,7 @@ public class InboundServiceImpl implements InboundService {
         log.error("入库单回调实体传入实体:[{}]",JSON.toJSONString(reqVo));
         //根据编码，查询入库单主体
         Inbound inbound = inboundDao.selectByCode(reqVo.getInboundOderCode());
+//        Inbound inbound = inboundDao.selectById(reqVo.getId().toString());
         //设置默认实际数量
         inbound.setInboundTime(reqVo.getInboundTime());
         inbound.setPraInboundNum(0L);
@@ -459,11 +460,9 @@ public class InboundServiceImpl implements InboundService {
         //如果不是调拨在途数 状态则是9，退货是10.调拨是8
         if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.ALLOCATE.getCode())){
              stockChangeRequest.setOperationType(8);
-        }else if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.ORDER.getCode())){
-           stockChangeRequest.setOperationType(10);
         }else if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.MOVEMENT.getCode())){
              // 如果是移库
-            stockChangeRequest.setOperationType(8);
+            stockChangeRequest.setOperationType(10);
         }else {
             stockChangeRequest.setOperationType(9);
         }
@@ -473,7 +472,7 @@ public class InboundServiceImpl implements InboundService {
 
         for (InboundProductCallBackReqVo inboundProductCallBackReqVo : list) {
 
-            ReturnInboundProduct returnInboundProduct = inboundProductDao.selectByLinenum(reqVo.getInboundOderCode(),inboundProductCallBackReqVo.getSkuCode() ,inboundProductCallBackReqVo.getLinenum());
+            ReturnInboundProduct returnInboundProduct = inboundProductDao.selectByLinenum(inbound.getInboundOderCode(),inboundProductCallBackReqVo.getSkuCode() ,inboundProductCallBackReqVo.getLinenum());
             InboundProduct inboundProduct = new InboundProduct();
             // 复制旧的sku
             BeanCopyUtils.copy(returnInboundProduct,inboundProduct);

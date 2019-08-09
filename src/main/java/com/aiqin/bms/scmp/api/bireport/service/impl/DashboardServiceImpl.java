@@ -50,12 +50,14 @@ public class DashboardServiceImpl implements DashboardService{
     @Override
     public List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio() {
         String oneMonthStr = DayUtil.getMonthStr();
-        return dashboardDao.selectDashboardDepMonthlyHomocyclicRatio(oneMonthStr);
+        List<DashboardDepMonthlyHomocyclicRatioRespVo> dashboardDepMonthlyHomocyclicRatioRespVos  = dashboardDao.selectDashboardDepMonthlyHomocyclicRatio(oneMonthStr);
+        ratioCommon(dashboardDepMonthlyHomocyclicRatioRespVos);
+        return dashboardDepMonthlyHomocyclicRatioRespVos;
     }
 
     // 今年各亏损占比
     @Override
-    public List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio() {
+    public DashboardAllKindsLossRatioRespVo selectDashboardAllKindsLossRatio() {
         String oneYearStr = DayUtil.getYearStr(0);
         return dashboardDao.selectDashboardAllKindsLossRatio(oneYearStr);
     }
@@ -77,6 +79,21 @@ public class DashboardServiceImpl implements DashboardService{
 
     // 当月部门销售同环比(带条件)
     public List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatioList(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo){
-        return dashboardDao.selectDashboardDepMonthlyHomocyclicRatioList(dashboardDepMonthlyHomocyclicRatioReqVo);
+        List<DashboardDepMonthlyHomocyclicRatioRespVo> dashboardDepMonthlyHomocyclicRatioRespVos = dashboardDao.selectDashboardDepMonthlyHomocyclicRatioList(dashboardDepMonthlyHomocyclicRatioReqVo);
+        ratioCommon(dashboardDepMonthlyHomocyclicRatioRespVos);
+        return dashboardDepMonthlyHomocyclicRatioRespVos;
+    }
+
+    // 当月部门销售同环比(带条件和不带条件的截取年月共用类)
+    private void ratioCommon(List<DashboardDepMonthlyHomocyclicRatioRespVo> dashboardDepMonthlyHomocyclicRatioRespVos) {
+        for (DashboardDepMonthlyHomocyclicRatioRespVo dashboardDepMonthlyHomocyclicRatioRespVo: dashboardDepMonthlyHomocyclicRatioRespVos) {
+            String statMonth = dashboardDepMonthlyHomocyclicRatioRespVo.getStatMonth();
+            if (statMonth.substring(5, 6).equals("0")){
+                dashboardDepMonthlyHomocyclicRatioRespVo.setStatMonth(statMonth.substring(6, 7));
+            }else {
+                dashboardDepMonthlyHomocyclicRatioRespVo.setStatMonth(statMonth.substring(5, 7));
+            }
+            dashboardDepMonthlyHomocyclicRatioRespVo.setStatYear(statMonth.substring(0, 4));
+        }
     }
 }

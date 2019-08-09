@@ -23,7 +23,7 @@ public interface DashboardService {
     List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatio();
 
     // 今年各亏损占比
-    List<DashboardAllKindsLossRatioRespVo> selectDashboardAllKindsLossRatio();
+    DashboardAllKindsLossRatioRespVo selectDashboardAllKindsLossRatio();
 
     // 当月各部门品类属性下的销售情况
     List<DashboardDepCateProperSalesAmountRespVo> selectDashboardDepCateProperSalesAmount(DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo);
