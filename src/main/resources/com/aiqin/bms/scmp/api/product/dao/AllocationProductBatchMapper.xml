@@ -453,8 +453,8 @@
     select
     <include refid="Base_Column_OutBound_List" />
     from allocation_product_batch  a  left join   product_sku_pictures b
-    on a.sku_code = b.product_sku_code
+    on a.sku_code = b.product_sku_code  and b.main_picture=1
     where a.allocation_code = #{allocationCode,jdbcType=VARCHAR}
-      and b.main_picture=1
+
   </select>
 </mapper>
