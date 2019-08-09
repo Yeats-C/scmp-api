@@ -40,7 +40,7 @@
         dmss.curr_achieve_rate as currAchieveRate,
         dmss.pre_achieve_rate as preAchieveRate
         FROM dashboard_monthly_sales_stati dmss
-        where dmss.stat_year = #{oneYearStr}
+        where dmss.stat_year = #{statYear}
     </select>
     <select id="selectDashboardMonthlySalesStatiAcc" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiAccRespVo">
         SELECT
@@ -93,6 +93,7 @@
       ddmhr.distribution_sales_amount as distributionSalesAmount,
       ddmhr.distribution_margin as distributionMargin
       FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
+      where ddmhr.stat_month = #{oneMonthStr}
     </select>
     <select id="selectDashboardAllKindsLossRatio" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardAllKindsLossRatioRespVo">
         SELECT
@@ -103,6 +104,7 @@
         daklr.defective_effect_ratio as defectiveEffectRatio,
         daklr.stockout_ratio as stockoutRatio
         FROM dashboard_all_kinds_loss_ratio daklr
+        where daklr.stat_year = #{oneYearStr}
     </select>
     <select id="selectDashboardDepCateProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepProperSalesAmountRespVo">
         SELECT

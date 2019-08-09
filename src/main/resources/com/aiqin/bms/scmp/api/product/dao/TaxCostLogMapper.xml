@@ -22,7 +22,7 @@
         id,tax_date,stock_code,sku_code,sku_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,stock_num,stock_change_num,new_purchase_price,tax_cost_last_day,tax_cost,create_time
     </sql>
     <select id="selectByTaxDate" resultMap="BaseResultMap">
-        select <include refid="Base_sql"></include> from tax_cost_log where tax_date=#{taxDate} and warehouse_code=#{warehouseCode} and sku_code=#{skuCode}
+        select <include refid="Base_sql"></include> from tax_cost_log where tax_date=#{taxDate} and warehouse_code=#{warehouseCode} and sku_code=#{skuCode} ORDER BY create_time DESC limit 1
     </select>
     <insert id="insertOne">
         insert into tax_cost_log(

@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.web.inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundCallBackReqVo;
 import com.aiqin.bms.scmp.api.product.service.impl.InboundServiceImpl;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
@@ -16,6 +17,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.QueryInboundResVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -99,20 +101,20 @@ public class InboundController {
         return HttpResponse.success(inboundService.saveReturnGoodsToInbound(reqVo));
     }
 
-//    @ApiOperation("入库单回调接口")
-//    @PostMapping("/workFlowCallBack")
-//    public HttpResponse<Integer>workFlowCallBack(@RequestBody @Valid InboundCallBackReqVo reqVo){
-//
-//
-//        try {
-//            inboundService.workFlowCallBack(reqVo);
-//            return HttpResponse.success();
-//        } catch (Exception e) {
-//            log.error("入库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
-//            e.printStackTrace();
-//            return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
-//        }
-//    }
+    @ApiOperation("入库单回调接口")
+    @PostMapping("/workFlowCallBack")
+    public HttpResponse<Integer>workFlowCallBack(@RequestBody @Valid InboundCallBackReqVo reqVo){
+
+
+        try {
+            inboundService.workFlowCallBack(reqVo);
+            return HttpResponse.success();
+        } catch (Exception e) {
+            log.error("入库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
+        }
+    }
 
     @ApiOperation("根据入库单号查询入库商品批次详情")
     @GetMapping("/getInfoByOderCode")

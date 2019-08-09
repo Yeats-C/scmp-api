@@ -20,4 +20,12 @@ public interface StockFlowDao {
     StockFlow selectOneByHistoryCode(String lockCode);
 
     void insertBatch(@Param("stockFlows") List<StockFlow> stockFlows);
+
+    List<StockFlow> selectFlowByStockSku(@Param("yesterday") String yesterday,@Param("stockCode") String stockCode);
+
+    /**
+     * 回显出库库存成本
+     */
+    Integer updateStockCost(@Param("stockCost")Long stockCost, @Param("documentNum")String documentNum, @Param("skuCode")String skuCode);
+
 }

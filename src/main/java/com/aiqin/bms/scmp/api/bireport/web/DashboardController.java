@@ -39,8 +39,13 @@ public class DashboardController {
 
     @GetMapping("/dashboard/monthly/sales/stati")
     @ApiOperation("月销售情况（不累计）")
-    public HttpResponse<List<DashboardMonthlySalesStatiRespVo>> selectDashboardMonthlySalesStati(){
-        return HttpResponse.success(dashboardService.selectDashboardMonthlySalesStati());
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "stat_year", value = "年", type = "String"),
+    })
+    public HttpResponse<List<DashboardMonthlySalesStatiRespVo>> selectDashboardMonthlySalesStati(@RequestParam(value = "stat_year", required = false) String statYear){
+        DashboardMonthlySalesStatiReqVo dashboardMonthlySalesStatiReqVo = new DashboardMonthlySalesStatiReqVo();
+        dashboardMonthlySalesStatiReqVo.setStatYear(statYear);
+        return HttpResponse.success(dashboardService.selectDashboardMonthlySalesStati(dashboardMonthlySalesStatiReqVo));
     }
 
     @GetMapping("/dashboard/monthly/sales/stati/acc")
@@ -58,15 +63,13 @@ public class DashboardController {
     @GetMapping("/dashboard/dep/monthly/homocyclic/ratio")
     @ApiOperation("当月部门销售同环比")
     public HttpResponse<List<DashboardDepMonthlyHomocyclicRatioRespVo>> selectDashboardDepMonthlyHomocyclicRatio(){
-        DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo = new DashboardDepMonthlyHomocyclicRatioReqVo();
-        return HttpResponse.success(dashboardService.selectDashboardDepMonthlyHomocyclicRatio(dashboardDepMonthlyHomocyclicRatioReqVo));
+        return HttpResponse.success(dashboardService.selectDashboardDepMonthlyHomocyclicRatio());
     }
 
     @GetMapping("/dashboard/all/kinds/loss/ratio")
     @ApiOperation("今年各亏损占比")
     public HttpResponse<List<DashboardAllKindsLossRatioRespVo>> selectDashboardAllKindsLossRatio(){
-        DashboardAllKindsLossRatioReqVo dashboardAllKindsLossRatioReqVo = new DashboardAllKindsLossRatioReqVo();
-        return HttpResponse.success(dashboardService.selectDashboardAllKindsLossRatio(dashboardAllKindsLossRatioReqVo));
+        return HttpResponse.success(dashboardService.selectDashboardAllKindsLossRatio());
     }
 
     @GetMapping("/dashboard/dep/cate/proper/sales/amount")
