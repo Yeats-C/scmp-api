@@ -22,6 +22,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
+import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
@@ -117,6 +119,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     private ProductSkuPicturesDao productSkuPicturesDao;
     @Autowired
     private SupplierCommonService supplierCommonService;
+    @Autowired
+    private RejectRecordDao rejectRecordDao;
 
     /**
      * 分页查询以及搜索
@@ -349,11 +353,27 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
         BeanCopyUtils.copy(outbound,outboundResVo);
         if(null!=outboundResVo){
+            if(outboundResVo.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
+                RejectRecord rejectRecord = rejectRecordDao.selectByRejectCode(outboundResVo.getSourceOderCode());
+                outboundResVo.setRemark(rejectRecord.getRemark());
+            }
             List<OutboundProduct> list = outboundProductDao.selectByOutboundOderCode(outboundResVo.getOutboundOderCode());
             list.stream().forEach(outboundProduct -> {
                 List<ReturnOutboundProduct> returnOutboundProductList = outboundProductDao.selectTax(outboundResVo.getOutboundOderCode(), outboundProduct.getSkuCode());
                 ReturnOutboundProduct returnOutboundProduct = returnOutboundProductList.get(0);
                 outboundProduct.setTax(returnOutboundProduct.getInputTaxRate());
+
+                if(Objects.isNull(outboundProduct.getPraOutboundNum()) || outboundProduct.getPraOutboundNum() == 0){
+                    outboundProduct.setPraSingleCount(outboundProduct.getPraOutboundMainNum());
+                }else{
+                    outboundProduct.setPraSingleCount(outboundProduct.getPraOutboundMainNum() % outboundProduct.getPraOutboundNum());
+                }
+
+                if(Objects.isNull(outboundProduct.getPreOutboundNum()) || outboundProduct.getPreOutboundNum() == 0){
+                    outboundProduct.setPreSingleCount(outboundProduct.getPreOutboundMainNum());
+                }else{
+                    outboundProduct.setPreSingleCount(outboundProduct.getPreOutboundMainNum()%outboundProduct.getPreOutboundNum());
+                }
             });
             try{
                 outboundResVo.setList(BeanCopyUtils.copyList(list, OutboundProductResVo.class));
