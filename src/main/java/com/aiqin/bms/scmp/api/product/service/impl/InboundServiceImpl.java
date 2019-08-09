@@ -460,11 +460,9 @@ public class InboundServiceImpl implements InboundService {
         //如果不是调拨在途数 状态则是9，退货是10.调拨是8
         if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.ALLOCATE.getCode())){
              stockChangeRequest.setOperationType(8);
-        }else if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.ORDER.getCode())){
-           stockChangeRequest.setOperationType(10);
         }else if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.MOVEMENT.getCode())){
              // 如果是移库
-            stockChangeRequest.setOperationType(8);
+            stockChangeRequest.setOperationType(10);
         }else {
             stockChangeRequest.setOperationType(9);
         }
