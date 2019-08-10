@@ -717,7 +717,7 @@ mgs:
         name: 月累计品类销售图表
         link: '/chart/MTDCategorySales'
         icon: fa-home
-      - code: SCMP014003
+      - code: SCMP014005
         name: 月累计品类毛利图表
         link: '/chart/MTDCategoryGross'
         icon: fa-home
