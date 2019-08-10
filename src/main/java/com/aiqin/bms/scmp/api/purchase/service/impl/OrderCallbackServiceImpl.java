@@ -17,6 +17,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemR
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
 import com.aiqin.bms.scmp.api.product.mapper.PriceChannelMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProfitLossMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
@@ -31,6 +32,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
@@ -147,6 +149,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private SupplierCommonService supplierCommonService;
     @Resource
     private AllocationProductMapper allocationProductMapper;
+    @Resource
+    private ProfitLossMapper profitLossMapper;
 
     /**
      * 销售出库接口
@@ -550,6 +554,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse transfersOrder(TransfersRequest request) {
+        //TODO 调拨查询商品信息是查询库存的
         byte type;
         String typeName;
         String inboundOderCode = "";
@@ -735,7 +740,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         allocationProductMapper.saveList(allocationProductList);
     }
 
-
     /**
      * 报损报溢回调
      *
@@ -743,12 +747,44 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse profitLossOrder(ProfitLossRequest request) {
+        //根据详情信息 分为两个报损报溢单
+        Map<String, List<ProfitLossDetailRequest>> detailMap = request.getDetailList().stream().collect(Collectors.groupingBy(ProfitLossDetailRequest::getWarehouseCode));
+        ProfitLoss profitLoss;
+        List<ProfitLoss> profitLossList = Lists.newArrayList();
+        ProfitLossProduct profitLossProduct;
+        List<ProfitLossProduct> profitLossProductList = Lists.newArrayList();
+        //取字典表数据
+        List<InnerValue> dictionaryInfoList = supplierDictionaryInfoDao.allList();
+        Map<String, InnerValue> dictionaryInfoMap = dictionaryInfoList.stream().collect(Collectors.toMap(InnerValue::getName, innerValue -> innerValue));
+        for (String warehouseCode : detailMap.keySet()) {
+            profitLoss = new ProfitLoss();
+            //损溢类型
+            if (dictionaryInfoMap.containsKey(DictionaryEnum.LOSS_TYPE.getCode() + request.getProfLossType())) {
+//            profitLoss.setPaymentTypeCode(dictionaryInfoMap.get(DictionaryEnum.PAY_TYPE.getCode() + request.getPaymentType()).getValue());
+            }
+            for (ProfitLossDetailRequest profitLossDetailRequest : detailMap.get(warehouseCode)) {
 
+            }
+        }
         //添加损溢记录
 
+
+//        profitLossMapper.insertSelective(profitLoss);
         //库存变动操作
 
-        return null;
+        //操作类型 直接减库存 4
+        StockChangeRequest stockChangeRequest = new StockChangeRequest();
+        stockChangeRequest.setOperationType(4);
+//        List<StockVoRequest> list = handleProfitLossStockData(profitLoss.getDetailList(),COMPANY_CODE , COMPANY_NAME  , request.getOrderCode());
+//        stockChangeRequest.setStockVoRequests(list);
+        HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+        if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+            throw new GroundRuntimeException("dl回调    减库存异常");
+        }
+        return HttpResponse.success();
     }
+
+
 }
