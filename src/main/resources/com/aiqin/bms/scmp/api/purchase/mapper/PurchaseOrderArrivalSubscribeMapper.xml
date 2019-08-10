@@ -55,7 +55,7 @@
 	c.warehouse_name,ifnull(d.arrival_subscribe_status,0) arrival_subscribe_status,
 	CASE WHEN ifnull(d.arrival_subscribe_status,0)=0 THEN '未预约' when d.arrival_subscribe_status = 1 THEN '已预约'else '已预约待确认' END as arrival_subscribe_status_name,
     d.license_plate,d.arrival_subscribe_time,d.driver_name,d.phone_mobile,
-    d.remark,b.expect_arrival_time,b.valid_time,c.pre_inbound_num,
+    d.remark,b.expect_arrival_time,b.valid_time,c.pre_main_unit_num pre_inbound_num,
     c.pre_tax_amount,a.purchase_group_code,a.purchase_group_name,d.create_time,
     d.create_by, d.update_time,d.update_by
   </sql>
@@ -81,7 +81,7 @@
     FROM purchase_order a
     LEFT JOIN purchase_order_details b ON a.purchase_order_code = b.purchase_order_code
     LEFT JOIN inbound c ON a.purchase_order_code = c.source_oder_code
-    AND c.inbound_type_code = '1'
+    AND c.inbound_type_code = '1' and c.purchase_num = 1
     LEFT JOIN purchase_order_arrival_subscribe d ON c.inbound_oder_code = d.inbound_oder_code
     WHERE c.inbound_status_code IN (1, 2)
     AND a.purchase_order_status IN (3, 4, 5, 6)

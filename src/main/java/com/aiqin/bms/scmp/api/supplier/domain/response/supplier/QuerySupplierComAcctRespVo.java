@@ -44,6 +44,7 @@ public class QuerySupplierComAcctRespVo {
     private String createBy;
 
     @ApiModelProperty("修改时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @ApiModelProperty("修改人")

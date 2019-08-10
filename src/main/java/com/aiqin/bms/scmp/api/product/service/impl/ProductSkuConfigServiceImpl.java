@@ -1142,7 +1142,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                     if (i < 0 || i > 100) {
                         errorList.add("联营扣点(%)应在0-100之间");
                     }else {
-                        copy.setJointFranchiseRate(i*100);
+                        copy.setJointFranchiseRate(i);
                     }
                 }
             } catch (NumberFormatException e) {
@@ -1167,7 +1167,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                     if (i < 0 || i > 100) {
                         errorList.add("返点(%)应在0-100之间");
                     }else {
-                        copy.setPoint(i*100);
+                        copy.setPoint(i);
                     }
                 }
             } catch (NumberFormatException e) {
