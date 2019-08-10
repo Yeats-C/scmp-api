@@ -2322,4 +2322,17 @@
             AND warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
         </if>
     </select>
+    <select id="stockCountByOtherInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseStockResponse">
+        SELECT s.sku_code as skuCode,s.sku_name as skuName,s.transport_center_code as transportCenterCode,
+        s.transport_center_name as transportCenterName,s.warehouse_code as warehouseCode,s.warehouse_name as warehouseName,
+        s.available_num as availableNum, sc.large_inventory_warn_day as LargeInventoryWarnDay, ba.days_turnover as daysTurnover,
+        s.tax_cost as taxCost, ba.sales_avg_3_month_num as salesAvgMonthNum
+        FROM stock s
+        INNER JOIN product_sku_config sc
+        on s.sku_code = sc.sku_code and s.transport_center_code = sc.transport_center_code
+        LEFT JOIN bi_app_suggest_replenishment ba
+        on ba.sku_code = s.sku_code and s.transport_center_code = ba.transport_center_code
+        WHERE sc.config_status = 0 and s.sku_code = #{skuCode,jdbcType=VARCHAR}
+        and s.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR} and s.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

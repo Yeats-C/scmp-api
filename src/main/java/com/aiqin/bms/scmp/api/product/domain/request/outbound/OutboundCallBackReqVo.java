@@ -21,6 +21,24 @@ import java.util.List;
 @Data
 @ApiOperation("出库单wms回调请求实体")
 public class OutboundCallBackReqVo {
+//
+//    @ApiModelProperty("id")
+//    private Long id;
+//
+//    @ApiModelProperty("入库时间")
+//    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+//    private Date outboundTime;
+//
+//    @ApiModelProperty("实际主单位数量")
+//    private Long praMainUnitNum;
+//
+//    @ApiModelProperty("操作人")
+//    private String createById;
+//
+//    @ApiModelProperty("sku 列表")
+//    private List<OutboundProductCallBackReqVo> list;
+
+
 
     @ApiModelProperty("公司编码")
     private String companyCode;

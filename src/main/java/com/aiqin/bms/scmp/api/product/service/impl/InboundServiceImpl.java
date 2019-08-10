@@ -210,17 +210,6 @@ public class InboundServiceImpl implements InboundService {
                 List<ReturnInboundProduct> returnInboundProductList = inboundProductDao.selectTax(inboundResVo.getInboundOderCode(), inboundProduct.getSkuCode());
                 ReturnInboundProduct returnInboundProduct = returnInboundProductList.get(0);
                 inboundProduct.setTax(returnInboundProduct.getTax());
-                if(Objects.isNull(inboundProduct.getPraInboundNum()) || inboundProduct.getPraInboundNum() == 0){
-                    inboundProduct.setPraSingleCount(inboundProduct.getPraInboundMainNum());
-                }else{
-                    inboundProduct.setPraSingleCount(inboundProduct.getPraInboundMainNum() % inboundProduct.getPraInboundNum());
-                }
-
-                if(Objects.isNull(inboundProduct.getPreInboundNum()) || inboundProduct.getPreInboundNum() == 0){
-                    inboundProduct.setPreSingleCount(inboundProduct.getPreInboundMainNum());
-                }else{
-                    inboundProduct.setPreSingleCount(inboundProduct.getPreInboundMainNum()%inboundProduct.getPreInboundNum());
-                }
             });
             inboundResVo.setList(BeanCopyUtils.copyList(list, InboundProductResVo.class));
             if (null != inboundResVo) {
@@ -233,6 +222,17 @@ public class InboundServiceImpl implements InboundService {
                 List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
                 pageList.stream().forEach(logData -> logData.setStatus(inbound.getInboundStatusName()));
                 inboundResVo.setLogDataList(pageList);
+            }
+            if(Objects.isNull(inboundResVo.getPraInboundNum()) || inboundResVo.getPraInboundNum() == 0){
+                inboundResVo.setPraSingleCount(inboundResVo.getPraMainUnitNum());
+            }else{
+                inboundResVo.setPraSingleCount(inboundResVo.getPraMainUnitNum() % inboundResVo.getPraInboundNum());
+            }
+
+            if(Objects.isNull(inboundResVo.getPreInboundNum()) || inboundResVo.getPreInboundNum() == 0){
+                inboundResVo.setPreSingleCount(inboundResVo.getPreMainUnitNum());
+            }else{
+                inboundResVo.setPreSingleCount(inboundResVo.getPreMainUnitNum() % inboundResVo.getPreInboundNum());
             }
             return inboundResVo;
         } catch (Exception e) {

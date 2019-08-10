@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseAppl
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
+import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
@@ -39,6 +40,7 @@ import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -102,6 +104,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private BiStockoutDetailDao biStockoutDetailDao;
     @Resource
     private BiStockoutRateDao biStockoutRateDao;
+    @Resource
+    private StockDao stockDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -859,13 +863,125 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }else {
             list = contrastRequest.getProductList();
         }
+        if(CollectionUtils.isEmptyCollection(list)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 根据sku、仓库、库房去重
         List<PurchaseApplyDetailResponse> details =
                 list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
                         () -> new TreeSet<>(Comparator.comparing(o -> o.getSkuCode() + "#" + o.getTransportCenterCode()
-                        +  "#" + o.getWarehouseCode()))),
+                        +  "#" + o.getWarehouseCode() + "#" + o.getSupplierCode()))),
                         ArrayList::new));
-        LOGGER.info("--------------------------------------"+details);
+        //LOGGER.info("--------------------------------------"+details);
+        Long frontTurnover = 0L, frontPurchaseCost = 0L;
+        PurchaseNewContrastResponse response = new PurchaseNewContrastResponse();
+        Integer unsalableFrontCount = 0, stockCount = 0, unsalableAfterCount = 0;
+        for(PurchaseApplyDetailResponse detail:details){
+            // 查询库存周转天数、大库存预警天数、库存数量
+            if(StringUtils.isBlank(detail.getSkuCode()) || StringUtils.isBlank(detail.getTransportCenterCode()) ||
+            StringUtils.isBlank(detail.getWarehouseCode())){
+                continue;
+            }
+            PurchaseStockResponse stockResponse = stockDao.stockCountByOtherInfo(detail.getSkuCode(), detail.getTransportCenterCode(), detail.getWarehouseCode());
+            if(stockResponse == null){
+                continue;
+            }
+            // 查询sku对应的爱亲渠道价
+            Long channelPrice;
+            if(StringUtils.isNotBlank(detail.getSkuCode()) || StringUtils.isNotBlank(detail.getSupplierCode())){
+                channelPrice = productSkuPriceInfoDao.selectPriceTax(detail.getSkuCode(), detail.getSupplierCode());
+                if(channelPrice == null){
+                    channelPrice = 0L;
+                }
+            }else {
+                channelPrice = 0L;
+            }
+            // 库存数量
+            Long availableNum = stockResponse.getAvailableNum() == null ? 0L : stockResponse.getAvailableNum();
+            Long taxCost = stockResponse.getTaxCost() == null ? 0L : stockResponse.getTaxCost();
+            frontTurnover += availableNum * channelPrice;
+            frontPurchaseCost += availableNum * taxCost;
+            // 库存周转天数
+            Integer daysTurnover = stockResponse.getDaysTurnover() == null ? 0 : stockResponse.getDaysTurnover().intValue();
+            Integer largeInventoryWarnDay = stockResponse.getLargeInventoryWarnDay() == null ? 0 : stockResponse.getLargeInventoryWarnDay();
+            // 计算滞销个数
+            if(daysTurnover > largeInventoryWarnDay){
+                ++unsalableFrontCount;
+            }
+            if(availableNum <= 0){
+                ++stockCount;
+            }
+            Map<String, Integer> purchaseMap = this.purchaseMap(list);
+            StringBuilder sb = new StringBuilder();
+            sb.append(detail.getSkuCode());
+            sb.append("_");
+            sb.append(detail.getTransportCenterCode());
+            sb.append("_");
+            sb.append(detail.getWarehouseCode());
+            sb.append("_");
+            sb.append(detail.getSupplierCode());
+            // 采购数量
+            Integer purchaseCount = purchaseMap.get(sb.toString());
+            purchaseCount = purchaseCount == null ? 0 : purchaseCount;
+            // 近三月平均日销量
+            Double salesAvgMonthNum = stockResponse.getSalesAvgMonthNum() == null ? 0 : stockResponse.getSalesAvgMonthNum();
+            // 计算采购后的滞销数
+            if(purchaseCount + availableNum > largeInventoryWarnDay * salesAvgMonthNum){
+                ++unsalableAfterCount;
+            }
+        }
+        response.setFrontTurnover(frontTurnover);
+        response.setFrontPurchaseCost(frontPurchaseCost);
+        response.setFrontGrossProfit(frontTurnover - frontPurchaseCost);
+        this.purchaseAfter(list, response);
+        response.setFrontUnsalableSku(unsalableFrontCount);
+        response.setAfterUnsalableSku(unsalableAfterCount);
+        response.setSkuSum(details.size());
+        response.setFrontShortageCount(stockCount);
+        return HttpResponse.success(response);
+    }
 
-        return HttpResponse.success();
+    private void purchaseAfter(List<PurchaseApplyDetailResponse> list, PurchaseNewContrastResponse response){
+        Long afterTurnover = 0L, afterPurchaseCost = 0L;
+        for(PurchaseApplyDetailResponse detail:list){
+            // 销售价
+            Long channelPrice =  productSkuPriceInfoDao.selectPriceTax(detail.getSkuCode(), detail.getSupplierCode());
+            channelPrice = channelPrice == null ? 0L : channelPrice;
+            // 采购价
+            Long productAmount = detail.getProductAmount() == null ? 0L : detail.getProductAmount().longValue();
+            // 采购数量
+            Long singCount = detail.getSingleCount() == null ? 0L : detail.getSingleCount().longValue();
+            afterTurnover += channelPrice * singCount;
+            afterPurchaseCost += productAmount * singCount;
+        }
+        response.setAfterTurnover(response.getFrontTurnover() + afterTurnover);
+        response.setAfterPurchaseCost(response.getFrontPurchaseCost() + afterPurchaseCost);
+        response.setAfterGrossProfit(response.getAfterTurnover() - response.getAfterPurchaseCost());
+    }
+
+    private Map<String, Integer> purchaseMap(List<PurchaseApplyDetailResponse> list){
+        List<Map<String, Object>> data = new ArrayList<>();
+        HashMap<String, Object> map;
+        for(PurchaseApplyDetailResponse detail:list){
+            map = new HashMap<>();
+            map.put("skuCode", detail.getSkuCode());
+            map.put("transport", detail.getTransportCenterCode());
+            map.put("warehouse", detail.getWarehouseCode());
+            map.put("supplier", detail.getSupplierCode());
+            map.put("sum", detail.getSingleCount());
+            data.add(map);
+        }
+        Map<String, Integer> collect = data.stream().collect(Collectors.groupingBy(m -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(MapUtils.getString(m, "skuCode"));
+            sb.append("_");
+            sb.append(MapUtils.getString(m, "transport"));
+            sb.append("_");
+            sb.append(MapUtils.getString(m, "warehouse"));
+            sb.append("_");
+            sb.append(MapUtils.getString(m, "supplier"));
+            return sb.toString();
+        }, Collectors.summingInt(s -> MapUtils.getInteger(s, "sum"))));
+        return collect;
     }
 }

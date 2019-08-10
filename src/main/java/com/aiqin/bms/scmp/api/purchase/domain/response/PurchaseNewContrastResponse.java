@@ -23,9 +23,9 @@ public class PurchaseNewContrastResponse {
     @JsonProperty("front_gross_profit")
     private Long frontGrossProfit;
 
-    @ApiModelProperty(value="采购前_毛利率")
-    @JsonProperty("front_gross_rate")
-    private Long frontGrossRate;
+//    @ApiModelProperty(value="采购前_毛利率")
+//    @JsonProperty("front_gross_rate")
+//    private Long frontGrossRate;
 
     @ApiModelProperty(value="采购后_预计营业额")
     @JsonProperty("after_turnover")
@@ -39,31 +39,35 @@ public class PurchaseNewContrastResponse {
     @JsonProperty("after_gross_profit")
     private Long afterGrossProfit;
 
-    @ApiModelProperty(value="采购后_毛利率")
-    @JsonProperty("after_gross_rate")
-    private Long afterGrossRate;
+//    @ApiModelProperty(value="采购后_毛利率")
+//    @JsonProperty("after_gross_rate")
+//    private Long afterGrossRate;
 
     @ApiModelProperty(value="采购前_滞销sku数")
     @JsonProperty("front_unsalable_sku")
-    private Long frontUnsalableSku;
+    private Integer frontUnsalableSku;
 
-    @ApiModelProperty(value="采购前_滞销率")
-    @JsonProperty("front_unsalable_rate")
-    private Long frontUnsalableRate;
+//    @ApiModelProperty(value="采购前_滞销率")
+//    @JsonProperty("front_unsalable_rate")
+//    private Long frontUnsalableRate;
 
     @ApiModelProperty(value="采购后_滞销sku数")
     @JsonProperty("after_unsalable_sku")
-    private Long afterUnsalableSku;
+    private Integer afterUnsalableSku;
 
-    @ApiModelProperty(value="采购前_滞销率")
-    @JsonProperty("after_unsalable_rate")
-    private Long afterUnsalableRate;
+//    @ApiModelProperty(value="采购前_滞销率")
+//    @JsonProperty("after_unsalable_rate")
+//    private Long afterUnsalableRate;
 
-    @ApiModelProperty(value="采购前_缺货率")
-    @JsonProperty("front_shortage_rate")
-    private Long frontShortageRate;
+    @ApiModelProperty(value="采购前_缺货数")
+    @JsonProperty("front_shortage_count")
+    private Integer frontShortageCount;
 
-    @ApiModelProperty(value="采购后_缺货率")
-    @JsonProperty("after_shortage_rate")
-    private Long afterShortageRate;
+    @ApiModelProperty(value="采购后_缺货数")
+    @JsonProperty("after_shortage_count")
+    private Integer afterShortageCount;
+
+    @ApiModelProperty(value="总sku数")
+    @JsonProperty("sku_sum")
+    private Integer skuSum;
 }

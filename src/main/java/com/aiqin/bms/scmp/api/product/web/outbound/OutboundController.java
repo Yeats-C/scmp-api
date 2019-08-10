@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.web.outbound;
 
 import com.aiqin.bms.scmp.api.product.dao.OutboundBatchDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackReqVo;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -15,6 +16,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.QueryOutboundResVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -101,16 +103,16 @@ public class OutboundController {
     }
 
 
-//    @ApiOperation("出库单回调接口")
-//     @PostMapping("/workFlowCallBack")
-//    public HttpResponse<Integer>workFlowCallBack(@RequestBody  OutboundCallBackReqVo reqVo){
-//        log.error(" 出库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
-//        try {
-//            return HttpResponse.success(outboundService.workFlowCallBack(reqVo));
-//        } catch (Exception e) {
-//            return HttpResponse.failure(ResultCode.OUTBOUND_SAVE_ERROR);
-//        }
-//    }
+    @ApiOperation("出库单回调接口")
+     @PostMapping("/workFlowCallBack")
+    public HttpResponse<Integer>workFlowCallBack(@RequestBody OutboundCallBackReqVo reqVo){
+        log.error(" 出库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
+        try {
+            return HttpResponse.success(outboundService.workFlowCallBack(reqVo));
+        } catch (Exception e) {
+            return HttpResponse.failure(ResultCode.OUTBOUND_SAVE_ERROR);
+        }
+    }
 
     @ApiOperation("根据出库单号查询出库商品批次详情")
     @GetMapping("/getInfoByOderCode")
