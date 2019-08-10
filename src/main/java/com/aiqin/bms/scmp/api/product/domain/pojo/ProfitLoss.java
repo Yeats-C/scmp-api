@@ -29,11 +29,17 @@ public class ProfitLoss extends CommonBean {
     @ApiModelProperty("库房名称")
     private String warehouseName;
 
-    @ApiModelProperty("数量")
-    private Long quantity;
+    @ApiModelProperty("报溢数量")
+    private Long profitQuantity;
 
-    @ApiModelProperty("含税总成本")
-    private Long totalCostRate;
+    @ApiModelProperty("报溢含税总成本")
+    private Long profitTotalCostRate;
+
+    @ApiModelProperty("报损数量")
+    private Long lossQuantity;
+
+    @ApiModelProperty("报损含税总成本")
+    private Long lossTotalCostRate;
 
     @ApiModelProperty("备注")
     private String remark;
