@@ -226,7 +226,7 @@
     sum(p.actual_single_count) as actualSingleCount, o.create_by_name as createByName,
 		o.purchase_order_code as purchaseOrderCode, o.transport_center_code as transportCenterCode,
 		o.transport_center_name as transportCenterName, o.warehouse_code as warehouseCode,
-		o.warehouse_name as warehouseName
+		o.warehouse_name as warehouseName, p.tax_rate as taxRate
     from purchase_order_product p
 	inner join purchase_order o on p.purchase_order_id = o.purchase_order_id
     where o.purchase_order_id = #{purchaseOrderId, jdbcType=VARCHAR} GROUP BY o.transport_center_code, o.warehouse_code, p.sku_code
@@ -238,7 +238,7 @@
     p.purchase_single as purchaseSingle, p.base_product_content as baseProductContent, p.single_count as singleCount,
     p.product_amount as productAmount, p.product_total_amount as productTotalAmount, p.actual_single_count as actualSingleCount,
     o.transport_center_code as transportCenterCode, o.transport_center_name as transportCenterName, o.warehouse_code as warehouseCode,
-	o.warehouse_name as warehouseName
+	o.warehouse_name as warehouseName, o.supplier_code as supplierCode, o.supplier_name as supplierName
     from purchase_order_product p
 	inner join purchase_order o on p.purchase_order_id = o.purchase_order_id
     where p.purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
