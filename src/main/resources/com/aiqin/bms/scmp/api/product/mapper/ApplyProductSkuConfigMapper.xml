@@ -73,6 +73,7 @@
     <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
     <result column="auditor_status" jdbcType="INTEGER" property="applyStatus" />
     <result column="approval_type" jdbcType="INTEGER" property="approvalType"/>
+    <result column="apply_type" jdbcType="INTEGER" property="applyType"/>
     <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
   </resultMap>
   <select id="queryApplyList" parameterType="com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO"
@@ -85,7 +86,8 @@
         auditor_by,
         auditor_time,
         form_no,
-        2 as approval_type
+        2 as approval_type,
+        apply_type
       from apply_product_sku_config
       where company_code = #{companyCode}
       and apply_show = 0
