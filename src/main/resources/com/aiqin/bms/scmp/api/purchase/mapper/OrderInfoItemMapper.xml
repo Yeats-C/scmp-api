@@ -92,7 +92,7 @@
         and b.customer_name like concat('%',#{storeName},'%')
       </if>
       <if test="storeCode != null and storeCode != ''">
-        and b.customer_name like concat('%',#{storeCode},'%')
+        and b.customer_code like concat('%',#{storeCode},'%')
       </if>
       <if test="skuName != null and skuName != ''">
         and a.sku_name like concat('%',#{skuName},'%')
