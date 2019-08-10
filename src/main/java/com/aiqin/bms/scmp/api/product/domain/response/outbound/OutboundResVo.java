@@ -150,6 +150,12 @@ public class OutboundResVo  {
     @ApiModelProperty("备注")
     private String remark;
 
+    @ApiModelProperty(value = "实际零数 展示用")
+    private Long praSingleCount;
+
+    @ApiModelProperty(value = "预计零数 展示用")
+    private Long preSingleCount;
+
     @ApiModelProperty("sku列表")
     private List<OutboundProductResVo> list;
 

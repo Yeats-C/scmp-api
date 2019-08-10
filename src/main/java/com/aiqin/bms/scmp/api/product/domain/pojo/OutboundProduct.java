@@ -96,11 +96,4 @@ public class OutboundProduct {
     @ApiModelProperty("税率")
     private Long tax;
 
-    @ApiModelProperty(value = "实际零数 展示用")
-    private Long praSingleCount;
-
-    @ApiModelProperty(value = "预计零数 展示用")
-    private Long preSingleCount;
-
-
 }
