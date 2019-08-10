@@ -692,8 +692,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setSupplierName(purchaseOrder.getSupplierName());
         save.setPurchaseNum(purchaseStorage.getPurchaseNum());
         save.setCreateBy(purchaseStorage.getCreateByName());
+        save.setUpdateBy(purchaseStorage.getCreateByName());
         save.setCreateTime(Calendar.getInstance().getTime());
-        save.setInboundTime(Calendar.getInstance().getTime());
+        save.setUpdateTime(Calendar.getInstance().getTime());
         // 预计到货时间
         PurchaseApplyDetailResponse detail = purchaseOrderDetailsDao.purchaseOrderDetail(purchaseOrder.getPurchaseOrderCode());
         if(detail != null){
