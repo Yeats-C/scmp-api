@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
  * @version 1.0
  * @className ProfitLossController
  * @date 2019/6/28 12:48
- * @description TODO
  */
 @RestController
 @Api(tags = "损益管理接口")
