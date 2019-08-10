@@ -15,7 +15,7 @@ public class ProfitLoss extends CommonBean {
     private String orderCode;
 
     @ApiModelProperty("订单类型(0:报损 1:报益)")
-    private Byte orderType;
+    private Integer orderType;
 
     @ApiModelProperty("仓库编号")
     private String logisticsCenterCode;
