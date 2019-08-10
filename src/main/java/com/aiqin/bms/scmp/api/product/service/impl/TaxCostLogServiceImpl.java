@@ -123,7 +123,7 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
                         // 前一天数据
                         TaxCostLog yesterdayLog = taxCostLogDao.selectByTaxDate(yesterday, st.getWarehouseCode(), st.getSkuCode());
                         // 采购
-                        if (yesterdayLog.getTaxCost() == null){
+                        if (yesterdayLog == null){
                             noCost(st, yesterday, log, stockFlow);
                         }else{
                             cost(st, yesterday, stockFlow, yesterdayLog);
@@ -132,7 +132,7 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
                         // 前一天数据
                         TaxCostLog yesterdayLog = taxCostLogDao.selectByTaxDate(yesterday, st.getWarehouseCode(), st.getSkuCode());
                         // 调拨
-                        if (yesterdayLog.getTaxCost() == null){
+                        if (yesterdayLog == null){
                             noCost(st, yesterday, log, stockFlow);
                         }else {
                             cost(st, yesterday, stockFlow, yesterdayLog);
@@ -141,7 +141,7 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
                         // 退货
                         // 前一天数据
                         TaxCostLog yesterdayLog = taxCostLogDao.selectByTaxDate(yesterday, st.getWarehouseCode(), st.getSkuCode());
-                        if (yesterdayLog.getTaxCost() == null){
+                        if (yesterdayLog == null){
                             noCost(st, yesterday, log, stockFlow);
                         }else{
                             cost(st, yesterday, stockFlow, yesterdayLog);
@@ -150,7 +150,7 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
                         // 前一天数据
                         TaxCostLog yesterdayLog = taxCostLogDao.selectByTaxDate(yesterday, st.getWarehouseCode(), st.getSkuCode());
                         // 移库
-                        if (yesterdayLog.getTaxCost() == null){
+                        if (yesterdayLog == null){
                             noCost(st, yesterday, log, stockFlow);
                         }else{
                             cost(st, yesterday, stockFlow, yesterdayLog);
@@ -222,7 +222,7 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
     }
 
     public void costCommon(TaxCostLog todayLog,TaxCostLog log,StockFlow stockFlow){
-        if (todayLog.getTaxCost() == null){
+        if (todayLog == null){
             outboundProductDao.updateStockCost(log.getTaxCost(),stockFlow.getDocumentNum(),stockFlow.getSkuCode());
             stockFlowDao.updateStockCost(log.getTaxCost(),stockFlow.getDocumentNum(),stockFlow.getSkuCode());
         }else{
