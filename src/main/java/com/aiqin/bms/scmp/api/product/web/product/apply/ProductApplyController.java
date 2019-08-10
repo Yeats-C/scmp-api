@@ -1,14 +1,15 @@
 package com.aiqin.bms.scmp.api.product.web.product.apply;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.CancelReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -76,5 +77,13 @@ public class ProductApplyController {
             ex.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
+    }
+
+    @PostMapping("/getInfoByFormNo")
+    @ApiOperation("根据formNo获取情接口请求 审批类型 1:商品 2.配置 3.区域")
+    public HttpResponse<DetailRequestRespVo> getInfoByFormNo(@RequestParam String formNo,
+                                                             @RequestParam Integer approvalType){
+        log.info("ProductApplyController---getInfoByFormNo---类型:[{}],编码:[{}] ", approvalType,formNo);
+        return HttpResponse.successGenerics(productApplyService.getRequsetParam(formNo,approvalType));
     }
 }
