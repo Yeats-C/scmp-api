@@ -327,7 +327,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
      */
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
-    @Update
     public int updateByPrimaryKeySelective(Allocation record) {
         try{
             return allocationMapper.updateByPrimaryKeySelective(record);

@@ -178,6 +178,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 stockVo.setChangeNum(singleCount);
                 stockVo.setDocumentNum(product.getPurchaseOrderCode());
                 stockVo.setDocumentType(3);
+                stockVo.setTaxRate(product.getTaxRate().longValue());
                 list.add(stockVo);
             }
             stock.setStockVoRequests(list);

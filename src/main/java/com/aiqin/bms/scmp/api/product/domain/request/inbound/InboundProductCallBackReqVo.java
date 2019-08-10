@@ -63,4 +63,7 @@ public class InboundProductCallBackReqVo {
 
     @ApiModelProperty("行号")
     private Long linenum;
+
+    @ApiModelProperty("0商品 1赠品 2实物返回")
+    private int productType;
 }

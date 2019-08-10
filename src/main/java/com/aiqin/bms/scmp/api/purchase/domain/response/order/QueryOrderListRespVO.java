@@ -44,14 +44,26 @@ public class QueryOrderListRespVO {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
-    @ApiModelProperty("商品总金额")
-    private Long productTotalAmount;
-
     @ApiModelProperty("订单金额")
     private Long orderAmount;
 
+    @ApiModelProperty("商品分销价总金额")
+    private Long productTotalAmount;
+
+    @ApiModelProperty("商品渠道价总金额")
+    private Long productChannelTotalAmount;
+
     @ApiModelProperty("商品数量")
     private Long productNum;
+
+    @ApiModelProperty("实际发货数量")
+    private Long actualProductNum;
+
+    @ApiModelProperty("实际渠道总价")
+    private Long actualProductChannelTotalAmount;
+
+    @ApiModelProperty("实际分销总价")
+    private Long actualProductTotalAmount;
 
     @ApiModelProperty("创建人")
     private String createByName;

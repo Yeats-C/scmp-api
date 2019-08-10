@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseStockResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse;
 import org.apache.ibatis.annotations.Param;
 
@@ -182,4 +183,8 @@ public interface StockDao {
     List<RejectApplyDetailHandleResponse> rejectProductList(RejectProductRequest rejectQueryRequest);
 
     Integer rejectProductListCount(RejectProductRequest rejectQueryRequest);
+
+    PurchaseStockResponse stockCountByOtherInfo(@Param("skuCode") String skuCode,
+                                                @Param("transportCenterCode") String transportCenterCode,
+                                                @Param("warehouseCode") String warehouseCode);
 }

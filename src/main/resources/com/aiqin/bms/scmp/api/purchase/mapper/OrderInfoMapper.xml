@@ -112,9 +112,13 @@
              supplier_name supplierName,
              order_status orderStatus,
              create_date createDate,
-             product_total_amount productTotalAmount,
-             order_amount orderAmount,
              product_num productNum,
+             product_total_amount productTotalAmount,
+             product_channel_total_amount productChannelTotalAmount,
+             actual_product_num actualProductNum,
+             actual_product_channel_total_amount actualProductChannelTotalAmount,
+             actual_product_total_amount actualProductTotalAmount,
+             order_amount orderAmount,
              create_by_name createByName,
              create_time createTime,
              update_by_name updateByName,
@@ -122,10 +126,10 @@
       from order_info
       where company_code = #{companyCode} and order_type_code = #{orderType}
       <if test="createDateStart != null">
-        and create_date &gt;=#{createDateStart,jdbcType=TIMESTAMP}
+        and create_time &gt;=#{createDateStart,jdbcType=TIMESTAMP}
       </if>
       <if test="createDateEnd != null">
-        and create_date &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
+        and create_time &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
       </if>
       <if test="orderStatus != null and orderStatus != ''">
         and order_status = #{orderStatus}

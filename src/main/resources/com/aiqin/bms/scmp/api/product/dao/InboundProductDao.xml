@@ -468,7 +468,7 @@
     </if>
   </select>
   <select id="selectPurchaseInfoByPurchaseNum" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
-    select a.pra_inbound_num as actualSingleCount, a.sku_code as skuCode, a.sku_name as skuName,
+    select a.pra_inbound_main_num as actualSingleCount, a.sku_code as skuCode, a.sku_name as skuName,
     b.purchase_num as purchaseNum, b.source_oder_code as sourceOderCode, a.linenum
     from inbound_product a left join inbound b on a.inbound_oder_code = b.inbound_oder_code
     <where>
