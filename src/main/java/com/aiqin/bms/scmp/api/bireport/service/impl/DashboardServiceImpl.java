@@ -64,21 +64,29 @@ public class DashboardServiceImpl implements DashboardService{
 
     // 当月各部门品类属性下的销售情况
     public List<DashboardDepCateProperSalesAmountRespVo> selectDashboardDepCateProperSalesAmount(DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo){
+        String oneYearStr = DayUtil.getYearStr(0);
+        dashboardDepCateProperSalesAmountReqVo.setStatMonth(oneYearStr+"-"+dashboardDepCateProperSalesAmountReqVo.getStatMonth());
         return dashboardDao.selectDashboardDepCateProperSalesAmount(dashboardDepCateProperSalesAmountReqVo);
     }
 
     // 当月各部门属性下的销售情况
     public List<DashboardDepProperSalesAmountRespVo> selectDashboardDepProperSalesAmount(DashboardDepProperSalesAmountReqVo dashboardDepProperSalesAmountReqVo){
+        String oneYearStr = DayUtil.getYearStr(0);
+        dashboardDepProperSalesAmountReqVo.setStatMonth(oneYearStr+"-"+dashboardDepProperSalesAmountReqVo.getStatMonth());
         return dashboardDao.selectDashboardDepProperSalesAmount(dashboardDepProperSalesAmountReqVo);
     }
 
     // 当月各部门品类下的销售情况
     public List<DashboardDepCateSalesAmountRespVo> selectDashboardDepCateSalesAmount(DashboardDepCateSalesAmountReqVo dashboardDepCateSalesAmountReqVo){
+        String oneYearStr = DayUtil.getYearStr(0);
+        dashboardDepCateSalesAmountReqVo.setStatMonth(oneYearStr+"-"+dashboardDepCateSalesAmountReqVo.getStatMonth());
         return dashboardDao.selectDashboardDepCateSalesAmount(dashboardDepCateSalesAmountReqVo);
     }
 
     // 当月部门销售同环比(带条件)
     public List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatioList(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo){
+        String oneYearStr = DayUtil.getYearStr(0);
+        dashboardDepMonthlyHomocyclicRatioReqVo.setStatMonth(oneYearStr+"-"+dashboardDepMonthlyHomocyclicRatioReqVo.getStatMonth());
         List<DashboardDepMonthlyHomocyclicRatioRespVo> dashboardDepMonthlyHomocyclicRatioRespVos = dashboardDao.selectDashboardDepMonthlyHomocyclicRatioList(dashboardDepMonthlyHomocyclicRatioReqVo);
         ratioCommon(dashboardDepMonthlyHomocyclicRatioRespVos);
         return dashboardDepMonthlyHomocyclicRatioRespVos;
