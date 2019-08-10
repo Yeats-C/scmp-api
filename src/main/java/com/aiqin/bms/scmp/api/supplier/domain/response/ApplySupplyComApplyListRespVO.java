@@ -34,12 +34,19 @@ public class ApplySupplyComApplyListRespVO {
     @ApiModelProperty("采购组")
     private String purchaseGroupName;
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("修改时间")
     private Date updateTime;
 
     @ApiModelProperty("修改人")
     private String updateBy;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
 
     @ApiModelProperty("省")
     private String provinceName;
