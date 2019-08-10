@@ -66,21 +66,51 @@ public class DashboardServiceImpl implements DashboardService{
     public List<DashboardDepCateProperSalesAmountRespVo> selectDashboardDepCateProperSalesAmount(DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo){
         String oneYearStr = DayUtil.getYearStr(0);
         dashboardDepCateProperSalesAmountReqVo.setStatMonth(oneYearStr+"-"+dashboardDepCateProperSalesAmountReqVo.getStatMonth());
-        return dashboardDao.selectDashboardDepCateProperSalesAmount(dashboardDepCateProperSalesAmountReqVo);
+        List<DashboardDepCateProperSalesAmountRespVo> dashboardDepCateProperSalesAmountRespVos = dashboardDao.selectDashboardDepCateProperSalesAmount(dashboardDepCateProperSalesAmountReqVo);
+        for (DashboardDepCateProperSalesAmountRespVo dashboardDepCateProperSalesAmountRespVo: dashboardDepCateProperSalesAmountRespVos) {
+            String statMonth = dashboardDepCateProperSalesAmountRespVo.getStatMonth();
+            if (statMonth.substring(5, 6).equals("0")){
+                dashboardDepCateProperSalesAmountRespVo.setStatMonth(statMonth.substring(6, 7));
+            }else {
+                dashboardDepCateProperSalesAmountRespVo.setStatMonth(statMonth.substring(5, 7));
+            }
+            dashboardDepCateProperSalesAmountRespVo.setStatYear(statMonth.substring(0, 4));
+        }
+        return dashboardDepCateProperSalesAmountRespVos;
     }
 
     // 当月各部门属性下的销售情况
     public List<DashboardDepProperSalesAmountRespVo> selectDashboardDepProperSalesAmount(DashboardDepProperSalesAmountReqVo dashboardDepProperSalesAmountReqVo){
         String oneYearStr = DayUtil.getYearStr(0);
         dashboardDepProperSalesAmountReqVo.setStatMonth(oneYearStr+"-"+dashboardDepProperSalesAmountReqVo.getStatMonth());
-        return dashboardDao.selectDashboardDepProperSalesAmount(dashboardDepProperSalesAmountReqVo);
+        List<DashboardDepProperSalesAmountRespVo> dashboardDepProperSalesAmountRespVos = dashboardDao.selectDashboardDepProperSalesAmount(dashboardDepProperSalesAmountReqVo);
+        for (DashboardDepProperSalesAmountRespVo dashboardDepProperSalesAmountRespVo: dashboardDepProperSalesAmountRespVos) {
+            String statMonth = dashboardDepProperSalesAmountRespVo.getStatMonth();
+            if (statMonth.substring(5, 6).equals("0")){
+                dashboardDepProperSalesAmountRespVo.setStatMonth(statMonth.substring(6, 7));
+            }else {
+                dashboardDepProperSalesAmountRespVo.setStatMonth(statMonth.substring(5, 7));
+            }
+            dashboardDepProperSalesAmountRespVo.setStatYear(statMonth.substring(0, 4));
+        }
+        return dashboardDepProperSalesAmountRespVos;
     }
 
     // 当月各部门品类下的销售情况
     public List<DashboardDepCateSalesAmountRespVo> selectDashboardDepCateSalesAmount(DashboardDepCateSalesAmountReqVo dashboardDepCateSalesAmountReqVo){
         String oneYearStr = DayUtil.getYearStr(0);
         dashboardDepCateSalesAmountReqVo.setStatMonth(oneYearStr+"-"+dashboardDepCateSalesAmountReqVo.getStatMonth());
-        return dashboardDao.selectDashboardDepCateSalesAmount(dashboardDepCateSalesAmountReqVo);
+        List<DashboardDepCateSalesAmountRespVo> dashboardDepCateSalesAmountRespVos = dashboardDao.selectDashboardDepCateSalesAmount(dashboardDepCateSalesAmountReqVo);
+        for (DashboardDepCateSalesAmountRespVo dashboardDepCateSalesAmountRespVo: dashboardDepCateSalesAmountRespVos) {
+            String statMonth = dashboardDepCateSalesAmountRespVo.getStatMonth();
+            if (statMonth.substring(5, 6).equals("0")){
+                dashboardDepCateSalesAmountRespVo.setStatMonth(statMonth.substring(6, 7));
+            }else {
+                dashboardDepCateSalesAmountRespVo.setStatMonth(statMonth.substring(5, 7));
+            }
+            dashboardDepCateSalesAmountRespVo.setStatYear(statMonth.substring(0, 4));
+        }
+        return dashboardDepCateSalesAmountRespVos;
     }
 
     // 当月部门销售同环比(带条件)
