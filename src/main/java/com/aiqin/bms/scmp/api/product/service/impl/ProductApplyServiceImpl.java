@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -98,5 +99,32 @@ public class ProductApplyServiceImpl implements ProductApplyService {
             default: throw new BizException(MessageId.create(Project.PRODUCT_API,98,"请选择审批类型!"));
         }
         return num;
+    }
+
+    /**
+     * 功能描述: 根据formNo获取情接口请求
+     *
+     * @param formNo
+     * @param approvalType
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/10 15:27
+     */
+    @Override
+    public DetailRequestRespVo getRequsetParam(String formNo, Integer approvalType) {
+        DetailRequestRespVo respVo;
+        switch (approvalType){
+            case 1:
+                respVo = skuInfoService.getInfoByForm(formNo);
+                break;
+            case 2:
+                respVo = productSkuConfigService.getInfoByForm(formNo);
+                break;
+            case 3:
+                respVo = productSaleAreaService.getInfoByForm(formNo);
+                break;
+            default: throw new BizException(MessageId.create(Project.PRODUCT_API,98,"请选择审批类型!"));
+        }
+        return respVo;
     }
 }
