@@ -449,7 +449,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         String url = "";
         // 通过id查询 入库单主体
         try {
-            Thread.sleep(2000);
+            Thread.sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -532,7 +532,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     public int workFlowCallBack(OutboundCallBackReqVo reqVo) {
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -686,7 +686,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Async("myTaskAsyncPool")
     public void returnSource(Long id){
         try {
-            Thread.sleep(2000);
+            Thread.sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -814,7 +814,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Async("myTaskAsyncPool")
     public void returnOder(SupplyOrderInfoReqVO reqVO) {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -840,7 +840,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Async("myTaskAsyncPool")
     public void returnStorageResult(RejectStockRequest reqVO) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(30000);
         } catch (InterruptedException e) {
             e.printStackTrace();
             log.error("出库单回传退供参数为：[{}]", reqVO);
