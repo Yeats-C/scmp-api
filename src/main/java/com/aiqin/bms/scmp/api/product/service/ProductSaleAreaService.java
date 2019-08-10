@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductA
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.*;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
@@ -276,4 +277,6 @@ public interface ProductSaleAreaService {
      * @return com.aiqin.bms.scmp.api.base.BasePage<StoreInfo>
      */
     BasePage<StoreInfo> storeList(QueryStoreReqVO req);
+
+    DetailRequestRespVo getInfoByForm(String formNo);
 }

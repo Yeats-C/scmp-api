@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespV
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.CancelReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 
 /**
  * Description:
@@ -38,4 +39,16 @@ public interface ProductApplyService {
      * @return
      */
     Integer cancel(CancelReqVO reqVO);
+
+    /**
+     *
+     * 功能描述: 根据formNo获取情接口请求
+     *
+     * @param formNo
+     * @param approvalType
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/10 15:27
+     */
+    DetailRequestRespVo getRequsetParam(String formNo, Integer approvalType);
 }

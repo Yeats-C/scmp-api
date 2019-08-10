@@ -454,6 +454,8 @@
              a.purchasing_group_name purchaseGroupName,
              a.update_by updateBy,
              a.update_time updateTime,
+             a.create_by createBy,
+             a.create_time createTime,
              a.province_name provinceName,
              a.city_name cityName,
              a.district_name districtName

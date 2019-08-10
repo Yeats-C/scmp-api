@@ -23,6 +23,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogBean;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
@@ -825,6 +826,20 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         pageList.setPageSize(req.getPageSize());
         return pageList;
     }
+
+    @Override
+    public DetailRequestRespVo getInfoByForm(String formNo) {
+        DetailRequestRespVo respVo = new DetailRequestRespVo();
+        List<ApplyProductSkuSaleAreaMainDTO> list = applyProductSkuSaleAreaMainMapper.selectByFormNo(formNo);
+        if(CollectionUtils.isEmpty(list)){
+            throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
+        }
+        String applyCode = list.get(0).getApplyCode();
+        respVo.setApplyCode(applyCode);
+        respVo.setItemCode("3");
+        return respVo;
+    }
+
     @Override
     public BasePage<StoreInfo> storeList(QueryStoreReqVO req) {
         HttpResponse httpResponse =  storeApi.storeList(req);
