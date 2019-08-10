@@ -978,7 +978,7 @@
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
         st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.product_brand_name,ps.color_code,ps.color_name,
         ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name,
-        st.stockup_num,date_format(st.stockupfinish_time, '%Y-%m-%d %H:%i:%s') stockupfinish_time,
+        st.tax_cost,st.stockup_num,date_format(st.stockupfinish_time, '%Y-%m-%d %H:%i:%s') stockupfinish_time,
         date_format(st.create_time, '%Y-%m-%d %H:%i:%s') create_time,st.create_by,date_format(st.update_time, '%Y-%m-%d %H:%i:%s') update_time,st.update_by
         from stock as st
         LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
