@@ -1982,9 +1982,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuInfoImports)) {
             throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
         }
-        if (skuInfoImports.size()<3) {
-            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
-        }
+//        if (skuInfoImports.size()<3) {
+//            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+//        }
         String  head = SkuInfoImportUpdate.HEAD;
         boolean equals = skuInfoImports.get(1).toString().equals(head);
         if(!equals){
@@ -2616,7 +2616,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         flag = false;
                     }
                     if (flag) {
-                        purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight());
+                        purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight()/10000);
                     }
                     try {
                         purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
