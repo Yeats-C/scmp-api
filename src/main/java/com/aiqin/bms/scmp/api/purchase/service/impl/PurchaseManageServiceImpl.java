@@ -996,6 +996,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 stockVo.setChangeNum(singleCount - actualSingleCount);
                 stockVo.setDocumentNum(product.getPurchaseOrderCode());
                 stockVo.setDocumentType(3);
+                stockVo.setTaxRate(product.getTaxRate().longValue());
                 list.add(stockVo);
             }
             stock.setStockVoRequests(list);
@@ -1026,10 +1027,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getLinenum());
                     if(orderProduct != null){
                         Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
-                        Integer baseProductContent = orderProduct.getBaseProductContent() == null ? 0 : orderProduct.getBaseProductContent();
+                        Integer productAmount = orderProduct.getProductAmount() == null ? 0 : orderProduct.getProductAmount();
                         BeanUtils.copyProperties(orderProduct, product);
                         product.setActualSingleCount(actualSingleCount);
-                        product.setActualTaxSum(actualSingleCount * baseProductContent);
+                        product.setActualTaxSum(actualSingleCount * productAmount);
                     }
                 }
             }

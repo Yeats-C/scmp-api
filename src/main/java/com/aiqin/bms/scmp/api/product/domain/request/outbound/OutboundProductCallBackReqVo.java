@@ -18,6 +18,20 @@ import javax.validation.constraints.NotNull;
 @ApiModel("出库单skuWMS回调申请实体")
 public class OutboundProductCallBackReqVo {
 
+//    @ApiModelProperty("sku编号")
+//    private String skuCode;
+//
+//    @ApiModelProperty("实际入库主数量")
+//    private Long praOutboundMainNum;
+//
+//    @ApiModelProperty("实际含税进价")
+//    private Long praTaxPurchaseAmount;
+//
+//    @ApiModelProperty("行号")
+//    private Long linenum;
+
+
+
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
 

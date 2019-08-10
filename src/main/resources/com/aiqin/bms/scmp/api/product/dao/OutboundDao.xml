@@ -678,4 +678,11 @@
     select b.create_by_id from outbound a left join reject_record b on a.source_oder_code = b.reject_record_code
     where a.outbound_oder_code = #{outboundOderCode, jdbcType=VARCHAR}
   </select>
+
+  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
 </mapper>

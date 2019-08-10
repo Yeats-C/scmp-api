@@ -148,6 +148,12 @@ public class InboundResVo {
     @ApiModelProperty("更新时间")
     private Date updateTime;
 
+    @ApiModelProperty(value = "实际零数 展示用")
+    private Long praSingleCount;
+
+    @ApiModelProperty(value = "预计零数 展示用")
+    private Long preSingleCount;
+
     @ApiModelProperty("sku")
     private List<InboundProductResVo> list;
 

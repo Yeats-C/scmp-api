@@ -362,18 +362,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 List<ReturnOutboundProduct> returnOutboundProductList = outboundProductDao.selectTax(outboundResVo.getOutboundOderCode(), outboundProduct.getSkuCode());
                 ReturnOutboundProduct returnOutboundProduct = returnOutboundProductList.get(0);
                 outboundProduct.setTax(returnOutboundProduct.getInputTaxRate());
-
-                if(Objects.isNull(outboundProduct.getPraOutboundNum()) || outboundProduct.getPraOutboundNum() == 0){
-                    outboundProduct.setPraSingleCount(outboundProduct.getPraOutboundMainNum());
-                }else{
-                    outboundProduct.setPraSingleCount(outboundProduct.getPraOutboundMainNum() % outboundProduct.getPraOutboundNum());
-                }
-
-                if(Objects.isNull(outboundProduct.getPreOutboundNum()) || outboundProduct.getPreOutboundNum() == 0){
-                    outboundProduct.setPreSingleCount(outboundProduct.getPreOutboundMainNum());
-                }else{
-                    outboundProduct.setPreSingleCount(outboundProduct.getPreOutboundMainNum()%outboundProduct.getPreOutboundNum());
-                }
             });
             try{
                 outboundResVo.setList(BeanCopyUtils.copyList(list, OutboundProductResVo.class));
@@ -387,6 +375,17 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     List<LogData> pageList = productOperationLogService.getLogType(operationLogVo);
                     pageList.stream().forEach(logData -> logData.setStatus(outbound.getOutboundStatusName()));
                     outboundResVo.setLogDataList(pageList);
+                }
+                if(Objects.isNull(outboundResVo.getPraOutboundNum()) || outboundResVo.getPraOutboundNum() == 0){
+                    outboundResVo.setPraSingleCount(outboundResVo.getPraMainUnitNum());
+                }else{
+                    outboundResVo.setPraSingleCount(outboundResVo.getPraMainUnitNum() % outboundResVo.getPraOutboundNum());
+                }
+
+                if(Objects.isNull(outboundResVo.getPreOutboundNum()) || outboundResVo.getPreOutboundNum() == 0){
+                    outboundResVo.setPreSingleCount(outboundResVo.getPreMainUnitNum());
+                }else{
+                    outboundResVo.setPreSingleCount(outboundResVo.getPreMainUnitNum() % outboundResVo.getPreOutboundNum());
                 }
                 return outboundResVo;
             }catch (Exception e){
@@ -539,6 +538,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }
         log.info(" 出库单回传实体为 ：[{}]" + reqVo);
         try{ // 根据入库单编号查询旧的入库单主体
+
+//            Outbound outbound = outboundDao.selectById(reqVo.getId().toString());
 
             Outbound outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
 
