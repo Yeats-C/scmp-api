@@ -116,7 +116,9 @@ public class DashboardServiceImpl implements DashboardService{
     // 当月部门销售同环比(带条件)
     public List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatioList(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo){
         String oneYearStr = DayUtil.getYearStr(0);
-        dashboardDepMonthlyHomocyclicRatioReqVo.setStatMonth(oneYearStr+"-"+dashboardDepMonthlyHomocyclicRatioReqVo.getStatMonth());
+        String monthStr = DayUtil.getMonthStr();
+        dashboardDepMonthlyHomocyclicRatioReqVo.setBeginStatDate(oneYearStr+"-01");
+        dashboardDepMonthlyHomocyclicRatioReqVo.setFinishStatDate(monthStr);
         List<DashboardDepMonthlyHomocyclicRatioRespVo> dashboardDepMonthlyHomocyclicRatioRespVos = dashboardDao.selectDashboardDepMonthlyHomocyclicRatioList(dashboardDepMonthlyHomocyclicRatioReqVo);
         ratioCommon(dashboardDepMonthlyHomocyclicRatioRespVos);
         return dashboardDepMonthlyHomocyclicRatioRespVos;

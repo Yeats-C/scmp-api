@@ -212,8 +212,11 @@
         ddmhr.distribution_margin as distributionMargin
         FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
         where 1=1
-        <if test="statMonth!=null and statMonth!=''">
-            and ddmhr.stat_month=#{statMonth}
+        <if test="beginStatDate!=null and beginStatDate!=''">
+            and ddmhr.stat_month between #{beginStatDate}
+        </if>
+        <if test="finishStatDate!=null and finishStatDate!=''">
+            and #{finishStatDate}
         </if>
         <if test="productSortCode!=null and productSortCode!=''">
             and ddmhr.product_sort_code=#{productSortCode}
