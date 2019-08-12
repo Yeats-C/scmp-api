@@ -21,7 +21,7 @@ import java.util.List;
 @ApiModel("物流中心请求修改实体")
 public class UpdateLogisticsCenterReqVo {
     @ApiModelProperty("主键")
-    @NotNull(message = "id不能为空")
+//    @NotNull(message = "id不能为空")
     private Long id;
 
     @ApiModelProperty("物流中心编码")
@@ -35,6 +35,9 @@ public class UpdateLogisticsCenterReqVo {
     @ApiModelProperty("启用禁用状态")
     @NotNull(message = "启用禁用状态能为空")
     private Byte enable;
+
+    @ApiModelProperty("排序")
+    private Integer logisticsCenterOrder;
 
     @ApiModelProperty("服务区范围")
     @Valid

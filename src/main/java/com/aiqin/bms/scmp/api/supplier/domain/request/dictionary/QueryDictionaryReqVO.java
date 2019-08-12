@@ -30,6 +30,10 @@ public class QueryDictionaryReqVO extends PageReq {
 
     @ApiModelProperty("字典名称")
     private String dictionaryName;
+
+    @ApiModelProperty("字典名称")
+    private String dictionaryCode;
+
     @ApiModelProperty("0 启用/1 禁用")
     private Byte enabled;
 

@@ -9,7 +9,8 @@
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode" />
-    <result column="base_product_content" jdbcType="VARCHAR" property="baseProductContent" />
+    <result column="base_product_content" jdbcType="BIGINT" property="baseProductContent" />
+    <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
@@ -30,6 +31,13 @@
     from product_sku_purchase_info
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getList" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
+    select
+     id, product_code, spec, product_name, unit_code, unit_name, purchase_code as bar_code, base_product_content,
+     del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,1 as `type`
+    from product_sku_purchase_info
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_purchase_info
     where id = #{id,jdbcType=BIGINT}
@@ -40,13 +48,13 @@
       purchase_code, base_product_content, del_flag, 
       create_time, create_by, update_time, 
       update_by, product_sku_code, product_sku_name, 
-      apply_code)
+      apply_code,zero_removal_coefficient)
     values (#{id,jdbcType=BIGINT}, #{productCode,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, 
       #{productName,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, 
       #{purchaseCode,jdbcType=VARCHAR}, #{baseProductContent,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR}, #{productSkuCode,jdbcType=VARCHAR}, #{productSkuName,jdbcType=VARCHAR}, 
-      #{applyCode,jdbcType=VARCHAR})
+      #{applyCode,jdbcType=VARCHAR}, #{zeroRemovalCoefficient,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo">
     insert into product_sku_purchase_info
@@ -99,6 +107,9 @@
       <if test="applyCode != null">
         apply_code,
       </if>
+      <if test="zeroRemovalCoefficient != null">
+        zero_removal_coefficient,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -148,6 +159,9 @@
       </if>
       <if test="applyCode != null">
         #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="zeroRemovalCoefficient != null">
+        #{zeroRemovalCoefficient,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -199,6 +213,9 @@
       <if test="applyCode != null">
         apply_code = #{applyCode,jdbcType=VARCHAR},
       </if>
+      <if test="zeroRemovalCoefficient != null">
+        zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -218,7 +235,8 @@
       update_by = #{updateBy,jdbcType=VARCHAR},
       product_sku_code = #{productSkuCode,jdbcType=VARCHAR},
       product_sku_name = #{productSkuName,jdbcType=VARCHAR},
-      apply_code = #{applyCode,jdbcType=VARCHAR}
+      apply_code = #{applyCode,jdbcType=VARCHAR},
+      zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

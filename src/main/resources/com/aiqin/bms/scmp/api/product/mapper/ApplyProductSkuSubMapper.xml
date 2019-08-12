@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSubMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSub">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="main_sku_code" jdbcType="VARCHAR" property="mainSkuCode" />
+    <result column="main_sku_name" jdbcType="VARCHAR" property="mainSkuName" />
+    <result column="sub_sku_code" jdbcType="VARCHAR" property="subSkuCode" />
+    <result column="sub_sku_name" jdbcType="VARCHAR" property="subSkuName" />
+    <result column="sub_sku_num" jdbcType="INTEGER" property="subSkuNum" />
+    <result column="main_product" jdbcType="TINYINT" property="mainProduct" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, main_sku_code, main_sku_name, sub_sku_code, sub_sku_name, sub_sku_num, main_product, 
+    apply_code, del_flag, create_time, create_by, update_time, update_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from apply_product_sku_sub
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="getApply" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_product_sku_sub
+    where main_sku_code = #{skuCode,jdbcType=VARCHAR}
+    and apply_code =  #{applyCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getApplys" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSubDraftMapper.RespResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSubDraftMapper.Resp_Column_List" />
+    from apply_product_sku_sub a
+    LEFT JOIN product_sku b ON a.sub_sku_code = b.sku_code
+    LEFT JOIN product_sku_distribution_info c on a.sub_sku_code = c.product_sku_code
+    where a.main_sku_code = #{skuCode,jdbcType=VARCHAR}
+    and a.apply_code =  #{applyCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from apply_product_sku_sub
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSub">
+    insert into apply_product_sku_sub (id, main_sku_code, main_sku_name, 
+      sub_sku_code, sub_sku_name, sub_sku_num, 
+      main_product, apply_code, del_flag, 
+      create_time, create_by, update_time, 
+      update_by)
+    values (#{id,jdbcType=BIGINT}, #{mainSkuCode,jdbcType=VARCHAR}, #{mainSkuName,jdbcType=VARCHAR}, 
+      #{subSkuCode,jdbcType=VARCHAR}, #{subSkuName,jdbcType=VARCHAR}, #{subSkuNum,jdbcType=INTEGER}, 
+      #{mainProduct,jdbcType=TINYINT}, #{applyCode,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into apply_product_sku_sub (main_sku_code, main_sku_name,
+      sub_sku_code, sub_sku_name, sub_sku_num,
+      main_product, apply_code, del_flag,
+      create_time, create_by, update_time,
+      update_by)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.mainSkuCode,jdbcType=VARCHAR}, #{item.mainSkuName,jdbcType=VARCHAR},
+      #{item.subSkuCode,jdbcType=VARCHAR}, #{item.subSkuName,jdbcType=VARCHAR}, #{item.subSkuNum,jdbcType=INTEGER},
+      #{item.mainProduct,jdbcType=TINYINT}, #{item.applyCode,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSub">
+    insert into apply_product_sku_sub
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="mainSkuCode != null">
+        main_sku_code,
+      </if>
+      <if test="mainSkuName != null">
+        main_sku_name,
+      </if>
+      <if test="subSkuCode != null">
+        sub_sku_code,
+      </if>
+      <if test="subSkuName != null">
+        sub_sku_name,
+      </if>
+      <if test="subSkuNum != null">
+        sub_sku_num,
+      </if>
+      <if test="mainProduct != null">
+        main_product,
+      </if>
+      <if test="applyCode != null">
+        apply_code,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="mainSkuCode != null">
+        #{mainSkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mainSkuName != null">
+        #{mainSkuName,jdbcType=VARCHAR},
+      </if>
+      <if test="subSkuCode != null">
+        #{subSkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="subSkuName != null">
+        #{subSkuName,jdbcType=VARCHAR},
+      </if>
+      <if test="subSkuNum != null">
+        #{subSkuNum,jdbcType=INTEGER},
+      </if>
+      <if test="mainProduct != null">
+        #{mainProduct,jdbcType=TINYINT},
+      </if>
+      <if test="applyCode != null">
+        #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSub">
+    update apply_product_sku_sub
+    <set>
+      <if test="mainSkuCode != null">
+        main_sku_code = #{mainSkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mainSkuName != null">
+        main_sku_name = #{mainSkuName,jdbcType=VARCHAR},
+      </if>
+      <if test="subSkuCode != null">
+        sub_sku_code = #{subSkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="subSkuName != null">
+        sub_sku_name = #{subSkuName,jdbcType=VARCHAR},
+      </if>
+      <if test="subSkuNum != null">
+        sub_sku_num = #{subSkuNum,jdbcType=INTEGER},
+      </if>
+      <if test="mainProduct != null">
+        main_product = #{mainProduct,jdbcType=TINYINT},
+      </if>
+      <if test="applyCode != null">
+        apply_code = #{applyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSub">
+    update apply_product_sku_sub
+    set main_sku_code = #{mainSkuCode,jdbcType=VARCHAR},
+      main_sku_name = #{mainSkuName,jdbcType=VARCHAR},
+      sub_sku_code = #{subSkuCode,jdbcType=VARCHAR},
+      sub_sku_name = #{subSkuName,jdbcType=VARCHAR},
+      sub_sku_num = #{subSkuNum,jdbcType=INTEGER},
+      main_product = #{mainProduct,jdbcType=TINYINT},
+      apply_code = #{applyCode,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

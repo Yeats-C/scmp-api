@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.SupervisoryWarehouseOrderProductMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="order_type" jdbcType="TINYINT" property="orderType" />
+    <result column="order_type_name" jdbcType="VARCHAR" property="orderTypeName" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="base_product_content" jdbcType="INTEGER" property="baseProductContent" />
+    <result column="single_count" jdbcType="INTEGER" property="singleCount" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="sku_batch_number" jdbcType="VARCHAR" property="skuBatchNumber" />
+    <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
+    <result column="product_amount" jdbcType="INTEGER" property="productAmount" />
+    <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
+    <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="line_num" jdbcType="INTEGER" property="lineNum" />
+    <result column="box_gross_weight" jdbcType="BIGINT" property="boxGrossWeight" />
+    <result column="net_weight" jdbcType="BIGINT" property="netWeight" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_code, order_type, order_type_name, sku_code, sku_name, num, base_product_content, 
+    single_count, product_date, sku_batch_number, tax_rate, product_amount, product_total_amount, 
+    brand_id, brand_name, category_id, category_name, product_spec, color_name, model_number, 
+    del_flag, create_time, create_by, update_time, update_by, unit_code, unit_name, line_num, 
+    box_gross_weight, net_weight
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from supervisory_warehouse_order_product
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from supervisory_warehouse_order_product
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct">
+    insert into supervisory_warehouse_order_product (id, order_code, order_type, 
+      order_type_name, sku_code, sku_name, 
+      num, base_product_content, single_count, 
+      product_date, sku_batch_number, tax_rate, 
+      product_amount, product_total_amount, brand_id, 
+      brand_name, category_id, category_name, 
+      product_spec, color_name, model_number, 
+      del_flag, create_time, create_by, 
+      update_time, update_by, unit_code, 
+      unit_name, line_num, box_gross_weight, 
+      net_weight)
+    values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=TINYINT}, 
+      #{orderTypeName,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
+      #{num,jdbcType=INTEGER}, #{baseProductContent,jdbcType=INTEGER}, #{singleCount,jdbcType=INTEGER}, 
+      #{productDate,jdbcType=VARCHAR}, #{skuBatchNumber,jdbcType=VARCHAR}, #{taxRate,jdbcType=INTEGER}, 
+      #{productAmount,jdbcType=INTEGER}, #{productTotalAmount,jdbcType=INTEGER}, #{brandId,jdbcType=VARCHAR}, 
+      #{brandName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, 
+      #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{modelNumber,jdbcType=VARCHAR}, 
+      #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{lineNum,jdbcType=INTEGER}, #{boxGrossWeight,jdbcType=BIGINT}, 
+      #{netWeight,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+  insert into supervisory_warehouse_order_product (order_code, order_type,
+      order_type_name, sku_code, sku_name,
+      num, base_product_content, single_count,
+      product_date, sku_batch_number, tax_rate,
+      product_amount, product_total_amount, brand_id,
+      brand_name, category_id, category_name,
+      product_spec, color_name, model_number,
+      del_flag, create_time, create_by,
+      update_time, update_by, unit_code,
+      unit_name, line_num, box_gross_weight,
+      net_weight)
+    values
+    <foreach collection="list" item="item" open="" close="" index="idx" separator=",">
+      ( #{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=TINYINT},
+      #{item.orderTypeName,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.num,jdbcType=INTEGER}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.singleCount,jdbcType=INTEGER},
+      #{item.productDate,jdbcType=VARCHAR}, #{item.skuBatchNumber,jdbcType=VARCHAR}, #{item.taxRate,jdbcType=INTEGER},
+      #{item.productAmount,jdbcType=INTEGER}, #{item.productTotalAmount,jdbcType=INTEGER}, #{item.brandId,jdbcType=VARCHAR},
+      #{item.brandName,jdbcType=VARCHAR}, #{item.categoryId,jdbcType=VARCHAR}, #{item.categoryName,jdbcType=VARCHAR},
+      #{item.productSpec,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR},
+      #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.unitCode,jdbcType=VARCHAR},
+      #{item.unitName,jdbcType=VARCHAR}, #{item.lineNum,jdbcType=INTEGER}, #{item.boxGrossWeight,jdbcType=BIGINT},
+      #{item.netWeight,jdbcType=BIGINT})
+    </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct">
+    insert into supervisory_warehouse_order_product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderCode != null">
+        order_code,
+      </if>
+      <if test="orderType != null">
+        order_type,
+      </if>
+      <if test="orderTypeName != null">
+        order_type_name,
+      </if>
+      <if test="skuCode != null">
+        sku_code,
+      </if>
+      <if test="skuName != null">
+        sku_name,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="baseProductContent != null">
+        base_product_content,
+      </if>
+      <if test="singleCount != null">
+        single_count,
+      </if>
+      <if test="productDate != null">
+        product_date,
+      </if>
+      <if test="skuBatchNumber != null">
+        sku_batch_number,
+      </if>
+      <if test="taxRate != null">
+        tax_rate,
+      </if>
+      <if test="productAmount != null">
+        product_amount,
+      </if>
+      <if test="productTotalAmount != null">
+        product_total_amount,
+      </if>
+      <if test="brandId != null">
+        brand_id,
+      </if>
+      <if test="brandName != null">
+        brand_name,
+      </if>
+      <if test="categoryId != null">
+        category_id,
+      </if>
+      <if test="categoryName != null">
+        category_name,
+      </if>
+      <if test="productSpec != null">
+        product_spec,
+      </if>
+      <if test="colorName != null">
+        color_name,
+      </if>
+      <if test="modelNumber != null">
+        model_number,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="unitCode != null">
+        unit_code,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="lineNum != null">
+        line_num,
+      </if>
+      <if test="boxGrossWeight != null">
+        box_gross_weight,
+      </if>
+      <if test="netWeight != null">
+        net_weight,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderCode != null">
+        #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=TINYINT},
+      </if>
+      <if test="orderTypeName != null">
+        #{orderTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="baseProductContent != null">
+        #{baseProductContent,jdbcType=INTEGER},
+      </if>
+      <if test="singleCount != null">
+        #{singleCount,jdbcType=INTEGER},
+      </if>
+      <if test="productDate != null">
+        #{productDate,jdbcType=VARCHAR},
+      </if>
+      <if test="skuBatchNumber != null">
+        #{skuBatchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="taxRate != null">
+        #{taxRate,jdbcType=INTEGER},
+      </if>
+      <if test="productAmount != null">
+        #{productAmount,jdbcType=INTEGER},
+      </if>
+      <if test="productTotalAmount != null">
+        #{productTotalAmount,jdbcType=INTEGER},
+      </if>
+      <if test="brandId != null">
+        #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryName != null">
+        #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="productSpec != null">
+        #{productSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelNumber != null">
+        #{modelNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCode != null">
+        #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="lineNum != null">
+        #{lineNum,jdbcType=INTEGER},
+      </if>
+      <if test="boxGrossWeight != null">
+        #{boxGrossWeight,jdbcType=BIGINT},
+      </if>
+      <if test="netWeight != null">
+        #{netWeight,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct">
+    update supervisory_warehouse_order_product
+    <set>
+      <if test="orderCode != null">
+        order_code = #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        order_type = #{orderType,jdbcType=TINYINT},
+      </if>
+      <if test="orderTypeName != null">
+        order_type_name = #{orderTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="baseProductContent != null">
+        base_product_content = #{baseProductContent,jdbcType=INTEGER},
+      </if>
+      <if test="singleCount != null">
+        single_count = #{singleCount,jdbcType=INTEGER},
+      </if>
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=VARCHAR},
+      </if>
+      <if test="skuBatchNumber != null">
+        sku_batch_number = #{skuBatchNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate,jdbcType=INTEGER},
+      </if>
+      <if test="productAmount != null">
+        product_amount = #{productAmount,jdbcType=INTEGER},
+      </if>
+      <if test="productTotalAmount != null">
+        product_total_amount = #{productTotalAmount,jdbcType=INTEGER},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryName != null">
+        category_name = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="productSpec != null">
+        product_spec = #{productSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        color_name = #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelNumber != null">
+        model_number = #{modelNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCode != null">
+        unit_code = #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="lineNum != null">
+        line_num = #{lineNum,jdbcType=INTEGER},
+      </if>
+      <if test="boxGrossWeight != null">
+        box_gross_weight = #{boxGrossWeight,jdbcType=BIGINT},
+      </if>
+      <if test="netWeight != null">
+        net_weight = #{netWeight,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct">
+    update supervisory_warehouse_order_product
+    set order_code = #{orderCode,jdbcType=VARCHAR},
+      order_type = #{orderType,jdbcType=TINYINT},
+      order_type_name = #{orderTypeName,jdbcType=VARCHAR},
+      sku_code = #{skuCode,jdbcType=VARCHAR},
+      sku_name = #{skuName,jdbcType=VARCHAR},
+      num = #{num,jdbcType=INTEGER},
+      base_product_content = #{baseProductContent,jdbcType=INTEGER},
+      single_count = #{singleCount,jdbcType=INTEGER},
+      product_date = #{productDate,jdbcType=VARCHAR},
+      sku_batch_number = #{skuBatchNumber,jdbcType=VARCHAR},
+      tax_rate = #{taxRate,jdbcType=INTEGER},
+      product_amount = #{productAmount,jdbcType=INTEGER},
+      product_total_amount = #{productTotalAmount,jdbcType=INTEGER},
+      brand_id = #{brandId,jdbcType=VARCHAR},
+      brand_name = #{brandName,jdbcType=VARCHAR},
+      category_id = #{categoryId,jdbcType=VARCHAR},
+      category_name = #{categoryName,jdbcType=VARCHAR},
+      product_spec = #{productSpec,jdbcType=VARCHAR},
+      color_name = #{colorName,jdbcType=VARCHAR},
+      model_number = #{modelNumber,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      unit_code = #{unitCode,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      line_num = #{lineNum,jdbcType=INTEGER},
+      box_gross_weight = #{boxGrossWeight,jdbcType=BIGINT},
+      net_weight = #{netWeight,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

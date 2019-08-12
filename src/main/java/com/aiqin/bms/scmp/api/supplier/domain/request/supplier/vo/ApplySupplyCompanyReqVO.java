@@ -30,6 +30,9 @@ public class ApplySupplyCompanyReqVO {
     @ApiModelProperty("申请供应商类型")
     private String applySupplyType;
 
+    @ApiModelProperty("申请供应商类型名称（导入后返给前端，只做展示）")
+    private String applySupplyTypeName;
+
     @NotEmpty(message = "简称不能为空")
     @ApiModelProperty("简称")
     private String applyAbbreviation;
@@ -91,7 +94,7 @@ public class ApplySupplyCompanyReqVO {
     private String corporateRepresentative;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("邮编")
     private String zipCode;
@@ -138,4 +141,13 @@ public class ApplySupplyCompanyReqVO {
     @NotEmpty(message = "直属上级名称不能为空！")
     private String directSupervisorName;
 
+    @ApiModelProperty("错误原因")
+    private String error;
+
+    @ApiModelProperty("是否禁用")
+    private Byte enable;
+
+
+    @ApiModelProperty("判断来源 0:非导入 1:导入, 如果从导入新增/修改 不进入审批流,审批状态待提交")
+    private Byte source = 0;
 }

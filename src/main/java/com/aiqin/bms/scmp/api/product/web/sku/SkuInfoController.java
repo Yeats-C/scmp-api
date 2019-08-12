@@ -1,12 +1,12 @@
 package com.aiqin.bms.scmp.api.product.web.sku;
 
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
+import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
@@ -15,13 +15,18 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveSkuApplyInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -43,6 +48,19 @@ public class SkuInfoController {
     public HttpResponse<Integer> addSkuInfo(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
         try {
             return HttpResponse.success(skuInfoService.saveDraftSkuInfo(addSkuInfoReqVO));
+        } catch (BizException bz){
+            return HttpResponse.failure(bz.getMessageId(),0);
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,0);
+        }
+    }
+
+    @PostMapping("/update")
+    @ApiOperation("修改临时表信息")
+    public HttpResponse<Integer> updateSkuInfo(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
+        try {
+            return HttpResponse.success(skuInfoService.updateDraftSkuInfo(addSkuInfoReqVO));
         } catch (BizException bz){
             return HttpResponse.failure(bz.getMessageId(),0);
         }catch (Exception e) {
@@ -100,7 +118,7 @@ public class SkuInfoController {
 
     @GetMapping("/apply/detail")
     @ApiOperation("商品申请详情")
-    public HttpResponse<ApplySkuDetailResp> getApplyDetail(String applyCode){
+    public HttpResponse<ProductApplyInfoRespVO<ProductSkuApplyVo>> getApplyDetail(String applyCode){
         return HttpResponse.success(skuInfoService.getSkuApplyDetail(applyCode));
     }
 
@@ -138,4 +156,102 @@ public class SkuInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
         }
     }
+
+    @PostMapping("/importSkuNew")
+    @ApiOperation("新增导入sku")
+    public HttpResponse<SkuImportMain> importSkuNew(MultipartFile file){
+        log.info("SkuInfoController---importSkuNew---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuNew(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @PostMapping("/importSkuForSupplyPlatform")
+    @ApiOperation("新增导入sku")
+    public HttpResponse<SkuImportMain> importSkuForSupplyPlatform(MultipartFile file){
+        log.info("SkuInfoController---importSkuForSupplyPlatform---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuForSupplyPlatform(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/importSkuNewSave")
+    @ApiOperation("新增导入sku保存")
+    public HttpResponse<Boolean> importSkuNewSave(@RequestBody SkuImportReq reqVO){
+        log.info("SkuInfoController---importSkuNewSave---入参：[{}]", JSON.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuNewSave(reqVO));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/importSkuUpdateForSupplyPlatform")
+    @ApiOperation("申请确认导入")
+    public HttpResponse<Boolean> importSkuUpdateForSupplyPlatform(@RequestBody SkuImportReq reqVO){
+        log.info("SkuInfoController---importSkuNewSave---入参：[{}]", JSON.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuUpdateForSupplyPlatform(reqVO));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+
+    @PostMapping("/importSkuNewUpdate")
+    @ApiOperation("修改导入sku保存")
+    public HttpResponse<Boolean> importSkuNewUpdate(@RequestBody SkuImportReq reqVO){
+        log.info("SkuInfoController---importSkuNewUpdate---入参：[{}]", JSON.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuNewUpdate(reqVO));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/importSkuUpdate")
+    @ApiOperation("修改导入sku")
+    public HttpResponse<SkuImportMain> importSkuUpdate(MultipartFile file){
+        log.info("SkuInfoController---importSkuNew---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
+        try {
+            return HttpResponse.success(skuInfoService.importSkuUpdate(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @GetMapping("/exportSku")
+    public HttpResponse<Boolean> exportSku(HttpServletResponse resp){
+        log.info("SkuInfoController---exportSku---入参：[{}]");
+        try {
+            return HttpResponse.success(skuInfoService.exportSku(resp));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
 }

@@ -25,10 +25,11 @@ public class AccountServiceImpl implements AccountService {
      */
     @Value("${center.main.url}")
     private String centerMainUrl;
-
+    @Value("${mgs.control.system-code}")
+    private String systemCode;
     @Override
     public UserDataVo getAccountInfoByAccountId(String ticket, String personId, String accountId) {
-        HttpClient httpClient = HttpClient.get(this.centerMainUrl + "/account/resources/" + accountId + "?ticket=" + ticket + "&ticket_person_id=" + personId);
+        HttpClient httpClient = HttpClient.get(this.centerMainUrl + "/account/resources/" + accountId + "?ticket=" + ticket + "&ticket_person_id=" + personId+"&system=" + systemCode );
         HttpResponse<UserDataVo> httpResponse =  httpClient.action().result(new TypeReference<HttpResponse<UserDataVo>>() {});
         return httpResponse.getData();
     }

@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Description:
@@ -50,6 +51,9 @@ public class QueryProductSkuPriceInfoReqVO extends PageReq {
     @ApiModelProperty("商品状态")
     private Integer productStatus;
 
+    @ApiModelProperty("批次号")
+    private String batchNumber;
+
     @ApiModelProperty("sku编码")
     private String skuCode;
 
@@ -73,4 +77,22 @@ public class QueryProductSkuPriceInfoReqVO extends PageReq {
 
     @ApiModelProperty("价格属性编码")
     private String priceAttributeCode;
+
+    @ApiModelProperty("公司编码")
+    private String companyCode;
+
+    @ApiModelProperty("品类集合编码 1级编码 2级编码 3级编码 4级编码")
+    private List<String> productCategoryCodes;
+
+    @ApiModelProperty(value = "1级品类编码",hidden = true)
+    private String productCategoryLv1Code;
+
+    @ApiModelProperty(value ="2级品类编码",hidden = true)
+    private String productCategoryLv2Code;
+
+    @ApiModelProperty(value ="3级品类编码",hidden = true)
+    private String productCategoryLv3Code;
+
+    @ApiModelProperty(value ="4级品类编码",hidden = true)
+    private String productCategoryLv4Code;
 }

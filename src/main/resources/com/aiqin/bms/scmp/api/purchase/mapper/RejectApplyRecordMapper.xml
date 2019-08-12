@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.RejectApplyRecordDao">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="reject_apply_record_code" jdbcType="VARCHAR" property="rejectApplyRecordCode"/>
+        <result column="apply_type" jdbcType="BIT" property="applyType"/>
+        <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
+        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
+        <result column="apply_record_status" jdbcType="BIT" property="applyRecordStatus"/>
+        <result column="sum_sku" jdbcType="INTEGER" property="sumSku"/>
+        <result column="sum_count" jdbcType="INTEGER" property="sumCount"/>
+        <result column="sum_amount" jdbcType="BIGINT" property="sumAmount"/>
+        <result column="create_by_id" jdbcType="VARCHAR" property="createById"/>
+        <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
+        <result column="update_by_id" jdbcType="VARCHAR" property="updateById"/>
+        <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+        <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+        <result column="sum_return_amount" jdbcType="VARCHAR" property="sumReturnAmount" />
+        <result column="sum_gift_amount" jdbcType="VARCHAR" property="sumGiftAmount" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name, 
+    apply_record_status, sum_sku, sum_count, sum_amount, create_by_id, create_by_name, sum_gift_amount,
+    update_by_id, update_by_name, create_time, update_time, company_name,company_code,sum_return_amount
+  </sql>
+    <resultMap id="queryResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="reject_apply_record_code" jdbcType="VARCHAR" property="rejectApplyRecordCode"/>
+        <result column="apply_type" jdbcType="BIT" property="applyType"/>
+        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
+        <result column="apply_record_status" jdbcType="INTEGER" property="applyRecordStatus"/>
+        <result column="sum_sku" jdbcType="INTEGER" property="sumSku"/>
+        <result column="sum_count" jdbcType="INTEGER" property="sumCount"/>
+        <result column="sum_amount" jdbcType="BIGINT" property="sumAmount"/>
+        <result column="sum_return_amount" jdbcType="BIGINT" property="sumReturnAmount"/>
+        <result column="sum_gift_amount" jdbcType="BIGINT" property="sumGiftAmount"/>
+        <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="LIST_QUERY">
+        <where>
+            purchase_group_code in
+            <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+                #{item.purchaseGroupCode,jdbcType=VARCHAR}
+            </foreach>
+            <if test="rejectApplyRecordCode!=null and rejectApplyRecordCode!=''">
+                and reject_apply_record_code like concat( #{rejectApplyRecordCode,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="applyType!=null ">
+                and apply_type = #{applyType,jdbcType=VARCHAR}
+            </if>
+            <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+                and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+            </if>
+            <if test="applyRecordStatus!=null ">
+                and apply_record_status = #{applyRecordStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="beginTime!=null  ">
+                and create_time <![CDATA[ >=]]>  #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="  finishTime!=null">
+                and create_time <![CDATA[ <=]]>  #{finishTime,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+    <select id="list" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest" resultMap="queryResultMap">
+        select
+            reject_apply_record_code, apply_type, purchase_group_name, apply_record_status, sum_sku, sum_count, sum_amount, sum_return_amount,
+            create_by_name, create_time,update_by_name,update_time,sum_gift_amount
+        from reject_apply_record
+        <include refid="LIST_QUERY"/>
+        order by create_time desc
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="selectByRejectCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+         <include refid="Base_Column_List"></include>
+        from reject_apply_record
+        where
+         reject_apply_record_code = #{rejectApplyCode,jdbcType=VARCHAR}
+    </select>
+    <select id="listCount" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest" resultType="java.lang.Integer">
+        select
+        count(1)
+        from reject_apply_record
+        <include refid="LIST_QUERY"/>
+    </select>
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
+    insert into reject_apply_record ( reject_apply_record_code, apply_type,
+      purchase_group_code, purchase_group_name, apply_record_status, 
+      sum_sku, sum_count, sum_amount,  company_name,company_code,sum_return_amount,sum_gift_amount,
+      create_by_id, create_by_name, update_by_id, 
+      update_by_name, create_time
+      )
+    values ( #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{applyType,jdbcType=BIT},
+      #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{applyRecordStatus,jdbcType=BIT}, 
+      #{sumSku,jdbcType=INTEGER}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT},  #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR},
+      #{sumReturnAmount,jdbcType=BIGINT},#{sumGiftAmount,jdbcType=BIGINT}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
+      #{createByName,jdbcType=VARCHAR}, now()
+      )
+  </insert>
+    <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
+        insert into reject_apply_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="rejectApplyRecordCode != null">
+                reject_apply_record_code,
+            </if>
+            <if test="applyType != null">
+                apply_type,
+            </if>
+            <if test="purchaseGroupCode != null">
+                purchase_group_code,
+            </if>
+            <if test="purchaseGroupName != null">
+                purchase_group_name,
+            </if>
+            <if test="applyRecordStatus != null">
+                apply_record_status,
+            </if>
+            <if test="sumSku != null">
+                sum_sku,
+            </if>
+            <if test="sumCount != null">
+                sum_count,
+            </if>
+            <if test="sumAmount != null">
+                sum_amount,
+            </if>
+            <if test="createById != null">
+                create_by_id,
+            </if>
+            <if test="createByName != null">
+                create_by_name,
+            </if>
+            <if test="updateById != null">
+                update_by_id,
+            </if>
+            <if test="updateByName != null">
+                update_by_name,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="rejectApplyRecordCode != null">
+                #{rejectApplyRecordCode,jdbcType=VARCHAR},
+            </if>
+            <if test="applyType != null">
+                #{applyType,jdbcType=BIT},
+            </if>
+            <if test="purchaseGroupCode != null">
+                #{purchaseGroupCode,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseGroupName != null">
+                #{purchaseGroupName,jdbcType=VARCHAR},
+            </if>
+            <if test="applyRecordStatus != null">
+                #{applyRecordStatus,jdbcType=BIT},
+            </if>
+            <if test="sumSku != null">
+                #{sumSku,jdbcType=INTEGER},
+            </if>
+            <if test="sumCount != null">
+                #{sumCount,jdbcType=INTEGER},
+            </if>
+            <if test="sumAmount != null">
+                #{sumAmount,jdbcType=BIGINT},
+            </if>
+            <if test="createById != null">
+                #{createById,jdbcType=VARCHAR},
+            </if>
+            <if test="createByName != null">
+                #{createByName,jdbcType=VARCHAR},
+            </if>
+            <if test="updateById != null">
+                #{updateById,jdbcType=VARCHAR},
+            </if>
+            <if test="updateByName != null">
+                #{updateByName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByRejectCode" >
+        update reject_apply_record
+        <set>
+                sum_sku = #{sumSku,jdbcType=INTEGER},
+                sum_count = #{sumCount,jdbcType=INTEGER},
+                sum_amount = #{sumAmount,jdbcType=BIGINT},
+                sum_return_amount = #{sumReturnAmount,jdbcType=BIGINT},
+                sum_gift_amount = #{sumGiftAmount,jdbcType=BIGINT},
+                update_by_id = #{updateById,jdbcType=VARCHAR},
+                update_by_name = #{updateByName,jdbcType=VARCHAR},
+                update_time = now()
+        </set>
+        where  reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    </update>
+    <update id="updateStatus">
+         update reject_apply_record
+         set
+         apply_record_status = 1
+         where reject_apply_record_code = #{rejectApplyRecordId,jdbcType=VARCHAR}
+    </update>
+
+</mapper>

@@ -9,6 +9,8 @@
     <result column="tax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
     <result column="joint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
     <result column="point" jdbcType="BIGINT" property="point" />
+    <result column="tax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="is_default" jdbcType="TINYINT" property="isDefault" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -27,6 +29,8 @@
     <result column="tax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
     <result column="joint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
     <result column="point" jdbcType="BIGINT" property="point" />
+    <result column="tax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="is_default" jdbcType="TINYINT" property="isDefault" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -47,6 +51,8 @@
     <result column="tax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
     <result column="joint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
     <result column="point" jdbcType="BIGINT" property="point" />
+    <result column="tax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="is_default" jdbcType="TINYINT" property="isDefault" />
     <result column="usage_status" jdbcType="TINYINT" property="usageStatus" />
     <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
@@ -59,13 +65,13 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <collection property="productSkuSupplyUnitCapacities" column="{supplyUnitCode = supply_unit_code,productSkuCode = product_sku_code}"
-                javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo" select="com.aiqin.mgs.product.api.dao.mapper.ProductSkuSupplyUnitCapacityDraftMapper.getDraftList"/>
+                javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo" select="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitCapacityDraftMapper.getDraftList"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, supply_unit_code, supply_unit_name, no_tax_purchase_price, tax_included_price,
     joint_franchise_rate, point, is_default, del_flag, create_time, create_by, update_time,
     update_by, product_sku_code, usage_status, product_sku_name,categories_supply_channels_code,
-    categories_supply_channels_name
+    categories_supply_channels_name,tax_rate,factory_sku_code
   </sql>
   <insert id="insertDraftList" parameterType="java.util.List" >
     insert into product_sku_supply_unit_draft (supply_unit_code, supply_unit_name,
@@ -74,7 +80,7 @@
     create_time, create_by, update_time,
     update_by, product_sku_code, usage_status,
     product_sku_name,categories_supply_channels_code,
-    categories_supply_channels_name)
+    categories_supply_channels_name,tax_rate,factory_sku_code)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
@@ -83,7 +89,8 @@
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT},
       #{item.productSkuName,jdbcType=VARCHAR},#{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
-      #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR})
+      #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},#{item.taxRate,jdbcType=BIGINT},
+      #{item.factorySkuCode,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <insert id="insertList" parameterType="java.util.List" >
@@ -92,7 +99,8 @@
     point, is_default, del_flag,
     create_time, create_by, update_time,
     update_by, product_sku_code, usage_status,
-    product_sku_name, apply_code)
+    product_sku_name, apply_code,categories_supply_channels_code,
+    categories_supply_channels_name,tax_rate,factory_sku_code)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
@@ -100,7 +108,9 @@
       #{item.point,jdbcType=BIGINT}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT},
-      #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR})
+      #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR},#{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+      #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},#{item.taxRate,jdbcType=BIGINT},
+      #{item.factorySkuCode,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <insert id="insertApplyList" parameterType="java.util.List">
@@ -109,7 +119,9 @@
     point, is_default, del_flag,
     create_time, create_by, update_time,
     update_by, product_sku_code, usage_status,
-    product_sku_name, apply_code)
+    product_sku_name, apply_code,
+    categories_supply_channels_code,categories_supply_channels_name,
+    tax_rate,factory_sku_code)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
@@ -117,7 +129,9 @@
       #{item.point,jdbcType=BIGINT}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT},
-      #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR})
+      #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR},
+      #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR}, #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},
+      #{item.taxRate,jdbcType=BIGINT},#{item.factorySkuCode,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <select id="getDraft" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -126,6 +140,17 @@
      FROM product_sku_supply_unit_draft
     where product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
+
+<select id="getDraftBySkuCodes" parameterType="java.util.List" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM product_sku_supply_unit_draft
+    where product_sku_code in
+    <foreach collection="list" item="skuCode" open="(" close=")" separator=",">
+        #{skuCode,jdbcType=VARCHAR}
+    </foreach>
+
+</select>
   <select id="getInfo" parameterType="java.lang.String" resultMap="SkuSupplyUnitMap">
     SELECT * FROM product_sku_supply_unit where product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
@@ -141,17 +166,143 @@
       #{item.skuCode,jdbcType=VARCHAR}
     </foreach>
   </delete>
-  <delete id="deleteList" parameterType="java.lang.String">
+  <delete id="deleteList">
     DELETE FROM product_sku_supply_unit WHERE product_sku_code =#{skuCode,jdbcType=VARCHAR}
   </delete>
-  <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSupplyUnitMapper.BaseResultMap">
-    SELECT * from apply_product_sku_supply_unit where product_sku_code=#{skuCode,jdbcType=VARCHAR}
-    and apply_code=#{applyCode}
+  <select id="getApply"  resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSupplyUnitMapper.BaseResultMap">
+    SELECT
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSupplyUnitMapper.Base_Column_List"/>
+    from apply_product_sku_supply_unit
+    where apply_code=#{applyCode}
+      and product_sku_code = #{skuCode}
   </select>
-  <select id="getApplys" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSupplyUnitMapper.BaseResultMap">
-    SELECT * from apply_product_sku_supply_unit where product_sku_code in
-    <foreach collection="applyProductSkus" item="item" open="(" separator="," close=")">
-      #{item.skuCode,jdbcType=VARCHAR}
-    </foreach>
+  <select id="getApplys" resultMap="selectBySkuCode">
+   select a.id aid,
+           a.supply_unit_code asupply_unit_code,
+           a.supply_unit_name asupply_unit_name,
+           a.no_tax_purchase_price ano_tax_purchase_price,
+           a.tax_included_price atax_included_price,
+           a.joint_franchise_rate ajoint_franchise_rate,
+           a.point apoint,
+           a.tax_rate atax_rate,
+           a.factory_sku_code afactory_sku_code,
+           a.is_default ais_default,
+           a.product_sku_code aproduct_sku_code,
+           a.product_sku_name aproduct_sku_name,
+           a.usage_status ausage_status,
+           a.apply_code aapply_code,
+           a.del_flag adel_flag,
+           a.create_time acreate_time,
+           a.create_by acreate_by,
+           a.update_time aupdate_time,
+           a.update_by aupdate_by,
+           a.categories_supply_channels_code acategories_supply_channels_code,
+           a.categories_supply_channels_name acategories_supply_channels_name,
+           b.id bid,
+           b.supply_unit_code bsupply_unit_code,
+           b.supply_unit_name bsupply_unit_name,
+           b.product_sku_code bproduct_sku_code,
+           b.product_sku_name bproduct_sku_name,
+           b.out_put bout_put,
+           b.need_days bneed_days,
+           b.apply_code bapply_code,
+           b.del_flag bdel_flag,
+           b.create_time bcreate_time,
+           b.create_by bcreate_by,
+           b.update_time bupdate_time,
+           b.update_by bupdate_by
+    from apply_product_sku_supply_unit a
+    left join apply_product_sku_supply_unit_capacity b
+    on a.product_sku_code = b.product_sku_code and a.supply_unit_code = b.supply_unit_code and a.apply_code = b.apply_code
+    where a.product_sku_code = #{skuCode,jdbcType=VARCHAR}
+    and a.apply_code = #{applyCode,jdbcType=VARCHAR}
+  </select>
+
+  <resultMap id="selectBySkuCode" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo">
+    <id column="aid" jdbcType="BIGINT" property="id" />
+    <result column="asupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
+    <result column="asupply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
+    <result column="ano_tax_purchase_price" jdbcType="BIGINT" property="noTaxPurchasePrice" />
+    <result column="atax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
+    <result column="ajoint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
+    <result column="apoint" jdbcType="BIGINT" property="point" />
+    <result column="atax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="afactory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
+    <result column="ais_default" jdbcType="TINYINT" property="isDefault" />
+    <result column="ausage_status" jdbcType="TINYINT" property="usageStatus" />
+    <result column="aproduct_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
+    <result column="aproduct_sku_name" jdbcType="VARCHAR" property="productSkuName" />
+    <result column="acategories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+    <result column="acategories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+    <result column="adel_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="acreate_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="acreate_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="aupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="aupdate_by" jdbcType="VARCHAR" property="updateBy" />
+    <collection property="productSkuSupplyUnitCapacities" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo">
+      <id column="bid" jdbcType="BIGINT" property="id" />
+      <result column="bsupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
+      <result column="bsupply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
+      <result column="bproduct_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
+      <result column="bproduct_sku_name" jdbcType="VARCHAR" property="productSkuName" />
+      <result column="bout_put" jdbcType="BIGINT" property="outPut" />
+      <result column="bneed_days" jdbcType="BIGINT" property="needDays" />
+      <result column="bdel_flag" jdbcType="TINYINT" property="delFlag" />
+      <result column="bcreate_time" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="bcreate_by" jdbcType="VARCHAR" property="createBy" />
+      <result column="bupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+      <result column="bupdate_by" jdbcType="VARCHAR" property="updateBy" />
+    </collection>
+  </resultMap>
+  <select id="selectBySkuCode" resultMap="selectBySkuCode">
+        select a.id aid,
+               a.supply_unit_code asupply_unit_code,
+               a.supply_unit_name asupply_unit_name,
+               a.no_tax_purchase_price ano_tax_purchase_price,
+               a.tax_included_price atax_included_price,
+               a.joint_franchise_rate ajoint_franchise_rate,
+               a.point apoint,
+               a.tax_rate atax_rate,
+               a.factory_sku_code afactory_sku_code,
+               a.is_default ais_default,
+               a.product_sku_code aproduct_sku_code,
+               a.product_sku_name aproduct_sku_name,
+               a.usage_status ausage_status,
+               a.apply_code aapply_code,
+               a.del_flag adel_flag,
+               a.create_time acreate_time,
+               a.create_by acreate_by,
+               a.update_time aupdate_time,
+               a.update_by aupdate_by,
+               a.categories_supply_channels_code acategories_supply_channels_code,
+               a.categories_supply_channels_name acategories_supply_channels_name,
+               b.id bid,
+               b.supply_unit_code bsupply_unit_code,
+               b.supply_unit_name bsupply_unit_name,
+               b.product_sku_code bproduct_sku_code,
+               b.product_sku_name bproduct_sku_name,
+               b.out_put bout_put,
+               b.need_days bneed_days,
+               b.apply_code bapply_code,
+               b.del_flag bdel_flag,
+               b.create_time bcreate_time,
+               b.create_by bcreate_by,
+               b.update_time bupdate_time,
+               b.update_by bupdate_by
+        from product_sku_supply_unit a
+        left join product_sku_supply_unit_capacity b
+        on a.product_sku_code = b.product_sku_code and a.supply_unit_code = b.supply_unit_code
+        where a.product_sku_code = #{skuCode}
+  </select>
+  <select id="getFactorySkuCode" resultType="java.lang.String">
+      select factory_sku_code as factorySkuCode from product_sku_supply_unit
+      where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+      and supply_unit_code = #{supplyUnitCode,jdbcType=VARCHAR}
+  </select>
+  <select id="supplyList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse">
+      select supply_unit_code as supplierCode, supply_unit_name as supplierName,
+      product_sku_code as skuCode, product_sku_name as skuName
+      from product_sku_supply_unit
+      where product_sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
 </mapper>

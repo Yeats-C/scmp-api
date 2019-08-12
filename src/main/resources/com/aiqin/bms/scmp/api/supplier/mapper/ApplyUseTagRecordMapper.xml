@@ -26,12 +26,33 @@
     from apply_use_tag_record
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="getApplyUseTagRecordByAppUseObjectCode" parameterType="java.lang.String"
+  <select id="getApplyUseTagRecordByAppUseObjectCode"
           resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from apply_use_tag_record
     where apply_use_object_code =#{appUseObjectCode,jdbcType=VARCHAR}
+    and tag_type_code = #{tagTypeCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_use_tag_record
+    where apply_use_object_code =#{appUseObjectCode,jdbcType=VARCHAR}
+    and tag_type_code = #{tagTypeCode,jdbcType=VARCHAR}
+    and use_object_code = #{useObjectCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getApplyUseTagRecordByAppUseObjectCodes"
+             resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_use_tag_record
+    where apply_use_object_code in
+    <foreach collection="list" item="item" separator="," open="(" close=")">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+    and tag_type_code = #{tagTypeCode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_use_tag_record
@@ -40,6 +61,13 @@
   <delete id="delete" parameterType="java.lang.String">
     delete from apply_use_tag_record
     where apply_use_object_code =#{appUseObjectCode,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deletes" parameterType="java.util.List">
+    delete from apply_use_tag_record
+    where apply_use_object_code  in
+    <foreach collection="list" item="appUseObjectCode" separator="," open="(" close=")">
+      #{appUseObjectCode,jdbcType=VARCHAR}
+    </foreach>
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord">
     insert into apply_use_tag_record (id, tag_code, tag_name, 
@@ -140,14 +168,14 @@
   </insert>
   <insert id="saveBatch" parameterType="java.util.List">
     insert  into apply_use_tag_record( tag_code, tag_name,
-      apply_use_object_code, use_object_name,
+      apply_use_object_code, use_object_code, use_object_name,
       tag_type_code, tag_type_name, del_flag,
       create_by, create_time, update_by,
       update_time)
       values
       <foreach collection="list" item="item" separator=",">
         (#{item.tagCode,jdbcType=VARCHAR}, #{item.tagName,jdbcType=VARCHAR},
-        #{item.applyUseObjectCode,jdbcType=VARCHAR}, #{item.useObjectName,jdbcType=VARCHAR},
+        #{item.applyUseObjectCode,jdbcType=VARCHAR}, #{item.useObjectCode,jdbcType=VARCHAR}, #{item.useObjectName,jdbcType=VARCHAR},
         #{item.tagTypeCode,jdbcType=VARCHAR}, #{item.tagTypeName,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT},
         #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR},
         #{item.updateTime,jdbcType=TIMESTAMP})
@@ -214,7 +242,7 @@
   <update id="updateBatch" parameterType="java.util.List">
     <foreach collection="list" item="item" separator=";">
       update apply_use_tag_record
-      set use_object_code = #{item.useObjectCode,jdbcType=VARCHAR}
+      set apply_use_object_code = #{item.applyUseObjectCode,jdbcType=VARCHAR}
       where id = #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>

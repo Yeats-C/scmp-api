@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.mapper;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierScore;
 import com.aiqin.bms.scmp.api.supplier.domain.request.score.QueryScoreReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.score.ScoreListRespVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface SupplierScoreMapper {
     int updateByPrimaryKey(SupplierScore record);
 
     List<ScoreListRespVo> getList(QueryScoreReqVo reqVo);
+
+    SupplierScore selectByCode(@Param("code") String code);
 }

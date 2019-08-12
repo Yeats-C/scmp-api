@@ -38,7 +38,7 @@
     <result column="purchasing_group_name" jdbcType="VARCHAR" property="purchasingGroupName"/>
     <result column="tax_id" jdbcType="VARCHAR" property="taxId"/>
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative"/>
-    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital"/>
+    <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital"/>
     <result column="enable" jdbcType="TINYINT" property="enable"/>
     <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
     <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
@@ -59,13 +59,40 @@
     corporate_representative,registered_capital,enable,company_code,company_name,max_order_amount,min_order_amount,
     business_license,star_score,direct_supervisor_code,direct_supervisor_name
   </sql>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+      insert into apply_supply_company (apply_supply_name, apply_supply_type, apply_abbreviation, province_id, province_name, city_id, city_name, district_id, district_name, address, contact_name, mobile_phone, phone, fax, email, company_website, create_time, create_by, update_time, update_by, del_flag, apply_supply_company_code, apply_status, apply_type, auditor_by, auditor_time, purchasing_group_code, supplier_code, supplier_name, zip_code, form_no, supply_company_code, purchasing_group_name, tax_id, corporate_representative, registered_capital, enable,company_code, company_name, min_order_amount, max_order_amount, business_license, star_score, direct_supervisor_code, direct_supervisor_name) values
+      (#{applySupplyName},#{applySupplyType},#{applyAbbreviation},#{provinceId},#{provinceName},#{cityId},#{cityName}, #{districtId},#{districtName},#{address}, #{contactName}, #{mobilePhone}, #{phone},#{fax}, #{email},#{companyWebsite}, #{createTime},#{createBy},#{updateTime}, #{updateBy},#{delFlag},#{applySupplyCompanyCode},#{applyStatus}, #{applyType}, #{auditorBy},#{auditorTime}, #{purchasingGroupCode}, #{supplierCode},#{supplierName}, #{zipCode}, #{formNo}, #{supplyCompanyCode},#{purchasingGroupName},#{taxId},#{corporateRepresentative}, #{registeredCapital}, #{enable},#{companyCode}, #{companyName},#{minOrderAmount},#{maxOrderAmount},#{businessLicense}, #{starScore},#{directSupervisorCode},#{directSupervisorName})
+    </insert>
+  <delete id="delectById">
+    delete from apply_supply_company where id = #{id}
+  </delete>
+  <delete id="delectByIds" parameterType="java.util.List">
+    delete from apply_supply_company where id in
+    <foreach collection="list" open="(" close=")" item="item" separator=",">
+         #{item}
+    </foreach>
+  </delete>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from apply_supply_company
     where id = #{id,jdbcType=BIGINT}
   </select>
-
+    <select id="selectByCode" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from apply_supply_company
+      where apply_supply_company_code = #{applySupplyCode}
+    </select>
+    <select id="selectBySupplyCode" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from apply_supply_company
+      where company_code = #{companyCode} and apply_status = #{applyStatus} and supply_company_code in
+      <foreach collection="list" open="(" close=")" item="item" separator=",">
+           #{item}
+      </foreach>
+    </select>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany">
     update apply_supply_company
     <set>

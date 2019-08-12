@@ -44,13 +44,17 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="queryApplyList" resultType="com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO">
-      select distinct code as code,
+      select distinct apply_code as code,
              apply_type as applyType,
+             3 as approvalType,
              create_by as createBy,
              create_time as createTime,
+             update_time as updateTime,
+             update_by as updateBy,
              auditor_by as auditorBy,
              auditor_time as auditorTime,
-             apply_status as applyStatus
+             apply_status as applyStatus,
+             form_no as formNo
       from apply_product_sku_sale_area_main
     where company_code = #{companyCode}
     <if test="createTimeStart != null">
@@ -65,12 +69,14 @@
     <if test="code != null">
       and apply_code like CONCAT('%',#{code},'%')
     </if>
-    <if test="skuName != null">
-      and sku_name like CONCAT('%',#{skuName},'%')
+     <if test="formNo != null">
+      and form_no like CONCAT('%',#{formNo},'%')
     </if>
+    order by create_time desc
   </select>
   <resultMap id="selectByApplyCode" type="com.aiqin.bms.scmp.api.product.domain.product.apply.ProductSaleAreaApplyVO">
     <result column="aapply_code" property="code"></result>
+    <result column="aname" property="name"></result>
     <result column="abe_disable" property="beDisable"></result>
     <result column="aapply_type" property="applyType"></result>
     <result column="aapply_status" property="applyStatus"></result>
@@ -386,6 +392,19 @@
       left join apply_product_sku_sale_area_channel d
       on a.code = d.code
     where a.be_effective = 0 and <![CDATA[a.selection_effective_start_time <= now() ]]>
+    </select>
+    <select id="selectByOfficialCode"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from apply_product_sku_sale_area_main
+        where apply_status = #{applyStatus} and official_code = #{officialCode}
+    </select>
+    <select id="selectByName" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from apply_product_sku_sale_area_main
+        where name = #{name} and apply_status in (0,1)
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_sale_area_main
@@ -747,7 +766,7 @@
         set
             be_effective = 1
         where code in
-        <foreach collection="items" separator="," close="(" open=")" item="item">
+        <foreach collection="items" separator="," close=")" open="(" item="item">
           #{item}
         </foreach>
     </update>

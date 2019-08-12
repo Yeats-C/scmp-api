@@ -70,4 +70,14 @@ public class DeliveryInfoServiceImpl implements DeliveryInfoService {
     public List<DeliveryInfoRespVO> getDeliveryInfoBySupplyCompanyCode(String supplyCompanyCode) {
         return deliveryInfoDao.getDeliveryInfoBySupplyCompanyCode(supplyCompanyCode);
     }
+    /**
+     * 根据供应商编码查询发货/退货信息
+     *
+     * @param supplyCompanyCode
+     * @return
+     */
+    @Override
+    public List<DeliveryInfoRespVO> getDeliveryInfoByApplyCompanyCode(String supplyCompanyCode) {
+        return deliveryInfoDao.getDeliveryInfoByApplyCompanyCode(supplyCompanyCode);
+    }
 }

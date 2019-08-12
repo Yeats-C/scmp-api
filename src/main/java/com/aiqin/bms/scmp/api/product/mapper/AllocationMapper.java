@@ -1,9 +1,17 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 
+import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo;
 
 import java.util.List;
 
@@ -39,6 +47,12 @@ public interface AllocationMapper {
     Allocation selectByPrimaryKey(Long id);
 
 
+    AllocationResVo getAllocationDetailById(Long id);
+
+    MovementResVo getMoveDetailById(Long id);
+
+    ScrapResVo getScrapDetailById(Long id);
+
     /**
      * 有选择的更新
      * @param record
@@ -55,6 +69,12 @@ public interface AllocationMapper {
      */
     Allocation selectByFormNO(String FormNo);
 
+    /**
+     * 根据流程变成查询申请合同
+     * @param FormNo
+     * @return
+     */
+    AllocationDTO selectByFormNO1(String FormNo);
 
     Long findIdByFormNo(String FormNo);
 
@@ -64,4 +84,27 @@ public interface AllocationMapper {
      * @return
      */
     Allocation selectByCode(String allocationCode);
+
+
+    /**
+     *
+     * 功能描述: 移库列表查询
+     *
+     * @param vo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/2 21:50
+     */
+    List<QueryMovementResVo> getMoveList(QueryMovementReqVo vo);
+
+    /**
+     *
+     * 功能描述: 报废列表查询
+     *
+     * @param vo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/2 22:27
+     */
+    List<QueryScrapResVo> getScrapList(QueryScrapReqVo vo);
 }

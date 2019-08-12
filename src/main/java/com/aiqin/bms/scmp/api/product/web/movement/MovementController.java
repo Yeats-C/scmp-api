@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.web.movement;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
@@ -8,9 +7,11 @@ import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
 import com.aiqin.bms.scmp.api.product.service.MovementService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -35,7 +36,12 @@ public class MovementController {
     @ApiOperation("移库列表详情")
     @PostMapping("/list")
     public HttpResponse<BasePage<QueryMovementResVo>> getList(@RequestBody QueryMovementReqVo vo) {
-        return HttpResponse.success(movementService.getList(vo));
+        try {
+            return HttpResponse.success(movementService.getList(vo));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
     /**
@@ -44,8 +50,13 @@ public class MovementController {
      */
     @ApiOperation("移库添加")
     @PostMapping("/save")
-    public HttpResponse<Integer> save(@RequestBody MovementReqVo vo) {
-        return HttpResponse.success(movementService.save(vo));
+    public HttpResponse<Long> save(@RequestBody @Validated MovementReqVo vo) {
+        try {
+            return HttpResponse.success(movementService.save(vo));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
     /**
@@ -55,7 +66,12 @@ public class MovementController {
     @ApiOperation("移库列表详情")
     @GetMapping("/view")
     public HttpResponse<MovementResVo> view(Long id) {
-        return HttpResponse.success(movementService.view(id));
+        try {
+            return HttpResponse.success(movementService.view(id));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
 
@@ -70,6 +86,7 @@ public class MovementController {
         try {
             return  HttpResponse.success(movementService.revocation(id));
         }catch ( Exception e){
-            return HttpResponse.failure(ResultCode.MOVEMENT_RECOVER);}
+            return HttpResponse.failure(ResultCode.MOVEMENT_RECOVER);
+        }
     }
 }

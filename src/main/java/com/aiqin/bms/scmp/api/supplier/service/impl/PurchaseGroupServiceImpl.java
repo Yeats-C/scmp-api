@@ -1,17 +1,15 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.http.HttpClient;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupBuyerDao;
-import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupBuyerDao;
+import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.EnabledSave;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupBuyerDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.PurchaseGroupReqVo;
@@ -20,7 +18,13 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.UpdatePur
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.UserPositionsRequest;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.*;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
-import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.util.AuthToken;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.message.BasicNameValuePair;
@@ -31,6 +35,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 描述: 采购管理组service实现层
@@ -122,7 +128,7 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         //设置采购组主体的删除状态，启用禁用状态
         purchaseGroupDTO.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus());
-        purchaseGroupDTO.setEnable(StatusTypeCode.DIS_ABLE.getStatus());
+        purchaseGroupDTO.setEnable(StatusTypeCode.EN_ABLE.getStatus());
         //保存采购组的主体
         int k = ((PurchaseGroupService) AopContext.currentProxy()).insertSelective(purchaseGroupDTO);
         if( k>0){
@@ -133,7 +139,7 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
                     // 设置关联编码
                     groupBuyerDTOList.stream().forEach(purchase -> purchase.setPurchaseGroupCode(String.valueOf(purchaseGroupDTO.getPurchaseGroupCode())));
                     //设置启用禁用状态
-                    groupBuyerDTOList.stream().forEach(purchase -> purchase.setEnable(StatusTypeCode.DIS_ABLE.getStatus()));
+                    groupBuyerDTOList.stream().forEach(purchase -> purchase.setEnable(StatusTypeCode.EN_ABLE.getStatus()));
                     // 设置逻辑删除状态
                     groupBuyerDTOList.stream().forEach(purchase -> purchase.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus()));
                     // 保存采购组专员
@@ -313,21 +319,22 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
      * @return
      */
     @Override
-    public List<PurchaseGroupVo> getPurchaseGroup() {
+    public List<PurchaseGroupVo> getPurchaseGroup(String name) {
         try{
             String companyCode = "";
+            String personId = "";
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 companyCode = authToken.getCompanyCode();
+                personId = authToken.getPersonId();
             }
-        List<PurchaseGroupDTO> dtoList = purchaseGroupDao.getPurchaseGroup(companyCode);
-        List<PurchaseGroupVo> list =BeanCopyUtils.copyList(dtoList,PurchaseGroupVo.class);
-            for (PurchaseGroupVo purchaseGroupVo : list) {
-                //查询未禁用的关联人员
-                List<PurchaseGroupBuyerDTO> groupBuyerDTOList = purchaseGroupBuyerDao.selectByPurchaseCode(purchaseGroupVo.getPurchaseGroupCode());
-                //转化关联人员实体并且set到返回实体
-                purchaseGroupVo.setList(BeanCopyUtils.copyList(groupBuyerDTOList, PurchaseGroupBuyerVo.class));
-            }
+            List<PurchaseGroupVo> list = purchaseGroupDao.getPurchaseGroup(companyCode,personId,name);
+//            for (PurchaseGroupVo purchaseGroupVo : list) {
+//                //查询未禁用的关联人员
+//                List<PurchaseGroupBuyerDTO> groupBuyerDTOList = purchaseGroupBuyerDao.selectByPurchaseCode(purchaseGroupVo.getPurchaseGroupCode());
+//                //转化关联人员实体并且set到返回实体
+//                purchaseGroupVo.setList(BeanCopyUtils.copyList(groupBuyerDTOList, PurchaseGroupBuyerVo.class));
+//            }
             return list;
         }catch (Exception e){
             throw new GroundRuntimeException("转化数据出错");
@@ -341,16 +348,40 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
      */
     @Override
     public HttpResponse getPurchaseGroupBuyerList(UserPositionsRequest userPositionsRequest) {
-
+        String companyCode = null;
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            companyCode = authToken.getCompanyCode();
+        }
         BasicNameValuePair pair1 =  new BasicNameValuePair("page_no", userPositionsRequest.getPageNo().toString());
         BasicNameValuePair pair2 =  new BasicNameValuePair("page_size", userPositionsRequest.getPageSize().toString());
         BasicNameValuePair pair3 =  new BasicNameValuePair("person_name", userPositionsRequest.getPersonName());
         BasicNameValuePair pair4 =  new BasicNameValuePair("position_level_name", userPositionsRequest.getPositionLevelName());
         BasicNameValuePair pair5 =  new BasicNameValuePair("position_name", userPositionsRequest.getPositionName());
+        BasicNameValuePair pair6 =  new BasicNameValuePair("company_code", companyCode);
 
         String url = urlConfig.CENTRAL_URL+"/person/list";
-        HttpClient orderOperationClient = HttpClient.get(url).addParameters(pair1,pair2,pair3,pair4,pair5);
+        HttpClient orderOperationClient = HttpClient.get(url).addParameters(pair1,pair2,pair3,pair4,pair5,pair6);
         HttpResponse orderDto = orderOperationClient.action().result(HttpResponse.class);
         return orderDto;
+    }
+
+    @Override
+    public Map<String, PurchaseGroupDTO> selectByNames(Set<String> purchaseGroupList, String companyCode) {
+        return purchaseGroupDao.selectByNames(purchaseGroupList,companyCode);
+    }
+
+    /**
+     * 功能描述: 启用/禁用
+     *
+     * @param enabledSave
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/6 21:46
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer enabled(EnabledSave enabledSave) {
+        return purchaseGroupDao.enable(enabledSave);
     }
 }

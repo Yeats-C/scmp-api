@@ -1,7 +1,8 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * @date 2019/3/29 16:04
  * @description TODO
  */
-public interface ApplyProductSkuServiceProduct extends ProductBaseService {
+public interface ApplyProductSkuServiceProduct extends BaseService {
 
     String productSkuFlow(List<ApplyProductSku> applyProductSkus, WorkFlowCallbackVO vo);
     /**

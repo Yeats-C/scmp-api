@@ -18,6 +18,9 @@ public class DeliveryInfoRespVO {
     @ApiModelProperty("发送至")
     private String sendTo;
 
+   @ApiModelProperty("发送至")
+    private String sendToName;
+
     @ApiModelProperty("发送地址")
     private String sendingAddress;
 

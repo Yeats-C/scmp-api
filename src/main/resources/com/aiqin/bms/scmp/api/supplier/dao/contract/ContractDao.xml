@@ -17,7 +17,7 @@
     <result column="fixed_rebate_type" jdbcType="TINYINT" property="fixedRebateType" />
     <result column="return_rate" jdbcType="BIGINT" property="returnRate" />
     <result column="target_rebate" jdbcType="TINYINT" property="targetRebate" />
-    <result column="plan_type" jdbcType="TINYINT" property="planType" />
+<!--    <result column="plan_type" jdbcType="TINYINT" property="planType" />-->
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
     <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
     <result column="purchase_price_standard" jdbcType="TINYINT" property="purchasePriceStandard" />
@@ -42,38 +42,79 @@
     <result column="rebate_clause" jdbcType="TINYINT" property="rebateClause" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
     <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName"/>
+    <result column="contract_type_code" jdbcType="VARCHAR" property="contractTypeCode"/>
+    <result column="contract_type_name" jdbcType="VARCHAR" property="contractTypeName"/>
+    <result column="checkout_date" jdbcType="VARCHAR" property="checkoutDate"/>
+    <result column="min_amount" jdbcType="BIGINT" property="minAmount"/>
+    <result column="max_amount" jdbcType="BIGINT" property="maxAmount"/>
+    <result column="delivery_cycle" jdbcType="INTEGER" property="deliveryCycle"/>
+    <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+    <result column="discount" jdbcType="BIGINT" property="discount"/>
+    <result column="return_guarantee" jdbcType="TINYINT" property="returnGuarantee"/>
+    <result column="return_guarantee_day" jdbcType="INTEGER" property="returnGuaranteeDay"/>
+    <result column="warranty" jdbcType="BIGINT" property="warranty"/>
+    <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode"/>
+    <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
     payment_period, shipping_fee, delivery_charges, unloading_fee, other_conventions, 
-    fixed_rebate_type, return_rate, target_rebate, plan_type, start_time, end_time, purchase_price_standard, 
+    fixed_rebate_type, return_rate, target_rebate, start_time, end_time, purchase_price_standard,
     del_flag, create_time, create_by, update_time, update_by, contract_code, apply_contract_code, 
     auditor_by, auditor_time, apply_status,company_code,company_name,
     purchasing_group_name,settlement_method_name,early_warn_num,
     pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,
-    direct_supervisor_code,direct_supervisor_name
+    direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date,min_amount,
+    max_amount,delivery_cycle,tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
+    categories_supply_channels_code,categories_supply_channels_name,remark
   </sql>
 
   <select id="selectBySelectContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from contract
+    from contract b
     WHERE
-    del_flag = 0
+    1=1
     <if test="contractCode != null and contractCode != '' ">
-      AND contract_code  = #{contractCode}
+      AND contract_code LIKE  CONCAT('%',#{contractCode},'%')
+    </if>
+    <if test="yearName != null and yearName != '' ">
+      and year_name LIKE  CONCAT('%',#{yearName},'%')
     </if>
     <if test="supplierCode != null  and supplierCode != ''">
-      AND supplier_code =  #{supplierCode}
+      AND supplier_code LIKE  CONCAT('%',#{supplierCode},'%')
     </if>
     <if test="supplierName != null and supplierName != ''">
       AND supplier_name LIKE  CONCAT('%',#{supplierName},'%')
     </if>
-    <if test="purchasingGroupCode != null and purchasingGroupCode != '' ">
-      AND purchasing_group_code = #{purchasingGroupCode}
+    <if test="enable != null and enable != '' ">
+      and del_flag = #{enable}
+    </if>
+    <if test="startTimeStart != null and startTimeStart != '' ">
+      and <![CDATA[ start_time >= #{startTimeStart} ]]>
+    </if>
+    <if test="startTimeEnd != null and startTimeEnd != '' ">
+      and <![CDATA[ start_time <= #{startTimeEnd} ]]>
+    </if>
+    <if test="endTimeStart != null and endTimeStart != '' ">
+      and <![CDATA[ end_time >= #{endTimeStart} ]]>
+    </if>
+    <if test="endTimeEnd != null and endTimeEnd != '' ">
+      and <![CDATA[ end_time <= #{endTimeEnd} ]]>
+    </if>
+    <if test="dueStartTime != null and dueEndTime != null">
+      and  <![CDATA[ DATEDIFF(now(),end_time) <= #{dueEndTime}]]>
+      and  <![CDATA[ DATEDIFF(now(),end_time) >= #{dueStartTime}]]>
     </if>
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchasingGroupCode != null and purchasingGroupCode != '' ">
+      and exists (select 1 from contract_purchase_group a where a.contract_code = b.contract_code and a.purchasing_group_code = #{purchasingGroupCode})
+    </if>
+    <if test="personId != null and personId != '' ">
+      and exists (select 1 from contract_purchase_group a where a.contract_code = b.contract_code and a.purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR}))
     </if>
     order by create_time desc
   </select>
@@ -138,9 +179,6 @@
       </if>
       <if test="targetRebate != null">
         target_rebate,
-      </if>
-      <if test="planType != null">
-        plan_type,
       </if>
       <if test="startTime != null">
         start_time,
@@ -214,6 +252,48 @@
       <if test="directSupervisorName != null">
         direct_supervisor_name,
       </if>
+      <if test="contractTypeCode != null">
+        contract_type_code,
+      </if>
+      <if test="contractTypeName != null">
+        contract_type_name,
+      </if>
+      <if test="checkoutDate != null">
+        checkout_date,
+      </if>
+      <if test="minAmount != null">
+        min_amount,
+      </if>
+      <if test="maxAmount != null">
+        max_amount,
+      </if>
+      <if test="deliveryCycle != null">
+        delivery_cycle,
+      </if>
+      <if test="taxRate != null">
+        tax_rate,
+      </if>
+      <if test="discount != null">
+        discount,
+      </if>
+      <if test="returnGuarantee != null">
+        return_guarantee,
+      </if>
+      <if test="returnGuaranteeDay != null">
+        return_guarantee_day,
+      </if>
+      <if test="warranty != null">
+        warranty,
+      </if>
+      <if test="categoriesSupplyChannelsCode != null">
+        categories_supply_channels_code,
+      </if>
+      <if test="categoriesSupplyChannelsName != null">
+        categories_supply_channels_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -260,9 +340,6 @@
       </if>
       <if test="targetRebate != null">
         #{targetRebate,jdbcType=TINYINT},
-      </if>
-      <if test="planType != null">
-        #{planType,jdbcType=TINYINT},
       </if>
       <if test="startTime != null">
         #{startTime,jdbcType=TIMESTAMP},
@@ -334,7 +411,49 @@
         #{directSupervisorCode,jdbcType=VARCHAR},
       </if>
       <if test="directSupervisorName != null">
-        #{directSupervisorName,jdbcType=VARCHAR}
+        #{directSupervisorName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractTypeCode != null">
+        #{contractTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractTypeName != null">
+        #{contractTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkoutDate != null">
+        #{checkoutDate,jdbcType=VARCHAR},
+      </if>
+      <if test="minAmount != null">
+        #{minAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxAmount != null">
+         #{maxAmount},
+      </if>
+      <if test="deliveryCycle != null">
+       #{deliveryCycle},
+      </if>
+      <if test="taxRate != null">
+        #{taxRate},
+      </if>
+      <if test="discount != null">
+        #{discount},
+      </if>
+      <if test="returnGuarantee != null">
+        #{returnGuarantee},
+      </if>
+      <if test="returnGuaranteeDay != null">
+        #{returnGuaranteeDay},
+      </if>
+      <if test="warranty != null">
+        #{warranty},
+      </if>
+      <if test="categoriesSupplyChannelsCode != null">
+        #{categoriesSupplyChannelsCode},
+      </if>
+      <if test="categoriesSupplyChannelsName != null">
+        #{categoriesSupplyChannelsName},
+      </if>
+      <if test="remark != null">
+        #{remark},
       </if>
     </trim>
   </insert>
@@ -384,9 +503,9 @@
       <if test="targetRebate != null">
         target_rebate = #{targetRebate,jdbcType=TINYINT},
       </if>
-      <if test="planType != null">
-        plan_type = #{planType,jdbcType=TINYINT},
-      </if>
+<!--      <if test="planType != null">-->
+<!--        plan_type = #{planType,jdbcType=TINYINT},-->
+<!--      </if>-->
       <if test="startTime != null">
         start_time = #{startTime,jdbcType=TIMESTAMP},
       </if>
@@ -453,6 +572,48 @@
       <if test="directSupervisorName != null">
         direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
       </if>
+      <if test="contractTypeCode != null">
+        contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractTypeName != null">
+        contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkoutDate != null">
+        checkout_date = #{checkoutDate,jdbcType=VARCHAR},
+      </if>
+      <if test="minAmount != null">
+       min_amount = #{minAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="maxAmount != null">
+        max_amount = #{maxAmount},
+      </if>
+      <if test="deliveryCycle != null">
+        delivery_cycle = #{deliveryCycle},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate},
+      </if>
+      <if test="discount != null">
+        discount = #{discount},
+      </if>
+      <if test="returnGuarantee != null">
+        return_guarantee = #{returnGuarantee},
+      </if>
+      <if test="returnGuaranteeDay != null">
+        return_guarantee_day = #{returnGuaranteeDay},
+      </if>
+      <if test="warranty != null">
+        warranty = #{warranty},
+      </if>
+      <if test="categoriesSupplyChannelsCode != null">
+        categories_supply_channels_code = #{categoriesSupplyChannelsCode},
+      </if>
+      <if test="categoriesSupplyChannelsName != null">
+        categories_supply_channels_name = #{categoriesSupplyChannelsName},
+      </if>
+      <if test="remark != null">
+        remark = #{remark},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -472,7 +633,7 @@
       fixed_rebate_type = #{fixedRebateType,jdbcType=TINYINT},
       return_rate = #{returnRate,jdbcType=BIGINT},
       target_rebate = #{targetRebate,jdbcType=TINYINT},
-      plan_type = #{planType,jdbcType=TINYINT},
+--       plan_type = #{planType,jdbcType=TINYINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
       purchase_price_standard = #{purchasePriceStandard,jdbcType=TINYINT},
@@ -494,7 +655,11 @@
       payment_on_delivery_ratio = #{paymentOnDeliveryRatio,jdbcType=BIGINT},
       rebate_clause = #{rebateClause,jdbcType=TINYINT},
       direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
-      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR}
+      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
+      contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
+      checkout_date = #{checkoutDate,jdbcType=VARCHAR},
+      min_amount = #{minAmount,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -515,11 +680,36 @@
     </if>
     order by create_time desc
   </select>
-  <update id="updateByCode" >
+    <select id="getContractByMap" parameterType="map"
+            resultType="com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseResVo">
+      SELECT
+      DISTINCT
+      a.contract_code as contractCode,
+      a.year_name as contractName
+      FROM
+      contract a
+      LEFT JOIN contract_purchase_group b on a.contract_code = b.contract_code
+      LEFT JOIN purchase_group_buyer c on b.purchasing_group_code = c.purchase_group_code
+      where 1=1
+      <if test="companyCode != null and companyCode !='' ">
+        and a.company_code = #{companyCode}
+      </if>
+      <if test="personId != null and personId != '' ">
+        and c.buyer_code = #{personId}
+      </if>
+      <if test="supplierCode != null and supplierCode != '' ">
+        and a.supplier_code = #{supplierCode}
+      </if>
+    </select>
+
+    <update id="updateByCode" >
     update contract
     <set>
       <if test="applyStatus != null">
         apply_status = #{applyStatus,jdbcType=TINYINT},
+      </if>
+      <if test="newApplyCode != null">
+        apply_contract_code = #{newApplyCode},
       </if>
     </set>
     where apply_contract_code = #{applyContractCode,jdbcType=VARCHAR}

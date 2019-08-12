@@ -97,4 +97,7 @@ public class ReturnInboundProduct {
 
     @ApiModelProperty("进项税率")
     private Long tax;
+
+    @ApiModelProperty("入库拆零系数")
+    private String inboundBaseUnit;
 }

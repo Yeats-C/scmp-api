@@ -1,11 +1,13 @@
 package com.aiqin.bms.scmp.api.supplier.dao.supplier;
 
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.request.QueryApplySupplyListComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyComDetailDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyCompanyReqDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyThreeIdDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplyComReqVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.ApplySupplyComApplyListRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComListRespVO;
 import org.apache.ibatis.annotations.Param;
@@ -91,4 +93,11 @@ public interface ApplySupplyCompanyDao {
      * @return
      */
     List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
+
+    /**
+     * 查询集合
+     * @param queryApplySupplyComReqVO
+     * @return
+     */
+    List<ApplySupplyComApplyListRespVO> applyList(QueryApplySupplyListComReqVO queryApplySupplyComReqVO);
 }

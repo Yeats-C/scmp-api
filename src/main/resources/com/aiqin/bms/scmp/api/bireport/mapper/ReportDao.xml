@@ -1,0 +1,1757 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.bireport.dao.ReportDao">
+
+    <resultMap id="supplierArrivalRateResultMap" type="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="begin_run_time" jdbcType="VARCHAR" property="beginRunTime"/>
+        <result column="finish_run_time" jdbcType="VARCHAR" property="finishRunTime"/>
+        <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode"/>
+        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
+        <result column="category_code" jdbcType="VARCHAR" property="categoryCode"/>
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
+        <result column="pre_inbound_num" jdbcType="VARCHAR" property="preInboundNum"/>
+        <result column="pre_tax_amount" jdbcType="VARCHAR" property="preTaxAmount"/>
+        <result column="pra_inbound_num" jdbcType="VARCHAR" property="praInboundNum"/>
+        <result column="pra_tax_amount" jdbcType="VARCHAR" property="praTaxAmount"/>
+        <result column="pra_tax_amount_rate" jdbcType="VARCHAR" property="praTaxAmountRate"/>
+        <result column="responsible_person_name" jdbcType="VARCHAR" property="responsiblePersonName"/>
+    </resultMap>
+
+    <sql id="select_supplier_arrival_rate">
+        <where>
+            1=1
+            <if test="supplierCode!=null and supplierCode!=''">
+                and bsar.supplier_code = #{supplierCode}
+            </if>
+            <if test="supplierName!=null and supplierName!=''">
+                and bsar.supplier_name like concat('%', #{supplierName}, '%')
+            </if>
+            <if test="transportCenterCode!=null and transportCenterCode!=''">
+                and bsar.transport_center_code = #{transportCenterCode}
+            </if>
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bsar.category_code like concat(#{categoryCode}, '%')
+            </if>
+            <if test="categoryName!=null and categoryName!=''">
+                and bsar.category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="beginInboundTime!=null and beginInboundTime!=''">
+                and bsar.inbound_time between #{beginInboundTime}
+            </if>
+            <if test="finishInboundTime!=null and finishInboundTime!=''">
+                and #{finishInboundTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="select_goods_buy_sales">
+        <where>
+            1=1
+            <if test="beginInboundTime!=null and beginInboundTime!=''">
+                and bgbs.inbound_time between #{beginInboundTime}
+            </if>
+            <if test="finishInboundTime!=null and finishInboundTime!=''">
+                and #{finishInboundTime}
+            </if>
+            <if test="supplierCode!=null and supplierCode!=''">
+                and bgbs.supplier_code=#{supplierCode}
+            </if>
+            <if test="supplierName!=null and supplierName!=''">
+                and bgbs.supplier_name like concat('%', #{supplierName}, '%')
+            </if>
+            <if test="skuCode!=null and skuCode!=''">
+                and bgbs.sku_code=#{skuCode}
+            </if>
+            <if test="skuName!=null and skuName!=''">
+                and bgbs.sku_name like concat('%', #{skuName}, '%')
+            </if>
+            <if test="transportCenterCode!=null and transportCenterCode!=''">
+                and bgbs.transport_center_code=#{transportCenterCode}
+            </if>
+            <if test="transportCenterName!=null and transportCenterName!=''">
+                and bgbs.transport_center_name like concat('%', #{transportCenterName}, '%')
+            </if>
+            <if test="categoryName!=null and categoryName!=''">
+                and bgbs.category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bgbs.category_code like concat(#{categoryCode}, '%')
+            </if>
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bgbs.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="inboundDays!=null and inboundDays!=''">
+                and bgbs.inbound_days=#{inboundDays}
+            </if>
+            <if test="beginTurnoverDays!=null">
+                and bgbs.turnover_days <![CDATA[>=]]> #{beginTurnoverDays}
+            </if>
+            <if test="finishTurnoverDays!=null">
+                and bgbs.turnover_days <![CDATA[<=]]> #{finishTurnoverDays}
+            </if>
+            <if test="warehouseCode!=null and warehouseCode!=''">
+                and bgbs.warehouse_code=#{warehouseCode}
+            </if>
+            <if test="warehouseName!=null and warehouseName!=''">
+                and bgbs.warehouse_name like concat('%', #{warehouseName}, '%')
+            </if>
+            <if test="categoryCodeOne!=null and categoryCodeOne!=''">
+                and bgbs.category_code_one like concat('%', #{categoryCodeOne}, '%')
+            </if>
+            <if test="categoryCodeTwo!=null and categoryCodeTwo!=''">
+                and bgbs.category_code_two like concat('%', #{categoryCodeTwo}, '%')
+            </if>
+            <if test="categoryCodeThree!=null and categoryCodeThree!=''">
+                and bgbs.category_code_three like concat('%', #{categoryCodeThree}, '%')
+            </if>
+        </where>
+    </sql>
+    <sql id="select_gifts_buy_sales">
+        <where>
+            1=1
+            <if test="skuCode!=null and skuCode!=''">
+                and bgbs.sku_code=#{skuCode}
+            </if>
+            <if test="skuName!=null and skuName!=''">
+                and bgbs.sku_name like concat('%', #{skuName}, '%')
+            </if>
+            <if test="transportCenterCode!=null and transportCenterCode!=''">
+                and bgbs.transport_center_code=#{transportCenterCode}
+            </if>
+            <if test="transportCenterName!=null and transportCenterName!=''">
+                and bgbs.transport_center_name like concat('%', #{transportCenterName}, '%')
+            </if>
+            <if test="categoryName!=null and categoryName!=''">
+                and bgbs.category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bgbs.category_code like concat(#{categoryCode}, '%')
+            </if>
+            <if test="inboundDays!=null and inboundDays!=''">
+                and bgbs.inbound_days=#{inboundDays}
+            </if>
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bgbs.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="beginInboundTime!=null and beginInboundTime!=''">
+                and bgbs.inbound_time between #{beginInboundTime}
+            </if>
+            <if test="finishInboundTime!=null and finishInboundTime!=''">
+                and #{finishInboundTime}
+            </if>
+            <if test="warehouseCode!=null and warehouseCode!=''">
+                and bgbs.warehouse_code=#{warehouseCode}
+            </if>
+            <if test="warehouseName!=null and warehouseName!=''">
+                and bgbs.warehouse_name like concat('%', #{warehouseName}, '%')
+            </if>
+            <if test="beginTurnoverDays!=null">
+                and bgbs.turnover_days <![CDATA[>=]]> #{beginTurnoverDays}
+            </if>
+            <if test="finishTurnoverDays!=null">
+                and bgbs.turnover_days <![CDATA[<=]]> #{finishTurnoverDays}
+            </if>
+            <if test="categoryCodeOne!=null and categoryCodeOne!=''">
+                and bgbs.category_code_one like concat('%', #{categoryCodeOne}, '%')
+            </if>
+            <if test="categoryCodeTwo!=null and categoryCodeTwo!=''">
+                and bgbs.category_code_two like concat('%', #{categoryCodeTwo}, '%')
+            </if>
+            <if test="categoryCodeThree!=null and categoryCodeThree!=''">
+                and bgbs.category_code_three like concat('%', #{categoryCodeThree}, '%')
+            </if>
+        </where>
+    </sql>
+    <sql id="select_supplier_return">
+        <where>
+            1=1
+            <if test="supplierCode!=null and supplierCode!=''">
+                and bsr.supplier_code=#{supplierCode}
+            </if>
+            <if test="supplierName!=null and supplierName!=''">
+                and bsr.supplier_name like concat('%', #{supplierName}, '%')
+            </if>
+            <if test="transportCenterCode!=null and transportCenterCode!=''">
+                and bsr.transport_center_code=#{transportCenterCode}
+            </if>
+            <if test="transportCenterName!=null and transportCenterName!=''">
+                and bsr.transport_center_name like concat('%', #{transportCenterName}, '%')
+            </if>
+            <if test="warehouseCode!=null and warehouseCode!=''">
+                and bsr.warehouse_code=#{warehouseCode}
+            </if>
+            <if test="warehouseName!=null and warehouseName!=''">
+                and bsr.warehouse_name like concat('%', #{warehouseName}, '%')
+            </if>
+            <if test="beginOutStockTime!=null and beginOutStockTime!=''">
+                and bsr.out_stock_time between #{beginOutStockTime}
+            </if>
+            <if test="finishOutStockTime!=null and finishOutStockTime!=''">
+                and #{finishOutStockTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="select_new_product_batch_moving_rate">
+        <where>
+            1=1
+            <if test="skuCode!=null and skuCode!=''">
+                and bnpbmr.sku_code=#{skuCode}
+            </if>
+            <if test="skuName!=null and skuName!=''">
+                and bnpbmr.sku_name like concat('%', #{skuName}, '%')
+            </if>
+            <if test="orderCode!=null and orderCode!=''">
+                and bnpbmr.price_channel_code=#{orderCode}
+            </if>
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bnpbmr.price_channel_name like concat('%', #{orderOriginal}, '%')
+            </if>
+            <if test="supplierCode!=null and supplierCode!=''">
+                and bnpbmr.supplier_code=#{supplierCode}
+            </if>
+            <if test="supplierName!=null and supplierName!=''">
+                and bnpbmr.supplier_name like concat('%', #{supplierName}, '%')
+            </if>
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bnpbmr.category_code like concat(#{categoryCode}, '%')
+            </if>
+            <if test="categoryName!=null and categoryName!=''">
+                and bnpbmr.category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="beginInboundTime!=null and beginInboundTime!=''">
+                and bnpbmr.inbound_time between #{beginInboundTime}
+            </if>
+            <if test="finishInboundTime!=null and finishInboundTime!=''">
+                and #{finishInboundTime}
+            </if>
+            <if test="batchCode!=null and batchCode!=''">
+                and bnpbmr.stock_batch_code=#{batchCode}
+            </if>
+            <if test="beginChannelMaoriRate!=null">
+                and bnpbmr.channel_maori_rate <![CDATA[>=]]> #{beginChannelMaoriRate}
+            </if>
+            <if test="finishChannelMaoriRate!=null">
+                and bnpbmr.channel_maori_rate <![CDATA[<=]]> #{finishChannelMaoriRate}
+            </if>
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bnpbmr.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bnpbmr.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+        </where>
+    </sql>
+    <sql id="select_store_repurchase_rate">
+        <where>
+            1=1
+            <if test="provinceName!=null and provinceName!=''">
+                and bsrr.province_name like concat('%', #{provinceName}, '%')
+            </if>
+            <if test="cityName!=null and cityName!=''">
+                and bsrr.city_name like concat('%', #{cityName}, '%')
+            </if>
+            <if test="districtName!=null and districtName!=''">
+                and bsrr.district_name like concat('%', #{districtName}, '%')
+            </if>
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bsrr.category_code like concat(#{categoryCode}, '%')
+            </if>
+            <if test="categoryName!=null and categoryName!=''">
+                and bsrr.category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="orderCode!=null and orderCode!=''">
+                and bsrr.price_channel_code=#{orderCode}
+            </if>
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bsrr.price_channel_name like concat('%', #{orderOriginal}, '%')
+            </if>
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bsrr.create_time between #{beginCreateTime}
+            </if>
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="select_negative_margin">
+        <where>
+            1=1
+            <if test="skuCode!=null and skuCode!=''">
+                and bnm.sku_code=#{skuCode}
+            </if>
+            <if test="skuName!=null and skuName!=''">
+                and bnm.sku_name like concat('%', #{skuName}, '%')
+            </if>
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bnm.category_code like concat(#{categoryCode}, '%')
+            </if>
+            <if test="categoryName!=null and categoryName!=''">
+                and bnm.category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="productBrandCode!=null and productBrandCode!=''">
+                and bnm.product_brand_code=#{productBrandCode}
+            </if>
+            <if test="productBrandName!=null and productBrandName!=''">
+                and bnm.product_brand_name like concat('%', #{productBrandName}, '%')
+            </if>
+            <if test="orderCode!=null and orderCode!=''">
+                and bnm.price_channel_code=#{orderCode}
+            </if>
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bnm.price_channel_name like concat('%', #{orderOriginal}, '%')
+            </if>
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bnm.create_time between #{beginCreateTime}
+            </if>
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
+            </if>
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bnm.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bnm.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+        </where>
+    </sql>
+    <sql id="select_suggest_replenishment">
+        <where>
+            1=1
+            <if test="skuCode!=null and skuCode!=''">
+                and bsr.sku_code=#{skuCode}
+            </if>
+            <if test="skuName!=null and skuName!=''">
+                and bsr.sku_name like concat('%', #{skuName}, '%')
+            </if>
+            <if test="productCategoryCode!=null and productCategoryCode!=''">
+                and bsr.product_category_code like concat(#{productCategoryCode}, '%')
+            </if>
+            <if test="productCategoryName!=null and productCategoryName!=''">
+                and bsr.product_category_name like concat('%', #{productCategoryName}, '%')
+            </if>
+            <if test="productBrandCode!=null and productBrandCode!=''">
+                and bsr.product_brand_code=#{productBrandCode}
+            </if>
+            <if test="productBrandName!=null and productBrandName!=''">
+                and bsr.product_brand_name like concat('%', #{productBrandName}, '%')
+            </if>
+            <if test="transportCenterCode!=null and transportCenterCode!=''">
+                and bsr.transport_center_code=#{transportCenterCode}
+            </if>
+            <if test="transportCenterName!=null and transportCenterName!=''">
+                and bsr.transport_center_name like concat('%', #{transportCenterName}, '%')
+            </if>
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bsr.create_time between #{beginCreateTime}
+            </if>
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="select_low_inventory">
+        <where>
+            1=1
+            <if test="procurementSectionCode!=null and procurementSectionCode!=''">
+                and bli.purchase_group_code=#{procurementSectionCode}
+            </if>
+            <if test="procurementSectionName!=null and procurementSectionName!=''">
+                and bli.purchase_group_name like concat('%', #{procurementSectionName}, '%')
+            </if>
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bli.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bli.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bli.create_time between #{beginCreateTime}
+            </if>
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="select_high_inventory">
+        <where>
+            1=1
+            <if test="procurementSectionCode!=null and procurementSectionCode!=''">
+                and bhi.purchase_group_code=#{procurementSectionCode}
+            </if>
+            <if test="procurementSectionName!=null and procurementSectionName!=''">
+                and bhi.purchase_group_name like concat('%', #{procurementSectionName}, '%')
+            </if>
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bhi.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bhi.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bhi.create_time between #{beginCreateTime}
+            </if>
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="select_brand_sale">
+        <where>
+            1=1
+            <if test="createTime!=null and createTime!=''">
+                and bbs.create_time like concat('%', #{createTime}, '%')
+            </if>
+            <if test="orderCode!=null and orderCode!=''">
+                and bbs.price_channel_code like concat('%', #{orderCode}, '%')
+            </if>
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bbs.price_channel_name like concat('%', #{orderOriginal}, '%')
+            </if>
+            <if test="departmentCode!=null and departmentCode!=''">
+                and bbs.department_code like concat('%', #{departmentCode}, '%')
+            </if>
+            <if test="departmentName!=null and departmentName!=''">
+                and bbs.department_name like concat('%', #{departmentName}, '%')
+            </if>
+        </where>
+    </sql>
+    <sql id="select_category_sale">
+        <where>
+            1=1
+            <if test="createTime!=null and createTime!=''">
+                and bcs.create_time=#{createTime}
+            </if>
+            <if test="orderCode!=null and orderCode!=''">
+                and bcs.price_channel_code=#{orderCode}
+            </if>
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bcs.price_channel_name like concat('%', #{orderOriginal}, '%')
+            </if>
+            <if test="departmentCode!=null and departmentCode!=''">
+                and bcs.department_code=#{departmentCode}
+            </if>
+            <if test="departmentName!=null and departmentName!=''">
+                and bcs.department_name like concat('%', #{departmentName}, '%')
+            </if>
+        </where>
+    </sql>
+    <sql id="select_big_effect">
+        <where>
+            1=1
+            <if test="createTime!=null and createTime!=''">
+                and bbe.create_time like concat('%', #{createTime}, '%')
+            </if>
+            <if test="skuCode!=null and skuCode!=''">
+                and bbe.sku_code=#{skuCode}
+            </if>
+            <if test="skuName!=null and skuName!=''">
+                and bbe.sku_name like concat('%', #{skuName}, '%')
+            </if>
+            <if test="productBrandCode!=null and productBrandCode!=''">
+                and bbe.product_brand_code=#{productBrandCode}
+            </if>
+            <if test="productBrandName!=null and productBrandName!=''">
+                and bbe.product_brand_name like concat('%', #{productBrandName}, '%')
+            </if>
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bbe.category_code like concat(#{categoryCode}, '%')
+            </if>
+            <if test="categoryName!=null and categoryName!=''">
+                and bbe.category_name like concat('%', #{categoryName}, '%')
+            </if>
+            <if test="supplyCode!=null and supplyCode!=''">
+                and bbe.supply_code=#{supplyCode}
+            </if>
+            <if test="supplyName!=null and supplyName!=''">
+                and bbe.supply_name like concat('%', #{supplyName}, '%')
+            </if>
+            <if test="procurementSectionCode!=null and procurementSectionCode!=''">
+                and bbe.procurement_section_code=#{procurementSectionCode}
+            </if>
+            <if test="procurementSectionName!=null and procurementSectionName!=''">
+                and bbe.procurement_section_name like concat('%', #{procurementSectionName}, '%')
+            </if>
+            <if test="transportCenterCode!=null and transportCenterCode!=''">
+                and bbe.transport_center_code=#{transportCenterCode}
+            </if>
+            <if test="transportCenterName!=null and transportCenterName!=''">
+                and bbe.transport_center_name like concat('%', #{transportCenterName}, '%')
+            </if>
+            <if test="warehouseCode!=null and warehouseCode!=''">
+                and bbe.warehouse_code=#{warehouseCode}
+            </if>
+            <if test="warehouseName!=null and warehouseName!=''">
+                and bbe.warehouse_name like concat('%', #{warehouseName}, '%')
+            </if>
+            <if test="bigEffectPeriodWarnDay!=null and bigEffectPeriodWarnDay!=''">
+                and bbe.big_effect_period_warn_day=#{bigEffectPeriodWarnDay}
+            </if>
+        </where>
+    </sql>
+    <sql id="select_monthly_sales">
+        <where>
+            1=1
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bms.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bms.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="orderCode!=null and orderCode!=''">
+                and bms.price_channel_code=#{orderCode}
+            </if>
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bms.price_channel_name like concat('%', #{orderOriginal}, '%')
+            </if>
+            <if test="storeTypeCode!=null and storeTypeCode!=''">
+                and bms.store_type_code=#{storeTypeCode}
+            </if>
+            <if test="storeType!=null and storeType!=''">
+                and bms.store_type like concat('%', #{storeType}, '%')
+            </if>
+            <if test="dataTypeCode!=null and dataTypeCode!=''">
+                and bms.data_type_code=#{dataTypeCode}
+            </if>
+            <if test="dataType!=null and dataType!=''">
+                and bms.data_type like concat('%', #{dataType}, '%')
+            </if>
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bms.create_time between #{beginCreateTime}
+            </if>
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="select_monthly_gross_margin">
+        <where>
+            1=1
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bmgm.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bmgm.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="orderCode!=null and orderCode!=''">
+                and bmgm.price_channel_code=#{orderCode}
+            </if>
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bmgm.price_channel_name like concat('%', #{orderOriginal}, '%')
+            </if>
+            <if test="storeTypeCode!=null and storeTypeCode!=''">
+                and bmgm.store_type_code=#{storeTypeCode}
+            </if>
+            <if test="storeType!=null and storeType!=''">
+                and bmgm.store_type like concat('%', #{storeType}, '%')
+            </if>
+            <if test="dataTypeCode!=null and dataTypeCode!=''">
+                and bmgm.store_type_code=#{dataTypeCode}
+            </if>
+            <if test="dataType!=null and dataType!=''">
+                and bmgm.data_type like concat('%', #{dataType}, '%')
+            </if>
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bmgm.create_time between #{beginCreateTime}
+            </if>
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
+            </if>
+        </where>
+    </sql>
+    <sql id="select_month_sales_achievement">
+        <where>
+            1=1
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bmsa.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bmsa.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="orderCode!=null and orderCode!=''">
+                and bmsa.price_channel_code=#{orderCode}
+            </if>
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bmsa.price_channel_name like concat('%', #{orderOriginal}, '%')
+            </if>
+            <if test="storeTypeCode!=null and storeTypeCode!=''">
+                and bmsa.store_type_code=#{storeTypeCode}
+            </if>
+            <if test="storeType!=null and storeType!=''">
+                and bmsa.store_type like concat('%', #{storeType}, '%')
+            </if>
+            <if test="dataTypeCode!=null and dataTypeCode!=''">
+                and bmsa.data_type_code=#{dataTypeCode}
+            </if>
+            <if test="dataType!=null and dataType!=''">
+                and bmsa.data_type like concat('%', #{dataType}, '%')
+            </if>
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bmsa.create_time between #{beginCreateTime}
+            </if>
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
+            </if>
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bmsa.category_code like concat(#{categoryCode}, '%')
+            </if>
+            <if test="categoryName!=null and categoryName!=''">
+                and bmsa.category_name like concat('%', #{categoryName}, '%')
+            </if>
+        </where>
+    </sql>
+    <sql id="select_month_cumulative_brand_sales">
+        <where>
+            1=1
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bmcbs.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bmcbs.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="orderCode!=null and orderCode!=''">
+                and bmcbs.price_channel_code=#{orderCode}
+            </if>
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bmcbs.price_channel_name like concat('%', #{orderOriginal}, '%')
+            </if>
+            <if test="storeTypeCode!=null and storeTypeCode!=''">
+                and bmcbs.store_type_code=#{storeTypeCode}
+            </if>
+            <if test="storeType!=null and storeType!=''">
+                and bmcbs.store_type like concat('%', #{storeType}, '%')
+            </if>
+            <if test="dataTypeCode!=null and dataTypeCode!=''">
+                and bmcbs.data_type_code=#{dataTypeCode}
+            </if>
+            <if test="dataType!=null and dataType!=''">
+                and bmcbs.data_type like concat('%', #{dataType}, '%')
+            </if>
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bmcbs.create_time between #{beginCreateTime}
+            </if>
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
+            </if>
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bmcbs.category_code like concat(#{categoryCode}, '%')
+            </if>
+            <if test="categoryName!=null and categoryName!=''">
+                and bmcbs.category_name like concat('%', #{categoryName}, '%')
+            </if>
+        </where>
+    </sql>
+    <sql id="select_month_cumulative_gross_profit_margin">
+        <where>
+            1=1
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bmcgpm.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bmcgpm.product_sort_name like concat('%', #{productSortName}, '%')
+            </if>
+            <if test="orderCode!=null and orderCode!=''">
+                and bmcgpm.price_channel_code=#{orderCode}
+            </if>
+            <if test="orderOriginal!=null and orderOriginal!=''">
+                and bmcgpm.price_channel_name like concat('%', #{orderOriginal}, '%')
+            </if>
+            <if test="storeTypeCode!=null and storeTypeCode!=''">
+                and bmcgpm.store_type_code=#{storeTypeCode}
+            </if>
+            <if test="storeType!=null and storeType!=''">
+                and bmcgpm.store_type like concat('%', #{storeType}, '%')
+            </if>
+            <if test="dataTypeCode!=null and dataTypeCode!=''">
+                and bmcgpm.data_type_code=#{dataTypeCode}
+            </if>
+            <if test="dataType!=null and dataType!=''">
+                and bmcgpm.data_type like concat('%', #{dataType}, '%')
+            </if>
+            <if test="beginCreateTime!=null and beginCreateTime!=''">
+                and bmcgpm.create_time between #{beginCreateTime}
+            </if>
+            <if test="finishCreateTime!=null and finishCreateTime!=''">
+                and #{finishCreateTime}
+            </if>
+            <if test="categoryCode!=null and categoryCode!=''">
+                and bmcgpm.category_code like concat(#{categoryCode}, '%')
+            </if>
+            <if test="categoryName!=null and categoryName!=''">
+                and bmcgpm.category_name like concat('%', #{categoryName}, '%')
+            </if>
+        </where>
+    </sql>
+    <select id="selectSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
+        select
+        bsar.id as id,
+        date_format(bsar.inbound_time, '%Y-%m-%d %H:%i:%s') as inboundTime,
+        bsar.supplier_code as supplierCode,
+        bsar.supplier_name as supplierName,
+        bsar.category_code as categoryCode,
+        bsar.category_name as categoryName,
+        bsar.transport_center_code as transportCenterCode,
+        bsar.transport_center_name as transportCenterName,
+        bsar.pre_inbound_num as preInboundNum,
+        bsar.pre_tax_amount as preTaxAmount,
+        bsar.pra_inbound_num as praInboundNum,
+        bsar.pra_tax_amount as praTaxAmount,
+        bsar.pra_tax_amount_rate as praTaxAmountRate,
+        date_format(bsar.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        bsar.responsible_person_code as responsiblePersonCode,
+        bsar.responsible_person_name as responsiblePersonName
+        from bi_supplier_arrival_rate bsar
+        <include refid="select_supplier_arrival_rate"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bsar.id
+        from bi_supplier_arrival_rate bsar
+        WHERE
+        1=1
+        <if test="supplierCode!=null and supplierCode!=''">
+            and bsar.supplier_code = #{supplierCode}
+        </if>
+        <if test="supplierName!=null and supplierName!=''">
+            and bsar.supplier_name like concat('%', #{supplierName}, '%')
+        </if>
+        <if test="transportCenterCode!=null and transportCenterCode!=''">
+            and bsar.transport_center_code = #{transportCenterCode}
+        </if>
+        <if test="categoryCode!=null and categoryCode!=''">
+            and bsar.category_code like concat(#{categoryCode}, '%')
+        </if>
+        <if test="categoryName!=null and categoryName!=''">
+            and bsar.category_name like concat('%', #{categoryName}, '%')
+        </if>
+        <if test="beginInboundTime!=null and beginInboundTime!=''">
+            and bsar.inbound_time between #{beginInboundTime}
+        </if>
+        <if test="finishInboundTime!=null and finishInboundTime!=''">
+            and #{finishInboundTime}
+        </if>
+        group by bsar.id
+        ) as tmp
+    </select>
+    <select id="selectSupplierArrivalRateTableCloumnName" resultType="java.util.HashMap">
+        select
+          COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
+        from information_schema.COLUMNS
+        where
+          table_name = 'bi_supplier_arrival_rate' and table_schema = 'bms_scmp'
+    </select>
+    <select id="sumSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo">
+        select
+        sum(bsar.pre_inbound_num) as preInboundNums,
+        sum(bsar.pre_tax_amount)  as preTaxAmounts,
+        sum(bsar.pra_inbound_num) as praInboundNums,
+        sum(bsar.pra_tax_amount)  as praTaxAmounts,
+        bsar.pra_tax_amount/bsar.pre_tax_amount as praTaxAmountRates
+        from bi_supplier_arrival_rate bsar
+        <include refid="select_supplier_arrival_rate"/>
+    </select>
+    <select id="selectGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        bgbs.id as id,
+        date_format(bgbs.inbound_time, '%Y-%m-%d %H:%i:%s') as inboundTime,
+        bgbs.supplier_code as supplierCode,
+        bgbs.supplier_name as supplierName,
+        bgbs.sku_code as skuCode,
+        bgbs.sku_name as skuName,
+        bgbs.product_sort_code as productSortCode,
+        bgbs.product_sort_name as productSortName,
+        bgbs.transport_center_code as transportCenterCode,
+        bgbs.transport_center_name as transportCenterName,
+        bgbs.warehouse_code as warehouseCode,
+        bgbs.warehouse_name as warehouseName,
+        bgbs.batch_code as batchCode,
+        bgbs.category_name as categoryName,
+        bgbs.category_code as categoryCode,
+        bgbs.category_code_one as categoryCodeOne,
+        bgbs.category_code_two as categoryCodeTwo,
+        bgbs.category_code_three as categoryCodeThree,
+        bgbs.product_brand_code as productBrandCode,
+        bgbs.product_brand_name as productBrandName,
+        bgbs.manufacturer_guide_price as manufacturerGuidePrice,
+        bgbs.available_num as availableNum,
+        bgbs.tax_cost as taxCost,
+        bgbs.sales_num_one_month as salesNumOneMonth,
+        bgbs.sales_cost_one_month as salesCostOneMonth,
+        bgbs.distribution_sales_money_one_month as distributionSalesMoneyOneMonth,
+        bgbs.distribution_sales_maori_one_month as distributionSalesMaoriOneMonth,
+        bgbs.distribution_sales_maori_one_month_rate as distributionSalesMaoriOneMonthRate,
+        bgbs.channel_sales_money_one_month as channelSalesMoneyOneMonth,
+        bgbs.channel_sales_maori_one_month as channelSalesMaoriOneMonth,
+        bgbs.channel_sales_maori_one_month_rate as channelSalesMaoriOneMonthRate,
+        bgbs.turnover_days as turnoverDays,
+        bgbs.inbound_days as inboundDays,
+        bgbs.config_status as configStatus,
+        bgbs.responsible_person_code as responsiblePersonCode,
+        bgbs.responsible_person_name as responsiblePersonName,
+        bgbs.production_date as productionDate,
+        bgbs.quality_number as qualityNumber,
+        date_format(bgbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_goods_buy_sales bgbs
+        <include refid="select_goods_buy_sales"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="selectGoodsSkuNameByCodeOne" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameOne
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeOne != null and categoryCodeOne != ''">
+                and pc.category_id  = #{categoryCodeOne, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGoodsSkuNameByCodeTwo" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameTwo
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeTwo != null and categoryCodeTwo != ''">
+                and pc.category_id  = #{categoryCodeTwo, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGoodsSkuNameByCodeThree" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameThree
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeThree != null and categoryCodeThree != ''">
+                and pc.category_id  = #{categoryCodeThree, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGoodsSkuNameByCode" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GoodsBuySalesRespVo">
+        select
+        pc.category_name as categoryName
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCode != null and categoryCode != ''">
+                and pc.category_id  = #{categoryCode, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="countGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bgbs.id
+        from bi_goods_buy_sales bgbs
+        <include refid="select_goods_buy_sales"/>
+        group by bgbs.id
+        ) as tmp
+    </select>
+    <select id="selectGoodsBuySalesTableCloumnName" resultType="java.util.HashMap">
+        select
+        COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
+        from information_schema.COLUMNS
+        where
+        table_name = 'bi_goods_buy_sales' and table_schema = 'bms_scmp'
+    </select>
+    <select id="selectGiftsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
+        select
+        bgbs.id as id,
+        bgbs.sku_code as skuCode,
+        bgbs.sku_name as skuName,
+        bgbs.product_sort_code as productSortCode,
+        bgbs.product_sort_name as productSortName,
+        bgbs.category_name as categoryName,
+        bgbs.category_code as categoryCode,
+        bgbs.category_code_one as categoryCodeOne,
+        bgbs.category_code_two as categoryCodeTwo,
+        bgbs.category_code_three as categoryCodeThree,
+        bgbs.product_brand_code as productBrandCode,
+        bgbs.product_brand_name as productBrandName,
+        bgbs.manufacturer_guide_price as manufacturerGuidePrice,
+        bgbs.transport_center_code as transportCenterCode,
+        bgbs.transport_center_name as transportCenterName,
+        bgbs.warehouse_code as warehouseCode,
+        bgbs.warehouse_name as warehouseName,
+        bgbs.available_num as availableNum,
+        bgbs.sales_num_one_month as salesNumOneMonth,
+        bgbs.sales_money_one_month as salesMoneyOneMonth,
+        bgbs.turnover_days as turnoverDays,
+        bgbs.responsible_person_code as responsiblePersonCode,
+        bgbs.responsible_person_name as responsiblePersonName,
+        date_format(bgbs.inbound_time, '%Y-%m-%d %H:%i:%s') as inboundTime,
+        bgbs.inbound_days as inboundDays,
+        date_format(bgbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_gifts_buy_sales bgbs
+        <include refid="select_gifts_buy_sales"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="selectGiftsSkuNameByCodeOne" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameOne
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeOne != null and categoryCodeOne != ''">
+                and pc.category_id  = #{categoryCodeOne, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGiftsSkuNameByCodeTwo" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameTwo
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeTwo != null and categoryCodeTwo != ''">
+                and pc.category_id  = #{categoryCodeTwo, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGiftsSkuNameByCodeThree" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
+        select
+        pc.category_name as categoryNameThree
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeThree != null and categoryCodeThree != ''">
+                and pc.category_id  = #{categoryCodeThree, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectGiftsSkuNameByCode" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.GiftsBuySalesRespVo">
+        select
+        pc.category_name as categoryName
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCode != null and categoryCode != ''">
+                and pc.category_id  = #{categoryCode, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="countGiftsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bgbs.id
+        from bi_gifts_buy_sales bgbs
+        <include refid="select_gifts_buy_sales"/>
+        group by bgbs.id
+        ) as tmp
+    </select>
+    <select id="selectSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierReturnRespVo">
+        select
+        bsr.id as id,
+        bsr.supplier_code as supplierCode,
+        bsr.supplier_name as supplierName,
+        bsr.transport_center_code as transportCenterCode,
+        bsr.transport_center_name as transportCenterName,
+        bsr.warehouse_code as warehouseCode,
+        bsr.warehouse_name as warehouseName,
+        bsr.reject_record_code as rejectRecordCode,
+        bsr.sum_count as sumCount,
+        bsr.sum_amount as sumAmount,
+        date_format(bsr.return_goods_create_time, '%Y-%m-%d %H:%i:%s') as returnGoodsCreateTime,
+        date_format(bsr.out_stock_time, '%Y-%m-%d %H:%i:%s') as outStockTime,
+        bsr.reject_status as rejectStatus,
+        bsr.purchase_group_code as purchaseGroupCode,
+        bsr.purchase_group_name as purchaseGroupName,
+        bsr.responsible_person_code as responsiblePersonCode,
+        bsr.responsible_person_name as responsiblePersonName,
+        date_format(bsr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_supplier_return bsr
+        <include refid="select_supplier_return"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bsr.id
+        from bi_supplier_return bsr
+        <include refid="select_supplier_return"/>
+        group by bsr.id
+        ) as tmp
+    </select>
+    <select id="sumSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierReturnRespVo">
+        select
+        sum(bsr.sum_count) as sumCounts,
+        sum(bsr.sum_amount) as sumAmounts
+        from bi_supplier_return bsr
+        <include refid="select_supplier_return"/>
+    </select>
+    <select id="selectNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
+        select
+        bnpbmr.id as id,
+        bnpbmr.sku_code as skuCode,
+        bnpbmr.sku_name as skuName,
+        bnpbmr.stock_batch_code as batchCode,
+        bnpbmr.supplier_code as supplierCode,
+        bnpbmr.supplier_name as supplierName,
+        bnpbmr.product_sort_code as productSortCode,
+        bnpbmr.product_sort_name as productSortName,
+        bnpbmr.category_code as categoryCode,
+        bnpbmr.category_name as categoryName,
+        bnpbmr.category_code_one as categoryCodeOne,
+        bnpbmr.category_code_two as categoryCodeTwo,
+        bnpbmr.category_code_three as categoryCodeThree,
+        bnpbmr.product_brand_code as productBrandCode,
+        bnpbmr.product_brand_name as productBrandName,
+        bnpbmr.purchase_price as purchasePrice,
+        bnpbmr.manufacturer_guide_price as manufacturerGuidePrice,
+        bnpbmr.available_num as availableNum,
+        bnpbmr.tax_cost as taxCost,
+        bnpbmr.num as num,
+        bnpbmr.sales_costs as salesCosts,
+        bnpbmr.price_channel_code as orderCode,
+        bnpbmr.price_channel_name as orderOriginal,
+        bnpbmr.channel_amount as channelAmount,
+        bnpbmr.channel_maori as channelMaori,
+        bnpbmr.channel_maori_rate as channelMaoriRate,
+        bnpbmr.distribution_sales_costs as distributionSalesCosts,
+        bnpbmr.distribution_maori as distributionMaori,
+        bnpbmr.distribution_maori_rate as distributionMaoriRate,
+        bnpbmr.sales_num_one_month as salesNumOneMonth,
+        bnpbmr.sales_coses_one_month as salesCosesOneMonth,
+        bnpbmr.turnover_days as turnoverDays,
+        date_format(bnpbmr.inbound_time, '%Y-%m-%d %H:%i:%s') as inboundTime,
+        bnpbmr.inbound_days as inboundDays,
+        bnpbmr.config_status as configStatus,
+        bnpbmr.responsible_person_code as responsiblePersonCode,
+        bnpbmr.responsible_person_name as responsiblePersonName,
+        date_format(bnpbmr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_new_product_batch_moving_rate bnpbmr
+        <include refid="select_new_product_batch_moving_rate"/>
+        GROUP by bnpbmr.inbound_time desc
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="selectNewProductSkuNameByCodeOne" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
+        select
+        pc.category_name as categoryNameOne
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeOne != null and categoryCodeOne != ''">
+                and pc.category_id  = #{categoryCodeOne, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectNewProductSkuNameByCodeTwo" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
+        select
+        pc.category_name as categoryNameTwo
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeTwo != null and categoryCodeTwo != ''">
+                and pc.category_id  = #{categoryCodeTwo, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectNewProductSkuNameByCodeThree" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
+        select
+        pc.category_name as categoryNameThree
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCodeThree != null and categoryCodeThree != ''">
+                and pc.category_id  = #{categoryCodeThree, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="selectNewProductSkuNameByCode" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
+        select
+        pc.category_name as categoryName
+        from product_category pc
+        <where>
+            1 = 1
+            <if test="categoryCode != null and categoryCode != ''">
+                and pc.category_id  = #{categoryCode, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <select id="countNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bnpbmr.id
+        from bi_new_product_batch_moving_rate bnpbmr
+        <include refid="select_new_product_batch_moving_rate"/>
+        group by bnpbmr.id
+        ) as tmp
+    </select>
+    <select id="selectStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StoreRepurchaseRateRespVo">
+        select
+        bsrr.id as id,
+        bsrr.price_channel_code as orderCode,
+        bsrr.price_channel_name as orderOriginal,
+        bsrr.province_name as provinceName,
+        bsrr.city_name as cityName,
+        bsrr.district_name as districtName,
+        bsrr.category_code as categoryCode,
+        bsrr.category_name as categoryName,
+        bsrr.product_sort_code as productSortCode,
+        bsrr.product_sort_name as productSortName,
+        bsrr.product_num as productNum,
+        bsrr.distribution_order_amount as distributionOrderAmount,
+        bsrr.channel_order_amount as channelOrderAmount,
+        bsrr.shopping_frequency as shoppingFrequency,
+        bsrr.after_buy_rate as afterBuyRate,
+        bsrr.months as months,
+        date_format(bsrr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_store_repurchase_rate bsrr
+        <include refid="select_store_repurchase_rate"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bsrr.id
+        from bi_store_repurchase_rate bsrr
+        <include refid="select_store_repurchase_rate"/>
+        group by bsrr.id
+        ) as tmp
+    </select>
+    <select id="selectNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NegativeMarginRespVo">
+        select
+        bnm.id as id,
+        bnm.price_channel_code as orderCode,
+        bnm.price_channel_name as orderOriginal,
+        bnm.sku_code as skuCode,
+        bnm.sku_name as skuName,
+        bnm.category_code as categoryCode,
+        bnm.category_name as categoryName,
+        bnm.product_brand_code as productBrandCode,
+        bnm.product_brand_name as productBrandName,
+        bnm.product_num as productNum,
+        bnm.sales_cost as salesCost,
+        bnm.channel_order_amount as channelOrderAmount,
+        bnm.channel_maori as channelMaori,
+        bnm.channel_maori_rate as channelMaoriRate,
+        bnm.distribution_order_amount as distributionOrderAmount,
+        bnm.distribution_maori as distributionMaori,
+        bnm.distribution_maori_rate as distributionMaoriRate,
+        bnm.product_sort_code as productSortCode,
+        bnm.product_sort_name as productSortName,
+        date_format(bnm.put_storage_create_time, '%Y-%m-%d %H:%i:%s') as putStorageCreateTime,
+        date_format(bnm.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_negative_margin bnm
+        <include refid="select_negative_margin"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="sumNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NegativeMarginRespVo">
+        select
+        sum(bnm.product_num) as productNums,
+        sum(bnm.sales_cost) as salesCosts,
+        sum(bnm.channel_order_amount) as channelOrderAmounts,
+        sum(bnm.channel_order_amount) - sum(bnm.sales_cost) as channelMaoris,
+        sum(bnm.channel_order_amount) - sum(bnm.sales_cost) / sum(bnm.sales_cost) as channelMaoriRates,
+        sum(bnm.distribution_order_amount) as distributionOrderAmounts,
+        (sum(bnm.distribution_order_amount) - sum(bnm.sales_cost)) as distributionMaoris,
+        (sum(bnm.distribution_order_amount) - sum(bnm.sales_cost)) / sum(bnm.sales_cost) as distributionMaoriRates
+        from bi_negative_margin bnm
+        <include refid="select_negative_margin"/>
+    </select>
+    <select id="countNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bnm.id
+        from bi_negative_margin bnm
+        <include refid="select_negative_margin"/>
+        group by bnm.id
+        ) as tmp
+    </select>
+    <select id="selectSuggestReplenishment" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SuggestReplenishmentReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SuggestReplenishmentRespVo">
+        select
+        bsr.id as id,
+        bsr.product_category_code as productCategoryCode,
+        bsr.product_category_name as productCategoryName,
+        bsr.product_brand_code as productBrandCode,
+        bsr.product_brand_name as productBrandName,
+        bsr.sku_code as skuCode,
+        bsr.sku_name as skuName,
+        bsr.transport_center_code as transportCenterCode,
+        bsr.transport_center_name as transportCenterName,
+        bsr.warehouse_code as warehouseCode,
+        bsr.warehouse_name as warehouseName,
+        bsr.sales_3_months_num as sales3monthsNum,
+        bsr.sales_avg_3_month_num as salesAvg3MonthNum,
+        bsr.available_num as availableNum,
+        bsr.stock_amount as stockAmount,
+        bsr.days_turnover as daysTurnover,
+        bsr.stockout_days as stockoutDays,
+        bsr.out_stock_affects_amount as outStockAffectsAmount,
+        bsr.stock_one_month_days as stockOneMonthDays,
+        bsr.suggested_order_num as suggestedOrderNum,
+        bsr.config_status as configStatus,
+        bsr.expected_days_arrival as expectedDaysArrival,
+        bsr.product_property_code as productPropertyCode,
+        bsr.product_property_name as productPropertyName,
+        date_format(bsr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_app_suggest_replenishment bsr
+        <include refid="select_suggest_replenishment"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countSuggestReplenishment" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SuggestReplenishmentReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bsr.id
+        from bi_app_suggest_replenishment bsr
+        <include refid="select_suggest_replenishment"/>
+        group by bsr.id
+        ) as tmp
+    </select>
+    <select id="selectLowInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.LowInventoryRespVo">
+        select
+        bli.id as id,
+        bli.product_sort_code as productSortCode,
+        bli.product_sort_name as productSortName,
+        bli.purchase_group_code as procurementSectionCode,
+        bli.purchase_group_name as procurementSectionName,
+        bli.responsible_person_code as responsiblePersonCode,
+        bli.responsible_person_name as responsiblePersonName,
+        bli.szqg_total_sku_num as szqgTotalSkuNum,
+        bli.szqg_low_sku_num as szqgLowSkuNum,
+        bli.szqg_low_inventory_ratio as szqgLowInventoryRatio,
+        bli.bzqg_total_sku_num as bzqgTotalSkuNum,
+        bli.bzqg_low_sku_num as bzqgLowSkuNum,
+        bli.bzqg_low_inventory_ratio as bzqgLowInventoryRatio,
+        bli.hb_total_sku_num as hbTotalSkuNum,
+        bli.hb_low_sku_num as hbLowSkuNum,
+        bli.hb_low_inventory_ratio as hbLowInventoryRatio,
+        bli.hn_total_sku_num as hnTotalSkuNum,
+        bli.hn_low_sku_num as hnLowSkuNum,
+        bli.hn_low_inventory_ratio as hnLowInventoryRatio,
+        bli.xn_total_sku_num as xnTotalSkuNum,
+        bli.xn_low_sku_num as xnLowSkuNum,
+        bli.xn_low_inventory_ratio as xnLowInventoryRatio,
+        bli.hd_total_sku_num as hdTotalSkuNum,
+        bli.hd_low_sku_num as hdLowSkuNum,
+        bli.hd_low_inventory_ratio as hdLowInventoryRatio,
+        date_format(bli.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_low_inventory bli
+        <include refid="select_low_inventory"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="sumLowInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.LowInventoryRespVo">
+        select
+        sum(bli.szqg_total_sku_num) as szqgTotalSkuNum,
+        sum(bli.szqg_low_sku_num) as szqgLowSkuNum,
+        sum(bli.szqg_total_sku_num)/sum(bli.szqg_low_sku_num) as szqgLowInventoryRatio,
+        sum(bli.bzqg_total_sku_num) as bzqgTotalSkuNum,
+        sum(bli.bzqg_low_sku_num) as bzqgLowSkuNum,
+        sum(bli.bzqg_total_sku_num)/sum(bli.bzqg_low_sku_num) as bzqgLowInventoryRatio,
+        sum(bli.hb_total_sku_num) as hbTotalSkuNum,
+        sum(bli.hb_low_sku_num) as hbLowSkuNum,
+        sum(bli.hb_total_sku_num)/sum(bli.hb_low_sku_num) as hbLowInventoryRatio,
+        sum(bli.hn_total_sku_num) as hnTotalSkuNum,
+        sum(bli.hn_low_sku_num) as hnLowSkuNum,
+        sum(bli.hn_total_sku_num)/sum(bli.hn_low_sku_num) as hnLowInventoryRatio,
+        sum(bli.xn_total_sku_num) as xnTotalSkuNum,
+        sum(bli.xn_low_sku_num) as xnLowSkuNum,
+        sum(bli.xn_total_sku_num)/sum(bli.xn_low_sku_num) as xnLowInventoryRatio,
+        sum(bli.hd_total_sku_num) as hdTotalSkuNum,
+        sum(bli.hd_low_sku_num) as hdLowSkuNum,
+        sum(bli.hd_total_sku_num)/sum(bli.hd_low_sku_num) as hdLowInventoryRatio
+        from bi_low_inventory bli
+        <include refid="select_low_inventory"/>
+
+    </select>
+    <select id="countLowInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bli.id
+        from bi_low_inventory bli
+        <include refid="select_low_inventory"/>
+        group by bli.id
+        ) as tmp
+    </select>
+    <select id="selectHighInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.HighInventoryRespVo">
+        select
+        bhi.id as id,
+        bhi.product_sort_code as productSortCode,
+        bhi.product_sort_name as productSortName,
+        bhi.purchase_group_code as procurementSectionCode,
+        bhi.purchase_group_name as procurementSectionName,
+        bhi.responsible_person_code as responsiblePersonCode,
+        bhi.responsible_person_name as responsiblePersonName,
+        bhi.szqg_high_inventory_amount as szqgHighInventoryAmount,
+        bhi.szqg_total_inventory_amount as szqgTotalInventoryAmount,
+        bhi.szqg_rate as szqgRate,
+        bhi.bzqg_high_inventory_amount as bzqgHighInventoryAmount,
+        bhi.bzqg_total_inventory_amount as bzqgTotalInventoryAmount,
+        bhi.bzqg_rate as bzqgRate,
+        bhi.hb_high_inventory_amount as hbHighInventoryAmount,
+        bhi.hb_total_inventory_amount as hbTotalInventoryAmount,
+        bhi.hb_rate as hbRate,
+        bhi.hn_high_inventory_amount as hnHighInventoryAmount,
+        bhi.hn_total_inventory_amount as hnTotalInventoryAmount,
+        bhi.hn_rate as hnRate,
+        bhi.xn_high_inventory_amount as xnHighInventoryAmount,
+        bhi.xn_total_inventory_amount as xnTotalInventoryAmount,
+        bhi.xn_rate as xnRate,
+        bhi.hd_high_inventory_amount as hdHhighInventoryAmount,
+        bhi.hd_total_inventory_amount as hdTotalInventoryAmount,
+        bhi.hd_rate as hdRate,
+        date_format(bhi.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_high_inventory bhi
+        <include refid="select_high_inventory"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="sumHighInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.HighInventoryRespVo">
+        select
+        sum(bhi.szqg_high_inventory_amount) as szqgHighInventoryAmount,
+        sum(bhi.szqg_total_inventory_amount) as szqgTotalInventoryAmount,
+        sum(bhi.szqg_high_inventory_amount)/sum(bhi.szqg_total_inventory_amount) as szqgRate,
+        sum(bhi.bzqg_high_inventory_amount) as bzqgHighInventoryAmount,
+        sum(bhi.bzqg_total_inventory_amount) as bzqgTotalInventoryAmount,
+        sum(bhi.bzqg_high_inventory_amount)/sum(bhi.bzqg_total_inventory_amount) as bzqgRate,
+        sum(bhi.hb_high_inventory_amount) as hbHighInventoryAmount,
+        sum(bhi.hb_total_inventory_amount) as hbTotalInventoryAmount,
+        sum(bhi.hb_high_inventory_amount)/sum(bhi.hb_total_inventory_amount) as hbRate,
+        sum(bhi.hn_high_inventory_amount) as hnHighInventoryAmount,
+        sum(bhi.hn_total_inventory_amount) as hnTotalInventoryAmount,
+        sum(bhi.hn_high_inventory_amount)/sum(bhi.hn_total_inventory_amount) as hnRate,
+        sum(bhi.xn_high_inventory_amount) as xnHighInventoryAmount,
+        sum(bhi.xn_total_inventory_amount) as xnTotalInventoryAmount,
+        sum(bhi.xn_high_inventory_amount)/sum(bhi.xn_total_inventory_amount) as xnRate,
+        sum(bhi.hd_high_inventory_amount) as hdHhighInventoryAmount,
+        sum(bhi.hd_total_inventory_amount) as hdTotalInventoryAmount,
+        sum(bhi.hd_high_inventory_amount)/sum(bhi.hd_total_inventory_amount) as hdRate
+        from bi_high_inventory bhi
+        <include refid="select_high_inventory"/>
+
+    </select>
+    <select id="countHighInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bhi.id
+        from bi_high_inventory bhi
+        <include refid="select_high_inventory"/>
+        group by bhi.id
+        ) as tmp
+    </select>
+    <select id="selectBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BrandSaleRespVo">
+        select
+        bbs.id as id,
+        bbs.month as month,
+        bbs.department_code as departmentCode,
+        bbs.department_name as departmentName,
+        bbs.price_channel_code as orderCode,
+        bbs.price_channel_name as orderOriginal,
+        bbs.store_type_code as storeTypeCode,
+        bbs.store_type as storeType,
+        bbs.data_type_code as dataTypeCode,
+        bbs.data_type as dataType,
+        bbs.category_code as categoryCode,
+        bbs.category_name as categoryName,
+        bbs.product_brand_code as productBrandCode,
+        bbs.product_brand_name as productBrandName,
+        bbs.channel_current_sale_amount as channelCurrentSaleAmount,
+        bbs.channel_previous_sales_amount as channelPreviousSalesAmount,
+        bbs.channel_current_gross_margin as channelCurrentGrossMargin,
+        bbs.channel_previous_gross_margin as channelPreviousGrossMargin,
+        bbs.channel_sale_link_ratio as channelSaleLinkRatio,
+        bbs.channel_gross_margin_link_ratio as channelGrossMarginLinkRatio,
+        bbs.distribution_current_sale_amount as distributionCurrentSaleAmount,
+        bbs.distribution_previous_sales_amount as distributionPreviousSalesAmount,
+        bbs.distribution_current_gross_margin as distributionCurrentGrossMargin,
+        bbs.distribution_previous_gross_margin as distributionPreviousGrossMargin,
+        bbs.distribution_sale_link_ratio as distributionSaleLinkRatio,
+        bbs.distribution_gross_margin_link_ratio as distributionGrossMarginLinkRatio,
+        date_format(bbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_brand_sale bbs
+        <include refid="select_brand_sale"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="sumBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BrandSaleRespVo">
+        select
+        sum(bbs.channel_current_sale_amount) as channelCurrentSaleAmounts,
+        sum(bbs.channel_previous_sales_amount) as channelPreviousSalesAmounts,
+        sum(bbs.channel_current_gross_margin) as channelCurrentGrossMargins,
+        sum(bbs.channel_previous_gross_margin ) as channelPreviousGrossMargins,
+        sum(bbs.channel_current_sale_amount)/sum(bbs.channel_previous_sales_amount) as channelSaleLinkRatios,
+        sum(bbs.channel_current_gross_margin)/sum(bbs.channel_previous_gross_margin ) as channelGrossMarginLinkRatios,
+        sum(bbs.distribution_current_sale_amount) as distributionCurrentSaleAmounts,
+        sum(bbs.distribution_previous_sales_amount) as distributionPreviousSalesAmounts,
+        sum(bbs.distribution_current_gross_margin) as distributionCurrentGrossMargins,
+        sum(bbs.distribution_previous_gross_margin) as distributionPreviousGrossMargins,
+        sum(bbs.distribution_current_sale_amount)/sum(bbs.distribution_previous_sales_amount) as distributionSaleLinkRatios,
+        sum(bbs.distribution_current_gross_margin)/sum(bbs.distribution_previous_gross_margin) as distributionGrossMarginLinkRatios
+        from bi_brand_sale bbs
+        <include refid="select_brand_sale"/>
+    </select>
+    <select id="countBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bbs.id
+        from bi_brand_sale bbs
+        <include refid="select_brand_sale"/>
+        group by bbs.id
+        ) as tmp
+    </select>
+    <select id="selectCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.CategorySaleRespVo">
+        select
+        bcs.id as id,
+        bcs.month as month,
+        bcs.department_code as departmentCode,
+        bcs.department_name as departmentName,
+        bcs.price_channel_code as orderCode,
+        bcs.price_channel_name as orderOriginal,
+        bcs.store_type_code as storeTypeCode,
+        bcs.store_type as storeType,
+        bcs.data_type_code as dataTypeCode,
+        bcs.data_type as dataType,
+        bcs.category_code as categoryCode,
+        bcs.category_name as categoryName,
+        bcs.channel_current_sale_amount as channelCurrentSaleAmount,
+        bcs.channel_previous_sales_amount as channelPreviousSalesAmount,
+        bcs.channel_current_gross_margin as channelCurrentGrossMargin,
+        bcs.channel_previous_gross_margin as channelPreviousGrossMargin,
+        bcs.channel_sale_link_ratio as channelSaleLinkRatio,
+        bcs.channel_gross_margin_link_ratio as channelGrossMarginLinkRatio,
+        bcs.distribution_current_sale_amount as distributionCurrentSaleAmount,
+        bcs.distribution_previous_sales_amount as distributionPreviousSalesAmount,
+        bcs.distribution_current_gross_margin as distributionCurrentGrossMargin,
+        bcs.distribution_previous_gross_margin as distributionPreviousGrossMargin,
+        bcs.distribution_sale_link_ratio as distributionSaleLinkRatio,
+        bcs.distribution_gross_margin_link_ratio as distributionGrossMarginLinkRatio,
+        date_format(bcs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_category_sale bcs
+        <include refid="select_category_sale"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="sumCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.CategorySaleRespVo">
+        select
+        sum(bcs.channel_current_sale_amount) as channelCurrentSaleAmounts,
+        sum(bcs.channel_previous_sales_amount) as channelPreviousSalesAmounts,
+        sum(bcs.channel_current_gross_margin) as channelCurrentGrossMargins,
+        sum(bcs.channel_previous_gross_margin ) as channelPreviousGrossMargins,
+        sum(bcs.channel_current_sale_amount)/sum(bcs.channel_previous_sales_amount) as channelSaleLinkRatios,
+        sum(bcs.channel_current_gross_margin)/sum(bcs.channel_previous_gross_margin ) as channelGrossMarginLinkRatios,
+        sum(bcs.distribution_current_sale_amount) as distributionCurrentSaleAmounts,
+        sum(bcs.distribution_previous_sales_amount) as distributionPreviousSalesAmounts,
+        sum(bcs.distribution_current_gross_margin) as distributionCurrentGrossMargins,
+        sum(bcs.distribution_previous_gross_margin) as distributionPreviousGrossMargins,
+        sum(bcs.distribution_current_sale_amount)/sum(bcs.distribution_previous_sales_amount) as distributionSaleLinkRatios,
+        sum(bcs.distribution_current_gross_margin)/sum(bcs.distribution_previous_gross_margin) as distributionGrossMarginLinkRatios
+        from bi_category_sale bcs
+        <include refid="select_category_sale"/>
+    </select>
+    <select id="countCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bcs.id
+        from bi_category_sale bcs
+        <include refid="select_category_sale"/>
+        group by bcs.id
+        ) as tmp
+    </select>
+    <select id="selectBigEffect" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.BigEffectReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BigEffectRespVo">
+        select
+        bbe.id as id,
+        bbe.category_code as categoryCode,
+        bbe.category_name as categoryName,
+        bbe.product_brand_code as productBrandCode,
+        bbe.product_brand_name as productBrandName,
+        bbe.procurement_section_code as procurementSectionCode,
+        bbe.procurement_section_name as procurementSectionName,
+        bbe.supply_code as supplyCode,
+        bbe.supply_name as supplyName,
+        bbe.sku_code as skuCode,
+        bbe.sku_name as skuName,
+        bbe.production_date as productionDate,
+        bbe.end_date as endDate,
+        bbe.quality_number as qualityNumber,
+        bbe.big_effect_period_warn_day as bigEffectPeriodWarnDay,
+        bbe.transport_center_code as transportCenterCode,
+        bbe.transport_center_name as transportCenterName,
+        bbe.warehouse_code as warehouseCode,
+        bbe.warehouse_name as warehouseName,
+        date_format(bbe.create_time, '%Y-%m-%d %H:%i:%s') as createTime
+        from bi_big_effect bbe
+        <include refid="select_big_effect"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countBigEffect" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.BigEffectReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bbe.id
+        from bi_big_effect bbe
+        <include refid="select_big_effect"/>
+        group by bbe.id
+        ) as tmp
+    </select>
+    <select id="selectMonthlySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
+        select
+        bms.id as id,
+        date_format(bms.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        bms.month as month,
+        bms.product_sort_code as productSortCode,
+        bms.product_sort_name as productSortName,
+        bms.price_channel_code as orderCode,
+        bms.price_channel_name as orderOriginal,
+        bms.store_type_code as storeTypeCode,
+        bms.store_type as storeType,
+        bms.data_type_code as dataTypeCode,
+        bms.data_type as dataType,
+        bms.channel_order_amount as channelOrderAmount,
+        bms.channel_last_year_sales as channelLastYearSales,
+        bms.channel_last_month_sales as channelLastMonthSales,
+        bms.channel_compared_same as channelComparedSame,
+        bms.channel_sequential as channelSequential,
+        bms.distribution_order_amount as distributionOrderAmount,
+        bms.distribution_last_year_sales as distributionLastYearSales,
+        bms.distribution_last_month_sales as distributionLastMonthSales,
+        bms.distribution_compared_same as distributionComparedSame,
+        bms.distribution_sequential as distributionSequential
+        from bi_monthly_sales bms
+        <include refid="select_monthly_sales"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countMonthlySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bms.id
+        from bi_monthly_sales bms
+        <include refid="select_monthly_sales"/>
+        group by bms.id
+        ) as tmp
+    </select>
+    <select id="selectMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlyGrossMarginRespVo">
+        select
+        bmgm.id as id,
+        date_format(bmgm.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        bmgm.month as month,
+        bmgm.product_sort_code as productSortCode,
+        bmgm.product_sort_name as productSortName,
+        bmgm.price_channel_code as orderCode,
+        bmgm.price_channel_name as orderOriginal,
+        bmgm.store_type_code as storeTypeCode,
+        bmgm.store_type as storeType,
+        bmgm.data_type_code as dataTypeCode,
+        bmgm.data_type as dataType,
+        bmgm.sales_cost as salesCost,
+        bmgm.channel_amount as channelAmount,
+        bmgm.channel_maori as channelMaori,
+        bmgm.channel_maori_rate as channelMaoriRate,
+        bmgm.channel_last_year_maori_rate as channelLastYearMaoriRate,
+        bmgm.channel_compared_same as channelComparedSame,
+        bmgm.channel_sequential as channelSequential,
+        bmgm.distribution_amount as distributionAmount,
+        bmgm.distribution_maori as distributionMaori,
+        bmgm.distribution_maori_rate as distributionMaoriRate,
+        bmgm.distribution_last_year_maori_rate as distributionLastYearMaoriRate,
+        bmgm.distribution_compared_same as distributionComparedSame,
+        bmgm.distribution_sequential as distributionSequential
+        from bi_month_gross_margin bmgm
+        <include refid="select_monthly_gross_margin"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bmgm.id
+        from bi_month_gross_margin bmgm
+        <include refid="select_monthly_gross_margin"/>
+        group by bmgm.id
+        ) as tmp
+    </select>
+    <select id="selectMonthSalesAchievement" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthSalesAchievementRespVo">
+        select
+        bmsa.id as id,
+        date_format(bmsa.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        bmsa.month as month,
+        bmsa.product_sort_code as productSortCode,
+        bmsa.product_sort_name as productSortName,
+        bmsa.price_channel_code as orderCode,
+        bmsa.price_channel_name as orderOriginal,
+        bmsa.store_type_code as storeTypeCode,
+        bmsa.store_type as storeType,
+        bmsa.data_type_code as dataTypeCode,
+        bmsa.data_type as dataType,
+        bmsa.category_code as categoryCode,
+        bmsa.category_name as categoryName,
+        bmsa.channel_amount as channelAmount,
+        bmsa.channel_budget as channelBudget,
+        bmsa.channel_yield_rate as channelYieldRate,
+        bmsa.distribution_amount as distributionAmount,
+        bmsa.distribution_budget as distributionBudget,
+        bmsa.distribution_yield_rate as distributionYieldRate
+        from bi_month_sales_achievement bmsa
+        <include refid="select_month_sales_achievement"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countMonthSalesAchievement" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bmsa.id
+        from bi_month_sales_achievement bmsa
+        <include refid="select_month_sales_achievement"/>
+        group by bmsa.id
+        ) as tmp
+    </select>
+    <select id="selectMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeBrandSalesRespVo">
+        select
+        bmcbs.id as id,
+        date_format(bmcbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        bmcbs.month as month,
+        bmcbs.product_sort_code as productSortCode,
+        bmcbs.product_sort_name as productSortName,
+        bmcbs.price_channel_code as orderCode,
+        bmcbs.price_channel_name as orderOriginal,
+        bmcbs.store_type_code as storeTypeCode,
+        bmcbs.store_type as storeType,
+        bmcbs.data_type_code as dataTypeCode,
+        bmcbs.data_type as dataType,
+        bmcbs.category_code as categoryCode,
+        bmcbs.category_name as categoryName,
+        bmcbs.channel_sales as channelSales,
+        bmcbs.channel_last_year_sales as channelLastYearSales,
+        bmcbs.channel_last_month_sales as channelLastMonthSales,
+        bmcbs.channel_compared_same as channelComparedSame,
+        bmcbs.channel_sequential as channelSequential,
+        bmcbs.distribution_sales as distributionSales,
+        bmcbs.distribution_last_year_sales as distributionLastYearSales,
+        bmcbs.distribution_last_month_sales as distributionLastMonthSales,
+        bmcbs.distribution_compared_same as distributionComparedSame,
+        bmcbs.distribution_sequential as distributionSequential
+        from bi_month_cumulative_brand_sales bmcbs
+        <include refid="select_month_cumulative_brand_sales"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bmcbs.id
+        from bi_month_cumulative_brand_sales bmcbs
+        <include refid="select_month_cumulative_brand_sales"/>
+        group by bmcbs.id
+        ) as tmp
+    </select>
+    <select id="selectMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeGrossProfitMarginRespVo">
+        select
+        bmcgpm.id as id,
+        date_format(bmcgpm.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
+        bmcgpm.month as month,
+        bmcgpm.cumulative_month as cumulativeMonth,
+        bmcgpm.product_sort_code as productSortCode,
+        bmcgpm.product_sort_name as productSortName,
+        bmcgpm.price_channel_code as orderCode,
+        bmcgpm.price_channel_name as orderOriginal,
+        bmcgpm.store_type_code as storeTypeCode,
+        bmcgpm.store_type as storeType,
+        bmcgpm.data_type_code as dataTypeCode,
+        bmcgpm.data_type as dataType,
+        bmcgpm.category_code as categoryCode,
+        bmcgpm.category_name as categoryName,
+        bmcgpm.sales_cost as salesCost,
+        bmcgpm.channel_amount as channelAmount,
+        bmcgpm.channel_maori as channelMaori,
+        bmcgpm.channel_maori_rate as channelMaoriRate,
+        bmcgpm.channel_last_maori_rate as channelLastMaoriRate,
+        bmcgpm.last_year_channel_maori_rate as lastYearChannelMaoriRate,
+        bmcgpm.channel_compared_same as channelComparedSame,
+        bmcgpm.channel_sequential as channelSequential,
+        bmcgpm.distribution_amount as distributionAmount,
+        bmcgpm.distribution_maori as distributionMaori,
+        bmcgpm.distribution_maori_rate as distributionMaoriRate,
+        bmcgpm.distribution_last_maori_rate as distributionLastMaoriRate,
+        bmcgpm.last_year_distribution_maori_rate as lastYearDistributionMaoriRate,
+        bmcgpm.distribution_compared_same as distributionComparedSame,
+        bmcgpm.distribution_sequential as distributionSequential
+        from bi_month_cumulative_gross_profit_margin bmcgpm
+        <include refid="select_month_cumulative_gross_profit_margin"/>
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="countMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
+            resultType="java.lang.Integer">
+        select count(1) from (
+        select
+        bmcgpm.id
+        from bi_month_cumulative_gross_profit_margin bmcgpm
+        <include refid="select_month_cumulative_gross_profit_margin"/>
+        group by bmcgpm.id
+        ) as tmp
+    </select>
+    <select id="selectStoreType" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
+        SELECT
+        bms.store_type_code as storeTypeCode,
+        bms.store_type_name as storeTypeName
+        FROM bi_monthly_sales bms
+    </select>
+    <select id="selectDataStyle" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
+        SELECT
+        bms.data_type_code as dataTypeCode,
+        bms.data_name as dataName
+        FROM bi_monthly_sales bms
+    </select>
+    <select id="selectAllOneCategory" resultType="java.util.HashMap">
+        SELECT
+        bsar.category_code,
+        bsar.category_name
+        FROM bi_supplier_arrival_rate bsar
+    </select>
+    <select id="selectTableCloumnName" resultType="java.util.HashMap">
+        select
+        COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
+        from information_schema.COLUMNS
+        where
+        table_name = #{cloumnName} and table_schema = 'bms_scmp'
+    </select>
+    <select id="selectNewProductBatchMovingRateTableCloumnName" resultType="java.util.HashMap">
+        select
+        COLUMN_COMMENT as columnName,COLUMN_NAME as columnKey
+        from information_schema.COLUMNS
+        where
+        table_name = #{cloumnName} and table_schema = 'bms_scmp'
+    </select>
+</mapper>

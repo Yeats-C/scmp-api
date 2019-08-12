@@ -50,7 +50,7 @@ public interface ProductSkuCheckoutService {
     int update(ProductSkuCheckout productSkuCheckout);
 
     /**
-     * 获取结算信息
+     * 获取临时结算信息
      * @param skuCode
      * @return
      */
@@ -63,4 +63,26 @@ public interface ProductSkuCheckoutService {
      */
     Integer deleteDrafts(List<String> skuCodes);
 
+    /**
+     *
+     * 功能描述: 根据skuCode编码查询正式结算信息
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 17:00
+     */
+    ProductSkuCheckoutRespVo getBySkuCode(String skuCode);
+
+    /**
+     *
+     * 功能描述: 获取申请结算信息
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return 
+     * @auther knight.xie
+     * @date 2019/7/6 22:52
+     */
+    ProductSkuCheckoutRespVo getApply(String skuCode, String applyCode);
 }

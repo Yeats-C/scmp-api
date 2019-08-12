@@ -21,6 +21,7 @@
     <result column="basic_inventory_day" jdbcType="INTEGER" property="basicInventoryDay" />
     <result column="large_inventory_warn_day" jdbcType="INTEGER" property="largeInventoryWarnDay" />
     <result column="big_effect_period_warn_day" jdbcType="INTEGER" property="bigEffectPeriodWarnDay" />
+    <result column="turnover_period_after_arrival" jdbcType="INTEGER" property="turnoverPeriodAfterArrival" />
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
     <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
     <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
@@ -31,18 +32,17 @@
   <sql id="Base_Column_List">
     id, create_by, create_time, update_by, update_time, del_flag, config_code, product_code, 
     product_name, sku_code, sku_name, transport_center_code, transport_center_name, config_status, 
-    arrival_cycle, order_cycle, basic_inventory_day, large_inventory_warn_day, big_effect_period_warn_day, 
+    arrival_cycle, order_cycle, basic_inventory_day, large_inventory_warn_day, big_effect_period_warn_day,
+    turnover_period_after_arrival,
     apply_code, apply_status, auditor_by, auditor_time, company_code, company_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from product_sku_config
-    where id = #{item.id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-
-
-  <select id="getList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo"
+  <select id="getList" parameterType="java.util.List"
           resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
     select
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
@@ -50,21 +50,46 @@
     product_sku_config a
     left join product_sku_config_spare_warehouse b
     on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
     where a.del_flag = 0
-    <if test="skuCode != null">
-      and sku_code = #{skuCode,jdbcType=VARCHAR}
+    and a.id in
+    <foreach collection="list" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </select>
+
+  <select id="getList2" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo"
+          resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
+    from
+    product_sku_config a
+    left join product_sku_config_spare_warehouse b
+    on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
+    where a.del_flag = 0
+    <if test="skuCode != null and skuCode != '' ">
+      and a.sku_code = #{skuCode,jdbcType=VARCHAR}
     </if>
-    <if test="skuName != null">
-      and sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')
+    <if test="skuName != null and skuName != ''  ">
+      and a.sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')
     </if>
-    <if test="transportCenterCode != null">
-      and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    <if test="transportCenterCode != null and transportCenterCode != ''  ">
+      and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
     </if>
-    <if test="transportCenterName != null">
-      and transport_center_name like concat('%', #{transportCenterName,jdbcType=VARCHAR}, '%')
+    <if test="transportCenterName != null and transportCenterName != ''  ">
+      and a.transport_center_name like concat('%', #{transportCenterName,jdbcType=VARCHAR}, '%')
     </if>
-    <if test="configStatus != null">
-      and config_status = #{configStatus,jdbcType=TINYINT}
+    <if test="configStatus != null ">
+      and a.config_status = #{configStatus,jdbcType=TINYINT}
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != ''  ">
+      and c.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != '' ">
+      and c.procurement_section_name like concat('%', #{purchaseGroupName,jdbcType=VARCHAR}, '%')
     </if>
   </select>
   <resultMap id="SkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo">
@@ -73,6 +98,10 @@
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
     <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
     <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
@@ -80,7 +109,7 @@
     <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
     <result column="goods_gifts" jdbcType="TINYINT" property="skuType" />
     <collection property="configs" column="{skuCode = sku_code}"
-                javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo" select="getList"/>
+                javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo" select="getList2"/>
   </resultMap>
   <select id="detail" parameterType="java.lang.String" resultMap="SkuResultMap">
     select
@@ -94,9 +123,19 @@
       product_category_name,
       categories_supply_channels_code,
       categories_supply_channels_name,
-      goods_gifts
+      goods_gifts,
+      create_time,
+      create_by,
+      update_by,
+      update_time
     from product_sku
     where sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByConfigCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_config
+    where config_code = #{configCode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_config
@@ -109,7 +148,7 @@
       sku_code, sku_name, transport_center_code, 
       transport_center_name, config_status, arrival_cycle, 
       order_cycle, basic_inventory_day, large_inventory_warn_day, 
-      big_effect_period_warn_day, apply_code, apply_status, 
+      big_effect_period_warn_day, turnover_period_after_arrival,apply_code, apply_status,
       auditor_by, auditor_time, company_code, 
       company_name)
     values (#{id,jdbcType=BIGINT}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
@@ -118,7 +157,7 @@
       #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, 
       #{transportCenterName,jdbcType=VARCHAR}, #{configStatus,jdbcType=TINYINT}, #{arrivalCycle,jdbcType=INTEGER}, 
       #{orderCycle,jdbcType=INTEGER}, #{basicInventoryDay,jdbcType=INTEGER}, #{largeInventoryWarnDay,jdbcType=INTEGER}, 
-      #{bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{applyCode,jdbcType=VARCHAR}, #{applyStatus,jdbcType=TINYINT}, 
+      #{bigEffectPeriodWarnDay,jdbcType=INTEGER},#{turnoverPeriodAfterArrival,jdbcType=INTEGER}, #{applyCode,jdbcType=VARCHAR}, #{applyStatus,jdbcType=TINYINT},
       #{auditorBy,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, #{companyCode,jdbcType=VARCHAR}, 
       #{companyName,jdbcType=VARCHAR})
   </insert>
@@ -181,6 +220,9 @@
       </if>
       <if test="bigEffectPeriodWarnDay != null">
         big_effect_period_warn_day,
+      </if>
+      <if test="turnoverPeriodAfterArrival != null">
+        turnover_period_after_arrival,
       </if>
       <if test="applyCode != null">
         apply_code,
@@ -259,6 +301,9 @@
       <if test="bigEffectPeriodWarnDay != null">
         #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
       </if>
+      <if test="turnoverPeriodAfterArrival != null">
+        #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      </if>
       <if test="applyCode != null">
         #{applyCode,jdbcType=VARCHAR},
       </if>
@@ -286,7 +331,7 @@
       sku_code, sku_name, transport_center_code,
       transport_center_name, config_status, arrival_cycle,
       order_cycle, basic_inventory_day, large_inventory_warn_day,
-      big_effect_period_warn_day, apply_code, apply_status,
+      big_effect_period_warn_day, turnover_period_after_arrival, apply_code, apply_status,
       auditor_by, auditor_time, company_code,
       company_name)
     values
@@ -297,7 +342,7 @@
         #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.transportCenterCode,jdbcType=VARCHAR},
         #{item.transportCenterName,jdbcType=VARCHAR}, #{item.configStatus,jdbcType=TINYINT}, #{item.arrivalCycle,jdbcType=INTEGER},
         #{item.orderCycle,jdbcType=INTEGER}, #{item.basicInventoryDay,jdbcType=INTEGER}, #{item.largeInventoryWarnDay,jdbcType=INTEGER},
-        #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{item.applyCode,jdbcType=VARCHAR}, #{item.applyStatus,jdbcType=TINYINT},
+        #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER}, #{item.turnoverPeriodAfterArrival,jdbcType=INTEGER},#{item.applyCode,jdbcType=VARCHAR}, #{item.applyStatus,jdbcType=TINYINT},
         #{item.auditorBy,jdbcType=VARCHAR}, #{item.auditorTime,jdbcType=TIMESTAMP}, #{item.companyCode,jdbcType=VARCHAR},
         #{item.companyName,jdbcType=VARCHAR})
       </foreach>
@@ -359,6 +404,9 @@
       <if test="bigEffectPeriodWarnDay != null">
         big_effect_period_warn_day = #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
       </if>
+      <if test="turnoverPeriodAfterArrival != null">
+        turnover_period_after_arrival = #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
+      </if>
       <if test="applyCode != null">
         apply_code = #{applyCode,jdbcType=VARCHAR},
       </if>
@@ -400,6 +448,7 @@
       basic_inventory_day = #{basicInventoryDay,jdbcType=INTEGER},
       large_inventory_warn_day = #{largeInventoryWarnDay,jdbcType=INTEGER},
       big_effect_period_warn_day = #{bigEffectPeriodWarnDay,jdbcType=INTEGER},
+      turnover_period_after_arrival = #{turnoverPeriodAfterArrival,jdbcType=INTEGER},
       apply_code = #{applyCode,jdbcType=VARCHAR},
       apply_status = #{applyStatus,jdbcType=TINYINT},
       auditor_by = #{auditorBy,jdbcType=VARCHAR},
@@ -411,8 +460,7 @@
   <update id="updateBatch">
     <foreach collection="list" item="item" open="" close="" separator=";">
       update product_sku_config
-      set
-      update_by = #{item.updateBy,jdbcType=VARCHAR},
+      set update_by = #{item.updateBy,jdbcType=VARCHAR},
       update_time = #{item.updateTime,jdbcType=TIMESTAMP},
       del_flag = #{item.delFlag,jdbcType=TINYINT},
       product_code = #{item.productCode,jdbcType=VARCHAR},
@@ -427,11 +475,96 @@
       basic_inventory_day = #{item.basicInventoryDay,jdbcType=INTEGER},
       large_inventory_warn_day = #{item.largeInventoryWarnDay,jdbcType=INTEGER},
       big_effect_period_warn_day = #{item.bigEffectPeriodWarnDay,jdbcType=INTEGER},
+      turnover_period_after_arrival = #{item.turnoverPeriodAfterArrival,jdbcType=INTEGER},
       apply_code = #{item.applyCode,jdbcType=VARCHAR},
       apply_status = #{item.applyStatus,jdbcType=TINYINT},
       auditor_by = #{item.auditorBy,jdbcType=VARCHAR},
-      auditor_time = #{item.auditorTime,jdbcType=TIMESTAMP},
+      auditor_time = #{item.auditorTime,jdbcType=TIMESTAMP}
       where config_code = #{item.configCode,jdbcType=VARCHAR}
     </foreach>
   </update>
+  <update id="updateApplyStatusByApplyCode">
+    update product_sku_config
+    set  auditor_by = #{auditorBy,jdbcType=VARCHAR},
+      auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
+      apply_status = #{auditorStatus,jdbcType=TINYINT}
+    where apply_code = #{applyCode,jdbcType=VARCHAR}
+  </update>
+  <update id="updateApplyCodeByConfigCodes">
+    update product_sku_config
+    set apply_code = #{applyCode}
+    where config_code in
+     <foreach collection="configCodes" item="configCode" separator="," open="(" close=")">
+       #{configCode}
+     </foreach>
+  </update>
+  <select id="getCycleInfo" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig">
+    select
+    product_code as productCode, product_name as productName, sku_code as skuCode, sku_name as skuName,
+    turnover_period_after_arrival as turnoverPeriodAfterArrival, transport_center_code as transportCenterCode,
+    transport_center_name as transportCenterName, arrival_cycle as arrivalCycle, order_cycle as orderCycle,
+    basic_inventory_day as basicInventoryDay, large_inventory_warn_day as largeInventoryWarnDay,
+    big_effect_period_warn_day as bigEffectPeriodWarnDay
+    from
+    product_sku_config
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getListBySkuCode" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
+    from product_sku_config a
+    left join product_sku_config_spare_warehouse b
+    on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
+    where a.del_flag = 0
+    and a.sku_code = #{skuCode}
+  </select>
+  <select id="selectSkuListForSaleAreaCount" resultType="java.lang.Long">
+    select
+      a.id
+    from
+    product_sku_config a
+    left join product_sku_config_spare_warehouse b
+    on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
+    where a.del_flag = 0
+    <if test="skuCode != null and skuCode != '' ">
+      and a.sku_code like concat('%',#{skuCode,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="skuName != null and skuName != ''  ">
+      and a.sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="transportCenterCode != null and transportCenterCode != ''  ">
+      and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    </if>
+    <if test="transportCenterName != null and transportCenterName != ''  ">
+      and a.transport_center_name like concat('%', #{transportCenterName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="configStatus != null ">
+      and a.config_status = #{configStatus,jdbcType=TINYINT}
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != ''  ">
+      and c.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != '' ">
+      and c.procurement_section_name like concat('%', #{purchaseGroupName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="personId != null and personId != '' ">
+      and c.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+    </if>
+    group by a.id order by a.create_time desc
+  </select>
+    <select id="selectByVo" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from product_sku_config
+      where sku_code in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+        #{item.skuCode}
+    </foreach>
+    </select>
 </mapper>

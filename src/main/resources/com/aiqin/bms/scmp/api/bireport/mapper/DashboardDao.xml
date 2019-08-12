@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.bireport.dao.DashboardDao">
+
+    <select id="selectDashboardDepartAnnualSalesStati" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepartAnnualSalesStatiRespVo">
+        SELECT
+        ddass.id as id,
+        ddass.stat_year as statYear,
+        ddass.product_sort_name as productSortName,
+        ddass.channel_costs as channelCosts,
+        ddass.channel_amount as channelAmount,
+        ddass.distribution_amount as distributionAmount,
+        ddass.channel_margin as channelMargin,
+        ddass.distribution_margin as distributionMargin,
+        ddass.sales_budget as salesBudget,
+        ddass.achieve_rate as achieveRate
+        FROM dashboard_depart_annual_sales_stati ddass
+        WHERE 1=1
+        <if test="fiveYearStr!=null and fiveYearStr!=''">
+            and ddass.stat_year between #{fiveYearStr}
+        </if>
+        <if test="oneYearStr!=null and oneYearStr!=''">
+            and #{oneYearStr}
+        </if>
+    </select>
+    <select id="selectDashboardMonthlySalesStati" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiRespVo">
+        SELECT
+        dmss.id as id,
+        dmss.stat_year as statYear,
+        dmss.stat_month as statMonth,
+        dmss.product_sort_name as productSortName,
+        dmss.channel_costs as channelCosts,
+        dmss.channel_amount as ChannelAmount,
+        dmss.pre_channel_amount as preChannelAmount,
+        dmss.channel_margin as channelMargin,
+        dmss.distribution_amount as distributionAmount,
+        dmss.distribution_margin as distributionMargin,
+        dmss.supplier_content as supplierContent,
+        dmss.pre_supplier_content as preSupplierContent,
+        dmss.curr_achieve_rate as currAchieveRate,
+        dmss.pre_achieve_rate as preAchieveRate
+        FROM dashboard_monthly_sales_stati dmss
+        where dmss.stat_year = #{statYear}
+    </select>
+    <select id="selectDashboardMonthlySalesStatiAcc" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlySalesStatiAccRespVo">
+        SELECT
+        dmssa.id as id,
+        dmssa.stat_year as statYear,
+        dmssa.stat_month as statMonth,
+        dmssa.product_sort_name as productSortName,
+        dmssa.channel_costs as channelCosts,
+        dmssa.channel_amount as channelAmount,
+        dmssa.pre_channel_amount as preChannelAmount,
+        dmssa.acc_sum_channel_amount as accSumChannelAmount,
+        dmssa.pre_acc_sum_channel_amount as preAccSumChannelAmount,
+        dmssa.channel_margin as channelMargin,
+        dmssa.acc_sum_channel_margin as accSumChannelMargin,
+        dmssa.distribution_amount as distributionAmount,
+        dmssa.distribution_margin as distributionMargin,
+        dmssa.supplier_content as supplierContent,
+        dmssa.pre_supplier_content as preSupplierContent,
+        dmssa.curr_achieve_rate as currAchieveRate,
+        dmssa.pre_achieve_rate as preAchieveRate
+        FROM dashboard_monthly_sales_stati_acc dmssa
+        where dmssa.stat_year = #{oneYearStr}
+    </select>
+    <select id="selectDashboardMonthlyLossAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlyLossAmountRespVo">
+      SELECT
+      dmla.id as id,
+      dmla.stat_year as statYear,
+      dmla.stat_month as statMonth,
+      dmla.defective_effect_amount as defectiveEffectAmount,
+      dmla.defective_effect_amount_acc as defectiveEffectAmountAcc,
+      dmla.stockout_effect_amount_monthly as stockoutEffectAmountMonthly,
+      dmla.stockout_effect_amount_acc as stockoutEffectAmountAcc,
+      dmla.monthly_loss_amount as monthlyLossAmount
+      FROM dashboard_monthly_loss_amount dmla
+      where dmla.stat_year = #{oneYearStr}
+    </select>
+    <select id="selectDashboardDepMonthlyHomocyclicRatio" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
+      SELECT
+      ddmhr.id as id,
+      ddmhr.stat_month as statMonth,
+      ddmhr.product_sort_code as productSortCode,
+      ddmhr.product_sort_name as productSortName,
+      ddmhr.channel_costs as channelCosts,
+      ddmhr.channel_sales_amount as channelSalesAmount,
+      ddmhr.channel_sales_yearonyear as channelSalesYearonyear,
+      ddmhr.channel_sales_link_relative as channelSalesLinkRelative,
+      ddmhr.channel_margin as channelMargin,
+      ddmhr.channel_margin_yearonyear as channelMarginYearonyear,
+      ddmhr.channel_margin_link_relative as channelMarginLinkRelative,
+      ddmhr.distribution_sales_amount as distributionSalesAmount,
+      ddmhr.distribution_margin as distributionMargin
+      FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
+      where ddmhr.stat_month = #{oneMonthStr}
+    </select>
+    <select id="selectDashboardAllKindsLossRatio" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardAllKindsLossRatioRespVo">
+        SELECT
+        daklr.id as id,
+        daklr.stat_year as statYear,
+        daklr.defective_effect_amount as defectiveEffectAmount,
+        daklr.stockout_sales_amount as stockoutSalesAmount,
+        daklr.defective_effect_ratio as defectiveEffectRatio,
+        daklr.stockout_ratio as stockoutRatio
+        FROM dashboard_all_kinds_loss_ratio daklr
+        where daklr.stat_year = #{oneYearStr}
+    </select>
+    <select id="selectDashboardDepCateProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepProperSalesAmountRespVo">
+        SELECT
+        ddcpsa.id as id,
+        ddcpsa.stat_month as statMonth,
+        ddcpsa.product_sort_code as productSortCode,
+        ddcpsa.product_sort_name as productSortName,
+        ddcpsa.product_category_code as productCategoryCode,
+        ddcpsa.product_category_name as productCategoryName,
+        ddcpsa.product_property_code as productPropertyCode,
+        ddcpsa.product_property_name as productPropertyName,
+        ddcpsa.channel_costs as channelCosts,
+        ddcpsa.channel_sales_amount as channelSalesAmount,
+        ddcpsa.channel_sales_yearonyear as channelSalesYearonyear,
+        ddcpsa.channel_sales_link_relative as channelSalesLinkRelative,
+        ddcpsa.distribution_sales_amount as distributionSalesAmount,
+        ddcpsa.channel_margin as channelMargin,
+        ddcpsa.channel_margin_yearonyear as channelMarginYearonyear,
+        ddcpsa.channel_margin_link_relative as channelMarginLinkRelative,
+        ddcpsa.distribution_margin as distributionMargin
+        FROM dashboard_dep_cate_proper_sales_amount ddcpsa
+        where 1=1
+        <if test="statMonth!=null and statMonth!=''">
+            and ddcpsa.stat_month=#{statMonth}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and ddcpsa.product_sort_code=#{productSortCode}
+        </if>
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and ddmhr.price_channel_code=#{priceChannelCode}
+        </if>
+    </select>
+    <select id="selectDashboardDepProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateProperSalesAmountRespVo">
+        SELECT
+        ddpsa.id as id,
+        ddpsa.stat_month as statMonth,
+        ddpsa.product_sort_code as productSortCode,
+        ddpsa.product_sort_name as productSortName,
+        ddpsa.product_property_code as productPropertyCode,
+        ddpsa.product_property_name as productPropertyName,
+        ddpsa.channel_costs as channelCosts,
+        ddpsa.channel_sales_amount as channelSalesAmount,
+        ddpsa.channel_sales_yearonyear as channelSalesYearonyear,
+        ddpsa.channel_sales_link_relative as channelSalesLinkRelative,
+        ddpsa.distribution_sales_amount as distributionSalesAmount,
+        ddpsa.channel_margin as channelMargin,
+        ddpsa.channel_margin_yearonyear as channelMarginYearonyear,
+        ddpsa.channel_margin_link_relative as channelMarginLinkRelative,
+        ddpsa.distribution_margin as distributionMargin
+        FROM dashboard_dep_proper_sales_amount ddpsa
+        where 1=1
+        <if test="statMonth!=null and statMonth!=''">
+            and ddpsa.stat_month=#{statMonth}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and ddpsa.product_sort_code=#{productSortCode}
+        </if>
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and ddmhr.price_channel_code=#{priceChannelCode}
+        </if>
+    </select>
+    <select id="selectDashboardDepCateSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateSalesAmountRespVo">
+        SELECT
+        ddcsa.id as id,
+        ddcsa.stat_month as statMonth,
+        ddcsa.product_sort_code as productSortCode,
+        ddcsa.product_sort_name as productSortName,
+        ddcsa.product_category_code as productCategoryCode,
+        ddcsa.product_category_name as productCategoryName,
+        ddcsa.channel_costs as channelCosts,
+        ddcsa.channel_sales_amount as channelSalesAmount,
+        ddcsa.channel_sales_yearonyear as channelSalesYearonyear,
+        ddcsa.channel_sales_link_relative as channelSalesLinkRelative,
+        ddcsa.distribution_sales_amount as distributionSalesAmount,
+        ddcsa.channel_margin as channelMargin,
+        ddcsa.channel_margin_yearonyear as channelMarginYearonyear,
+        ddcsa.channel_margin_link_relative as channelMarginLinkRelative,
+        ddcsa.distribution_margin as distributionMargin
+        FROM dashboard_dep_cate_sales_amount ddcsa
+        where 1=1
+        <if test="statMonth!=null and statMonth!=''">
+            and ddcsa.stat_month=#{statMonth}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and ddcsa.product_sort_code=#{productSortCode}
+        </if>
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and ddmhr.price_channel_code=#{priceChannelCode}
+        </if>
+    </select>
+    <select id="selectDashboardDepMonthlyHomocyclicRatioList" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
+        SELECT
+        ddmhr.id as id,
+        ddmhr.stat_month as statMonth,
+        ddmhr.product_sort_code as productSortCode,
+        ddmhr.product_sort_name as productSortName,
+        ddmhr.channel_costs as channelCosts,
+        ddmhr.channel_sales_amount as channelSalesAmount,
+        ddmhr.channel_sales_yearonyear as channelSalesYearonyear,
+        ddmhr.channel_sales_link_relative as channelSalesLinkRelative,
+        ddmhr.channel_margin as channelMargin,
+        ddmhr.channel_margin_yearonyear as channelMarginYearonyear,
+        ddmhr.channel_margin_link_relative as channelMarginLinkRelative,
+        ddmhr.distribution_sales_amount as distributionSalesAmount,
+        ddmhr.distribution_margin as distributionMargin
+        FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
+        where 1=1
+        <if test="statMonth!=null and statMonth!=''">
+            and ddmhr.stat_month=#{statMonth}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and ddmhr.product_sort_code=#{productSortCode}
+        </if>
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and ddmhr.price_channel_code=#{priceChannelCode}
+        </if>
+    </select>
+</mapper>

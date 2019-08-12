@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.mapper;
 
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -32,6 +33,13 @@ public interface ApplyUseTagRecordMapper {
     int delete(String appUseObjectCode);
 
     /**
+     * 批量删除
+     * @param appUseObjectCodes
+     * @return
+     */
+    int deletes(List<String> appUseObjectCodes);
+
+    /**
      * 批量修改
      * @param applyUseTagRecords
      * @return
@@ -43,5 +51,21 @@ public interface ApplyUseTagRecordMapper {
      * @param appUseObjectCode
      * @return
      */
-    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(String appUseObjectCode);
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(@Param("appUseObjectCode") String appUseObjectCode, @Param("tagTypeCode") String tagTypeCode);
+
+    /**
+     * 根据申请使用者编号查询
+     * @param appUseObjectCode
+     * @return
+     */
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode(@Param("appUseObjectCode") String appUseObjectCode,
+                                                                   @Param("tagTypeCode") String tagTypeCode,
+                                                                   @Param("useObjectCode") String useObjectCode);
+
+    /**
+     * 根据申请使用者编号List查询
+     * @param appUseObjectCode
+     * @return
+     */
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodes(@Param("list") List<String> appUseObjectCode,@Param("tagTypeCode")String tagTypeCode);
 }

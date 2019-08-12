@@ -1,14 +1,16 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
-@ApiModel("")
+@ApiModel("SKU信息")
+@Data
 public class ProductSkuInfo extends CommonBean {
-    @ApiModelProperty("")
+    @ApiModelProperty("主键Id")
     private Long id;
 
     @ApiModelProperty("所属商品编码")
@@ -137,7 +139,7 @@ public class ProductSkuInfo extends CommonBean {
     @ApiModelProperty("更新人")
     private String updateBy;
 
-    @ApiModelProperty("商品/赠品(0:商品，1:赠品)")
+    @ApiModelProperty("商品/赠品(0:商品，1:赠品 2:组合商品)")
     private Byte goodsGifts;
 
     @ApiModelProperty("")
@@ -185,475 +187,39 @@ public class ProductSkuInfo extends CommonBean {
     @ApiModelProperty("审批流程编码")
     private String formNo;
 
-    public Long getId() {
-        return id;
-    }
+    @ApiModelProperty(" 库存分配-组合独有(0:共享)")
+    private Byte inventoryAllocation;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @ApiModelProperty("价格模式-组合独有(0:人工设置)")
+    private Byte priceModel;
 
-    public String getProductCode() {
-        return productCode;
-    }
+    @ApiModelProperty(value = "公司编码",hidden = true)
+    private String companyCode;
 
-    public void setProductCode(String productCode) {
-        this.productCode = productCode == null ? null : productCode.trim();
-    }
+    @ApiModelProperty(value = "公司名称",hidden = true)
+    private String companyName;
 
-    public String getProductName() {
-        return productName;
-    }
+    @ApiModelProperty("是否季节性商品(0:是 1:否)")
+    private Byte seasonalGoods;
 
-    public void setProductName(String productName) {
-        this.productName = productName == null ? null : productName.trim();
-    }
+    @ApiModelProperty("仓位类型编码--商品数据字典")
+    private String warehouseTypeCode;
 
-    public String getProductCategoryCode() {
-        return productCategoryCode;
-    }
+    @ApiModelProperty("仓位类型名称--商品数据字典")
+    private String warehouseTypeName;
 
-    public void setProductCategoryCode(String productCategoryCode) {
-        this.productCategoryCode = productCategoryCode == null ? null : productCategoryCode.trim();
-    }
+    @ApiModelProperty("是否结构性商品(0:是 1:否)")
+    private Byte structuralGoods;
 
-    public String getProductCategoryName() {
-        return productCategoryName;
-    }
+    @ApiModelProperty("库存模式(0:有库存销售 1:无库存销售)")
+    private Byte inventoryModel;
 
-    public void setProductCategoryName(String productCategoryName) {
-        this.productCategoryName = productCategoryName == null ? null : productCategoryName.trim();
-    }
+    @ApiModelProperty("使用时长")
+    private Integer useTime;
 
-    public String getSkuCode() {
-        return skuCode;
-    }
+    @ApiModelProperty("唯一码管理(0:是 1:否)")
+    private Byte uniqueCode;
 
-    public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode == null ? null : skuCode.trim();
-    }
-
-    public String getSkuName() {
-        return skuName;
-    }
-
-    public void setSkuName(String skuName) {
-        this.skuName = skuName == null ? null : skuName.trim();
-    }
-
-    public String getSpec() {
-        return spec;
-    }
-
-    public void setSpec(String spec) {
-        this.spec = spec == null ? null : spec.trim();
-    }
-
-    public String getUnitCode() {
-        return unitCode;
-    }
-
-    public void setUnitCode(String unitCode) {
-        this.unitCode = unitCode == null ? null : unitCode.trim();
-    }
-
-    public Byte getSkuStatus() {
-        return skuStatus;
-    }
-
-    public void setSkuStatus(Byte skuStatus) {
-        this.skuStatus = skuStatus;
-    }
-
-    public Byte getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(Byte delFlag) {
-        this.delFlag = delFlag;
-    }
-
-    public String getProductPropertyCode() {
-        return productPropertyCode;
-    }
-
-    public void setProductPropertyCode(String productPropertyCode) {
-        this.productPropertyCode = productPropertyCode == null ? null : productPropertyCode.trim();
-    }
-
-    public String getProductPropertyName() {
-        return productPropertyName;
-    }
-
-    public void setProductPropertyName(String productPropertyName) {
-        this.productPropertyName = productPropertyName == null ? null : productPropertyName.trim();
-    }
-
-    public String getProductBrandCode() {
-        return productBrandCode;
-    }
-
-    public void setProductBrandCode(String productBrandCode) {
-        this.productBrandCode = productBrandCode == null ? null : productBrandCode.trim();
-    }
-
-    public String getProductBrandName() {
-        return productBrandName;
-    }
-
-    public void setProductBrandName(String productBrandName) {
-        this.productBrandName = productBrandName == null ? null : productBrandName.trim();
-    }
-
-    public String getSkuAbbreviation() {
-        return skuAbbreviation;
-    }
-
-    public void setSkuAbbreviation(String skuAbbreviation) {
-        this.skuAbbreviation = skuAbbreviation == null ? null : skuAbbreviation.trim();
-    }
-
-    public String getColorCode() {
-        return colorCode;
-    }
-
-    public void setColorCode(String colorCode) {
-        this.colorCode = colorCode == null ? null : colorCode.trim();
-    }
-
-    public String getColorName() {
-        return colorName;
-    }
-
-    public void setColorName(String colorName) {
-        this.colorName = colorName == null ? null : colorName.trim();
-    }
-
-    public String getModelNumber() {
-        return modelNumber;
-    }
-
-    public void setModelNumber(String modelNumber) {
-        this.modelNumber = modelNumber == null ? null : modelNumber.trim();
-    }
-
-    public String getUnitName() {
-        return unitName;
-    }
-
-    public void setUnitName(String unitName) {
-        this.unitName = unitName == null ? null : unitName.trim();
-    }
-
-    public Byte getQualityAssuranceManagement() {
-        return qualityAssuranceManagement;
-    }
-
-    public void setQualityAssuranceManagement(Byte qualityAssuranceManagement) {
-        this.qualityAssuranceManagement = qualityAssuranceManagement;
-    }
-
-    public String getProductSortCode() {
-        return productSortCode;
-    }
-
-    public void setProductSortCode(String productSortCode) {
-        this.productSortCode = productSortCode == null ? null : productSortCode.trim();
-    }
-
-    public String getProductSortName() {
-        return productSortName;
-    }
-
-    public void setProductSortName(String productSortName) {
-        this.productSortName = productSortName == null ? null : productSortName.trim();
-    }
-
-    public String getQualityNumber() {
-        return qualityNumber;
-    }
-
-    public void setQualityNumber(String qualityNumber) {
-        this.qualityNumber = qualityNumber == null ? null : qualityNumber.trim();
-    }
-
-    public String getQualityDate() {
-        return qualityDate;
-    }
-
-    public void setQualityDate(String qualityDate) {
-        this.qualityDate = qualityDate == null ? null : qualityDate.trim();
-    }
-
-    public String getManagementStyleCode() {
-        return managementStyleCode;
-    }
-
-    public void setManagementStyleCode(String managementStyleCode) {
-        this.managementStyleCode = managementStyleCode == null ? null : managementStyleCode.trim();
-    }
-
-    public String getManagementStyleName() {
-        return managementStyleName;
-    }
-
-    public void setManagementStyleName(String managementStyleName) {
-        this.managementStyleName = managementStyleName == null ? null : managementStyleName.trim();
-    }
-
-    public String getCategoriesSupplyChannelsCode() {
-        return categoriesSupplyChannelsCode;
-    }
-
-    public void setCategoriesSupplyChannelsCode(String categoriesSupplyChannelsCode) {
-        this.categoriesSupplyChannelsCode = categoriesSupplyChannelsCode == null ? null : categoriesSupplyChannelsCode.trim();
-    }
-
-    public Byte getOnSale() {
-        return onSale;
-    }
-
-    public void setOnSale(Byte onSale) {
-        this.onSale = onSale;
-    }
-
-    public String getCategoriesSupplyChannelsName() {
-        return categoriesSupplyChannelsName;
-    }
-
-    public void setCategoriesSupplyChannelsName(String categoriesSupplyChannelsName) {
-        this.categoriesSupplyChannelsName = categoriesSupplyChannelsName == null ? null : categoriesSupplyChannelsName.trim();
-    }
-
-    public String getBoxGauge() {
-        return boxGauge;
-    }
-
-    public void setBoxGauge(String boxGauge) {
-        this.boxGauge = boxGauge == null ? null : boxGauge.trim();
-    }
-
-    public String getApplicableMonthAge() {
-        return applicableMonthAge;
-    }
-
-    public void setApplicableMonthAge(String applicableMonthAge) {
-        this.applicableMonthAge = applicableMonthAge == null ? null : applicableMonthAge.trim();
-    }
-
-    public String getPoint() {
-        return point;
-    }
-
-    public void setPoint(String point) {
-        this.point = point == null ? null : point.trim();
-    }
-
-    public String getBarCode() {
-        return barCode;
-    }
-
-    public void setBarCode(String barCode) {
-        this.barCode = barCode == null ? null : barCode.trim();
-    }
-
-    public String getMnemonicCode() {
-        return mnemonicCode;
-    }
-
-    public void setMnemonicCode(String mnemonicCode) {
-        this.mnemonicCode = mnemonicCode == null ? null : mnemonicCode.trim();
-    }
-
-    public Byte getSelectionEffectiveTime() {
-        return selectionEffectiveTime;
-    }
-
-    public void setSelectionEffectiveTime(Byte selectionEffectiveTime) {
-        this.selectionEffectiveTime = selectionEffectiveTime;
-    }
-
-    public String getSelectionEffectiveStartTime() {
-        return selectionEffectiveStartTime;
-    }
-
-    public void setSelectionEffectiveStartTime(String selectionEffectiveStartTime) {
-        this.selectionEffectiveStartTime = selectionEffectiveStartTime == null ? null : selectionEffectiveStartTime.trim();
-    }
-
-    public String getSelectionEffectiveEndTime() {
-        return selectionEffectiveEndTime;
-    }
-
-    public void setSelectionEffectiveEndTime(String selectionEffectiveEndTime) {
-        this.selectionEffectiveEndTime = selectionEffectiveEndTime == null ? null : selectionEffectiveEndTime.trim();
-    }
-
-    public String getApplyCode() {
-        return applyCode;
-    }
-
-    public void setApplyCode(String applyCode) {
-        this.applyCode = applyCode == null ? null : applyCode.trim();
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getCreateBy() {
-        return createBy;
-    }
-
-    public void setCreateBy(String createBy) {
-        this.createBy = createBy == null ? null : createBy.trim();
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public String getUpdateBy() {
-        return updateBy;
-    }
-
-    public void setUpdateBy(String updateBy) {
-        this.updateBy = updateBy == null ? null : updateBy.trim();
-    }
-
-    public Byte getGoodsGifts() {
-        return goodsGifts;
-    }
-
-    public void setGoodsGifts(Byte goodsGifts) {
-        this.goodsGifts = goodsGifts;
-    }
-
-    public String getSpuCode() {
-        return spuCode;
-    }
-
-    public void setSpuCode(String spuCode) {
-        this.spuCode = spuCode == null ? null : spuCode.trim();
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo == null ? null : logo.trim();
-    }
-
-    public String getImages() {
-        return images;
-    }
-
-    public void setImages(String images) {
-        this.images = images == null ? null : images.trim();
-    }
-
-    public String getItroImages() {
-        return itroImages;
-    }
-
-    public void setItroImages(String itroImages) {
-        this.itroImages = itroImages == null ? null : itroImages.trim();
-    }
-
-    public Byte getIsMainPush() {
-        return isMainPush;
-    }
-
-    public void setIsMainPush(Byte isMainPush) {
-        this.isMainPush = isMainPush;
-    }
-
-    public Byte getNewProduct() {
-        return newProduct;
-    }
-
-    public void setNewProduct(Byte newProduct) {
-        this.newProduct = newProduct;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark == null ? null : remark.trim();
-    }
-
-    public Long getManufacturerGuidePrice() {
-        return manufacturerGuidePrice;
-    }
-
-    public void setManufacturerGuidePrice(Long manufacturerGuidePrice) {
-        this.manufacturerGuidePrice = manufacturerGuidePrice;
-    }
-
-    public Long getZeroRemovalCoefficient() {
-        return zeroRemovalCoefficient;
-    }
-
-    public void setZeroRemovalCoefficient(Long zeroRemovalCoefficient) {
-        this.zeroRemovalCoefficient = zeroRemovalCoefficient;
-    }
-
-    public String getProcurementSectionCode() {
-        return procurementSectionCode;
-    }
-
-    public void setProcurementSectionCode(String procurementSectionCode) {
-        this.procurementSectionCode = procurementSectionCode == null ? null : procurementSectionCode.trim();
-    }
-
-    public String getProcurementSectionName() {
-        return procurementSectionName;
-    }
-
-    public void setProcurementSectionName(String procurementSectionName) {
-        this.procurementSectionName = procurementSectionName == null ? null : procurementSectionName.trim();
-    }
-
-    public Byte getApplyStatus() {
-        return applyStatus;
-    }
-
-    public void setApplyStatus(Byte applyStatus) {
-        this.applyStatus = applyStatus;
-    }
-
-    public String getAuditorBy() {
-        return auditorBy;
-    }
-
-    public void setAuditorBy(String auditorBy) {
-        this.auditorBy = auditorBy;
-    }
-
-    public Date getAuditorTime() {
-        return auditorTime;
-    }
-
-    public void setAuditorTime(Date auditorTime) {
-        this.auditorTime = auditorTime;
-    }
-
-    public String getFormNo() {
-        return formNo;
-    }
-
-    public void setFormNo(String formNo) {
-        this.formNo = formNo;
-    }
+    @ApiModelProperty("申请类型名称")
+    private String applyTypeName;
 }

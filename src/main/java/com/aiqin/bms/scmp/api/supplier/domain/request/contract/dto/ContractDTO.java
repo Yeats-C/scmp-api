@@ -63,8 +63,8 @@ public class ContractDTO extends CommonBean {
     @ApiModelProperty("目标返利(门店,地区,大区,全国)")
     private Byte targetRebate;
 
-    @ApiModelProperty("计划类型(月度,季度,半年,全年)")
-    private Byte planType;
+//    @ApiModelProperty("计划类型(月度,季度,半年,全年)")
+//    private Byte planType;
 
     @ApiModelProperty("起始日期")
     private Date startTime;
@@ -122,4 +122,46 @@ public class ContractDTO extends CommonBean {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
+
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
+
+    @ApiModelProperty("最小起订金额")
+    private Long minAmount;
+
+    @ApiModelProperty("最高起订金额")
+    private Long maxAmount;
+
+    @ApiModelProperty("送货周期")
+    private Integer deliveryCycle;
+
+    @ApiModelProperty("税率")
+    private Long taxRate;
+
+    @ApiModelProperty("折扣")
+    private Long discount;
+
+    @ApiModelProperty("退换货保证(0保证 1不保证)")
+    private Byte returnGuarantee;
+
+    @ApiModelProperty("退换货保证天数")
+    private Integer returnGuaranteeDay;
+
+    @ApiModelProperty("质保金")
+    private Long warranty;
+
+    @ApiModelProperty("供货渠道编码")
+    private String categoriesSupplyChannelsCode;
+
+    @ApiModelProperty("供货渠道名称")
+    private String categoriesSupplyChannelsName;
+
+    @ApiModelProperty("备注")
+    private String remark;
 }

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="purchase_order_id" jdbcType="VARCHAR" property="purchaseOrderId" />
+    <result column="purchase_order_code" jdbcType="VARCHAR" property="purchaseOrderCode" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="info_status" jdbcType="INTEGER" property="infoStatus" />
+    <result column="purchase_order_status" jdbcType="INTEGER" property="purchaseOrderStatus" />
+    <result column="storage_status" jdbcType="INTEGER" property="storageStatus" />
+    <result column="single_count" jdbcType="INTEGER" property="singleCount" />
+    <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
+    <result column="return_amount" jdbcType="INTEGER" property="returnAmount" />
+    <result column="purchase_mode" jdbcType="INTEGER" property="purchaseMode" />
+    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
+    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+    <result column="cancel_reason" jdbcType="VARCHAR" property="cancelReason" />
+    <result column="cancel_remark" jdbcType="VARCHAR" property="cancelRemark" />
+    <result column="apply_type_form" jdbcType="VARCHAR" property="applyTypeForm" />
+    <result column="approval_code" jdbcType="VARCHAR" property="approvalCode" />
+    <result column="gift_tax_sum" jdbcType="INTEGER" property="giftTaxSum" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, purchase_order_id, purchase_order_code, transport_center_code, transport_center_name, 
+    purchase_group_code, purchase_group_name, warehouse_code, warehouse_name, supplier_code, 
+    supplier_name, info_status, purchase_order_status, storage_status, single_count, 
+    product_total_amount, return_amount, purchase_mode, settlement_method_code, settlement_method_name,
+    cancel_reason, cancel_remark, create_time, create_by_id, create_by_name, apply_type_form, approval_code,
+    gift_tax_sum
+  </sql>
+  <insert id="insert">
+    insert into purchase_order (purchase_order_id, purchase_order_code,
+      transport_center_code, transport_center_name, purchase_group_code, purchase_group_name, warehouse_code,
+      warehouse_name, supplier_code, supplier_name, info_status, purchase_order_status, storage_status,
+      single_count, product_total_amount, return_amount, purchase_mode, settlement_method_code, settlement_method_name,
+      create_time, create_by_id, create_by_name, apply_type_form, approval_code, gift_tax_sum)
+    values (#{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR},
+      #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
+      #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, 
+      #{warehouseName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, 
+      #{infoStatus,jdbcType=INTEGER}, #{purchaseOrderStatus,jdbcType=INTEGER}, #{storageStatus,jdbcType=INTEGER}, 
+      #{singleCount,jdbcType=INTEGER}, #{productTotalAmount,jdbcType=INTEGER}, #{returnAmount,jdbcType=INTEGER}, 
+      #{purchaseMode,jdbcType=INTEGER}, #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR},
+      now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{applyTypeForm,jdbcType=VARCHAR},
+      #{approvalCode,jdbcType=VARCHAR}, #{giftTaxSum,jdbcType=INTEGER})
+  </insert>
+  <update id="update">
+    update purchase_order
+    <set>
+      <if test="transportCenterName != null">
+        transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="infoStatus != null">
+        info_status = #{infoStatus,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseOrderStatus != null">
+        purchase_order_status = #{purchaseOrderStatus,jdbcType=INTEGER},
+      </if>
+      <if test="storageStatus != null">
+        storage_status = #{storageStatus,jdbcType=INTEGER},
+      </if>
+      <if test="singleCount != null">
+        single_count = #{singleCount,jdbcType=INTEGER},
+      </if>
+      <if test="productTotalAmount != null">
+        product_total_amount = #{productTotalAmount,jdbcType=INTEGER},
+      </if>
+      <if test="returnAmount != null">
+        return_amount = #{returnAmount,jdbcType=INTEGER},
+      </if>
+      <if test="settlementMethodCode != null">
+        settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodName != null">
+        settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelReason != null">
+        cancel_reason = #{cancelReason,jdbcType=VARCHAR},
+      </if>
+      <if test="cancelRemark != null">
+        cancel_remark = #{cancelRemark,jdbcType=VARCHAR},
+      </if>
+      update_time = now(),
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+  </update>
+  <select id="purchaseOrderList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse">
+    select o.purchase_order_id as purchaseOrderId, o.purchase_order_code as purchaseOrderCode,
+    o.warehouse_code as warehouseCode, o.warehouse_name as warehouseName, o.transport_center_code as transportCenterCode,
+    o.transport_center_name as transportCenterName, o.purchase_order_status as purchaseOrderStatus, o.storage_status as storageStatus,
+    o.single_count as singleCount, o.product_total_amount as productTotalAmount, o.return_amount as returnAmount,
+    d.expect_arrival_time as expectArrivalTime, d.valid_time as validTime, o.create_time as createTime,
+    o.purchase_group_code as purchaseGroupCode, o.purchase_group_name as purchaseGroupName, o.purchase_mode as purchaseMode,
+    o.supplier_code as supplierCode, o.supplier_name as supplierName, o.create_by_id as createById, o.create_by_name as createByName,
+    o.update_by_id as updateById, o.update_by_name as updateByName, o.gift_tax_sum as giftTaxSum, o.update_time as updateTime,
+    o.approval_code as approvalCode
+    from purchase_order o
+    inner join purchase_order_details d
+    on o.purchase_order_id = d.purchase_order_id
+    <where>
+      o.purchase_group_code in
+      <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+        #{item.purchaseGroupCode,jdbcType=VARCHAR}
+      </foreach>
+      <if test="beginTime != null">
+        and o.create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and o.create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderCode != null">
+        and o.purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupCode != null">
+        and o.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierCode != null">
+        and o.supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and o.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null">
+        and o.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderStatus != null">
+        and o.purchase_order_status = #{purchaseOrderStatus,jdbcType=INTEGER}
+      </if>
+      <if test="storageStatus != null">
+        and o.storage_status = #{storageStatus,jdbcType=INTEGER}
+      </if>
+      <if test="purchaseMode != null">
+        and o.purchase_mode = #{purchaseMode,jdbcType=INTEGER}
+      </if>
+      <if test="approvalCode != null">
+        and o.approval_code = #{approvalCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+    order by o.create_time desc
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="purchaseOrderCount" resultType="java.lang.Integer">
+    select count(1)
+    from purchase_order
+    <where>
+      purchase_group_code in
+      <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+        #{item.purchaseGroupCode,jdbcType=VARCHAR}
+      </foreach>
+      <if test="beginTime != null">
+        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderCode != null">
+        and purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupCode != null">
+        and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierCode != null">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null">
+        and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderStatus != null">
+        and purchase_order_status = #{purchaseOrderStatus,jdbcType=INTEGER}
+      </if>
+      <if test="storageStatus != null">
+        and storage_status = #{storageStatus,jdbcType=INTEGER}
+      </if>
+      <if test="purchaseMode != null">
+        and purchase_mode = #{purchaseMode,jdbcType=INTEGER}
+      </if>
+      <if test="approvalCode != null">
+        and approval_code = #{approvalCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <select id="purchaseOrder"  resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_order where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+  </select>
+  <select id="purchaseOrderInfo" resultMap="BaseResultMap" parameterType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder">
+     select <include refid="Base_Column_List"></include>
+     from purchase_order where purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+  </select>
+  <select id="orderByExecuteWarehousing" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+    select d.valid_time as validTime, o.purchase_order_id as purchaseOrderId, o.purchase_order_code as purchaseOrderCode,
+    o.purchase_order_status as purchaseOrderStatus, o.storage_status as storageStatus, o.apply_type_form as applyTypeForm
+    from purchase_order o
+    inner join purchase_order_details d on o.purchase_order_id = d.purchase_order_id
+    where o.purchase_order_status in(3, 4, 5, 6)
+    and d.valid_time &gt;= #{beginTime,jdbcType=VARCHAR}
+    and d.valid_time &lt;= #{finishTime,jdbcType=VARCHAR}
+  </select>
+</mapper>

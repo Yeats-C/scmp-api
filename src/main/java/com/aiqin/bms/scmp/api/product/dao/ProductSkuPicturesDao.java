@@ -28,6 +28,8 @@ public interface ProductSkuPicturesDao {
 
     List<ProductSkuPicturesRespVo> getDraftInfo(String skuCode);
 
+    List<ProductSkuPicturesRespVo> getRespInfoBySkuCode(String skuCode);
+
     List<ProductSkuPictures> getInfo(String skuCode);
 
     List<ProductSkuPicturesDraft> getDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);
@@ -38,5 +40,7 @@ public interface ProductSkuPicturesDao {
 
     List<ApplyProductSkuPictures> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuPictures> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
+    List<ProductSkuPicturesRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode")String applyCode);
+
+    ProductSkuPictures getPicInfoBySkuCode(String skuCode);
 }

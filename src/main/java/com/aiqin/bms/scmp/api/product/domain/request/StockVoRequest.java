@@ -52,7 +52,7 @@ public class StockVoRequest {
     @JsonProperty(value = "purchase_group_name")
     private String purchaseGroupName;
 
-    @ApiModelProperty("备品含税金额")
+    @ApiModelProperty("税率")
     @JsonProperty(value = "tax_rate")
     private Long taxRate;
 
@@ -72,5 +72,31 @@ public class StockVoRequest {
     @JsonProperty(value = "new_purchase_price")
     private Long newPurchasePrice;
 
+    @ApiModelProperty("单据类型 0出库 1入库 2退供 3采购 4调拨 5退货 6移库 7监管仓入库 8报废 9订单 10监管仓出库 11报损  12报溢")
+    @JsonProperty(value = "document_type")
+    private Integer documentType;
 
+    @ApiModelProperty("单据号")
+    @JsonProperty(value = "document_num")
+    private String documentNum;
+
+    @ApiModelProperty("来源单据类型 0出库 1入库 2退供 3采购 4调拨 5退货 6移库 7监管仓入库 8报废 9订单 10监管仓出库")
+    @JsonProperty(value = "source_document_type")
+    private Integer sourceDocumentType;
+
+    @ApiModelProperty("来源单据号")
+    @JsonProperty(value = "source_document_num")
+    private String sourceDocumentNum;
+
+    @ApiModelProperty("操作人")
+    @JsonProperty(value = "operator")
+    private String operator;
+
+    @ApiModelProperty("商品备注")
+    @JsonProperty(value = "remark")
+    private String remark;
+
+    @ApiModelProperty("库存成本")
+    @JsonProperty(value = "stock_cost")
+    private Long stockCost;
 }

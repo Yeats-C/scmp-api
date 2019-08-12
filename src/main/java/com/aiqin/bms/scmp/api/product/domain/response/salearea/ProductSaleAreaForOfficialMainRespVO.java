@@ -1,9 +1,12 @@
 package com.aiqin.bms.scmp.api.product.domain.response.salearea;
 
+import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,6 +29,20 @@ public class ProductSaleAreaForOfficialMainRespVO {
     @ApiModelProperty("是否禁用(0禁用1启用)")
     private Integer beDisable;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
+
     @ApiModelProperty("sku信息")
     private List<QueryProductSaleAreaRespVO> skuList;
 
@@ -34,4 +51,7 @@ public class ProductSaleAreaForOfficialMainRespVO {
 
     @ApiModelProperty("渠道信息")
     private List<ProductSaleAreaChannelRespVO> channelList;
+
+    @ApiModelProperty("区域详情")
+    List<LogData> logData;
 }

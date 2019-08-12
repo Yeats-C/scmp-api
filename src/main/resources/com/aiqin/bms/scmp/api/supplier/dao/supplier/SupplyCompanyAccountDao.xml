@@ -32,46 +32,52 @@
   </sql>
   <select id="selectListByQueryVO" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.supplier.QuerySupplierComAcctRespVo" >
     select
-    id,
-    bank_account bankAccount,
-    account account,
-    account_name accountName,
-    max_payment_amount maxPaymentAmount,
-    create_time createTime,
-    create_by createBy,
-    update_time updateTime,
-    update_by updateBy,
-    supply_company_name supplyCompanyName,
-    supply_company_code supplyCompanyCode,
-    supply_company_account_code supplyCompanyAccountCode,
-    apply_status as applyStatus
-    from supply_company_account
-    where del_flag = 0
+    a.id,
+    a.bank_account bankAccount,
+    a.account account,
+    a.account_name accountName,
+    a.max_payment_amount maxPaymentAmount,
+    a.create_time createTime,
+    a.create_by createBy,
+    a.update_time updateTime,
+    a.update_by updateBy,
+    a.supply_company_name supplyCompanyName,
+    a.supply_company_code supplyCompanyCode,
+    a.supply_company_account_code supplyCompanyAccountCode,
+    a.apply_status as applyStatus,
+    b.purchasing_group_name as purchasingGroupName,
+    b.purchasing_group_code as purchasingGroupCode
+    from supply_company_account a
+    left join supply_company b on a.supply_company_code = b.supply_code
+    where a.del_flag = 0
     <if test="bankAccount != null and bankAccount !='' ">
-      and bank_account LIKE CONCAT('%',#{bankAccount,jdbcType=VARCHAR}, '%')
+      and a.bank_account LIKE CONCAT('%',#{bankAccount,jdbcType=VARCHAR}, '%')
     </if>
     <if test="supplyCompanyAccountCode != null and supplyCompanyAccountCode !='' ">
-      and supply_company_account_code = #{supplyCompanyAccountCode,jdbcType=VARCHAR}
+      and a.supply_company_account_code LIKE CONCAT('%',#{supplyCompanyAccountCode,jdbcType=VARCHAR}, '%')
     </if>
     <if test="supplyCompanyCode != null and supplyCompanyCode !='' ">
-      and supply_company_code LIKE CONCAT('%', #{supplyCompanyCode,jdbcType=VARCHAR}, '%')
+      and a.supply_company_code LIKE CONCAT('%', #{supplyCompanyCode,jdbcType=VARCHAR}, '%')
     </if>
     <if test="supplyCompanyName != null and supplyCompanyName !='' ">
-      and supply_company_name LIKE CONCAT('%', #{supplyCompanyName,jdbcType=VARCHAR}, '%')
+      and a.supply_company_name LIKE CONCAT('%', #{supplyCompanyName,jdbcType=VARCHAR}, '%')
     </if>
-      <if test="purchasingGroupCode != null and purchasingGroupCode !='' ">
-      and purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR}
+    <if test="purchasingGroupCode != null and purchasingGroupCode !='' ">
+      and b.purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR}
     </if>
     <if test="createDateStart != null ">
-      and create_time &gt; #{createDateStart,jdbcType=TIMESTAMP}
+      and a.create_time &gt; #{createDateStart,jdbcType=TIMESTAMP}
     </if>
     <if test="createDateEnd != null ">
-      and create_time &lt; #{createDateEnd,jdbcType=TIMESTAMP}
+      and a.create_time &lt; #{createDateEnd,jdbcType=TIMESTAMP}
     </if>
     <if test="companyCode != null and companyCode != '' ">
-      and company_code = #{companyCode,jdbcType=VARCHAR}
+      and a.company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
-      order by create_time desc
+    <if test="personId != null and personId != '' ">
+        and b.purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+    </if>
+    order by a.create_time desc
   </select>
     <!--<insert id="insert" parameterType="com.aiqin.bms.scmp.api.scmp.pojo.SupplyCompanyAccount">-->
     <!--insert into supply_company_account (id, account_opening_branch, bank_account, -->

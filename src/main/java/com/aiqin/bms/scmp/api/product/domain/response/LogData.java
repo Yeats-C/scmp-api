@@ -24,10 +24,17 @@ public class LogData {
 
     @ApiModelProperty("json数据")
     private String content;
+
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     private Date createTime;
 
     @ApiModelProperty("创建人")
     private String createBy;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+    @ApiModelProperty("状态")
+    private String status;
 }

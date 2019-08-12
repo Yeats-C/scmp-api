@@ -1,11 +1,13 @@
 package com.aiqin.bms.scmp.api.product.domain.response.changeprice;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Description:
@@ -28,6 +30,16 @@ public class QueryProductSkuChangePriceRespVO {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
+    @ApiModelProperty("创建人")
+    private String updateBy;
+
     @ApiModelProperty("变价类型名称")
     private String changePriceName;
 
@@ -37,10 +49,19 @@ public class QueryProductSkuChangePriceRespVO {
     @ApiModelProperty("与之前相同")
     private Integer applyStatus;
 
+    @ApiModelProperty("是否含有区域0否1是")
+    private Integer beContainArea;
+
     @ApiModelProperty("操作人")
     private String operateBy;
+
+    @ApiModelProperty("流程编号")
+    private String formNo;
 
     @ApiModelProperty("操作时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date operateTime;
+
+    @ApiModelProperty("sku信息")
+    private List<ProductSkuChangePriceInfo> skuList;
 }

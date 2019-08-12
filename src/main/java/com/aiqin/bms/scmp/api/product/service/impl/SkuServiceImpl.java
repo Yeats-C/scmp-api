@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.UrlConfig;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductLabelDao;
@@ -29,11 +30,14 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.merchant.MerchantSkuIt
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ocenter.QueryCenterSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.*;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoDao;
 import com.aiqin.bms.scmp.api.product.service.ProductCategoryService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseApiResVo;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -58,7 +62,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
-public class SkuServiceImpl implements SkuService {
+public class SkuServiceImpl extends BaseServiceImpl implements SkuService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SkuServiceImpl.class);
 
@@ -502,5 +506,19 @@ try {
         List<QueryCenterSkuListRespVo> respVos = productSkuDao.queryOcenterSkuList(querySkuListReqVo);
 
         return PageUtil.getPageList(querySkuListReqVo.getPageNo(),respVos);
+    }
+
+
+    /**
+     * 监管仓入库SKU查询
+     *
+     * @return
+     */
+    @Override
+    public BasePage<SupervisoryWarehouseSkuRespVo> getSupervisoryWarehouseSku(QuerySkuListReqVO querySkuListReqVO) {
+        PageHelper.startPage(querySkuListReqVO.getPageNo(), querySkuListReqVO.getPageSize());
+        querySkuListReqVO.setCompanyCode(getUser().getCompanyCode());
+        List<SupervisoryWarehouseSkuRespVo> productSkuInfos = productSkuDao.getSupervisoryWarehouseSku(querySkuListReqVO);
+        return PageUtil.getPageList(querySkuListReqVO.getPageNo(), productSkuInfos);
     }
 }

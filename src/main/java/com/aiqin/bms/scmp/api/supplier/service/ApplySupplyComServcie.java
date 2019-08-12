@@ -1,19 +1,25 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportReq;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportResp;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.request.QueryApplySupplyListComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyComDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyCompanyReqDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.CancelApplySupplyComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplyComReqVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.ApplyComDetailRespVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.ApplySupplyComApplyListRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComListRespVO;
-import com.aiqin.bms.scmp.api.supplier.service.helper.WorkflowHelper;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,7 +29,7 @@ import java.util.List;
  * @author: wangxu
  * @date: 2018/12/3 0003 16:40
  */
-public interface ApplySupplyComServcie extends WorkflowHelper {
+public interface ApplySupplyComServcie {
     /**
      * 编码，数据设置
      * @param applySupplyCompanyReqVO
@@ -36,7 +42,7 @@ public interface ApplySupplyComServcie extends WorkflowHelper {
      * @param applySupplyCompanyReqVO
      * @return
      */
-    int updateApply(ApplySupplyCompanyReqVO applySupplyCompanyReqVO);
+    Long updateApply(ApplySupplyCompanyReqVO applySupplyCompanyReqVO);
 
     /**
      * 调用DAO层修改数据
@@ -100,4 +106,76 @@ public interface ApplySupplyComServcie extends WorkflowHelper {
      * @return
      */
     List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
+    /**
+     * 保存导入
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param file
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO>
+     */
+    SupplierImportResp dealImport(MultipartFile file);
+    /**
+     * 修改导入
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param file
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO>
+     */
+    SupplierImportResp dealImport2(MultipartFile file);
+
+    /**
+     *
+     * 功能描述: 新增导入保存
+     *
+     * @param req
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/26 14:40
+     */
+    Boolean importSupplierNewSave(SupplierImportReq req);
+
+
+    /**
+     *
+     * 功能描述: 修改导入保存
+     *
+     * @param req
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/26 14:41
+     */
+    Boolean importSupplierNewUpdate(SupplierImportReq req);
+
+    /**
+     * 查申请数据
+     * @param queryApplySupplyComReqVO
+     * @return
+     */
+    BasePage<ApplySupplyComApplyListRespVO> applyList(QueryApplySupplyListComReqVO queryApplySupplyComReqVO);
+
+    /**
+     * 查询申请信息
+     * @param id
+     * @return
+     */
+    ApplyComDetailRespVO applyView(Long id,String statusTypeCode);
+
+    Boolean editApply(ApplySupplyCompanyReqVO applySupplyCompanyReqVO);
+
+    int insertData(ApplySupplyCompany applySupplyCompany);
+
+
+//    BasePage<SupplyComListRespVO> applyList();
+
+    /**
+     *
+     * 功能描述: 返回详情接口请求参数
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/9 14:41
+     */
+    DetailRequestRespVo getInfoByForm(String formNo);
+
 }

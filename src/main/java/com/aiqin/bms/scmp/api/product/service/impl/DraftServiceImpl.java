@@ -1,13 +1,10 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.ApprovalTypeEnum;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductDraft;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.DetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.SaveReqVo;
@@ -16,14 +13,15 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveSkuApplyInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplySkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaMainRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 /**
  * @author knight.xie
@@ -55,6 +53,10 @@ public class DraftServiceImpl implements DraftService {
 
     @Autowired
     private ProductSkuConfigService productSkuConfigService;
+    @Autowired
+    private ProductSkuDraftMapper productSkuDraftMapper;
+    @Autowired
+    private ProductSkuSupplyUnitService productSkuSupplyUnitService;
 
 
     /**
@@ -70,24 +72,24 @@ public class DraftServiceImpl implements DraftService {
             throw new BizException(ResultCode.OBJECT_NOT_FOUND);
         }
         String companyCode = "";
+        String personId = "";
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
             companyCode = authToken.getCompanyCode();
+            personId = authToken.getPersonId();
         }
         log.info("获取的公司信息编码[{}]",companyCode);
         HttpResponse httpResponse = null;
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
             log.info("获取商品信息");
-            List<ProductSkuDraftRespVo> productSkuDraftRespVos = Lists.newArrayList();
-            productSkuDraftRespVos.addAll(applyProductDraftService.getProductListDraftByCompanyCode(companyCode));
-            productSkuDraftRespVos.addAll(skuInfoService.getProductSkuDraftsByCompanyCode(companyCode));
+            List<ProductSkuDraftRespVo> productSkuDraftRespVos = skuInfoService.getProductSkuDraftsByCompanyCode(companyCode,personId);
             log.info("获取商品信息,结果{}", JSON.toJSON(productSkuDraftRespVos));
             httpResponse = HttpResponse.success(productSkuDraftRespVos);
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
             log.info("获取商品配置信息数据");
-            List<SkuConfigsRepsVo> configsRepsVos = productSkuConfigService.findDraftList(companyCode);
-            log.info("获取商品配置信息,结果{}", JSON.toJSON(configsRepsVos));
-            httpResponse = HttpResponse.success(configsRepsVos);
+            DetailConfigSupplierRespVo configsRepsVo = productSkuConfigService.findDraftList(companyCode);
+            log.info("获取商品配置信息,结果{}", JSON.toJSON(configsRepsVo));
+            httpResponse = HttpResponse.success(configsRepsVo);
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
             log.info("获取销售区域信息数据");
             List<QueryProductSaleAreaMainRespVO> saleAreaRespVOS = productSaleAreaService.queryListForDraft(companyCode);
@@ -111,11 +113,7 @@ public class DraftServiceImpl implements DraftService {
         }
         HttpResponse httpResponse = null;
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
-            if(Objects.equals(Global.SKU,reqVo.getApplySort())){
-                httpResponse = HttpResponse.success(skuInfoService.getSkuDraftInfo(reqVo.getCode()));
-            } else if (Objects.equals(Global.SPU,reqVo.getApplySort())) {
-                httpResponse = HttpResponse.success(applyProductDraftService.getDraftByProductCode(reqVo.getCode()));
-            }
+            httpResponse = HttpResponse.success(skuInfoService.getSkuDraftInfo(reqVo.getCode()));
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
 
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
@@ -138,30 +136,23 @@ public class DraftServiceImpl implements DraftService {
             throw new BizException(ResultCode.OBJECT_NOT_FOUND);
         }
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
-            if(Objects.equals(Global.SKU,reqVo.getApplySort())){
+            if(Objects.nonNull(reqVo.getCode())){
                 List<String> skuCodes = Lists.newArrayList();
                 skuCodes.add(reqVo.getCode());
                 skuInfoService.deleteProductSkuDraft(skuCodes);
-            } else if (Objects.equals(Global.SPU,reqVo.getApplySort())) {
-                //先判断SPU是新增还是修改
-                ApplyProductDraft applyProductDraft = applyProductDraftService.getDraftByProductCode(reqVo.getCode());
-                //如果是新增,则需要删除商品下SKU信息
-                if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applyProductDraft.getApplyType())){
-                    //再判断删除商品下是否存在SKU
-                    List<ProductSkuDraft> skuDraftList = skuInfoService.getProductSkuDraftsByProductCode(reqVo.getCode());
-                    if (CollectionUtils.isNotEmpty(skuDraftList)) {
-                        List<String> skuCodes = skuDraftList.stream().map(item -> item.getSkuCode()).collect(Collectors.toList());
-                        skuInfoService.deleteProductSkuDraft(skuCodes);
-                    }
-                }
-                List<String> productCodes = Lists.newArrayList();
-                productCodes.add(reqVo.getCode());
-                applyProductDraftService.deleteCode(productCodes);
             }
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
-            productSkuConfigService.deleteDraftById(reqVo.getId());
+            if(Objects.nonNull(reqVo.getId())){
+                if(Objects.equals(reqVo.getConfigType(),DetailReqVo.DEL_CONFIG)){
+                    productSkuConfigService.deleteDraftById(reqVo.getId());
+                } else if (Objects.equals(reqVo.getConfigType(),DetailReqVo.DEL_SUPPLIER)) {
+                    productSkuSupplyUnitService.deleteDraftById(reqVo.getId());
+                }
+            }
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
-            productSaleAreaService.deleteDraft(reqVo.getCode());
+            if(Objects.nonNull(reqVo.getCode())){
+                productSaleAreaService.deleteDraft(reqVo.getCode());
+            }
         }
         return HttpResponse.success(1);
     }
@@ -178,19 +169,21 @@ public class DraftServiceImpl implements DraftService {
         if(null == approvalTypeEnum){
             throw new BizException(ResultCode.OBJECT_NOT_FOUND);
         }
+        if(null == reqVo.getData()){
+            throw new BizException(ResultCode.APPLY_DATA_EMPTY);
+        }
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
             SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO = new SaveSkuApplyInfoReqVO();
             BeanCopyUtils.copy(reqVo,saveSkuApplyInfoReqVO);
-            Map<String,List<String>> dataMap = (Map<String, List<String>>) reqVo.getData();
-            saveSkuApplyInfoReqVO.setProductCodes(dataMap.get(Global.PRODUCT_CODE));
-            saveSkuApplyInfoReqVO.setSkuCodes(dataMap.get(Global.SKU_CODE));
+            List<String> skuCodes = (List<String>) reqVo.getData();
+            saveSkuApplyInfoReqVO.setSkuCodes(skuCodes);
             skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO);
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
             ApplySkuConfigReqVo applySkuConfigReqVo = new ApplySkuConfigReqVo();
             BeanCopyUtils.copy(reqVo,applySkuConfigReqVo);
-            List<String> configCodes = (List<String>) reqVo.getData();
-            List<String> collect = configCodes.stream().distinct().collect(Collectors.toList());
-            applySkuConfigReqVo.setSkuConfigs(collect);
+            Map<String,Object> dataMap = (Map<String, Object>) reqVo.getData();
+            applySkuConfigReqVo.setSkuConfigs((List<String>)dataMap.get(Global.CONFIG_CODE));
+            applySkuConfigReqVo.setSupplierId((List<Long>)dataMap.get(Global.SUPPLIER_ID));
             productSkuConfigService.insertApplyList(applySkuConfigReqVo);
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
             ApplySaleAreaReqVO saleAreaReqVO = new ApplySaleAreaReqVO();
@@ -200,5 +193,10 @@ public class DraftServiceImpl implements DraftService {
             productSaleAreaService.addSaleAreaApply(saleAreaReqVO);
         }
         return HttpResponse.success(1);
+    }
+
+    @Override
+    public Map<String, ProductSkuDraft> selectBySkuCode(Set<String> skuNameList, String companyCode) {
+        return productSkuDraftMapper.selectBySkuCode(skuNameList,companyCode);
     }
 }

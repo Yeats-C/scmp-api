@@ -1,14 +1,14 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPicturesDraftMapper;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPicturesDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuPicturesRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPicturesDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPicturesService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import org.springframework.aop.framework.AopContext;
@@ -40,7 +40,6 @@ public class ProductSkuPicturesServiceImpl implements ProductSkuPicturesService 
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    @SaveList
     public int insertList(List<ProductSkuPictures> productSkuPictures) {
         int num = productSkuPicturesDao.insertList(productSkuPictures);
         return num;
@@ -120,4 +119,33 @@ public class ProductSkuPicturesServiceImpl implements ProductSkuPicturesService 
     public Integer deleteDrafts(List<String> skuCodes) {
         return draftMapper.delete(skuCodes);
     }
+
+    /**
+     * 功能描述: 申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:14
+     */
+    @Override
+    public List<ProductSkuPicturesRespVo> getApply(String skuCode, String applyCode) {
+        return productSkuPicturesDao.getApplys(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 获取正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:31
+     */
+    @Override
+    public List<ProductSkuPicturesRespVo> getList(String skuCode) {
+        return productSkuPicturesDao.getRespInfoBySkuCode(skuCode);
+    }
 }
+
+

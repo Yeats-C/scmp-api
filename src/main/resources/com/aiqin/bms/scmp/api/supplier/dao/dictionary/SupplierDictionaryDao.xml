@@ -5,7 +5,7 @@
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="supplier_dictionary_code" jdbcType="INTEGER" property="dictionaryCode"/>
         <result column="supplier_dictionary_name" jdbcType="VARCHAR" property="dictionaryName"/>
-        <result column="supplier_type" jdbcType="VARCHAR" property="dictionaryType"/>
+<!--        <result column="supplier_type" jdbcType="VARCHAR" property="dictionaryType"/>-->
         <result column="del_flag" jdbcType="TINYINT" property="delFlag"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
@@ -15,7 +15,9 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-    id, supplier_dictionary_code, supplier_dictionary_name, supplier_type, del_flag, create_time, create_by,
+    id, supplier_dictionary_code, supplier_dictionary_name,
+--      supplier_type,
+     del_flag, create_time, create_by,
     update_time, update_by,enabled
   </sql>
 
@@ -34,17 +36,20 @@
             and create_time &lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
         </if>
         <if test="createBy != null and createBy !=''">
-            and create_by LIKE CONCAT(CONCAT('%',#{createBy},'%'))
+            and create_by LIKE CONCAT('%',#{createBy},'%')
         </if>
         <if test="updateBy != null and updateBy !=''">
-            and update_by LIKE CONCAT(CONCAT('%',#{updateBy},'%'))
+            and update_by LIKE CONCAT('%',#{updateBy},'%')
         </if>
         <if test="dictionaryName != null and dictionaryName !=''">
-            and supplier_dictionary_name LIKE CONCAT(CONCAT('%',#{dictionaryName},'%'))
+            and supplier_dictionary_name LIKE CONCAT('%',#{dictionaryName},'%')
         </if>
-        <if test="dictionaryType != null and dictionaryType !=''">
-            and supplier_type = #{dictionaryType}
+        <if test="dictionaryCode != null and dictionaryCode !=''">
+            and supplier_dictionary_code LIKE CONCAT('%',#{dictionaryCode},'%')
         </if>
+<!--        <if test="dictionaryType != null and dictionaryType !=''">-->
+<!--            and supplier_type = #{dictionaryType}-->
+<!--        </if>-->
         <if test="enabled != null">
             and enabled = #{enabled,jdbcType=TINYINT}
         </if>
@@ -63,11 +68,13 @@
 
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionary">
     insert into supplier_dictionary (id, supplier_dictionary_code, supplier_dictionary_name,
-      supplier_type, del_flag, create_time, 
+--       supplier_type,
+       del_flag, create_time,
       create_by, update_time, update_by, company_code, company_name
       )
     values (#{id,jdbcType=BIGINT}, #{supplierDictionaryCode,jdbcType=INTEGER}, #{supplierDictionaryName,jdbcType=VARCHAR},
-      #{supplierType,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+--       #{supplierType,jdbcType=VARCHAR},
+      #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP},
       #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR},
       #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}
       )
@@ -86,9 +93,9 @@
             <if test="supplierDictionaryName != null">
                 supplier_dictionary_name,
             </if>
-            <if test="supplierType != null">
-                supplier_type,
-            </if>
+<!--            <if test="supplierType != null">-->
+<!--                supplier_type,-->
+<!--            </if>-->
             <if test="delFlag != null">
                 del_flag,
             </if>
@@ -124,9 +131,9 @@
             <if test="supplierDictionaryName != null">
                 #{supplierDictionaryName,jdbcType=VARCHAR},
             </if>
-            <if test="supplierType != null">
-                #{supplierType,jdbcType=VARCHAR},
-            </if>
+<!--            <if test="supplierType != null">-->
+<!--                #{supplierType,jdbcType=VARCHAR},-->
+<!--            </if>-->
             <if test="delFlag != null">
                 #{delFlag,jdbcType=TINYINT},
             </if>
@@ -184,9 +191,9 @@
         <if test="dictionaryCode!=null and dictionaryCode!=''">
             AND sdi.supplier_dictionary_code=#{dictionaryCode,jdbcType=VARCHAR}
         </if>
-        <if test="dictionaryType!=null and dictionaryType!=''">
-            AND sdi.supplier_type=#{dictionaryType,jdbcType=VARCHAR}
-        </if>
+<!--        <if test="dictionaryType!=null and dictionaryType!=''">-->
+<!--            AND sdi.supplier_type=#{dictionaryType,jdbcType=VARCHAR}-->
+<!--        </if>-->
         <if test="companyCode != null and companyCode != '' ">
             and company_code = #{companyCode,jdbcType=VARCHAR}
         </if>

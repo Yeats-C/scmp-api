@@ -16,6 +16,18 @@ import lombok.Data;
 @ApiModel("入库单回调请求sku实体")
 public class InboundProductCallBackReqVo {
 
+//    @ApiModelProperty("sku编号")
+//    private String skuCode;
+//
+//    @ApiModelProperty("实际入库主数量")
+//    private Long praInboundMainNum;
+//
+//    @ApiModelProperty("实际含税进价")
+//    private Long praTaxPurchaseAmount;
+//
+//    @ApiModelProperty("行号")
+//    private Long linenum;
+
     @ApiModelProperty("入库单号")
     private String inboundOderCode;
 
@@ -51,4 +63,7 @@ public class InboundProductCallBackReqVo {
 
     @ApiModelProperty("行号")
     private Long linenum;
+
+    @ApiModelProperty("0商品 1赠品 2实物返回")
+    private int productType;
 }

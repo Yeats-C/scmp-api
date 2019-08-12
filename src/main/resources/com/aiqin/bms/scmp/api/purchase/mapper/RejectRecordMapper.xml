@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="reject_record_id" jdbcType="VARCHAR" property="rejectRecordId"/>
+        <result column="reject_record_code" jdbcType="VARCHAR" property="rejectRecordCode"/>
+        <result column="approval_code" jdbcType="VARCHAR" property="approvalCode"/>
+        <result column="duty_person" jdbcType="VARCHAR" property="dutyPerson"/>
+        <result column="contacts_person" jdbcType="VARCHAR" property="contactsPerson"/>
+        <result column="contacts_person_phone" jdbcType="VARCHAR" property="contactsPersonPhone"/>
+        <result column="province_id" jdbcType="VARCHAR" property="provinceId"/>
+        <result column="province_name" jdbcType="VARCHAR" property="provinceName"/>
+        <result column="city_id" jdbcType="VARCHAR" property="cityId"/>
+        <result column="city_name" jdbcType="VARCHAR" property="cityName"/>
+        <result column="district_id" jdbcType="VARCHAR" property="districtId"/>
+        <result column="district_name" jdbcType="VARCHAR" property="districtName"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="expect_time" jdbcType="TIMESTAMP" property="expectTime"/>
+        <result column="valid_day" jdbcType="TIMESTAMP" property="validDay"/>
+        <result column="dictionary_id" jdbcType="VARCHAR" property="dictionaryId"/>
+        <result column="dictionary_name" jdbcType="VARCHAR" property="dictionaryName"/>
+        <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode"/>
+        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
+        <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
+        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
+        <result column="reject_status" jdbcType="BIT" property="rejectStatus"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="transport_remark" jdbcType="VARCHAR" property="transportRemark"/>
+        <result column="transport_url" jdbcType="VARCHAR" property="transportUrl"/>
+        <result column="out_stock_time" jdbcType="TIMESTAMP" property="outStockTime"/>
+        <result column="product_count" jdbcType="INTEGER" property="productCount"/>
+        <result column="product_amount" jdbcType="BIGINT" property="productAmount"/>
+        <result column="single_count" jdbcType="INTEGER" property="singleCount"/>
+        <result column="gift_count" jdbcType="INTEGER" property="giftCount"/>
+        <result column="gift_amount" jdbcType="BIGINT" property="giftAmount"/>
+        <result column="return_count" jdbcType="INTEGER" property="returnCount"/>
+        <result column="return_amount" jdbcType="BIGINT" property="returnAmount"/>
+        <result column="untaxed_amount" jdbcType="BIGINT" property="untaxedAmount"/>
+        <result column="actual_product_count" jdbcType="INTEGER" property="actualProductCount"/>
+        <result column="actual_product_amount" jdbcType="BIGINT" property="actualProductAmount"/>
+        <result column="actual_single_count" jdbcType="INTEGER" property="actualSingleCount"/>
+        <result column="actual_gift_count" jdbcType="INTEGER" property="actualGiftCount"/>
+        <result column="actual_gift_amount" jdbcType="BIGINT" property="actualGiftAmount"/>
+        <result column="actual_return_count" jdbcType="INTEGER" property="actualReturnCount"/>
+        <result column="actual_return_amount" jdbcType="BIGINT" property="actualReturnAmount"/>
+        <result column="create_by_id" jdbcType="VARCHAR" property="createById"/>
+        <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
+        <result column="update_by_id" jdbcType="VARCHAR" property="updateById"/>
+        <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime"/>
+        <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime"/>
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
+        <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
+        <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+        <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+        <result column="score_code" jdbcType="VARCHAR" property="scoreCode" />
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, reject_record_id, reject_record_code, duty_person, contacts_person, contacts_person_phone,
+    province_id, province_name, city_id, city_name, district_id, district_name, address,
+    expect_time, valid_day, dictionary_id, dictionary_name, supplier_code, supplier_name,
+    purchase_group_code, purchase_group_name, reject_status, remark, transport_remark, transport_url,
+    out_stock_time, product_count, product_amount, single_count, gift_count,gift_amount, return_count,
+    return_amount, actual_product_count, actual_product_amount, actual_single_count, actual_gift_count,actual_gift_amount, actual_return_count,
+    actual_return_amount,create_by_id, create_by_name, update_by_id, update_by_name, create_time,
+    update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name,
+    company_name,company_code,untaxed_amount,score_code,approval_code,delivery_time,finish_time
+  </sql>
+    <sql id="LIST_QUERY">
+        <where>
+            purchase_group_code in
+            <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+                #{item.purchaseGroupCode,jdbcType=VARCHAR}
+            </foreach>
+            <if test="rejectRecordCode!=null and rejectRecordCode!=''">
+                and reject_record_code like concat( #{rejectRecordCode,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+                and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+            </if>
+            <if test="rejectStatus!=null ">
+                and reject_status = #{rejectStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="beginTime!=null  ">
+                and create_time <![CDATA[ >=]]>  #{beginTime,jdbcType=VARCHAR}
+            </if>
+            <if test="  finishTime!=null">
+                and create_time <![CDATA[ <=]]>  #{finishTime,jdbcType=VARCHAR}
+            </if>
+            <if test="transportCenterCode!=null ">
+                and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouseCode!=null ">
+                and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+            </if>
+            <if test="supplierCode!=null ">
+                and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from reject_record
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from reject_record
+        <include refid="LIST_QUERY"/>
+        order by create_time desc
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="listCount" resultType="java.lang.Integer">
+        select
+        count(1)
+        from reject_record
+        <include refid="LIST_QUERY"/>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from reject_record
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
+    insert into reject_record (reject_record_id, reject_record_code,approval_code,
+      duty_person, contacts_person, contacts_person_phone, 
+      province_id, province_name, city_id, 
+      city_name, district_id, district_name, 
+      address, expect_time, valid_day, 
+      dictionary_id, dictionary_name, supplier_code, 
+      supplier_name, purchase_group_code, purchase_group_name, 
+      remark, transport_remark,untaxed_amount,
+      out_stock_time, product_count, product_amount, 
+      single_count, gift_count,gift_amount, return_count,
+      return_amount, actual_product_count, actual_product_amount,
+      actual_single_count, actual_gift_count,actual_gift_amount, actual_return_count,
+      actual_return_amount, create_by_id, create_by_name, transport_center_code,
+      transport_center_name, warehouse_code, warehouse_name,company_name,company_code,
+      settlement_method_code,settlement_method_name,  create_time,  update_time, update_by_id, update_by_name)
+    values ( #{rejectRecordId,jdbcType=VARCHAR}, #{rejectRecordCode,jdbcType=VARCHAR}, #{approvalCode,jdbcType=VARCHAR},
+      #{dutyPerson,jdbcType=VARCHAR}, #{contactsPerson,jdbcType=VARCHAR}, #{contactsPersonPhone,jdbcType=VARCHAR}, 
+      #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=VARCHAR}, 
+      #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, #{districtName,jdbcType=VARCHAR}, 
+      #{address,jdbcType=VARCHAR}, #{expectTime,jdbcType=TIMESTAMP}, #{validDay,jdbcType=TIMESTAMP}, 
+      #{dictionaryId,jdbcType=VARCHAR}, #{dictionaryName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
+      #{supplierName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR},#{transportRemark,jdbcType=VARCHAR}, #{untaxedAmount,jdbcType=BIGINT},
+      #{outStockTime,jdbcType=TIMESTAMP}, #{productCount,jdbcType=INTEGER}, #{productAmount,jdbcType=BIGINT}, 
+      #{singleCount,jdbcType=INTEGER},#{giftCount,jdbcType=INTEGER}, #{giftAmount,jdbcType=BIGINT}, #{returnCount,jdbcType=INTEGER},
+      #{returnAmount,jdbcType=BIGINT},#{actualProductCount,jdbcType=INTEGER}, #{actualProductAmount,jdbcType=BIGINT},
+      #{actualSingleCount,jdbcType=INTEGER},#{actualGiftCount,jdbcType=INTEGER}, #{actualGiftAmount,jdbcType=BIGINT}, #{actualReturnCount,jdbcType=INTEGER},
+      #{actualReturnAmount,jdbcType=BIGINT}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
+      #{transportCenterCode,jdbcType=VARCHAR},#{transportCenterName,jdbcType=VARCHAR},
+      #{warehouseCode,jdbcType=VARCHAR},#{warehouseName,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
+      #{settlementMethodCode,jdbcType=VARCHAR},#{settlementMethodName,jdbcType=VARCHAR},
+       now(),now(),#{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
+        insert into reject_record
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="rejectRecordId != null">
+                reject_record_id,
+            </if>
+            <if test="rejectRecordCode != null">
+                reject_record_code,
+            </if>
+            <if test="dutyPerson != null">
+                duty_person,
+            </if>
+            <if test="contactsPerson != null">
+                contacts_person,
+            </if>
+            <if test="contactsPersonPhone != null">
+                contacts_person_phone,
+            </if>
+            <if test="provinceId != null">
+                province_id,
+            </if>
+            <if test="provinceName != null">
+                province_name,
+            </if>
+            <if test="cityId != null">
+                city_id,
+            </if>
+            <if test="cityName != null">
+                city_name,
+            </if>
+            <if test="districtId != null">
+                district_id,
+            </if>
+            <if test="districtName != null">
+                district_name,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="expectTime != null">
+                expect_time,
+            </if>
+            <if test="validDay != null">
+                valid_day,
+            </if>
+            <if test="dictionaryId != null">
+                dictionary_id,
+            </if>
+            <if test="dictionaryName != null">
+                dictionary_name,
+            </if>
+            <if test="supplierCode != null">
+                supplier_code,
+            </if>
+            <if test="supplierName != null">
+                supplier_name,
+            </if>
+            <if test="purchaseGroupCode != null">
+                purchase_group_code,
+            </if>
+            <if test="purchaseGroupName != null">
+                purchase_group_name,
+            </if>
+            <if test="rejectStatus != null">
+                reject_status,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="transportRemark != null">
+                transport_remark,
+            </if>
+            <if test="outStockTime != null">
+                out_stock_time,
+            </if>
+            <if test="productCount != null">
+                product_count,
+            </if>
+            <if test="productAmount != null">
+                product_amount,
+            </if>
+            <if test="singleCount != null">
+                single_count,
+            </if>
+            <if test="giftAmount != null">
+                gift_amount,
+            </if>
+            <if test="returnCount != null">
+                return_count,
+            </if>
+            <if test="returnAmount != null">
+                return_amount,
+            </if>
+            <if test="createById != null">
+                create_by_id,
+            </if>
+            <if test="createByName != null">
+                create_by_name,
+            </if>
+            <if test="createById != null">
+                update_by_id,
+            </if>
+            <if test="createByName != null">
+                update_by_name,
+            </if>
+                create_time,
+                update_time
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="rejectRecordId != null">
+                #{rejectRecordId,jdbcType=VARCHAR},
+            </if>
+            <if test="rejectRecordCode != null">
+                #{rejectRecordCode,jdbcType=VARCHAR},
+            </if>
+            <if test="dutyPerson != null">
+                #{dutyPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="contactsPerson != null">
+                #{contactsPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="contactsPersonPhone != null">
+                #{contactsPersonPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="provinceId != null">
+                #{provinceId,jdbcType=VARCHAR},
+            </if>
+            <if test="provinceName != null">
+                #{provinceName,jdbcType=VARCHAR},
+            </if>
+            <if test="cityId != null">
+                #{cityId,jdbcType=VARCHAR},
+            </if>
+            <if test="cityName != null">
+                #{cityName,jdbcType=VARCHAR},
+            </if>
+            <if test="districtId != null">
+                #{districtId,jdbcType=VARCHAR},
+            </if>
+            <if test="districtName != null">
+                #{districtName,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="expectTime != null">
+                #{expectTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="validDay != null">
+                #{validDay,jdbcType=TIMESTAMP},
+            </if>
+            <if test="dictionaryId != null">
+                #{dictionaryId,jdbcType=VARCHAR},
+            </if>
+            <if test="dictionaryName != null">
+                #{dictionaryName,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierCode != null">
+                #{supplierCode,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierName != null">
+                #{supplierName,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseGroupCode != null">
+                #{purchaseGroupCode,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseGroupName != null">
+                #{purchaseGroupName,jdbcType=VARCHAR},
+            </if>
+            <if test="rejectStatus != null">
+                #{rejectStatus,jdbcType=BIT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="transportRemark != null">
+                #{transportRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="outStockTime != null">
+                #{outStockTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="productCount != null">
+                #{productCount,jdbcType=INTEGER},
+            </if>
+            <if test="productAmount != null">
+                #{productAmount,jdbcType=BIGINT},
+            </if>
+            <if test="singleCount != null">
+                #{singleCount,jdbcType=INTEGER},
+            </if>
+            <if test="giftAmount != null">
+                #{giftAmount,jdbcType=BIGINT},
+            </if>
+            <if test="returnCount != null">
+                #{returnCount,jdbcType=INTEGER},
+            </if>
+            <if test="returnAmount != null">
+                #{returnAmount,jdbcType=BIGINT},
+            </if>
+            <if test="createById != null">
+                #{createById,jdbcType=VARCHAR},
+            </if>
+            <if test="createByName != null">
+                #{createByName,jdbcType=VARCHAR},
+            </if>
+            <if test="createById != null">
+                #{createById,jdbcType=VARCHAR},
+            </if>
+            <if test="createByName != null">
+                #{createByName,jdbcType=VARCHAR},
+            </if>
+             now(),now()
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
+        update reject_record
+        <set>
+            <if test="rejectRecordId != null">
+                reject_record_id = #{rejectRecordId,jdbcType=VARCHAR},
+            </if>
+            <if test="rejectRecordCode != null">
+                reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR},
+            </if>
+            <if test="dutyPerson != null">
+                duty_person = #{dutyPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="contactsPerson != null">
+                contacts_person = #{contactsPerson,jdbcType=VARCHAR},
+            </if>
+            <if test="contactsPersonPhone != null">
+                contacts_person_phone = #{contactsPersonPhone,jdbcType=VARCHAR},
+            </if>
+            <if test="provinceId != null">
+                province_id = #{provinceId,jdbcType=VARCHAR},
+            </if>
+            <if test="provinceName != null">
+                province_name = #{provinceName,jdbcType=VARCHAR},
+            </if>
+            <if test="cityId != null">
+                city_id = #{cityId,jdbcType=VARCHAR},
+            </if>
+            <if test="cityName != null">
+                city_name = #{cityName,jdbcType=VARCHAR},
+            </if>
+            <if test="districtId != null">
+                district_id = #{districtId,jdbcType=VARCHAR},
+            </if>
+            <if test="districtName != null">
+                district_name = #{districtName,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="expectTime != null">
+                expect_time = #{expectTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="validDay != null">
+                valid_day = #{validDay,jdbcType=TIMESTAMP},
+            </if>
+            <if test="dictionaryId != null">
+                dictionary_id = #{dictionaryId,jdbcType=VARCHAR},
+            </if>
+            <if test="dictionaryName != null">
+                dictionary_name = #{dictionaryName,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierCode != null">
+                supplier_code = #{supplierCode,jdbcType=VARCHAR},
+            </if>
+            <if test="supplierName != null">
+                supplier_name = #{supplierName,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseGroupCode != null">
+                purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+            </if>
+            <if test="purchaseGroupName != null">
+                purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+            </if>
+            <if test="rejectStatus != null">
+                reject_status = #{rejectStatus,jdbcType=BIT},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="transportRemark != null">
+                transport_remark = #{transportRemark,jdbcType=VARCHAR},
+            </if>
+            <if test="outStockTime != null">
+                out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="productCount != null">
+                product_count = #{productCount,jdbcType=INTEGER},
+            </if>
+            <if test="productAmount != null">
+                product_amount = #{productAmount,jdbcType=BIGINT},
+            </if>
+            <if test="singleCount != null">
+                single_count = #{singleCount,jdbcType=INTEGER},
+            </if>
+            <if test="giftAmount != null">
+                gift_amount = #{giftAmount,jdbcType=BIGINT},
+            </if>
+            <if test="returnCount != null">
+                return_count = #{returnCount,jdbcType=INTEGER},
+            </if>
+            <if test="returnAmount != null">
+                return_amount = #{returnAmount,jdbcType=BIGINT},
+            </if>
+            <if test="createById != null">
+                create_by_id = #{createById,jdbcType=VARCHAR},
+            </if>
+            <if test="createByName != null">
+                create_by_name = #{createByName,jdbcType=VARCHAR},
+            </if>
+            <if test="updateById != null">
+                update_by_id = #{updateById,jdbcType=VARCHAR},
+            </if>
+            <if test="updateByName != null">
+                update_by_name = #{updateByName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateStatus" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
+        update reject_record
+        set
+        reject_status = #{rejectStatus,jdbcType=BIT},
+        <if test="provinceId != null">
+            province_id = #{provinceId,jdbcType=VARCHAR},
+        </if>
+        <if test="provinceName != null">
+            province_name = #{provinceName,jdbcType=VARCHAR},
+        </if>
+        <if test="cityId != null">
+            city_id = #{cityId,jdbcType=VARCHAR},
+        </if>
+        <if test="cityName != null">
+            city_name = #{cityName,jdbcType=VARCHAR},
+        </if>
+        <if test="districtId != null">
+            district_id = #{districtId,jdbcType=VARCHAR},
+        </if>
+        <if test="districtName != null">
+            district_name = #{districtName,jdbcType=VARCHAR},
+        </if>
+        <if test="address != null">
+            address = #{address,jdbcType=VARCHAR},
+        </if>
+        <if test="contactsPersonPhone != null">
+            contacts_person_phone = #{contactsPersonPhone,jdbcType=VARCHAR},
+        </if>
+        <if test="contactsPerson != null">
+            contacts_person = #{contactsPerson,jdbcType=VARCHAR},
+        </if>
+        <if test="transportRemark != null">
+            transport_remark = #{transportRemark,jdbcType=VARCHAR},
+        </if>
+        <if test="transportUrl != null">
+            transport_url = #{transportUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="outStockTime != null">
+            out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="updateById != null">
+            update_by_id = #{updateById,jdbcType=VARCHAR},
+        </if>
+        <if test="updateByName != null">
+            update_by_name = #{updateByName,jdbcType=VARCHAR},
+        </if>
+        <if test="actualProductCount != null">
+            actual_product_count = #{actualProductCount,jdbcType=INTEGER},
+        </if>
+        <if test="actualProductAmount != null">
+            actual_product_amount = #{actualProductAmount,jdbcType=BIGINT},
+        </if>
+        <if test="actualGiftCount != null">
+            actual_gift_count = #{actualGiftCount,jdbcType=INTEGER},
+        </if>
+        <if test="actualGiftAmount != null">
+            actual_gift_amount = #{actualGiftAmount,jdbcType=BIGINT},
+        </if>
+        <if test="actualReturnCount != null">
+            actual_return_count = #{actualReturnCount,jdbcType=INTEGER},
+        </if>
+        <if test="actualReturnAmount != null">
+            actual_return_amount = #{actualReturnAmount,jdbcType=BIGINT},
+        </if>
+        <if test="actualSingleCount != null">
+            actual_single_count = #{actualSingleCount,jdbcType=INTEGER},
+        </if>
+        <if test="scoreCode != null">
+            score_code = #{scoreCode,jdbcType=VARCHAR},
+        </if>
+        <if test="deliveryTime != null">
+            delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="finishTime != null">
+            finish_time = #{finishTime,jdbcType=TIMESTAMP},
+        </if>
+        update_time =now()
+        <where>
+            <if test="rejectRecordId!=null">
+               and reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
+            </if>
+            <if test="rejectRecordCode!=null">
+                and reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+            </if>
+        </where>
+
+
+    </update>
+    <select id="selectByRejectId" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        reject_record
+        where
+           reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByRejectCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        reject_record
+        where
+        reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+    </select>
+</mapper>

@@ -1,467 +1,723 @@
 server:
-    port: 80
+  port: 80
 spring:
-    profiles:
-        active: ${profile.name}
-    resources:
-        chain:
-            strategy:
-                content:
-                    enabled: true
-                    paths: /**
-    swagger:
-        enabled: true
-        title: SUPPLIER-API
-        description: 熙耘供应链系统的API文档
-        version: 1.0.0
-        contact:
-            name: liuxiaohan
-        base-package: com.aiqin.mgs.scmp.api.web
-    servlet:
-        multipart:
-            max-file-size: 2MB
-            max-request-size: 20MB
-mybatis-plus:
-    mapper-locations: com.aiqin.bms.scmp.api.*.dao/*.xml,com.aiqin.bms.scmp.api.*.mapper/*.xml
-    #实体扫描，多个package用逗号或者分号分隔
-    type-aliases-package: com.aiqin.mgs.scmp.api.*.domain
-    configuration:
-        call-setters-on-nulls: true
+  profiles:
+    active: ${profile.name}
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /**
+  swagger:
+    enabled: true
+    title: SUPPLIER-API
+    description: 熙耘供应链系统的API文档
+    version: 1.0.0
+    contact:
+      name: liuxiaohan
+    base-package: com.aiqin.bms.scmp.api.webSwagger2Config
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+control:
+  url:
+   # 角色列表
+    role-list: http://control.api.aiqin.com/role/list
+    # 角色绑定
+    role-add: http://control.api.aiqin.com/person/account/role
+   # 主控增加人员等接口
+    account: http://control.api.aiqin.com/external/account
+mybatis:
+  mapper-locations: classpath*:/com/aiqin/bms/scmp/api/*/dao/*.xml,classpath*:/com/aiqin/bms/scmp/api/*/mapper/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  type-aliases-package: com.aiqin.bms.scmp.api.*.domain
+  configuration:
+    call-setters-on-nulls: true
 logging:
-    config: classpath:logback.xml
-    level:
-        io.swagger.models.parameters.AbstractSerializableParameter: error
+  config: classpath:logback.xml
+  level:
+    io.swagger.models.parameters.AbstractSerializableParameter: error
 image:
   upload:
     path: D:\\images\\
+activiti:
+  host: http://flows.aiqin.com
 marker:
   info:
     url: http://market.api.aiqin.com/
-Visit:
-    #url: http://product.api.aiqin.com
-    url: http://127.0.0.1:9021
 Central:
-    url: http://control.api.aiqin.com
-Purchase:
-    #本地启动调用商品的地址
-    #url: http://127.0.0.1:9022
-    url: http://purchase.api.aiqin.com
+  url: http://control.api.aiqin.com
 Store:
   url: http://store.api.aiqin.com
 Workflow:
-    url: http://finance.bms.aiqin.com/tpm/workflowcontroller/submit
-    #  url: http://172.20.10.4/tpm/workflowcontroller/submit
-    cancelUrl: http://finance.bms.aiqin.com/tpm/workflowcontroller/cancel
+  url: http://finance.bms.aiqin.com/tpm/workflowcontroller/submit
+  cancelUrl: http://finance.bms.aiqin.com/tpm/workflowcontroller/cancel
 #审批流的前缀url地址
 WorkFlowBaseUrl:
-    #回调url
-    callBackBaseUrl: http://scmp.api.aiqin.com/scmp/workFlowCallBack/
-    #各个页面详情url
-    supplierUrl:
-        #合同申请详情
-        applyContract: http://scm.bms.aiqin.com/#/Supplier/ContractAppDetails/
-        #供应商申请详情
-        applySupplier: http://scm.bms.aiqin.com/#/Supplier/SupplierDetails/
-        #供应商集团申请详情
-        applySupplierGroup: http://scm.bms.aiqin.com/#/Supplier/SupplierGroupDetails/
-        #供应商账户申请详情
-        applySupplierAccount: http://scm.bms.aiqin.com/#/Supplier/SupplierAccountDetails/
-        #制造商申请详情
-        applyManu: http://scm.bms.aiqin.com/#/Supplier/ManuApplieDetail/
-        #采购申请详情
-        applyPurchase: http://scm.bms.aiqin.com/#/Supplier/PurchaseDetails/
-        #退供申请详情
-        applyRefund: http://scm.bms.aiqin.com/#/Supplier/RefundDetails/
-        #调拨申请详情
-        applyAllocattion: http://scm.bms.aiqin.com/#/Supplier/AllocattionDetail/
-        #商品申请详情
-        applyGoods: http://scm.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail/
-        #商品配置申请详情
-        applyGoodsConfig: http://scm.bms.aiqin.com/#/Supplier/DetailsAppConfiguration/
-        #商品价格申请详情
-        applyGoodsPrice:
-    productUrl:
-      #/Supplier/IntendingDetails?variablePriceName=促销活动&priceTypeCode=1&variablePriceCode=10001
-      variablePrice: http://scm.bms.aiqin.com/#/Supplier/IntendingDetails
-      applySku: http://scm.bms.aiqin.com/#/Supplier/GoodsApplyManageDetail
-      applySkuConfig: http://scm.bms.aiqin.com/#/Supplier/DetailsConfiguration
-      #销售区域
-      applySaleArea: http://scm.bms.aiqin.com/#/Supplier/DetailsConfiguration
-      #调拨申请详情
-      applyAllocattion: http://scm.bms.aiqin.com/#/Supplier/AllocattionDetail/
-      #移库查看详情
-      movement: http://scm.bms.aiqin.com/#/Supplier/MoveWareHouseDetail
+  #回调url
+  callBackBaseUrl: http://scmp.api.aiqin.com/workFlow/workFlowCallBack/
+  #各个页面详情url
+  supplierUrl:
+    #合同申请详情
+    applyContract: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
+    #供应商申请详情
+    applySupplier: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
+    #供应商集团申请详情
+    applySupplierGroup: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
+    #供应商账户申请详情
+    applySupplierAccount: http://scmp.bms.aiqin.com/#/supplier/detailSupplierApprovalProcess
+  productUrl:
+    #变价
+    variablePrice: http://scmp.bms.aiqin.com/#/price/detailIntending
+    #sku
+    applySku: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
+    #sku配置
+    applySkuConfig: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
+    #销售区域
+    applySaleArea: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
+    #调拨申请详情
+    applyAllocattion: http://scmp.bms.aiqin.com/#/store/detailTransfer
+    #移库查看详情
+    movement: http://scmp.bms.aiqin.com/#/store/detailMove
+    #报废
+    scrap: http://scmp.bms.aiqin.com/#/store/detailScrap
+  purchaseUrl:
+    #采购申请详情
+    applyPurchase: http://scmp.bms.aiqin.com/#/purchase/detailPurchase
+    #退供申请详情
+    applyRefund: http://scmp.bms.aiqin.com/#/purchase/returnDetail
 #审批流的host
 WorkFlowBaseHost:
-    supplierHost: http://scm.bms.aiqin.com
+  supplierHost: http://scmp.bms.aiqin.com
 #不拦截的公参
 BaseParam:
-    authority: authority=0
+  authority: authority=0
 WMS:
   url: http://39.96.81.67:9003
 order:
   info:
     url: http://order.api.aiqin.com/
 mgs:
-    control:
-        system-code: scmp-system
-        center: http://control.api.aiqin.com/system/plan
-        resources:
-        - code: SUP001
-          name: 基础资料管理
-          link: ''
-          icon: icon-scm-ziliao
-          resources:
-          - code: SUP001001
-            name: 字典管理
-            link: '/Supplier/TheDictionary'
-            icon: fa-home
-            methods:
-            - code: SUP001001001
-              name: 查询
-            - code: SUP001001002
-              name: 增加
-          - code: SUP001002
-            name: 采购组管理
-            link: '/Supplier/PurchasingGroup'
-            icon: fa-home
-            methods:
-            - code: SUP001002001
-              name: 查询
-            - code: SUP001002002
-              name: 增加
-          - code: SUP001003
-            name: 仓库管理
-            link: '/Supplier/BasedLogistics'
-            icon: fa-home
-            methods:
-            - code: SUP001003001
-              name: 查询
-            - code: SUP001003002
-              name: 增加
-          - code: SUP001004
-            name: 库房管理
-            link: '/Supplier/BasedWarehouse'
-            icon: fa-home
-            methods:
-            - code: SUP001004001
-              name: 查询
-            - code: SUP001004002
-              name: 增加
-          - code: SUP001005
-            name: 价格项目管理
-            link: '/Supplier/PriceProject'
-            icon: fa-home
-            methods:
-            - code: SUP001005001
-              name: 查询
-            - code: SUP001005002
-              name: 增加
-          - code: SUP001006
-            name: 渠道管理
-            link: '/Supplier/ChannelManagement'
-            icon: fa-home
-            methods:
-            - code: SUP001006001
-              name: 查询
-            - code: SUP001006002
-              name: 增加
-          - code: SUP001007
-            name: 标签管理
-            link: '/Supplier/LabelManagement'
-            icon: fa-home
-            methods:
-            - code: SUP001007001
-              name: 查询
-            - code: SUP001007002
-              name: 增加
-        - code: SUP003
-          name: 供应商管理
-          link: ''
-          icon: icon-scm-scmp
-          resources:
-          - code: SUP003001
-            name: 供应商管理
-            link: '/Supplier/SupManage'
-            icon: fa-home
-            methods:
-            - code: SUP003001001
-              name: 查询
-            - code: SUP003001002
-              name: 增加
-          - code: SUP003002
-            name: 供应商集团管理
-            link: '/Supplier/SupplierGroupManagement'
-            icon: fa-home
-            methods:
-            - code: SUP003002001
-              name: 查询
-          - code: SUP003003
-            name: 账户管理
-            link: '/Supplier/SupUnitAccountManage'
-            icon: fa-home
-            methods:
-            - code: SUP003003001
-              name: 查询
-            - code: SUP003003002
-              name: 增加
-          - code: SUP003004
-            name: 供应商申请管理
-            link: '/Supplier/SupApplicationManage'
-            icon: fa-home
-            methods:
-            - code: SUP003004001
-              name: 查询
-          - code: SUP003007
-            name: 合同管理
-            link: '/Supplier/ContractManage'
-            icon: fa-home
-            methods:
-            - code: SUP003007001
-              name: 查询
-            - code: SUP003007002
-              name: 增加
-          - code: SUP003009
-            name: 制造商管理
-            link: '/Supplier/SupManuManage'
-            icon: fa-home
-            methods:
-            - code: SUP003009001
-              name: 查询
-            - code: SUP003009002
-              name: 增加
-        - code: SUP002
-          name: 商品管理
-          link: ''
-          icon: icon-scm-shangpin
-          resources:
-          - code: SUP002001
-            name: 品类管理
-            link: '/Supplier/Category'
-            icon: fa-home
-            methods:
-            - code: SUP002001001
-              name: 新增
-            - code: SUP002001002
-              name: 显示启用
-            - code: SUP002001003
-              name: 显示全部
-          - code: SUP002002
-            name: 品牌管理
-            link: '/Supplier/Brand'
-            icon: fa-home
-            methods:
-            - code: SUP002002001
-              name: 查询
-            - code: SUP002002002
-              name: 增加
-          - code: SUP002003
-            name: 商品管理
-            link: '/Supplier/CommodityManagement'
-            icon: fa-home
-            methods:
-            - code: SUP002003001
-              name: 查询
-            - code: SUP002003002
-              name: 增加
-          - code: SUP002004
-            name: SKU管理
-            link: '/Supplier/SkuManagement'
-            icon: fa-home
-            methods:
-            - code: SUP002004001
-              name: 查询
-            - code: SUP002004002
-              name: 增加
-          - code: SUP002005
-            name: 商品申请管理
-            link: '/Supplier/GoodsApplyManage'
-            icon: fa-home
-            methods:
-            - code: SUP002005001
-              name: 查询
-            - code: SUP002005002
-              name: 增加
-          - code: SUP002006
-            name: 商品配置管理
-            link: '/Supplier/GoodsConfiguration'
-            icon: fa-home
-            methods:
-            - code: SUP002006001
-              name: 查询
-            - code: SUP002006002
-              name: 增加
-          - code: SUP002007
-            name: 商品配置申请管理
-            link: '/Supplier/GoodsConfigurationApp'
-            icon: fa-home
-            methods:
-            - code: SUP002007001
-              name: 查询
-        - code: SUP007
-          name: 价格管理
-          link: ''
-          icon: icon-scm-price1
-          resources:
-          - code: SUP007001
-            name: 价格管理
-            link: '/Supplier/PriceManagement'
-            icon: fa-home
-            methods:
-            - code: SUP007001001
-              name: 查询
-          - code: SUP007002
-            name: 变价管理
-            link: '/Supplier/IntendingManagement'
-            icon: fa-home
-            methods:
-            - code: SUP007001001
-              name: 查询
-            - code: SUP007001002
-              name: 增加
-        - code: SUP004
-          name: 库存管理
-          link: ''
-          icon: icon-scm-kucun
-          resources:
-          - code: SUP004001
-            name: 总库存管理
-            link: '/Supplier/InvGeneralManage'
-            icon: fa-home
-            methods:
-            - code: SUP004001001
-              name: 查询
-          - code: SUP004002
-            name: 物流中心库存管理
-            link: '/Supplier/InvDistributeCenterManage'
-            icon: fa-home
-            methods:
-            - code: SUP004002001
-              name: 查询
-          - code: SUP004003
-            name: 库房库存管理
-            link: '/Supplier/InvWarehouseManage'
-            icon: fa-home
-            methods:
-            - code: SUP004003001
-              name: 查询
-        - code: SUP005
-          name: 采购管理
-          link: ''
-          icon: icon-scm-caigou
-          resources:
-          - code: SUP005003
-            name: 采购商品
-            link: '/Supplier/PurchasingGoods'
-            icon: fa-home
-            methods:
-            - code: SUP005003001
-              name: 查询
-          - code: SUP005004
-            name: 采购申请
-            link: '/Supplier/PurchasingApply'
-            icon: fa-home
-            methods:
-            - code: SUP005004001
-              name: 查询
-            - code: SUP005004002
-              name: 采购对比
-            - code: SUP005004003
-              name: 申请采购
-          - code: SUP005001
-            name: 采购管理
-            link: '/Supplier/PurchasingSupplyManagement'
-            icon: fa-home
-            methods:
-            - code: SUP005001001
-              name: 查询
-            - code: SUP005001002
-              name: 增加
-          - code: SUP005002
-            name: 退供管理
-            link: '/Supplier/RefundManagement'
-            icon: fa-home
-            methods:
-            - code: SUP005002001
-              name: 查询
-            - code: SUP005002002
-              name: 增加
-        - code: SUP006
-          name: 销售管理
-          link: ''
-          icon: icon-scm-xiaoshou
-          resources:
-          - code: SUP006001
-            name: 订单管理
-            link: '/Supplier/OrderManage'
-            icon: fa-home
-            methods:
-            - code: SUP006001001
-              name: 查询
-          - code: SUP006002
-            name: 退货管理
-            link: '/Supplier/RefundGoodsManage'
-            icon: fa-home
-            methods:
-            - code: SUP006002001
-              name: 查询
-        - code: SUP008
-          name: 库房管理
-          link: ''
-          icon: icon-scm-kufang
-          resources:
-          - code: SUP008001
-            name: 入库管理
-            link: '/Supplier/StoreManageIn'
-            icon: fa-home
-            methods:
-            - code: SUP008001001
-              name: 查询
-          - code: SUP008002
-            name: 出库管理
-            link: '/Supplier/StoreManageOut'
-            icon: fa-home
-            methods:
-            - code: SUP008002001
-              name: 查询
-          - code: SUP008003
-            name: 调拨管理
-            link: '/Supplier/AllocattionManage'
-            icon: fa-home
-            methods:
-            - code: SUP005003001
-              name: 查询
-            - code: SUP005003002
-              name: 增加
-          - code: SUP008004
-            name: 移库管理
-            link: '/Supplier/MoveLibraryManage'
-            icon: fa-home
-            methods:
-            - code: SUP005004001
-              name: 查询
-            - code: SUP005005002
-              name: 增加
-        - code: SUP009
-          name: 运输管理
-          link: ''
-          icon: icon-scm-kufang
-          resources:
-          - code: SUP009001
-            name: 发运管理
-            link: '/Supplier/ShipManagement'
-            icon: fa-home
-            methods:
-            - code: SUP009001001
-              name: 查询
-            - code: SUP009001002
-              name: 新增
-          - code: SUP009002
-            name: 运输管理
-            link: '/Supplier/TransportationManagement'
-            icon: fa-home
-            methods:
-            - code: SUP009002001
-              name: 查询
-            - code: SUP009002002
-              name: 新增
+  control:
+    system-code: scmp-system
+    center: http://control.api.aiqin.com/system/plan
+    resources:
+    - code: SCMP001
+      name: 审批管理
+      link: '/approve/list'
+      icon: icon-aq-shenpi
+    - code: SCMP002
+      name: 基础资料管理
+      link: ''
+      icon: icon-aq-jichuziliao
+      resources:
+      - code: SCMP002001
+        name: 字典管理
+        link: '/basicData/dictionary'
+        icon: fa-home
+      - code: SCMP002002
+        name: 采购组管理
+        link: '/basicData/purchasingGroup'
+        icon: fa-home
+      - code: SCMP002003
+        name: 仓库管理
+        link: '/basicData/store'
+        icon: fa-home
+      - code: SCMP002004
+        name: 库房管理
+        link: '/basicData/warehouse'
+        icon: fa-home
+      - code: SCMP002005
+        name: 价格项目管理
+        link: '/basicData/priceProject'
+        icon: fa-home
+      - code: SCMP002006
+        name: 渠道管理
+        link: '/basicData/channel'
+        icon: fa-home
+      - code: SCMP002007
+        name: 标签管理
+        link: '/basicData/label'
+        icon: fa-home
+      - code: SCMP002008
+        name: 规则管理
+        link: '/basicData/rules'
+        icon: fa-home
+      - code: SCMP002009
+        name: 促销SKU管理
+        link: '/basicData/promoteSku'
+        icon: fa-home
+    - code: SCMP003
+      name: 供应商管理
+      link: ''
+      icon: icon-aq-gongyingshang
+      resources:
+      - code: SCMP003001
+        name: 供应商集团管理
+        link: '/supplier/supplierGroup'
+        icon: fa-home
+      - code: SCMP003002
+        name: 供应商管理
+        link: '/supplier/supplier'
+        icon: fa-home
+      - code: SCMP003003
+        name: 供应商合同管理
+        link: '/supplier/contract'
+        icon: fa-home
+      - code: SCMP003004
+        name: 供应商结算账户管理
+        link: '/supplier/account'
+        icon: fa-home
+      - code: SCMP003005
+        name: 供应商账号管理
+        link: '/basicData/accountList'
+        icon: fa-home
+      - code: SCMP003006
+        name: 供应商评分管理
+        link: '/supplier/rate'
+        icon: fa-home
+      - code: SCMP003007
+        name: 制造商管理
+        link: '/supplier/manufacturer'
+        icon: fa-home
+    - code: SCMP004
+      name: 商品管理
+      link: ''
+      icon: icon-aq-shangping
+      resources:
+      - code: SCMP004001
+        name: 品类管理
+        link: '/product/category'
+        icon: fa-home
+      - code: SCMP004002
+        name: 品牌管理
+        link: '/product/brand'
+        icon: fa-home
+      - code: SCMP004003
+        name: SPU管理
+        link: '/product/spu'
+        icon: fa-home
+      - code: SCMP004004
+        name: SKU管理
+        link: '/product/sku'
+        icon: fa-home
+      - code: SCMP004005
+        name: 销售区域配置
+        link: '/product/saleArea'
+        icon: fa-home
+      - code: SCMP004006
+        name: 商品销售区域配置
+        link: '/product/productSaleArea'
+        icon: fa-home
+      - code: SCMP004007
+        name: 配置信息管理
+        link: '/product/productConfig'
+        icon: fa-home
+      - code: SCMP004008
+        name: 质检报告管理
+        link: '/product/qualityReport'
+        icon: fa-home
+    - code: SCMP005
+      name: 价格管理
+      link: ''
+      icon: icon-aq-jiage
+      resources:
+      - code: SCMP005001
+        name: 价格查询
+        link: '/price/price'
+        icon: fa-home
+    - code: SCMP006
+      name: 采购管理
+      link: ''
+      icon: icon-aq-caigou
+      resources:
+      - code: SCMP006001
+        name: 采购申请单管理
+        link: '/purchase/applyOrder'
+        icon: fa-home
+      - code: SCMP006002
+        name: 采购单管理
+        link: '/purchase/purchase'
+        icon: fa-home
+      - code: SCMP006003
+        name: 退供申请单管理
+        link: '/purchase/refundApply'
+        icon: fa-home
+      - code: SCMP006004
+        name: 退供单管理
+        link: '/purchase/refund'
+        icon: fa-home
+    - code: SCMP007
+      name: 销售管理
+      link: ''
+      icon: icon-aq-xiaoshou
+      resources:
+      - code: SCMP007001
+        name: 订单管理
+        link: '/sale/order'
+        icon: fa-home
+      - code: SCMP007002
+        name: 辅采订单管理
+        link: '/sale/auxiliaryOrder'
+        icon: fa-home
+      - code: SCMP007003
+        name: 直送订单管理
+        link: '/sale/directOrder'
+        icon: fa-home
+      - code: SCMP007004
+        name: 订单商品查询
+        link: '/sale/orderProduct'
+        icon: fa-home
+      - code: SCMP007005
+        name: 商品唯一码查询
+        link: '/sale/uniqueCode'
+        icon: fa-home
+      - code: SCMP007006
+        name: 退货管理
+        link: '/sale/return'
+        icon: fa-home
+      - code: SCMP007007
+        name: 直送退货管理
+        link: '/sale/directReturn'
+        icon: fa-home
+      - code: SCMP007008
+        name: 退货验货
+        link: '/sale/returnInspection'
+        icon: fa-home
+    - code: SCMP008
+      name: 库存管理
+      link: ''
+      icon: icon-aq-kucun
+      resources:
+      - code: SCMP008001
+        name: 中央库存管理
+        link: '/inventory/totalInventory'
+        icon: fa-home
+      - code: SCMP008002
+        name: 仓库库存管理
+        link: '/inventory/logisticsInventory'
+        icon: fa-home
+      - code: SCMP008003
+        name: 库房库存管理
+        link: '/inventory/warehouseInventory'
+        icon: fa-home
+      - code: SCMP008004
+        name: 批次库存管理
+        link: '/inventory/batchInventory'
+        icon: fa-home
+    - code: SCMP009
+      name: 库房管理
+      link: ''
+      icon: icon-aq-kufang
+      resources:
+      - code: SCMP009001
+        name: 入库管理
+        link: '/store/inStore'
+        icon: fa-home
+      - code: SCMP009002
+        name: 出库管理
+        link: '/store/outStore'
+        icon: fa-home
+      - code: SCMP009003
+        name: 调拨管理
+        link: '/store/transfer'
+        icon: fa-home
+      - code: SCMP009004
+        name: 移库管理
+        link: '/store/move'
+        icon: fa-home
+      - code: SCMP009005
+        name: 报废管理
+        link: '/store/scrap'
+        icon: fa-home
+      - code: SCMP009006
+        name: 损益管理
+        link: '/store/profitLoss'
+        icon: fa-home
+      - code: SCMP009007
+        name: 供应商到货预约
+        link: '/store/reservation'
+        icon: fa-home
+      - code: SCMP009008
+        name: 监管仓开单
+        link: '/store/superviseOpen'
+        icon: fa-home
+    - code: SCMP010
+      name: 运输管理
+      link: ''
+      icon: icon-aq-yunshu
+      resources:
+      - code: SCMP010001
+        name: 发运管理
+        link: '/transport/shipment'
+        icon: fa-home
+      - code: SCMP010002
+        name: 运输管理
+        link: '/transport/transport'
+        icon: fa-home
+    - code: SCMP011
+      name: 分析报表
+      link: ''
+      icon: icon-aq-fenxi
+      resources:
+      - code: SCMP011001
+        name: 销售分析
+        link: '/analysis/sale'
+        icon: fa-home
+    - code: SCMP012
+      name: 统计报表
+      link: ''
+      icon: icon-aq-tongji
+      resources:
+      - code: SCMP012001
+        name: 供应商到货率统计-品采
+        link: '/statistics/supplierArrival/BPDept'
+        icon: fa-home
+      - code: SCMP012002
+        name: 供应商到货率统计-辅采
+        link: '/statistics/supplierArrival/APDept'
+        icon: fa-home
+      - code: SCMP012003
+        name: 供应商到货率统计-服纺
+        link: '/statistics/supplierArrival/CTDept'
+        icon: fa-home
+      - code: SCMP012004
+        name: 供应商到货率统计-鞋品
+        link: '/statistics/supplierArrival/FBDept'
+        icon: fa-home
+      - code: SCMP012005
+        name: 供应商到货率统计-自主品牌
+        link: '/statistics/supplierArrival/PBDept'
+        icon: fa-home
+      - code: SCMP012006
+        name: 退供率统计-品采
+        link: '/statistics/supplierReturn/BPDept'
+        icon: fa-home
+      - code: SCMP012007
+        name: 退供率统计-辅采
+        link: '/statistics/supplierReturn/APDept'
+        icon: fa-home
+      - code: SCMP012008
+        name: 退供率统计-服纺
+        link: '/statistics/supplierReturn/CTDept'
+        icon: fa-home
+      - code: SCMP012009
+        name: 退供率统计-鞋品
+        link: '/statistics/supplierReturn/FBDept'
+        icon: fa-home
+      - code: SCMP012010
+        name: 退供率统计-自主品牌
+        link: '/statistics/supplierReturn/PBDept'
+        icon: fa-home
+      - code: SCMP012011
+        name: 新品动销率统计-公司
+        link: '/statistics/newGoodsInvoicing'
+        icon: fa-home
+      - code: SCMP012012
+        name: 新品动销率统计-品采
+        link: '/statistics/newGoodsInvoicing/BPDept'
+        icon: fa-home
+      - code: SCMP012013
+        name: 新品动销率统计-辅采
+        link: '/statistics/newGoodsInvoicing/APDept'
+        icon: fa-home
+      - code: SCMP012014
+        name: 新品动销率统计-服纺
+        link: '/statistics/newGoodsInvoicing/CTDept'
+        icon: fa-home
+      - code: SCMP012015
+        name: 新品动销率统计-鞋品
+        link: '/statistics/newGoodsInvoicing/FBDept'
+        icon: fa-home
+      - code: SCMP012016
+        name: 新品动销率统计-自主品牌
+        link: '/statistics/newGoodsInvoicing/PBDept'
+        icon: fa-home
+      - code: SCMP012017
+        name: 门店复购率统计-公司
+        link: '/statistics/storeRepurchase'
+        icon: fa-home
+      - code: SCMP012018
+        name: 门店复购率统计-品采
+        link: '/statistics/storeRepurchase/BPDept'
+        icon: fa-home
+      - code: SCMP012019
+        name: 门店复购率统计-辅采
+        link: '/statistics/storeRepurchase/APDept'
+        icon: fa-home
+      - code: SCMP012020
+        name: 门店复购率统计-服纺
+        link: '/statistics/storeRepurchase/CTDept'
+        icon: fa-home
+      - code: SCMP012021
+        name: 门店复购率统计-鞋品
+        link: '/statistics/storeRepurchase/FBDept'
+        icon: fa-home
+      - code: SCMP012022
+        name: 门店复购率统计-自主品牌
+        link: '/statistics/storeRepurchase/PBDept'
+        icon: fa-home
+      - code: SCMP012023
+        name: 负毛利统计-公司
+        link: '/statistics/nagativeGross'
+        icon: fa-home
+      - code: SCMP012024
+        name: 负毛利统计-品采
+        link: '/statistics/nagativeGross/BPDept'
+        icon: fa-home
+      - code: SCMP012025
+        name: 负毛利统计-辅采
+        link: '/statistics/nagativeGross/APDept'
+        icon: fa-home
+      - code: SCMP012026
+        name: 负毛利统计-服纺
+        link: '/statistics/nagativeGross/CTDept'
+        icon: fa-home
+      - code: SCMP012027
+        name: 负毛利统计-鞋品
+        link: '/statistics/nagativeGross/FBDept'
+        icon: fa-home
+      - code: SCMP012028
+        name: 负毛利统计-自主品牌
+        link: '/statistics/nagativeGross/PBDept'
+        icon: fa-home
+      - code: SCMP012029
+        name: 销售统计-公司
+        link: '/statistics/sale'
+        icon: fa-home
+      - code: SCMP012030
+        name: 销售统计-品采
+        link: '/statistics/sale/BPDept'
+        icon: fa-home
+      - code: SCMP012031
+        name: 销售统计-辅采
+        link: '/statistics/sale/APDept'
+        icon: fa-home
+      - code: SCMP012032
+        name: 销售统计-服纺
+        link: '/statistics/sale/CTDept'
+        icon: fa-home
+      - code: SCMP012033
+        name: 销售统计-鞋品
+        link: '/statistics/sale/FBDept'
+        icon: fa-home
+      - code: SCMP012034
+        name: 销售统计-自主品牌
+        link: '/statistics/sale/PBDept'
+        icon: fa-home
+      - code: SCMP012035
+        name: 月累计销售统计-公司
+        link: '/statistics/MTDCategorySale'
+        icon: fa-home
+      - code: SCMP012036
+        name: 月累计销售统计-品采
+        link: '/statistics/MTDCategorySale/BPDept'
+        icon: fa-home
+      - code: SCMP012037
+        name: 月累计销售统计-辅采
+        link: '/statistics/MTDCategorySale/APDept'
+        icon: fa-home
+      - code: SCMP012038
+        name: 月累计销售统计-服纺
+        link: '/statistics/MTDCategorySale/CTDept'
+        icon: fa-home
+      - code: SCMP012039
+        name: 月累计销售统计-鞋品
+        link: '/statistics/MTDCategorySale/FBDept'
+        icon: fa-home
+      - code: SCMP012040
+        name: 月累计销售统计-自主品牌
+        link: '/statistics/MTDCategorySale/PBDept'
+        icon: fa-home
+      - code: SCMP012041
+        name: 低库存统计-公司
+        link: '/statistics/lowInventory'
+        icon: fa-home
+      - code: SCMP012042
+        name: 低库存统计-品采
+        link: '/statistics/lowInventory/BPDept'
+        icon: fa-home
+      - code: SCMP012043
+        name: 低库存统计-辅采
+        link: '/statistics/lowInventory/APDept'
+        icon: fa-home
+      - code: SCMP012044
+        name: 低库存统计-服纺
+        link: '/statistics/lowInventory/CTDept'
+        icon: fa-home
+      - code: SCMP012045
+        name: 低库存统计-鞋品
+        link: '/statistics/lowInventory/FBDept'
+        icon: fa-home
+      - code: SCMP012046
+        name: 低库存统计-自主品牌
+        link: '/statistics/lowInventory/PBDept'
+        icon: fa-home
+      - code: SCMP012047
+        name: 高库存统计-公司
+        link: '/statistics/highInventory'
+        icon: fa-home
+      - code: SCMP012048
+        name: 高库存统计-品采
+        link: '/statistics/highInventory/BPDept'
+        icon: fa-home
+      - code: SCMP012049
+        name: 高库存统计-辅采
+        link: '/statistics/highInventory/APDept'
+        icon: fa-home
+      - code: SCMP012050
+        name: 高库存统计-服纺
+        link: '/statistics/highInventory/CTDept'
+        icon: fa-home
+      - code: SCMP012051
+        name: 高库存统计-鞋品
+        link: '/statistics/highInventory/FBDept'
+        icon: fa-home
+      - code: SCMP012052
+        name: 高库存统计-自主品牌
+        link: '/statistics/highInventory/PBDept'
+        icon: fa-home
+      - code: SCMP012053
+        name: 品类促销统计-公司
+        link: '/statistics/categoryPromotion'
+        icon: fa-home
+      - code: SCMP012054
+        name: 品类促销统计-品采
+        link: '/statistics/categoryPromotion/BPDept'
+        icon: fa-home
+      - code: SCMP012055
+        name: 品类促销统计-辅采
+        link: '/statistics/categoryPromotion/APDept'
+        icon: fa-home
+      - code: SCMP012056
+        name: 品类促销统计-服纺
+        link: '/statistics/categoryPromotion/CTDept'
+        icon: fa-home
+      - code: SCMP012057
+        name: 品类促销统计-鞋品
+        link: '/statistics/categoryPromotion/FBDept'
+        icon: fa-home
+      - code: SCMP012058
+        name: 品类促销统计-自主品牌
+        link: '/statistics/categoryPromotion/PBDept'
+        icon: fa-home
+      - code: SCMP012059
+        name: 缺货统计-公司
+        link: '/statistics/stockout'
+        icon: fa-home
+      - code: SCMP012060
+        name: 缺货统计-品采
+        link: '/statistics/stockout/BPDept'
+        icon: fa-home
+      - code: SCMP012061
+        name: 缺货统计-辅采
+        link: '/statistics/stockout/APDept'
+        icon: fa-home
+      - code: SCMP012062
+        name: 缺货统计-服纺
+        link: '/statistics/stockout/CTDept'
+        icon: fa-home
+      - code: SCMP012063
+        name: 缺货统计-鞋品
+        link: '/statistics/stockout/FBDept'
+        icon: fa-home
+      - code: SCMP012064
+        name: 缺货统计-自主品牌
+        link: '/statistics/stockout/PBDept'
+        icon: fa-home
+      - code: SCMP012065
+        name: 品类销售统计-OEM
+        link: '/statistics/categorySale/PBDept'
+        icon: fa-home
+      - code: SCMP012066
+        name: 品牌销售统计-OEM
+        link: '/statistics/brandSale/PBDept'
+        icon: fa-home
+    - code: SCMP013
+      name: 查询报表
+      link: ''
+      icon: icon-aq-chaxun
+      resources:
+      - code: SCMP013001
+        name: 供应商到货率查询
+        link: '/query/supplierArrival'
+        icon: fa-home
+      - code: SCMP013002
+        name: 商品进销存查询
+        link: '/query/goodsInvoicing'
+        icon: fa-home
+      - code: SCMP013003
+        name: 赠品进销存查询
+        link: '/query/presentInvoicing'
+        icon: fa-home
+      - code: SCMP013004
+        name: 退供查询
+        link: '/query/supplierReturn'
+        icon: fa-home
+      - code: SCMP013005
+        name: 新品动销查询
+        link: '/query/newGoodsPinRate'
+        icon: fa-home
+      - code: SCMP013006
+        name: 门店复购率查询
+        link: '/query/storeRepurchase'
+        icon: fa-home
+      - code: SCMP013007
+        name: 负毛利查询
+        link: '/query/nagativeGross'
+        icon: fa-home
+      - code: SCMP013008
+        name: 建议补货查询
+        link: '/query/suggestReplenish'
+        icon: fa-home
+      - code: SCMP013009
+        name: 品牌促销查询
+        link: '/query/brandPromotion'
+        icon: fa-home
+      - code: SCMP013010
+        name: 品类促销查询
+        link: '/query/categoryPromotion'
+        icon: fa-home
+      - code: SCMP013011
+        name: 月销售查询
+        link: '/query/monthSales'
+        icon: fa-home
+      - code: SCMP013012
+        name: 月累计品类销售查询
+        link: '/query/MTDCategorySales'
+        icon: fa-home
+      - code: SCMP013013
+        name: 库存周转查询
+        link: '/query/inventoryTurnover'
+        icon: fa-home
+      - code: SCMP013014
+        name: 库存在途周转查询
+        link: '/query/inventoryTurnoverWay'
+        icon: fa-home
+    - code: SCMP014
+      name: 图表
+      link: ''
+      icon: icon-aq-tubiao
+      resources:
+      - code: SCMP014001
+        name: 月销售图表
+        link: '/chart/monthSales'
+        icon: fa-home
+      - code: SCMP014002
+        name: 月毛利图表
+        link: '/chart/monthGross'
+        icon: fa-home
+      - code: SCMP014003
+        name: 月销售达成率图表
+        link: '/chart/monthSalesAchievement'
+        icon: fa-home
+      - code: SCMP014004
+        name: 月累计品类销售图表
+        link: '/chart/MTDCategorySales'
+        icon: fa-home
+      - code: SCMP014005
+        name: 月累计品类毛利图表
+        link: '/chart/MTDCategoryGross'
+        icon: fa-home

@@ -5,11 +5,14 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
-import com.aiqin.bms.scmp.api.product.service.helper.WorkflowHelper;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,7 +21,7 @@ import java.util.List;
  * @author: wangxu
  * @date: 2019/1/29 0029 15:42
  */
-public interface ProductSkuConfigService  extends WorkflowHelper {
+public interface ProductSkuConfigService {
 
     /**
      * 批量保存临时配置信息
@@ -26,13 +29,30 @@ public interface ProductSkuConfigService  extends WorkflowHelper {
      * @return
      */
     Integer insertDraftList(List<SaveSkuConfigReqVo> configReqVos);
-
     /**
-     * 批量修改临时配置信息
+     * 批量保存导入的临时配置信息
      * @param configReqVos
      * @return
      */
-    Integer updateDraftList(List<UpdateSkuConfigReqVo> configReqVos);
+    Integer importSaveDraft(List<SaveSkuConfigReqVo> configReqVos);
+
+    void saveDraftBatch(List<ProductSkuConfigDraft> draftList);
+
+    void deleteByIds(List<Long> ids);
+
+    /**
+     * 批量修改临时配置信息
+     * @param reqVo
+     * @return
+     */
+    Integer updateDraftList(UpdateSkuConfigSupplierReqVo reqVo);
+
+    /**
+     * 批量插入临时配置信息(数据库)
+     * @param drafts
+     * @return
+     */
+    Integer insertDraftBatch(List<ProductSkuConfigDraft> drafts);
 
     /**
      * 保存临时配置信息
@@ -47,7 +67,7 @@ public interface ProductSkuConfigService  extends WorkflowHelper {
      * @param companyCode
      * @return
      */
-    List<SkuConfigsRepsVo> findDraftList(String companyCode);
+    DetailConfigSupplierRespVo findDraftList(String companyCode);
 
     /**
      * 删除临时表配置信息
@@ -55,6 +75,14 @@ public interface ProductSkuConfigService  extends WorkflowHelper {
      * @return
      */
     Integer deleteDraftById(Long id);
+
+
+    /**
+     * 根据SkuCodes批量删除
+     * @param skuCodes
+     * @return
+     */
+    Integer deleteDraftBySkuCodes(List<String> skuCodes);
 
     /**
      * 保存申请信息
@@ -64,12 +92,18 @@ public interface ProductSkuConfigService  extends WorkflowHelper {
     Integer insertApplyList(ApplySkuConfigReqVo reqVo);
 
     /**
+     * 外部调用保存到申请列表,不进入审批流
+     * @param applyProductSkus
+     * @return
+     */
+    Integer outInsertApplyList( List<ApplyProductSku> applyProductSkus);
+    /**
      * 审批流调入
      * @param formNo
      * @param applyCode
      * @param userName
      */
-    void workFlow(String formNo, String applyCode, String userName);
+    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode);
 
 
 
@@ -77,7 +111,7 @@ public interface ProductSkuConfigService  extends WorkflowHelper {
      * 更新申请表审批状态
      * @param newVO
      */
-    void updateApplyInfoByVO(WorkFlowCallbackVO newVO);
+    void updateApplyInfoByVO(WorkFlowCallbackVO newVO,String applyCode);
 
     /**
      * 审批流-审批通过
@@ -109,6 +143,17 @@ public interface ProductSkuConfigService  extends WorkflowHelper {
     Integer updateApplyInfoByVO(ApplyProductSkuConfigReqVo req);
 
     /**
+     *
+     * 功能描述: 根据申请编码更新状态
+     *
+     * @param req
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 22:42
+     */
+    Integer updateInfoByVo(ApplyProductSkuConfigReqVo req);
+
+    /**
      * 查询正式表信息
      * @param reqVo
      * @return
@@ -135,7 +180,7 @@ public interface ProductSkuConfigService  extends WorkflowHelper {
      * @param code
      * @return
      */
-    ProductApplyInfoRespVO<SkuConfigsRepsVo> applyView(String code);
+    ProductApplyInfoRespVO<SkuConfigDetailRepsVo> applyView(String code);
 
     /**
      * 申请取消
@@ -158,4 +203,90 @@ public interface ProductSkuConfigService  extends WorkflowHelper {
      * @return
      */
     Integer insertSpareWarehouseList(List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses);
+
+
+   /**
+    *
+    * 功能描述: 获取临时表数据根据SkuCode
+    *
+    * @param skuCode
+    * @return
+    * @auther knight.xie
+    * @date 2019/7/5 20:10
+    */
+    List<SkuConfigsRepsVo> draftDetail(String skuCode);
+
+    /**
+     *
+     * 功能描述: 根据配置信息计算SKU状态和销售状态
+     *
+     * @param skuConfigsRepsVos
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 19:44
+     */
+    SkuStatusRespVo calculationSkuStatus(List<SkuConfigsRepsVo> skuConfigsRepsVos);
+
+    /**
+     *
+     * 功能描述: 获取申请表数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:33
+     */
+    List<SkuConfigsRepsVo> getApply(String skuCode, String applyCode);
+
+    /**
+     *
+     * 功能描述: 获取正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:39
+     */
+    List<SkuConfigsRepsVo> getList(String skuCode);
+
+
+    /**
+     *
+     * 功能描述: 保存到正式表
+     *
+     * @param skuCode
+     * @param applyCode
+     * @param workFlowCallbackVO
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 22:00
+     */
+    Integer saveList(WorkFlowCallbackVO workFlowCallbackVO, String skuCode, String applyCode);
+    /**
+     * 配置导入
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param file
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo>
+     */
+    List<SaveSkuConfigReqVo> importData(MultipartFile file,String purchaseGroupCode);
+    /**
+     * 导入供应商配置
+     * @author NullPointException
+     * @date 2019/7/19
+     * @param file
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft>
+     */
+    List<ProductSkuSupplyUnitDraft> importSupplyData(MultipartFile file,String purchaseGroupCode);
+    /**
+     * 供应商配置导入保存
+     * @author NullPointException
+     * @date 2019/7/19
+     * @param reqVo
+     * @return java.lang.Boolean
+     */
+    Boolean saveImportSupply(List<ProductSkuSupplyUnitDraft> reqVo);
+
+    DetailRequestRespVo getInfoByForm(String formNo);
 }

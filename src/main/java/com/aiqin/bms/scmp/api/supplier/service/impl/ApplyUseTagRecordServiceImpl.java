@@ -47,6 +47,17 @@ public class ApplyUseTagRecordServiceImpl implements ApplyUseTagRecordService {
     }
 
     /**
+     * 批量删除
+     *
+     * @param appUseObjectCodes
+     * @return
+     */
+    @Override
+    public int deletes(List<String> appUseObjectCodes) {
+        return applyUseTagRecordMapper.deletes(appUseObjectCodes);
+    }
+
+    /**
      * 批量修改
      *
      * @param applyUseTagRecords
@@ -65,7 +76,28 @@ public class ApplyUseTagRecordServiceImpl implements ApplyUseTagRecordService {
      * @return
      */
     @Override
-    public List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(String appUseObjectCode) {
-        return applyUseTagRecordMapper.getApplyUseTagRecordByAppUseObjectCode(appUseObjectCode);
+    public List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(String appUseObjectCode,String tagTypeCode) {
+        return applyUseTagRecordMapper.getApplyUseTagRecordByAppUseObjectCode(appUseObjectCode,tagTypeCode);
+    }
+
+    /**
+     * 根据申请使用者编号查询
+     *
+     * @param appUseObjectCode
+     * @return
+     */
+    @Override
+    public List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode(String appUseObjectCode,String tagTypeCode,String useObjectCode) {
+        return applyUseTagRecordMapper.getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode(appUseObjectCode,tagTypeCode,useObjectCode);
+    }
+
+    /**
+     * 根据申请使用者编号List查询
+     * @param appUseObjectCodes
+     * @return
+     */
+    @Override
+    public List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodes(List<String> appUseObjectCodes,String tagTypeCode) {
+        return applyUseTagRecordMapper.getApplyUseTagRecordByAppUseObjectCodes(appUseObjectCodes,tagTypeCode);
     }
 }

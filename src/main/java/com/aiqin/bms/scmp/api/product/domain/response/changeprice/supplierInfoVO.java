@@ -20,4 +20,16 @@ public class supplierInfoVO {
     private String supplierName;
     @ApiModelProperty("原含税采购价")
     private Long purchasePriceOld;
+    @ApiModelProperty("最新采购价")
+    private Long purchasePriceNewest;
+    @ApiModelProperty("原含税价")
+    private Long oldPrice = 0L;
+    @ApiModelProperty("新含税价")
+    private Long newPrice = 0L;
+    @ApiModelProperty("是否缺省（0:否,1：是）")
+    private Boolean beDefault;
+    @ApiModelProperty("原毛利率")
+    private Long oldGrossProfitMargin = 0L;
+    @ApiModelProperty("成本")
+    private Long taxCost=0L;
 }

@@ -25,10 +25,10 @@ public enum  ObjectTypeCode {
     SUPPLIER_DICTIONARY((byte) 1, "供应商字典"),
     CONTRACT((byte)2, "合同"),
     APPLY_CONTRACT((byte)3, "申请合同"),
-    SUPPLIER((byte)4, "供应商"),
-    APPLY_SUPPLIER((byte)5, "申请供应商"),
-    SUPPLY_COMPANY((byte)6, "供货单位"),
-    APPLY_SUPPLY_COMPANY((byte)7, "申请供货单位"),
+    SUPPLIER((byte)4, "供应商集团"),
+    APPLY_SUPPLIER((byte)5, "申请供应商集团"),
+    SUPPLY_COMPANY((byte)6, "供应商"),
+    APPLY_SUPPLY_COMPANY((byte)7, "申请供应商"),
     SETTLEMENT_INFORMATION((byte)8, "结算信息"),
     APPLY_SETTLEMENT_INFORMATION((byte)9, "申请结算信息"),
     DELIVERY_INFORMATION((byte)10, "发货信息"),
@@ -52,7 +52,11 @@ public enum  ObjectTypeCode {
     APPLY_SKU_COONFIG((byte)27,"SKU配置申请"),
     INBOUND_ODER((byte)28,"入库单"),
     OUTBOUND_ODER((byte)29,"出库单"),
-    MOVEMENT_ODER((byte)30,"移库单");
+    MOVEMENT_ODER((byte)30,"移库单"),
+    CHANGE_PRICE((byte)31,"变价管理"),
+    SALE_AREA((byte)32,"销售区域"),
+    SCRAP((byte) 33,"报废")
+    ;
     private Byte status;
     private String name;
     ObjectTypeCode(Byte status, String name) {

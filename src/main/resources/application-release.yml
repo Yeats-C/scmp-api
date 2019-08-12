@@ -1,5 +1,8 @@
+server:
+  tomcat:
+    basedir: /tmp/dir
 web:
-  host-url: http://scm.bms.aiqin.com
+  host-url: http://scmp.bms.aiqin.com
 center:
   main:
   #中控服务端
@@ -12,23 +15,18 @@ product:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
 ground:
   druid:
-    url: jdbc:mysql://rm-2zeela0dj4k34987s.mysql.rds.aliyuncs.com/mgs_supplier_release?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
-    username: supplier_write
-    password: D80SjZXnBLJxZLEZyf(x)vi
-    initialSize: 5
-    minIdle: 3
-    maxActive: 40
-    maxWait: 6000000
-    timeBetweenEvictionRunsMillis: 600000
-    minEvictableIdleTimeMillis: 300000
+    url: jdbc:mysql://--------/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: --------
+    password: --------
+    initial-size: 5
+    min-idle: 3
+    max-active: 20
+    max-wait: 6000
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 300000
     filters: stat,slf4j
-    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=50000
-    web-stat-filter:
-      enabled: true
-      url-pattern: /*
-#      exclusions: *.js,*.gif,*.jpg,*.png,*.css,*.ico,*.map,/druid/*
-      session-stat-enable: false
-      profile-enable: true
+    connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
 oss:
   end:
     point: http://oss-cn-qingdao.aliyuncs.com

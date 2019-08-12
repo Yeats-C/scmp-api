@@ -27,4 +27,8 @@ public class StorageResultItemReqVo {
     @ApiModelProperty("实际价格")
     @JsonProperty("price")
     private Long praTaxPurchaseAmount;
+
+    @ApiModelProperty("行号")
+    @JsonProperty("lineNum")
+    private Long linenum;
 }

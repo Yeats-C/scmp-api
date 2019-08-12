@@ -1,13 +1,21 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.Save;
+import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuInspReportDao;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInspReportDraftMapper;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuInspReport;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReportDraft;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInspReportDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInspReportMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuInspReportService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @功能说明:
@@ -27,6 +36,8 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     ProductSkuInspReportDao productSkuInspReportDao;
     @Autowired
     private ProductSkuInspReportDraftMapper draftMapper;
+    @Autowired
+    private ProductSkuInspReportMapper productSkuInspReportMapper;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveApplyList(List<ApplyProductSku> applyProductSkus) {
@@ -84,7 +95,6 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     }
 
     @Override
-    @SaveList
     @Transactional(rollbackFor = BizException.class)
     public int insertList(List<ProductSkuInspReport> productSkuInspReports) {
         int num = productSkuInspReportDao.insertInspReportList(productSkuInspReports);
@@ -119,5 +129,117 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     @Override
     public Integer deleteDrafts(List<String> skuCodes) {
         return draftMapper.delete(skuCodes);
+    }
+
+    /**
+     * 功能描述: 获取正式表数据
+     *
+     * @param reportReqVo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/2 17:49
+     */
+    @Override
+    public List<ProductSkuInspReportRespVo> getList(QueryProductSkuInspReportReqVo reportReqVo) {
+        return productSkuInspReportDao.getListBySkuCodeAndProductDate(reportReqVo);
+    }
+
+    /**
+     * 功能描述: 质检报告保存接口
+     *
+     * @param reportReqVo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/3 17:43
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int saveProductSkuInspReports(SaveProductSkuInspReportReqVo reportReqVo) {
+        List<ProductSkuInspReport> productSkuInspReports =
+                BeanCopyUtils.copyList(reportReqVo.getItemList(),ProductSkuInspReport.class);
+        productSkuInspReports.forEach(item->{
+            item.setSkuCode(reportReqVo.getSkuCode());
+            item.setSkuName(reportReqVo.getSkuName());
+        });
+        return ((ProductSkuInspReportService)AopContext.currentProxy()).insertList(productSkuInspReports);
+    }
+
+    /**
+     * 功能描述: 根据Id删除正式表数据
+     *
+     * @param id
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 10:25
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteById(Long id) {
+        return productSkuInspReportDao.deleteById(id);
+    }
+
+    /**
+     * 功能描述: 根据SkuCode删除正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 10:28
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteBySkuCode(String skuCode) {
+        return productSkuInspReportDao.deleteList(skuCode);
+    }
+
+    /**
+     * 功能描述: 单个保存质检报告
+     *
+     * @param reportReqVo
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 10:29
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @Save
+    public int saveProductSkuInspReport(ProductSkuInspReport reportReqVo) {
+        //根据SKU和生产日期查询
+        QueryProductSkuInspReportReqVo queryReqVo = new QueryProductSkuInspReportReqVo();
+        queryReqVo.setProductionDate(reportReqVo.getProductionDate());
+        queryReqVo.setSkuCode(reportReqVo.getSkuCode());
+        List<ProductSkuInspReportRespVo> list = this.getList(queryReqVo);
+        if(CollectionUtils.isNotEmpty(list)){
+            List<Long> ids = list.stream().map(ProductSkuInspReportRespVo::getId).collect(Collectors.toList());
+            productSkuInspReportMapper.deleteByIds(ids);
+        }
+        return productSkuInspReportMapper.insertSelective(reportReqVo);
+    }
+
+    /**
+     * 功能描述: 获取申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:21
+     */
+    @Override
+    public List<ProductSkuInspReportRespVo> getApply(String skuCode, String applyCode) {
+        return productSkuInspReportDao.getApplys(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 获取正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:22
+     */
+    @Override
+    public List<ProductSkuInspReportRespVo> getListBySkuCode(String skuCode) {
+        return productSkuInspReportDao.getList(skuCode);
     }
 }

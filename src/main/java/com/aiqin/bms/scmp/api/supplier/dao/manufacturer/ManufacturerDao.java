@@ -3,9 +3,12 @@ package com.aiqin.bms.scmp.api.supplier.dao.manufacturer;
 
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Manufacturer;
 import com.aiqin.bms.scmp.api.supplier.domain.request.manufacturer.vo.QueryManufacturerReqVo;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface ManufacturerDao {
 
@@ -48,4 +51,6 @@ public interface ManufacturerDao {
      * @return
      */
     Integer checkName(@Param("name") String name, @Param("id") Long id, @Param("companyCode") String companyCode);
+    @MapKey("name")
+    Map<String, Manufacturer> selectByManufactureNames(@Param("list") Set<String> manufactureList, @Param("companyCode") String companyCode);
 }

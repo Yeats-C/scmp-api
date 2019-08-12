@@ -21,6 +21,9 @@ public class OutboundProduct {
     @ApiModelProperty("sku名称")
     private String skuName;
 
+    @ApiModelProperty("条形码")
+    private String barCode;
+
     @ApiModelProperty("图片地址")
     private String pictureUrl;
 
@@ -44,6 +47,9 @@ public class OutboundProduct {
 
     @ApiModelProperty("出库规格")
     private String outboundNorms;
+
+    @ApiModelProperty("出库拆零系数")
+    private String outboundBaseUnit;
 
     @ApiModelProperty("出库基商品含量")
     private String outboundBaseContent;
@@ -87,5 +93,7 @@ public class OutboundProduct {
     @ApiModelProperty("行号")
     private Long linenum;
 
+    @ApiModelProperty("税率")
+    private Long tax;
 
 }

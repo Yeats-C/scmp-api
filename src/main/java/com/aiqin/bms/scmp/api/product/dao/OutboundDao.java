@@ -41,5 +41,16 @@ public interface OutboundDao {
 
     int updateOutboundInfo(UpdateOutBoundReqVO reqVO);
 
+    /**
+     * 批量插入出库数据
+     * @author NullPointException
+     * @date 2019/6/26
+     * @param list
+     * @return int
+     */
+    int insertBatch(List<Outbound> list);
 
+    String selectCreateById(String outboundOderCode);
+
+    Outbound selectById(String id);
 }

@@ -25,12 +25,18 @@
     <result column="city_name" jdbcType="VARCHAR" property="cityName" />
     <result column="district_id" jdbcType="VARCHAR" property="districtId" />
     <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
   </resultMap>
   <resultMap id="SupplyComDetailMap" type="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompanyDetailDTO">
     <result column="id" jdbcType="BIGINT" property="supplyComId" />
     <result column="supply_name" jdbcType="VARCHAR" property="supplyName" />
+    <result column="formal_code" jdbcType="VARCHAR" property="formalCode" />
     <result column="supply_code" jdbcType="VARCHAR" property="supplyCode"/>
     <result column="supply_type" jdbcType="VARCHAR" property="supplyType" />
+    <result column="supply_type_name" jdbcType="VARCHAR" property="supplyTypeName" />
     <result column="supply_abbreviation" jdbcType="VARCHAR" property="supplyAbbreviation" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
@@ -52,7 +58,7 @@
     <result column="zip_code" jdbcType="VARCHAR" property="zipCode" />
     <result column="tax_id" jdbcType="VARCHAR" property="taxId" />
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
-    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital" />
+    <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital" />
     <result column="enable" jdbcType="TINYINT" property="enable" />
     <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
     <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />
@@ -60,7 +66,10 @@
     <result column="star_score" jdbcType="DECIMAL" property="starScore" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
     <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName"/>
-
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
   </resultMap>
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -103,7 +112,18 @@
     <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
     <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount"/>
     <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount"/>
+    <result column="star_score" jdbcType="BIGINT" property="starScore"/>
+    <result column="send_province_id" jdbcType="VARCHAR" property="sendProvinceId" />
+    <result column="send_province_name" jdbcType="VARCHAR" property="sendProvinceName" />
+    <result column="send_city_id" jdbcType="VARCHAR" property="sendCityId" />
+    <result column="send_city_name" jdbcType="VARCHAR" property="sendCityName" />
+    <result column="send_district_id" jdbcType="VARCHAR" property="sendDistrictId" />
+    <result column="send_district_name" jdbcType="VARCHAR" property="sendDistrictName" />
+    <result column="sending_address" jdbcType="VARCHAR" property="sendingAddress" />
   </resultMap>
+  <update id="updateApplyCode">
+    update supply_company set  apply_supply_company_code = #{applySupplyCompanyCode} where supply_code = #{supplyCompanyCode}
+  </update>
   <select id="getSupplyCompanyList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO" resultMap="SupplyComListMap">
     SELECT
       id,
@@ -136,7 +156,7 @@
       supply_company
     WHERE del_flag=0
     <if test="supplyCompanyCode!=null and supplyCompanyCode!=''">
-      and supply_code = #{supplyCompanyCode,jdbcType=VARCHAR}
+      and supply_code LIKE concat('%',#{supplyCompanyCode,jdbcType=VARCHAR},'%')
     </if>
     <if test="enable != null and enable != ''">
       and enable = #{enable,jdbcType=TINYINT}
@@ -162,7 +182,10 @@
     <if test="supplierCode != null and supplierCode != '' ">
       and supplier_code = #{supplierCode,jdbcType=VARCHAR}
     </if>
-    ORDER by update_time desc
+    <if test="personId != null and personId != '' ">
+      and purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+    </if>
+    ORDER by supply_code desc,update_time desc
   </select>
   <select id="getSupplyComDetail" parameterType="java.lang.Long" resultMap="SupplyComDetailMap">
     SELECT
@@ -170,6 +193,7 @@
       sc.supply_name,
       sc.supply_code,
       sc.supply_type,
+      si.supplier_content supply_type_name,
       sc.supply_abbreviation,
       sc.supplier_name,
       sc.supplier_code,
@@ -198,8 +222,54 @@
       sc.business_license,
       sc.star_score,
       sc.direct_supervisor_code,
-      sc.direct_supervisor_name
+      sc.direct_supervisor_name,
+      sc.create_time,
+      sc.create_by,
+      sc.update_time,
+      sc.update_by
     FROM supply_company sc
+    left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and sc.supply_type = si.supplier_dictionary_value
+    WHERE sc.id=#{id,jdbcType=BIGINT}
+  </select>
+  <select id="getApplySupplyComDetail" parameterType="java.lang.Long" resultMap="SupplyComDetailMap">
+    SELECT
+      sc.id,
+      sc.supply_company_code formal_code,
+      sc.apply_supply_name supply_name,
+      sc.apply_supply_company_code supply_code,
+      sc.apply_supply_type supply_type,
+      si.supplier_content supply_type_name,
+      sc.apply_abbreviation supply_abbreviation,
+      sc.supplier_name,
+      sc.supplier_code,
+      sc.province_id,
+      sc.province_name,
+      sc.city_id,
+      sc.city_name,
+      sc.district_id,
+      sc.district_name,
+      sc.address,
+      sc.contact_name,
+      sc.mobile_phone,
+      sc.phone,
+      sc.fax,
+      sc.email,
+      sc.company_website,
+      sc.purchasing_group_code supply_purchasing_group_code,
+	  sc.purchasing_group_name supply_purchasing_group_name,
+      sc.zip_code,
+      sc.tax_id,
+      sc.corporate_representative,
+      sc.registered_capital,
+      sc.enable,
+      sc.min_order_amount,
+      sc.max_order_amount,
+      sc.business_license,
+      sc.star_score,
+      sc.direct_supervisor_code,
+      sc.direct_supervisor_name
+    FROM apply_supply_company sc
+    left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and sc.apply_supply_type = si.supplier_dictionary_value
     WHERE sc.id=#{id,jdbcType=BIGINT}
   </select>
   <select id="checkName" parameterType="java.util.Map" resultType="java.lang.Integer">
@@ -226,5 +296,59 @@
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
+  </select>
+  <select id="selectBySupplierName" resultMap="BaseResultMap" >
+   select
+      supply_code , supply_name
+    from
+      supply_company
+    where
+      supply_name = #{supplyName,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySupplierCode" resultMap="BaseResultMap" >
+   select
+      supply_code , supply_name
+    from
+      supply_company
+    where
+      supply_code = #{supplyCode,jdbcType=VARCHAR}
+  </select>
+    <select id="selectByCompanyNameList"
+            resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.BaseResultMap">
+      SELECT
+      apply_supply_name as supply_name
+      from apply_supply_company where apply_supply_name in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+        #{item}
+      </foreach>
+        and company_code = #{companyCode,jdbcType=VARCHAR}
+    </select>
+
+  <select id="selectByCompanyCodeList"
+          resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.BaseResultMap">
+    SELECT
+    <include refid="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.Base_Column_List"/>
+    from supply_company where supply_code in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+    and company_code = #{companyCode,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAddress" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+      b.send_province_id,
+      b.send_province_name,
+      b.send_city_id,
+      b.send_city_name,
+      b.send_district_id,
+      b.send_district_name,
+      b.sending_address,
+      a.contact_name,
+      a.mobile_phone,
+      a.zip_code
+    from supply_company a
+    left join delivery_information b on a.supply_code = b.supply_company_code
+    where a.supply_code = #{supplyCode, jdbcType=VARCHAR} and b.delivery_type = 0
   </select>
 </mapper>

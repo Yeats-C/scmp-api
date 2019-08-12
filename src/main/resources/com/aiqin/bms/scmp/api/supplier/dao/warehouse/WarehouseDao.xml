@@ -19,6 +19,7 @@
     <result column="contact" jdbcType="VARCHAR" property="contact" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="enable" jdbcType="TINYINT" property="enable" />
+    <result column="warehouse_order" jdbcType="INTEGER" property="warehouseOrder" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -29,7 +30,7 @@
     id, warehouse_code, warehouse_name, logistics_center_code, logistics_center_name, 
     warehouse_type_name, warehouse_type_code, province_code, province_name, city_code, 
     city_name, county_code, county_name, detailed_address, contact, phone, enable, del_flag, 
-    create_by, create_time, update_by, update_time
+    create_by, create_time, update_by, update_time,warehouse_order
   </sql>
   <select id="findWarehouseList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo" resultMap="BaseResultMap">
   select
@@ -43,13 +44,19 @@
     and warehouse_name like CONCAT(CONCAT('%',#{warehouseName},'%'))
     </if>
     <if test ="enable!=null">
-      and enable like CONCAT(CONCAT('%',#{enable},'%'))
+      and enable = #{enable}
     </if>
     <if test ="logisticsCenterName!=null and logisticsCenterName!=''">
       and logistics_center_name like CONCAT(CONCAT('%',#{logisticsCenterName},'%'))
     </if>
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="warehouseTypeName != null and warehouseTypeName != '' ">
+      and warehouse_type_name = #{warehouseTypeName,jdbcType=VARCHAR}
+    </if>
+    <if test="warehouseTypeCode != null and warehouseTypeCode != '' ">
+      and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
     order by create_time desc
   </select>
@@ -156,6 +163,9 @@
       <if test="companyName != null">
         company_name,
       </if>
+      <if test="warehouseOrder != null">
+        warehouse_order,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -230,6 +240,9 @@
       <if test="companyName != null">
         #{companyName,jdbcType=VARCHAR},
       </if>
+      <if test="warehouseOrder != null">
+        #{warehouseOrder,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO">
@@ -298,6 +311,9 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="warehouseOrder != null">
+        warehouse_order = #{warehouseOrder,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -346,7 +362,7 @@
     select
     <include refid="Base_Column_List" />
     from warehouse
-    where warehouse_code = #{warehouseCode,jdbcType=VARCHAR} and enable=1
+    where warehouse_code = #{warehouseCode,jdbcType=VARCHAR} and enable=0
   </select>
 
   <select id="getWarehouseByLogisticsCenterCode" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -354,19 +370,16 @@
     <include refid="Base_Column_List" />
     from warehouse
     where logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
-    and enable=1
-    <if test="warehouseTypeCode != null and warehouseTypeCode !=3">
+    and enable=0
+    <if test="warehouseTypeCode != null">
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
-    </if>
-    <if test="warehouseTypeCode == '3'">
-      and warehouse_type_code != '2'
     </if>
   </select>
   <select id="getWarehouseApi" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from warehouse
-    where  enable =1
+    where  enable =0
     <if test="provinceCode != null  and provinceCode !=''">
      and province_code   like CONCAT(CONCAT('%',#{provinceCode},'%'))
     </if>
@@ -379,17 +392,38 @@
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
-    order by create_time desc
+    order by warehouse_order desc,create_time desc
   </select>
   <select id="getWarehouseTypeByLogisticsCenterCode" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from warehouse
     where logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
-    and enable=1
+    and enable=0
     <if test="warehouseTypeCode != null ">
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
+    order by warehouse_order desc,create_time desc
+  </select>
+  <select id="selectByWarehouseName" resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse">
+    select
+      warehouse_code as warehouseCode, warehouse_name as warehouseName, logistics_center_code as logisticsCenterCode,
+      logistics_center_name as logisticsCenterName
+    from warehouse
+    where
+    warehouse_name = #{warehouseName,jdbcType=VARCHAR}
+     order by warehouse_order desc,create_time desc
   </select>
 
+  <select id="getWarehouseByLogisticsCenterCodeAndNotExistsType" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from warehouse
+    where logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
+    and enable=0
+    <if test="warehouseTypeCode != null ">
+      and warehouse_type_code != #{warehouseTypeCode,jdbcType=TINYINT}
+    </if>
+    order by warehouse_order desc,create_time desc
+  </select>
 </mapper>

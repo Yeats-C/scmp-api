@@ -1,30 +1,40 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
+import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaForSkuReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveSkuApplyInfoReqVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
-import com.aiqin.bms.scmp.api.product.service.helper.WorkflowHelper;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @功能说明:
  * @author: wangxu
  * @date: 2019/1/28 0028 10:46
  */
-public interface SkuInfoService extends WorkflowHelper {
+public interface SkuInfoService{
     /**
      * 新增sku所有信息
      * @param addSkuInfoReqVO
@@ -32,6 +42,12 @@ public interface SkuInfoService extends WorkflowHelper {
      */
     int saveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO);
 
+    /**
+     * 更新sku所有信息
+     * @param addSkuInfoReqVO
+     * @return
+     */
+    int updateDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO);
     /**
      * 新增sku草稿信息
      * @param productSkuDraft
@@ -96,21 +112,21 @@ public interface SkuInfoService extends WorkflowHelper {
      * @param applyCode
      * @return
      */
-    ApplySkuDetailResp getSkuApplyDetail(String applyCode);
+    ProductApplyInfoRespVO<ProductSkuApplyVo> getSkuApplyDetail(String applyCode);
 
     /**
      * 单个sku申请详情
      * @param skuCode
      * @return
      */
-    ApplyProductSkuDetailResp getProductSkuApplyDetail(String skuCode, String applyCode);
+    ProductSkuDetailResp getProductSkuApplyDetail(String skuCode, String applyCode);
 
     int cancelSkuApply(String applyCode);
 
     int cancelApply(ApplyProductSku applyProductSku);
 
 
-    void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus);
+    void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus,String directSupervisorCode);
 
     String skuWorkFlowCallback(WorkFlowCallbackVO vo1);
 
@@ -119,7 +135,7 @@ public interface SkuInfoService extends WorkflowHelper {
      * @param companyCode
      * @return
      */
-    List<ProductSkuDraftRespVo> getProductSkuDraftsByCompanyCode(String companyCode);
+    List<ProductSkuDraftRespVo> getProductSkuDraftsByCompanyCode(String companyCode,String personId);
 
 
     /**
@@ -135,6 +151,8 @@ public interface SkuInfoService extends WorkflowHelper {
      * @return
      */
     Integer deleteProductSkuDraft(List<String> skuCodes);
+
+    Integer deleteProductSkuDraftForPlatform(List<String> skuCodes);
 
     /**
      * 根据商品编码获取SKU临时数据
@@ -174,4 +192,77 @@ public interface SkuInfoService extends WorkflowHelper {
      * @return com.aiqin.mgs.product.api.base.BasePage<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaForSkuRespVO>
      */
     BasePage<QueryProductSaleAreaForSkuRespVO> selectSkuListForSaleArea(QueryProductSaleAreaForSkuReqVO reqVO);
+
+
+    /**
+     * 查询申请审批列表信息
+     * @param reqVo
+     * @return
+     */
+    List<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo);
+
+    /**
+     *
+     * 功能描述: 更新SKU状态
+     *
+     * @param respVos
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/18 0:39
+     */
+    int updateStatus(List<SkuStatusRespVo> respVos);
+    /**
+     * 通过sku编码查询数据
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param skuList
+     * @param companyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.ProductSku>
+     */
+    Map<String,ProductSkuInfo> selectBySkuCodes(Set<String> skuList, String companyCode);
+    /**
+     * 商品导入
+     * @author NullPointException
+     * @date 2019/7/21
+     * @param file
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO>
+     */
+    SkuImportMain importSkuNew(MultipartFile file);
+
+    SkuImportMain importSkuForSupplyPlatform(MultipartFile file);
+
+    /**
+     * 通过名称查询
+     * @author NullPointException
+     * @date 2019/7/21
+     * @param skuNameList
+     * @param companyCode
+     * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo>
+     */
+    Map<String, ProductSkuInfo> selectBySkuNames(Set<String> skuNameList, String companyCode);
+
+    /**
+     * 修改导入sku
+     * @param file
+     * @return
+     */
+    SkuImportMain importSkuUpdate(MultipartFile file);
+
+    /**
+     * 新增保存
+     * @param addSkuList
+     * @param purchaseGroupCode
+     * @return
+     */
+    Boolean importSkuNewSave(SkuImportReq reqVO);
+
+    Boolean importSkuNewUpdate(SkuImportReq reqVO);
+
+    Boolean exportSku(HttpServletResponse resp);
+
+    Boolean importSkuUpdateForSupplyPlatform(SkuImportReq reqVO);
+
+    int saveDraftSkuInfoForPlatform(AddSkuInfoReqVO reqVO);
+
+    DetailRequestRespVo getInfoByForm(String formNo);
 }

@@ -43,6 +43,26 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{delFlag,jdbcType=TINYINT})
   </insert>
+  <insert id="insertAll" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPicDescDraft">
+    insert into product_sku_pic_desc_draft ( sorting_number, pic_desc_path,
+      sku_code, sku_name, create_by,
+      update_by,del_flag, update_time,  create_time
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+    (
+      #{item.sortingNumber,jdbcType=BIGINT},
+      #{item.picDescPath,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR},
+      #{item.createBy,jdbcType=VARCHAR},
+      #{item.createBy,jdbcType=VARCHAR},
+      0,
+      now(),
+      now()
+      )
+    </foreach>
+  </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPicDescDraft">
     insert into product_sku_pic_desc_draft
     <trim prefix="(" suffix=")" suffixOverrides=",">

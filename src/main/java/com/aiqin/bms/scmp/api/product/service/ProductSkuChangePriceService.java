@@ -6,11 +6,13 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceAreaInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -116,6 +118,16 @@ public interface ProductSkuChangePriceService {
      */
     void saveOfficial(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto) throws Exception;
     /**
+     * 更改状态
+     * @author NullPointException
+     * @date 2019/7/10
+     * @param newVO
+     * @param dto
+     * @return void
+     */
+    void changeStatus(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto);
+
+    /**
      * 临时区域变价
      * @author NullPointException
      * @date 2019/5/25
@@ -207,4 +219,45 @@ public interface ProductSkuChangePriceService {
      * @return java.lang.Boolean
      */
     Boolean cancelData(String code);
+    /**
+     * 变价查询sku列表
+     * @author NullPointException
+     * @date 2019/6/13
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO>
+     */
+    BasePage<QuerySkuInfoRespVO> getSkuListByQueryVO(QuerySkuInfoReqVO reqVO);
+    /**
+     * 查批次sku
+     * @author NullPointException
+     * @date 2019/7/5
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO>
+     */
+    BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO);
+    /**
+     * 采购变价批量导入
+     */
+    List<ProductSkuChangePriceImportRespVO> importProductSkuChangePrice(ProductSkuChangePriceImportReqVo reqVo);
+
+    /**
+     * 获得2年内的价格数据
+     * @param skuCode
+     * @return
+     */
+    List<PriceJog> getPriceJog(String skuCode);
+
+    List<QuerySkuInfoRespVOForIm> importForChangePrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
+
+    /**
+     * 采购价导入
+     * @param file
+     * @param purchaseGroupCode
+     * @return
+     */
+    List<QuerySkuInfoRespVOForIm> importForPurchasePrice(MultipartFile file, String purchaseGroupCode,String changePriceType);
+
+    List<QuerySkuInfoRespVOForIm> importForSalePrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
+
+    List<QuerySkuInfoRespVOForIm> importForTemporaryPrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
 }

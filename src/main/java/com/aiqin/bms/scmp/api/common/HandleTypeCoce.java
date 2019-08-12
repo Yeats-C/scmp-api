@@ -212,10 +212,6 @@ public enum  HandleTypeCoce {
 
     //调拨
     ADD_ALLOCATION((byte)179,"调拨单新增"),
-
-
-
-
     FLOW_ALLOCATION((byte)180,"调拨单提交"),
     REVOCATION_ALLOCATION((byte)181,"调拨单撤销"),
     FLOW_SUCCESS_ALLOCATION((byte)182,"调拨单审批通过"),
@@ -233,7 +229,46 @@ public enum  HandleTypeCoce {
     OUTBOUND_MOVEMENT((byte)193,"移库单待出库"),
     SUCCESS_OUT_MOVEMENT((byte)194,"移库单已出库"),
     INBOUND_MOVEMENT((byte)195,"移库单待入库"),
-    SUCCESS__MOVEMENT((byte)196,"移库单已完成"),;
+    SUCCESS__MOVEMENT((byte)196,"移库单已完成"),
+
+    ADD_CHANGEPRICE((byte)197,"新建变价"),
+    EDIT_CHANGEPRICE((byte)198,"修改变价"),
+    WAIT_CHANGEPRICE((byte)199,"变价待审"),
+    UNDER_CHANGEPRICE((byte)200,"变价审批中"),
+    PASS_CHANGEPRICE((byte)200,"变价审批通过"),
+    NOPASS_CHANGEPRICE((byte)201,"变价审批不通过"),
+    RECOBER_CHANGEPRICE((byte)202,"变价撤销"),
+
+    ADD_SALE_AREA((byte)203,"新建销售区域"),
+    EDIT_SALE_AREA((byte)204,"修改销售区域"),
+    WAIT_SALE_AREA((byte)205,"销售区域待审"),
+    UNDER_SALE_AREA((byte)206,"销售区域审批中"),
+    PASS_SALE_AREA((byte)207,"销售区域审批通过"),
+    NOPASS_SALE_AREA((byte)208,"销售区域审批不通过"),
+    RECOBER_SALE_AREA((byte)209,"销售区域撤销"),
+
+    //报废单
+    ADD_SCRAP((byte)188,"新建报废单"),
+    SUBMIT_SCRAP((byte)189,"提交报废单"),
+    PASS_SCRAP((byte)190,"审批通过报废单"),
+    NOPASS_SCRAP((byte)191,"审批不通过报废单"),
+    RECOBER_SCRAP((byte)192,"撤销报废单"),
+    OUTBOUND_SCRAP((byte)193,"报废单待出库"),
+    SUCCESS_OUT_SCRAP((byte)194,"报废单已出库"),
+    INBOUND_SCRAP((byte)195,"报废单待入库"),
+    SUCCESS__SCRAP((byte)196,"报废单已完成"),
+
+    ADD((byte)1000,"新增"),
+    UPDATE((byte)10001,"修改"),
+    DOWNLOAD((byte)10002,"下载"),
+    PENDING((byte)10004, "待审"),
+    APPROVAL((byte)10005, "审批中"),
+    APPROVAL_SUCCESS((byte)10006, "审批通过"),
+    APPROVAL_FAILED((byte)10007, "审批失败"),
+    REVOKED((byte)10008, "已撤销"),
+    PENDING_SUBMISSION((byte)10009, "待提交"),
+    DELETE((byte)100010, "删除"),
+    ;
     private Byte status;
     private String name;
     HandleTypeCoce(Byte status, String name) {

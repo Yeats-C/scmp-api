@@ -32,6 +32,12 @@ public class ProductSkuSupplyUnitDraft extends CommonBean {
     @ApiModelProperty("返点")
     private Long point;
 
+    @ApiModelProperty("税率")
+    private Long taxRate;
+
+    @ApiModelProperty("厂商SKU编码")
+    private String factorySkuCode;
+
     @ApiModelProperty("是否缺省（0:否,1：是）")
     private Byte isDefault;
 
@@ -53,4 +59,7 @@ public class ProductSkuSupplyUnitDraft extends CommonBean {
     @ApiModelProperty(value = "供应商产能信息",name = "productSkuSupplyUnitCapacities",position = 7)
     @JsonProperty("productSkuSupplyUnitCapacities")
     private List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts;
+
+    @ApiModelProperty("错误信息")
+    private String error;
 }

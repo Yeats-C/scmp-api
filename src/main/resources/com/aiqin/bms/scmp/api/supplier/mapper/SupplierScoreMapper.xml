@@ -53,6 +53,12 @@
     from supplier_score
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from supplier_score
+    where score_code = #{code,jdbcType=VARCHAR}
+  </select>
   <select id="getList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.score.QueryScoreReqVo" resultMap="ListResultMap">
     select
     <include refid="List_Column"/>
@@ -60,16 +66,16 @@
     left join supply_company b on a.supplier_code = b.supply_code
     where a.del_flag = 0
     <if test="scoreCode != null  and scoreCode.length > 0">
-      and a.score_code = #{scoreCode,jdbcType=VARCHAR}
+      and a.score_code like CONCAT('%',#{scoreCode,jdbcType=VARCHAR},'%')
     </if>
     <if test="supplierCode != null  and supplierCode.length > 0">
-      and a.supplier_code =  #{supplierCode,jdbcType=VARCHAR}
+      and a.supplier_code like CONCAT('%',#{supplierCode,jdbcType=VARCHAR},'%')
     </if>
     <if test="supplierName != null  and supplierName.length > 0">
       and a.supplier_name like CONCAT('%', #{supplierName,jdbcType=VARCHAR}, '%')
     </if>
     <if test="purchasingGroupCode != null  and purchasingGroupCode.length > 0">
-      and b,purchasing_group_code =  #{purchasingGroupCode,jdbcType=VARCHAR}
+      and b.purchasing_group_code =  #{purchasingGroupCode,jdbcType=VARCHAR}
     </if>
     <if test="purchasingGroupName != null  and purchasingGroupName.length > 0">
       and b.purchasing_group_name like CONCAT('%', #{purchasingGroupName,jdbcType=VARCHAR}, '%')
@@ -77,6 +83,7 @@
     <if test="companyCode != null  and companyCode.length > 0">
       and a.company_code =  #{companyCode,jdbcType=VARCHAR}
     </if>
+    order by create_time desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from supplier_score

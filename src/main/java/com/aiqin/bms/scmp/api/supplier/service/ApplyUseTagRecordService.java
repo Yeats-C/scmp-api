@@ -28,6 +28,13 @@ public interface ApplyUseTagRecordService {
     int delete(String appUseObjectCode);
 
     /**
+     * 批量删除
+     * @param appUseObjectCodes
+     * @return
+     */
+    int deletes(List<String> appUseObjectCodes);
+
+    /**
      * 批量修改
      * @param applyUseTagRecords
      * @return
@@ -39,5 +46,14 @@ public interface ApplyUseTagRecordService {
      * @param appUseObjectCode
      * @return
      */
-    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(String appUseObjectCode);
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCode(String appUseObjectCode,String tagTypeCode);
+
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodeAndUseObjectCode(String appUseObjectCode,String tagTypeCode,String useObjectCode);
+
+    /**
+     * 根据申请使用者编号List查询
+     * @param appUseObjectCodes
+     * @return
+     */
+    List<ApplyUseTagRecord> getApplyUseTagRecordByAppUseObjectCodes(List<String> appUseObjectCodes,String tagTypeCode);
 }

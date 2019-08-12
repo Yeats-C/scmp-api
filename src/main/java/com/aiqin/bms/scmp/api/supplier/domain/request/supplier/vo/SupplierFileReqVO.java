@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,7 +37,11 @@ public class SupplierFileReqVO {
     @ApiModelProperty("文件名称")
     private String fileName;
 
+    @ApiModelProperty("文件编码")
+    private String fileCode;
+
     @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty("创建人")

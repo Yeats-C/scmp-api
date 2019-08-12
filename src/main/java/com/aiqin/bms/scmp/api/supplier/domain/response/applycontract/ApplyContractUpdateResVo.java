@@ -1,5 +1,9 @@
 package com.aiqin.bms.scmp.api.supplier.domain.response.applycontract;
 
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractBrandResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractCategoryResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractFileResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseGroupResVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -107,6 +111,62 @@ public class ApplyContractUpdateResVo {
 
     @ApiModelProperty("进货额")
     private List<ApplyContractPurchaseVolumeResVo> purchaseList;
+
+    @ApiModelProperty("最小起订额")
+    private Long minAmount;
+
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
+
+    @ApiModelProperty("最高起订金额")
+    private Long maxAmount;
+
+    @ApiModelProperty("送货周期")
+    private Integer deliveryCycle;
+
+    @ApiModelProperty("税率")
+    private Long taxRate;
+
+    @ApiModelProperty("折扣")
+    private Long discount;
+
+    @ApiModelProperty("退换货保证(0保证 1不保证)")
+    private Byte returnGuarantee;
+
+    @ApiModelProperty("退换货保证天数")
+    private Integer returnGuaranteeDay;
+
+    @ApiModelProperty("质保金")
+    private Long warranty;
+
+    @ApiModelProperty("供货渠道编码")
+    private String categoriesSupplyChannelsCode;
+
+    @ApiModelProperty("供货渠道名称")
+    private String categoriesSupplyChannelsName;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+    @ApiModelProperty("合同采购组")
+    private List<ContractPurchaseGroupResVo> purchaseGroupResVos;
+
+    @ApiModelProperty("品牌")
+    List<ContractBrandResVo> brandResVos;
+
+    @ApiModelProperty("品类")
+    List<ContractCategoryResVo> categoryResVos;
+
+
+
+    @ApiModelProperty("文件信息")
+    private List<ContractFileResVo> fileResVos;
 
 
 }

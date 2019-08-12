@@ -23,6 +23,7 @@ public interface UseTagRecordMapper {
     List<UseTagRecordReqVo> getUseTagByUseObjectCode(@Param("useObjectCode") String useObjectCode, @Param("tagTypeCode") String tagTypeCode);
 
     List<DetailTagUseRespVo> getListByUseObjectCode(@Param("useObjectCode") String useObjectCode, @Param("tagTypeCode") String tagTypeCode);
+    List<DetailTagUseRespVo> getListByUseObjectCode2(@Param("useObjectCode") String useObjectCode, @Param("tagTypeCode") String tagTypeCode);
 
     List<DetailTagUseRespVo> getListBySourceCode(@Param("sourceCode") String useObjectCode, @Param("tagTypeCode") String tagTypeCode);
 

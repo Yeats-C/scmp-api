@@ -1,12 +1,16 @@
 package com.aiqin.bms.scmp.api.supplier.dao.logisticscenter;
 
 
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.vo.QueryLogisticsCenterReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface LogisticsCenterDao {
 
@@ -52,7 +56,7 @@ public interface LogisticsCenterDao {
      * @param id
      * @return
      */
-    Integer checkName(@Param("logisticsCenterName") String logisticsCenterName, @Param("id") Long id, @Param("companyCode") String companyCode);
+    Integer checkName(@Param("logisticsCenterName") String logisticsCenterName, @Param("code") String code, @Param("companyCode") String companyCode);
 
     /**
      * 根据省市编码，服务范围查询物流中心
@@ -60,4 +64,28 @@ public interface LogisticsCenterDao {
      * @return
      */
     List<LogisticsCenterDTO> getLogisticsCenterListByArea(WarehouseListReqVo warehouseListReqVo);
+
+    /**
+     * 根据仓库名称查询仓库信息 (退供导入使用)
+     */
+    LogisticsCenter selectByCenterName(@Param("logisticsCenterName")String logisticsCenterName);
+
+    /**
+     * 通过编码更新
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param record
+     * @return int
+     */
+    int updateByCodeSelective(LogisticsCenterDTO record);
+    /**
+     * 名称集合匹配
+     * @author NullPointException
+     * @date 2019/7/18
+     * @param warehouseList
+     * @param companyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter>
+     */
+    @MapKey("logisticsCenterName")
+    Map<String,LogisticsCenterDTO> selectByCenterNames(@Param("list") Set<String> warehouseList, @Param("companyCode") String companyCode);
 }

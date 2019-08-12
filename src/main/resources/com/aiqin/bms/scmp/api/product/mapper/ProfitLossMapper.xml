@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ProfitLossMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="order_type" jdbcType="TINYINT" property="orderType" />
+    <result column="logistics_center_code" jdbcType="VARCHAR" property="logisticsCenterCode" />
+    <result column="logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="profit_quantity" jdbcType="BIGINT" property="profitQuantity" />
+    <result column="profit_total_cost_rate" jdbcType="BIGINT" property="profitTotalCostRate" />
+    <result column="loss_quantity" jdbcType="BIGINT" property="lossQuantity" />
+    <result column="loss_total_cost_rate" jdbcType="BIGINT" property="lossTotalCostRate" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="order_status_code" jdbcType="VARCHAR" property="orderStatusCode" />
+    <result column="order_status_name" jdbcType="VARCHAR" property="orderStatusName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <resultMap id="ResultListMap" type="com.aiqin.bms.scmp.api.product.domain.response.profitloss.QueryProfitLossRespVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="order_type" jdbcType="TINYINT" property="orderType" />
+    <result column="logistics_center_code" jdbcType="VARCHAR" property="logisticsCenterCode" />
+    <result column="logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="profit_quantity" jdbcType="BIGINT" property="profitQuantity" />
+    <result column="profit_total_cost_rate" jdbcType="BIGINT" property="profitTotalCostRate" />
+    <result column="loss_quantity" jdbcType="BIGINT" property="lossQuantity" />
+    <result column="loss_total_cost_rate" jdbcType="BIGINT" property="lossTotalCostRate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="order_type_name" jdbcType="TINYINT" property="orderTypeName" />
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_code, order_type, logistics_center_code, logistics_center_name, warehouse_code, 
+    warehouse_name, profit_quantity, profit_total_cost_rate, loss_quantity, loss_total_cost_rate,
+    remark, order_status_code, order_status_name,
+    del_flag, create_time, create_by, update_time, update_by
+  </sql>
+  <sql id="Result_Column_List">
+     id, order_code, order_type, logistics_center_code, logistics_center_name, warehouse_code,
+    warehouse_name, profit_quantity, profit_total_cost_rate, loss_quantity, loss_total_cost_rate,
+    create_time, create_by, update_time, update_by,
+    case when order_type = 0 then '指定损溢' else '盘点损溢' end as order_type_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from profit_loss
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.profitloss.QueryProfitLossVo" resultMap="ResultListMap">
+    select
+    <include refid="Result_Column_List" />
+    from profit_loss
+    where del_flag = 0
+    <if test="createTimeStart != null">
+      and <![CDATA[ create_time >= #{createTimeStart}]]>
+    </if>
+    <if test="createTimeEnd != null">
+      and <![CDATA[ create_time <= #{createTimeEnd}]]>
+    </if>
+    <if test="orderCode != null and orderCode != '' ">
+      and order_code LIKE CONCAT('%',#{orderCode},'%')
+    </if>
+    <if test="orderType != null">
+      and order_type = #{orderType}
+    </if>
+    <if test="logisticsCenterCode != null and logisticsCenterCode != '' ">
+      and logistics_center_code = #{logisticsCenterCode}
+    </if>
+    <if test="logisticsCenterName != null and logisticsCenterName != '' ">
+      and logistics_center_name like CONCAT('%',#{logisticsCenterName},'%')
+    </if>
+    <if test="warehouseCode != null and warehouseCode != '' ">
+      and warehouse_code = #{warehouseCode}
+    </if>
+    <if test="warehouseName != null and warehouseName != '' ">
+      and warehouse_name like CONCAT('%',#{warehouseName},'%')
+    </if>
+    order by create_time desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from profit_loss
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss">
+    insert into profit_loss (id, order_code, order_type, 
+      logistics_center_code, logistics_center_name, 
+      warehouse_code, warehouse_name,
+      profit_quantity, profit_total_cost_rate,
+      loss_quantity, loss_total_cost_rate,
+      remark, del_flag,
+      create_time, create_by, update_time, 
+      update_by, order_status_code, order_status_name)
+    values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=TINYINT}, 
+      #{logisticsCenterCode,jdbcType=VARCHAR}, #{logisticsCenterName,jdbcType=VARCHAR}, 
+      #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR},
+      #{profitQuantity,jdbcType=BIGINT}, #{profitTotalCostRate,jdbcType=BIGINT},
+      #{lossQuantity,jdbcType=BIGINT}, #{lossTotalCostRate,jdbcType=BIGINT},
+      #{remark,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT},
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateBy,jdbcType=VARCHAR},  #{orderStatusCode,jdbcType=VARCHAR},  #{orderStatusName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss">
+    insert into profit_loss
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderCode != null">
+        order_code,
+      </if>
+      <if test="orderType != null">
+        order_type,
+      </if>
+      <if test="logisticsCenterCode != null">
+        logistics_center_code,
+      </if>
+      <if test="logisticsCenterName != null">
+        logistics_center_name,
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code,
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name,
+      </if>
+      <if test="profitQuantity != null">
+        profit_quantity,
+      </if>
+      <if test="profitTotalCostRate != null">
+        profit_total_cost_rate,
+      </if>
+      <if test="lossQuantity != null">
+        loss_quantity,
+      </if>
+      <if test="lossTotalCostRate != null">
+        loss_total_cost_rate,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="orderStatusCode != null">
+        order_status_code,
+      </if>
+      <if test="orderStatusName != null">
+        order_status_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderCode != null">
+        #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        #{orderType,jdbcType=TINYINT},
+      </if>
+      <if test="logisticsCenterCode != null">
+        #{logisticsCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsCenterName != null">
+        #{logisticsCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="profitQuantity != null">
+        #{profitQuantity,jdbcType=BIGINT},
+      </if>
+      <if test="profitTotalCostRate != null">
+        #{profitTotalCostRate,jdbcType=BIGINT},
+      </if>
+      <if test="lossQuantity != null">
+        #{lossQuantity,jdbcType=BIGINT},
+      </if>
+      <if test="lossTotalCostRate != null">
+        #{lossTotalCostRate,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="orderStatusCode != null">
+        #{orderStatusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderStatusName != null">
+        #{orderStatusName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss">
+    update profit_loss
+    <set>
+      <if test="orderCode != null">
+        order_code = #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+        order_type = #{orderType,jdbcType=TINYINT},
+      </if>
+      <if test="logisticsCenterCode != null">
+        logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsCenterName != null">
+        logistics_center_name = #{logisticsCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="profitQuantity != null">
+        profit_quantity = #{profitQuantity,jdbcType=BIGINT},
+      </if>
+      <if test="profitTotalCostRate != null">
+        profit_total_cost_rate = #{profitTotalCostRate,jdbcType=BIGINT},
+      </if>
+      <if test="lossQuantity != null">
+        loss_quantity = #{lossQuantity,jdbcType=BIGINT},
+      </if>
+      <if test="lossTotalCostRate != null">
+        loss_total_cost_rate = #{lossTotalCostRate,jdbcType=BIGINT},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="orderStatusCode != null">
+        order_status_code = #{orderStatusCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderStatusName != null">
+        order_status_name = #{orderStatusName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss">
+    update profit_loss
+    set order_code = #{orderCode,jdbcType=VARCHAR},
+      order_type = #{orderType,jdbcType=TINYINT},
+      logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR},
+      logistics_center_name = #{logisticsCenterName,jdbcType=VARCHAR},
+      warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      profit_quantity = #{profitQuantity,jdbcType=BIGINT},
+      profit_total_cost_rate = #{profitTotalCostRate,jdbcType=BIGINT},
+      loss_quantity = #{lossQuantity,jdbcType=BIGINT},
+      loss_total_cost_rate = #{lossTotalCostRate,jdbcType=BIGINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      order_status_code = #{orderStatusCode,jdbcType=VARCHAR},
+      order_status_name = #{orderStatusName,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

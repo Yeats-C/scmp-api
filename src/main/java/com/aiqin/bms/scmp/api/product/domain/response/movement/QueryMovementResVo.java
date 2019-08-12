@@ -1,7 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.movement;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -32,16 +31,16 @@ public class QueryMovementResVo {
     private String logisticsCenterName;
 
     @ApiModelProperty("调出库房编码")
-    private String calloutWarehouseCode;
+    private String callOutWarehouseCode;
 
     @ApiModelProperty("调出库房名称")
-    private String calloutWarehouseName;
+    private String callOutWarehouseName;
 
     @ApiModelProperty("调入库房编码")
-    private String callinWarehouseCode;
+    private String callInWarehouseCode;
 
     @ApiModelProperty("调入库房名称")
-    private String callinWarehouseName;
+    private String callInWarehouseName;
 
     @ApiModelProperty("采购组编码")
     private String purchaseGroupCode;
@@ -55,7 +54,13 @@ public class QueryMovementResVo {
     @ApiModelProperty("数量")
     private Long quantity;
 
-    @ApiModelProperty("含税库存成本")
+    @ApiModelProperty("出库数量")
+    private Long callOutQuantity;
+
+    @ApiModelProperty("入库数量")
+    private Long  callInQuantity;
+
+    @ApiModelProperty("含税库存成本，展示时需要除以100")
     private Long taxInventoryCost;
 
     @ApiModelProperty("出库单号")
@@ -74,7 +79,7 @@ public class QueryMovementResVo {
     private Byte delFlag;
 
     @ApiModelProperty("创建时间")
-    @JsonProperty("yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty("创建人")

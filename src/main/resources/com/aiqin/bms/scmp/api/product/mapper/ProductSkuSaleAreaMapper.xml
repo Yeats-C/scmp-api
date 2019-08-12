@@ -51,7 +51,7 @@
         <result column="bcode"  property="code" />
       </collection>
     </resultMap>
-    <select id="officialSkuList" resultMap="officialSkuList">
+    <select id="officialSkuList" parameterType="java.util.List" resultMap="officialSkuList">
         select a.sku_code asku_code,
                a.sku_name asku_name,
                a.categories_supply_channels_code acategories_supply_channels_code,
@@ -70,24 +70,44 @@
                          on a.code = b.main_code
                left join product_sku_sale_area_main c
                          on a.code = c.code
-        where c.company_code = #{companyCode}
-      <if test="skuCode != null">
-        and a.sku_code = #{skuCode}
-      </if>
-      <if test="skuName != null">
-        and a.sku_name like CONCAT('%',#{skuName},'%')
-      </if>
-      <if test="beDisable != null">
-        and c.be_disable = #{beDisable}
-      </if>
-      <if test="categoriesSupplyChannelsCode != null">
-        and a.categories_supply_channels_code = #{categoriesSupplyChannelsCode}
-      </if>
-      <if test="directDeliverySupplierName != null">
-        and a.direct_delivery_supplier_name like CONCAT('%',#{directDeliverySupplierName},'%')
-      </if>
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        where a.id in
+        <foreach collection="list" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+</select>
+  <select id="officialSkuListCount" resultType="java.lang.Long">
+    select a.id
+    from product_sku_sale_area a
+    left join product_sku_sale_area_info b
+    on a.code = b.main_code
+    left join product_sku_sale_area_main c
+    on a.code = c.code
+    where c.company_code = #{companyCode}
+    <if test="skuCode != null and skuCode != ''">
+      and a.sku_code like CONCAT('%',#{skuCode},'%')
+    </if>
+    <if test="skuName != null and skuName != ''">
+      and a.sku_name like CONCAT('%',#{skuName},'%')
+    </if>
+    <if test="code != null and code != ''">
+      and c.code like CONCAT('%',#{code},'%')
+    </if>
+    <if test="name != null and name != ''">
+      and c.name like CONCAT('%',#{name},'%')
+    </if>
+    <if test="beDisable != null">
+      and c.be_disable = #{beDisable}
+    </if>
+    <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != ''">
+      and a.categories_supply_channels_code = #{categoriesSupplyChannelsCode}
+    </if>
+    <if test="directDeliverySupplierCode != null and directDeliverySupplierCode != ''">
+      and a.direct_delivery_supplier_code like CONCAT('%',#{directDeliverySupplierCode},'%')
+    </if>
+    group by a.id
+    order by a.create_time desc
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_sale_area
     where id = #{id,jdbcType=BIGINT}
   </delete>
@@ -260,14 +280,14 @@
       ext_field_6)
     values
     <foreach collection="items" item="item" open="" close="" separator=",">
-    (#{items.id,jdbcType=BIGINT}, #{items.code,jdbcType=VARCHAR}, #{items.skuCode,jdbcType=VARCHAR},
-      #{items.skuName,jdbcType=VARCHAR}, #{items.beDisable,jdbcType=INTEGER}, #{items.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
-      #{items.categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{items.directDeliverySupplierCode,jdbcType=VARCHAR},
-      #{items.directDeliverySupplierName,jdbcType=VARCHAR}, #{items.createBy,jdbcType=VARCHAR}, #{items.createTime,jdbcType=TIMESTAMP},
-      #{items.updateBy,jdbcType=VARCHAR}, #{items.updateTime,jdbcType=TIMESTAMP}, #{items.companyCode,jdbcType=VARCHAR},
-      #{items.companyName,jdbcType=VARCHAR}, #{items.extField1,jdbcType=VARCHAR}, #{items.extField2,jdbcType=VARCHAR},
-      #{items.extField3,jdbcType=VARCHAR}, #{items.extField4,jdbcType=TIMESTAMP}, #{items.extField5,jdbcType=INTEGER},
-      #{items.extField6,jdbcType=BIGINT})
+    (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR}, #{item.beDisable,jdbcType=INTEGER}, #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+      #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{item.directDeliverySupplierCode,jdbcType=VARCHAR},
+      #{item.directDeliverySupplierName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.companyCode,jdbcType=VARCHAR},
+      #{item.companyName,jdbcType=VARCHAR}, #{item.extField1,jdbcType=VARCHAR}, #{item.extField2,jdbcType=VARCHAR},
+      #{item.extField3,jdbcType=VARCHAR}, #{item.extField4,jdbcType=TIMESTAMP}, #{item.extField5,jdbcType=INTEGER},
+      #{item.extField6,jdbcType=BIGINT})
     </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleArea">

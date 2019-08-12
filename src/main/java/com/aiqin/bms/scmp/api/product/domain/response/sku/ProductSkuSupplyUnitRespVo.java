@@ -20,10 +20,10 @@ public class ProductSkuSupplyUnitRespVo extends CommonBean {
     @ApiModelProperty("主键id")
     private Long id;
 
-    @ApiModelProperty("供货单位code")
+    @ApiModelProperty("供应商编码")
     private String supplyUnitCode;
 
-    @ApiModelProperty("供货单位名称")
+    @ApiModelProperty("供应商名称")
     private String supplyUnitName;
 
     @ApiModelProperty("无税进价")
@@ -37,6 +37,12 @@ public class ProductSkuSupplyUnitRespVo extends CommonBean {
 
     @ApiModelProperty("返点")
     private Long point;
+
+    @ApiModelProperty("税率")
+    private Long taxRate;
+
+    @ApiModelProperty("厂商SKU编码")
+    private String factorySkuCode;
 
     @ApiModelProperty("是否缺省（0:否,1：是）")
     private Byte isDefault;

@@ -42,4 +42,7 @@ public class QueryProductSaleAreaForSkuReqVO extends PageReq {
 
     @ApiModelProperty("公司编码")
     private String companyCode;
+
+    @ApiModelProperty("sku集合")
+    private String skuCodes;
 }

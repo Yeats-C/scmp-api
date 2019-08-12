@@ -1,9 +1,6 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandReqVO;
@@ -11,8 +8,11 @@ import com.aiqin.bms.scmp.api.product.domain.request.brand.QueryProductBrandReqV
 import com.aiqin.bms.scmp.api.product.domain.response.ProductBrandRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryProductBrandRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductBrandService;
-import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Lists;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.google.common.collect.Sets;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -41,9 +42,9 @@ public class ProductBrandController {
 
     @PostMapping("/list")
     @ApiOperation(value = "列表")
-    public HttpResponse<PageInfo<QueryProductBrandRespVO>> list(@RequestBody QueryProductBrandReqVO reqVO) {
+    public HttpResponse<BasePage<QueryProductBrandRespVO>> list(@RequestBody QueryProductBrandReqVO reqVO) {
         try {
-            PageInfo<QueryProductBrandRespVO> s = productBrandService.selectBrandListByQueryVO(reqVO);
+            BasePage<QueryProductBrandRespVO> s = productBrandService.selectBrandListByQueryVO(reqVO);
             return HttpResponse.success(s);
         }catch (Exception e){
             log.error(e.getMessage());
@@ -117,7 +118,9 @@ public class ProductBrandController {
     @ApiOperation(value = "通过编码集合获取品牌列表")
     public HttpResponse<List<ProductBrandType>> selectByBrandCodes(String codes) {
         try {
-            List<ProductBrandType> list = productBrandService.selectByBrandCodes(Lists.newArrayList(Lists.newArrayList(codes.split(","))));
+            Set<String> list = Sets.newHashSet();
+            list.add(codes);
+            productBrandService.selectByBrandNames(list,"04");
             return HttpResponse.success(list);
         }catch (Exception e){
             log.error(e.getMessage());

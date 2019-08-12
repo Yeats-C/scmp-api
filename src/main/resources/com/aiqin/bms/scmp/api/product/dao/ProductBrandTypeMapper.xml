@@ -123,6 +123,16 @@
             #{code}
         </foreach>
     </select>
+    <select id="selectByBrandNames" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_brand_type
+        where company_code = #{companyCode} and brand_status = 0
+        and brand_name in
+        <foreach collection="list" separator="," item="code" open="(" close=")">
+            #{code}
+        </foreach>
+    </select>
     <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductBrandType">
         update product_brand_type
         <set>

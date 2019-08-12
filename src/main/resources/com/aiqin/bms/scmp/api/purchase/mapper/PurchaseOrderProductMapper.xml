@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="order_product_id" jdbcType="VARCHAR" property="orderProductId" />
+    <result column="purchase_order_id" jdbcType="VARCHAR" property="purchaseOrderId" />
+    <result column="purchase_order_code" jdbcType="VARCHAR" property="purchaseOrderCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
+    <result column="purchase_whole" jdbcType="INTEGER" property="purchaseWhole" />
+    <result column="purchase_single" jdbcType="INTEGER" property="purchaseSingle" />
+    <result column="base_product_content" jdbcType="INTEGER" property="baseProductContent" />
+    <result column="box_gauge" jdbcType="VARCHAR" property="boxGauge" />
+    <result column="single_count" jdbcType="INTEGER" property="singleCount" />
+    <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
+    <result column="product_amount" jdbcType="INTEGER" property="productAmount" />
+    <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
+    <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
+    <result column="actual_single_count" jdbcType="INTEGER" property="actualSingleCount" />
+    <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_product_id as orderProductId, purchase_order_id as purchaseOrderId, purchase_order_code as purchaseOrderCode,
+    sku_code as skuCode, sku_name as skuName, brand_id as brandId, brand_name as brandName, category_id as categoryId,
+    category_name as categoryName, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
+    product_type as productType, purchase_whole as purchaseWhole, purchase_single as purchaseSingle,
+    base_product_content as baseProductContent, box_gauge as boxGauge, single_count as singleCount,
+    tax_rate as taxRate, product_amount as productAmount, product_total_amount as productTotalAmount,
+    stock_count as stockCount, actual_single_count as actualSingleCount, create_time as createTime, update_time as updateTime,
+    create_by_id as createById, create_by_name as createByName, factory_sku_code as factorySkuCode
+  </sql>
+  <insert id="insert">
+    insert into purchase_order_product (order_product_id, purchase_order_id,
+      purchase_order_code, sku_code, sku_name, 
+      brand_id, brand_name, category_id, 
+      category_name, product_spec, color_name, 
+      model_number, product_type, purchase_whole, 
+      purchase_single, base_product_content, box_gauge, 
+      single_count, tax_rate, product_amount, product_total_amount, stock_count,
+      factory_sku_code, create_time, create_by_id, create_by_name)
+    values (#{orderProductId,jdbcType=VARCHAR}, #{purchaseOrderId,jdbcType=VARCHAR},
+      #{purchaseOrderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
+      #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR}, #{categoryId,jdbcType=VARCHAR}, 
+      #{categoryName,jdbcType=VARCHAR}, #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, 
+      #{modelNumber,jdbcType=VARCHAR}, #{productType,jdbcType=INTEGER}, #{purchaseWhole,jdbcType=INTEGER}, 
+      #{purchaseSingle,jdbcType=INTEGER}, #{baseProductContent,jdbcType=INTEGER}, #{boxGauge,jdbcType=VARCHAR}, 
+      #{singleCount,jdbcType=INTEGER}, #{taxRate,jdbcType=INTEGER}, #{productAmount,jdbcType=INTEGER}, 
+      #{productTotalAmount,jdbcType=INTEGER}, #{stockCount,jdbcType=INTEGER}, #{factorySkuCode,jdbcType=VARCHAR},
+      now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
+  </insert>
+  <update id="update">
+    update purchase_order_product
+    <set>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryName != null">
+        category_name = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="productSpec != null">
+        product_spec = #{productSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        color_name = #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelNumber != null">
+        model_number = #{modelNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseWhole != null">
+        purchase_whole = #{purchaseWhole,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseSingle != null">
+        purchase_single = #{purchaseSingle,jdbcType=INTEGER},
+      </if>
+      <if test="baseProductContent != null">
+        base_product_content = #{baseProductContent,jdbcType=INTEGER},
+      </if>
+      <if test="boxGauge != null">
+        box_gauge = #{boxGauge,jdbcType=VARCHAR},
+      </if>
+      <if test="singleCount != null">
+        single_count = #{singleCount,jdbcType=INTEGER},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate,jdbcType=INTEGER},
+      </if>
+      <if test="productAmount != null">
+        product_amount = #{productAmount,jdbcType=INTEGER},
+      </if>
+      <if test="productTotalAmount != null">
+        product_total_amount = #{productTotalAmount,jdbcType=INTEGER},
+      </if>
+      <if test="stockCount != null">
+        stock_count = #{stockCount,jdbcType=INTEGER},
+      </if>
+      <if test="actualSingleCount != null">
+        actual_single_count = #{actualSingleCount,jdbcType=INTEGER},
+      </if>
+      update_time = now(),
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <where>
+      <if test="orderProductId != null">
+        order_product_id = #{orderProductId,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseOrderCode != null">
+        and purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuCode != null">
+        and sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="id != null">
+        and id = #{id,jdbcType=BIGINT}
+      </if>
+    </where>
+  </update>
+  <select id="purchaseOrderList" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
+    select <include refid="Base_Column_List"></include>
+    from purchase_order_product
+    <where>
+      purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+    </where>
+    <if test="isPage == 0">
+      LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="purchaseOrderCount" resultType="java.lang.Integer">
+    select count(1)
+    from purchase_order_product
+    <where>
+      purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+    </where>
+  </select>
+  <insert id="insertAll">
+    insert into purchase_order_product (order_product_id, purchase_order_id,
+      purchase_order_code, sku_code, sku_name, brand_id, brand_name, category_id,
+      category_name, product_spec, color_name, model_number, product_type, purchase_whole,
+      purchase_single, base_product_content, box_gauge, single_count, tax_rate, product_amount,
+      product_total_amount, stock_count, factory_sku_code, create_time, create_by_id, create_by_name)
+    values
+    <foreach collection="list" item="item" index="" separator=",">
+    (#{item.orderProductId,jdbcType=VARCHAR}, #{item.purchaseOrderId,jdbcType=VARCHAR},
+      #{item.purchaseOrderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.brandId,jdbcType=VARCHAR}, #{item.brandName,jdbcType=VARCHAR}, #{item.categoryId,jdbcType=VARCHAR},
+      #{item.categoryName,jdbcType=VARCHAR}, #{item.productSpec,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR},
+      #{item.modelNumber,jdbcType=VARCHAR}, #{item.productType,jdbcType=INTEGER}, #{item.purchaseWhole,jdbcType=INTEGER},
+      #{item.purchaseSingle,jdbcType=INTEGER}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.boxGauge,jdbcType=VARCHAR},
+      #{item.singleCount,jdbcType=INTEGER}, #{item.taxRate,jdbcType=INTEGER}, #{item.productAmount,jdbcType=INTEGER},
+      #{item.productTotalAmount,jdbcType=INTEGER}, #{item.stockCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR},
+      now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <select id="orderBySku" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
+    select sku_code as skuCode, sku_name as skuName
+    from purchase_order_product
+    where  purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+    GROUP BY sku_code
+  </select>
+  <select id="warehousingInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+    select purchase_order_id as purchaseOrderId, purchase_order_code as purchaseOrderCode,
+    sku_code as skuCode, sku_name as skuName, brand_id as brandId, brand_name as brandName, category_id as categoryId,
+    category_name as categoryName, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
+    product_type as productType, purchase_whole as purchaseWhole, purchase_single as purchaseSingle,
+    base_product_content as baseProductContent, box_gauge as boxGauge, single_count as singleCount,
+    tax_rate as taxRate, product_amount as productAmount, product_total_amount as productTotalAmount
+    from purchase_order_product
+    where  purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+    and id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="orderProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
+    select <include refid="Base_Column_List"></include>
+    from purchase_order_product
+    where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+  </select>
+  <select id="orderStatusByCount" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+    SELECT p.single_count as singleCount, p.actual_single_count as actualSingleCount,
+    d.expect_arrival_time as expectArrivalTime
+    from purchase_order_product p
+    inner join purchase_order o
+    on p.purchase_order_id = o.purchase_order_id
+    inner join purchase_order_details d
+    on d.purchase_order_id = p.purchase_order_id
+    where o.info_status = 0
+    and o.purchase_order_status in (2, 3, 4, 5, 6)
+    and p.sku_code = #{skuCode,jdbcType=VARCHAR}
+    and o.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectPreNumAndPraNumBySkuCodeAndSource" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
+    select <include refid="Base_Column_List" /> from purchase_order_product
+    where purchase_order_code = #{code, jdbcType=VARCHAR}
+    and sku_code = #{skuCode, jdbcType=VARCHAR}
+    and id = #{id, jdbcType=VARCHAR}
+  </select>
+  <select id="orderProductInfoByGroup" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+    select
+    p.sku_code as skuCode, p.sku_name as skuName, sum(p.single_count) as singleCount,
+    sum(p.actual_single_count) as actualSingleCount, o.create_by_name as createByName,
+		o.purchase_order_code as purchaseOrderCode, o.transport_center_code as transportCenterCode,
+		o.transport_center_name as transportCenterName, o.warehouse_code as warehouseCode,
+		o.warehouse_name as warehouseName, p.tax_rate as taxRate
+    from purchase_order_product p
+	inner join purchase_order o on p.purchase_order_id = o.purchase_order_id
+    where o.purchase_order_id = #{purchaseOrderId, jdbcType=VARCHAR} GROUP BY o.transport_center_code, o.warehouse_code, p.sku_code
+  </select>
+  <select id="orderProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+    select
+    p.purchase_order_id as purchaseOrderId, p.purchase_order_code as purchaseOrderCode,
+    p.sku_code as skuCode, p.sku_name as skuName, p.product_type as productType, p.purchase_whole as purchaseWhole,
+    p.purchase_single as purchaseSingle, p.base_product_content as baseProductContent, p.single_count as singleCount,
+    p.product_amount as productAmount, p.product_total_amount as productTotalAmount, p.actual_single_count as actualSingleCount,
+    o.transport_center_code as transportCenterCode, o.transport_center_name as transportCenterName, o.warehouse_code as warehouseCode,
+	o.warehouse_name as warehouseName, o.supplier_code as supplierCode, o.supplier_name as supplierName
+    from purchase_order_product p
+	inner join purchase_order o on p.purchase_order_id = o.purchase_order_id
+    where p.purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
+  </select>
+</mapper>

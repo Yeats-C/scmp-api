@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSaleAreaMain;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMain;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductSaleAreaApplyVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.ApplyProductSkuSaleAreaInfoReq;
@@ -78,4 +79,20 @@ public interface ApplyProductSkuSaleAreaMainMapper {
      * @return int
      */
     int updateByCode(@Param("items") List<String> strings);
+    /**
+     * 通过正式编码查询申请数据
+     * @author NullPointException
+     * @date 2019/6/15
+     * @param officialCode
+     * @param applyStatus
+     * @return com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSaleAreaMain
+     */
+    ApplyProductSkuSaleAreaMain selectByOfficialCode(@Param("applyStatus") Integer applyStatus, @Param("officialCode") String officialCode);
+
+    /**
+     * 通过名称查询
+     * @param name
+     * @return
+     */
+    List<ProductSkuSaleAreaMain> selectByName(String name);
 }

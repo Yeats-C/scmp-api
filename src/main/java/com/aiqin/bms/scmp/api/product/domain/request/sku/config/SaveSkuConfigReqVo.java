@@ -16,17 +16,23 @@ import java.util.List;
 @ApiModel("保存SKU配置信息VO")
 @Data
 public class SaveSkuConfigReqVo {
+    public SaveSkuConfigReqVo() {
+    }
 
-    @ApiModelProperty("商品名称")
+    public SaveSkuConfigReqVo(String transportCenterCode, String transportCenterName) {
+        this.transportCenterCode = transportCenterCode;
+        this.transportCenterName = transportCenterName;
+    }
+    @ApiModelProperty(value = "商品名称",hidden = true)
     private String productCode;
 
-    @ApiModelProperty("商品编码")
+    @ApiModelProperty(value = "商品编码",hidden = true)
     private String productName;
 
-    @ApiModelProperty("sku编码")
+    @ApiModelProperty(value = "sku编码",hidden = true)
     private String skuCode;
 
-    @ApiModelProperty("sku名称")
+    @ApiModelProperty(value = "sku名称",hidden = true)
     private String skuName;
 
     @ApiModelProperty("物流中心(仓库)编码")
@@ -37,6 +43,9 @@ public class SaveSkuConfigReqVo {
 
     @ApiModelProperty("配置状态(0:再用 1:停止进货 2:停止配送 3:停止销售)")
     private Byte configStatus;
+
+    @ApiModelProperty("配置状态描述")
+    private String configStatusName;
 
     @ApiModelProperty("到货周期")
     private Integer arrivalCycle;
@@ -53,6 +62,13 @@ public class SaveSkuConfigReqVo {
     @ApiModelProperty("大效期预警天数")
     private Integer bigEffectPeriodWarnDay;
 
+    @ApiModelProperty("到货后周转期")
+    private Integer turnoverPeriodAfterArrival;
+
     @ApiModelProperty("备用仓库")
     private List<SpareWarehouseReqVo> spareWarehouses;
+
+    @ApiModelProperty("错误信息")
+    private String error;
+
 }

@@ -61,7 +61,7 @@
     from price_project
     <where>
       <if test="code != null and code.length()  > 0 ">
-        price_project_code =  #{code,jdbcType=VARCHAR}
+        price_project_code  LIKE CONCAT('%', #{code,jdbcType=VARCHAR},'%')
       </if>
       <if test="name != null and name.length()  > 0 ">
         and price_project_name LIKE CONCAT('%',#{name,jdbcType=VARCHAR},'%')
@@ -79,7 +79,7 @@
         and company_code =  #{companyCode,jdbcType=VARCHAR}
       </if>
     </where>
-    order by price_project_order asc,update_time desc
+    order by price_project_order asc,create_time desc
   </select>
   <select id="checkName" resultType="java.lang.Integer">
     select
@@ -288,4 +288,12 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectInfoByImport" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from price_project where price_type_code = #{priceTypeCode, jdbcType = VARCHAR}
+    and price_project_name in
+    <foreach collection="nameList" item="item" index="index" separator="," close=")" open="(">
+      #{item, jdbcType=VARCHAR}
+    </foreach>
+  </select>
 </mapper>

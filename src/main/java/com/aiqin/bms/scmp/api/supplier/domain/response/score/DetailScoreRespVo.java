@@ -1,11 +1,13 @@
 package com.aiqin.bms.scmp.api.supplier.domain.response.score;
 
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -57,6 +59,13 @@ public class DetailScoreRespVo {
 
     @ApiModelProperty("评分姓名")
     private String scorerName;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
 
     @ApiModelProperty("标签使用记录")
     List<DetailTagUseRespVo> tagUseRespVos;

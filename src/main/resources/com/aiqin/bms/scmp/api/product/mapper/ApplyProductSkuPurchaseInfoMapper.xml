@@ -18,11 +18,12 @@
     <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
     <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, spec, product_name, unit_code, unit_name, purchase_code, base_product_content, 
     del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name, 
-    apply_code
+    apply_code,zero_removal_coefficient
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

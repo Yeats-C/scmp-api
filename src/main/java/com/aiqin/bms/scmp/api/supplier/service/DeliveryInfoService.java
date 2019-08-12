@@ -31,4 +31,6 @@ public interface DeliveryInfoService {
      * @return
      */
     List<DeliveryInfoRespVO> getDeliveryInfoBySupplyCompanyCode(String supplyCompanyCode);
+
+    List<DeliveryInfoRespVO> getDeliveryInfoByApplyCompanyCode(String supplyCompanyCode);
 }

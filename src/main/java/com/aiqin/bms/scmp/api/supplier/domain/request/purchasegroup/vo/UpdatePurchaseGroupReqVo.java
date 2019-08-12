@@ -32,6 +32,15 @@ public class UpdatePurchaseGroupReqVo {
     @ApiModelProperty("启用禁用状态")
     private Byte enable;
 
+    @ApiModelProperty("排序")
+    private Integer purchaseGroupOrder;
+
     @ApiModelProperty("采购管理组人员")
     private List<UpdatePurchaseGroupBuyerReqVo> groupBuyerReqVoList;
+
+    @ApiModelProperty("负责人编号")
+    private String responsiblePersonCode;
+
+    @ApiModelProperty("负责人名称")
+    private String responsiblePersonName;
 }

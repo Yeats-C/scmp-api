@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.product.domain.request.sku.store;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.store.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseApiResVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.domain.response.applycontract;
 
+import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -70,7 +71,7 @@ public class ApplyContractViewResVo {
     private Byte targetRebate;
 
     @ApiModelProperty("计划类型(月度,季度,半年,全年)")
-    private Byte planType;
+    List<PlanTypeReqVO> planTypeList;
 
     @ApiModelProperty("起始日期")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
@@ -83,6 +84,14 @@ public class ApplyContractViewResVo {
     @ApiModelProperty("进货价格生效标准(下单日价格,收获日价格)")
     private Byte purchasePriceStandard;
 
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
 
 
     @ApiModelProperty("申通合同编号")
@@ -118,6 +127,15 @@ public class ApplyContractViewResVo {
 
     @ApiModelProperty("文件信息")
     private List<ApplyContractFileResVo> fileResVos;
+
+    @ApiModelProperty("采购组")
+    private List<ApplyContractPurchaseGroupResVo> purchaseGroupResVos;
+
+    @ApiModelProperty("品牌")
+    private List<ApplyContractBrandResVo> brandReqVos;
+
+    @ApiModelProperty("品类")
+    private List<ApplyContractCategoryResVo> categoryReqVos;
 
     @ApiModelProperty("操作日志列表")
     private List<LogData> logDataList;
@@ -161,6 +179,39 @@ public class ApplyContractViewResVo {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
+
+    @ApiModelProperty("最小起订金额")
+    private Long minAmount;
+
+    @ApiModelProperty("最高起订金额")
+    private Long maxAmount;
+
+    @ApiModelProperty("送货周期")
+    private Integer deliveryCycle;
+
+    @ApiModelProperty("税率")
+    private Long taxRate;
+
+    @ApiModelProperty("折扣")
+    private Long discount;
+
+    @ApiModelProperty("退换货保证(0保证 1不保证)")
+    private Byte returnGuarantee;
+
+    @ApiModelProperty("退换货保证天数")
+    private Integer returnGuaranteeDay;
+
+    @ApiModelProperty("质保金")
+    private Long warranty;
+
+    @ApiModelProperty("供货渠道编码")
+    private String categoriesSupplyChannelsCode;
+
+    @ApiModelProperty("供货渠道名称")
+    private String categoriesSupplyChannelsName;
+
+    @ApiModelProperty("备注")
+    private String remark;
 
     public void setApplyType(Byte applyType) {
         if(applyType.equals((byte)0)){

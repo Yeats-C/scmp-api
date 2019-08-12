@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @功能说明: 供货单位详情，包括结算和收货信息
@@ -18,6 +20,9 @@ public class SupplyCompanyDetailDTO {
     @ApiModelProperty("供应商编号")
     private String supplyCode;
 
+    @ApiModelProperty("申请修改时需要展示的供应商编码")
+    private String formalCode;
+
     @ApiModelProperty("所属集团名称")
     private String supplierName;
 
@@ -29,6 +34,9 @@ public class SupplyCompanyDetailDTO {
 
     @ApiModelProperty("供应商类型")
     private String supplyType;
+
+    @ApiModelProperty("供应商类型")
+    private String supplyTypeName;
 
     @ApiModelProperty("供应商简称")
     private String supplyAbbreviation;
@@ -88,7 +96,7 @@ public class SupplyCompanyDetailDTO {
     private String corporateRepresentative;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("是否禁用")
     private Byte enable;
@@ -110,5 +118,19 @@ public class SupplyCompanyDetailDTO {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
 
 }

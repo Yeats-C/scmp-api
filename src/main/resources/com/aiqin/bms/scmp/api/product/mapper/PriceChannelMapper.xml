@@ -64,10 +64,10 @@
     from price_channel
     <where>
       <if test="code != null and code.length() >0 ">
-        price_channel_code = #{code,jdbcType=VARCHAR}
+        price_channel_code  like CONCAT('%', #{code,jdbcType=VARCHAR},'%')
       </if>
       <if test="name != null and name.length() >0 ">
-        price_channel_name like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
+        and price_channel_name like CONCAT('%',#{name,jdbcType=VARCHAR},'%')
       </if>
       <if test="enable != null and enable.length()  > 0 ">
         and price_channel_enable =  #{enable,jdbcType=TINYINT}
@@ -76,7 +76,7 @@
         and company_code =  #{companyCode,jdbcType=VARCHAR}
       </if>
     </where>
-    order by price_channel_order asc,update_time desc
+    order by price_channel_order asc,create_time desc
   </select>
 
   <select id="checkName" resultType="java.lang.Integer">
@@ -95,8 +95,17 @@
       </if>
     </where>
   </select>
-
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <select id="selectByChannelNames" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from price_channel
+    where company_code = #{companyCode}
+    and price_channel_name in
+    <foreach collection="list" open="(" close=")" item="item" separator=",">
+        #{item}
+    </foreach>
+  </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from price_channel
     where id = #{id,jdbcType=BIGINT}
   </delete>
@@ -375,4 +384,11 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectByChannelName" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannel">
+    select
+    price_channel_code as priceChannelCode , price_channel_name as priceChannelName
+    from price_channel
+    where
+     price_channel_name = #{priceChannelName,jdbcType=VARCHAR}
+  </select>
 </mapper>

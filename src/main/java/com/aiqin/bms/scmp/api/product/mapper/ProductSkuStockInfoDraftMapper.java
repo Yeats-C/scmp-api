@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuStockInfoDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 
@@ -21,4 +22,8 @@ public interface ProductSkuStockInfoDraftMapper {
     List<PurchaseSaleStockRespVo> getList(String skuCode);
 
     Integer delete(List<String> skuCodes);
+
+    int deleteDrafts(List<ApplyProductSku> applyProductSkus);
+
+    List<ProductSkuStockInfoDraft> getDrafts(List<ApplyProductSku> applyProductSkus);
 }

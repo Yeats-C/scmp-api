@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -48,15 +49,33 @@ public class SupplierRuleServiceImpl implements SupplierRuleService {
                throw new BizException(ResultCode.OBJECT_EMPTY);
            }
            rule.setAutoReturnGoodsDay(reqVo.getAutoReturnGoodsDay());
+           rule.setOrderVolumeCoefficient(reqVo.getOrderVolumeCoefficient());
+           rule.setOrderWeightCoefficient(reqVo.getOrderWeightCoefficient());
+           rule.setPurchaseProcessDay(reqVo.getPurchaseProcessDay());
+           rule.setPurchaseProcessReviewDay(reqVo.getPurchaseProcessReviewDay());
+           rule.setPurchaseProcessPaymentDay(reqVo.getPurchaseProcessPaymentDay());
+           rule.setPurchaseProcessSupplierConfirmDay(reqVo.getPurchaseProcessSupplierConfirmDay());
            num = ((SupplierRuleService)AopContext.currentProxy()).update(rule);
         } else {
             DetailRespVo detailRespVo = findRule();
             if(null != detailRespVo.getId()  && !Objects.equals(detailRespVo.getId(),MsgStatus.ZERO.longValue())){
                 rule.setId(detailRespVo.getId());
                 rule.setAutoReturnGoodsDay(reqVo.getAutoReturnGoodsDay());
+                rule.setOrderVolumeCoefficient(reqVo.getOrderVolumeCoefficient());
+                rule.setOrderWeightCoefficient(reqVo.getOrderWeightCoefficient());
+                rule.setPurchaseProcessDay(reqVo.getPurchaseProcessDay());
+                rule.setPurchaseProcessReviewDay(reqVo.getPurchaseProcessReviewDay());
+                rule.setPurchaseProcessPaymentDay(reqVo.getPurchaseProcessPaymentDay());
+                rule.setPurchaseProcessSupplierConfirmDay(reqVo.getPurchaseProcessSupplierConfirmDay());
                 num = ((SupplierRuleService)AopContext.currentProxy()).update(rule);
             }else {
                 rule.setAutoReturnGoodsDay(reqVo.getAutoReturnGoodsDay());
+                rule.setOrderVolumeCoefficient(reqVo.getOrderVolumeCoefficient());
+                rule.setOrderWeightCoefficient(reqVo.getOrderWeightCoefficient());
+                rule.setPurchaseProcessDay(reqVo.getPurchaseProcessDay());
+                rule.setPurchaseProcessReviewDay(reqVo.getPurchaseProcessReviewDay());
+                rule.setPurchaseProcessPaymentDay(reqVo.getPurchaseProcessPaymentDay());
+                rule.setPurchaseProcessSupplierConfirmDay(reqVo.getPurchaseProcessSupplierConfirmDay());
                 num = ((SupplierRuleService)AopContext.currentProxy()).insert(rule);
             }
         }
@@ -80,6 +99,12 @@ public class SupplierRuleServiceImpl implements SupplierRuleService {
         if (null == detailRespVo) {
             detailRespVo = new DetailRespVo();
             detailRespVo.setAutoReturnGoodsDay(0);
+            detailRespVo.setOrderVolumeCoefficient(BigDecimal.ZERO);
+            detailRespVo.setOrderWeightCoefficient(BigDecimal.ZERO);
+            detailRespVo.setPurchaseProcessDay(0);
+            detailRespVo.setPurchaseProcessReviewDay(0);
+            detailRespVo.setPurchaseProcessPaymentDay(0);
+            detailRespVo.setPurchaseProcessSupplierConfirmDay(0);
         }
         return detailRespVo;
     }

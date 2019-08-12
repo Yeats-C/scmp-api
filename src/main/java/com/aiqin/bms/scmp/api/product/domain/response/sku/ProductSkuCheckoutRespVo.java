@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author knight.xie
  * @version 1.0
@@ -38,4 +40,7 @@ public class ProductSkuCheckoutRespVo extends CommonBean {
 
     @ApiModelProperty("积分系数")
     private Long integralCoefficient;
+
+    @ApiModelProperty("物流费奖励比例")
+    private BigDecimal logisticsFeeAwardRatio;
 }

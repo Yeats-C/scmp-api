@@ -32,7 +32,7 @@ public class NewProductController {
 
     @PostMapping("/insert")
     @ApiOperation("商品新增")
-    public HttpResponse<Integer> insertProduct(@RequestBody NewProductSaveReqVO newProductSaveReqVO) {
+    public HttpResponse<String> insertProduct(@RequestBody NewProductSaveReqVO newProductSaveReqVO) {
         try {
             return HttpResponse.success(newProductService.insertProduct(newProductSaveReqVO));
         } catch (Exception ex) {

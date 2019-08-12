@@ -27,12 +27,12 @@ public interface EncodingRuleType {
     /**
      * 申请合同编码类型
      */
-     String APPLY_CONTRACT_CODE = "APPLY_CONTRACT_CODE";
+     String APPLY_CONTRACT_CODE = "APPLY_CONTRACT_CODE_";
 
     /**
      *  合同编码类型
      */
-      String CONTRACT_CODE ="CONTRACT_CODE";
+      String CONTRACT_CODE ="CONTRACT_CODE_";
 
     /**
      * 制造商编码类型
@@ -109,5 +109,26 @@ public interface EncodingRuleType {
     String SKU_CONFIG_CODE = "SKU_CONFIG_CODE";
     String APPLY_SKU_CONFIG_CODE = "APPLY_SKU_CONFIG_CODE";
 
+    /**
+     * 退供单编码
+     */
+    String GOODS_REJECT_CODE = "GOODS_REJECT_CODE";
+    /**
+     * 退供申请单编码
+     */
+    String GOODS_REJECT_APPLY_CODE = "GOODS_REJECT_APPLY_CODE";
+    /**
+     * 采购申请单编码
+     */
+    String PURCHASE_APPLY_CODE = "PURCHASE_APPLY_CODE";
 
+    /**
+     * 采购单编码
+     */
+    String PURCHASE_ORDER_CODE = "PURCHASE_ORDER_CODE";
+
+    /**
+     * 监管库订单编号
+     */
+    String SUPERVISORY_WAREHOUSE_ORDER_CODE = "SUPERVISORY_WAREHOUSE_ORDER_CODE";
 }

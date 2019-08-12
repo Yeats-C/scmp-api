@@ -4,23 +4,19 @@
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.Allocation">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="allocation_code" jdbcType="VARCHAR" property="allocationCode" />
-    <result column="callout_logistics_center_code" jdbcType="VARCHAR" property="calloutLogisticsCenterCode" />
-    <result column="callout_logistics_center_name" jdbcType="VARCHAR" property="calloutLogisticsCenterName" />
-    <result column="callout_warehouse_code" jdbcType="VARCHAR" property="calloutWarehouseCode" />
-    <result column="callout_warehouse_name" jdbcType="VARCHAR" property="calloutWarehouseName" />
-    <result column="inventory_attributes_code" jdbcType="VARCHAR" property="inventoryAttributesCode" />
-    <result column="inventory_attributes_name" jdbcType="VARCHAR" property="inventoryAttributesName" />
+    <result column="callout_logistics_center_code" jdbcType="VARCHAR" property="callOutLogisticsCenterCode" />
+    <result column="callout_logistics_center_name" jdbcType="VARCHAR" property="callOutLogisticsCenterName" />
+    <result column="callout_warehouse_code" jdbcType="VARCHAR" property="callOutWarehouseCode" />
+    <result column="callout_warehouse_name" jdbcType="VARCHAR" property="callOutWarehouseName" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
-    <result column="callin_logistics_center_code" jdbcType="VARCHAR" property="callinLogisticsCenterCode" />
-    <result column="callin_logistics_center_name" jdbcType="VARCHAR" property="callinLogisticsCenterName" />
-    <result column="callin_warehouse_code" jdbcType="VARCHAR" property="callinWarehouseCode" />
-    <result column="callin_warehouse_name" jdbcType="VARCHAR" property="callinWarehouseName" />
-    <result column="allocation_type_code" jdbcType="TINYINT" property="allocationTypeCode" />
-    <result column="allocation_type_name" jdbcType="VARCHAR" property="allocationTypeName" />
+    <result column="callin_logistics_center_code" jdbcType="VARCHAR" property="callInLogisticsCenterCode" />
+    <result column="callin_logistics_center_name" jdbcType="VARCHAR" property="callInLogisticsCenterName" />
+    <result column="callin_warehouse_code" jdbcType="VARCHAR" property="callInWarehouseCode" />
+    <result column="callin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
     <result column="principal" jdbcType="VARCHAR" property="principal" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
-    <result column="tax_refund_amount" jdbcType="BIGINT" property="taxRefundAmount" />
+    <result column="total_cost_rate" jdbcType="BIGINT" property="totalCostRate" />
     <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
     <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
     <result column="allocation_status_code" jdbcType="TINYINT" property="allocationStatusCode" />
@@ -33,171 +29,193 @@
     <result column="form_no"  jdbcType="VARCHAR" property="formNo"/>
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode" />
+    <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
+    <result column="undertaking_unit_code" jdbcType="VARCHAR" property="undertakingUnitCode" />
+    <result column="undertaking_unit_name" jdbcType="VARCHAR" property="undertakingUnitName" />
+    <result column="remark" jdbcType="CLOB" property="remark" />
+    <result column="allocation_type" jdbcType="TINYINT" property="allocationType" />
+    <result column="allocation_type_name" jdbcType="VARCHAR" property="allocationTypeName" />
   </resultMap>
-  <!--<sql id="Example_Where_Clause">-->
-    <!--<where>-->
-      <!--<foreach collection="oredCriteria" item="criteria" separator="or">-->
-        <!--<if test="criteria.valid">-->
-          <!--<trim prefix="(" prefixOverrides="and" suffix=")">-->
-            <!--<foreach collection="criteria.criteria" item="criterion">-->
-              <!--<choose>-->
-                <!--<when test="criterion.noValue">-->
-                  <!--and ${criterion.condition}-->
-                <!--</when>-->
-                <!--<when test="criterion.singleValue">-->
-                  <!--and ${criterion.condition} #{criterion.value}-->
-                <!--</when>-->
-                <!--<when test="criterion.betweenValue">-->
-                  <!--and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}-->
-                <!--</when>-->
-                <!--<when test="criterion.listValue">-->
-                  <!--and ${criterion.condition}-->
-                  <!--<foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">-->
-                    <!--#{listItem}-->
-                  <!--</foreach>-->
-                <!--</when>-->
-              <!--</choose>-->
-            <!--</foreach>-->
-          <!--</trim>-->
-        <!--</if>-->
-      <!--</foreach>-->
-    <!--</where>-->
-  <!--</sql>-->
-  <!--<sql id="Update_By_Example_Where_Clause">-->
-    <!--<where>-->
-      <!--<foreach collection="example.oredCriteria" item="criteria" separator="or">-->
-        <!--<if test="criteria.valid">-->
-          <!--<trim prefix="(" prefixOverrides="and" suffix=")">-->
-            <!--<foreach collection="criteria.criteria" item="criterion">-->
-              <!--<choose>-->
-                <!--<when test="criterion.noValue">-->
-                  <!--and ${criterion.condition}-->
-                <!--</when>-->
-                <!--<when test="criterion.singleValue">-->
-                  <!--and ${criterion.condition} #{criterion.value}-->
-                <!--</when>-->
-                <!--<when test="criterion.betweenValue">-->
-                  <!--and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}-->
-                <!--</when>-->
-                <!--<when test="criterion.listValue">-->
-                  <!--and ${criterion.condition}-->
-                  <!--<foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">-->
-                    <!--#{listItem}-->
-                  <!--</foreach>-->
-                <!--</when>-->
-              <!--</choose>-->
-            <!--</foreach>-->
-          <!--</trim>-->
-        <!--</if>-->
-      <!--</foreach>-->
-    <!--</where>-->
-  <!--</sql>-->
   <sql id="Base_Column_List">
-    id, allocation_code, callout_logistics_center_code, callout_logistics_center_name, 
-    callout_warehouse_code, callout_warehouse_name, inventory_attributes_code, inventory_attributes_name, 
-    purchase_group_code, purchase_group_name, callin_logistics_center_code, callin_logistics_center_name, 
-    callin_warehouse_code, callin_warehouse_name, allocation_type_code, allocation_type_name, 
-    principal, quantity, tax_refund_amount, outbound_oder_code, inbound_oder_code, allocation_status_code,
-    allocation_status_name, del_flag, create_time, create_by, update_time, update_by,form_no,company_code,company_name
+      id, allocation_code, callout_logistics_center_code,
+      callout_logistics_center_name, callout_warehouse_code,
+      callout_warehouse_name, purchase_group_code,
+      purchase_group_name, callin_logistics_center_code,
+      callin_logistics_center_name, callin_warehouse_code,
+      callin_warehouse_name, principal, quantity,
+      total_cost_rate, outbound_oder_code, inbound_oder_code,
+      allocation_status_code, allocation_status_name,
+      del_flag, create_time, create_by,
+      update_time, update_by ,form_no,company_code,company_name,
+      direct_supervisor_code,direct_supervisor_name,
+      undertaking_unit_code,undertaking_unit_name,remark,allocation_type,
+      allocation_type_name
   </sql>
-  <!--<select id="selectByExample" parameterType="com.aiqin.mgs.product.api.pojo.AllocationExample" resultMap="BaseResultMap">-->
-    <!--select-->
-    <!--<if test="distinct">-->
-      <!--distinct-->
-    <!--</if>-->
-    <!--<include refid="Base_Column_List" />-->
-    <!--from allocation-->
-    <!--<if test="_parameter != null">-->
-      <!--<include refid="Example_Where_Clause" />-->
-    <!--</if>-->
-    <!--<if test="orderByClause != null">-->
-      <!--order by ${orderByClause}-->
-    <!--</if>-->
-  <!--</select>-->
-
-  <select id="getList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List">
-    </include>
-    FROM allocation
-    where
-    1=1
-    <if test="createStartTime != null ">
-      AND create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
-    </if>
-    <if test="createEndTime != null">
-      AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
-    </if>
-    <if test="allocationCode != null and allocationCode != '' ">
-      AND allocation_code  LIKE  CONCAT(CONCAT('%',#{allocationCode},'%'))
-    </if>
-    <if test="allocationStatusCode != null">
-      AND allocation_status_code = #{allocationStatusCode}
-    </if>
-    <if test="calloutLogisticsCenterName != null and calloutLogisticsCenterName != ''">
-      AND callout_logistics_center_name LIKE  CONCAT(CONCAT('%',#{calloutLogisticsCenterName},'%'))
-    </if>
-    <if test="calloutWarehouseName != null and calloutWarehouseName != '' ">
-      AND callout_warehouse_name LIKE  CONCAT(CONCAT('%',#{calloutWarehouseName},'%'))
-    </if>
-    <if test="outboundOderCode != null and outboundOderCode != ''">
-      AND outbound_oder_code LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
-    </if>
-    <if test="callinLogisticsCenterName != null and callinLogisticsCenterName != ''">
-      AND callin_logistics_center_name LIKE  CONCAT(CONCAT('%',#{callinLogisticsCenterName},'%'))
-    </if>
-    <if test="callinWarehouseName != null and callinWarehouseName != '' ">
-      AND callin_warehouse_name LIKE  CONCAT(CONCAT('%',#{callinWarehouseName},'%'))
-    </if>
-    <if test="inboundOderCode != null and inboundOderCode != ''">
-      AND inbound_oder_code LIKE  CONCAT(CONCAT('%',#{inboundOderCode},'%'))
-    </if>
-    <if test="companyCode != null and companyCode != ''">
-      AND company_code = #{companyCode}
-    </if>
-    order by create_time desc
-  </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from allocation
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="getAllocationDetailById"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo">
+    select
+      a.id,
+      a.allocation_code allocationCode,
+      a.callout_logistics_center_code callOutLogisticsCenterCode,
+      a.callout_logistics_center_name callOutLogisticsCenterName,
+      a.callout_warehouse_code callOutWarehouseCode,
+      a.callout_warehouse_name callOutWarehouseName,
+      a.purchase_group_code purchaseGroupCode,
+      a.purchase_group_name purchaseGroupName,
+      a.callin_logistics_center_code callInLogisticsCenterCode,
+      a.callin_logistics_center_name callInLogisticsCenterName,
+      a.callin_warehouse_code callInWarehouseCode,
+      a.callin_warehouse_name callInWarehouseName,
+      a.principal,
+      a.quantity,
+      a.total_cost_rate totalCostRate,
+      a.outbound_oder_code outboundOderCode,
+      a.inbound_oder_code inboundOderCode,
+      a.allocation_status_code allocationStatusCode,
+      a.allocation_status_name allocationStatusName,
+      a.del_flag delFlag,
+      a.create_time createTime,
+      a.create_by createBy,
+      a.update_time updateTime,
+      a.update_by updateBy,
+      a.form_no formNo,
+      a.company_code companyCode,
+      a.company_name companyName,
+      a.direct_supervisor_code directSupervisorCode,
+      a.direct_supervisor_name directSupervisorName,
+      a.undertaking_unit_code undertakingUnitCode,
+      a.undertaking_unit_name undertakingUnitName,
+      a.remark,
+      a.allocation_type allocationType,
+      a.allocation_type_name allocationTypeName,
+      b.pra_main_unit_num callOutQuantity,
+      b.pra_tax_amount callOutTotalCostRate,
+      c.pra_main_unit_num callInQuantity,
+      c.pra_tax_amount callInTotalCostRate
+    from allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    LEFT JOIN inbound c ON a.inbound_oder_code = c.inbound_oder_code
+    where a.id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getMoveDetailById"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo">
+    select
+      a.id,
+      a.allocation_code movementCode,
+      a.callout_logistics_center_code logisticsCenterCode,
+      a.callout_logistics_center_name logisticsCenterName,
+      a.callout_warehouse_code callOutWarehouseCode,
+      a.callout_warehouse_name callOutWarehouseName,
+      a.purchase_group_code purchaseGroupCode,
+      a.purchase_group_name purchaseGroupName,
+      a.callin_warehouse_code callInWarehouseCode,
+      a.callin_warehouse_name callInWarehouseName,
+      a.principal,
+      a.quantity,
+      a.total_cost_rate totalCostRate,
+      a.outbound_oder_code outboundOderCode,
+      a.inbound_oder_code inboundOderCode,
+      a.allocation_status_code movementStatusCode,
+      a.allocation_status_name movementStatusName,
+      a.del_flag delFlag,
+      a.create_time createTime,
+      a.create_by createBy,
+      a.update_time updateTime,
+      a.update_by updateBy,
+      a.form_no formNo,
+      a.company_code companyCode,
+      a.company_name companyName,
+      a.direct_supervisor_code directSupervisorCode,
+      a.direct_supervisor_name directSupervisorName,
+      a.undertaking_unit_code undertakingUnitCode,
+      a.undertaking_unit_name undertakingUnitName,
+      a.remark,
+      b.pra_main_unit_num callOutQuantity,
+      b.pra_tax_amount callOutTotalCostRate,
+      c.pra_main_unit_num callInQuantity,
+      c.pra_tax_amount callInTotalCostRate
+    from allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    LEFT JOIN inbound c ON a.inbound_oder_code = c.inbound_oder_code
+    where a.id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <select id="getScrapDetailById"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo">
+    select
+      a.id,
+      a.allocation_code scrapCode,
+      a.callout_logistics_center_code logisticsCenterCode,
+      a.callout_logistics_center_name logisticsCenterName,
+      a.callout_warehouse_code warehouseCode,
+      a.callout_warehouse_name warehouseName,
+      a.purchase_group_code purchaseGroupCode,
+      a.purchase_group_name purchaseGroupName,
+      a.principal,
+      a.quantity,
+      a.total_cost_rate totalCostRate,
+      a.outbound_oder_code outboundOderCode,
+      a.inbound_oder_code inboundOderCode,
+      a.allocation_status_code scrapStatusCode,
+      a.allocation_status_name scrapStatusName,
+      a.del_flag delFlag,
+      a.create_time createTime,
+      a.create_by createBy,
+      a.update_time updateTime,
+      a.update_by updateBy,
+      a.form_no formNo,
+      a.company_code companyCode,
+      a.company_name companyName,
+      a.direct_supervisor_code directSupervisorCode,
+      a.direct_supervisor_name directSupervisorName,
+      a.undertaking_unit_code undertakingUnitCode,
+      a.undertaking_unit_name undertakingUnitName,
+      a.remark,
+      b.pra_main_unit_num callOutQuantity,
+      b.pra_tax_amount callOutTotalCostRate
+    from allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    where a.id = #{id,jdbcType=BIGINT}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from allocation
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <!--<delete id="deleteByExample" parameterType="com.aiqin.mgs.product.api.pojo.AllocationExample">-->
-    <!--delete from allocation-->
-    <!--<if test="_parameter != null">-->
-      <!--<include refid="Example_Where_Clause" />-->
-    <!--</if>-->
-  <!--</delete>-->
   <insert id="insert"  parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Allocation">
     insert into allocation (id, allocation_code, callout_logistics_center_code, 
       callout_logistics_center_name, callout_warehouse_code, 
-      callout_warehouse_name, inventory_attributes_code, 
-      inventory_attributes_name, purchase_group_code, 
+      callout_warehouse_name,purchase_group_code,
       purchase_group_name, callin_logistics_center_code, 
       callin_logistics_center_name, callin_warehouse_code, 
-      callin_warehouse_name, allocation_type_code, 
-      allocation_type_name, principal, quantity, 
-      tax_refund_amount, outbound_oder_code, inbound_oder_code,
+      callin_warehouse_name, principal, quantity,
+      total_cost_rate, outbound_oder_code, inbound_oder_code,
       allocation_status_code, allocation_status_name, 
       del_flag, create_time, create_by, 
-      update_time, update_by ,form_no,,company_code,company_name)
-    values (#{id,jdbcType=BIGINT}, #{allocationCode,jdbcType=VARCHAR}, #{calloutLogisticsCenterCode,jdbcType=VARCHAR}, 
-      #{calloutLogisticsCenterName,jdbcType=VARCHAR}, #{calloutWarehouseCode,jdbcType=VARCHAR}, 
-      #{calloutWarehouseName,jdbcType=VARCHAR}, #{inventoryAttributesCode,jdbcType=VARCHAR}, 
-      #{inventoryAttributesName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
-      #{purchaseGroupName,jdbcType=VARCHAR}, #{callinLogisticsCenterCode,jdbcType=VARCHAR}, 
-      #{callinLogisticsCenterName,jdbcType=VARCHAR}, #{callinWarehouseCode,jdbcType=VARCHAR}, 
-      #{callinWarehouseName,jdbcType=VARCHAR}, #{allocationTypeCode,jdbcType=TINYINT}, 
-      #{allocationTypeName,jdbcType=VARCHAR}, #{principal,jdbcType=VARCHAR}, #{quantity,jdbcType=BIGINT}, 
-      #{taxRefundAmount,jdbcType=BIGINT}, #{outboundOderCode,jdbcType=VARCHAR}, #{inboundOderCode,jdbcType=VARCHAR},
+      update_time, update_by ,form_no,
+      company_code,company_name,
+      direct_supervisor_code,direct_supervisor_name,
+      undertaking_unit_code,undertaking_unit_name,remark)
+    values (#{id,jdbcType=BIGINT}, #{allocationCode,jdbcType=VARCHAR}, #{callOutLogisticsCenterCode,jdbcType=VARCHAR}, 
+      #{callOutLogisticsCenterName,jdbcType=VARCHAR}, #{callOutWarehouseCode,jdbcType=VARCHAR}, 
+      #{callOutWarehouseName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR},
+      #{purchaseGroupName,jdbcType=VARCHAR}, #{callInLogisticsCenterCode,jdbcType=VARCHAR}, 
+      #{callInLogisticsCenterName,jdbcType=VARCHAR}, #{callInWarehouseCode,jdbcType=VARCHAR}, 
+      #{callInWarehouseName,jdbcType=VARCHAR}, #{principal,jdbcType=VARCHAR}, #{quantity,jdbcType=BIGINT},
+      #{totalCostRate,jdbcType=BIGINT}, #{outboundOderCode,jdbcType=VARCHAR}, #{inboundOderCode,jdbcType=VARCHAR},
       #{allocationStatusCode,jdbcType=TINYINT}, #{allocationStatusName,jdbcType=VARCHAR}, 
       #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR},
-     #{company_code, jdbcType=VARCHAR },#{company_name,jdbcType=VARCHAR}
+      #{updateTime,jdbcType=TIMESTAMP}, #{update,jdbcType=VARCHAR},#{formNo,jdbcType=VARCHAR},
+      #{company_code, jdbcType=VARCHAR },#{company_name,jdbcType=VARCHAR},
+      #{directSupervisorCode,jdbcType=VARCHAR}, #{directSupervisorName,jdbcType=VARCHAR},
+      #{undertakingUnitCode,jdbcType=VARCHAR},#{undertakingUnitName,jdbcType=VARCHAR},#{remark,jdbcType=CLOB})
 </insert>
   <insert id="insertSelective"  keyProperty="id" useGeneratedKeys="true" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Allocation">
     insert into allocation
@@ -208,23 +226,17 @@
       <if test="allocationCode != null">
         allocation_code,
       </if>
-      <if test="calloutLogisticsCenterCode != null">
+      <if test="callOutLogisticsCenterCode != null">
         callout_logistics_center_code,
       </if>
-      <if test="calloutLogisticsCenterName != null">
+      <if test="callOutLogisticsCenterName != null">
         callout_logistics_center_name,
       </if>
-      <if test="calloutWarehouseCode != null">
+      <if test="callOutWarehouseCode != null">
         callout_warehouse_code,
       </if>
-      <if test="calloutWarehouseName != null">
+      <if test="callOutWarehouseName != null">
         callout_warehouse_name,
-      </if>
-      <if test="inventoryAttributesCode != null">
-        inventory_attributes_code,
-      </if>
-      <if test="inventoryAttributesName != null">
-        inventory_attributes_name,
       </if>
       <if test="purchaseGroupCode != null">
         purchase_group_code,
@@ -232,20 +244,20 @@
       <if test="purchaseGroupName != null">
         purchase_group_name,
       </if>
-      <if test="callinLogisticsCenterCode != null">
+      <if test="callInLogisticsCenterCode != null">
         callin_logistics_center_code,
       </if>
-      <if test="callinLogisticsCenterName != null">
+      <if test="callInLogisticsCenterName != null">
         callin_logistics_center_name,
       </if>
-      <if test="callinWarehouseCode != null">
+      <if test="callInWarehouseCode != null">
         callin_warehouse_code,
       </if>
-      <if test="callinWarehouseName != null">
+      <if test="callInWarehouseName != null">
         callin_warehouse_name,
       </if>
-      <if test="allocationTypeCode != null">
-        allocation_type_code,
+      <if test="allocationType != null">
+        allocation_type,
       </if>
       <if test="allocationTypeName != null">
         allocation_type_name,
@@ -256,8 +268,8 @@
       <if test="quantity != null">
         quantity,
       </if>
-      <if test="taxRefundAmount != null">
-        tax_refund_amount,
+      <if test="totalCostRate != null">
+        total_cost_rate,
       </if>
       <if test="outboundOderCode != null">
         outbound_oder_code,
@@ -295,6 +307,21 @@
       <if test="companyName != null">
         company_name,
       </if>
+      <if test="directSupervisorCode != null">
+        direct_supervisor_code,
+      </if>
+      <if test="directSupervisorName != null">
+        direct_supervisor_name,
+      </if>
+      <if test="undertakingUnitCode != null">
+        undertaking_unit_code,
+      </if>
+      <if test="undertakingUnitName != null">
+        undertaking_unit_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -303,23 +330,17 @@
       <if test="allocationCode != null">
         #{allocationCode,jdbcType=VARCHAR},
       </if>
-      <if test="calloutLogisticsCenterCode != null">
-        #{calloutLogisticsCenterCode,jdbcType=VARCHAR},
+      <if test="callOutLogisticsCenterCode != null">
+        #{callOutLogisticsCenterCode,jdbcType=VARCHAR},
       </if>
-      <if test="calloutLogisticsCenterName != null">
-        #{calloutLogisticsCenterName,jdbcType=VARCHAR},
+      <if test="callOutLogisticsCenterName != null">
+        #{callOutLogisticsCenterName,jdbcType=VARCHAR},
       </if>
-      <if test="calloutWarehouseCode != null">
-        #{calloutWarehouseCode,jdbcType=VARCHAR},
+      <if test="callOutWarehouseCode != null">
+        #{callOutWarehouseCode,jdbcType=VARCHAR},
       </if>
-      <if test="calloutWarehouseName != null">
-        #{calloutWarehouseName,jdbcType=VARCHAR},
-      </if>
-      <if test="inventoryAttributesCode != null">
-        #{inventoryAttributesCode,jdbcType=VARCHAR},
-      </if>
-      <if test="inventoryAttributesName != null">
-        #{inventoryAttributesName,jdbcType=VARCHAR},
+      <if test="callOutWarehouseName != null">
+        #{callOutWarehouseName,jdbcType=VARCHAR},
       </if>
       <if test="purchaseGroupCode != null">
         #{purchaseGroupCode,jdbcType=VARCHAR},
@@ -327,20 +348,20 @@
       <if test="purchaseGroupName != null">
         #{purchaseGroupName,jdbcType=VARCHAR},
       </if>
-      <if test="callinLogisticsCenterCode != null">
-        #{callinLogisticsCenterCode,jdbcType=VARCHAR},
+      <if test="callInLogisticsCenterCode != null">
+        #{callInLogisticsCenterCode,jdbcType=VARCHAR},
       </if>
-      <if test="callinLogisticsCenterName != null">
-        #{callinLogisticsCenterName,jdbcType=VARCHAR},
+      <if test="callInLogisticsCenterName != null">
+        #{callInLogisticsCenterName,jdbcType=VARCHAR},
       </if>
-      <if test="callinWarehouseCode != null">
-        #{callinWarehouseCode,jdbcType=VARCHAR},
+      <if test="callInWarehouseCode != null">
+        #{callInWarehouseCode,jdbcType=VARCHAR},
       </if>
-      <if test="callinWarehouseName != null">
-        #{callinWarehouseName,jdbcType=VARCHAR},
+      <if test="callInWarehouseName != null">
+        #{callInWarehouseName,jdbcType=VARCHAR},
       </if>
-      <if test="allocationTypeCode != null">
-        #{allocationTypeCode,jdbcType=TINYINT},
+      <if test="allocationType != null">
+        #{allocationType,jdbcType=TINYINT},
       </if>
       <if test="allocationTypeName != null">
         #{allocationTypeName,jdbcType=VARCHAR},
@@ -351,8 +372,8 @@
       <if test="quantity != null">
         #{quantity,jdbcType=BIGINT},
       </if>
-      <if test="taxRefundAmount != null">
-        #{taxRefundAmount,jdbcType=BIGINT},
+      <if test="totalCostRate != null">
+        #{totalCostRate,jdbcType=BIGINT},
       </if>
       <if test="outboundOderCode != null">
         #{outboundOderCode,jdbcType=VARCHAR},
@@ -390,163 +411,40 @@
       <if test="companyName != null">
         #{companyName,jdbcType=VARCHAR},
       </if>
+      <if test="directSupervisorCode != null">
+        #{directSupervisorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorName != null">
+        #{directSupervisorName,jdbcType=VARCHAR},
+      </if>
+      <if test="undertakingUnitCode != null">
+        #{undertakingUnitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="undertakingUnitName != null">
+        #{undertakingUnitName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+       #{remark,jdbcType=CLOB},
+      </if>
     </trim>
   </insert>
-  <!--<select id="countByExample" parameterType="com.aiqin.mgs.product.api.pojo.AllocationExample" resultType="java.lang.Long">-->
-    <!--select count(*) from allocation-->
-    <!--<if test="_parameter != null">-->
-      <!--<include refid="Example_Where_Clause" />-->
-    <!--</if>-->
-  <!--</select>-->
-  <!--<update id="updateByExampleSelective" parameterType="map">-->
-    <!--update allocation-->
-    <!--<set>-->
-      <!--<if test="record.id != null">-->
-        <!--id = #{record.id,jdbcType=BIGINT},-->
-      <!--</if>-->
-      <!--<if test="record.allocationCode != null">-->
-        <!--allocation_code = #{record.allocationCode,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.calloutLogisticsCenterCode != null">-->
-        <!--callout_logistics_center_code = #{record.calloutLogisticsCenterCode,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.calloutLogisticsCenterName != null">-->
-        <!--callout_logistics_center_name = #{record.calloutLogisticsCenterName,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.calloutWarehouseCode != null">-->
-        <!--callout_warehouse_code = #{record.calloutWarehouseCode,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.calloutWarehouseName != null">-->
-        <!--callout_warehouse_name = #{record.calloutWarehouseName,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.inventoryAttributesCode != null">-->
-        <!--inventory_attributes_code = #{record.inventoryAttributesCode,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.inventoryAttributesName != null">-->
-        <!--inventory_attributes_name = #{record.inventoryAttributesName,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.purchaseGroupCode != null">-->
-        <!--purchase_group_code = #{record.purchaseGroupCode,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.purchaseGroupName != null">-->
-        <!--purchase_group_name = #{record.purchaseGroupName,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.callinLogisticsCenterCode != null">-->
-        <!--callin_logistics_center_code = #{record.callinLogisticsCenterCode,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.callinLogisticsCenterName != null">-->
-        <!--callin_logistics_center_name = #{record.callinLogisticsCenterName,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.callinWarehouseCode != null">-->
-        <!--callin_warehouse_code = #{record.callinWarehouseCode,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.callinWarehouseName != null">-->
-        <!--callin_warehouse_name = #{record.callinWarehouseName,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.allocationTypeCode != null">-->
-        <!--allocation_type_code = #{record.allocationTypeCode,jdbcType=TINYINT},-->
-      <!--</if>-->
-      <!--<if test="record.allocationTypeName != null">-->
-        <!--allocation_type_name = #{record.allocationTypeName,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.principal != null">-->
-        <!--principal = #{record.principal,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.quantity != null">-->
-        <!--quantity = #{record.quantity,jdbcType=BIGINT},-->
-      <!--</if>-->
-      <!--<if test="record.taxRefundAmount != null">-->
-        <!--tax_refund_amount = #{record.taxRefundAmount,jdbcType=BIGINT},-->
-      <!--</if>-->
-      <!--<if test="record.outboundOderCode != null">-->
-        <!--outbound_oder_code = #{record.outboundOderCode,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.inboundOderCode != null">-->
-        <!--inbound_oder_code = #{record.inboundOderCode,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.allocationStatusCode != null">-->
-        <!--allocation_status_code = #{record.allocationStatusCode,jdbcType=TINYINT},-->
-      <!--</if>-->
-      <!--<if test="record.allocationStatusName != null">-->
-        <!--allocation_status_name = #{record.allocationStatusName,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.delFlag != null">-->
-        <!--del_flag = #{record.delFlag,jdbcType=TINYINT},-->
-      <!--</if>-->
-      <!--<if test="record.createTime != null">-->
-        <!--create_time = #{record.createTime,jdbcType=TIMESTAMP},-->
-      <!--</if>-->
-      <!--<if test="record.createBy != null">-->
-        <!--create_by = #{record.createBy,jdbcType=VARCHAR},-->
-      <!--</if>-->
-      <!--<if test="record.updateTime != null">-->
-        <!--update_time = #{record.updateTime,jdbcType=TIMESTAMP},-->
-      <!--</if>-->
-      <!--<if test="record.updateBy != null">-->
-        <!--update_by = #{record.updateBy,jdbcType=VARCHAR},-->
-      <!--</if>-->
-    <!--</set>-->
-    <!--<if test="_parameter != null">-->
-      <!--<include refid="Update_By_Example_Where_Clause" />-->
-    <!--</if>-->
-  <!--</update>-->
-  <!--<update id="updateByExample" parameterType="map">-->
-    <!--update allocation-->
-    <!--set id = #{record.id,jdbcType=BIGINT},-->
-      <!--allocation_code = #{record.allocationCode,jdbcType=VARCHAR},-->
-      <!--callout_logistics_center_code = #{record.calloutLogisticsCenterCode,jdbcType=VARCHAR},-->
-      <!--callout_logistics_center_name = #{record.calloutLogisticsCenterName,jdbcType=VARCHAR},-->
-      <!--callout_warehouse_code = #{record.calloutWarehouseCode,jdbcType=VARCHAR},-->
-      <!--callout_warehouse_name = #{record.calloutWarehouseName,jdbcType=VARCHAR},-->
-      <!--inventory_attributes_code = #{record.inventoryAttributesCode,jdbcType=VARCHAR},-->
-      <!--inventory_attributes_name = #{record.inventoryAttributesName,jdbcType=VARCHAR},-->
-      <!--purchase_group_code = #{record.purchaseGroupCode,jdbcType=VARCHAR},-->
-      <!--purchase_group_name = #{record.purchaseGroupName,jdbcType=VARCHAR},-->
-      <!--callin_logistics_center_code = #{record.callinLogisticsCenterCode,jdbcType=VARCHAR},-->
-      <!--callin_logistics_center_name = #{record.callinLogisticsCenterName,jdbcType=VARCHAR},-->
-      <!--callin_warehouse_code = #{record.callinWarehouseCode,jdbcType=VARCHAR},-->
-      <!--callin_warehouse_name = #{record.callinWarehouseName,jdbcType=VARCHAR},-->
-      <!--allocation_type_code = #{record.allocationTypeCode,jdbcType=TINYINT},-->
-      <!--allocation_type_name = #{record.allocationTypeName,jdbcType=VARCHAR},-->
-      <!--principal = #{record.principal,jdbcType=VARCHAR},-->
-      <!--quantity = #{record.quantity,jdbcType=BIGINT},-->
-      <!--tax_refund_amount = #{record.taxRefundAmount,jdbcType=BIGINT},-->
-      <!--outbound_oder_code = #{record.outboundOderCode,jdbcType=VARCHAR},-->
-      <!--inbound_oder_code = #{record.inboundOderCode,jdbcType=VARCHAR},-->
-      <!--allocation_status_code = #{record.allocationStatusCode,jdbcType=TINYINT},-->
-      <!--allocation_status_name = #{record.allocationStatusName,jdbcType=VARCHAR},-->
-      <!--del_flag = #{record.delFlag,jdbcType=TINYINT},-->
-      <!--create_time = #{record.createTime,jdbcType=TIMESTAMP},-->
-      <!--create_by = #{record.createBy,jdbcType=VARCHAR},-->
-      <!--update_time = #{record.updateTime,jdbcType=TIMESTAMP},-->
-      <!--update_by = #{record.updateBy,jdbcType=VARCHAR}-->
-    <!--<if test="_parameter != null">-->
-      <!--<include refid="Update_By_Example_Where_Clause" />-->
-    <!--</if>-->
-  <!--</update>-->
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Allocation">
     update allocation
     <set>
       <if test="allocationCode != null">
         allocation_code = #{allocationCode,jdbcType=VARCHAR},
       </if>
-      <if test="calloutLogisticsCenterCode != null">
-        callout_logistics_center_code = #{calloutLogisticsCenterCode,jdbcType=VARCHAR},
+      <if test="callOutLogisticsCenterCode != null">
+        callout_logistics_center_code = #{callOutLogisticsCenterCode,jdbcType=VARCHAR},
       </if>
-      <if test="calloutLogisticsCenterName != null">
-        callout_logistics_center_name = #{calloutLogisticsCenterName,jdbcType=VARCHAR},
+      <if test="callOutLogisticsCenterName != null">
+        callout_logistics_center_name = #{callOutLogisticsCenterName,jdbcType=VARCHAR},
       </if>
-      <if test="calloutWarehouseCode != null">
-        callout_warehouse_code = #{calloutWarehouseCode,jdbcType=VARCHAR},
+      <if test="callOutWarehouseCode != null">
+        callout_warehouse_code = #{callOutWarehouseCode,jdbcType=VARCHAR},
       </if>
-      <if test="calloutWarehouseName != null">
-        callout_warehouse_name = #{calloutWarehouseName,jdbcType=VARCHAR},
-      </if>
-      <if test="inventoryAttributesCode != null">
-        inventory_attributes_code = #{inventoryAttributesCode,jdbcType=VARCHAR},
-      </if>
-      <if test="inventoryAttributesName != null">
-        inventory_attributes_name = #{inventoryAttributesName,jdbcType=VARCHAR},
+      <if test="callOutWarehouseName != null">
+        callout_warehouse_name = #{callOutWarehouseName,jdbcType=VARCHAR},
       </if>
       <if test="purchaseGroupCode != null">
         purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
@@ -554,23 +452,17 @@
       <if test="purchaseGroupName != null">
         purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
       </if>
-      <if test="callinLogisticsCenterCode != null">
-        callin_logistics_center_code = #{callinLogisticsCenterCode,jdbcType=VARCHAR},
+      <if test="callInLogisticsCenterCode != null">
+        callin_logistics_center_code = #{callInLogisticsCenterCode,jdbcType=VARCHAR},
       </if>
-      <if test="callinLogisticsCenterName != null">
-        callin_logistics_center_name = #{callinLogisticsCenterName,jdbcType=VARCHAR},
+      <if test="callInLogisticsCenterName != null">
+        callin_logistics_center_name = #{callInLogisticsCenterName,jdbcType=VARCHAR},
       </if>
-      <if test="callinWarehouseCode != null">
-        callin_warehouse_code = #{callinWarehouseCode,jdbcType=VARCHAR},
+      <if test="callInWarehouseCode != null">
+        callin_warehouse_code = #{callInWarehouseCode,jdbcType=VARCHAR},
       </if>
-      <if test="callinWarehouseName != null">
-        callin_warehouse_name = #{callinWarehouseName,jdbcType=VARCHAR},
-      </if>
-      <if test="allocationTypeCode != null">
-        allocation_type_code = #{allocationTypeCode,jdbcType=TINYINT},
-      </if>
-      <if test="allocationTypeName != null">
-        allocation_type_name = #{allocationTypeName,jdbcType=VARCHAR},
+      <if test="callInWarehouseName != null">
+        callin_warehouse_name = #{callInWarehouseName,jdbcType=VARCHAR},
       </if>
       <if test="principal != null">
         principal = #{principal,jdbcType=VARCHAR},
@@ -578,8 +470,8 @@
       <if test="quantity != null">
         quantity = #{quantity,jdbcType=BIGINT},
       </if>
-      <if test="taxRefundAmount != null">
-        tax_refund_amount = #{taxRefundAmount,jdbcType=BIGINT},
+      <if test="totalCostRate != null">
+        total_cost_rate = #{totalCostRate,jdbcType=BIGINT},
       </if>
       <if test="outboundOderCode != null">
         outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
@@ -617,29 +509,40 @@
       <if test="companyName != null">
         company_name=#{companyName,jdbcType=VARCHAR},
       </if>
+      <if test="directSupervisorCode != null">
+        direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorName != null">
+        direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      </if>
+      <if test="undertakingUnitCode != null">
+        undertaking_unit_code = #{undertakingUnitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="undertakingUnitName != null">
+        undertaking_unit_name = #{undertakingUnitName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=CLOB},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Allocation">
     update allocation
     set allocation_code = #{allocationCode,jdbcType=VARCHAR},
-      callout_logistics_center_code = #{calloutLogisticsCenterCode,jdbcType=VARCHAR},
-      callout_logistics_center_name = #{calloutLogisticsCenterName,jdbcType=VARCHAR},
-      callout_warehouse_code = #{calloutWarehouseCode,jdbcType=VARCHAR},
-      callout_warehouse_name = #{calloutWarehouseName,jdbcType=VARCHAR},
-      inventory_attributes_code = #{inventoryAttributesCode,jdbcType=VARCHAR},
-      inventory_attributes_name = #{inventoryAttributesName,jdbcType=VARCHAR},
+      callout_logistics_center_code = #{callOutLogisticsCenterCode,jdbcType=VARCHAR},
+      callout_logistics_center_name = #{callOutLogisticsCenterName,jdbcType=VARCHAR},
+      callout_warehouse_code = #{callOutWarehouseCode,jdbcType=VARCHAR},
+      callout_warehouse_name = #{callOutWarehouseName,jdbcType=VARCHAR},
       purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
       purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
-      callin_logistics_center_code = #{callinLogisticsCenterCode,jdbcType=VARCHAR},
-      callin_logistics_center_name = #{callinLogisticsCenterName,jdbcType=VARCHAR},
-      callin_warehouse_code = #{callinWarehouseCode,jdbcType=VARCHAR},
-      callin_warehouse_name = #{callinWarehouseName,jdbcType=VARCHAR},
-      allocation_type_code = #{allocationTypeCode,jdbcType=TINYINT},
-      allocation_type_name = #{allocationTypeName,jdbcType=VARCHAR},
+      callin_logistics_center_code = #{callInLogisticsCenterCode,jdbcType=VARCHAR},
+      callin_logistics_center_name = #{callInLogisticsCenterName,jdbcType=VARCHAR},
+      callin_warehouse_code = #{callInWarehouseCode,jdbcType=VARCHAR},
+      callin_warehouse_name = #{callInWarehouseName,jdbcType=VARCHAR},
       principal = #{principal,jdbcType=VARCHAR},
       quantity = #{quantity,jdbcType=BIGINT},
-      tax_refund_amount = #{taxRefundAmount,jdbcType=BIGINT},
+      total_cost_rate = #{totalCostRate,jdbcType=BIGINT},
       outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
       inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR},
       allocation_status_code = #{allocationStatusCode,jdbcType=TINYINT},
@@ -652,6 +555,11 @@
       form_no = #{formNo,jdbcType=VARCHAR},
       company_code = #{companyCode,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},
+      direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
+      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      undertaking_unit_code = #{undertakingUnitCode,jdbcType=VARCHAR},
+      undertaking_unit_name = #{undertakingUnitName,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=CLOB},
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -673,5 +581,486 @@
     <include refid="Base_Column_List" />
     from allocation
     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
+  </select>
+
+  <sql id="Allocation_Column_List">
+      a.id, a.allocation_code, a.callout_logistics_center_code,
+      a.callout_logistics_center_name, a.callout_warehouse_code,
+      a.callout_warehouse_name, a.purchase_group_code,
+      a.purchase_group_name, a.callin_logistics_center_code,
+      a.callin_logistics_center_name, a.callin_warehouse_code,
+      a.callin_warehouse_name, a.principal, a.quantity,
+      a.total_cost_rate, a.outbound_oder_code, a.inbound_oder_code,
+      a.allocation_status_code, a.allocation_status_name,
+      a.del_flag, a.create_time, a.create_by,
+      a.update_time, a.update_by ,a.form_no,a.company_code,a.company_name,
+      b.pra_main_unit_num as callout_quantity,c.pra_main_unit_num as callin_quantity
+  </sql>
+  <resultMap id="AllocationResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="allocation_code" jdbcType="VARCHAR" property="allocationCode" />
+    <result column="callout_logistics_center_code" jdbcType="VARCHAR" property="callOutLogisticsCenterCode" />
+    <result column="callout_logistics_center_name" jdbcType="VARCHAR" property="callOutLogisticsCenterName" />
+    <result column="callout_warehouse_code" jdbcType="VARCHAR" property="callOutWarehouseCode" />
+    <result column="callout_warehouse_name" jdbcType="VARCHAR" property="callOutWarehouseName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="callin_logistics_center_code" jdbcType="VARCHAR" property="callInLogisticsCenterCode" />
+    <result column="callin_logistics_center_name" jdbcType="VARCHAR" property="callInLogisticsCenterName" />
+    <result column="callin_warehouse_code" jdbcType="VARCHAR" property="callInWarehouseCode" />
+    <result column="callin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
+    <result column="callin_quantity" jdbcType="BIGINT" property="callInQuantity" />
+    <result column="total_cost_rate" jdbcType="BIGINT" property="taxRefundAmount" />
+    <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
+    <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+    <result column="allocation_status_code" jdbcType="TINYINT" property="allocationStatusCode" />
+    <result column="allocation_status_name" jdbcType="VARCHAR" property="allocationStatusName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="form_no"  jdbcType="VARCHAR" property="formNo"/>
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+  </resultMap>
+  <select id="getList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo" resultMap="AllocationResultMap">
+    select
+    <include refid="Allocation_Column_List"/>
+    FROM allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    LEFT JOIN inbound c ON a.inbound_oder_code = c.inbound_oder_code
+    where
+    1=1
+    <if test="createStartTime != null ">
+      AND a.create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createEndTime != null">
+      AND a.create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="allocationCode != null and allocationCode != '' ">
+      AND a.allocation_code LIKE CONCAT(CONCAT('%',#{allocationCode},'%'))
+    </if>
+    <if test="allocationStatusCode != null">
+      AND a.allocation_status_code = #{allocationStatusCode}
+    </if>
+    <if test="callOutLogisticsCenterName != null and callOutLogisticsCenterName != ''">
+      AND a.callout_logistics_center_name LIKE CONCAT('%',#{callOutLogisticsCenterName},'%')
+    </if>
+    <if test="callOutLogisticsCenterCode != null and callOutLogisticsCenterCode != ''">
+      AND a.callout_logistics_center_code = #{callOutLogisticsCenterCode}
+    </if>
+    <if test="callOutWarehouseName != null and callOutWarehouseName != '' ">
+      AND a.callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
+    </if>
+    <if test="callOutWarehouseCode != null and callOutWarehouseCode != '' ">
+      AND a.callout_warehouse_code = #{callOutWarehouseCode}
+    </if>
+    <if test="outboundOderCode != null and outboundOderCode != ''">
+      AND a.outbound_oder_code LIKE  CONCAT('%',#{outboundOderCode},'%')
+    </if>
+    <if test="callInLogisticsCenterName != null and callInLogisticsCenterName != ''">
+      AND a.callin_logistics_center_name LIKE  CONCAT('%',#{callInLogisticsCenterName},'%')
+    </if>
+    <if test="callInLogisticsCenterCode != null and callInLogisticsCenterCode != ''">
+      AND a.callin_logistics_center_code =  #{callInLogisticsCenterCode}
+    </if>
+    <if test="callInWarehouseName != null and callInWarehouseName != '' ">
+      AND a.callin_warehouse_name LIKE  CONCAT('%',#{callInWarehouseName},'%')
+    </if>
+    <if test="callInWarehouseCode != null and callInWarehouseCode != '' ">
+      AND a.callin_warehouse_code =  #{callInWarehouseCode}
+    </if>
+    <if test="inboundOderCode != null and inboundOderCode != ''">
+      AND a.inbound_oder_code LIKE  CONCAT('%',#{inboundOderCode},'%')
+    </if>
+    <if test="companyCode != null and companyCode != ''">
+      AND a.company_code = #{companyCode}
+    </if>
+    <if test="allocationType != null">
+      and a.allocation_type = #{allocationType}
+    </if>
+    order by a.create_time desc
+  </select>
+
+  <sql id="Move_Column_List">
+      a.id, a.allocation_code, a.callout_logistics_center_code,
+      a.callout_logistics_center_name, a.callout_warehouse_code,
+      a.callout_warehouse_name, a.purchase_group_code,
+      a.purchase_group_name, a.callin_warehouse_code,
+      a.callin_warehouse_name, a.principal, a.quantity,
+      a.total_cost_rate, a.outbound_oder_code, a.inbound_oder_code,
+      a.allocation_status_code, a.allocation_status_name,
+      a.del_flag, a.create_time, a.create_by,
+      a.update_time, a.update_by ,a.form_no,a.company_code,a.company_name,
+      b.pra_main_unit_num as callout_quantity,c.pra_main_unit_num as callin_quantity
+  </sql>
+  <resultMap id="MoveResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="allocation_code" jdbcType="VARCHAR" property="movementCode" />
+    <result column="callout_logistics_center_code" jdbcType="VARCHAR" property="logisticsCenterCode" />
+    <result column="callout_logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
+    <result column="callout_warehouse_code" jdbcType="VARCHAR" property="callOutWarehouseCode" />
+    <result column="callout_warehouse_name" jdbcType="VARCHAR" property="callOutWarehouseName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="callin_warehouse_code" jdbcType="VARCHAR" property="callInWarehouseCode" />
+    <result column="callin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
+    <result column="callin_quantity" jdbcType="BIGINT" property="callInQuantity" />
+    <result column="total_cost_rate" jdbcType="BIGINT" property="taxInventoryCost" />
+    <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
+    <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+    <result column="allocation_status_code" jdbcType="TINYINT" property="movementStatusCode" />
+    <result column="allocation_status_name" jdbcType="VARCHAR" property="movementStatusName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="form_no"  jdbcType="VARCHAR" property="formNo"/>
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+  </resultMap>
+  <select id="getMoveList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo" resultMap="MoveResultMap">
+    select
+    <include refid="Move_Column_List"/>
+    FROM allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    LEFT JOIN inbound c ON a.inbound_oder_code = c.inbound_oder_code
+    where
+    1=1
+    <if test="createStartTime != null ">
+      AND a.create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createEndTime != null">
+      AND a.create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="movementCode != null and movementCode != '' ">
+      AND a.allocation_code LIKE CONCAT(CONCAT('%',#{movementCode},'%'))
+    </if>
+    <if test="movementStatusCode != null">
+      AND a.allocation_status_code = #{movementStatusCode}
+    </if>
+    <if test="logisticsCenterName != null and logisticsCenterName != ''">
+      AND a.callout_logistics_center_name LIKE CONCAT('%',#{logisticsCenterName},'%')
+    </if>
+    <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
+      AND a.callout_logistics_center_code = #{logisticsCenterCode}
+    </if>
+    <if test="callOutWarehouseName != null and callOutWarehouseName != '' ">
+      AND a.callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
+    </if>
+    <if test="callOutWarehouseCode != null and callOutWarehouseCode != '' ">
+      AND a.callout_warehouse_code = #{callOutWarehouseCode}
+    </if>
+    <if test="outboundOderCode != null and outboundOderCode != ''">
+      AND a.outbound_oder_code LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
+    </if>
+    <if test="logisticsCenterName != null and logisticsCenterName != ''">
+      AND a.callin_logistics_center_name LIKE  CONCAT('%',#{logisticsCenterName},'%')
+    </if>
+    <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
+      AND a.callin_logistics_center_code =  #{logisticsCenterCode}
+    </if>
+    <if test="callInWarehouseName != null and callInWarehouseName != '' ">
+      AND a.callin_warehouse_name LIKE  CONCAT('%',#{callInWarehouseName},'%')
+    </if>
+    <if test="callInWarehouseCode != null and callInWarehouseCode != '' ">
+      AND a.callin_warehouse_code =  #{callInWarehouseCode}
+    </if>
+    <if test="inboundOderCode != null and inboundOderCode != ''">
+      AND a.inbound_oder_code LIKE  CONCAT('%',#{inboundOderCode},'%')
+    </if>
+    <if test="companyCode != null and companyCode != ''">
+      AND a.company_code = #{companyCode}
+    </if>
+    <if test="allocationType != null">
+      and a.allocation_type = #{allocationType}
+    </if>
+    order by a.create_time desc
+  </select>
+
+  <sql id="Scrap_Column_List">
+      a.id, a.allocation_code, a.callout_logistics_center_code,
+      a.callout_logistics_center_name, a.callout_warehouse_code,
+      a.callout_warehouse_name, a.purchase_group_code,
+      a.purchase_group_name,  a.principal, a.quantity,
+      a.total_cost_rate, a.outbound_oder_code, a.inbound_oder_code,
+      a.allocation_status_code, a.allocation_status_name,
+      a.del_flag, a.create_time, a.create_by,
+      a.update_time, a.update_by ,a.form_no,a.company_code,a.company_name,
+      b.pra_main_unit_num as callout_quantity,b.pra_tax_amount as callout_tax_amount
+  </sql>
+  <resultMap id="ScrapResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="allocation_code" jdbcType="VARCHAR" property="scrapCode" />
+    <result column="callout_logistics_center_code" jdbcType="VARCHAR" property="logisticsCenterCode" />
+    <result column="callout_logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
+    <result column="callout_warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="callout_warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="quantity" jdbcType="BIGINT" property="quantity" />
+    <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
+    <result column="total_cost_rate" jdbcType="BIGINT" property="taxInventoryCost" />
+    <result column="callout_tax_amount" jdbcType="BIGINT" property="callOutTaxAmount" />
+    <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
+    <result column="allocation_status_code" jdbcType="TINYINT" property="scrapStatusCode" />
+    <result column="allocation_status_name" jdbcType="VARCHAR" property="scrapStatusName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="form_no"  jdbcType="VARCHAR" property="formNo"/>
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+  </resultMap>
+  <select id="getScrapList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo" resultMap="ScrapResultMap">
+    select
+    <include refid="Scrap_Column_List"/>
+    FROM allocation a
+    LEFT JOIN outbound b ON a.outbound_oder_code = b.outbound_oder_code
+    where
+    1=1
+    <if test="createStartTime != null ">
+      AND a.create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createEndTime != null">
+      AND a.create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
+    </if>
+    <if test="scrapCode != null and scrapCode != '' ">
+      AND a.allocation_code LIKE CONCAT('%',#{scrapCode},'%')
+    </if>
+    <if test="scrapStatusCode != null">
+      AND a.allocation_status_code = #{scrapStatusCode}
+    </if>
+    <if test="logisticsCenterName != null and logisticsCenterName != ''">
+      AND a.callout_logistics_center_name LIKE CONCAT('%',#{logisticsCenterName},'%')
+    </if>
+    <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
+      AND a.callout_logistics_center_code = #{logisticsCenterCode}
+    </if>
+    <if test="warehouseName != null and warehouseName != '' ">
+      AND a.callout_warehouse_name LIKE  CONCAT('%',#{callOutWarehouseName},'%')
+    </if>
+    <if test="warehouseCode != null and warehouseCode != '' ">
+      AND a.callout_warehouse_code = #{warehouseCode}
+    </if>
+    <if test="outboundOderCode != null and outboundOderCode != ''">
+      AND a.outbound_oder_code LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
+    </if>
+    <if test="logisticsCenterName != null and logisticsCenterName != ''">
+      AND a.callin_logistics_center_name LIKE  CONCAT('%',#{logisticsCenterName},'%')
+    </if>
+    <if test="logisticsCenterCode != null and logisticsCenterCode != ''">
+      AND a.callin_logistics_center_code =  #{logisticsCenterCode}
+    </if>
+    <if test="warehouseName != null and warehouseName != '' ">
+      AND a.callin_warehouse_name LIKE  CONCAT('%',#{warehouseName},'%')
+    </if>
+    <if test="warehouseCode != null and warehouseCode != '' ">
+      AND a.callin_warehouse_code =  #{warehouseCode}
+    </if>
+    <if test="companyCode != null and companyCode != ''">
+      AND a.company_code = #{companyCode}
+    </if>
+    <if test="allocationType != null">
+      and a.allocation_type = #{allocationType}
+    </if>
+    order by a.create_time desc
+  </select>
+  <resultMap id="selectByFormNO1" type="com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO">
+        <id column="aid" jdbcType="BIGINT" property="id" />
+        <result column="aallocation_code" jdbcType="VARCHAR" property="allocationCode" />
+        <result column="acallout_logistics_center_code" jdbcType="VARCHAR" property="callOutLogisticsCenterCode" />
+        <result column="acallout_logistics_center_name" jdbcType="VARCHAR" property="callOutLogisticsCenterName" />
+        <result column="acallout_warehouse_code" jdbcType="VARCHAR" property="callOutWarehouseCode" />
+        <result column="acallout_warehouse_name" jdbcType="VARCHAR" property="callOutWarehouseName" />
+        <result column="apurchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+        <result column="apurchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+        <result column="acallin_logistics_center_code" jdbcType="VARCHAR" property="callInLogisticsCenterCode" />
+        <result column="acallin_logistics_center_name" jdbcType="VARCHAR" property="callInLogisticsCenterName" />
+        <result column="acallin_warehouse_code" jdbcType="VARCHAR" property="callInWarehouseCode" />
+        <result column="acallin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
+        <result column="aprincipal" jdbcType="VARCHAR" property="principal" />
+        <result column="aquantity" jdbcType="BIGINT" property="quantity" />
+        <result column="atotal_cost_rate" jdbcType="BIGINT" property="totalCostRate" />
+        <result column="aoutbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
+        <result column="ainbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+        <result column="aallocation_status_code" jdbcType="TINYINT" property="allocationStatusCode" />
+        <result column="aallocation_status_name" jdbcType="VARCHAR" property="allocationStatusName" />
+        <result column="adel_flag" jdbcType="TINYINT" property="delFlag" />
+        <result column="acreate_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="acreate_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="aupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="aupdate_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="aform_no"  jdbcType="VARCHAR" property="formNo"/>
+        <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+        <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
+        <result column="adirect_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode" />
+        <result column="adirect_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
+        <result column="aundertaking_unit_code" jdbcType="VARCHAR" property="undertakingUnitCode" />
+        <result column="aundertaking_unit_name" jdbcType="VARCHAR" property="undertakingUnitName" />
+        <result column="aremark" jdbcType="CLOB" property="remark" />
+        <result column="aallocation_type" jdbcType="TINYINT" property="allocationType" />
+        <result column="aallocation_type_name" jdbcType="VARCHAR" property="allocationTypeName" />
+        <collection property="list" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch">
+          <id column="cid" jdbcType="BIGINT" property="id" />
+          <result column="callocation_code" jdbcType="VARCHAR" property="allocationCode" />
+          <result column="csku_code" jdbcType="VARCHAR" property="skuCode" />
+          <result column="csku_name" jdbcType="VARCHAR" property="skuName" />
+          <result column="ccategory" jdbcType="VARCHAR" property="category" />
+          <result column="cbrand" jdbcType="VARCHAR" property="brand" />
+          <result column="ccolor" jdbcType="VARCHAR" property="color" />
+          <result column="cspecification" jdbcType="VARCHAR" property="specification" />
+          <result column="cmodel" jdbcType="VARCHAR" property="model" />
+          <result column="cunit" jdbcType="VARCHAR" property="unit" />
+          <result column="cclasses" jdbcType="VARCHAR" property="classes" />
+          <result column="ctype" jdbcType="VARCHAR" property="type" />
+          <result column="cinventory_unit" jdbcType="VARCHAR" property="inventoryUnit" />
+          <result column="cinventory" jdbcType="BIGINT" property="inventory" />
+          <result column="ctax" jdbcType="BIGINT" property="tax" />
+          <result column="ctax_price" jdbcType="BIGINT" property="taxPrice" />
+          <result column="cquantity" jdbcType="BIGINT" property="quantity" />
+          <result column="ctax_amount" jdbcType="BIGINT" property="taxAmount" />
+          <result column="cdel_flag" jdbcType="TINYINT" property="delFlag" />
+          <result column="ccreate_time" jdbcType="TIMESTAMP" property="createTime" />
+          <result column="ccreate_by" jdbcType="VARCHAR" property="createBy" />
+          <result column="cupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+          <result column="cupdate_by" jdbcType="VARCHAR" property="updateBy" />
+          <result column="cpicture_url" jdbcType="VARCHAR" property="pictureUrl" />
+          <result column="cline_num" jdbcType="BIGINT" property="lineNum" />
+          <result column="ccallout_batch_number" jdbcType="VARCHAR" property="callOutBatchNumber" />
+          <result column="ccallin_batch_number" jdbcType="VARCHAR" property="callInBatchNumber" />
+          <result column="cbatch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
+          <result column="cproduct_date" jdbcType="VARCHAR" property="productDate" />
+        </collection>
+         <collection property="products" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct">
+           <id column="bid" jdbcType="BIGINT" property="id" />
+           <result column="ballocation_code" jdbcType="VARCHAR" property="allocationCode" />
+           <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
+           <result column="bsku_name" jdbcType="VARCHAR" property="skuName" />
+           <result column="bcategory" jdbcType="VARCHAR" property="category" />
+           <result column="bbrand" jdbcType="VARCHAR" property="brand" />
+           <result column="bcolor" jdbcType="VARCHAR" property="color" />
+           <result column="bspecification" jdbcType="VARCHAR" property="specification" />
+           <result column="bmodel" jdbcType="VARCHAR" property="model" />
+           <result column="bunit" jdbcType="VARCHAR" property="unit" />
+           <result column="bclasses" jdbcType="VARCHAR" property="classes" />
+           <result column="btype" jdbcType="VARCHAR" property="type" />
+           <result column="btax" jdbcType="BIGINT" property="tax" />
+           <result column="btax_price" jdbcType="BIGINT" property="taxPrice" />
+           <result column="bquantity" jdbcType="BIGINT" property="quantity" />
+           <result column="btax_amount" jdbcType="BIGINT" property="taxAmount" />
+           <result column="bdel_flag" jdbcType="TINYINT" property="delFlag" />
+           <result column="bcreate_time" jdbcType="TIMESTAMP" property="createTime" />
+           <result column="bcreate_by" jdbcType="VARCHAR" property="createBy" />
+           <result column="bupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+           <result column="bupdate_by" jdbcType="VARCHAR" property="updateBy" />
+           <result column="bpicture_url" jdbcType="VARCHAR" property="pictureUrl" />
+           <result column="bline_num" jdbcType="BIGINT" property="lineNum" />
+         </collection>
+  </resultMap>
+  <select id="selectByFormNO1" resultMap="selectByFormNO1">
+            select a.id aid,
+                   a.allocation_code aallocation_code,
+                   a.callout_logistics_center_code acallout_logistics_center_code,
+                   a.callout_logistics_center_name acallout_logistics_center_name,
+                   a.callout_warehouse_code acallout_warehouse_code,
+                   a.callout_warehouse_name acallout_warehouse_name,
+                   a.purchase_group_code apurchase_group_code,
+                   a.purchase_group_name apurchase_group_name,
+                   a.callin_logistics_center_code acallin_logistics_center_code,
+                   a.callin_logistics_center_name acallin_logistics_center_name,
+                   a.callin_warehouse_code acallin_warehouse_code,
+                   a.callin_warehouse_name acallin_warehouse_name,
+                   a.principal aprincipal,
+                   a.quantity aquantity,
+                   a.total_cost_rate atotal_cost_rate,
+                   a.outbound_oder_code aoutbound_oder_code,
+                   a.inbound_oder_code ainbound_oder_code,
+                   a.allocation_status_code aallocation_status_code,
+                   a.allocation_status_name aallocation_status_name,
+                   a.del_flag adel_flag,
+                   a.create_time acreate_time,
+                   a.create_by acreate_by,
+                   a.update_time aupdate_time,
+                   a.update_by aupdate_by,
+                   a.form_no aform_no,
+                   a.company_code acompany_code,
+                   a.company_name acompany_name,
+                   a.direct_supervisor_code adirect_supervisor_code,
+                   a.direct_supervisor_name adirect_supervisor_name,
+                   a.undertaking_unit_code aundertaking_unit_code,
+                   a.undertaking_unit_name aundertaking_unit_name,
+                   a.remark aremark,
+                   a.allocation_type aallocation_type,
+                   a.allocation_type_name aallocation_type_name,
+                   b.id bid,
+                   b.allocation_code ballocation_code,
+                   b.sku_code bsku_code,
+                   b.sku_name bsku_name,
+                   b.category bcategory,
+                   b.brand bbrand,
+                   b.color bcolor,
+                   b.specification bspecification,
+                   b.model bmodel,
+                   b.unit bunit,
+                   b.classes bclasses,
+                   b.type btype,
+                   b.tax btax,
+                   b.tax_price btax_price,
+                   b.quantity bquantity,
+                   b.tax_amount btax_amount,
+                   b.del_flag bdel_flag,
+                   b.create_time bcreate_time,
+                   b.create_by bcreate_by,
+                   b.update_time bupdate_time,
+                   b.update_by bupdate_by,
+                   b.picture_url bpicture_url,
+                   b.line_num bline_num,
+                   c.id cid,
+                   c.allocation_code callocation_code,
+                   c.sku_code csku_code,
+                   c.sku_name csku_name,
+                   c.category ccategory,
+                   c.brand cbrand,
+                   c.color ccolor,
+                   c.specification cspecification,
+                   c.model cmodel,
+                   c.unit cunit,
+                   c.classes cclasses,
+                   c.type ctype,
+                   c.inventory_unit cinventory_unit,
+                   c.inventory cinventory,
+                   c.tax ctax,
+                   c.tax_price ctax_price,
+                   c.quantity cquantity,
+                   c.tax_amount ctax_amount,
+                   c.del_flag cdel_flag,
+                   c.create_time ccreate_time,
+                   c.create_by ccreate_by,
+                   c.update_time cupdate_time,
+                   c.update_by cupdate_by,
+                   c.picture_url cpicture_url,
+                   c.callout_batch_number ccallout_batch_number,
+                   c.callin_batch_number ccallin_batch_number,
+                   c.batch_number_remark cbatch_number_remark,
+                   c.product_date cproduct_date,
+                   c.line_num cline_num
+            from allocation a
+                     left join allocation_product b
+                               on a.allocation_code = b.allocation_code
+                     left join allocation_product_batch c
+                               on a.allocation_code = c.allocation_code
+            where a.form_no = #{FormNo}
   </select>
 </mapper>

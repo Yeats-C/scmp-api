@@ -1,17 +1,18 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyContractFile;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.dto.ApplyContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.dto.ApplyContractPurchaseVolumeDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.ApplyContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.QueryApplyContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.UpdateApplyContractReqVo;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
-import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.*;
-import com.aiqin.bms.scmp.api.supplier.service.helper.WorkflowHelper;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.ApplyContractUpdateResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.ApplyContractViewResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.QueryApplyContractResVo;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
  * @author:曾兴旺
  * @date: 2018/11/30
  */
-public interface ApplyContractService  extends WorkflowHelper {
+public interface ApplyContractService{
 
     /**
      * 查询合同申请List
@@ -35,7 +36,10 @@ public interface ApplyContractService  extends WorkflowHelper {
      * @return
      */
     int saveApplyContract(ApplyContractReqVo applyContractReqVo);
-    /**
+
+    void savePlanTypeList(List<ApplyContractPlanType> typeList);
+
+ /**
      * 查看合同申请详情（新增）
      * @param id
      * @return
@@ -86,11 +90,34 @@ public interface ApplyContractService  extends WorkflowHelper {
 
 
      /**
-      * 批量保存进货额
+      * 批量保存文件信息
       * @param files
       * @return
       */
      int saveFileList(List<ApplyContractFile> files);
+
+     /**
+      * 批量保存采购组
+      * @param contractPurchaseGroups
+      * @return
+      */
+     int savePurchaseGroupList(List<ApplyContractPurchaseGroup> contractPurchaseGroups);
+
+
+    /**
+     * 批量保存品牌
+     * @param contractBrands
+     * @return
+     */
+    int saveBrandList(List<ApplyContractBrand> contractBrands);
+
+
+    /**
+     * 批量保存品类
+     * @param contractCategories
+     * @return
+     */
+    int saveCategoryList(List<ApplyContractCategory> contractCategories);
 
     /**
      * 跟新申请合同主体
@@ -115,13 +142,32 @@ public interface ApplyContractService  extends WorkflowHelper {
       */
      int deleteFiles(String applyContractCode);
 
+    /**
+     * 根据关联编码删除采购组
+     * @param applyContractCode
+     * @return
+     */
+    int deletePurchaseGroups(String applyContractCode);
+
+    /**
+     * 根据关联编码删除品牌
+     * @param applyContractCode
+     * @return
+     */
+    int deleteBrands(String applyContractCode);
+
+    /**
+     * 根据关联编码删除品类
+     * @param applyContractCode
+     * @return
+     */
+    int deleteCategories(String applyContractCode);
+
    /**
     * 审批流接口
     * @param id
     */
    void workFlow(Long id) ;
-
- String workFlowCallback(WorkFlowCallbackVO vo);
 
  /**
   * 查询供货单位账户列表
@@ -130,5 +176,15 @@ public interface ApplyContractService  extends WorkflowHelper {
   */
  List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
 
+    /**
+     *
+     * 功能描述: 返回详情接口请求参数
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/9 14:41
+     */
+    DetailRequestRespVo getInfoByForm(String formNo);
 
 }

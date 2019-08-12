@@ -1,37 +1,36 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
+import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractPurchaseVolumeDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
-import com.aiqin.bms.scmp.api.common.Save;
-import com.aiqin.bms.scmp.api.common.SaveList;
-import com.aiqin.bms.scmp.api.common.Update;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ContractFile;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractPurchaseVolumeDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUsernameReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
-import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractFileResVo;
-import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseVolumeResVo;
-import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractResVo;
-import com.aiqin.bms.scmp.api.supplier.domain.response.contract.QueryContractResVo;
-import com.aiqin.bms.scmp.api.supplier.mapper.ContractFileMapper;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.*;
+import com.aiqin.bms.scmp.api.supplier.mapper.*;
 import com.aiqin.bms.scmp.api.supplier.service.ContractService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @description:合同Service
@@ -47,7 +48,7 @@ import java.util.List;
  * @date: 2018/11/30
  */
 @Service
-public class ContractServiceImpl implements ContractService{
+public class ContractServiceImpl extends BaseServiceImpl implements ContractService{
 
     @Autowired
     private ContractDao contractDao;
@@ -59,11 +60,26 @@ public class ContractServiceImpl implements ContractService{
     private ContractPurchaseVolumeDao contractPurchaseVolumeDao;
 
     @Autowired
+    private ContractPurchaseGroupMapper contractPurchaseGroupMapper;
+
+    @Autowired
     private OperationLogService operationLogService;
 
     @Autowired
-
     private ContractFileMapper contractFileMapper;
+
+    @Autowired
+    private ContractPlanTypeMapper contractPlanTypeMapper;
+
+    @Autowired
+    private ContractBrandMapper contractBrandMapper;
+
+    @Autowired
+    private ContractCategoryMapper contractCategoryMapper;
+
+    @Autowired
+    private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
+
     /**
      * 分页获取合同列表
      * @param vo
@@ -75,6 +91,7 @@ public class ContractServiceImpl implements ContractService{
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 vo.setCompanyCode(authToken.getCompanyCode());
+                vo.setPersonId(authToken.getPersonId());
             }
             PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
             List<QueryContractResVo> contractResDTOList = contractDao.selectBySelectContract(vo);
@@ -107,6 +124,11 @@ public class ContractServiceImpl implements ContractService{
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         if(k > 0){
             try {
+                if (contractDTO.getRebateClause().equals((byte)1)){
+                    List<ContractPlanType> typeList = BeanCopyUtils.copyList(contractReqVo.getPlanTypeList(),ContractPlanType.class);
+                    typeList.stream().forEach(planType -> planType.setContractCode(contractDTO.getContractCode()));
+                    savePlanTypeList(typeList);
+                }
                 List<ContractPurchaseVolumeDTO> list = BeanCopyUtils.copyList(contractReqVo.getPurchaseCount(),ContractPurchaseVolumeDTO.class);
                 list.stream().forEach(purchaselist -> purchaselist.setContractCode(contractDTO.getContractCode()));
                 int s = ((ContractService) AopContext.currentProxy()).saveList(list);
@@ -122,6 +144,16 @@ public class ContractServiceImpl implements ContractService{
             throw new GroundRuntimeException("合同保存失败");
         }
     }
+    @Override
+    public void savePlanTypeList(List<ContractPlanType> typeList) {
+        if(CollectionUtils.isEmptyCollection(typeList)){
+            return;
+        }
+        int i = contractPlanTypeMapper.insertBatch(typeList);
+        if(i!=typeList.size()){
+            throw new BizException(ResultCode.SAVE_PLAN_TYPE_FAILED);
+        }
+    }
 
     /**
      * 查看合同详情
@@ -131,20 +163,51 @@ public class ContractServiceImpl implements ContractService{
     @Override
     public ContractResVo findContractDetail(Long id) {
         ContractResVo contractResVo = new ContractResVo();
-        if (id != null){
+        if (id != null) {
             ContractDTO entity = contractDao.selectByPrimaryKey(id);
-            BeanCopyUtils.copy(entity,contractResVo);
+            BeanCopyUtils.copy(entity, contractResVo);
+            List<String> dicNameList = Lists.newArrayList();
+            dicNameList.add("结算方式");
+            Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
+            dicMap.forEach((k,v)->{
+                if (Objects.equals(contractResVo.getSettlementMethod().toString(), v.getSupplierDictionaryValue())) {
+                    contractResVo.setSettlementMethodName(v.getSupplierContent());
+                }
+            });
             List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(contractResVo.getContractCode());
             List<ContractFile> contractFiles = contractFileMapper.selectByContractCode(contractResVo.getContractCode());
+            List<ContractPurchaseGroup> contractPurchaseGroups = contractPurchaseGroupMapper.selectByContractCode(contractResVo.getContractCode());
+            List<ContractBrand> contractBrands = contractBrandMapper.selectByContractCode(contractResVo.getContractCode());
+            List<ContractCategory> contractCategories = contractCategoryMapper.selectByContractCode(contractResVo.getContractCode());
+            List<ContractPlanType> planTypeList = contractPlanTypeMapper.selectByCode(contractResVo.getContractCode());
             try {
-                if(CollectionUtils.isNotEmptyCollection(purchaseVolume)){
-                    List<ContractPurchaseVolumeResVo>  list =BeanCopyUtils.copyList(purchaseVolume,ContractPurchaseVolumeResVo.class);
-                    contractResVo.setPurchaseCount(list);
+                if (CollectionUtils.isNotEmptyCollection(purchaseVolume)) {
+                    List<ContractPurchaseVolumeResVo> list = BeanCopyUtils.copyList(purchaseVolume, ContractPurchaseVolumeResVo.class);
+                    contractResVo.setPurchaseVolumeReqVos(list);
                 }
-               if(CollectionUtils.isNotEmptyCollection(contractFiles)){
-                   List<ContractFileResVo>  fileResVos = BeanCopyUtils.copyList(contractFiles, ContractFileResVo.class);
-                   contractResVo.setFileResVos(fileResVos);
-               }
+                if (CollectionUtils.isNotEmptyCollection(planTypeList)) {
+                    List<PlanTypeReqVO> copyList = BeanCopyUtils.copyList(planTypeList, PlanTypeReqVO.class);
+                    contractResVo.setPlanTypeList(copyList);
+                } else {
+                    contractResVo.setPlanTypeList(Lists.newArrayList());
+                }
+                if (CollectionUtils.isNotEmptyCollection(contractFiles)) {
+                    List<ContractFileResVo> fileResVos = BeanCopyUtils.copyList(contractFiles, ContractFileResVo.class);
+                    contractResVo.setFileResVos(fileResVos);
+                }
+                if (CollectionUtils.isNotEmptyCollection(contractPurchaseGroups)) {
+                    List<ContractPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(contractPurchaseGroups, ContractPurchaseGroupResVo.class);
+                    contractResVo.setPurchaseGroupResVos(purchaseGroupResVos);
+                }
+
+                if (CollectionUtils.isNotEmptyCollection(contractBrands)) {
+                    List<ContractBrandResVo> contractBrandResVos = BeanCopyUtils.copyList(contractBrands, ContractBrandResVo.class);
+                    contractResVo.setBrandResVos(contractBrandResVos);
+                }
+                if (CollectionUtils.isNotEmptyCollection(contractCategories)) {
+                    List<ContractCategoryResVo> contractCategoryResVos = BeanCopyUtils.copyList(contractCategories, ContractCategoryResVo.class);
+                    contractResVo.setCategoryResVos(contractCategoryResVos);
+                }
                 if (null != contractResVo) {
                     //获取操作日志
                     OperationLogVo operationLogVo = new OperationLogVo();
@@ -159,7 +222,7 @@ public class ContractServiceImpl implements ContractService{
                     }
                     contractResVo.setLogDataList(logDataList);
                     return contractResVo;
-                }else {
+                } else {
                     return null;
                 }
             } catch (Exception e) {
@@ -351,12 +414,54 @@ public class ContractServiceImpl implements ContractService{
             for (ContractResVo resVo : list) {
                 List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(resVo.getContractCode());
                     List<ContractPurchaseVolumeResVo>  contractPurchaseVolumeResVos =BeanCopyUtils.copyList(purchaseVolume,ContractPurchaseVolumeResVo.class);
-                resVo.setPurchaseCount(contractPurchaseVolumeResVos);
+                resVo.setPurchaseVolumeReqVos(contractPurchaseVolumeResVos);
             }
             return list;
         } catch (Exception e) {
             throw new GroundRuntimeException("查询失败");
         }
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void deletePlanTypeList(String contractCode) {
+        int i = contractPlanTypeMapper.deletePlanTypeList(contractCode);
+    }
+
+
+    /**
+     * 功能描述: 限定采购组
+     *
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/1 20:16
+     */
+    @Override
+    public List<ContractPurchaseResVo> getContractByPurchaseGroup() {
+
+        Map<String,String> map = Maps.newHashMap();
+        AuthToken user = getUser();
+        map.put("companyCode",user.getCompanyCode());
+        map.put("personId",user.getPersonId());
+
+        return contractDao.getContractByMap(map);
+    }
+
+    /**
+     * 功能描述: 根据供应商查询合同
+     *
+     * @param supplierCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/3 12:11
+     */
+    @Override
+    public List<ContractPurchaseResVo> getContractBySupplierCode(String supplierCode) {
+        Map<String,String> map = Maps.newHashMap();
+        AuthToken user = getUser();
+        map.put("companyCode",user.getCompanyCode());
+        map.put("supplierCode",supplierCode);
+        return contractDao.getContractByMap(map);
     }
 }

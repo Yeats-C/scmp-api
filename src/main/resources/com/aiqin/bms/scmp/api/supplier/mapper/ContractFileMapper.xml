@@ -7,6 +7,7 @@
     <result column="file_path" jdbcType="VARCHAR" property="filePath" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_code" jdbcType="VARCHAR" property="fileCode" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -14,7 +15,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, contract_code, file_path, del_flag, file_name, create_time, create_by,
-    update_time, update_by
+    update_time, update_by,file_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -144,7 +145,7 @@
     insert into contract_file (id,file_path,
     del_flag, contract_code, file_name,
     create_time, create_by, update_time,
-    update_by)
+    update_by,file_code)
     VALUES
     <foreach collection="list" item="t" index= "index" separator =",">
       (
@@ -156,7 +157,8 @@
       #{t.createTime,jdbcType=TIMESTAMP},
       #{t.createBy,jdbcType=VARCHAR},
       #{t.updateTime,jdbcType=TIMESTAMP},
-      #{t.updateBy,jdbcType=VARCHAR}
+      #{t.updateBy,jdbcType=VARCHAR},
+      #{t.fileCode,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

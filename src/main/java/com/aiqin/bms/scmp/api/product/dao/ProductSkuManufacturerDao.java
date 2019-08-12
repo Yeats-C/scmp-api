@@ -28,6 +28,8 @@ public interface ProductSkuManufacturerDao {
 
     List<ProductSkuManufacturerRespVo> getDraft(String skuCode);
 
+    List<ProductSkuManufacturerRespVo> getRespVo(String skuCode);
+
     List<ProductSkuManufacturer> getInfo(String skuCode);
 
     List<ProductSkuManufacturerDraft> getDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);
@@ -38,5 +40,5 @@ public interface ProductSkuManufacturerDao {
 
     List<ApplyProductSkuManufacturer> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuManufacturer> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
+    List<ProductSkuManufacturerRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 }

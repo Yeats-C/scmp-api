@@ -37,6 +37,9 @@
       <if test="handleName != null">
         handle_name,
       </if>
+      <if test="remark != null">
+        remark,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -67,10 +70,13 @@
         #{delFlag,jdbcType=TINYINT},
       </if>
       <if test="content != null">
-        #{content,jdbcType=CHAR},
+        #{content,jdbcType=VARCHAR},
       </if>
       <if test="handleName != null">
         #{handleName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -86,7 +92,7 @@
     <if test="objectId !=null and objectId!=''">
       AND object_id =#{objectId}
     </if>
-    order by create_time desc
+    order by create_time desc,id desc
   </select>
   <select id="getList" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.LogData">
     SELECT
@@ -101,7 +107,7 @@
     (id, object_id, handle_type,
     object_type, create_time, create_by,
     update_time, update_by, del_flag,
-    content, handle_name
+    content, handle_name,remark
     )
     values
     <foreach collection="list" item="item" index="index" separator=",">
@@ -109,7 +115,7 @@
       #{item.id,jdbcType=BIGINT}, #{item.objectId,jdbcType=VARCHAR}, #{item.handleType,jdbcType=TINYINT},
       #{item.objectType,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
       #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT},
-      #{item.content,jdbcType=CHAR}, #{item.handleName,jdbcType=VARCHAR}
+      #{item.content,jdbcType=VARCHAR}, #{item.handleName,jdbcType=VARCHAR}, #{item.remark,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

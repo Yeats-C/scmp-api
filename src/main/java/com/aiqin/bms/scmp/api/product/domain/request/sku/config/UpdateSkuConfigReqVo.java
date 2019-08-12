@@ -20,18 +20,6 @@ public class UpdateSkuConfigReqVo {
     @ApiModelProperty("商品配置编号")
     private String configCode;
 
-    @ApiModelProperty("商品名称")
-    private String productCode;
-
-    @ApiModelProperty("商品编码")
-    private String productName;
-
-    @ApiModelProperty("sku编码")
-    private String skuCode;
-
-    @ApiModelProperty("sku名称")
-    private String skuName;
-
     @ApiModelProperty("物流中心(仓库)编码")
     private String transportCenterCode;
 
@@ -56,12 +44,10 @@ public class UpdateSkuConfigReqVo {
     @ApiModelProperty("大效期预警天数")
     private Integer bigEffectPeriodWarnDay;
 
-    @ApiModelProperty("公司编码")
-    private String companyCode;
-
-    @ApiModelProperty("公司名称")
-    private String companyName;
+    @ApiModelProperty("到货后周转期")
+    private Integer turnoverPeriodAfterArrival;
 
     @ApiModelProperty("备用仓库")
     private List<SpareWarehouseReqVo> spareWarehouses;
+
 }

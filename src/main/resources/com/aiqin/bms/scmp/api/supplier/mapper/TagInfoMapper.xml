@@ -10,6 +10,7 @@
     <result column="tag_type_name" jdbcType="VARCHAR" property="tagTypeName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="classify" jdbcType="VARCHAR" property="classify" />
     <result column="enable" jdbcType="TINYINT" property="enable" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
@@ -28,18 +29,21 @@
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="enable" jdbcType="TINYINT" property="enable" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
 
   <sql id="Base_Column_List">
     id, tag_code, tag_name, tag_use_num, tag_type_code, tag_type_name, company_code,
-    company_name, enable, del_flag, create_by, create_time, update_by, update_time
+    company_name, enable, del_flag, create_by, create_time, update_by, update_time,
+    classify
   </sql>
 
   <sql id="List_Column_List">
     id, tag_code, tag_name, tag_use_num, tag_type_code, tag_type_name, company_code,
-    company_name, enable, update_by, update_time
+    company_name, enable, update_by, update_time,create_by, create_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -50,11 +54,11 @@
 
   <select id="getList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.tag.QueryTagReqVo" resultMap="ListResultMap">
     select
-    <include refid="Base_Column_List" />
+    <include refid="List_Column_List" />
     from tag_info
     <where>
       <if test="tagCode != null and tagCode.length >0">
-        tag_code = #{tagCode,jdbcType=VARCHAR}
+        tag_code like CONCAT('%',#{tagCode,jdbcType=VARCHAR},'%')
       </if>
       <if test="companyCode != null and companyCode.length >0">
         and company_code = #{companyCode,jdbcType=VARCHAR}
@@ -66,10 +70,10 @@
         and tag_type_code = #{tagTypeCode,jdbcType=TINYINT}
       </if>
       <if test="tagName != null and tagName.length >0">
-        and tag_name like CONCAT('%', #{tagName,jdbcType=TINYINT}, '%')
+        and tag_name like CONCAT('%', #{tagName,jdbcType=VARCHAR}, '%')
       </if>
     </where>
-    order by tag_use_num desc
+    order by create_time desc
   </select>
   <select id="checkName" resultType="java.lang.Integer">
     select
@@ -87,8 +91,17 @@
       </if>
     </where>
   </select>
-
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectByTagNames" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from tag_info
+      where company_code = #{companyCode}
+      and tag_name in
+      <foreach collection="list" open="(" close=")" item="item" separator=",">
+           #{item}
+      </foreach>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from tag_info
     where id = #{id,jdbcType=BIGINT}
   </delete>
@@ -97,12 +110,12 @@
       tag_use_num, tag_type_code, tag_type_name,
       company_code, company_name, enable,
       del_flag, create_by, create_time,
-      update_by, update_time)
+      update_by, update_time,classify)
     values (#{id,jdbcType=BIGINT}, #{tagCode,jdbcType=VARCHAR}, #{tagName,jdbcType=VARCHAR},
       #{tagUseNum,jdbcType=INTEGER}, #{tagTypeCode,jdbcType=VARCHAR}, #{tagTypeName,jdbcType=VARCHAR},
       #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{enable,jdbcType=TINYINT},
       #{delFlag,jdbcType=TINYINT}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
-      #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
+      #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},#{classify,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.TagInfo">
     insert into tag_info
@@ -149,6 +162,9 @@
       <if test="updateTime != null">
         update_time,
       </if>
+      <if test="classify != null">
+        classify,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -192,6 +208,9 @@
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="classify != null">
+        #{classify,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -237,6 +256,9 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
+      <if test="classify != null">
+        classify = #{classify,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -249,6 +271,7 @@
       tag_type_name = #{tagTypeName,jdbcType=VARCHAR},
       company_code = #{companyCode,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},
+      classify = #{classify,jdbcType=VARCHAR},
       enable = #{enable,jdbcType=TINYINT},
       del_flag = #{delFlag,jdbcType=TINYINT},
       create_by = #{createBy,jdbcType=VARCHAR},

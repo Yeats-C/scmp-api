@@ -37,4 +37,27 @@ public interface ProductSkuPicDescService {
      * @return
      */
     Integer deleteDrafts(List<String> skuCodes);
+
+    /**
+     *
+     * 功能描述: 获取申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:16
+     */
+    List<ProductSkuPicDescRespVo> getApply(String skuCode, String applyCode);
+
+    /**
+     *
+     * 功能描述: 获取正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:32
+     */
+    List<ProductSkuPicDescRespVo> getList(String skuCode);
 }

@@ -1,10 +1,13 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku.config;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.StatusTypeCode;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -55,8 +58,25 @@ public class SkuConfigDetailRepsVo {
     @ApiModelProperty("商品类型")
     private String skuTypeName;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
+
     @ApiModelProperty("SKU配置列表信息")
     private List<SkuConfigsRepsVo> configs;
+
+    @ApiModelProperty("供应商列表")
+    private List<ProductSkuSupplyUnitRespVo> supplierList;
 
     public String getSkuTypeName() {
        if (Objects.equals(StatusTypeCode.GOOD.getStatus(),skuType)) {

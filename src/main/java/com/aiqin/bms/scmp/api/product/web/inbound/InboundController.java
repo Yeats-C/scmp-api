@@ -1,5 +1,10 @@
 package com.aiqin.bms.scmp.api.product.web.inbound;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundCallBackReqVo;
+import com.aiqin.bms.scmp.api.product.service.impl.InboundServiceImpl;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -12,6 +17,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.QueryInboundResVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -32,7 +38,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@Api(description = "库房入库管理")
+@Api(tags = "库房入库管理")
 @RequestMapping("/product/inbound")
 public class InboundController {
 
@@ -95,19 +101,49 @@ public class InboundController {
         return HttpResponse.success(inboundService.saveReturnGoodsToInbound(reqVo));
     }
 
-//    @ApiOperation("入库单回调接口")
-//    @PostMapping("/workFlowCallBack")
-//    public HttpResponse<Integer>workFlowCallBack(@RequestBody @Valid InboundCallBackReqVo reqVo){
-//
-//
+    @ApiOperation("入库单回调接口")
+    @PostMapping("/workFlowCallBack")
+    public HttpResponse<Integer>workFlowCallBack(@RequestBody @Valid InboundCallBackReqVo reqVo){
+
+
+        try {
+            inboundService.workFlowCallBack(reqVo);
+            return HttpResponse.success();
+        } catch (Exception e) {
+            log.error("入库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
+        }
+    }
+
+    @ApiOperation("根据入库单号查询入库商品批次详情")
+    @GetMapping("/getInfoByOderCode")
+    public HttpResponse<InboundBatch> selectInboundBatchInfoByInboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode,
+                                                                              @RequestParam(value = "page_size", required = false)Integer pageSize,
+                                                                              @RequestParam(value = "page_no", required = false)Integer pageNo){
+        return inboundService.selectInboundBatchInfoByInboundOderCode(new InboundBatch(inboundOderCode, pageSize, pageNo));
+    }
+
+//    @ApiOperation("采购查询批次详情")
+//    @GetMapping("/getInfoByPurChase")
+//    public HttpResponse<InboundProduct> selectPurchaseInfoByPurchaseNum(@RequestParam(value = "source_oder_code")String sourceOderCode,
+//                                                                      @RequestParam(value = "purchase_num")Integer purchaseNum,
+//                                                                      @RequestParam(value = "page_size", required = false)Integer pageSize,
+//                                                                      @RequestParam(value = "page_no", required = false)Integer pageNo){
+//        return inboundService.selectPurchaseInfoByPurchaseNum(new Inbound(sourceOderCode, purchaseNum, pageSize, pageNo));
+//    }
+
+
+//    @ApiOperation("pushWms")
+//    @GetMapping("/pushWms")
+//    public HttpResponse pushWms(String code){
 //        try {
-//            inboundService.workFlowCallBack(reqVo);
+//            inboundService.pushWms(code);
 //            return HttpResponse.success();
 //        } catch (Exception e) {
-//            log.error("入库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
+//            log.error("入库单回调接口错误实体是:[{}]", code);
 //            e.printStackTrace();
 //            return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
 //        }
 //    }
-
 }

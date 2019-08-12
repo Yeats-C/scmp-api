@@ -39,6 +39,8 @@
     <result column="product_time" jdbcType="TIMESTAMP" property="productTime" />
     <result column="be_synchronize" jdbcType="INTEGER" property="beSynchronize" />
     <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
+    <result column="old_gross_profit_margin" jdbcType="BIGINT" property="oldGrossProfitMargin" />
+    <result column="new_gross_profit_margin" jdbcType="BIGINT" property="newGrossProfitMargin" />
   </resultMap>
   <sql id="Base_Column_List">
     id, code, sku_code, sku_name, purchase_price_newest, supplier_code, supplier_name, 
@@ -47,7 +49,7 @@
     change_price_reason_name, temporary_price, price_item_code, price_item_name, price_type_code, 
     price_type_name, price_attribute_code, price_attribute_name, company_code, company_name, 
     transport_center_code, transport_center_name, warehouse_code, warehouse_name, batch_remark,
-    official_code, ext_field_3, product_time, be_synchronize, ext_field_6
+    official_code, ext_field_3, product_time, be_synchronize, ext_field_6, old_gross_profit_margin, new_gross_profit_margin
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -55,38 +57,91 @@
     from product_sku_change_price_info
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="selectListByQueryVO" parameterType="com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO">
-    select a.code                               as code,
-           a.name                               as name,
-           a.create_time                        as createTime,
-           a.change_price_name                  as changePriceName,
-           a.purchase_group_name                as purchaseGroupName,
-           a.apply_status                       as applyStatus,
-           IFNULL(a.update_by,a.create_by)     as operateBy,
-           IFNULL(a.update_time,a.create_time) as operateTime
+  <select id="selectListByQueryVOCount" parameterType="com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO" resultType="java.lang.Long">
+    select a.id
     from product_sku_change_price a
+    left join product_sku_change_price_info b
+    on a.code = b.code
     where a.company_code = #{companyCode}
     <if test="createTimeStart != null">
-      and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+      and a.create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="flag != null">
+      and a.apply_status != 5
     </if>
     <if test="createTimeEnd != null">
-      and create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+      and a.create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
     </if>
     <if test="code != null and code !=''">
-      and code LIKE CONCAT(CONCAT('%',#{code},'%'))
+      and a.code LIKE CONCAT('%',#{code},'%')
     </if>
     <if test="name != null and name !=''">
-      and code LIKE CONCAT(CONCAT('%',#{name},'%'))
+      and a.name LIKE CONCAT('%',#{name},'%')
+    </if>
+    <if test="skuCode != null and skuCode !=''">
+      and b.sku_code LIKE CONCAT('%',#{skuCode},'%')
+    </if>
+    <if test="skuName != null and skuName !=''">
+      and b.sku_name LIKE CONCAT('%',#{skuName},'%')
     </if>
     <if test="changePriceType != null and changePriceType !=''">
-      and change_price_type = #{changePriceType}
+      and a.change_price_type = #{changePriceType}
     </if>
     <if test="purchaseGroupCode != null and purchaseGroupCode !=''">
-      and purchase_group_code = #{purchaseGroupCode}
+      and a.purchase_group_code = #{purchaseGroupCode}
     </if>
     <if test="applyStatus != null and applyStatus !=''">
-      and apply_status = #{applyStatus}
+      and a.apply_status = #{applyStatus}
     </if>
+    <if test="beContainArea != null">
+      and a.ext_field_5 = #{beContainArea}
+    </if>
+    group by a.id
+    order by a.create_time desc
+  </select>
+  <resultMap id="selectListByQueryVO" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO">
+    <result column="code" property="code"/>
+    <result column="name" property="name"/>
+    <result column="createTime" property="createTime"/>
+    <result column="createBy" property="createBy"/>
+    <result column="changePriceName" property="changePriceName"/>
+    <result column="beContainArea" property="beContainArea"/>
+    <result column="purchaseGroupName" property="purchaseGroupName"/>
+    <result column="applyStatus" property="applyStatus"/>
+    <result column="createBy" property="createBy"/>
+    <result column="createTime" property="createTime"/>
+    <result column="updateBy" property="updateBy"/>
+    <result column="updateTime" property="updateTime"/>
+    <result column="formNo" property="formNo"/>
+    <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo">
+      <result column="skuCode" property="skuCode"/>
+      <result column="skuName" property="skuName"/>
+    </collection>
+  </resultMap>
+  <select id="selectListByQueryVO" parameterType="java.util.List" resultMap="selectListByQueryVO">
+    select a.code                        as code,
+    a.name                               as name,
+    a.create_time                        as createTime,
+    a.create_by                          as createBy,
+    a.change_price_name                  as changePriceName,
+    a.ext_field_5                        as beContainArea,
+    a.purchase_group_name                as purchaseGroupName,
+    a.apply_status                       as applyStatus,
+    a.create_by                          as createBy,
+    a.create_time                        as createTime,
+    a.update_by                          as updateBy,
+    a.update_time                        as updateTime,
+    a.purchase_group_name                as purchaseGroupName,
+    b.sku_code                           as skuCode,
+    b.sku_name                           as skuName,
+    a.form_no                            as formNo
+    from product_sku_change_price a
+    left join product_sku_change_price_info b
+    on a.code = b.code
+    where a.id in
+    <foreach collection="list" open="(" close=")" item="item" separator=",">
+         #{item}
+    </foreach>
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_change_price_info
@@ -110,7 +165,7 @@
       transport_center_code, transport_center_name, 
       warehouse_code, warehouse_name, batch_remark,
       official_code, ext_field_3, product_time,
-      be_synchronize, ext_field_6)
+      be_synchronize, ext_field_6, old_gross_profit_margin, new_gross_profit_margin)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{purchasePriceNewest,jdbcType=BIGINT}, #{supplierCode,jdbcType=VARCHAR}, 
       #{supplierName,jdbcType=VARCHAR}, #{beDefault,jdbcType=INTEGER}, #{purchasePriceOld,jdbcType=BIGINT}, 
@@ -124,7 +179,7 @@
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR},
       #{officialCode,jdbcType=VARCHAR}, #{extField3,jdbcType=VARCHAR}, #{productTime,jdbcType=TIMESTAMP},
-      #{beSynchronize,jdbcType=INTEGER}, #{extField6,jdbcType=BIGINT})
+      #{beSynchronize,jdbcType=INTEGER}, #{extField6,jdbcType=BIGINT}, #{oldGrossProfitMargin,jdbcType=BIGINT}, #{newGrossProfitMargin,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo">
     insert into product_sku_change_price_info
@@ -240,6 +295,12 @@
       <if test="extField6 != null">
         ext_field_6,
       </if>
+    <if test="oldGrossProfitMargin != null">
+      old_gross_profit_margin,
+      </if>
+    <if test="newGrossProfitMargin != null">
+      new_gross_profit_margin,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -353,6 +414,12 @@
       <if test="extField6 != null">
         #{extField6,jdbcType=BIGINT},
       </if>
+       <if test="oldGrossProfitMargin != null">
+        #{oldGrossProfitMargin,jdbcType=BIGINT},
+      </if>
+       <if test="newGrossProfitMargin != null">
+        #{newGrossProfitMargin,jdbcType=BIGINT},
+      </if>
     </trim>
   </insert>
     <insert id="insertBatch">
@@ -369,7 +436,7 @@
       transport_center_code, transport_center_name,
       warehouse_code, warehouse_name, batch_remark,
       official_code, ext_field_3, product_time,
-      be_synchronize, ext_field_6)
+      be_synchronize, ext_field_6, old_gross_profit_margin, new_gross_profit_margin)
     values
       <foreach collection="items" item="item" close="" open="" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
@@ -385,7 +452,7 @@
         #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
         #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR},
         #{item.officialCode,jdbcType=VARCHAR}, #{item.extField3,jdbcType=VARCHAR}, #{item.productTime,jdbcType=TIMESTAMP},
-        #{item.beSynchronize,jdbcType=INTEGER}, #{item.extField6,jdbcType=BIGINT})
+        #{item.beSynchronize,jdbcType=INTEGER}, #{item.extField6,jdbcType=BIGINT}, #{item.oldGrossProfitMargin,jdbcType=BIGINT}, #{item.newGrossProfitMargin,jdbcType=BIGINT})
       </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo">
@@ -499,6 +566,12 @@
       <if test="extField6 != null">
         ext_field_6 = #{extField6,jdbcType=BIGINT},
       </if>
+    <if test="oldGrossProfitMargin != null">
+      old_gross_profit_margin = #{oldGrossProfitMargin,jdbcType=BIGINT},
+      </if>
+    <if test="newGrossProfitMargin != null">
+      new_gross_profit_margin = #{newGrossProfitMargin,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -539,13 +612,15 @@
       ext_field_3 = #{extField3,jdbcType=VARCHAR},
       product_time = #{productTime,jdbcType=TIMESTAMP},
       be_synchronize = #{beSynchronize,jdbcType=INTEGER},
-      ext_field_6 = #{extField6,jdbcType=BIGINT}
+      ext_field_6 = #{extField6,jdbcType=BIGINT},
+      old_gross_profit_margin = #{oldGrossProfitMargin,jdbcType=BIGINT},
+      new_gross_profit_margin = #{newGrossProfitMargin,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateBatch" parameterType="list">
     <foreach collection="items" separator=";" open="" close="" item="item">
       update product_sku_change_price_info
-      set code = #{item.code,jdbcType=VARCHAR},
+      set
       sku_code = #{item.skuCode,jdbcType=VARCHAR},
       sku_name = #{item.skuName,jdbcType=VARCHAR},
       purchase_price_newest = #{item.purchasePriceNewest,jdbcType=BIGINT},
@@ -580,7 +655,9 @@
       ext_field_3 = #{item.extField3,jdbcType=VARCHAR},
       product_time = #{item.productTime,jdbcType=TIMESTAMP},
       be_synchronize = #{item.beSynchronize,jdbcType=INTEGER},
-      ext_field_6 = #{item.extField6,jdbcType=BIGINT}
+      ext_field_6 = #{item.extField6,jdbcType=BIGINT},
+      old_gross_profit_margin = #{item.oldGrossProfitMargin,jdbcType=BIGINT},
+      new_gross_profit_margin = #{item.newGrossProfitMargin,jdbcType=BIGINT}
       where id = #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>

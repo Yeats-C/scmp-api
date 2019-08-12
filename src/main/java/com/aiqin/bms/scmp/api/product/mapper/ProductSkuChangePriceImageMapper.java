@@ -26,7 +26,7 @@ public interface ProductSkuChangePriceImageMapper {
      */
     int insertBatch(@Param("items") List<ProductSkuChangePriceImage> images);
     /**
-     * TODO
+     * 编码删除图片
      * @author NullPointException
      * @date 2019/5/23
      * @param code

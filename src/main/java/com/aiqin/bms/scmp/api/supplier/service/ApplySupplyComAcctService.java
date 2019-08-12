@@ -10,13 +10,13 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompany
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyAcctReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplierComAcctReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierComAcctReqVo;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComAcctInfo2RespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.QueryApplySupplierComAcctRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.QuerySupplierComAcctRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComAcctMainRespVO;
-import com.aiqin.bms.scmp.api.supplier.service.helper.WorkflowHelper;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ import java.util.List;
  * @author: wangxu
  * @date: 2018/12/3 0003 16:44
  */
-public interface ApplySupplyComAcctService extends WorkflowHelper {
+public interface ApplySupplyComAcctService{
     /**
      * 编码，复制对象,AOP
      * @param applySupplyCompanyAcctReqVO
@@ -109,6 +109,13 @@ public interface ApplySupplyComAcctService extends WorkflowHelper {
      * @return java.util.Map<java.lang.String,java.lang.Object>
      */
     BasePage<QuerySupplierComAcctRespVo> selectSupplyListByQueryVO(QuerySupplierComAcctReqVo vo);
+
+    /**
+     * 根据供应商名称查询账户信息
+     * @param supplierCode
+     * @return
+     */
+    List<QuerySupplierComAcctRespVo> selectSupplierComAcctBySupplierCode(String supplierCode);
     /**
      * 通过id查找申请供货单位账户详情
      * @author zth
@@ -173,4 +180,16 @@ public interface ApplySupplyComAcctService extends WorkflowHelper {
      * @return
      */
     List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
+
+
+    /**
+     *
+     * 功能描述: 返回详情接口请求参数
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/9 14:41
+     */
+    DetailRequestRespVo getInfoByForm(String formNo);
 }

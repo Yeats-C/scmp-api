@@ -26,6 +26,9 @@ public class ApplySupplyComInfoRespVO {
     @ApiModelProperty("申请供货单位类型")
     private String applySupplyType;
 
+    @ApiModelProperty("申请供货单位类型名称")
+    private String applySupplyTypeName;
+
     @ApiModelProperty("简称")
     private String supplyAbbreviation;
 
@@ -87,7 +90,7 @@ public class ApplySupplyComInfoRespVO {
     private String corporateRepresentative;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("公司网址")
     private String companyWebsite;

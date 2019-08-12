@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Objects;
+
 /**
  * Description:
  *
@@ -32,4 +34,33 @@ public class PriceChannelForChangePrice {
 
     @ApiModelProperty("价格数据名称")
     private String priceAttributeName;
+
+    @ApiModelProperty("原含税价")
+    private Long oldPrice=0L;
+
+    @ApiModelProperty("新含税价")
+    private Long newPrice = 0L;
+
+    @ApiModelProperty("原含税采购价")
+    private Long purchasePriceOld = 0L;
+
+    @ApiModelProperty("最新采购价")
+    private Long purchasePriceNewest = 0L;
+
+    @ApiModelProperty("原毛利率")
+    private Long oldGrossProfitMargin;
+
+    @ApiModelProperty("成本")
+    private Long taxCost;
+
+    @ApiModelProperty("平均成本")
+    private Long avgTaxCost;
+
+    public Long getOldGrossProfitMargin() {
+        if (Objects.isNull(this.oldPrice)||Objects.isNull(this.taxCost)||this.taxCost==0) {
+            return 0L;
+        }
+        this.avgTaxCost = taxCost;
+        return this.oldGrossProfitMargin = (this.oldPrice-taxCost)/this.avgTaxCost;
+    }
 }

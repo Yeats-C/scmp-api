@@ -37,4 +37,38 @@ public interface ProductSkuSalesInfoService {
      * @return
      */
     Integer deleteDrafts(List<String> skuCodes);
+
+    /**
+     *
+     * 功能描述: 获取申请表数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 22:37
+     */
+    List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode);
+
+    /**
+     *
+     * 功能描述: 获取正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:26
+     */
+    List<PurchaseSaleStockRespVo> getList(String skuCode);
+
+    /**
+     *
+     * 功能描述: 检查销售条形码是否存在
+     *
+     * @param salesCodes
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/30 18:33
+     */
+    List<String> checkSalesCodes(List<String> salesCodes,String skuCode);
 }

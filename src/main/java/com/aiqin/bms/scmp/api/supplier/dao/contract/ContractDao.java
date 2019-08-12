@@ -3,10 +3,12 @@ package com.aiqin.bms.scmp.api.supplier.dao.contract;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUsernameReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.QueryContractResVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface ContractDao {
@@ -68,5 +70,8 @@ public interface ContractDao {
      * @return
      */
 
-    int updateByCode(@Param("applyContractCode") String applyContractCode, @Param("applyStatus") byte applyStatus);
+    int updateByCode(@Param("applyContractCode") String applyContractCode, @Param("applyStatus") byte applyStatus,@Param("newApplyCode") String newApplyCode);
+
+
+    List<ContractPurchaseResVo> getContractByMap(Map<String,String> map);
 }

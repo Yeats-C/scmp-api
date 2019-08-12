@@ -1,19 +1,25 @@
 package com.aiqin.bms.scmp.api.product.web.allocation;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -42,7 +48,13 @@ public class AllocationController {
     @ApiOperation("调拨单列表详情")
     @PostMapping("/list")
     public HttpResponse<BasePage<QueryAllocationResVo>> getList(@RequestBody QueryAllocationReqVo vo) {
-        return HttpResponse.success(allocationService.getList(vo));
+        vo.setAllocationType(AllocationTypeEnum.ALLOCATION.getType());
+        try {
+            return HttpResponse.success(allocationService.getList(vo));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
 
@@ -53,10 +65,15 @@ public class AllocationController {
      */
     @ApiOperation("新增调拨单")
     @PostMapping("/save")
-    public HttpResponse<Long> save(@RequestBody  AllocationReqVo vo){
+    public HttpResponse<Long> save(@RequestBody @Validated AllocationReqVo vo){
         try {
+            vo.setAllocationType(AllocationTypeEnum.ALLOCATION.getType());
+            vo.setAllocationTypeName(AllocationTypeEnum.ALLOCATION.getTypeName());
             return HttpResponse.success(allocationService.save(vo));
-        }catch (Exception ex){
+        }catch (BizException ex){
+            return HttpResponse.failure(ex.getMessageId());
+        } catch (Exception ex){
+            ex.printStackTrace();
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_ADD_ERROR);
         }
     }
@@ -90,7 +107,7 @@ public class AllocationController {
             return HttpResponse.success(allocationService. view(id));
         } catch (Exception e) {
             e.printStackTrace();
-            return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
 
@@ -111,5 +128,18 @@ public class AllocationController {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);
         }
+    }
+
+    @ApiOperation("导入商品信息")
+    @PostMapping("/importAllocationSku")
+    public HttpResponse<List<AllocationItemRespVo>> importAllocationSku(MultipartFile file,String transportCenterCode, String warehouseCode, String purchaseGroupCode){
+        AllocationImportSkuReqVo allocationImportSkuReqVo = new AllocationImportSkuReqVo(file,transportCenterCode,warehouseCode,purchaseGroupCode);
+        return HttpResponse.success(allocationService.importAllocationSku(allocationImportSkuReqVo));
+    }
+
+    @GetMapping("/getIdByFormNo")
+    @ApiOperation("根据formNo获取主键ID")
+    public HttpResponse<Long> getIdByFormNo(@RequestParam String formNo){
+        return HttpResponse.success(allocationService.getIdByFormNo(formNo));
     }
 }

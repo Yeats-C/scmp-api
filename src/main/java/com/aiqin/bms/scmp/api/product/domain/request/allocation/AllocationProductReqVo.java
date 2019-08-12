@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
  * @since 1.0
  */
 @Data
-@ApiModel("调拨sku接受实体")
+@ApiModel("sku接受实体")
 public class AllocationProductReqVo {
 
     @ApiModelProperty("sku编号")
@@ -51,33 +51,43 @@ public class AllocationProductReqVo {
     @ApiModelProperty("类型")
     private String type;
 
-    @ApiModelProperty("库存单位")
+    @ApiModelProperty(value = "库存单位",hidden = true)
     private String inventoryUnit;
 
-    @ApiModelProperty("库存")
-    @NotNull(message = "库存不能为空")
+    @ApiModelProperty(value = "库存",hidden = true)
     private Long inventory;
 
     @ApiModelProperty("税率")
     @NotNull(message = "税率不能为空")
     private Long tax;
 
-    @ApiModelProperty("含税单价")
-    @NotNull(message = "含税单价不能为空")
+    @ApiModelProperty("含税成本")
+    @NotNull(message = "含税成本不能为空")
     private Long taxPrice;
 
     @ApiModelProperty("数量")
     @NotNull(message = "数量不能为空")
     private Long quantity;
 
-    @ApiModelProperty("含税总价")
-    @NotNull(message = "含税总价不能为空")
+    @ApiModelProperty("含税总成本")
+    @NotNull(message = "含税总成本不能为空")
     private Long taxAmount;
 
-
-    @ApiModelProperty("图片地址")
+    @ApiModelProperty(value = "图片地址",hidden = true)
     private String pictureUrl;
 
     @ApiModelProperty("行号")
-    private Long linenum;
+    private Long lineNum;
+
+    @ApiModelProperty("调出批次号")
+    private String callOutBatchNumber;
+
+    @ApiModelProperty("调入批次号")
+    private String callInBatchNumber;
+
+    @ApiModelProperty("批次备注")
+    private String batchNumberRemark;
+
+    @ApiModelProperty("生产日期")
+    private String productDate;
 }

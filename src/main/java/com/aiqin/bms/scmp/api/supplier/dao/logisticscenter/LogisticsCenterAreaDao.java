@@ -46,4 +46,20 @@ public interface LogisticsCenterAreaDao {
     int updateByPrimaryKeySelective(LogisticsCenterAreaDTO record);
 
     int updateByPrimaryKey(LogisticsCenterAreaDTO record);
+    /**
+     * 通过关联编码查询数据
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param logisticsCenterCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterAreaDTO>
+     */
+    List<LogisticsCenterAreaDTO> selectByCode(String logisticsCenterCode);
+    /**
+     * 通过关联编码删除
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param logisticsCenterCode
+     * @return int
+     */
+    int deleteByCode(String logisticsCenterCode);
 }

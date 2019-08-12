@@ -57,6 +57,9 @@ public class InboundProductReqVo {
     @ApiModelProperty("入库基商品含量")
     private String inboundBaseContent;
 
+    @ApiModelProperty("拆零系数")
+    private String inboundBaseUnit;
+
     @ApiModelProperty("预计入库数量")
     private Long preInboundNum;
 
@@ -95,4 +98,7 @@ public class InboundProductReqVo {
 
     @ApiModelProperty("行号")
     private Long linenum;
+
+    @ApiModelProperty("进销税率")
+    private Integer taxRate;
 }

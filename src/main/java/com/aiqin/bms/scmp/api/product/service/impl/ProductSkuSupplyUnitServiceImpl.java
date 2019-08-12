@@ -1,16 +1,18 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuSupplyUnitDao;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.google.common.collect.Lists;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,8 +42,7 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
     }
 
     @Override
-    @SaveList
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int insertList(List<ProductSkuSupplyUnit> productSkuSupplyUnits) {
         int num = productSkuSupplyUnitDao.insertList(productSkuSupplyUnits);
         return num;
@@ -50,19 +51,12 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveList(String skuCode,String applyCode) {
+        //通过申请编码查询供应商信息
         List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = productSkuSupplyUnitDao.getApply(skuCode,applyCode);
-        if (null != applyProductSkuSupplyUnits && applyProductSkuSupplyUnits.size() > 0){
-            List<ProductSkuSupplyUnit> productSkuSupplyUnits = new ArrayList<>();
-            List<ProductSkuSupplyUnit> oldInfo = productSkuSupplyUnitDao.getInfo(skuCode);
-            applyProductSkuSupplyUnits.forEach(item->{
-                ProductSkuSupplyUnit productSkuSupplyUnit = new ProductSkuSupplyUnit();
-                BeanCopyUtils.copy(item,productSkuSupplyUnit);
-                productSkuSupplyUnits.add(productSkuSupplyUnit);
-            });
-            if (null != oldInfo && oldInfo.size() > 0){
-                productSkuSupplyUnitDao.deleteList(skuCode);
-            }
-            return ((ProductSkuSupplyUnitService)AopContext.currentProxy()).insertList(productSkuSupplyUnits);
+        if (CollectionUtils.isNotEmptyCollection(applyProductSkuSupplyUnits)){
+            List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(applyProductSkuSupplyUnits,ProductSkuSupplyUnit.class);
+            productSkuSupplyUnitDao.deleteList(skuCode);
+            return ((ProductSkuSupplyUnitService) AopContext.currentProxy()).insertList(productSkuSupplyUnits);
         } else {
             return 0;
         }
@@ -111,6 +105,11 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
         return productSkuSupplyUnitDao.getDraft(skuCode);
     }
 
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> getDraftList(List<String> skuCodes) {
+        return productSkuSupplyUnitDao.getDraftBySkuCodes(skuCodes);
+    }
+
     /**
      * 删除临时表数据
      *
@@ -120,5 +119,64 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
     @Override
     public Integer deleteDrafts(List<String> skuCodes) {
         return draftMapper.delete(skuCodes);
+    }
+
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> selectBySkuCode(String skuCode) {
+        List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitDao.selectBySkuCode(skuCode);
+        if(CollectionUtils.isEmptyCollection(list)){
+            return Lists.newArrayList();
+        }
+        return list;
+    }
+
+    /**
+     * 功能描述: 根据Id批量查询临时表细腻些
+     *
+     * @param ids
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 16:09
+     */
+    @Override
+    public List<ProductSkuSupplyUnitDraft> getDraftByIds(List<Long> ids) {
+        return draftMapper.selectByIds(ids);
+    }
+
+    /**
+     * 功能描述: 根据Id批量删除临时表信息
+     *
+     * @param ids
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/4 16:19
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteDraftByIds(List<Long> ids) {
+        return draftMapper.deleteDraftByIds(ids);
+    }
+
+    @Override
+    public Integer deleteDraftById(Long id) {
+        return draftMapper.deleteDraftById(id);
+    }
+
+    /**
+     * 功能描述: 获取申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 22:59
+     */
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> getApply(String skuCode, String applyCode) {
+        List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitDao.getApplys(skuCode,applyCode);
+        if(CollectionUtils.isEmptyCollection(list)){
+            return Lists.newArrayList();
+        }
+        return list;
     }
 }

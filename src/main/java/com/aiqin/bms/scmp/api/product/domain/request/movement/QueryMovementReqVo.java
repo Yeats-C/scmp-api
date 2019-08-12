@@ -36,18 +36,30 @@ public class QueryMovementReqVo extends PageReq {
     @ApiModelProperty("所属仓库编码")
     private String logisticsCenterCode;
 
+    @ApiModelProperty("所属仓库名称")
+    private String logisticsCenterName;
+
     @ApiModelProperty("调出库房编码")
-    private String calloutWarehouseCode;
+    private String callOutWarehouseCode;
+
+    @ApiModelProperty("调出库房名称")
+    private String callOutWarehouseName;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
 
     @ApiModelProperty("调入库房编码")
-    private String callinWarehouseCode;
+    private String callInWarehouseCode;
+
+    @ApiModelProperty("调入库房名称")
+    private String callInWarehouseName;
 
     @ApiModelProperty("入库单号")
     private String inboundOderCode;
 
-    @ApiModelProperty("公司编码")
+    @ApiModelProperty(value = "公司编码",hidden = true)
     private String companyCode;
+
+    @ApiModelProperty(value = "调拨类型",hidden = true)
+    private Byte allocationType;
 }

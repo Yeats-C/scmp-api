@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -36,8 +37,21 @@ public interface ProductSkuSupplyUnitDao {
 
     int deleteList(String skuCode);
 
-    List<ApplyProductSkuSupplyUnit> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+    List<ApplyProductSkuSupplyUnit> getApply(@Param("skuCode") String skuCode,@Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuSupplyUnit> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
+    List<ProductSkuSupplyUnitRespVo> getApplys(@Param("skuCode") String skuCode,@Param("applyCode") String applyCode);
+    /**
+     * 查询供应商
+     * @author NullPointException
+     * @date 2019/7/2
+     * @param skuCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo>
+     */
+    List<ProductSkuSupplyUnitRespVo> selectBySkuCode(String skuCode);
 
+    List<ProductSkuSupplyUnitRespVo> getDraftBySkuCodes(List<String> skuCodes);
+
+    String getFactorySkuCode(@Param("skuCode") String skuCode, @Param("supplyUnitCode")String supplyUnitCode);
+
+    List<PurchaseFormResponse> supplyList(String skuCode);
 }

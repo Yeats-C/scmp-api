@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.domain.request.brand;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ import java.util.Date;
  * @time: 10:27
  */
 @Data
+@ApiModel("商品品牌请求VO")
 public class QueryProductBrandReqVO extends PageReq {
 
     @ApiModelProperty(value = "品牌类型code")
@@ -33,11 +35,11 @@ public class QueryProductBrandReqVO extends PageReq {
     private String brandInitials;
 
     @ApiModelProperty(value = "创建时间从")
-    @JsonFormat(timezone = "GTM+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDateStart;
 
     @ApiModelProperty(value = "创建时间到")
-    @JsonFormat(timezone = "GTM+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDateEnd;
 
     @ApiModelProperty(value = "公司编码", notes = "前端查询接口可以不传,但是其他第三方系统此字段必填")

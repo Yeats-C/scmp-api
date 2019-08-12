@@ -41,6 +41,9 @@ public class ProductOperationLog extends CommonBean {
     @ApiModelProperty("删除标记(0:正常 1:删除)")
     private Byte delFlag;
 
+    @ApiModelProperty("备注")
+    private String remark;
+
     public Long getId() {
         return id;
     }
@@ -129,4 +132,11 @@ public class ProductOperationLog extends CommonBean {
         this.delFlag = delFlag;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 }

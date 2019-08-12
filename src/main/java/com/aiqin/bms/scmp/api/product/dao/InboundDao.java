@@ -4,6 +4,7 @@ package com.aiqin.bms.scmp.api.product.dao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.QueryInboundReqVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -31,4 +32,20 @@ public interface InboundDao {
     List<Inbound> selectInboundInfoByBoundSearch(BoundRequest boundRequest);
 
     Inbound selectByCode(String inboundOderCode);
+    /**
+     * 批量保存入库信息
+     * @author NullPointException
+     * @date 2019/6/28
+     * @param inboundList
+     * @return int
+     */
+    int insertBatch(List<Inbound> inboundList);
+
+    Integer selectMaxPurchaseNumBySourceOderCode(String sourceOderCode);
+
+    List<Inbound> selectTimeAndSatusBySourchAndNum(@Param("sourceOderCode")String sourceOderCode);
+
+    String selectCreateById(String inboundOderCode);
+
+    Inbound selectById(String id);
 }

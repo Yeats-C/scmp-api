@@ -56,6 +56,7 @@
     <result column="apply_supply_name" jdbcType="VARCHAR" property="applySupplyName" />
     <result column="supply_company_code" jdbcType="VARCHAR" property="applySupplyCode" />
     <result column="apply_supply_type" jdbcType="VARCHAR" property="applySupplyType" />
+    <result column="apply_supply_type_name" jdbcType="VARCHAR" property="applySupplyTypeName" />
     <result column="supply_abbreviation" jdbcType="VARCHAR" property="supplyAbbreviation" />
     <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
     <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
@@ -83,7 +84,7 @@
     <result column="supply_purchasing_group_name" jdbcType="VARCHAR" property="supplyPurchasingGroupName" />
     <result column="tax_id" jdbcType="VARCHAR" property="taxId" />
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
-    <result column="registered_capital" jdbcType="BIGINT" property="registeredCapital" />
+    <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital" />
     <result column="company_website" jdbcType="VARCHAR" property="companyWebsite" />
     <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
     <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />
@@ -126,8 +127,9 @@
       create_time, create_by, del_flag,
       apply_supply_company_code,apply_type,zip_code,purchasing_group_code,form_no,
       purchasing_group_name,tax_id,corporate_representative,registered_capital,
-      enable,update_time,update_by,add_account, company_code,company_name,max_order_amount,min_order_amount,business_license,star_score,
-      direct_supervisor_code,direct_supervisor_name)
+      enable,update_time,update_by,add_account, company_code,company_name,max_order_amount,
+      min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,
+      supply_company_code,apply_status)
     values ( #{applySupplyName,jdbcType=VARCHAR},#{applySupplyType,jdbcType=VARCHAR},#{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR},
       #{applyAbbreviation,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, 
@@ -138,10 +140,10 @@
       #{applyCode,jdbcType=VARCHAR},#{applyType,jdbcType=TINYINT},
       #{zipCode,jdbcType=VARCHAR},#{purchasingGroupCode,jdbcType=VARCHAR},#{formNo,jdbcType=VARCHAR},
       #{purchasingGroupName, jdbcType=VARCHAR},#{taxId, jdbcType=VARCHAR},#{corporateRepresentative, jdbcType=VARCHAR},
-      #{registeredCapital, jdbcType=BIGINT},#{enable, jdbcType=TINYINT},#{updateTime,jdbcType=TIMESTAMP},
+      #{registeredCapital, jdbcType=DECIMAL},#{enable, jdbcType=TINYINT},#{updateTime,jdbcType=TIMESTAMP},
       #{updateBy,jdbcType=VARCHAR},#{addAccount, jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{maxOrderAmount, jdbcType=BIGINT}, #{minOrderAmount, jdbcType=BIGINT}, #{businessLicense, jdbcType=VARCHAR}, #{starScore, jdbcType=DECIMAL},
-      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR}
+      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{supplyCompanyCode,jdbcType=VARCHAR},#{applyStatus,jdbcType=TINYINT}
       )
   </insert>
   <select id="getApplyList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplyComReqVO" resultMap="ApplySupplyComListMap">
@@ -162,6 +164,7 @@
       when 2 THEN '审核通过'
       when 3 THEN '审核未通过'
       when 4 THEN '已撤销'
+      when 5 then '待提交'
       ELSE '待审' END apply_status_name,
       a.auditor_by,
       a.auditor_time,
@@ -200,10 +203,10 @@
       and a.apply_status = #{reviewerStatus,jdbcType=TINYINT}
     </if>
     <if test="companyCode != null and companyCode != '' ">
-      and company_code = #{companyCode,jdbcType=VARCHAR}
+      and a.company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
     <if test="applyBy != null and applyBy != '' ">
-      and create_by = #{applyBy,jdbcType=VARCHAR}
+      and a.create_by = #{applyBy,jdbcType=VARCHAR}
     </if>
     order by a.create_time desc
   </select>
@@ -241,6 +244,7 @@
       a.supplier_code,
       a.supplier_name,
       a.apply_supply_type,
+      si.supplier_content apply_supply_type_name,
       a.apply_abbreviation supply_abbreviation,
       a.province_id,
       a.province_name,
@@ -274,6 +278,7 @@
       a.direct_supervisor_name
     FROM
 	   apply_supply_company a
+	  left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and a.apply_supply_type = si.supplier_dictionary_value
     where a.apply_supply_company_code=#{applyCode,jdbcType=VARCHAR}
   </select>
   <update id="updateApply" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyCompanyReqDTO">
@@ -379,11 +384,11 @@
   </select>
   <select id="checkName" parameterType="java.util.Map" resultType="java.lang.Integer">
     SELECT COUNT(1) from apply_supply_company WHERE del_flag=0
-    <if test="name != null">
+    <if test="name != null and name != '' ">
       AND apply_supply_name =#{name,jdbcType=VARCHAR}
     </if>
-    <if test="code != null">
-      and apply_supply_company_code !=#{code,jdbcType=VARCHAR}
+    <if test="code != null and code != ''">
+      and supply_company_code !=#{code,jdbcType=VARCHAR}
     </if>
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
@@ -406,9 +411,11 @@
        a.update_by as applyBy,
        a.update_time as applyTime,
        a.auditor_by as approvalBy,
-       a.auditor_time as approvalTime
+       a.auditor_time as approvalTime,
+       a.form_no as formNo
     from apply_supply_company a
     where 1=1
+    and a.apply_status != 5
     <if test="createTimeStart != null and createTimeStart != ''">
       and a.create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
     </if>
@@ -425,10 +432,59 @@
       and a.apply_status = #{applyStatus}
     </if>
     <if test="companyCode != null and companyCode != '' ">
-      and company_code = #{companyCode,jdbcType=VARCHAR}
+      and  a.company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
     <if test="applyBy != null and applyBy != '' ">
-      and update_by = #{applyBy,jdbcType=VARCHAR}
+      and a.update_by = #{applyBy,jdbcType=VARCHAR}
     </if>
+    <if test="formNo != null  and formNo != '' " >
+      and a.form_no like concat('%', #{formNo,jdbcType=VARCHAR},'%')
+    </if>
+    order by create_time desc
+  </select>
+  <select id="applyList"
+          resultType="com.aiqin.bms.scmp.api.supplier.domain.response.ApplySupplyComApplyListRespVO">
+      select a.id,
+             a.apply_supply_company_code applyCode,
+             a.supply_company_code supplyCode,
+             a.apply_supply_name applySupplyName,
+             a.supplier_name supplierName,
+             a.contact_name contactName,
+             a.mobile_phone mobilePhone,
+             a.purchasing_group_name purchaseGroupName,
+             a.update_by updateBy,
+             a.update_time updateTime,
+             a.create_by createBy,
+             a.create_time createTime,
+             a.province_name provinceName,
+             a.city_name cityName,
+             a.district_name districtName
+      from apply_supply_company a
+      where 1=1 and a.company_code = #{companyCode} and a.apply_status = 5
+    <if test="supplyCode != null and supplyCode != '' ">
+      and a.supply_company_code like concat('%',#{supplyCode},'%')
+    </if>
+    <if test="supplyName != null and supplyName != ''">
+      and a.apply_supply_name  like concat('%',supplyName},'%')
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != '' ">
+      and  a.purchasing_group_Code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != '' ">
+      and  a.purchasing_group_Name like concat('%',#{purchaseGroupName},'%')
+    </if>
+    <if test="provinceId!=null and provinceId!=''">
+      and a.province_id =#{provinceId,jdbcType=VARCHAR}
+    </if>
+    <if test="cityId!=null and cityId!=''">
+      and a.city_id =#{cityId,jdbcType=VARCHAR}
+    </if>
+    <if test="districtId!=null and districtId!=''">
+      and a.district_id =#{districtId,jdbcType=VARCHAR}
+    </if>
+    <if test="personId != null and personId != '' ">
+      and a.purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+    </if>
+    order by create_time desc
   </select>
 </mapper>

@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.ObjectMetadata;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -11,14 +13,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Base64;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -47,7 +45,7 @@ public class UploadFileUtil {
         if (base64.startsWith("data:img")) {
             fileType = base64.substring(9, base64.indexOf(";"));
         }
-        if (base64.startsWith("data:file")) {
+        if (base64.startsWith("data:DownPicReqVo")) {
             fileType = base64.substring(10, base64.indexOf(";"));
         }
         String fileName = dir + UUID.randomUUID() + "." + fileType;
@@ -71,8 +69,8 @@ public class UploadFileUtil {
 
     public String uploadFile(MultipartFile file) throws Exception {
         OSSClient ossClient = new OSSClient(endPoint, accessKeyId, accessKeySecret);
-        String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        String fileName = dir + UUID.randomUUID() + type;
+        //String type = DownPicReqVo.getOriginalFilename().substring(DownPicReqVo.getOriginalFilename().lastIndexOf("."));
+        String fileName = dir + file.getOriginalFilename();
         ossClient.putObject(bucketName, fileName, new ByteArrayInputStream(file.getBytes()));
         ossClient.shutdown();
         Date expiration = new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10);
@@ -100,8 +98,8 @@ public class UploadFileUtil {
         OSSClient ossClient = new OSSClient(endPoint, accessKeyId, accessKeySecret);
         // 上传文件流。
         InputStream inputStream = null;
-        String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        String fileName = dir + UUID.randomUUID() + type;
+        //String type = DownPicReqVo.getOriginalFilename().substring(DownPicReqVo.getOriginalFilename().lastIndexOf("."));
+        String fileName = dir + file.getOriginalFilename();
         try {
             inputStream = file.getInputStream();
             ossClient.putObject(bucketName,fileName, inputStream);
@@ -139,5 +137,54 @@ public class UploadFileUtil {
         String url = ossClient.generatePresignedUrl(bucketName, fileName, expiration).toString();
         LOGGER.info("oss图片链接,{}", url);
         return url;
+    }
+
+    public String downImage(String url){
+        OSSClient ossClient = new OSSClient(endPoint, accessKeyId, accessKeySecret);
+        String base64 = "";
+        String contentType = "";
+        InputStream inputStream = null;
+        //通过url获取图片格式
+        try {
+            URL url1 = new URL(url);
+            Map<String, String> customHeaders = new HashMap<String, String>();
+            OSSObject ossObject = ossClient.getObject(url1, customHeaders);
+            inputStream = ossObject.getObjectContent();
+            ObjectMetadata objectMetadata = ossObject.getObjectMetadata();
+            contentType = objectMetadata.getContentType();
+            base64 = getBase64FromInputStream(inputStream);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            ossClient.shutdown();
+        }
+        return new StringBuilder().append("data:").append(contentType).append(";base64,").append(base64).toString();
+    }
+    public String getBase64FromInputStream(InputStream in) {
+        // 将图片文件转化为字节数组字符串，并对其进行Base64编码处理
+        byte[] data = null;
+        // 读取图片字节数组
+        try {
+            ByteArrayOutputStream swapStream = new ByteArrayOutputStream();
+            byte[] buff = new byte[100];
+            int rc = 0;
+            while ((rc = in.read(buff, 0, 100)) > 0) {
+                swapStream.write(buff, 0, rc);
+            }
+            data = swapStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return new String(org.apache.commons.codec.binary.Base64.encodeBase64(data));
     }
 }

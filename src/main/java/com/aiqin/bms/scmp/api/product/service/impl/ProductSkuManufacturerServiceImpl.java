@@ -1,16 +1,17 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuManufacturerDao;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuManufacturerDraftMapper;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuManufacturer;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuManufacturer;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuManufacturerDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuManufacturerRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuManufacturerDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuManufacturerService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,6 @@ public class ProductSkuManufacturerServiceImpl implements ProductSkuManufacturer
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    @SaveList
     public int insertList(List<ProductSkuManufacturer> productSkuManufacturers) {
         int num = productSkuManufacturerDao.insertList(productSkuManufacturers);
         return num;
@@ -51,17 +51,9 @@ public class ProductSkuManufacturerServiceImpl implements ProductSkuManufacturer
     @Transactional(rollbackFor = Exception.class)
     public int saveList(String skuCode,String applyCode) {
         List<ApplyProductSkuManufacturer> applyProductSkuManufacturers = productSkuManufacturerDao.getApply(skuCode,applyCode);
-        if (null != applyProductSkuManufacturers && applyProductSkuManufacturers.size() > 0){
-            List<ProductSkuManufacturer> productSkuManufacturers = new ArrayList<>();
-            List<ProductSkuManufacturer> oldInfo = productSkuManufacturerDao.getInfo(skuCode);
-            applyProductSkuManufacturers.forEach(item->{
-                ProductSkuManufacturer productSkuManufacturer = new ProductSkuManufacturer();
-                BeanCopyUtils.copy(item,productSkuManufacturer);
-                productSkuManufacturers.add(productSkuManufacturer);
-            });
-            if (null != oldInfo && oldInfo.size() > 0){
-                productSkuManufacturerDao.deleteList(skuCode);
-            }
+        if (CollectionUtils.isNotEmptyCollection(applyProductSkuManufacturers)){
+            List<ProductSkuManufacturer> productSkuManufacturers = BeanCopyUtils.copyList(applyProductSkuManufacturers,ProductSkuManufacturer.class);
+            productSkuManufacturerDao.deleteList(skuCode);
             return ((ProductSkuManufacturerService)AopContext.currentProxy()).insertList(productSkuManufacturers);
         } else {
             return 0;
@@ -114,5 +106,32 @@ public class ProductSkuManufacturerServiceImpl implements ProductSkuManufacturer
     @Override
     public Integer deleteDrafts(List<String> skuCodes) {
         return draftMapper.delete(skuCodes);
+    }
+
+    /**
+     * 功能描述: 申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:11
+     */
+    @Override
+    public List<ProductSkuManufacturerRespVo> getApply(String skuCode, String applyCode) {
+        return productSkuManufacturerDao.getApplys(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:13
+     */
+    @Override
+    public List<ProductSkuManufacturerRespVo> getList(String skuCode) {
+        return productSkuManufacturerDao.getRespVo(skuCode);
     }
 }

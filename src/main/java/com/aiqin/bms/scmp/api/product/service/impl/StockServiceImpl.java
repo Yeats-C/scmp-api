@@ -1,47 +1,49 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.bms.scmp.api.base.MsgStatus;
-import com.aiqin.bms.scmp.api.base.PageResData;
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.WarehouseTypeCode;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.Save;
+import com.aiqin.bms.scmp.api.common.StockStatusEnum;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.dao.StockFlowDao;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.product.domain.converter.InboundReqVo2InboundSaveConverter;
-import com.aiqin.bms.scmp.api.product.domain.converter.PurchaseToStockConverter;
-import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupplyToStockConverter;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
+import com.aiqin.bms.scmp.api.product.domain.converter.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.VerifyReturnSupplyErrorRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.*;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.store.LogisticsCenterApiResVo;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.store.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
+import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -56,6 +58,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -89,7 +93,7 @@ public class StockServiceImpl implements StockService {
     @Autowired
     private ProductSkuDao productSkuDao;
     @Autowired
-    private SupplierApiService supplierApiService;
+    private WarehouseService supplierApiService;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -137,7 +141,7 @@ public class StockServiceImpl implements StockService {
     public PageResData selectStockSumInfoByPage(StockRequest stockRequest) {
         try {
             LOGGER.info("库存列表查询");
-            List<Stock> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
+            List<StockRespVO> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
             Integer total = stockDao.countStockSumInfoByPage(stockRequest);
             return new PageResData<>(total, stockList);
         } catch (Exception e) {
@@ -207,10 +211,14 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public StockRespVO selectOneStockInfoByStockId(Long stockId) {
+    public PageInfo<StockFlowRespVo> selectOneStockInfoByStockId(String stockCode, Integer page_no, Integer page_size) {
         try {
             LOGGER.info("根据stockId查询单个stock信息");
-            return stockDao.selectOneStockInfoByStockId(stockId);
+            PageHelper.startPage(page_no, page_size);
+            // List<StockRespVO> stockRespVOs = stockDao.selectOneStockInfoByStockId(stockId);
+            // Long total = stockDao.selectOneStockInfoByStockIdInfoByPage(stockId);
+            // new PageResData<>(total.intValue(), stockRespVOs);
+            return new PageInfo<>(stockDao.selectOneStockInfoByStockId(stockCode));
         } catch (Exception e) {
             LOGGER.error("根据stockId查询单个stock信息失败", e);
             throw new GroundRuntimeException(e.getMessage());
@@ -309,7 +317,7 @@ public class StockServiceImpl implements StockService {
 //                respVO.setOutBoundCode("LS123");
 //            }
             Boolean b = returnSupplyLockStock(reqVO);
-            if(!b){
+            if (!b) {
                 throw new BizException(ResultCode.STOCK_LOCK_ERROR);
             }
         } catch (Exception e) {
@@ -324,6 +332,7 @@ public class StockServiceImpl implements StockService {
         return respVO;
 
     }
+
     @Override
     public Boolean returnSupplyLockStock(ILockStockReqVO reqVO) {
         try {
@@ -338,7 +347,7 @@ public class StockServiceImpl implements StockService {
             //采购编码
             stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
             HttpResponse httpResponse = changeStock(stockChangeRequest);
-            if(MsgStatus.SUCCESS.equals(httpResponse.getCode())){
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                 return true;
             }
         } catch (Exception e) {
@@ -346,6 +355,33 @@ public class StockServiceImpl implements StockService {
         }
         return false;
     }
+
+    // 退供加锁
+    @Override
+    public Boolean returnSupplyLockStocks(ILockStocksReqVO reqVO) {
+        try {
+            //生成库存数据
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            //操作类型
+            Integer integer1 = 1;
+            stockChangeRequest.setOperationType(integer1);
+            //sku信息
+            List<StockVoRequest> convert = new ReturnSupplyToStocksConverter().convert(reqVO);
+            stockChangeRequest.setStockVoRequests(convert);
+            //采购编码
+            stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
+            HttpResponse httpResponse = changeStock(stockChangeRequest);
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                return true;
+            }
+        } catch (Exception e) {
+            LOGGER.error("调用退供加锁接口失败", e);
+            e.printStackTrace();
+            throw new GroundRuntimeException(e.getMessage());
+        }
+        return false;
+    }
+
     @Override
     public Boolean returnSupplyUnLockStock(ILockStockReqVO reqVO) {
         try {
@@ -360,7 +396,7 @@ public class StockServiceImpl implements StockService {
             //采购编码
             stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
             HttpResponse httpResponse = changeStock(stockChangeRequest);
-            if(MsgStatus.SUCCESS.equals(httpResponse.getCode())){
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                 return true;
             }
         } catch (Exception e) {
@@ -368,6 +404,33 @@ public class StockServiceImpl implements StockService {
         }
         return false;
     }
+
+    // 退供解锁
+    @Override
+    public Boolean returnSupplyUnLockStocks(ILockStocksReqVO reqVO) {
+        try {
+            //生成库存数据
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            //操作类型
+            Integer integer1 = 3;
+            stockChangeRequest.setOperationType(integer1);
+            //sku信息
+            List<StockVoRequest> convert = new ReturnSupplyToStocksConverter().convert(reqVO);
+            stockChangeRequest.setStockVoRequests(convert);
+            //采购编码
+            stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
+            HttpResponse httpResponse = changeStock(stockChangeRequest);
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                return true;
+            }
+        } catch (Exception e) {
+            LOGGER.error("调用退供解锁接口失败", e);
+            e.printStackTrace();
+            throw new GroundRuntimeException(e.getMessage());
+        }
+        return false;
+    }
+
     /**
      * 解锁库存
      *
@@ -510,20 +573,20 @@ public class StockServiceImpl implements StockService {
         warehouseReq.setCityCode(vo.getCityId());
         warehouseReq.setWarehouseTypeCode(WarehouseTypeCode.LARGEPERIODANDSALES.getTypeCode());
         List<LogisticsCenterApiResVo> warehouseApi = supplierApiService.getWarehouseApi(warehouseReq);
-        if(CollectionUtils.isEmpty(warehouseApi)){
+        if (CollectionUtils.isEmpty(warehouseApi)) {
             throw new GroundRuntimeException("查询物流中心失败！");
         }
         List<String> centerCodes = Lists.newArrayList();
         List<String> warehouseCodes = Lists.newArrayList();
         List<WarehouseApiResVo> warehouseApiResVos = Lists.newArrayList();
         //拿到物流中心和库房
-        warehouseApi.forEach(o->{
+        warehouseApi.forEach(o -> {
             centerCodes.add(o.getLogisticsCenterCode());
             List<String> collect = o.getList().stream().map(WarehouseApiResVo::getWarehouseCode).collect(Collectors.toList());
             warehouseApiResVos.addAll(o.getList());
             warehouseCodes.addAll(collect);
         });
-        if(CollectionUtils.isEmpty(warehouseCodes)){
+        if (CollectionUtils.isEmpty(warehouseCodes)) {
             throw new GroundRuntimeException("查询库房失败！");
         }
         Map<String, WarehouseApiResVo> collect = warehouseApiResVos.stream().collect(Collectors.toMap(WarehouseApiResVo::getWarehouseCode, Function.identity(), (k1, k2) -> k2));
@@ -532,45 +595,45 @@ public class StockServiceImpl implements StockService {
         Map<String, Long> vos = Maps.newHashMap();
         for (MerchantLockStockItemReqVo itemReqVo : vo.getSkuList()) {
             Long num = vos.get(itemReqVo.getSkuCode() + itemReqVo.getProductType());
-            if(Objects.isNull(num)){
-                vos.put(itemReqVo.getSkuCode()+itemReqVo.getProductType(),itemReqVo.getNum());
-            }else {
-                vos.put(itemReqVo.getSkuCode()+itemReqVo.getProductType(),itemReqVo.getNum()+num);
+            if (Objects.isNull(num)) {
+                vos.put(itemReqVo.getSkuCode() + itemReqVo.getProductType(), itemReqVo.getNum());
+            } else {
+                vos.put(itemReqVo.getSkuCode() + itemReqVo.getProductType(), itemReqVo.getNum() + num);
             }
         }
 
         //2.通过物流中心找到对应仓库
         //3.根据仓库和skuList查询是否有库存
-        List<Stock> stocks = selectByQueryList(centerCodes,warehouseCodes,skuCodes,vo.getCompanyCode());
+        List<Stock> stocks = selectByQueryList(centerCodes, warehouseCodes, skuCodes, vo.getCompanyCode());
         Map<String, Long> map1 = Maps.newHashMap();
         //k: skuCode + 仓库类型 v: 该sku下仓的集合
         Map<String, List<Stock>> map2 = Maps.newHashMap();
         for (Stock stock : stocks) {
             Long num = map1.get(stock.getSkuCode() + stock.getWarehouseType());
             Byte warehouseTypeCode = collect.get(stock.getWarehouseCode()).getWarehouseTypeCode();
-            if(Objects.isNull(num)){
-                map1.put(stock.getSkuCode()+warehouseTypeCode,stock.getAvailableNum());
-            }else {
-                map1.put(stock.getSkuCode()+warehouseTypeCode,stock.getAvailableNum()+num);
+            if (Objects.isNull(num)) {
+                map1.put(stock.getSkuCode() + warehouseTypeCode, stock.getAvailableNum());
+            } else {
+                map1.put(stock.getSkuCode() + warehouseTypeCode, stock.getAvailableNum() + num);
             }
             List<Stock> stocks1 = map2.get(stock.getSkuCode() + warehouseTypeCode);
-            if(CollectionUtils.isEmpty(stocks1)){
+            if (CollectionUtils.isEmpty(stocks1)) {
                 List<Stock> temp = Lists.newArrayList();
                 temp.add(stock);
-                map2.put(stock.getSkuCode()+warehouseTypeCode,temp);
-            }else {
+                map2.put(stock.getSkuCode() + warehouseTypeCode, temp);
+            } else {
                 stocks1.add(stock);
-                map2.put(stock.getSkuCode()+warehouseTypeCode,stocks1);
+                map2.put(stock.getSkuCode() + warehouseTypeCode, stocks1);
             }
         }
         List<String> errorMsg = Lists.newArrayList();
-        vos.forEach((k,v)->{
+        vos.forEach((k, v) -> {
             Long aLong = map1.get(k);
-            if(Objects.isNull(aLong)||aLong<v){
-                errorMsg.add("sku:"+k.substring(0,k.length()-1)+"数量不足，保存失败");
+            if (Objects.isNull(aLong) || aLong < v) {
+                errorMsg.add("sku:" + k.substring(0, k.length() - 1) + "数量不足，保存失败");
             }
         });
-        if(CollectionUtils.isNotEmpty(errorMsg)){
+        if (CollectionUtils.isNotEmpty(errorMsg)) {
             throw new GroundRuntimeException(errorMsg.toString());
         }
 
@@ -593,15 +656,15 @@ public class StockServiceImpl implements StockService {
 //            assert Optional.ofNullable(stocks1.get(0).getAvailableNum()).orElse(-1L)>Optional.ofNullable(stocks1.get(1).getAvailableNum()).orElse(0L);
             //拿到刚刚大于数量的索引
             for (int i = 0; i < stocks1.size(); i++) {
-                if(stocks1.get(i).getAvailableNum()<itemReqVo.getNum()){
+                if (stocks1.get(i).getAvailableNum() < itemReqVo.getNum()) {
                     temp = i - 1;
                     break;
                 }
             }
-            if(temp<0){
+            if (temp < 0) {
                 //说明货不够，需要分仓发货
                 int index = 0;
-                while (itemReqVo.getNum()>0){
+                while (itemReqVo.getNum() > 0) {
                     Stock stock = stocks1.get(index);
                     MerchantLockStockRespVo respVo = new MerchantLockStockRespVo();
                     //拼装门店返回信息
@@ -615,14 +678,14 @@ public class StockServiceImpl implements StockService {
                     respVo.setLockNum(stock.getAvailableNum());
                     Long lockNum = 0L;
                     //扣减数量
-                    if(itemReqVo.getNum()-stock.getAvailableNum()<0){
-                        stock.setAvailableNum(stock.getAvailableNum()-itemReqVo.getNum());
+                    if (itemReqVo.getNum() - stock.getAvailableNum() < 0) {
+                        stock.setAvailableNum(stock.getAvailableNum() - itemReqVo.getNum());
                         lockNum = itemReqVo.getNum();
                         respVo.setLockNum(lockNum);
                         itemReqVo.setNum(0L);
-                    }else {
+                    } else {
                         stock.setAvailableNum(0L);
-                        itemReqVo.setNum(itemReqVo.getNum()-stock.getAvailableNum());
+                        itemReqVo.setNum(itemReqVo.getNum() - stock.getAvailableNum());
                         lockNum = stock.getAvailableNum();
                         respVo.setLockNum(lockNum);
                     }
@@ -638,7 +701,7 @@ public class StockServiceImpl implements StockService {
                     stockVoRequests.add(stockTemp);
                 }
                 //这里还可以移除
-            }else {
+            } else {
                 //货够
                 Stock stock = stocks1.get(temp);
                 MerchantLockStockRespVo respVo = new MerchantLockStockRespVo();
@@ -652,7 +715,7 @@ public class StockServiceImpl implements StockService {
                 respVo.setSkuCode(itemReqVo.getSkuCode());
                 respVo.setLockNum(itemReqVo.getNum());
                 //扣减数量
-                stock.setAvailableNum(stock.getAvailableNum()-itemReqVo.getNum());
+                stock.setAvailableNum(stock.getAvailableNum() - itemReqVo.getNum());
                 respVos.add(respVo);
                 //拼装调用锁库vo
                 StockVoRequest stockTemp = new StockVoRequest();
@@ -667,7 +730,7 @@ public class StockServiceImpl implements StockService {
         //调用库存接口锁库
         try {
             HttpResponse httpResponse = changeStock(lock);
-            if(!MsgStatus.SUCCESS.equals(httpResponse.getCode())){
+            if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                 throw new GroundRuntimeException("调用库存接口锁定库存失败");
             }
         } catch (Exception e) {
@@ -675,7 +738,8 @@ public class StockServiceImpl implements StockService {
         }
         return respVos;
     }
-//    /**
+
+    //    /**
 //     * 门店库存锁定
 //     *
 //     * @param vo
@@ -705,7 +769,7 @@ public class StockServiceImpl implements StockService {
 //    }
     @Override
     public List<Stock> selectByQueryList(List<String> centerCodes, List<String> warehouseCodes, List<String> skuCodes, String companyCode) {
-        return stockDao.selectByQueryList(centerCodes,warehouseCodes,skuCodes,companyCode);
+        return stockDao.selectByQueryList(centerCodes, warehouseCodes, skuCodes, companyCode);
     }
 
     @Override
@@ -746,8 +810,9 @@ public class StockServiceImpl implements StockService {
             }
         }
     }
+
     @Override
-    public Boolean purchaseSaveStockInfo(InboundReqVo reqVo){
+    public Boolean purchaseSaveStockInfo(InboundReqVo reqVo) {
         try {
             //生成库存数据
             StockChangeRequest stockChangeRequest = new StockChangeRequest();
@@ -760,7 +825,7 @@ public class StockServiceImpl implements StockService {
             //采购编码
             stockChangeRequest.setOrderCode(reqVo.getCode());
             HttpResponse httpResponse = changeStock(stockChangeRequest);
-            if(MsgStatus.SUCCESS.equals(httpResponse.getCode())){
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                 return true;
             }
         } catch (Exception e) {
@@ -771,7 +836,7 @@ public class StockServiceImpl implements StockService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-        //增加库存(如果某些商品库存数据不存在,则需要新增一条数据,如果存在则需要增加存库数据)
+    //增加库存(如果某些商品库存数据不存在,则需要新增一条数据,如果存在则需要增加存库数据)
     public Integer saveStock(InboundReqVo reqVo) {
         //1,根据采购单的sku编码,公司编码,物流中心编码,库房编码查看该维度下的商品存在与否,不存在新增
         try {
@@ -862,6 +927,7 @@ public class StockServiceImpl implements StockService {
                 stock.setStockUnitCode(o.getSaleUnitCode());
                 stock.setStockUnitName(o.getSaleUnitName());
                 stock.setTaxPrice(o.getPrice());
+                stock.setTaxRate(o.getTaxRate());
 //                stock.setBrandCode(o.getProductBrandCode());
 //                stock.setBrandName(o.getProductBrandName());
                 list.add(stock);
@@ -908,7 +974,7 @@ public class StockServiceImpl implements StockService {
             String lockCode;
             StockFlow stockFlow = new StockFlow();
             BeanCopyUtils.copy(reqVo, stockFlow);
-            long id = new IdSequenceUtils().nextId();
+            long id = IdSequenceUtils.getInstance().nextId();
             lockCode = "LOCK" + id;
 //            stockFlow.setLockCode(lockCode);
             stockFlow.setCreateTime(new Date());
@@ -965,110 +1031,216 @@ public class StockServiceImpl implements StockService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @Save
-    public HttpResponse changeStock(StockChangeRequest stockChangeRequest) throws Exception {
-        if (CollectionUtils.isEmpty(stockChangeRequest.getStockVoRequests())) {
-            HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
-        }
-        //查询需要做修改的库存数据
-        List<Stock> stocks = stockDao.selectListByCodesAndSkuCode(stockChangeRequest.getStockVoRequests());
-        Map<String, Stock> stockMap = new HashMap<>();
-        stocks.forEach(stock -> {
-            stockMap.put(stock.getSkuCode() + stock.getWarehouseCode(), stock);
-        });
-        List<Stock> updates = new ArrayList<>();
-        List<Stock> adds = new ArrayList<>();
-        Boolean flage = false;
-        //将需要修改的库存进行逻辑计算
-        List<StockFlow> flows = new ArrayList<>();
-        for (StockVoRequest stockVoRequest : stockChangeRequest.getStockVoRequests()) {
-            if (stockMap.containsKey(stockVoRequest.getSkuCode() + stockVoRequest.getWarehouseCode())) {
-                Stock stock = stockMap.get(stockVoRequest.getSkuCode() + stockVoRequest.getWarehouseCode());
-                //设置库存流水期初值
-                StockFlow stockFlow = new StockFlow();
-                stockFlow.setStockCode(stock.getStockCode());
-                stockFlow.setFlowCode("FL" + new IdSequenceUtils().nextId());
-                stockFlow.setOrderCode(stockChangeRequest.getOrderCode());
-                stockFlow.setOrderType(stockChangeRequest.getOrderType());
-//                    stockFlow.setOrderSource();
-                stockFlow.setSkuCode(stock.getSkuCode());
-                stockFlow.setSkuName(stock.getSkuName());
-                stockFlow.setOperationType(stockChangeRequest.getOperationType().longValue());
-                stockFlow.setBeforeInventoryNum(stock.getInventoryNum());
-                stockFlow.setBeforeLockNum(stock.getLockNum());
-                stockFlow.setBeforeAvailableNum(stock.getAvailableNum());
-                stockFlow.setBeforeAllocationWayNum(stock.getAllocationWayNum());
-                stockFlow.setBeforePurchaseWayNum(stock.getPurchaseWayNum());
-                stockFlow.setBeforeTotalWayNum(stock.getTotalWayNum());
-                stock = stockVoRequestToStock(stock, stockVoRequest, stockChangeRequest.getOperationType());
-                if (null != stock) {
-                    updates.add(stock);
-                } else {
-                    flage = true;
-                    break;
-                }
-                //设置库存流水变化后值
-                stockFlow.setChangeNum(stockVoRequest.getChangeNum());
-                stockFlow.setAfterInventoryNum(stock.getInventoryNum());
-                stockFlow.setAfterLockNum(stock.getLockNum());
-                stockFlow.setAfterAvailableNum(stock.getAvailableNum());
-                stockFlow.setAfterAllocationWayNum(stock.getAllocationWayNum());
-                stockFlow.setAfterPurchaseWayNum(stock.getPurchaseWayNum());
-                stockFlow.setAfterTotalWayNum(stock.getTotalWayNum());
-                flows.add(stockFlow);
-            } else {
-                Stock stock = new Stock();
-                //设置库存流水期初值
-                StockFlow stockFlow = new StockFlow();
-                stockFlow.setFlowCode("FL" + new IdSequenceUtils().nextId());
-                stockFlow.setOrderCode(stockChangeRequest.getOrderCode());
-                stockFlow.setOrderType(stockChangeRequest.getOrderType());
-//                    stockFlow.setOrderSource();
-                stockFlow.setSkuCode(stockVoRequest.getSkuCode());
-                stockFlow.setSkuName(stockVoRequest.getSkuName());
-                stockFlow.setOperationType(stockChangeRequest.getOperationType().longValue());
-                stockFlow.setChangeNum(stockVoRequest.getChangeNum());
-                stockFlow.setBeforeInventoryNum(0l);
-                stockFlow.setBeforeLockNum(0l);
-                stockFlow.setBeforeAvailableNum(0l);
-                stockFlow.setBeforeAllocationWayNum(0l);
-                stockFlow.setBeforePurchaseWayNum(0l);
-                stockFlow.setBeforeTotalWayNum(0l);
-                stock = stockVoRequestToStock(stock, stockVoRequest, stockChangeRequest.getOperationType());
-                ProductSkuInfo productSkuInfo = productSkuDao.getSkuInfo(stock.getSkuCode());
-                if (productSkuInfo==null){
-                    flage = true;
-                    break;
-                }
-                stock.setStockUnitCode(productSkuInfo.getUnitCode());
-                stock.setStockUnitName(productSkuInfo.getUnitName());
-                if (stock != null) {
-                    adds.add(stock);
-                } else {
-                    flage = true;
-                    break;
-                }
-                //设置库存流水修改后的值
-                stockFlow.setStockCode(stock.getStockCode());
-                stockFlow.setAfterInventoryNum(stock.getInventoryNum());
-                stockFlow.setAfterLockNum(stock.getLockNum());
-                stockFlow.setAfterAvailableNum(stock.getAvailableNum());
-                stockFlow.setAfterAllocationWayNum(stock.getAllocationWayNum());
-                stockFlow.setAfterPurchaseWayNum(stock.getPurchaseWayNum());
-                stockFlow.setAfterTotalWayNum(stock.getTotalWayNum());
-                flows.add(stockFlow);
+    public HttpResponse changeStock(StockChangeRequest stockChangeRequest) {
+
+        try{
+            LOGGER.info("对库存进行操作");
+            if (CollectionUtils.isEmpty(stockChangeRequest.getStockVoRequests())) {
+                return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
             }
-        }
-        if (flage) {
-            return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
-        }
-        if (CollectionUtils.isNotEmpty(flows)) {
-            stockFlowDao.insertBatch(flows);
-        }
-        if (CollectionUtils.isNotEmpty(updates)) {
-            stockDao.updateBatch(updates);
-        }
-        if (CollectionUtils.isNotEmpty(adds)) {
-            stockDao.insertBatch(adds);
+            //查询需要做修改的库存数据
+            List<Stock> stocks = stockDao.selectListByCodesAndSkuCode(stockChangeRequest.getStockVoRequests());
+            Map<String, Stock> stockMap = new HashMap<>();
+            stocks.forEach(stock -> {
+                stockMap.put(stock.getSkuCode() + stock.getWarehouseCode(), stock);
+            });
+            List<Stock> updates = new ArrayList<>();
+            List<Stock> adds = new ArrayList<>();
+            Boolean flage = false;
+            //将需要修改的库存进行逻辑计算
+            List<StockFlow> flows = new ArrayList<>();
+            for (StockVoRequest stockVoRequest : stockChangeRequest.getStockVoRequests()) {
+                if (stockMap.containsKey(stockVoRequest.getSkuCode() + stockVoRequest.getWarehouseCode())) {
+                    Stock stock = stockMap.get(stockVoRequest.getSkuCode() + stockVoRequest.getWarehouseCode());
+                    //设置库存流水期初值
+                    StockFlow stockFlow = new StockFlow();
+                    stockFlow.setStockCode(stock.getStockCode());
+                    stockFlow.setFlowCode("FL" + IdSequenceUtils.getInstance().nextId());
+                    stockFlow.setOrderCode(stockChangeRequest.getOrderCode());
+                    stockFlow.setOrderType(stockChangeRequest.getOrderType());
+//                    stockFlow.setOrderSource();
+                    stockFlow.setSkuCode(stock.getSkuCode());
+                    stockFlow.setSkuName(stock.getSkuName());
+                    stockFlow.setOperationType(stockChangeRequest.getOperationType());
+                    stockFlow.setBeforeInventoryNum(stock.getInventoryNum());
+                    stockFlow.setBeforeLockNum(stock.getLockNum());
+                    stockFlow.setBeforeAvailableNum(stock.getAvailableNum());
+                    stockFlow.setBeforeAllocationWayNum(stock.getAllocationWayNum());
+                    stockFlow.setBeforePurchaseWayNum(stock.getPurchaseWayNum());
+                    stockFlow.setBeforeTotalWayNum(stock.getTotalWayNum());
+                    stock = stockVoRequestToStock(stock, stockVoRequest, stockChangeRequest.getOperationType());
+                    if (null != stock) {
+                        updates.add(stock);
+                    } else {
+                        flage = true;
+                        break;
+                    }
+                    //设置库存流水变化后值
+                    stockFlow.setChangeNum(stockVoRequest.getChangeNum());
+                    stockFlow.setLockStatus(stockChangeRequest.getOperationType());
+                    stockFlow.setAfterInventoryNum(stock.getInventoryNum());
+                    stockFlow.setAfterLockNum(stock.getLockNum());
+                    stockFlow.setAfterAvailableNum(stock.getAvailableNum());
+                    stockFlow.setAfterAllocationWayNum(stock.getAllocationWayNum());
+                    stockFlow.setAfterPurchaseWayNum(stock.getPurchaseWayNum());
+                    stockFlow.setAfterTotalWayNum(stock.getTotalWayNum());
+                    stockFlow.setCreateBy(stockVoRequest.getOperator());
+                    stockFlow.setUpdateBy(stockVoRequest.getOperator());
+                    stockFlow.setDocumentNum(stockVoRequest.getDocumentNum());
+                    stockFlow.setDocumentType(stockVoRequest.getDocumentType());
+                    //1入库
+                    if(stockVoRequest.getDocumentType() == 1){
+                        //采购
+                        if(stockVoRequest.getSourceDocumentType() == 1){
+                            stockFlow.setSourceDocumentType(3);
+                            //调拨
+                        }else if(stockVoRequest.getSourceDocumentType() == 2){
+                            stockFlow.setSourceDocumentType(4);
+                            //退货
+                        }else if(stockVoRequest.getSourceDocumentType() == 3){
+                            stockFlow.setSourceDocumentType(5);
+                            //移库
+                        }else if(stockVoRequest.getSourceDocumentType() == 4){
+                            stockFlow.setSourceDocumentType(6);
+                            //监管仓入库
+                        }else if(stockVoRequest.getSourceDocumentType() == 5){
+                            stockFlow.setSourceDocumentType(7);
+                            //报废
+                        }else if(stockVoRequest.getSourceDocumentType() == 6){
+                            stockFlow.setSourceDocumentType(8);
+                        }
+                        //0 出库
+                    }else if(stockVoRequest.getDocumentType() == 0){
+                        //退供
+                        if(stockVoRequest.getSourceDocumentType() == 1){
+                            stockFlow.setSourceDocumentType(2);
+                            //调拨
+                        }else if(stockVoRequest.getSourceDocumentType() == 2){
+                            stockFlow.setSourceDocumentType(4);
+                            //订单
+                        }else if(stockVoRequest.getSourceDocumentType() == 3){
+                            stockFlow.setSourceDocumentType(9);
+                            //移库
+                        }else if(stockVoRequest.getSourceDocumentType() == 4){
+                            stockFlow.setSourceDocumentType(6);
+                            //监管仓出库
+                        }else if(stockVoRequest.getSourceDocumentType() == 5){
+                            stockFlow.setSourceDocumentType(10);
+                        }
+                    }
+                    stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
+                    // stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
+                    stockFlow.setRemark(stockVoRequest.getRemark());
+                    stockFlow.setStockCost(stockVoRequest.getNewPurchasePrice());
+                    flows.add(stockFlow);
+                } else {
+                    Stock stock = new Stock();
+                    //设置库存流水期初值
+                    StockFlow stockFlow = new StockFlow();
+                    stockFlow.setFlowCode("FL" + IdSequenceUtils.getInstance().nextId());
+                    stockFlow.setOrderCode(stockChangeRequest.getOrderCode());
+                    stockFlow.setOrderType(stockChangeRequest.getOrderType());
+//                    stockFlow.setOrderSource();
+                    stockFlow.setSkuCode(stockVoRequest.getSkuCode());
+                    stockFlow.setSkuName(stockVoRequest.getSkuName());
+                    stockFlow.setOperationType(stockChangeRequest.getOperationType());
+                    stockFlow.setChangeNum(stockVoRequest.getChangeNum());
+                    stockFlow.setBeforeInventoryNum(0l);
+                    stockFlow.setBeforeLockNum(0l);
+                    stockFlow.setBeforeAvailableNum(0l);
+                    stockFlow.setBeforeAllocationWayNum(0l);
+                    stockFlow.setBeforePurchaseWayNum(0l);
+                    stockFlow.setBeforeTotalWayNum(0l);
+                    stock = stockVoRequestToStock(stock, stockVoRequest, stockChangeRequest.getOperationType());
+                    ProductSkuInfo productSkuInfo = productSkuDao.getSkuInfo(stock.getSkuCode());
+                    if (productSkuInfo == null) {
+                        flage = true;
+                        break;
+                    }
+                    stock.setStockUnitCode(productSkuInfo.getUnitCode());
+                    stock.setStockUnitName(productSkuInfo.getUnitName());
+                    if (stock != null) {
+                        adds.add(stock);
+                    } else {
+                        flage = true;
+                        break;
+                    }
+                    //设置库存流水修改后的值
+                    stockFlow.setLockStatus(stockChangeRequest.getOperationType());
+                    stockFlow.setStockCode(stock.getStockCode());
+                    stockFlow.setAfterInventoryNum(stock.getInventoryNum());
+                    stockFlow.setAfterLockNum(stock.getLockNum());
+                    stockFlow.setAfterAvailableNum(stock.getAvailableNum());
+                    stockFlow.setAfterAllocationWayNum(stock.getAllocationWayNum());
+                    stockFlow.setAfterPurchaseWayNum(stock.getPurchaseWayNum());
+                    stockFlow.setAfterTotalWayNum(stock.getTotalWayNum());
+                    stockFlow.setCreateBy(stockVoRequest.getOperator());
+                    stockFlow.setUpdateBy(stockVoRequest.getOperator());
+                    stockFlow.setDocumentNum(stockVoRequest.getDocumentNum());
+                    stockFlow.setDocumentType(stockVoRequest.getDocumentType());
+                    //1入库
+                    if(stockVoRequest.getDocumentType() == 1){
+                        //采购
+                        if(stockVoRequest.getSourceDocumentType() == 1){
+                            stockFlow.setSourceDocumentType(3);
+                            //调拨
+                        }else if(stockVoRequest.getSourceDocumentType() == 2){
+                            stockFlow.setSourceDocumentType(4);
+                            //退货
+                        }else if(stockVoRequest.getSourceDocumentType() == 3){
+                            stockFlow.setSourceDocumentType(5);
+                            //移库
+                        }else if(stockVoRequest.getSourceDocumentType() == 4){
+                            stockFlow.setSourceDocumentType(6);
+                            //监管仓入库
+                        }else if(stockVoRequest.getSourceDocumentType() == 5){
+                            stockFlow.setSourceDocumentType(7);
+                            //报废
+                        }else if(stockVoRequest.getSourceDocumentType() == 6){
+                            stockFlow.setSourceDocumentType(8);
+                        }
+                        //0 出库
+                    }else if(stockVoRequest.getDocumentType() == 0){
+                        //退供
+                        if(stockVoRequest.getSourceDocumentType() == 1){
+                            stockFlow.setSourceDocumentType(2);
+                            //调拨
+                        }else if(stockVoRequest.getSourceDocumentType() == 2){
+                            stockFlow.setSourceDocumentType(4);
+                            //订单
+                        }else if(stockVoRequest.getSourceDocumentType() == 3){
+                            stockFlow.setSourceDocumentType(9);
+                            //移库
+                        }else if(stockVoRequest.getSourceDocumentType() == 4){
+                            stockFlow.setSourceDocumentType(6);
+                            //监管仓出库
+                        }else if(stockVoRequest.getSourceDocumentType() == 5){
+                            stockFlow.setSourceDocumentType(10);
+                        }
+                    }
+                    stockFlow.setSourceDocumentNum(stockVoRequest.getSourceDocumentNum());
+                    //  stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
+                    stockFlow.setRemark(stockVoRequest.getRemark());
+                    stockFlow.setStockCost(stockVoRequest.getNewPurchasePrice());
+                    flows.add(stockFlow);
+                }
+            }
+            if (flage) {
+                return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
+            }
+            if (CollectionUtils.isNotEmpty(flows)) {
+                stockFlowDao.insertBatch(flows);
+            }
+            if (CollectionUtils.isNotEmpty(updates)) {
+                stockDao.updateBatch(updates);
+            }
+            if (CollectionUtils.isNotEmpty(adds)) {
+                stockDao.insertBatch(adds);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            LOGGER.error("操作库存失败", e);
+            throw new BizException("操作库存失败");
         }
         return HttpResponse.success();
     }
@@ -1082,19 +1254,30 @@ public class StockServiceImpl implements StockService {
      * @return
      */
     private Stock stockVoRequestToStock(Stock stock, StockVoRequest stockVoRequest, Integer operationType) {
-        if (null==stock.getId()){
-            BeanCopyUtils.copy(stockVoRequest,stock);
+        if (stockVoRequest.getWarehouseCode() != null){
+            StockVoRequest warehouseTypeName = stockDao.selectWarehouseTypeBycode(stockVoRequest.getWarehouseCode());
+            stockVoRequest.setWarehouseType(warehouseTypeName.getWarehouseType());
+        }
+        if (null == stock.getId()) {
+            BeanCopyUtils.copy(stockVoRequest, stock);
             stock.setLockNum(0L);
             stock.setInventoryNum(0L);
             stock.setAvailableNum(0L);
             stock.setPurchaseWayNum(0L);
             stock.setAllocationWayNum(0L);
             stock.setTotalWayNum(0L);
-            stock.setStockCode("ST"+ new IdSequenceUtils().nextId());
+            stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
+            stock.setTaxRate(0L);
+            stock.setTaxCost(0L);
+            stock.setUpdateBy(stockVoRequest.getOperator());
+            stock.setCreateBy(stockVoRequest.getOperator());
         }
+        stock.setUpdateBy(stockVoRequest.getOperator());
         stock.setNewPurchasePrice(stockVoRequest.getNewPurchasePrice());
         stock.setTaxPrice(stockVoRequest.getNewPurchasePrice());
-        stock.setTaxRate(stockVoRequest.getTaxRate());
+        if (stockVoRequest.getTaxRate() != null){
+            stock.setTaxRate(stockVoRequest.getTaxRate());
+        }
         stock.setNewDelivery(stockVoRequest.getNewDelivery());
         stock.setNewDeliveryName(stockVoRequest.getNewDeliveryName());
         switch (operationType) {
@@ -1131,26 +1314,31 @@ public class StockServiceImpl implements StockService {
             //只改变调拨在途和在途总数
             case 7:
                 stock.setAllocationWayNum(stock.getAllocationWayNum() + stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getAllocationWayNum() + stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(stock.getTotalWayNum() + stockVoRequest.getChangeNum());
                 break;
             //调拨在途变成可用及库存数
             case 8:
-                stock.setAllocationWayNum(stock.getAllocationWayNum()-stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getPurchaseWayNum()+stock.getAllocationWayNum());
-                stock.setInventoryNum(stock.getInventoryNum()+stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum()+stockVoRequest.getChangeNum());
+                stock.setAllocationWayNum(stock.getAllocationWayNum() - stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(stock.getPurchaseWayNum() + stock.getAllocationWayNum());
+                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
                 break;
             //采购在途变成可用及库存数
             case 9:
-                stock.setPurchaseWayNum(stock.getPurchaseWayNum()-stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getPurchaseWayNum()+stock.getAllocationWayNum());
-                stock.setInventoryNum(stock.getInventoryNum()+stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum()+stockVoRequest.getChangeNum());
+                stock.setPurchaseWayNum(stock.getPurchaseWayNum() - stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(stock.getPurchaseWayNum() + stock.getAllocationWayNum());
+                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
                 break;
             //直接加库存
             case 10:
-                stock.setInventoryNum(stock.getInventoryNum()+stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum()+stockVoRequest.getChangeNum());
+                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
+                break;
+            //只改变采购在途数和在途总数(减订单完成差异价)
+            case 11:
+                stock.setPurchaseWayNum(stock.getPurchaseWayNum() - stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(stock.getTotalWayNum() - stockVoRequest.getChangeNum());
                 break;
             default:
                 return null;
@@ -1216,19 +1404,659 @@ public class StockServiceImpl implements StockService {
     @Override
     public HttpResponse logs(StockLogsRequest stockLogsRequest) {
         PageHelper.startPage(stockLogsRequest.getPageNo(), stockLogsRequest.getPageSize());
-        List<StockFlow> list=stockDao.selectStockLogs(stockLogsRequest);
+        List<StockFlow> list = stockDao.selectStockLogs(stockLogsRequest);
         return HttpResponse.success(new PageInfo<StockFlow>(list));
     }
 
     @Override
-    public List<Stock> selectGroup(){
+    public List<Stock> selectGroup() {
         return stockDao.selectGroup();
     }
 
     @Override
     public List<Stock> selectListByWareHouseCode(Stock stock) {
-        List<Stock> list=stockDao.selectListByWareHouseCode(stock);
+        List<Stock> list = stockDao.selectListByWareHouseCode(stock);
         return list;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public List<OrderInfoItemProductBatch> lockBatchStock(List<LockOrderItemBatchReqVO> vo) {
+        List<OrderInfoItemProductBatch> list = Lists.newArrayList();
+        Date date = new Date();
+        for (int i = 0; i < vo.size(); i++) {
+            LockOrderItemBatchReqVO reqVO = vo.get(i);
+            OrderInfoItemProductBatch copy = BeanCopyUtils.copy(reqVO, OrderInfoItemProductBatch.class);
+            copy.setBatchNumber(System.currentTimeMillis() + i + "");
+            copy.setProductTime(date);
+            copy.setProductLineNum((long) i);
+            list.add(copy);
+        }
+        return list;
+    }
+
+    /**
+     * 批次库存管理查询
+     *
+     * @param stockBatchRequest
+     * @return
+     */
+    @Override
+    public PageResData selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest) {
+        try {
+            LOGGER.info("批次库存管理列表条件查询");
+            List<StockBatchRespVO> stockLists = stockDao.selectStockBatchInfoByPage(stockBatchRequest);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (StockBatchRespVO stockList : stockLists) {
+                String format = sdf.format(sdf.parse(stockList.getProductionDate()));
+                stockList.setProductionDate(format);
+            }
+            Integer total = stockDao.countStockBatchInfoByPage(stockBatchRequest);
+            return new PageResData<>(total, stockLists);
+        } catch (Exception e) {
+            LOGGER.error("批次库存管理列表条件查询失败", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
+    }
+
+    /**
+     * 根据stockBatchId查询单个库存信息
+     *
+     * @param stockBatchId
+     * @return
+     */
+    @Override
+    public PageInfo<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId,Integer page_no,Integer page_size) {
+        try {
+            LOGGER.info("根据stockBatchId查询单个stockBatch信息");
+            PageHelper.startPage(page_no, page_size);
+           // List<StockBatchRespVO> stockBatchRespVOs = stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId);
+           // Long total = stockDao.selectOneStockBatchInfoByStockBatchIdInfoByPage(stockBatchId);
+           // new PageResData<>(total.intValue(),stockBatchRespVOs);
+            return  new PageInfo<StockBatchRespVO>(stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId));
+        } catch (Exception e) {
+            LOGGER.error("根据stockBatchId查询单个stockBatch信息失败", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse operationStockBatch(StockChangeRequest stockChangeRequest) {
+        if (CollectionUtils.isEmpty(stockChangeRequest.getStockBatchVoRequest())) {
+            return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
+        }
+        try {
+            LOGGER.info("查stock和inbound表给stockBatch中插入数据");
+            // 查询商品表数据
+            List<StockBatchProductSkuRespVO> stockBatchProductSkuRespVOs = stockDao.selectProductSku();
+            // 创建批次库存实体类
+            StockBatch stockBatch = new StockBatch();
+            // 插入数据集合
+            ArrayList stockBatchs = new ArrayList();
+            // 创建批次库存流水表实体类
+            StockBatchFlow stockBatchFlow = new StockBatchFlow();
+            // 插入流水集合
+            ArrayList flows = new ArrayList();
+            // 批次表中拿批次号和入库批次号进行比对，不同直接入库，相同判断库类型，更新数据。
+            List<StockBatchRespVO> stockBatchCodes = stockDao.selectStockBatchDistinct();
+            // 取出表批次号
+            for (StockBatchRespVO stockBatchCode : stockBatchCodes) {
+                // 入库批次号
+                for (StockBatchVoRequest stockBatchVoRequest : stockChangeRequest.getStockBatchVoRequest()) {
+                    // 不同-不是一批次-增
+                    if (!stockBatchVoRequest.getBatchCode().equals(stockBatchCode.getBatchCode())) {
+                        // 判断商品skuCode和入库的商品Sku
+                        for (StockBatchProductSkuRespVO stockBatchProductSkuRespVO : stockBatchProductSkuRespVOs) {
+                            if (stockBatchVoRequest.getSkuCode().equals(stockBatchProductSkuRespVO.getSkuCode())){
+                                stockBatch.setStockBatchCode("SB"+ IdSequenceUtils.getInstance().nextId());
+                                stockBatch.setCompanyCode(stockBatchVoRequest.getCompanyCode());
+                                stockBatch.setCompanyName(stockBatchVoRequest.getCompanyName());
+                                stockBatch.setTransportCenterCode(stockBatchVoRequest.getTransportCenterCode());
+                                stockBatch.setTransportCenterName(stockBatchVoRequest.getTransportCenterName());
+                                stockBatch.setWarehouseName(stockBatchVoRequest.getWarehouseName());
+                                stockBatch.setWarehouseCode(stockBatchVoRequest.getWarehouseCode());
+                                stockBatch.setWarehouseType(stockBatchVoRequest.getWarehouseType());
+                                stockBatch.setSkuCode(stockBatchVoRequest.getSkuCode());
+                                stockBatch.setSkuName(stockBatchVoRequest.getSkuName());
+                                stockBatch.setBatchCode(stockBatchVoRequest.getBatchCode());
+                                stockBatch.setProductionDate(stockBatchVoRequest.getProductionDate());
+                                stockBatch.setBatchRemark(stockBatchVoRequest.getBatchRemark());
+                                stockBatch.setCategoryTypeCode(stockBatchProductSkuRespVO.getProductCategoryCode());
+                                stockBatch.setCategoryTypeName(stockBatchProductSkuRespVO.getProductCategoryName());
+                                stockBatch.setSpec(stockBatchProductSkuRespVO.getSpec());
+                                stockBatch.setColorCode(stockBatchProductSkuRespVO.getColorCode());
+                                stockBatch.setColorName(stockBatchProductSkuRespVO.getColorName());
+                                stockBatch.setModelNumber(stockBatchProductSkuRespVO.getModelNumber());
+                                stockBatch.setUnitCode(stockBatchProductSkuRespVO.getUnitCode());
+                                stockBatch.setUnitName(stockBatchProductSkuRespVO.getUnitName());
+                                stockBatch.setPack(stockBatchProductSkuRespVO.getBaseProductContent()+"/"+stockBatchProductSkuRespVO.getUnitCode());
+                                stockBatch.setConfigStatus(stockBatchProductSkuRespVO.getConfigStatus());
+                                stockBatch = stockBatchVoRequestToStock(stockBatch,stockBatchCode,stockBatchVoRequest,stockChangeRequest.getOperationType());
+                                stockBatch.setSupplierCode(stockBatchVoRequest.getSupplierCode());
+                                stockBatch.setSupplierName(stockBatchVoRequest.getSupplierName());
+                                stockBatch.setNewDelivery(stockBatchVoRequest.getNewDelivery());
+                                stockBatch.setNewDeliveryName(stockBatchVoRequest.getNewDeliveryName());
+                                stockBatch.setPurchasePrice(stockBatchVoRequest.getPurchasePrice());
+                                stockBatch.setTaxRate(stockBatchVoRequest.getTaxRate());
+                                stockBatchs.add(stockBatch);
+                                // 设置批次库存流水
+                                stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
+                                stockBatchFlow.setFlowBatchCode("FL"+ IdSequenceUtils.getInstance().nextId());
+                                stockBatchFlow.setBatchCode(stockBatchVoRequest.getBatchCode());
+                                stockBatchFlow.setOrderCode(stockChangeRequest.getOrderCode());
+                                stockBatchFlow.setOrderType(stockChangeRequest.getOrderType());
+                                // stockBatchFlow.setOrderSource();
+                                stockBatchFlow.setSkuCode(stockBatch.getSkuCode());
+                                stockBatchFlow.setSkuName(stockBatch.getSkuName());
+                                stockBatchFlow.setLockStatus(1);
+                                stockBatchFlow.setDocumentType(stockBatchVoRequest.getDocumentType());
+                                stockBatchFlow.setDocumentNum(stockBatchVoRequest.getDocumentNum());
+                                stockBatchFlow.setSourceDocumentType(stockBatchVoRequest.getSourceDocumentType());
+                                stockBatchFlow.setSourceDocumentNum(stockBatchVoRequest.getSourceDocumentNum());
+                                stockBatchFlow.setUpdateByCode(stockBatchVoRequest.getUpdateByCode());
+                                stockBatchFlow.setUpdateByName(stockBatchVoRequest.getUpdateByName());
+                                stockBatchFlow.setRemark(stockBatchVoRequest.getRemark());
+                                stockBatchFlow.setBeforeInventoryNum(stockBatchCode.getInventoryNum());
+                                stockBatchFlow.setAfterInventoryNum(stockBatch.getInventoryNum());
+                                stockBatchFlow.setBeforeAvailableNum(stockBatchCode.getAvailableNum());
+                                stockBatchFlow.setAfterAvailableNum(stockBatch.getAvailableNum());
+                                stockBatchFlow.setBeforeLockNum(stockBatchCode.getLockNum());
+                                stockBatchFlow.setAfterLockNum(stockBatch.getLockNum());
+                                stockBatchFlow.setChangeNum(stockBatchVoRequest.getChangeNum());
+                                stockBatchFlow.setOperationType(stockChangeRequest.getOperationType());
+                                flows.add(stockBatchFlow);
+                            }else{
+                                throw new BizException("新增入库单数据时,更改stockBatch表失败");
+                            }
+                        }
+                        // 批次表插入数据
+                        stockDao.insertStockBatch(stockBatchs);
+                        stockDao.insertStockBatchFlow(flows);
+                    } else {
+                        // 相同-判断商品skuCode和入库的商品Sku
+                        for (StockBatchProductSkuRespVO stockBatchProductSkuRespVO : stockBatchProductSkuRespVOs) {
+                            if (stockBatchVoRequest.getSkuCode().equals(stockBatchProductSkuRespVO.getSkuCode())){
+                                stockBatch.setStockBatchCode(stockBatchCode.getStockBatchCode());
+                                stockBatch.setCompanyCode(stockBatchVoRequest.getCompanyCode());
+                                stockBatch.setCompanyName(stockBatchVoRequest.getCompanyName());
+                                stockBatch.setTransportCenterCode(stockBatchVoRequest.getTransportCenterCode());
+                                stockBatch.setTransportCenterName(stockBatchVoRequest.getTransportCenterName());
+                                stockBatch.setWarehouseName(stockBatchVoRequest.getWarehouseName());
+                                stockBatch.setWarehouseCode(stockBatchVoRequest.getWarehouseCode());
+                                stockBatch.setWarehouseType(stockBatchVoRequest.getWarehouseType());
+                                stockBatch.setSkuCode(stockBatchVoRequest.getSkuCode());
+                                stockBatch.setSkuName(stockBatchVoRequest.getSkuName());
+                                stockBatch.setBatchCode(stockBatchVoRequest.getBatchCode());
+                                stockBatch.setProductionDate(stockBatchVoRequest.getProductionDate());
+                                stockBatch.setBatchRemark(stockBatchVoRequest.getBatchRemark());
+                                stockBatch.setCategoryTypeCode(stockBatchProductSkuRespVO.getProductCategoryCode());
+                                stockBatch.setCategoryTypeName(stockBatchProductSkuRespVO.getProductCategoryName());
+                                stockBatch.setSpec(stockBatchProductSkuRespVO.getSpec());
+                                stockBatch.setColorCode(stockBatchProductSkuRespVO.getColorCode());
+                                stockBatch.setColorName(stockBatchProductSkuRespVO.getColorName());
+                                stockBatch.setModelNumber(stockBatchProductSkuRespVO.getModelNumber());
+                                stockBatch.setUnitCode(stockBatchProductSkuRespVO.getUnitCode());
+                                stockBatch.setUnitName(stockBatchProductSkuRespVO.getUnitName());
+                                stockBatch.setPack(stockBatchProductSkuRespVO.getBaseProductContent()+"/"+stockBatchProductSkuRespVO.getUnitCode());
+                                stockBatch.setConfigStatus(stockBatchProductSkuRespVO.getConfigStatus());
+                                stockBatch = stockBatchVoRequestToStock(stockBatch, stockBatchCode, stockBatchVoRequest, stockChangeRequest.getOperationType());
+                                stockBatch.setSupplierCode(stockBatchVoRequest.getSupplierCode());
+                                stockBatch.setSupplierName(stockBatchVoRequest.getSupplierName());
+                                stockBatch.setNewDelivery(stockBatchVoRequest.getNewDelivery());
+                                stockBatch.setNewDeliveryName(stockBatchVoRequest.getNewDeliveryName());
+                                stockBatch.setPurchasePrice(stockBatchVoRequest.getPurchasePrice());
+                                stockBatch.setTaxRate(stockBatchVoRequest.getTaxRate());
+                                stockBatchs.add(stockBatch);
+                                // 设置批次库存流水
+                                stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
+                                stockBatchFlow.setFlowBatchCode("FL"+ IdSequenceUtils.getInstance().nextId());
+                                stockBatchFlow.setBatchCode(stockBatchVoRequest.getBatchCode());
+                                stockBatchFlow.setOrderCode(stockChangeRequest.getOrderCode());
+                                stockBatchFlow.setOrderType(stockChangeRequest.getOrderType());
+                                stockBatchFlow.setSkuCode(stockBatch.getSkuCode());
+                                stockBatchFlow.setSkuName(stockBatch.getSkuName());
+                                stockBatchFlow.setLockStatus(stockChangeRequest.getOperationType());
+                                stockBatchFlow.setDocumentType(stockBatchVoRequest.getDocumentType());
+                                stockBatchFlow.setDocumentNum(stockBatchVoRequest.getDocumentNum());
+                                stockBatchFlow.setSourceDocumentType(stockBatchVoRequest.getSourceDocumentType());
+                                stockBatchFlow.setSourceDocumentNum(stockBatchVoRequest.getSourceDocumentNum());
+                                stockBatchFlow.setUpdateByCode(stockBatchVoRequest.getUpdateByCode());
+                                stockBatchFlow.setUpdateByName(stockBatchVoRequest.getUpdateByName());
+                                stockBatchFlow.setRemark(stockBatchVoRequest.getRemark());
+                                stockBatchFlow.setBeforeInventoryNum(stockBatchCode.getInventoryNum());
+                                stockBatchFlow.setAfterInventoryNum(stockBatch.getInventoryNum());
+                                stockBatchFlow.setBeforeAvailableNum(stockBatchCode.getAvailableNum());
+                                stockBatchFlow.setAfterAvailableNum(stockBatch.getAvailableNum());
+                                stockBatchFlow.setBeforeLockNum(stockBatchCode.getLockNum());
+                                stockBatchFlow.setAfterLockNum(stockBatch.getLockNum());
+                                stockBatchFlow.setChangeNum(stockBatchVoRequest.getChangeNum());
+                                stockBatchFlow.setOperationType(stockChangeRequest.getOperationType());
+                                flows.add(stockBatchFlow);
+                            } else {
+                                throw new BizException("修改入库单数据时,更改stockBatch表失败");
+                            }
+                        }
+                        stockDao.updateStockBatch(stockBatchs);
+                        stockDao.insertStockBatchFlow(flows);
+                    }
+                }
+            }
+            return HttpResponse.success();
+        } catch (Exception e) {
+            LOGGER.error("查stock和inbound表给stockBatch中插入数据失败", e);
+            throw new GroundRuntimeException(e.getMessage());
+        }
+    }
+
+    /**
+     * 参数转换成库存数据
+     *
+     * @param stockBatch          批次库存实体
+     * @param stockBatchCode      批次库存数据
+     * @param stockBatchVoRequest 请求改变实体
+     * @param operationType       操作类型
+     * @return
+     */
+
+    private StockBatch stockBatchVoRequestToStock(StockBatch stockBatch,StockBatchRespVO stockBatchCode,StockBatchVoRequest stockBatchVoRequest, Integer operationType) {
+        /*
+          // stockBatch.setAvailableNum(stockBatchVoRequest.getChangeNum());  // 可用库存数
+          // stockBatch.setLockNum(0L); //   新增不锁定没有值
+          // stockBatch.setInventoryNum(stockBatch.getAvailableNum()+stockBatch.getLockNum());  // 总库存数
+        */
+        switch (operationType) {
+            //直接加库存
+            case 1:
+                stockBatch.setInventoryNum(stockBatchVoRequest.getChangeNum().longValue());
+                stockBatch.setAvailableNum(stockBatchVoRequest.getChangeNum().longValue());
+                break;
+            //锁定库存数
+            case 2:
+                stockBatch.setLockNum(stockBatch.getLockNum() + stockBatchVoRequest.getChangeNum());
+                stockBatch.setAvailableNum(stockBatchCode.getAvailableNum() - stockBatchVoRequest.getChangeNum());
+                break;
+            //减少库存并解锁
+            case 3:
+                stockBatch.setInventoryNum(stockBatchCode.getInventoryNum() - stockBatchVoRequest.getChangeNum());
+                stockBatch.setLockNum(stockBatchCode.getLockNum() - stockBatchVoRequest.getChangeNum());
+                break;
+            //解锁锁定库存
+            case 4:
+                stockBatch.setAvailableNum(stockBatchCode.getAvailableNum() + stockBatchVoRequest.getChangeNum());
+                stockBatch.setLockNum(stockBatchCode.getLockNum() - stockBatchVoRequest.getChangeNum());
+                break;
+            //无锁定直接减库存 总库存减可用库存减
+            case 5:
+                stockBatch.setAvailableNum(stockBatchCode.getAvailableNum() - stockBatchVoRequest.getChangeNum());
+                stockBatch.setInventoryNum(stockBatchCode.getInventoryNum() - stockBatchVoRequest.getChangeNum());
+                break;
+            //锁定库存转移--暂时不会用到
+            //case 6:
+               // break;
+            //加库存并锁定库存
+            case 7:
+                stockBatch.setInventoryNum(stockBatchCode.getInventoryNum() + stockBatchVoRequest.getChangeNum());
+                stockBatch.setLockNum(stockBatchCode.getLockNum() + stockBatchVoRequest.getChangeNum());
+                break;
+            default:
+                return null;
+        }
+        //库存不管是锁定数还是可以数还是库存数都不能为负
+        if (stockBatchCode.getLockNum() < 0 || stockBatchCode.getInventoryNum() < 0 || stockBatchCode.getAvailableNum() < 0 ) {
+            return null;
+        }
+        return stockBatch;
+    }
+
+
+    /**
+     * 功能描述: 查询批次库存商品(采购退供使用)
+     *
+     * @param reqVO
+     * @paramreqVO
+     * @returnPageInfo
+     * @date 2019/6/26 17:47
+     */
+    @Override
+    public PageInfo<QueryStockBatchSkuRespVo> selectStockBatchSkuPage(QueryStockBatchSkuReqVo reqVO) {
+        try {
+            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+            List<QueryStockBatchSkuRespVo> queryStockBatchSkuRespVos = stockDao.selectStockBatchSkuInfoByPage(reqVO);
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            for (QueryStockBatchSkuRespVo queryStockBatchSkuRespVo : queryStockBatchSkuRespVos) {
+                String format = sdf.format(sdf.parse(queryStockBatchSkuRespVo.getProductionDate()));
+                queryStockBatchSkuRespVo.setProductionDate(format);
+            }
+            return new PageInfo<QueryStockBatchSkuRespVo>(queryStockBatchSkuRespVos);
+        } catch (Exception ex) {
+            log.error("查询批次库存商失败");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     * 库房管理新增调拨,移库,报废列表查询
+     * @param reqVO
+     * @return
+     */
+    @Override
+    public PageInfo<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO) {
+        try {
+            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+            List<QueryStockSkuListRespVo> queryStockSkuListRespVos = stockDao.selectStockSkuList(reqVO);
+            for (QueryStockSkuListRespVo queryStockSkuListRespVo: queryStockSkuListRespVos) {
+                List<QueryStockSkuListRespVo> repsVos = stockDao.selectSkuCodeByQueryBatchCodeList(queryStockSkuListRespVo.getWarehouseCode(), queryStockSkuListRespVo.getSkuCode());
+                ArrayList<StockSkuListItemRespVo> list = new ArrayList();
+                for (QueryStockSkuListRespVo repsVo : repsVos) {
+                    StockSkuListItemRespVo respVo = new StockSkuListItemRespVo();
+                    respVo.setBatchCode(repsVo.getBatchCode());
+                    respVo.setProductionDate(repsVo.getProductionDate());
+                    respVo.setBatchRemark(repsVo.getBatchRemark());
+                    respVo.setAvailableNum(repsVo.getAvailableNum());
+                    list.add(respVo);
+                    queryStockSkuListRespVo.setItemRespVos(list);
+                }
+            }
+            return new PageInfo<QueryStockSkuListRespVo>(queryStockSkuListRespVos);
+        } catch (Exception ex) {
+            log.error("库房管理新增调拨,移库,报废列表查询");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    /**
+     * 库房库存数据保存
+     * @return
+     */
+   @Override
+    public HttpResponse updateStorehouseById(List<StockRespVO> stockRespVO){
+       stockDao.updateStorehouseById(stockRespVO);
+       return HttpResponse.success();
+    }
+
+
+    /**
+     * 退供锁定批次库存
+     * @param reqVO
+     * @return
+     */
+    @Override
+    public Boolean returnSupplyLockStockBatch(ILockStockBatchReqVO reqVO) {
+        try {
+            //生成库存数据
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            //操作类型
+            Integer integer1 = 2;
+            stockChangeRequest.setOperationType(integer1);
+            //sku信息
+            List<StockBatchVoRequest> convert = new ReturnSupplyToStockBatchConverter().convert(reqVO);
+            stockChangeRequest.setStockBatchVoRequest(convert);
+            //采购编码
+            stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
+            HttpResponse httpResponse = changeStockBatch(stockChangeRequest);
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * 退供解锁批次库存
+     * @param reqVO
+     * @return
+     */
+    @Override
+    public Boolean returnSupplyUnLockStockBatch(ILockStockBatchReqVO reqVO) {
+        try {
+            //生成库存数据
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            //操作类型
+            Integer integer1 = 4;
+            stockChangeRequest.setOperationType(integer1);
+            //sku信息
+            List<StockBatchVoRequest> convert = new ReturnSupplyToStockBatchConverter().convert(reqVO);
+            stockChangeRequest.setStockBatchVoRequest(convert);
+            //采购编码
+            stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
+            HttpResponse httpResponse = changeStockBatch(stockChangeRequest);
+            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @Save
+    public HttpResponse changeStockBatch(StockChangeRequest stockChangeRequest) {
+        if (CollectionUtils.isEmpty(stockChangeRequest.getStockBatchVoRequest())) {
+            return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
+        }
+        //查询需要做修改的库存数据
+        List<StockBatch> stockBatches = stockDao.selectListByCodesAndSkuCodeBatch(stockChangeRequest.getStockBatchVoRequest());
+        Map<String, StockBatch> stockBatchMap = new HashMap<>();
+        stockBatches.forEach(stockBatch -> {
+            stockBatchMap.put(stockBatch.getSkuCode() + stockBatch.getWarehouseCode(), stockBatch);
+        });
+        List<StockBatch> updates = new ArrayList<>();
+        List<StockBatch> adds = new ArrayList<>();
+        Boolean flage = false;
+        //将需要修改的库存进行逻辑计算
+        List<StockBatchFlow> flows = new ArrayList<>();
+        for (StockBatchVoRequest stockBatchVoRequest : stockChangeRequest.getStockBatchVoRequest()) {
+            if (stockBatchMap.containsKey(stockBatchVoRequest.getSkuCode() + stockBatchVoRequest.getWarehouseCode())) {
+                StockBatch stockBatch = stockBatchMap.get(stockBatchVoRequest.getSkuCode() + stockBatchVoRequest.getWarehouseCode());
+                //设置库存流水期初值
+                StockBatchFlow stockBatchFlow = new StockBatchFlow();
+                stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
+                stockBatchFlow.setFlowBatchCode("FL" + IdSequenceUtils.getInstance().nextId());
+                stockBatchFlow.setOrderCode(stockChangeRequest.getOrderCode());
+                stockBatchFlow.setOrderType(stockChangeRequest.getOrderType());
+//                    stockBatchFlow.setOrderSource();
+                stockBatchFlow.setSkuCode(stockBatch.getSkuCode());
+                stockBatchFlow.setSkuName(stockBatch.getSkuName());
+                stockBatchFlow.setOperationType(stockChangeRequest.getOperationType());
+                stockBatchFlow.setBeforeInventoryNum(stockBatch.getInventoryNum());
+                stockBatchFlow.setBeforeLockNum(stockBatch.getLockNum());
+                stockBatchFlow.setBeforeAvailableNum(stockBatch.getAvailableNum());
+                stockBatch = stockBatchVoRequestToStockBatch(stockBatch,stockBatchVoRequest, stockChangeRequest.getOperationType());
+                if (null != stockBatch) {
+                    updates.add(stockBatch);
+                } else {
+                    flage = true;
+                    break;
+                }
+                //设置库存流水变化后值
+                stockBatchFlow.setBatchCode(stockBatch.getBatchCode());
+                stockBatchFlow.setLockStatus(stockChangeRequest.getOperationType());
+                stockBatchFlow.setDocumentType(stockBatchVoRequest.getDocumentType());
+                stockBatchFlow.setDocumentNum(stockBatchVoRequest.getDocumentNum());
+                stockBatchFlow.setSourceDocumentType(stockBatchVoRequest.getSourceDocumentType());
+                stockBatchFlow.setSourceDocumentNum(stockBatchVoRequest.getSourceDocumentNum());
+                stockBatchFlow.setUpdateByCode(stockBatchVoRequest.getUpdateByCode());
+                stockBatchFlow.setUpdateByName(stockBatchVoRequest.getUpdateByName());
+                stockBatchFlow.setRemark(stockBatchVoRequest.getRemark());
+                stockBatchFlow.setChangeNum(stockBatchVoRequest.getChangeNum());
+                stockBatchFlow.setAfterInventoryNum(stockBatch.getInventoryNum());
+                stockBatchFlow.setAfterLockNum(stockBatch.getLockNum());
+                stockBatchFlow.setAfterAvailableNum(stockBatch.getAvailableNum());
+                flows.add(stockBatchFlow);
+            } else {
+                StockBatch stockBatch = new StockBatch();
+                //设置库存流水期初值
+                StockBatchFlow stockBatchFlow = new StockBatchFlow();
+                stockBatchFlow.setFlowBatchCode("FL" + IdSequenceUtils.getInstance().nextId());
+                stockBatchFlow.setBatchCode(stockBatchFlow.getBatchCode());
+                stockBatchFlow.setOrderCode(stockChangeRequest.getOrderCode());
+                stockBatchFlow.setOrderType(stockChangeRequest.getOrderType());
+//                    stockBatchFlow.setOrderSource();
+                stockBatchFlow.setSkuCode(stockBatchVoRequest.getSkuCode());
+                stockBatchFlow.setSkuName(stockBatchVoRequest.getSkuName());
+                stockBatchFlow.setOperationType(stockChangeRequest.getOperationType());
+                stockBatchFlow.setChangeNum(stockBatchVoRequest.getChangeNum());
+                stockBatchFlow.setBeforeInventoryNum(0l);
+                stockBatchFlow.setBeforeLockNum(0l);
+                stockBatchFlow.setBeforeAvailableNum(0l);
+                stockBatch = stockBatchVoRequestToStockBatch(stockBatch, stockBatchVoRequest, stockChangeRequest.getOperationType());
+                ProductSkuInfo productSkuInfo = productSkuDao.getSkuInfo(stockBatch.getSkuCode());
+                if (productSkuInfo == null) {
+                    flage = true;
+                    break;
+                }
+                stockBatch.setUnitCode(productSkuInfo.getUnitCode());
+                stockBatch.setUnitName(productSkuInfo.getUnitName());
+                if (stockBatch != null) {
+                    adds.add(stockBatch);
+                } else {
+                    flage = true;
+                    break;
+                }
+                //设置库存流水修改后的值
+                stockBatchFlow.setBatchCode(stockBatch.getBatchCode());
+                stockBatchFlow.setLockStatus(stockChangeRequest.getOperationType());
+                stockBatchFlow.setDocumentType(stockBatchVoRequest.getDocumentType());
+                stockBatchFlow.setDocumentNum(stockBatchVoRequest.getDocumentNum());
+                stockBatchFlow.setSourceDocumentType(stockBatchVoRequest.getSourceDocumentType());
+                stockBatchFlow.setSourceDocumentNum(stockBatchVoRequest.getSourceDocumentNum());
+                stockBatchFlow.setUpdateByCode(stockBatchVoRequest.getUpdateByCode());
+                stockBatchFlow.setUpdateByName(stockBatchVoRequest.getUpdateByCode());
+                stockBatchFlow.setRemark(stockBatchVoRequest.getRemark());
+                stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
+                stockBatchFlow.setAfterInventoryNum(stockBatch.getInventoryNum());
+                stockBatchFlow.setAfterLockNum(stockBatch.getLockNum());
+                stockBatchFlow.setAfterAvailableNum(stockBatch.getAvailableNum());
+                flows.add(stockBatchFlow);
+            }
+        }
+        if (flage) {
+            return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
+        }
+        if (CollectionUtils.isNotEmpty(flows)) {
+            stockDao.insertStockBatchFlows(flows);
+        }
+        if (CollectionUtils.isNotEmpty(updates)) {
+            stockDao.updateBatchStocks(updates);
+        }
+        if (CollectionUtils.isNotEmpty(adds)) {
+            stockDao.insertBatchStockAdd(adds);
+        }
+        return HttpResponse.success();
+    }
+
+
+    /**
+     * 参数转换成库存数据
+     * @param stockBatch
+     * @param stockBatchVoRequest
+     * @param operationType
+     * @return
+     */
+
+    private StockBatch stockBatchVoRequestToStockBatch(StockBatch stockBatch,StockBatchVoRequest stockBatchVoRequest, Integer operationType) {
+        /*
+          // stockBatch.setAvailableNum(stockBatchVoRequest.getChangeNum());  // 可用库存数
+          // stockBatch.setLockNum(0L); //   新增不锁定没有值
+          // stockBatch.setInventoryNum(stockBatch.getAvailableNum()+stockBatch.getLockNum());  // 总库存数
+        */
+        if (null == stockBatch.getId()) {
+            BeanCopyUtils.copy(stockBatchVoRequest, stockBatch);
+            stockBatch.setLockNum(0L);
+            stockBatch.setInventoryNum(0L);
+            stockBatch.setAvailableNum(0L);
+            stockBatch.setStockBatchCode("SB" + IdSequenceUtils.getInstance().nextId());
+        }
+        stockBatch.setTaxRate(stockBatchVoRequest.getTaxRate());
+        stockBatch.setNewDelivery(stockBatchVoRequest.getNewDelivery());
+        stockBatch.setNewDeliveryName(stockBatchVoRequest.getNewDeliveryName());
+        switch (operationType) {
+            //直接加库存
+            case 1:
+                stockBatch.setInventoryNum(stockBatchVoRequest.getChangeNum().longValue());
+                stockBatch.setAvailableNum(stockBatchVoRequest.getChangeNum().longValue());
+                break;
+            //锁定库存数
+            case 2:
+                stockBatch.setLockNum(stockBatch.getLockNum() + stockBatchVoRequest.getChangeNum());
+                stockBatch.setAvailableNum(stockBatch.getAvailableNum() - stockBatchVoRequest.getChangeNum());
+                break;
+            //减少库存并解锁
+            case 3:
+                stockBatch.setInventoryNum(stockBatch.getInventoryNum() - stockBatchVoRequest.getChangeNum());
+                stockBatch.setLockNum(stockBatch.getLockNum() - stockBatchVoRequest.getChangeNum());
+                break;
+            //解锁锁定库存
+            case 4:
+                stockBatch.setAvailableNum(stockBatch.getAvailableNum() + stockBatchVoRequest.getChangeNum());
+                stockBatch.setLockNum(stockBatch.getLockNum() - stockBatchVoRequest.getChangeNum());
+                break;
+            //无锁定直接减库存 总库存减可用库存减
+            case 5:
+                stockBatch.setAvailableNum(stockBatch.getAvailableNum() - stockBatchVoRequest.getChangeNum());
+                stockBatch.setInventoryNum(stockBatch.getInventoryNum() - stockBatchVoRequest.getChangeNum());
+                break;
+            //锁定库存转移--暂时不会用到
+            //case 6:
+            // break;
+            //加库存并锁定库存
+            case 7:
+                stockBatch.setInventoryNum(stockBatch.getInventoryNum() + stockBatchVoRequest.getChangeNum());
+                stockBatch.setLockNum(stockBatch.getLockNum() + stockBatchVoRequest.getChangeNum());
+                break;
+            default:
+                return null;
+        }
+        //库存不管是锁定数还是可以数还是库存数都不能为负
+        if (stockBatch.getLockNum() < 0 || stockBatch.getInventoryNum() < 0 || stockBatch.getAvailableNum() < 0 ) {
+            return null;
+        }
+        return stockBatch;
+    }
+
+    /**
+     * 库房管理新增调拨,移库,报废列表查询导入操作
+     * @return
+     */
+    public PageInfo<QueryStockSkuListRespVo> importStockSkuList(QueryImportStockSkuListReqVo reqVO){
+        try {
+            /*List<String> skuCodes = stockDao.importStockSkuList();
+            ArrayList<QueryStockSkuListRespVo> list = new ArrayList();
+            for (String skuCode: skuCodes) {
+                QueryStockSkuListRespVo queryStockSkuListRespVo = new QueryStockSkuListRespVo();
+                    queryStockSkuListRespVo.setSkuCode(skuCode);
+                    Long availableNum = stockDao.selectSkuCodeByQueryAvailableNum(skuCode);
+                    List<String> batchCodeLists = stockDao.selectSkuCodeByQueryBatchCode(skuCode);
+                    List<String> productionDateList = stockDao.selectSkuCodeByQueryProductionDateList(skuCode);
+                    queryStockSkuListRespVo.setAvailableNum(availableNum);
+                    queryStockSkuListRespVo.setBatchCodeList(batchCodeLists);
+                    queryStockSkuListRespVo.setProductionDateList(productionDateList);
+                list.add(queryStockSkuListRespVo);
+            }*/
+
+            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+            return new PageInfo<QueryStockSkuListRespVo>(stockDao.queryStockBatch(reqVO));
+        } catch (Exception ex) {
+            log.error("库房管理新增调拨,移库,报废列表查询导入操作");
+            ex.printStackTrace();
+            throw new GroundRuntimeException(ex.getMessage());
+        }
+    }
+
+    @Override
+    public BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO) {
+        return PageUtil.getPageList(reqVO.getPageNo(), stockDao.getSkuBatchForChangePrice(reqVO));
+    }
+
+    @Override
+    public List<SkuBatchRespVO> querySkuBatchList(SkuBatchReqVO reqVO) {
+        return  stockDao.queryStockBatchForAllo(reqVO);
+    }
 }

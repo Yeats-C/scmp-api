@@ -8,6 +8,8 @@
     <result column="supplier_abbreviation" jdbcType="VARCHAR" property="supplierAbbreviation" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="enable" jdbcType="VARCHAR" property="enable" />
     <result column="sub_supplier_company_count" jdbcType="BIGINT" property="subSupplierCompanyCount" />
     <result column="apply_status" jdbcType="VARCHAR" property="applyStatus" />
@@ -28,7 +30,7 @@
     <result column="enable" jdbcType="TINYINT" property="enable" />
   </resultMap>
   <update id="updatetSupplierApplyStatusByCode" parameterType="java.lang.String">
-    update supplier set apply_status = 1 where supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    update supplier set apply_status = 1,apply_supplier_code = #{applyCode} where supplier_code = #{supplierCode,jdbcType=VARCHAR}
   </update>
   <select id="getSupplierList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierReqVO" resultMap="SupplierListMap">
     SELECT
@@ -39,6 +41,8 @@
       CASE enable WHEN 0 THEN '启用' WHEN 1 THEN '禁用' ELSE '禁用' END enable,
       update_time,
       update_by,
+      create_time,
+      create_by,
     (select count(*) from apply_supply_company where supplier_code = supplier.supplier_code) as sub_supplier_company_count,
     apply_status
     FROM supplier
@@ -84,7 +88,8 @@
       a.update_by as applyBy,
       a.update_time as applyTime,
       a.auditor_by as approvalBy,
-      a.auditor_time as approvalTime
+      a.auditor_time as approvalTime,
+      a.form_no as formNo
       from apply_supplier a
       where 1=1
       <if test="createTimeStart != null and createTimeStart != '' ">
@@ -111,5 +116,26 @@
       <if test="applyBy != null and applyBy != '' ">
         and update_by = #{applyBy,jdbcType=VARCHAR}
       </if>
+      <if test="formNo != null  and formNo != '' " >
+        and form_no like concat('%', #{formNo,jdbcType=VARCHAR},'%')
+      </if>
+      order by apply_supplier_code desc
     </select>
+  <select id="selectBySupplierName" resultMap="BaseResultMap" >
+    select
+      supplier_name , supplier_code
+    from
+      supplier
+    where
+      supplier_name = #{supplierName,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByNameList" resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplierMapper.BaseResultMap">
+    SELECT
+    <include refid="com.aiqin.bms.scmp.api.supplier.mapper.SupplierMapper.Base_Column_List"/>
+    from supplier where supplier_name in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+    and company_code = #{companyCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

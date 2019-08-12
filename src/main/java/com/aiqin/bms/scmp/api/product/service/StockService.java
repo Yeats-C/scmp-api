@@ -1,5 +1,16 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
@@ -87,10 +98,10 @@ public interface StockService {
     /**
      * 根据stockid查询单个库存信息
      *
-     * @param stockId
+     * @param stockCode
      * @return
      */
-    StockRespVO selectOneStockInfoByStockId(Long stockId);
+    PageInfo<StockFlowRespVo> selectOneStockInfoByStockId(String stockCode, Integer page_no, Integer page_size);
 
 
     /**
@@ -118,6 +129,8 @@ public interface StockService {
      * @return java.lang.Boolean
      */
     Boolean returnSupplyLockStock(ILockStockReqVO reqVO);
+
+    Boolean returnSupplyLockStocks(ILockStocksReqVO reqVO);
     /**
      * 退供解锁库存
      * @author zth
@@ -126,6 +139,8 @@ public interface StockService {
      * @return java.lang.Boolean
      */
     Boolean returnSupplyUnLockStock(ILockStockReqVO reqVO);
+
+    Boolean returnSupplyUnLockStocks(ILockStocksReqVO reqVO);
 
     /**
      * 解锁库存
@@ -183,7 +198,7 @@ public interface StockService {
 
     String stockFlow(StockFlowRequest reqVo);
 
-    HttpResponse changeStock(StockChangeRequest stockChangeRequest) throws Exception;
+    HttpResponse changeStock(StockChangeRequest stockChangeRequest);
 
     boolean changeWayNum(StockWayNumRequest stockWayNumRequest) throws Exception;
 
@@ -199,4 +214,76 @@ public interface StockService {
     List<Stock> selectGroup();
 
     List<Stock> selectListByWareHouseCode(Stock stock);
+    /**
+     * TODO 订单锁库的方法
+     * @author NullPointException
+     * @date 2019/6/21
+     * @param vo
+     * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch>
+     */
+    List<OrderInfoItemProductBatch> lockBatchStock(List<LockOrderItemBatchReqVO> vo);
+
+    /**
+     * 批次库存
+     * @param stockBatchRequest
+     * @return
+     */
+    PageResData selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
+
+    /**
+     * 根据stockBatchId查询单个stockBatch信息
+     *
+     * @param stockBatchId
+     * @return
+     */
+    PageInfo<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId,Integer page_no,Integer page_size);
+
+    HttpResponse operationStockBatch(StockChangeRequest stockChangeRequest);
+
+    /**
+     *
+     * 功能描述: 批次查询库存商品(采购退供使用) 分页
+     *
+     * @param reqVO
+     * @return PageInfo
+     * @date 2019/6/25 16:06
+     */
+    PageInfo<QueryStockBatchSkuRespVo> selectStockBatchSkuPage(QueryStockBatchSkuReqVo reqVO);
+
+    /**
+     * 库房管理新增调拨,移库,报废列表查询
+     * @param reqVO
+     * @return
+     */
+    PageInfo<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
+
+    HttpResponse updateStorehouseById(List<StockRespVO> stockRespVO);
+
+    /**
+     * 退供锁定批次库存
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean returnSupplyLockStockBatch(ILockStockBatchReqVO reqVO);
+    /**
+     * 退供解锁批次库存
+     * @param reqVO
+     * @return java.lang.Boolean
+     */
+    Boolean returnSupplyUnLockStockBatch(ILockStockBatchReqVO reqVO);
+
+    HttpResponse changeStockBatch(StockChangeRequest stockChangeRequest);
+
+
+    PageInfo<QueryStockSkuListRespVo> importStockSkuList(QueryImportStockSkuListReqVo reqVO);
+    /**
+     *
+     * @author NullPointException
+     * @date 2019/7/5
+     * @param reqVO
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO>
+     */
+    BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO);
+
+    List<SkuBatchRespVO> querySkuBatchList(SkuBatchReqVO reqVO);
 }

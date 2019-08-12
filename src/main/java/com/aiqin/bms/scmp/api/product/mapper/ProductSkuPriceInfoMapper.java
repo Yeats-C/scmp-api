@@ -4,7 +4,9 @@ import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuPriceInfo
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceJog;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -50,8 +52,6 @@ public interface ProductSkuPriceInfoMapper {
      * 通过状态和时间查询
      * @author NullPointException
      * @date 2019/5/27
-     * @param i
-     * @param date
      * @return java.util.List<com.aiqin.mgs.product.api.domain.pojo.ProductSkuPriceInfo>
      */
     List<ProductSkuPriceInfoDTO> selectByPriceStatusAndDate();
@@ -87,4 +87,42 @@ public interface ProductSkuPriceInfoMapper {
      * @return com.aiqin.mgs.product.api.domain.response.price.ProductSkuPriceInfoRespVO
      */
     ProductSkuPriceInfoRespVO selectInfoByCode(String code);
+
+    Long selectPriceTax(@Param("skuCode") String skuCode, @Param("supplierCode") String supplierCode);
+    /**
+     * 通过sku编码查询sku信息
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param skuCode
+     * @param companyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
+     */
+    List<ProductSkuPriceRespVo> selectBySkuCodeForOfficial(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
+    /**
+     * 申请详情查看
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param skuCode
+     * @param applyCode
+     * @param companyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
+     */
+    List<ProductSkuPriceRespVo> selectBySkuCodeForApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode, @Param("companyCode") String companyCode);
+    /**
+     * 申请详情查看
+     * @author NullPointException
+     * @date 2019/7/9
+     * @param skuCode
+     * @param companyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
+     */
+    List<ProductSkuPriceRespVo> selectBySkuCodeForDraft(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
+
+    /**
+     * 查year内的价格 目前价格是每个月的平均值
+     * @param skuCode
+     * @param year
+     * @return
+     */
+    List<PriceJog> getPriceJog(@Param("skuCode") String skuCode, @Param("year") int year);
 }

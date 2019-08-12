@@ -34,7 +34,7 @@
     <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
   </resultMap>
   <resultMap id="SELECT_BY_FORM_NO_MAP" type="com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO">
-    <id column="aid" jdbcType="BIGINT" property="id" />
+<!--    <id column="aid" jdbcType="BIGINT" property="id" />-->
     <result column="acode" jdbcType="VARCHAR" property="code" />
     <result column="achange_price_type" jdbcType="VARCHAR" property="changePriceType" />
     <result column="achange_price_name" jdbcType="VARCHAR" property="changePriceName" />
@@ -102,9 +102,11 @@
       <result column="bproduct_time" jdbcType="TIMESTAMP" property="productTime" />
       <result column="bbe_synchronize" jdbcType="INTEGER" property="beSynchronize" />
       <result column="bext_field_6" jdbcType="BIGINT" property="extField6" />
+      <result column="dInput_tax_rate" jdbcType="BIGINT" property="inTax" />
+      <result column="doutput_tax_rate" jdbcType="BIGINT" property="outTax" />
     </collection>
     <collection property="areaInfos" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceAreaInfo">
-      <id column="cid" jdbcType="BIGINT" property="id" />
+<!--      <id column="cid" jdbcType="BIGINT" property="id" />-->
       <result column="cmain_code" jdbcType="VARCHAR" property="mainCode" />
       <result column="ctype" jdbcType="INTEGER" property="type" />
       <result column="cstatus" jdbcType="INTEGER" property="status" />
@@ -140,6 +142,10 @@
     <result column="aform_no" jdbcType="VARCHAR" property="formNo" />
     <result column="aapply_status" jdbcType="INTEGER" property="applyStatus" />
     <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <collection property="infoList" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceInfoRespVO">
       <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
       <result column="bsku_name" jdbcType="VARCHAR" property="skuName" />
@@ -279,6 +285,10 @@
              a.form_no aform_no,
              a.apply_status aapply_status,
              a.company_code acompany_code,
+             a.create_by acreate_by,
+             a.create_time acreate_time,
+             a.update_by aupdate_by,
+             a.update_time aupdate_time,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
              b.purchase_price_newest bpurchase_price_newest,
@@ -323,11 +333,98 @@
       where a.code = #{code}
   </select>
     <select id="selectByFormNo" resultMap="SELECT_BY_FORM_NO_MAP">
-      select
-      <include refid="select_by_form_no" />
-      from product_sku_change_price a left join product_sku_change_price_info b on a.code=b.code
-      left join product_sku_change_price_area_info c on c.main_code = a.code
-      where a.form_no = #{formNo}
+      select   a.id aid,
+               a.code acode,
+               a.change_price_type achange_price_type,
+               a.change_price_name achange_price_name,
+               a.name aname,
+               a.purchase_group_code apurchase_group_code,
+               a.purchase_group_name apurchase_group_name,
+               a.remake aremake,
+               a.direct_supervisor_code adirect_supervisor_code,
+               a.direct_supervisor_name adirect_supervisor_name,
+               a.cost_bearer_code acost_bearer_code,
+               a.cost_bearer_name acost_bearer_name,
+               a.budget abudget,
+               a.company_code acompany_code,
+               a.company_name acompany_name,
+               a.create_by acreate_by,
+               a.create_time acreate_time,
+               a.update_by aupdate_by,
+               a.update_time aupdate_time,
+               a.auditor_by aauditor_by,
+               a.apply_status aapply_status,
+               a.form_no aform_no,
+               a.auditor_time aauditor_time,
+               a.original aoriginal,
+               a.ext_field_1 aext_field_1,
+               a.ext_field_2 aext_field_2,
+               a.ext_field_3 aext_field_3,
+               a.ext_field_4 aext_field_4,
+               a.ext_field_5 aext_field_5,
+               a.ext_field_6 aext_field_6,
+               b.id bid,
+               b.code bcode,
+               b.sku_code bsku_code,
+               b.sku_name bsku_name,
+               b.purchase_price_newest bpurchase_price_newest,
+               b.supplier_code bsupplier_code,
+               b.supplier_name bsupplier_name,
+               b.be_default bbe_default,
+               b.purchase_price_old bpurchase_price_old,
+               b.effective_time_start beffective_time_start,
+               b.effective_time_end beffective_time_end,
+               b.purchase_price_new bpurchase_price_new,
+               b.old_price bold_price,
+               b.new_price bnew_price,
+               b.warehouse_batch_number bwarehouse_batch_number,
+               b.warehouse_batch_name bwarehouse_batch_name,
+               b.change_price_reason_code bchange_price_reason_code,
+               b.change_price_reason_name bchange_price_reason_name,
+               b.temporary_price btemporary_price,
+               b.price_item_code bprice_item_code,
+               b.price_item_name bprice_item_name,
+               b.price_type_code bprice_type_code,
+               b.price_type_name bprice_type_name,
+               b.price_attribute_code bprice_attribute_code,
+               b.price_attribute_name bprice_attribute_name,
+               b.company_code bcompany_code,
+               b.company_name bcompany_name,
+               b.transport_center_code btransport_center_code,
+               b.transport_center_name btransport_center_name,
+               b.warehouse_code bwarehouse_code,
+               b.warehouse_name bwarehouse_name,
+               b.batch_remark bbatch_remark,
+               b.official_code bofficial_code,
+               b.ext_field_3 bext_field_3,
+               b.product_time bproduct_time,
+               b.be_synchronize bbe_synchronize,
+               b.ext_field_6 bext_field_6,
+               c.id cid,
+               c.main_code cmain_code,
+               c.type ctype,
+               c.status cstatus,
+               c.name cname,
+               c.code ccode,
+               c.company_code ccompany_code,
+               c.company_name ccompany_name,
+               c.effective_time_start ceffective_time_start,
+               c.effective_time_end ceffective_time_end,
+               c.be_effective cbe_effective,
+               c.un_effective_reason cun_effective_reason,
+               c.ext_field_1 cext_field_1,
+               c.ext_field_2 cext_field_2,
+               c.ext_field_3 cext_field_3,
+               c.ext_field_4 cext_field_4,
+               c.ext_field_5 cext_field_5,
+               c.ext_field_6 cext_field_6,
+               IFNULL(d.Input_tax_rate,0) dInput_tax_rate,
+               IFNULL(d.output_tax_rate,0) doutput_tax_rate
+        from product_sku_change_price a
+                 left join product_sku_change_price_info b on a.code = b.code
+                 left join product_sku_checkout d on b.sku_code = d.sku_code
+                 left join product_sku_change_price_area_info c on c.main_code = a.code
+        where a.form_no = #{formNo}
     </select>
     <select id="selectByPriceStatusAndDate"
             resultMap="SELECT_BY_FORM_NO_MAP">

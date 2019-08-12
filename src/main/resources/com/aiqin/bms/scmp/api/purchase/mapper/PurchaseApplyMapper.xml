@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="purchase_apply_id" jdbcType="VARCHAR" property="purchaseApplyId" />
+    <result column="purchase_apply_code" jdbcType="VARCHAR" property="purchaseApplyCode" />
+    <result column="apply_type" jdbcType="INTEGER" property="applyType" />
+    <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    purchase_apply_id as purchaseApplyId, purchase_apply_code as purchaseApplyCode, apply_type as applyType,
+    apply_status as applyStatus, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
+    create_time as createTime, create_by_id as createById, create_by_name as createByName
+  </sql>
+  <insert id="insert">
+    insert into purchase_apply (purchase_apply_id, purchase_apply_code, apply_type,
+      apply_status, purchase_group_code, purchase_group_name, create_time, create_by_id, create_by_name)
+    values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR},
+      #{applyType,jdbcType=INTEGER}, #{applyStatus,jdbcType=INTEGER}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
+      #{purchaseGroupName,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
+  </insert>
+  <update id="update">
+    update purchase_apply
+    <set>
+      <if test="applyType != null">
+        apply_type = #{applyType,jdbcType=INTEGER},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      update_time = now(),
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR}
+      </if>
+    </set>
+    where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+  </update>
+  <select id="applyList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse">
+    select
+    purchase_apply_id as purchaseApplyId, purchase_apply_code as purchaseApplyCode, apply_type as applyType,
+    apply_status as applyStatus, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
+    create_time as createTime, create_by_id as createById, create_by_name as createByName,
+    update_by_id as updateById, update_by_name as updateByName, update_time as updateTime
+    from purchase_apply
+    <where>
+      purchase_group_code in
+      <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+        #{item.purchaseGroupCode,jdbcType=VARCHAR}
+      </foreach>
+      <if test="beginTime != null">
+        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseApplyCode != null">
+        and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupCode != null">
+        and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="applyType != null">
+        and apply_type = #{applyType,jdbcType=INTEGER}
+      </if>
+      <if test="applyStatus != null">
+        and apply_status = #{applyStatus,jdbcType=INTEGER}
+      </if>
+    </where>
+    order by create_time desc
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="applyCount" resultType="java.lang.Integer">
+    select count(1) from purchase_apply
+    <where>
+      purchase_group_code in
+      <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+        #{item.purchaseGroupCode,jdbcType=VARCHAR}
+      </foreach>
+      <if test="beginTime != null">
+        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseApplyCode != null">
+        and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseGroupCode != null">
+        and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="applyType != null">
+        and apply_type = #{applyType,jdbcType=INTEGER}
+      </if>
+      <if test="applyStatus != null">
+        and apply_status = #{applyStatus,jdbcType=INTEGER}
+      </if>
+    </where>
+  </select>
+  <select id="purchaseApplyInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply">
+    select <include refid="Base_Column_List"></include>
+    from purchase_apply
+    where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+  </select>
+  <insert id="insertAll">
+    insert into purchase_apply (purchase_apply_id, purchase_apply_code, apply_type,
+      apply_status, purchase_group_code, purchase_group_name, create_time, create_by_id, create_by_name)
+    values
+    <foreach collection="list" item="item" index="" separator=",">
+    (#{item.purchaseApplyId,jdbcType=VARCHAR}, #{item.purchaseApplyCode,jdbcType=VARCHAR},
+      #{item.applyType,jdbcType=INTEGER}, #{item.applyStatus,jdbcType=INTEGER}, #{item.purchaseGroupCode,jdbcType=VARCHAR},
+      #{item.purchaseGroupName,jdbcType=VARCHAR}, now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+</mapper>

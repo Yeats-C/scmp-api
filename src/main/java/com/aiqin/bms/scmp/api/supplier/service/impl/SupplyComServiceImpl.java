@@ -1,15 +1,14 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
+import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierFileDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyAccountDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierFile;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
@@ -18,15 +17,20 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierC
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierFileReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
-import com.aiqin.bms.scmp.api.supplier.domain.response.sku.QueryProductSkuListResp;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper;
-import com.aiqin.bms.scmp.api.supplier.service.*;
+import com.aiqin.bms.scmp.api.supplier.service.DeliveryInfoService;
+import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
+import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
@@ -35,9 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @功能说明:
@@ -57,8 +59,8 @@ public class SupplyComServiceImpl implements SupplyComService {
     private SupplierFileDao supplierFileDao;
     @Autowired
     private SupplyCompanyAccountDao supplyCompanyAccountDao;
-//    @Autowired
-//    private SkuInfoService skuInfoService;
+    @Autowired
+    private SkuInfoService skuInfoService;
     @Autowired
     private DeliveryInfoService deliveryInfoService;
     @Autowired
@@ -69,6 +71,7 @@ public class SupplyComServiceImpl implements SupplyComService {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 querySupplyComReqVO.setCompanyCode(authToken.getCompanyCode());
+                querySupplyComReqVO.setPersonId(authToken.getPersonId());
             }
             PageHelper.startPage(querySupplyComReqVO.getPageNo(), querySupplyComReqVO.getPageSize());
             List<SupplyComListRespVO> supplyComListRespVOS = supplyCompanyDao.getSupplyCompanyList(querySupplyComReqVO);
@@ -79,14 +82,16 @@ public class SupplyComServiceImpl implements SupplyComService {
     }
 
     @Override
-    public List<SupplyComListRespVO> getAllSupplyComList() {
+    public List<SupplyComListRespVO> getAllSupplyComList(String name) {
         QuerySupplyComReqVO querySupplyComReqVO = new QuerySupplyComReqVO();
         try {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 querySupplyComReqVO.setCompanyCode(authToken.getCompanyCode());
+                querySupplyComReqVO.setPersonId(authToken.getPersonId());
             }
             querySupplyComReqVO.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
+            querySupplyComReqVO.setSupplyComNameOrShort(name);
             List<SupplyComListRespVO> supplyComListRespVOS = supplyCompanyDao.getSupplyCompanyList(querySupplyComReqVO);
             return supplyComListRespVOS;
         } catch (Exception e) {
@@ -155,6 +160,7 @@ public class SupplyComServiceImpl implements SupplyComService {
                 supplyComDetailRespVO.setApplyAbbreviation(supplyCompanyDetailDTO.getSupplyAbbreviation());
                 supplyComDetailRespVO.setApplySupplyCode(supplyCompanyDetailDTO.getSupplyCode());
                 supplyComDetailRespVO.setApplySupplyType(supplyCompanyDetailDTO.getSupplyType());
+                supplyComDetailRespVO.setApplySupplyTypeName(supplyCompanyDetailDTO.getSupplyTypeName());
                 supplyComDetailRespVO.setApplySupplyName(supplyCompanyDetailDTO.getSupplyName());
                 //获取操作日志
                 OperationLogVo operationLogVo = new OperationLogVo();
@@ -172,7 +178,7 @@ public class SupplyComServiceImpl implements SupplyComService {
                 List<DeliveryInfoRespVO> deliveryInfoRespVOS = deliveryInfoService.getDeliveryInfoBySupplyCompanyCode(supplyCompanyDetailDTO.getSupplyCode());
                 supplyComDetailRespVO.setDeliveryInfoRespVOS(deliveryInfoRespVOS);
                 //根据供货单位编码查询标签信息
-                List<DetailTagUseRespVo> useTagRecordReqVos = tagInfoService.getUseTagRecordByUseObjectCode(supplyCompanyDetailDTO.getSupplyCode(), TagTypeCode.SUPPLIER.getStatus());
+                List<DetailTagUseRespVo> useTagRecordReqVos = tagInfoService.getUseTagRecordByUseObjectCode2(supplyCompanyDetailDTO.getSupplyCode(), TagTypeCode.SUPPLIER.getStatus());
                 supplyComDetailRespVO.setUseTagRecordReqVos(useTagRecordReqVos);
 
                 List<SupplierFile> supplierFile = supplierFileDao.getSupplierFile(supplyCompanyDetailDTO.getSupplyCode());
@@ -190,12 +196,7 @@ public class SupplyComServiceImpl implements SupplyComService {
                     List<QuerySupplierComAcctRespVo> querySupplierComAcctRespVos = supplyCompanyAccountDao.selectListByQueryVO(vo);
                     supplyComDetailRespVO.setSupplierComAcctRespVos(querySupplierComAcctRespVos);
                     List<QueryProductSkuListResp> queryProductSkuListResps = null;
-                    try {
-                        //queryProductSkuListResps = skuInfoService.querySkuListBySupplyUnitCode(supplyComDetailRespVO.getApplySupplyCode());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        log.info("查询SKU信息失败,失败原因[{}]",e.getMessage());
-                    }
+                    queryProductSkuListResps = skuInfoService.querySkuListBySupplyUnitCode(supplyComDetailRespVO.getApplySupplyCode());
                     supplyComDetailRespVO.setSkuListRespVos(queryProductSkuListResps);
                 }
             } else {
@@ -247,6 +248,22 @@ public class SupplyComServiceImpl implements SupplyComService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer updateStarScore(String supplierCode, BigDecimal starScore) {
-        return supplyCompanyMapper.updateStarScore(supplierCode,starScore);
+        //根据供应商编号获取供应商综合评分
+        SupplyCompany supplyCompany = supplyCompanyDao.detailByCode(supplierCode, null);
+        BigDecimal newStarScore = starScore;
+        if(null != supplyCompany && null != supplyCompany.getStarScore() &&  supplyCompany.getStarScore().compareTo(BigDecimal.ZERO) != 0){
+            newStarScore = (starScore.add(supplyCompany.getStarScore())).divide(new BigDecimal(2),1,BigDecimal.ROUND_HALF_UP);
+        }
+        return supplyCompanyMapper.updateStarScore(supplierCode,newStarScore);
+    }
+
+    @Override
+    public Map<String, SupplyCompany> selectBySupplyComCodes(Set<String> supplierList,String companyCode) {
+        return supplyCompanyMapper.selectBySupplyComCodes(supplierList, companyCode);
+    }
+
+    @Override
+    public Map<String, SupplyCompany> selectBySupplyComNames(Set<String> supplierList, String companyCode) {
+        return supplyCompanyMapper.selectBySupplyComNames(supplierList, companyCode);
     }
 }

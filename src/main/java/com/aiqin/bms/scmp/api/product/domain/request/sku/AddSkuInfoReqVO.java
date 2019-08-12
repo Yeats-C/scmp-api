@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.domain.request.sku;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,9 +24,16 @@ public class AddSkuInfoReqVO {
     @JsonProperty("productSkuInfo")
     private ProductSkuDraft productSkuDraft;
 
+    @ApiModelProperty("商品标签信息")
+    private List<SaveUseTagRecordItemReqVo> tagInfoList;
+
     @ApiModelProperty(value = "sku渠道信息",name = "productSkuChannels",position = 2)
     @JsonProperty("productSkuChannels")
     private List<ProductSkuChannelDraft> productSkuChannelDrafts;
+
+    @ApiModelProperty("组合商品-子商品列表")
+    @JsonProperty("productSkuSubs")
+    private List<ProductSkuSubDraft> productSkuSubs;
 
     @ApiModelProperty(value = "进销存信息",name = "purchaseSaleStocks",position = 3)
     @JsonProperty("purchaseSaleStocks")
@@ -43,11 +53,11 @@ public class AddSkuInfoReqVO {
 
     @ApiModelProperty(value = "sku价格管理",name = "productSkuPrices",position = 8)
     @JsonProperty("productSkuPrices")
-    private List<ProductSkuPriceDraft> productSkuPriceDrafts;
+    private List<SkuPriceDraftReqVO> productSkuPrices;
 
     @ApiModelProperty(value = "sku配置管理",name = "productSkuConfigs",position = 9)
     @JsonProperty("productSkuConfigs")
-    private List<ProductSkuConfigDraft> productSkuConfigDrafts;
+    private List<SaveSkuConfigReqVo> productSkuConfigs;
 
     @ApiModelProperty(value = "关联商品",name = "productAssociatedGoods",position = 10)
     @JsonProperty("productAssociatedGoods")
@@ -72,4 +82,7 @@ public class AddSkuInfoReqVO {
     @ApiModelProperty(value = "sku质检信息", name = "productSkuInspReports",position = 15)
     @JsonProperty("productSkuInspReports")
     private List<ProductSkuInspReportDraft> productSkuInspReportDrafts;
+
+    @ApiModelProperty(value = "标志位,判断是否需要校验包装信息（导入不是必填项）",hidden = true)
+    private Boolean boxFlag = true;
 }

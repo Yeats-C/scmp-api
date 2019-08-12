@@ -1,19 +1,22 @@
 package com.aiqin.bms.scmp.api.product.web.sku;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateSkuConfigReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateSkuConfigSupplierReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -43,12 +46,24 @@ public class SkuConfigController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+    @PostMapping("/importSave")
+    @ApiOperation("保存SKU配置导入信息")
+    public HttpResponse<Integer> saveImport(@RequestBody List<SaveSkuConfigReqVo> configReqVos) {
+        try {
+            return HttpResponse.success(productSkuConfigService.importSaveDraft(configReqVos));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
     @PostMapping("/update")
     @ApiOperation("修改SKU配置信息")
-    public HttpResponse<Integer> update(@RequestBody List<UpdateSkuConfigReqVo> configReqVos) {
+    public HttpResponse<Integer> update(@RequestBody UpdateSkuConfigSupplierReqVo reqVo) {
         try {
-            return HttpResponse.success(productSkuConfigService.updateDraftList(configReqVos));
+            return HttpResponse.success(productSkuConfigService.updateDraftList(reqVo));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
@@ -72,9 +87,20 @@ public class SkuConfigController {
 
     @GetMapping("/view")
     @ApiOperation(("sku配置信息详情"))
-    public HttpResponse view (@RequestParam("skuCode") String skuCode) {
+    public HttpResponse<SkuConfigDetailRepsVo> view (@RequestParam("skuCode") String skuCode) {
         try {
             return HttpResponse.success(productSkuConfigService.detail(skuCode));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/importConfig")
+    @ApiOperation(("sku配置信息导入"))
+    public HttpResponse<List<SaveSkuConfigReqVo>> importData (MultipartFile file,String purchaseGroupCode) {
+        try {
+            return HttpResponse.success(productSkuConfigService.importData(file,purchaseGroupCode));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
@@ -83,5 +109,30 @@ public class SkuConfigController {
         }
     }
 
+    @PostMapping("/importSupply")
+    @ApiOperation(("供应商配置信息导入"))
+    public HttpResponse<List<ProductSkuSupplyUnitDraft>> importSupplyData (MultipartFile file,String purchaseGroupCode) {
+        try {
+            return HttpResponse.success(productSkuConfigService.importSupplyData(file,purchaseGroupCode));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/importSupplySave")
+    @ApiOperation(("供应商配置信息导入保存"))
+    public HttpResponse<Boolean> importSupplyData (@RequestBody List<ProductSkuSupplyUnitDraft> reqVo) {
+        try {
+            return HttpResponse.success(productSkuConfigService.saveImportSupply(reqVo));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
 }

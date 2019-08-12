@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.changeprice;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -40,9 +41,11 @@ public class ProductSkuChangePriceInfoRespVO {
     private Long purchasePriceOld;
 
     @ApiModelProperty("开始生效时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date effectiveTimeStart;
 
     @ApiModelProperty("结束生效时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date effectiveTimeEnd;
 
     @ApiModelProperty("新的含税采购价")
@@ -100,7 +103,14 @@ public class ProductSkuChangePriceInfoRespVO {
     private String warehouseName;
 
     @ApiModelProperty("生产日期")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date productTime;
+
+    @ApiModelProperty("原毛利率")
+    private Long oldGrossProfitMargin = 0L;
+
+    @ApiModelProperty("现毛利率")
+    private Long newGrossProfitMargin = 0L;
 
     @ApiModelProperty("价格项目集合")
     private List<PriceChannelForChangePrice> priceChannelList;

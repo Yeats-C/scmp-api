@@ -24,6 +24,15 @@ public class PurchaseGroupReqVo {
     @NotEmpty(message = "采购组名称不能为空")
     private String purchaseGroupName;
 
+    @ApiModelProperty("负责人编号")
+    private String responsiblePersonCode;
+
+    @ApiModelProperty("负责人名称")
+    private String responsiblePersonName;
+
+    @ApiModelProperty("排序")
+    private Integer purchaseGroupOrder;
+
     @ApiModelProperty("采购组人员")
     @Valid
     List<PurchaseGroupBuyerReqVo> groupBuyerReqVoList;

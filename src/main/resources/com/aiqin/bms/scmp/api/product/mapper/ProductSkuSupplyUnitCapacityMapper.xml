@@ -30,7 +30,18 @@
     delete from product_sku_supply_unit_capacity
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity">
+  <delete id="deleteBySkuCode">
+    delete from product_sku_supply_unit_capacity
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+  </delete>
+    <delete id="deleteDraftsByVos" parameterType="java.util.List">
+      <foreach collection="list" open="" close="" separator=";" item="item">
+        delete from product_sku_supply_unit_capacity
+        where product_sku_code = #{item.productSkuCode}
+        and supply_unit_code = #{item.supplyUnitCode}
+      </foreach>
+    </delete>
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity">
     insert into product_sku_supply_unit_capacity (id, supply_unit_code, supply_unit_name, 
       product_sku_code, product_sku_name, out_put, 
       need_days, apply_code, del_flag, 
@@ -41,6 +52,21 @@
       #{needDays,jdbcType=BIGINT}, #{applyCode,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, 
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into product_sku_supply_unit_capacity (supply_unit_code, supply_unit_name,
+      product_sku_code, product_sku_name, out_put,
+      need_days, apply_code, del_flag,
+      create_time, create_by, update_time,
+      update_by)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
+      #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR}, #{item.outPut,jdbcType=BIGINT},
+      #{item.needDays,jdbcType=BIGINT}, #{item.applyCode,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR})
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity">
     insert into product_sku_supply_unit_capacity
@@ -185,4 +211,11 @@
       update_by = #{updateBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectSupplyCapacityInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include> from
+    product_sku_supply_unit_capacity
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+    and supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
+    order by out_put asc
+  </select>
 </mapper>

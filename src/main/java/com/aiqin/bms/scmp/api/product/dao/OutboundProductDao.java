@@ -4,7 +4,7 @@ package com.aiqin.bms.scmp.api.product.dao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateOutboundProductReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.ReturnOutboundProduct;
-import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundProductWmsResVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public interface OutboundProductDao {
      * @param outboundOderCode
      * @return
      */
-    List<InboundProductWmsReqVO> selectMmsReqByOutboundOderCode(String outboundOderCode);
+    List<OutboundProductWmsResVO> selectMmsReqByOutboundOderCode(String outboundOderCode);
 
 
 
@@ -55,4 +55,11 @@ public interface OutboundProductDao {
      * @param linenum
      */
     ReturnOutboundProduct selectByLinenum(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
+
+    List<ReturnOutboundProduct> selectTax(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode);
+
+    /**
+     * 回显出库库存成本
+     */
+    Integer updateStockCost(@Param("productStockCost")Long productStockCost, @Param("outboundOderCode")String outboundOderCode, @Param("skuCode")String skuCode);
 }

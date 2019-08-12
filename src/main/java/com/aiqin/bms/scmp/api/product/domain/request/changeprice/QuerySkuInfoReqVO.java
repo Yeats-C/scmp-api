@@ -45,6 +45,9 @@ public class QuerySkuInfoReqVO extends PageReq {
     @ApiModelProperty("spu编码")
     private String spuName;
 
+    @ApiModelProperty("供应商编码")
+    private String supplierCode;
+
     @ApiModelProperty("spu编码")
     private String spuCode;
 
@@ -53,5 +56,20 @@ public class QuerySkuInfoReqVO extends PageReq {
 
     @ApiModelProperty("sku编码编码集合")
     private List<String> skuCodes;
+
+    @ApiModelProperty("品类集合编码 1级编码 2级编码 3级编码 4级编码")
+    private List<String> productCategoryCodes;
+
+    @ApiModelProperty(value = "1级品类编码",hidden = true)
+    private String productCategoryLv1Code;
+
+    @ApiModelProperty(value ="2级品类编码",hidden = true)
+    private String productCategoryLv2Code;
+
+    @ApiModelProperty(value ="3级品类编码",hidden = true)
+    private String productCategoryLv3Code;
+
+    @ApiModelProperty(value ="4级品类编码",hidden = true)
+    private String productCategoryLv4Code;
 
 }

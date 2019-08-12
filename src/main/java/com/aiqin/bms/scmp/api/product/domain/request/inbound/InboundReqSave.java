@@ -133,6 +133,9 @@ public class InboundReqSave {
     @ApiModelProperty("详细地址")
     private String detailedAddress;
 
+    @ApiModelProperty("采购调用次数")
+    private Integer purchaseNum;
+
     @ApiModelProperty("创建人")
     private String createBy;
 
@@ -145,6 +148,12 @@ public class InboundReqSave {
     @ApiModelProperty("更新时间")
     private Date updateTime;
 
-    @ApiModelProperty
+    @ApiModelProperty("备注")
+    private String remark;
+
+    @ApiModelProperty("入库sku")
     private List<InboundProductReqVo> list;
+
+    @ApiModelProperty("入库sku批次")
+    private List<InboundBatchReqVo> inboundBatchReqVos;
 }

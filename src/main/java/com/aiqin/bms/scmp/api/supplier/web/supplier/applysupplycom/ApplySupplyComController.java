@@ -1,13 +1,18 @@
 package com.aiqin.bms.scmp.api.supplier.web.supplier.applysupplycom;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.supplier.domain.request.QueryApplySupplyListComReqVO;
+import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.CancelApplySupplyComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplyComReqVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.ApplyComDetailRespVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.ApplySupplyComApplyListRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComListRespVO;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComServcie;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -33,6 +38,41 @@ public class ApplySupplyComController {
     public HttpResponse<BasePage<ApplySupplyComListRespVO>> listApplySupplyCompany(@RequestBody @Validated QueryApplySupplyComReqVO queryApplySupplyComReqVO){
         try {
             BasePage<ApplySupplyComListRespVO> result = applySupplyComServcie.getApplyList(queryApplySupplyComReqVO);
+            return HttpResponse.success(result);
+        } catch (Exception e) {
+            return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
+        }
+    }
+
+    @PostMapping("/editApply")
+    @ApiOperation("修改供应商")
+    public HttpResponse<Boolean> editApply(@RequestBody @Validated ApplySupplyCompanyReqVO applySupplyCompanyReqVO){
+        try {
+            return HttpResponse.success(applySupplyComServcie.editApply(applySupplyCompanyReqVO));
+        } catch (BizException ex) {
+            return HttpResponse.failure(ex.getMessageId());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.ADD_ERROR);
+        }
+    }
+
+    @PostMapping("/applyList")
+    @ApiOperation("供货单位申请管理")
+    public HttpResponse<BasePage<ApplySupplyComApplyListRespVO>> applyList(@RequestBody @Validated QueryApplySupplyListComReqVO queryApplySupplyComReqVO){
+        try {
+            BasePage<ApplySupplyComApplyListRespVO> result = applySupplyComServcie.applyList(queryApplySupplyComReqVO);
+            return HttpResponse.success(result);
+        } catch (Exception e) {
+            return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
+        }
+    }
+
+    @GetMapping("/applyView")
+    public HttpResponse<ApplyComDetailRespVO> applyView(@RequestParam Long id){
+        try {
+            String statusTypeCode = "1";
+            ApplyComDetailRespVO result = applySupplyComServcie.applyView(id,statusTypeCode);
             return HttpResponse.success(result);
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);

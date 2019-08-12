@@ -45,6 +45,9 @@ public class ApplyContractDTO extends CommonBean {
     @ApiModelProperty("配送费")
     private Long shippingFee;
 
+    @ApiModelProperty("最小起订金额")
+    private Long minAmount;
+
     @ApiModelProperty("送货费承担方(甲方,乙方承担)")
     private Byte deliveryCharges;
 
@@ -126,5 +129,44 @@ public class ApplyContractDTO extends CommonBean {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
+
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
+
+    @ApiModelProperty("最高起订金额")
+    private Long maxAmount;
+
+    @ApiModelProperty("送货周期")
+    private Integer deliveryCycle;
+
+    @ApiModelProperty("税率")
+    private Long taxRate;
+
+    @ApiModelProperty("折扣")
+    private Long discount;
+
+    @ApiModelProperty("退换货保证(0保证 1不保证)")
+    private Byte returnGuarantee;
+
+    @ApiModelProperty("退换货保证天数")
+    private Integer returnGuaranteeDay;
+
+    @ApiModelProperty("质保金")
+    private Long warranty;
+
+    @ApiModelProperty("供货渠道编码")
+    private String categoriesSupplyChannelsCode;
+
+    @ApiModelProperty("供货渠道名称")
+    private String categoriesSupplyChannelsName;
+
+    @ApiModelProperty("备注")
+    private String remark;
 
 }

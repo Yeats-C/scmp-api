@@ -1,26 +1,30 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ContentTpye;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.product.dao.ProductBrandTypeDao;
+import com.aiqin.bms.scmp.api.common.Save;
+import com.aiqin.bms.scmp.api.common.Update;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.dao.ProductBrandTypeDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandReqDTO;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.QueryProductBrandReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductBrandRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryProductBrandRespVO;
+import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductBrandService;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
+import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.bms.scmp.api.util.UploadFileUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
@@ -30,7 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -49,6 +55,14 @@ public class ProductBrandServiceImpl implements ProductBrandService {
     private UploadFileUtil uploadFileUtil;
     @Autowired
     private EncodingRuleDao encodingRuleDao;
+    @Autowired
+    private ProductSkuInfoMapper skuInfoMapper;
+    @Autowired
+    private ProductSkuDraftMapper skuDraftMapper;
+    @Autowired
+    private ApplyProductSkuMapper applyProductSkuMapper;
+
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -182,6 +196,24 @@ public class ProductBrandServiceImpl implements ProductBrandService {
         if(Objects.equals(productBrandType.getBrandStatus(),enable)){
             throw new GroundRuntimeException("状态已经为"+(enable==0?"启用":"禁用")+"无需更改！");
         }
+        //如果状态为禁用,需要判断是否有SKU在使用,如果有的话则不允许禁用
+        if(Objects.equals(1,enable)){
+            //判断正式表
+            int i = skuInfoMapper.checkBrand(productBrandType.getBrandId());
+            if(i>0){
+                throw new GroundRuntimeException("此品牌在SKU中存在,不允许禁用");
+            }
+            //判断临时表
+            i = skuDraftMapper.checkBrand(productBrandType.getBrandId());
+            if(i>0){
+                throw new GroundRuntimeException("此品牌在SKU中存在,不允许禁用");
+            }
+            //判断申请表
+            i = applyProductSkuMapper.checkBrand(productBrandType.getBrandId());
+            if(i>0){
+                throw new GroundRuntimeException("此品牌在SKU中存在,不允许禁用");
+            }
+        }
         ProductBrandReqDTO t = new ProductBrandReqDTO();
         t.setId(productBrandType.getId());
         t.setBrandStatus(enable);
@@ -217,7 +249,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
     }
 
     @Override
-    public PageInfo<QueryProductBrandRespVO> selectBrandListByQueryVO(QueryProductBrandReqVO vo) {
+    public BasePage<QueryProductBrandRespVO> selectBrandListByQueryVO(QueryProductBrandReqVO vo) {
         try {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
@@ -225,7 +257,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
             }
             PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
             List<QueryProductBrandRespVO> userDetails = productBrandTypeDao.selectListByQueryVO(vo);
-            return new PageInfo<QueryProductBrandRespVO>(userDetails);
+            return PageUtil.getPageList(vo.getPageNo(),userDetails);
         } catch (Exception ex) {
             log.error("商品品牌位列表查询异常！");
             ex.printStackTrace();
@@ -237,5 +269,10 @@ public class ProductBrandServiceImpl implements ProductBrandService {
     public List<ProductBrandType> selectByBrandCodes(List<String> codes) {
         log.debug("ProductBrandServiceImpl-selectByBrandCodes,入参是：[{}]", JSONObject.toJSONString(codes));
         return productBrandTypeDao.selectByBrandCodes(codes);
+    }
+
+    @Override
+    public Map<String, ProductBrandType> selectByBrandNames(Set<String> brandNameList, String companyCode) {
+        return productBrandTypeDao.selectByBrandNames(brandNameList,companyCode);
     }
 }

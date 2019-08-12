@@ -44,6 +44,7 @@ public class QuerySupplierComAcctRespVo {
     private String createBy;
 
     @ApiModelProperty("修改时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @ApiModelProperty("修改人")
@@ -78,4 +79,10 @@ public class QuerySupplierComAcctRespVo {
 
     @ApiModelProperty("供货单位账号编码")
     private String supplyCompanyAccountCode;
+
+    @ApiModelProperty("采购组编码")
+    private String purchasingGroupCode;
+
+    @ApiModelProperty("采购组名称")
+    private String purchasingGroupName;
 }

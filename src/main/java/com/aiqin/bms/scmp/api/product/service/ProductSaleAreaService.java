@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.base.AreaBasic;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO;
@@ -8,9 +9,10 @@ import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespV
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductSaleAreaApplyVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.*;
-import com.aiqin.bms.scmp.api.common.workflow.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.*;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
 import java.util.List;
 import java.util.Set;
@@ -109,7 +111,7 @@ public interface ProductSaleAreaService {
      * @param userName 登录人
      * @return void
      */
-    void workFlow(String formNo, String applyCode, String userName);
+    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode);
     /**
      * 处理保存或修改正式数据
      * @author NullPointException
@@ -251,4 +253,30 @@ public interface ProductSaleAreaService {
      * @return com.aiqin.mgs.product.api.base.BasePage<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaForSkuRespVO>
      */
     BasePage<QueryProductSaleAreaForSkuRespVO> skuList(QueryProductSaleAreaForSkuReqVO reqVO);
+    /**
+     * 模糊搜索
+     * @author NullPointException
+     * @date 2019/6/13
+     * @param name
+     * @return java.util.List<ProductSaleAreaFuzzySearchRespVO>
+     */
+    List<ProductSaleAreaFuzzySearchRespVO> fuzzySearch(String name);
+    /**
+     * 区域列表
+     * @author NullPointException
+     * @date 2019/6/13
+     * @param req
+     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.base.AreaBasic>
+     */
+    BasePage<AreaBasic> areaList(QueryAreaReqVO req);
+    /**
+     * 门店列表
+     * @author NullPointException
+     * @date 2019/6/13
+     * @param req
+     * @return com.aiqin.bms.scmp.api.base.BasePage<StoreInfo>
+     */
+    BasePage<StoreInfo> storeList(QueryStoreReqVO req);
+
+    DetailRequestRespVo getInfoByForm(String formNo);
 }

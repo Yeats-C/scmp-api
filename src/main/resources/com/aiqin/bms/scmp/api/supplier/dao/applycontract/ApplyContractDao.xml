@@ -40,9 +40,24 @@
     <result column="pre_payment_ratio" jdbcType="BIGINT" property="prePaymentRatio" />
     <result column="ship_payment_ratio" jdbcType="BIGINT" property="shipPaymentRatio" />
     <result column="payment_on_delivery_ratio" jdbcType="BIGINT" property="paymentOnDeliveryRatio" />
+    <result column="min_amount" jdbcType="BIGINT" property="minAmount" />
     <result column="rebate_clause" jdbcType="TINYINT" property="rebateClause" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
     <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName"/>
+    <result column="contract_type_code" jdbcType="VARCHAR" property="contractTypeCode"/>
+    <result column="contract_type_name" jdbcType="VARCHAR" property="contractTypeName"/>
+    <result column="checkout_date" jdbcType="VARCHAR" property="checkoutDate"/>
+    <result column="min_amount" jdbcType="BIGINT" property="minAmount"/>
+    <result column="max_amount" jdbcType="BIGINT" property="maxAmount"/>
+    <result column="delivery_cycle" jdbcType="INTEGER" property="deliveryCycle"/>
+    <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+    <result column="discount" jdbcType="BIGINT" property="discount"/>
+    <result column="return_guarantee" jdbcType="TINYINT" property="returnGuarantee"/>
+    <result column="return_guarantee_day" jdbcType="INTEGER" property="returnGuaranteeDay"/>
+    <result column="warranty" jdbcType="BIGINT" property="warranty"/>
+    <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode"/>
+    <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
@@ -52,7 +67,9 @@
     apply_type, auditor_by, auditor_time,form_no,company_code,company_name,
     purchasing_group_name,settlement_method_name,early_warn_num,
     pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,
-    direct_supervisor_code,direct_supervisor_name
+    direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date,min_amount,
+    max_amount,delivery_cycle,tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
+    categories_supply_channels_code,categories_supply_channels_name,remark
   </sql>
 
   <select id="selectBySelectApplyContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.QueryApplyContractReqVo" resultMap="BaseResultMap">
@@ -85,6 +102,9 @@
     <if test="applyBy != null and applyBy != '' ">
       and create_by = #{applyBy,jdbcType=VARCHAR}
     </if>
+    <if test="yearName != null and yearName != '' ">
+      and year_name like concat('%',#{yearName},'%')
+    </if>
     order by create_time desc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -105,7 +125,11 @@
       apply_contract_code, apply_status, apply_type, 
       auditor_by, auditor_time,form_no,company_code,company_name,
       purchasing_group_name,settlement_method_name,early_warn_num,
-      pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,direct_supervisor_code,direct_supervisor_name)
+      pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,
+      direct_supervisor_code,direct_supervisor_name,contract_type_code,
+      contract_type_name,checkout_date,min_amount,max_amount,delivery_cycle,
+      tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
+      categories_supply_channels_code,categories_supply_channels_name,remark)
     values ( #{year,jdbcType=VARCHAR}, #{yearName,jdbcType=VARCHAR},
       #{supplierName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{purchasingGroupCode,jdbcType=VARCHAR}, 
       #{settlementMethod,jdbcType=TINYINT}, #{paymentPeriod,jdbcType=INTEGER}, #{shippingFee,jdbcType=BIGINT}, 
@@ -119,7 +143,10 @@
       #{companyCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{purchasingGroupName,jdbcType=VARCHAR},#{settlementMethodName,jdbcType=VARCHAR},#{earlyWarnNum,jdbcType=INTEGER},
       #{prePaymentRatio,jdbcType=BIGINT},#{shipPaymentRatio,jdbcType=BIGINT},#{paymentOnDeliveryRatio,jdbcType=BIGINT},
-       #{rebateClause,jdbcType=TINYINT},#{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR}
+      #{rebateClause,jdbcType=TINYINT},#{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},
+      #{contractTypeCode,jdbcType=VARCHAR},#{contractTypeName,jdbcType=VARCHAR},#{checkoutDate,jdbcType=VARCHAR},#{minAmount},
+      #{maxAmount},#{deliveryCycle},#{taxRate},#{discount},#{returnGuarantee},#{returnGuaranteeDay},
+      #{warranty},#{categoriesSupplyChannelsCode},#{categoriesSupplyChannelsName},#{remark}
       )
   </insert>
 
@@ -247,6 +274,48 @@
       <if test="directSupervisorName != null">
         direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
       </if>
+      <if test="contractTypeCode != null">
+        contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractTypeName != null">
+        contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
+      </if>
+      <if test="checkoutDate != null">
+        checkout_date = #{checkoutDate,jdbcType=VARCHAR},
+      </if>
+      <if test="minAmount != null">
+        min_amount = #{minAmount,jdbcType=BIGINT},
+      </if>
+      <if test="maxAmount != null">
+        max_amount = #{maxAmount},
+      </if>
+      <if test="deliveryCycle != null">
+        delivery_cycle = #{deliveryCycle},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate},
+      </if>
+      <if test="discount != null">
+        discount = #{discount},
+      </if>
+      <if test="returnGuarantee != null">
+        return_guarantee = #{returnGuarantee},
+      </if>
+      <if test="returnGuaranteeDay != null">
+        return_guarantee_day = #{returnGuaranteeDay},
+      </if>
+      <if test="warranty != null">
+        warranty = #{warranty},
+      </if>
+      <if test="categoriesSupplyChannelsCode != null">
+        categories_supply_channels_code = #{categoriesSupplyChannelsCode},
+      </if>
+      <if test="categoriesSupplyChannelsName != null">
+        categories_supply_channels_name = #{categoriesSupplyChannelsName},
+      </if>
+      <if test="remark != null">
+        remark = #{remark},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -289,7 +358,11 @@
       payment_on_delivery_ratio = #{paymentOnDeliveryRatio,jdbcType=BIGINT},
       rebate_clause = #{rebateClause,jdbcType=TINYINT},
       direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
-      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR}
+      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
+      contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
+      checkout_date = #{checkoutDate,jdbcType=VARCHAR},
+      min_amount = #{minAmount}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectByFormNO" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -310,7 +383,8 @@
       a.update_by as applyBy,
       a.update_time as applyTime,
       a.auditor_by as approvalBy,
-      a.auditor_time as approvalTime
+      a.auditor_time as approvalTime,
+      a.form_no as formNo
     from apply_contract a
     where 1=1
     <if test="createTimeStart != null and createTimeStart != '' ">
@@ -319,7 +393,7 @@
     <if test="createTimeEnd != null and createTimeEnd != '' ">
       and a.create_time &lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
     </if>
-    <if test="applyType != null and applyType != ''">
+    <if test="applyType != null and applyType != '' ">
       and a.apply_type = #{applyType}
     </if>
     <if test="applyCode != null  and applyCode != '' ">
@@ -334,6 +408,10 @@
     <if test="applyBy != null and applyBy != '' ">
       and update_by = #{applyBy,jdbcType=VARCHAR}
     </if>
+    <if test="formNo != null  and formNo != '' " >
+      and form_no like concat('%', #{formNo,jdbcType=VARCHAR},'%')
+    </if>
+    order by create_time desc
   </select>
 
 </mapper>

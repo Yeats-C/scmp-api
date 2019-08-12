@@ -1,14 +1,16 @@
 package com.aiqin.bms.scmp.api.product.web.price;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryProductSkuChangePriceRespVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
+import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -16,15 +18,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-/**
- * Description:
- * 变价api
- *
- * @author: NullPointException
- * @date: 2019-05-20
- * @time: 17:24
- */
+import javax.validation.Valid;
+import java.util.List;
+
 @RestController
 @Slf4j
 @Api(description = "变价api")
@@ -97,6 +95,7 @@ public class ProductSkuChangePriceController {
     public HttpResponse<BasePage<QueryProductSkuChangePriceRespVO>> list(@RequestBody QueryProductSkuChangePriceReqVO reqVO) {
         log.info("ProductSkuChangePriceController---list---入参：[{}]", JSONObject.toJSONString(reqVO));
         try {
+            reqVO.setFlag(true);
             return HttpResponse.success(productSkuChangePriceService.list(reqVO));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
@@ -104,6 +103,47 @@ public class ProductSkuChangePriceController {
         } catch (Exception ex) {
             ex.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/edit/list")
+    @ApiOperation("供应商变价列表")
+    public HttpResponse<BasePage<QueryProductSkuChangePriceRespVO>> listForEdit(@RequestBody QueryProductSkuChangePriceReqVO reqVO) {
+        log.info("ProductSkuChangePriceController---list---入参：[{}]", JSONObject.toJSONString(reqVO));
+        try {
+            //默认查状态为5的，5是供应商提交过来的。可以编辑
+            reqVO.setApplyStatus(5);
+            return HttpResponse.success(productSkuChangePriceService.list(reqVO));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/querySkuList")
+    @ApiOperation("根据条件查询sku列表")
+    public HttpResponse<BasePage<QuerySkuInfoRespVO>> querySkuList(@RequestBody @Valid QuerySkuInfoReqVO reqVO){
+        log.info("ProductSkuChangePriceController---querySkuList---入参：[{}]", JSON.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(productSkuChangePriceService.getSkuListByQueryVO(reqVO));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
+        }
+    }
+
+    @PostMapping("/querySkuBatchList")
+    @ApiOperation("根据条件查询sku批次列表")
+    public HttpResponse<BasePage<QuerySkuInfoRespVO>> querySkuBatchList(@RequestBody @Valid QuerySkuInfoReqVO reqVO){
+        log.info("ProductSkuChangePriceController---querySkuBatchList---入参：[{}]", JSON.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(productSkuChangePriceService.querySkuBatchList(reqVO));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
         }
     }
 
@@ -120,5 +160,46 @@ public class ProductSkuChangePriceController {
             ex.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
+    }
+
+    @ApiOperation("采购价导入")
+    @PostMapping("/importForPurchasePrice")
+    public HttpResponse<List<QuerySkuInfoRespVOForIm>> importForPurchasePrice(MultipartFile file, String purchaseGroupCode,String changePriceType){
+        try {
+            return HttpResponse.success(productSkuChangePriceService.importForChangePrice(file,purchaseGroupCode,changePriceType));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+
+    }
+
+    @ApiOperation("导入商品信息")
+    @PostMapping("/importProductSkuChangePrice")
+    public HttpResponse<List<ProductSkuChangePriceImportRespVO>> importProductSkuChangePrice(MultipartFile file, String purchaseGroupCode, String companyCode, Integer changePriceType){
+        ProductSkuChangePriceImportReqVo productSkuChangePriceImportReqVo = new ProductSkuChangePriceImportReqVo(file,purchaseGroupCode,companyCode, changePriceType);
+        return HttpResponse.success(productSkuChangePriceService.importProductSkuChangePrice(productSkuChangePriceImportReqVo));
+    }
+
+    @ApiOperation("2年内价格波动数据")
+    @GetMapping("/getPriceJog")
+    public HttpResponse<List<PriceJog>> importProductSkuChangePrice(@RequestParam String skuCode){
+        try {
+            return HttpResponse.success(productSkuChangePriceService.getPriceJog(skuCode));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @ApiOperation("测试生成id")
+    @PostMapping("/getid")
+    public Long getid(){
+        IdSequenceUtils idSequenceUtils = IdSequenceUtils.getInstance();
+        return idSequenceUtils.nextId();
     }
 }

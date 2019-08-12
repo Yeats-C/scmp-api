@@ -1,16 +1,16 @@
 package com.aiqin.bms.scmp.api.product.domain.converter;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.bms.scmp.api.base.InOutStatus;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductToOutboundVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationToOutboundVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
-import com.aiqin.bms.scmp.api.product.domain.response.warehouse.WarehouseResVo;
-import com.aiqin.bms.scmp.api.product.service.api.SupplierApiService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
+import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
@@ -29,18 +29,17 @@ import java.util.*;
 public class AllocationResVo2InboundReqVoConverter implements Converter<AllocationToOutboundVo, InboundReqSave> {
 
     @Autowired
-    private SupplierApiService supplierApiService;
+    private WarehouseService warehouseService;
 
-   public AllocationResVo2InboundReqVoConverter (SupplierApiService supplierApiService) {
-        this.supplierApiService = supplierApiService;
+   public AllocationResVo2InboundReqVoConverter (WarehouseService warehouseService) {
+        this.warehouseService = warehouseService;
     }
 
     @Override
     public InboundReqSave convert(AllocationToOutboundVo source) {
             InboundReqSave outbound = new InboundReqSave();
 
-        try {
-            WarehouseResVo warehouseByCode = supplierApiService.getWarehouseByCode(source.getCalloutWarehouseCode());
+            WarehouseResVo warehouseByCode = warehouseService.getWarehouseByCode(source.getCalloutWarehouseCode());
             if(Objects.isNull(warehouseByCode)){
                 throw new GroundRuntimeException("调拨查询联系人信息失败");
             }
@@ -120,9 +119,6 @@ public class AllocationResVo2InboundReqVoConverter implements Converter<Allocati
             outbound.setList(products);
             outbound.setPreAmount(totalNoRateAmount);
             outbound.setPreTax(source.getTaxRefundAmount()-totalNoRateAmount);
-        }catch (Exception e){
-            throw new GroundRuntimeException("调拨vo转为出库失败！");
-        }
-        return outbound;
+            return outbound;
     }
 }

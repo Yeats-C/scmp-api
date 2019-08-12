@@ -77,12 +77,21 @@ public class ProductSkuChangePriceReqVO {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    @ApiModelProperty("调价原因编码")
+    private String changePriceReasonCode;
+
+    @ApiModelProperty("调价原因描述")
+    private String changePriceReasonName;
+
     @ApiModelProperty("审批表单号")
     private String formNo;
 
     @ApiModelProperty("提交or保存1提交2保存")
     @NotNull(message = "操作类型不能为空")
     private Integer operation;
+
+    @ApiModelProperty("是否含有区域0否1是")
+    private Integer extField5;
 
     @ApiModelProperty("sku列表信息")
     @NotEmpty(message = "sku信息不能为空")

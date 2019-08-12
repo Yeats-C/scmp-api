@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ProductCategoryDao {
 
@@ -43,7 +44,7 @@ public interface ProductCategoryDao {
      * @param categoryStatus
      * @return
      */
-    List<ProductCategoryRespVO> getProductCategoryList(@Param("categoryStatus") Byte categoryStatus, @Param("companyCode") String companyCode);
+    List<ProductCategoryRespVO> getProductCategoryList(@Param("categoryStatus") Byte categoryStatus, @Param("companyCode") String companyCode, @Param("parentCode") String parentCode);
 
     /**
      * 修改品类记录
@@ -73,4 +74,20 @@ public interface ProductCategoryDao {
      */
     ProductCategory getProductCategoryById(@Param("categoryId") String categoryId);
 
+    ProductCategory selectByPrimaryKey(Long id);
+    /**
+     *
+     * 功能描述: 查询下级启用数量
+     *
+     * @param categoryId
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/19 20:06
+     */
+    int selectSubCategoryEnableCount(String categoryId);
+    List<ProductCategory> selectByCategoryNames(@Param("list") Set<String> brandNameList, @Param("companyCode") String companyCode);
+
+    List<String> checkName(@Param("list") List<String> sameLevelNameList, @Param("companyCode") String companyCode);
+
+    int checkNameByNameAndCode(@Param("categoryName") String categoryName, @Param("categoryId") String categoryId, @Param("companyCode") String companyCode);
 }

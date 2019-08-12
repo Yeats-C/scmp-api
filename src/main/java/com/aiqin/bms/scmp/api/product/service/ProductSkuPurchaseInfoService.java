@@ -20,7 +20,7 @@ public interface ProductSkuPurchaseInfoService {
 
     int insertApplyList(List<ApplyProductSkuPurchaseInfo> applyProductSkuPurchaseInfos);
 
-    int saveList(String skuCode, String applyCode);
+    int saveInfo(String skuCode, String applyCode);
 
     int insertList(List<ProductSkuPurchaseInfo> productSkuPurchaseInfos);
 
@@ -42,4 +42,26 @@ public interface ProductSkuPurchaseInfoService {
      */
     Integer deleteDrafts(List<String> skuCodes);
 
+    /**
+     *
+     * 功能描述: 查询申请表数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 20:48
+     */
+    List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode);
+
+    /**
+     *
+     * 功能描述: 查询正式表数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 16:56
+     */
+    List<PurchaseSaleStockRespVo> getList(String skuCode);
 }

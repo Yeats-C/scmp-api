@@ -15,10 +15,10 @@ import java.util.List;
 @Data
 public class ProductCategoryAddReqVO {
     @ApiModelProperty("父节点分类id")
-    private Long parentId;
+    private String parentId;
 
     @ApiModelProperty("所选节点分类id")
-    private Long currentCategoryId;
+    private String currentCategoryId;
 
     @ApiModelProperty(value = "所选节点级别，1、2、3、4级")
     private Byte currentLevel;

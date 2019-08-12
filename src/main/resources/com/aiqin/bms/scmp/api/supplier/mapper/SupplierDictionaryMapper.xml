@@ -113,9 +113,9 @@
       <if test="supplierDictionaryName != null">
         supplier_dictionary_name = #{supplierDictionaryName,jdbcType=VARCHAR},
       </if>
-      <if test="supplierType != null">
-        supplier_type = #{supplierType,jdbcType=VARCHAR},
-      </if>
+<!--      <if test="supplierType != null">-->
+<!--        supplier_type = #{supplierType,jdbcType=VARCHAR},-->
+<!--      </if>-->
       <if test="delFlag != null">
         del_flag = #{delFlag,jdbcType=TINYINT},
       </if>
@@ -141,7 +141,7 @@
     update supplier_dictionary
     set supplier_dictionary_code = #{supplierDictionaryCode,jdbcType=VARCHAR},
       supplier_dictionary_name = #{supplierDictionaryName,jdbcType=VARCHAR},
-      supplier_type = #{supplierType,jdbcType=VARCHAR},
+--       supplier_type = #{supplierType,jdbcType=VARCHAR},
       del_flag = #{delFlag,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},

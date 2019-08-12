@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 
 @ApiModel("SKU临时表信息")
@@ -40,7 +42,7 @@ public class ProductSkuDraft extends CommonBean {
     @ApiModelProperty("商品品类名称")
     private String productCategoryName;
 
-    @ApiModelProperty("商品/赠品(0:商品，1:赠品)")
+    @ApiModelProperty("商品/赠品(0:商品，1:赠品 2:组合商品)")
     private Byte goodsGifts;
 
     @ApiModelProperty("商品属性code")
@@ -111,11 +113,21 @@ public class ProductSkuDraft extends CommonBean {
 
     @ApiModelProperty("是否结构性商品(0:是 1:否)")
     private Byte structuralGoods;
-    @ApiModelProperty("是否爱亲主推(0:否，1:是)")
+
+    @ApiModelProperty(value = "是否爱亲主推(0:否，1:是)", hidden = true)
     private Byte isMainPush;
 
-    @ApiModelProperty("是否新品(0:否，1:是)")
+    @ApiModelProperty(value = "是否新品(0:否，1:是)", hidden = true)
     private Byte newProduct;
+
+    @ApiModelProperty("库存模式(0:有库存销售 1:无库存销售)")
+    private Byte inventoryModel;
+
+    @ApiModelProperty("使用时长")
+    private Integer useTime;
+
+    @ApiModelProperty("唯一码管理(0:是 1:否)")
+    private Byte uniqueCode;
 
     @ApiModelProperty("备注")
     private String remark;
@@ -132,6 +144,11 @@ public class ProductSkuDraft extends CommonBean {
     @ApiModelProperty(value = "申请类型名称", hidden = true)
     private String applyTypeName;
 
+    @ApiModelProperty(" 库存分配-组合独有(0:共享)")
+    private Byte inventoryAllocation;
+
+    @ApiModelProperty("价格模式-组合独有(0:人工设置)")
+    private Byte priceModel;
 
 
     @ApiModelProperty(value = "规格", hidden = true)
@@ -181,4 +198,22 @@ public class ProductSkuDraft extends CommonBean {
 
     @ApiModelProperty(value = "拆零系数",hidden = true)
     private Long zeroRemovalCoefficient;
+
+    @ApiModelProperty(value = "图片文件夹编码")
+    private String picFolderCode;
+
+    @ApiModelProperty(value = "改变内容",hidden = true)
+    private String changeContent;
+
+    @ApiModelProperty(value = "修改人")
+    private String updateBy;
+
+    @ApiModelProperty("供应商信息")
+    private List<ProductSkuSupplyUnitDraft> supplyList;
+
+    @ApiModelProperty(value = "来源 0供应链1供应商平台",hidden = true)
+    private Integer originalCode = 0;
+
+
+
 }

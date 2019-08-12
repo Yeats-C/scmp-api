@@ -2,6 +2,9 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
@@ -10,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.QueryInboundResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderMainReqVOReturn;
 import com.aiqin.bms.scmp.api.product.service.impl.InboundServiceImpl;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -117,4 +121,19 @@ public interface InboundService {
      * @param allocationCode
      */
     void inBoundReturnMovement(String allocationCode);
+
+    HttpResponse selectInboundBatchInfoByInboundOderCode(InboundBatch inboundBatch);
+    /**
+     * 批量保存入库单
+     * @author NullPointException
+     * @date 2019/6/27
+     * @param list
+     * @return java.lang.Boolean
+     */
+    Boolean saveList(List<InboundReqSave> list);
+
+    void saveData(List<Inbound> inboundList, List<InboundProduct> productList, List<InboundBatch> batchList);
+
+    void repealOrder(String orderId, String createById, String createByName);
+
 }

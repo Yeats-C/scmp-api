@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.domain.response.contract;
 
+import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -36,7 +37,7 @@ public class ContractResVo {
     @ApiModelProperty("供货单位编号")
     private String supplierCode;
 
-    @ApiModelProperty("采购组编号")
+    @ApiModelProperty(value = "采购组编号", hidden = true)
     private String purchasingGroupCode;
 
     @ApiModelProperty("结算方式")
@@ -66,8 +67,11 @@ public class ContractResVo {
     @ApiModelProperty("目标返利(门店,地区,大区,全国)")
     private Byte targetRebate;
 
+//    @ApiModelProperty("计划类型(月度,季度,半年,全年)")
+//    private Byte planType;
+
     @ApiModelProperty("计划类型(月度,季度,半年,全年)")
-    private Byte planType;
+    List<PlanTypeReqVO> planTypeList;
 
     @ApiModelProperty("起始日期")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
@@ -84,12 +88,14 @@ public class ContractResVo {
     private Byte delFlag;
 
     @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty("创建人")
     private String createBy;
 
     @ApiModelProperty("修改时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @ApiModelProperty("修改人")
@@ -116,7 +122,7 @@ public class ContractResVo {
     @ApiModelProperty("公司名称")
     private String companyName;
 
-    @ApiModelProperty("采购组名称")
+    @ApiModelProperty(value = "采购组名称",hidden = true)
     private String purchasingGroupName;
 
     @ApiModelProperty("付款方式名称")
@@ -134,6 +140,9 @@ public class ContractResVo {
     @ApiModelProperty("到货付款比例")
     private Long paymentOnDeliveryRatio;
 
+    @ApiModelProperty("最小起订额")
+    private Long minAmount;
+
     @ApiModelProperty("返利条款 0:固定返利 1:目标返利")
     private Byte rebateClause;
 
@@ -144,11 +153,61 @@ public class ContractResVo {
     private String directSupervisorName;
 
     @ApiModelProperty("进货额")
-    private  List<ContractPurchaseVolumeResVo> purchaseCount;
+    private  List<ContractPurchaseVolumeResVo> purchaseVolumeReqVos;
 
     @ApiModelProperty("操作日志列表")
     private List<LogData> logDataList;
 
     @ApiModelProperty("文件信息")
     private List<ContractFileResVo> fileResVos;
+
+    //新增字段
+
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
+
+    @ApiModelProperty("最高起订金额")
+    private Long maxAmount;
+
+    @ApiModelProperty("送货周期")
+    private Integer deliveryCycle;
+
+    @ApiModelProperty("税率")
+    private Long taxRate;
+
+    @ApiModelProperty("折扣")
+    private Long discount;
+
+    @ApiModelProperty("退换货保证(0保证 1不保证)")
+    private Byte returnGuarantee;
+
+    @ApiModelProperty("退换货保证天数")
+    private Integer returnGuaranteeDay;
+
+    @ApiModelProperty("质保金")
+    private Long warranty;
+
+    @ApiModelProperty("供货渠道编码")
+    private String categoriesSupplyChannelsCode;
+
+    @ApiModelProperty("供货渠道名称")
+    private String categoriesSupplyChannelsName;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+    @ApiModelProperty("合同采购组")
+    private List<ContractPurchaseGroupResVo> purchaseGroupResVos;
+
+    @ApiModelProperty("品牌")
+    List<ContractBrandResVo> brandResVos;
+
+    @ApiModelProperty("品类")
+    List<ContractCategoryResVo> categoryResVos;
 }

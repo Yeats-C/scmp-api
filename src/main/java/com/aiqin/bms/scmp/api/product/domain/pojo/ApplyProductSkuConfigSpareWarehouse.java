@@ -14,6 +14,9 @@ public class ApplyProductSkuConfigSpareWarehouse extends CommonBean {
     @ApiModelProperty("商品配置编码")
     private String configCode;
 
+    @ApiModelProperty("商品配置申请编号")
+    private String applyCode;
+
     @ApiModelProperty("物流中心(仓库)编码")
     private String transportCenterCode;
 

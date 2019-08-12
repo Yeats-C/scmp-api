@@ -2,11 +2,13 @@ package com.aiqin.bms.scmp.api.product.dao;
 
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryInspectionReportReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.InspectionReportRespVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,11 +31,11 @@ public interface ProductSkuInspReportDao {
 
     List<ApplyProductSkuInspReport> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
-    List<ApplyProductSkuInspReport> getApplys(@Param("applyProductSkus") List<ApplyProductSku> applyProductSkus);
+    List<ProductSkuInspReportRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     int insertApplyList(List<ApplyProductSkuInspReport> applyProductSkuInspReports);
 
-    int insertInspReportList(@Param("productSkuInspReports") List<ProductSkuInspReport> productSkuInspReports);
+    int insertInspReportList(@Param("list") List<ProductSkuInspReport> productSkuInspReports);
 
     List<ProductSkuInspReportDraft> getDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);
 
@@ -43,5 +45,14 @@ public interface ProductSkuInspReportDao {
 
     int deleteList(String skuCode);
 
+    int deleteById(Long id);
+
     int insertDraftList(@Param("productSkuInspReportDrafts") List<ProductSkuInspReportDraft> productSkuInspReportDrafts);
+
+    List<ProductSkuInspReportRespVo> getList(String skuCode);
+
+    List<ProductSkuInspReportRespVo> getListBySkuCodeAndProductDate(QueryProductSkuInspReportReqVo reportReqVo);
+
+    Integer updateInspection(ProductSkuInspReport productSkuInspReport);
+
 }

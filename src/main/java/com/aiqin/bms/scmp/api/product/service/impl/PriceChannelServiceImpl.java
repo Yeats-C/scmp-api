@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.bms.scmp.api.base.BasePage;
@@ -33,7 +34,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author knight.xie
@@ -220,6 +223,19 @@ public class PriceChannelServiceImpl implements PriceChannelService {
         return priceChannelItemMapper.insertBach(items);
     }
 
+    @Override
+    public List<PriceChannelItem> selectByChannelCodes(List<String> codes) {
+        if(CollectionUtils.isEmptyCollection(codes)){
+            return Lists.newArrayList();
+        }
+        return priceChannelItemMapper.selectByChannelCodes(codes,2);
+    }
+
+    @Override
+    public Map<String, PriceChannel> selectByChannelNames(Set<String> channelList, String companyCode) {
+        return priceChannelMapper.selectByChannelNames(channelList,companyCode);
+    }
+
     private void itemTransFormChannelResp(PriceChannelRespVo respVo){
         if(Objects.isNull(respVo)){
             throw new BizException(ResultCode.OBJECT_EMPTY);
@@ -319,4 +335,6 @@ public class PriceChannelServiceImpl implements PriceChannelService {
         items.add(item);
         return items;
     }
+
+
 }

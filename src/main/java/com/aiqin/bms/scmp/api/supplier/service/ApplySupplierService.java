@@ -7,9 +7,9 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplierR
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.CancelApplySupplierReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplierReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierUpdateReqVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplierDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplierListRespVO;
-import com.aiqin.bms.scmp.api.supplier.service.helper.WorkflowHelper;
 
 
 /**
@@ -17,7 +17,7 @@ import com.aiqin.bms.scmp.api.supplier.service.helper.WorkflowHelper;
  * @author: wangxu
  * @date: 2018/12/3 0003 16:49
  */
-public interface ApplySupplierService extends WorkflowHelper {
+public interface ApplySupplierService{
     /**
      * 生成编码，复制对象
      * @param supplierReq
@@ -69,9 +69,27 @@ public interface ApplySupplierService extends WorkflowHelper {
     int cancelApply(CancelApplySupplierReqVO cancelApplySupplierReqVO);
 
     /**
+     * 修改供应商保存
+     * @param applySupplierReqDTO
+     * @return
+     */
+    int insert(ApplySupplier applySupplierReqDTO);
+
+    /**
      * 供应商审批流
      * @param applySupplierReqDTO
      */
     void workFlow(ApplySupplierReqDTO applySupplierReqDTO);
+
+    /**
+     *
+     * 功能描述: 返回详情接口请求参数
+     *
+     * @param formNo
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/9 14:41
+     */
+    DetailRequestRespVo getInfoByForm(String formNo);
 
 }

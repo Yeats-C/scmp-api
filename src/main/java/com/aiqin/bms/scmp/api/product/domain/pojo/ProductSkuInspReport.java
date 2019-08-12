@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
 import com.aiqin.bms.scmp.api.common.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -17,7 +18,8 @@ public class ProductSkuInspReport extends CommonBean {
     @ApiModelProperty("sku名称")
     private String skuName;
 
-    @ApiModelProperty("生产日期")
+    @ApiModelProperty(value = "生产日期")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date productionDate;
 
     @ApiModelProperty("质检报告文件路径")

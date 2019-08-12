@@ -35,4 +35,7 @@ public class ApplyContractPurchaseVolumeDTO extends CommonBean {
     @ApiModelProperty("或者金额(以分为单位)")
     private Long orAmountMoney;
 
+    @ApiModelProperty("返利类型1月2季3半年4年")
+    private Byte planType;
+
 }

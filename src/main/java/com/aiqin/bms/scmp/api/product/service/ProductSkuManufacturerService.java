@@ -32,4 +32,27 @@ public interface ProductSkuManufacturerService {
      * @return
      */
     Integer deleteDrafts(List<String> skuCodes);
+
+    /**
+     *
+     * 功能描述: 申请数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 23:11
+     */
+    List<ProductSkuManufacturerRespVo> getApply(String skuCode, String applyCode);
+
+    /**
+     *
+     * 功能描述: 正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:13
+     */
+    List<ProductSkuManufacturerRespVo> getList(String skuCode);
 }

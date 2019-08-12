@@ -52,6 +52,9 @@ public class OutboundProductResVo {
     @ApiModelProperty("出库规格")
     private String outboundNorms;
 
+    @ApiModelProperty("出库拆零系数")
+    private String outboundBaseUnit;
+
     @ApiModelProperty("出库基商品含量")
     private String outboundBaseContent;
 
@@ -93,4 +96,13 @@ public class OutboundProductResVo {
 
     @ApiModelProperty("行号")
     private Long linenum;
+
+    @ApiModelProperty("税率")
+    private Long tax;
+
+    @ApiModelProperty(value = "实际零数 展示用")
+    private Long praSingleCount;
+
+    @ApiModelProperty(value = "预计零数 展示用")
+    private Long preSingleCount;
 }

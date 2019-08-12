@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -25,18 +26,21 @@ public class ProductSkuPriceInfoLog {
     private Long tax;
 
     @ApiModelProperty("开始生效时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date effectiveTimeStart;
 
     @ApiModelProperty("结束生效时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date effectiveTimeEnd;
 
     @ApiModelProperty("状态0未生效1生效中2已失效")
-    private Integer status;
+    private Integer status=1;
 
     @ApiModelProperty("创建人")
     private String createBy;
 
     @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty("备注")

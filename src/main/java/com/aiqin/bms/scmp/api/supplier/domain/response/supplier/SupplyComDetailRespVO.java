@@ -1,14 +1,16 @@
 package com.aiqin.bms.scmp.api.supplier.domain.response.supplier;
 
+import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierFileReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
-import com.aiqin.bms.scmp.api.supplier.domain.response.sku.QueryProductSkuListResp;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,6 +32,9 @@ public class SupplyComDetailRespVO {
 
     @ApiModelProperty("供应商类型")
     private String applySupplyType;
+
+    @ApiModelProperty("供应商类型")
+    private String applySupplyTypeName;
 
     @ApiModelProperty("简称")
     private String applyAbbreviation;
@@ -95,7 +100,7 @@ public class SupplyComDetailRespVO {
     private String corporateRepresentative;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("是否禁用")
     private Byte enable;
@@ -117,6 +122,20 @@ public class SupplyComDetailRespVO {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
 
     @ApiModelProperty("收货信息")
     private List<DeliveryInfoRespVO> deliveryInfoRespVOS;

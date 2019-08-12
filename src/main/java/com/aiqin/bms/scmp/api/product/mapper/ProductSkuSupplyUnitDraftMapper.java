@@ -5,17 +5,20 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import java.util.List;
 
 public interface ProductSkuSupplyUnitDraftMapper {
-    int deleteByPrimaryKey(Long id);
-
-    int insert(ProductSkuSupplyUnitDraft record);
-
-    int insertSelective(ProductSkuSupplyUnitDraft record);
-
-    ProductSkuSupplyUnitDraft selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(ProductSkuSupplyUnitDraft record);
-
-    int updateByPrimaryKey(ProductSkuSupplyUnitDraft record);
 
     Integer delete(List<String> skuCodes);
+
+    List<ProductSkuSupplyUnitDraft> selectByIds(List<Long> ids);
+
+    int deleteDraftByIds(List<Long> ids);
+
+    int deleteDraftById(Long id);
+    /**
+     * 通过vo查找数据
+     * @author NullPointException
+     * @date 2019/7/19
+     * @param reqVo
+     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft>
+     */
+    List<ProductSkuSupplyUnitDraft> selectByVo(List<ProductSkuSupplyUnitDraft> reqVo);
 }

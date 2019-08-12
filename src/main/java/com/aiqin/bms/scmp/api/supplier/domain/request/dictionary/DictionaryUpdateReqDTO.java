@@ -22,12 +22,15 @@ public class DictionaryUpdateReqDTO{
     private String dictionaryName;
 
     @ApiModelProperty("供应商字典类型")
-    @NotEmpty(message = "供应商字典类型不能为空")
+//    @NotEmpty(message = "供应商字典类型不能为空")
     private String dictionaryType;
 
     @ApiModelProperty("删除标记(0:正常 1:删除)")
     @Min(0)
     private Byte delFlag;
+
+    @ApiModelProperty("0启用1禁用")
+    private Byte enabled;
 
     @NotNull
     private List<DictionaryUpdateInfoReqVO> listInfo;

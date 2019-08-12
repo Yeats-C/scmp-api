@@ -49,6 +49,13 @@ public class QueryTagRespVo {
     private String enableName;
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("修改时间")
     private Date updateTime;
 
@@ -57,6 +64,9 @@ public class QueryTagRespVo {
 
     @ApiModelProperty("标签使用次数")
     private Integer tagUseNum;
+
+    @ApiModelProperty("标签分类")
+    private String classify;
 
     @ApiModelProperty("标签使用记录")
     List<DetailTagUseRespVo> tagUseRespVos;
@@ -73,4 +83,6 @@ public class QueryTagRespVo {
             this.enableName = StatusTypeCode.DIS_ABLE.getName();
         }
     }
+
+
 }

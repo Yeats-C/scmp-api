@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class ManufacturerResVo {
     private String legalPerson;
 
     @ApiModelProperty("注册资金")
-    private Long registeredCapital;
+    private BigDecimal registeredCapital;
 
     @ApiModelProperty("公司注册号")
     private String registrationNumber;
@@ -86,7 +87,7 @@ public class ManufacturerResVo {
     private String updateBy;
 
     @ApiModelProperty("制造商关联品牌")
-    private List<ManufacturerBrandResVo> resVoList;
+    private List<ManufacturerBrandResVo> list;
 
     @ApiModelProperty("操作日志")
     private List<LogData> logDataList;

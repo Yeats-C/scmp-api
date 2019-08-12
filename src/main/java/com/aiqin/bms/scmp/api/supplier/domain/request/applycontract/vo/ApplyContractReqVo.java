@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo;
 
+import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,15 +30,15 @@ public class ApplyContractReqVo{
     private String yearName;
 
     @ApiModelProperty("供货单位名称")
-    @NotEmpty(message = "供货单位名称不能为空")
+//    @NotEmpty(message = "供货单位名称不能为空")
     private String supplierName;
 
     @ApiModelProperty("供货单位编号")
     @NotEmpty(message = "供货单位编号不能为空")
     private String supplierCode;
 
-    @ApiModelProperty("采购组编号")
-    @NotEmpty(message = "采购组编号不能为空")
+    @ApiModelProperty(value = "采购组编号",hidden = true)
+
     private String purchasingGroupCode;
 
     @ApiModelProperty("结算方式")
@@ -71,8 +72,11 @@ public class ApplyContractReqVo{
     @ApiModelProperty("目标返利(门店,地区,大区,全国)")
     private Byte targetRebate;
 
+//    @ApiModelProperty("计划类型(月度,季度,半年,全年)")
+//    private Byte planType;
+
     @ApiModelProperty("计划类型(月度,季度,半年,全年)")
-    private Byte planType;
+    List<PlanTypeReqVO> planTypeList;
 
     @ApiModelProperty("起始日期")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
@@ -87,7 +91,7 @@ public class ApplyContractReqVo{
     @ApiModelProperty("进货价格生效标准(下单日价格,收获日价格)")
     @NotNull(message = "进货价格生效标准(下单日价格,收获日价格)不能为空")
     private Byte purchasePriceStandard;
-    @ApiModelProperty("采购组名称")
+    @ApiModelProperty(value = "采购组名称",hidden = true)
     private String purchasingGroupName;
 
     @ApiModelProperty("付款方式名称")
@@ -116,6 +120,58 @@ public class ApplyContractReqVo{
     @NotEmpty(message = "直属上级名称不能为空！")
     private String directSupervisorName;
 
+    @ApiModelProperty("合同类型编码")
+    private String contractTypeCode;
+
+    @ApiModelProperty("合同类型名称")
+    private String contractTypeName;
+
+    @ApiModelProperty("结账日")
+    private String checkoutDate;
+
+    @ApiModelProperty("最低起订金额")
+    private Long minAmount;
+
+    @ApiModelProperty("最高起订金额")
+    private Long maxAmount;
+
+    @ApiModelProperty("送货周期")
+    private Integer deliveryCycle;
+
+    @ApiModelProperty("税率")
+    private Long taxRate;
+
+    @ApiModelProperty("折扣")
+    private Long discount;
+
+    @ApiModelProperty("退换货保证(0保证 1不保证)")
+    private Byte returnGuarantee;
+
+    @ApiModelProperty("退换货保证天数")
+    private Integer returnGuaranteeDay;
+
+    @ApiModelProperty("质保金")
+    private Long warranty;
+
+    @ApiModelProperty("供货渠道编码")
+    private String categoriesSupplyChannelsCode;
+
+    @ApiModelProperty("供货渠道名称")
+    private String categoriesSupplyChannelsName;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+
+
+    @ApiModelProperty("采购组")
+    private List<ApplyContractPurchaseGroupReqVo> purchaseGroupReqVos;
+
+    @ApiModelProperty("品牌")
+    private List<ApplyContractBrandReqVo> brandReqVos;
+
+    @ApiModelProperty("品类")
+    private List<ApplyContractCategoryReqVo> categoryReqVos;
 
     @ApiModelProperty("进货额")
     @Valid

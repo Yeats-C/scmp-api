@@ -34,6 +34,18 @@ public interface PriceProjectService  {
      */
     List<QueryPriceProjectRespVo> getAll();
 
+    /**
+     * 查询不同价格属性的价格项目
+     *
+     * @return
+     */
+    List<QueryPriceProjectRespVo> getByTypeCode(String type);
+
+    /**
+     * 获取采购价格项目
+     * @return
+     */
+    QueryPriceProjectRespVo getPurchasePriceProject();
 
     /**
      * 获取价格项目列表信息,按照价格类型分组

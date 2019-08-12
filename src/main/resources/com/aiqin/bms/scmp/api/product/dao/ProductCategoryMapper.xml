@@ -129,7 +129,7 @@
           resultType="com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse">
     select
     <include refid="Base_Column_List" />
-    from product_category where category_id = #{categoryId, jdbcType=VARCHAR}
+    from product_category where category_id = #{categoryId, jdbcType=VARCHAR} limit 1
   </select>
   <select id="countAllCategory" resultType="java.lang.Integer">
     select count(1) from product_category
@@ -160,7 +160,7 @@
         </if>
     </select>
   <select id="getMaxCategoryIdByParentId" parameterType="java.lang.String" resultType="java.lang.String">
-    SELECT MAX(category_id) FROM product_category  WHERE parent_id=#{parentId,jdbcType=VARCHAR}
+    SELECT MAX(category_id) FROM product_category  WHERE parent_id=#{parentId,jdbcType=VARCHAR} and category_id != '99'
   </select>
   <select id="getMaxChildNodeByCategoryId" parameterType="java.lang.String" resultType="java.lang.String">
     SELECT
@@ -169,7 +169,7 @@
     WHERE parent_id = #{categoryId,jdbcType=VARCHAR}
     AND category_level = (SELECT category_level
                           FROM product_category
-                          WHERE category_id = #{categoryId,jdbcType=VARCHAR}) + 1
+                          WHERE category_id = #{categoryId,jdbcType=VARCHAR} limit 1) + 1
   </select>
   <insert id="insertList" parameterType="java.util.List">
     INSERT  INTO  product_category
@@ -195,6 +195,10 @@
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
+    <if test="parentCode != null and parentCode != '' ">
+      and  parent_id = #{parentCode,jdbcType=VARCHAR}
+    </if>
+    order by weight
   </select>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductCategory">
     update product_category
@@ -246,5 +250,46 @@
   </update>
   <select id="getProductCategoryById" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT * from product_category where category_id=#{categoryId,jdbcType=VARCHAR}
+  </select>
+    <select id="selectSubCategoryEnableCount" resultType="java.lang.Integer">
+      select count(*) from product_category
+      where parent_id = #{categoryId}
+      and del_flag =0 and category_status = 0
+    </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+     SELECT * from product_category where id = #{id,jdbcType=BIGINT}
+  </select>
+    <select id="selectByCategoryNames" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from product_category
+      where company_code = #{companyCode}
+      and
+      category_status = 0
+      and category_name  in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+          #{item}
+      </foreach>
+    </select>
+
+  <select id="checkName" resultType="java.lang.String">
+    select
+    distinct
+    category_name
+    from product_category
+    where company_code = #{companyCode}
+    and category_name  in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="checkNameByNameAndCode" resultType="java.lang.Integer">
+    select
+    count(*)
+    from product_category
+    where company_code = #{companyCode}
+    and category_name  = #{categoryName}
+    and category_id != #{categoryId}
   </select>
 </mapper>

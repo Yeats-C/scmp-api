@@ -56,6 +56,10 @@
     delete from logistics_center_area
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteByCode" parameterType="java.lang.String">
+    delete from logistics_center_area
+    where logistics_center_code = #{logisticsCenterCode}
+  </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterAreaDTO">
     insert into logistics_center_area (id, logistics_center_code, province_code, 
       province_name, city_code, city_name, 
@@ -249,6 +253,13 @@
     <include refid="Base_Column_List" />
     from logistics_center_area
     where logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
-    And enable=1
+    And enable=0
+  </select>
+  <select id="selectByCode"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from logistics_center_area
+    where logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR}
   </select>
 </mapper>

@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.ProductCategoryReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @功能说明:品类service
@@ -56,6 +57,14 @@ public interface ProductCategoryService {
      */
     List<ProductCategoryRespVO> getList(Byte categoryStatus);
 
+
+    /**
+     * 获取返回列表
+     * @param categoryStatus
+     * @return
+     */
+    List<ProductCategoryRespVO> getTree(Byte categoryStatus, String parentCode);
+
     /**
      * 根据品类id查询父类集合
      * @param categoryId
@@ -71,4 +80,27 @@ public interface ProductCategoryService {
      * @return
      */
     List<ProductCategory> getChildCategoryList(String categoryId, String companyCode);
+
+    /**
+     *
+     * 功能描述: 验证是否能禁用
+     *
+     * @param categoryCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/19 20:03
+     */
+    boolean verifyDisable(String categoryCode);
+    /**
+     * 名字查品类品牌
+     * @author NullPointException
+     * @date 2019/7/21
+     * @param brandNameList
+     * @param companyCode
+     * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.ProductCategory>
+     */
+    List<ProductCategory> selectByCategoryNames(Set<String> brandNameList, String companyCode);
+
+
+
 }

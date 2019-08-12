@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -50,18 +51,17 @@ import javax.sql.DataSource;
  * @author heroin.nee@gmail.com
  */
 @Configuration
-@ComponentScan(basePackages = {"com.aiqin.bms","com.aiqin.mgs"})
+@ComponentScan(basePackages = {"com.aiqin.bms","com.aiqin.mgs","com.aiqin.platform"})
 @GroundBoot
 @GroundDataSource
 @EnableTransactionManagement
 @ControlClient
-@MapperScan(basePackages = {"com.aiqin.bms.scmp.api.supplier.dao",
-        "com.aiqin.bms.scmp.api.supplier.mapper",
-        "com.aiqin.bms.scmp.api.product.dao",
-        "com.aiqin.bms.scmp.api.product.mapper"})
+@MapperScan(basePackages = {"com.aiqin.bms.scmp.api.*.dao",
+        "com.aiqin.bms.scmp.api.*.mapper"})
 @EnableAspectJAutoProxy(proxyTargetClass = true,exposeProxy = true)
 @EnableAsync(proxyTargetClass = true)
 @EnableSwagger2
+@EnableScheduling
 public class ScmpApiBootApplication extends SpringBootServletInitializer {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ScmpApiBootApplication.class);

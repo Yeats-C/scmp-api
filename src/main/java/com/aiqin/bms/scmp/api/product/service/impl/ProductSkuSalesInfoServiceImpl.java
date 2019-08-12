@@ -1,13 +1,17 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuSalesInfoDao;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoDraftMapper;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSalesInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSalesInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSalesInfoDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSalesInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +41,6 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    @SaveList
     public int insertList(List<ProductSkuSalesInfo> productSkuSalesInfos) {
         int num = productSkuSalesInfoDao.insertList(productSkuSalesInfos);
         return num;
@@ -47,17 +50,9 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
     @Transactional(rollbackFor = Exception.class)
     public int saveList(String skuCode,String applyCode) {
         List<ApplyProductSkuSalesInfo> applyProductSkuSalesInfos = productSkuSalesInfoDao.getApply(skuCode,applyCode);
-        if (null != applyProductSkuSalesInfos && applyProductSkuSalesInfos.size() > 0){
-            List<ProductSkuSalesInfo> productSkuSalesInfos = new ArrayList<>();
-            List<ProductSkuSalesInfo> oldInfo = productSkuSalesInfoDao.getInfo(skuCode);
-            applyProductSkuSalesInfos.forEach(item->{
-                ProductSkuSalesInfo productSkuSalesInfo = new ProductSkuSalesInfo();
-                BeanCopyUtils.copy(item,productSkuSalesInfo);
-                productSkuSalesInfos.add(productSkuSalesInfo);
-            });
-            if (null != oldInfo && oldInfo.size() > 0){
-                productSkuSalesInfoDao.deleteList(skuCode);
-            }
+        if (CollectionUtils.isNotEmptyCollection(applyProductSkuSalesInfos)){
+            List<ProductSkuSalesInfo> productSkuSalesInfos = BeanCopyUtils.copyList(applyProductSkuSalesInfos,ProductSkuSalesInfo.class);
+            productSkuSalesInfoDao.deleteList(skuCode);
             return ((ProductSkuSalesInfoService)AopContext.currentProxy()).insertList(productSkuSalesInfos);
         } else {
             return 0;
@@ -117,4 +112,46 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
     public Integer deleteDrafts(List<String> skuCodes) {
         return draftMapper.delete(skuCodes);
     }
+
+    /**
+     * 功能描述: 获取申请表数据
+     *
+     * @param skuCode
+     * @param applyCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/6 22:37
+     */
+    @Override
+    public List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode) {
+        return productSkuSalesInfoDao.getApplys(skuCode,applyCode);
+    }
+
+    /**
+     * 功能描述: 获取正式数据
+     *
+     * @param skuCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/8 17:26
+     */
+    @Override
+    public List<PurchaseSaleStockRespVo> getList(String skuCode) {
+        return productSkuSalesInfoDao.getRespVoBySkuCode(skuCode);
+    }
+
+    /**
+     * 功能描述: 检查销售条形码是否存在
+     *
+     * @param salesCodes
+     * @return
+     * @auther knight.xie
+     * @date 2019/7/30 18:33
+     */
+    @Override
+    public List<String> checkSalesCodes(List<String> salesCodes,String skuCode) {
+        return productSkuSalesInfoDao.productSkuSalesInfoDao(salesCodes,skuCode);
+    }
 }
+
+

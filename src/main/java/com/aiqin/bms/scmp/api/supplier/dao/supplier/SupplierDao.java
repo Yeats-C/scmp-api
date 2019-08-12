@@ -6,6 +6,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplierListRespVO;
+import org.apache.ibatis.annotations.MapKey;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -37,8 +39,18 @@ public interface SupplierDao {
      */
     Supplier getSupplierByApplyCode(String applyCode);
 
-    void updatetSupplierApplyStatusByCode(String supplierCode);
+    void updatetSupplierApplyStatusByCode(@Param("supplierCode") String supplierCode, @Param("applyCode") String applyCode);
 
     List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
 
+    /**
+     * TODO
+     * @author NullPointException
+     * @date 2019/7/16
+     * @param supplierNameList
+     * @param companyCode
+     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier>
+     */
+    @MapKey("supplierName")
+    Map<String, Supplier> selectByNameList(@Param("list") List<String> supplierNameList, @Param("companyCode") String companyCode);
 }

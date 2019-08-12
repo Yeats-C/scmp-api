@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author knight.xie
@@ -42,6 +44,9 @@ public class ProductSkuRespVo extends CommonBean {
 
     @ApiModelProperty("商品品类code")
     private String productCategoryCode;
+
+    @ApiModelProperty("商品品类code")
+    private List<String> productCategoryCodes;
 
     @ApiModelProperty("商品品类名称")
     private String productCategoryName;
@@ -118,11 +123,20 @@ public class ProductSkuRespVo extends CommonBean {
     @ApiModelProperty("是否结构性商品(0:是 1:否)")
     private Byte structuralGoods;
 
-    @ApiModelProperty("是否爱亲主推(0:否，1:是)")
+    @ApiModelProperty(value = "是否爱亲主推(0:否，1:是)",hidden = true)
     private Byte isMainPush;
 
-    @ApiModelProperty("是否新品(0:否，1:是)")
+    @ApiModelProperty(value = "是否新品(0:否，1:是)",hidden = true)
     private Byte newProduct;
+
+    @ApiModelProperty("库存模式(0:有库存销售 1:无库存销售)")
+    private Byte inventoryModel;
+
+    @ApiModelProperty("使用时长")
+    private Integer useTime;
+
+    @ApiModelProperty("唯一码管理(0:是 1:否)")
+    private Byte uniqueCode;
 
     @ApiModelProperty("备注")
     private String remark;
@@ -138,4 +152,17 @@ public class ProductSkuRespVo extends CommonBean {
 
     @ApiModelProperty(value = "申请类型名称", hidden = true)
     private String applyTypeName;
+
+    @ApiModelProperty(" 库存分配-组合独有(0:共享)")
+    private Byte inventoryAllocation;
+
+    @ApiModelProperty("价格模式-组合独有(0:人工设置)")
+    private Byte priceModel;
+
+    @ApiModelProperty("SKU状态(0:再用 1:停止进货 2:停止配送 3:停止销售)")
+    private Byte skuStatus;
+
+    @ApiModelProperty("销售状态(0:未进货 1:新品 2:正常 3:淘汰品)")
+    private Byte onSale;
+
 }

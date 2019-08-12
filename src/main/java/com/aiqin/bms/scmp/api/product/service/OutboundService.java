@@ -2,6 +2,9 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Outbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateOutBoundReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateStockReqVo;
@@ -10,8 +13,12 @@ import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRe
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.QueryOutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
-import com.aiqin.bms.scmp.api.product.service.impl.OutboundServiceImpl;
+import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundResponse;
+import com.aiqin.bms.scmp.api.product.domain.response.outbound.QueryOutboundResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.outbound.SupplyOrderInfoReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -106,7 +113,7 @@ public interface OutboundService {
      * @param id
      * @return
      */
-    void pushWms(String Code, OutboundServiceImpl inboundService);
+    void pushWms(String Code);
 
     /**
      * 出库单回调接口
@@ -132,14 +139,14 @@ public interface OutboundService {
      * 退供会传接口
      * @param reqVO
      */
-    void returnStorageResult(ReturnStorageResultReqVo reqVO);
+    void returnStorageResult(RejectStockRequest reqVO);
 
 
     /**
      * 调拨生成入库单并且改变在途数
      * @param id
      */
-    void createInbound(Long id);
+    void createInbound(String formNo);
 
 
 
@@ -148,8 +155,27 @@ public interface OutboundService {
      * 移库生成入库单并且改变在途数
      * @param id
      */
-    void movementCreateInbound(Long id);
+    void movementCreateInbound(String formNo);
 
+    HttpResponse selectOutboundBatchInfoByOutboundOderCode(OutboundBatch outboundBatch);
+    /**
+     * 批量保存出库单数据
+     * @author NullPointException
+     * @date 2019/6/25
+     * @param outboundReqVoList
+     * @return java.lang.Boolean
+     */
+    Boolean saveList(List<OutboundReqVo> outboundReqVoList);
+    /**
+     * 批量保存入库数据
+     * @author NullPointException
+     * @date 2019/6/26
+     * @param list
+     * @param productList
+     * @param batchList
+     * @return void
+     */
+    void saveData(List<Outbound> list, List<OutboundProduct> productList, List<OutboundBatch> batchList);
 }
 
 

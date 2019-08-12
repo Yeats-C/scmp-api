@@ -23,4 +23,6 @@ public class StockChangeRequest {
     private Integer orderType;
 
     private List<StockVoRequest> stockVoRequests;
+
+    private List<StockBatchVoRequest> stockBatchVoRequest;
 }

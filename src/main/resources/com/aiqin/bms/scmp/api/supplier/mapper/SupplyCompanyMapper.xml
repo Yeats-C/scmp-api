@@ -60,6 +60,33 @@
     from supply_company
     where id = #{id,jdbcType=BIGINT}
   </select>
+    <select id="selectBySupplyComCodes" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List"/>
+      from supply_company
+      where company_code = #{companyCode}
+      and supply_code in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+              #{item}
+      </foreach>
+    </select>
+  <select id="selectBySupplyComNames" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from supply_company
+    where company_code = #{companyCode}
+    and supply_name in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+  </select>
+  <select id="selectBySupplyComCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from supply_company
+    where company_code = #{companyCode}
+    and supply_code = #{supplyCompanyCode}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from supply_company
     where id = #{id,jdbcType=BIGINT}
@@ -89,7 +116,7 @@
       #{supplyCode,jdbcType=VARCHAR}, #{applySupplyCompanyCode,jdbcType=VARCHAR}, #{auditorBy,jdbcType=VARCHAR}, 
       #{auditorTime,jdbcType=TIMESTAMP}, #{applyStatus,jdbcType=TINYINT}, #{supplierName,jdbcType=VARCHAR}, 
       #{purchasingGroupCode,jdbcType=VARCHAR}, #{zipCode,jdbcType=VARCHAR}, #{purchasingGroupName,jdbcType=VARCHAR},
-      #{taxId,jdbcType=VARCHAR}, #{corporateRepresentative,jdbcType=VARCHAR}, #{registeredCapital,jdbcType=BIGINT},
+      #{taxId,jdbcType=VARCHAR}, #{corporateRepresentative,jdbcType=VARCHAR}, #{registeredCapital,jdbcType=DECIMAL},
       #{enable,jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{maxOrderAmount,jdbcType=BIGINT}, #{minOrderAmount,jdbcType=BIGINT},#{businessLicense, jdbcType=VARCHAR},
       #{starScore, jdbcType=DECIMAL}, #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR})
@@ -511,7 +538,7 @@
       purchasing_group_name = #{purchasingGroupName,jdbcType=VARCHAR},
       tax_id = #{taxId,jdbcType=VARCHAR},
       corporate_representative = #{corporateRepresentative,jdbcType=VARCHAR},
-      registered_capital = #{registeredCapital,jdbcType=BIGINT},
+      registered_capital = #{registeredCapital,jdbcType=DECIMAL},
       enable = #{enable,jdbcType=TINYINT},
       max_order_amount = #{maxOrderAmount,jdbcType=BIGINT},
       min_order_amount = #{minOrderAmount,jdbcType=BIGINT},
@@ -524,5 +551,9 @@
     <update id="updateStarScore">
       update supply_company set star_score = #{startScore, jdbcType=DECIMAL}
       where supply_code =#{supplierCode,jdbcType=VARCHAR}
+    </update>
+    <update id="updateApplyCodeBySupplyComCode">
+      update supply_company set apply_supply_company_code = #{applyCode, jdbcType=VARCHAR}
+      where supply_code =#{supplyComCode,jdbcType=VARCHAR}
     </update>
 </mapper>

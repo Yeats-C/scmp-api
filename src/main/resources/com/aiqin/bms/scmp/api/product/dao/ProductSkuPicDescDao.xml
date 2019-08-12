@@ -71,7 +71,11 @@
     </foreach>
   </insert>
   <select id="getDraft" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT <include refid="Base_Column_List"/> FROM product_sku_pic_desc_draft WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM product_sku_pic_desc_draft
+    WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
+    order by sorting_number asc
   </select>
   <select id="getInfo" parameterType="java.lang.String" resultMap="SkuPicDescMap">
     SELECT * FROM product_sku_pic_desc WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
@@ -94,11 +98,22 @@
   <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPicDescMapper.BaseResultMap">
     SELECT * from apply_product_sku_pic_desc WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
     and apply_code = #{applyCode}
+     order by sorting_number asc
   </select>
-  <select id="getApplys" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPicDescMapper.BaseResultMap">
-    SELECT * from apply_product_sku_pic_desc WHERE sku_code in
-    <foreach collection="applyProductSkus" item="item" open="(" separator="," close=")">
-      #{item.skuCode,jdbcType=VARCHAR}
-    </foreach>
+  <select id="getApplys" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM apply_product_sku_pic_desc
+    WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
+    and apply_code=#{applyCode,jdbcType=VARCHAR}
+    order by sorting_number asc
+  </select>
+
+  <select id="getRespVoBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM product_sku_pic_desc
+    WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
+    order by sorting_number asc
   </select>
 </mapper>
