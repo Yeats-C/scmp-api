@@ -93,7 +93,7 @@
       #{item.taxPrice,jdbcType=BIGINT},
       #{item.quantity,jdbcType=BIGINT},
       #{item.taxAmount,jdbcType=BIGINT},
-      #{item.delFlag,jdbcType=TINYINT},
+      0,
       #{item.createTime,jdbcType=TIMESTAMP},
       #{item.createByName,jdbcType=VARCHAR},
       #{item.updateTime,jdbcType=TIMESTAMP},

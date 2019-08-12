@@ -126,4 +126,5 @@ public class ProfitLossDetailRequest {
     @JsonProperty("update_by_name")
     private String updateByName;
 
+
 }
