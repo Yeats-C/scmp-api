@@ -518,7 +518,7 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockVoRequest.setOperator(inbound.getCreateBy());
             stockVoRequest.setTaxRate(returnInboundProduct.getTax());
-            if(inboundProductCallBackReqVo.getProductType() == 0){
+            if(inboundProductCallBackReqVo.getProductType() != 2){
                 stockVoRequest.setNewPurchasePrice(inboundProduct.getPraTaxPurchaseAmount());
             }
             stockVoRequest.setNewDelivery(inbound.getSupplierCode());

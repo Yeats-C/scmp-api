@@ -529,7 +529,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                         }
                          if(record[4] != null){
-                             if(!("零").equals(record[4].indexOf("零"))){
+                             if(!record[4].contains("零")){
                                  HandleResponse(response, record,"采购数量格式不正确");
                                  errorList.add(response);
                                  continue;
@@ -543,7 +543,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                              applyProduct.setPurchaseSingle(single);
                          }
                          if(record[5] != null){
-                             if(!("零").equals(record[4].indexOf("零"))){
+                             if(!record[5].contains("零")){
                                  HandleResponse(response, record,"实物返数量格式不正确");
                                  errorList.add(response);
                                  continue;
