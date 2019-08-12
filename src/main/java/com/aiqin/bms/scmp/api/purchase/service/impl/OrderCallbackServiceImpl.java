@@ -808,8 +808,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 }
                 profitLossProductList.add(profitLossDetail);
             }
-            profitLoss.setQuantity(sumQuantity);
-            profitLoss.setQuantity(sumQuantity);
+//            profitLoss.setQuantity(sumQuantity);
+//            profitLoss.setQuantity(sumQuantity);
         }
         //添加损溢记录
         profitLossMapper.insertList(profitLossList);
