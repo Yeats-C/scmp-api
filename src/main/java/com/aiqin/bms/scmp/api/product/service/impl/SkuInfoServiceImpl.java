@@ -1372,7 +1372,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
                 vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
             }
-            respVos = productSkuDao.selectSkuListForSalePrice(longs1);
+            respVos = productSkuDao.selectSkuListForSalePrice(longs1,vo.getChangePriceType());
         }else {
             throw new BizException(ResultCode.NOT_HAVE_PARAM);
         }
@@ -1414,7 +1414,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
                 vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
             }
-            list = productSkuDao.selectSkuListForSalePrice(ids);
+            list = productSkuDao.selectSkuListForSalePrice(ids,vo.getChangePriceType());
         }else {
             throw new BizException(ResultCode.NOT_HAVE_PARAM);
         }

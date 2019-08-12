@@ -57,10 +57,26 @@ public class PriceChannelForChangePrice {
     private Long avgTaxCost;
 
     public Long getOldGrossProfitMargin() {
-        if (Objects.isNull(this.oldPrice)||Objects.isNull(this.taxCost)||this.taxCost==0) {
+        if (Objects.isNull(this.priceAttributeCode)) {
             return 0L;
         }
-        this.avgTaxCost = taxCost;
-        return this.oldGrossProfitMargin = (this.oldPrice-taxCost)/this.avgTaxCost;
+        if("1".equals(this.priceAttributeCode) ){
+            this.avgTaxCost = this.purchasePriceOld;
+            //采购变价
+            if(Objects.isNull(this.purchasePriceOld)||this.purchasePriceOld==0){
+                return 0L;
+            }else {
+                return this.oldGrossProfitMargin = (this.purchasePriceOld-taxCost)/this.purchasePriceOld;
+            }
+        }else {
+            this.avgTaxCost = this.oldPrice;
+            //销售类的变价
+            if(Objects.isNull(this.oldPrice)||this.oldPrice==0){
+                return 0L;
+            }else {
+                return this.oldGrossProfitMargin = (this.oldPrice-taxCost)/this.oldPrice;
+            }
+        }
+
     }
 }

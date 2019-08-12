@@ -2207,7 +2207,7 @@
     <result column="batchRemark" property="batchRemark"/>
     <result column="productTime" property="productTime"/>
     <collection property="batchList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo" column="companyCode = companyCode,skuCode = skuCode" select="getBatch" />
-    <collection property="priceChannelList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice" column="changePriceType = changePriceType,companyCode = companyCode,skuCode = skuCode" select="com.aiqin.bms.scmp.api.product.dao.ProductSkuDao.getSaleChannelList" />
+    <collection property="priceChannelList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice" column="changePriceType = changePriceType,companyCode = companyCode,skuCode = skuCode" select="getSaleChannelList" />
     </resultMap>
     <select id="getSkuBatchForChangePrice" resultMap="SkuListForSalePriceMap">
          select
@@ -2275,6 +2275,33 @@
        from stock_batch a
        where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
     </select>
+    <resultMap id="getSaleChannelList" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice">
+        <result column="priceItemCode" property="priceItemCode"/>
+        <result column="priceItemName" property="priceItemName"/>
+        <result column="priceTypeCode" property="priceTypeCode"/>
+        <result column="priceTypeName" property="priceTypeName"/>
+        <result column="priceAttributeCode" property="priceAttributeCode"/>
+        <result column="priceAttributeName" property="priceAttributeName"/>
+        <result column="oldPrice" property="oldPrice"/>
+        <result column="taxCost" property="taxCost"/>
+    </resultMap>
+    <select id="getSaleChannelList" resultMap="getSaleChannelList">
+    select
+      f.price_project_code    as priceItemCode,
+      f.price_project_name    as priceItemName,
+      f.price_type_code       as priceTypeCode,
+      f.price_type_name       as priceTypeName,
+      f.price_category_code   as priceAttributeCode,
+      f.price_category_name   as priceAttributeName,
+      ifnull(g.price_tax,0) as oldPrice,
+      ifnull(h.stock_tax_cost,0) as taxCost
+      from price_project f
+       left join product_sku_price_info g
+      on #{skuCode} = g.sku_code and g.price_item_code = f.price_project_code and g.ext_field_5 = 0
+       left join tax_cost_log_stock h
+      on g.sku_code = h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
+      where  f.company_code = #{companyCode} and f.price_category_code = #{changePriceType}
+  </select>
     <resultMap id="queryStockBatchForAllo" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO">
         <result column="skuCode" property="skuCode"/>
         <result column="skuName" property="skuName"/>

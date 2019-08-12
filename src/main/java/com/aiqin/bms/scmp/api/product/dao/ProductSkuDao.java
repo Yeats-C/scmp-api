@@ -238,7 +238,7 @@ public interface ProductSkuDao {
      * @param vo
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.changeprice.QuerySkuInfoRespVO>
      */
-    List<QuerySkuInfoRespVO> selectSkuListForSalePrice(List<Long> ids);
+    List<QuerySkuInfoRespVO> selectSkuListForSalePrice(@Param("list") List<Long> list, @Param("changePriceType") String changePriceType);
 
     List<Long> selectSkuListForSalePriceCount(QuerySkuInfoReqVO vo);
     /**

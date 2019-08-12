@@ -1651,7 +1651,7 @@
 
     </collection>
   </resultMap>
-  <select id="selectSkuListForSalePrice" parameterType="java.util.List"
+  <select id="selectSkuListForSalePrice"
           resultMap="SkuListForSalePriceMap">
       select a.sku_code              as skuCode,
       a.sku_name              as skuName,
@@ -1687,7 +1687,7 @@
       left join product_sku_purchase_info c
       on a.sku_code = c.product_sku_code
       left join price_project f
-      on 1=1 and f.del_flag = 0 and f.price_project_enable = 0
+      on  f.del_flag = 0 and f.price_project_enable = 0 and f.price_category_code = #{changePriceType}
       left join product_sku_price_info g
       on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.ext_field_5 = 0
       left join tax_cost_log_stock h
@@ -1791,6 +1791,7 @@
       <result column="priceAttributeCode" property="priceAttributeCode"/>
       <result column="priceAttributeName" property="priceAttributeName"/>
       <result column="oldPrice" property="oldPrice"/>
+      <result column="taxCost" property="taxCost"/>
     </collection>
     <collection property="supplierInfoVOS" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO">
       <result column="supplierCode" property="supplierCode"/>
@@ -1825,7 +1826,8 @@ select a.sku_code              as skuCode,
        d.supply_unit_name as supplierName,
        ifnull(d.is_default,0) as isDefault,
        ifnull(e.price_tax,0) as purchasePriceOld,
-       ifnull(g.new_purchase_price,0) purchasePriceNewest
+       ifnull(g.new_purchase_price,0) purchasePriceNewest,
+       ifnull(h.stock_tax_cost,0) taxCost
       from product_sku a
        left join product b
                  on a.spu_code = b.product_code
@@ -1838,7 +1840,9 @@ select a.sku_code              as skuCode,
        left join (select new_delivery,sku_code,max(id), new_purchase_price from stock group by new_delivery,sku_code) g
                  on g.new_delivery = supply_unit_code and a.sku_code = g.sku_code
        left join price_project f
-                 on f.price_category_code = #{changePriceType} and f.price_project_enable = 0 and f.company_code =#{companyCode}
+                 on f.price_category_code = 1 and f.price_project_enable = 0
+       left join tax_cost_log_stock h
+                 on h.sku_code = a.sku_code and h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
        LEFT JOIN product_category lv4
                  on lv4.category_id = a.product_category_code
        LEFT JOIN product_category lv3
