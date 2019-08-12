@@ -713,10 +713,7 @@
     </select>
     <select id="countSupplierArrivalRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierArrivalRateReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bsar.id
-        from bi_supplier_arrival_rate bsar
+        select count(1) from bi_supplier_arrival_rate bsar
         WHERE
         1=1
         <if test="supplierCode!=null and supplierCode!=''">
@@ -740,8 +737,6 @@
         <if test="finishInboundTime!=null and finishInboundTime!=''">
             and #{finishInboundTime}
         </if>
-        group by bsar.id
-        ) as tmp
     </select>
     <select id="selectSupplierArrivalRateTableCloumnName" resultType="java.util.HashMap">
         select
@@ -853,13 +848,8 @@
     </select>
     <select id="countGoodsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GoodsBuySalesReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bgbs.id
-        from bi_goods_buy_sales bgbs
+        select count(1) from bi_goods_buy_sales bgbs
         <include refid="select_goods_buy_sales"/>
-        group by bgbs.id
-        ) as tmp
     </select>
     <select id="selectGoodsBuySalesTableCloumnName" resultType="java.util.HashMap">
         select
@@ -947,13 +937,8 @@
     </select>
     <select id="countGiftsBuySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.GiftsBuySalesReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bgbs.id
-        from bi_gifts_buy_sales bgbs
+        select count(1) FROM bi_gifts_buy_sales bgbs
         <include refid="select_gifts_buy_sales"/>
-        group by bgbs.id
-        ) as tmp
     </select>
     <select id="selectSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierReturnRespVo">
@@ -982,13 +967,9 @@
     </select>
     <select id="countSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bsr.id
+        select count(1)
         from bi_supplier_return bsr
         <include refid="select_supplier_return"/>
-        group by bsr.id
-        ) as tmp
     </select>
     <select id="sumSupplierReturn" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SupplierReturnReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SupplierReturnRespVo">
@@ -1090,13 +1071,9 @@
     </select>
     <select id="countNewProductBatchMovingRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NewProductBatchMovingRateReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bnpbmr.id
+        select count(1)
         from bi_new_product_batch_moving_rate bnpbmr
         <include refid="select_new_product_batch_moving_rate"/>
-        group by bnpbmr.id
-        ) as tmp
     </select>
     <select id="selectStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StoreRepurchaseRateRespVo">
@@ -1124,13 +1101,10 @@
     </select>
     <select id="countStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bsrr.id
+        select count(1)
         from bi_store_repurchase_rate bsrr
         <include refid="select_store_repurchase_rate"/>
-        group by bsrr.id
-        ) as tmp
+
     </select>
     <select id="selectNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NegativeMarginRespVo">
@@ -1176,13 +1150,9 @@
     </select>
     <select id="countNegativeMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.NegativeMarginReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bnm.id
+        select count(1)
         from bi_negative_margin bnm
         <include refid="select_negative_margin"/>
-        group by bnm.id
-        ) as tmp
     </select>
     <select id="selectSuggestReplenishment" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SuggestReplenishmentReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.SuggestReplenishmentRespVo">
@@ -1218,13 +1188,10 @@
     </select>
     <select id="countSuggestReplenishment" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.SuggestReplenishmentReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bsr.id
+        select count(1)
         from bi_app_suggest_replenishment bsr
         <include refid="select_suggest_replenishment"/>
-        group by bsr.id
-        ) as tmp
+
     </select>
     <select id="selectLowInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.LowInventoryRespVo">
@@ -1286,13 +1253,9 @@
     </select>
     <select id="countLowInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bli.id
+        select count(1)
         from bi_low_inventory bli
         <include refid="select_low_inventory"/>
-        group by bli.id
-        ) as tmp
     </select>
     <select id="selectHighInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.HighInventoryRespVo">
@@ -1354,13 +1317,10 @@
     </select>
     <select id="countHighInventory" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.HighLowInventoryReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bhi.id
+        select count(1)
         from bi_high_inventory bhi
         <include refid="select_high_inventory"/>
-        group by bhi.id
-        ) as tmp
+
     </select>
     <select id="selectBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BrandSaleRespVo">
@@ -1416,13 +1376,10 @@
     </select>
     <select id="countBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bbs.id
+        select count(1)
         from bi_brand_sale bbs
         <include refid="select_brand_sale"/>
-        group by bbs.id
-        ) as tmp
+
     </select>
     <select id="selectCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.CategorySaleRespVo">
@@ -1476,13 +1433,10 @@
     </select>
     <select id="countCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bcs.id
+        select count(1)
         from bi_category_sale bcs
         <include refid="select_category_sale"/>
-        group by bcs.id
-        ) as tmp
+
     </select>
     <select id="selectBigEffect" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.BigEffectReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BigEffectRespVo">
@@ -1513,13 +1467,10 @@
     </select>
     <select id="countBigEffect" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.BigEffectReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bbe.id
+        select count(1)
         from bi_big_effect bbe
         <include refid="select_big_effect"/>
-        group by bbe.id
-        ) as tmp
+
     </select>
     <select id="selectMonthlySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
@@ -1551,13 +1502,10 @@
     </select>
     <select id="countMonthlySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bms.id
+        select count(1)
         from bi_monthly_sales bms
         <include refid="select_monthly_sales"/>
-        group by bms.id
-        ) as tmp
+
     </select>
     <select id="selectMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlyGrossMarginRespVo">
@@ -1592,13 +1540,10 @@
     </select>
     <select id="countMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bmgm.id
+        select count(1)
         from bi_month_gross_margin bmgm
         <include refid="select_monthly_gross_margin"/>
-        group by bmgm.id
-        ) as tmp
+
     </select>
     <select id="selectMonthSalesAchievement" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthSalesAchievementRespVo">
@@ -1628,13 +1573,10 @@
     </select>
     <select id="countMonthSalesAchievement" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bmsa.id
+        select count(1)
         from bi_month_sales_achievement bmsa
         <include refid="select_month_sales_achievement"/>
-        group by bmsa.id
-        ) as tmp
+
     </select>
     <select id="selectMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeBrandSalesRespVo">
@@ -1668,13 +1610,10 @@
     </select>
     <select id="countMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bmcbs.id
+        select count(1)
         from bi_month_cumulative_brand_sales bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
-        group by bmcbs.id
-        ) as tmp
+
     </select>
     <select id="selectMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeGrossProfitMarginRespVo">
@@ -1714,13 +1653,10 @@
     </select>
     <select id="countMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        bmcgpm.id
+        select count(1)
         from bi_month_cumulative_gross_profit_margin bmcgpm
         <include refid="select_month_cumulative_gross_profit_margin"/>
-        group by bmcgpm.id
-        ) as tmp
+
     </select>
     <select id="selectStoreType" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
         SELECT
