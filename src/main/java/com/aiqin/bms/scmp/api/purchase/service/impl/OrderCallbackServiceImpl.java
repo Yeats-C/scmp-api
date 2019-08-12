@@ -784,14 +784,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             profitLoss.setCreateTime(new DateTime(new Long(request.getCreateTime())).toDate());
             profitLoss.setUpdateTime(new DateTime(new Long(request.getApproveTime())).toDate());
             for (ProfitLossDetailRequest profitLossDetailRequest : detailMap.get(warehouseCode)) {
-//                profitLossDetail = new ProfitLossDetailRequest();
                 profitLossDetail = profitLossDetailRequest;
                 profitLossDetail.setCreateByName(request.getCreateByName());
                 profitLossDetail.setUpdateByName(request.getUpdateByName());
                 profitLossDetail.setUpdateTime(profitLoss.getCreateTime());
                 profitLossDetail.setCreateTime(profitLoss.getUpdateTime());
-//                profitLossDetail.setQuantity(profitLossDetailRequest.getQuantity());
-//                profitLossDetail.setSkuCode(profitLossDetailRequest.getSkuCode());
+                profitLossDetail.setQuantity(profitLossDetail.getQuantity());
                 if (profitLossDetailRequest.getQuantity() < 0) {
                     lossQuantity += profitLossDetailRequest.getQuantity();
                 }else{
@@ -821,6 +819,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             //dl只传回完成的
             profitLoss.setOrderStatusCode(0);
             profitLoss.setOrderStatusName("完成");
+            profitLossList.add(profitLoss);
         }
         //添加损溢记录
         profitLossMapper.insertList(profitLossList);
@@ -834,22 +833,22 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
         }));
         //正值减库存
-        if (groupByList.get(1) != null) {
+        if (groupByList.get(0) != null) {
             //操作类型 直接减库存 4
             StockChangeRequest stockChangeRequest = new StockChangeRequest();
             stockChangeRequest.setOperationType(4);
-            List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(1), request.getOrderCode());
+            List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
             stockChangeRequest.setStockVoRequests(list);
             HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                 throw new GroundRuntimeException("dl回调    减库存异常");
             }
         }
-        if (groupByList.get(0) != null) {
+        if (groupByList.get(1) != null) {
             //操作类型 直接加库存 10
             StockChangeRequest stockChangeRequest = new StockChangeRequest();
             stockChangeRequest.setOperationType(10);
-            List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+            List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(1), request.getOrderCode());
             stockChangeRequest.setStockVoRequests(list);
             HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -877,7 +876,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             stockVoRequest.setDocumentNum(itemReqVo.getOrderCode());
             stockVoRequest.setSourceDocumentType(11);
             stockVoRequest.setSourceDocumentNum(sourceOrderCode);
-            stockVoRequest.setOperator(itemReqVo.getCreateById());
+            stockVoRequest.setOperator(itemReqVo.getCreateByName());
             list.add(stockVoRequest);
         }
         return list;
