@@ -483,7 +483,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setCode("TPA" + IdSequenceUtils.getInstance().nextId());
             priceInfo.setPriceTax(info.getTemporaryPrice());
             priceInfo.setTax(info.getOutTax());
-            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getTemporaryPrice(), info.getOutTax()));
+            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getTemporaryPrice()).orElse(0L), info.getOutTax()));
             priceInfo.setExtField5(1);
             info.setOfficialCode(priceInfo.getCode());
             List<ProductSkuPriceAreaInfo> areaInfo = BeanCopyUtils.copyList(dto.getAreaInfos(), ProductSkuPriceAreaInfo.class);
@@ -529,7 +529,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setCreateTime(new Date());
             priceInfo.setPriceTax(info.getNewPrice());
             priceInfo.setTax(info.getOutTax());
-            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getNewPrice(), info.getOutTax()));
+            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getNewPrice()).orElse(0L), info.getOutTax()));
             priceInfo.setExtField5(1);
             info.setOfficialCode(priceInfo.getCode());
             List<ProductSkuPriceAreaInfo> areaInfo = BeanCopyUtils.copyList(dto.getAreaInfos(), ProductSkuPriceAreaInfo.class);
@@ -576,7 +576,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setTax(info.getOutTax());
             priceInfo.setExtField5(0);
             info.setOfficialCode(priceInfo.getCode());
-            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getTemporaryPrice(), info.getOutTax()));
+            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getTemporaryPrice()).orElse(0L), info.getOutTax()));
             ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),priceInfo.getEffectiveTimeEnd(),1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
             if (info.getEffectiveTimeStart().after(new Date())) {
                 //未生效的
@@ -623,7 +623,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setCreateTime(new Date());
                 priceInfo.setPriceTax(info.getNewPrice());
                 priceInfo.setTax(info.getOutTax());
-                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getNewPrice(), info.getOutTax()));
+                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getNewPrice()).orElse(0L), info.getOutTax()));
                 priceInfo.setExtField5(0);
                 priceInsertInfos.add(priceInfo);
                 info.setBeSynchronize(1);
@@ -703,7 +703,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setPriceTax(info.getPurchasePriceNew());
                 priceInfo.setExtField5(0);
                 priceInfo.setTax(info.getInTax());
-                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getPurchasePriceNew(), info.getInTax()));
+                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getPurchasePriceNew()).orElse(0L), info.getInTax()));
                 info.setBeSynchronize(1);
                 info.setOfficialCode(priceInfo.getCode());
                 priceInsertInfos.add(priceInfo);
@@ -1198,7 +1198,12 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                          .checkPurchasePrice()
                          .checkEffectiveTimeStart()
                          ;
-                 list.add(checkChangePrice.getData());
+                String error = checkChangePrice.getData().getError();
+                if (StringUtils.isNotBlank(error)) {
+                    error = "第"+(i+1)+"行 "+error;
+                    checkChangePrice.getData().setError(error);
+                }
+                list.add(checkChangePrice.getData());
                 repeatMap = checkChangePrice.getRepeatMap();
             }
             return list;
@@ -1237,6 +1242,11 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                         .checkEffectiveTimeStart()//检查生效时间
                         .checkChangeReason()//调价原因
                         ;
+                String error = checkChangePrice.getData().getError();
+                if (StringUtils.isNotBlank(error)) {
+                    error = "第"+(i+1)+"行 "+error;
+                    checkChangePrice.getData().setError(error);
+                }
                 list.add(checkChangePrice.getData());
                 repeatMap = checkChangePrice.getRepeatMap();
             }
@@ -1287,6 +1297,11 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                         .checkEffectiveTimeEnd()//检查失效时间
                         .checkChangeReason()//调价原因
                         ;
+                String error = checkChangePrice.getData().getError();
+                if (StringUtils.isNotBlank(error)) {
+                    error = "第"+(i+1)+"行 "+error;
+                    checkChangePrice.getData().setError(error);
+                }
                 list.add(checkChangePrice.getData());
                 repeatMap = checkChangePrice.getRepeatMap();
             }
