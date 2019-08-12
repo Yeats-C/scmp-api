@@ -773,6 +773,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             profitLoss.setLogisticsCenterCode(request.getLogisticsCenterCode());
             profitLoss.setLogisticsCenterName(request.getLogisticsCenterName());
             profitLoss.setRemark(request.getRemark());
+            profitLoss.setCompanyName(COMPANY_NAME);
+            profitLoss.setCompanyCode(COMPANY_CODE);
             profitLoss.setCreateBy(request.getCreateByName());
             profitLoss.setUpdateBy(request.getUpdateByName());
             profitLoss.setCreateTime(new DateTime(new Long(request.getCreateTime())).toDate());
