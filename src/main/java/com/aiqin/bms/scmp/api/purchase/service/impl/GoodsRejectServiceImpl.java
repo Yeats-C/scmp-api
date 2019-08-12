@@ -268,19 +268,17 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     }
 
     @Override
-    public HttpResponse<PageResData<RejectImportResponse>> rejectApplyImport(MultipartFile file, String purchaseGroupCode) {
+    public HttpResponse<List<RejectImportResponse>> rejectApplyImport(MultipartFile file, String purchaseGroupCode) {
         if (file == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         List<String> productTypeList = Arrays.asList("商品", "赠品", "实物返");
-
         try {
             String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
             if (result.length < 2) {
                 return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
             }
             List<RejectImportResponse> list = new ArrayList<>();
-            Integer errorCount = 0;
             String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
             if (StringUtils.isNotBlank(validResult)) {
                 return HttpResponse.failure(MessageId.create(Project.SCMP_API, 88888, validResult));
@@ -295,33 +293,29 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 record = result[i];
                 response = new RejectImportResponse();
                 if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[3])||StringUtils.isBlank(record[6])) {
-                    response.setErrorReason(String.format("第%d行,导入的数据不全",i));
-                    errorCount++;
+                    response.setErrorInfo(String.format("第%d行,导入的数据不全",i+1));
                     list.add(response);
                     continue;
                 }
                 supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                 if (supplier == null) {
-                    response.setErrorReason(String.format("第%d行,未查询到供应商信息",i));
-                    errorCount++;
+                    response.setErrorInfo(String.format("第%d行,未查询到供应商信息",i));
                     list.add(response);
                     continue;
                 }
                 logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
                 if (logisticsCenter == null) {
-                    response.setErrorReason(String.format("第%d行,未查询到仓库信息",i));
-                    errorCount++;
+                    response.setErrorInfo(String.format("第%d行,未查询到仓库信息",i));
                     list.add(response);
                     continue;
                 }
                 warehouse = warehouseDao.selectByWarehouseName(record[4]);
                 if (warehouse == null) {
-                    response.setErrorReason(String.format("第%d行,未查询到库房信息",i));
-                    errorCount++;
+                    response.setErrorInfo(String.format("第%d行,未查询到库房信息",i));
                     list.add(response);
                     continue;
                 }
-                rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(Integer.valueOf(record[6]),purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
+                rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(productTypeList.indexOf(record[6]),purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
                 if (rejectApplyDetailHandleResponse != null) {
                     BeanUtils.copyProperties(rejectApplyDetailHandleResponse, response);
                     response.setProductCount(new Double(record[7]).intValue());
@@ -331,24 +325,18 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     }
                     response.setProductTotalAmount(Long.valueOf(record[8]) * Long.valueOf(record[7]) * 100);
                     if (rejectApplyDetailHandleResponse.getStockCount() < Integer.valueOf(record[7])) {
-                        response.setErrorReason(String.format("第%d行,可用库存数量小于销售数量",i));
-                        errorCount++;
+                        response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量",i));
                     }
                 } else {
-                    response.setErrorReason(String.format("第%d行,未查询到对应的商品",i));
-                    errorCount++;
+                    response.setErrorInfo(String.format("第%d行,未查询到对应的商品",i));
                 }
                 list.add(response);
             }
-            return HttpResponse.successGenerics(new PageResData<>(errorCount, list));
+            return HttpResponse.successGenerics(list);
         } catch (Exception e) {
             LOGGER.error("退供申请单导入异常:{}", e);
             return HttpResponse.failure(ResultCode.IMPORT_REJECT_APPLY_ERROR);
         }
-    }
-
-    private void HandleResponse(RejectImportResponse response, String[] record, String errorReason) {
-        response.setErrorReason(errorReason);
     }
 
     @Override

@@ -108,7 +108,7 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
                 Integer counts = applyRejectRecordDao.updateStatus(rejectRecord);
                 LOGGER.info("影响条数:{}", counts);
                 //解锁库存
-                List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecord.getRejectRecordId());
+                List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(record.getRejectRecordId());
                 ILockStocksReqVO iLockStockBatchReqVO = goodsRejectService.handleStockParam(list, record);
                 Boolean stockStatus = stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
                 if (!stockStatus) {
