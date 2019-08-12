@@ -15,9 +15,9 @@ product:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
 ground:
   druid:
-    url: jdbc:mysql://--------/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
-    username: --------
-    password: --------
+    url: jdbc:mysql://rm-2zeela0dj4k34987s.mysql.rds.aliyuncs.com/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: scmp_write
+    password: YEc4I3xxMshnj1giGxxv2A
     initial-size: 5
     min-idle: 3
     max-active: 20

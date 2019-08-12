@@ -44,4 +44,7 @@ public class QueryProfitLossVo extends PageReq {
 
     @ApiModelProperty("库房名称")
     private String warehouseName;
+
+    @ApiModelProperty(value = "公司编码",hidden = true)
+    private String companyCode;
 }

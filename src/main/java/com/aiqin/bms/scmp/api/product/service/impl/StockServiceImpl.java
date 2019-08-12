@@ -1273,7 +1273,9 @@ public class StockServiceImpl implements StockService {
             stock.setCreateBy(stockVoRequest.getOperator());
         }
         stock.setUpdateBy(stockVoRequest.getOperator());
-        stock.setNewPurchasePrice(stockVoRequest.getNewPurchasePrice());
+        if(stockVoRequest.getNewPurchasePrice() != null && stockVoRequest.getNewPurchasePrice() != 0){
+            stock.setNewPurchasePrice(stockVoRequest.getNewPurchasePrice());
+        }
         stock.setTaxPrice(stockVoRequest.getNewPurchasePrice());
         if (stockVoRequest.getTaxRate() != null){
             stock.setTaxRate(stockVoRequest.getTaxRate());

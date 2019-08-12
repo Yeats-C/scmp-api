@@ -1099,6 +1099,15 @@
         <include refid="select_store_repurchase_rate"/>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
+    <select id="sumStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
+            resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StoreRepurchaseRateRespVo">
+        SELECT
+        sum(bsrr.product_num) as productNum,
+        sum(bsrr.distribution_order_amount) as distributionOrderAmount,
+        sum(bsrr.channel_order_amount) as channelOrderAmount
+        from bi_store_repurchase_rate bsrr
+        <include refid="select_store_repurchase_rate"/>
+    </select>
     <select id="countStoreRepurchaseRate" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.StoreRepurchaseRateReqVo"
             resultType="java.lang.Integer">
         select count(1)
