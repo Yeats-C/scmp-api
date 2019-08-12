@@ -61,6 +61,22 @@ public class ProductSkuChangePriceController {
         }
     }
 
+
+    @GetMapping("/getCodeByFormNo")
+    @ApiOperation("根据FormNo获取申请编码")
+    public HttpResponse<String> getApplyCodeByFormNo(@RequestParam String formNo) {
+        log.info("ProductSkuChangePriceController---getCodeByFormNo---入参：[{}]", formNo);
+        try {
+            return HttpResponse.success(productSkuChangePriceService.getApplyCodeByFormNo(formNo));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @GetMapping("/editView")
     @ApiOperation("编辑时获取数据")
     public HttpResponse<ProductSkuChangePriceRespVO> editView(@RequestParam String code) {

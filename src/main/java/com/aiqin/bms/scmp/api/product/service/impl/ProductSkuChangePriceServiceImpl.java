@@ -1244,6 +1244,16 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     }
 
     @Override
+    public String getApplyCodeByFormNo(String formNo) {
+        //首先通过formNO查找数据
+        ProductSkuChangePriceDTO dto = productSkuChangePriceMapper.selectByFormNo(formNo);
+        if(null == dto){
+            throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
+        }
+        return dto.getCode();
+    }
+
+    @Override
     public List<QuerySkuInfoRespVOForIm> importForTemporaryPrice(MultipartFile file, String purchaseGroupCode, String changePriceType) {
         try {
             List<TemporaryPriceImport> imports = com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil.readExcel(file, TemporaryPriceImport.class, 1, 0);
