@@ -14,10 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
-import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
-import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
-import com.aiqin.bms.scmp.api.product.mapper.PriceChannelMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProfitLossMapper;
+import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
@@ -41,6 +38,7 @@ import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
+import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
@@ -151,6 +149,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private AllocationProductMapper allocationProductMapper;
     @Resource
     private ProfitLossMapper profitLossMapper;
+    @Resource
+    private ProfitLossProductMapper profitLossProductMapper;
+    @Resource
+    private GoodsRejectService goodsRejectService;
 
     /**
      * 销售出库接口
@@ -580,7 +582,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         allocation.setUpdateTime(new DateTime(new Long(request.getReceiptTime())).toDate());
         allocationInsert(allocation, type, typeName);
         //调拨生成出库单
-        OutboundReqVo convert = new AllocationToOutboundConverter(skuService).convert(allocation);
+        OutboundReqVo convert = new AllocationToOutboundConverter(productSkuDao).convert(allocation);
         if (request.getTransfersType().equals(1)) {
             //调拨才有出库 出库单号
             outboundOderCode = outboundRecord(convert);
@@ -688,7 +690,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             stockVoRequest.setWarehouseCode(outWarehouseCode);
             stockVoRequest.setWarehouseName(outWarehouseName);
             //库存是主单位数量 退供基商品含量默认是1
-            stockVoRequest.setChangeNum(itemReqVo.getLineNum());
+            stockVoRequest.setChangeNum(itemReqVo.getQuantity());
             stockVoRequest.setSkuCode(itemReqVo.getSkuCode());
             stockVoRequest.setSkuName(itemReqVo.getSkuName());
             stockVoRequest.setDocumentType(0);
@@ -753,37 +755,121 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         Map<String, List<ProfitLossDetailRequest>> detailMap = request.getDetailList().stream().collect(Collectors.groupingBy(ProfitLossDetailRequest::getWarehouseCode));
         ProfitLoss profitLoss;
         List<ProfitLoss> profitLossList = Lists.newArrayList();
-        ProfitLossProduct profitLossProduct;
-        List<ProfitLossProduct> profitLossProductList = Lists.newArrayList();
-        //取字典表数据
-        List<InnerValue> dictionaryInfoList = supplierDictionaryInfoDao.allList();
-        Map<String, InnerValue> dictionaryInfoMap = dictionaryInfoList.stream().collect(Collectors.toMap(InnerValue::getName, innerValue -> innerValue));
+        ProfitLossDetailRequest profitLossDetail;
+        List<ProfitLossDetailRequest> profitLossProductList = Lists.newArrayList();
+//        取字典表数据
+//        List<InnerValue> dictionaryInfoList = supplierDictionaryInfoDao.allList();
+//        Map<String, InnerValue> dictionaryInfoMap = dictionaryInfoList.stream().collect(Collectors.toMap(InnerValue::getName, innerValue -> innerValue));
+        List<String> skuList = request.getDetailList().stream().map(ProfitLossDetailRequest::getSkuCode).collect(Collectors.toList());
+        List<OrderProductSkuResponse> productSkuList = productSkuDao.selectStockSkuInfoList(skuList);
+        Map<String, OrderProductSkuResponse> productSkuResponseMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
+        int order = 0;
+        //报溢数量 正数值
+        Long sumQuantity;
+        //报损数量 负数值
+        Long negativeQuantity;
+        OrderProductSkuResponse productSkuResponse;
         for (String warehouseCode : detailMap.keySet()) {
             profitLoss = new ProfitLoss();
-            //损溢类型
-            if (dictionaryInfoMap.containsKey(DictionaryEnum.LOSS_TYPE.getCode() + request.getProfLossType())) {
-//            profitLoss.setPaymentTypeCode(dictionaryInfoMap.get(DictionaryEnum.PAY_TYPE.getCode() + request.getPaymentType()).getValue());
-            }
+            sumQuantity = 0L;
+            negativeQuantity = 0L;
+            profitLoss.setOrderCode(String.format("%s_%d", request.getOrderCode(), ++order));
+            //损溢类型:0 指定损益  1 盘点损益
+            profitLoss.setOrderType(request.getOrderType());
+            profitLoss.setLogisticsCenterCode(request.getLogisticsCenterCode());
+            profitLoss.setLogisticsCenterName(request.getLogisticsCenterName());
+            profitLoss.setRemark(request.getRemark());
             for (ProfitLossDetailRequest profitLossDetailRequest : detailMap.get(warehouseCode)) {
-
+//                profitLossDetail = new ProfitLossDetailRequest();
+                profitLossDetail = profitLossDetailRequest;
+//                profitLossDetail.setQuantity(profitLossDetailRequest.getQuantity());
+//                profitLossDetail.setSkuCode(profitLossDetailRequest.getSkuCode());
+                if (profitLossDetailRequest.getQuantity() < 0) {
+                    negativeQuantity += profitLossDetailRequest.getQuantity();
+                }else{
+                    sumQuantity += profitLossDetailRequest.getQuantity();
+                }
+                productSkuResponse = productSkuResponseMap.get(profitLossDetailRequest.getSkuCode());
+                if (productSkuResponse != null) {
+                    profitLossDetail.setSkuName(productSkuResponse.getProductName());
+                    profitLossDetail.setCategory(goodsRejectService.selectCategoryName(productSkuResponse.getCategoryCode()));
+                    profitLossDetail.setBrand(productSkuResponse.getBrandName());
+                    profitLossDetail.setColor(productSkuResponse.getColorName());
+                    profitLossDetail.setSpecification(productSkuResponse.getSpec());
+                    profitLossDetail.setModel(productSkuResponse.getModel());
+                    profitLossDetail.setUnit(productSkuResponse.getUnitName());
+                    profitLossDetail.setTax(productSkuResponse.getTaxRate().longValue());
+                    profitLossDetail.setPictureUrl(productSkuResponse.getPictureUrl());
+                }
+                profitLossDetail.setOrderCode(profitLoss.getOrderCode());
+                if (StringUtils.isBlank(profitLoss.getWarehouseCode())) {
+                    profitLoss.setWarehouseCode(profitLossDetailRequest.getWarehouseCode());
+                    profitLoss.setWarehouseName(profitLossDetailRequest.getWarehouseName());
+                }
+                profitLossProductList.add(profitLossDetail);
             }
+            profitLoss.setQuantity(sumQuantity);
+            profitLoss.setQuantity(sumQuantity);
         }
         //添加损溢记录
-
-
-//        profitLossMapper.insertSelective(profitLoss);
+        profitLossMapper.insertList(profitLossList);
+        profitLossProductMapper.insertList(profitLossProductList);
         //库存变动操作
-
-        //操作类型 直接减库存 4
-        StockChangeRequest stockChangeRequest = new StockChangeRequest();
-        stockChangeRequest.setOperationType(4);
-//        List<StockVoRequest> list = handleProfitLossStockData(profitLoss.getDetailList(),COMPANY_CODE , COMPANY_NAME  , request.getOrderCode());
-//        stockChangeRequest.setStockVoRequests(list);
-        HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
-        if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-            throw new GroundRuntimeException("dl回调    减库存异常");
+        Map<Integer, List<ProfitLossDetailRequest>> groupByList = profitLossProductList.stream().collect(Collectors.groupingBy(baseOrder -> {
+            if (baseOrder.getQuantity() > 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }));
+        //正值减库存
+        if (groupByList.get(1) != null) {
+            //操作类型 直接减库存 4
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            stockChangeRequest.setOperationType(4);
+            List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(1), request.getOrderCode());
+            stockChangeRequest.setStockVoRequests(list);
+            HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+            if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                throw new GroundRuntimeException("dl回调    减库存异常");
+            }
+        }
+        if (groupByList.get(0) != null) {
+            //操作类型 直接加库存 10
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            stockChangeRequest.setOperationType(10);
+            List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+            stockChangeRequest.setStockVoRequests(list);
+            HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+            if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                throw new GroundRuntimeException("dl回调    减库存异常");
+            }
         }
         return HttpResponse.success();
+    }
+
+    private List<StockVoRequest> handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode) {
+        List<StockVoRequest> list = Lists.newArrayList();
+        StockVoRequest stockVoRequest;
+        for (ProfitLossDetailRequest itemReqVo : profitLossProductList) {
+            stockVoRequest = new StockVoRequest();
+            stockVoRequest.setCompanyCode(COMPANY_CODE);
+            stockVoRequest.setCompanyName(COMPANY_NAME);
+            stockVoRequest.setTransportCenterCode(itemReqVo.getLogisticsCenterCode());
+            stockVoRequest.setTransportCenterName(itemReqVo.getLogisticsCenterName());
+            stockVoRequest.setWarehouseCode(itemReqVo.getWarehouseCode());
+            stockVoRequest.setWarehouseName(itemReqVo.getWarehouseName());
+            stockVoRequest.setChangeNum(Math.abs(itemReqVo.getQuantity()));
+            stockVoRequest.setSkuCode(itemReqVo.getSkuCode());
+            stockVoRequest.setSkuName(itemReqVo.getSkuName());
+            stockVoRequest.setDocumentType(11);
+            stockVoRequest.setDocumentNum(itemReqVo.getOrderCode());
+            stockVoRequest.setSourceDocumentType(11);
+            stockVoRequest.setSourceDocumentNum(sourceOrderCode);
+            stockVoRequest.setOperator(itemReqVo.getCreateById());
+            list.add(stockVoRequest);
+        }
+        return list;
     }
 
 

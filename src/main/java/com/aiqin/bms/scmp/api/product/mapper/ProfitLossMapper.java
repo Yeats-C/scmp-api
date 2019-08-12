@@ -20,4 +20,6 @@ public interface ProfitLossMapper {
     int updateByPrimaryKey(ProfitLoss record);
 
     List<QueryProfitLossRespVo> getList(QueryProfitLossVo vo);
+
+    void insertList(List<ProfitLoss> profitLossList);
 }

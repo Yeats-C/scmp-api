@@ -1651,6 +1651,9 @@
             <if test="skuCode != null">
                 and s.sku_code = #{skuCode,jdbcType=VARCHAR}
             </if>
+            <if test="productType != null">
+                and ps.goods_gifts = #{productType,jdbcType=VARCHAR}
+            </if>
         </where>
     </select>
     <select id="rejectProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
