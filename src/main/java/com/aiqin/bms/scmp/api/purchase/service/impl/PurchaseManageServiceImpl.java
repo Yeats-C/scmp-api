@@ -813,7 +813,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         // 是否入库完成
         if(purchaseStorage.getPurchaseNum() > num){
-            if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) || purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_8) ){
+            if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)
+                    || purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_8)
+                    || purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)){
                 return HttpResponse.success();
             }
             InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
