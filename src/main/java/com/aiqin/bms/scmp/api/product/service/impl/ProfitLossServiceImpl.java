@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProduct;
@@ -33,7 +34,7 @@ import java.util.Objects;
  * @description TODO
  */
 @Service
-public class ProfitLossServiceImpl implements ProfitLossService {
+public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLossService {
 
     @Autowired
     private ProfitLossMapper profitLossMapper;
@@ -50,7 +51,9 @@ public class ProfitLossServiceImpl implements ProfitLossService {
     @Override
     public BasePage<QueryProfitLossRespVo> findPage(QueryProfitLossVo vo) {
         PageHelper.startPage(vo.getPageNo(),vo.getPageSize());
+        vo.setCompanyCode(getUser().getCompanyCode());
         List<QueryProfitLossRespVo> list = profitLossMapper.getList(vo);
+
         return PageUtil.getPageList(vo.getPageNo(),list);
     }
 

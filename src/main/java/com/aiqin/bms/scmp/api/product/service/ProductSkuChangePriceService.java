@@ -260,4 +260,6 @@ public interface ProductSkuChangePriceService {
     List<QuerySkuInfoRespVOForIm> importForSalePrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
 
     List<QuerySkuInfoRespVOForIm> importForTemporaryPrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
+
+    String getApplyCodeByFormNo(String formNo);
 }
