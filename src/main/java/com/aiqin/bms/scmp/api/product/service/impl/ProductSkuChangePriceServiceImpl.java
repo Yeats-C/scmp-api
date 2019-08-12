@@ -273,7 +273,10 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 //        String formNo = "CP" + IdSequenceUtils.getInstance().nextId();
 //        respVO.setFormNo(formNo);
         if (Objects.isNull(respVO)) {
-            throw new BizException(ResultCode.CAN_NOT_FIND_CHANGE_PRICE_INFO);
+            respVO = productSkuChangePriceMapper.selectInfoByFormNo1(code);
+            if(Objects.isNull(respVO)){
+                throw new BizException(ResultCode.CAN_NOT_FIND_CHANGE_PRICE_INFO);
+            }
         }
         //查询日志信息
         OperationLogBean operationLogBean = new OperationLogBean(code, null, ObjectTypeCode.CHANGE_PRICE.getStatus(), null, null);
@@ -725,7 +728,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
                 priceInfo.setApplyCode(productSkuChangePriceInfo.getCode());
                 priceInfo.setPriceTax(productSkuChangePriceInfo.getPurchasePriceNew());
-                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(productSkuChangePriceInfo.getPurchasePriceNew(), productSkuChangePriceInfo.getInTax()));
+                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(productSkuChangePriceInfo.getPurchasePriceNew()).orElse(0L), productSkuChangePriceInfo.getInTax()));
                 priceInfo.setTax(productSkuChangePriceInfo.getInTax());
                 priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                 priceInfo.setUpdateTime(new Date());
