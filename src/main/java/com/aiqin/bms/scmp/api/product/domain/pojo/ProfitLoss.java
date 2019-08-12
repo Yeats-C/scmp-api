@@ -15,7 +15,7 @@ public class ProfitLoss extends CommonBean {
     private String orderCode;
 
     @ApiModelProperty("订单类型(0:报损 1:报益)")
-    private Byte orderType;
+    private Integer orderType;
 
     @ApiModelProperty("仓库编号")
     private String logisticsCenterCode;
@@ -29,17 +29,23 @@ public class ProfitLoss extends CommonBean {
     @ApiModelProperty("库房名称")
     private String warehouseName;
 
-    @ApiModelProperty("数量")
-    private Long quantity;
+    @ApiModelProperty("报溢数量")
+    private Long profitQuantity;
 
-    @ApiModelProperty("含税总成本")
-    private Long totalCostRate;
+    @ApiModelProperty("报溢含税总成本")
+    private Long profitTotalCostRate;
+
+    @ApiModelProperty("报损数量")
+    private Long lossQuantity;
+
+    @ApiModelProperty("报损含税总成本")
+    private Long lossTotalCostRate;
 
     @ApiModelProperty("备注")
     private String remark;
 
-    @ApiModelProperty("订单状态")
-    private String orderStatusCode;
+    @ApiModelProperty("订单状态:0完成")
+    private Integer orderStatusCode;
 
     @ApiModelProperty("订单状态名称")
     private String orderStatusName;

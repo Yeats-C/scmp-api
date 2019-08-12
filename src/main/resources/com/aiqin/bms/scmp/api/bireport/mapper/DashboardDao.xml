@@ -133,8 +133,8 @@
         <if test="productSortCode!=null and productSortCode!=''">
             and ddcpsa.product_sort_code=#{productSortCode}
         </if>
-        <if test="productSortName!=null and productSortName!=''">
-            and ddcpsa.product_sort_name like concat('%', #{productSortName, jdbcType=VARCHAR})
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and ddmhr.price_channel_code=#{priceChannelCode}
         </if>
     </select>
     <select id="selectDashboardDepProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateProperSalesAmountRespVo">
@@ -162,8 +162,8 @@
         <if test="productSortCode!=null and productSortCode!=''">
             and ddpsa.product_sort_code=#{productSortCode}
         </if>
-        <if test="productSortName!=null and productSortName!=''">
-            and ddpsa.product_sort_name like concat('%', #{productSortName, jdbcType=VARCHAR})
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and ddmhr.price_channel_code=#{priceChannelCode}
         </if>
     </select>
     <select id="selectDashboardDepCateSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateSalesAmountRespVo">
@@ -191,8 +191,8 @@
         <if test="productSortCode!=null and productSortCode!=''">
             and ddcsa.product_sort_code=#{productSortCode}
         </if>
-        <if test="productSortName!=null and productSortName!=''">
-            and ddcsa.product_sort_name like concat('%', #{productSortName, jdbcType=VARCHAR})
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and ddmhr.price_channel_code=#{priceChannelCode}
         </if>
     </select>
     <select id="selectDashboardDepMonthlyHomocyclicRatioList" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
@@ -212,14 +212,17 @@
         ddmhr.distribution_margin as distributionMargin
         FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
         where 1=1
-        <if test="statMonth!=null and statMonth!=''">
-            and ddmhr.stat_month=#{statMonth}
+        <if test="beginStatDate!=null and beginStatDate!=''">
+            and ddmhr.stat_month between #{beginStatDate}
+        </if>
+        <if test="finishStatDate!=null and finishStatDate!=''">
+            and #{finishStatDate}
         </if>
         <if test="productSortCode!=null and productSortCode!=''">
             and ddmhr.product_sort_code=#{productSortCode}
         </if>
-        <if test="productSortName!=null and productSortName!=''">
-            and ddmhr.product_sort_name like concat('%', #{productSortName, jdbcType=VARCHAR})
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and ddmhr.price_channel_code=#{priceChannelCode}
         </if>
     </select>
 </mapper>

@@ -39,6 +39,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
@@ -1985,6 +1986,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraftForPlatform(skuCodes);
         reqVO.getProductSkuSupplyUnitDrafts().get(0).setIsDefault(unitDraft.getIsDefault());
         return  ((SkuInfoService)AopContext.currentProxy()).saveDraftSkuInfo(reqVO);
+    }
+
+    @Override
+    public DetailRequestRespVo getInfoByForm(String formNo) {
+        DetailRequestRespVo respVo = new DetailRequestRespVo();
+        List<ApplyProductSku> applyProductSkus = productSkuDao.getApplySkuByFormNo(formNo);
+        if(CollectionUtils.isEmpty(applyProductSkus)){
+            throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
+        }
+        String applyCode = applyProductSkus.get(0).getApplyCode();
+        respVo.setApplyCode(applyCode);
+        respVo.setItemCode("1");
+        return respVo;
     }
 
     /**

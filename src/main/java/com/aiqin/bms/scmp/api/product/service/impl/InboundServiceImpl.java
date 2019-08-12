@@ -373,6 +373,7 @@ public class InboundServiceImpl implements InboundService {
                         InboundProductCallBackReqVo inboundProductCallBackReqVo = new InboundProductCallBackReqVo();
                         inboundProductCallBackReqVo.setLinenum(inboundProductWmsReqVO.getLinenum());
                         inboundProductCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
+                        inboundProductCallBackReqVo.setProductType(inboundProductWmsReqVO.getProductType());
                         //TODO 入库数联改为预计数量的一半
                         Long num = 10l;
                         inboundProductCallBackReqVo.setPraInboundMainNum(num);
@@ -517,7 +518,9 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockVoRequest.setOperator(inbound.getCreateBy());
             stockVoRequest.setTaxRate(returnInboundProduct.getTax());
-            stockVoRequest.setNewPurchasePrice(inboundProduct.getPraTaxPurchaseAmount());
+            if(inboundProductCallBackReqVo.getProductType() != 2){
+                stockVoRequest.setNewPurchasePrice(inboundProduct.getPraTaxPurchaseAmount());
+            }
             stockVoRequest.setNewDelivery(inbound.getSupplierCode());
             stockVoRequest.setNewDeliveryName(inbound.getSupplierName());
             stockVoRequestList.add(stockVoRequest);

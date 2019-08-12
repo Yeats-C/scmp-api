@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProduct
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -265,4 +266,6 @@ public interface SkuInfoService{
     Boolean importSkuUpdateForSupplyPlatform(SkuImportReq reqVO);
 
     int saveDraftSkuInfoForPlatform(AddSkuInfoReqVO reqVO);
+
+    DetailRequestRespVo getInfoByForm(String formNo);
 }

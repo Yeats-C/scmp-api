@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.converter;
 
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
@@ -10,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemR
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailByCodeRespVO;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -53,10 +55,10 @@ import java.util.stream.Collectors;
  */
 public class AllocationToOutboundConverter implements Converter<Allocation, OutboundReqVo> {
 
-    private SkuService skuService;
+    private ProductSkuDao productSkuDao;
 
-    public AllocationToOutboundConverter(SkuService skuService) {
-        this.skuService = skuService;
+    public AllocationToOutboundConverter(ProductSkuDao productSkuDao) {
+        this.productSkuDao = productSkuDao;
     }
 
     @Override
@@ -94,7 +96,7 @@ public class AllocationToOutboundConverter implements Converter<Allocation, Outb
         stockReqVO.setOutboundTime(allocation.getUpdateTime());
         stockReqVO.setPreArrivalTime(allocation.getUpdateTime());
         List<String> skuCodes = allocation.getDetailList().stream().map(AllocationProduct::getSkuCode).collect(Collectors.toList());
-        Map<String, PurchaseItemRespVo> map2 = skuService.getSalesSkuList(skuCodes).stream().collect(Collectors.toMap(PurchaseItemRespVo::getSkuCode, Function.identity(), (k1, k2) -> k2));
+        Map<String, OrderProductSkuResponse> map2 = productSkuDao.selectStockSkuInfoList(skuCodes).stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity(), (k1, k2) -> k2));
         List<OutboundProductReqVo> parts = Lists.newArrayList();
         OutboundProductReqVo outboundProduct;
         for (AllocationProduct item : allocation.getDetailList()) {
@@ -103,7 +105,7 @@ public class AllocationToOutboundConverter implements Converter<Allocation, Outb
             outboundProduct.setSkuCode(item.getSkuCode());
             outboundProduct.setSkuName(item.getSkuName());
             //图片
-            outboundProduct.setPictureUrl(map2.get(item.getSkuCode()).getPicUrl());
+            outboundProduct.setPictureUrl(map2.get(item.getSkuCode()).getPictureUrl());
             //规格
             outboundProduct.setNorms(map2.get(item.getSkuCode()).getSpec());
             outboundProduct.setOutboundNorms(map2.get(item.getSkuCode()).getSpec());

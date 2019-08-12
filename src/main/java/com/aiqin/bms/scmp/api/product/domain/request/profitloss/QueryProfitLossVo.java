@@ -30,7 +30,7 @@ public class QueryProfitLossVo extends PageReq {
     @ApiModelProperty("订单号")
     private String orderCode;
 
-    @ApiModelProperty("订单类型(0:报损 1:报益)")
+    @ApiModelProperty("订单类型(0:指定损益 1:盘点损溢)")
     private Byte orderType;
 
     @ApiModelProperty("仓库编号")

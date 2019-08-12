@@ -294,34 +294,34 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             for (int i = 1; i <= result.length - 1; i++) {
                 record = result[i];
                 response = new RejectImportResponse();
-                if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[3])) {
-                    HandleResponse(response, record, "导入的数据不全");
+                if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[3])||StringUtils.isBlank(record[6])) {
+                    response.setErrorReason(String.format("第%d行,导入的数据不全",i));
                     errorCount++;
                     list.add(response);
                     continue;
                 }
                 supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                 if (supplier == null) {
-                    HandleResponse(response, record, "未查询到供应商信息");
+                    response.setErrorReason(String.format("第%d行,未查询到供应商信息",i));
                     errorCount++;
                     list.add(response);
                     continue;
                 }
                 logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
                 if (logisticsCenter == null) {
-                    HandleResponse(response, record, "未查询到仓库信息");
+                    response.setErrorReason(String.format("第%d行,未查询到仓库信息",i));
                     errorCount++;
                     list.add(response);
                     continue;
                 }
                 warehouse = warehouseDao.selectByWarehouseName(record[4]);
                 if (warehouse == null) {
-                    HandleResponse(response, record, "未查询到库房.信息");
+                    response.setErrorReason(String.format("第%d行,未查询到库房信息",i));
                     errorCount++;
                     list.add(response);
                     continue;
                 }
-                rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
+                rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(Integer.valueOf(record[6]),purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
                 if (rejectApplyDetailHandleResponse != null) {
                     BeanUtils.copyProperties(rejectApplyDetailHandleResponse, response);
                     response.setProductCount(new Double(record[7]).intValue());
@@ -331,11 +331,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     }
                     response.setProductTotalAmount(Long.valueOf(record[8]) * Long.valueOf(record[7]) * 100);
                     if (rejectApplyDetailHandleResponse.getStockCount() < Integer.valueOf(record[7])) {
-                        response.setErrorReason("可用库存数量小于销售数量");
+                        response.setErrorReason(String.format("第%d行,可用库存数量小于销售数量",i));
                         errorCount++;
                     }
                 } else {
-                    HandleResponse(response, record, "未查询到对应的商品");
+                    response.setErrorReason(String.format("第%d行,未查询到对应的商品",i));
                     errorCount++;
                 }
                 list.add(response);
@@ -348,18 +348,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     }
 
     private void HandleResponse(RejectImportResponse response, String[] record, String errorReason) {
-        response.setSkuCode(record[0]);
-        response.setSkuName(record[1]);
-        response.setSupplierCode(record[2]);
-        response.setTransportCenterCode(record[3]);
-        response.setWarehouseCode(record[4]);
-        response.setBatchNo(record[5]);
-        if (StringUtils.isNotBlank(record[6]))
-            response.setProductType(Integer.valueOf(record[6]));
-        if (StringUtils.isNotBlank(record[7]))
-            response.setProductCount(Integer.valueOf(record[7]));
-        if (StringUtils.isNotBlank(record[8]))
-            response.setProductAmount(Long.valueOf(record[8]));
         response.setErrorReason(errorReason);
     }
 
@@ -370,7 +358,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         RejectApplyDetailHandleResponse rejectApplyDetailHandleResponse;
         //查询每个商品的库存数量
         for (RejectApplyRecordDetail detailResponse : detailList) {
-            rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(detailResponse.getPurchaseGroupCode(), detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode());
+            rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(detailResponse.getProductType(),detailResponse.getPurchaseGroupCode(), detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode());
             if (rejectApplyDetailHandleResponse != null) {
                 detailResponse.setStockCount(rejectApplyDetailHandleResponse.getStockCount());
             }

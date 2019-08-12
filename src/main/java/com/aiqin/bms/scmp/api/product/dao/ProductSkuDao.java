@@ -299,4 +299,11 @@ public interface ProductSkuDao {
     OrderProductSkuResponse selectSkuInfo(String skuCode);
 
     List<OrderProductSkuResponse> selectSkuInfoList(List<String> list);
+
+    /**
+     *  查询sku库存的相关单位
+     * @param skuList
+     * @return
+     */
+    List<OrderProductSkuResponse> selectStockSkuInfoList(List<String> skuList);
 }

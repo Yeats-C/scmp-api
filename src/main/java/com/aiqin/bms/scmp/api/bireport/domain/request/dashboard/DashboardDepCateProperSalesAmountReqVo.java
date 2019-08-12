@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class DashboardDepCateProperSalesAmountReqVo {
 
-    @ApiModelProperty("年月")
+    @ApiModelProperty("月")
     @JsonProperty("stat_month")
     private String statMonth;
 
@@ -17,16 +17,16 @@ public class DashboardDepCateProperSalesAmountReqVo {
     @JsonProperty("product_sort_code")
     private String productSortCode;
 
-    @ApiModelProperty("部门")
-    @JsonProperty("product_sort_name")
-    private String productSortName;
+    @ApiModelProperty("渠道编码")
+    @JsonProperty("price_channel_code")
+    private String priceChannelCode;
 
     public DashboardDepCateProperSalesAmountReqVo() {
     }
 
-    public DashboardDepCateProperSalesAmountReqVo(String statMonth, String productSortCode, String productSortName) {
+    public DashboardDepCateProperSalesAmountReqVo(String statMonth, String productSortCode, String priceChannelCode) {
         this.statMonth = statMonth;
         this.productSortCode = productSortCode;
-        this.productSortName = productSortName;
+        this.priceChannelCode = priceChannelCode;
     }
 }

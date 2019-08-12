@@ -9,8 +9,10 @@
     <result column="logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
     <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
-    <result column="quantity" jdbcType="BIGINT" property="quantity" />
-    <result column="total_cost_rate" jdbcType="BIGINT" property="totalCostRate" />
+    <result column="profit_quantity" jdbcType="BIGINT" property="profitQuantity" />
+    <result column="profit_total_cost_rate" jdbcType="BIGINT" property="profitTotalCostRate" />
+    <result column="loss_quantity" jdbcType="BIGINT" property="lossQuantity" />
+    <result column="loss_total_cost_rate" jdbcType="BIGINT" property="lossTotalCostRate" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="order_status_code" jdbcType="VARCHAR" property="orderStatusCode" />
     <result column="order_status_name" jdbcType="VARCHAR" property="orderStatusName" />
@@ -28,8 +30,10 @@
     <result column="logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
     <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
-    <result column="quantity" jdbcType="BIGINT" property="quantity" />
-    <result column="total_cost_rate" jdbcType="BIGINT" property="totalCostRate" />
+    <result column="profit_quantity" jdbcType="BIGINT" property="profitQuantity" />
+    <result column="profit_total_cost_rate" jdbcType="BIGINT" property="profitTotalCostRate" />
+    <result column="loss_quantity" jdbcType="BIGINT" property="lossQuantity" />
+    <result column="loss_total_cost_rate" jdbcType="BIGINT" property="lossTotalCostRate" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -39,13 +43,15 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, order_code, order_type, logistics_center_code, logistics_center_name, warehouse_code, 
-    warehouse_name, quantity, total_cost_rate, remark, order_status_code, order_status_name,
+    warehouse_name, profit_quantity, profit_total_cost_rate, loss_quantity, loss_total_cost_rate,
+    remark, order_status_code, order_status_name,
     del_flag, create_time, create_by, update_time, update_by
   </sql>
   <sql id="Result_Column_List">
      id, order_code, order_type, logistics_center_code, logistics_center_name, warehouse_code,
-    warehouse_name, quantity, total_cost_rate, create_time, create_by, update_time, update_by,
-    case when order_type = 0 then '报损' else '报溢' end as order_type_name
+    warehouse_name, profit_quantity, profit_total_cost_rate, loss_quantity, loss_total_cost_rate,
+    create_time, create_by, update_time, update_by,
+    case when order_type = 0 then '指定损溢' else '盘点损溢' end as order_type_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -92,16 +98,54 @@
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss">
     insert into profit_loss (id, order_code, order_type, 
       logistics_center_code, logistics_center_name, 
-      warehouse_code, warehouse_name, quantity, 
-      total_cost_rate, remark, del_flag, 
+      warehouse_code, warehouse_name,
+      profit_quantity, profit_total_cost_rate,
+      loss_quantity, loss_total_cost_rate,
+      remark, del_flag,
       create_time, create_by, update_time, 
       update_by, order_status_code, order_status_name)
     values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=TINYINT}, 
       #{logisticsCenterCode,jdbcType=VARCHAR}, #{logisticsCenterName,jdbcType=VARCHAR}, 
-      #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{quantity,jdbcType=BIGINT}, 
-      #{totalCostRate,jdbcType=BIGINT}, #{remark,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, 
+      #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR},
+      #{profitQuantity,jdbcType=BIGINT}, #{profitTotalCostRate,jdbcType=BIGINT},
+      #{lossQuantity,jdbcType=BIGINT}, #{lossTotalCostRate,jdbcType=BIGINT},
+      #{remark,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT},
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR},  #{orderStatusCode,jdbcType=VARCHAR},  #{orderStatusName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertList" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss">
+    insert into profit_loss (  order_code, order_type,
+      logistics_center_code, logistics_center_name,
+      warehouse_code, warehouse_name,
+      profit_quantity, profit_total_cost_rate,
+      loss_quantity, loss_total_cost_rate,
+      remark, del_flag,
+      create_time, create_by, update_time,
+      update_by, order_status_code, order_status_name)
+    values
+     <foreach collection="list" item="item" separator=",">
+       (
+       #{item.orderCode,jdbcType=VARCHAR},
+       #{item.orderType,jdbcType=TINYINT},
+       #{item.logisticsCenterCode,jdbcType=VARCHAR},
+       #{item.logisticsCenterName,jdbcType=VARCHAR},
+       #{item.warehouseCode,jdbcType=VARCHAR},
+       #{item.warehouseName,jdbcType=VARCHAR},
+       #{item.profitQuantity,jdbcType=BIGINT},
+       #{item.profitTotalCostRate,jdbcType=BIGINT},
+       #{item.lossQuantity,jdbcType=BIGINT},
+       #{item.lossTotalCostRate,jdbcType=BIGINT},
+       #{item.remark,jdbcType=VARCHAR},
+       0,
+       #{item.createTime,jdbcType=TIMESTAMP},
+       #{item.createBy,jdbcType=VARCHAR},
+       #{item.updateTime,jdbcType=TIMESTAMP},
+       #{item.updateBy,jdbcType=VARCHAR},
+       #{item.orderStatusCode,jdbcType=VARCHAR},
+       #{item.orderStatusName,jdbcType=VARCHAR}
+       )
+     </foreach>
+
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss">
     insert into profit_loss
@@ -127,11 +171,17 @@
       <if test="warehouseName != null">
         warehouse_name,
       </if>
-      <if test="quantity != null">
-        quantity,
+      <if test="profitQuantity != null">
+        profit_quantity,
       </if>
-      <if test="totalCostRate != null">
-        total_cost_rate,
+      <if test="profitTotalCostRate != null">
+        profit_total_cost_rate,
+      </if>
+      <if test="lossQuantity != null">
+        loss_quantity,
+      </if>
+      <if test="lossTotalCostRate != null">
+        loss_total_cost_rate,
       </if>
       <if test="remark != null">
         remark,
@@ -180,11 +230,17 @@
       <if test="warehouseName != null">
         #{warehouseName,jdbcType=VARCHAR},
       </if>
-      <if test="quantity != null">
-        #{quantity,jdbcType=BIGINT},
+      <if test="profitQuantity != null">
+        #{profitQuantity,jdbcType=BIGINT},
       </if>
-      <if test="totalCostRate != null">
-        #{totalCostRate,jdbcType=BIGINT},
+      <if test="profitTotalCostRate != null">
+        #{profitTotalCostRate,jdbcType=BIGINT},
+      </if>
+      <if test="lossQuantity != null">
+        #{lossQuantity,jdbcType=BIGINT},
+      </if>
+      <if test="lossTotalCostRate != null">
+        #{lossTotalCostRate,jdbcType=BIGINT},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -233,11 +289,17 @@
       <if test="warehouseName != null">
         warehouse_name = #{warehouseName,jdbcType=VARCHAR},
       </if>
-      <if test="quantity != null">
-        quantity = #{quantity,jdbcType=BIGINT},
+      <if test="profitQuantity != null">
+        profit_quantity = #{profitQuantity,jdbcType=BIGINT},
       </if>
-      <if test="totalCostRate != null">
-        total_cost_rate = #{totalCostRate,jdbcType=BIGINT},
+      <if test="profitTotalCostRate != null">
+        profit_total_cost_rate = #{profitTotalCostRate,jdbcType=BIGINT},
+      </if>
+      <if test="lossQuantity != null">
+        loss_quantity = #{lossQuantity,jdbcType=BIGINT},
+      </if>
+      <if test="lossTotalCostRate != null">
+        loss_total_cost_rate = #{lossTotalCostRate,jdbcType=BIGINT},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
@@ -274,8 +336,10 @@
       logistics_center_name = #{logisticsCenterName,jdbcType=VARCHAR},
       warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
       warehouse_name = #{warehouseName,jdbcType=VARCHAR},
-      quantity = #{quantity,jdbcType=BIGINT},
-      total_cost_rate = #{totalCostRate,jdbcType=BIGINT},
+      profit_quantity = #{profitQuantity,jdbcType=BIGINT},
+      profit_total_cost_rate = #{profitTotalCostRate,jdbcType=BIGINT},
+      loss_quantity = #{lossQuantity,jdbcType=BIGINT},
+      loss_total_cost_rate = #{lossTotalCostRate,jdbcType=BIGINT},
       remark = #{remark,jdbcType=VARCHAR},
       order_status_code = #{orderStatusCode,jdbcType=VARCHAR},
       order_status_name = #{orderStatusName,jdbcType=VARCHAR},

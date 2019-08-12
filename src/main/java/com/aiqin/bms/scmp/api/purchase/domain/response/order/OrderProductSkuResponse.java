@@ -34,6 +34,21 @@ import java.math.BigDecimal;
 @Data
 public class OrderProductSkuResponse {
 
+    @ApiModelProperty("税率")
+    private Integer taxRate;
+
+    @ApiModelProperty("商品品牌code")
+    private String brandCode;
+
+    @ApiModelProperty("商品品牌name")
+    private String brandName;
+
+    @ApiModelProperty("商品分类name")
+    private String categoryName;
+
+    @ApiModelProperty("商品分类code")
+    private String categoryCode;
+
     @ApiModelProperty("商品sku")
     private String skuCode;
 
