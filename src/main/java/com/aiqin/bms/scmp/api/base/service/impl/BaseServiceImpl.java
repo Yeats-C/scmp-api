@@ -81,6 +81,7 @@ public class BaseServiceImpl implements BaseService {
             JSONObject jsonObject = JSONObject.parseObject(vo.getVariables());
             Map<String, Object> map = new HashMap<>();
             map.put("auditPersonId", jsonObject.getString("auditPersonId"));
+            map.put("price", jsonObject.getString("price"));
             paramVO.setVariables(map);
         }
         log.info("调用审批流发起申请,request={}", paramVO);
