@@ -68,5 +68,23 @@
         WHERE tax_date = #{taxDate}
         GROUP BY tax_date
     </select>
-
+    <update id="updateOneSku">
+        <foreach collection="taxCostLogStock" item="item" separator=";">
+        update stock_batch
+        <set>
+            #{item.stockSumNum}, #{item.stockSumCost},
+            #{item.stockTaxCost},NOW()
+            tax_date = #{item.taxDate},
+            sku_code = #{item.skuCode},
+            sku_name = #{item.skuName},
+            warehous_type = #{item.warehousType},
+            warehous_name = #{item.warehousName},
+            stock_sum_num = #{item.stockSumNum},
+            stock_sum_cost = #{item.stockSumCost},
+            stock_tax_cost = #{item.stockTaxCost},
+            create_time = NOW()
+        </set>
+        where tax_date = #{item.taxDate} AND sku_code = #{item.skuCode}
+        </foreach>
+    </update>
 </mapper>
