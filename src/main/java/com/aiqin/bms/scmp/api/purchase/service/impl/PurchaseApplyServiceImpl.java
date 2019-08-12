@@ -481,21 +481,21 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     response.setErrorNum(i);
                     if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) ||
                             StringUtils.isBlank(record[3]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[5]) || StringUtils.isBlank(record[6])) {
-                        HandleResponse(response, record,"导入的数据不全");
+                        HandleResponse(response, record,"导入的数据不全；", i);
                         errorCount++;
                         errorList.add(response);
                         continue;
                     }
                     supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                     if(supplier==null){
-                        HandleResponse(response, record,"未查询到供应商信息");
+                        HandleResponse(response, record,"未查询到供应商信息；", i);
                         errorCount++;
                         list.add(response);
                         continue;
                     }
                     logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
                     if(logisticsCenter==null){
-                        HandleResponse(response, record,"未查询到仓库信息");
+                        HandleResponse(response, record,"未查询到仓库信息；", i);
                         errorCount++;
                         errorList.add(response);
                         continue;
@@ -530,7 +530,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         }
                          if(record[4] != null){
                              if(!record[4].contains("零")){
-                                 HandleResponse(response, record,"采购数量格式不正确");
+                                 HandleResponse(response, record,"采购数量格式不正确；", i);
                                  errorList.add(response);
                                  continue;
                              }
@@ -544,7 +544,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                          }
                          if(record[5] != null){
                              if(!record[5].contains("零")){
-                                 HandleResponse(response, record,"实物返数量格式不正确");
+                                 HandleResponse(response, record,"实物返数量格式不正确；", i);
                                  errorList.add(response);
                                  continue;
                              }
@@ -564,7 +564,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             response.setProductPurchaseAmount(value * 100);
                         }
                     }else{
-                        HandleResponse(response, record,"未查询到对应的商品");
+                        HandleResponse(response, record,"未查询到对应的商品；", i);
                         errorCount++;
                         errorList.add(response);
                     }
@@ -581,7 +581,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }
     }
 
-    private void HandleResponse(PurchaseImportResponse response, String[] record, String errorReason) {
+    private void HandleResponse(PurchaseImportResponse response, String[] record, String errorReason, int i) {
         response.setSkuCode(record[0]);
         response.setSkuName(record[1]);
         response.setSupplierName(record[2]);
@@ -591,7 +591,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(StringUtils.isNotBlank(record[6] )){
             response.setProductPurchaseAmount(Integer.valueOf(record[6]));
         }
-        response.setErrorInfo(errorReason);
+        response.setErrorInfo("第" + i + "行  " + errorReason);
     }
 
     @Override

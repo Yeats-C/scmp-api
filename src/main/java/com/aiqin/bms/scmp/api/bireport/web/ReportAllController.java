@@ -430,29 +430,27 @@ public class ReportAllController {
     @GetMapping("/search/monthly/sales/all")
     @ApiOperation("月销售情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
-            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
-            @ApiImplicitParam(name = "order_code", value = "渠道编码", type = "String"),
-            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
-            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "month", value = "月份", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
+            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性code(AB品)", type = "String"),
+            @ApiImplicitParam(name = "product_property_name", value = "商品属性(AB品)", type = "String"),
     })
     public HttpResponse<List<MonthlySalesRespVo>> selectMonthlySales(
-            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_name", required = false) String productSortName,
-            @RequestParam(value = "order_code", required = false) String orderCode,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
-            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
-            @RequestParam(value = "store_type", required = false) String storeType,
+            @RequestParam(value = "month", required = false) String month,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime){
-        MonthlySalesReqVo monthlySalesReqVo = new MonthlySalesReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,beginCreateTime,finishCreateTime);
+            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
+            @RequestParam(value = "store_type", required = false) String storeType,
+            @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+            @RequestParam(value = "product_property_name", required = false) String productPropertyName){
+        MonthlySalesReqVo monthlySalesReqVo = new MonthlySalesReqVo(month,priceChannelCode,priceChannelName,dataTypeCode,dataType,storeTypeCode,storeType,productPropertyCode,productPropertyName);
         return HttpResponse.success(reportAllService.selectMonthlySales(monthlySalesReqVo));
     }
 
@@ -467,8 +465,7 @@ public class ReportAllController {
             @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "month", value = "时间begin", type = "String"),
     })
     public HttpResponse<List<MonthlyGrossMarginRespVo>> selectMonthlyGrossMargin(
             @RequestParam(value = "product_sort_code", required = false) String productSortCode,
@@ -479,9 +476,8 @@ public class ReportAllController {
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime){
-        MonthlySalesReqVo monthlyGrossMarginReqVo = new MonthlySalesReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,beginCreateTime,finishCreateTime);
+            @RequestParam(value = "month", required = false) String month){
+        MonthlySalesReqVo monthlyGrossMarginReqVo = new MonthlySalesReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,month);
         return HttpResponse.success(reportAllService.selectMonthlyGrossMargin(monthlyGrossMarginReqVo));
     }
 
@@ -502,52 +498,50 @@ public class ReportAllController {
             @ApiImplicitParam(name = "category_name", value = "品类名称", type = "String"),
     })
     public HttpResponse<List<MonthSalesAchievementRespVo>> selectMonthSalesAchievement(
-            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_name", required = false) String productSortName,
-            @RequestParam(value = "order_code", required = false) String orderCode,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
+            @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+            @RequestParam(value = "product_property_name", required = false) String productPropertyName,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
             @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "begin_create_time", required = false) String month,
             @RequestParam(value = "category_code", required = false) String categoryCode,
             @RequestParam(value = "category_name", required = false) String categoryName){
-        MonthSalesAchievementReqVo monthSalesAchievementReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,beginCreateTime,finishCreateTime,categoryCode,categoryName);
+        MonthSalesAchievementReqVo monthSalesAchievementReqVo = new MonthSalesAchievementReqVo(month,priceChannelCode,priceChannelName,dataTypeCode,dataType,storeTypeCode,storeType,categoryCode,categoryName,productPropertyCode,productPropertyName);
         return HttpResponse.success(reportAllService.selectMonthSalesAchievement(monthSalesAchievementReqVo));
     }
 
     @GetMapping("/search/month/cumulative/brand/sales/all")
     @ApiOperation("月累计品类销售情况")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
-            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
-            @ApiImplicitParam(name = "order_code", value = "渠道编码", type = "String"),
-            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
-            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "month", value = "月份", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
+            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
             @ApiImplicitParam(name = "category_code", value = "品类编码", type = "String"),
             @ApiImplicitParam(name = "category_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性编码", type = "String"),
+            @ApiImplicitParam(name = "product_property_name", value = "商品属性名称", type = "String"),
     })
     public HttpResponse<List<MonthCumulativeBrandSalesRespVo>> selectMonthCumulativeBrandSales(
-            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_name", required = false) String productSortName,
-            @RequestParam(value = "order_code", required = false) String orderCode,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
-            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
-            @RequestParam(value = "store_type", required = false) String storeType,
+            @RequestParam(value = "month", required = false) String month,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
+            @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "category_code", required = false) String categoryCode,
-            @RequestParam(value = "category_name", required = false) String categoryName){
-        MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,beginCreateTime,finishCreateTime,categoryCode,categoryName);
+            @RequestParam(value = "category_name", required = false) String categoryName,
+            @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+            @RequestParam(value = "product_property_name", required = false) String productPropertyName,
+            @RequestParam(value = "page_no", required = false) Integer pageNo){
+        MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo = new MonthSalesAchievementReqVo(month,priceChannelCode,priceChannelName,dataTypeCode,dataType,storeTypeCode,storeType,categoryCode,categoryName,productPropertyCode,productPropertyName);
         return HttpResponse.success(reportAllService.selectMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo));
     }
 
@@ -568,19 +562,18 @@ public class ReportAllController {
             @ApiImplicitParam(name = "category_name", value = "品类名称", type = "String"),
     })
     public HttpResponse<List<MonthCumulativeGrossProfitMarginRespVo>> selectMonthCumulativeGrossProfitMargin(
-            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_name", required = false) String productSortName,
-            @RequestParam(value = "order_code", required = false) String orderCode,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
+            @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+            @RequestParam(value = "product_property_name", required = false) String productPropertyName,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
             @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "begin_create_time", required = false) String month,
             @RequestParam(value = "category_code", required = false) String categoryCode,
             @RequestParam(value = "category_name", required = false) String categoryName){
-        MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,beginCreateTime,finishCreateTime,categoryCode,categoryName);
+        MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo = new MonthSalesAchievementReqVo(month,priceChannelCode,priceChannelName,dataTypeCode,dataType,storeTypeCode,storeType,categoryCode,categoryName,productPropertyCode,productPropertyName);
         return HttpResponse.success(reportAllService.selectMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo));
     }
 

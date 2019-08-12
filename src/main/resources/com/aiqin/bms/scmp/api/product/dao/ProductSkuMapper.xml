@@ -2328,7 +2328,7 @@ select a.sku_code              as skuCode,
   <sql id="SELECT_SKU_SQL">
         ps.goods_gifts as product_type,ps.sku_code,ps.sku_name ,ps.color_code,ps.color_name,ps.model_number,psdi.spec,psdi.unit_code,psdi.unit_name,
     psdi.zero_removal_coefficient,psbp.box_volume,psbp.box_gross_weight,psp.product_picture_path,ps.product_category_code,ps.product_category_name,
-    ps.product_brand_code,ps.product_brand_name,psc.Input_tax_rate
+    ps.product_brand_code,ps.product_brand_name
   </sql>
   <select id="selectSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
     select
@@ -2347,7 +2347,7 @@ select a.sku_code              as skuCode,
   </select>
   <select id="selectStockSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
     select
-    <include refid="SELECT_SKU_SQL"/>
+    <include refid="SELECT_SKU_SQL"/> ,psc.Input_tax_rate
    from
     product_sku as ps
     left JOIN product_sku_stock_info    as psdi on psdi.product_sku_code = ps.sku_code
