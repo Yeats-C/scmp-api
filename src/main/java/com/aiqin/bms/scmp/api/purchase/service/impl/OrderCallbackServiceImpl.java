@@ -765,29 +765,37 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         Map<String, OrderProductSkuResponse> productSkuResponseMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
         int order = 0;
         //报溢数量 正数值
-        Long sumQuantity;
+        Long profitQuantity;
         //报损数量 负数值
-        Long negativeQuantity;
+        Long lossQuantity;
         OrderProductSkuResponse productSkuResponse;
         for (String warehouseCode : detailMap.keySet()) {
             profitLoss = new ProfitLoss();
-            sumQuantity = 0L;
-            negativeQuantity = 0L;
+            profitQuantity = 0L;
+            lossQuantity = 0L;
             profitLoss.setOrderCode(String.format("%s_%d", request.getOrderCode(), ++order));
             //损溢类型:0 指定损益  1 盘点损益
             profitLoss.setOrderType(request.getOrderType());
             profitLoss.setLogisticsCenterCode(request.getLogisticsCenterCode());
             profitLoss.setLogisticsCenterName(request.getLogisticsCenterName());
             profitLoss.setRemark(request.getRemark());
+            profitLoss.setCreateBy(request.getCreateByName());
+            profitLoss.setUpdateBy(request.getUpdateByName());
+            profitLoss.setCreateTime(new DateTime(new Long(request.getCreateTime())).toDate());
+            profitLoss.setUpdateTime(new DateTime(new Long(request.getApproveTime())).toDate());
             for (ProfitLossDetailRequest profitLossDetailRequest : detailMap.get(warehouseCode)) {
 //                profitLossDetail = new ProfitLossDetailRequest();
                 profitLossDetail = profitLossDetailRequest;
+                profitLossDetail.setCreateByName(request.getCreateByName());
+                profitLossDetail.setUpdateByName(request.getUpdateByName());
+                profitLossDetail.setUpdateTime(profitLoss.getCreateTime());
+                profitLossDetail.setCreateTime(profitLoss.getUpdateTime());
 //                profitLossDetail.setQuantity(profitLossDetailRequest.getQuantity());
 //                profitLossDetail.setSkuCode(profitLossDetailRequest.getSkuCode());
                 if (profitLossDetailRequest.getQuantity() < 0) {
-                    negativeQuantity += profitLossDetailRequest.getQuantity();
+                    lossQuantity += profitLossDetailRequest.getQuantity();
                 }else{
-                    sumQuantity += profitLossDetailRequest.getQuantity();
+                    profitQuantity += profitLossDetailRequest.getQuantity();
                 }
                 productSkuResponse = productSkuResponseMap.get(profitLossDetailRequest.getSkuCode());
                 if (productSkuResponse != null) {
@@ -808,8 +816,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 }
                 profitLossProductList.add(profitLossDetail);
             }
-//            profitLoss.setQuantity(sumQuantity);
-//            profitLoss.setQuantity(sumQuantity);
+            profitLoss.setProfitQuantity(profitQuantity);
+            profitLoss.setLossQuantity(lossQuantity);
+            //dl只传回完成的
+            profitLoss.setOrderStatusCode(0);
+            profitLoss.setOrderStatusName("完成");
         }
         //添加损溢记录
         profitLossMapper.insertList(profitLossList);
