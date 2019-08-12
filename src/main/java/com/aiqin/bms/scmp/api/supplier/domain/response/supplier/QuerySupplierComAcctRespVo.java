@@ -33,8 +33,8 @@ public class QuerySupplierComAcctRespVo {
     @ApiModelProperty("最高付款额")
     private Long maxPaymentAmount;
 
-//    @ApiModelProperty("删除标记(0:正常 1:删除)")
-//    private Byte delFlag;
+    @ApiModelProperty("删除标记(0:正常 1:删除)")
+    private Byte delFlag;
 
     @ApiModelProperty("创建时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
