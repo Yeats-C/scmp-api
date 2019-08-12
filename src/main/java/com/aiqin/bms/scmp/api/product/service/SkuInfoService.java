@@ -167,6 +167,9 @@ public interface SkuInfoService{
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.changeprice.QuerySkuInfoRespVO>
      */
     BasePage<QuerySkuInfoRespVO> getSkuListByQueryVO(QuerySkuInfoReqVO vo);
+
+    List<Long> getSkuListByQueryNoPageCount(QuerySkuInfoReqVO vo);
+
     /**
      * 不分页
      * @author NullPointException
