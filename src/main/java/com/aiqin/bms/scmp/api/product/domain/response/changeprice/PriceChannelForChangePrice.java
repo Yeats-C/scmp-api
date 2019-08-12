@@ -48,13 +48,13 @@ public class PriceChannelForChangePrice {
     private Long purchasePriceNewest = 0L;
 
     @ApiModelProperty("原毛利率")
-    private Long oldGrossProfitMargin;
+    private Long oldGrossProfitMargin=0L;
 
     @ApiModelProperty("成本")
-    private Long taxCost;
+    private Long taxCost=0L;
 
     @ApiModelProperty("平均成本")
-    private Long avgTaxCost;
+    private Long avgTaxCost=0L;
 
     public Long getOldGrossProfitMargin() {
         this.avgTaxCost = this.oldPrice;

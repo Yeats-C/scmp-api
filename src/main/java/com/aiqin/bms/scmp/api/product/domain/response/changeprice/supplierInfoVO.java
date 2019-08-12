@@ -35,7 +35,7 @@ public class supplierInfoVO {
     @ApiModelProperty("成本")
     private Long taxCost=0L;
     @ApiModelProperty("平均成本")
-    private Long avgTaxCost;
+    private Long avgTaxCost=0L;
 
     public Long getOldGrossProfitMargin() {
         this.avgTaxCost = this.purchasePriceOld;
