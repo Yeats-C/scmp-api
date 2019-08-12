@@ -142,6 +142,7 @@
     <foreach collection="list" open="(" close=")" item="item" separator=",">
          #{item}
     </foreach>
+    order by a.create_time desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_change_price_info

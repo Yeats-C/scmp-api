@@ -6,7 +6,7 @@ import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.dao.*;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
 import com.aiqin.bms.scmp.api.product.domain.excel.*;
@@ -1348,7 +1348,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
     @Override
     public BasePage<QuerySkuInfoRespVO> getSkuListByQueryVO(QuerySkuInfoReqVO vo){
-        PageHelper.startPage(vo.getPageNo(),vo.getPageSize());
         if(CollectionUtils.isNotEmpty(vo.getProductCategoryCodes())){
             try {
                 vo.setProductCategoryLv1Code(vo.getProductCategoryCodes().get(0));
@@ -1359,24 +1358,63 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 log.info("不做处理,让程序继续执行下去");
             }
         }
-        List<QuerySkuInfoRespVO> list = getSkuListByQueryNoPage(vo);
-        return PageUtil.getPageList(vo.getPageNo(),list);
-    }
-    @Override
-    public List<QuerySkuInfoRespVO> getSkuListByQueryNoPage(QuerySkuInfoReqVO vo){
-        if(StringUtils.isBlank(vo.getChangePriceType())){
-            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+        List<Long> longs = getSkuListByQueryNoPageCount(vo);
+        if(CollectionUtils.isEmpty(longs)){
+            return PageUtil.getPageList(vo.getPageNo(), Lists.newArrayList());
         }
-        List<QuerySkuInfoRespVO> list = Lists.newArrayList();
+        List<Long> longs1 = PageUtil.myPage(longs, vo);
+        List<QuerySkuInfoRespVO> respVos = Lists.newArrayList();
         if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
-            list = productSkuDao.selectSkuListForPurchasePrice(vo);
+            respVos = productSkuDao.selectSkuListForPurchasePrice(longs1);
         } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
             if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
                 vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
             }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
                 vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
             }
-            list = productSkuDao.selectSkuListForSalePrice(vo);
+            respVos = productSkuDao.selectSkuListForSalePrice(longs1,vo.getChangePriceType());
+        }else {
+            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+        }
+        return PageUtil.getPageList(vo.getPageNo(),vo.getPageSize(),longs.size(),respVos);
+    }
+    @Override
+    public List<Long> getSkuListByQueryNoPageCount(QuerySkuInfoReqVO vo){
+        if(StringUtils.isBlank(vo.getChangePriceType())){
+            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+        }
+        List<Long> list = Lists.newArrayList();
+        if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
+            list = productSkuDao.selectSkuListForPurchasePriceCount(vo);
+        } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
+            if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
+                vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
+            }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
+                vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
+            }
+            list = productSkuDao.selectSkuListForSalePriceCount(vo);
+        }else {
+            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+        }
+        return list;
+    }
+
+    @Override
+    public List<QuerySkuInfoRespVO> getSkuListByQueryNoPage(QuerySkuInfoReqVO vo){
+        if(StringUtils.isBlank(vo.getChangePriceType())){
+            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+        }
+        List<Long> ids = getSkuListByQueryNoPageCount(vo);
+        List<QuerySkuInfoRespVO> list = Lists.newArrayList();
+        if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
+            list = productSkuDao.selectSkuListForPurchasePrice(ids);
+        } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
+            if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
+                vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
+            }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
+                vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
+            }
+            list = productSkuDao.selectSkuListForSalePrice(ids,vo.getChangePriceType());
         }else {
             throw new BizException(ResultCode.NOT_HAVE_PARAM);
         }

@@ -37,6 +37,7 @@ public interface ProductSkuChangePriceMapper {
      * @return com.aiqin.mgs.product.api.domain.response.changeprice.ProductSkuChangePriceRespVO
      */
     ProductSkuChangePriceRespVO selectInfoByCode(String code);
+    ProductSkuChangePriceRespVO selectInfoByFormNo1(String code);
 
     /**
      * 非空更新
