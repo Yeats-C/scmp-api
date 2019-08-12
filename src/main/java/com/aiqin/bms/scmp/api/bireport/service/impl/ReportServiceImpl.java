@@ -184,11 +184,17 @@ public class ReportServiceImpl implements ReportService {
     public PageReportResData selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo) {
         try {
             List<StoreRepurchaseRateRespVo> storeRepurchaseRateRespVos = reportDao.selectStoreRepurchaseRate(storeRepurchaseRateReqVo);
+            StoreRepurchaseRateRespVo storeRepurchaseRateRespVoSum = reportDao.sumStoreRepurchaseRate(storeRepurchaseRateReqVo);
             Integer total = reportDao.countStoreRepurchaseRate(storeRepurchaseRateReqVo);
             String cloumnName = "bi_store_repurchase_rate";
             List<Map> maps = reportDao.selectNewProductBatchMovingRateTableCloumnName(cloumnName);
             StoreRepurchaseRateRespVo storeRepurchaseRateRespVo = new StoreRepurchaseRateRespVo();
             storeRepurchaseRateRespVo.setColumnList(maps);
+            if(storeRepurchaseRateRespVoSum != null){
+                storeRepurchaseRateRespVo.setProductNum(storeRepurchaseRateRespVoSum.getProductNum());
+                storeRepurchaseRateRespVo.setChannelOrderAmount(storeRepurchaseRateRespVoSum.getChannelOrderAmount());
+                storeRepurchaseRateRespVo.setDistributionOrderAmount(storeRepurchaseRateRespVoSum.getDistributionOrderAmount());
+            }
             return new PageReportResData<StoreRepurchaseRateRespVo>(total,storeRepurchaseRateRespVos,storeRepurchaseRateRespVo);
         } catch (Exception ex) {
             log.error("查询门店复购率失败");
