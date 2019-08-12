@@ -187,4 +187,6 @@ public interface StockDao {
     PurchaseStockResponse stockCountByOtherInfo(@Param("skuCode") String skuCode,
                                                 @Param("transportCenterCode") String transportCenterCode,
                                                 @Param("warehouseCode") String warehouseCode);
+
+    List<Stock> selectSkuCost();
 }

@@ -2059,4 +2059,9 @@ public class StockServiceImpl implements StockService {
     public List<SkuBatchRespVO> querySkuBatchList(SkuBatchReqVO reqVO) {
         return  stockDao.queryStockBatchForAllo(reqVO);
     }
+
+    @Override
+    public List<Stock> selectSkuCost() {
+        return  stockDao.selectSkuCost();
+    }
 }

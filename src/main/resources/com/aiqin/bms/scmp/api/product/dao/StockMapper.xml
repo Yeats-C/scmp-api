@@ -2332,4 +2332,10 @@
         WHERE sc.config_status = 0 and s.sku_code = #{skuCode,jdbcType=VARCHAR}
         and s.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR} and s.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectSkuCost" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
+        select
+        sku_code skuCode,sku_name skuName,sum(tax_cost*inventory_num) taxCost,sum(inventory_num) inventoryNum
+        from stock
+        group by sku_code
+    </select>
 </mapper>
