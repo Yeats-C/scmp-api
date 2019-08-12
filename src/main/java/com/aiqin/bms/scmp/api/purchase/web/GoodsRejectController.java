@@ -119,7 +119,7 @@ public class GoodsRejectController {
 
     @PostMapping("/apply/import")
     @ApiOperation(value = "批量导入退供申请单")
-    public HttpResponse<PageResData<RejectImportResponse>> rejectApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
+    public HttpResponse<List<RejectImportResponse>> rejectApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
         LOGGER.info("批量导入退供申请单请求,purchaseGroupCode:{}", purchaseGroupCode);
         return goodsRejectService.rejectApplyImport(file, purchaseGroupCode);
     }

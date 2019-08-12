@@ -34,8 +34,8 @@ import lombok.Data;
 public class RejectImportResponse extends RejectApplyDetailHandleResponse {
 
     @ApiModelProperty("错误原因")
-    @JsonProperty("error_reason")
-    private String errorReason;
+    @JsonProperty("error_info")
+    private String errorInfo;
 
     @ApiModelProperty("退供含税单价")
     @JsonProperty("product_amount")
