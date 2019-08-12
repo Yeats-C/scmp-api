@@ -55,7 +55,7 @@
     select
     <include refid="Base_Column_List" />
     from account
-    order by create_time desc
+    order by id desc
     limit 1
   </select>
   <select id="list"  resultMap="BaseResultMap">

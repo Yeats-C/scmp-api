@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.account.domain.response;
 
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -90,10 +91,12 @@ public class AccountResponse {
     @JsonProperty("update_by_name")
     private String updateByName;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value="")
     @JsonProperty("create_time")
     private Date createTime;
 
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty(value="")
     @JsonProperty("update_time")
     private Date updateTime;
