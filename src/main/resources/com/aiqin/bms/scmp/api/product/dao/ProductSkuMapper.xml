@@ -2229,6 +2229,11 @@ select a.sku_code              as skuCode,
     </foreach>
   </select>
   <resultMap id="ORDER_PRODUCT_RESULTMAP" type="com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse">
+    <result column="Input_tax_rate" jdbcType="VARCHAR" property="taxRate" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="product_brand_code" jdbcType="VARCHAR" property="brandCode" />
+    <result column="product_category_name" jdbcType="VARCHAR" property="categoryName" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="categoryCode" />
     <result column="product_type" jdbcType="VARCHAR" property="productType" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="productName" />
@@ -2257,7 +2262,8 @@ select a.sku_code              as skuCode,
   </select>
   <sql id="SELECT_SKU_SQL">
         ps.goods_gifts as product_type,ps.sku_code,ps.sku_name ,ps.color_code,ps.color_name,ps.model_number,psdi.spec,psdi.unit_code,psdi.unit_name,
-    psdi.zero_removal_coefficient,psbp.box_volume,psbp.box_gross_weight,psp.product_picture_path
+    psdi.zero_removal_coefficient,psbp.box_volume,psbp.box_gross_weight,psp.product_picture_path,ps.product_category_code,ps.product_category_name,
+    ps.product_brand_code,ps.product_brand_name,psc.Input_tax_rate
   </sql>
   <select id="selectSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
     select
@@ -2267,6 +2273,22 @@ select a.sku_code              as skuCode,
     left JOIN product_sku_distribution_info  as psdi on psdi.product_sku_code = ps.sku_code
     left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code
     left JOIN product_sku_pictures  as psp on psp.product_sku_code = ps.sku_code
+    where psp.main_picture = 1
+    and ps.sku_code   in(
+    <foreach collection="list" item="skuCode" separator=",">
+      #{skuCode,jdbcType=VARCHAR}
+    </foreach>
+    )
+  </select>
+  <select id="selectStockSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
+    select
+    <include refid="SELECT_SKU_SQL"/>
+   from
+    product_sku as ps
+    left JOIN product_sku_stock_info    as psdi on psdi.product_sku_code = ps.sku_code
+    left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code
+    left JOIN product_sku_pictures  as psp on psp.product_sku_code = ps.sku_code
+    inner join product_sku_checkout psc on ps.sku_code = psc.sku_code
     where psp.main_picture = 1
     and ps.sku_code   in(
     <foreach collection="list" item="skuCode" separator=",">

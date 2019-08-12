@@ -26,7 +26,7 @@ public class DetailProfitLossRespVo {
     private String orderCode;
 
     @ApiModelProperty("订单类型(0:报损 1:报益)")
-    private Byte orderType;
+    private Integer orderType;
 
     @ApiModelProperty("订单类型名称")
     private String orderTypeName;

@@ -286,4 +286,6 @@ public interface StockService {
     BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO);
 
     List<SkuBatchRespVO> querySkuBatchList(SkuBatchReqVO reqVO);
+
+    List<Stock> selectSkuCost();
 }
