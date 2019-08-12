@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -286,4 +287,6 @@ public interface ProductSkuConfigService {
      * @return java.lang.Boolean
      */
     Boolean saveImportSupply(List<ProductSkuSupplyUnitDraft> reqVo);
+
+    DetailRequestRespVo getInfoByForm(String formNo);
 }

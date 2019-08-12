@@ -36,4 +36,8 @@ public class PurchaseImportResponse extends PurchaseApplyDetailResponse{
     @JsonProperty("product_total_amount")
     private Integer productTotalAmount;
 
+    @ApiModelProperty(value="错误行数")
+    @JsonProperty("error_num")
+    private Integer errorNum;
+
 }

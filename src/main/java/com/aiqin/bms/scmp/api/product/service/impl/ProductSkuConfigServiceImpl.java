@@ -28,6 +28,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.LogisticsCenterService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
@@ -1038,6 +1039,19 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         } catch (ExcelException e) {
             throw new BizException(ResultCode.IMPORT_DATA_ERROR);
         }
+    }
+
+    @Override
+    public DetailRequestRespVo getInfoByForm(String formNo) {
+        DetailRequestRespVo respVo = new DetailRequestRespVo();
+        List<ApplyProductSkuConfig> list = applyMapper.selectByFormNo(formNo);
+        if(CollectionUtils.isEmpty(list)){
+            throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
+        }
+        String applyCode = list.get(0).getApplyCode();
+        respVo.setApplyCode(applyCode);
+        respVo.setItemCode("2");
+        return respVo;
     }
 
     @Override

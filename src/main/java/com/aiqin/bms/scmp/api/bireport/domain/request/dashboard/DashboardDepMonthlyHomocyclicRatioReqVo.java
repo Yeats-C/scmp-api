@@ -9,24 +9,27 @@ import lombok.Data;
 @Data
 public class DashboardDepMonthlyHomocyclicRatioReqVo {
 
-    @ApiModelProperty("年月")
-    @JsonProperty("stat_month")
-    private String statMonth;
+    @ApiModelProperty("日期begin")
+    @JsonProperty("begin_stat_date")
+    private String beginStatDate;
+
+    @ApiModelProperty("日期finish")
+    @JsonProperty("finish_stat_date")
+    private String finishStatDate;
 
     @ApiModelProperty("部门编码")
     @JsonProperty("product_sort_code")
     private String productSortCode;
 
-    @ApiModelProperty("部门名")
-    @JsonProperty("product_sort_name")
-    private String productSortName;
+    @ApiModelProperty("渠道编码")
+    @JsonProperty("price_channel_code")
+    private String priceChannelCode;
 
     public DashboardDepMonthlyHomocyclicRatioReqVo() {
     }
 
-    public DashboardDepMonthlyHomocyclicRatioReqVo(String statMonth, String productSortCode, String productSortName) {
-        this.statMonth = statMonth;
+    public DashboardDepMonthlyHomocyclicRatioReqVo(String productSortCode, String priceChannelCode) {
         this.productSortCode = productSortCode;
-        this.productSortName = productSortName;
+        this.priceChannelCode = priceChannelCode;
     }
 }

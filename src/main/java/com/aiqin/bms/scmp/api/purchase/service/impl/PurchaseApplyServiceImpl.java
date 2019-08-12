@@ -461,6 +461,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
             }
             List<PurchaseImportResponse> list = new ArrayList<>();
+            List<PurchaseImportResponse> errorList = new ArrayList<>();
             Integer errorCount = 0;
             if (result != null) {
                 String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
@@ -477,11 +478,12 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 for (int i = 1; i <= result.length - 1; i++) {
                     record = result[i];
                     response = new PurchaseImportResponse();
+                    response.setErrorNum(i);
                     if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) ||
                             StringUtils.isBlank(record[3]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[5]) || StringUtils.isBlank(record[6])) {
                         HandleResponse(response, record,"导入的数据不全");
                         errorCount++;
-                        list.add(response);
+                        errorList.add(response);
                         continue;
                     }
                     supplier = supplyCompanyDao.selectBySupplierName(record[2]);
@@ -495,7 +497,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     if(logisticsCenter==null){
                         HandleResponse(response, record,"未查询到仓库信息");
                         errorCount++;
-                        list.add(response);
+                        errorList.add(response);
                         continue;
                     }
                     applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
@@ -527,6 +529,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                         }
                          if(record[4] != null){
+                             if(!("零").equals(record[4].indexOf("零"))){
+                                 HandleResponse(response, record,"采购数量格式不正确");
+                                 errorList.add(response);
+                                 continue;
+                             }
                              String index = record[4].replace("零", "/").trim();
                              int index1 = index.indexOf("/");
                              int length = index.length();
@@ -536,6 +543,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                              applyProduct.setPurchaseSingle(single);
                          }
                          if(record[5] != null){
+                             if(!("零").equals(record[4].indexOf("零"))){
+                                 HandleResponse(response, record,"实物返数量格式不正确");
+                                 errorList.add(response);
+                                 continue;
+                             }
                              String index = record[5].replace("零", "/").trim();
                              int index1 = index.indexOf("/");
                              int length = index.length();
@@ -554,11 +566,15 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     }else{
                         HandleResponse(response, record,"未查询到对应的商品");
                         errorCount++;
+                        errorList.add(response);
                     }
                     list.add(response);
                 }
             }
-            return HttpResponse.success(new PageResData(errorCount,list));
+            if(errorCount > 0){
+                return HttpResponse.success(errorList);
+            }
+            return HttpResponse.success(list);
         } catch (Exception e) {
             LOGGER.error("采购申请单导入异常:{}", e.getMessage());
             return HttpResponse.failure(ResultCode.IMPORT_PURCHASE_APPLY_ERROR);
