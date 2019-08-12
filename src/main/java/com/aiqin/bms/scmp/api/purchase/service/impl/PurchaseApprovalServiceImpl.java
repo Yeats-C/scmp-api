@@ -134,6 +134,15 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         workFlowVO.setTitle(userName + "创建采购单审批");
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId", directSupervisorCode);
+        // 查询采购价格
+        PurchaseOrder order = new PurchaseOrder();
+        order.setPurchaseOrderCode(formNo);
+        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
+        if(purchaseOrder != null){
+            Integer productAmount = purchaseOrder.getProductTotalAmount() == null ? 0 : purchaseOrder.getProductTotalAmount();
+            Integer giftAmount = purchaseOrder.getGiftTaxSum() == null ? 0 : purchaseOrder.getGiftTaxSum();
+            jsonObject.addProperty("purchaseAmount", productAmount + giftAmount);
+        }
         workFlowVO.setVariables(jsonObject.toString());
         WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_PURCHASE);
         //判断是否成功
