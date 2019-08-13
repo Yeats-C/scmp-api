@@ -16,17 +16,11 @@
     <result column="selection_effective_start_time" jdbcType="TIMESTAMP" property="selectionEffectiveStartTime" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
-    <result column="ext_field_1" jdbcType="VARCHAR" property="extField1" />
-    <result column="ext_field_2" jdbcType="VARCHAR" property="extField2" />
-    <result column="ext_field_3" jdbcType="VARCHAR" property="extField3" />
-    <result column="ext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-    <result column="ext_field_5" jdbcType="INTEGER" property="extField5" />
-    <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
   </resultMap>
   <sql id="Base_Column_List">
     id, code, name, be_disable, create_by, create_time, update_by, update_time, apply_code, 
     be_effective, selection_effective_time, selection_effective_start_time, company_code, 
-    company_name, ext_field_1, ext_field_2, ext_field_3, ext_field_4, ext_field_5, ext_field_6
+    company_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -49,12 +43,6 @@
     <result column="aselection_effective_start_time" jdbcType="TIMESTAMP" property="selectionEffectiveStartTime" />
     <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
-    <result column="aext_field_1" jdbcType="VARCHAR" property="extField1" />
-    <result column="aext_field_2" jdbcType="VARCHAR" property="extField2" />
-    <result column="aext_field_3" jdbcType="VARCHAR" property="extField3" />
-    <result column="aext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-    <result column="aext_field_5" jdbcType="INTEGER" property="extField5" />
-    <result column="aext_field_6" jdbcType="BIGINT" property="extField6" />
     <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleArea">
       <!--<id column="id" jdbcType="BIGINT" property="id" />-->
       <result column="bcode" jdbcType="VARCHAR" property="code" />
@@ -71,12 +59,6 @@
       <result column="bupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
       <result column="bcompany_code" jdbcType="VARCHAR" property="companyCode" />
       <result column="bcompany_name" jdbcType="VARCHAR" property="companyName" />
-      <result column="bext_field_1" jdbcType="VARCHAR" property="extField1" />
-      <result column="bext_field_2" jdbcType="VARCHAR" property="extField2" />
-      <result column="bext_field_3" jdbcType="VARCHAR" property="extField3" />
-      <result column="bext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-      <result column="bext_field_5" jdbcType="INTEGER" property="extField5" />
-      <result column="bext_field_6" jdbcType="BIGINT" property="extField6" />
     </collection>
     <collection property="areaList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaInfo">
       <!--<id column="id" jdbcType="BIGINT" property="id" />-->
@@ -89,12 +71,6 @@
       <result column="ccompany_code" jdbcType="VARCHAR" property="companyCode" />
       <result column="ccompany_name" jdbcType="VARCHAR" property="companyName" />
       <result column="cprovince_id" jdbcType="VARCHAR" property="provinceId" />
-      <result column="cext_field_1" jdbcType="VARCHAR" property="extField1" />
-      <result column="cext_field_2" jdbcType="VARCHAR" property="extField2" />
-      <result column="cext_field_3" jdbcType="VARCHAR" property="extField3" />
-      <result column="cext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-      <result column="cext_field_5" jdbcType="INTEGER" property="extField5" />
-      <result column="cext_field_6" jdbcType="BIGINT" property="extField6" />
     </collection>
     <collection property="channelList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaChannel">
       <!--<id column="id" jdbcType="BIGINT" property="id" />-->
@@ -103,12 +79,6 @@
       <result column="dprice_channel_name" jdbcType="VARCHAR" property="priceChannelName" />
       <result column="dcompany_code" jdbcType="VARCHAR" property="companyCode" />
       <result column="dcompany_name" jdbcType="VARCHAR" property="companyName" />
-      <result column="dext_field_1" jdbcType="VARCHAR" property="extField1" />
-      <result column="dext_field_2" jdbcType="VARCHAR" property="extField2" />
-      <result column="dext_field_3" jdbcType="VARCHAR" property="extField3" />
-      <result column="dext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-      <result column="dext_field_5" jdbcType="INTEGER" property="extField5" />
-      <result column="dext_field_6" jdbcType="BIGINT" property="extField6" />
     </collection>
   </resultMap>
   <select id="selectListByCodes" resultMap="selectListByCodes">
@@ -126,12 +96,6 @@
     a.selection_effective_start_time aselection_effective_start_time,
     a.company_code acompany_code,
     a.company_name acompany_name,
-    a.ext_field_1 aext_field_1,
-    a.ext_field_2 aext_field_2,
-    a.ext_field_3 aext_field_3,
-    a.ext_field_4 aext_field_4,
-    a.ext_field_5 aext_field_5,
-    a.ext_field_6 aext_field_6,
     b.id bid,
     b.code bcode,
     b.sku_code bsku_code,
@@ -147,12 +111,6 @@
     b.update_time bupdate_time,
     b.company_code bcompany_code,
     b.company_name bcompany_name,
-    b.ext_field_1 bext_field_1,
-    b.ext_field_2 bext_field_2,
-    b.ext_field_3 bext_field_3,
-    b.ext_field_4 bext_field_4,
-    b.ext_field_5 bext_field_5,
-    b.ext_field_6 bext_field_6,
     c.id cid,
     c.main_code cmain_code,
     c.sku_code csku_code,
@@ -163,24 +121,12 @@
     c.company_code ccompany_code,
     c.company_name ccompany_name,
     c.province_id cprovince_id,
-    c.ext_field_1 cext_field_1,
-    c.ext_field_2 cext_field_2,
-    c.ext_field_3 cext_field_3,
-    c.ext_field_4 cext_field_4,
-    c.ext_field_5 cext_field_5,
-    c.ext_field_6 cext_field_6,
     d.id did,
     d.code dcode,
     d.price_channel_code dprice_channel_code,
     d.price_channel_name dprice_channel_name,
     d.company_code dcompany_code,
-    d.company_name dcompany_name,
-    d.ext_field_1 dext_field_1,
-    d.ext_field_2 dext_field_2,
-    d.ext_field_3 dext_field_3,
-    d.ext_field_4 dext_field_4,
-    d.ext_field_5 dext_field_5,
-    d.ext_field_6 dext_field_6
+    d.company_name dcompany_name
     from product_sku_sale_area_main a
     left join product_sku_sale_area b
     on a.code = b.code
@@ -371,16 +317,12 @@
       be_disable, create_by, create_time, 
       update_by, update_time, apply_code, 
       be_effective, selection_effective_time, selection_effective_start_time, 
-      company_code, company_name, ext_field_1, 
-      ext_field_2, ext_field_3, ext_field_4, 
-      ext_field_5, ext_field_6)
+      company_code, company_name)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{beDisable,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{applyCode,jdbcType=VARCHAR}, 
       #{beEffective,jdbcType=INTEGER}, #{selectionEffectiveTime,jdbcType=TINYINT}, #{selectionEffectiveStartTime,jdbcType=TIMESTAMP}, 
-      #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{extField1,jdbcType=VARCHAR}, 
-      #{extField2,jdbcType=VARCHAR}, #{extField3,jdbcType=VARCHAR}, #{extField4,jdbcType=TIMESTAMP}, 
-      #{extField5,jdbcType=INTEGER}, #{extField6,jdbcType=BIGINT})
+      #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMain">
     insert into product_sku_sale_area_main
@@ -427,24 +369,6 @@
       <if test="companyName != null">
         company_name,
       </if>
-      <if test="extField1 != null">
-        ext_field_1,
-      </if>
-      <if test="extField2 != null">
-        ext_field_2,
-      </if>
-      <if test="extField3 != null">
-        ext_field_3,
-      </if>
-      <if test="extField4 != null">
-        ext_field_4,
-      </if>
-      <if test="extField5 != null">
-        ext_field_5,
-      </if>
-      <if test="extField6 != null">
-        ext_field_6,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -489,24 +413,6 @@
       <if test="companyName != null">
         #{companyName,jdbcType=VARCHAR},
       </if>
-      <if test="extField1 != null">
-        #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        #{extField6,jdbcType=BIGINT},
-      </if>
     </trim>
   </insert>
     <insert id="insertBatch">
@@ -514,18 +420,14 @@
       be_disable, create_by, create_time,
       update_by, update_time, apply_code,
       be_effective, selection_effective_time, selection_effective_start_time,
-      company_code, company_name, ext_field_1,
-      ext_field_2, ext_field_3, ext_field_4,
-      ext_field_5, ext_field_6)
+      company_code, company_name)
     values
       <foreach collection="items" item="item" open="" close="" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.name,jdbcType=VARCHAR},
       #{item.beDisable,jdbcType=INTEGER}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
       #{item.beEffective,jdbcType=INTEGER}, #{item.selectionEffectiveTime,jdbcType=TINYINT}, #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP},
-      #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR}, #{item.extField1,jdbcType=VARCHAR},
-      #{item.extField2,jdbcType=VARCHAR}, #{item.extField3,jdbcType=VARCHAR}, #{item.extField4,jdbcType=TIMESTAMP},
-      #{item.extField5,jdbcType=INTEGER}, #{item.extField6,jdbcType=BIGINT})
+      #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR})
       </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMain">
@@ -570,24 +472,6 @@
       <if test="companyName != null">
         company_name = #{companyName,jdbcType=VARCHAR},
       </if>
-      <if test="extField1 != null">
-        ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        ext_field_5 = #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        ext_field_6 = #{extField6,jdbcType=BIGINT},
-      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -605,13 +489,7 @@
       selection_effective_time = #{selectionEffectiveTime,jdbcType=TINYINT},
       selection_effective_start_time = #{selectionEffectiveStartTime,jdbcType=TIMESTAMP},
       company_code = #{companyCode,jdbcType=VARCHAR},
-      company_name = #{companyName,jdbcType=VARCHAR},
-      ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      ext_field_5 = #{extField5,jdbcType=INTEGER},
-      ext_field_6 = #{extField6,jdbcType=BIGINT}
+      company_name = #{companyName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByCode">
@@ -629,13 +507,7 @@
       selection_effective_time = #{item.selectionEffectiveTime,jdbcType=TINYINT},
       selection_effective_start_time = #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP},
       company_code = #{item.companyCode,jdbcType=VARCHAR},
-      company_name = #{item.companyName,jdbcType=VARCHAR},
-      ext_field_1 = #{item.extField1,jdbcType=VARCHAR},
-      ext_field_2 = #{item.extField2,jdbcType=VARCHAR},
-      ext_field_3 = #{item.extField3,jdbcType=VARCHAR},
-      ext_field_4 = #{item.extField4,jdbcType=TIMESTAMP},
-      ext_field_5 = #{item.extField5,jdbcType=INTEGER},
-      ext_field_6 = #{item.extField6,jdbcType=BIGINT}
+      company_name = #{item.companyName,jdbcType=VARCHAR}
     where code = #{item.code,jdbcType=BIGINT}
     </foreach>
   </update>

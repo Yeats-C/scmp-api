@@ -1579,6 +1579,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         .checkPic();//检查图片
                 //返回实体
                 AddSkuInfoReqVO resp = checkSku.getRespVO();
+                String error = checkSku.getSkuInfoImport().getError();
+                if (StringUtils.isNotBlank(error)) {
+                    error = "第"+(i+2)+"行 "+error;
+                    checkSku.getSkuInfoImport().setError(error);
+                }
                 skuInfoList.add(resp);
                 importList.add(checkSku.getSkuInfoImport());
                 reaptMap = checkSku.getReapMap();
@@ -1716,6 +1721,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 //返回实体
                 AddSkuInfoReqVO resp = checkSku.getRespVO();
                 skuInfoList.add(resp);
+                String error = checkSku.getSkuInfoImport().getError();
+                if (StringUtils.isNotBlank(error)) {
+                    error = "第"+(i+2)+"行 "+error;
+                    checkSku.getSkuInfoImport().setError(error);
+                }
                 importList.add(checkSku.getSkuInfoImport());
                 reaptMap = checkSku.getReapMap();
                 spuMap = checkSku.getSpuMap();
@@ -1844,6 +1854,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 //返回实体
                 AddSkuInfoReqVO resp = checkSku.getRespVO();
                 skuInfoList.add(resp);
+                String error = checkSku.getSkuInfoImport().getError();
+                if (StringUtils.isNotBlank(error)) {
+                    error = "第"+(i+2)+"行 "+error;
+                    checkSku.getSkuInfoImport().setError(error);
+                }
                 importList.add(checkSku.getSkuInfoImport());
                 reaptMap = checkSku.getReapMap();
                 spuMap = checkSku.getSpuMap();
