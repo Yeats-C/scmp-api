@@ -519,7 +519,7 @@
         <if test="badFinishNum!=null">
             and st.bad_num <![CDATA[<=]]> #{badFinishNum}
         </if>
-        group by st.sku_code
+        group by st.warehouse_type,st.sku_code
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
 
