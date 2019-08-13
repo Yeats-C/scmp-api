@@ -140,13 +140,53 @@ public class StockServiceImpl implements StockService {
     @Override
     public PageResData selectStockSumInfoByPage(StockRequest stockRequest) {
         try {
-            LOGGER.info("库存列表查询");
+            LOGGER.info("中央库存列表查询");
             List<StockRespVO> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
+            HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
+            List<StockRespVO> lists = new ArrayList<>();
+            for (StockRespVO stockRespVO : stockList) {
+                String str = stockRespVO.getSkuCode();
+                if(stockRespMap.get(str) == null){
+                    stockRespMap.put(str,stockRespVO);
+                    stockCommon(stockRespMap, stockRespVO, str);
+                }else {
+                    stockCommon(stockRespMap, stockRespVO, str);
+                }
+            }
+            for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
+                lists.add(entry.getValue());
+            }
             Integer total = stockDao.countStockSumInfoByPage(stockRequest);
-            return new PageResData<>(total, stockList);
+            return new PageResData<>(total, lists);
         } catch (Exception e) {
-            LOGGER.error("库存列表查询失败", e);
+            LOGGER.error("中央列表查询失败", e);
             throw new GroundRuntimeException(e.getMessage());
+        }
+    }
+
+    private void stockCommon(HashMap<String, StockRespVO> stockRespMap, StockRespVO stockRespVO, String str) {
+        StockRespVO key = stockRespMap.get(str);
+        if(stockRespVO.getWarehouseType() != null){
+            if(stockRespVO.getWarehouseType().equals("销售库")){
+                key.setSaleNum(stockRespVO.getAvailableNum());
+                key.setSaleLockNum(stockRespVO.getLockNum());
+                key.setSaleWayNum(stockRespVO.getTotalWayNum());
+                key.setPurchaseWayNum(stockRespVO.getPurchaseWayNum());
+            }else if (stockRespVO.getWarehouseType().equals("赠品库")){
+                key.setGiftNum(stockRespVO.getAvailableNum());
+                key.setGiftLockNum(stockRespVO.getLockNum());
+                key.setGiftWayNum(stockRespVO.getTotalWayNum());
+                key.setGiftPurchaseWayNum(stockRespVO.getPurchaseWayNum());
+            }else if (stockRespVO.getWarehouseType().equals("特卖库")){
+                key.setSpecialSaleNum(stockRespVO.getAvailableNum());
+                key.setSpecialSaleLockNum(stockRespVO.getLockNum());
+                key.setSpecialSaleWayNum(stockRespVO.getSpecialSaleWayNum());
+            }else if(stockRespVO.getWarehouseType().equals("残品库")){
+                key.setBadNum(stockRespVO.getAvailableNum());
+                key.setBadLockNum(stockRespVO.getLockNum());
+                key.setBadWayNum(stockRespVO.getBadWayNum());
+            }
+            stockRespMap.put(str,key);
         }
     }
 
@@ -189,8 +229,22 @@ public class StockServiceImpl implements StockService {
         try {
             LOGGER.info("物流中心库存列表查询");
             List<StockRespVO> stockList = stockDao.selectTransportStockInfoByPage(stockRequest);
+            HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
+            List<StockRespVO> lists = new ArrayList<>();
+            for (StockRespVO stockRespVO : stockList) {
+                String str = stockRespVO.getTransportCenterCode()+ stockRespVO.getSkuCode();
+                if(stockRespMap.get(str) == null){
+                    stockRespMap.put(str,stockRespVO);
+                    stockCommon(stockRespMap, stockRespVO, str);
+                }else {
+                    stockCommon(stockRespMap, stockRespVO, str);
+                }
+            }
+            for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
+                lists.add(entry.getValue());
+            }
             Integer total = stockDao.countTransportStockInfoByPage(stockRequest);
-            return new PageResData<>(total, stockList);
+            return new PageResData<>(total, lists);
         } catch (Exception e) {
             LOGGER.error("物流中心库存列表查询失败", e);
             throw new GroundRuntimeException(e.getMessage());

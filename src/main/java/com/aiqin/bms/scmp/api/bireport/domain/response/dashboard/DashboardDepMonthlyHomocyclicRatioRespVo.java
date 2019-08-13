@@ -64,4 +64,12 @@ public class DashboardDepMonthlyHomocyclicRatioRespVo {
     @ApiModelProperty("分销毛利额")
     @JsonProperty("distribution_margin")
     private Long distributionMargin;
+
+    @ApiModelProperty("渠道成本同比")
+    @JsonProperty("channel_costs_yearonyear")
+    private Long channelCostsYearonyear;
+
+    @ApiModelProperty("渠道成本环比")
+    @JsonProperty("channel_costs_link_relative")
+    private Long channelCostsLinkRelative;
 }

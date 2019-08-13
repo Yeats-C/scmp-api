@@ -15,18 +15,11 @@
     <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
-    <result column="ext_field_1" jdbcType="VARCHAR" property="extField1" />
-    <result column="ext_field_2" jdbcType="VARCHAR" property="extField2" />
-    <result column="ext_field_3" jdbcType="VARCHAR" property="extField3" />
-    <result column="ext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-    <result column="ext_field_5" jdbcType="INTEGER" property="extField5" />
-    <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
   </resultMap>
 
   <sql id="Base_Column_List">
     id, code, name, official_code, be_disable, create_by, create_time, update_by, update_time, 
-    apply_type, company_code, company_name, ext_field_1, ext_field_2, ext_field_3, ext_field_4, 
-    ext_field_5, ext_field_6
+    apply_type, company_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -101,12 +94,6 @@
     <result column="aapply_type" jdbcType="INTEGER" property="applyType" />
     <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="acompany_name" jdbcType="VARCHAR" property="companyName" />
-    <result column="aext_field_1" jdbcType="VARCHAR" property="extField1" />
-    <result column="aext_field_2" jdbcType="VARCHAR" property="extField2" />
-    <result column="aext_field_3" jdbcType="VARCHAR" property="extField3" />
-    <result column="aext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-    <result column="aext_field_5" jdbcType="INTEGER" property="extField5" />
-    <result column="aext_field_6" jdbcType="BIGINT" property="extField6" />
     <collection property="channelList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaChannelDraft">
       <!--<id column="bid" jdbcType="BIGINT" property="id" />-->
       <result column="bcode" jdbcType="VARCHAR" property="code" />
@@ -114,12 +101,6 @@
       <result column="bprice_channel_name" jdbcType="VARCHAR" property="priceChannelName" />
       <result column="bcompany_code" jdbcType="VARCHAR" property="companyCode" />
       <result column="bcompany_name" jdbcType="VARCHAR" property="companyName" />
-      <result column="bext_field_1" jdbcType="VARCHAR" property="extField1" />
-      <result column="bext_field_2" jdbcType="VARCHAR" property="extField2" />
-      <result column="bext_field_3" jdbcType="VARCHAR" property="extField3" />
-      <result column="bext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-      <result column="bext_field_5" jdbcType="INTEGER" property="extField5" />
-      <result column="bext_field_6" jdbcType="BIGINT" property="extField6" />
     </collection>
     <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaDraft">
       <!--<id column="cid" jdbcType="BIGINT" property="id" />-->
@@ -137,12 +118,6 @@
       <result column="cupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
       <result column="ccompany_code" jdbcType="VARCHAR" property="companyCode" />
       <result column="ccompany_name" jdbcType="VARCHAR" property="companyName" />
-      <result column="cext_field_1" jdbcType="VARCHAR" property="extField1" />
-      <result column="cext_field_2" jdbcType="VARCHAR" property="extField2" />
-      <result column="cext_field_3" jdbcType="VARCHAR" property="extField3" />
-      <result column="cext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-      <result column="cext_field_5" jdbcType="INTEGER" property="extField5" />
-      <result column="cext_field_6" jdbcType="BIGINT" property="extField6" />
     </collection>
     <collection property="areaList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaInfoDraft">
       <!--<id column="did" jdbcType="BIGINT" property="id" />-->
@@ -155,12 +130,6 @@
       <result column="dcompany_code" jdbcType="VARCHAR" property="companyCode" />
       <result column="dcompany_name" jdbcType="VARCHAR" property="companyName" />
       <result column="dprovince_id" jdbcType="VARCHAR" property="provinceId" />
-      <result column="dext_field_1" jdbcType="VARCHAR" property="extField1" />
-      <result column="dext_field_2" jdbcType="VARCHAR" property="extField2" />
-      <result column="dext_field_3" jdbcType="VARCHAR" property="extField3" />
-      <result column="dext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-      <result column="dext_field_5" jdbcType="INTEGER" property="extField5" />
-      <result column="dext_field_6" jdbcType="BIGINT" property="extField6" />
     </collection>
   </resultMap>
   <select id="selectDataByCodes" resultMap="selectDataByCodes" parameterType="list">
@@ -176,24 +145,12 @@
        a.apply_type aapply_type,
        a.company_code acompany_code,
        a.company_name acompany_name,
-       a.ext_field_1 aext_field_1,
-       a.ext_field_2 aext_field_2,
-       a.ext_field_3 aext_field_3,
-       a.ext_field_4 aext_field_4,
-       a.ext_field_5 aext_field_5,
-       a.ext_field_6 aext_field_6,
        b.id bid,
        b.code bcode,
        b.price_channel_code bprice_channel_code,
        b.price_channel_name bprice_channel_name,
        b.company_code bcompany_code,
        b.company_name bcompany_name,
-       b.ext_field_1 bext_field_1,
-       b.ext_field_2 bext_field_2,
-       b.ext_field_3 bext_field_3,
-       b.ext_field_4 bext_field_4,
-       b.ext_field_5 bext_field_5,
-       b.ext_field_6 bext_field_6,
        c.id cid,
        c.code ccode,
        c.sku_code csku_code,
@@ -209,12 +166,6 @@
        c.update_time cupdate_time,
        c.company_code ccompany_code,
        c.company_name ccompany_name,
-       c.ext_field_1 cext_field_1,
-       c.ext_field_2 cext_field_2,
-       c.ext_field_3 cext_field_3,
-       c.ext_field_4 cext_field_4,
-       c.ext_field_5 cext_field_5,
-       c.ext_field_6 cext_field_6,
        d.id did,
        d.main_code dmain_code,
        d.sku_code dsku_code,
@@ -224,13 +175,7 @@
        d.code dcode,
        d.company_code dcompany_code,
        d.company_name dcompany_name,
-       d.province_id dprovince_id,
-       d.ext_field_1 dext_field_1,
-       d.ext_field_2 dext_field_2,
-       d.ext_field_3 dext_field_3,
-       d.ext_field_4 dext_field_4,
-       d.ext_field_5 dext_field_5,
-       d.ext_field_6 dext_field_6
+       d.province_id dprovince_id
 from product_sku_sale_area_main_draft a
        left join product_sku_sale_area_channel_draft b
                  on a.code = b.code
@@ -264,16 +209,12 @@ where a.code in
     insert into product_sku_sale_area_main_draft (id, code, name, 
       official_code, be_disable, create_by, 
       create_time, update_by, update_time, 
-      apply_type, company_code, company_name, 
-      ext_field_1, ext_field_2, ext_field_3, 
-      ext_field_4, ext_field_5, ext_field_6
+      apply_type, company_code, company_name
       )
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
       #{officialCode,jdbcType=VARCHAR}, #{beDisable,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{applyType,jdbcType=INTEGER}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
-      #{extField1,jdbcType=VARCHAR}, #{extField2,jdbcType=VARCHAR}, #{extField3,jdbcType=VARCHAR}, 
-      #{extField4,jdbcType=TIMESTAMP}, #{extField5,jdbcType=INTEGER}, #{extField6,jdbcType=BIGINT}
+      #{applyType,jdbcType=INTEGER}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMainDraft">
@@ -315,24 +256,6 @@ where a.code in
       <if test="companyName != null">
         company_name,
       </if>
-      <if test="extField1 != null">
-        ext_field_1,
-      </if>
-      <if test="extField2 != null">
-        ext_field_2,
-      </if>
-      <if test="extField3 != null">
-        ext_field_3,
-      </if>
-      <if test="extField4 != null">
-        ext_field_4,
-      </if>
-      <if test="extField5 != null">
-        ext_field_5,
-      </if>
-      <if test="extField6 != null">
-        ext_field_6,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -371,24 +294,6 @@ where a.code in
       <if test="companyName != null">
         #{companyName,jdbcType=VARCHAR},
       </if>
-      <if test="extField1 != null">
-        #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        #{extField6,jdbcType=BIGINT},
-      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaMainDraft">
@@ -424,24 +329,6 @@ where a.code in
       <if test="companyName != null">
         company_name = #{companyName,jdbcType=VARCHAR},
       </if>
-      <if test="extField1 != null">
-        ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        ext_field_5 = #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        ext_field_6 = #{extField6,jdbcType=BIGINT},
-      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -456,13 +343,7 @@ where a.code in
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       apply_type = #{applyType,jdbcType=INTEGER},
       company_code = #{companyCode,jdbcType=VARCHAR},
-      company_name = #{companyName,jdbcType=VARCHAR},
-      ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      ext_field_5 = #{extField5,jdbcType=INTEGER},
-      ext_field_6 = #{extField6,jdbcType=BIGINT}
+      company_name = #{companyName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

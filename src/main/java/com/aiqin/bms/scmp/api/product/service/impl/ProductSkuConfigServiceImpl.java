@@ -993,6 +993,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             Map<String,String> skuCodeMap = Maps.newHashMap();
             for (int i = 0; i < skuConfigImport.size(); i++) {
                 SaveSkuConfigReqVo reqVo = validData(productSkuList,centerList,skuCodeMap,skuConfigImport.get(i),purchaseGroupCode);
+                String error = reqVo.getError();
+                if (StringUtils.isNotBlank(error)) {
+                    error = "第"+(i+1)+"行 "+error;
+                    reqVo.setError(error);
+                }
                 list.add(reqVo);
             }
             return list;
@@ -1033,6 +1038,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             Map<String,String> skuCodeMap = Maps.newHashMap();
             for (int i = 0; i < skuSupplierImport.size(); i++) {
                 ProductSkuSupplyUnitDraft reqVo = validData2(productSkuMap,supplyCompanyMap,skuCodeMap,dicMap,skuSupplierImport.get(i),purchaseGroupCode);
+                String error = reqVo.getError();
+                if (StringUtils.isNotBlank(error)) {
+                    error = "第"+(i+1)+"行 "+error;
+                    reqVo.setError(error);
+                }
                 list.add(reqVo);
             }
             return list;

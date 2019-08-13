@@ -1791,7 +1791,6 @@
       <result column="priceAttributeCode" property="priceAttributeCode"/>
       <result column="priceAttributeName" property="priceAttributeName"/>
       <result column="oldPrice" property="oldPrice"/>
-      <result column="taxCost" property="taxCost"/>
     </collection>
     <collection property="supplierInfoVOS" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO">
       <result column="supplierCode" property="supplierCode"/>
@@ -1799,6 +1798,7 @@
       <result column="isDefault" property="beDefault"/>
       <result column="purchasePriceOld" property="purchasePriceOld"/>
       <result column="purchasePriceNewest" property="purchasePriceNewest"/>
+      <result column="taxCost" property="taxCost"/>
     </collection>
   </resultMap>
   <select id="selectSkuListForPurchasePrice" parameterType="java.util.List"
