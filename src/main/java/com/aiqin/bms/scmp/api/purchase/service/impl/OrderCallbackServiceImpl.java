@@ -513,7 +513,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             stockVoRequest.setDocumentNum(inboundOderCode);
             stockVoRequest.setSourceDocumentType((int) OutboundTypeEnum.ORDER.getCode());
             stockVoRequest.setSourceDocumentNum(returnOrderInfo.getReturnOrderCode());
-            stockVoRequest.setOperator(returnOrderInfo.getCreateById());
+            stockVoRequest.setOperator(returnOrderInfo.getCreateByName());
             list.add(stockVoRequest);
         }
         return list;
