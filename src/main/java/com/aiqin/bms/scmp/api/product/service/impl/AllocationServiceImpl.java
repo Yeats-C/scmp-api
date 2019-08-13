@@ -208,16 +208,35 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int revocation(Long id) {
-
         Allocation allocation = allocationMapper.selectByPrimaryKey(id);
+        AllocationDTO allocationDTO  = allocationMapper.selectByFormNO1(allocation.getFormNo());
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setFormNo(allocation.getFormNo());
         // 调用审批流的撤销接口
         WorkFlowRespVO workFlowRespVO = cancelWorkFlow(workFlowVO);
-        if(workFlowRespVO.getSuccess().equals(true)){
+        if(workFlowRespVO.getSuccess()){
+            allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_CANCEL.getStatus());
+            allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_CANCEL.getName());
+            ((AllocationService) AopContext.currentProxy()).updateByPrimaryKeySelective(allocation);
+            // 打印撤销的日志
+            String content = ApplyStatus.APPROVAL_FAILED.getContent().replace("CREATEBY", allocation.getUpdateBy()).replace("AUDITORBY",  getUser().getPersonName());
+            supplierCommonService.getInstance(
+                    allocation.getAllocationCode()+"",
+                    HandleTypeCoce.REVOKED.getStatus(),
+                    ObjectTypeCode.ALLOCATION.getStatus(),
+                    content, null,
+                    HandleTypeCoce.REVOKED.getName(),
+                    getUser().getPersonName()
+            );
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            stockChangeRequest.setOperationType(3);
+            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
+            List<StockVoRequest> list1 = allocationProductTransStock(allocation,allocationDTO.getProducts());
+            stockChangeRequest.setStockVoRequests(list1);
+            stockService.changeStock(stockChangeRequest);
             return 1;
         }else {
-            throw  new GroundRuntimeException("撤销失败");
+            throw  new GroundRuntimeException(workFlowRespVO.getMsg());
         }
 
     }

@@ -8,6 +8,9 @@ import com.aiqin.bms.scmp.api.product.domain.request.scrap.ScrapReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo;
 import com.aiqin.bms.scmp.api.product.service.ScrapService;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -90,7 +93,9 @@ public class ScrapController {
     public HttpResponse<Integer> revocation(Long id) {
         try {
             return  HttpResponse.success(ScrapService.revocation(id));
-        }catch ( Exception e){
+        } catch (GroundRuntimeException e) {
+            return HttpResponse.failure(MessageId.create(Project.PRODUCT_API,52,e.getMessage()));
+        } catch ( Exception e){
             return HttpResponse.failure(ResultCode.MOVEMENT_RECOVER);
         }
     }

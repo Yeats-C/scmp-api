@@ -92,7 +92,7 @@
       and warehouse_name like CONCAT('%',#{warehouseName},'%')
     </if>
     <if test="companyCode != null and companyCode != '' ">
-      and companyCode = #{companyCode,jdbcType=VARCHAR}
+      and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
     order by create_time desc
   </select>

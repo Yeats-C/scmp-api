@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -93,6 +94,7 @@ public class AccountInfoServiceImpl implements AccountInfoService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse addAccount(AccountRequest accountRequest, String ticket, String personId) {
         if (CollectionUtils.isEmpty(accountRequest.getRoleIds())) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -180,6 +182,7 @@ public class AccountInfoServiceImpl implements AccountInfoService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse updateAccount(AccountRequest request, String ticket, String personId) {
 
         Account account = new Account();

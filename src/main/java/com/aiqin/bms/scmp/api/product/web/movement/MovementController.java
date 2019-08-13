@@ -7,6 +7,9 @@ import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
 import com.aiqin.bms.scmp.api.product.service.MovementService;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -85,7 +88,9 @@ public class MovementController {
     public HttpResponse<Integer> revocation(Long id){
         try {
             return  HttpResponse.success(movementService.revocation(id));
-        }catch ( Exception e){
+        } catch (GroundRuntimeException e) {
+            return HttpResponse.failure(MessageId.create(Project.PRODUCT_API,52,e.getMessage()));
+        } catch ( Exception e){
             return HttpResponse.failure(ResultCode.MOVEMENT_RECOVER);
         }
     }
