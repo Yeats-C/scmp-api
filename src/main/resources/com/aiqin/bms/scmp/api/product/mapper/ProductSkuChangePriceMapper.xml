@@ -291,6 +291,8 @@
              b.purchase_price_new bpurchase_price_new,
              b.old_price bold_price,
              b.new_price bnew_price,
+             b.new_gross_profit_margin bnew_gross_profit_margin,
+             b.old_gross_profit_margin bold_gross_profit_margin,
              b.warehouse_batch_number bwarehouse_batch_number,
              b.warehouse_batch_name bwarehouse_batch_name,
              b.change_price_reason_code bchange_price_reason_code,
