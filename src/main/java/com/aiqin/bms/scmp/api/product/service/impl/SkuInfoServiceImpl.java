@@ -178,12 +178,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //临时表
             int count = productSkuDraftMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
             if(count > 0 ){
-                throw new BizException(ResultCode.SKU_NAME_EXISTS);
+                throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
             }
             //申请表
             count = applyProductSkuMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
             if(count > 0 ){
-                throw new BizException(ResultCode.SKU_NAME_EXISTS);
+                throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
             }
             //计算状态
             if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuConfigs())) {
