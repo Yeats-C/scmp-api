@@ -455,6 +455,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     throw new GroundRuntimeException("审批流撤销失败!");
                 }
                 applyPurchaseOrderDao.update(purchaseOrder);
+            }else {
+                // 取消在途数
+                this.wayNum(purchaseOrderId);
             }
         }
         // 添加操作日志

@@ -126,10 +126,16 @@ public interface Global {
      * 主商品
      */
     Byte MAIN_PRODUCT = Byte.valueOf("1");
-
     Byte BYTE_ZERO = Byte.valueOf("0");
     Byte BYTE_ONE = Byte.valueOf("1");
 
-
+    /**
+     * 仓库编码
+     */
+    String HB_CODE = "1081";
+    String XN_CODE = "1082";
+    String HD_CODE = "1083";
+    String HN_CODE = "1084";
+    String HZ_CODE = "1085";
 
 }

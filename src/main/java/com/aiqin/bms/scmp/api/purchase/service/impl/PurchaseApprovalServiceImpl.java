@@ -67,9 +67,8 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
             PurchaseOrder purchaseOrder = new PurchaseOrder();
             purchaseOrder.setPurchaseOrderCode(vo1.getFormNo());
             PurchaseOrder order = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-            purchaseOrder.setPurchaseOrderId(order.getPurchaseOrderId());
-            purchaseOrder.setUpdateById(vo1.getApprovalUserCode());
-            purchaseOrder.setUpdateByName(vo1.getApprovalUserName());
+            order.setUpdateById(vo1.getApprovalUserCode());
+            order.setUpdateByName(vo1.getApprovalUserName());
             if(order == null){
                 LOGGER.info("采购单为空");
                 return WorkFlowReturn.FALSE;
@@ -80,27 +79,27 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
 
             if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
                 //审批失败
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_10);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
-                applyPurchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_10);
+                Integer count = purchaseOrderDao.update(order);
+                applyPurchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT_NOT.getCode(), PurchaseOrderLogEnum.CHECKOUT_NOT.getName(), null);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
                 // 审批中
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_1);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
-                applyPurchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_1);
+                Integer count = purchaseOrderDao.update(order);
+                applyPurchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批中操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
                         PurchaseOrderLogEnum.CHECKOUT.getCode(), PurchaseOrderLogEnum.CHECKOUT.getName(), null);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 //审批成功
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_2);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
-                applyPurchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_2);
+                Integer count = purchaseOrderDao.update(order);
+                applyPurchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
@@ -108,9 +107,9 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 this.updateWayNum(order.getPurchaseOrderId());
             } else if(Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())){
                 // 审批撤销
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_9);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
-                applyPurchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_9);
+                Integer count = purchaseOrderDao.update(order);
+                applyPurchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
