@@ -13,29 +13,17 @@ import java.io.Serializable;
 @Data
 public class MonthSalesAchievementReqVo extends PagesRequest implements Serializable {
 
-    @ApiModelProperty("所属部门编码")
-    @JsonProperty("product_sort_code")
-    private String productSortCode;
-
-    @ApiModelProperty("所属部门")
-    @JsonProperty("product_sort_name")
-    private String productSortName;
+    @ApiModelProperty("月份")
+    @JsonProperty("month")
+    private String month;
 
     @ApiModelProperty("渠道编码")
-    @JsonProperty("order_code")
-    private String orderCode;
+    @JsonProperty("price_channel_code")
+    private String priceChannelCode;
 
     @ApiModelProperty("渠道")
-    @JsonProperty("order_original")
-    private String orderOriginal;
-
-    @ApiModelProperty("门店类型code")
-    @JsonProperty("store_type_code")
-    private String storeTypeCode;
-
-    @ApiModelProperty("门店类型名称")
-    @JsonProperty("store_type")
-    private String storeType;
+    @JsonProperty("price_channel_name")
+    private String priceChannelName;
 
     @ApiModelProperty("数据类型code")
     @JsonProperty("data_type_code")
@@ -45,13 +33,13 @@ public class MonthSalesAchievementReqVo extends PagesRequest implements Serializ
     @JsonProperty("data_type")
     private String dataType;
 
-    @ApiModelProperty("时间begin")
-    @JsonProperty("begin_create_time")
-    private String beginCreateTime;
+    @ApiModelProperty("门店类型code")
+    @JsonProperty("store_type_code")
+    private String storeTypeCode;
 
-    @ApiModelProperty("时间finish")
-    @JsonProperty("finish_create_time")
-    private String finishCreateTime;
+    @ApiModelProperty("门店类型名称")
+    @JsonProperty("store_type")
+    private String storeType;
 
     @ApiModelProperty("品类编码")
     @JsonProperty("category_code")
@@ -61,19 +49,26 @@ public class MonthSalesAchievementReqVo extends PagesRequest implements Serializ
     @JsonProperty("category_name")
     private String categoryName;
 
-    public MonthSalesAchievementReqVo(String productSortCode, String productSortName, String orderCode, String orderOriginal, String storeTypeCode, String storeType, String dataTypeCode, String dataType, String beginCreateTime, String finishCreateTime, String categoryCode, String categoryName) {
-        this.productSortCode = productSortCode;
-        this.productSortName = productSortName;
-        this.orderCode = orderCode;
-        this.orderOriginal = orderOriginal;
-        this.storeTypeCode = storeTypeCode;
-        this.storeType = storeType;
+    @ApiModelProperty("商品属性code(AB品)")
+    @JsonProperty("product_property_code")
+    private String productPropertyCode;
+
+    @ApiModelProperty("商品属性(AB品)")
+    @JsonProperty("product_property_name")
+    private String productPropertyName;
+
+    public MonthSalesAchievementReqVo(String month, String priceChannelCode, String priceChannelName, String dataTypeCode, String dataType, String storeTypeCode, String storeType, String categoryCode, String categoryName, String productPropertyCode, String productPropertyName) {
+        this.month = month;
+        this.priceChannelCode = priceChannelCode;
+        this.priceChannelName = priceChannelName;
         this.dataTypeCode = dataTypeCode;
         this.dataType = dataType;
-        this.beginCreateTime = beginCreateTime;
-        this.finishCreateTime = finishCreateTime;
+        this.storeTypeCode = storeTypeCode;
+        this.storeType = storeType;
         this.categoryCode = categoryCode;
         this.categoryName = categoryName;
+        this.productPropertyCode = productPropertyCode;
+        this.productPropertyName = productPropertyName;
     }
 
     public MonthSalesAchievementReqVo() {

@@ -63,10 +63,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -105,6 +102,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
      */
     private final static String COMPANY_CODE = "09";
     private final static String COMPANY_NAME = "宁波熙耘";
+    List<String> productTypeList = Arrays.asList("商品", "赠品", "实物返");
     @Resource
     private OrderInfoMapper orderInfoMapper;
     @Resource
@@ -556,7 +554,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse transfersOrder(TransfersRequest request) {
-        //TODO 调拨查询商品信息是查询库存的
         byte type;
         String typeName;
         String inboundOderCode = "";
@@ -757,9 +754,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         List<ProfitLoss> profitLossList = Lists.newArrayList();
         ProfitLossDetailRequest profitLossDetail;
         List<ProfitLossDetailRequest> profitLossProductList = Lists.newArrayList();
-//        取字典表数据
-//        List<InnerValue> dictionaryInfoList = supplierDictionaryInfoDao.allList();
-//        Map<String, InnerValue> dictionaryInfoMap = dictionaryInfoList.stream().collect(Collectors.toMap(InnerValue::getName, innerValue -> innerValue));
         List<String> skuList = request.getDetailList().stream().map(ProfitLossDetailRequest::getSkuCode).collect(Collectors.toList());
         List<OrderProductSkuResponse> productSkuList = productSkuDao.selectStockSkuInfoList(skuList);
         Map<String, OrderProductSkuResponse> productSkuResponseMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
@@ -779,6 +773,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             profitLoss.setLogisticsCenterCode(request.getLogisticsCenterCode());
             profitLoss.setLogisticsCenterName(request.getLogisticsCenterName());
             profitLoss.setRemark(request.getRemark());
+            profitLoss.setCompanyName(COMPANY_NAME);
+            profitLoss.setCompanyCode(COMPANY_CODE);
             profitLoss.setCreateBy(request.getCreateByName());
             profitLoss.setUpdateBy(request.getUpdateByName());
             profitLoss.setCreateTime(new DateTime(new Long(request.getCreateTime())).toDate());
@@ -792,7 +788,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 profitLossDetail.setQuantity(profitLossDetail.getQuantity());
                 if (profitLossDetailRequest.getQuantity() < 0) {
                     lossQuantity += profitLossDetailRequest.getQuantity();
-                }else{
+                } else {
                     profitQuantity += profitLossDetailRequest.getQuantity();
                 }
                 productSkuResponse = productSkuResponseMap.get(profitLossDetailRequest.getSkuCode());
@@ -802,6 +798,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     profitLossDetail.setBrand(productSkuResponse.getBrandName());
                     profitLossDetail.setColor(productSkuResponse.getColorName());
                     profitLossDetail.setSpecification(productSkuResponse.getSpec());
+                    profitLossDetail.setType(productTypeList.get(productSkuResponse.getProductType()));
                     profitLossDetail.setModel(productSkuResponse.getModel());
                     profitLossDetail.setUnit(productSkuResponse.getUnitName());
                     profitLossDetail.setTax(productSkuResponse.getTaxRate().longValue());

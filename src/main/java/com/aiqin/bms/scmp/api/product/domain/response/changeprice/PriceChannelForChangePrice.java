@@ -48,19 +48,21 @@ public class PriceChannelForChangePrice {
     private Long purchasePriceNewest = 0L;
 
     @ApiModelProperty("原毛利率")
-    private Long oldGrossProfitMargin;
+    private Long oldGrossProfitMargin=0L;
 
     @ApiModelProperty("成本")
-    private Long taxCost;
+    private Long taxCost=0L;
 
     @ApiModelProperty("平均成本")
-    private Long avgTaxCost;
+    private Long avgTaxCost=0L;
 
     public Long getOldGrossProfitMargin() {
-        if (Objects.isNull(this.oldPrice)||Objects.isNull(this.taxCost)||this.taxCost==0) {
+        this.avgTaxCost = this.oldPrice;
+        //销售类的变价
+        if(Objects.isNull(this.oldPrice)||this.oldPrice==0){
             return 0L;
+        }else {
+            return this.oldGrossProfitMargin = (this.oldPrice-taxCost)*100/this.oldPrice;
         }
-        this.avgTaxCost = taxCost;
-        return this.oldGrossProfitMargin = (this.oldPrice-taxCost)/this.avgTaxCost;
     }
 }

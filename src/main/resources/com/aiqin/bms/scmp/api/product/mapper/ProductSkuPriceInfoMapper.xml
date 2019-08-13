@@ -231,7 +231,7 @@
             <result column="ccode" jdbcType="VARCHAR" property="code"/>
         </collection>
     </resultMap>
-    <select id="selectListByQueryVO" resultMap="SelectListByQueryVO">
+    <select id="selectListByQueryVO" parameterType="java.util.List" resultMap="SelectListByQueryVO">
         select
         a.code acode,
         a.sku_code asku_code,
@@ -255,6 +255,29 @@
         c.type ctype,
         c.status cstatus,
         c.code ccode
+        from product_sku_price_info a
+        left join product_sku b
+        on a.sku_code = b.sku_code
+        left join product_sku_price_area_info c
+        on a.code = c.main_code
+        LEFT JOIN product_category lv4
+        on lv4.category_id = b.product_category_code
+        LEFT JOIN product_category lv3
+        on lv3.category_id = lv4.parent_id
+        LEFT JOIN product_category lv2
+        on lv2.category_id = lv3.parent_id
+        LEFT JOIN product_category lv1
+        on lv1.category_id = lv2.parent_id
+        where a.id in
+        <foreach collection="list" open="(" close=")" item="item" separator=",">
+             #{item}
+        </foreach>
+        order by a.create_time desc
+    </select>
+
+    <select id="selectListByQueryVOCount" resultType="java.lang.Long">
+        select
+        a.id
         from product_sku_price_info a
         left join product_sku b
         on a.sku_code = b.sku_code
@@ -335,6 +358,7 @@
         <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
             and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
         </if>
+        group by a.id
         order by a.create_time desc
     </select>
     <resultMap id="selectInfoByCode"

@@ -55,7 +55,7 @@ public interface GoodsRejectService {
 
     HttpResponse<RejectResponse> rejectInfo(String rejectApplyQueryRequest);
 
-    HttpResponse<PageResData<RejectImportResponse>> rejectApplyImport(MultipartFile file, String purchaseGroupCode);
+    HttpResponse<List<RejectImportResponse>> rejectApplyImport(MultipartFile file, String purchaseGroupCode);
 
     HttpResponse updateRejectApply(RejectApplyHandleRequest rejectApplyQueryRequest);
 

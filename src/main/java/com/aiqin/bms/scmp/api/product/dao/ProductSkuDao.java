@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
-import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.SkuWarehouseStockNum;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
@@ -21,9 +20,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryMerchantSkuL
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreProductListReqDTO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkuListReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkusReqVO;
-import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaSupplierInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
@@ -33,7 +30,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.*;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
@@ -242,7 +238,9 @@ public interface ProductSkuDao {
      * @param vo
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.changeprice.QuerySkuInfoRespVO>
      */
-    List<QuerySkuInfoRespVO> selectSkuListForSalePrice(QuerySkuInfoReqVO vo);
+    List<QuerySkuInfoRespVO> selectSkuListForSalePrice(@Param("list") List<Long> list, @Param("changePriceType") String changePriceType);
+
+    List<Long> selectSkuListForSalePriceCount(QuerySkuInfoReqVO vo);
     /**
      * 采购类变价查询sku列表
      * @author NullPointException
@@ -250,7 +248,14 @@ public interface ProductSkuDao {
      * @param vo
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.changeprice.QuerySkuInfoRespVO>
      */
-    List<QuerySkuInfoRespVO> selectSkuListForPurchasePrice(QuerySkuInfoReqVO vo);
+    List<QuerySkuInfoRespVO> selectSkuListForPurchasePrice(List<Long> ids);
+
+    /**
+     * 查数量
+     * @param vo
+     * @return
+     */
+    List<Long> selectSkuListForPurchasePriceCount(QuerySkuInfoReqVO vo);
     /**
      * 查直送供应商
      * @author NullPointException
@@ -277,10 +282,6 @@ public interface ProductSkuDao {
     List<Long> selectSkuListForSaleAreaCount(QueryProductSaleAreaForSkuReqVO reqVO);
 
     List<SupervisoryWarehouseSkuRespVo> getSupervisoryWarehouseSku(QuerySkuListReqVO querySkuListReqVO);
-
-    List<PriceChannelForChangePrice>  getSaleChannelList();
-
-    List<ProductSaleAreaSupplierInfo> getSupplier();
 
     List<ProductSkuInfo> getSkuInfoByCodeList(@Param("skuCodeList")List<String> skuCodeList);
 

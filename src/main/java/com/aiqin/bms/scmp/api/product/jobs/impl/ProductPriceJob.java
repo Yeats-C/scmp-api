@@ -29,7 +29,7 @@ public class ProductPriceJob {
      * 每天晚上零点统计产品成本价
      */
     @Scheduled(cron = "0 0 0 * * ?")
-   // @Scheduled(cron = "*/2 * * * * ?")
+   // @Scheduled(cron = "* */4 * * * ?")
     public void productPrice() {
         //查询仓库数
         List<Stock> warehouse = stockService.selectGroup();
@@ -77,7 +77,7 @@ public class ProductPriceJob {
         if(taxCostLogStock == null){
             taxCostLogDao.insertOneSku(list);
         }else{
-            return;
+            taxCostLogDao.updateOneSku(list);
         }
     }
 }

@@ -522,33 +522,31 @@ public class ReportController {
     @GetMapping("/search/monthly/sales")
     @ApiOperation("月销售情况(带分页)")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
-            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
-            @ApiImplicitParam(name = "order_code", value = "渠道编码", type = "String"),
-            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
-            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "month", value = "月份", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
+            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性code(AB品)", type = "String"),
+            @ApiImplicitParam(name = "product_property_name", value = "商品属性(AB品)", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
     public HttpResponse<PageReportResData<MonthlySalesRespVo>> selectMonthlySales(
-            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_name", required = false) String productSortName,
-            @RequestParam(value = "order_code", required = false) String orderCode,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
-            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
-            @RequestParam(value = "store_type", required = false) String storeType,
+            @RequestParam(value = "month", required = false) String month,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
+            @RequestParam(value = "store_type", required = false) String storeType,
+            @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+            @RequestParam(value = "product_property_name", required = false) String productPropertyName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        MonthlySalesReqVo monthlySalesReqVo = new MonthlySalesReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,beginCreateTime,finishCreateTime);
+        MonthlySalesReqVo monthlySalesReqVo = new MonthlySalesReqVo(month,priceChannelCode,priceChannelName,dataTypeCode,dataType,storeTypeCode,storeType,productPropertyCode,productPropertyName);
         monthlySalesReqVo.setPageNo(pageNo);
         monthlySalesReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthlySales(monthlySalesReqVo));
@@ -565,8 +563,7 @@ public class ReportController {
             @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "month", value = "时间begin", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
@@ -579,11 +576,10 @@ public class ReportController {
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "month", required = false) String month,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        MonthlySalesReqVo monthlyGrossMarginReqVo = new MonthlySalesReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,beginCreateTime,finishCreateTime);
+        MonthlySalesReqVo monthlyGrossMarginReqVo = new MonthlySalesReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,month);
         monthlyGrossMarginReqVo.setPageNo(pageNo);
         monthlyGrossMarginReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthlyGrossMargin(monthlyGrossMarginReqVo));
@@ -608,21 +604,20 @@ public class ReportController {
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
     public HttpResponse<PageReportResData<MonthSalesAchievementRespVo>> selectMonthSalesAchievement(
-            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_name", required = false) String productSortName,
-            @RequestParam(value = "order_code", required = false) String orderCode,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
+            @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+            @RequestParam(value = "product_property_name", required = false) String productPropertyName,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
             @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "begin_create_time", required = false) String month,
             @RequestParam(value = "category_code", required = false) String categoryCode,
             @RequestParam(value = "category_name", required = false) String categoryName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        MonthSalesAchievementReqVo monthSalesAchievementReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,beginCreateTime,finishCreateTime,categoryCode,categoryName);
+        MonthSalesAchievementReqVo monthSalesAchievementReqVo = new MonthSalesAchievementReqVo(month,priceChannelCode,priceChannelName,dataTypeCode,dataType,storeTypeCode,storeType,categoryCode,categoryName,productPropertyCode,productPropertyName);
         monthSalesAchievementReqVo.setPageNo(pageNo);
         monthSalesAchievementReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthSalesAchievement(monthSalesAchievementReqVo));
@@ -631,37 +626,35 @@ public class ReportController {
     @GetMapping("/search/month/cumulative/brand/sales")
     @ApiOperation("月累计品类销售情况(带分页)")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
-            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
-            @ApiImplicitParam(name = "order_code", value = "渠道编码", type = "String"),
-            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
-            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
+            @ApiImplicitParam(name = "month", value = "月份", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
             @ApiImplicitParam(name = "data_type_code", value = "数据类型code", type = "String"),
             @ApiImplicitParam(name = "data_type", value = "数据类型", type = "String"),
-            @ApiImplicitParam(name = "begin_create_time", value = "时间begin", type = "String"),
-            @ApiImplicitParam(name = "finish_create_time", value = "时间finish", type = "String"),
+            @ApiImplicitParam(name = "store_type_code", value = "门店类型code", type = "String"),
+            @ApiImplicitParam(name = "store_type", value = "门店类型", type = "String"),
             @ApiImplicitParam(name = "category_code", value = "品类编码", type = "String"),
             @ApiImplicitParam(name = "category_name", value = "品类名称", type = "String"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性编码", type = "String"),
+            @ApiImplicitParam(name = "product_property_name", value = "商品属性名称", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
     public HttpResponse<PageReportResData<MonthCumulativeBrandSalesRespVo>> selectMonthCumulativeBrandSales(
-            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_name", required = false) String productSortName,
-            @RequestParam(value = "order_code", required = false) String orderCode,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
-            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
-            @RequestParam(value = "store_type", required = false) String storeType,
+            @RequestParam(value = "month", required = false) String month,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
+            @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "category_code", required = false) String categoryCode,
             @RequestParam(value = "category_name", required = false) String categoryName,
+            @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+            @RequestParam(value = "product_property_name", required = false) String productPropertyName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,beginCreateTime,finishCreateTime,categoryCode,categoryName);
+        MonthSalesAchievementReqVo monthCumulativeBrandSalesReqVo = new MonthSalesAchievementReqVo(month,priceChannelCode,priceChannelName,dataTypeCode,dataType,storeTypeCode,storeType,categoryCode,categoryName,productPropertyCode,productPropertyName);
         monthCumulativeBrandSalesReqVo.setPageNo(pageNo);
         monthCumulativeBrandSalesReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthCumulativeBrandSales(monthCumulativeBrandSalesReqVo));
@@ -686,21 +679,20 @@ public class ReportController {
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
     public HttpResponse<PageReportResData<MonthCumulativeGrossProfitMarginRespVo>> selectMonthCumulativeGrossProfitMargin(
-            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-            @RequestParam(value = "product_sort_name", required = false) String productSortName,
-            @RequestParam(value = "order_code", required = false) String orderCode,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
+            @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+            @RequestParam(value = "product_property_name", required = false) String productPropertyName,
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
             @RequestParam(value = "store_type_code", required = false) String storeTypeCode,
             @RequestParam(value = "store_type", required = false) String storeType,
             @RequestParam(value = "data_type_code", required = false) String dataTypeCode,
             @RequestParam(value = "data_type", required = false) String dataType,
-            @RequestParam(value = "begin_create_time", required = false) String beginCreateTime,
-            @RequestParam(value = "finish_create_time", required = false) String finishCreateTime,
+            @RequestParam(value = "begin_create_time", required = false) String month,
             @RequestParam(value = "category_code", required = false) String categoryCode,
             @RequestParam(value = "category_name", required = false) String categoryName,
             @RequestParam(value = "page_no", required = false) Integer pageNo,
             @RequestParam(value = "page_size", required = false) Integer pageSize){
-        MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo = new MonthSalesAchievementReqVo(productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType,beginCreateTime,finishCreateTime,categoryCode,categoryName);
+        MonthSalesAchievementReqVo monthCumulativeGrossProfitMarginReqVo = new MonthSalesAchievementReqVo(month,priceChannelCode,priceChannelName,dataTypeCode,dataType,storeTypeCode,storeType,categoryCode,categoryName,productPropertyCode,productPropertyName);
         monthCumulativeGrossProfitMarginReqVo.setPageNo(pageNo);
         monthCumulativeGrossProfitMarginReqVo.setPageSize(pageSize);
         return HttpResponse.success(reportService.selectMonthCumulativeGrossProfitMargin(monthCumulativeGrossProfitMarginReqVo));

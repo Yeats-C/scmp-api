@@ -751,6 +751,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 CheckSupply checkSupply = new CheckSupply(supplierImportNew, areaTree, supplyCompanies, null, supplierList, dictionaryInfoList)
                         .checkSupplyNew()
                         .checkCommonData();
+                String error = checkSupply.getSupplierImport().getError();
+                if (StringUtils.isNotBlank(error)) {
+                    error = "第"+(i+1)+"行 "+error;
+                    checkSupply.getSupplierImport().setError(error);
+                }
                 applyList.add(checkSupply.getReqVO());
                 importVos.add(checkSupply.getSupplierImport());
             }
@@ -794,6 +799,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                         .checkSupplyUpdate()
                         .checkCommonData();
                 applyList.add(checkSupply.getReqVO());
+                String error = checkSupply.getSupplierImport().getError();
+                if (StringUtils.isNotBlank(error)) {
+                    error = "第"+(i+1)+"行 "+error;
+                    checkSupply.getSupplierImport().setError(error);
+                }
                 importVos.add(checkSupply.getSupplierImport());
             }
             return new SupplierImportResp(applyList,importVos);

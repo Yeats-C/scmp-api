@@ -332,6 +332,70 @@
              on d.main_code = a.code
       where a.code = #{code}
   </select>
+    <select id="selectInfoByFormNo1" resultMap="selectInfoByCode">
+          select
+             a.code acode,
+             a.change_price_name achange_price_name,
+             a.change_price_type achange_price_type,
+             a.name aname,
+             a.purchase_group_name apurchase_group_name,
+             a.purchase_group_code apurchase_group_code,
+             a.remake aremake,
+             a.direct_supervisor_code adirect_supervisor_code,
+             a.direct_supervisor_name adirect_supervisor_name,
+             a.cost_bearer_code acost_bearer_code,
+             a.cost_bearer_name acost_bearer_name,
+             a.budget abudget,
+             a.form_no aform_no,
+             a.apply_status aapply_status,
+             a.company_code acompany_code,
+             a.create_by acreate_by,
+             a.create_time acreate_time,
+             a.update_by aupdate_by,
+             a.update_time aupdate_time,
+             b.sku_code bsku_code,
+             b.sku_name bsku_name,
+             b.purchase_price_newest bpurchase_price_newest,
+             b.supplier_code bsupplier_code,
+             b.supplier_name bsupplier_name,
+             b.be_default bbe_default,
+             b.purchase_price_old bpurchase_price_old,
+             b.effective_time_start beffective_time_start,
+             b.effective_time_end beffective_time_end,
+             b.purchase_price_new bpurchase_price_new,
+             b.old_price bold_price,
+             b.new_price bnew_price,
+             b.warehouse_batch_number bwarehouse_batch_number,
+             b.warehouse_batch_name bwarehouse_batch_name,
+             b.change_price_reason_code bchange_price_reason_code,
+             b.change_price_reason_name bchange_price_reason_name,
+             b.temporary_price btemporary_price,
+             b.price_item_code bprice_item_code,
+             b.price_item_name bprice_item_name,
+             b.price_type_code bprice_type_code,
+             b.price_type_code bprice_type_code,
+             b.price_attribute_code bprice_attribute_code,
+             b.price_attribute_name bprice_attribute_name,
+             b.transport_center_code btransport_center_code,
+             b.transport_center_code btransport_center_code,
+             b.warehouse_code bwarehouse_code,
+             b.warehouse_name bwarehouse_name,
+             b.product_time bproduct_time,
+             c.name cname,
+             c.url curl,
+             d.name dname,
+             d.code dcode,
+             d.status dstatus,
+             d.type dtype
+             from product_sku_change_price a
+             left join product_sku_change_price_info b
+             on a.code = b.code
+             left join product_sku_change_price_image c
+             on c.code = a.code
+             left join product_sku_change_price_area_info d
+             on d.main_code = a.code
+      where a.form_no = #{code}
+  </select>
     <select id="selectByFormNo" resultMap="SELECT_BY_FORM_NO_MAP">
       select   a.id aid,
                a.code acode,
