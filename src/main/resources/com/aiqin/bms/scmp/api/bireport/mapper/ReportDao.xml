@@ -499,7 +499,7 @@
         <where>
             1=1
             <if test="month!=null and month!=''">
-                and bms.month = #{month}
+                and bms.year_month = #{month}
             </if>
             <if test="priceChannelCode!=null and priceChannelCode!=''">
                 and bms.price_channel_code=#{priceChannelCode}
@@ -1479,7 +1479,8 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
         select
         bms.id as id,
-        bms.month as month,
+        bms.year_month as month,
+        bms.sales_cost as salesCost,
         bms.price_channel_code as priceChannelCode,
         bms.price_channel_name as priceChannelName,
         bms.product_property_code as productPropertyCode,
@@ -1507,7 +1508,9 @@
         bms.channel_margin_compared_same as channelMarginComparedSame,
         bms.distribution_margin_compared_same as distributionMarginComparedSame,
         bms.channel_margin_rate_sequential as channelMarginRateSequential,
+        bms.channel_margin_rate_compared_same as channelMarginRateComparedSame,
         bms.distribution_margin_rate_compared_same as distributionMarginRateComparedSame,
+        bms.distribution_margin_rate_sequential as distributionMarginRateSequential,
         bms.channel_budget as channelBudget,
         bms.channel_achievement as channelAchievement,
         bms.distribution_budget as distributionBudget,
