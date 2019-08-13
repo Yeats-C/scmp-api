@@ -60,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -1272,10 +1273,12 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         List<SaleCountDTO> list = productSkuChangePriceMapper.selectSaleNumBySkuCode(req);
         Map<String,SaleCountDTO> collect = list.stream().collect(Collectors.toMap(SaleCountDTO::getSkuCode,Function.identity(),(k1,k2)->k2));
         PriceMeasurementRespVO respVO = new PriceMeasurementRespVO();
-        long in = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin()).count();
-        long de = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin()).count();
-        long deAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin()).mapToLong(o -> collect.get(o.getSkuCode()).getSaleNum() * o.getNewGrossProfitMargin() * o.getPrice()).sum();
-        long inAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin()).mapToLong(o -> collect.get(o.getSkuCode()).getSaleNum() * o.getNewGrossProfitMargin() * o.getPrice()).sum();
+        Stream<PriceMeasurementReqVO> stream = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin());
+        Stream<PriceMeasurementReqVO> stream1 = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin());
+        long in = stream.count();
+        long de = stream1.count();
+        long deAmount = stream1.mapToLong(o -> collect.get(o.getSkuCode()).getSaleNum() * o.getNewGrossProfitMargin() * o.getPrice()).sum();
+        long inAmount = stream.mapToLong(o -> collect.get(o.getSkuCode()).getSaleNum() * o.getNewGrossProfitMargin() * o.getPrice()).sum();
         respVO.setDecreaseCount(de);
         respVO.setIncreaseCount(in);
         respVO.setDecreaseGrossProfit(deAmount);
