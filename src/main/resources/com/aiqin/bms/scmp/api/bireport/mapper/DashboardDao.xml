@@ -91,7 +91,9 @@
       ddmhr.channel_margin_yearonyear as channelMarginYearonyear,
       ddmhr.channel_margin_link_relative as channelMarginLinkRelative,
       ddmhr.distribution_sales_amount as distributionSalesAmount,
-      ddmhr.distribution_margin as distributionMargin
+      ddmhr.distribution_margin as distributionMargin,
+      ddmhr.channel_costs_yearonyear as channelCostsYearonyear,
+      ddmhr.channel_costs_link_relative as channelCostsLinkRelative
       FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
       where ddmhr.stat_month = #{oneMonthStr}
     </select>
@@ -209,7 +211,9 @@
         ddmhr.channel_margin_yearonyear as channelMarginYearonyear,
         ddmhr.channel_margin_link_relative as channelMarginLinkRelative,
         ddmhr.distribution_sales_amount as distributionSalesAmount,
-        ddmhr.distribution_margin as distributionMargin
+        ddmhr.distribution_margin as distributionMargin,
+        ddmhr.channel_costs_yearonyear as channelCostsYearonyear,
+        ddmhr.channel_costs_link_relative as channelCostsLinkRelative
         FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
         where 1=1
         <if test="beginStatDate!=null and beginStatDate!=''">
