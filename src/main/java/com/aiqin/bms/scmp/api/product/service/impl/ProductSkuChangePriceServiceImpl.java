@@ -1362,6 +1362,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
         }
     }
+
     @Getter(AccessLevel.PRIVATE)
     private class CheckChangePrice {
         private Map<String,QuerySkuInfoRespVO> queryNoPage;

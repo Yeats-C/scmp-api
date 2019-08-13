@@ -106,7 +106,7 @@
   </sql>
 
     <sql id="select_by_price_status_and_date">
-  a.id aid, a.code acode, a.sku_code asku_code, a.sku_name asku_name, a.purchase_group_code apurchase_group_code, a.purchase_group_name apurchase_group_name, a.price_item_code aprice_item_code, a.price_item_name aprice_item_name, a.price_type_code aprice_type_code, a.price_type_name aprice_type_name, a.price_attribute_code aprice_attribute_code, a.price_attribute_name aprice_attribute_name, a.price_tax aprice_tax, a.price_no_tax aprice_no_tax, a.tax atax, a.effective_time_start aeffective_time_start, a.effective_time_end aeffective_time_end, a.supplier_code asupplier_code, a.supplier_name asupplier_name, a.be_default abe_default, a.create_by acreate_by, a.create_time acreate_time, a.update_by aupdate_by, a.update_time aupdate_time, a.warehouse_batch_number awarehouse_batch_number, a.warehouse_batch_name awarehouse_batch_name, a.transport_center_code atransport_center_code, a.transport_center_name atransport_center_name, a.warehouse_code awarehouse_code, a.warehouse_name awarehouse_name, a.batch_remark abatch_remark, a.product_time aproduct_time, a.apply_code aapply_code, a.company_code acompany_code, a.company_name acompany_name, a.be_synchronous abe_synchronousa.ext_field_5 aext_field_5, b.id bid, b.main_code bmain_code, b.type btype, b.status bstatus, b.name bname, b.code bcode, b.company_code bcompany_code, b.company_name bcompany_name, b.effective_time_start beffective_time_start, b.effective_time_end beffective_time_end, b.be_effective bbe_effective, b.un_effective_reason bun_effective_reason
+  a.id aid, a.code acode, a.sku_code asku_code, a.sku_name asku_name, a.purchase_group_code apurchase_group_code, a.purchase_group_name apurchase_group_name, a.price_item_code aprice_item_code, a.price_item_name aprice_item_name, a.price_type_code aprice_type_code, a.price_type_name aprice_type_name, a.price_attribute_code aprice_attribute_code, a.price_attribute_name aprice_attribute_name, a.price_tax aprice_tax, a.price_no_tax aprice_no_tax, a.tax atax, a.effective_time_start aeffective_time_start, a.effective_time_end aeffective_time_end, a.supplier_code asupplier_code, a.supplier_name asupplier_name, a.be_default abe_default, a.create_by acreate_by, a.create_time acreate_time, a.update_by aupdate_by, a.update_time aupdate_time, a.warehouse_batch_number awarehouse_batch_number, a.warehouse_batch_name awarehouse_batch_name, a.transport_center_code atransport_center_code, a.transport_center_name atransport_center_name, a.warehouse_code awarehouse_code, a.warehouse_name awarehouse_name, a.batch_remark abatch_remark, a.product_time aproduct_time, a.apply_code aapply_code, a.company_code acompany_code, a.company_name acompany_name, a.be_synchronous abe_synchronous,a.ext_field_5 aext_field_5, b.id bid, b.main_code bmain_code, b.type btype, b.status bstatus, b.name bname, b.code bcode, b.company_code bcompany_code, b.company_name bcompany_name, b.effective_time_start beffective_time_start, b.effective_time_end beffective_time_end, b.be_effective bbe_effective, b.un_effective_reason bun_effective_reason
 </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -467,7 +467,7 @@
       transport_center_code, transport_center_name, 
       warehouse_code, warehouse_name, batch_remark, 
       product_time, apply_code, company_code, 
-      company_name, be_synchronous
+      company_name, be_synchronous,
       ext_field_5)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
@@ -481,7 +481,7 @@
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, 
       #{productTime,jdbcType=TIMESTAMP}, #{applyCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, 
-      #{companyName,jdbcType=VARCHAR}, #{beSynchronous,jdbcType=INTEGER}
+      #{companyName,jdbcType=VARCHAR}, #{beSynchronous,jdbcType=INTEGER},
       #{extField5,jdbcType=INTEGER})
   </insert>
     <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo">

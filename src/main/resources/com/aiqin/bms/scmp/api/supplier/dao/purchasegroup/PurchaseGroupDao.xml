@@ -38,7 +38,7 @@
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
-    order by purchase_group_order desc,create_time desc
+    order by purchase_group_order asc,create_time desc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -224,6 +224,7 @@
     LEFT JOIN purchase_group_buyer b
     ON a.purchase_group_code = b.purchase_group_code
     where a.enable != 1
+    and b.enable != 1
     <if test="companyCode != null and companyCode != '' ">
       and a.company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
@@ -233,7 +234,7 @@
     <if test="name != null and name != ''">
       and a.purchase_group_name like concat('%', #{name,jdbcType=VARCHAR},'%')
     </if>
-    order by a.purchase_group_order desc,a.create_time desc
+    order by a.purchase_group_order asc,a.create_time desc
   </select>
 
   <select id="checkName" resultType="java.lang.Integer">
