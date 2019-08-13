@@ -16,9 +16,13 @@ public class MonthlySalesRespVo {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("月份")
-    @JsonProperty("month")
-    private String month;
+    @ApiModelProperty("年月")
+    @JsonProperty("year_month")
+    private String yearMonth;
+
+    @ApiModelProperty("销售成本")
+    @JsonProperty("sales_cost")
+    private String salesCost;
 
     @ApiModelProperty("渠道编码")
     @JsonProperty("price_channel_code")
@@ -27,6 +31,14 @@ public class MonthlySalesRespVo {
     @ApiModelProperty("渠道")
     @JsonProperty("price_channel_name")
     private String priceChannelName;
+
+    @ApiModelProperty("所属部门编码")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty("所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
 
     @ApiModelProperty("商品属性编码(ab品)")
     @JsonProperty("product_property_code")
@@ -64,11 +76,11 @@ public class MonthlySalesRespVo {
     @JsonProperty("channel_last_month_sales")
     private Long channelLastMonthSales;
 
-    @ApiModelProperty("渠道销售额同比")
+    @ApiModelProperty("渠道同比")
     @JsonProperty("channel_compared_same")
     private Double channelComparedSame;
 
-    @ApiModelProperty("渠道销售额环比")
+    @ApiModelProperty("渠道环比")
     @JsonProperty("channel_sequential")
     private Double channelSequential;
 
@@ -76,19 +88,19 @@ public class MonthlySalesRespVo {
     @JsonProperty("distribution_order_amount")
     private Long distributionOrderAmount;
 
-    @ApiModelProperty("去年同期分销销售额")
+    @ApiModelProperty("分销去年同期销售额")
     @JsonProperty("distribution_last_year_sales")
     private Long distributionLastYearSales;
 
-    @ApiModelProperty("上月分销销售额")
+    @ApiModelProperty("分销上月销售额")
     @JsonProperty("distribution_last_month_sales")
     private Long distributionLastMonthSales;
 
-    @ApiModelProperty("分销销售额同比")
+    @ApiModelProperty("分销同比")
     @JsonProperty("distribution_compared_same")
     private Double distributionComparedSame;
 
-    @ApiModelProperty("分销销售额环比")
+    @ApiModelProperty("分销环比")
     @JsonProperty("distribution_sequential")
     private Double distributionSequential;
 
@@ -128,9 +140,17 @@ public class MonthlySalesRespVo {
     @JsonProperty("channel_margin_rate_sequential")
     private Double channelMarginRateSequential;
 
+    @ApiModelProperty("渠道毛利率同比")
+    @JsonProperty("channel_margin_rate_compared_same")
+    private Double channelMarginRateComparedSame;
+
     @ApiModelProperty("分销毛利率同比")
     @JsonProperty("distribution_margin_rate_compared_same")
     private Double distributionMarginRateComparedSame;
+
+    @ApiModelProperty("分销毛利率环比")
+    @JsonProperty("distribution_margin_rate_sequential")
+    private Double distributionMarginRateSequential;
 
     @ApiModelProperty("渠道预算")
     @JsonProperty("channel_budget")
