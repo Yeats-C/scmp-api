@@ -102,7 +102,7 @@
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, 
       #{productTime,jdbcType=TIMESTAMP}, #{applyCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, 
-      #{companyName,jdbcType=VARCHAR}, #{beSynchronous,jdbcType=INTEGER}
+      #{companyName,jdbcType=VARCHAR}, #{beSynchronous,jdbcType=INTEGER},
       #{extField5,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft">
@@ -363,7 +363,7 @@
       #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
       #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR},
       #{item.productTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR},
-      #{item.companyName,jdbcType=VARCHAR}, #{item.beSynchronous,jdbcType=INTEGER}
+      #{item.companyName,jdbcType=VARCHAR}, #{item.beSynchronous,jdbcType=INTEGER},
       #{item.extField5,jdbcType=INTEGER})
     </foreach>
   </insert>

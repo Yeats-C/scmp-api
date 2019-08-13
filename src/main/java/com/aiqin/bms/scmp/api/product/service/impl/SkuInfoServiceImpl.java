@@ -1579,13 +1579,14 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         .checkPic();//检查图片
                 //返回实体
                 AddSkuInfoReqVO resp = checkSku.getRespVO();
-                String error = checkSku.getSkuInfoImport().getError();
+                SkuInfoImport skuInfoImport = checkSku.getSkuInfoImport();
+                String error = skuInfoImport.getError();
                 if (StringUtils.isNotBlank(error)) {
-                    error = "第"+(i+2)+"行 "+error;
-                    checkSku.getSkuInfoImport().setError(error);
+                    String s = "第" + (i + 3) + "行 " + error;
+                    skuInfoImport.setError(s);
                 }
                 skuInfoList.add(resp);
-                importList.add(checkSku.getSkuInfoImport());
+                importList.add(skuInfoImport);
                 reaptMap = checkSku.getReapMap();
                 spuMap = checkSku.getSpuMap();
             }
@@ -1721,12 +1722,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 //返回实体
                 AddSkuInfoReqVO resp = checkSku.getRespVO();
                 skuInfoList.add(resp);
-                String error = checkSku.getSkuInfoImport().getError();
+                SkuInfoImport skuInfoImport = checkSku.getSkuInfoImport();
+                String error = skuInfoImport.getError();
                 if (StringUtils.isNotBlank(error)) {
-                    error = "第"+(i+2)+"行 "+error;
-                    checkSku.getSkuInfoImport().setError(error);
+                    String s = "第" + (i + 3) + "行 " + error;
+                    skuInfoImport.setError(s);
                 }
-                importList.add(checkSku.getSkuInfoImport());
+                importList.add(skuInfoImport);
                 reaptMap = checkSku.getReapMap();
                 spuMap = checkSku.getSpuMap();
             }
@@ -1854,12 +1856,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 //返回实体
                 AddSkuInfoReqVO resp = checkSku.getRespVO();
                 skuInfoList.add(resp);
-                String error = checkSku.getSkuInfoImport().getError();
+                SkuInfoImport skuInfoImport = checkSku.getSkuInfoImport();
+                String error = skuInfoImport.getError();
                 if (StringUtils.isNotBlank(error)) {
-                    error = "第"+(i+2)+"行 "+error;
-                    checkSku.getSkuInfoImport().setError(error);
+                    String s = "第" + (i + 3) + "行 " + error;
+                    skuInfoImport.setError(s);
                 }
-                importList.add(checkSku.getSkuInfoImport());
+                importList.add(skuInfoImport);
                 reaptMap = checkSku.getReapMap();
                 spuMap = checkSku.getSpuMap();
             }
