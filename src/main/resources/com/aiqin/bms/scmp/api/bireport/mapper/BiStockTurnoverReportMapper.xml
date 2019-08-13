@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.bireport.dao.BiStockTurnoverReportDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.bireport.domain.BiStockTurnoverReport">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="stat_date" jdbcType="VARCHAR" property="statDate" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="config_status" jdbcType="VARCHAR" property="configStatus" />
+    <result column="stock_num" jdbcType="BIGINT" property="stockNum" />
+    <result column="sales_num" jdbcType="BIGINT" property="salesNum" />
+    <result column="turnover_days" jdbcType="BIGINT" property="turnoverDays" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stat_date, sku_code, sku_name, supplier_code, supplier_name, product_sort_code, 
+    product_sort_name, product_brand_code, product_brand_name, transport_center_code, 
+    transport_center_name, warehouse_code, warehouse_name, config_status, stock_num, 
+    sales_num, turnover_days
+  </sql>
+  <select id="stockTurnoverList" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.ProductAndStockResponse">
+    select
+      stat_date as statDate, sku_code as skuCode, sku_name as skuName, supplier_code as supplierCode, supplier_name as supplierName,
+      product_sort_code as productSortCode, product_sort_name as productSortName, product_brand_code as productBrandCode,
+      product_brand_name as productBrandName
+    from bi_stock_turnover_report
+    <where>
+      <if test="beginTime != null">
+        and stat_date &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and stat_date &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierCode != null">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productSortCode != null">
+        and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuCode != null">
+        and sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuName != null">
+        and sku_name like CONCAT('',#{skuName},'%')
+      </if>
+      <if test="productBrandCode != null">
+        and product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null">
+        and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="turnoverDaysMin != null">
+        and turnover_days &gt;= #{turnoverDaysMin,jdbcType=VARCHAR}
+      </if>
+      <if test="turnoverDaysMax != null">
+        and turnover_days &lt;= #{turnoverDaysMax,jdbcType=VARCHAR}
+      </if>
+    </where>
+    group by sku_code, stat_date
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="getStockTurnoverInfo" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StockTurnoverResponse">
+    select
+      stat_date as statDate, sku_code as skuCode, sku_name as skuName,transport_center_code as transportCenterCode,
+      transport_center_name as transportCenterName, sum(stock_num) as stockNum, sum(sales_num) as salesNum,
+      sum(turnover_days) as turnoverDays
+    from bi_stock_turnover_report
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and stat_date = #{statDate,jdbcType=VARCHAR}
+    group by sku_code,stat_date,transport_center_code
+  </select>
+</mapper>
