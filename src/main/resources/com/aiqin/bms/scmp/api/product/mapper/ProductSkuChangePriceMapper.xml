@@ -483,6 +483,18 @@
       left join product_sku_change_price_area_info c on c.main_code = a.code
       where  <![CDATA[ now() >= ]]>b.effective_time_end and b.be_synchronize = 0
     </select>
+    <select id="selectSaleNumBySkuCode"
+            resultType="com.aiqin.bms.scmp.api.product.domain.dto.changeprice.SaleCountDTO">
+        select
+        a.sku_code skuCode,
+        a.num saleNum
+        from bi_month_sales a
+        where a.`year_month` = date_format(date_sub(now(),interval 1 month),'%Y-%m')
+        and a.`sku_code` in
+        <foreach collection="list" open="(" close=")" item="item" separator=",">
+             #{item.skuCode}
+        </foreach>
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_change_price
     where id = #{id,jdbcType=BIGINT}

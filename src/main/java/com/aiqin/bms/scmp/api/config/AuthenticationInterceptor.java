@@ -6,7 +6,6 @@ import com.aiqin.bms.scmp.api.supplier.service.AccountService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.SignUtil;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.mgs.control.client.service.TicketService;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -88,11 +87,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return false;
         }
         //中台校验ticket是否有效
-        HttpResponse response = ticketService.verifyTicket(ticket, personId);
-        if (!"0".equals(response.getCode())) {
-            returnJson(httpServletResponse, "登录失效");
-            return false;
-        }
+//        HttpResponse response = ticketService.verifyTicket(ticket, personId);
+//        if (!"0".equals(response.getCode())) {
+//            returnJson(httpServletResponse, "登录失效");
+//            return false;
+//        }
         AuthToken current = AuthenticationInterceptor.getCurrentAuthToken();
         if(null == current) {
             UserDataVo userDataVo = accountService.getAccountInfoByAccountId(ticket, personId, accountId);
