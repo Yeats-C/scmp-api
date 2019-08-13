@@ -39,4 +39,7 @@ public interface DashboardService {
 
     // 首页头字段
     DashboardHomePageTitle selectDashboardHomePageTitle();
+
+    // 渠道部门月销售情况
+    ChannelSectorMonthSalesRespVo selectChannelSectorMonthSales(ChannelSectorMonthSalesReqVo dhannelSectorMonthSalesReqVo);
 }

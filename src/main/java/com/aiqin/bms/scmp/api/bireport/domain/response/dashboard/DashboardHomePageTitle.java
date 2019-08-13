@@ -9,10 +9,6 @@ import lombok.Data;
 @Data
 public class DashboardHomePageTitle {
 
-    @ApiModelProperty("主键")
-    @JsonProperty("id")
-    private Long id;
-
     @ApiModelProperty("年销售额(万元)")
     @JsonProperty("channel_amount")
     private Long channelAmount;

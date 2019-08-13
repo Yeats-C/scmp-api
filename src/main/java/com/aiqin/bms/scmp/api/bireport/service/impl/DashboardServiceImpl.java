@@ -169,4 +169,38 @@ public class DashboardServiceImpl implements DashboardService {
         return dashboardHomePageTitle;
     }
 
+    public ChannelSectorMonthSalesRespVo selectChannelSectorMonthSales(ChannelSectorMonthSalesReqVo channelSectorMonthSalesReqVo){
+        ChannelSectorMonthSalesRespVo channelSectorMonthSalesRespVo = new ChannelSectorMonthSalesRespVo();
+        String oneYearStr = DayUtil.getYearStr(0);
+        channelSectorMonthSalesReqVo.setStatMonth(oneYearStr+"-"+channelSectorMonthSalesReqVo.getStatMonth());
+        // 查询部门销售额贡献率
+        // 查询部门销售额（条件筛选的）
+        DashboardDepMonthlyHomocyclicRatioRespVo dashboardDepMonthlyHomocyclicRatioRespVo = dashboardDao.selectSalesContributionRate(channelSectorMonthSalesReqVo);
+        // 查询所有的部门销售额
+        DashboardDepMonthlyHomocyclicRatioRespVo dashboardDepMonthlyHomocyclicRatioRespVoAll = dashboardDao.selectSalesContributionRateAll(channelSectorMonthSalesReqVo.getStatMonth());
+
+        // 查询负毛利SKU数
+        DashboardNegativeMarginRespVo dashboardNegativeMarginRespVo = dashboardDao.selectNegativeMarginSkuNumber(channelSectorMonthSalesReqVo);
+        // 查询缺货率
+        DashboardStockoutRateRespVo dashboardStockoutRateRespVo = dashboardDao.selectOutStockRate(channelSectorMonthSalesReqVo);
+        // 渠道退供金额(元)
+        DashboardReturnAmountRespVo dashboardReturnAmountRespVo = dashboardDao.selectAmountChannelRefund(channelSectorMonthSalesReqVo);
+
+        //插入数据
+        if(dashboardDepMonthlyHomocyclicRatioRespVoAll != null && dashboardDepMonthlyHomocyclicRatioRespVoAll.getChannelSalesAmount() != 0){
+            Long salesContributionRate = dashboardDepMonthlyHomocyclicRatioRespVo.getChannelSalesAmount() / dashboardDepMonthlyHomocyclicRatioRespVoAll.getChannelSalesAmount();
+            channelSectorMonthSalesRespVo.setSalesContributionRate(salesContributionRate);
+        }
+        if(dashboardNegativeMarginRespVo != null){
+            channelSectorMonthSalesRespVo.setNegativeMarginSkuNumber(dashboardNegativeMarginRespVo.getNegativeMarginSkuNum());
+        }
+        if(dashboardStockoutRateRespVo != null){
+            channelSectorMonthSalesRespVo.setOutStockRate(dashboardStockoutRateRespVo.getStockoutRate());
+        }
+        if(dashboardReturnAmountRespVo != null){
+            channelSectorMonthSalesRespVo.setAmountChannelRefund(dashboardReturnAmountRespVo.getAmt());
+        }
+        return channelSectorMonthSalesRespVo;
+    }
+
 }

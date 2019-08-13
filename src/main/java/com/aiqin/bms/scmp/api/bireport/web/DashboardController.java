@@ -131,4 +131,19 @@ public class DashboardController {
     public HttpResponse<DashboardHomePageTitle> selectDashboardHomePageTitle(){
         return HttpResponse.success(dashboardService.selectDashboardHomePageTitle());
     }
+
+    @GetMapping("/dashboard/channel/sector/month/sales")
+    @ApiOperation("渠道部门月销售情况")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "stat_month", value = "月", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
+    })
+    public HttpResponse<ChannelSectorMonthSalesRespVo> selectChannelSectorMonthSales(@RequestParam(value = "stat_month", required = false) String statMonth,
+                                                                                     @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+                                                                                     @RequestParam(value = "price_channel_code", required = false) String priceChannelCode){
+        ChannelSectorMonthSalesReqVo dhannelSectorMonthSalesReqVo = new ChannelSectorMonthSalesReqVo(statMonth,productSortCode,priceChannelCode);
+        return HttpResponse.success(dashboardService.selectChannelSectorMonthSales(dhannelSectorMonthSalesReqVo));
+    }
+
 }

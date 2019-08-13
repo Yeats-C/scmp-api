@@ -46,4 +46,20 @@ public interface DashboardDao {
 
     // 查询首页7字段之1(A品金额)
     DashboardDepCateProperSalesAmountRespVo selectPropertyAmount(@Param("oneYearStr") String oneYearStr);
+
+    // 查询部门销售额贡献率
+    DashboardDepMonthlyHomocyclicRatioRespVo selectSalesContributionRate(ChannelSectorMonthSalesReqVo channelSectorMonthSalesReqVo);
+
+    DashboardDepMonthlyHomocyclicRatioRespVo selectSalesContributionRateAll(@Param("statMonth") String statMonth);
+
+    // 查询负毛利SKU数
+    DashboardNegativeMarginRespVo selectNegativeMarginSkuNumber(ChannelSectorMonthSalesReqVo channelSectorMonthSalesReqVo);
+
+    // 查询缺货率
+    DashboardStockoutRateRespVo selectOutStockRate(ChannelSectorMonthSalesReqVo channelSectorMonthSalesReqVo);
+
+    // 渠道退供金额(元)
+    DashboardReturnAmountRespVo selectAmountChannelRefund(ChannelSectorMonthSalesReqVo channelSectorMonthSalesReqVo);
+
+
 }
