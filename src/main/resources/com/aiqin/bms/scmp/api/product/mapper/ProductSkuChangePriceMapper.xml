@@ -147,6 +147,8 @@
       <result column="bpurchase_price_new" jdbcType="BIGINT" property="purchasePriceNew" />
       <result column="bold_price" jdbcType="BIGINT" property="oldPrice" />
       <result column="bnew_price" jdbcType="BIGINT" property="newPrice" />
+      <result column="bold_gross_profit_margin" jdbcType="BIGINT" property="oldGrossProfitMargin" />
+      <result column="bnew_gross_profit_margin" jdbcType="BIGINT" property="newGrossProfitMargin" />
       <result column="bwarehouse_batch_number" jdbcType="VARCHAR" property="warehouseBatchNumber" />
       <result column="bwarehouse_batch_name" jdbcType="VARCHAR" property="warehouseBatchName" />
       <result column="bchange_price_reason_code" jdbcType="VARCHAR" property="changePriceReasonCode" />
@@ -351,6 +353,8 @@
              b.effective_time_start beffective_time_start,
              b.effective_time_end beffective_time_end,
              b.purchase_price_new bpurchase_price_new,
+             b.new_gross_profit_margin bnew_gross_profit_margin,
+             b.old_gross_profit_margin bold_gross_profit_margin,
              b.old_price bold_price,
              b.new_price bnew_price,
              b.warehouse_batch_number bwarehouse_batch_number,
