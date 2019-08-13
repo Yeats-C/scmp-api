@@ -846,11 +846,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
 
     @Override
     public BasePage<ApplySupplyComApplyListRespVO> applyList(QueryApplySupplyListComReqVO queryApplySupplyComReqVO) {
-            queryApplySupplyComReqVO.setCompanyCode(getUser().getCompanyCode());
-            queryApplySupplyComReqVO.setPersonId(getUser().getPersonId());
+        queryApplySupplyComReqVO.setCompanyCode(getUser().getCompanyCode());
+        queryApplySupplyComReqVO.setPersonId(getUser().getPersonId());
         PageHelper.startPage(queryApplySupplyComReqVO.getPageNo(), queryApplySupplyComReqVO.getPageSize());
         List<ApplySupplyComApplyListRespVO> applySupplierResps = applySupplyCompanyDao.applyList(queryApplySupplyComReqVO);
-        return PageUtil.getPageList(queryApplySupplyComReqVO.getPageNo(),applySupplierResps);
+        return PageUtil.getPageList(queryApplySupplyComReqVO.getPageNo(), applySupplierResps);
     }
 
     @Override
