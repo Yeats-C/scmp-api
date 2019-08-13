@@ -178,12 +178,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //临时表
             int count = productSkuDraftMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
             if(count > 0 ){
-                throw new BizException(ResultCode.SKU_NAME_EXISTS);
+                throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
             }
             //申请表
             count = applyProductSkuMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
             if(count > 0 ){
-                throw new BizException(ResultCode.SKU_NAME_EXISTS);
+                throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
             }
             //计算状态
             if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuConfigs())) {
@@ -2030,6 +2030,26 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraftForPlatform(skuCodes);
         reqVO.getProductSkuSupplyUnitDrafts().get(0).setIsDefault(unitDraft.getIsDefault());
         return  ((SkuInfoService)AopContext.currentProxy()).saveDraftSkuInfo(reqVO);
+    }
+
+    @Override
+    public List<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO) {
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            reqVO.setCompanyCode(authToken.getCompanyCode());
+            reqVO.setPersonId(authToken.getPersonId());
+        }
+        if(CollectionUtils.isNotEmpty(reqVO.getProductCategoryCodes())){
+            try {
+                reqVO.setProductCategoryLv1Code(reqVO.getProductCategoryCodes().get(0));
+                reqVO.setProductCategoryLv2Code(reqVO.getProductCategoryCodes().get(1));
+                reqVO.setProductCategoryLv3Code(reqVO.getProductCategoryCodes().get(2));
+                reqVO.setProductCategoryLv4Code(reqVO.getProductCategoryCodes().get(3));
+            } catch (Exception e) {
+                log.info("不做处理,让程序继续执行下去");
+            }
+        }
+        return productSkuDraftMapper.getProductSkuDraft(reqVO);
     }
 
     @Override

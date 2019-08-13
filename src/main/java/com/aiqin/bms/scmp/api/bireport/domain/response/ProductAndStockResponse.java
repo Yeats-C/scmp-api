@@ -163,6 +163,30 @@ public class ProductAndStockResponse{
     @JsonProperty("hd_on_way")
     private Long hdOnWay;
 
+    @ApiModelProperty(value="华中仓库编码")
+    @JsonProperty("hz_transport_center_code")
+    private String hzTransportCenterCode;
+
+    @ApiModelProperty(value="华中仓库名称")
+    @JsonProperty("hz_transport_center_name")
+    private String hzTransportCenterName;
+
+    @ApiModelProperty(value="华中库存数量")
+    @JsonProperty("hz_stock_num")
+    private Long hzStockNum;
+
+    @ApiModelProperty(value="华中销售数量")
+    @JsonProperty("hz_sales_num")
+    private Long hzSalesNum;
+
+    @ApiModelProperty(value="华中周转天数")
+    @JsonProperty("hz_turnover_days")
+    private Long hzTurnoverDays;
+
+    @ApiModelProperty(value="华中在途数")
+    @JsonProperty("hz_on_way")
+    private Long hzOnWay;
+
     @ApiModelProperty(value="总库存数量")
     @JsonProperty("sum_stock_num")
     private Long sumStockNum;

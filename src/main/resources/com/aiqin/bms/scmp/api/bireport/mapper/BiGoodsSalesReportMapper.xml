@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aiqin.bms.scmp.api.bireport.dao.BiGoodsSalesReportDao">
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.bireport.domain.BiGoodsSalesReport">
-    <id column="id" jdbcType="INTEGER" property="id" />
+    <id column="id" jdbcType="BIGINT" property="id" />
     <result column="stat_date" jdbcType="VARCHAR" property="statDate" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
@@ -61,6 +61,9 @@
       <if test="supplierCode != null">
         and supplier_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
+      <if test="supplierName != null">
+        and supplier_name like CONCAT('',#{supplierName},'%')
+      </if>
       <if test="productSortCode != null">
         and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
       </if>
@@ -106,6 +109,9 @@
       </if>
       <if test="supplierCode != null">
         and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierName != null">
+        and supplier_name like CONCAT('',#{supplierName},'%')
       </if>
       <if test="productSortCode != null">
         and product_sort_code = #{productSortCode,jdbcType=VARCHAR}

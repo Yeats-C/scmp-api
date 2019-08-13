@@ -151,6 +151,23 @@ public class ReportFormServiceImpl implements ReportFormService {
                             response.setHdTurnoverDays(num);
                             response.setHdOnWay(num);
                         }
+
+                        // 华中仓
+                        if(stock.getTransportCenterCode().equals(Global.HZ_CODE)){
+                            response.setHzTransportCenterCode(stock.getTransportCenterCode());
+                            response.setHzTransportCenterName(stock.getTransportCenterName());
+                            response.setHzStockNum(stockNum);
+                            response.setHzSalesNum(salesNum);
+                            response.setHzTurnoverDays(turnoverDays);
+                            if(i == 2){
+                                response.setHzOnWay(onWay);
+                            }
+                        }else {
+                            response.setHzStockNum(num);
+                            response.setHzSalesNum(num);
+                            response.setHzTurnoverDays(num);
+                            response.setHzOnWay(num);
+                        }
                     }
                     response.setSumStockNum(sumStockNum);
                     response.setSumSalesNum(sumSalesNum);

@@ -10,7 +10,7 @@ import lombok.Data;
 public class BiStockTurnoverReport {
     @ApiModelProperty(value="id")
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty(value="年月日")
     @JsonProperty("stat_date")

@@ -17,5 +17,5 @@ public interface TaxCostLogDao {
 
     void insertOneSku(@Param("taxCostLogStock") List<TaxCostLogStock> taxCostLogStock);
 
-    void updateOneSku(@Param("taxCostLogStock") List<TaxCostLogStock> taxCostLogStock);
+    void updateOneSku(@Param("taxCostStock") List<TaxCostLogStock> taxCostLogStock);
 }

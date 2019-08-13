@@ -119,7 +119,7 @@
              a.amount amount,
              b.order_code orderCode,
              b.transport_center_name transportCenterName,
-             b.warehouse_name warehouse_name,
+             b.warehouse_name warehouseName,
              a.give_promotion givePromotion,
              b.create_date createDate,
              '1' as status,

@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 public class BiGoodsSalesReport {
     @ApiModelProperty(value="id")
     @JsonProperty("id")
-    private Integer id;
+    private Long id;
 
     @ApiModelProperty(value="年月日")
     @JsonProperty("stat_date")

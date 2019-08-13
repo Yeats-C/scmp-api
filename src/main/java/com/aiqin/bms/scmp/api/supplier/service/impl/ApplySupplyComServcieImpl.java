@@ -664,8 +664,6 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             supplierCommonService.getInstance(supplyCompany.getSupplyCode(), handleTypeCoce.getStatus(), ObjectTypeCode.SUPPLY_COMPANY.getStatus(), content, null, handleTypeCoce.getName(), applySupplyCompany.getCreateBy());
         } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
-            //驳回, 设置状态
-            applySupplyCompany.setApplyStatus(vo.getApplyStatus());
             SupplyCompany oldSupplyCompany = supplyCompanyDao.getSupplyComByApplyCode(applySupplyCompany.getApplySupplyCompanyCode());
             if (null != oldSupplyCompany) {
                 SupplyCompany supplyCompany = new SupplyCompany();
@@ -675,14 +673,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }
         } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.APPROVAL;
-            ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(applySupplyCompany.getApplyStatus());
-            String content = applyStatus.getContent().replace("CREATEBY", applySupplyCompany.getCreateBy()).replace("AUDITORBY", vo.getApprovalUserName());
-            supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode(), applyHandleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), content, null, applyHandleTypeCoce.getName(), vo.getApprovalUserName());
-            //传入的是审批中，继续该流程
-            return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
         } else if (vo.getApplyStatus().equals(ApplyStatus.REVOKED.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.REVOKED;
-            applySupplyCompany.setApplyStatus(vo.getApplyStatus());
             SupplyCompany oldSupplyCompany = supplyCompanyDao.getSupplyComByApplyCode(applySupplyCompany.getApplySupplyCompanyCode());
             if (null != oldSupplyCompany) {
                 SupplyCompany supplyCompany = new SupplyCompany();
@@ -856,11 +848,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
 
     @Override
     public BasePage<ApplySupplyComApplyListRespVO> applyList(QueryApplySupplyListComReqVO queryApplySupplyComReqVO) {
-            queryApplySupplyComReqVO.setCompanyCode(getUser().getCompanyCode());
-            queryApplySupplyComReqVO.setPersonId(getUser().getPersonId());
+        queryApplySupplyComReqVO.setCompanyCode(getUser().getCompanyCode());
+        queryApplySupplyComReqVO.setPersonId(getUser().getPersonId());
         PageHelper.startPage(queryApplySupplyComReqVO.getPageNo(), queryApplySupplyComReqVO.getPageSize());
         List<ApplySupplyComApplyListRespVO> applySupplierResps = applySupplyCompanyDao.applyList(queryApplySupplyComReqVO);
-        return PageUtil.getPageList(queryApplySupplyComReqVO.getPageNo(),applySupplierResps);
+        return PageUtil.getPageList(queryApplySupplyComReqVO.getPageNo(), applySupplierResps);
     }
 
     @Override
