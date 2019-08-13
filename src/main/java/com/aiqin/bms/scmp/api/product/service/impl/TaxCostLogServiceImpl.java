@@ -193,7 +193,12 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
         // 本次采购入库数量
         long changeNum = stockFlow.getChangeNum();
         // 本次的采购入库总成本
-        long price = changeNum * stockFlow.getStockCost();
+        long price;
+        if(stockFlow.getStockCost() != null){
+            price = changeNum * stockFlow.getStockCost();
+        }else{
+            price = stockFlow.getChangeNum() * 0;
+        }
         // 本次的最终含税成本
         long num = yesterdayLog.getStockNum() + changeNum;
         long taxCost;
@@ -205,11 +210,17 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
         common(taxCost,yesterdayLog.getTaxCost(),st,yesterday,changeNum,num);
     }
 
+
     private void noCost(Stock st, String yesterday, TaxCostLog log, StockFlow stockFlow) {
         // 前天的正品含税总成本
         long total = log.getStockNum() * log.getTaxCost();
         // 本次的采购入库总成本
-        long price = stockFlow.getChangeNum() * stockFlow.getStockCost();
+        long price;
+        if(stockFlow.getStockCost() != null){
+            price = stockFlow.getChangeNum() * stockFlow.getStockCost();
+        }else{
+            price = stockFlow.getChangeNum() * 0;
+        }
         // 本次的最终含税成本
         long num = log.getStockNum() + stockFlow.getChangeNum();
         long taxCost;
@@ -232,7 +243,7 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
     }
 
     public void common(Long taxCost,Long logTaxCost,Stock st,String yesterday,Long changeNum,Long num){
-        if(taxCost != logTaxCost){
+        if(!taxCost.equals(logTaxCost)){
             TaxCostLog yesterLog = new TaxCostLog();
             yesterLog.setCreateTime(new Date());
             yesterLog.setTaxDate(yesterday);

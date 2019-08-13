@@ -69,11 +69,9 @@
         GROUP BY tax_date
     </select>
     <update id="updateOneSku">
-        <foreach collection="taxCostLogStock" item="item" separator=";">
-        update stock_batch
+        <foreach collection="taxCostStock" item="item" separator=";">
+        update tax_cost_log_stock
         <set>
-            #{item.stockSumNum}, #{item.stockSumCost},
-            #{item.stockTaxCost},NOW()
             tax_date = #{item.taxDate},
             sku_code = #{item.skuCode},
             sku_name = #{item.skuName},

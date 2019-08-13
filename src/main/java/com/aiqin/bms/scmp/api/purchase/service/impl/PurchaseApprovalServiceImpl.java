@@ -72,7 +72,8 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
             if(order == null){
                 LOGGER.info("采购单为空");
                 return WorkFlowReturn.FALSE;
-            }else if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)){
+            }else if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0) &&
+                    !order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_1)){
                 // 采购单不是待审核状态
                 return WorkFlowReturn.SUCCESS;
             }

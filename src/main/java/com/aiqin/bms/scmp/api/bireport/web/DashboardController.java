@@ -133,7 +133,7 @@ public class DashboardController {
     }
 
     @GetMapping("/dashboard/channel/sector/month/sales")
-    @ApiOperation("渠道部门月销售情况")
+    @ApiOperation("部门销售统计")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "stat_month", value = "月", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
