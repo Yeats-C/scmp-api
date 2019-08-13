@@ -12,6 +12,9 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -89,6 +92,8 @@ public class AllocationController {
     public HttpResponse<Integer> revocation(@RequestParam @ApiParam(value = " 传入主键id" ,required = true)Long id ){
         try {
             return HttpResponse.success(allocationService.revocation(id));
+        } catch (GroundRuntimeException e) {
+            return HttpResponse.failure(MessageId.create(Project.PRODUCT_API,52,e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);
