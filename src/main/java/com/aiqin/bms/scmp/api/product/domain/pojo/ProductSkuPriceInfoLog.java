@@ -49,24 +49,6 @@ public class ProductSkuPriceInfoLog {
     @ApiModelProperty("区域或门店信息")
     private String areaInfo;
 
-    @ApiModelProperty("扩展字段1")
-    private String extField1;
-
-    @ApiModelProperty("扩展字段2")
-    private String extField2;
-
-    @ApiModelProperty("扩展字段3")
-    private String extField3;
-
-    @ApiModelProperty("扩展字段4")
-    private Date extField4;
-
-    @ApiModelProperty("扩展字段5")
-    private Integer extField5;
-
-    @ApiModelProperty("扩展字段6")
-    private Long extField6;
-
     public ProductSkuPriceInfoLog(String code, Long priceTax, Long priceNoTax, Long tax, Date effectiveTimeStart, Date effectiveTimeEnd, Integer status, String createBy, Date createTime) {
         this.code = code;
         this.priceTax = priceTax;
