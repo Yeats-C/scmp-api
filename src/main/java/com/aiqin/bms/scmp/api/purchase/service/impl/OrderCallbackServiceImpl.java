@@ -173,6 +173,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         request.setDeliveryTime(request.getCreateDate());
         OrderInfo orderInfo = new OrderInfo();
         BeanUtils.copyProperties(request, orderInfo);
+        orderInfo.setCreateTime(request.getCreateDate());
+        orderInfo.setUpdateTime(request.getReceivingTime());
         DetailRespVo detailRespVo = supplierRuleMapper.findByCompanyCode(COMPANY_CODE);
         //取字典表数据
         List<InnerValue> dictionaryInfoList = supplierDictionaryInfoDao.allList();
@@ -362,6 +364,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         request.setDeliveryTime(request.getCreateDate());
         ReturnOrderInfo returnOrderInfo = new ReturnOrderInfo();
         BeanUtils.copyProperties(request, returnOrderInfo);
+        returnOrderInfo.setCreateTime(request.getCreateDate());
+        returnOrderInfo.setUpdateTime(request.getReceivingTime());
         DetailRespVo detailRespVo = supplierRuleMapper.findByCompanyCode(COMPANY_CODE);
         //取字典表数据
         List<InnerValue> dictionaryInfoList = supplierDictionaryInfoDao.allList();
