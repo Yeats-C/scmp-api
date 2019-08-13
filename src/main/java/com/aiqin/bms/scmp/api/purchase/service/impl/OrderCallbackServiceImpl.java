@@ -102,7 +102,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
      */
     private final static String COMPANY_CODE = "09";
     private final static String COMPANY_NAME = "宁波熙耘";
-    List<String> productTypeList = Arrays.asList("商品", "赠品", "实物返");
+    private static List<String> productTypeList = Arrays.asList("商品", "赠品", "实物返");
     @Resource
     private OrderInfoMapper orderInfoMapper;
     @Resource
