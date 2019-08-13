@@ -465,7 +465,7 @@
       and a.supply_company_code like concat('%',#{supplyCode},'%')
     </if>
     <if test="supplyName != null and supplyName != ''">
-      and a.apply_supply_name  like concat('%',supplyName},'%')
+      and a.apply_supply_name  like concat('%',#{supplyName},'%')
     </if>
     <if test="purchaseGroupCode != null and purchaseGroupCode != '' ">
       and  a.purchasing_group_Code = #{purchaseGroupCode,jdbcType=VARCHAR}

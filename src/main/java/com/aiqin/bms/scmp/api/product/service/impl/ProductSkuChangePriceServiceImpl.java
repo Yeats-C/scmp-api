@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
+import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.SaleCountDTO;
 import com.aiqin.bms.scmp.api.product.domain.excel.PriceImport;
 import com.aiqin.bms.scmp.api.product.domain.excel.PurchasePriceImport;
 import com.aiqin.bms.scmp.api.product.domain.excel.SalePriceImport;
@@ -59,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -1264,6 +1266,24 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
         }
         return dto.getCode();
+    }
+
+    @Override
+    public PriceMeasurementRespVO priceMeasurement(List<PriceMeasurementReqVO> req) {
+        List<SaleCountDTO> list = productSkuChangePriceMapper.selectSaleNumBySkuCode(req);
+        Map<String,SaleCountDTO> collect = list.stream().collect(Collectors.toMap(SaleCountDTO::getSkuCode,Function.identity(),(k1,k2)->k2));
+        PriceMeasurementRespVO respVO = new PriceMeasurementRespVO();
+        Stream<PriceMeasurementReqVO> stream = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin());
+        Stream<PriceMeasurementReqVO> stream1 = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin());
+        long in = stream.count();
+        long de = stream1.count();
+        long deAmount = stream1.mapToLong(o -> collect.get(o.getSkuCode()).getSaleNum() * o.getNewGrossProfitMargin() * o.getPrice()).sum();
+        long inAmount = stream.mapToLong(o -> collect.get(o.getSkuCode()).getSaleNum() * o.getNewGrossProfitMargin() * o.getPrice()).sum();
+        respVO.setDecreaseCount(de);
+        respVO.setIncreaseCount(in);
+        respVO.setDecreaseGrossProfit(deAmount);
+        respVO.setIncreaseGrossProfit(inAmount);
+        return respVO;
     }
 
     @Override

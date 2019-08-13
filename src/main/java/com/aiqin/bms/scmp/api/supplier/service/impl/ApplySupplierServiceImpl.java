@@ -445,89 +445,79 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
         //通过编码查询实体
         WorkFlowCallbackVO vo = updateSupStatus(vo1);
         ApplySupplier applySupplier = applySupplierDao.selectByFormNO(vo.getFormNo());
-        if(Objects.isNull(applySupplier)){
+        if (Objects.isNull(applySupplier)) {
             return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
         }
         HandleTypeCoce applyHandleTypeCoce;
-        if(applySupplier.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
-            if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())){
-                applyHandleTypeCoce = HandleTypeCoce.APPROVAL_SUCCESS;
-                applySupplier.setApplyStatus(vo.getApplyStatus());
-                //通过插入/更新正式数据
-                Supplier supplier = new Supplier();
-                BeanCopyUtils.copy(applySupplier,supplier);
-                Supplier oldSupplier = supplierDao.getSupplierByApplyCode(applySupplier.getApplySupplierCode());
-                supplier.setAuditorBy(vo.getApprovalUserName());
-                supplier.setAuditorTime(new Date());
-                HandleTypeCoce handleTypeCoce;
-                String handleTypeCoceName;
-                if (null != oldSupplier){
-                    supplier.setId(oldSupplier.getId());
-                    supplier.setSupplierCode(oldSupplier.getSupplierCode());
-                    handleTypeCoce = HandleTypeCoce.UPDATE;
-                    handleTypeCoceName = HandleTypeCoce.UPDATE_SUPPLIER.getName();
-                    supplierMapper.updateByPrimaryKey(supplier);
-                } else {
-                    //供应商编码
-                    EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_CODE);
-                    supplier.setId(null);
-                    supplier.setSupplierCode(String.valueOf(encodingRule.getNumberingValue()+1));
-                    supplier.setUpdateBy(applySupplier.getUpdateBy());
-                    supplier.setUpdateTime(applySupplier.getUpdateTime());
-                    handleTypeCoce = HandleTypeCoce.ADD;
-                    handleTypeCoceName = HandleTypeCoce.ADD_SUPPLIER.getName();
-                    supplierMapper.insert(supplier);
-                    //更新编码
-                    encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
-                }
-                //赋值供应商编码
-                applySupplier.setSupplierCode(supplier.getSupplierCode());
-                supplierCommonService.getInstance(supplier.getSupplierCode(),
-                        handleTypeCoce.getStatus(),ObjectTypeCode.SUPPLIER.getStatus(),
-                        handleTypeCoceName,
-                        null,
-                        handleTypeCoce.getName(),
-                        applySupplier.getUpdateBy());
-            }else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
-                applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
-                //驳回, 设置状态
-                applySupplier.setApplyStatus(vo.getApplyStatus());
-                Supplier oldSupplier = supplierDao.getSupplierByApplyCode(applySupplier.getApplySupplierCode());
-                if (null != oldSupplier){
-                    Supplier supplier = new Supplier();
-                    supplier.setId(oldSupplier.getId());
-                    supplier.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
-                    supplierMapper.updateByPrimaryKeySelective(supplier);
-                }
-            }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
-                applyHandleTypeCoce = HandleTypeCoce.APPROVAL;
-                String content = ApplyStatus.APPROVAL_SUCCESS.getContent().replace("CREATEBY", applySupplier.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
-                supplierCommonService.getInstance(applySupplier.getApplySupplierCode(),applyHandleTypeCoce.getStatus(),ObjectTypeCode.APPLY_SUPPLIER.getStatus(),content, null,applyHandleTypeCoce.getName(),vo.getApprovalUserName());
-                //传入的是审批中，继续该流程
-                return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
-            }else if (vo.getApplyStatus().equals(ApplyStatus.REVOKED.getNumber())){
-                applyHandleTypeCoce = HandleTypeCoce.REVOKED;
-                applySupplier.setApplyStatus(vo.getApplyStatus());
-                Supplier oldSupplier = supplierDao.getSupplierByApplyCode(applySupplier.getApplySupplierCode());
-                if (null != oldSupplier){
-                    Supplier supplier = new Supplier();
-                    supplier.setId(oldSupplier.getId());
-                    supplier.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
-                    supplierMapper.updateByPrimaryKeySelective(supplier);
-                }
-            }else {
-                return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
+        if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+            applyHandleTypeCoce = HandleTypeCoce.APPROVAL_SUCCESS;
+            //通过插入/更新正式数据
+            Supplier supplier = new Supplier();
+            BeanCopyUtils.copy(applySupplier, supplier);
+            Supplier oldSupplier = supplierDao.getSupplierByApplyCode(applySupplier.getApplySupplierCode());
+            supplier.setAuditorBy(vo.getApprovalUserName());
+            supplier.setAuditorTime(new Date());
+            HandleTypeCoce handleTypeCoce;
+            String handleTypeCoceName;
+            if (null != oldSupplier) {
+                supplier.setId(oldSupplier.getId());
+                supplier.setSupplierCode(oldSupplier.getSupplierCode());
+                handleTypeCoce = HandleTypeCoce.UPDATE;
+                handleTypeCoceName = HandleTypeCoce.UPDATE_SUPPLIER.getName();
+                supplierMapper.updateByPrimaryKey(supplier);
+            } else {
+                //供应商编码
+                EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_CODE);
+                supplier.setId(null);
+                supplier.setSupplierCode(String.valueOf(encodingRule.getNumberingValue() + 1));
+                supplier.setUpdateBy(applySupplier.getUpdateBy());
+                supplier.setUpdateTime(applySupplier.getUpdateTime());
+                handleTypeCoce = HandleTypeCoce.ADD;
+                handleTypeCoceName = HandleTypeCoce.ADD_SUPPLIER.getName();
+                supplierMapper.insert(supplier);
+                //更新编码
+                encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             }
-        }else{
+            //赋值供应商编码
+            applySupplier.setSupplierCode(supplier.getSupplierCode());
+            supplierCommonService.getInstance(supplier.getSupplierCode(),
+                    handleTypeCoce.getStatus(), ObjectTypeCode.SUPPLIER.getStatus(),
+                    handleTypeCoceName,
+                    null,
+                    handleTypeCoce.getName(),
+                    applySupplier.getUpdateBy());
+        } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())) {
+            applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
+            //驳回, 设置状态
+            Supplier oldSupplier = supplierDao.getSupplierByApplyCode(applySupplier.getApplySupplierCode());
+            if (null != oldSupplier) {
+                Supplier supplier = new Supplier();
+                supplier.setId(oldSupplier.getId());
+                supplier.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
+                supplierMapper.updateByPrimaryKeySelective(supplier);
+            }
+        } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
+            applyHandleTypeCoce = HandleTypeCoce.APPROVAL;
+        } else if (vo.getApplyStatus().equals(ApplyStatus.REVOKED.getNumber())) {
+            applyHandleTypeCoce = HandleTypeCoce.REVOKED;
+            Supplier oldSupplier = supplierDao.getSupplierByApplyCode(applySupplier.getApplySupplierCode());
+            if (null != oldSupplier) {
+                Supplier supplier = new Supplier();
+                supplier.setId(oldSupplier.getId());
+                supplier.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
+                supplierMapper.updateByPrimaryKeySelective(supplier);
+            }
+        } else {
             return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
         }
+        applySupplier.setApplyStatus(vo.getApplyStatus());
         applySupplier.setAuditorBy(vo.getApprovalUserName());
         applySupplier.setAuditorTime(new Date());
         applySupplierMapper.updateByPrimaryKey(applySupplier);
         //判断审核状态，存日志信息
         ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(applySupplier.getApplyStatus());
         String content = applyStatus.getContent().replace("CREATEBY", applySupplier.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
-        supplierCommonService.getInstance(applySupplier.getApplySupplierCode(),applyHandleTypeCoce.getStatus(),ObjectTypeCode.APPLY_SUPPLIER.getStatus(),content, null,applyHandleTypeCoce.getName(),vo.getApprovalUserName());
+        supplierCommonService.getInstance(applySupplier.getApplySupplierCode(), applyHandleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLIER.getStatus(), content, null, applyHandleTypeCoce.getName(), vo.getApprovalUserName());
 
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
