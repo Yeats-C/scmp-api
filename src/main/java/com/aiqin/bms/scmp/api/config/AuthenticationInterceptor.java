@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.supplier.service.AccountService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.SignUtil;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.mgs.control.client.service.TicketService;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -46,29 +47,29 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Value("${web.host-url}")
     private String webHostUrl;
-//
-//    @Value("${evn}")
-//    private String evn;
+
+    @Value("${evn}")
+    private String evn;
 
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
-//        String referer = httpServletRequest.getHeader("referer");
-//        boolean fromSwagger = false;
-//        if(null != referer){
-//            fromSwagger = referer.indexOf("swagger-ui.html") > 0;
-//        }
-//        if (fromSwagger || (StringUtils.isNotBlank(evn) && "dev".equals(evn))) {
-//            AuthToken current = new AuthToken();
-//            current.setPersonId("12211");
-//            current.setPositionCode("GW0137");
-//            current.setPersonName("张昀童");
-//            current.setCompanyCode("04");
-//            current.setCompanyName("北京爱亲技术股份有限公司");
-//            current.setAccountId("b05d34ae4cf442458e141affcdf54532");
-//            filterThreadLocal.set(current);
-//            return true;
-//        }
+        String referer = httpServletRequest.getHeader("referer");
+        boolean fromSwagger = false;
+        if(null != referer){
+            fromSwagger = referer.indexOf("swagger-ui.html") > 0;
+        }
+        if (fromSwagger || (StringUtils.isNotBlank(evn) && "dev".equals(evn))) {
+            AuthToken current = new AuthToken();
+            current.setPersonId("12211");
+            current.setPositionCode("GW0137");
+            current.setPersonName("张昀童");
+            current.setCompanyCode("04");
+            current.setCompanyName("北京爱亲技术股份有限公司");
+            current.setAccountId("b05d34ae4cf442458e141affcdf54532");
+            filterThreadLocal.set(current);
+            return true;
+        }
         String ticket = httpServletRequest.getParameter("ticket");
         String accountId = httpServletRequest.getParameter("account_id");
         log.info("ticket{}",ticket);
@@ -87,11 +88,11 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             return false;
         }
         //中台校验ticket是否有效
-//        HttpResponse response = ticketService.verifyTicket(ticket, personId);
-//        if (!"0".equals(response.getCode())) {
-//            returnJson(httpServletResponse, "登录失效");
-//            return false;
-//        }
+        HttpResponse response = ticketService.verifyTicket(ticket, personId);
+        if (!"0".equals(response.getCode())) {
+            returnJson(httpServletResponse, "登录失效");
+            return false;
+        }
         AuthToken current = AuthenticationInterceptor.getCurrentAuthToken();
         if(null == current) {
             UserDataVo userDataVo = accountService.getAccountInfoByAccountId(ticket, personId, accountId);
