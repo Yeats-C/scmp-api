@@ -32,6 +32,10 @@ public class ProductAndStockRequest extends PagesRequest {
     @JsonProperty("supplier_code")
     private String supplierCode;
 
+    @ApiModelProperty(value = "供应商名称")
+    @JsonProperty("supplier_name")
+    private String supplierName;
+
     @ApiModelProperty(value = "所属部门")
     @JsonProperty("product_sort_code")
     private String productSortCode;
@@ -74,7 +78,7 @@ public class ProductAndStockRequest extends PagesRequest {
 
     public ProductAndStockRequest(String beginTime, String finishTime, String skuCode, String skuName, String supplierCode,
                                   String productSortCode, String productBrandCode, String lv1, String lv2, String lv3,
-                                  String lv4, String transportCenterCode, String warehouseCode) {
+                                  String lv4, String transportCenterCode, String warehouseCode, String supplierName) {
         this.beginTime = beginTime;
         this.finishTime = finishTime;
         this.skuCode = skuCode;
@@ -88,6 +92,7 @@ public class ProductAndStockRequest extends PagesRequest {
         this.lv4 = lv4;
         this.transportCenterCode = transportCenterCode;
         this.warehouseCode = warehouseCode;
+        this.supplierName = supplierName;
     }
 
     public ProductAndStockRequest(String beginTime, String finishTime, String skuCode, String skuName, String supplierCode,

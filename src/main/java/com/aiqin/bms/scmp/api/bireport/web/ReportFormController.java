@@ -47,6 +47,7 @@ public class ReportFormController {
             @ApiImplicitParam(name = "warehouse_code", value = "库房编码", type = "String"),
             @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
             @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
+            @ApiImplicitParam(name = "supplier_name", value = "供应商名称", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer") })
     public HttpResponse<BiGoodsSalesReport> applyList(@RequestParam(value = "begin_time", required = false) String beginTime,
@@ -62,10 +63,11 @@ public class ReportFormController {
                                                       @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
                                                       @RequestParam(value = "sku_code", required = false) String skuCode,
                                                       @RequestParam(value = "sku_name", required = false) String skuName,
+                                                      @RequestParam(value = "supplier_name", required = false) String supplierName,
                                                       @RequestParam(value = "page_no", required = false) Integer pageNo,
                                                       @RequestParam(value = "page_size", required = false) Integer pageSize) {
         ProductAndStockRequest productAndStock = new ProductAndStockRequest(beginTime, finishTime, skuCode, skuName,
-                supplierCode, productSortCode, productBrandCode, lv1, lv2, lv3, lv4, transportCenterCode, warehouseCode);
+                supplierCode, productSortCode, productBrandCode, lv1, lv2, lv3, lv4, transportCenterCode, warehouseCode, supplierName);
         productAndStock.setPageSize(pageSize);
         productAndStock.setPageNo(pageNo);
         return reportFormService.productSaleInfo(productAndStock);

@@ -19,8 +19,10 @@ import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
@@ -121,6 +123,10 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     private SupplierCommonService supplierCommonService;
     @Autowired
     private RejectRecordDao rejectRecordDao;
+    @Autowired
+    private ProductSkuDao productSkuDao;
+    @Autowired
+    private ProductSkuStockInfoMapper productSkuStockInfoMapper;
 
     /**
      * 分页查询以及搜索
@@ -361,7 +367,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             list.stream().forEach(outboundProduct -> {
                 List<ReturnOutboundProduct> returnOutboundProductList = outboundProductDao.selectTax(outboundResVo.getOutboundOderCode(), outboundProduct.getSkuCode());
                 ReturnOutboundProduct returnOutboundProduct = returnOutboundProductList.get(0);
+                ProductSkuRespVo productSkuRespVo = productSkuDao.getSkuInfoResp(outboundProduct.getSkuCode());
+                ProductSkuStockInfo productSkuStockInfo = productSkuStockInfoMapper.getBySkuCode(outboundProduct.getSkuCode());
+                outboundProduct.setColorCode(productSkuRespVo.getColorCode());
+                outboundProduct.setColorName(productSkuRespVo.getColorName());
+                outboundProduct.setModel(productSkuRespVo.getModelNumber());
                 outboundProduct.setTax(returnOutboundProduct.getInputTaxRate());
+                outboundProduct.setNorms(productSkuStockInfo.getSpec());
             });
             try{
                 outboundResVo.setList(BeanCopyUtils.copyList(list, OutboundProductResVo.class));

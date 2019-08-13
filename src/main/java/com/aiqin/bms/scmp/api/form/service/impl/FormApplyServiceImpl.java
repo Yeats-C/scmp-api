@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.form.service.impl;
 
-import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.form.domain.FormApplyRequest;
 import com.aiqin.bms.scmp.api.form.service.FormApplyService;
 import com.aiqin.ground.util.id.IdUtil;
