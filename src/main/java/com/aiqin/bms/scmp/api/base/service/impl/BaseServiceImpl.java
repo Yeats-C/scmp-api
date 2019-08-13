@@ -21,7 +21,6 @@ import com.aiqin.platform.flows.client.domain.vo.StartProcessParamVO;
 import com.aiqin.platform.flows.client.service.FormApplyCommonService;
 import com.aiqin.platform.flows.client.service.FormOperateService;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 @Service
 @Slf4j
@@ -78,10 +80,7 @@ public class BaseServiceImpl implements BaseService {
         paramVO.setReceiptType(2); // 2代表供应链
         paramVO.setSignTicket(IdUtil.uuid());
         if (StringUtils.isNotBlank(vo.getVariables())) {
-            JSONObject jsonObject = JSONObject.parseObject(vo.getVariables());
-            Map<String, Object> map = new HashMap<>();
-            map.put("auditPersonId", jsonObject.getString("auditPersonId"));
-            map.put("purchaseAmount", jsonObject.getString("purchaseAmount"));
+            Map map = JSON.parseObject(vo.getVariables(), Map.class);
             paramVO.setVariables(map);
         }
         log.info("调用审批流发起申请,request={}", paramVO);

@@ -87,15 +87,6 @@ public class ProductSkuChangePrice {
     @ApiModelProperty("调价原因描述")
     private String extField2;
 
-    @ApiModelProperty("扩展字段3")
-    private String extField3;
-
-    @ApiModelProperty("扩展字段4")
-    private Date extField4;
-
     @ApiModelProperty("是否含有区域")
     private Integer extField5;
-
-    @ApiModelProperty("扩展字段6")
-    private Long extField6;
 }
