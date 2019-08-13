@@ -820,8 +820,8 @@
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         select
         st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,st.warehouse_code,st.warehouse_name,
-        st.warehouse_type,st.sku_code,st.sku_name,sum(st.inventory_num) as inventory_num,sum(st.available_num) as available_num,sum(st.lock_num) as lock_num,
-        sum(st.purchase_way_num) as purchase_way_num,sum(st.allocation_way_num) as allocation_way_num,sum(st.total_way_num) as total_way_num,st.new_delivery,
+        st.warehouse_type,st.sku_code,st.sku_name,inventory_num,available_num,lock_num,
+        purchase_way_num,allocation_way_num,total_way_num,st.new_delivery,
         st.new_delivery_name,st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,st.stock_unit_name,
         st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,
         ps.product_category_code,ps.product_category_name,date_format(st.create_time, '%Y-%m-%d %H:%i:%s') create_time,st.create_by,date_format(st.update_time, '%Y-%m-%d %H:%i:%s') update_time,st.update_by
@@ -890,7 +890,6 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             and ps.procurement_section_name=#{procurementSectionName}
         </if>
-        group by st.transport_center_code,st.sku_code
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
 
