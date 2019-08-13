@@ -225,4 +225,35 @@
             and ddmhr.price_channel_code=#{priceChannelCode}
         </if>
     </select>
+    <select id="selectAnnualSales" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepartAnnualSalesStatiRespVo">
+        SELECT
+        ddass.id as id,
+        ddass.stat_year as statYear,
+        ddass.product_sort_name as productSortName,
+        ddass.channel_costs as channelCosts,
+        ddass.channel_amount as channelAmount,
+        ddass.distribution_amount as distributionAmount,
+        ddass.channel_margin as channelMargin,
+        ddass.distribution_margin as distributionMargin,
+        ddass.sales_budget as salesBudget,
+        ddass.achieve_rate as achieveRate
+        FROM dashboard_depart_annual_sales_stati ddass
+        WHERE  ddass.stat_year like concat('%',#{oneYearStr},'%')
+    </select>
+    <select id="selectMonthlyLossAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlyLossAmountRespVo">
+        SELECT
+          dmla.id as id,
+          dmla.stat_year as statYear,
+          sum(dmla.monthly_loss_amount) as monthlyLossAmount
+          FROM dashboard_monthly_loss_amount dmla
+          where dmla.stat_year = #{oneYearStr}
+    </select>
+    <select id="selectPropertyAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateProperSalesAmountRespVo">
+      SELECT
+        SUM(ddcpsa.channel_sales_amount) channelSalesAmount
+      FROM
+        dashboard_dep_cate_proper_sales_amount ddcpsa
+      WHERE
+        ddcpsa.stat_month like concat('%',#{oneYearStr},'%') and ddcpsa.product_property_code = "1"
+    </select>
 </mapper>

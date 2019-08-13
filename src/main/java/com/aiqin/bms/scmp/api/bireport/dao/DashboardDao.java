@@ -37,4 +37,13 @@ public interface DashboardDao {
 
     // 当月部门销售同环比(带条件)
     List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatioList(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo);
+
+    // 查询首页7字段之4(渠道金额，渠道达成率，渠道毛利率)
+    DashboardDepartAnnualSalesStatiRespVo selectAnnualSales(@Param("oneYearStr") String oneYearStr);
+
+    // 查询首页7字段之1(亏损合计)
+    DashboardMonthlyLossAmountRespVo selectMonthlyLossAmount(@Param("oneYearStr") String oneYearStr);
+
+    // 查询首页7字段之1(A品金额)
+    DashboardDepCateProperSalesAmountRespVo selectPropertyAmount(@Param("oneYearStr") String oneYearStr);
 }

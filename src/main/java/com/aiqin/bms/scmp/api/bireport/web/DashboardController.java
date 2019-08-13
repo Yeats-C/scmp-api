@@ -125,4 +125,10 @@ public class DashboardController {
         DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo = new DashboardDepMonthlyHomocyclicRatioReqVo(productSortCode,priceChannelCode);
         return HttpResponse.success(dashboardService.selectDashboardDepMonthlyHomocyclicRatioList(dashboardDepMonthlyHomocyclicRatioReqVo));
     }
+
+    @GetMapping("/dashboard/home/page/title")
+    @ApiOperation("首页头字段")
+    public HttpResponse<DashboardHomePageTitle> selectDashboardHomePageTitle(){
+        return HttpResponse.success(dashboardService.selectDashboardHomePageTitle());
+    }
 }

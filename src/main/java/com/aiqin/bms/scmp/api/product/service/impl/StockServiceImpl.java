@@ -235,6 +235,7 @@ public class StockServiceImpl implements StockService {
                 String str = stockRespVO.getTransportCenterCode()+ stockRespVO.getSkuCode();
                 if(stockRespMap.get(str) == null){
                     stockRespMap.put(str,stockRespVO);
+                    stockCommon(stockRespMap, stockRespVO, str);
                 }else {
                     stockCommon(stockRespMap, stockRespVO, str);
                 }
