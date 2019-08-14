@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -44,7 +45,7 @@ public class QuerySkuInfoRespVOForIm extends QuerySkuInfoRespVO {
     private Long newPrice=0L;
 
     @ApiModelProperty("原毛利率")
-    private Long oldGrossProfitMargin=0L;
+    private BigDecimal oldGrossProfitMargin=BigDecimal.ZERO;
 
     @ApiModelProperty("现毛利率")
     private Long newGrossProfitMargin = 0L;

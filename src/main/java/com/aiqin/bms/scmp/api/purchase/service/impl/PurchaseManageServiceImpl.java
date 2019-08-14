@@ -862,7 +862,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         log.setOperationType(code);
         log.setOperationContent(name);
         log.setRemark(remark);
-        operationLogDao.insert(log);
+        if(code.equals(10)){
+            Calendar calendar = Calendar.getInstance ();
+            calendar.add (Calendar.SECOND, 3);
+            log.setCreateTime(calendar.getTime());
+        }else {
+            log.setCreateTime(Calendar.getInstance().getTime());
+        }
+        operationLogDao.insertByTime(log);
     }
 
     @Override

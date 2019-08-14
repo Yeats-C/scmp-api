@@ -35,10 +35,8 @@
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
     <result column="official_code" jdbcType="VARCHAR" property="officialCode" />
-    <result column="ext_field_3" jdbcType="VARCHAR" property="extField3" />
     <result column="product_time" jdbcType="TIMESTAMP" property="productTime" />
     <result column="be_synchronize" jdbcType="INTEGER" property="beSynchronize" />
-    <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
     <result column="old_gross_profit_margin" jdbcType="BIGINT" property="oldGrossProfitMargin" />
     <result column="new_gross_profit_margin" jdbcType="BIGINT" property="newGrossProfitMargin" />
   </resultMap>
@@ -49,7 +47,7 @@
     change_price_reason_name, temporary_price, price_item_code, price_item_name, price_type_code, 
     price_type_name, price_attribute_code, price_attribute_name, company_code, company_name, 
     transport_center_code, transport_center_name, warehouse_code, warehouse_name, batch_remark,
-    official_code, ext_field_3, product_time, be_synchronize, ext_field_6, old_gross_profit_margin, new_gross_profit_margin
+    official_code, product_time, be_synchronize, old_gross_profit_margin, new_gross_profit_margin
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -94,7 +92,7 @@
       and a.apply_status = #{applyStatus}
     </if>
     <if test="beContainArea != null">
-      and a.ext_field_5 = #{beContainArea}
+      and a.be_contain_area = #{beContainArea}
     </if>
     group by a.id
     order by a.create_time desc
@@ -124,7 +122,7 @@
     a.create_time                        as createTime,
     a.create_by                          as createBy,
     a.change_price_name                  as changePriceName,
-    a.ext_field_5                        as beContainArea,
+    a.be_contain_area                        as beContainArea,
     a.purchase_group_name                as purchaseGroupName,
     a.apply_status                       as applyStatus,
     a.create_by                          as createBy,
@@ -165,8 +163,8 @@
       price_attribute_name, company_code, company_name, 
       transport_center_code, transport_center_name, 
       warehouse_code, warehouse_name, batch_remark,
-      official_code, ext_field_3, product_time,
-      be_synchronize, ext_field_6, old_gross_profit_margin, new_gross_profit_margin)
+      official_code, product_time,
+      be_synchronize, old_gross_profit_margin, new_gross_profit_margin)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{purchasePriceNewest,jdbcType=BIGINT}, #{supplierCode,jdbcType=VARCHAR}, 
       #{supplierName,jdbcType=VARCHAR}, #{beDefault,jdbcType=INTEGER}, #{purchasePriceOld,jdbcType=BIGINT}, 
@@ -179,8 +177,8 @@
       #{priceAttributeName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR},
-      #{officialCode,jdbcType=VARCHAR}, #{extField3,jdbcType=VARCHAR}, #{productTime,jdbcType=TIMESTAMP},
-      #{beSynchronize,jdbcType=INTEGER}, #{extField6,jdbcType=BIGINT}, #{oldGrossProfitMargin,jdbcType=BIGINT}, #{newGrossProfitMargin,jdbcType=BIGINT})
+      #{officialCode,jdbcType=VARCHAR}, #{productTime,jdbcType=TIMESTAMP},
+      #{beSynchronize,jdbcType=INTEGER}, #{oldGrossProfitMargin,jdbcType=BIGINT}, #{newGrossProfitMargin,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo">
     insert into product_sku_change_price_info
@@ -284,17 +282,11 @@
       <if test="officialCode != null">
         official_code,
       </if>
-      <if test="extField3 != null">
-        ext_field_3,
-      </if>
       <if test="productTime != null">
         product_time,
       </if>
       <if test="beSynchronize != null">
         be_synchronize,
-      </if>
-      <if test="extField6 != null">
-        ext_field_6,
       </if>
     <if test="oldGrossProfitMargin != null">
       old_gross_profit_margin,
@@ -403,17 +395,11 @@
       <if test="officialCode != null">
         #{officialCode,jdbcType=VARCHAR},
       </if>
-      <if test="extField3 != null">
-        #{extField3,jdbcType=VARCHAR},
-      </if>
       <if test="productTime != null">
         #{productTime,jdbcType=TIMESTAMP},
       </if>
       <if test="beSynchronize != null">
         #{beSynchronize,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        #{extField6,jdbcType=BIGINT},
       </if>
        <if test="oldGrossProfitMargin != null">
         #{oldGrossProfitMargin,jdbcType=BIGINT},
@@ -436,8 +422,8 @@
       price_attribute_name, company_code, company_name,
       transport_center_code, transport_center_name,
       warehouse_code, warehouse_name, batch_remark,
-      official_code, ext_field_3, product_time,
-      be_synchronize, ext_field_6, old_gross_profit_margin, new_gross_profit_margin)
+      official_code, product_time,
+      be_synchronize, old_gross_profit_margin, new_gross_profit_margin)
     values
       <foreach collection="items" item="item" close="" open="" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
@@ -452,8 +438,8 @@
         #{item.priceAttributeName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
         #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
         #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR},
-        #{item.officialCode,jdbcType=VARCHAR}, #{item.extField3,jdbcType=VARCHAR}, #{item.productTime,jdbcType=TIMESTAMP},
-        #{item.beSynchronize,jdbcType=INTEGER}, #{item.extField6,jdbcType=BIGINT}, #{item.oldGrossProfitMargin,jdbcType=BIGINT}, #{item.newGrossProfitMargin,jdbcType=BIGINT})
+        #{item.officialCode,jdbcType=VARCHAR}, #{item.productTime,jdbcType=TIMESTAMP},
+        #{item.beSynchronize,jdbcType=INTEGER}, #{item.oldGrossProfitMargin,jdbcType=BIGINT}, #{item.newGrossProfitMargin,jdbcType=BIGINT})
       </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo">
@@ -555,17 +541,11 @@
       <if test="officialCode != null">
         official_code = #{officialCode,jdbcType=VARCHAR},
       </if>
-      <if test="extField3 != null">
-        ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      </if>
       <if test="productTime != null">
         product_time = #{productTime,jdbcType=TIMESTAMP},
       </if>
       <if test="beSynchronize != null">
         be_synchronize = #{beSynchronize,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        ext_field_6 = #{extField6,jdbcType=BIGINT},
       </if>
     <if test="oldGrossProfitMargin != null">
       old_gross_profit_margin = #{oldGrossProfitMargin,jdbcType=BIGINT},
@@ -610,10 +590,8 @@
       warehouse_name = #{warehouseName,jdbcType=VARCHAR},
       batch_remark = #{batchRemark,jdbcType=VARCHAR},
       official_code = #{officialCode,jdbcType=VARCHAR},
-      ext_field_3 = #{extField3,jdbcType=VARCHAR},
       product_time = #{productTime,jdbcType=TIMESTAMP},
       be_synchronize = #{beSynchronize,jdbcType=INTEGER},
-      ext_field_6 = #{extField6,jdbcType=BIGINT},
       old_gross_profit_margin = #{oldGrossProfitMargin,jdbcType=BIGINT},
       new_gross_profit_margin = #{newGrossProfitMargin,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
@@ -653,10 +631,8 @@
       warehouse_name = #{item.warehouseName,jdbcType=VARCHAR},
       batch_remark = #{item.batchRemark,jdbcType=VARCHAR},
       official_code = #{item.officialCode,jdbcType=VARCHAR},
-      ext_field_3 = #{item.extField3,jdbcType=VARCHAR},
       product_time = #{item.productTime,jdbcType=TIMESTAMP},
       be_synchronize = #{item.beSynchronize,jdbcType=INTEGER},
-      ext_field_6 = #{item.extField6,jdbcType=BIGINT},
       old_gross_profit_margin = #{item.oldGrossProfitMargin,jdbcType=BIGINT},
       new_gross_profit_margin = #{item.newGrossProfitMargin,jdbcType=BIGINT}
       where id = #{item.id,jdbcType=BIGINT}

@@ -188,7 +188,7 @@
         select
         bms.id as id,
         date_format(bms.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        bms.month as month,
+        bms.year_month as month,
         bms.product_sort_code as productSortCode,
         bms.product_sort_name as productSortName,
         bms.price_channel_code as orderCode,

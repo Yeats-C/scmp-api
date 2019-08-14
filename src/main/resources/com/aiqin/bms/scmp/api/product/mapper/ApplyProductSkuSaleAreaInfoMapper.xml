@@ -12,12 +12,6 @@
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
-    <result column="ext_field_1" jdbcType="VARCHAR" property="extField1" />
-    <result column="ext_field_2" jdbcType="VARCHAR" property="extField2" />
-    <result column="ext_field_3" jdbcType="VARCHAR" property="extField3" />
-    <result column="ext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-    <result column="ext_field_5" jdbcType="INTEGER" property="extField5" />
-    <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
   </resultMap>
   <sql id="Base_Column_List">
     id, main_code, sku_code, type, status, name, code, company_code, company_name, province_id

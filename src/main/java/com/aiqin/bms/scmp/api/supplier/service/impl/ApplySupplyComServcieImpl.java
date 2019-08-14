@@ -743,13 +743,14 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 CheckSupply checkSupply = new CheckSupply(supplierImportNew, areaTree, supplyCompanies, null, supplierList, dictionaryInfoList)
                         .checkSupplyNew()
                         .checkCommonData();
-                String error = checkSupply.getSupplierImport().getError();
-                if (StringUtils.isNotBlank(error)) {
-                    error = "第"+(i+1)+"行 "+error;
-                    checkSupply.getSupplierImport().setError(error);
-                }
                 applyList.add(checkSupply.getReqVO());
-                importVos.add(checkSupply.getSupplierImport());
+                SupplierImport supplierImport = checkSupply.getSupplierImport();
+                String error = supplierImport.getError();
+                if (StringUtils.isNotBlank(error)) {
+                    String s = "第" + (i + 2) + "行 " + error;
+                    supplierImport.setError(s);
+                }
+                importVos.add(supplierImport);
             }
             return new SupplierImportResp(applyList,importVos);
         } catch (ExcelException e) {
@@ -791,12 +792,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                         .checkSupplyUpdate()
                         .checkCommonData();
                 applyList.add(checkSupply.getReqVO());
-                String error = checkSupply.getSupplierImport().getError();
+                SupplierImport supplierImport = checkSupply.getSupplierImport();
+                String error = supplierImport.getError();
                 if (StringUtils.isNotBlank(error)) {
-                    error = "第"+(i+1)+"行 "+error;
-                    checkSupply.getSupplierImport().setError(error);
+                    String s = "第" + (i + 2) + "行 " + error;
+                    supplierImport.setError(s);
                 }
-                importVos.add(checkSupply.getSupplierImport());
+                importVos.add(supplierImport);
             }
             return new SupplierImportResp(applyList,importVos);
         } catch (ExcelException e) {

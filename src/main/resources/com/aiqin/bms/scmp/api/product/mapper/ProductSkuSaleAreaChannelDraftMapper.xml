@@ -34,8 +34,7 @@
       price_channel_name, company_code, company_name
       )
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{priceChannelCode,jdbcType=VARCHAR}, 
-      #{priceChannelName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
-      #{extField1,jdbcType=VARCHAR}, #{extField2,jdbcType=VARCHAR}, #{extField3,jdbcType=VARCHAR}
+      #{priceChannelName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaChannelDraft">

@@ -8,16 +8,9 @@
     <result column="price_channel_name" jdbcType="VARCHAR" property="priceChannelName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
-    <result column="ext_field_1" jdbcType="VARCHAR" property="extField1" />
-    <result column="ext_field_2" jdbcType="VARCHAR" property="extField2" />
-    <result column="ext_field_3" jdbcType="VARCHAR" property="extField3" />
-    <result column="ext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-    <result column="ext_field_5" jdbcType="INTEGER" property="extField5" />
-    <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, code, price_channel_code, price_channel_name, company_code, company_name, ext_field_1, 
-    ext_field_2, ext_field_3, ext_field_4, ext_field_5, ext_field_6
+    id, code, price_channel_code, price_channel_name, company_code, company_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -38,14 +31,10 @@
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaChannel">
     insert into product_sku_sale_area_channel (id, code, price_channel_code, 
-      price_channel_name, company_code, company_name, 
-      ext_field_1, ext_field_2, ext_field_3, 
-      ext_field_4, ext_field_5, ext_field_6
+      price_channel_name, company_code, company_name
       )
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{priceChannelCode,jdbcType=VARCHAR}, 
-      #{priceChannelName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
-      #{extField1,jdbcType=VARCHAR}, #{extField2,jdbcType=VARCHAR}, #{extField3,jdbcType=VARCHAR}, 
-      #{extField4,jdbcType=TIMESTAMP}, #{extField5,jdbcType=INTEGER}, #{extField6,jdbcType=BIGINT}
+      #{priceChannelName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaChannel">
@@ -69,24 +58,6 @@
       <if test="companyName != null">
         company_name,
       </if>
-      <if test="extField1 != null">
-        ext_field_1,
-      </if>
-      <if test="extField2 != null">
-        ext_field_2,
-      </if>
-      <if test="extField3 != null">
-        ext_field_3,
-      </if>
-      <if test="extField4 != null">
-        ext_field_4,
-      </if>
-      <if test="extField5 != null">
-        ext_field_5,
-      </if>
-      <if test="extField6 != null">
-        ext_field_6,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -107,38 +78,16 @@
       <if test="companyName != null">
         #{companyName,jdbcType=VARCHAR},
       </if>
-      <if test="extField1 != null">
-        #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        #{extField6,jdbcType=BIGINT},
-      </if>
     </trim>
   </insert>
     <insert id="insertBatch">
       insert into product_sku_sale_area_channel (id, code, price_channel_code,
-      price_channel_name, company_code, company_name,
-      ext_field_1, ext_field_2, ext_field_3,
-      ext_field_4, ext_field_5, ext_field_6
+      price_channel_name, company_code, company_name
       )
       values
       <foreach collection="items" item="item" open="" close="" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.priceChannelCode,jdbcType=VARCHAR},
-      #{item.priceChannelName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
-      #{item.extField1,jdbcType=VARCHAR}, #{item.extField2,jdbcType=VARCHAR}, #{item.extField3,jdbcType=VARCHAR},
-      #{item.extField4,jdbcType=TIMESTAMP}, #{item.extField5,jdbcType=INTEGER}, #{item.extField6,jdbcType=BIGINT}
+      #{item.priceChannelName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR}
       )
       </foreach>
     </insert>
@@ -160,24 +109,6 @@
       <if test="companyName != null">
         company_name = #{companyName,jdbcType=VARCHAR},
       </if>
-      <if test="extField1 != null">
-        ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        ext_field_5 = #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        ext_field_6 = #{extField6,jdbcType=BIGINT},
-      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -187,13 +118,7 @@
       price_channel_code = #{priceChannelCode,jdbcType=VARCHAR},
       price_channel_name = #{priceChannelName,jdbcType=VARCHAR},
       company_code = #{companyCode,jdbcType=VARCHAR},
-      company_name = #{companyName,jdbcType=VARCHAR},
-      ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      ext_field_5 = #{extField5,jdbcType=INTEGER},
-      ext_field_6 = #{extField6,jdbcType=BIGINT}
+      company_name = #{companyName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

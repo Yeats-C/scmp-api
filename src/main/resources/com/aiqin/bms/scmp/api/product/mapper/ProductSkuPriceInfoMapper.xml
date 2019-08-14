@@ -38,7 +38,7 @@
         <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
         <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
         <result column="be_synchronous" jdbcType="INTEGER" property="beSynchronous"/>
-        <result column="ext_field_5" jdbcType="INTEGER" property="extField5"/>
+        <result column="be_contain_area" jdbcType="INTEGER" property="beContainArea"/>
     </resultMap>
     <resultMap id="selectByPriceStatusAndDate"
                type="com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuPriceInfoDTO">
@@ -78,7 +78,7 @@
         <result column="acompany_code" jdbcType="VARCHAR" property="companyCode"/>
         <result column="acompany_name" jdbcType="VARCHAR" property="companyName"/>
         <result column="abe_synchronous" jdbcType="INTEGER" property="beSynchronous"/>
-        <result column="aext_field_5" jdbcType="INTEGER" property="extField5"/>
+        <result column="abe_contain_area" jdbcType="INTEGER" property="beContainArea"/>
         <collection property="areaInfos" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceAreaInfo">
             <id column="bid" jdbcType="BIGINT" property="id"/>
             <result column="bmain_code" jdbcType="VARCHAR" property="mainCode"/>
@@ -102,11 +102,11 @@
     supplier_name, be_default, create_by, create_time, update_by, update_time, warehouse_batch_number, 
     warehouse_batch_name, transport_center_code, transport_center_name, warehouse_code, 
     warehouse_name, batch_remark, product_time, apply_code, company_code, company_name, 
-    be_synchronous, ext_field_5
+    be_synchronous, be_contain_area
   </sql>
 
     <sql id="select_by_price_status_and_date">
-  a.id aid, a.code acode, a.sku_code asku_code, a.sku_name asku_name, a.purchase_group_code apurchase_group_code, a.purchase_group_name apurchase_group_name, a.price_item_code aprice_item_code, a.price_item_name aprice_item_name, a.price_type_code aprice_type_code, a.price_type_name aprice_type_name, a.price_attribute_code aprice_attribute_code, a.price_attribute_name aprice_attribute_name, a.price_tax aprice_tax, a.price_no_tax aprice_no_tax, a.tax atax, a.effective_time_start aeffective_time_start, a.effective_time_end aeffective_time_end, a.supplier_code asupplier_code, a.supplier_name asupplier_name, a.be_default abe_default, a.create_by acreate_by, a.create_time acreate_time, a.update_by aupdate_by, a.update_time aupdate_time, a.warehouse_batch_number awarehouse_batch_number, a.warehouse_batch_name awarehouse_batch_name, a.transport_center_code atransport_center_code, a.transport_center_name atransport_center_name, a.warehouse_code awarehouse_code, a.warehouse_name awarehouse_name, a.batch_remark abatch_remark, a.product_time aproduct_time, a.apply_code aapply_code, a.company_code acompany_code, a.company_name acompany_name, a.be_synchronous abe_synchronous,a.ext_field_5 aext_field_5, b.id bid, b.main_code bmain_code, b.type btype, b.status bstatus, b.name bname, b.code bcode, b.company_code bcompany_code, b.company_name bcompany_name, b.effective_time_start beffective_time_start, b.effective_time_end beffective_time_end, b.be_effective bbe_effective, b.un_effective_reason bun_effective_reason
+  a.id aid, a.code acode, a.sku_code asku_code, a.sku_name asku_name, a.purchase_group_code apurchase_group_code, a.purchase_group_name apurchase_group_name, a.price_item_code aprice_item_code, a.price_item_name aprice_item_name, a.price_type_code aprice_type_code, a.price_type_name aprice_type_name, a.price_attribute_code aprice_attribute_code, a.price_attribute_name aprice_attribute_name, a.price_tax aprice_tax, a.price_no_tax aprice_no_tax, a.tax atax, a.effective_time_start aeffective_time_start, a.effective_time_end aeffective_time_end, a.supplier_code asupplier_code, a.supplier_name asupplier_name, a.be_default abe_default, a.create_by acreate_by, a.create_time acreate_time, a.update_by aupdate_by, a.update_time aupdate_time, a.warehouse_batch_number awarehouse_batch_number, a.warehouse_batch_name awarehouse_batch_name, a.transport_center_code atransport_center_code, a.transport_center_name atransport_center_name, a.warehouse_code awarehouse_code, a.warehouse_name awarehouse_name, a.batch_remark abatch_remark, a.product_time aproduct_time, a.apply_code aapply_code, a.company_code acompany_code, a.company_name acompany_name, a.be_synchronous abe_synchronous,a.be_contain_area abe_contain_area, b.id bid, b.main_code bmain_code, b.type btype, b.status bstatus, b.name bname, b.code bcode, b.company_code bcompany_code, b.company_name bcompany_name, b.effective_time_start beffective_time_start, b.effective_time_end beffective_time_end, b.be_effective bbe_effective, b.un_effective_reason bun_effective_reason
 </sql>
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -120,7 +120,7 @@
         <include refid="Base_Column_List"/>
         from product_sku_price_info
         where company_code = #{vo.companyCode}
-        and ext_field_5 = 0
+        and be_contain_area = 0
         and price_attribute_code = #{vo.priceType}
         <if test="vo.skuCode != null and vo.skuCode.size>0">
             and sku_code in
@@ -468,7 +468,7 @@
       warehouse_code, warehouse_name, batch_remark, 
       product_time, apply_code, company_code, 
       company_name, be_synchronous,
-      ext_field_5)
+      be_contain_area)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
       #{priceItemCode,jdbcType=VARCHAR}, #{priceItemName,jdbcType=VARCHAR}, #{priceTypeCode,jdbcType=VARCHAR}, 
@@ -482,7 +482,7 @@
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, 
       #{productTime,jdbcType=TIMESTAMP}, #{applyCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, 
       #{companyName,jdbcType=VARCHAR}, #{beSynchronous,jdbcType=INTEGER},
-      #{extField5,jdbcType=INTEGER})
+      #{beContainArea,jdbcType=INTEGER})
   </insert>
     <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo">
         insert into product_sku_price_info
@@ -595,8 +595,8 @@
             <if test="beSynchronous != null">
                 be_synchronous,
             </if>
-            <if test="extField5 != null">
-                ext_field_5,
+            <if test="beContainArea != null">
+                be_contain_area,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -708,8 +708,8 @@
             <if test="beSynchronous != null">
                 #{beSynchronous,jdbcType=INTEGER},
             </if>
-            <if test="extField5 != null">
-                #{extField5,jdbcType=INTEGER},
+            <if test="beContainArea != null">
+                #{beContainArea,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -727,7 +727,7 @@
         warehouse_code, warehouse_name, batch_remark,
         product_time, apply_code, company_code,
         company_name, be_synchronous,
-        ext_field_5)
+        be_contain_area)
         values
         <foreach collection="items" item="item" open="" close="" separator=",">
             (
@@ -751,7 +751,7 @@
             #{item.productTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
             #{item.companyCode,jdbcType=VARCHAR},
             #{item.companyName,jdbcType=VARCHAR}, #{item.beSynchronous,jdbcType=INTEGER},
-            #{item.extField5,jdbcType=INTEGER}
+            #{item.beContainArea,jdbcType=INTEGER}
             )
         </foreach>
     </insert>
@@ -864,8 +864,8 @@
             <if test="beSynchronous != null">
                 be_synchronous = #{beSynchronous,jdbcType=INTEGER},
             </if>
-            <if test="extField5 != null">
-                ext_field_5 = #{extField5,jdbcType=INTEGER},
+            <if test="beContainArea != null">
+                be_contain_area = #{beContainArea,jdbcType=INTEGER},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
@@ -907,7 +907,7 @@
       company_code = #{companyCode,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},
       be_synchronous = #{beSynchronous,jdbcType=INTEGER},
-      ext_field_5 = #{extField5,jdbcType=INTEGER}
+      be_contain_area = #{beContainArea,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="updateBatch">
@@ -948,7 +948,7 @@
             company_code = #{item.companyCode,jdbcType=VARCHAR},
             company_name = #{item.companyName,jdbcType=VARCHAR},
             be_synchronous = #{item.beSynchronous,jdbcType=INTEGER},
-            ext_field_5 = #{item.extField5,jdbcType=INTEGER}
+            be_contain_area = #{item.beContainArea,jdbcType=INTEGER}
             where id = #{item.id,jdbcType=BIGINT}
         </foreach>
     </update>
@@ -972,7 +972,7 @@
             a.supplier_name supplierName
          from product_sku_price_info a
         where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
-        and a.ext_field_5 = 0 and a.price_attribute_code in (1,2)
+        and a.be_contain_area = 0 and a.price_attribute_code in (1,2)
     </select>
     <select id="selectBySkuCodeForApply"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo">
@@ -993,7 +993,7 @@
         <if test="companyCode != null and companyCode != '' ">
             and a.company_code = #{companyCode}
         </if>
-        and a.ext_field_5 = 0 and a.price_attribute_code in (1,2) and a.apply_code = #{applyCode}
+        and a.be_contain_area = 0 and a.price_attribute_code in (1,2) and a.apply_code = #{applyCode}
     </select>
     <select id="selectBySkuCodeForDraft"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo">
@@ -1011,7 +1011,7 @@
             a.supplier_name supplierName
          from product_sku_price_info_draft a
         where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
-        and a.ext_field_5 = 0 and a.price_attribute_code in (1,2)
+        and a.be_contain_area = 0 and a.price_attribute_code in (1,2)
   </select>
     <select id="getPriceJog" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceJog">
         select DATE_FORMAT(a.create_time, '%Y/%m') month,
@@ -1036,5 +1036,21 @@
                 ) a
         where a.sku_code = #{skuCode}
         GROUP BY DATE_FORMAT(create_time, '%Y/%m'),sku_code order by create_time;
+    </select>
+    <resultMap id="selectChannelPriceBySkuCode" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo">
+        <result column="skuCode" property="skuCode"/>
+        <result column="priceTax" property="priceTax"/>
+    </resultMap>
+    <select id="selectChannelPriceBySkuCode" parameterType="java.util.List" resultMap="selectChannelPriceBySkuCode">
+        select sku_code skuCode,
+         max(price_tax) priceTax
+        from product_sku_price_info a
+        where a.price_type_code = 2
+          and a.price_attribute_code = 2 and a.be_contain_area = 0
+        and a.sku_code in
+        <foreach collection="list" open="(" close=")" item="item" separator=",">
+            #{item.skuCode}
+        </foreach>
+        group by sku_code
     </select>
 </mapper>
