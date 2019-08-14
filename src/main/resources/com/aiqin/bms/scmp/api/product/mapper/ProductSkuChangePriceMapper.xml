@@ -528,7 +528,7 @@
       create_by, create_time, update_by, 
       update_time, auditor_by, apply_status, 
       form_no, auditor_time, original, 
-      change_price_reason_code, change_price_reason_name, be_contain_area,increase_count,decrease_count,increase_gross_profit,decrease_gross_profit,
+      change_price_reason_code, change_price_reason_name, be_contain_area,increase_count,decrease_count,increase_gross_profit,decrease_gross_profit
       )
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{changePriceType,jdbcType=VARCHAR}, 
       #{changePriceName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
