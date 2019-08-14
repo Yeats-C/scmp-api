@@ -84,6 +84,7 @@ public class AllocationToOutboundConverter implements Converter<Allocation, Outb
         stockReqVO.setConsigneeNumber(allocation.getUpdateBy());
 //        stockReqVO.setDetailedAddress(allocation.getDetailAddress());
         stockReqVO.setCreateBy(allocation.getCreateBy());
+        stockReqVO.setUpdateBy(allocation.getUpdateBy());
         stockReqVO.setCreateTime(allocation.getCreateTime());
         stockReqVO.setUpdateTime(allocation.getUpdateTime());
         //状态
