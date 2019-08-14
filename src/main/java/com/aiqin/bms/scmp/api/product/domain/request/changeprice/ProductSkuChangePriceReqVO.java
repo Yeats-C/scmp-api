@@ -91,7 +91,7 @@ public class ProductSkuChangePriceReqVO {
     private Integer operation;
 
     @ApiModelProperty("是否含有区域0否1是")
-    private Integer extField5;
+    private Integer beContainArea;
 
     @ApiModelProperty("毛利率增加数")
     private Long increaseCount;
