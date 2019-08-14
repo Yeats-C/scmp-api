@@ -15,9 +15,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -83,8 +81,8 @@ public class OrderInfoToOutboundConverter implements Converter<OrderInfo, Outbou
         stockReqVO.setPraTax(orderInfo.getProductChannelTotalAmount());
         stockReqVO.setConsigneeNumber(orderInfo.getConsigneePhone());
         stockReqVO.setDetailedAddress(orderInfo.getDetailAddress());
-        // todo 订单没有创建人字段
-        //        stockReqVO.setCreateBy(orderInfo.getCreateBy());
+        stockReqVO.setCreateBy(orderInfo.getCreateByName());
+        stockReqVO.setUpdateBy(orderInfo.getUpdateByName());
         stockReqVO.setCreateTime(orderInfo.getCreateDate());
         stockReqVO.setUpdateTime(orderInfo.getCreateDate());
         stockReqVO.setRemark(orderInfo.getRemake());

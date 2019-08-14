@@ -110,6 +110,7 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
             inbound.setCreateTime(reqVo.getCreateDate());
             //创建人
             inbound.setCreateBy(reqVo.getCreateByName());
+            inbound.setUpdateBy(reqVo.getUpdateByName());
             for (ReturnOrderInfoItem returnOrderInfoItem : detailMap.get(warehouseCode)) {
                 product = new InboundProductReqVo();
                 BeanUtils.copyProperties(returnOrderInfoItem, product);
