@@ -70,7 +70,9 @@
       </if>
     </where>
     group by sku_code, stat_date
-    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    <if test="isPage == 0">
+      LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </if>
   </select>
   <select id="getStockWayTurnoverInfo" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StockTurnoverResponse">
     select

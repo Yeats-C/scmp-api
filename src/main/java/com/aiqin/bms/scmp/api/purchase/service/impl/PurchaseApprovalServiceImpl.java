@@ -86,7 +86,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.CHECKOUT_NOT.getCode(), PurchaseOrderLogEnum.CHECKOUT_NOT.getName(), null);
+                        PurchaseOrderLogEnum.CHECKOUT_NOT.getCode(), PurchaseOrderLogEnum.CHECKOUT_NOT.getName(), order.getApplyTypeForm());
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
                 // 审批中
                 order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_1);
@@ -95,7 +95,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批中操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.CHECKOUT.getCode(), PurchaseOrderLogEnum.CHECKOUT.getName(), null);
+                        PurchaseOrderLogEnum.CHECKOUT.getCode(), PurchaseOrderLogEnum.CHECKOUT.getName(), order.getApplyTypeForm());
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 //审批成功
                 order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_2);
@@ -104,7 +104,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.CHECKOUT_ADOPT.getCode(), PurchaseOrderLogEnum.CHECKOUT_ADOPT.getName(), null);
+                        PurchaseOrderLogEnum.CHECKOUT_ADOPT.getCode(), PurchaseOrderLogEnum.CHECKOUT_ADOPT.getName(), order.getApplyTypeForm());
                 this.updateWayNum(order.getPurchaseOrderId());
             } else if(Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())){
                 // 审批撤销
@@ -114,7 +114,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.REVOKE.getCode(), PurchaseOrderLogEnum.REVOKE.getName(), null);
+                        PurchaseOrderLogEnum.REVOKE.getCode(), PurchaseOrderLogEnum.REVOKE.getName(), order.getApplyTypeForm());
             }
             return WorkFlowReturn.SUCCESS;
         }catch  (Exception e) {

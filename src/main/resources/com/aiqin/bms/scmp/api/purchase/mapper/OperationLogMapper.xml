@@ -142,5 +142,14 @@
     <include refid="Base_Column_List" />
     from operation_log
     where operation_id = #{operationId,jdbcType=VARCHAR}
+    order by create_time
   </select>
+  <insert id="insertByTime" parameterType="com.aiqin.bms.scmp.api.purchase.domain.OperationLog">
+    insert into operation_log (operation_id, operation_type,
+      operation_content, remark, create_by_id,
+      create_by_name, create_time)
+    values ( #{operationId,jdbcType=VARCHAR}, #{operationType,jdbcType=BIT},
+      #{operationContent,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createById,jdbcType=VARCHAR},
+      #{createByName,jdbcType=VARCHAR},  #{createTime,jdbcType=TIMESTAMP})
+  </insert>
 </mapper>
