@@ -89,4 +89,13 @@ public class ProductSkuChangePrice {
 
     @ApiModelProperty("是否含有区域")
     private Integer extField5;
+
+    @ApiModelProperty("毛利率增加数")
+    private Long increaseCount;
+    @ApiModelProperty("毛利率减少数")
+    private Long decreaseCount;
+    @ApiModelProperty("毛利率增加额度")
+    private Long increaseGrossProfit;
+    @ApiModelProperty("毛利率减少额度")
+    private Long decreaseGrossProfit;
 }
