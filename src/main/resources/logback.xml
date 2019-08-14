@@ -21,7 +21,7 @@
     </appender>
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${APP_HOME}/logs/supplier-api.%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+            <fileNamePattern>${APP_HOME}/logs/scmp-api.%d{yyyy-MM-dd_HH}.log</fileNamePattern>
             <maxHistory>5</maxHistory>
             <totalSizeCap>10MB</totalSizeCap>
         </rollingPolicy>
