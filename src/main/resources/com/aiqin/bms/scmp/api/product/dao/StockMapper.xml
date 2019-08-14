@@ -538,7 +538,7 @@
         sf.remark as remark
         from stock_flow as sf
         where sf.stock_code = #{stockCode, jdbcType=VARCHAR}
-        GROUP BY sf.sku_code,sf.document_num
+        GROUP BY sf.lock_status,sf.sku_code,sf.document_num
         order by sf.update_time DESC
     </select>
 

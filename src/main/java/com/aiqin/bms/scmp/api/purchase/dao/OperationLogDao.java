@@ -18,4 +18,6 @@ public interface OperationLogDao {
     int updateByPrimaryKey(OperationLog record);
 
     List<OperationLog> list(String operationId);
+
+    int insertByTime(OperationLog record);
 }

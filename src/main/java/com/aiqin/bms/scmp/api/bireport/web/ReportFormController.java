@@ -49,7 +49,8 @@ public class ReportFormController {
             @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
             @ApiImplicitParam(name = "supplier_name", value = "供应商名称", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
-            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer") })
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+            @ApiImplicitParam(name = "is_page", value = "是否分页", type = "Integer")})
     public HttpResponse<BiGoodsSalesReport> applyList(@RequestParam(value = "begin_time", required = false) String beginTime,
                                                       @RequestParam(value = "finish_time", required = false) String finishTime,
                                                       @RequestParam(value = "supplier_code", required = false) String supplierCode,
@@ -65,9 +66,10 @@ public class ReportFormController {
                                                       @RequestParam(value = "sku_name", required = false) String skuName,
                                                       @RequestParam(value = "supplier_name", required = false) String supplierName,
                                                       @RequestParam(value = "page_no", required = false) Integer pageNo,
-                                                      @RequestParam(value = "page_size", required = false) Integer pageSize) {
+                                                      @RequestParam(value = "page_size", required = false) Integer pageSize,
+                                                      @RequestParam(value = "is_page", required = false) Integer isPage) {
         ProductAndStockRequest productAndStock = new ProductAndStockRequest(beginTime, finishTime, skuCode, skuName,
-                supplierCode, productSortCode, productBrandCode, lv1, lv2, lv3, lv4, transportCenterCode, warehouseCode, supplierName);
+                supplierCode, productSortCode, productBrandCode, lv1, lv2, lv3, lv4, transportCenterCode, warehouseCode, supplierName, isPage);
         productAndStock.setPageSize(pageSize);
         productAndStock.setPageNo(pageNo);
         return reportFormService.productSaleInfo(productAndStock);
@@ -88,7 +90,8 @@ public class ReportFormController {
             @ApiImplicitParam(name = "turnover_days_min", value = "库存周转天数最小值", type = "Integer"),
             @ApiImplicitParam(name = "turnover_days_max", value = "库存周转天数最大值", type = "Integer"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
-            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer") })
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+            @ApiImplicitParam(name = "is_page", value = "是否分页", type = "Integer") })
     public HttpResponse<ProductAndStockResponse> stockTurnover(@RequestParam(value = "begin_time", required = false) String beginTime,
                                                                @RequestParam(value = "finish_time", required = false) String finishTime,
                                                                @RequestParam(value = "supplier_code", required = false) String supplierCode,
@@ -101,10 +104,11 @@ public class ReportFormController {
                                                                @RequestParam(value = "turnover_days_min", required = false) Integer turnoverDaysMin,
                                                                @RequestParam(value = "turnover_days_max", required = false) Integer turnoverDaysMax,
                                                                @RequestParam(value = "page_no", required = false) Integer pageNo,
-                                                               @RequestParam(value = "page_size", required = false) Integer pageSize) {
+                                                               @RequestParam(value = "page_size", required = false) Integer pageSize,
+                                                               @RequestParam(value = "is_page", required = false) Integer isPage){
         ProductAndStockRequest productAndStock = new ProductAndStockRequest(beginTime, finishTime, skuCode, skuName,
                 supplierCode, productSortCode, productBrandCode, transportCenterCode, warehouseCode,
-                turnoverDaysMin, turnoverDaysMax);
+                turnoverDaysMin, turnoverDaysMax, isPage);
         productAndStock.setPageSize(pageSize);
         productAndStock.setPageNo(pageNo);
         return reportFormService.stockTurnover(productAndStock);
@@ -125,7 +129,8 @@ public class ReportFormController {
             @ApiImplicitParam(name = "turnover_days_min", value = "库存周转天数最小值", type = "Integer"),
             @ApiImplicitParam(name = "turnover_days_max", value = "库存周转天数最大值", type = "Integer"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
-            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer") })
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
+            @ApiImplicitParam(name = "is_page", value = "是否分页", type = "Integer") })
     public HttpResponse<ProductAndStockResponse> stockWayTurnover(@RequestParam(value = "begin_time", required = false) String beginTime,
                                                                 @RequestParam(value = "finish_time", required = false) String finishTime,
                                                                 @RequestParam(value = "supplier_code", required = false) String supplierCode,
@@ -138,10 +143,11 @@ public class ReportFormController {
                                                                 @RequestParam(value = "turnover_days_min", required = false) Integer turnoverDaysMin,
                                                                 @RequestParam(value = "turnover_days_max", required = false) Integer turnoverDaysMax,
                                                                 @RequestParam(value = "page_no", required = false) Integer pageNo,
-                                                                @RequestParam(value = "page_size", required = false) Integer pageSize) {
+                                                                @RequestParam(value = "page_size", required = false) Integer pageSize,
+                                                                @RequestParam(value = "is_page", required = false) Integer isPage){
         ProductAndStockRequest productAndStock = new ProductAndStockRequest(beginTime, finishTime, skuCode, skuName,
                 supplierCode, productSortCode, productBrandCode, transportCenterCode, warehouseCode,
-                turnoverDaysMin, turnoverDaysMax);
+                turnoverDaysMin, turnoverDaysMax, isPage);
         productAndStock.setPageSize(pageSize);
         productAndStock.setPageNo(pageNo);
         return reportFormService.stockWayTurnover(productAndStock);

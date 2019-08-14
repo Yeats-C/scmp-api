@@ -664,8 +664,6 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             supplierCommonService.getInstance(supplyCompany.getSupplyCode(), handleTypeCoce.getStatus(), ObjectTypeCode.SUPPLY_COMPANY.getStatus(), content, null, handleTypeCoce.getName(), applySupplyCompany.getCreateBy());
         } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
-            //驳回, 设置状态
-            applySupplyCompany.setApplyStatus(vo.getApplyStatus());
             SupplyCompany oldSupplyCompany = supplyCompanyDao.getSupplyComByApplyCode(applySupplyCompany.getApplySupplyCompanyCode());
             if (null != oldSupplyCompany) {
                 SupplyCompany supplyCompany = new SupplyCompany();
@@ -675,14 +673,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }
         } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.APPROVAL;
-            ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(applySupplyCompany.getApplyStatus());
-            String content = applyStatus.getContent().replace("CREATEBY", applySupplyCompany.getCreateBy()).replace("AUDITORBY", vo.getApprovalUserName());
-            supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode(), applyHandleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), content, null, applyHandleTypeCoce.getName(), vo.getApprovalUserName());
-            //传入的是审批中，继续该流程
-            return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
         } else if (vo.getApplyStatus().equals(ApplyStatus.REVOKED.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.REVOKED;
-            applySupplyCompany.setApplyStatus(vo.getApplyStatus());
             SupplyCompany oldSupplyCompany = supplyCompanyDao.getSupplyComByApplyCode(applySupplyCompany.getApplySupplyCompanyCode());
             if (null != oldSupplyCompany) {
                 SupplyCompany supplyCompany = new SupplyCompany();
@@ -751,13 +743,14 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 CheckSupply checkSupply = new CheckSupply(supplierImportNew, areaTree, supplyCompanies, null, supplierList, dictionaryInfoList)
                         .checkSupplyNew()
                         .checkCommonData();
-                String error = checkSupply.getSupplierImport().getError();
-                if (StringUtils.isNotBlank(error)) {
-                    error = "第"+(i+1)+"行 "+error;
-                    checkSupply.getSupplierImport().setError(error);
-                }
                 applyList.add(checkSupply.getReqVO());
-                importVos.add(checkSupply.getSupplierImport());
+                SupplierImport supplierImport = checkSupply.getSupplierImport();
+                String error = supplierImport.getError();
+                if (StringUtils.isNotBlank(error)) {
+                    String s = "第" + (i + 2) + "行 " + error;
+                    supplierImport.setError(s);
+                }
+                importVos.add(supplierImport);
             }
             return new SupplierImportResp(applyList,importVos);
         } catch (ExcelException e) {
@@ -799,12 +792,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                         .checkSupplyUpdate()
                         .checkCommonData();
                 applyList.add(checkSupply.getReqVO());
-                String error = checkSupply.getSupplierImport().getError();
+                SupplierImport supplierImport = checkSupply.getSupplierImport();
+                String error = supplierImport.getError();
                 if (StringUtils.isNotBlank(error)) {
-                    error = "第"+(i+1)+"行 "+error;
-                    checkSupply.getSupplierImport().setError(error);
+                    String s = "第" + (i + 2) + "行 " + error;
+                    supplierImport.setError(s);
                 }
-                importVos.add(checkSupply.getSupplierImport());
+                importVos.add(supplierImport);
             }
             return new SupplierImportResp(applyList,importVos);
         } catch (ExcelException e) {
@@ -854,11 +848,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
 
     @Override
     public BasePage<ApplySupplyComApplyListRespVO> applyList(QueryApplySupplyListComReqVO queryApplySupplyComReqVO) {
-            queryApplySupplyComReqVO.setCompanyCode(getUser().getCompanyCode());
-            queryApplySupplyComReqVO.setPersonId(getUser().getPersonId());
+        queryApplySupplyComReqVO.setCompanyCode(getUser().getCompanyCode());
+        queryApplySupplyComReqVO.setPersonId(getUser().getPersonId());
         PageHelper.startPage(queryApplySupplyComReqVO.getPageNo(), queryApplySupplyComReqVO.getPageSize());
         List<ApplySupplyComApplyListRespVO> applySupplierResps = applySupplyCompanyDao.applyList(queryApplySupplyComReqVO);
-        return PageUtil.getPageList(queryApplySupplyComReqVO.getPageNo(),applySupplierResps);
+        return PageUtil.getPageList(queryApplySupplyComReqVO.getPageNo(), applySupplierResps);
     }
 
     @Override

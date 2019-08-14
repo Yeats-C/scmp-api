@@ -106,17 +106,11 @@ public class ProductSkuChangePriceInfo {
     @ApiModelProperty("正式编码")
     private String officialCode;
 
-    @ApiModelProperty("扩展字段3")
-    private String extField3;
-
     @ApiModelProperty("生产日期")
     private Date productTime;
 
     @ApiModelProperty("是否同步(0否1是)")
     private Integer beSynchronize;
-
-    @ApiModelProperty("扩展字段6")
-    private Long extField6;
 
     @ApiModelProperty("原毛利率")
     private Long oldGrossProfitMargin;
@@ -394,15 +388,6 @@ public class ProductSkuChangePriceInfo {
     public void setOfficialCode(String officialCode) {
         this.officialCode = officialCode == null ? null : officialCode.trim();
     }
-
-    public String getExtField3() {
-        return extField3;
-    }
-
-    public void setExtField3(String extField3) {
-        this.extField3 = extField3 == null ? null : extField3.trim();
-    }
-
     public Date getProductTime() {
         return productTime;
     }
@@ -417,14 +402,6 @@ public class ProductSkuChangePriceInfo {
 
     public void setBeSynchronize(Integer beSynchronize) {
         this.beSynchronize = beSynchronize;
-    }
-
-    public Long getExtField6() {
-        return extField6;
-    }
-
-    public void setExtField6(Long extField6) {
-        this.extField6 = extField6;
     }
 
     public Long getOldGrossProfitMargin() {

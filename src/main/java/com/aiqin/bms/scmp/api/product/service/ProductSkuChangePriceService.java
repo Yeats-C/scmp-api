@@ -6,10 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceAreaInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog;
-import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import org.springframework.web.multipart.MultipartFile;
@@ -262,4 +259,6 @@ public interface ProductSkuChangePriceService {
     List<QuerySkuInfoRespVOForIm> importForTemporaryPrice(MultipartFile file, String purchaseGroupCode, String changePriceType);
 
     String getApplyCodeByFormNo(String formNo);
+
+    PriceMeasurementRespVO priceMeasurement(List<PriceMeasurementReqVO> req);
 }

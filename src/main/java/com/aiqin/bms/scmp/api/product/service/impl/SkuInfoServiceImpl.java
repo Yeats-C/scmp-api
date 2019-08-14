@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProjectRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
@@ -28,10 +29,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleA
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
-import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
@@ -167,6 +165,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private PurchaseGroupService purchaseGroupService;
     @Autowired
     private ProductSkuSupplyUnitDraftMapper productSkuSupplyUnitDraftMapper;
+    @Autowired
+    private ProductSkuPriceInfoMapper productSkuPriceInfoMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1366,6 +1366,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<QuerySkuInfoRespVO> respVos = Lists.newArrayList();
         if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
             respVos = productSkuDao.selectSkuListForPurchasePrice(longs1);
+            //采购变价需要查询渠道价
+            respVos = dealPurchasePriceSkuData(respVos);
         } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
             if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
                 vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
@@ -1378,6 +1380,30 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         return PageUtil.getPageList(vo.getPageNo(),vo.getPageSize(),longs.size(),respVos);
     }
+
+    /**
+     *
+     * @param respVos
+     * @return
+     */
+    private List<QuerySkuInfoRespVO> dealPurchasePriceSkuData(List<QuerySkuInfoRespVO> respVos) {
+        Map<String,ProductSkuPriceInfo> priceMap = productSkuPriceInfoMapper.selectChannelPriceBySkuCode(respVos);
+        for (QuerySkuInfoRespVO respVo : respVos) {
+            ProductSkuPriceInfo productSkuPriceInfo = priceMap.get(respVo.getSkuCode());
+            Long price = 0L;
+            if(Objects.nonNull(productSkuPriceInfo)){
+                price = productSkuPriceInfo.getPriceTax();
+            }
+            List<supplierInfoVO> supplierInfoVOS = respVo.getSupplierInfoVOS();
+            for (supplierInfoVO supplierInfoVO : supplierInfoVOS) {
+                supplierInfoVO.setTaxCost(price);
+            }
+            respVo.setSupplierInfoVOS(supplierInfoVOS);
+        }
+
+        return respVos;
+    }
+
     @Override
     public List<Long> getSkuListByQueryNoPageCount(QuerySkuInfoReqVO vo){
         if(StringUtils.isBlank(vo.getChangePriceType())){
@@ -2004,6 +2030,26 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraftForPlatform(skuCodes);
         reqVO.getProductSkuSupplyUnitDrafts().get(0).setIsDefault(unitDraft.getIsDefault());
         return  ((SkuInfoService)AopContext.currentProxy()).saveDraftSkuInfo(reqVO);
+    }
+
+    @Override
+    public List<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO) {
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            reqVO.setCompanyCode(authToken.getCompanyCode());
+            reqVO.setPersonId(authToken.getPersonId());
+        }
+        if(CollectionUtils.isNotEmpty(reqVO.getProductCategoryCodes())){
+            try {
+                reqVO.setProductCategoryLv1Code(reqVO.getProductCategoryCodes().get(0));
+                reqVO.setProductCategoryLv2Code(reqVO.getProductCategoryCodes().get(1));
+                reqVO.setProductCategoryLv3Code(reqVO.getProductCategoryCodes().get(2));
+                reqVO.setProductCategoryLv4Code(reqVO.getProductCategoryCodes().get(3));
+            } catch (Exception e) {
+                log.info("不做处理,让程序继续执行下去");
+            }
+        }
+        return productSkuDraftMapper.getProductSkuDraft(reqVO);
     }
 
     @Override

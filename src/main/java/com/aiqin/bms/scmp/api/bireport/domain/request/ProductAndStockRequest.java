@@ -76,9 +76,14 @@ public class ProductAndStockRequest extends PagesRequest {
     @JsonProperty("turnover_days_max")
     private Integer turnoverDaysMax;
 
+    @ApiModelProperty(value="是否分页 0是  1否")
+    @JsonProperty("is_page")
+    private Integer isPage;
+
     public ProductAndStockRequest(String beginTime, String finishTime, String skuCode, String skuName, String supplierCode,
                                   String productSortCode, String productBrandCode, String lv1, String lv2, String lv3,
-                                  String lv4, String transportCenterCode, String warehouseCode, String supplierName) {
+                                  String lv4, String transportCenterCode, String warehouseCode, String supplierName,
+                                  Integer isPage) {
         this.beginTime = beginTime;
         this.finishTime = finishTime;
         this.skuCode = skuCode;
@@ -93,11 +98,12 @@ public class ProductAndStockRequest extends PagesRequest {
         this.transportCenterCode = transportCenterCode;
         this.warehouseCode = warehouseCode;
         this.supplierName = supplierName;
+        this.isPage = isPage;
     }
 
     public ProductAndStockRequest(String beginTime, String finishTime, String skuCode, String skuName, String supplierCode,
                                   String productSortCode, String productBrandCode, String transportCenterCode,
-                                  String warehouseCode, Integer turnoverDaysMin, Integer turnoverDaysMax) {
+                                  String warehouseCode, Integer turnoverDaysMin, Integer turnoverDaysMax, Integer isPage) {
         this.beginTime = beginTime;
         this.finishTime = finishTime;
         this.skuCode = skuCode;
@@ -109,5 +115,6 @@ public class ProductAndStockRequest extends PagesRequest {
         this.warehouseCode = warehouseCode;
         this.turnoverDaysMin = turnoverDaysMin;
         this.turnoverDaysMax = turnoverDaysMax;
+        this.isPage = isPage;
     }
 }
