@@ -36,4 +36,10 @@ public interface DashboardService {
 
     // 当月部门销售同环比(带条件)
     List<DashboardDepMonthlyHomocyclicRatioRespVo> selectDashboardDepMonthlyHomocyclicRatioList(DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo);
+
+    // 首页头字段
+    DashboardHomePageTitle selectDashboardHomePageTitle();
+
+    // 渠道部门月销售情况
+    ChannelSectorMonthSalesRespVo selectChannelSectorMonthSales(ChannelSectorMonthSalesReqVo dhannelSectorMonthSalesReqVo);
 }

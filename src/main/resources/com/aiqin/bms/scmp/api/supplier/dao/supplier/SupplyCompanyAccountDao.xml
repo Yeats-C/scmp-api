@@ -45,13 +45,17 @@
     a.supply_company_code supplyCompanyCode,
     a.supply_company_account_code supplyCompanyAccountCode,
     a.apply_status as applyStatus,
+    a.del_flag as delFlag,
     b.purchasing_group_name as purchasingGroupName,
     b.purchasing_group_code as purchasingGroupCode
     from supply_company_account a
     left join supply_company b on a.supply_company_code = b.supply_code
-    where a.del_flag = 0
+    where 1=1
     <if test="bankAccount != null and bankAccount !='' ">
       and a.bank_account LIKE CONCAT('%',#{bankAccount,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="delFlag != null ">
+      and a.del_flag = #{delFlag}
     </if>
     <if test="supplyCompanyAccountCode != null and supplyCompanyAccountCode !='' ">
       and a.supply_company_account_code LIKE CONCAT('%',#{supplyCompanyAccountCode,jdbcType=VARCHAR}, '%')

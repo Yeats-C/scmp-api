@@ -7,33 +7,32 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.HttpClientHelper;
-import com.aiqin.bms.scmp.api.util.MD5Utils;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.platform.flows.client.constant.FormUpdateUrlType;
+import com.aiqin.platform.flows.client.constant.TpmBpmUtils;
 import com.aiqin.platform.flows.client.domain.vo.StartProcessParamVO;
 import com.aiqin.platform.flows.client.service.FormApplyCommonService;
 import com.aiqin.platform.flows.client.service.FormOperateService;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 @Service
 @Slf4j
@@ -81,9 +80,7 @@ public class BaseServiceImpl implements BaseService {
         paramVO.setReceiptType(2); // 2代表供应链
         paramVO.setSignTicket(IdUtil.uuid());
         if (StringUtils.isNotBlank(vo.getVariables())) {
-            JSONObject jsonObject = JSONObject.parseObject(vo.getVariables());
-            Map<String, Object> map = new HashMap<>();
-            map.put("auditPersonId", jsonObject.getString("auditPersonId"));
+            Map map = JSON.parseObject(vo.getVariables(), Map.class);
             paramVO.setVariables(map);
         }
         log.info("调用审批流发起申请,request={}", paramVO);
@@ -168,26 +165,6 @@ public class BaseServiceImpl implements BaseService {
         }
     }
     /**
-     * 判断是否通过
-     * @author zth
-     * @date 2019/1/22
-     * @param updateFormStatus
-     * @param optBtn
-     * @return boolean
-     */
-    protected static boolean isPass(Integer updateFormStatus, String optBtn) {
-        if (Indicator.COST_FORM_STATUS_APPROVING.getCode().equals(updateFormStatus)) {
-            if (IndicatorStr.PROCESS_BTN_ISSUE.getCode().equals(optBtn)
-                    || IndicatorStr.PROCESS_BTN_APPROVAL.getCode().equals(optBtn)
-                    || IndicatorStr.PROCESS_BTN_AUDIT.getCode().equals(optBtn)
-                    || IndicatorStr.PROCESS_BTN_BATCH_COMPLETE.getCode().equals(optBtn)) {
-                //已阅 同意 审核
-                return true;
-            }
-        }
-        return false;
-    }
-    /**
      * 设置状态
      * @author zth
      * @date 2019/1/22
@@ -199,7 +176,7 @@ public class BaseServiceImpl implements BaseService {
         if (Indicator.COST_FORM_STATUS_APPROVED.getCode().equals(costApplyO.getUpdateFormStatus())) {
             //审核通过
             costApplyO.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
-        } else if (isPass(costApplyO.getUpdateFormStatus(), costApplyO.getOptBtn())) {
+        } else if (TpmBpmUtils.isPass(costApplyO.getUpdateFormStatus(), costApplyO.getOptBtn())) {
             //审核中
             costApplyO.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
         } else if(IndicatorStr.PROCESS_BTN_CANCEL.getCode().equals(costApplyO.getOptBtn())) {

@@ -412,6 +412,10 @@ public class InboundServiceImpl implements InboundService {
                             //记录调拨待入库
                             supplierCommonService.getInstance(inbound.getSourceOderCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
                         }
+                        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode() )) {
+                            //记录移库待入库
+                            supplierCommonService.getInstance(inbound.getSourceOderCode() + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
+                        }
                             log.error("推送保存日志修改状态,应该在回调接口前面执行");
             }
             inboundService.workFlowCallBack(inboundCallBackReqVo);
@@ -518,8 +522,10 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockVoRequest.setOperator(inbound.getCreateBy());
             stockVoRequest.setTaxRate(returnInboundProduct.getTax());
-            if(inboundProductCallBackReqVo.getProductType() == 0){
+            if(inboundProductCallBackReqVo.getProductType() != 2){
                 stockVoRequest.setNewPurchasePrice(inboundProduct.getPraTaxPurchaseAmount());
+            }else{
+                stockVoRequest.setNewPurchasePrice(0l);
             }
             stockVoRequest.setNewDelivery(inbound.getSupplierCode());
             stockVoRequest.setNewDeliveryName(inbound.getSupplierName());
@@ -797,8 +803,8 @@ public class InboundServiceImpl implements InboundService {
     public void inBoundReturnMovement(String allocationCode) {
 
         try {
-//            productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__MOVEMENT.getName());
-            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.MOVEMENT_ODER.getStatus(), HandleTypeCoce.SUCCESS__MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
+//            productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__MOVEMENT.getName());
+            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS__MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
             Allocation allocation = allocationMapper.selectByCode(allocationCode);
             //设置调拨状态
             allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());

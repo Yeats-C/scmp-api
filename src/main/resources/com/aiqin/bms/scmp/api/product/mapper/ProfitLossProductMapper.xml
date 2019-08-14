@@ -66,6 +66,44 @@
       #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
       #{pictureUrl,jdbcType=VARCHAR}, #{lineNum,jdbcType=BIGINT}, #{reason,jdbcType=VARCHAR})
   </insert>
+  <insert id="insertList" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProduct">
+    insert into profit_loss_product ( order_code, sku_code,
+      sku_name, category, brand,
+      color, specification, model,
+      unit, classes, type,
+      tax, tax_price, quantity,
+      tax_amount, del_flag, create_time,
+      create_by, update_time, update_by,
+      picture_url, line_num,reason)
+    values
+    <foreach collection="list" item="item" separator=",">
+    (
+      #{item.orderCode,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR},
+      #{item.category,jdbcType=VARCHAR},
+      #{item.brand,jdbcType=VARCHAR},
+      #{item.color,jdbcType=VARCHAR},
+      #{item.specification,jdbcType=VARCHAR},
+      #{item.model,jdbcType=VARCHAR},
+      #{item.unit,jdbcType=VARCHAR},
+      #{item.classes,jdbcType=VARCHAR},
+      #{item.type,jdbcType=VARCHAR},
+      #{item.tax,jdbcType=BIGINT},
+      #{item.taxPrice,jdbcType=BIGINT},
+      #{item.quantity,jdbcType=BIGINT},
+      #{item.taxAmount,jdbcType=BIGINT},
+      0,
+      #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.createByName,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateByName,jdbcType=VARCHAR},
+      #{item.pictureUrl,jdbcType=VARCHAR},
+      #{item.lineNum,jdbcType=BIGINT},
+      #{item.reason,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProduct">
     insert into profit_loss_product
     <trim prefix="(" suffix=")" suffixOverrides=",">

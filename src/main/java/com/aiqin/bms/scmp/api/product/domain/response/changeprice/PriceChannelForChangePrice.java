@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -48,19 +49,22 @@ public class PriceChannelForChangePrice {
     private Long purchasePriceNewest = 0L;
 
     @ApiModelProperty("原毛利率")
-    private Long oldGrossProfitMargin;
+    private BigDecimal oldGrossProfitMargin=BigDecimal.ZERO;
 
     @ApiModelProperty("成本")
-    private Long taxCost;
+    private Long taxCost=0L;
 
     @ApiModelProperty("平均成本")
-    private Long avgTaxCost;
+    private Long avgTaxCost=0L;
 
-    public Long getOldGrossProfitMargin() {
-        if (Objects.isNull(this.oldPrice)||Objects.isNull(this.taxCost)||this.taxCost==0) {
-            return 0L;
+    public BigDecimal getOldGrossProfitMargin() {
+        this.avgTaxCost = this.oldPrice;
+        //销售类的变价
+        if(Objects.isNull(this.oldPrice)||this.oldPrice==0){
+            return BigDecimal.ZERO;
+        }else {
+            BigDecimal divide = BigDecimal.valueOf(this.oldPrice - this.taxCost).divide(BigDecimal.valueOf(this.oldPrice), 4, BigDecimal.ROUND_HALF_UP);
+            return this.oldGrossProfitMargin = divide.multiply(BigDecimal.valueOf(100));
         }
-        this.avgTaxCost = taxCost;
-        return this.oldGrossProfitMargin = (this.oldPrice-taxCost)/this.avgTaxCost;
     }
 }

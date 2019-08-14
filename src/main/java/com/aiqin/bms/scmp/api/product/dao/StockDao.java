@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
@@ -143,7 +144,7 @@ public interface StockDao {
     List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
 
     QueryStockBatchSkuRespVo selectSkuBatchCode(@Param("procurementSectionCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode,@Param("batchCode") String batchCode);
-    RejectApplyDetailHandleResponse rejectProductInfo(@Param("purchaseGroupCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode);
+    RejectApplyDetailHandleResponse rejectProductInfo(@Param("productType") Integer productType,@Param("purchaseGroupCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode);
 
     /**
      * 库房管理新增调拨,移库,报废列表查询
@@ -177,6 +178,7 @@ public interface StockDao {
     List<QuerySkuInfoRespVO> getSkuBatchForChangePrice(QuerySkuInfoReqVO reqVO);
 
     List<BatchInfo> getBatch();
+    List<PriceChannelForChangePrice> getSaleChannelList();
 
     List<SkuBatchRespVO> queryStockBatchForAllo(SkuBatchReqVO reqVO);
 
@@ -187,4 +189,6 @@ public interface StockDao {
     PurchaseStockResponse stockCountByOtherInfo(@Param("skuCode") String skuCode,
                                                 @Param("transportCenterCode") String transportCenterCode,
                                                 @Param("warehouseCode") String warehouseCode);
+
+    List<Stock> selectSkuCost();
 }

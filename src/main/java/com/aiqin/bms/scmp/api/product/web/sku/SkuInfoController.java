@@ -5,14 +5,11 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveSkuApplyInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -99,10 +96,10 @@ public class SkuInfoController {
         return HttpResponse.success(skuInfoService.getProductDraftList());
     }
 
-    @GetMapping("/draft/list")
+    @PostMapping("/draft/list")
     @ApiOperation("待提交sku列表")
-    public HttpResponse<List<ProductSkuDraft>> getSkuDraftList(){
-        return HttpResponse.success(skuInfoService.getProductSkuDraftList());
+    public HttpResponse<List<ProductSkuDraftRespVo>> getSkuDraftList(@RequestBody QuerySkuDraftListReqVO reqVO){
+        return HttpResponse.success(skuInfoService.getProductSkuDraftList(reqVO));
     }
 
     @PostMapping("/apply/add")

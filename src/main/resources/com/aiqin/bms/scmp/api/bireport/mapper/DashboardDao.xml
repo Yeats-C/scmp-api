@@ -91,7 +91,9 @@
       ddmhr.channel_margin_yearonyear as channelMarginYearonyear,
       ddmhr.channel_margin_link_relative as channelMarginLinkRelative,
       ddmhr.distribution_sales_amount as distributionSalesAmount,
-      ddmhr.distribution_margin as distributionMargin
+      ddmhr.distribution_margin as distributionMargin,
+      ddmhr.channel_costs_yearonyear as channelCostsYearonyear,
+      ddmhr.channel_costs_link_relative as channelCostsLinkRelative
       FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
       where ddmhr.stat_month = #{oneMonthStr}
     </select>
@@ -209,17 +211,124 @@
         ddmhr.channel_margin_yearonyear as channelMarginYearonyear,
         ddmhr.channel_margin_link_relative as channelMarginLinkRelative,
         ddmhr.distribution_sales_amount as distributionSalesAmount,
-        ddmhr.distribution_margin as distributionMargin
+        ddmhr.distribution_margin as distributionMargin,
+        ddmhr.channel_costs_yearonyear as channelCostsYearonyear,
+        ddmhr.channel_costs_link_relative as channelCostsLinkRelative
         FROM dashboard_dep_monthly_homocyclic_ratio ddmhr
         where 1=1
-        <if test="statMonth!=null and statMonth!=''">
-            and ddmhr.stat_month=#{statMonth}
+        <if test="beginStatDate!=null and beginStatDate!=''">
+            and ddmhr.stat_month between #{beginStatDate}
+        </if>
+        <if test="finishStatDate!=null and finishStatDate!=''">
+            and #{finishStatDate}
         </if>
         <if test="productSortCode!=null and productSortCode!=''">
             and ddmhr.product_sort_code=#{productSortCode}
         </if>
         <if test="priceChannelCode!=null and priceChannelCode!=''">
             and ddmhr.price_channel_code=#{priceChannelCode}
+        </if>
+    </select>
+    <select id="selectAnnualSales" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepartAnnualSalesStatiRespVo">
+        SELECT
+        ddass.id as id,
+        ddass.stat_year as statYear,
+        ddass.product_sort_name as productSortName,
+        ddass.channel_costs as channelCosts,
+        ddass.channel_amount as channelAmount,
+        ddass.distribution_amount as distributionAmount,
+        ddass.channel_margin as channelMargin,
+        ddass.distribution_margin as distributionMargin,
+        ddass.sales_budget as salesBudget,
+        ddass.achieve_rate as achieveRate
+        FROM dashboard_depart_annual_sales_stati ddass
+        WHERE  ddass.stat_year like concat('%',#{oneYearStr},'%')
+    </select>
+    <select id="selectMonthlyLossAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardMonthlyLossAmountRespVo">
+        SELECT
+          dmla.id as id,
+          dmla.stat_year as statYear,
+          sum(dmla.monthly_loss_amount) as monthlyLossAmount
+          FROM dashboard_monthly_loss_amount dmla
+          where dmla.stat_year = #{oneYearStr}
+    </select>
+    <select id="selectPropertyAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateProperSalesAmountRespVo">
+        SELECT
+        SUM(ddcpsa.channel_sales_amount) channelSalesAmount
+        FROM
+        dashboard_dep_cate_proper_sales_amount ddcpsa
+        WHERE
+        ddcpsa.stat_month like concat('%',#{oneYearStr},'%') and ddcpsa.product_property_code = "1"
+    </select>
+    <select id="selectSalesContributionRate" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
+        SELECT
+          sum(ddmhr.channel_sales_amount) as channelSalesAmount
+        FROM
+          dashboard_dep_monthly_homocyclic_ratio ddmhr
+        where 1=1
+        <if test="statMonth!=null and statMonth!=''">
+            and ddmhr.stat_month = #{statMonth}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and ddmhr.product_sort_code=#{productSortCode}
+        </if>
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and ddmhr.price_channel_code=#{priceChannelCode}
+        </if>
+    </select>
+    <select id="selectSalesContributionRateAll" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
+        SELECT
+        sum(ddmhr.channel_sales_amount) as channelSalesAmount
+        FROM
+        dashboard_dep_monthly_homocyclic_ratio ddmhr
+        where 1=1
+        <if test="statMonth!=null and statMonth!=''">
+            and ddmhr.stat_month = #{statMonth}
+        </if>
+    </select>
+    <select id="selectNegativeMarginSkuNumber" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardNegativeMarginRespVo">
+        SELECT
+          dnm.negative_margin_sku_num as negativeMarginSkuNum
+        FROM dashboard_negative_margin dnm
+        where 1=1
+        <if test="statMonth!=null and statMonth!=''">
+            and dnm.year_month = #{statMonth}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and dnm.product_sort_code=#{productSortCode}
+        </if>
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and dnm.price_channel_code=#{priceChannelCode}
+        </if>
+    </select>
+    <select id="selectOutStockRate" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardStockoutRateRespVo">
+      SELECT
+        dsr.stockout_rate as stockoutRate
+      FROM dashboard_stockout_rate dsr
+        where 1=1
+        <if test="statMonth!=null and statMonth!=''">
+            and dsr.year_month = #{statMonth}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and dsr.product_sort_code=#{productSortCode}
+        </if>
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and dsr.price_channel_code=#{priceChannelCode}
+        </if>
+    </select>
+    <select id="selectAmountChannelRefund" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardReturnAmountRespVo">
+        SELECT
+        dra.amt as amt
+        FROM dashboard_return_amount dra
+        where 1=1
+        <if test="statMonth!=null and statMonth!=''">
+            and dra.year_month = #{statMonth}
+        </if>
+        <if test="productSortCode!=null and productSortCode!=''">
+            and dra.product_sort_code=#{productSortCode}
+        </if>
+        <if test="priceChannelCode!=null and priceChannelCode!=''">
+            and dra.price_channel_code=#{priceChannelCode}
         </if>
     </select>
 </mapper>

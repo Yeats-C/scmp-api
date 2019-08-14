@@ -1,7 +1,10 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.callback;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * <p>
@@ -57,5 +60,71 @@ public class ProfitLossDetailRequest {
 
     @ApiModelProperty("原因")
     private String reason;
+
+    /**                        */
+
+    @ApiModelProperty("sku名称")
+    private String skuName;
+
+    @ApiModelProperty("品类")
+    private String category;
+
+    @ApiModelProperty("品牌")
+    private String brand;
+
+    @ApiModelProperty("颜色")
+    private String color;
+
+    @ApiModelProperty("规格")
+    private String specification;
+
+    @ApiModelProperty("型号")
+    private String model;
+
+    @ApiModelProperty("单位(销售单位)")
+    private String unit;
+
+    @ApiModelProperty("类别")
+    private String classes;
+
+    @ApiModelProperty("类型")
+    private String type;
+
+    @ApiModelProperty("税率")
+    private Long tax;
+
+    @ApiModelProperty("含税成本")
+    private Long taxPrice;
+
+    @ApiModelProperty("含税总成本")
+    private Long taxAmount;
+
+    @ApiModelProperty("图片地址")
+    private String pictureUrl;
+
+    @ApiModelProperty(value="创建时间")
+    @JsonProperty("create_time")
+    private Date createTime;
+
+    @ApiModelProperty(value="修改时间")
+    @JsonProperty("update_time")
+    private Date updateTime;
+
+    @ApiModelProperty(value="创建者id")
+    @JsonProperty("create_by_id")
+    private String createById;
+
+    @ApiModelProperty(value="修改者id")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="创建者")
+    @JsonProperty("create_by_name")
+    private String createByName;
+
+    @ApiModelProperty(value="修改者")
+    @JsonProperty("update_by_name")
+    private String updateByName;
+
 
 }

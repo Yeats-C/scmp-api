@@ -44,10 +44,16 @@ public class ProfitLoss extends CommonBean {
     @ApiModelProperty("备注")
     private String remark;
 
-    @ApiModelProperty("订单状态")
-    private String orderStatusCode;
+    @ApiModelProperty("订单状态:0完成")
+    private Integer orderStatusCode;
 
     @ApiModelProperty("订单状态名称")
     private String orderStatusName;
+
+    @ApiModelProperty("公司编码")
+    private String companyCode;
+
+    @ApiModelProperty("公司名称")
+    private String companyName;
 
 }

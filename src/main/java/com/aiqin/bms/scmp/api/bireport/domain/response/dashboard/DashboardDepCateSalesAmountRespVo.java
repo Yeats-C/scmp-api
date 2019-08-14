@@ -13,9 +13,13 @@ public class DashboardDepCateSalesAmountRespVo {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("年月")
+    @ApiModelProperty("月")
     @JsonProperty("stat_month")
-    private Long statMonth;
+    private String statMonth;
+
+    @ApiModelProperty("年")
+    @JsonProperty("stat_year")
+    private String statYear;
 
     @ApiModelProperty("部门编码")
     @JsonProperty("product_sort_code")

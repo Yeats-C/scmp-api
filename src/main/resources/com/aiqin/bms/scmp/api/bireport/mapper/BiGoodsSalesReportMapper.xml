@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.bireport.dao.BiGoodsSalesReportDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.bireport.domain.BiGoodsSalesReport">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stat_date" jdbcType="VARCHAR" property="statDate" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="lv1" jdbcType="VARCHAR" property="lv1" />
+    <result column="lv1_category_name" jdbcType="VARCHAR" property="lv1CategoryName" />
+    <result column="lv2" jdbcType="VARCHAR" property="lv2" />
+    <result column="lv2_category_name" jdbcType="VARCHAR" property="lv2CategoryName" />
+    <result column="lv3" jdbcType="VARCHAR" property="lv3" />
+    <result column="lv3_category_name" jdbcType="VARCHAR" property="lv3CategoryName" />
+    <result column="lv4" jdbcType="VARCHAR" property="lv4" />
+    <result column="lv4_category_name" jdbcType="VARCHAR" property="lv4CategoryName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="channel_unit_price" jdbcType="DECIMAL" property="channelUnitPrice" />
+    <result column="sales_num" jdbcType="BIGINT" property="salesNum" />
+    <result column="real_sales_amount" jdbcType="BIGINT" property="realSalesAmount" />
+    <result column="real_sales_margin" jdbcType="BIGINT" property="realSalesMargin" />
+    <result column="margin_rate" jdbcType="DECIMAL" property="marginRate" />
+    <result column="sales_num_yearonyear" jdbcType="BIGINT" property="salesNumYearonyear" />
+    <result column="real_sales_amount_yearonyear" jdbcType="BIGINT" property="realSalesAmountYearonyear" />
+    <result column="real_sales_margin_yearonyear" jdbcType="BIGINT" property="realSalesMarginYearonyear" />
+    <result column="margin_rate_yearonyear" jdbcType="DECIMAL" property="marginRateYearonyear" />
+    <result column="sales_num_yearonyear_growth_rate" jdbcType="DECIMAL" property="salesNumYearonyearGrowthRate" />
+    <result column="real_sales_amount_yearonyear_growth_rate" jdbcType="DECIMAL" property="realSalesAmountYearonyearGrowthRate" />
+    <result column="real_sales_margin_yearonyear_growth_rate" jdbcType="BIGINT" property="realSalesMarginYearonyearGrowthRate" />
+    <result column="margin_rate_yearonyear_growth_rate" jdbcType="DECIMAL" property="marginRateYearonyearGrowthRate" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stat_date, sku_code, sku_name, supplier_code, supplier_name, product_sort_code, 
+    product_sort_name, lv1, lv1_category_name, lv2, lv2_category_name, lv3, lv3_category_name, 
+    lv4, lv4_category_name, transport_center_code, transport_center_name, warehouse_code, 
+    warehouse_name, product_brand_code, product_brand_name, channel_unit_price, sales_num, 
+    real_sales_amount, real_sales_margin, margin_rate, sales_num_yearonyear, real_sales_amount_yearonyear, 
+    real_sales_margin_yearonyear, margin_rate_yearonyear, sales_num_yearonyear_growth_rate, 
+    real_sales_amount_yearonyear_growth_rate, real_sales_margin_yearonyear_growth_rate, 
+    margin_rate_yearonyear_growth_rate
+  </sql>
+  <select id="goodsSalesList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include> from
+    bi_goods_sales_report
+    <where>
+      <if test="beginTime != null">
+        and stat_date &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and stat_date &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierCode != null">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierName != null">
+        and supplier_name like CONCAT('',#{supplierName},'%')
+      </if>
+      <if test="productSortCode != null">
+        and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuCode != null">
+        and sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuName != null">
+        and sku_name like CONCAT('',#{skuName},'%')
+      </if>
+      <if test="lv1 != null">
+        and lv1 = #{lv1,jdbcType=VARCHAR}
+      </if>
+      <if test="lv2 != null">
+        and lv2 = #{lv2,jdbcType=VARCHAR}
+      </if>
+      <if test="lv3 != null">
+        and lv3 = #{lv3,jdbcType=VARCHAR}
+      </if>
+      <if test="lv4 != null">
+        and lv4 = #{lv4,jdbcType=VARCHAR}
+      </if>
+      <if test="productBrandCode != null">
+        and product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null">
+        and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+    <if test="isPage == 0">
+      LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="goodsSalesCount" resultType="java.lang.Integer">
+    select count(1) from
+    bi_goods_sales_report
+    <where>
+      <if test="beginTime != null">
+        and stat_date &gt;= #{beginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="finishTime != null">
+        and stat_date &lt;= #{finishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierCode != null">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierName != null">
+        and supplier_name like CONCAT('',#{supplierName},'%')
+      </if>
+      <if test="productSortCode != null">
+        and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuCode != null">
+        and sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuName != null">
+        and sku_name like CONCAT('',#{skuName},'%')
+      </if>
+      <if test="lv1 != null">
+        and lv1 = #{lv1,jdbcType=VARCHAR}
+      </if>
+      <if test="lv2 != null">
+        and lv2 = #{lv2,jdbcType=VARCHAR}
+      </if>
+      <if test="lv3 != null">
+        and lv3 = #{lv3,jdbcType=VARCHAR}
+      </if>
+      <if test="lv4 != null">
+        and lv4 = #{lv4,jdbcType=VARCHAR}
+      </if>
+      <if test="productBrandCode != null">
+        and product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null">
+        and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+</mapper>

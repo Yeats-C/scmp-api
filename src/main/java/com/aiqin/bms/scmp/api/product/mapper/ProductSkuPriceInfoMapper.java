@@ -5,12 +5,15 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceJog;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductSkuPriceInfoMapper {
     int deleteByPrimaryKey(Long id);
@@ -78,7 +81,8 @@ public interface ProductSkuPriceInfoMapper {
      * @param reqVO
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.price.QueryProductSkuPriceInfoRespVO>
      */
-    List<QueryProductSkuPriceInfoRespVO> selectListByQueryVO(QueryProductSkuPriceInfoReqVO reqVO);
+    List<QueryProductSkuPriceInfoRespVO> selectListByQueryVO(List<Long> ids);
+    List<Long> selectListByQueryVOCount(QueryProductSkuPriceInfoReqVO reqVO);
     /**
      * TODO
      * @author NullPointException
@@ -125,4 +129,6 @@ public interface ProductSkuPriceInfoMapper {
      * @return
      */
     List<PriceJog> getPriceJog(@Param("skuCode") String skuCode, @Param("year") int year);
+    @MapKey("skuCode")
+    Map<String, ProductSkuPriceInfo> selectChannelPriceBySkuCode(List<QuerySkuInfoRespVO> respVos);
 }

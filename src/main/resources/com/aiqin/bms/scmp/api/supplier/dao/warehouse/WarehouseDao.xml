@@ -58,7 +58,7 @@
     <if test="warehouseTypeCode != null and warehouseTypeCode != '' ">
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
-    order by create_time desc
+    order by warehouse_order asc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -363,6 +363,7 @@
     <include refid="Base_Column_List" />
     from warehouse
     where warehouse_code = #{warehouseCode,jdbcType=VARCHAR} and enable=0
+    order by warehouse_order asc
   </select>
 
   <select id="getWarehouseByLogisticsCenterCode" parameterType="java.lang.String" resultMap="BaseResultMap">
@@ -374,6 +375,7 @@
     <if test="warehouseTypeCode != null">
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
+    order by warehouse_order asc
   </select>
   <select id="getWarehouseApi" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo" resultMap="BaseResultMap">
     select
@@ -392,7 +394,7 @@
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
-    order by warehouse_order desc,create_time desc
+    order by warehouse_order asc
   </select>
   <select id="getWarehouseTypeByLogisticsCenterCode" resultMap="BaseResultMap">
     select
@@ -403,7 +405,7 @@
     <if test="warehouseTypeCode != null ">
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
-    order by warehouse_order desc,create_time desc
+    order by warehouse_order asc
   </select>
   <select id="selectByWarehouseName" resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse">
     select
@@ -412,7 +414,7 @@
     from warehouse
     where
     warehouse_name = #{warehouseName,jdbcType=VARCHAR}
-     order by warehouse_order desc,create_time desc
+     order by warehouse_order asc
   </select>
 
   <select id="getWarehouseByLogisticsCenterCodeAndNotExistsType" resultMap="BaseResultMap">
@@ -424,6 +426,6 @@
     <if test="warehouseTypeCode != null ">
       and warehouse_type_code != #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
-    order by warehouse_order desc,create_time desc
+    order by warehouse_order asc
   </select>
 </mapper>

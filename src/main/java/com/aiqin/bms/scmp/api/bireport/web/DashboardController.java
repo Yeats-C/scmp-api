@@ -117,14 +117,33 @@ public class DashboardController {
     @GetMapping("/dashboard/dep/monthly/homocyclic/ratio/list")
     @ApiOperation("当月部门销售同环比(带条件)")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
+    })
+    public HttpResponse<List<DashboardDepMonthlyHomocyclicRatioRespVo>> selectDashboardDepMonthlyHomocyclicRatioList(@RequestParam(value = "product_sort_code", required = false) String productSortCode,
+                                                                                                                     @RequestParam(value = "price_channel_code", required = false) String priceChannelCode){
+        DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo = new DashboardDepMonthlyHomocyclicRatioReqVo(productSortCode,priceChannelCode);
+        return HttpResponse.success(dashboardService.selectDashboardDepMonthlyHomocyclicRatioList(dashboardDepMonthlyHomocyclicRatioReqVo));
+    }
+
+    @GetMapping("/dashboard/home/page/title")
+    @ApiOperation("首页头字段")
+    public HttpResponse<DashboardHomePageTitle> selectDashboardHomePageTitle(){
+        return HttpResponse.success(dashboardService.selectDashboardHomePageTitle());
+    }
+
+    @GetMapping("/dashboard/channel/sector/month/sales")
+    @ApiOperation("部门销售统计")
+    @ApiImplicitParams({
             @ApiImplicitParam(name = "stat_month", value = "月", type = "String"),
             @ApiImplicitParam(name = "product_sort_code", value = "部门编码", type = "String"),
             @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
     })
-    public HttpResponse<List<DashboardDepMonthlyHomocyclicRatioRespVo>> selectDashboardDepMonthlyHomocyclicRatioList(@RequestParam(value = "stat_month", required = false) String statMonth,
-                                                                                                                     @RequestParam(value = "product_sort_code", required = false) String productSortCode,
-                                                                                                                     @RequestParam(value = "price_channel_code", required = false) String priceChannelCode){
-        DashboardDepMonthlyHomocyclicRatioReqVo dashboardDepMonthlyHomocyclicRatioReqVo = new DashboardDepMonthlyHomocyclicRatioReqVo(statMonth,productSortCode,priceChannelCode);
-        return HttpResponse.success(dashboardService.selectDashboardDepMonthlyHomocyclicRatioList(dashboardDepMonthlyHomocyclicRatioReqVo));
+    public HttpResponse<ChannelSectorMonthSalesRespVo> selectChannelSectorMonthSales(@RequestParam(value = "stat_month", required = false) String statMonth,
+                                                                                     @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+                                                                                     @RequestParam(value = "price_channel_code", required = false) String priceChannelCode){
+        ChannelSectorMonthSalesReqVo dhannelSectorMonthSalesReqVo = new ChannelSectorMonthSalesReqVo(statMonth,productSortCode,priceChannelCode);
+        return HttpResponse.success(dashboardService.selectChannelSectorMonthSales(dhannelSectorMonthSalesReqVo));
     }
+
 }

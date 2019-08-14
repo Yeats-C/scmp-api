@@ -86,6 +86,8 @@ public interface ReportDao {
      */
     List<StoreRepurchaseRateRespVo> selectStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo);
 
+    StoreRepurchaseRateRespVo sumStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo);
+
     Integer countStoreRepurchaseRate(StoreRepurchaseRateReqVo storeRepurchaseRateReqVo);
 
     /**

@@ -116,39 +116,30 @@ mgs:
       - code: SCMP002001
         name: 字典管理
         link: '/basicData/dictionary'
-        icon: fa-home
       - code: SCMP002002
         name: 采购组管理
         link: '/basicData/purchasingGroup'
-        icon: fa-home
       - code: SCMP002003
         name: 仓库管理
         link: '/basicData/store'
-        icon: fa-home
       - code: SCMP002004
         name: 库房管理
         link: '/basicData/warehouse'
-        icon: fa-home
       - code: SCMP002005
         name: 价格项目管理
         link: '/basicData/priceProject'
-        icon: fa-home
       - code: SCMP002006
         name: 渠道管理
         link: '/basicData/channel'
-        icon: fa-home
       - code: SCMP002007
         name: 标签管理
         link: '/basicData/label'
-        icon: fa-home
       - code: SCMP002008
         name: 规则管理
         link: '/basicData/rules'
-        icon: fa-home
       - code: SCMP002009
         name: 促销SKU管理
         link: '/basicData/promoteSku'
-        icon: fa-home
     - code: SCMP003
       name: 供应商管理
       link: ''
@@ -157,31 +148,24 @@ mgs:
       - code: SCMP003001
         name: 供应商集团管理
         link: '/supplier/supplierGroup'
-        icon: fa-home
       - code: SCMP003002
         name: 供应商管理
         link: '/supplier/supplier'
-        icon: fa-home
       - code: SCMP003003
         name: 供应商合同管理
         link: '/supplier/contract'
-        icon: fa-home
       - code: SCMP003004
         name: 供应商结算账户管理
         link: '/supplier/account'
-        icon: fa-home
       - code: SCMP003005
         name: 供应商账号管理
         link: '/basicData/accountList'
-        icon: fa-home
       - code: SCMP003006
         name: 供应商评分管理
         link: '/supplier/rate'
-        icon: fa-home
       - code: SCMP003007
         name: 制造商管理
         link: '/supplier/manufacturer'
-        icon: fa-home
     - code: SCMP004
       name: 商品管理
       link: ''
@@ -190,35 +174,27 @@ mgs:
       - code: SCMP004001
         name: 品类管理
         link: '/product/category'
-        icon: fa-home
       - code: SCMP004002
         name: 品牌管理
         link: '/product/brand'
-        icon: fa-home
       - code: SCMP004003
         name: SPU管理
         link: '/product/spu'
-        icon: fa-home
       - code: SCMP004004
         name: SKU管理
         link: '/product/sku'
-        icon: fa-home
       - code: SCMP004005
         name: 销售区域配置
         link: '/product/saleArea'
-        icon: fa-home
       - code: SCMP004006
         name: 商品销售区域配置
         link: '/product/productSaleArea'
-        icon: fa-home
       - code: SCMP004007
         name: 配置信息管理
         link: '/product/productConfig'
-        icon: fa-home
       - code: SCMP004008
         name: 质检报告管理
         link: '/product/qualityReport'
-        icon: fa-home
     - code: SCMP005
       name: 价格管理
       link: ''
@@ -227,7 +203,6 @@ mgs:
       - code: SCMP005001
         name: 价格查询
         link: '/price/price'
-        icon: fa-home
     - code: SCMP006
       name: 采购管理
       link: ''
@@ -236,19 +211,15 @@ mgs:
       - code: SCMP006001
         name: 采购申请单管理
         link: '/purchase/applyOrder'
-        icon: fa-home
       - code: SCMP006002
         name: 采购单管理
         link: '/purchase/purchase'
-        icon: fa-home
       - code: SCMP006003
         name: 退供申请单管理
         link: '/purchase/refundApply'
-        icon: fa-home
       - code: SCMP006004
         name: 退供单管理
         link: '/purchase/refund'
-        icon: fa-home
     - code: SCMP007
       name: 销售管理
       link: ''
@@ -257,35 +228,27 @@ mgs:
       - code: SCMP007001
         name: 订单管理
         link: '/sale/order'
-        icon: fa-home
       - code: SCMP007002
         name: 辅采订单管理
         link: '/sale/auxiliaryOrder'
-        icon: fa-home
       - code: SCMP007003
         name: 直送订单管理
         link: '/sale/directOrder'
-        icon: fa-home
       - code: SCMP007004
         name: 订单商品查询
         link: '/sale/orderProduct'
-        icon: fa-home
       - code: SCMP007005
         name: 商品唯一码查询
         link: '/sale/uniqueCode'
-        icon: fa-home
       - code: SCMP007006
         name: 退货管理
         link: '/sale/return'
-        icon: fa-home
       - code: SCMP007007
         name: 直送退货管理
         link: '/sale/directReturn'
-        icon: fa-home
       - code: SCMP007008
         name: 退货验货
         link: '/sale/returnInspection'
-        icon: fa-home
     - code: SCMP008
       name: 库存管理
       link: ''
@@ -294,19 +257,15 @@ mgs:
       - code: SCMP008001
         name: 中央库存管理
         link: '/inventory/totalInventory'
-        icon: fa-home
       - code: SCMP008002
         name: 仓库库存管理
         link: '/inventory/logisticsInventory'
-        icon: fa-home
       - code: SCMP008003
         name: 库房库存管理
         link: '/inventory/warehouseInventory'
-        icon: fa-home
       - code: SCMP008004
         name: 批次库存管理
         link: '/inventory/batchInventory'
-        icon: fa-home
     - code: SCMP009
       name: 库房管理
       link: ''
@@ -315,35 +274,27 @@ mgs:
       - code: SCMP009001
         name: 入库管理
         link: '/store/inStore'
-        icon: fa-home
       - code: SCMP009002
         name: 出库管理
         link: '/store/outStore'
-        icon: fa-home
       - code: SCMP009003
         name: 调拨管理
         link: '/store/transfer'
-        icon: fa-home
       - code: SCMP009004
         name: 移库管理
         link: '/store/move'
-        icon: fa-home
       - code: SCMP009005
         name: 报废管理
         link: '/store/scrap'
-        icon: fa-home
       - code: SCMP009006
         name: 损益管理
         link: '/store/profitLoss'
-        icon: fa-home
       - code: SCMP009007
         name: 供应商到货预约
         link: '/store/reservation'
-        icon: fa-home
       - code: SCMP009008
         name: 监管仓开单
         link: '/store/superviseOpen'
-        icon: fa-home
     - code: SCMP010
       name: 运输管理
       link: ''
@@ -352,11 +303,9 @@ mgs:
       - code: SCMP010001
         name: 发运管理
         link: '/transport/shipment'
-        icon: fa-home
       - code: SCMP010002
         name: 运输管理
         link: '/transport/transport'
-        icon: fa-home
     - code: SCMP011
       name: 分析报表
       link: ''
@@ -365,7 +314,21 @@ mgs:
       - code: SCMP011001
         name: 销售分析
         link: '/analysis/sale'
-        icon: fa-home
+      - code: SCMP011002
+        name: 月销售分析
+        link: '/chart/monthSales'
+      - code: SCMP011003
+        name: 月毛利分析
+        link: '/chart/monthGross'
+      - code: SCMP011004
+        name: 月销售达成率分析
+        link: '/chart/monthSalesAchievement'
+      - code: SCMP011005
+        name: 月累计品类销售分析
+        link: '/chart/MTDCategorySales'
+      - code: SCMP011006
+        name: 月累计品类毛利分析
+        link: '/chart/MTDCategoryGross'
     - code: SCMP012
       name: 统计报表
       link: ''
@@ -374,267 +337,201 @@ mgs:
       - code: SCMP012001
         name: 供应商到货率统计-品采
         link: '/statistics/supplierArrival/BPDept'
-        icon: fa-home
       - code: SCMP012002
         name: 供应商到货率统计-辅采
         link: '/statistics/supplierArrival/APDept'
-        icon: fa-home
       - code: SCMP012003
         name: 供应商到货率统计-服纺
         link: '/statistics/supplierArrival/CTDept'
-        icon: fa-home
       - code: SCMP012004
         name: 供应商到货率统计-鞋品
         link: '/statistics/supplierArrival/FBDept'
-        icon: fa-home
       - code: SCMP012005
         name: 供应商到货率统计-自主品牌
         link: '/statistics/supplierArrival/PBDept'
-        icon: fa-home
       - code: SCMP012006
         name: 退供率统计-品采
         link: '/statistics/supplierReturn/BPDept'
-        icon: fa-home
       - code: SCMP012007
         name: 退供率统计-辅采
         link: '/statistics/supplierReturn/APDept'
-        icon: fa-home
       - code: SCMP012008
         name: 退供率统计-服纺
         link: '/statistics/supplierReturn/CTDept'
-        icon: fa-home
       - code: SCMP012009
         name: 退供率统计-鞋品
         link: '/statistics/supplierReturn/FBDept'
-        icon: fa-home
       - code: SCMP012010
         name: 退供率统计-自主品牌
         link: '/statistics/supplierReturn/PBDept'
-        icon: fa-home
       - code: SCMP012011
         name: 新品动销率统计-公司
         link: '/statistics/newGoodsInvoicing'
-        icon: fa-home
       - code: SCMP012012
         name: 新品动销率统计-品采
         link: '/statistics/newGoodsInvoicing/BPDept'
-        icon: fa-home
       - code: SCMP012013
         name: 新品动销率统计-辅采
         link: '/statistics/newGoodsInvoicing/APDept'
-        icon: fa-home
       - code: SCMP012014
         name: 新品动销率统计-服纺
         link: '/statistics/newGoodsInvoicing/CTDept'
-        icon: fa-home
       - code: SCMP012015
         name: 新品动销率统计-鞋品
         link: '/statistics/newGoodsInvoicing/FBDept'
-        icon: fa-home
       - code: SCMP012016
         name: 新品动销率统计-自主品牌
         link: '/statistics/newGoodsInvoicing/PBDept'
-        icon: fa-home
       - code: SCMP012017
         name: 门店复购率统计-公司
         link: '/statistics/storeRepurchase'
-        icon: fa-home
       - code: SCMP012018
         name: 门店复购率统计-品采
         link: '/statistics/storeRepurchase/BPDept'
-        icon: fa-home
       - code: SCMP012019
         name: 门店复购率统计-辅采
         link: '/statistics/storeRepurchase/APDept'
-        icon: fa-home
       - code: SCMP012020
         name: 门店复购率统计-服纺
         link: '/statistics/storeRepurchase/CTDept'
-        icon: fa-home
       - code: SCMP012021
         name: 门店复购率统计-鞋品
         link: '/statistics/storeRepurchase/FBDept'
-        icon: fa-home
       - code: SCMP012022
         name: 门店复购率统计-自主品牌
         link: '/statistics/storeRepurchase/PBDept'
-        icon: fa-home
       - code: SCMP012023
         name: 负毛利统计-公司
         link: '/statistics/nagativeGross'
-        icon: fa-home
       - code: SCMP012024
         name: 负毛利统计-品采
         link: '/statistics/nagativeGross/BPDept'
-        icon: fa-home
       - code: SCMP012025
         name: 负毛利统计-辅采
         link: '/statistics/nagativeGross/APDept'
-        icon: fa-home
       - code: SCMP012026
         name: 负毛利统计-服纺
         link: '/statistics/nagativeGross/CTDept'
-        icon: fa-home
       - code: SCMP012027
         name: 负毛利统计-鞋品
         link: '/statistics/nagativeGross/FBDept'
-        icon: fa-home
       - code: SCMP012028
         name: 负毛利统计-自主品牌
         link: '/statistics/nagativeGross/PBDept'
-        icon: fa-home
       - code: SCMP012029
         name: 销售统计-公司
         link: '/statistics/sale'
-        icon: fa-home
       - code: SCMP012030
         name: 销售统计-品采
         link: '/statistics/sale/BPDept'
-        icon: fa-home
       - code: SCMP012031
         name: 销售统计-辅采
         link: '/statistics/sale/APDept'
-        icon: fa-home
       - code: SCMP012032
         name: 销售统计-服纺
         link: '/statistics/sale/CTDept'
-        icon: fa-home
       - code: SCMP012033
         name: 销售统计-鞋品
         link: '/statistics/sale/FBDept'
-        icon: fa-home
       - code: SCMP012034
         name: 销售统计-自主品牌
         link: '/statistics/sale/PBDept'
-        icon: fa-home
       - code: SCMP012035
         name: 月累计销售统计-公司
         link: '/statistics/MTDCategorySale'
-        icon: fa-home
       - code: SCMP012036
         name: 月累计销售统计-品采
         link: '/statistics/MTDCategorySale/BPDept'
-        icon: fa-home
       - code: SCMP012037
         name: 月累计销售统计-辅采
         link: '/statistics/MTDCategorySale/APDept'
-        icon: fa-home
       - code: SCMP012038
         name: 月累计销售统计-服纺
         link: '/statistics/MTDCategorySale/CTDept'
-        icon: fa-home
       - code: SCMP012039
         name: 月累计销售统计-鞋品
         link: '/statistics/MTDCategorySale/FBDept'
-        icon: fa-home
       - code: SCMP012040
         name: 月累计销售统计-自主品牌
         link: '/statistics/MTDCategorySale/PBDept'
-        icon: fa-home
       - code: SCMP012041
         name: 低库存统计-公司
         link: '/statistics/lowInventory'
-        icon: fa-home
       - code: SCMP012042
         name: 低库存统计-品采
         link: '/statistics/lowInventory/BPDept'
-        icon: fa-home
       - code: SCMP012043
         name: 低库存统计-辅采
         link: '/statistics/lowInventory/APDept'
-        icon: fa-home
       - code: SCMP012044
         name: 低库存统计-服纺
         link: '/statistics/lowInventory/CTDept'
-        icon: fa-home
       - code: SCMP012045
         name: 低库存统计-鞋品
         link: '/statistics/lowInventory/FBDept'
-        icon: fa-home
       - code: SCMP012046
         name: 低库存统计-自主品牌
         link: '/statistics/lowInventory/PBDept'
-        icon: fa-home
       - code: SCMP012047
         name: 高库存统计-公司
         link: '/statistics/highInventory'
-        icon: fa-home
       - code: SCMP012048
         name: 高库存统计-品采
         link: '/statistics/highInventory/BPDept'
-        icon: fa-home
       - code: SCMP012049
         name: 高库存统计-辅采
         link: '/statistics/highInventory/APDept'
-        icon: fa-home
       - code: SCMP012050
         name: 高库存统计-服纺
         link: '/statistics/highInventory/CTDept'
-        icon: fa-home
       - code: SCMP012051
         name: 高库存统计-鞋品
         link: '/statistics/highInventory/FBDept'
-        icon: fa-home
       - code: SCMP012052
         name: 高库存统计-自主品牌
         link: '/statistics/highInventory/PBDept'
-        icon: fa-home
       - code: SCMP012053
         name: 品类促销统计-公司
         link: '/statistics/categoryPromotion'
-        icon: fa-home
       - code: SCMP012054
         name: 品类促销统计-品采
         link: '/statistics/categoryPromotion/BPDept'
-        icon: fa-home
       - code: SCMP012055
         name: 品类促销统计-辅采
         link: '/statistics/categoryPromotion/APDept'
-        icon: fa-home
       - code: SCMP012056
         name: 品类促销统计-服纺
         link: '/statistics/categoryPromotion/CTDept'
-        icon: fa-home
       - code: SCMP012057
         name: 品类促销统计-鞋品
         link: '/statistics/categoryPromotion/FBDept'
-        icon: fa-home
       - code: SCMP012058
         name: 品类促销统计-自主品牌
         link: '/statistics/categoryPromotion/PBDept'
-        icon: fa-home
       - code: SCMP012059
         name: 缺货统计-公司
         link: '/statistics/stockout'
-        icon: fa-home
       - code: SCMP012060
         name: 缺货统计-品采
         link: '/statistics/stockout/BPDept'
-        icon: fa-home
       - code: SCMP012061
         name: 缺货统计-辅采
         link: '/statistics/stockout/APDept'
-        icon: fa-home
       - code: SCMP012062
         name: 缺货统计-服纺
         link: '/statistics/stockout/CTDept'
-        icon: fa-home
       - code: SCMP012063
         name: 缺货统计-鞋品
         link: '/statistics/stockout/FBDept'
-        icon: fa-home
       - code: SCMP012064
         name: 缺货统计-自主品牌
         link: '/statistics/stockout/PBDept'
-        icon: fa-home
       - code: SCMP012065
         name: 品类销售统计-OEM
         link: '/statistics/categorySale/PBDept'
-        icon: fa-home
       - code: SCMP012066
         name: 品牌销售统计-OEM
         link: '/statistics/brandSale/PBDept'
-        icon: fa-home
     - code: SCMP013
       name: 查询报表
       link: ''
@@ -643,81 +540,45 @@ mgs:
       - code: SCMP013001
         name: 供应商到货率查询
         link: '/query/supplierArrival'
-        icon: fa-home
       - code: SCMP013002
         name: 商品进销存查询
         link: '/query/goodsInvoicing'
-        icon: fa-home
       - code: SCMP013003
         name: 赠品进销存查询
         link: '/query/presentInvoicing'
-        icon: fa-home
       - code: SCMP013004
         name: 退供查询
         link: '/query/supplierReturn'
-        icon: fa-home
       - code: SCMP013005
         name: 新品动销查询
         link: '/query/newGoodsPinRate'
-        icon: fa-home
       - code: SCMP013006
         name: 门店复购率查询
         link: '/query/storeRepurchase'
-        icon: fa-home
       - code: SCMP013007
         name: 负毛利查询
         link: '/query/nagativeGross'
-        icon: fa-home
       - code: SCMP013008
         name: 建议补货查询
         link: '/query/suggestReplenish'
-        icon: fa-home
       - code: SCMP013009
         name: 品牌促销查询
         link: '/query/brandPromotion'
-        icon: fa-home
       - code: SCMP013010
         name: 品类促销查询
         link: '/query/categoryPromotion'
-        icon: fa-home
       - code: SCMP013011
         name: 月销售查询
         link: '/query/monthSales'
-        icon: fa-home
       - code: SCMP013012
         name: 月累计品类销售查询
         link: '/query/MTDCategorySales'
-        icon: fa-home
       - code: SCMP013013
+        name: 商品销售查询
+        link: '/query/goodsSale'
+      - code: SCMP013014
         name: 库存周转查询
         link: '/query/inventoryTurnover'
-        icon: fa-home
-      - code: SCMP013014
+      - code: SCMP013015
         name: 库存在途周转查询
         link: '/query/inventoryTurnoverWay'
-        icon: fa-home
-    - code: SCMP014
-      name: 图表
-      link: ''
-      icon: icon-aq-tubiao
-      resources:
-      - code: SCMP014001
-        name: 月销售图表
-        link: '/chart/monthSales'
-        icon: fa-home
-      - code: SCMP014002
-        name: 月毛利图表
-        link: '/chart/monthGross'
-        icon: fa-home
-      - code: SCMP014003
-        name: 月销售达成率图表
-        link: '/chart/monthSalesAchievement'
-        icon: fa-home
-      - code: SCMP014004
-        name: 月累计品类销售图表
-        link: '/chart/MTDCategorySales'
-        icon: fa-home
-      - code: SCMP014005
-        name: 月累计品类毛利图表
-        link: '/chart/MTDCategoryGross'
-        icon: fa-home

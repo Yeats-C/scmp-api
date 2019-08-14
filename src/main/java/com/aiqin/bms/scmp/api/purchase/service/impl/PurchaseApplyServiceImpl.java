@@ -110,12 +110,12 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+        PageResData pageResData = new PageResData();
         if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
-            return HttpResponse.success();
+            return HttpResponse.success(pageResData);
         }
         purchaseApplyRequest.setGroupList(groupVoList);
         List<PurchaseApplyResponse> purchases = purchaseApplyDao.applyList(purchaseApplyRequest);
-        PageResData pageResData = new PageResData();
         if(CollectionUtils.isNotEmptyCollection(purchases)){
             for (PurchaseApplyResponse apply:purchases){
                 // 计算sku数量 / 单品数量/ 采购含税金额 / 实物返金额
@@ -143,12 +143,12 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     @Override
     public HttpResponse applyProductList(PurchaseApplyRequest purchases){
+        PageResData pageResData = new PageResData();
         if(StringUtils.isBlank(purchases.getPurchaseGroupCode())){
-            return HttpResponse.failure(ResultCode.NOT_PURCHASE_GROUP_DATA);
+            return HttpResponse.success(pageResData);
         }
         this.fourProduct(purchases);
         // 新增时的商品信息
-        PageResData pageResData = new PageResData();
         if(StringUtils.isBlank(purchases.getPurchaseApplyId())){
             return this.stockProductInfo(purchases, pageResData);
         }
@@ -461,6 +461,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
             }
             List<PurchaseImportResponse> list = new ArrayList<>();
+            List<PurchaseImportResponse> errorList = new ArrayList<>();
             Integer errorCount = 0;
             if (result != null) {
                 String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
@@ -477,25 +478,26 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 for (int i = 1; i <= result.length - 1; i++) {
                     record = result[i];
                     response = new PurchaseImportResponse();
+                    response.setErrorNum(i);
                     if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) ||
                             StringUtils.isBlank(record[3]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[5]) || StringUtils.isBlank(record[6])) {
-                        HandleResponse(response, record,"导入的数据不全");
+                        HandleResponse(response, record,"导入的数据不全；", i);
                         errorCount++;
-                        list.add(response);
+                        errorList.add(response);
                         continue;
                     }
                     supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                     if(supplier==null){
-                        HandleResponse(response, record,"未查询到供应商信息");
+                        HandleResponse(response, record,"未查询到供应商信息；", i);
                         errorCount++;
                         list.add(response);
                         continue;
                     }
                     logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
                     if(logisticsCenter==null){
-                        HandleResponse(response, record,"未查询到仓库信息");
+                        HandleResponse(response, record,"未查询到仓库信息；", i);
                         errorCount++;
-                        list.add(response);
+                        errorList.add(response);
                         continue;
                     }
                     applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
@@ -527,6 +529,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                         }
                          if(record[4] != null){
+                             if(!record[4].contains("零")){
+                                 HandleResponse(response, record,"采购数量格式不正确；", i);
+                                 errorList.add(response);
+                                 continue;
+                             }
                              String index = record[4].replace("零", "/").trim();
                              int index1 = index.indexOf("/");
                              int length = index.length();
@@ -536,6 +543,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                              applyProduct.setPurchaseSingle(single);
                          }
                          if(record[5] != null){
+                             if(!record[5].contains("零")){
+                                 HandleResponse(response, record,"实物返数量格式不正确；", i);
+                                 errorList.add(response);
+                                 continue;
+                             }
                              String index = record[5].replace("零", "/").trim();
                              int index1 = index.indexOf("/");
                              int length = index.length();
@@ -552,20 +564,24 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             response.setProductPurchaseAmount(value * 100);
                         }
                     }else{
-                        HandleResponse(response, record,"未查询到对应的商品");
+                        HandleResponse(response, record,"未查询到对应的商品；", i);
                         errorCount++;
+                        errorList.add(response);
                     }
                     list.add(response);
                 }
             }
-            return HttpResponse.success(new PageResData(errorCount,list));
+            if(errorCount > 0){
+                return HttpResponse.success(errorList);
+            }
+            return HttpResponse.success(list);
         } catch (Exception e) {
             LOGGER.error("采购申请单导入异常:{}", e.getMessage());
             return HttpResponse.failure(ResultCode.IMPORT_PURCHASE_APPLY_ERROR);
         }
     }
 
-    private void HandleResponse(PurchaseImportResponse response, String[] record, String errorReason) {
+    private void HandleResponse(PurchaseImportResponse response, String[] record, String errorReason, int i) {
         response.setSkuCode(record[0]);
         response.setSkuName(record[1]);
         response.setSupplierName(record[2]);
@@ -575,7 +591,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(StringUtils.isNotBlank(record[6] )){
             response.setProductPurchaseAmount(Integer.valueOf(record[6]));
         }
-        response.setErrorInfo(errorReason);
+        response.setErrorInfo("第" + i + "行  " + errorReason);
     }
 
     @Override

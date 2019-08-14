@@ -46,5 +46,43 @@
     <update id="updateStockTaxCost">
         update stock set tax_cost=#{taxCost} where id=#{id}
     </update>
-
+    <insert id="insertOneSku">
+        insert into tax_cost_log_stock(
+        tax_date,sku_code,sku_name,
+        warehous_type,warehous_name,
+        stock_sum_num,stock_sum_cost,
+        stock_tax_cost,create_time
+        ) values
+        <foreach collection="taxCostLogStock" item="item" index="index" separator=",">
+        (
+        #{item.taxDate},#{item.skuCode},#{item.skuName},
+        #{item.warehousType},#{item.warehousName},
+        #{item.stockSumNum}, #{item.stockSumCost},
+        #{item.stockTaxCost},NOW()
+        )
+        </foreach>
+    </insert>
+    <select id="selectTimeByTaxDate" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.TaxCostLogStock">
+        SELECT tax_date taxDate
+        FROM tax_cost_log_stock
+        WHERE tax_date = #{taxDate}
+        GROUP BY tax_date
+    </select>
+    <update id="updateOneSku">
+        <foreach collection="taxCostStock" item="item" separator=";">
+        update tax_cost_log_stock
+        <set>
+            tax_date = #{item.taxDate},
+            sku_code = #{item.skuCode},
+            sku_name = #{item.skuName},
+            warehous_type = #{item.warehousType},
+            warehous_name = #{item.warehousName},
+            stock_sum_num = #{item.stockSumNum},
+            stock_sum_cost = #{item.stockSumCost},
+            stock_tax_cost = #{item.stockTaxCost},
+            create_time = NOW()
+        </set>
+        where tax_date = #{item.taxDate} AND sku_code = #{item.skuCode}
+        </foreach>
+    </update>
 </mapper>

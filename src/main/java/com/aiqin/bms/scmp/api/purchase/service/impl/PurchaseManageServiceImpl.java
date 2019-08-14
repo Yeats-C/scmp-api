@@ -219,10 +219,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
 
     @Override
     public HttpResponse purchaseProductList(PurchaseFormRequest purchaseFormRequest){
-        if(purchaseFormRequest == null){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
         PageResData pageResData = new PageResData();
+        if(purchaseFormRequest == null){
+            return HttpResponse.successGenerics(pageResData);
+        }
         List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormList(purchaseFormRequest);
         // 提交采购单页面商品列表
         if(CollectionUtils.isNotEmptyCollection(details)){
@@ -386,11 +386,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     @Override
     public HttpResponse<List<PurchaseOrderResponse>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest){
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+        PageResData pageResData = new PageResData();
         if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
-            return HttpResponse.success();
+            return HttpResponse.success(pageResData);
         }
         purchaseApplyRequest.setGroupList(groupVoList);
-        PageResData pageResData = new PageResData();
         List<PurchaseOrderResponse> list = purchaseOrderDao.purchaseOrderList(purchaseApplyRequest);
         if(CollectionUtils.isNotEmptyCollection(list)){
             for(PurchaseOrderResponse order:list){
@@ -455,6 +455,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     throw new GroundRuntimeException("审批流撤销失败!");
                 }
                 applyPurchaseOrderDao.update(purchaseOrder);
+            }else {
+                // 取消在途数
+                this.wayNum(purchaseOrderId);
             }
         }
         // 添加操作日志
@@ -510,10 +513,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
 
     @Override
     public HttpResponse purchaseOrderProduct(PurchaseOrderProductRequest request){
-        if(StringUtils.isBlank(request.getPurchaseOrderId())){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
         PageResData pageResData = new PageResData();
+        if(StringUtils.isBlank(request.getPurchaseOrderId())){
+            return HttpResponse.successGenerics(pageResData);
+        }
         List<PurchaseOrderProduct> list = purchaseOrderProductDao.purchaseOrderList(request);
         Integer count = purchaseOrderProductDao.purchaseOrderCount(request);
         pageResData.setDataList(list);
@@ -813,7 +816,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         // 是否入库完成
         if(purchaseStorage.getPurchaseNum() > num){
-            if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) || purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_8) ){
+            if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)
+                    || purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_8)
+                    || purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)){
                 return HttpResponse.success();
             }
             InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
@@ -857,7 +862,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         log.setOperationType(code);
         log.setOperationContent(name);
         log.setRemark(remark);
-        operationLogDao.insert(log);
+        if(code.equals(10)){
+            Calendar calendar = Calendar.getInstance ();
+            calendar.add (Calendar.SECOND, 3);
+            log.setCreateTime(calendar.getTime());
+        }else {
+            log.setCreateTime(Calendar.getInstance().getTime());
+        }
+        operationLogDao.insertByTime(log);
     }
 
     @Override
@@ -1008,7 +1020,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     @Override
     public HttpResponse<PurchaseApplyDetailResponse> receiptProduct(String purchaseOrderCode, Integer purchaseNum, Integer pageNo, Integer pageSize){
         if(StringUtils.isBlank(purchaseOrderCode) || purchaseNum == null){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            return HttpResponse.success(new PageResData<>());
         }
         Inbound inbound = new Inbound();
         inbound.setPageSize(pageSize);
@@ -1079,10 +1091,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
 
     @Override
     public HttpResponse applyOrderProduct(PurchaseOrderProductRequest request){
-        if(StringUtils.isBlank(request.getPurchaseOrderId())){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
         PageResData pageResData = new PageResData();
+        if(StringUtils.isBlank(request.getPurchaseOrderId())){
+            return HttpResponse.success(pageResData);
+        }
         List<ApplyPurchaseOrderProduct> list = applyPurchaseOrderProductDao.applyPurchaseOrderList(request);
         Integer count = applyPurchaseOrderProductDao.applyPurchaseOrderCount(request);
         pageResData.setDataList(list);

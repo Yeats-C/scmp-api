@@ -67,54 +67,54 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
             PurchaseOrder purchaseOrder = new PurchaseOrder();
             purchaseOrder.setPurchaseOrderCode(vo1.getFormNo());
             PurchaseOrder order = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-            purchaseOrder.setPurchaseOrderId(order.getPurchaseOrderId());
-            purchaseOrder.setUpdateById(vo1.getApprovalUserCode());
-            purchaseOrder.setUpdateByName(vo1.getApprovalUserName());
+            order.setUpdateById(vo1.getApprovalUserCode());
+            order.setUpdateByName(vo1.getApprovalUserName());
             if(order == null){
                 LOGGER.info("采购单为空");
                 return WorkFlowReturn.FALSE;
-            }else if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)){
+            }else if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0) &&
+                    !order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_1)){
                 // 采购单不是待审核状态
                 return WorkFlowReturn.SUCCESS;
             }
 
             if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
                 //审批失败
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_10);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
-                applyPurchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_10);
+                Integer count = purchaseOrderDao.update(order);
+                applyPurchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.CHECKOUT_NOT.getCode(), PurchaseOrderLogEnum.CHECKOUT_NOT.getName(), null);
+                        PurchaseOrderLogEnum.CHECKOUT_NOT.getCode(), PurchaseOrderLogEnum.CHECKOUT_NOT.getName(), order.getApplyTypeForm());
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
                 // 审批中
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_1);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
-                applyPurchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_1);
+                Integer count = purchaseOrderDao.update(order);
+                applyPurchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批中操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.CHECKOUT.getCode(), PurchaseOrderLogEnum.CHECKOUT.getName(), null);
+                        PurchaseOrderLogEnum.CHECKOUT.getCode(), PurchaseOrderLogEnum.CHECKOUT.getName(), order.getApplyTypeForm());
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 //审批成功
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_2);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
-                applyPurchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_2);
+                Integer count = purchaseOrderDao.update(order);
+                applyPurchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.CHECKOUT_ADOPT.getCode(), PurchaseOrderLogEnum.CHECKOUT_ADOPT.getName(), null);
+                        PurchaseOrderLogEnum.CHECKOUT_ADOPT.getCode(), PurchaseOrderLogEnum.CHECKOUT_ADOPT.getName(), order.getApplyTypeForm());
                 this.updateWayNum(order.getPurchaseOrderId());
             } else if(Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())){
                 // 审批撤销
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_9);
-                Integer count = purchaseOrderDao.update(purchaseOrder);
-                applyPurchaseOrderDao.update(purchaseOrder);
+                order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_9);
+                Integer count = purchaseOrderDao.update(order);
+                applyPurchaseOrderDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(order.getPurchaseOrderId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.REVOKE.getCode(), PurchaseOrderLogEnum.REVOKE.getName(), null);
+                        PurchaseOrderLogEnum.REVOKE.getCode(), PurchaseOrderLogEnum.REVOKE.getName(), order.getApplyTypeForm());
             }
             return WorkFlowReturn.SUCCESS;
         }catch  (Exception e) {
@@ -134,6 +134,15 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         workFlowVO.setTitle(userName + "创建采购单审批");
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId", directSupervisorCode);
+        // 查询采购价格
+        PurchaseOrder order = new PurchaseOrder();
+        order.setPurchaseOrderCode(formNo);
+        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
+        if(purchaseOrder != null){
+            Integer productAmount = purchaseOrder.getProductTotalAmount() == null ? 0 : purchaseOrder.getProductTotalAmount();
+            Integer giftAmount = purchaseOrder.getGiftTaxSum() == null ? 0 : purchaseOrder.getGiftTaxSum();
+            jsonObject.addProperty("purchaseAmount", productAmount + giftAmount);
+        }
         workFlowVO.setVariables(jsonObject.toString());
         WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_PURCHASE);
         //判断是否成功

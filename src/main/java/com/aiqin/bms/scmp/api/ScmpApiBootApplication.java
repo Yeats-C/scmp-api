@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api;
 
 import com.aiqin.ground.spring.boot.core.annotations.GroundBoot;
 import com.aiqin.ground.spring.boot.core.annotations.GroundDataSource;
+import com.aiqin.ground.spring.boot.core.annotations.RedisCache;
 import com.aiqin.mgs.control.client.annotations.ControlClient;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
@@ -62,6 +63,7 @@ import javax.sql.DataSource;
 @EnableAsync(proxyTargetClass = true)
 @EnableSwagger2
 @EnableScheduling
+@RedisCache
 public class ScmpApiBootApplication extends SpringBootServletInitializer {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ScmpApiBootApplication.class);

@@ -21,6 +21,8 @@
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
   </resultMap>
   <resultMap id="ResultListMap" type="com.aiqin.bms.scmp.api.product.domain.response.profitloss.QueryProfitLossRespVo">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -89,6 +91,9 @@
     <if test="warehouseName != null and warehouseName != '' ">
       and warehouse_name like CONCAT('%',#{warehouseName},'%')
     </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
     order by create_time desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -103,7 +108,8 @@
       loss_quantity, loss_total_cost_rate,
       remark, del_flag,
       create_time, create_by, update_time, 
-      update_by, order_status_code, order_status_name)
+      update_by, order_status_code, order_status_name,
+      company_code,company_name)
     values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=TINYINT}, 
       #{logisticsCenterCode,jdbcType=VARCHAR}, #{logisticsCenterName,jdbcType=VARCHAR}, 
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR},
@@ -111,7 +117,45 @@
       #{lossQuantity,jdbcType=BIGINT}, #{lossTotalCostRate,jdbcType=BIGINT},
       #{remark,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT},
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=VARCHAR},  #{orderStatusCode,jdbcType=VARCHAR},  #{orderStatusName,jdbcType=VARCHAR})
+      #{updateBy,jdbcType=VARCHAR},  #{orderStatusCode,jdbcType=VARCHAR}, #{orderStatusName,jdbcType=VARCHAR},
+      #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertList" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss">
+    insert into profit_loss (  order_code, order_type,
+      logistics_center_code, logistics_center_name,
+      warehouse_code, warehouse_name,
+      profit_quantity, profit_total_cost_rate,
+      loss_quantity, loss_total_cost_rate,
+      remark, del_flag,
+      create_time, create_by, update_time,
+      update_by, order_status_code, order_status_name,
+      company_code,company_name)
+    values
+     <foreach collection="list" item="item" separator=",">
+       (
+       #{item.orderCode,jdbcType=VARCHAR},
+       #{item.orderType,jdbcType=TINYINT},
+       #{item.logisticsCenterCode,jdbcType=VARCHAR},
+       #{item.logisticsCenterName,jdbcType=VARCHAR},
+       #{item.warehouseCode,jdbcType=VARCHAR},
+       #{item.warehouseName,jdbcType=VARCHAR},
+       #{item.profitQuantity,jdbcType=BIGINT},
+       #{item.profitTotalCostRate,jdbcType=BIGINT},
+       #{item.lossQuantity,jdbcType=BIGINT},
+       #{item.lossTotalCostRate,jdbcType=BIGINT},
+       #{item.remark,jdbcType=VARCHAR},
+       0,
+       #{item.createTime,jdbcType=TIMESTAMP},
+       #{item.createBy,jdbcType=VARCHAR},
+       #{item.updateTime,jdbcType=TIMESTAMP},
+       #{item.updateBy,jdbcType=VARCHAR},
+       #{item.orderStatusCode,jdbcType=VARCHAR},
+       #{item.orderStatusName,jdbcType=VARCHAR},
+       #{item.companyCode,jdbcType=VARCHAR},
+       #{item.companyName,jdbcType=VARCHAR}
+       )
+     </foreach>
+
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss">
     insert into profit_loss
@@ -173,6 +217,12 @@
       <if test="orderStatusName != null">
         order_status_name,
       </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -231,6 +281,12 @@
       </if>
       <if test="orderStatusName != null">
         #{orderStatusName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -291,6 +347,12 @@
       <if test="orderStatusName != null">
         order_status_name = #{orderStatusName,jdbcType=VARCHAR},
       </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -313,7 +375,9 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=VARCHAR}
+      update_by = #{updateBy,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>
