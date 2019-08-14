@@ -11,7 +11,6 @@ import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
@@ -21,6 +20,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.ApplyRejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
@@ -40,7 +40,6 @@ import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -91,11 +90,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private static final String[] importRejectApplyHeaders = new String[]{
             "SKU编号", "SKU名称", "供应商名称", "仓库名称", "库房名称", "商品批次号", "退供类型", "退供数量", "含税单价",
     };
-    /**
-     * 品类code递增长度
-     */
-    private static final int categoryAddLength = 2;
-
     @Resource
     private RejectApplyRecordDao rejectApplyRecordDao;
     @Resource
@@ -132,6 +126,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private ApplyRejectRecordDao applyRejectRecordDao;
     @Resource
     private ApplyRejectRecordDetailDao applyRejectRecordDetailDao;
+    @Resource
+    private DataManageService dataManageService;
 
     @Override
     public HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -776,21 +772,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
      * 根据品类code 查询所有的名称(包含父级)
      */
     public String selectCategoryName(String categoryCode) {
-        StringBuilder stringBuilder = new StringBuilder();
-        ProductCategoryResponse productCategoryResponse;
-        if (StringUtils.isNotBlank(categoryCode)) {
-            int s = categoryCode.length() / categoryAddLength;
-            for (int i = 0; i < s; i++) {
-                productCategoryResponse = productCategoryDao.selectCategoryLevelByCategoryId(categoryCode.substring(0, (i + 1) * 2));
-                if (productCategoryResponse != null) {
-                    stringBuilder.append(productCategoryResponse.getCategoryName());
-                    if (i < s - 1) {
-                        stringBuilder.append("/");
-                    }
-                }
-            }
-        }
-        return stringBuilder.toString();
+        return dataManageService.selectCategoryName(categoryCode);
     }
 
     @Override

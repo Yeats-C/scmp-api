@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.dao.test.account;
 import com.aiqin.bms.scmp.api.SpringBootTestContext;
 import com.aiqin.bms.scmp.api.account.domain.request.AccountRequest;
 import com.aiqin.bms.scmp.api.account.service.AccountInfoService;
+import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -42,7 +43,6 @@ public class accountTest extends SpringBootTestContext {
     private static Logger LOGGER = LoggerFactory.getLogger(accountTest.class);
     @Resource
     private AccountInfoService accountInfoService;
-
 
     @Test
     public void rejectApplyListInfo(){
