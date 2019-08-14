@@ -55,7 +55,11 @@ public class NewProductController {
     @PostMapping("/list")
     @ApiOperation("查询商品列表")
     public HttpResponse<List<NewProductResponseVO>> listSupplierDicionary(@RequestBody QueryNewProductReqVO queryNewProductReqVO) {
-        return  newProductService.getList(queryNewProductReqVO);
+        try {
+            return HttpResponse.success(newProductService.getList(queryNewProductReqVO));
+        } catch (Exception e) {
+            return HttpResponse.failure(MessageId.create(Project.PRODUCT_API, -1, e.getMessage()));
+        }
     }
 
     @GetMapping("/skuDetails")

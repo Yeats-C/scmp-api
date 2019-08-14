@@ -8,7 +8,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdate
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.QueryNewProductReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewSkuDetailsResponseVO;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +28,7 @@ public interface NewProductService {
 
     void ExceptionId(String productCode);
 
-    HttpResponse<List<NewProductResponseVO>> getList(QueryNewProductReqVO queryNewProductReqVO);
+    BasePage<NewProductResponseVO> getList(QueryNewProductReqVO queryNewProductReqVO);
 
     List<NewSkuDetailsResponseVO>productSku(String productCode, String productName);
 
