@@ -62,11 +62,6 @@ public class ProductServiceImpl implements ProductService {
     @Resource
     private UploadFileUtil uploadFileUtil;
 
-    @Value("${order.info.url}")
-    private String orderInfoUrl;
-
-
-
     @Override
     public HttpResponse selectWeiShopSkuInfo(String distributorId) {
         try {
