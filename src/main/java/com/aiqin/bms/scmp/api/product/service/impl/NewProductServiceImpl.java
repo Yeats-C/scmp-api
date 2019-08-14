@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
@@ -20,6 +21,7 @@ import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -136,14 +138,16 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     @Override
-    public BasePage<NewProductResponseVO> getList(QueryNewProductReqVO queryNewProductReqVO) {
+    public HttpResponse<List<NewProductResponseVO>> getList(QueryNewProductReqVO queryNewProductReqVO) {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
             queryNewProductReqVO.setCompanyCode(authToken.getCompanyCode());
         }
-        PageHelper.startPage(queryNewProductReqVO.getPageNo(), queryNewProductReqVO.getPageSize());
+        PageResData pageResData = new PageResData();
         List<NewProductResponseVO> list = newProductMapper.getList(queryNewProductReqVO);
-        return PageUtil.getPageList(queryNewProductReqVO.getPageNo(), list);
+        pageResData.setDataList(list);
+        pageResData.setTotalCount(list.size());
+        return HttpResponse.success(pageResData);
     }
 
     @Override
