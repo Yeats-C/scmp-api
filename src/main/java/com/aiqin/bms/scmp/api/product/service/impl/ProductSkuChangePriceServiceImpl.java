@@ -1200,12 +1200,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                          .checkPurchasePrice()
                          .checkEffectiveTimeStart()
                          ;
-                String error = checkChangePrice.getData().getError();
+                QuerySkuInfoRespVOForIm data = checkChangePrice.getData();
+                String error = data.getError();
                 if (StringUtils.isNotBlank(error)) {
-                    error = "第"+(i+1)+"行 "+error;
-                    checkChangePrice.getData().setError(error);
+                    String s2 = "第"+(i+2)+"行 "+error;
+                    data.setError(s2);
                 }
-                list.add(checkChangePrice.getData());
+                list.add(data);
                 repeatMap = checkChangePrice.getRepeatMap();
             }
             return list;
@@ -1244,12 +1245,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                         .checkEffectiveTimeStart()//检查生效时间
                         .checkChangeReason()//调价原因
                         ;
-                String error = checkChangePrice.getData().getError();
+                QuerySkuInfoRespVOForIm data = checkChangePrice.getData();
+                String error = data.getError();
                 if (StringUtils.isNotBlank(error)) {
-                    error = "第"+(i+1)+"行 "+error;
-                    checkChangePrice.getData().setError(error);
+                    String s2 = "第"+(i+2)+"行 "+error;
+                    data.setError(s2);
                 }
-                list.add(checkChangePrice.getData());
+                list.add(data);
                 repeatMap = checkChangePrice.getRepeatMap();
             }
             return list;
@@ -1317,12 +1319,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                         .checkEffectiveTimeEnd()//检查失效时间
                         .checkChangeReason()//调价原因
                         ;
-                String error = checkChangePrice.getData().getError();
+                QuerySkuInfoRespVOForIm data = checkChangePrice.getData();
+                String error = data.getError();
                 if (StringUtils.isNotBlank(error)) {
-                    error = "第"+(i+1)+"行 "+error;
-                    checkChangePrice.getData().setError(error);
+                    String s2 = "第"+(i+2)+"行 "+error;
+                    data.setError(s2);
                 }
-                list.add(checkChangePrice.getData());
+                list.add(data);
                 repeatMap = checkChangePrice.getRepeatMap();
             }
             return list;
@@ -1526,6 +1529,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             }else {
                 if (CollectionUtils.isEmpty(error)) {
                     QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+                    if (Objects.isNull(querySkuInfoRespVO)) {
+                        return this;
+                    }
                     Map<String, PriceChannelForChangePrice> collect = querySkuInfoRespVO.getPriceChannelList().stream().collect(Collectors.toMap(PriceChannelForChangePrice::getPriceItemName, Function.identity(), (k1, k2) -> k2));
                     if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyMap(collect)) {
                         this.resp.setPriceItemName(anImport.getPriceItemName().trim());
@@ -1553,6 +1559,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //采购补充价格项目信息
         private CheckChangePrice checkPriceItemForPurchase(){
             QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+            if (Objects.isNull(querySkuInfoRespVO)) {
+                return this;
+            }
             List<PriceChannelForChangePrice> collect = querySkuInfoRespVO.getPriceChannelList();
             if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(collect)||collect.size()>1) {
                 error.add("该sku的采购价格项目异常");
