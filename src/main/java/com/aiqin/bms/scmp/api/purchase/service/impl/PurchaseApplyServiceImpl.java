@@ -110,12 +110,12 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+        PageResData pageResData = new PageResData();
         if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
-            return HttpResponse.success();
+            return HttpResponse.success(pageResData);
         }
         purchaseApplyRequest.setGroupList(groupVoList);
         List<PurchaseApplyResponse> purchases = purchaseApplyDao.applyList(purchaseApplyRequest);
-        PageResData pageResData = new PageResData();
         if(CollectionUtils.isNotEmptyCollection(purchases)){
             for (PurchaseApplyResponse apply:purchases){
                 // 计算sku数量 / 单品数量/ 采购含税金额 / 实物返金额
@@ -143,12 +143,12 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     @Override
     public HttpResponse applyProductList(PurchaseApplyRequest purchases){
+        PageResData pageResData = new PageResData();
         if(StringUtils.isBlank(purchases.getPurchaseGroupCode())){
-            return HttpResponse.failure(ResultCode.NOT_PURCHASE_GROUP_DATA);
+            return HttpResponse.success(pageResData);
         }
         this.fourProduct(purchases);
         // 新增时的商品信息
-        PageResData pageResData = new PageResData();
         if(StringUtils.isBlank(purchases.getPurchaseApplyId())){
             return this.stockProductInfo(purchases, pageResData);
         }
