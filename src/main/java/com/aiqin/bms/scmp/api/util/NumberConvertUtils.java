@@ -17,4 +17,8 @@ public class NumberConvertUtils {
         return temp;
     }
 
+    public static BigDecimal bigDecimalMultiplyHundred(BigDecimal divide) {
+        divide.multiply(BigDecimal.valueOf(10000));
+        return divide;
+    }
 }

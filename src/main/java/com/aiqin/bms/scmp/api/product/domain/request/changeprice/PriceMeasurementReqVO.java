@@ -9,8 +9,10 @@ import lombok.Data;
 public class PriceMeasurementReqVO {
     @ApiModelProperty("sku编码")
     private String skuCode;
-    @ApiModelProperty("毛利率")
-    private Long grossProfitMargin;
+    @ApiModelProperty("原毛利率")
+    private Long oldGrossProfitMargin;
+    @ApiModelProperty("现毛利率")
+    private Long newGrossProfitMargin;
     @ApiModelProperty("价格")
     private Long price;
 }

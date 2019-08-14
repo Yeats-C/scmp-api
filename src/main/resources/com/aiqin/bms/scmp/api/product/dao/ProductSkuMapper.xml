@@ -865,7 +865,7 @@
       a.sku_code,
       a.sku_name,
       a.product_code,
-      a.product_name,
+      d.product_name,
       CASE a.on_sale
       WHEN 1 THEN '上架'
       WHEN 0 THEN '下架'
@@ -885,6 +885,7 @@
     FROM
       product_sku a
       LEFT JOIN product_sku_distribution_info c on a.sku_code = c.product_sku_code
+      left join product d on a.product_code = d.product_code
       LEFT JOIN product_category lv4
       on lv4.category_id = a.product_category_code
       LEFT JOIN product_category lv3

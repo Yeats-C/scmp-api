@@ -1001,7 +1001,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 return "success";
             }else if(vo.getApplyStatus().intValue()==ApplyStatus.APPROVAL.getNumber()){
                 //传入的是审批中，继续该流程
-                // 打印撤销的日志
+                ((ApplyContractService) AopContext.currentProxy()).updateApplyContractDetails(account);
                 String content = ApplyStatus.APPROVAL_SUCCESS.getContent().replace("CREATEBY", account.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
                 supplierCommonService.getInstance(account.getApplyContractCode()+"", HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(), content,null,HandleTypeCoce.APPROVAL.getName(),vo.getApprovalUserName());
                 return "success";

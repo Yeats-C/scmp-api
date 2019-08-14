@@ -147,6 +147,8 @@
       <result column="bpurchase_price_new" jdbcType="BIGINT" property="purchasePriceNew" />
       <result column="bold_price" jdbcType="BIGINT" property="oldPrice" />
       <result column="bnew_price" jdbcType="BIGINT" property="newPrice" />
+      <result column="bold_gross_profit_margin" jdbcType="BIGINT" property="oldGrossProfitMargin" />
+      <result column="bnew_gross_profit_margin" jdbcType="BIGINT" property="newGrossProfitMargin" />
       <result column="bwarehouse_batch_number" jdbcType="VARCHAR" property="warehouseBatchNumber" />
       <result column="bwarehouse_batch_name" jdbcType="VARCHAR" property="warehouseBatchName" />
       <result column="bchange_price_reason_code" jdbcType="VARCHAR" property="changePriceReasonCode" />
@@ -289,6 +291,8 @@
              b.purchase_price_new bpurchase_price_new,
              b.old_price bold_price,
              b.new_price bnew_price,
+             b.new_gross_profit_margin bnew_gross_profit_margin,
+             b.old_gross_profit_margin bold_gross_profit_margin,
              b.warehouse_batch_number bwarehouse_batch_number,
              b.warehouse_batch_name bwarehouse_batch_name,
              b.change_price_reason_code bchange_price_reason_code,
@@ -351,6 +355,8 @@
              b.effective_time_start beffective_time_start,
              b.effective_time_end beffective_time_end,
              b.purchase_price_new bpurchase_price_new,
+             b.new_gross_profit_margin bnew_gross_profit_margin,
+             b.old_gross_profit_margin bold_gross_profit_margin,
              b.old_price bold_price,
              b.new_price bnew_price,
              b.warehouse_batch_number bwarehouse_batch_number,
@@ -476,6 +482,18 @@
       from product_sku_change_price a left join product_sku_change_price_info b on a.code=b.code
       left join product_sku_change_price_area_info c on c.main_code = a.code
       where  <![CDATA[ now() >= ]]>b.effective_time_end and b.be_synchronize = 0
+    </select>
+    <select id="selectSaleNumBySkuCode"
+            resultType="com.aiqin.bms.scmp.api.product.domain.dto.changeprice.SaleCountDTO">
+        select
+        a.sku_code skuCode,
+        a.num saleNum
+        from bi_month_sales a
+        where a.`year_month` = date_format(date_sub(now(),interval 1 month),'%Y-%m')
+        and a.`sku_code` in
+        <foreach collection="list" open="(" close=")" item="item" separator=",">
+             #{item.skuCode}
+        </foreach>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_change_price

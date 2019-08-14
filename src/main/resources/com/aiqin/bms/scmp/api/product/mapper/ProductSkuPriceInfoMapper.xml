@@ -1037,4 +1037,20 @@
         where a.sku_code = #{skuCode}
         GROUP BY DATE_FORMAT(create_time, '%Y/%m'),sku_code order by create_time;
     </select>
+    <resultMap id="selectChannelPriceBySkuCode" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo">
+        <result column="skuCode" property="skuCode"/>
+        <result column="priceTax" property="priceTax"/>
+    </resultMap>
+    <select id="selectChannelPriceBySkuCode" parameterType="java.util.List" resultMap="selectChannelPriceBySkuCode">
+        select sku_code skuCode,
+         max(price_tax) priceTax
+        from product_sku_price_info a
+        where a.price_type_code = 2
+          and a.price_attribute_code = 2 and a.ext_field_5 = 0
+        and a.sku_code in
+        <foreach collection="list" open="(" close=")" item="item" separator=",">
+            #{item.skuCode}
+        </foreach>
+        group by sku_code
+    </select>
 </mapper>

@@ -209,19 +209,19 @@ public class ProductSkuChangePriceController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
-//
-//    @ApiOperation("变价测算")
-//    @PostMapping("/priceMeasurement")
-//    public HttpResponse<List<PriceJog>> priceMeasurement(@RequestBody List<PriceMeasurementReqVO> req){
-//        try {
-//            return HttpResponse.success(productSkuChangePriceService.priceMeasurement(req));
-//        } catch (BizException e) {
-//            return HttpResponse.failure(e.getMessageId());
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-//        }
-//    }
+
+    @ApiOperation("变价测算")
+    @PostMapping("/priceMeasurement")
+    public HttpResponse<PriceMeasurementRespVO> priceMeasurement(@RequestBody List<PriceMeasurementReqVO> req){
+        try {
+            return HttpResponse.success(productSkuChangePriceService.priceMeasurement(req));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
     @ApiOperation("测试生成id")
     @PostMapping("/getid")

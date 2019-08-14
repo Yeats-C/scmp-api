@@ -47,10 +47,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
 
     @Value("${web.host-url}")
     private String webHostUrl;
-//
+
     @Value("${evn}")
     private String evn;
-
 
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
