@@ -93,6 +93,15 @@ public class ProductSkuChangePriceReqVO {
     @ApiModelProperty("是否含有区域0否1是")
     private Integer extField5;
 
+    @ApiModelProperty("毛利率增加数")
+    private Long increaseCount;
+    @ApiModelProperty("毛利率减少数")
+    private Long decreaseCount;
+    @ApiModelProperty("毛利率增加额度")
+    private Long increaseGrossProfit;
+    @ApiModelProperty("毛利率减少额度")
+    private Long decreaseGrossProfit;
+
     @ApiModelProperty("sku列表信息")
     @NotEmpty(message = "sku信息不能为空")
     private List<ProductSkuChangePriceInfoReqVO> infoLists;
