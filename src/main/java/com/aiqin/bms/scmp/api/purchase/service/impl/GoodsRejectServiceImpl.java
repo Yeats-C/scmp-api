@@ -40,6 +40,7 @@ import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -136,7 +137,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     public HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
         if (CollectionUtils.isEmpty(groupVoList)) {
-            return HttpResponse.success();
+            return HttpResponse.successGenerics(new PageResData<>());
         }
         rejectApplyQueryRequest.setGroupList(groupVoList);
         List<RejectApplyQueryResponse> list = rejectApplyRecordDao.list(rejectApplyQueryRequest);

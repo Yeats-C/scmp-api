@@ -665,6 +665,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         inbound.setWarehouseName(allocation.getCallInWarehouseName());
         //创建人
         inbound.setCreateBy(allocation.getCreateBy());
+        inbound.setUpdateBy(allocation.getUpdateBy());
+        inbound.setUpdateTime(allocation.getUpdateTime());
         for (AllocationProduct allocationProduct : allocation.getDetailList()) {
             product = new InboundProductReqVo();
             product.setPreInboundMainNum(allocationProduct.getQuantity());
@@ -723,7 +725,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         allocation.setAllocationTypeName(typeName);
         allocationMapper.insertSelective(allocation);
         List<String> skuList = allocation.getDetailList().stream().map(AllocationProduct::getSkuCode).collect(Collectors.toList());
-        List<OrderProductSkuResponse> productSkuList = productSkuDao.selectSkuInfoList(skuList);
+        List<OrderProductSkuResponse> productSkuList = productSkuDao.selectStockSkuInfoList(skuList);
         Map<String, OrderProductSkuResponse> productSkuMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
         OrderProductSkuResponse orderProductSkuResponse;
         List<AllocationProduct> allocationProductList = Lists.newArrayList();
@@ -735,7 +737,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 allocationProduct.setSpecification(orderProductSkuResponse.getSpec());
                 allocationProduct.setColor(orderProductSkuResponse.getColorName());
                 allocationProduct.setModel(orderProductSkuResponse.getModel());
+                allocationProduct.setCategory(goodsRejectService.selectCategoryName(orderProductSkuResponse.getCategoryCode()));
                 allocationProduct.setUnit(orderProductSkuResponse.getUnitName());
+                allocationProduct.setBrand(orderProductSkuResponse.getBrandName());
+                allocationProduct.setType(productTypeList.get(orderProductSkuResponse.getProductType()));
+                allocationProduct.setTax(orderProductSkuResponse.getTaxRate().longValue());
+
             }
             allocationProduct.setAllocationCode(allocation.getAllocationCode());
             allocationProduct.setCreateBy(allocation.getCreateBy());
