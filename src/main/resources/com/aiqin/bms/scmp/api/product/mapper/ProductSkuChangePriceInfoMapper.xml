@@ -92,7 +92,7 @@
       and a.apply_status = #{applyStatus}
     </if>
     <if test="beContainArea != null">
-      and a.ext_field_5 = #{beContainArea}
+      and a.be_contain_area = #{beContainArea}
     </if>
     group by a.id
     order by a.create_time desc
@@ -122,7 +122,7 @@
     a.create_time                        as createTime,
     a.create_by                          as createBy,
     a.change_price_name                  as changePriceName,
-    a.ext_field_5                        as beContainArea,
+    a.be_contain_area                        as beContainArea,
     a.purchase_group_name                as purchaseGroupName,
     a.apply_status                       as applyStatus,
     a.create_by                          as createBy,

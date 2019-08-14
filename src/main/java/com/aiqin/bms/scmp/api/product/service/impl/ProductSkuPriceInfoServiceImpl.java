@@ -85,7 +85,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
         List<ProductSkuPriceInfoDraft> drafts = BeanCopyUtils.copyList(reqVOList, ProductSkuPriceInfoDraft.class);
         for (ProductSkuPriceInfoDraft o : drafts) {
             o.setCode("pp"+UUIDUtils.getUUID());
-            o.setExtField5(0);
+            o.setBeContainArea(0);
         }
         int i = productSkuPriceInfoDraftMapper.insertBatch(drafts);
         if(i!=reqVOList.size()){
