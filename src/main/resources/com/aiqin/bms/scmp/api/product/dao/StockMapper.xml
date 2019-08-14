@@ -2361,6 +2361,7 @@
         on ba.sku_code = s.sku_code and s.transport_center_code = ba.transport_center_code
         WHERE sc.config_status = 0 and s.sku_code = #{skuCode,jdbcType=VARCHAR}
         and s.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR} and s.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+        limit 1
     </select>
     <select id="selectSkuCost" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
         select

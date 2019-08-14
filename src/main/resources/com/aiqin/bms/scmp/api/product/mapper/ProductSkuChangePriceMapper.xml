@@ -86,6 +86,8 @@
       <result column="bchange_price_reason_code" jdbcType="VARCHAR" property="changePriceReasonCode" />
       <result column="bchange_price_reason_name" jdbcType="VARCHAR" property="changePriceReasonName" />
       <result column="btemporary_price" jdbcType="BIGINT" property="temporaryPrice" />
+      <result column="bold_gross_profit_margin" jdbcType="BIGINT" property="oldGrossProfitMargin" />
+      <result column="bnew_gross_profit_margin" jdbcType="BIGINT" property="newGrossProfitMargin" />
       <result column="bprice_item_code" jdbcType="VARCHAR" property="priceItemCode" />
       <result column="bprice_item_name" jdbcType="VARCHAR" property="priceItemName" />
       <result column="bprice_type_code" jdbcType="VARCHAR" property="priceTypeCode" />
@@ -458,6 +460,8 @@
                b.warehouse_batch_name bwarehouse_batch_name,
                b.change_price_reason_code bchange_price_reason_code,
                b.change_price_reason_name bchange_price_reason_name,
+               b.old_gross_profit_margin bold_gross_profit_margin,
+               b.new_gross_profit_margin bnew_gross_profit_margin,
                b.temporary_price btemporary_price,
                b.price_item_code bprice_item_code,
                b.price_item_name bprice_item_name,
@@ -528,7 +532,7 @@
       create_by, create_time, update_by, 
       update_time, auditor_by, apply_status, 
       form_no, auditor_time, original, 
-      change_price_reason_code, change_price_reason_name, be_contain_area,increase_count,decrease_count,increase_gross_profit,decrease_gross_profit,
+      change_price_reason_code, change_price_reason_name, be_contain_area,increase_count,decrease_count,increase_gross_profit,decrease_gross_profit
       )
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{changePriceType,jdbcType=VARCHAR}, 
       #{changePriceName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
