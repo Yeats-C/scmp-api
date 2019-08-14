@@ -42,7 +42,7 @@ oss:
   bucket:
     name: aq-scmp
   dir: release/
-
+evn: release
 Encryption:
   key: 16#t%9@AJ6DYaeRp
 #  dZ3@k!KMhq!Tqeh3%RYm83cX&JmvYyY!
