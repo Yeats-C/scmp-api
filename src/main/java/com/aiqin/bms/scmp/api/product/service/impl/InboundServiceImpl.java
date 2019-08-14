@@ -524,6 +524,8 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequest.setTaxRate(returnInboundProduct.getTax());
             if(inboundProductCallBackReqVo.getProductType() != 2){
                 stockVoRequest.setNewPurchasePrice(inboundProduct.getPraTaxPurchaseAmount());
+            }else{
+                stockVoRequest.setNewPurchasePrice(0l);
             }
             stockVoRequest.setNewDelivery(inbound.getSupplierCode());
             stockVoRequest.setNewDeliveryName(inbound.getSupplierName());

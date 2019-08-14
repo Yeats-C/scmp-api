@@ -975,7 +975,7 @@
         st.warehouse_code,st.warehouse_name,st.warehouse_type,st.sku_code,st.sku_name,st.inventory_num,st.available_num,
         st.lock_num,st.purchase_way_num,st.allocation_way_num,st.total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.product_brand_name,ps.color_code,ps.color_name,
+        st.stock_unit_name,st.tax_price,pscc.Input_tax_rate tax_rate,psc.config_status,pssi.spec,ps.product_brand_name,ps.color_code,ps.color_name,
         ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name,
         st.tax_cost,st.stockup_num,date_format(st.stockupfinish_time, '%Y-%m-%d %H:%i:%s') stockupfinish_time,
         date_format(st.create_time, '%Y-%m-%d %H:%i:%s') create_time,st.create_by,date_format(st.update_time, '%Y-%m-%d %H:%i:%s') update_time,st.update_by
@@ -984,6 +984,7 @@
         LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
         left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
         left join product_sku_stock_info as pssi on st.sku_code=pssi.product_sku_code
+        left join product_sku_checkout as pscc on st.sku_code=pscc.sku_code
         where 1=1
         <if test="skuCode!=null and skuCode!=''">
             and st.sku_code=#{skuCode}
@@ -2296,7 +2297,7 @@
       ifnull(h.stock_tax_cost,0) as taxCost
       from price_project f
        left join product_sku_price_info g
-      on #{skuCode} = g.sku_code and g.price_item_code = f.price_project_code and g.ext_field_5 = 0
+      on #{skuCode} = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
        left join tax_cost_log_stock h
       on g.sku_code = h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
       where  f.company_code = #{companyCode} and f.price_category_code = #{changePriceType}

@@ -1432,6 +1432,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         List<Long> ids = getSkuListByQueryNoPageCount(vo);
         List<QuerySkuInfoRespVO> list = Lists.newArrayList();
+        if(CollectionUtils.isEmpty(ids)){
+            return list;
+        }
         if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
             list = productSkuDao.selectSkuListForPurchasePrice(ids);
         } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
