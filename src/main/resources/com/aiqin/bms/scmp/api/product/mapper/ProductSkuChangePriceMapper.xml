@@ -62,10 +62,10 @@
     <result column="aext_field_1" jdbcType="VARCHAR" property="extField1" />
     <result column="aext_field_2" jdbcType="VARCHAR" property="extField2" />
     <result column="aext_field_5" jdbcType="INTEGER" property="extField5" />
-      <result column="increase_count" jdbcType="BIGINT" property="increaseCount" />
-      <result column="decrease_count" jdbcType="BIGINT" property="decreaseCount" />
-      <result column="increase_gross_profit" jdbcType="BIGINT" property="increaseGrossProfit" />
-      <result column="decrease_gross_profit" jdbcType="BIGINT" property="decreaseGrossProfit" />
+      <result column="aincrease_count" jdbcType="BIGINT" property="increaseCount" />
+      <result column="adecrease_count" jdbcType="BIGINT" property="decreaseCount" />
+      <result column="aincrease_gross_profit" jdbcType="BIGINT" property="increaseGrossProfit" />
+      <result column="adecrease_gross_profit" jdbcType="BIGINT" property="decreaseGrossProfit" />
     <collection property="infos" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo">
       <id column="bid" jdbcType="BIGINT" property="id" />
       <result column="bcode" jdbcType="VARCHAR" property="code" />
@@ -100,10 +100,8 @@
       <result column="bwarehouse_name" jdbcType="VARCHAR" property="warehouseName" />
       <result column="bbatch_remark" jdbcType="VARCHAR" property="batchRemark" />
       <result column="bofficial_code" jdbcType="VARCHAR" property="officialCode" />
-      <result column="bext_field_3" jdbcType="VARCHAR" property="extField3" />
       <result column="bproduct_time" jdbcType="TIMESTAMP" property="productTime" />
       <result column="bbe_synchronize" jdbcType="INTEGER" property="beSynchronize" />
-      <result column="bext_field_6" jdbcType="BIGINT" property="extField6" />
       <result column="dInput_tax_rate" jdbcType="BIGINT" property="inTax" />
       <result column="doutput_tax_rate" jdbcType="BIGINT" property="outTax" />
     </collection>
@@ -291,6 +289,10 @@
              a.create_time acreate_time,
              a.update_by aupdate_by,
              a.update_time aupdate_time,
+             a.increase_count aincrease_count,
+             a.decrease_count adecrease_count,
+             a.increase_gross_profit aincrease_gross_profit,
+             a.decrease_gross_profit adecrease_gross_profit,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
              b.purchase_price_newest bpurchase_price_newest,
@@ -357,6 +359,10 @@
              a.create_time acreate_time,
              a.update_by aupdate_by,
              a.update_time aupdate_time,
+             a.increase_count aincrease_count,
+             a.decrease_count adecrease_count,
+             a.increase_gross_profit aincrease_gross_profit,
+             a.decrease_gross_profit adecrease_gross_profit,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
              b.purchase_price_newest bpurchase_price_newest,
@@ -430,6 +436,10 @@
                a.ext_field_1 aext_field_1,
                a.ext_field_2 aext_field_2,
                a.ext_field_5 aext_field_5,
+               a.increase_count aincrease_count,
+               a.decrease_count adecrease_count,
+               a.increase_gross_profit aincrease_gross_profit,
+               a.decrease_gross_profit adecrease_gross_profit,
                b.id bid,
                b.code bcode,
                b.sku_code bsku_code,
@@ -463,10 +473,8 @@
                b.warehouse_name bwarehouse_name,
                b.batch_remark bbatch_remark,
                b.official_code bofficial_code,
-               b.ext_field_3 bext_field_3,
                b.product_time bproduct_time,
                b.be_synchronize bbe_synchronize,
-               b.ext_field_6 bext_field_6,
                c.id cid,
                c.main_code cmain_code,
                c.type ctype,
@@ -520,7 +528,7 @@
       create_by, create_time, update_by, 
       update_time, auditor_by, apply_status, 
       form_no, auditor_time, original, 
-      ext_field_1, ext_field_2, ext_field_5
+      ext_field_1, ext_field_2, ext_field_5,increase_count,decrease_count,increase_gross_profit,decrease_gross_profit,
       )
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{changePriceType,jdbcType=VARCHAR}, 
       #{changePriceName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
@@ -530,7 +538,7 @@
       #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{auditorBy,jdbcType=VARCHAR}, #{applyStatus,jdbcType=INTEGER}, 
       #{formNo,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, #{original,jdbcType=INTEGER}, 
-      #{extField1,jdbcType=VARCHAR}, #{extField2,jdbcType=VARCHAR}, #{extField5,jdbcType=INTEGER}
+      #{extField1,jdbcType=VARCHAR}, #{extField2,jdbcType=VARCHAR}, #{extField5,jdbcType=INTEGER},#{increaseCount,jdbcType=BIGINT},#{decreaseCount,jdbcType=BIGINT},#{increaseGrossProfit,jdbcType=BIGINT},#{decreaseGrossProfit,jdbcType=BIGINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePrice">
@@ -617,6 +625,18 @@
       <if test="extField5 != null">
         ext_field_5,
       </if>
+        <if test="increaseCount != null">
+            increase_count,
+        </if>
+     <if test="decreaseCount != null">
+            decrease_count,
+        </if>
+     <if test="increaseGrossProfit != null">
+            increase_gross_profit,
+        </if>
+     <if test="decreaseGrossProfit != null">
+            decrease_gross_profit,
+        </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -699,6 +719,18 @@
       </if>
       <if test="extField5 != null">
         #{extField5,jdbcType=INTEGER},
+      </if>
+      <if test="increaseCount != null">
+        #{increaseCount,jdbcType=BIGINT},
+      </if>
+      <if test="decreaseCount != null">
+        #{decreaseCount,jdbcType=BIGINT},
+      </if>
+      <if test="increaseGrossProfit != null">
+        #{increaseGrossProfit,jdbcType=BIGINT},
+      </if>
+      <if test="decreaseGrossProfit != null">
+        #{decreaseGrossProfit,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -783,6 +815,18 @@
       <if test="extField5 != null">
         ext_field_5 = #{extField5,jdbcType=INTEGER},
       </if>
+       <if test="increaseCount != null">
+        increase_count = #{increaseCount,jdbcType=BIGINT},
+      </if>
+     <if test="decreaseCount != null">
+        decrease_count = #{decreaseCount,jdbcType=BIGINT},
+      </if>
+     <if test="increaseGrossProfit != null">
+        increase_gross_profit = #{increaseGrossProfit,jdbcType=BIGINT},
+      </if>
+     <if test="decreaseGrossProfit != null">
+        decrease_gross_profit = #{decreaseGrossProfit,jdbcType=BIGINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -800,6 +844,10 @@
       cost_bearer_code = #{costBearerCode,jdbcType=VARCHAR},
       cost_bearer_name = #{costBearerName,jdbcType=VARCHAR},
       budget = #{budget,jdbcType=BIGINT},
+      increase_count = #{increaseCount,jdbcType=BIGINT},
+      decrease_count = #{decreaseCount,jdbcType=BIGINT},
+      increase_gross_profit = #{increaseGrossProfit,jdbcType=BIGINT},
+      decrease_gross_profit = #{decreaseGrossProfit,jdbcType=BIGINT},
       company_code = #{companyCode,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},
       create_by = #{createBy,jdbcType=VARCHAR},
@@ -851,6 +899,18 @@
       </if>
       <if test="budget != null">
         budget = #{budget,jdbcType=BIGINT},
+      </if>
+      <if test="increaseCount != null">
+        increase_count = #{increaseCount,jdbcType=BIGINT},
+      </if>
+      <if test="decreaseCount != null">
+        decrease_count = #{decreaseCount,jdbcType=BIGINT},
+      </if>
+      <if test="increaseGrossProfit != null">
+        increase_gross_profit = #{increaseGrossProfit,jdbcType=BIGINT},
+      </if>
+      <if test="decreaseGrossProfit != null">
+        decrease_gross_profit = #{decreaseGrossProfit,jdbcType=BIGINT},
       </if>
       <if test="companyCode != null">
         company_code = #{companyCode,jdbcType=VARCHAR},
