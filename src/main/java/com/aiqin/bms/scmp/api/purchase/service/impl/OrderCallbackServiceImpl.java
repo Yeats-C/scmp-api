@@ -248,7 +248,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         orderInfo.setUpdateById(request.getOperatorCode());
         orderInfo.setUpdateByName(request.getOperatorName());
         orderInfo.setActualProductChannelTotalAmount(request.getProductChannelTotalAmount());
-        orderInfo.setActualOrderAmount(request.getProductChannelTotalAmount());
         orderInfo.setActualProductNum(request.getProductNum());
         if (StringUtils.isNotBlank(request.getSupplierCode())) {
             //供应商
@@ -312,7 +311,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             stockVoRequest.setDocumentNum(outboundOderCode);
             stockVoRequest.setSourceDocumentType((int) OutboundTypeEnum.ORDER.getCode());
             stockVoRequest.setSourceDocumentNum(itemReqVo.getOrderCode());
-            stockVoRequest.setOperator(orderInfo.getCreateById());
+            stockVoRequest.setOperator(orderInfo.getCreateByName());
             list.add(stockVoRequest);
         }
         return list;
@@ -581,7 +580,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         allocation.setCreateTime(new DateTime(new Long(request.getCreateTime())).toDate());
         allocation.setUpdateBy(request.getUpdateByName());
         allocation.setUpdateTime(new DateTime(new Long(request.getReceiptTime())).toDate());
-        allocationInsert(allocation, type, typeName);
         //调拨生成出库单
         OutboundReqVo convert = new AllocationToOutboundConverter(productSkuDao).convert(allocation);
         if (request.getTransfersType().equals(1)) {
@@ -615,6 +613,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
             throw new GroundRuntimeException("dl回调   加库存异常");
         }
+
+        allocation.setOutboundOderCode(outboundOderCode);
+        allocation.setInboundOderCode(inboundOderCode);
+        //生成调拨单
+        allocationInsert(allocation, type, typeName);
+
         return HttpResponse.success();
     }
 

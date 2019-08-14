@@ -118,6 +118,6 @@ public class ApplyProductSkuPriceInfo {
     private Integer beSynchronous;
 
     @ApiModelProperty("扩展字段5")
-    private Integer extField5;
+    private Integer beContainArea;
 
 }

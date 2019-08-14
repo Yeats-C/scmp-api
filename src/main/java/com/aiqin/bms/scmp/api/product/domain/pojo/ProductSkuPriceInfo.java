@@ -118,5 +118,5 @@ public class ProductSkuPriceInfo {
     private Integer beSynchronous;
 
     @ApiModelProperty("是否含有区域")
-    private Integer extField5;
+    private Integer beContainArea;
 }

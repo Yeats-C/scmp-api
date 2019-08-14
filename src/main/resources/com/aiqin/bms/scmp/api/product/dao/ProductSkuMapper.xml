@@ -1690,7 +1690,7 @@
       left join price_project f
       on  f.del_flag = 0 and f.price_project_enable = 0 and f.price_category_code = #{changePriceType}
       left join product_sku_price_info g
-      on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.ext_field_5 = 0
+      on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
       left join tax_cost_log_stock h
       on a.sku_code = h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
       left join stock_batch i
@@ -1720,7 +1720,7 @@
     left join price_project f
     on 1=1 and f.del_flag = 0 and f.price_project_enable = 0
     left join product_sku_price_info g
-    on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.ext_field_5 = 0
+    on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
     left join tax_cost_log_stock h
     on a.sku_code = h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
     left join stock_batch i
