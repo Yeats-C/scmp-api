@@ -59,15 +59,9 @@ public class ProductServiceImpl implements ProductService {
     private ProductCategoryDistributionDao productCategoryDistributionDao;
     @Resource
     private ProductPriceChangeDao productPriceChangeDao;
-    @Autowired
-    private ProductSkuDao productSkuDao;
     @Resource
     private UploadFileUtil uploadFileUtil;
 
-    @Value("${image.upload.path}")
-    private String imageUploadPath;
-    @Value("${marker.info.url}")
-    private String marketInfoUrl;
     @Value("${order.info.url}")
     private String orderInfoUrl;
 
@@ -454,133 +448,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public HttpResponse selectProductPage(ProductSearchRequest productSearchRequest) {
-        try {
-            LOGGER.info("根据搜索信息查询商品信息(门店)");
-            List dataList = new ArrayList<>();
-            List<ProductDistributor> list = new ArrayList<>();
-            List codeList = new ArrayList<>();
-            List<ProductDistributor> getList = new ArrayList<>();
-            QueryStoreSkusReqVO queryStoreSkusReqVO = new QueryStoreSkusReqVO();
-            List<String> skuCodeList = new ArrayList<>();
-            ProdisorRequest prodisorRequest = new ProdisorRequest();
-            List<Integer> originTypeList = new ArrayList<>();
-            list = productDistributorDao.selectProductPage(productSearchRequest);
-            for (ProductDistributor productDistributor : list) {
-                String skuCode = productDistributor.getSkuCode();
-                codeList.add(skuCode);
-            }
-            HttpClient httpPost = HttpClient.post(marketInfoUrl + "coupon/product/by/activity").json(codeList);
-            Map<String, Object> result = httpPost.action().result(new TypeReference<Map<String, Object>>() {
-            });
-            if (result != null) {
-                dataList = (List) result.get("data");
-            }
-            if (productSearchRequest.getShowActivity() != null) {
-                if (productSearchRequest.getShowActivity() == 1) {
-                    if (CollectionUtils.isNotEmpty(dataList)) {
-                        productSearchRequest.setSkuCodes(dataList);
-                    }
-                    getList = productDistributorDao.selectProductPage(productSearchRequest);
-                }
-            } else {
-                ProductSkuRequest productSku = new ProductSkuRequest();
-                productSku.setDistributorId(productSearchRequest.getDistributorId());
-                if (CollectionUtils.isNotEmpty(dataList)) {
-                    productSku.setSkuCodeList(dataList);
-                    List<ProductDistributor> resultList = productDistributorDao.selectProductInfoByProductIdList(productSku);
-                    if (CollectionUtils.isNotEmpty(list)) {
-                        list.removeAll(resultList);
-                    }
-                    List<ProductDistributor> findList = resultList.stream().map(productDistributor1 -> {
-                        productDistributor1.setActivityJoinStatus(Global.JOIN_ACTIVITY_YES);
-                        return productDistributor1;
-                    }).collect(Collectors.toList());
-                    getList = list.stream().map(productDistributor1 -> {
-                        productDistributor1.setActivityJoinStatus(Global.JOIN_ACTIVITY_NOT);
-                        return productDistributor1;
-                    }).collect(Collectors.toList());
-                    getList.addAll(findList);
-                } else {
-                    getList = list.stream().map(productDistributor1 -> {
-                        productDistributor1.setActivityJoinStatus(Global.JOIN_ACTIVITY_NOT);
-                        return productDistributor1;
-                    }).collect(Collectors.toList());
-                }
-            }
-            if (CollectionUtils.isNotEmpty(productSearchRequest.getSkuCodes()) || productSearchRequest.getText() != null) {
-                //来源类型:2||null-全部;0&&3-门店;1-微商城;0-pos;3:web
-                if (productSearchRequest.getSkuCodes() != null) {
-                    skuCodeList.addAll(productSearchRequest.getSkuCodes());
-                } else if (productSearchRequest.getText() != null) {
-                    skuCodeList.add(productSearchRequest.getText());
-                }
-            } else if (!CollectionUtils.isNotEmpty(productSearchRequest.getSkuCodes()) && productSearchRequest.getText() == null) {
-                for (ProductDistributor productDistributor : getList) {
-                    skuCodeList.add(productDistributor.getSkuCode());
-                }
-            }
-            originTypeList.add(0);
-            originTypeList.add(3);
-            prodisorRequest.setOriginTypeList(originTypeList);
-            prodisorRequest.setSkuList(skuCodeList);
-            HttpClient httpClientPos = HttpClient.post(orderInfoUrl + "orderdetail/prodisor").json(prodisorRequest);
-            Map<String, Object> dataMapPos = httpClientPos.action().result(new TypeReference<Map<String, Object>>() {
-            });
-            originTypeList.clear();
-            originTypeList.add(1);
-            HttpClient httpClientOnline = HttpClient.post(orderInfoUrl + "orderdetail/prodisor").json(prodisorRequest);
-            Map<String, Object> dataMapOnline = httpClientOnline.action().result(new TypeReference<Map<String, Object>>() {
-            });
-            if (dataMapPos != null) {
-                List amountPosList = (List) dataMapPos.get("data");
-                if (CollectionUtils.isNotEmpty(amountPosList)) {
-                    for (Object object : amountPosList) {
-                        Map map = (Map) object;
-                        getList = getList.stream().map(productDistributor1 -> {
-                            if (productDistributor1.getSkuCode().equals(map.get("code"))) {
-                                int amount = Integer.parseInt(map.get("amount").toString());
-                                productDistributor1.setPosSaleNum(amount);
-                            }
-                            return productDistributor1;
-                        }).collect(Collectors.toList());
-                    }
-                }
-            }
-            if (dataMapOnline != null) {
-                List amountOnlineList = (List) dataMapOnline.get("data");
-                if (CollectionUtils.isNotEmpty(amountOnlineList)) {
-                    for (Object object : amountOnlineList) {
-                        Map map = (Map) object;
-                        getList = getList.stream().map(productDistributor1 -> {
-                            if (productDistributor1.getSkuCode().equals(map.get("code"))) {
-                                int amount = Integer.parseInt(map.get("amount").toString());
-                                productDistributor1.setOnlineSaleNum(amount);
-                            }
-                            return productDistributor1;
-                        }).collect(Collectors.toList());
-                    }
-                }
-            }
-            //获取供应链的 进货价
-            queryStoreSkusReqVO.setSkuCodes(skuCodeList);
-            List<StoreSkuItemRespVO> skuItemRespVOS = productSkuDao.getStoreSkuListByCodes(queryStoreSkusReqVO);
-            Map<String, StoreSkuItemRespVO> skuMap = skuItemRespVOS.stream().collect(Collectors.toMap(StoreSkuItemRespVO::getSkuCode, input -> input, (k1, k2) -> k1));
-            for (ProductDistributor distributor : getList) {
-                if (skuMap.containsKey(distributor.getSkuCode())) {
-                    distributor.setPurchasePrice(skuMap.get(distributor.getSkuCode()).getPurchasePrice());
-                }
-            }
-
-            int total = productDistributorDao.countProductPage(productSearchRequest);
-            return HttpResponse.success(new PageResData(total, getList));
-        } catch (Exception e) {
-            LOGGER.error("根据搜索信息查询商品信息(门店)失败，系统异常", e);
-            return HttpResponse.failure(ResultCode.SELECT_PRODUCT_BY_SEARCHTEXT_ERROR);
-        }
-    }
-
-    @Override
     public HttpResponse countAllCategory(String distributorId) {
         try {
             LOGGER.info("查询品类数量");
@@ -732,48 +599,5 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDistributor> list = productDistributorDao.selectProductPage(productSearchRequest);
         int total = productDistributorDao.countProductPage(productSearchRequest);
         return new PageResData(total, list);
-    }
-
-    @Override
-    public HttpResponse selectLikeProductList(String skuCode, String distributorId) {
-        try {
-            LOGGER.info("根据pos扫码查询相似商品");
-            String url = orderInfoUrl + "orderdetail/want/buy";
-            List<String> skuCodeList = new ArrayList<>();
-            List<ProductDistributor> returnProductList = new ArrayList<>();
-            ProductDistributor productDistributor = productDistributorDao.selectProductInfoBySkuCode(skuCode, distributorId);
-            if(productDistributor != null){
-                String categoryId = productDistributor.getCategoryId();
-                List<ProductDistributor> productDistributorList = productDistributorDao.selectProductByCategoryId(categoryId, distributorId);
-                if(CollectionUtils.isNotEmpty(productDistributorList)){
-                    for (ProductDistributor distributor : productDistributorList) {
-                        String resultSkuCode = distributor.getSkuCode();
-                        skuCodeList.add(resultSkuCode);
-                    }
-                }
-                if(CollectionUtils.isNotEmpty(skuCodeList)){
-                    int i = 0;
-                    for (String getSkuCode : skuCodeList) {
-                        if(i > 0){
-                            url += "&sukList=" + getSkuCode;
-                        }else{
-                            url += "?sukList=" + getSkuCode;
-                        }
-                        i++;
-                    }
-                }
-                HttpClient httpClientPos = HttpClient.get(url);
-                Map<String, Object> dataMap = httpClientPos.action().result(new TypeReference<Map<String, Object>>() {
-                });
-                if(dataMap != null){
-                    List<String> returnSkuCodeList = (List) dataMap.get("data");
-                    returnProductList = productDistributorDao.getSelectByDistributorIdAndSkuCodeIn(distributorId, returnSkuCodeList);
-                }
-            }
-            return HttpResponse.success(returnProductList);
-        } catch (Exception e) {
-            LOGGER.error("根据pos扫码查询相似商品失败，系统异常", e);
-            return HttpResponse.failure(ResultCode.SELECT_LIKE_PRODUCT_LIST_ERROR);
-        }
     }
 }
