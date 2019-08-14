@@ -786,7 +786,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
 
 //                productCommonService.getInstance(allocation.getAllocationCode(), HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocation.getAllocationCode() ,HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getName());
-                supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
+                supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS_OUT_MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
                 //跟新调拨单状态
                 int k = allocationMapper.updateByPrimaryKeySelective(allocation);
                 //生成入库单
