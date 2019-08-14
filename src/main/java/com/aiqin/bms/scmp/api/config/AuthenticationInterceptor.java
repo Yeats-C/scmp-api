@@ -51,7 +51,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Value("${evn}")
     private String evn;
 
-
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String referer = httpServletRequest.getHeader("referer");

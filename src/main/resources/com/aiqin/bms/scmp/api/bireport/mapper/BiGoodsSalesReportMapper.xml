@@ -95,7 +95,9 @@
         and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
       </if>
     </where>
-    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    <if test="isPage == 0">
+      LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </if>
   </select>
   <select id="goodsSalesCount" resultType="java.lang.Integer">
     select count(1) from
