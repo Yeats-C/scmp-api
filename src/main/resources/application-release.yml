@@ -1,3 +1,7 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
 server:
   tomcat:
     basedir: /tmp/dir
@@ -29,15 +33,15 @@ ground:
 
 oss:
   end:
-    point: http://oss-cn-qingdao.aliyuncs.com
+    point: http://oss-cn-beijing.aliyuncs.com
   access:
     key:
-      id: LTAIPWfI0ApMnQPo
-      secret: kG0tvYo3Ts4tr95sa9eh3Pw3wF2WQ7
+      id: LTAIYOvtCIluSvwO
+      secret: BpkZWSEPnBHdVwi2ZQvKX06u6JruaF
   bucket:
-    name: lyj-upload-image
-  dir: dev/
-
+    name: aq-scmp
+  dir: release/
+evn: release
 Encryption:
   key: 16#t%9@AJ6DYaeRp
 #  dZ3@k!KMhq!Tqeh3%RYm83cX&JmvYyY!
