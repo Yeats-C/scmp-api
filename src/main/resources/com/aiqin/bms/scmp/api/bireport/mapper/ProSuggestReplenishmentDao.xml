@@ -38,9 +38,9 @@
         pssuc.out_put as outPuts,
         pssuc.need_days as needDays
         FROM bi_app_suggest_replenishment bsr
-        LEFT JOIN product_sku_config AS psc ON CONVERT(bsr.sku_code USING utf8) COLLATE utf8_unicode_ci  = psc.sku_code AND CONVERT(bsr.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = psc.transport_center_code
+        LEFT JOIN product_sku_config AS psc ON bsr.sku_code = psc.sku_code AND bsr.transport_center_code  = psc.transport_center_code
         LEFT JOIN product_sku_supply_unit_capacity AS pssuc
-          ON CONVERT(bsr.sku_code USING utf8) COLLATE utf8_unicode_ci  = pssuc.product_sku_code
+          ON bsr.sku_code  = pssuc.product_sku_code
             <if test="supplierCode!=null and supplierCode!=''">
                 AND CONVERT(#{supplierCode} USING utf8) COLLATE utf8_unicode_ci  = pssuc.supply_unit_code
             </if>
