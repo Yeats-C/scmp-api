@@ -563,11 +563,14 @@
         SELECT COUNT(1) FROM (
         SELECT
         st.sku_code
-        FROM stock AS st
-        LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
-        LEFT JOIN product_sku_box_packing AS psbp ON st.sku_code = psbp.product_sku_code
-        WHERE 1=1
+        from stock as st
+        <if test="configStatus!=null">
+            LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
+        </if>
+        <if test="(propertyText !=null and propertyText!='') or (brandText!=null and brandText!='') or (productCategoryText!=null and productCategoryText!='')">
+            LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
+        </if>
+        where 1=1
         <if test="skuCode!=null and skuCode!=''">
             AND st.sku_code = #{skuCode}
         </if>
@@ -622,8 +625,8 @@
         <if test="badFinishNum!=null">
             AND st.bad_num <![CDATA[<=]]> #{badFinishNum}
         </if>
-        GROUP BY st.warehouse_code,st.sku_code
-        ) as tmp
+        group by st.warehouse_code,st.sku_code
+        ) as countStockSumInfoByPage
     </select>
 
     <select id="countWarehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
@@ -675,8 +678,8 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             and ps.procurement_section_name=#{procurementSectionName}
         </if>
-        group by st.sku_code,st.warehouse_code
-        ) as tmp
+        group by st.warehouse_code,st.sku_code
+        ) AS countWarehouseStockInfoByPage
     </select>
 
     <sql id="Query_Stock_Sku_Where">
@@ -964,8 +967,8 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        GROUP BY st.transport_center_code,st.warehouse_code,st.sku_code
-        ) as tmp
+        group by st.transport_center_code,st.sku_code
+        ) AS countTransportStockInfoByPage
     </select>
 
     <select id="selectStorehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
@@ -1127,8 +1130,8 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        GROUP BY st.transport_center_code,st.warehouse_code,st.sku_code
-        ) as tmp
+        group by st.transport_center_code,st.warehouse_code,st.sku_code
+        ) as countStorehouseStockInfoByPage
     </select>
     <insert id="insertBatch" parameterType="java.util.List">
         insert into stock(
@@ -1603,8 +1606,8 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             and ps.procurement_section_name=#{procurementSectionName}
         </if>
-        group by sb.sku_code,sb.warehouse_code
-        ) as tmp
+        group by sb.warehouse_code,sb.sku_code
+        ) AS countStockBatchInfoByPage
     </select>
     <select id="selectOneStockBatchInfoByStockBatchId" parameterType="java.lang.Long"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO" resultMap="StockBatchRespMap">
