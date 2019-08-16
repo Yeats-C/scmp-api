@@ -39,9 +39,6 @@ logging:
   config: classpath:logback.xml
   level:
     io.swagger.models.parameters.AbstractSerializableParameter: error
-image:
-  upload:
-    path: D:\\images\\
 activiti:
   host: http://flows.aiqin.com
 marker:
