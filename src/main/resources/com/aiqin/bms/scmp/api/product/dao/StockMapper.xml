@@ -405,8 +405,8 @@
         st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name,
         st.stockup_num,st.stockupfinish_time,date_format(st.create_time, '%Y-%m-%d %H:%i:%s') create_time,st.create_by,date_format(st.update_time, '%Y-%m-%d %H:%i:%s') update_time,st.update_by
         from stock as st
-        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = st.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
+        LEFT JOIN product_sku_config AS psc ON psc.sku_code  = st.sku_code AND psc.transport_center_code  = st.transport_center_code
+        LEFT JOIN product_sku AS ps ON st.sku_code  = ps.sku_code
         left join product_sku_stock_info as pssi on st.sku_code=pssi.product_sku_code
         where 1=1
         <if test="skuCode!=null and skuCode!=''">
@@ -548,12 +548,12 @@
         st.sku_code
         from stock as st
 
-        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
-        AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
-        left join product_sku_box_packing as psbp on st.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
-        left join product_sku_stock_info as pssi on st.sku_code=CONVERT(pssi.product_sku_code USING utf8) COLLATE utf8_unicode_ci
-        left join stock_flow as sf on st.sku_code=CONVERT(sf.sku_code USING utf8) COLLATE utf8_unicode_ci
+        LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code
+        AND psc.transport_center_code = st.transport_center_code
+        LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
+        left join product_sku_box_packing as psbp on st.sku_code=psbp.product_sku_code
+        left join product_sku_stock_info as pssi on st.sku_code=pssi.product_sku_code
+        left join stock_flow as sf on st.sku_code=sf.sku_code
 
         where st.id = #{stockId, jdbcType=VARCHAR}
         ) as tmp
@@ -632,9 +632,9 @@
         select
         st.sku_code
         from stock as st
-        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci = st.sku_code
-        AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON CONVERT(st.sku_code USING utf8) COLLATE utf8_unicode_ci = ps.sku_code
+        LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code
+        AND psc.transport_center_code = st.transport_center_code
+        LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
         where 1=1
         <if test="skuCode!=null and skuCode!=''">
             and st.sku_code=#{skuCode}
@@ -1471,9 +1471,9 @@
         select
         <include refid="Query_Stock_Batch_Sku_List"/>
         from stock_batch as sb
-        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = sb.transport_center_code
-        LEFT JOIN product_sku AS ps ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
-        left join product_sku_box_packing as psbp on sb.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        LEFT JOIN product_sku_config AS psc ON psc.sku_code  = sb.sku_code AND psc.transport_center_code  = sb.transport_center_code
+        LEFT JOIN product_sku AS ps ON sb.sku_code  = ps.sku_code
+        left join product_sku_box_packing as psbp on sb.sku_code=psbp.product_sku_code
         left join product_sku_stock_info as pssi on sb.sku_code=pssi.product_sku_code
         where 1=1
         <if test="companyCode!=null and companyCode!=''">
@@ -1542,9 +1542,9 @@
         select
         sb.sku_code
         from stock_batch as sb
-        LEFT JOIN product_sku_config AS psc ON CONVERT(psc.sku_code USING utf8) COLLATE utf8_unicode_ci  = sb.sku_code AND CONVERT(psc.transport_center_code USING utf8) COLLATE utf8_unicode_ci  = sb.transport_center_code
-        LEFT JOIN product_sku AS ps ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = ps.sku_code
-        left join product_sku_box_packing as psbp on sb.sku_code=CONVERT(psbp.product_sku_code USING utf8) COLLATE utf8_unicode_ci
+        LEFT JOIN product_sku_config AS psc ON psc.sku_code  = sb.sku_code AND psc.transport_center_code  = sb.transport_center_code
+        LEFT JOIN product_sku AS ps ON sb.sku_code  = ps.sku_code
+        left join product_sku_box_packing as psbp on sb.sku_code=psbp.product_sku_code
         where 1=1
         <if test="companyCode!=null and companyCode!=''">
             and sb.company_code like concat('%',#{companyCode},'%')
@@ -1611,7 +1611,7 @@
         select
         <include refid="Query_Stock_Batch_Id"/>
         from stock_batch sb
-        LEFT JOIN stock_batch_flow AS sbf ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = sbf.sku_code
+        LEFT JOIN stock_batch_flow AS sbf ON sb.sku_code  = sbf.sku_code
         where sb.sku_code = #{stockBatchId, jdbcType=VARCHAR}
     </select>
     <select id="selectOneStockBatchInfoByStockBatchIdInfoByPage" resultType="java.lang.Long">
@@ -1619,7 +1619,7 @@
         select
         sb.sku_code
         from stock_batch sb
-        LEFT JOIN stock_batch_flow AS sbf ON CONVERT(sb.sku_code USING utf8) COLLATE utf8_unicode_ci  = sbf.sku_code
+        LEFT JOIN stock_batch_flow AS sbf ON sb.sku_code  = sbf.sku_code
         where sb.id = #{stockBatchId, jdbcType=VARCHAR}) as tmp
     </select>
     <select id="rejectProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
