@@ -264,8 +264,6 @@
         from product_sku_price_info a
         left join product_sku b
         on a.sku_code = b.sku_code
-        left join product_sku_price_area_info c
-        on a.code = c.main_code
         LEFT JOIN product_category lv4
         on lv4.category_id = b.product_category_code
         LEFT JOIN product_category lv3
