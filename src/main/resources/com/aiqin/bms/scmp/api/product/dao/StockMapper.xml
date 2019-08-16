@@ -543,20 +543,10 @@
     </select>
 
     <select id="selectOneStockInfoByStockIdInfoByPage" resultType="java.lang.Long">
-        select count(1) from (
         select
-        st.sku_code
+        count(1)
         from stock as st
-
-        LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code
-        AND psc.transport_center_code = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
-        left join product_sku_box_packing as psbp on st.sku_code=psbp.product_sku_code
-        left join product_sku_stock_info as pssi on st.sku_code=pssi.product_sku_code
-        left join stock_flow as sf on st.sku_code=sf.sku_code
-
         where st.id = #{stockId, jdbcType=VARCHAR}
-        ) as tmp
     </select>
     <select id="countStockSumInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockSumRequest"
             resultType="java.lang.Integer">
@@ -628,13 +618,15 @@
 
     <select id="countWarehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
             resultType="java.lang.Integer">
-        select count(1) from (
         select
-        st.sku_code
+        count(1)
         from stock as st
-        LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code
-        AND psc.transport_center_code = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
+        <if test="configStatus!=null">
+            LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
+        </if>
+        <if test="(propertyText !=null and propertyText!='') or (brandText!=null and brandText!='') or (productCategoryText!=null and productCategoryText!='') or (procurementSectionCode!=null and procurementSectionCode!='') or (procurementSectionName!=null and procurementSectionName!='')">
+            LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
+        </if>
         where 1=1
         <if test="skuCode!=null and skuCode!=''">
             and st.sku_code=#{skuCode}
@@ -675,8 +667,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             and ps.procurement_section_name=#{procurementSectionName}
         </if>
-        group by st.sku_code,st.warehouse_code
-        ) as tmp
+        group by st.warehouse_code,st.sku_code
     </select>
 
     <sql id="Query_Stock_Sku_Where">
@@ -896,14 +887,16 @@
 
     <select id="countTransportStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
             resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM (
-        SELECT
-        st.sku_code
-        FROM stock AS st
-        LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
-        LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code=pssi.product_sku_code
-        WHERE 1=1
+        select
+        count(1)
+        from stock as st
+        <if test="configStatus!=null">
+            LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
+        </if>
+        <if test="(propertyText !=null and propertyText!='') or (brandText!=null and brandText!='') or (productCategoryText!=null and productCategoryText!='') or (procurementSectionCode!=null and procurementSectionCode!='') or (procurementSectionName!=null and procurementSectionName!='')">
+            LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
+        </if>
+        where 1=1
         <if test="skuCode!=null and skuCode!=''">
             AND st.sku_code=#{skuCode}
         </if>
@@ -964,8 +957,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        GROUP BY st.transport_center_code,st.warehouse_code,st.sku_code
-        ) as tmp
+        group by st.transport_center_code,st.sku_code
     </select>
 
     <select id="selectStorehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
@@ -1538,13 +1530,12 @@
     </select>
     <select id="countStockBatchInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockBatchRequest"
             resultType="java.lang.Integer">
-        select count(1) from (
         select
-        sb.sku_code
+        count(1)
         from stock_batch as sb
-        LEFT JOIN product_sku_config AS psc ON psc.sku_code  = sb.sku_code AND psc.transport_center_code  = sb.transport_center_code
-        LEFT JOIN product_sku AS ps ON sb.sku_code  = ps.sku_code
-        left join product_sku_box_packing as psbp on sb.sku_code=psbp.product_sku_code
+        <if test="(propertyText !=null and propertyText!='') or (brandText!=null and brandText!='') or (productCategoryText!=null and productCategoryText!='')">
+            LEFT JOIN product_sku AS ps ON sb.sku_code  = ps.sku_code
+        </if>
         where 1=1
         <if test="companyCode!=null and companyCode!=''">
             and sb.company_code like concat('%',#{companyCode},'%')
@@ -1603,8 +1594,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             and ps.procurement_section_name=#{procurementSectionName}
         </if>
-        group by sb.sku_code,sb.warehouse_code
-        ) as tmp
+        group by sb.warehouse_code,sb.sku_code
     </select>
     <select id="selectOneStockBatchInfoByStockBatchId" parameterType="java.lang.Long"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO" resultMap="StockBatchRespMap">
@@ -1615,12 +1605,10 @@
         where sb.sku_code = #{stockBatchId, jdbcType=VARCHAR}
     </select>
     <select id="selectOneStockBatchInfoByStockBatchIdInfoByPage" resultType="java.lang.Long">
-        select count(1) from (
         select
-        sb.sku_code
+        count(1)
         from stock_batch sb
-        LEFT JOIN stock_batch_flow AS sbf ON sb.sku_code  = sbf.sku_code
-        where sb.id = #{stockBatchId, jdbcType=VARCHAR}) as tmp
+        where sb.id = #{stockBatchId, jdbcType=VARCHAR}
     </select>
     <select id="rejectProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
         select
