@@ -20,9 +20,13 @@ public class MonthSalesAchievementRespVo {
     @JsonProperty("create_time")
     private String createTime;
 
+    @ApiModelProperty("年")
+    @JsonProperty("stat_year")
+    private String statYear;
+
     @ApiModelProperty("月份")
-    @JsonProperty("month")
-    private String month;
+    @JsonProperty("stat_month")
+    private String statMonth;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")

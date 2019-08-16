@@ -435,10 +435,10 @@
                 and bcs.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="departmentCode!=null and departmentCode!=''">
-                and bcs.department_code=#{departmentCode}
+                and bcs.product_sort_code=#{departmentCode}
             </if>
             <if test="departmentName!=null and departmentName!=''">
-                and bcs.department_name like concat('%', #{departmentName}, '%')
+                and bcs.product_sort_name like concat('%', #{departmentName}, '%')
             </if>
         </where>
     </sql>
@@ -1329,7 +1329,7 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BrandSaleRespVo">
         select
         bbs.id as id,
-        bbs.month as month,
+        bbs.year_month as month,
         bbs.department_code as departmentCode,
         bbs.department_name as departmentName,
         bbs.price_channel_code as orderCode,
@@ -1342,8 +1342,8 @@
         bbs.category_name as categoryName,
         bbs.product_brand_code as productBrandCode,
         bbs.product_brand_name as productBrandName,
-        bbs.channel_current_sale_amount as channelCurrentSaleAmount,
-        bbs.channel_previous_sales_amount as channelPreviousSalesAmount,
+        bbs.channel_sale_amount as channelCurrentSaleAmount,
+        bbs.last_month_channel_amount_daily as channelPreviousSalesAmount,
         bbs.channel_current_gross_margin as channelCurrentGrossMargin,
         bbs.channel_previous_gross_margin as channelPreviousGrossMargin,
         bbs.channel_sale_link_ratio as channelSaleLinkRatio,
@@ -1362,11 +1362,11 @@
     <select id="sumBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BrandSaleRespVo">
         select
-        sum(bbs.channel_current_sale_amount) as channelCurrentSaleAmounts,
-        sum(bbs.channel_previous_sales_amount) as channelPreviousSalesAmounts,
+        sum(bbs.channel_sale_amount) as channelCurrentSaleAmounts,
+        sum(bbs.last_month_channel_amount_daily) as channelPreviousSalesAmounts,
         sum(bbs.channel_current_gross_margin) as channelCurrentGrossMargins,
         sum(bbs.channel_previous_gross_margin ) as channelPreviousGrossMargins,
-        sum(bbs.channel_current_sale_amount)/sum(bbs.channel_previous_sales_amount) as channelSaleLinkRatios,
+        sum(bbs.channel_sale_amount)/sum(bbs.last_month_channel_amount_daily) as channelSaleLinkRatios,
         sum(bbs.channel_current_gross_margin)/sum(bbs.channel_previous_gross_margin ) as channelGrossMarginLinkRatios,
         sum(bbs.distribution_current_sale_amount) as distributionCurrentSaleAmounts,
         sum(bbs.distribution_previous_sales_amount) as distributionPreviousSalesAmounts,
@@ -1388,9 +1388,9 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.CategorySaleRespVo">
         select
         bcs.id as id,
-        bcs.month as month,
-        bcs.department_code as departmentCode,
-        bcs.department_name as departmentName,
+        bcs.year_month as month,
+        bcs.product_sort_code as departmentCode,
+        bcs.product_sort_name as departmentName,
         bcs.price_channel_code as orderCode,
         bcs.price_channel_name as orderOriginal,
         bcs.store_type_code as storeTypeCode,

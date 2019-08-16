@@ -32,14 +32,6 @@ public class MonthlySalesRespVo {
     @JsonProperty("price_channel_name")
     private String priceChannelName;
 
-    @ApiModelProperty("所属部门编码")
-    @JsonProperty("product_sort_code")
-    private String productSortCode;
-
-    @ApiModelProperty("所属部门")
-    @JsonProperty("product_sort_name")
-    private String productSortName;
-
     @ApiModelProperty("商品属性编码(ab品)")
     @JsonProperty("product_property_code")
     private String productPropertyCode;
