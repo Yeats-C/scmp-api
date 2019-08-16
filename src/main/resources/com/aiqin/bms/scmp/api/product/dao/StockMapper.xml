@@ -409,6 +409,10 @@
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code = pssi.product_sku_code
         where 1=1
+        ps.purchase_group_code in
+        <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+            #{item.purchaseGroupCode,jdbcType=VARCHAR}
+        </foreach>
         <if test="skuCode!=null and skuCode!=''">
             and st.sku_code = #{skuCode}
         </if>
@@ -468,6 +472,10 @@
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code = pssi.product_sku_code
         WHERE 1=1
+        ps.purchase_group_code in
+        <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+            #{item.purchaseGroupCode,jdbcType=VARCHAR}
+        </foreach>
         <if test="skuCode!=null and skuCode!=''">
             AND st.sku_code = #{skuCode}
         </if>
@@ -833,6 +841,10 @@
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code = pssi.product_sku_code
         WHERE 1=1
+        ps.purchase_group_code in
+        <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+            #{item.purchaseGroupCode,jdbcType=VARCHAR}
+        </foreach>
         <if test="skuCode!=null and skuCode!=''">
             AND st.sku_code=#{skuCode}
         </if>
@@ -989,6 +1001,10 @@
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code=pssi.product_sku_code
         LEFT JOIN product_sku_checkout AS pscc ON st.sku_code=pscc.sku_code
         WHERE 1=1
+        ps.purchase_group_code in
+        <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+            #{item.purchaseGroupCode,jdbcType=VARCHAR}
+        </foreach>
         <if test="skuCode!=null and skuCode!=''">
             AND st.sku_code=#{skuCode}
         </if>
