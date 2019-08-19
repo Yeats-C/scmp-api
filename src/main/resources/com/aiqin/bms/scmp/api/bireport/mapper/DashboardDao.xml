@@ -108,10 +108,12 @@
         FROM dashboard_all_kinds_loss_ratio daklr
         where daklr.stat_year = #{oneYearStr}
     </select>
-    <select id="selectDashboardDepCateProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepProperSalesAmountRespVo">
+    <select id="selectDashboardDepCateProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateProperSalesAmountRespVo">
         SELECT
         ddcpsa.id as id,
         ddcpsa.stat_month as statMonth,
+        ddcpsa.price_channel_code as priceChannelCode,
+        ddcpsa.price_channel_name as priceChannelName,
         ddcpsa.product_sort_code as productSortCode,
         ddcpsa.product_sort_name as productSortName,
         ddcpsa.product_category_code as productCategoryCode,
@@ -172,6 +174,8 @@
         SELECT
         ddcsa.id as id,
         ddcsa.stat_month as statMonth,
+        ddcsa.price_channel_code as priceChannelCode,
+        ddcsa.price_channel_name as priceChannelName,
         ddcsa.product_sort_code as productSortCode,
         ddcsa.product_sort_name as productSortName,
         ddcsa.product_category_code as productCategoryCode,
@@ -201,6 +205,8 @@
         SELECT
         ddmhr.id as id,
         ddmhr.stat_month as statMonth,
+        ddmhr.price_channel_code as priceChannelCode,
+        ddmhr.price_channel_name as priceChannelName,
         ddmhr.product_sort_code as productSortCode,
         ddmhr.product_sort_name as productSortName,
         ddmhr.channel_costs as channelCosts,
