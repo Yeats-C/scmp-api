@@ -141,13 +141,11 @@ public interface OutboundService {
 
     /**
      * 调拨生成入库单并且改变在途数
-     * @param id
      */
     void createInbound(String formNo);
 
     /**
      * 移库生成入库单并且改变在途数
-     * @param id
      */
     void movementCreateInbound(String formNo);
 

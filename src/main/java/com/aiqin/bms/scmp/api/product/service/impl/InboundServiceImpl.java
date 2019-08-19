@@ -348,78 +348,84 @@ public class InboundServiceImpl implements InboundService {
 //        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVos = new ArrayList<>();
         try{
             InboundCallBackReqVo inboundCallBackReqVo = new InboundCallBackReqVo();
+            //采购传入wms
             if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
                 String createById = inboundDao.selectCreateById(inbound.getInboundOderCode());
                 inboundWmsReqVO.setCreateById(createById);
                 log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundWmsReqVO));
                 url =urlConfig.WMS_API_URL+"/wms/save/purchase/inbound";
-            }
-            HttpClient httpClient = HttpClient.post(url).json(inboundWmsReqVO);
-            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-            String data= JSON.toJSONString(orderDto.getData());
-            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-            ResponseWms entiy = mapper.readValue(data, ResponseWms.class);
-            if("0".equals(orderDto.getCode())){
-                if("0".equals(entiy.getResultCode())){
-//                    设置wms编号
-                    inbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
+
+                HttpClient httpClient = HttpClient.post(url).json(inboundWmsReqVO);
+                HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+                String data= JSON.toJSONString(orderDto.getData());
+                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+                ResponseWms entiy = mapper.readValue(data, ResponseWms.class);
+                if("0".equals(orderDto.getCode())){
+                    if("0".equals(entiy.getResultCode())){
+                        //设置wms编号
+                        inbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
+                        //设置入库状态
+                        inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+                        inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
+
+                        //采购日志列表
+                        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode() )){
+                            OperationLog operationLog = new OperationLog();
+                            PurchaseOrder purchaseOrder = new PurchaseOrder();
+                            purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
+                            PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+                            if(resultPurchaseOrder != null){
+                                operationLog.setOperationId(resultPurchaseOrder.getPurchaseOrderId());
+                                operationLog.setCreateByName(inbound.getCreateBy());
+                                operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
+                                operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
+                                operationLog.setCreateTime(new Date());
+                                operationLog.setRemark(resultPurchaseOrder.getApplyTypeForm());
+                                purchaseManageService.addLog(operationLog);
+
+                            }
+                        }
+                    }
+                } else {
+                    throw new RuntimeException("入库单传入wms失败");
+                }
+            //移库
+            }else{
+                if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
+                    //记录调拨待入库
+                    supplierCommonService.getInstance(inbound.getSourceOderCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
+                }
+                if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode() )) {
+                    //记录移库待入库
+                    supplierCommonService.getInstance(inbound.getSourceOderCode() + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
+                }
+                if(inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())) {
+
                     //设置入库状态
                     inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
                     inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
-                    // 跟新数据库
 
                     inboundCallBackReqVo.setInboundOderCode(inbound.getInboundOderCode());
-                    inboundCallBackReqVo.setInboundTime(new Date());
+
                     List<InboundProductCallBackReqVo> list = new ArrayList<>();
                     for (InboundProductWmsReqVO inboundProductWmsReqVO : inboundProductWmsReqVOS) {
                         InboundProductCallBackReqVo inboundProductCallBackReqVo = new InboundProductCallBackReqVo();
                         inboundProductCallBackReqVo.setLinenum(inboundProductWmsReqVO.getLinenum());
                         inboundProductCallBackReqVo.setSkuCode(inboundProductWmsReqVO.getSkuCode());
                         inboundProductCallBackReqVo.setProductType(inboundProductWmsReqVO.getProductType());
-                        //TODO 入库数联改为预计数量的一半
-                        Long num = 10l;
-                        inboundProductCallBackReqVo.setPraInboundMainNum(num);
+//                        Long num = 10l;
+                        inboundProductCallBackReqVo.setPraInboundMainNum(inboundProductWmsReqVO.getPreInboundMainNum());
                         list.add(inboundProductCallBackReqVo);
                     }
                     inboundCallBackReqVo.setList(list);
-
-                    int s = inboundDao.updateByPrimaryKeySelective(inbound);
-                    //保存日志
-                    productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.PULL_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), code, HandleTypeCoce.PULL_INBOUND_ODER.getName(), new Date(), inbound.getCreateBy(), null);
-
-                    //采购日志列表
-                    if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode() )){
-                        OperationLog operationLog = new OperationLog();
-                        PurchaseOrder purchaseOrder = new PurchaseOrder();
-                        purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
-                        PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-                        if(resultPurchaseOrder != null){
-                            operationLog.setOperationId(resultPurchaseOrder.getPurchaseOrderId());
-                            operationLog.setCreateByName(inbound.getCreateBy());
-                            operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
-                            operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
-                            operationLog.setCreateTime(new Date());
-                            operationLog.setRemark(resultPurchaseOrder.getApplyTypeForm());
-                            purchaseManageService.addLog(operationLog);
-
-
-//                          //调用回调接口
-//                            this.workFlowCallBack(inboundCallBackReqVo);
-                        }
-                    }
-                }else {
-                    throw new RuntimeException("入库单传入wms失败");
                 }
-                        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode() )) {
-                            //记录调拨待入库
-                            supplierCommonService.getInstance(inbound.getSourceOderCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
-                        }
-                        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode() )) {
-                            //记录移库待入库
-                            supplierCommonService.getInstance(inbound.getSourceOderCode() + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
-                        }
-                            log.error("推送保存日志修改状态,应该在回调接口前面执行");
             }
+
+            // 跟新数据库
+            int s = inboundDao.updateByPrimaryKeySelective(inbound);
+            //保存日志
+            productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.PULL_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), code, HandleTypeCoce.PULL_INBOUND_ODER.getName(), new Date(), inbound.getCreateBy(), null);
+            log.error("推送保存日志修改状态,应该在回调接口前面执行");
             inboundService.workFlowCallBack(inboundCallBackReqVo);
         }catch (Exception e){
              e.printStackTrace();
@@ -440,8 +446,8 @@ public class InboundServiceImpl implements InboundService {
         }
         log.error("入库单回调实体传入实体:[{}]",JSON.toJSONString(reqVo));
         //根据编码，查询入库单主体
-        Inbound inbound = inboundDao.selectByCode(reqVo.getInboundOderCode());
-//        Inbound inbound = inboundDao.selectById(reqVo.getId().toString());
+//        Inbound inbound = inboundDao.selectByCode(reqVo.getInboundOderCode());
+        Inbound inbound = inboundDao.selectById(reqVo.getId().toString());
         //设置默认实际数量
         inbound.setInboundTime(reqVo.getInboundTime());
         inbound.setPraInboundNum(0L);
@@ -867,6 +873,29 @@ public class InboundServiceImpl implements InboundService {
     @Override
     public void repealOrder(String orderId, String createById, String createByName){
         //TODO wms发送撤销订单
+        RepealOrderRequest repealOrderRequest = new RepealOrderRequest();
+        repealOrderRequest.setRepealEmpId(createById);
+        repealOrderRequest.setRepealOrderId(orderId);
+        repealOrderRequest.setRepealTime(new Date().toString());
+
+        try{
+            String url =urlConfig.WMS_API_URL+"/wms/repeal/inbound";
+            HttpClient httpClient = HttpClient.post(url).json(repealOrderRequest);
+            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+            String data= JSON.toJSONString(orderDto.getData());
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            ResponseWms entiy = mapper.readValue(data, ResponseWms.class);
+            if("0".equals(orderDto.getCode())) {
+                if ("0".equals(entiy.getResultCode())) {
+                    log.info("向dl发送撤销订单请求成功");
+                }
+            }else{
+                log.error("向dl发送撤销订单请求失败，参数为：{}", repealOrderRequest);
+            }
+        } catch (Exception e){
+            log.error("向dl发送撤销订单请求失败，原因为：{}", e);
+        }
+
     }
 
 }

@@ -503,8 +503,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     //设置入库状态
                     outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
                     outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
-                    // 跟新数据库
-                    int s = outboundDao.updateByPrimaryKeySelective(outbound);
                 }else{
                     throw new RuntimeException("退供出库单传入wms失败");
                 }
@@ -513,10 +511,10 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 //设置出库状态
                 outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
-                // 跟新数据库
-                int s = outboundDao.updateByPrimaryKeySelective(outbound);
             }
 
+            // 跟新数据库
+            int s = outboundDao.updateByPrimaryKeySelective(outbound);
             OutboundCallBackReqVo outboundCallBackReqVo = new OutboundCallBackReqVo();
             BeanCopyUtils.copy(outbound,outboundCallBackReqVo);
 
