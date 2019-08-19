@@ -16,6 +16,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
+import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
@@ -34,6 +35,7 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -334,7 +336,7 @@ public class InboundServiceImpl implements InboundService {
         String url = "";
          // 通过id查询 入库单主体
         try {
-            Thread.sleep(60000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -345,27 +347,27 @@ public class InboundServiceImpl implements InboundService {
 
 //        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVos = new ArrayList<>();
         try{
-//            if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
-//                String createById = inboundDao.selectCreateById(inbound.getInboundOderCode());
-//                inboundWmsReqVO.setCreateById(createById);
-//                log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundWmsReqVO));
-//                url =urlConfig.WMS_API_URL+"/wms/save/purchase/inbound";
-//            }
-//            HttpClient httpClient = HttpClient.post(url).json(inboundWmsReqVO);
-//            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-//            String data= JSON.toJSONString(orderDto.getData());
-//            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-//            ResponseWms entiy = mapper.readValue(data, ResponseWms.class);
-//            if("0".equals(orderDto.getCode())){
-//                if("0".equals(entiy.getResultCode())){
-                    //设置wms编号
-//                    inbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
+            InboundCallBackReqVo inboundCallBackReqVo = new InboundCallBackReqVo();
+            if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
+                String createById = inboundDao.selectCreateById(inbound.getInboundOderCode());
+                inboundWmsReqVO.setCreateById(createById);
+                log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundWmsReqVO));
+                url =urlConfig.WMS_API_URL+"/wms/save/purchase/inbound";
+            }
+            HttpClient httpClient = HttpClient.post(url).json(inboundWmsReqVO);
+            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+            String data= JSON.toJSONString(orderDto.getData());
+            com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
+            ResponseWms entiy = mapper.readValue(data, ResponseWms.class);
+            if("0".equals(orderDto.getCode())){
+                if("0".equals(entiy.getResultCode())){
+//                    设置wms编号
+                    inbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
                     //设置入库状态
                     inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
                     inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
                     // 跟新数据库
 
-                    InboundCallBackReqVo inboundCallBackReqVo = new InboundCallBackReqVo();
                     inboundCallBackReqVo.setInboundOderCode(inbound.getInboundOderCode());
                     inboundCallBackReqVo.setInboundTime(new Date());
                     List<InboundProductCallBackReqVo> list = new ArrayList<>();
@@ -404,10 +406,10 @@ public class InboundServiceImpl implements InboundService {
 //                          //调用回调接口
 //                            this.workFlowCallBack(inboundCallBackReqVo);
                         }
-//                    }
-//                }else {
-//                    throw new RuntimeException("入库单传入wms失败");
-//                }
+                    }
+                }else {
+                    throw new RuntimeException("入库单传入wms失败");
+                }
                         if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode() )) {
                             //记录调拨待入库
                             supplierCommonService.getInstance(inbound.getSourceOderCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
@@ -428,7 +430,7 @@ public class InboundServiceImpl implements InboundService {
     public void workFlowCallBack(InboundCallBackReqVo reqVo) {
 
         try {
-            Thread.sleep(60000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -603,7 +605,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnSource(Long id) {
         try {
-            Thread.sleep(60000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -702,7 +704,7 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void returnPurchase(StorageResultReqVo storageResultReqVo) {
         try {
-            Thread.sleep(60000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultReqVo));
             e.printStackTrace();

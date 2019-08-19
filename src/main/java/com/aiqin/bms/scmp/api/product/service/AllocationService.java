@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationCallbackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
@@ -129,4 +130,10 @@ public interface AllocationService extends BaseService {
      * @date 2019/8/8 19:38
      */
     Long getIdByFormNo(String formNo);
+
+    /**
+     * wms回传移库单
+     * @param reqVo
+     */
+    void workFlowCallBack(AllocationCallbackReqVo reqVo);
 }

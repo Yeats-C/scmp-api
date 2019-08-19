@@ -4,9 +4,11 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
+import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationCallbackToOutboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToOutboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
@@ -16,6 +18,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
@@ -24,13 +27,17 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
@@ -54,6 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,6 +121,15 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
     @Autowired
     private WarehouseService warehouseService;
+
+    @Autowired
+    private ProductSkuStockInfoMapper productSkuStockInfoMapper;
+
+    @Autowired
+    private ProductSkuDao productSkuDao;
+
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -266,8 +283,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Save
     public Long insertSelective(Allocation record) {
        try{
-           record.setCompanyCode(getUser().getCompanyCode());
-           record.setCompanyName(getUser().getCompanyName());
+//           record.setCompanyCode(getUser().getCompanyCode());
+//           record.setCompanyName(getUser().getCompanyName());
+           record.setCompanyCode("04");
+           record.setCompanyName("爱亲");
             long k = allocationMapper.insertSelective(record);
             if(k>0){
                 return record.getId();
@@ -754,5 +773,80 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
         }
         return allocation.getId();
+    }
+
+    @Override
+    @Async("myTaskAsyncPool")
+    public void workFlowCallBack(AllocationCallbackReqVo reqVo) {
+        //生成出库单
+        log.info("wms回传回来的移库单信息为：{}", JSON.toJSON(reqVo));
+        OutboundReqVo convert = new AllocationCallbackToOutboundConverter(warehouseService, productSkuPicturesDao, productSkuStockInfoMapper, productSkuDao).convert(reqVo);
+        log.info("移库单信息转换为出库单信息为：{}", JSON.toJSON(convert));
+        Allocation allocationReqVo = new Allocation();
+        allocationReqVo.setAllocationCode(reqVo.getSourceOderCode());
+        allocationReqVo.setAllocationType(AllocationTypeEnum.MOVE.getType());
+        allocationReqVo.setAllocationTypeName(AllocationTypeEnum.MOVE.getTypeName());
+        allocationReqVo.setCallOutWarehouseName(reqVo.getCallOutWarehouseName());
+        allocationReqVo.setCallOutWarehouseCode(reqVo.getCallOutWarehouseCode());
+
+        WarehouseDTO callOutWarehouse = warehouseDao.getWarehouseByCode(reqVo.getCallOutWarehouseCode());
+        allocationReqVo.setCallOutLogisticsCenterCode(callOutWarehouse.getLogisticsCenterCode());
+        allocationReqVo.setCallOutLogisticsCenterName(callOutWarehouse.getLogisticsCenterName());
+        allocationReqVo.setCallInWarehouseName(reqVo.getCallInWarehouseName());
+        allocationReqVo.setCallInWarehouseCode(reqVo.getCallInWarehouseCode());
+
+        WarehouseDTO callInWarehouse = warehouseDao.getWarehouseByCode(reqVo.getCallInWarehouseCode());
+        allocationReqVo.setCallInLogisticsCenterCode(callInWarehouse.getLogisticsCenterCode());
+        allocationReqVo.setCallInLogisticsCenterName(callInWarehouse.getLogisticsCenterName());
+        allocationReqVo.setQuantity(reqVo.getPraMainUnitNum());
+        allocationReqVo.setPrincipal(reqVo.getCreateBy());
+        allocationReqVo.setCreateBy(reqVo.getCreateBy());
+        allocationReqVo.setCreateTime(new Date());
+
+        Long k  = this.insertSelective(allocationReqVo);
+        if(k <= 0){
+            throw new GroundRuntimeException("调拨单保存失败");
+        }
+        //转化调拨单sku列表
+        List<AllocationProductBatch> list = BeanCopyUtils.copyList(reqVo.getList(), AllocationProductBatch.class);
+        list.stream().forEach(allocationProduct -> {
+            allocationProduct.setTaxAmount(null != allocationProduct.getTaxAmount() ? allocationProduct.getTaxAmount() : 0L);
+            allocationProduct.setTax(null != allocationProduct.getTax() ? allocationProduct.getTax() : 0L);
+            allocationProduct.setTaxPrice(null != allocationProduct.getTaxPrice() ? allocationProduct.getTaxPrice() : 0L);
+            allocationProduct.setAllocationCode(allocationReqVo.getAllocationCode());
+            allocationProduct.setCreateBy(reqVo.getCreateBy());
+            allocationProduct.setCreateTime(new Date());
+        });
+        int kp = this.saveListBatch(list);
+        if(kp>0) {
+            List<AllocationProduct> products = productbatchTransProduct(list);
+            this.saveList(products);
+            //TODO 库存锁定
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            stockChangeRequest.setOperationType(1);
+            stockChangeRequest.setOrderCode(allocationReqVo.getAllocationCode());
+            allocationReqVo.setUpdateBy(reqVo.getCreateBy());
+            allocationReqVo.setUpdateTime(new Date());
+            List<StockVoRequest> list1 = allocationProductTransStock(allocationReqVo, products);
+            stockChangeRequest.setStockVoRequests(list1);
+            // 调用锁定库存数
+            HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+            if (httpResponse.getCode().equals(MsgStatus.SUCCESS)) {
+
+            } else {
+                log.error(httpResponse.getMessage());
+                throw new BizException(ResultCode.STOCK_LOCK_ERROR);
+            }
+        }
+        String outboundOderCode = outboundService.save(convert);
+        if(StringUtils.isNotBlank(outboundOderCode)){
+            Allocation oldAllocation = new Allocation();
+            oldAllocation.setOutboundOderCode(outboundOderCode);
+            oldAllocation.setAllocationCode(allocationReqVo.getAllocationCode());
+            int ok = ((AllocationService)AopContext.currentProxy()).updateByPrimaryKeySelective(oldAllocation);
+            if(ok<1){
+                throw new GroundRuntimeException("调拨单更改出库单号失败");
+            }
+        }
     }
 }

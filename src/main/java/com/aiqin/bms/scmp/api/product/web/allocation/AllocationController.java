@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationCallbackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
@@ -142,4 +143,11 @@ public class AllocationController {
     public HttpResponse<Long> getIdByFormNo(@RequestParam String formNo){
         return HttpResponse.success(allocationService.getIdByFormNo(formNo));
     }
+
+    @PostMapping("/workFlowCallBack")
+    @ApiOperation("回传移库单")
+    public void workFlowCallBack(@RequestBody AllocationCallbackReqVo reqVo){
+        allocationService.workFlowCallBack(reqVo);
+    }
+
 }

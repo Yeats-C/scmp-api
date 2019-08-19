@@ -62,4 +62,7 @@ public interface OutboundProductDao {
      * 回显出库库存成本
      */
     Integer updateStockCost(@Param("productStockCost")Long productStockCost, @Param("outboundOderCode")String outboundOderCode, @Param("skuCode")String skuCode);
+
+    List<ReturnOutboundProduct> selectBySkuCode(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode);
+
 }
