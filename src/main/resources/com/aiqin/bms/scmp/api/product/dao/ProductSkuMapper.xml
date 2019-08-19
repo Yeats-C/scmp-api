@@ -1522,7 +1522,7 @@
 	  product_sku_supply_unit supply
     WHERE
         sku.sku_code = supply.product_sku_code
-      and supply.del_flag = 0
+--       and supply.del_flag = 0
 --       and supply.usage_status = 1
 --       and sku.sku_status = 0
       and sku.del_flag = 0
