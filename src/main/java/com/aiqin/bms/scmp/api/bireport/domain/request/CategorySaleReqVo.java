@@ -18,27 +18,27 @@ public class CategorySaleReqVo extends PagesRequest implements Serializable {
     private String createTime;
 
     @ApiModelProperty("渠道编码")
-    @JsonProperty("order_code")
-    private String orderCode;
+    @JsonProperty("price_channel_code")
+    private String priceChannelCode;
 
     @ApiModelProperty("渠道")
-    @JsonProperty("order_original")
-    private String orderOriginal;
+    @JsonProperty("price_channel_name")
+    private String priceChannelName;
 
     @ApiModelProperty("所属部门编码")
-    @JsonProperty("department_code")
-    private String departmentCode;
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
 
     @ApiModelProperty("所属部门")
-    @JsonProperty("department_name")
-    private String departmentName;
+    @JsonProperty("product_sort_name")
+    private String productSortName;
 
-    public CategorySaleReqVo(String createTime, String orderCode, String orderOriginal, String departmentCode, String departmentName) {
+    public CategorySaleReqVo(String createTime, String priceChannelCode, String priceChannelName, String productSortCode, String productSortName) {
         this.createTime = createTime;
-        this.orderCode = orderCode;
-        this.orderOriginal = orderOriginal;
-        this.departmentCode = departmentCode;
-        this.departmentName = departmentName;
+        this.priceChannelCode = priceChannelCode;
+        this.priceChannelName = priceChannelName;
+        this.productSortCode = productSortCode;
+        this.productSortName = productSortName;
     }
 
     public CategorySaleReqVo() {
