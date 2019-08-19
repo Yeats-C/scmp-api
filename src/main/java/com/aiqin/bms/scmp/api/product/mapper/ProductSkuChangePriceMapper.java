@@ -1,7 +1,9 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
+import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.SaleCountDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePrice;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.PriceMeasurementReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryChangePriceRepeatVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryChangePriceRepeatRespVO;
@@ -37,6 +39,7 @@ public interface ProductSkuChangePriceMapper {
      * @return com.aiqin.mgs.product.api.domain.response.changeprice.ProductSkuChangePriceRespVO
      */
     ProductSkuChangePriceRespVO selectInfoByCode(String code);
+    ProductSkuChangePriceRespVO selectInfoByFormNo1(String code);
 
     /**
      * 非空更新
@@ -62,4 +65,11 @@ public interface ProductSkuChangePriceMapper {
      * @return java.util.List<com.aiqin.mgs.product.api.domain.pojo.ProductSkuChangePriceInfo>
      */
     List<ProductSkuChangePriceDTO> selectByPriceStatusAndDate();
+
+    /**
+     * 查sku上月数量
+     * @param req
+     * @return
+     */
+    List<SaleCountDTO> selectSaleNumBySkuCode(List<PriceMeasurementReqVO> req);
 }

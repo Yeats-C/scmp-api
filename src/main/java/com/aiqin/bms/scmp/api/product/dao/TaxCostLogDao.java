@@ -16,4 +16,6 @@ public interface TaxCostLogDao {
     TaxCostLogStock selectTimeByTaxDate(@Param("taxDate") String taxDate);
 
     void insertOneSku(@Param("taxCostLogStock") List<TaxCostLogStock> taxCostLogStock);
+
+    void updateOneSku(@Param("taxCostStock") List<TaxCostLogStock> taxCostLogStock);
 }

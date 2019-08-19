@@ -38,12 +38,7 @@
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="be_synchronous" jdbcType="INTEGER" property="beSynchronous" />
-    <result column="ext_field_1" jdbcType="VARCHAR" property="extField1" />
-    <result column="ext_field_2" jdbcType="VARCHAR" property="extField2" />
-    <result column="ext_field_3" jdbcType="VARCHAR" property="extField3" />
-    <result column="ext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-    <result column="ext_field_5" jdbcType="INTEGER" property="extField5" />
-    <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
+    <result column="be_contain_area" jdbcType="INTEGER" property="beContainArea" />
   </resultMap>
   <sql id="Base_Column_List">
     id, code, sku_code, sku_name, purchase_group_code, purchase_group_name, price_item_code, 
@@ -52,8 +47,7 @@
     supplier_name, be_default, create_by, create_time, update_by, update_time, warehouse_batch_number, 
     warehouse_batch_name, transport_center_code, transport_center_name, warehouse_code, 
     warehouse_name, batch_remark, product_time, apply_code, company_code, company_name, 
-    be_synchronous, ext_field_1, ext_field_2, ext_field_3, ext_field_4, ext_field_5, 
-    ext_field_6
+    be_synchronous, be_contain_area
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -94,9 +88,8 @@
       transport_center_code, transport_center_name, 
       warehouse_code, warehouse_name, batch_remark, 
       product_time, apply_code, company_code, 
-      company_name, be_synchronous, ext_field_1, 
-      ext_field_2, ext_field_3, ext_field_4, 
-      ext_field_5, ext_field_6)
+      company_name, be_synchronous,
+      be_contain_area)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
       #{priceItemCode,jdbcType=VARCHAR}, #{priceItemName,jdbcType=VARCHAR}, #{priceTypeCode,jdbcType=VARCHAR}, 
@@ -109,9 +102,8 @@
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, 
       #{productTime,jdbcType=TIMESTAMP}, #{applyCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, 
-      #{companyName,jdbcType=VARCHAR}, #{beSynchronous,jdbcType=INTEGER}, #{extField1,jdbcType=VARCHAR}, 
-      #{extField2,jdbcType=VARCHAR}, #{extField3,jdbcType=VARCHAR}, #{extField4,jdbcType=TIMESTAMP}, 
-      #{extField5,jdbcType=INTEGER}, #{extField6,jdbcType=BIGINT})
+      #{companyName,jdbcType=VARCHAR}, #{beSynchronous,jdbcType=INTEGER},
+      #{beContainArea,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft">
     insert into product_sku_price_info_draft
@@ -224,23 +216,8 @@
       <if test="beSynchronous != null">
         be_synchronous,
       </if>
-      <if test="extField1 != null">
-        ext_field_1,
-      </if>
-      <if test="extField2 != null">
-        ext_field_2,
-      </if>
-      <if test="extField3 != null">
-        ext_field_3,
-      </if>
-      <if test="extField4 != null">
-        ext_field_4,
-      </if>
-      <if test="extField5 != null">
-        ext_field_5,
-      </if>
-      <if test="extField6 != null">
-        ext_field_6,
+      <if test="beContainArea != null">
+        be_contain_area,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -352,23 +329,8 @@
       <if test="beSynchronous != null">
         #{beSynchronous,jdbcType=INTEGER},
       </if>
-      <if test="extField1 != null">
-        #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        #{extField6,jdbcType=BIGINT},
+      <if test="beContainArea != null">
+        #{beContainArea,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -385,9 +347,8 @@
       transport_center_code, transport_center_name,
       warehouse_code, warehouse_name, batch_remark,
       product_time, apply_code, company_code,
-      company_name, be_synchronous, ext_field_1,
-      ext_field_2, ext_field_3, ext_field_4,
-      ext_field_5, ext_field_6)
+      company_name, be_synchronous,
+      be_contain_area)
     values
     <foreach collection="list" open="" close="" separator="," item="item">
     (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
@@ -402,9 +363,8 @@
       #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
       #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR},
       #{item.productTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR},
-      #{item.companyName,jdbcType=VARCHAR}, #{item.beSynchronous,jdbcType=INTEGER}, #{item.extField1,jdbcType=VARCHAR},
-      #{item.extField2,jdbcType=VARCHAR}, #{item.extField3,jdbcType=VARCHAR}, #{item.extField4,jdbcType=TIMESTAMP},
-      #{item.extField5,jdbcType=INTEGER}, #{item.extField6,jdbcType=BIGINT})
+      #{item.companyName,jdbcType=VARCHAR}, #{item.beSynchronous,jdbcType=INTEGER},
+      #{item.beContainArea,jdbcType=INTEGER})
     </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft">
@@ -515,23 +475,8 @@
       <if test="beSynchronous != null">
         be_synchronous = #{beSynchronous,jdbcType=INTEGER},
       </if>
-      <if test="extField1 != null">
-        ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        ext_field_5 = #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        ext_field_6 = #{extField6,jdbcType=BIGINT},
+      <if test="beContainArea != null">
+        be_contain_area = #{beContainArea,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -573,12 +518,7 @@
       company_code = #{companyCode,jdbcType=VARCHAR},
       company_name = #{companyName,jdbcType=VARCHAR},
       be_synchronous = #{beSynchronous,jdbcType=INTEGER},
-      ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      ext_field_5 = #{extField5,jdbcType=INTEGER},
-      ext_field_6 = #{extField6,jdbcType=BIGINT}
+      be_contain_area = #{beContainArea,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -14,17 +14,10 @@
     <result column="effective_time_end" jdbcType="TIMESTAMP" property="effectiveTimeEnd" />
     <result column="be_effective" jdbcType="INTEGER" property="beEffective" />
     <result column="un_effective_reason" jdbcType="VARCHAR" property="unEffectiveReason" />
-    <result column="ext_field_1" jdbcType="VARCHAR" property="extField1" />
-    <result column="ext_field_2" jdbcType="VARCHAR" property="extField2" />
-    <result column="ext_field_3" jdbcType="VARCHAR" property="extField3" />
-    <result column="ext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-    <result column="ext_field_5" jdbcType="INTEGER" property="extField5" />
-    <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
   </resultMap>
   <sql id="Base_Column_List">
     id, main_code, type, status, name, code, company_code, company_name, effective_time_start, 
-    effective_time_end, be_effective, un_effective_reason, ext_field_1, ext_field_2, 
-    ext_field_3, ext_field_4, ext_field_5, ext_field_6
+    effective_time_end, be_effective, un_effective_reason
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -40,16 +33,12 @@
     insert into product_sku_price_area_info (id, main_code, type, 
       status, name, code, 
       company_code, company_name, effective_time_start, 
-      effective_time_end, be_effective, un_effective_reason, 
-      ext_field_1, ext_field_2, ext_field_3, 
-      ext_field_4, ext_field_5, ext_field_6
+      effective_time_end, be_effective, un_effective_reason
       )
     values (#{id,jdbcType=BIGINT}, #{mainCode,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
       #{status,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, 
       #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, #{effectiveTimeStart,jdbcType=TIMESTAMP}, 
-      #{effectiveTimeEnd,jdbcType=TIMESTAMP}, #{beEffective,jdbcType=INTEGER}, #{unEffectiveReason,jdbcType=VARCHAR}, 
-      #{extField1,jdbcType=VARCHAR}, #{extField2,jdbcType=VARCHAR}, #{extField3,jdbcType=VARCHAR},
-      #{extField4,jdbcType=TIMESTAMP}, #{extField5,jdbcType=INTEGER}, #{extField6,jdbcType=BIGINT}
+      #{effectiveTimeEnd,jdbcType=TIMESTAMP}, #{beEffective,jdbcType=INTEGER}, #{unEffectiveReason,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceAreaInfo">
@@ -91,24 +80,6 @@
       <if test="unEffectiveReason != null">
         un_effective_reason,
       </if>
-      <if test="extField1 != null">
-        ext_field_1,
-      </if>
-      <if test="extField2 != null">
-        ext_field_2,
-      </if>
-      <if test="extField3 != null">
-        ext_field_3,
-      </if>
-      <if test="extField4 != null">
-        ext_field_4,
-      </if>
-      <if test="extField5 != null">
-        ext_field_5,
-      </if>
-      <if test="extField6 != null">
-        ext_field_6,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -147,42 +118,20 @@
       <if test="unEffectiveReason != null">
         #{unEffectiveReason,jdbcType=VARCHAR},
       </if>
-      <if test="extField1 != null">
-        #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        #{extField6,jdbcType=BIGINT},
-      </if>
     </trim>
   </insert>
     <insert id="insertBatch">
           insert into product_sku_price_area_info (id, main_code, type,
       status, name, code,
       company_code, company_name, effective_time_start,
-      effective_time_end, be_effective, un_effective_reason,
-      ext_field_1, ext_field_2, ext_field_3,
-      ext_field_4, ext_field_5, ext_field_6
+      effective_time_end, be_effective, un_effective_reason
       )
     values
     <foreach collection="items" item="item" close="" open="" separator=",">
     (#{item.id,jdbcType=BIGINT}, #{item.mainCode,jdbcType=VARCHAR}, #{item.type,jdbcType=INTEGER},
       #{item.status,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR},
       #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR}, #{item.effectiveTimeStart,jdbcType=TIMESTAMP},
-      #{item.effectiveTimeEnd,jdbcType=TIMESTAMP}, #{item.beEffective,jdbcType=INTEGER}, #{item.unEffectiveReason,jdbcType=VARCHAR},
-      #{item.extField1,jdbcType=VARCHAR}, #{item.extField2,jdbcType=VARCHAR}, #{item.extField3,jdbcType=VARCHAR},
-      #{item.extField4,jdbcType=TIMESTAMP}, #{item.extField5,jdbcType=INTEGER}, #{item.extField6,jdbcType=BIGINT}
+      #{item.effectiveTimeEnd,jdbcType=TIMESTAMP}, #{item.beEffective,jdbcType=INTEGER}, #{item.unEffectiveReason,jdbcType=VARCHAR}
       )
     </foreach>
     </insert>
@@ -222,24 +171,6 @@
       <if test="unEffectiveReason != null">
         un_effective_reason = #{unEffectiveReason,jdbcType=VARCHAR},
       </if>
-      <if test="extField1 != null">
-        ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        ext_field_5 = #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        ext_field_6 = #{extField6,jdbcType=BIGINT},
-      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -255,13 +186,7 @@
       effective_time_start = #{effectiveTimeStart,jdbcType=TIMESTAMP},
       effective_time_end = #{effectiveTimeEnd,jdbcType=TIMESTAMP},
       be_effective = #{beEffective,jdbcType=INTEGER},
-      un_effective_reason = #{unEffectiveReason,jdbcType=VARCHAR},
-      ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      ext_field_5 = #{extField5,jdbcType=INTEGER},
-      ext_field_6 = #{extField6,jdbcType=BIGINT}
+      un_effective_reason = #{unEffectiveReason,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

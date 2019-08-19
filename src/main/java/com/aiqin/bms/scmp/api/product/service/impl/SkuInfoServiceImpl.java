@@ -6,7 +6,7 @@ import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.dao.*;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
 import com.aiqin.bms.scmp.api.product.domain.excel.*;
@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProjectRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
@@ -28,10 +29,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleA
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
-import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
@@ -167,6 +165,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private PurchaseGroupService purchaseGroupService;
     @Autowired
     private ProductSkuSupplyUnitDraftMapper productSkuSupplyUnitDraftMapper;
+    @Autowired
+    private ProductSkuPriceInfoMapper productSkuPriceInfoMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -178,12 +178,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //临时表
             int count = productSkuDraftMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
             if(count > 0 ){
-                throw new BizException(ResultCode.SKU_NAME_EXISTS);
+                throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
             }
             //申请表
             count = applyProductSkuMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
             if(count > 0 ){
-                throw new BizException(ResultCode.SKU_NAME_EXISTS);
+                throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
             }
             //计算状态
             if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuConfigs())) {
@@ -1348,7 +1348,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
     @Override
     public BasePage<QuerySkuInfoRespVO> getSkuListByQueryVO(QuerySkuInfoReqVO vo){
-        PageHelper.startPage(vo.getPageNo(),vo.getPageSize());
         if(CollectionUtils.isNotEmpty(vo.getProductCategoryCodes())){
             try {
                 vo.setProductCategoryLv1Code(vo.getProductCategoryCodes().get(0));
@@ -1359,24 +1358,92 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 log.info("不做处理,让程序继续执行下去");
             }
         }
-        List<QuerySkuInfoRespVO> list = getSkuListByQueryNoPage(vo);
-        return PageUtil.getPageList(vo.getPageNo(),list);
-    }
-    @Override
-    public List<QuerySkuInfoRespVO> getSkuListByQueryNoPage(QuerySkuInfoReqVO vo){
-        if(StringUtils.isBlank(vo.getChangePriceType())){
-            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+        List<Long> longs = getSkuListByQueryNoPageCount(vo);
+        if(CollectionUtils.isEmpty(longs)){
+            return PageUtil.getPageList(vo.getPageNo(), Lists.newArrayList());
         }
-        List<QuerySkuInfoRespVO> list = Lists.newArrayList();
+        List<Long> longs1 = PageUtil.myPage(longs, vo);
+        List<QuerySkuInfoRespVO> respVos = Lists.newArrayList();
         if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
-            list = productSkuDao.selectSkuListForPurchasePrice(vo);
+            respVos = productSkuDao.selectSkuListForPurchasePrice(longs1);
+            //采购变价需要查询渠道价
+            respVos = dealPurchasePriceSkuData(respVos);
         } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
             if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
                 vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
             }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
                 vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
             }
-            list = productSkuDao.selectSkuListForSalePrice(vo);
+            respVos = productSkuDao.selectSkuListForSalePrice(longs1,vo.getChangePriceType());
+        }else {
+            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+        }
+        return PageUtil.getPageList(vo.getPageNo(),vo.getPageSize(),longs.size(),respVos);
+    }
+
+    /**
+     *
+     * @param respVos
+     * @return
+     */
+    private List<QuerySkuInfoRespVO> dealPurchasePriceSkuData(List<QuerySkuInfoRespVO> respVos) {
+        Map<String,ProductSkuPriceInfo> priceMap = productSkuPriceInfoMapper.selectChannelPriceBySkuCode(respVos);
+        for (QuerySkuInfoRespVO respVo : respVos) {
+            ProductSkuPriceInfo productSkuPriceInfo = priceMap.get(respVo.getSkuCode());
+            Long price = 0L;
+            if(Objects.nonNull(productSkuPriceInfo)){
+                price = productSkuPriceInfo.getPriceTax();
+            }
+            List<supplierInfoVO> supplierInfoVOS = respVo.getSupplierInfoVOS();
+            for (supplierInfoVO supplierInfoVO : supplierInfoVOS) {
+                supplierInfoVO.setTaxCost(price);
+            }
+            respVo.setSupplierInfoVOS(supplierInfoVOS);
+        }
+
+        return respVos;
+    }
+
+    @Override
+    public List<Long> getSkuListByQueryNoPageCount(QuerySkuInfoReqVO vo){
+        if(StringUtils.isBlank(vo.getChangePriceType())){
+            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+        }
+        List<Long> list = Lists.newArrayList();
+        if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
+            list = productSkuDao.selectSkuListForPurchasePriceCount(vo);
+        } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
+            if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
+                vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
+            }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
+                vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
+            }
+            list = productSkuDao.selectSkuListForSalePriceCount(vo);
+        }else {
+            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+        }
+        return list;
+    }
+
+    @Override
+    public List<QuerySkuInfoRespVO> getSkuListByQueryNoPage(QuerySkuInfoReqVO vo){
+        if(StringUtils.isBlank(vo.getChangePriceType())){
+            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+        }
+        List<Long> ids = getSkuListByQueryNoPageCount(vo);
+        List<QuerySkuInfoRespVO> list = Lists.newArrayList();
+        if(CollectionUtils.isEmpty(ids)){
+            return list;
+        }
+        if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
+            list = productSkuDao.selectSkuListForPurchasePrice(ids);
+        } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
+            if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
+                vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
+            }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
+                vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
+            }
+            list = productSkuDao.selectSkuListForSalePrice(ids,vo.getChangePriceType());
         }else {
             throw new BizException(ResultCode.NOT_HAVE_PARAM);
         }
@@ -1541,8 +1608,14 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         .checkPic();//检查图片
                 //返回实体
                 AddSkuInfoReqVO resp = checkSku.getRespVO();
+                SkuInfoImport skuInfoImport = checkSku.getSkuInfoImport();
+                String error = skuInfoImport.getError();
+                if (StringUtils.isNotBlank(error)) {
+                    String s = "第" + (i + 3) + "行 " + error;
+                    skuInfoImport.setError(s);
+                }
                 skuInfoList.add(resp);
-                importList.add(checkSku.getSkuInfoImport());
+                importList.add(skuInfoImport);
                 reaptMap = checkSku.getReapMap();
                 spuMap = checkSku.getSpuMap();
             }
@@ -1678,7 +1751,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 //返回实体
                 AddSkuInfoReqVO resp = checkSku.getRespVO();
                 skuInfoList.add(resp);
-                importList.add(checkSku.getSkuInfoImport());
+                SkuInfoImport skuInfoImport = checkSku.getSkuInfoImport();
+                String error = skuInfoImport.getError();
+                if (StringUtils.isNotBlank(error)) {
+                    String s = "第" + (i + 3) + "行 " + error;
+                    skuInfoImport.setError(s);
+                }
+                importList.add(skuInfoImport);
                 reaptMap = checkSku.getReapMap();
                 spuMap = checkSku.getSpuMap();
             }
@@ -1806,7 +1885,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 //返回实体
                 AddSkuInfoReqVO resp = checkSku.getRespVO();
                 skuInfoList.add(resp);
-                importList.add(checkSku.getSkuInfoImport());
+                SkuInfoImport skuInfoImport = checkSku.getSkuInfoImport();
+                String error = skuInfoImport.getError();
+                if (StringUtils.isNotBlank(error)) {
+                    String s = "第" + (i + 3) + "行 " + error;
+                    skuInfoImport.setError(s);
+                }
+                importList.add(skuInfoImport);
                 reaptMap = checkSku.getReapMap();
                 spuMap = checkSku.getSpuMap();
             }
@@ -1948,6 +2033,26 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraftForPlatform(skuCodes);
         reqVO.getProductSkuSupplyUnitDrafts().get(0).setIsDefault(unitDraft.getIsDefault());
         return  ((SkuInfoService)AopContext.currentProxy()).saveDraftSkuInfo(reqVO);
+    }
+
+    @Override
+    public List<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO) {
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            reqVO.setCompanyCode(authToken.getCompanyCode());
+            reqVO.setPersonId(authToken.getPersonId());
+        }
+        if(CollectionUtils.isNotEmpty(reqVO.getProductCategoryCodes())){
+            try {
+                reqVO.setProductCategoryLv1Code(reqVO.getProductCategoryCodes().get(0));
+                reqVO.setProductCategoryLv2Code(reqVO.getProductCategoryCodes().get(1));
+                reqVO.setProductCategoryLv3Code(reqVO.getProductCategoryCodes().get(2));
+                reqVO.setProductCategoryLv4Code(reqVO.getProductCategoryCodes().get(3));
+            } catch (Exception e) {
+                log.info("不做处理,让程序继续执行下去");
+            }
+        }
+        return productSkuDraftMapper.getProductSkuDraft(reqVO);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
+import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.SaleCountDTO;
 import com.aiqin.bms.scmp.api.product.domain.excel.PriceImport;
 import com.aiqin.bms.scmp.api.product.domain.excel.PurchasePriceImport;
 import com.aiqin.bms.scmp.api.product.domain.excel.SalePriceImport;
@@ -59,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Description:
@@ -139,7 +141,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             reqVO.setCode(code);
         }
         //判断是否含有区域0否1是
-        reqVO.setExtField5(CollectionUtils.isEmpty(reqVO.getAreaList())?0:1);
+        reqVO.setBeContainArea(CollectionUtils.isEmpty(reqVO.getAreaList())?0:1);
         saveData(reqVO);
         //保存日志
         supplierCommonService.getInstance(reqVO.getCode(), HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.CHANGE_PRICE.getStatus(), HandleTypeCoce.ADD_CHANGEPRICE.getName(), null, HandleTypeCoce.ADD.getName(), getUser().getPersonName());
@@ -273,7 +275,10 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 //        String formNo = "CP" + IdSequenceUtils.getInstance().nextId();
 //        respVO.setFormNo(formNo);
         if (Objects.isNull(respVO)) {
-            throw new BizException(ResultCode.CAN_NOT_FIND_CHANGE_PRICE_INFO);
+            respVO = productSkuChangePriceMapper.selectInfoByFormNo1(code);
+            if(Objects.isNull(respVO)){
+                throw new BizException(ResultCode.CAN_NOT_FIND_CHANGE_PRICE_INFO);
+            }
         }
         //查询日志信息
         OperationLogBean operationLogBean = new OperationLogBean(code, null, ObjectTypeCode.CHANGE_PRICE.getStatus(), null, null);
@@ -424,14 +429,14 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                  savePurchaseChangePrice(newVO, dto);
                 break;
             case CommonConstant.SALE_CHANGE_PRICE:
-                if(dto.getExtField5() == 0) {
+                if(dto.getBeContainArea() == 0) {
                     saveSaleChangePrice(newVO, dto);
                 }else {
                     saveSaleAreaChangePrice(newVO, dto);
                 }
                 break;
             case CommonConstant.TEMPORARY_CHANGE_PRICE:
-                if(dto.getExtField5() == 0) {
+                if(dto.getBeContainArea() == 0) {
                     saveTemporaryChangePrice(newVO, dto);
                 }else {
                     saveTemporaryAreaChangePrice(newVO, dto);
@@ -480,8 +485,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setCode("TPA" + IdSequenceUtils.getInstance().nextId());
             priceInfo.setPriceTax(info.getTemporaryPrice());
             priceInfo.setTax(info.getOutTax());
-            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getTemporaryPrice(), info.getOutTax()));
-            priceInfo.setExtField5(1);
+            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getTemporaryPrice()).orElse(0L), info.getOutTax()));
+            priceInfo.setBeContainArea(1);
             info.setOfficialCode(priceInfo.getCode());
             List<ProductSkuPriceAreaInfo> areaInfo = BeanCopyUtils.copyList(dto.getAreaInfos(), ProductSkuPriceAreaInfo.class);
             ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),priceInfo.getEffectiveTimeEnd(),1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
@@ -526,8 +531,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setCreateTime(new Date());
             priceInfo.setPriceTax(info.getNewPrice());
             priceInfo.setTax(info.getOutTax());
-            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getNewPrice(), info.getOutTax()));
-            priceInfo.setExtField5(1);
+            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getNewPrice()).orElse(0L), info.getOutTax()));
+            priceInfo.setBeContainArea(1);
             info.setOfficialCode(priceInfo.getCode());
             List<ProductSkuPriceAreaInfo> areaInfo = BeanCopyUtils.copyList(dto.getAreaInfos(), ProductSkuPriceAreaInfo.class);
             ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),priceInfo.getEffectiveTimeEnd(),1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
@@ -571,9 +576,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             priceInfo.setCode("TP" + IdSequenceUtils.getInstance().nextId());
             priceInfo.setPriceTax(info.getTemporaryPrice());
             priceInfo.setTax(info.getOutTax());
-            priceInfo.setExtField5(0);
+            priceInfo.setBeContainArea(0);
             info.setOfficialCode(priceInfo.getCode());
-            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getTemporaryPrice(), info.getOutTax()));
+            priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getTemporaryPrice()).orElse(0L), info.getOutTax()));
             ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),priceInfo.getEffectiveTimeEnd(),1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
             if (info.getEffectiveTimeStart().after(new Date())) {
                 //未生效的
@@ -620,8 +625,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setCreateTime(new Date());
                 priceInfo.setPriceTax(info.getNewPrice());
                 priceInfo.setTax(info.getOutTax());
-                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getNewPrice(), info.getOutTax()));
-                priceInfo.setExtField5(0);
+                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getNewPrice()).orElse(0L), info.getOutTax()));
+                priceInfo.setBeContainArea(0);
                 priceInsertInfos.add(priceInfo);
                 info.setBeSynchronize(1);
                 info.setOfficialCode(priceInfo.getCode());
@@ -646,13 +651,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
                 priceInfo.setApplyCode(productSkuChangePriceInfo.getCode());
                 priceInfo.setPriceTax(productSkuChangePriceInfo.getNewPrice());
-                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(productSkuChangePriceInfo.getNewPrice(), productSkuChangePriceInfo.getOutTax()));
+                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(productSkuChangePriceInfo.getNewPrice()).orElse(0L), productSkuChangePriceInfo.getOutTax()));
                 priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                 priceInfo.setUpdateTime(new Date());
                 priceInfo.setTax(productSkuChangePriceInfo.getOutTax());
                 ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,priceInfo.getCreateBy(),new Date());
                 //判断生效日期
-                if (productSkuChangePriceInfo.getEffectiveTimeStart().after(new Date())) {
+                if (Optional.ofNullable(productSkuChangePriceInfo.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
                     //未生效的
                     log.setStatus(0);
                 } else {
@@ -698,9 +703,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setCreateTime(new Date());
                 priceInfo.setCode("PP" + IdSequenceUtils.getInstance().nextId());
                 priceInfo.setPriceTax(info.getPurchasePriceNew());
-                priceInfo.setExtField5(0);
+                priceInfo.setBeContainArea(0);
                 priceInfo.setTax(info.getInTax());
-                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getPurchasePriceNew(), info.getInTax()));
+                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getPurchasePriceNew()).orElse(0L), info.getInTax()));
                 info.setBeSynchronize(1);
                 info.setOfficialCode(priceInfo.getCode());
                 priceInsertInfos.add(priceInfo);
@@ -725,7 +730,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
                 priceInfo.setApplyCode(productSkuChangePriceInfo.getCode());
                 priceInfo.setPriceTax(productSkuChangePriceInfo.getPurchasePriceNew());
-                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(productSkuChangePriceInfo.getPurchasePriceNew(), productSkuChangePriceInfo.getInTax()));
+                priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(productSkuChangePriceInfo.getPurchasePriceNew()).orElse(0L), productSkuChangePriceInfo.getInTax()));
                 priceInfo.setTax(productSkuChangePriceInfo.getInTax());
                 priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                 priceInfo.setUpdateTime(new Date());
@@ -1195,7 +1200,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                          .checkPurchasePrice()
                          .checkEffectiveTimeStart()
                          ;
-                 list.add(checkChangePrice.getData());
+                QuerySkuInfoRespVOForIm data = checkChangePrice.getData();
+                String error = data.getError();
+                if (StringUtils.isNotBlank(error)) {
+                    String s2 = "第"+(i+2)+"行 "+error;
+                    data.setError(s2);
+                }
+                list.add(data);
                 repeatMap = checkChangePrice.getRepeatMap();
             }
             return list;
@@ -1234,13 +1245,47 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                         .checkEffectiveTimeStart()//检查生效时间
                         .checkChangeReason()//调价原因
                         ;
-                list.add(checkChangePrice.getData());
+                QuerySkuInfoRespVOForIm data = checkChangePrice.getData();
+                String error = data.getError();
+                if (StringUtils.isNotBlank(error)) {
+                    String s2 = "第"+(i+2)+"行 "+error;
+                    data.setError(s2);
+                }
+                list.add(data);
                 repeatMap = checkChangePrice.getRepeatMap();
             }
             return list;
         } catch (ExcelException e) {
             throw new BizException(ResultCode.IMPORT_DATA_ERROR);
         }
+    }
+
+    @Override
+    public String getApplyCodeByFormNo(String formNo) {
+        //首先通过formNO查找数据
+        ProductSkuChangePriceDTO dto = productSkuChangePriceMapper.selectByFormNo(formNo);
+        if(null == dto){
+            throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
+        }
+        return dto.getCode();
+    }
+
+    @Override
+    public PriceMeasurementRespVO priceMeasurement(List<PriceMeasurementReqVO> req) {
+        List<SaleCountDTO> list = productSkuChangePriceMapper.selectSaleNumBySkuCode(req);
+        Map<String,SaleCountDTO> collect = list.stream().collect(Collectors.toMap(SaleCountDTO::getSkuCode,Function.identity(),(k1,k2)->k2));
+        PriceMeasurementRespVO respVO = new PriceMeasurementRespVO();
+        Stream<PriceMeasurementReqVO> stream = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin());
+        Stream<PriceMeasurementReqVO> stream1 = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin());
+        long in = stream.count();
+        long de = stream1.count();
+        long deAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin()).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode()).getSaleNum()).orElse(0) * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
+        long inAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin()).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode()).getSaleNum()).orElse(0) * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
+        respVO.setDecreaseCount(de);
+        respVO.setIncreaseCount(in);
+        respVO.setDecreaseGrossProfit(deAmount);
+        respVO.setIncreaseGrossProfit(inAmount);
+        return respVO;
     }
 
     @Override
@@ -1274,7 +1319,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                         .checkEffectiveTimeEnd()//检查失效时间
                         .checkChangeReason()//调价原因
                         ;
-                list.add(checkChangePrice.getData());
+                QuerySkuInfoRespVOForIm data = checkChangePrice.getData();
+                String error = data.getError();
+                if (StringUtils.isNotBlank(error)) {
+                    String s2 = "第"+(i+2)+"行 "+error;
+                    data.setError(s2);
+                }
+                list.add(data);
                 repeatMap = checkChangePrice.getRepeatMap();
             }
             return list;
@@ -1334,6 +1385,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
         }
     }
+
     @Getter(AccessLevel.PRIVATE)
     private class CheckChangePrice {
         private Map<String,QuerySkuInfoRespVO> queryNoPage;
@@ -1477,6 +1529,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             }else {
                 if (CollectionUtils.isEmpty(error)) {
                     QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+                    if (Objects.isNull(querySkuInfoRespVO)) {
+                        return this;
+                    }
                     Map<String, PriceChannelForChangePrice> collect = querySkuInfoRespVO.getPriceChannelList().stream().collect(Collectors.toMap(PriceChannelForChangePrice::getPriceItemName, Function.identity(), (k1, k2) -> k2));
                     if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyMap(collect)) {
                         this.resp.setPriceItemName(anImport.getPriceItemName().trim());
@@ -1504,6 +1559,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //采购补充价格项目信息
         private CheckChangePrice checkPriceItemForPurchase(){
             QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+            if (Objects.isNull(querySkuInfoRespVO)) {
+                return this;
+            }
             List<PriceChannelForChangePrice> collect = querySkuInfoRespVO.getPriceChannelList();
             if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(collect)||collect.size()>1) {
                 error.add("该sku的采购价格项目异常");

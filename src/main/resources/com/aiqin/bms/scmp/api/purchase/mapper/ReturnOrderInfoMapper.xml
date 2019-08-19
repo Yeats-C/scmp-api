@@ -121,8 +121,6 @@
              a.actual_product_total_amount actualProductTotalAmount,
              a.product_channel_total_amount productChannelTotalAmount
       from return_order_info a
-               left join return_order_info_item b
-      on a.return_order_code = b.return_order_code
       where a.company_code = #{companyCode}
     <if test="createDateStart != null">
       and a.create_time &gt;=#{createDateStart,jdbcType=TIMESTAMP}

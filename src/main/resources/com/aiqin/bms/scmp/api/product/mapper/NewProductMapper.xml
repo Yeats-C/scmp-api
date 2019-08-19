@@ -454,10 +454,10 @@
             parameterType="com.aiqin.bms.scmp.api.product.domain.request.newproduct.QueryNewProductReqVO">
         SELECT
         pro.id,pro.product_code as productCode,pro.product_name as productName,
-        COUNT(pku.id) as skuNumber,pro.update_time as updateTime,
+        (select count(pku.id) from product_sku pku where pro.product_code=pku.product_code) as skuNumber,pro.update_time as updateTime,
         pro.update_by as updateBy,pro.create_time as createTime,
         pro.create_by as createBy,pro.bar_code as barCode
-        FROM product pro LEFT JOIN product_sku pku on pro.product_code=pku.product_code
+        FROM product pro
         WHERE pro.del_flag=0
         <if test="createTimeStart != null">
             AND pro.create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
@@ -474,7 +474,6 @@
         <if test="companyCode != null and companyCode != '' ">
             and pro.company_code = #{companyCode,jdbcType=VARCHAR}
         </if>
-        GROUP BY pro.product_code
         ORDER BY pro.create_time DESC
     </select>
     <select id="productSku" resultType="com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewSkuDetailsResponseVO">

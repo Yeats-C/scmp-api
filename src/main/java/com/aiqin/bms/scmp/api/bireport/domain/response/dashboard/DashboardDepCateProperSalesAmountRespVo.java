@@ -21,6 +21,14 @@ public class DashboardDepCateProperSalesAmountRespVo {
     @JsonProperty("stat_year")
     private String statYear;
 
+    @ApiModelProperty("渠道编码")
+    @JsonProperty("price_channel_code")
+    private String priceChannelCode;
+
+    @ApiModelProperty("渠道名称")
+    @JsonProperty("price_channel_name")
+    private String priceChannelName;
+
     @ApiModelProperty("部门编码")
     @JsonProperty("product_sort_code")
     private String productSortCode;

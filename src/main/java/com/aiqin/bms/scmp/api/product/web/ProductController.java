@@ -202,11 +202,4 @@ public class ProductController {
     public HttpResponse<PageResData<ProductPriceChange>> getProductPriceChangeList(@RequestBody ProductPriceChangeQuery query){
         return productService.listProductPriceChange(query);
     }
-
-    @GetMapping("/want/buy")
-    @ApiOperation(value = "pos顾客可能还想购买")
-    public HttpResponse selectLikeProductList(@RequestParam("sku_code")String skuCode,
-                                              @RequestParam("distributor_id")String distributorId) {
-        return productService.selectLikeProductList(skuCode, distributorId);
-    }
 }

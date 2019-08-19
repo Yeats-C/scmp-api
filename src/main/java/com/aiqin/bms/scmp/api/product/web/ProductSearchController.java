@@ -28,12 +28,6 @@ public class ProductSearchController {
     @Resource
     private ProductService productService;
 
-    @PostMapping("/find/distributor")
-    @ApiOperation("查询商品")
-    public HttpResponse productPage(@RequestBody ProductSearchRequest request) {
-        return productService.selectProductPage(request);
-    }
-
     @PostMapping("/unsold")
     @ApiOperation("滞销商品")
     public HttpResponse<PageResData<ProductDistributor>> unsoldProductPage(@RequestBody UnsoldDistributorProductRequest request) {

@@ -3,10 +3,7 @@ package com.aiqin.bms.scmp.api.product.web.price;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceImportReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
@@ -52,6 +49,22 @@ public class ProductSkuChangePriceController {
         log.info("ProductSkuChangePriceController---view---入参：[{}]", code);
         try {
             return HttpResponse.success(productSkuChangePriceService.view(code));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+
+    @GetMapping("/getCodeByFormNo")
+    @ApiOperation("根据FormNo获取申请编码")
+    public HttpResponse<String> getApplyCodeByFormNo(@RequestParam String formNo) {
+        log.info("ProductSkuChangePriceController---getCodeByFormNo---入参：[{}]", formNo);
+        try {
+            return HttpResponse.success(productSkuChangePriceService.getApplyCodeByFormNo(formNo));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
             return HttpResponse.failure(e.getMessageId());
@@ -196,6 +209,20 @@ public class ProductSkuChangePriceController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @ApiOperation("变价测算")
+    @PostMapping("/priceMeasurement")
+    public HttpResponse<PriceMeasurementRespVO> priceMeasurement(@RequestBody List<PriceMeasurementReqVO> req){
+        try {
+            return HttpResponse.success(productSkuChangePriceService.priceMeasurement(req));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e){
+            e.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @ApiOperation("测试生成id")
     @PostMapping("/getid")
     public Long getid(){

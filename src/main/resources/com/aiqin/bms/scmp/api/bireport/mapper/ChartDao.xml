@@ -207,7 +207,7 @@
         bms.distribution_last_month_sales as distributionLastMonthSales,
         bms.distribution_compared_same as distributionComparedSame,
         bms.distribution_sequential as distributionSequential
-        from bi_monthly_sales bms
+        from bi_chart_monthly_sales bms
         <include refid="select_monthly_sales"/>
         order by bms.id asc
     </select>
@@ -238,7 +238,7 @@
         bmgm.distribution_last_year_maori_rate as distributionLastYearMaoriRate,
         bmgm.distribution_compared_same as distributionComparedSame,
         bmgm.distribution_sequential as distributionSequential
-        from bi_month_gross_margin bmgm
+        from bi_chart_month_gross_margin bmgm
         <include refid="select_monthly_gross_margin"/>
         order by bmgm.id asc
     </select>
@@ -247,7 +247,8 @@
         select
         bmsa.id as id,
         date_format(bmsa.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        bmsa.month as month,
+        bmsa.stat_year as statYear,
+        bmsa.stat_month as statMonth,
         bmsa.product_sort_code as productSortCode,
         bmsa.product_sort_name as productSortName,
         bmsa.price_channel_code as orderCode,
@@ -264,7 +265,7 @@
         bmsa.distribution_amount as distributionAmount,
         bmsa.distribution_budget as distributionBudget,
         bmsa.distribution_yield_rate as distributionYieldRate
-        from bi_month_sales_achievement bmsa
+        from bi_chart_month_sales_achievement bmsa
         <include refid="select_month_sales_achievement"/>
         order by bmsa.id asc
     </select>
@@ -307,7 +308,7 @@
         bmcbs.distribution_last_month_sales as distributionLastMonthSales,
         bmcbs.distribution_compared_same as distributionComparedSame,
         bmcbs.distribution_sequential as distributionSequential
-        from bi_month_cumulative_brand_sales bmcbs
+        from bi_chart_month_cumulative_brand_sales bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
         order by bmcbs.id asc
     </select>
@@ -317,7 +318,6 @@
         bmcgpm.id as id,
         date_format(bmcgpm.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
         bmcgpm.month as month,
-        bmcgpm.cumulative_month as cumulativeMonth,
         bmcgpm.product_sort_code as productSortCode,
         bmcgpm.product_sort_name as productSortName,
         bmcgpm.price_channel_code as orderCode,
@@ -343,7 +343,7 @@
         bmcgpm.last_year_distribution_maori_rate as lastYearDistributionMaoriRate,
         bmcgpm.distribution_compared_same as distributionComparedSame,
         bmcgpm.distribution_sequential as distributionSequential
-        from bi_month_cumulative_gross_profit_margin bmcgpm
+        from bi_chart_month_cumulative_gross_profit_margin bmcgpm
         <include refid="select_month_cumulative_gross_profit_margin"/>
         order by bmcgpm.id asc
     </select>

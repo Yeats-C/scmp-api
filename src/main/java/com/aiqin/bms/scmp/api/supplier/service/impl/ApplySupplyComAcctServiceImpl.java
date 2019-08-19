@@ -694,7 +694,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             return "false";
         }
         HandleTypeCoce typeCoce = null;
-        if (account.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
+        if (account.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             account.setApplyStatus(vo.getApplyStatus());
             if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 typeCoce = HandleTypeCoce.APPROVAL_SUCCESS;
@@ -735,7 +735,6 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
                 typeCoce = HandleTypeCoce.APPROVAL_FAILED;
                 //驳回, 设置状态
                 //修改驳回后，数据还原
-                account.setApplyStatus(vo.getApplyStatus());
                 SupplyCompanyAccount oldSupplyComAcct = supplyCompanyAccountDao.getSupplyCompanyAccount(account.getApplyCompanyAccountCode());
                 if(null != oldSupplyComAcct){
                     SupplyCompanyAccount account1 = new SupplyCompanyAccount();
@@ -746,13 +745,9 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
                 typeCoce = HandleTypeCoce.APPROVAL;
                 //传入的是审批中，继续该流程
-                String content = ApplyStatus.APPROVAL_SUCCESS.getContent().replace("CREATEBY", account.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
-                supplierCommonService.getInstance(account.getApplyCompanyAccountCode(), typeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, typeCoce.getName(),vo.getApprovalUserName());
-                return "success";
             } else if (vo.getApplyStatus().equals(ApplyStatus.REVOKED.getNumber())) {
                 //传入的撤销
                 typeCoce = HandleTypeCoce.REVOKED;
-                account.setApplyStatus(vo.getApplyStatus());
                 SupplyCompanyAccount oldSupplyComAcct = supplyCompanyAccountDao.getSupplyCompanyAccount(account.getApplyCompanyAccountCode());
                 if(null != oldSupplyComAcct){
                     SupplyCompanyAccount account1 = new SupplyCompanyAccount();

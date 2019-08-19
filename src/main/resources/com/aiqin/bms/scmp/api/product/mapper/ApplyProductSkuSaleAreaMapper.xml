@@ -17,24 +17,16 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
-    <result column="ext_field_1" jdbcType="VARCHAR" property="extField1" />
-    <result column="ext_field_2" jdbcType="VARCHAR" property="extField2" />
-    <result column="ext_field_3" jdbcType="VARCHAR" property="extField3" />
-    <result column="ext_field_4" jdbcType="TIMESTAMP" property="extField4" />
-    <result column="ext_field_5" jdbcType="INTEGER" property="extField5" />
-    <result column="ext_field_6" jdbcType="BIGINT" property="extField6" />
   </resultMap>
   <sql id="Base_Column_List">
     id, code, sku_code, sku_name, be_disable, categories_supply_channels_code, categories_supply_channels_name, 
     direct_delivery_supplier_code, direct_delivery_supplier_name, create_by, create_time, 
-    update_by, update_time, company_code, company_name, ext_field_1, ext_field_2, ext_field_3, 
-    ext_field_4, ext_field_5, ext_field_6
+    update_by, update_time, company_code, company_name
   </sql>
   <sql id="Base_Column_List1">
     a.id, a.code, a.sku_code, a.sku_name, a.be_disable, a.categories_supply_channels_code, a.categories_supply_channels_name,
     a.direct_delivery_supplier_code, a.direct_delivery_supplier_name, a.create_by, a.create_time,
-    a.update_by, a.update_time, a.company_code, a.company_name, a.ext_field_1, a.ext_field_2, a.ext_field_3,
-    a.ext_field_4, a.ext_field_5, a.ext_field_6
+    a.update_by, a.update_time, a.company_code, a.company_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -63,17 +55,13 @@
       categories_supply_channels_name, direct_delivery_supplier_code, 
       direct_delivery_supplier_name, create_by, create_time, 
       update_by, update_time, company_code, 
-      company_name, ext_field_1, ext_field_2, 
-      ext_field_3, ext_field_4, ext_field_5, 
-      ext_field_6)
+      company_name)
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{beDisable,jdbcType=INTEGER}, #{categoriesSupplyChannelsCode,jdbcType=VARCHAR}, 
       #{categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{directDeliverySupplierCode,jdbcType=VARCHAR}, 
       #{directDeliverySupplierName,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{companyCode,jdbcType=VARCHAR}, 
-      #{companyName,jdbcType=VARCHAR}, #{extField1,jdbcType=VARCHAR}, #{extField2,jdbcType=VARCHAR}, 
-      #{extField3,jdbcType=VARCHAR}, #{extField4,jdbcType=TIMESTAMP}, #{extField5,jdbcType=INTEGER}, 
-      #{extField6,jdbcType=BIGINT})
+      #{companyName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSaleArea">
     insert into apply_product_sku_sale_area
@@ -123,24 +111,6 @@
       <if test="companyName != null">
         company_name,
       </if>
-      <if test="extField1 != null">
-        ext_field_1,
-      </if>
-      <if test="extField2 != null">
-        ext_field_2,
-      </if>
-      <if test="extField3 != null">
-        ext_field_3,
-      </if>
-      <if test="extField4 != null">
-        ext_field_4,
-      </if>
-      <if test="extField5 != null">
-        ext_field_5,
-      </if>
-      <if test="extField6 != null">
-        ext_field_6,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -188,24 +158,6 @@
       <if test="companyName != null">
         #{companyName,jdbcType=VARCHAR},
       </if>
-      <if test="extField1 != null">
-        #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        #{extField6,jdbcType=BIGINT},
-      </if>
     </trim>
   </insert>
   <insert id="insertBatch" parameterType="list">
@@ -214,9 +166,7 @@
       categories_supply_channels_name, direct_delivery_supplier_code,
       direct_delivery_supplier_name, create_by, create_time,
       update_by, update_time, company_code,
-      company_name, ext_field_1, ext_field_2,
-      ext_field_3, ext_field_4, ext_field_5,
-      ext_field_6)
+      company_name)
     values
     <foreach collection="items" item="item" open="" close="" separator=",">
     (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
@@ -224,9 +174,7 @@
       #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{item.directDeliverySupplierCode,jdbcType=VARCHAR},
       #{item.directDeliverySupplierName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.companyCode,jdbcType=VARCHAR},
-      #{item.companyName,jdbcType=VARCHAR}, #{item.extField1,jdbcType=VARCHAR}, #{item.extField2,jdbcType=VARCHAR},
-      #{item.extField3,jdbcType=VARCHAR}, #{item.extField4,jdbcType=TIMESTAMP}, #{item.extField5,jdbcType=INTEGER},
-      #{item.extField6,jdbcType=BIGINT})
+      #{item.companyName,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSaleArea">
@@ -274,24 +222,6 @@
       <if test="companyName != null">
         company_name = #{companyName,jdbcType=VARCHAR},
       </if>
-      <if test="extField1 != null">
-        ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      </if>
-      <if test="extField2 != null">
-        ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      </if>
-      <if test="extField3 != null">
-        ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      </if>
-      <if test="extField4 != null">
-        ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      </if>
-      <if test="extField5 != null">
-        ext_field_5 = #{extField5,jdbcType=INTEGER},
-      </if>
-      <if test="extField6 != null">
-        ext_field_6 = #{extField6,jdbcType=BIGINT},
-      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -310,13 +240,7 @@
       update_by = #{updateBy,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       company_code = #{companyCode,jdbcType=VARCHAR},
-      company_name = #{companyName,jdbcType=VARCHAR},
-      ext_field_1 = #{extField1,jdbcType=VARCHAR},
-      ext_field_2 = #{extField2,jdbcType=VARCHAR},
-      ext_field_3 = #{extField3,jdbcType=VARCHAR},
-      ext_field_4 = #{extField4,jdbcType=TIMESTAMP},
-      ext_field_5 = #{extField5,jdbcType=INTEGER},
-      ext_field_6 = #{extField6,jdbcType=BIGINT}
+      company_name = #{companyName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

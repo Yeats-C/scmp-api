@@ -20,7 +20,6 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoLogMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPriceInfoService;
 import com.aiqin.bms.scmp.api.util.*;
-import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,9 +63,12 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
                 log.info("不做处理,让程序继续执行下去");
             }
         }
-        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
-        List<QueryProductSkuPriceInfoRespVO> list = productSkuPriceInfoMapper.selectListByQueryVO(reqVO);
-        return PageUtil.getPageList(reqVO.getPageNo(),list);
+        List<Long> ids = productSkuPriceInfoMapper.selectListByQueryVOCount(reqVO);
+        if(org.apache.commons.collections.CollectionUtils.isEmpty(ids)){
+            return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
+        }
+        List<QueryProductSkuPriceInfoRespVO> list = productSkuPriceInfoMapper.selectListByQueryVO(PageUtil.myPage(ids, reqVO));
+        return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),ids.size(),list);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
         List<ProductSkuPriceInfoDraft> drafts = BeanCopyUtils.copyList(reqVOList, ProductSkuPriceInfoDraft.class);
         for (ProductSkuPriceInfoDraft o : drafts) {
             o.setCode("pp"+UUIDUtils.getUUID());
-            o.setExtField5(0);
+            o.setBeContainArea(0);
         }
         int i = productSkuPriceInfoDraftMapper.insertBatch(drafts);
         if(i!=reqVOList.size()){

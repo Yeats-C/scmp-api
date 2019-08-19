@@ -39,6 +39,9 @@ public class QuerySupplierComAcctReqVo extends PageReq {
     @ApiModelProperty("供货单位名称")
     private String supplyCompanyName;
 
+    @ApiModelProperty("是否禁用")
+    private Byte delFlag;
+
     @ApiModelProperty("采购组编码")
     private String purchasingGroupCode;
 

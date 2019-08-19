@@ -21,11 +21,20 @@
     </appender>
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${APP_HOME}/logs/supplier-api.%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+            <fileNamePattern>${APP_HOME}/logs/scmp-api.%d{yyyy-MM-dd_HH}.log</fileNamePattern>
             <maxHistory>5</maxHistory>
             <totalSizeCap>10MB</totalSizeCap>
         </rollingPolicy>
         <encoder>
+            <pattern>%date [%5p] - %25c - %m%n</pattern>
+        </encoder>
+    </appender>
+    <!--请求参数,写入日志文件中-->
+    <appender name="CALLBACK_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${APP_HOME}/logs/abutment/callback.%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%date [%5p] - %25c - %m%n</pattern>
         </encoder>
     </appender>
@@ -45,6 +54,10 @@
         <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
     </logger>
     <logger name="org.apache.ibatis.io.DefaultVFS" level="INFO" additivity="false">
+        <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
+    </logger>
+    <logger name="com.aiqin.bms.scmp.api.purchase.service.impl.OrderCallbackServiceImpl" level="ERROR" additivity="false">
+        <appender-ref ref="CALLBACK_FILE"/>
         <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
     </logger>
     <logger name="com.aiqin.bms.scmp.api" level="DEBUG" additivity="false">

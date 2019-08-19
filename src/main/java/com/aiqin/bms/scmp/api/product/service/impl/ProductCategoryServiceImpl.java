@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductCategoryService;
+import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -45,6 +46,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     private ProductSkuDraftMapper skuDraftMapper;
     @Autowired
     private ApplyProductSkuMapper applyProductSkuMapper;
+    @Autowired
+    private DataManageService dataManageService;
 
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
@@ -143,7 +146,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
         //调用批量新增
         num = ((ProductCategoryService) AopContext.currentProxy()).insertList(productCategoryReqDTOS);
-
+        //删除品类缓存信息
+        dataManageService.deleteCategoryName();
         return num;
     }
 
@@ -183,6 +187,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
             verifyDisable(productCategory.getCategoryId());
         }
         num = ((ProductCategoryService) AopContext.currentProxy()).update(productCategory);
+        //删除品类缓存信息
+        dataManageService.deleteCategoryName();
         return num;
     }
 
@@ -218,6 +224,8 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         productCategory.setCategoryStatus(status);
         //调用修改,修改删除标志
         num = ((ProductCategoryService) AopContext.currentProxy()).update(productCategory);
+        //删除品类缓存信息
+        dataManageService.deleteCategoryName();
         return num;
     }
 

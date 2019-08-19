@@ -1,3 +1,8 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: aiqin123456
 server:
   tomcat:
     basedir: /tmp/dir
@@ -15,9 +20,9 @@ product:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
 ground:
   druid:
-    url: jdbc:mysql://--------/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
-    username: --------
-    password: --------
+    url: jdbc:mysql://rm-2zeela0dj4k34987s.mysql.rds.aliyuncs.com/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: scmp_write
+    password: YEc4I3xxMshnj1giGxxv2A
     initial-size: 5
     min-idle: 3
     max-active: 20
@@ -29,15 +34,15 @@ ground:
 
 oss:
   end:
-    point: http://oss-cn-qingdao.aliyuncs.com
+    point: http://oss-cn-beijing.aliyuncs.com
   access:
     key:
-      id: LTAIPWfI0ApMnQPo
-      secret: kG0tvYo3Ts4tr95sa9eh3Pw3wF2WQ7
+      id: LTAIYOvtCIluSvwO
+      secret: BpkZWSEPnBHdVwi2ZQvKX06u6JruaF
   bucket:
-    name: lyj-upload-image
-  dir: dev/
-
+    name: aq-scmp
+  dir: release/
+evn: release
 Encryption:
   key: 16#t%9@AJ6DYaeRp
 #  dZ3@k!KMhq!Tqeh3%RYm83cX&JmvYyY!

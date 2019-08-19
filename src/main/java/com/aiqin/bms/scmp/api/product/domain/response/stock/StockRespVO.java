@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.stock;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -218,6 +219,7 @@ public class StockRespVO {
     @JsonProperty(value = "stockup_num")
     private Integer stockupNum;
 
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("备货完成时间")
     @JsonProperty(value = "stockupfinish_time")
     private String stockupfinishTime;
@@ -226,6 +228,7 @@ public class StockRespVO {
     @JsonProperty(value = "tax_cost")
     private Long taxCost;
 
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     @JsonProperty(value = "create_time")
     private String createTime;
@@ -234,6 +237,7 @@ public class StockRespVO {
     @JsonProperty(value = "create_by")
     private String createBy;
 
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("更新时间")
     @JsonProperty(value = "update_time")
     private String updateTime;

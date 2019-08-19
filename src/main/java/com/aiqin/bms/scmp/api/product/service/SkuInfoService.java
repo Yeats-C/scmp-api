@@ -10,10 +10,7 @@ import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespV
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaForSkuReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveSkuApplyInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
@@ -168,6 +165,9 @@ public interface SkuInfoService{
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.changeprice.QuerySkuInfoRespVO>
      */
     BasePage<QuerySkuInfoRespVO> getSkuListByQueryVO(QuerySkuInfoReqVO vo);
+
+    List<Long> getSkuListByQueryNoPageCount(QuerySkuInfoReqVO vo);
+
     /**
      * 不分页
      * @author NullPointException
@@ -265,4 +265,6 @@ public interface SkuInfoService{
     int saveDraftSkuInfoForPlatform(AddSkuInfoReqVO reqVO);
 
     DetailRequestRespVo getInfoByForm(String formNo);
+
+    List<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO);
 }
