@@ -37,7 +37,9 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchRe
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
@@ -94,6 +96,9 @@ public class StockServiceImpl implements StockService {
     private ProductSkuDao productSkuDao;
     @Autowired
     private WarehouseService supplierApiService;
+    @Autowired
+    private PurchaseGroupService purchaseGroupService;
+
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -141,6 +146,12 @@ public class StockServiceImpl implements StockService {
     public PageResData selectStockSumInfoByPage(StockRequest stockRequest) {
         try {
             LOGGER.info("中央库存列表查询");
+            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+            PageResData pageResData = new PageResData();
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+                return pageResData;
+            }
+            stockRequest.setGroupList(groupVoList);
             List<StockRespVO> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
             HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
             List<StockRespVO> lists = new ArrayList<>();
@@ -157,7 +168,9 @@ public class StockServiceImpl implements StockService {
                 lists.add(entry.getValue());
             }
             Integer total = stockDao.countStockSumInfoByPage(stockRequest);
-            return new PageResData<>(total, lists);
+            pageResData.setTotalCount(total);
+            pageResData.setDataList(stockList);
+            return pageResData;
         } catch (Exception e) {
             LOGGER.error("中央列表查询失败", e);
             throw new GroundRuntimeException(e.getMessage());
@@ -214,12 +227,20 @@ public class StockServiceImpl implements StockService {
     @Override
     public PageResData selectWarehouseStockInfoByPage(StockRequest stockRequest) {
         try {
-            LOGGER.info("库房库存列表查询");
+            LOGGER.info("总库存管理列表查询");
+            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+            PageResData pageResData = new PageResData();
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+                return pageResData;
+            }
+            stockRequest.setGroupList(groupVoList);
             List<StockRespVO> stockList = stockDao.selectWarehouseStockInfoByPage(stockRequest);
             Integer total = stockDao.countWarehouseStockInfoByPage(stockRequest);
-            return new PageResData<>(total, stockList);
+            pageResData.setTotalCount(total);
+            pageResData.setDataList(stockList);
+            return pageResData;
         } catch (Exception e) {
-            LOGGER.error("库房库存列表查询失败", e);
+            LOGGER.error("总库存管理列表查询失败", e);
             throw new GroundRuntimeException(e.getMessage());
         }
     }
@@ -228,6 +249,12 @@ public class StockServiceImpl implements StockService {
     public PageResData selectTransportStockInfoByPage(StockRequest stockRequest) {
         try {
             LOGGER.info("物流中心库存列表查询");
+            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+            PageResData pageResData = new PageResData();
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+                return pageResData;
+            }
+            stockRequest.setGroupList(groupVoList);
             List<StockRespVO> stockList = stockDao.selectTransportStockInfoByPage(stockRequest);
             HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
             List<StockRespVO> lists = new ArrayList<>();
@@ -244,7 +271,9 @@ public class StockServiceImpl implements StockService {
                 lists.add(entry.getValue());
             }
             Integer total = stockDao.countTransportStockInfoByPage(stockRequest);
-            return new PageResData<>(total, lists);
+            pageResData.setTotalCount(total);
+            pageResData.setDataList(stockList);
+            return pageResData;
         } catch (Exception e) {
             LOGGER.error("物流中心库存列表查询失败", e);
             throw new GroundRuntimeException(e.getMessage());
@@ -255,9 +284,17 @@ public class StockServiceImpl implements StockService {
     public PageResData selectStorehouseStockInfoByPage(StockRequest stockRequest) {
         try {
             LOGGER.info("物流中心库存列表查询");
+            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+            PageResData pageResData = new PageResData();
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+                return pageResData;
+            }
+            stockRequest.setGroupList(groupVoList);
             List<StockRespVO> stockList = stockDao.selectStorehouseStockInfoByPage(stockRequest);
             Integer total = stockDao.countStorehouseStockInfoByPage(stockRequest);
-            return new PageResData<>(total, stockList);
+            pageResData.setTotalCount(total);
+            pageResData.setDataList(stockList);
+            return pageResData;
         } catch (Exception e) {
             LOGGER.error("物流中心库存列表查询失败", e);
             throw new GroundRuntimeException(e.getMessage());

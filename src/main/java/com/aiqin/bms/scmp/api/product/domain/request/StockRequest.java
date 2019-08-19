@@ -1,10 +1,13 @@
 package com.aiqin.bms.scmp.api.product.domain.request;
 
 import com.aiqin.bms.scmp.api.base.PagesRequest;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 @ApiModel("库存request")
 @Data
@@ -100,6 +103,9 @@ public class StockRequest extends PagesRequest {
     @ApiModelProperty("采购组名称")
     @JsonProperty(value = "procurement_section_name")
     private String procurementSectionName;
+
+    @ApiModelProperty(value="不需要传的参数")
+    private List<PurchaseGroupVo> groupList;
 
     public String getTransportCenterText() {
         return transportCenterText;

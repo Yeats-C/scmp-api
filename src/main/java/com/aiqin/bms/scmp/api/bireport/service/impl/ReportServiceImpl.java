@@ -361,18 +361,18 @@ public class ReportServiceImpl implements ReportService {
             BrandSaleRespVo brandSaleRespVo = new BrandSaleRespVo();
             brandSaleRespVo.setColumnList(maps);
             if(brandSaleRespVoSum != null){
-                brandSaleRespVo.setChannelCurrentSaleAmounts(brandSaleRespVoSum.getChannelCurrentSaleAmounts());
-                brandSaleRespVo.setChannelPreviousSalesAmounts(brandSaleRespVoSum.getChannelPreviousSalesAmounts());
-                brandSaleRespVo.setChannelCurrentGrossMargins(brandSaleRespVoSum.getChannelCurrentGrossMargins());
-                brandSaleRespVo.setChannelPreviousGrossMargins(brandSaleRespVoSum.getChannelPreviousGrossMargins());
-                brandSaleRespVo.setChannelSaleLinkRatios(brandSaleRespVoSum.getChannelSaleLinkRatios());
-                brandSaleRespVo.setChannelGrossMarginLinkRatios(brandSaleRespVoSum.getChannelGrossMarginLinkRatios());
-                brandSaleRespVo.setDistributionCurrentSaleAmounts(brandSaleRespVoSum.getDistributionCurrentSaleAmounts());
-                brandSaleRespVo.setDistributionPreviousSalesAmounts(brandSaleRespVoSum.getDistributionPreviousSalesAmounts());
-                brandSaleRespVo.setDistributionCurrentGrossMargins(brandSaleRespVoSum.getDistributionCurrentGrossMargins());
-                brandSaleRespVo.setDistributionPreviousGrossMargins(brandSaleRespVoSum.getDistributionPreviousGrossMargins());
-                brandSaleRespVo.setDistributionSaleLinkRatios(brandSaleRespVoSum.getDistributionSaleLinkRatios());
-                brandSaleRespVo.setDistributionGrossMarginLinkRatios(brandSaleRespVoSum.getDistributionGrossMarginLinkRatios());
+                brandSaleRespVo.setChannelSaleAmount(brandSaleRespVoSum.getChannelSaleAmount());
+                brandSaleRespVo.setLastMonthChannelAmountDaily(brandSaleRespVoSum.getLastMonthChannelAmountDaily());
+                brandSaleRespVo.setChannelGrossMargin(brandSaleRespVoSum.getChannelGrossMargin());
+                brandSaleRespVo.setLastMonthChannelGrossMargin(brandSaleRespVoSum.getLastMonthChannelGrossMargin());
+                brandSaleRespVo.setChannelSalesSequentialAdd(brandSaleRespVoSum.getChannelSalesSequentialAdd());
+                brandSaleRespVo.setChannelMaoriSequentialAdd(brandSaleRespVoSum.getChannelMaoriSequentialAdd());
+                brandSaleRespVo.setDistributionAmountDaily(brandSaleRespVoSum.getDistributionAmountDaily());
+                brandSaleRespVo.setLastMonthDistributionAmountDaily(brandSaleRespVoSum.getLastMonthDistributionAmountDaily());
+                brandSaleRespVo.setDistributionAmount(brandSaleRespVoSum.getDistributionAmount());
+                brandSaleRespVo.setLastMonthDistributionAmount(brandSaleRespVoSum.getLastMonthDistributionAmount());
+                brandSaleRespVo.setDistributionSalesSequentialAdd(brandSaleRespVoSum.getDistributionSalesSequentialAdd());
+                brandSaleRespVo.setDistributionMaoriSequentialAdd(brandSaleRespVoSum.getDistributionMaoriSequentialAdd());
             }
             return new PageReportResData<BrandSaleRespVo>(total,brandSaleRespVos,brandSaleRespVo);
         } catch (Exception ex) {
@@ -398,18 +398,18 @@ public class ReportServiceImpl implements ReportService {
             CategorySaleRespVo categorySaleRespVo = new CategorySaleRespVo();
             categorySaleRespVo.setColumnList(maps);
             if(categorySaleRespVoSum != null){
-                categorySaleRespVo.setChannelCurrentSaleAmounts(categorySaleRespVoSum.getChannelCurrentSaleAmounts());
-                categorySaleRespVo.setChannelPreviousSalesAmounts(categorySaleRespVoSum.getChannelPreviousSalesAmounts());
-                categorySaleRespVo.setChannelCurrentGrossMargins(categorySaleRespVoSum.getChannelCurrentGrossMargins());
-                categorySaleRespVo.setChannelPreviousGrossMargins(categorySaleRespVoSum.getChannelPreviousGrossMargins());
-                categorySaleRespVo.setChannelSaleLinkRatios(categorySaleRespVoSum.getChannelSaleLinkRatios());
-                categorySaleRespVo.setChannelGrossMarginLinkRatios(categorySaleRespVoSum.getChannelGrossMarginLinkRatios());
-                categorySaleRespVo.setDistributionCurrentSaleAmounts(categorySaleRespVoSum.getDistributionCurrentSaleAmounts());
-                categorySaleRespVo.setDistributionPreviousSalesAmounts(categorySaleRespVoSum.getDistributionPreviousSalesAmounts());
-                categorySaleRespVo.setDistributionCurrentGrossMargins(categorySaleRespVoSum.getDistributionCurrentGrossMargins());
-                categorySaleRespVo.setDistributionPreviousGrossMargins(categorySaleRespVoSum.getDistributionPreviousGrossMargins());
-                categorySaleRespVo.setDistributionSaleLinkRatios(categorySaleRespVoSum.getDistributionSaleLinkRatios());
-                categorySaleRespVo.setDistributionGrossMarginLinkRatios(categorySaleRespVoSum.getDistributionGrossMarginLinkRatios());
+                categorySaleRespVo.setChannelAmountDaily(categorySaleRespVoSum.getChannelAmountDaily());
+                categorySaleRespVo.setLastMonthChannelAmountDaily(categorySaleRespVoSum.getLastMonthChannelAmountDaily());
+                categorySaleRespVo.setChannelMaori(categorySaleRespVoSum.getChannelMaori());
+                categorySaleRespVo.setLastMonthChannelMaori(categorySaleRespVoSum.getLastMonthChannelMaori());
+                categorySaleRespVo.setChannelSalesSequentialAdd(categorySaleRespVoSum.getChannelSalesSequentialAdd());
+                categorySaleRespVo.setChannelMaoriSequentialAdd(categorySaleRespVoSum.getChannelMaoriSequentialAdd());
+                categorySaleRespVo.setDistributionAmountDaily(categorySaleRespVoSum.getDistributionAmountDaily());
+                categorySaleRespVo.setLastMonthDistributionAmountDaily(categorySaleRespVoSum.getLastMonthDistributionAmountDaily());
+                categorySaleRespVo.setDistributionAmount(categorySaleRespVoSum.getDistributionAmount());
+                categorySaleRespVo.setLastMonthDistributionAmount(categorySaleRespVoSum.getLastMonthDistributionAmount());
+                categorySaleRespVo.setDistributionSalesSequentialAdd(categorySaleRespVoSum.getDistributionSalesSequentialAdd());
+                categorySaleRespVo.setDistributionMaoriSequentialAdd(categorySaleRespVoSum.getDistributionMaoriSequentialAdd());
             }
             return new PageReportResData<CategorySaleRespVo>(total,categorySaleRespVos,categorySaleRespVo);
         } catch (Exception ex) {

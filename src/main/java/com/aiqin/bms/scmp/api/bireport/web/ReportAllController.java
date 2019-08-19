@@ -352,18 +352,18 @@ public class ReportAllController {
     @ApiOperation("品牌促销")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "create_time", value = "日期", type = "String"),
-            @ApiImplicitParam(name = "order_code", value = "渠道编码", type = "String"),
-            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
-            @ApiImplicitParam(name = "department_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
     })
     public HttpResponse<PageImportResData<BrandSaleRespVo>> selectBrandSale(
             @RequestParam(value = "create_time", required = false) String createTime,
-            @RequestParam(value = "order_code", required = false) String orderCode,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
-            @RequestParam(value = "department_code", required = false) String departmentCode,
-            @RequestParam(value = "department_name", required = false) String departmentName){
-        CategorySaleReqVo brandSaleReqVo = new CategorySaleReqVo(createTime,orderCode,orderOriginal,departmentCode,departmentName);
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName){
+        CategorySaleReqVo brandSaleReqVo = new CategorySaleReqVo(createTime,priceChannelCode,priceChannelName,productSortCode,productSortName);
         return HttpResponse.success(reportAllService.selectBrandSale(brandSaleReqVo));
     }
 
@@ -371,18 +371,18 @@ public class ReportAllController {
     @ApiOperation("品类促销")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "create_time", value = "日期", type = "String"),
-            @ApiImplicitParam(name = "order_code", value = "渠道编码", type = "String"),
-            @ApiImplicitParam(name = "order_original", value = "渠道", type = "String"),
-            @ApiImplicitParam(name = "department_code", value = "所属部门编码", type = "String"),
-            @ApiImplicitParam(name = "department_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "price_channel_code", value = "渠道编码", type = "String"),
+            @ApiImplicitParam(name = "price_channel_name", value = "渠道", type = "String"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门编码", type = "String"),
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
     })
     public HttpResponse<PageImportResData<CategorySaleRespVo>> selectCategorySale(
             @RequestParam(value = "create_time", required = false) String createTime,
-            @RequestParam(value = "order_code", required = false) String orderCode,
-            @RequestParam(value = "order_original", required = false) String orderOriginal,
-            @RequestParam(value = "department_code", required = false) String departmentCode,
-            @RequestParam(value = "department_name", required = false) String departmentName){
-        CategorySaleReqVo categorySaleReqVo = new CategorySaleReqVo(createTime,orderCode,orderOriginal,departmentCode,departmentName);
+            @RequestParam(value = "price_channel_code", required = false) String priceChannelCode,
+            @RequestParam(value = "price_channel_name", required = false) String priceChannelName,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode,
+            @RequestParam(value = "product_sort_name", required = false) String productSortName){
+        CategorySaleReqVo categorySaleReqVo = new CategorySaleReqVo(createTime,priceChannelCode,priceChannelName,productSortCode,productSortName);
         return HttpResponse.success(reportAllService.selectCategorySale(categorySaleReqVo));
     }
     

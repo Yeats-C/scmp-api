@@ -49,14 +49,6 @@ public interface ProductService {
 
     HttpResponse selectProductInfoByIdOrCode(ProductDistributor productDistributor);
 
-    /**
-     * 商品搜索
-     *
-     * @param productSearchRequest
-     * @return
-     */
-    HttpResponse selectProductPage(ProductSearchRequest productSearchRequest);
-
     HttpResponse countAllCategory(String distributorId);
 
     HttpResponse selectPriceByProductIdList(Product product);
@@ -96,6 +88,4 @@ public interface ProductService {
      * @return
      */
     PageResData<ProductDistributor> unsoldProductPage(UnsoldDistributorProductRequest request);
-
-    HttpResponse selectLikeProductList(String skuCode, String distributorId);
 }
