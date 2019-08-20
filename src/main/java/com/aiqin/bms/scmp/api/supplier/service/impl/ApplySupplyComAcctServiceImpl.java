@@ -694,7 +694,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             return "false";
         }
         HandleTypeCoce typeCoce = null;
-        if (account.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+        if (!account.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             account.setApplyStatus(vo.getApplyStatus());
             if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 typeCoce = HandleTypeCoce.APPROVAL_SUCCESS;
