@@ -174,6 +174,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             temp.setNewGrossProfitMargin(vo.getNewGrossProfitMargin());
             temp.setOldGrossProfitMargin(vo.getOldGrossProfitMargin());
             temp.setSkuCode(vo.getSkuCode());
+            tempList.add(temp);
         }
         return tempList;
     }
