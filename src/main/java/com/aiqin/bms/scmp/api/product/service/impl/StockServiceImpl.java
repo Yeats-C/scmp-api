@@ -167,7 +167,8 @@ public class StockServiceImpl implements StockService {
             for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
                 lists.add(entry.getValue());
             }
-            Integer total = stockDao.countStockSumInfoByPage(stockRequest);
+      //      Integer total = stockDao.countStockSumInfoByPage(stockRequest);
+            Integer total = stockList.size();
             pageResData.setTotalCount(total);
             pageResData.setDataList(stockList);
             return pageResData;
@@ -270,7 +271,8 @@ public class StockServiceImpl implements StockService {
             for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
                 lists.add(entry.getValue());
             }
-            Integer total = stockDao.countTransportStockInfoByPage(stockRequest);
+       //     Integer total = stockDao.countTransportStockInfoByPage(stockRequest);
+            Integer total = stockList.size();
             pageResData.setTotalCount(total);
             pageResData.setDataList(stockList);
             return pageResData;
