@@ -1,9 +1,9 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
+import com.aiqin.bms.scmp.api.supplier.domain.response.account.Account;
+import com.aiqin.bms.scmp.api.supplier.service.AccountService;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.bms.scmp.api.supplier.domain.response.account.UserDataVo;
-import com.aiqin.bms.scmp.api.supplier.service.AccountService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,9 +28,9 @@ public class AccountServiceImpl implements AccountService {
     @Value("${mgs.control.system-code}")
     private String systemCode;
     @Override
-    public UserDataVo getAccountInfoByAccountId(String ticket, String personId, String accountId) {
-        HttpClient httpClient = HttpClient.get(this.centerMainUrl + "/account/resources/" + accountId + "?ticket=" + ticket + "&ticket_person_id=" + personId+"&system=" + systemCode );
-        HttpResponse<UserDataVo> httpResponse =  httpClient.action().result(new TypeReference<HttpResponse<UserDataVo>>() {});
+    public Account getAccountInfoByAccountId(String accountId) {
+        HttpClient httpClient = HttpClient.get(this.centerMainUrl + "/account/person/info?account_id=" + accountId);
+        HttpResponse<Account> httpResponse =  httpClient.action().result(new TypeReference<HttpResponse<Account>>() {});
         return httpResponse.getData();
     }
 }

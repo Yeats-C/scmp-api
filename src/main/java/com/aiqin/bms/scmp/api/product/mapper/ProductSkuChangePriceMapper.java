@@ -71,5 +71,5 @@ public interface ProductSkuChangePriceMapper {
      * @param req
      * @return
      */
-    List<SaleCountDTO> selectSaleNumBySkuCode(List<PriceMeasurementReqVO> req);
+    List<SaleCountDTO> selectSaleNumBySkuCode(@Param("list") List<PriceMeasurementReqVO> req, @Param("date") String date);
 }

@@ -119,4 +119,7 @@ public class ProductSkuChangePriceInfoReqVO {
     @ApiModelProperty("生产日期")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date productTime;
+
+    @ApiModelProperty("含税成本")
+    private Long taxCost;
 }

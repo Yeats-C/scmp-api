@@ -142,6 +142,12 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         }
         //判断是否含有区域0否1是
         reqVO.setBeContainArea(CollectionUtils.isEmpty(reqVO.getAreaList())?0:1);
+        //计算
+        PriceMeasurementRespVO respVO = priceMeasurement(fullPriceMeasurementData(reqVO),DateUtils.getLastMonthString(new Date()));
+        reqVO.setIncreaseCount(respVO.getIncreaseCount());
+        reqVO.setIncreaseGrossProfit(respVO.getIncreaseGrossProfit2());
+        reqVO.setDecreaseCount(respVO.getDecreaseCount());
+        reqVO.setDecreaseGrossProfit(respVO.getDecreaseGrossProfit2());
         saveData(reqVO);
         //保存日志
         supplierCommonService.getInstance(reqVO.getCode(), HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.CHANGE_PRICE.getStatus(), HandleTypeCoce.ADD_CHANGEPRICE.getName(), null, HandleTypeCoce.ADD.getName(), getUser().getPersonName());
@@ -150,6 +156,29 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         }
         return true;
     }
+
+    private List<PriceMeasurementReqVO> fullPriceMeasurementData(ProductSkuChangePriceReqVO reqVO) {
+        List<PriceMeasurementReqVO> tempList = Lists.newArrayList();
+        List<ProductSkuChangePriceInfoReqVO> infoLists = reqVO.getInfoLists();
+        for (ProductSkuChangePriceInfoReqVO vo : infoLists) {
+            PriceMeasurementReqVO temp = new PriceMeasurementReqVO();
+            if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(reqVO.getChangePriceType())) {
+                temp.setPrice(vo.getTaxCost());
+            }else if (CommonConstant.SALE_CHANGE_PRICE.equals(reqVO.getChangePriceType())){
+                temp.setPrice(vo.getNewPrice());
+            }else if(CommonConstant.TEMPORARY_CHANGE_PRICE.equals(reqVO.getChangePriceType())){
+                temp.setPrice(vo.getTemporaryPrice());
+            }else {
+                throw new BizException(ResultCode.DATA_ERROR);
+            }
+            temp.setNewGrossProfitMargin(vo.getNewGrossProfitMargin());
+            temp.setOldGrossProfitMargin(vo.getOldGrossProfitMargin());
+            temp.setSkuCode(vo.getSkuCode());
+            tempList.add(temp);
+        }
+        return tempList;
+    }
+
     /**
      * 校验参数是否重复
      * @author NullPointException
@@ -1271,8 +1300,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     }
 
     @Override
-    public PriceMeasurementRespVO priceMeasurement(List<PriceMeasurementReqVO> req) {
-        List<SaleCountDTO> list = productSkuChangePriceMapper.selectSaleNumBySkuCode(req);
+    public PriceMeasurementRespVO priceMeasurement(List<PriceMeasurementReqVO> req,String date) {
+        List<SaleCountDTO> list = productSkuChangePriceMapper.selectSaleNumBySkuCode(req,date);
         Map<String,SaleCountDTO> collect = list.stream().collect(Collectors.toMap(SaleCountDTO::getSkuCode,Function.identity(),(k1,k2)->k2));
         PriceMeasurementRespVO respVO = new PriceMeasurementRespVO();
         Stream<PriceMeasurementReqVO> stream = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin());

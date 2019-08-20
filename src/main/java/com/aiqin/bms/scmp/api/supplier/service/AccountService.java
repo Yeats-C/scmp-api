@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
-import com.aiqin.bms.scmp.api.supplier.domain.response.account.UserDataVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.account.Account;
 
 /**
  * @author knight.xie
@@ -13,9 +13,7 @@ public interface AccountService {
     /**
      * 根据accountId获取信息
      * @param accountId
-     * @param ticket
-     * @param accountId
      * @return
      */
-    UserDataVo getAccountInfoByAccountId(String ticket, String personId, String accountId);
+    Account getAccountInfoByAccountId(String accountId);
 }
