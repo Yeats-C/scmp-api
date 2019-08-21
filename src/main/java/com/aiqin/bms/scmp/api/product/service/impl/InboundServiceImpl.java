@@ -532,29 +532,6 @@ public class InboundServiceImpl implements InboundService {
             stockVoRequestList.add(stockVoRequest);
         }
         stockChangeRequest.setStockVoRequests(stockVoRequestList);
-
-//        for(InboundBatchCallBackReqVo inboundBatchCallBackReqVo : inboundBatchCallBackReqVoList){
-//            ReturnInboundBatch returnInboundBatch = inboundBatchDao.selectByLinenum(reqVo.getInboundOderCode(),inboundBatchCallBackReqVo.getSkuCode() ,inboundBatchCallBackReqVo.getLinenum());
-//            InboundBatch inboundBatch = new InboundBatch();
-//
-//            // 复制旧的sku
-//            BeanCopyUtils.copy(returnInboundBatch, inboundBatch);
-//            // 实际数量
-//            inboundBatch.setPraQty(inboundBatchCallBackReqVo.getPraQty());
-//
-//            //更新对应批次的实际数量
-//            Integer i = inboundBatchDao.updateBatchInfoByInboundOderCodeAndLineNum(inboundBatch);
-//            log.info("更新对应批次的实际数量返回结果:{}", i);
-//            //  设置修改在途数加库存的单条sku的实体
-//            StockBatchVoRequest stockBatchVoRequest = new StockBatchVoRequest();
-//            //设置sku编码名称
-//            stockBatchVoRequest.setSkuCode(inboundBatch.getSkuCode());
-//            stockBatchVoRequest.setSkuName(inboundBatch.getSkuName());
-//            //设置更改数量
-//            stockBatchVoRequest.setChangeNum(inboundBatch.getPraQty());
-//            stockBatchVoRequestList.add(stockBatchVoRequest);
-//        }
-//        stockChangeRequest.setStockBatchVoRequest(stockBatchVoRequestList);
         //保存日志
         productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.RETURN_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),reqVo,HandleTypeCoce.RETURN_INBOUND_ODER.getName(),new Date(),inbound.getCreateBy(), null);
 
@@ -577,15 +554,14 @@ public class InboundServiceImpl implements InboundService {
         try {
             HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
             if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
-
+                log.info("操作库存成功");
             }else{
                 log.error(httpResponse.getMessage());
                 throw  new GroundRuntimeException("库存操作失败");
             }
         } catch (Exception e) {
-            log.error("入库单改变在途数，增加库存失败:[{}]"+stockChangeRequest);
-            e.printStackTrace();
-            log.error(e.getMessage());
+            log.error("入库单改变在途数，增加库存失败:[{}],异常信息:{}",stockChangeRequest,e.getMessage());
+            throw  new GroundRuntimeException("库存操作失败");
         }
 
 
@@ -593,8 +569,8 @@ public class InboundServiceImpl implements InboundService {
         inbound.setPraTax(inbound.getPraTaxAmount()-inbound.getPraAmount());
         //实际不含税总金额
         //修改入库单主题
-          int k = inboundDao.updateByPrimaryKeySelective(inbound);
-
+        int k = inboundDao.updateByPrimaryKeySelective(inbound);
+        log.info("入库更新条数:{}",k);
           // 回传给来源编号
         returnSource(inbound.getId());
         return ;
