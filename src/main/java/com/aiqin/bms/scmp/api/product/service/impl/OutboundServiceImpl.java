@@ -465,11 +465,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         log.error("异步推送给wms");
         String url = "";
         // 通过id查询 入库单主体
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         OutboundWmsResVO outboundWmsReqVO = new OutboundWmsResVO();
 
         Outbound outbound = outboundDao.selectByCode(code);
@@ -530,7 +525,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             //保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
 
-            workFlowCallBack(outboundCallBackReqVo);
+            if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())){
+                workFlowCallBack(outboundCallBackReqVo);
+            }
         }catch (Exception e){
             e.printStackTrace();
             log.error("出库单传入wms失败，错误原因为：{}", e);
@@ -545,11 +542,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Async("myTaskAsyncPool")
     public int workFlowCallBack(OutboundCallBackReqVo reqVo) {
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         log.info(" 出库单回传实体为 ：[{}]" + reqVo);
         Outbound outbound = new Outbound();
         try{ // 根据入库单编号查询旧的入库单主体
@@ -707,11 +699,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Transactional(rollbackFor = Exception.class)
     @Async("myTaskAsyncPool")
     public void returnSource(Long id){
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
         List<OutboundProduct> list = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy(), null);
@@ -724,7 +711,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 List<SupplyOrderProductItemReqVO> orderItems = BeanCopyUtils.copyList(list,SupplyOrderProductItemReqVO.class);
                 supplyOrderInfoReqVO.setOrderItems(orderItems);
                 // 调用订单接口
-                returnOder(supplyOrderInfoReqVO);
+//                returnOder(supplyOrderInfoReqVO);
                 //修改出库单完成状态
                 outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
@@ -835,11 +822,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Override
     @Async("myTaskAsyncPool")
     public void returnOder(SupplyOrderInfoReqVO reqVO) {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
 //        String url = urlConfig.PURCHASE_URL+"/purchase/order/outBoundCallBack";
 //        try {
 //            HttpClient client = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(reqVO));
@@ -861,12 +843,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Override
     @Async("myTaskAsyncPool")
     public void returnStorageResult(RejectStockRequest reqVO) {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            log.error("出库单回传退供参数为：[{}]", reqVO);
-        }
         try {
             goodsRejectService.finishStock(reqVO);
         } catch (GroundRuntimeException e) {

@@ -485,7 +485,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             detail.setUpdateById(createByName);
             purchaseOrderDetailsDao.update(detail);
             // 手动入库完成 撤销未完成的入库单
-            inboundService.repealOrder(order.getPurchaseOrderCode(), createById, createByName);
+            inboundService.repealOrder(order.getId().toString(), createById, createByName);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
             if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){

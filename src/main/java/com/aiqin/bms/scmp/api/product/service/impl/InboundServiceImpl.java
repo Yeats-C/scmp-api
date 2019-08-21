@@ -335,16 +335,11 @@ public class InboundServiceImpl implements InboundService {
         log.error("异步推送给wms");
         String url = "";
          // 通过id查询 入库单主体
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         Inbound  inbound = inboundDao.selectByCode(code);
         InboundWmsReqVO inboundWmsReqVO = new InboundWmsReqVO();
         BeanCopyUtils.copy(inbound, inboundWmsReqVO);
         List<InboundProductWmsReqVO> inboundProductWmsReqVOS =  inboundProductDao.selectMmsReqByInboundOderCode(inbound.getInboundOderCode());
-
+        inboundWmsReqVO.setList(inboundProductWmsReqVOS);
 //        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVos = new ArrayList<>();
         try{
             InboundCallBackReqVo inboundCallBackReqVo = new InboundCallBackReqVo();
@@ -426,7 +421,9 @@ public class InboundServiceImpl implements InboundService {
             //保存日志
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.PULL_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), code, HandleTypeCoce.PULL_INBOUND_ODER.getName(), new Date(), inbound.getCreateBy(), null);
             log.error("推送保存日志修改状态,应该在回调接口前面执行");
-            inboundService.workFlowCallBack(inboundCallBackReqVo);
+            if(inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())){
+                inboundService.workFlowCallBack(inboundCallBackReqVo);
+            }
         }catch (Exception e){
              e.printStackTrace();
              log.error(e.getMessage());
@@ -439,11 +436,6 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void workFlowCallBack(InboundCallBackReqVo reqVo) {
 
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         log.error("入库单回调实体传入实体:[{}]",JSON.toJSONString(reqVo));
         //根据编码，查询入库单主体
 //        Inbound inbound = inboundDao.selectByCode(reqVo.getInboundOderCode());
@@ -616,11 +608,6 @@ public class InboundServiceImpl implements InboundService {
     @Override
     @Async("myTaskAsyncPool")
     public void returnSource(Long id) {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
          // 查询入库单主体
         Inbound inbound = inboundDao.selectByPrimaryKey(id);
         //查询sku
@@ -715,12 +702,6 @@ public class InboundServiceImpl implements InboundService {
     @Override
     @Async("myTaskAsyncPool")
     public void returnPurchase(StorageResultReqVo storageResultReqVo) {
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            log.error("调用采购回调接口:[{}]", JSON.toJSONString(storageResultReqVo));
-            e.printStackTrace();
-        }
         try {
             PurchaseStorageRequest purchaseStorage = new PurchaseStorageRequest();
             List<PurchaseOrderProduct> purchaseOrderProducts = new ArrayList<>();
