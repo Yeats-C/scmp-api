@@ -191,4 +191,6 @@ public interface StockDao {
                                                 @Param("warehouseCode") String warehouseCode);
 
     List<Stock> selectSkuCost();
+
+    Stock selectStockSum(Stock stock);
 }
