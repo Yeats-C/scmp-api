@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatSupplierReturnRateYearlyDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatSupplierReturnRateYearly">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="responsible_person_code" jdbcType="VARCHAR" property="responsiblePersonCode" />
+    <result column="responsible_person_name" jdbcType="VARCHAR" property="responsiblePersonName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="single_count" jdbcType="BIGINT" property="singleCount" />
+    <result column="amt" jdbcType="BIGINT" property="amt" />
+    <result column="return_rate" jdbcType="DECIMAL" property="returnRate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stat_year, supplier_code, supplier_name, responsible_person_code, responsible_person_name, 
+    transport_center_code, transport_center_name, single_count, amt, return_rate, create_time
+  </sql>
+</mapper>
