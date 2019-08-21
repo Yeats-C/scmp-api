@@ -408,7 +408,7 @@
         LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code = pssi.product_sku_code
-        where 1=1
+        where
         ps.procurement_section_code in
         <foreach collection="groupList" open="(" close=")" item="item" separator=",">
             #{item.purchaseGroupCode,jdbcType=VARCHAR}
@@ -471,7 +471,7 @@
         LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code = pssi.product_sku_code
-        WHERE 1=1
+        WHERE
         ps.procurement_section_code in
         <foreach collection="groupList" open="(" close=")" item="item" separator=",">
             #{item.purchaseGroupCode,jdbcType=VARCHAR}
@@ -840,7 +840,7 @@
         LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code = pssi.product_sku_code
-        WHERE 1=1
+        WHERE
         ps.procurement_section_code in
         <foreach collection="groupList" open="(" close=")" item="item" separator=",">
             #{item.purchaseGroupCode,jdbcType=VARCHAR}
@@ -1000,7 +1000,7 @@
         LEFT JOIN product_sku_box_packing AS psbp ON st.sku_code = psbp.product_sku_code
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code=pssi.product_sku_code
         LEFT JOIN product_sku_checkout AS pscc ON st.sku_code=pscc.sku_code
-        WHERE 1=1
+        WHERE
         ps.procurement_section_code in
         <foreach collection="groupList" open="(" close=")" item="item" separator=",">
             #{item.purchaseGroupCode,jdbcType=VARCHAR}

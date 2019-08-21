@@ -260,5 +260,5 @@ public interface ProductSkuChangePriceService {
 
     String getApplyCodeByFormNo(String formNo);
 
-    PriceMeasurementRespVO priceMeasurement(List<PriceMeasurementReqVO> req);
+    PriceMeasurementRespVO priceMeasurement(List<PriceMeasurementReqVO> req,String date);
 }

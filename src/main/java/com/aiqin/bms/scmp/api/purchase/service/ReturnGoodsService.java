@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptRe
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
@@ -30,6 +31,9 @@ public interface ReturnGoodsService {
      * @return java.lang.Boolean
      */
     Boolean save(List<ReturnOrderInfoReqVO> reqVO);
+
+    void saveLog(List<ReturnOrderInfoLog> logs);
+
     /**
      * 保存数据
      * @author NullPointException

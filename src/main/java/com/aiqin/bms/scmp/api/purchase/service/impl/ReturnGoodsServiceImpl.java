@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
@@ -23,6 +24,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInf
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoInspectionItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
@@ -32,6 +34,7 @@ import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -53,6 +56,7 @@ import java.util.stream.Collectors;
  * @time: 17:35
  */
 @Service
+@Slf4j
 public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoodsService {
 
     @Autowired
@@ -70,6 +74,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     @Autowired
     private ReturnOrderInfoInspectionItemMapper returnOrderInfoInspectionItemMapper;
 
+    @Autowired
+    private ReturnOrderInfoLogMapper returnOrderInfoLogMapper;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean save(List<ReturnOrderInfoReqVO> reqVO) {
@@ -79,7 +86,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         //数据处理
         List<ReturnOrderInfo> orders = Lists.newCopyOnWriteArrayList();
         List<ReturnOrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
-//        List<ReturnOrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
+        List<ReturnOrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
         reqVO.parallelStream().forEach(o -> {
             ReturnOrderInfo info = BeanCopyUtils.copy(o, ReturnOrderInfo.class);
             info.setCreateDate(date);
@@ -90,16 +97,27 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             List<ReturnOrderInfoItem> orderItem = BeanCopyUtils.copyList(o.getItemReqVOList(), ReturnOrderInfoItem.class);
             orderItems.addAll(orderItem);
             //拼装日志信息
-//            OrderInfoLog log = new OrderInfoLog(null,info.getOrderCode(),info.getOrderStatus(), OrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(),null,info.getOperator(),date,info.getCompanyCode(),info.getCompanyName());
-//            logs.add(log);
+            ReturnOrderInfoLog log = new ReturnOrderInfoLog(null,info.getReturnOrderCode(),info.getOrderStatus(), ReturnOrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),ReturnOrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(),null,info.getOperator(),date,info.getCompanyCode(),info.getCompanyName());
+            logs.add(log);
         });
         //保存
         saveData(orderItems, orders);
         //存日志
-//        saveLog(logs);
+        saveLog(logs);
         return true;
     }
 
+    @Override
+    public void saveLog(List<ReturnOrderInfoLog> logs) {
+        if(CollectionUtils.isEmptyCollection(logs)){
+            return;
+        }
+        int i = returnOrderInfoLogMapper.insertBatch(logs);
+        if (i != logs.size()) {
+            log.info("需要插入订单日志条数[{}]，实际插入订单日志的条数：[{}]",logs.size(),i);
+//            throw new BizException(ResultCode.LOG_SAVE_ERROR);
+        }
+    }
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveData(List<ReturnOrderInfoItem> orderItems, List<ReturnOrderInfo> orders) {
@@ -294,10 +312,10 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         //更新
         updateByOrderCode(order);
         //存日志
-//        OrderInfoLog log = new OrderInfoLog(null,reqVO.getOrderCode(),reqVO.getOrderStatus(), OrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getStandardDescription(),null,reqVO.getOperator(),date,order.getCompanyCode(),order.getCompanyName());
-//        List<OrderInfoLog> logs = Lists.newArrayList();
-//        logs.add(log);
-//        saveLog(logs);
+        ReturnOrderInfoLog log = new ReturnOrderInfoLog(null,reqVO.getOrderCode(),reqVO.getOrderStatus(), ReturnOrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getBackgroundOrderStatus(),ReturnOrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getStandardDescription(),null,reqVO.getOperator(),date,order.getCompanyCode(),order.getCompanyName());
+        List<ReturnOrderInfoLog> logs = Lists.newArrayList();
+        logs.add(log);
+        saveLog(logs);
         return Boolean.TRUE;
     }
 
