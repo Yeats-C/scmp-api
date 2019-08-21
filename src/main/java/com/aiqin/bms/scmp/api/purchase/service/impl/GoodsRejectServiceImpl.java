@@ -312,7 +312,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     list.add(response);
                     continue;
                 }
-                rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(productTypeList.indexOf(record[6]),purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
+                rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(supplier.getSupplyCode(),productTypeList.indexOf(record[6]),purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
                 if (rejectApplyDetailHandleResponse != null) {
                     BeanUtils.copyProperties(rejectApplyDetailHandleResponse, response);
                     response.setProductCount(new Double(record[7]).intValue());
@@ -343,7 +343,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         RejectApplyDetailHandleResponse rejectApplyDetailHandleResponse;
         //查询每个商品的库存数量
         for (RejectApplyRecordDetail detailResponse : detailList) {
-            rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(detailResponse.getProductType(),detailResponse.getPurchaseGroupCode(), detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode());
+            rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(request.getSupplierCode(),detailResponse.getProductType(),detailResponse.getPurchaseGroupCode(), detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode());
             if (rejectApplyDetailHandleResponse != null) {
                 detailResponse.setStockCount(rejectApplyDetailHandleResponse.getStockCount());
             }

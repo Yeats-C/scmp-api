@@ -1668,6 +1668,9 @@
             <if test="purchaseGroupCode != null">
                 and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
             </if>
+            <if test="supplierCode != null">
+                and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
+            </if>
             <if test="skuCode != null">
                 and s.sku_code = #{skuCode,jdbcType=VARCHAR}
             </if>

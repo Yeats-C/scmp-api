@@ -144,7 +144,7 @@ public interface StockDao {
     List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
 
     QueryStockBatchSkuRespVo selectSkuBatchCode(@Param("procurementSectionCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode,@Param("batchCode") String batchCode);
-    RejectApplyDetailHandleResponse rejectProductInfo(@Param("productType") Integer productType,@Param("purchaseGroupCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode);
+    RejectApplyDetailHandleResponse rejectProductInfo(@Param("supplierCode") String supplierCode,@Param("productType") Integer productType,@Param("purchaseGroupCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode);
 
     /**
      * 库房管理新增调拨,移库,报废列表查询
