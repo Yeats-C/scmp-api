@@ -49,4 +49,40 @@ public class PriceImport {
 
     @ApiModelProperty("临时含税价")
     private String temporaryPrice;
+
+    @ApiModelProperty(value ="爱亲渠道价")
+    @ExcelProperty(index = 4, value = "爱亲渠道价")
+    private String readyCol67;
+
+    @ApiModelProperty(value ="萌贝树渠道价")
+    @ExcelProperty(index = 5, value = "萌贝树渠道价")
+    private String readyCol68;
+
+    @ApiModelProperty(value ="小红马渠道价")
+    @ExcelProperty(index = 6, value = "小红马渠道价")
+    private String readyCol69;
+
+    @ApiModelProperty(value ="爱亲分销价")
+    @ExcelProperty(index = 7, value = "爱亲分销价")
+    private String readyCol70;
+
+    @ApiModelProperty(value ="萌贝树分销价")
+    @ExcelProperty(index = 8, value = "萌贝树分销价")
+    private String readyCol71;
+
+    @ApiModelProperty(value ="小红马分销价")
+    @ExcelProperty(index = 9, value = "小红马分销价")
+    private String readyCol72;
+
+    @ApiModelProperty(value ="爱亲售价")
+    @ExcelProperty(index = 10, value = "爱亲售价")
+    private String readyCol73;
+
+    @ApiModelProperty(value ="萌贝树售价")
+    @ExcelProperty(index = 11, value = "萌贝树售价")
+    private String readyCol74;
+
+    @ApiModelProperty(value ="小红马售价")
+    @ExcelProperty(index = 12, value = "小红马售价")
+    private String readyCol75;
 }

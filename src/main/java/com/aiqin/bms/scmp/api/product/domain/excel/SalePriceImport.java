@@ -5,6 +5,9 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+/**
+ * 爱亲渠道价	萌贝树渠道价	小红马渠道价	爱亲分销价	萌贝树分销价	小红马分销价	爱亲售价	萌贝树售价	小红马售价
+ */
 @Data
 public class SalePriceImport extends BaseRowModel {
     public static final String HEAD = "SalePriceImport(skuCode=SKU编号, skuName=SKU名称, priceItemName=价格项目, effectiveTimeStart=生效时间, newPrice=含税价, warehouseBatchName=仓库批次号, changePriceReasonName=调价原因)";
@@ -16,24 +19,47 @@ public class SalePriceImport extends BaseRowModel {
     @ExcelProperty(index = 1, value = "sku名称")
     private String skuName;
 
-    @ApiModelProperty("价格项目名称")
-    @ExcelProperty(index = 2, value = "价格项目")
-    private String priceItemName;
+    @ApiModelProperty("仓库批次号名称")
+    @ExcelProperty(index = 2, value = "仓库批次号")
+    private String warehouseBatchName;
 
     @ApiModelProperty("开始生效时间")
     @ExcelProperty(index = 3, value = "生效时间", format = "yyyy-MM-dd")
     private String effectiveTimeStart;
 
-    @ApiModelProperty("新含税价")
-    @ExcelProperty(index = 4, value = "含税价")
-    private String newPrice;
+    @ApiModelProperty(value ="爱亲渠道价")
+    @ExcelProperty(index = 4, value = "爱亲渠道价")
+    private String readyCol67;
 
-    @ApiModelProperty("仓库批次号名称")
-    @ExcelProperty(index = 5, value = "仓库批次号")
-    private String warehouseBatchName;
+    @ApiModelProperty(value ="萌贝树渠道价")
+    @ExcelProperty(index = 5, value = "萌贝树渠道价")
+    private String readyCol68;
 
-    @ApiModelProperty("调价原因描述")
-    @ExcelProperty(index = 6, value = "调价原因")
-    private String changePriceReasonName;
+    @ApiModelProperty(value ="小红马渠道价")
+    @ExcelProperty(index = 6, value = "小红马渠道价")
+    private String readyCol69;
 
+    @ApiModelProperty(value ="爱亲分销价")
+    @ExcelProperty(index = 7, value = "爱亲分销价")
+    private String readyCol70;
+
+    @ApiModelProperty(value ="萌贝树分销价")
+    @ExcelProperty(index = 8, value = "萌贝树分销价")
+    private String readyCol71;
+
+    @ApiModelProperty(value ="小红马分销价")
+    @ExcelProperty(index = 9, value = "小红马分销价")
+    private String readyCol72;
+
+    @ApiModelProperty(value ="爱亲售价")
+    @ExcelProperty(index = 10, value = "爱亲售价")
+    private String readyCol73;
+
+    @ApiModelProperty(value ="萌贝树售价")
+    @ExcelProperty(index = 11, value = "萌贝树售价")
+    private String readyCol74;
+
+    @ApiModelProperty(value ="小红马售价")
+    @ExcelProperty(index = 12, value = "小红马售价")
+    private String readyCol75;
 }

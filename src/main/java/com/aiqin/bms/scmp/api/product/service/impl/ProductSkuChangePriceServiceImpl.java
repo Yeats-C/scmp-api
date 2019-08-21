@@ -1423,6 +1423,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         private List<String> error;
         private QuerySkuInfoRespVOForIm resp;
         private Map<String, SupplierDictionaryInfo> dicMap;
+        private boolean flag =  true;
         private CheckChangePrice(Map<String,QuerySkuInfoRespVO> queryNoPage, Object purchasePriceImport,Map<String,String> repeatMap,Map<String, SupplierDictionaryInfo> dicMap) {
             this.queryNoPage = queryNoPage;
             this.anImport = BeanCopyUtils.copy(purchasePriceImport,PriceImport.class);
@@ -1435,18 +1436,22 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         private CheckChangePrice checkSkuInfo(){
             if (StringUtils.isBlank(anImport.getSkuCode())) {
                 error.add("SKU编码不能为为空");
+                flag = false;
             }else {
                 QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
                 if (Objects.isNull(querySkuInfoRespVO)) {
                     resp.setSkuCode(anImport.getSkuCode().trim());
                     error.add("无对应的SKU编码数据或该SKU不属于所选采购组");
+                    flag = false;
                 }else {
                     if (StringUtils.isBlank(anImport.getSkuName())) {
                         error.add("SKU名称不能为空");
+                        flag = false;
                     }else {
                         if (!anImport.getSkuName().equals(querySkuInfoRespVO.getSkuName())) {
                             resp.setSkuName(anImport.getSkuName().trim());
                             error.add("SKU编码和SKU名称无法对应");
+                            flag = false;
                         }else {
                             resp.setSkuCode(querySkuInfoRespVO.getSkuCode());
                             resp.setSkuName(querySkuInfoRespVO.getSkuName());
@@ -1649,6 +1654,152 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             }
             return this;
         }
+
+        //检查价格
+//        private CheckChangePrice checkPrice() {
+//            List<SkuPriceDraftReqVO> priceList = Lists.newArrayList();
+//            Map<String, SkuPriceDraftReqVO> price = PriceAndWarehouseMap.price;
+//            //爱亲渠道价
+//            if (Objects.isNull(importVo.getReadyCol67())) {
+//                error.add("爱亲渠道价不能为空");
+//            } else {
+//                SkuPriceDraftReqVO aiqinChannel = price.get("爱亲渠道价");
+//                try {
+//                    aiqinChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol67()));
+//                } catch (Exception e) {
+//                    error.add("爱亲渠道价格式不正确");
+//                }
+//                priceList.add(aiqinChannel);
+//            }
+//            //萌贝树渠道价
+//            if (Objects.isNull(importVo.getReadyCol68())) {
+//                error.add("萌贝树渠道价不能为空");
+//            } else {
+//                SkuPriceDraftReqVO mengbeishuChannel = price.get("萌贝树渠道价");
+//                try {
+//                    mengbeishuChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol68()));
+//                } catch (Exception e) {
+//                    error.add("萌贝树渠道价格式不正确");
+//                }
+//                priceList.add(mengbeishuChannel);
+//            }
+//            //小红马渠道价
+//            if (Objects.isNull(importVo.getReadyCol69())) {
+//                error.add("小红马渠道价不能为空");
+//            } else {
+//                SkuPriceDraftReqVO xiaohongmaChannel = price.get("小红马渠道价");
+//                try {
+//                    xiaohongmaChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol69()));
+//                } catch (Exception e) {
+//                    error.add("小红马渠道价格式不正确");
+//                }
+//                priceList.add(xiaohongmaChannel);
+//            }
+//            //爱亲分销价
+//            if (Objects.isNull(importVo.getReadyCol70())) {
+//                error.add("爱亲分销价不能为空");
+//            } else {
+//                SkuPriceDraftReqVO aiqinDistribution = price.get("爱亲分销价");
+//                try {
+//                    aiqinDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol70()));
+//                } catch (Exception e) {
+//                    error.add("爱亲分销价格式不正确");
+//                }
+//                priceList.add(aiqinDistribution);
+//            }
+//            //萌贝树分销价
+//            if (Objects.isNull(importVo.getReadyCol71())) {
+//                error.add("萌贝树分销价不能为空");
+//            } else {
+//                SkuPriceDraftReqVO mengbeishuDistribution = price.get("萌贝树分销价");
+//                try {
+//                    mengbeishuDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol71()));
+//                } catch (Exception e) {
+//                    error.add("萌贝树分销价格式不正确");
+//                }
+//                priceList.add(mengbeishuDistribution);
+//            }
+//            //小红马分销价
+//            if (Objects.isNull(importVo.getReadyCol72())) {
+//                error.add("小红马分销价不能为空");
+//            } else {
+//                SkuPriceDraftReqVO xiaohongmaDistribution = price.get("小红马分销价");
+//                try {
+//                    xiaohongmaDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol72()));
+//                } catch (Exception e) {
+//                    error.add("小红马分销价格式不正确");
+//                }
+//                priceList.add(xiaohongmaDistribution);
+//            }
+//            //爱亲售价
+//            if (Objects.isNull(importVo.getReadyCol73())) {
+//                error.add("爱亲售价不能为空");
+//            } else {
+//                SkuPriceDraftReqVO aiqinSale = price.get("爱亲售价");
+//                try {
+//                    aiqinSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol73()));
+//                } catch (Exception e) {
+//                    error.add("爱亲售价格式不正确");
+//                }
+//                priceList.add(aiqinSale);
+//            }
+//            //萌贝树售价
+//            if (Objects.isNull(importVo.getReadyCol74())) {
+//                error.add("萌贝树售价不能为空");
+//            } else {
+//                SkuPriceDraftReqVO mengbeishuSale = price.get("萌贝树售价");
+//                try {
+//                    mengbeishuSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol74()));
+//                } catch (Exception e) {
+//                    error.add("萌贝树售价格式不正确");
+//                }
+//                priceList.add(mengbeishuSale);
+//            }
+//            //小红马售价
+//            if (Objects.isNull(importVo.getReadyCol75())) {
+//                error.add("小红马售价不能为空");
+//            } else {
+//                SkuPriceDraftReqVO xiaohongmaSale = price.get("小红马售价");
+//                try {
+//                    xiaohongmaSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol75()));
+//                } catch (Exception e) {
+//                    error.add("小红马售价格式不正确");
+//                }
+//                priceList.add(xiaohongmaSale);
+//            }
+//            this.resp.setProductSkuPrices(priceList);
+//            return this;
+//        }
+
+        private CheckChangePrice checkPriceItemForSale(String priceItemName,String price){
+            if(StringUtils.isNotBlank(price)){
+                if (flag) {
+                    QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+                    if (Objects.isNull(querySkuInfoRespVO)) {
+                        return this;
+                    }
+                    Map<String, PriceChannelForChangePrice> collect = querySkuInfoRespVO.getPriceChannelList().stream().collect(Collectors.toMap(PriceChannelForChangePrice::getPriceItemName, Function.identity(), (k1, k2) -> k2));
+                    if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyMap(collect)) {
+                        this.resp.setPriceItemName(priceItemName);
+                        error.add("未找到对应的价格项目信息");
+                    }else {
+                        PriceChannelForChangePrice item = collect.get(anImport.getPriceItemName().trim());
+                        PriceChannelForChangePrice copy = BeanCopyUtils.copy(item, PriceChannelForChangePrice.class);
+                        if (Objects.isNull(item)) {
+                            this.resp.setPriceItemName(anImport.getPriceItemName().trim());
+                            error.add("未找到对应名称的价格项目");
+                        }else {
+                            try {
+                                copy.setNewPrice(NumberConvertUtils.stringParseLong(price));
+                            } catch (Exception e) {
+                                error.add(priceItemName+"格式不正确");
+                            }
+                        }
+                    }
+                }
+            }
+            return this;
+        }
         //获取数据
         private QuerySkuInfoRespVOForIm getData(){
             String s = repeatMap.get(resp.getSkuCode() + resp.getPriceItemName() + resp.getSupplierCode() + resp.getWarehouseBatchName());
@@ -1668,6 +1819,5 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             repeatMap.put(resp.getSkuCode() + resp.getPriceItemName() + resp.getSupplierCode() + resp.getWarehouseBatchName(),"检查重复数据");
             return resp;
         }
-
     }
 }
