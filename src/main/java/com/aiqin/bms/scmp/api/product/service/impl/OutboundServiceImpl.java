@@ -41,6 +41,8 @@ import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.json.JsonUtil;
+import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -251,7 +253,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             // 跟新数据库状态
             return j;
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("保存出库单失败:{}",e.getMessage());
             throw new GroundRuntimeException("保存出库单失败");
         }
     }
@@ -459,7 +461,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      * @return
      */
     @Override
-    @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
     public void pushWms(String  code){
         log.error("异步推送给wms");
@@ -486,21 +487,25 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outboundWmsReqVO.setCreateById(createById);
                 url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
                 log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
-                HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO));
-
+                HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO)).timeout(10000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-                String hello= JSON.toJSONString(orderDto.getData());
-                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                ResponseWms entiy = mapper.readValue(hello, ResponseWms.class);
-                if("0".equals(orderDto.getCode())){
-                    //设置wms编号
-                    outbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
-                    //设置入库状态
-                    outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-                    outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
+                if(orderDto.getCode().equals(MessageId.SUCCESS_CODE)){
+                    ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()),ResponseWms.class);
+                    if(responseWms.getResultCode().equals(MessageId.SUCCESS_CODE)){
+                        //设置wms编号
+                        outbound.setWmsDocumentCode(responseWms.getUniquerRequestNumber());
+                        //设置入库状态
+                        outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+                        outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
+                    }else{
+                        LOGGER.error("退供出库单传入wms失败:{}",responseWms.getReason());
+                        throw new GroundRuntimeException("退供出库单传入wms失败");
+                    }
                 }else{
-                    throw new RuntimeException("退供出库单传入wms失败");
+                    LOGGER.error("退供出库单传入wms失败:{}",orderDto.getMessage());
+                    throw new GroundRuntimeException("退供出库单传入wms失败");
                 }
+
             }else{
                 //其他出库 移库 预计数量=实际数量
                 //设置出库状态
@@ -508,7 +513,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
             }
 
-            // 跟新数据库
+            // 更新数据库
             int s = outboundDao.updateByPrimaryKeySelective(outbound);
             OutboundCallBackReqVo outboundCallBackReqVo = new OutboundCallBackReqVo();
             BeanCopyUtils.copy(outbound,outboundCallBackReqVo);
@@ -529,8 +534,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 workFlowCallBack(outboundCallBackReqVo);
             }
         }catch (Exception e){
-            e.printStackTrace();
-            log.error("出库单传入wms失败，错误原因为：{}", e);
+            LOGGER.error("出库单传入wms失败，错误原因为：{}", e);
+            throw new GroundRuntimeException("退供出库单传入wms失败:{}");
         }
     }
     /**
