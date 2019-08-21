@@ -905,7 +905,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        GROUP BY st.transport_center_code,st.warehouse_code,st.sku_code
+        GROUP BY st.warehouse_code,st.sku_code
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
 
@@ -979,7 +979,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        group by st.transport_center_code,st.sku_code
+        group by st.warehouse_code,st.sku_code
         ) AS countTransportStockInfoByPage
     </select>
 
@@ -1068,7 +1068,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        GROUP BY st.transport_center_code,st.warehouse_code,st.sku_code
+        GROUP BY st.warehouse_code,st.sku_code
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countStorehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
@@ -1146,7 +1146,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        group by st.transport_center_code,st.warehouse_code,st.sku_code
+        group by st.warehouse_code,st.sku_code
         ) as countStorehouseStockInfoByPage
     </select>
     <insert id="insertBatch" parameterType="java.util.List">
