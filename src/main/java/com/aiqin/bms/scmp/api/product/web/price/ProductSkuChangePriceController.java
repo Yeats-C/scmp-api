@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
+import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -214,7 +216,8 @@ public class ProductSkuChangePriceController {
     @PostMapping("/priceMeasurement")
     public HttpResponse<PriceMeasurementRespVO> priceMeasurement(@RequestBody List<PriceMeasurementReqVO> req){
         try {
-            return HttpResponse.success(productSkuChangePriceService.priceMeasurement(req));
+            //获取上个月份
+            return HttpResponse.success(productSkuChangePriceService.priceMeasurement(req, DateUtils.getLastMonthString(new Date())));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e){

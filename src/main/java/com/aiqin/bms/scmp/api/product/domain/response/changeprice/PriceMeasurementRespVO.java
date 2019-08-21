@@ -21,7 +21,12 @@ public class PriceMeasurementRespVO {
     public String getIncreaseGrossProfit() {
         return "+"+BigDecimal.valueOf(increaseGrossProfit).divide(BigDecimal.valueOf(100),2, BigDecimal.ROUND_HALF_UP).toString();
     }
-
+    public Long getIncreaseGrossProfit2(){
+        return increaseGrossProfit;
+    }
+    public Long getDecreaseGrossProfit2(){
+        return increaseGrossProfit;
+    }
     public String getDecreaseGrossProfit() {
         return "-"+BigDecimal.valueOf(decreaseGrossProfit).divide(BigDecimal.valueOf(100),2, BigDecimal.ROUND_HALF_UP).toString();
     }

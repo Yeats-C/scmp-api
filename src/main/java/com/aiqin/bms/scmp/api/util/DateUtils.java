@@ -5,9 +5,12 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -87,5 +90,17 @@ public class DateUtils {
         //c.add(Calendar.MONTH, -i);
         Date m = c.getTime();
         return sdf.format(m);
+    }
+
+    /**
+     * @return Stirng like "1928-09"
+     */
+    public static String getLastMonthString(Date d) {
+        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(df1.format(d));
+        Period period = Period.ofMonths(-1);
+        LocalDate plus = date.plus(period);
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM");
+        return plus.format(df);
     }
 }
