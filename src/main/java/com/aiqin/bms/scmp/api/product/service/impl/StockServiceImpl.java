@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.StockStatusEnum;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.dao.StockFlowDao;
@@ -155,19 +156,22 @@ public class StockServiceImpl implements StockService {
             List<StockRespVO> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
             HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
             List<StockRespVO> lists = new ArrayList<>();
+            Stock stock = null;
+            int i = 0;
             for (StockRespVO stockRespVO : stockList) {
                 String str = stockRespVO.getSkuCode();
                 if(stockRespMap.get(str) == null){
                     stockRespMap.put(str,stockRespVO);
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }else {
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }
             }
             for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
                 lists.add(entry.getValue());
             }
-            Integer total = stockDao.countStockSumInfoByPage(stockRequest);
+      //      Integer total = stockDao.countStockSumInfoByPage(stockRequest);
+            Integer total = stockList.size();
             pageResData.setTotalCount(total);
             pageResData.setDataList(stockList);
             return pageResData;
@@ -177,27 +181,45 @@ public class StockServiceImpl implements StockService {
         }
     }
 
-    private void stockCommon(HashMap<String, StockRespVO> stockRespMap, StockRespVO stockRespVO, String str) {
+    private void stockCommon(HashMap<String, StockRespVO> stockRespMap, StockRespVO stockRespVO, String str, Stock stock, int i) {
         StockRespVO key = stockRespMap.get(str);
-        if(stockRespVO.getWarehouseType() != null){
-            if(stockRespVO.getWarehouseType().equals("销售库")){
-                key.setSaleNum(stockRespVO.getAvailableNum());
-                key.setSaleLockNum(stockRespVO.getLockNum());
-                key.setSaleWayNum(stockRespVO.getTotalWayNum());
-                key.setPurchaseWayNum(stockRespVO.getPurchaseWayNum());
-            }else if (stockRespVO.getWarehouseType().equals("赠品库")){
-                key.setGiftNum(stockRespVO.getAvailableNum());
-                key.setGiftLockNum(stockRespVO.getLockNum());
-                key.setGiftWayNum(stockRespVO.getTotalWayNum());
-                key.setGiftPurchaseWayNum(stockRespVO.getPurchaseWayNum());
-            }else if (stockRespVO.getWarehouseType().equals("特卖库")){
-                key.setSpecialSaleNum(stockRespVO.getAvailableNum());
-                key.setSpecialSaleLockNum(stockRespVO.getLockNum());
-                key.setSpecialSaleWayNum(stockRespVO.getSpecialSaleWayNum());
-            }else if(stockRespVO.getWarehouseType().equals("残品库")){
-                key.setBadNum(stockRespVO.getAvailableNum());
-                key.setBadLockNum(stockRespVO.getLockNum());
-                key.setBadWayNum(stockRespVO.getBadWayNum());
+        if(StringUtils.isNotBlank(stockRespVO.getCompanyCode()) || StringUtils.isNotBlank(stockRespVO.getSkuCode())){
+            stock = new Stock();
+            Stock stockInfo;
+            stock.setSkuCode(stockRespVO.getSkuCode());
+            stock.setCompanyCode(stockRespVO.getCompanyCode());
+            if(i == 1){
+                stock.setTransportCenterCode(stockRespVO.getTransportCenterCode());
+            }
+            stock.setWarehouseType(Global.SALE_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if(stockInfo != null){
+                key.setSaleNum(stockInfo.getAvailableNum());
+                key.setSaleLockNum(stockInfo.getLockNum());
+                key.setSaleWayNum(stockInfo.getTotalWayNum());
+                key.setPurchaseWayNum(stockInfo.getPurchaseWayNum());
+            }
+            stock.setWarehouseType(Global.GIFT_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if (stockInfo != null){
+                key.setGiftNum(stockInfo.getAvailableNum());
+                key.setGiftLockNum(stockInfo.getLockNum());
+                key.setGiftWayNum(stockInfo.getTotalWayNum());
+                key.setGiftPurchaseWayNum(stockInfo.getPurchaseWayNum());
+            }
+            stock.setWarehouseType(Global.SPECIAL_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if (stockInfo != null){
+                key.setSpecialSaleNum(stockInfo.getAvailableNum());
+                key.setSpecialSaleLockNum(stockInfo.getLockNum());
+                key.setSpecialSaleWayNum(stockInfo.getTotalWayNum());
+            }
+            stock.setWarehouseType(Global.DEFECTIVE_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if(stockInfo != null){
+                key.setBadNum(stockInfo.getAvailableNum());
+                key.setBadLockNum(stockInfo.getLockNum());
+                key.setBadWayNum(stockInfo.getTotalWayNum());
             }
             stockRespMap.put(str,key);
         }
@@ -258,19 +280,22 @@ public class StockServiceImpl implements StockService {
             List<StockRespVO> stockList = stockDao.selectTransportStockInfoByPage(stockRequest);
             HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
             List<StockRespVO> lists = new ArrayList<>();
+            Stock stock = null;
+            int i = 1;
             for (StockRespVO stockRespVO : stockList) {
                 String str = stockRespVO.getTransportCenterCode()+ stockRespVO.getSkuCode();
                 if(stockRespMap.get(str) == null){
                     stockRespMap.put(str,stockRespVO);
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }else {
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }
             }
             for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
                 lists.add(entry.getValue());
             }
-            Integer total = stockDao.countTransportStockInfoByPage(stockRequest);
+       //     Integer total = stockDao.countTransportStockInfoByPage(stockRequest);
+            Integer total = stockList.size();
             pageResData.setTotalCount(total);
             pageResData.setDataList(stockList);
             return pageResData;
