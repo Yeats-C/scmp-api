@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.outbound;
 
+import com.aiqin.bms.scmp.api.product.domain.request.BaseDateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -20,7 +21,7 @@ import java.util.List;
  */
 @Data
 @ApiOperation("出库单wms回调请求实体")
-public class OutboundCallBackReqVo {
+public class OutboundCallBackReqVo extends BaseDateRequest {
 //
     @ApiModelProperty("id")
     private Long id;
