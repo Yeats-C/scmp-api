@@ -36,6 +36,8 @@ import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.json.JsonUtil;
+import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -252,7 +254,6 @@ public class InboundServiceImpl implements InboundService {
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public String saveInbound(InboundReqSave reqVo) {
-        int flag = 0;
         try {
             // 入库单转化主体保存实体
             Inbound inbound = new Inbound();
@@ -281,8 +282,8 @@ public class InboundServiceImpl implements InboundService {
                // 跟新数据库状态
             return inbound.getInboundOderCode();
         } catch (Exception e) {
-            log.error("保存入库单接口错误");
-            throw  new GroundRuntimeException("添加入库单失败");
+            log.error("保存入库单接口错误:{}",e.getCause());
+            throw new GroundRuntimeException("添加入库单失败");
         }
     }
 
@@ -328,7 +329,7 @@ public class InboundServiceImpl implements InboundService {
      * @return
      */
     @Override
-    @Async("myTaskAsyncPool")
+//    @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
     public void pushWms(String code  ,InboundServiceImpl inboundService){
 
@@ -340,7 +341,6 @@ public class InboundServiceImpl implements InboundService {
         BeanCopyUtils.copy(inbound, inboundWmsReqVO);
         List<InboundProductWmsReqVO> inboundProductWmsReqVOS =  inboundProductDao.selectMmsReqByInboundOderCode(inbound.getInboundOderCode());
         inboundWmsReqVO.setList(inboundProductWmsReqVOS);
-//        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVos = new ArrayList<>();
         try{
             InboundCallBackReqVo inboundCallBackReqVo = new InboundCallBackReqVo();
             //采购传入wms
@@ -349,27 +349,23 @@ public class InboundServiceImpl implements InboundService {
                 inboundWmsReqVO.setCreateById(createById);
                 log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundWmsReqVO));
                 url =urlConfig.WMS_API_URL+"/wms/save/purchase/inbound";
-
                 HttpClient httpClient = HttpClient.post(url).json(inboundWmsReqVO);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-                String data= JSON.toJSONString(orderDto.getData());
-                com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-                ResponseWms entiy = mapper.readValue(data, ResponseWms.class);
-                if("0".equals(orderDto.getCode())){
-                    if("0".equals(entiy.getResultCode())){
+                if(orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                    ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()), ResponseWms.class);
+                    if ("0".equals(responseWms.getResultCode())) {
                         //设置wms编号
-                        inbound.setWmsDocumentCode(entiy.getUniquerRequestNumber());
+                        inbound.setWmsDocumentCode(responseWms.getUniquerRequestNumber());
                         //设置入库状态
                         inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
                         inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
-
                         //采购日志列表
-                        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode() )){
+                        if (inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
                             OperationLog operationLog = new OperationLog();
                             PurchaseOrder purchaseOrder = new PurchaseOrder();
                             purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
                             PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-                            if(resultPurchaseOrder != null){
+                            if (resultPurchaseOrder != null) {
                                 operationLog.setOperationId(resultPurchaseOrder.getPurchaseOrderId());
                                 operationLog.setCreateByName(inbound.getCreateBy());
                                 operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
@@ -380,8 +376,12 @@ public class InboundServiceImpl implements InboundService {
 
                             }
                         }
+                    } else {
+                        log.error("入库单传入wms失败:{}", responseWms.getReason());
+                        throw new RuntimeException("入库单传入wms失败");
                     }
                 } else {
+                    log.error("入库单传入wms失败:{}", orderDto.getMessage());
                     throw new RuntimeException("入库单传入wms失败");
                 }
             //移库
