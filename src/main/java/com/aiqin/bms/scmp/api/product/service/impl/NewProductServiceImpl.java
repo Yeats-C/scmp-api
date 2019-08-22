@@ -65,6 +65,9 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         ExceptionId(productCode);
 
         NewProduct newProduct = newProductMapper.getProductCode(productCode);
+        if(null == newProduct){
+            throw  new BizException(ResultCode.NO_HAVE_INFO_ERROR);
+        }
         int i = newProductMapper.checkName(newProductUpdateReqVO.getProductName(), newProduct.getCompanyCode(), productCode);
         if(i>0){
             throw  new BizException(ResultCode.SPU_NAME_EXISTS);
@@ -140,6 +143,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
             queryNewProductReqVO.setCompanyCode(authToken.getCompanyCode());
+            queryNewProductReqVO.setPersonId(authToken.getPersonId());
         }
         PageHelper.startPage(queryNewProductReqVO.getPageNo(), queryNewProductReqVO.getPageSize());
         List<NewProductResponseVO> list = newProductMapper.getList(queryNewProductReqVO);
