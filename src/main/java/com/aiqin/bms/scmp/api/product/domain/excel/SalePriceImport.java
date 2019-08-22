@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 public class SalePriceImport extends BaseRowModel {
-    public static final String HEAD = "SalePriceImport(skuCode=SKU编号, skuName=SKU名称, priceItemName=价格项目, effectiveTimeStart=生效时间, newPrice=含税价, warehouseBatchName=仓库批次号, changePriceReasonName=调价原因)";
+    public static final String HEAD = "SalePriceImport(skuCode=SKU编号, skuName=SKU名称, warehouseBatchName=仓库批次号, effectiveTimeStart=生效时间, readyCol67=爱亲渠道价, readyCol68=萌贝树渠道价, readyCol69=小红马渠道价, readyCol70=爱亲分销价, readyCol71=萌贝树分销价, readyCol72=小红马分销价, readyCol73=爱亲售价, readyCol74=萌贝树售价, readyCol75=小红马售价)";
     @ApiModelProperty("sku编码")
     @ExcelProperty(index = 0, value = "sku编码")
     private String skuCode;

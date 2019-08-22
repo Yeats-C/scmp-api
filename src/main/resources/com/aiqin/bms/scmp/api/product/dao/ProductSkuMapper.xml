@@ -1767,6 +1767,12 @@
     <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
       and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
     </if>
+    <if test="skuCodes!=null and skuCodes.size>0">
+      AND a.sku_code in
+      <foreach collection="skuCodes" item="item" close=")" open="(" separator=",">
+        #{item}
+      </foreach>
+    </if>
     group by a.id order by a.create_time desc
   </select>
 
