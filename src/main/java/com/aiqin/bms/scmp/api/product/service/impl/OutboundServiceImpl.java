@@ -544,7 +544,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      * @return
      */
     @Override
-    @Async("myTaskAsyncPool")
+//    @Async("myTaskAsyncPool")
     public int workFlowCallBack(OutboundCallBackReqVo reqVo) {
 
         log.info(" 出库单回传实体为 ：[{}]" + reqVo);

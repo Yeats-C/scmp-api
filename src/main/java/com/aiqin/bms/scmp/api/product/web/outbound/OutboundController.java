@@ -110,7 +110,8 @@ public class OutboundController {
         log.error(" 出库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
         try {
             reqVo.setOutboundTime(new DateTime(new Long(reqVo.getDateTime())).toDate());
-            return HttpResponse.success(outboundService.workFlowCallBack(reqVo));
+            int s = outboundService.workFlowCallBack(reqVo);
+            return HttpResponse.success(s);
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.OUTBOUND_SAVE_ERROR);
         }
