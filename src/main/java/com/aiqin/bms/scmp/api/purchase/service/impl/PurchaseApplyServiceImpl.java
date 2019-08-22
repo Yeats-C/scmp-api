@@ -320,6 +320,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             purchaseApply.setPurchaseGroupName(applyProducts.get(0).getPurchaseGroupName());
             purchaseApply.setCreateById(applyProductRequest.getCreateById());
             purchaseApply.setCreateByName(applyProductRequest.getCreateByName());
+            purchaseApply.setCompanyCode(applyProductRequest.getCompanyCode());
+            purchaseApply.setCompanyName(applyProductRequest.getCompanyName());
             purchaseApplyDao.insert(purchaseApply);
             encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         }

@@ -9,6 +9,8 @@
     <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
@@ -22,11 +24,12 @@
     create_time as createTime, create_by_id as createById, create_by_name as createByName
   </sql>
   <insert id="insert">
-    insert into purchase_apply (purchase_apply_id, purchase_apply_code, apply_type,
-      apply_status, purchase_group_code, purchase_group_name, create_time, create_by_id, create_by_name)
-    values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR},
-      #{applyType,jdbcType=INTEGER}, #{applyStatus,jdbcType=INTEGER}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
-      #{purchaseGroupName,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
+    insert into purchase_apply (purchase_apply_id, purchase_apply_code, apply_type, apply_status, purchase_group_code,
+      purchase_group_name, company_code, company_name, create_time, create_by_id, create_by_name)
+    values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{applyType,jdbcType=INTEGER},
+      #{applyStatus,jdbcType=INTEGER}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR},
+      #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR},
+      #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_apply
