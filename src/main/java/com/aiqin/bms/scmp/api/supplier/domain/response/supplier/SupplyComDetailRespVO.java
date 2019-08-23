@@ -155,4 +155,7 @@ public class SupplyComDetailRespVO {
     @ApiModelProperty("sku信息")
     private List<QueryProductSkuListResp> skuListRespVos;
 
+    @ApiModelProperty("采购组")
+    private List<SupplyCompanyPurchaseGroupResVo> purchaseGroupVos;
+
 }
