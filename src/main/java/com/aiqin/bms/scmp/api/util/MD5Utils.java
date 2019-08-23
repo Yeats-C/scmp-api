@@ -5,6 +5,7 @@
  */
 package com.aiqin.bms.scmp.api.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 
 import java.security.MessageDigest;
@@ -15,6 +16,7 @@ import java.util.Random;
  * @description MD5加密工具
  * @date 2014-3-1
  */
+@Slf4j
 public class MD5Utils {
 
     /**
@@ -104,7 +106,7 @@ public class MD5Utils {
             md5str = bytesToHex(buff);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return md5str;
     }

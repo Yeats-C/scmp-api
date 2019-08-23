@@ -165,7 +165,7 @@ public class ManufacturerServiceImp  implements ManufacturerService {
             List<ManufacturerBrandResVo> manufacturerBrandResVoList=  BeanCopyUtils.copyList(list, ManufacturerBrandResVo.class);
             manufacturerResVo.setList(manufacturerBrandResVoList);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             log.error("制造商查看关联品牌转化失败");
             throw new GroundRuntimeException("制造商查看关联品牌转化失败");
         }
@@ -223,7 +223,7 @@ public class ManufacturerServiceImp  implements ManufacturerService {
                        saveList.stream().forEach(manufacturerBrand -> manufacturerBrand.setManufacturerCode(vo.getManufacturerCode()));
                        int kp = ((ManufacturerService) AopContext.currentProxy()).saveList(saveList);
                    }catch (Exception e){
-                       e.printStackTrace();
+                       log.error("error", e);
                        log.error("制造商关联品牌添加失败");
                        throw new GroundRuntimeException("制造商关联品牌添加失败");
                    }
@@ -233,14 +233,14 @@ public class ManufacturerServiceImp  implements ManufacturerService {
                     updateList.stream().forEach(manufacturerBrand -> manufacturerBrand.setManufacturerCode(vo.getManufacturerCode()));
                     int kp = ((ManufacturerService) AopContext.currentProxy()).updateList(updateList);
                 }catch (Exception e){
-                    e.printStackTrace();
+                    log.error("error", e);
                     log.error("制造商关联品牌更新失败");
                     throw new GroundRuntimeException("制造商关联品牌更新失败");
                 }
                }
                return HttpResponse.success(k) ;
            } catch (Exception e) {
-               e.printStackTrace();
+               log.error("error", e);
                log.error("品牌实体转化失败");
                throw new GroundRuntimeException("品牌实体转化失败");
            }

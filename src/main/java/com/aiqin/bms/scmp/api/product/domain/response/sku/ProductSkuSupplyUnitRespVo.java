@@ -12,7 +12,6 @@ import java.util.List;
  * @version 1.0
  * @className ProductSkuSupplyUnitRespVo
  * @date 2019/5/14 15:46
- * @description TODO
  */
 @ApiModel("SKU供应商信息返回")
 @Data

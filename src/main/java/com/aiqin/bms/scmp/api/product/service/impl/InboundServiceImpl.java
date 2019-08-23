@@ -425,7 +425,7 @@ public class InboundServiceImpl implements InboundService {
                 inboundService.workFlowCallBack(inboundCallBackReqVo);
             }
         }catch (Exception e){
-             e.printStackTrace();
+             log.error("error", e);
              log.error(e.getMessage());
              throw new RuntimeException("入库单传入wms失败");
         }
@@ -626,7 +626,7 @@ public class InboundServiceImpl implements InboundService {
                    purchaseManageService.addLog(operationLog);
                }
            }catch (Exception e){
-               e.printStackTrace();
+               log.error("error", e);
                log.error(e.getMessage());
                throw new GroundRuntimeException("回传采购单失败失败");
            }
@@ -649,7 +649,7 @@ public class InboundServiceImpl implements InboundService {
                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
                int k = inboundDao.updateByPrimaryKeySelective(inbound);
            } catch (Exception e) {
-               e.printStackTrace();
+               log.error("error", e);
            }
 
        }// 如果是调拨
@@ -708,7 +708,7 @@ public class InboundServiceImpl implements InboundService {
                 log.error("入库单回传给采购接口失败");
             }
         } catch (GroundRuntimeException e) {
-            e.printStackTrace();
+            log.error("error", e);
             log.error("入库单回传给采购接口失败+回传实体为：[{}]",storageResultReqVo);
         }
 
@@ -731,7 +731,7 @@ public class InboundServiceImpl implements InboundService {
                 //跟新调拨单状态
                 int k = allocationMapper.updateByPrimaryKeySelective(allocation);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("调拨单更改入库状态失败");
         }
     }
@@ -753,7 +753,7 @@ public class InboundServiceImpl implements InboundService {
 //                throw  new GroundRuntimeException("调用采购服务失败");
 //            }
 //        } catch (GroundRuntimeException e) {
-//            e.printStackTrace();
+//            log.error("error", e);
 //            log.error("入库单回传给退货接口失败+回传实体为：[{}]",storageResultItemReqVo);
 //        }
 
@@ -777,7 +777,7 @@ public class InboundServiceImpl implements InboundService {
             //跟新调拨单状态
             int k = allocationMapper.updateByPrimaryKeySelective(allocation);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("移库单更改入库状态失败");
         }
     }

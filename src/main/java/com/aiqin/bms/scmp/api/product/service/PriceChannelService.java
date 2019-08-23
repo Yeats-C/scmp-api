@@ -16,7 +16,7 @@ import java.util.Set;
  * @version 1.0
  * @className PriceChannelService
  * @date 2019/4/19 15:30
- * @description TODO
+
  */
 public interface PriceChannelService {
 

@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @className TagInfoServiceImpl
  * @date 2019/4/29 14:59
- * @description TODO
+
  */
 @Service
 @Slf4j
@@ -250,7 +250,7 @@ public class TagInfoServiceImpl implements TagInfoService {
                 });
                 checkUseTagRecord(record.getUseObjectCode(),record.getTagTypeCode(),reqVos,addList,updateList,delList);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("error", e);
                 throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
                         "系统错误"));
             }

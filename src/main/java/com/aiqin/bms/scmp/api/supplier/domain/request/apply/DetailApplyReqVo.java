@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * @version 1.0
  * @className DetailApplyReqVo
  * @date 2019/4/8 09:59
- * @description TODO
+
  */
 @ApiModel("查看详情请求参数")
 @Data

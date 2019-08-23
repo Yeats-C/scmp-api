@@ -7,7 +7,6 @@ import lombok.Getter;
  * @version 1.0
  * @className BatchProductEnum
  * @date 2019/6/19 15:59
- * @description TODO
  */
 @Getter
 public enum BatchProductEnum {

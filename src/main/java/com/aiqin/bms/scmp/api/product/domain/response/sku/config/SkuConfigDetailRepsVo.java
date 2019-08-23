@@ -16,7 +16,6 @@ import java.util.Objects;
  * @version 1.0
  * @className SkuConfigDetailRepsVo
  * @date 2019/5/25 18:39
- * @description TODO
  */
 @Data
 @ApiModel("SKU配置信息详情返回")

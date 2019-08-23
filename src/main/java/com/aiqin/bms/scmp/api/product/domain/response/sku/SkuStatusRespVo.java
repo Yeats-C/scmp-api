@@ -9,7 +9,6 @@ import lombok.Data;
  * @version 1.0
  * @className SkuStatusRespVo
  * @date 2019/7/6 19:42
- * @description TODO
  */
 @ApiModel("sku状态返回")
 @Data

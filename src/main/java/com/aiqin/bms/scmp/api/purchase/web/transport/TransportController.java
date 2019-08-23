@@ -14,6 +14,7 @@ import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("purchase/transport")
+@Slf4j
 public class TransportController {
     @Autowired
     private TransportService transportService;
@@ -35,7 +37,7 @@ public class TransportController {
         try {
             return HttpResponse.success(transportService.selectPage(transportRequest));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(MessageId.create(Project.PURCHASE_API,-1,e.getMessage()));
         }
     }
@@ -46,7 +48,7 @@ public class TransportController {
         try {
             return HttpResponse.success(transportService.selectTransportOrdersPage(transportOrdersResquest));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(MessageId.create(Project.PURCHASE_API,-1,e.getMessage()));
         }
     }
@@ -56,7 +58,7 @@ public class TransportController {
         try {
             return HttpResponse.success(transportService.selectDeliverOrdersPage(transportOrdersResquest));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(MessageId.create(Project.PURCHASE_API,-1,e.getMessage()));
         }
     }
@@ -66,7 +68,7 @@ public class TransportController {
         try {
             return transportService.saveTransport(transportAddRequest);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(MessageId.create(Project.PURCHASE_API,-1,e.getMessage()));
         }
     }
@@ -76,7 +78,7 @@ public class TransportController {
         try {
             return transportService.deliver(transportCode);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(MessageId.create(Project.PURCHASE_API,-1,e.getMessage()));
         }
     }
@@ -86,7 +88,7 @@ public class TransportController {
         try {
             return transportService.sign(transportCode);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(MessageId.create(Project.PURCHASE_API,-1,e.getMessage()));
         }
     }
@@ -97,7 +99,7 @@ public class TransportController {
         try {
             return HttpResponse.success(transportService.transportLogs(transportLogsRequest));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(MessageId.create(Project.PURCHASE_API,-1,e.getMessage()));
         }
     }
@@ -110,7 +112,7 @@ public class TransportController {
         } catch (GroundRuntimeException ge){
             return HttpResponse.failure(MessageId.create(Project.PURCHASE_API, 500, ge.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -122,7 +124,7 @@ public class TransportController {
         } catch (GroundRuntimeException ge){
             return HttpResponse.failure(MessageId.create(Project.PURCHASE_API, 500, ge.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * @version 1.0
  * @className DetailRespVo
  * @date 2019/5/23 10:59
- * @description TODO
+
  */
 @ApiModel("规则响应Vo")
 @Data

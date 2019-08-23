@@ -9,7 +9,6 @@ import lombok.Data;
  * @version 1.0
  * @className CancelReqVO
  * @date 2019/5/27 11:08
- * @description TODO
  */
 @ApiModel("申请撤销请求VO")
 @Data

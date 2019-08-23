@@ -11,7 +11,6 @@ import java.util.List;
  * @version 1.0
  * @className SaveItemReqVo
  * @date 2019/5/17 15:16
- * @description TODO
  */
 
 @ApiModel("新增SKU/SPU")

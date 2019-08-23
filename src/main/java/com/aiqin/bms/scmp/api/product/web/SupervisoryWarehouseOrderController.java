@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  * @version 1.0
  * @className SupervisoryWarehouseOrderController
  * @date 2019/6/29 15:26
- * @description TODO
+
  */
 
 @RestController
@@ -35,7 +35,7 @@ public class SupervisoryWarehouseOrderController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -48,7 +48,7 @@ public class SupervisoryWarehouseOrderController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

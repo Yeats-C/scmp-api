@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
  * @version 1.0
  * @className ProductSkuPromoteSalesController
  * @date 2019/7/3 12:52
- * @description TODO
+
  */
 @RestController
 @Api(description = "基础资料-SKU促销管理")

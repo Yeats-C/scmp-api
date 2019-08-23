@@ -10,7 +10,7 @@ import lombok.Data;
  * @version 1.0
  * @className QueryPromoteSalesReqVo
  * @date 2019/7/3 12:31
- * @description TODO
+
  */
 @ApiModel("SKU促销查询Vo")
 @Data

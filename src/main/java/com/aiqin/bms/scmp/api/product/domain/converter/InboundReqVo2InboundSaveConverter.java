@@ -1,10 +1,9 @@
 package com.aiqin.bms.scmp.api.product.domain.converter;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.bms.scmp.api.base.InOutStatus;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.product.domain.SupplyComDetailRespVO;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
@@ -12,7 +11,9 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  * @date 2019/1/17
  */
 @Component
+@Slf4j
 public class InboundReqVo2InboundSaveConverter implements Converter<InboundReqVo, InboundReqSave> {
     private SkuService skuService;
 
@@ -116,7 +118,7 @@ public class InboundReqVo2InboundSaveConverter implements Converter<InboundReqVo
                     product.setPreInboundMainNum(vo.getNum()*vo.getConvertNum());
                     product.setInboundBaseContent(vo.getConvertNum().toString());
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                     throw new BizException("sku编码:"+vo.getSkuCode()+",对应的转换单位系数不存在");
                 }
                 product.setCreateTime(new Date());
@@ -138,7 +140,7 @@ public class InboundReqVo2InboundSaveConverter implements Converter<InboundReqVo
             inbound.setList(products);
             return inbound;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if(e instanceof BizException){
                 throw new BizException(e.getMessage());
             }else {

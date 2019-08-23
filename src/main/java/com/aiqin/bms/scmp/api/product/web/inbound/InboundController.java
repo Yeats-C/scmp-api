@@ -114,7 +114,7 @@ public class InboundController {
             return HttpResponse.success();
         } catch (Exception e) {
             log.error("入库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
         }
     }
@@ -145,7 +145,7 @@ public class InboundController {
 //            return HttpResponse.success();
 //        } catch (Exception e) {
 //            log.error("入库单回调接口错误实体是:[{}]", code);
-//            e.printStackTrace();
+//            log.error("error", e);
 //            return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
 //        }
 //    }

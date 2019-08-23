@@ -2,11 +2,12 @@ package com.aiqin.bms.scmp.api.supplier.web.advice;
 
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.bms.scmp.api.common.BizException;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,7 @@ import java.util.Map;
 
 
 @ControllerAdvice
+@Slf4j
 public class SupplierValidationHandler {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -101,7 +103,7 @@ public class SupplierValidationHandler {
     public HttpResponse handleRException(HttpServletResponse response, Exception e) {
         response.setStatus(500);
         logger.error(e.getMessage());
-        e.printStackTrace();
+        log.error("error", e);
         return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
     }
 

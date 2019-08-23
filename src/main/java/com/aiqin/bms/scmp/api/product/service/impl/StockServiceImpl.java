@@ -386,7 +386,7 @@ public class StockServiceImpl implements StockService {
 //                httpResponse.setData(errorRespVos);
 //            }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -437,7 +437,7 @@ public class StockServiceImpl implements StockService {
                 throw new BizException(ResultCode.STOCK_LOCK_ERROR);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -467,7 +467,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -492,7 +492,7 @@ public class StockServiceImpl implements StockService {
             }
         } catch (Exception e) {
             LOGGER.error("调用退供加锁接口失败", e);
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException(e.getMessage());
         }
         return false;
@@ -516,7 +516,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -541,7 +541,7 @@ public class StockServiceImpl implements StockService {
             }
         } catch (Exception e) {
             LOGGER.error("调用退供解锁接口失败", e);
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException(e.getMessage());
         }
         return false;
@@ -572,7 +572,7 @@ public class StockServiceImpl implements StockService {
                 outboundService.updateOutBoundInfo(reqVO);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -602,7 +602,7 @@ public class StockServiceImpl implements StockService {
                 outboundService.updateOutBoundInfo(reqVo);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -918,7 +918,7 @@ public class StockServiceImpl implements StockService {
             }
             return vo;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw new BizException(e.getMessage());
             } else {
@@ -945,7 +945,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -993,7 +993,7 @@ public class StockServiceImpl implements StockService {
             }
             return Integer.valueOf(1);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw new BizException(e.getMessage());
             } else {
@@ -1050,7 +1050,7 @@ public class StockServiceImpl implements StockService {
             }
             return list;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException("采购单数据转换为 [新增] 库存数据集合失败");
         }
     }
@@ -1069,7 +1069,7 @@ public class StockServiceImpl implements StockService {
             }
             return list;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException("采购单数据转换为 [更新] 库存数据集合失败");
         }
     }
@@ -1135,7 +1135,7 @@ public class StockServiceImpl implements StockService {
             stockFlowDao.insertOne(stockFlow);
             return lockCode;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (reqVo.getLockType() == 0) {
                 throw new BizException(ResultCode.STOCK_LOCK_ERROR);
             } else {
@@ -1354,7 +1354,7 @@ public class StockServiceImpl implements StockService {
                 stockDao.insertBatch(adds);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("error", e);
             LOGGER.error("操作库存失败", e);
             throw new BizException("操作库存失败");
         }
@@ -1919,7 +1919,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -1947,7 +1947,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }

@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.util;
 
-import com.alibaba.fastjson.JSONException;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser.Feature;
@@ -9,6 +8,7 @@ import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,6 +25,7 @@ import java.util.Map;
  * 
  * @author free lance
  */
+@Slf4j
 public class JsonMapper extends ObjectMapper {
     private static final long serialVersionUID = 1L;
 
@@ -125,7 +124,7 @@ public class JsonMapper extends ObjectMapper {
             return this.writeValueAsString(object);
         } catch (IOException e) {
             logger.warn("write to json string error:" + object, e);
-            e.printStackTrace();
+            log.error("error", e);
             return null;
         }
     }

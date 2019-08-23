@@ -13,7 +13,7 @@ import java.util.List;
  * @version 1.0
  * @className ProductSkuChannelService
  * @date 2019/5/7 17:32
- * @description TODO
+
  */
 public interface ProductSkuChannelService {
     /**

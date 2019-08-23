@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.util;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier;
 import com.google.common.collect.Maps;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
 import java.beans.PropertyDescriptor;
@@ -15,8 +16,8 @@ import java.util.Map;
  * @version 1.0
  * @className GetChangeValueUtil
  * @date 2019/7/17 18:55
- * @description TODO
  */
+@Slf4j
 public class GetChangeValueUtil<T> {
 
     public static Map<String,String> skuHeadMap = Maps.newHashMap();
@@ -108,7 +109,7 @@ public class GetChangeValueUtil<T> {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return changeMap;
     }

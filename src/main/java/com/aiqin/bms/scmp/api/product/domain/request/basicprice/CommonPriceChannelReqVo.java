@@ -8,7 +8,6 @@ import lombok.Data;
  * @version 1.0
  * @className CommonPriceChannelReqVo
  * @date 2019/6/3 16:29
- * @description TODO
  */
 @Data
 public class CommonPriceChannelReqVo {

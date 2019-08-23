@@ -12,7 +12,7 @@ import java.util.Date;
  * @version 1.0
  * @className ScoreListRespVo
  * @date 2019/5/23 15:48
- * @description TODO
+
  */
 @ApiModel("评分列表查询返回VO")
 @Data

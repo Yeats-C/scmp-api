@@ -1,17 +1,18 @@
 package com.aiqin.bms.scmp.api.util;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
 
 /**
  * Created by boyd on 2018/9/3.
  */
+@Slf4j
 public class SignUtil {
     private final static String SECRET_KEY = "SECRET_KEY";
 
@@ -23,6 +24,9 @@ public class SignUtil {
      */
     public static String mapTosign(TreeMap<String, String> map) {
         Map<String, String> resultMap = sortMapByKey(map);    //按Key进行排序
+        if(null == resultMap){
+            return null;
+        }
         String unsign = SECRET_KEY;
         for (Map.Entry<String, String> entry : resultMap.entrySet()) {
             unsign += entry.getKey() + entry.getValue();
@@ -88,7 +92,7 @@ public class SignUtil {
         try {
             result = java.net.URLEncoder.encode(str, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return result;
     }
@@ -101,7 +105,7 @@ public class SignUtil {
         try {
             result = java.net.URLDecoder.decode(str, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return result;
     }

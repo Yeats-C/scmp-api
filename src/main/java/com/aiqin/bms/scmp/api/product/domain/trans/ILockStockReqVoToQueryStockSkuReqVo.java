@@ -13,7 +13,6 @@ import java.util.List;
  * @version 1.0
  * @className ILockStockReqVoToQueryStockSkuReqVo
  * @date 2019/1/9 14:11
- * @description TODO
  */
 public class ILockStockReqVoToQueryStockSkuReqVo implements Function<ILockStockReqVO, QueryStockSkuReqVo> {
 
