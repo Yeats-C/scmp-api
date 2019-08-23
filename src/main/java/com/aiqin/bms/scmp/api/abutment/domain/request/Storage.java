@@ -81,13 +81,13 @@ public class Storage {
      * 出库仓库编码
      */
     @JsonProperty("transport_code")
-    @ApiModelProperty("出库仓库编码")
+    @ApiModelProperty("出库仓库编码(只是出入库单据时,都传出库中)")
     private String transportCode;
     /**
      * 出库仓库名称
      */
     @JsonProperty("transport_name")
-    @ApiModelProperty("出库仓库名称")
+    @ApiModelProperty("出库仓库名称(只是出入库单据时,都传出库中")
     private String transportName;
     /**
      * sap出库仓库编码
@@ -99,13 +99,13 @@ public class Storage {
      * 出库库房编码
      */
     @JsonProperty("storage_code")
-    @ApiModelProperty("出库库房编码")
+    @ApiModelProperty("出库库房编码(只是出入库单据时,都传出库中")
     private String storageCode;
     /**
      * 出库库房名称
      */
     @JsonProperty("storage_name")
-    @ApiModelProperty("出库库房名称")
+    @ApiModelProperty("出库库房名称(只是出入库单据时,都传出库中")
     private String storageName;
     /**
      * sap出库库房编码

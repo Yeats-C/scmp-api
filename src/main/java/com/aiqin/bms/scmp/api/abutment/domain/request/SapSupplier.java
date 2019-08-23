@@ -1,6 +1,4 @@
-package com.aiqin.fms.wechat.api.domain.sap.supplier;
-
-import com.aiqin.fms.wechat.api.domain.sap.SapBaseVO;
+package com.aiqin.bms.scmp.api.abutment.domain.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -49,7 +47,7 @@ public class SapSupplier extends SapBaseVO {
     @JsonProperty("KTOKK")
     private String supplierGroupCode;
 
-    @ApiModelProperty(value = "排序字段",hidden = true)
+    @ApiModelProperty(value = "排序字段", hidden = true)
     @JsonProperty("SORTL")
     private String sortIndex = "1";
 

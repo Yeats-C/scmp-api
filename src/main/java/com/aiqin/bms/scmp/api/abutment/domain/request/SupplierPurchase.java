@@ -1,4 +1,4 @@
-package com.aiqin.fms.wechat.api.domain.sap.supplier;
+package com.aiqin.bms.scmp.api.abutment.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
