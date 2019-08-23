@@ -15,7 +15,10 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, stat_year, stat_month, province_code, province_name, sales_num, channel_sales_amount, 
+    stat_year, stat_month, province_code, province_name, sales_num, channel_sales_amount,
     distribution_sales_amount, shopping_frequency, repurchase_rate, create_time
   </sql>
+  <select id="storeRepurchaseList" resultMap="BaseResultMap">
+
+  </select>
 </mapper>

@@ -260,7 +260,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             for(PurchaseApplyDetailResponse product : detail){
                 StringBuilder sb = new StringBuilder();
                 sb.append(product.getSkuCode()).append("_").append(product.getSupplierCode()).append("_").
-                        append(product.getTransportCenterCode()).append("_").append(product.getWarehouseCode());
+                        append(product.getTransportCenterCode()).append("_").append(product.getWarehouseCode()).
+                        append("_").append(product.getProductType());
                 for(String str:list){
                     if(str.equals(sb.toString())){
                         response.add(product);
@@ -269,9 +270,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
             detail.removeAll(response);
         }
-        Integer count = productSkuDao.purchaseProductCount(purchases);
+        //Integer count = productSkuDao.purchaseProductCount(purchases);
         pageResData.setDataList(detail);
-        pageResData.setTotalCount(count);
+        pageResData.setTotalCount(detail.size());
         return HttpResponse.success(pageResData);
     }
 
@@ -280,7 +281,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         for(PurchaseProductSearchRequest search:searchList){
             StringBuilder sb = new StringBuilder();
             sb.append(search.getSkuCode()).append("_").append(search.getSupplierCode()).append("_").
-               append(search.getTransportCenterCode()).append("_").append(search.getWarehouseCode());
+               append(search.getTransportCenterCode()).append("_").append(search.getWarehouseCode()).
+                    append("_").append(search.getProductType());
             set.add(sb.toString());
         }
         return set;

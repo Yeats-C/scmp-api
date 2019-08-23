@@ -1082,7 +1082,11 @@
         LEFT JOIN product_sku_box_packing AS psbp ON st.sku_code = psbp.product_sku_code
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code=pssi.product_sku_code
         LEFT JOIN product_sku_checkout AS pscc ON st.sku_code=pscc.sku_code
-        WHERE 1=1
+        WHERE
+        ps.procurement_section_code in
+        <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+            #{item.purchaseGroupCode,jdbcType=VARCHAR}
+        </foreach>
         <if test="skuCode!=null and skuCode!=''">
             AND st.sku_code=#{skuCode}
         </if>

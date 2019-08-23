@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.statistics.service.impl;
 
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.statistics.dao.StatComStoreRepurchaseRateDao;
+import com.aiqin.bms.scmp.api.statistics.dao.StatDeptStoreRepurchaseRateDao;
 import com.aiqin.bms.scmp.api.statistics.dao.StatSupplierArrivalRateMonthlyDao;
 import com.aiqin.bms.scmp.api.statistics.dao.StatSupplierArrivalRateYearlyDao;
 import com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse;
@@ -29,19 +31,27 @@ public class StatisticsServiceImpl implements StatisticsService {
     private StatSupplierArrivalRateMonthlyDao statSupplierArrivalRateMonthlyDao;
     @Resource
     private StatSupplierArrivalRateYearlyDao statSupplierArrivalRateYearlyDao;
+    @Resource
+    private StatDeptStoreRepurchaseRateDao statDeptStoreRepurchaseRateDao;
+    @Resource
+    private StatComStoreRepurchaseRateDao statComStoreRepurchaseRateDao;
+
+    private void currency(Integer type, String date){
+        if(type == null && StringUtils.isEmpty(date)){
+            type = 0;
+            Calendar cale = null;
+            cale = Calendar.getInstance();
+            date = Integer.toString(cale.get(Calendar.YEAR));
+        }
+    }
 
     @Override
-    public HttpResponse<SupplierDeliveryResponse> supplierDelivery(Integer formType, String date){
-       if(formType == null && StringUtils.isEmpty(date)){
-           formType = 0;
-           Calendar cale = null;
-           cale = Calendar.getInstance();
-           date = Integer.toString(cale.get(Calendar.YEAR));
-       }
+    public HttpResponse<SupplierDeliveryResponse> supplierDelivery(Integer type, String date){
+       this.currency(type, date);
        // 查询年报信息
        List<SupplierDeliveryResponse> deliveryList;
        List<SupplierDeliveryRateResponse> rateList;
-       if(formType == 0){
+       if(type == 0){
            deliveryList = statSupplierArrivalRateYearlyDao.supplyArrivalYearByGroup(date);
            if(CollectionUtils.isNotEmptyCollection(deliveryList)){
                for(SupplierDeliveryResponse response:deliveryList){
@@ -97,7 +107,15 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public HttpResponse<StoreRepurchaseRateResponse> storeRepurchaseRate(String date, Integer type){
-
+        this.currency(type, date);
+        List<StoreRepurchaseRateResponse> list;
+        String year = date.substring(0, 4);
+        String month = date.substring(5, date.length());
+        if(type == 0){
+            list = statComStoreRepurchaseRateDao.storeRepurchaseList(year, month);
+        }else {
+            list = statDeptStoreRepurchaseRateDao.storeRepurchaseList(year, month);
+        }
         return HttpResponse.success();
     }
 

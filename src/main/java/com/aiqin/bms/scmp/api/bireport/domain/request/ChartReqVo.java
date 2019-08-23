@@ -49,13 +49,9 @@ public class ChartReqVo {
     @JsonProperty("data_type")
     private String dataType;
 
-    @ApiModelProperty("销售类型")
-    @JsonProperty("sale_type_code")
-    private Integer saleTypeCode;
-
 
     // 有参去掉beginCreateTime
-    public ChartReqVo(String createTime, String productSortCode, String productSortName, String orderCode, String orderOriginal, String storeTypeCode, String storeType, String dataTypeCode, String dataType, Integer saleTypeCode) {
+    public ChartReqVo(String createTime, String productSortCode, String productSortName, String orderCode, String orderOriginal, String storeTypeCode, String storeType, String dataTypeCode, String dataType) {
         this.createTime = createTime;
         this.productSortCode = productSortCode;
         this.productSortName = productSortName;
@@ -65,7 +61,6 @@ public class ChartReqVo {
         this.storeType = storeType;
         this.dataTypeCode = dataTypeCode;
         this.dataType = dataType;
-        this.saleTypeCode = saleTypeCode;
     }
 
     public ChartReqVo() {

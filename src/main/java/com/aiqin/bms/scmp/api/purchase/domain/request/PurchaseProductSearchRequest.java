@@ -26,4 +26,8 @@ public class PurchaseProductSearchRequest {
     @ApiModelProperty(value="库房编码")
     @JsonProperty("warehouse_code")
     private String warehouseCode;
+
+    @ApiModelProperty(value="商品类型")
+    @JsonProperty("product_type")
+    private Integer productType;
 }
