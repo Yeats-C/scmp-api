@@ -246,7 +246,9 @@ public class GoodsRejectController {
             @ApiImplicitParam(name = "sku_code", value = "sku编号", type = "String"),
             @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
             @ApiImplicitParam(name = "category_name", value = "分类", type = "String"),
+            @ApiImplicitParam(name = "category_id", value = "分类", type = "String"),
             @ApiImplicitParam(name = "brand_name", value = "品牌", type = "String"),
+            @ApiImplicitParam(name = "brand_id", value = "品牌", type = "String"),
             @ApiImplicitParam(name = "product_property_name", value = "商品属性name", type = "String"),
             @ApiImplicitParam(name = "product_property_code", value = "商品属性code", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
@@ -257,8 +259,9 @@ public class GoodsRejectController {
                                                                                          @RequestParam(value = "sku_code", required = false) String sku_code, @RequestParam(value = "sku_name", required = false) String sku_name,
                                                                                          @RequestParam(value = "transport_center_code", required = false) String transport_center_code, @RequestParam(value = "supplier_code", required = false) String supplier_code,
                                                                                          @RequestParam(value = "category_name", required = false) String category_name, @RequestParam(value = "product_property_code", required = false) String product_property_code,
+                                                                                         @RequestParam(value = "category_id", required = false) String category_id,@RequestParam(value = "brand_id", required = false) String brand_id,
                                                                                          @RequestParam(value = "warehouse_code", required = false) String warehouse_code, @RequestParam(value = "brand_name", required = false) String brand_name) {
-        RejectProductRequest rejectQueryRequest = new RejectProductRequest(purchase_group_code, supplier_code, transport_center_code, warehouse_code, sku_code, sku_name, category_name, brand_name, product_property_name, product_property_code);
+        RejectProductRequest rejectQueryRequest = new RejectProductRequest(category_id,brand_id,purchase_group_code, supplier_code, transport_center_code, warehouse_code, sku_code, sku_name, category_name, brand_name, product_property_name, product_property_code);
         rejectQueryRequest.setPageNo(page_no);
         rejectQueryRequest.setPageSize(page_size);
         LOGGER.info("查询退供申请单的商品信息,rejectRecord:{}", rejectQueryRequest.toString());
