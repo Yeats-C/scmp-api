@@ -107,4 +107,6 @@ public interface AllocationMapper {
      * @date 2019/7/2 22:27
      */
     List<QueryScrapResVo> getScrapList(QueryScrapReqVo vo);
+
+    AllocationDTO selectById(Long id);
 }

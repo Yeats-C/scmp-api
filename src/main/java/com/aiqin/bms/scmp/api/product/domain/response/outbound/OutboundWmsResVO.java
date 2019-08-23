@@ -41,6 +41,9 @@ public class OutboundWmsResVO {
     @ApiModelProperty("预计主单位数量")
     private Long preMainUnitNum;
 
+    @ApiModelProperty("实际主单位数量")
+    private Long praMainUnitNum;
+
     @ApiModelProperty(value = "明细信息 必填")
     private List<OutboundProductWmsResVO> list;
 
