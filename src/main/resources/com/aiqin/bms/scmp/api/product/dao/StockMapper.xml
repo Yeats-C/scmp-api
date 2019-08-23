@@ -146,11 +146,11 @@
         <result column="bad_lock_num" jdbcType="BIGINT" property="badLockNum"/>
         <result column="bad_way_num" jdbcType="BIGINT" property="badWayNum"/>
         <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
-        <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
+        <result column="stockupfinish_time" jdbcType="TIMESTAMP" property="stockupfinishTime"/>
         <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
-        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
-        <result column="update_time" jdbcType="VARCHAR" property="updateTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
 
     </resultMap>

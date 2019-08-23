@@ -37,6 +37,14 @@ public class PurchaseApply {
     @JsonProperty("purchase_group_name")
     private String purchaseGroupName;
 
+    @ApiModelProperty(value="公司编码")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty(value="公司名称")
+    @JsonProperty("company_name")
+    private String companyName;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

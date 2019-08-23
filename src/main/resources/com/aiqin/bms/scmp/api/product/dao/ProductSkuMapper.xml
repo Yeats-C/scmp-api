@@ -1767,6 +1767,12 @@
     <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
       and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
     </if>
+    <if test="skuCodes!=null and skuCodes.size>0">
+      AND a.sku_code in
+      <foreach collection="skuCodes" item="item" close=")" open="(" separator=",">
+        #{item}
+      </foreach>
+    </if>
     group by a.id order by a.create_time desc
   </select>
 
@@ -2089,43 +2095,43 @@
     <where>
       ps.del_flag = 0 and w.warehouse_type_code = 1
       and sc.config_status = 0 and ps.goods_gifts != 2
-      <if test="supplierCode != null">
+      <if test="supplierCode != null and supplierCode != ''">
         and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
-      <if test="transportCenterCode != null">
+      <if test="transportCenterCode != null and transportCenterCode != ''">
         and sc.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
       </if>
-      <if test="skuCode != null">
+      <if test="skuCode != null and skuCode != ''">
         and ps.sku_code = #{skuCode,jdbcType=VARCHAR}
       </if>
-      <if test="skuName != null">
+      <if test="skuName != null and skuName != ''">
         and ps.sku_name like CONCAT('',#{skuName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="purchaseGroupCode != null">
+      <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
         and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
-      <if test="productPropertyCode != null">
+      <if test="productPropertyCode != null and productPropertyCode != ''">
         and ps.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
       </if>
-      <if test="productPropertyName != null">
+      <if test="productPropertyName != null and productPropertyName != ''">
         and ps.product_property_name like CONCAT('', #{productPropertyName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="brandId != null">
+      <if test="brandId != null and brandId != ''">
         and ps.product_brand_code = #{brandId,jdbcType=VARCHAR}
       </if>
-      <if test="brandName != null">
+      <if test="brandName != null and brandName != ''">
         and ps.product_brand_name like CONCAT('', #{brandName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="categoryId != null">
+      <if test="categoryId != null and categoryId != ''">
         and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
       </if>
-      <if test="categoryName != null">
+      <if test="categoryName != null and categoryName != ''">
         and ps.product_category_name like CONCAT('', #{categoryName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="spuCode != null">
+      <if test="spuCode != null and spuCode != ''">
         and ps.product_code = #{spuCode,jdbcType=VARCHAR}
       </if>
-      <if test="productName != null">
+      <if test="productName != null and productName != ''">
         and ps.product_name like CONCAT('',#{productName,jdbcType=VARCHAR},"%")
       </if>
       <if test="aReplenish != null and aReplenish.size > 0">
@@ -2164,43 +2170,43 @@
     <where>
       ps.del_flag = 0 and w.warehouse_type_code = 1
       and sc.config_status = 0 and ps.goods_gifts != 2
-      <if test="supplierCode != null">
+      <if test="supplierCode != null and supplierCode != ''">
         and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
-      <if test="transportCenterCode != null">
+      <if test="transportCenterCode != null and transportCenterCode != ''">
         and sc.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
       </if>
-      <if test="skuCode != null">
+      <if test="skuCode != null and skuCode != ''">
         and ps.sku_code = #{skuCode,jdbcType=VARCHAR}
       </if>
-      <if test="skuName != null">
+      <if test="skuName != null and skuName != ''">
         and ps.sku_name like CONCAT('',#{skuName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="purchaseGroupCode != null">
+      <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
         and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
-      <if test="productPropertyCode != null">
+      <if test="productPropertyCode != null and productPropertyCode != ''">
         and ps.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
       </if>
-      <if test="productPropertyName != null">
+      <if test="productPropertyName != null and productPropertyName != ''">
         and ps.product_property_name like CONCAT('', #{productPropertyName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="brandId != null">
+      <if test="brandId != null and brandId != ''">
         and ps.product_brand_code = #{brandId,jdbcType=VARCHAR}
       </if>
-      <if test="brandName != null">
+      <if test="brandName != null and brandName != ''">
         and ps.product_brand_name like CONCAT('', #{brandName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="categoryId != null">
+      <if test="categoryId != null and categoryId != ''">
         and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
       </if>
-      <if test="categoryName != null">
+      <if test="categoryName != null and  categoryName != ''">
         and ps.product_category_name like CONCAT('', #{categoryName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="spuCode != null">
+      <if test="spuCode != null and spuCode != ''">
         and ps.product_code = #{spuCode,jdbcType=VARCHAR}
       </if>
-      <if test="productName != null">
+      <if test="productName != null and productName != ''">
         and ps.product_name like CONCAT('',#{productName,jdbcType=VARCHAR},"%")
       </if>
       <if test="aReplenish != null and aReplenish.size > 0">

@@ -18,9 +18,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.BiAClassification;
 import com.aiqin.bms.scmp.api.purchase.domain.BiClassification;
 import com.aiqin.bms.scmp.api.purchase.domain.BiGrossProfitMargin;
 import com.aiqin.bms.scmp.api.purchase.domain.BiStockoutRate;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
@@ -253,10 +251,39 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 }
             }
         }
+
+        // 去重已选的商品
+        if(CollectionUtils.isNotEmptyCollection(purchases.getSearchList())){
+            Set<String> info = this.searchProductInfo(purchases.getSearchList());
+            List<String> list = new ArrayList<>(info);
+            List<PurchaseApplyDetailResponse> response = new ArrayList<>();
+            for(PurchaseApplyDetailResponse product : detail){
+                StringBuilder sb = new StringBuilder();
+                sb.append(product.getSkuCode()).append("_").append(product.getSupplierCode()).append("_").
+                        append(product.getTransportCenterCode()).append("_").append(product.getWarehouseCode());
+                for(String str:list){
+                    if(str.equals(sb.toString())){
+                        response.add(product);
+                    }
+                }
+            }
+            detail.removeAll(response);
+        }
         Integer count = productSkuDao.purchaseProductCount(purchases);
         pageResData.setDataList(detail);
         pageResData.setTotalCount(count);
         return HttpResponse.success(pageResData);
+    }
+
+    private Set<String> searchProductInfo(List<PurchaseProductSearchRequest>  searchList){
+        Set<String> set = new HashSet<>();
+        for(PurchaseProductSearchRequest search:searchList){
+            StringBuilder sb = new StringBuilder();
+            sb.append(search.getSkuCode()).append("_").append(search.getSupplierCode()).append("_").
+               append(search.getTransportCenterCode()).append("_").append(search.getWarehouseCode());
+            set.add(sb.toString());
+        }
+        return set;
     }
 
     private PurchaseApplyRequest fourProduct(PurchaseApplyRequest purchases){
@@ -320,6 +347,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             purchaseApply.setPurchaseGroupName(applyProducts.get(0).getPurchaseGroupName());
             purchaseApply.setCreateById(applyProductRequest.getCreateById());
             purchaseApply.setCreateByName(applyProductRequest.getCreateByName());
+            purchaseApply.setCompanyCode(applyProductRequest.getCompanyCode());
+            purchaseApply.setCompanyName(applyProductRequest.getCompanyName());
             purchaseApplyDao.insert(purchaseApply);
             encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         }
