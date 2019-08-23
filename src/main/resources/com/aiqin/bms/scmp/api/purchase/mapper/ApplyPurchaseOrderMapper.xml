@@ -27,6 +27,8 @@
     <result column="apply_type_form" jdbcType="VARCHAR" property="applyTypeForm" />
     <result column="approval_code" jdbcType="VARCHAR" property="approvalCode" />
     <result column="gift_tax_sum" jdbcType="INTEGER" property="giftTaxSum" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />

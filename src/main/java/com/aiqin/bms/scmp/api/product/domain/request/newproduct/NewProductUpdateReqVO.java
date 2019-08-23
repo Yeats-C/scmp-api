@@ -21,4 +21,10 @@ public class NewProductUpdateReqVO {
     @NotEmpty(message = "商品名称不能为空")
     private String productName;
 
+    @ApiModelProperty("采购组编号")
+    private String purchasingGroupCode;
+
+    @ApiModelProperty("采购组名称")
+    private String purchasingGroupName;
+
 }

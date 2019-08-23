@@ -244,6 +244,14 @@ public class OrderInfo {
     @ApiModelProperty("实际分销总价")
     private Long actualProductTotalAmount;
 
+    @ApiModelProperty("运输公司")
+    private String transportCompany;
+
+    @ApiModelProperty("运输公司编码")
+    private String transportCompanyCode;
+
+    @ApiModelProperty("运输单号")
+    private String transportNumber;
     /**以下字段为了dl回调销售单生成出库单和库存变动需要*/
 
     @ApiModelProperty("预计商品数量")

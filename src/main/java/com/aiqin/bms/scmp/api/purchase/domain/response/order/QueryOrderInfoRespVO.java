@@ -206,6 +206,15 @@ public class QueryOrderInfoRespVO {
     @ApiModelProperty("减免比例")
     private Integer logisticsRemissionRatio;
 
+    @ApiModelProperty("运输公司")
+    private String transportCompany;
+
+    @ApiModelProperty("运输公司编码")
+    private String transportCompanyCode;
+
+    @ApiModelProperty("运输单号")
+    private String transportNumber;
+
     @ApiModelProperty("商品信息")
     private List<QueryOrderInfoItemRespVO> productList;
 
