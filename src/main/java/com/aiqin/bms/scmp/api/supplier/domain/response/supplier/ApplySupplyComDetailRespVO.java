@@ -29,6 +29,9 @@ public class ApplySupplyComDetailRespVO {
     @ApiModelProperty("供应商申请文件列表")
     private List<ApplySupplierFile> applySupplierFileList;
 
+    @ApiModelProperty("采购组")
+    private List<SupplyCompanyPurchaseGroupResVo> purchaseGroupVos;
+
     @ApiModelProperty("供货单位账户申请")
     private ApplySupplyComAcctInfoRespVO applySupplyComAcctInfoRespVO;
 

@@ -79,12 +79,10 @@ public class ApplySupplyCompanyReqVO {
     @ApiModelProperty("邮箱")
     private String email;
 
-    @NotEmpty(message = "采购组编号不能为空")
-    @ApiModelProperty("采购组编号")
+    @ApiModelProperty(value = "采购组编号", hidden = true)
     private String purchasingGroupCode;
 
-    @NotEmpty(message = "采购组名称不能为空")
-    @ApiModelProperty("采购组名称")
+    @ApiModelProperty(value = "采购组名称", hidden = true)
     private String purchasingGroupName;
 
     @ApiModelProperty("税号")
@@ -147,7 +145,9 @@ public class ApplySupplyCompanyReqVO {
     @ApiModelProperty("是否禁用")
     private Byte enable;
 
-
     @ApiModelProperty("判断来源 0:非导入 1:导入, 如果从导入新增/修改 不进入审批流,审批状态待提交")
     private Byte source = 0;
+
+    @ApiModelProperty("采购组")
+    private List<ApplySupplyCompanyPurchaseGroupReqVo> purchaseGroupVos;
 }

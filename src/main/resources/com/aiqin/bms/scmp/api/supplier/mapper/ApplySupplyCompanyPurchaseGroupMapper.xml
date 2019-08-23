@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyPurchaseGroupMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyPurchaseGroup">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="apply_supply_company_code" jdbcType="VARCHAR" property="applySupplyCompanyCode" />
+    <result column="apply_supply_company_name" jdbcType="VARCHAR" property="applySupplyCompanyName" />
+    <result column="purchasing_group_code" jdbcType="VARCHAR" property="purchasingGroupCode" />
+    <result column="purchasing_group_name" jdbcType="VARCHAR" property="purchasingGroupName" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, apply_supply_company_code, apply_supply_company_name, purchasing_group_code, purchasing_group_name, del_flag,
+    create_time, create_by, update_time, update_by
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from apply_supply_company_purchase_group
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByApplySupplyCompanyCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_supply_company_purchase_group
+    where apply_supply_company_code = #{applySupplyCompanyCode,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from apply_supply_company_purchase_group
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByApplyCode" parameterType="java.lang.String">
+    delete from apply_supply_company_purchase_group
+    where apply_supply_company_code = #{applySupplyCompanyCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyPurchaseGroup">
+    insert into apply_supply_company_purchase_group (id, apply_supply_company_code,apply_supply_company_code, purchasing_group_code,
+      purchasing_group_name, del_flag, create_time, 
+      create_by, update_time, update_by
+      )
+    values (#{id,jdbcType=BIGINT}, #{applySupplyCompanyCode,jdbcType=VARCHAR},#{applySupplyCompanyName,jdbcType=VARCHAR}, #{purchasingGroupCode,jdbcType=VARCHAR},
+      #{purchasingGroupName,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into apply_supply_company_purchase_group (apply_supply_company_code, apply_supply_company_name,
+      purchasing_group_code,
+      purchasing_group_name, del_flag, create_time,
+      create_by, update_time, update_by
+      )
+    values
+    <foreach collection="list" item="item" separator="," open="" close="">
+      ( #{item.applySupplyCompanyCode,jdbcType=VARCHAR},#{item.applySupplyCompanyName,jdbcType=VARCHAR},
+      #{item.purchasingGroupCode,jdbcType=VARCHAR},
+      #{item.purchasingGroupName,jdbcType=VARCHAR}, #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}
+      )
+    </foreach>
+
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyPurchaseGroup">
+    insert into apply_supply_company_purchase_group
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="applySupplyCompanyCode != null">
+        apply_supply_company_code,
+      </if>
+      <if test="applySupplyCompanyName != null">
+        apply_supply_company_name,
+      </if>
+      <if test="purchasingGroupCode != null">
+        purchasing_group_code,
+      </if>
+      <if test="purchasingGroupName != null">
+        purchasing_group_name,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="applySupplyCompanyCode != null">
+        #{applySupplyCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applySupplyCompanyName != null">
+        #{applySupplyCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasingGroupCode != null">
+        #{purchasingGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasingGroupName != null">
+        #{purchasingGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyPurchaseGroup">
+    update apply_supply_company_purchase_group
+    <set>
+      <if test="applySupplyCompanyCode != null">
+        apply_supply_company_code = #{applySupplyCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="applySupplyCompanyName != null">
+        apply_supply_company_name = #{applySupplyCompanyName,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasingGroupCode != null">
+        purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchasingGroupName != null">
+        purchasing_group_name = #{purchasingGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyPurchaseGroup">
+    update apply_supply_company_purchase_group
+    set apply_supply_company_code = #{applySupplyCompanyCode,jdbcType=VARCHAR},
+      apply_supply_company_name = #{applySupplyCompanyName,jdbcType=VARCHAR},
+      purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR},
+      purchasing_group_name = #{purchasingGroupName,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_by = #{createBy,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

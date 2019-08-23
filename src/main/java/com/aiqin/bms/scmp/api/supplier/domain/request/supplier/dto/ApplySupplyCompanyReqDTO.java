@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplyDeliveryInfoReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyAcctReqVO;
+import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyPurchaseGroupReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierFileReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import io.swagger.annotations.ApiModelProperty;
@@ -130,6 +131,9 @@ public class ApplySupplyCompanyReqDTO extends CommonBean {
 
     @ApiModelProperty("文件信息")
     private List<SupplierFileReqVO> fileReqVOList;
+
+    @ApiModelProperty("采购组")
+    private List<ApplySupplyCompanyPurchaseGroupReqVo> purchaseGroupVos;
 
     @ApiModelProperty("供货单位账户")
     private ApplySupplyCompanyAcctReqVO applySupplyCompanyAccountReq;
