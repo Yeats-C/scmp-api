@@ -128,6 +128,12 @@ public interface SkuInfoService{
     String skuWorkFlowCallback(WorkFlowCallbackVO vo1);
 
     /**
+     * 保存数据
+     * @param applyProductSkus
+     */
+    void toBeEffective(List<ApplyProductSku> applyProductSkus);
+
+    /**
      * 根据公司编码获取SKU临时数据
      * @param companyCode
      * @return

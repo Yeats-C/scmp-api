@@ -146,7 +146,7 @@ public class ProductSkuSubServiceImpl implements ProductSkuSubService {
         List<ApplyProductSkuSub> applyProductSkuSubList = applyMapper.getApply(skuCode, applyCode);
         if(CollectionUtils.isNotEmptyCollection(applyProductSkuSubList)){
             List<ProductSkuSub> list = BeanCopyUtils.copyList(applyProductSkuSubList,ProductSkuSub.class);
-            mapper.selectBySkuCode(skuCode);
+            mapper.deleteBySkuCode(skuCode);
             return ((ProductSkuSubService)AopContext.currentProxy()).insertBatch(list);
         }
         return 0;
