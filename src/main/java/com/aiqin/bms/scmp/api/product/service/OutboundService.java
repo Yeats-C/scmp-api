@@ -105,9 +105,6 @@ public interface OutboundService {
      */
     Integer returnSupplySave(ReturnSupplyToOutBoundReqVo req);
 
-
-
-
     /**
      * 出库单传送给wms
      * @param id
@@ -144,16 +141,11 @@ public interface OutboundService {
 
     /**
      * 调拨生成入库单并且改变在途数
-     * @param id
      */
     void createInbound(String formNo);
 
-
-
-
     /**
      * 移库生成入库单并且改变在途数
-     * @param id
      */
     void movementCreateInbound(String formNo);
 
@@ -176,6 +168,7 @@ public interface OutboundService {
      * @return void
      */
     void saveData(List<Outbound> list, List<OutboundProduct> productList, List<OutboundBatch> batchList);
+
 }
 
 

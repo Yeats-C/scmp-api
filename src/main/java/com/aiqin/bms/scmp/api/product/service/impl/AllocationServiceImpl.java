@@ -4,9 +4,11 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
+import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationCallbackToOutboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToOutboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
@@ -16,6 +18,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
@@ -24,13 +27,17 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
@@ -54,6 +61,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -113,6 +121,15 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
     @Autowired
     private WarehouseService warehouseService;
+
+    @Autowired
+    private ProductSkuStockInfoMapper productSkuStockInfoMapper;
+
+    @Autowired
+    private ProductSkuDao productSkuDao;
+
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -285,8 +302,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Save
     public Long insertSelective(Allocation record) {
        try{
-           record.setCompanyCode(getUser().getCompanyCode());
-           record.setCompanyName(getUser().getCompanyName());
+//           record.setCompanyCode(getUser().getCompanyCode());
+//           record.setCompanyName(getUser().getCompanyName());
+           record.setCompanyCode("04");
+           record.setCompanyName("爱亲");
             long k = allocationMapper.insertSelective(record);
             if(k>0){
                 return record.getId();
@@ -774,4 +793,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         }
         return allocation.getId();
     }
+
+
 }

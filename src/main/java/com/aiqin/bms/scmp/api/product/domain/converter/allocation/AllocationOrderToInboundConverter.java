@@ -112,7 +112,9 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
             reqVo1.setCreateTime(record.getCreateTime());
             reqVo1.setUpdateBy(record.getUpdateBy());
             reqVo1.setUpdateTime(record.getUpdateTime());
-            reqVo1.setLinenum(record.getLineNum().longValue());
+            if(!Objects.isNull(record.getLineNum()) && record.getLineNum() != null){
+                reqVo1.setLinenum(record.getLineNum().longValue());
+            }
             preInboundNum += record.getQuantity().intValue();
             preInboundMainNum += record.getQuantity().intValue();
             preTaxAmount += record.getTaxAmount();
@@ -133,7 +135,9 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
             batch.setCreateTime(batch1.getCreateTime());
             batch.setUpdateBy(batch1.getUpdateBy());
             batch.setUpdateTime(batch1.getUpdateTime());
-            batch.setLinenum(batch1.getLineNum().longValue());
+            if(!Objects.isNull(batch1.getLineNum()) && batch1.getLineNum() != null){
+                batch.setLinenum(batch1.getLineNum().longValue());
+            }
             inboundBatchReqVos.add(batch);
         }
         inboundReqSave.setPreInboundNum(preInboundNum);

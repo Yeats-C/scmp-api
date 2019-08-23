@@ -72,10 +72,6 @@ public class StoreRepurchaseRateRespVo {
     @JsonProperty("after_buy_rate")
     private Double afterBuyRate;
 
-    @ApiModelProperty("月份")
-    @JsonProperty("months")
-    private String months;
-
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")
     private String createTime;

@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationCallbackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
@@ -19,6 +20,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -147,4 +149,5 @@ public class AllocationController {
     public HttpResponse<Long> getIdByFormNo(@RequestParam String formNo){
         return HttpResponse.success(allocationService.getIdByFormNo(formNo));
     }
+
 }
