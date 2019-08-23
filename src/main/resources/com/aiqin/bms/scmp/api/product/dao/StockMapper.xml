@@ -1734,10 +1734,16 @@
                 and ps.product_property_name = #{productPropertyName,jdbcType=VARCHAR}
             </if>
             <if test="brandName != null">
-                and ps.product_brand_name like CONCAT( #{brandName,jdbcType=VARCHAR})
+                and ps.product_brand_name like CONCAT( #{brandName,jdbcType=VARCHAR},"%")
             </if>
             <if test="categoryName != null">
-                and ps.product_category_name like CONCAT( #{categoryName,jdbcType=VARCHAR})
+                and ps.product_category_name like CONCAT( #{categoryName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="brandId != null">
+                and ps.product_brand_code= #{brandId,jdbcType=VARCHAR}
+            </if>
+            <if test="categoryId != null">
+                and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
             </if>
         </where>
     </sql>

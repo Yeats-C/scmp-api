@@ -52,5 +52,5 @@ public interface OutboundDao {
 
     String selectCreateById(String outboundOderCode);
 
-    Outbound selectById(String id);
+    Outbound selectById(Long id);
 }
