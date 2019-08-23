@@ -21,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -108,7 +109,9 @@ public class OutboundController {
     public HttpResponse<Integer>workFlowCallBack(@RequestBody OutboundCallBackReqVo reqVo){
         log.error(" 出库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
         try {
-            return HttpResponse.success(outboundService.workFlowCallBack(reqVo));
+            reqVo.setOutboundTime(new DateTime(new Long(reqVo.getDateTime())).toDate());
+            int s = outboundService.workFlowCallBack(reqVo);
+            return HttpResponse.success(s);
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.OUTBOUND_SAVE_ERROR);
         }

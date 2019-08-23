@@ -1011,7 +1011,6 @@
         bsrr.channel_order_amount as channelOrderAmount,
         bsrr.shopping_frequency as shoppingFrequency,
         bsrr.after_buy_rate as afterBuyRate,
-        bsrr.months as months,
         date_format(bsrr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_store_repurchase_rate bsrr
         <include refid="select_store_repurchase_rate"/>
