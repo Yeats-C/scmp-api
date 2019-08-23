@@ -595,7 +595,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             allocation.setUpdateTime(new DateTime(new Long(request.getReceiptTime())).toDate());
             List<String> skuList = allocation.getDetailList().stream().map(AllocationProduct::getSkuCode).collect(Collectors.toList());
             List<OrderProductSkuResponse> productSkuList = productSkuDao.selectStockSkuInfoList(skuList);
-            InboundProductReqVo product;
             Map<String, OrderProductSkuResponse> productSkuMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
             //调拨生成出库单
             OutboundReqVo convert = handleTransferOutbound(allocation, productSkuMap);
@@ -615,7 +614,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 LOGGER.error("dl回调   加库存异常");
                 throw new GroundRuntimeException("dl回调    减库存异常");
             }
-
             //调拨生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(allocation, productSkuMap);
             if (request.getTransfersType().equals(1)) {
@@ -633,12 +631,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 LOGGER.error("dl回调   加库存异常");
                 throw new GroundRuntimeException("dl回调   加库存异常");
             }
-
             allocation.setOutboundOderCode(outboundOderCode);
             allocation.setInboundOderCode(inboundOderCode);
             //生成调拨单
             allocationInsert(allocation, type, typeName, productSkuMap);
-
             return HttpResponse.success();
         } catch (Exception e) {
             LOGGER.error("订单回调异常:{}", e.getCause());

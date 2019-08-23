@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -131,9 +132,4 @@ public interface AllocationService extends BaseService {
      */
     Long getIdByFormNo(String formNo);
 
-    /**
-     * wms回传移库单
-     * @param reqVo
-     */
-    void workFlowCallBack(AllocationCallbackReqVo reqVo);
 }

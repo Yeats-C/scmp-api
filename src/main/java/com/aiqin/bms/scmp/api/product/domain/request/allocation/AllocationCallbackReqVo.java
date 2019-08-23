@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.allocation;
 
+import com.aiqin.bms.scmp.api.product.domain.request.BaseDateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,7 +14,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("移库回传vo")
-public class AllocationCallbackReqVo {
+public class AllocationCallbackReqVo extends BaseDateRequest {
 
     @ApiModelProperty("出库单编号")
     private String sourceOderCode;

@@ -20,6 +20,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -147,12 +148,6 @@ public class AllocationController {
     @ApiOperation("根据formNo获取主键ID")
     public HttpResponse<Long> getIdByFormNo(@RequestParam String formNo){
         return HttpResponse.success(allocationService.getIdByFormNo(formNo));
-    }
-
-    @PostMapping("/workFlowCallBack")
-    @ApiOperation("回传移库单")
-    public void workFlowCallBack(@RequestBody AllocationCallbackReqVo reqVo){
-        allocationService.workFlowCallBack(reqVo);
     }
 
 }
