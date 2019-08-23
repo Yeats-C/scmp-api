@@ -16,9 +16,9 @@ public class MonthCumulativeBrandSalesRespVo {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("月份")
-    @JsonProperty("month")
-    private String month;
+    @ApiModelProperty("年月")
+    @JsonProperty("year_month")
+    private String yearMonth;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
