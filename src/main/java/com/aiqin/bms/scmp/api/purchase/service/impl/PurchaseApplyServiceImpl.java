@@ -917,7 +917,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         List<PurchaseApplyDetailResponse> details =
                 list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
                         () -> new TreeSet<>(Comparator.comparing(o -> o.getSkuCode() + "#" + o.getTransportCenterCode()
-                        +  "#" + o.getWarehouseCode() + "#" + o.getSupplierCode()))),
+                        +  "#" + o.getWarehouseCode() + "#" + o.getSupplierCode() + "#" + o.getProductType()))),
                         ArrayList::new));
         //LOGGER.info("--------------------------------------"+details);
         Long frontTurnover = 0L, frontPurchaseCost = 0L;
@@ -946,8 +946,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             // 库存数量
             Long availableNum = stockResponse.getAvailableNum() == null ? 0L : stockResponse.getAvailableNum();
             Long taxCost = stockResponse.getTaxCost() == null ? 0L : stockResponse.getTaxCost();
-            frontTurnover += availableNum * channelPrice;
-            frontPurchaseCost += availableNum * taxCost;
+            if(!detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                frontTurnover += availableNum * channelPrice;
+                frontPurchaseCost += availableNum * taxCost;
+            }
             // 库存周转天数
             Integer daysTurnover = stockResponse.getDaysTurnover() == null ? 0 : stockResponse.getDaysTurnover().intValue();
             Integer largeInventoryWarnDay = stockResponse.getLargeInventoryWarnDay() == null ? 0 : stockResponse.getLargeInventoryWarnDay();
@@ -960,13 +962,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
             Map<String, Integer> purchaseMap = this.purchaseMap(list);
             StringBuilder sb = new StringBuilder();
-            sb.append(detail.getSkuCode());
-            sb.append("_");
-            sb.append(detail.getTransportCenterCode());
-            sb.append("_");
-            sb.append(detail.getWarehouseCode());
-            sb.append("_");
-            sb.append(detail.getSupplierCode());
+            sb.append(detail.getSkuCode()).append("_");
+            sb.append(detail.getTransportCenterCode()).append("_");
+            sb.append(detail.getWarehouseCode()).append("_");
+            sb.append(detail.getSupplierCode()).append("_");
+            sb.append(detail.getProductType());
             // 采购数量
             Integer purchaseCount = purchaseMap.get(sb.toString());
             purchaseCount = purchaseCount == null ? 0 : purchaseCount;
@@ -998,6 +998,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             Long productAmount = detail.getProductAmount() == null ? 0L : detail.getProductAmount().longValue();
             // 采购数量
             Long singCount = detail.getSingleCount() == null ? 0L : detail.getSingleCount().longValue();
+            if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                continue;
+            }
             afterTurnover += channelPrice * singCount;
             afterPurchaseCost += productAmount * singCount;
         }
@@ -1015,18 +1018,17 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             map.put("transport", detail.getTransportCenterCode());
             map.put("warehouse", detail.getWarehouseCode());
             map.put("supplier", detail.getSupplierCode());
+            map.put("productType", detail.getProductType());
             map.put("sum", detail.getSingleCount());
             data.add(map);
         }
         Map<String, Integer> collect = data.stream().collect(Collectors.groupingBy(m -> {
             StringBuilder sb = new StringBuilder();
-            sb.append(MapUtils.getString(m, "skuCode"));
-            sb.append("_");
-            sb.append(MapUtils.getString(m, "transport"));
-            sb.append("_");
-            sb.append(MapUtils.getString(m, "warehouse"));
-            sb.append("_");
-            sb.append(MapUtils.getString(m, "supplier"));
+            sb.append(MapUtils.getString(m, "skuCode")).append("_");
+            sb.append(MapUtils.getString(m, "transport")).append("_");
+            sb.append(MapUtils.getString(m, "warehouse")).append("_");
+            sb.append(MapUtils.getString(m, "supplier")).append("_");
+            sb.append(MapUtils.getString(m, "productType"));
             return sb.toString();
         }, Collectors.summingInt(s -> MapUtils.getInteger(s, "sum"))));
         return collect;
