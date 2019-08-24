@@ -15,7 +15,6 @@ import java.util.List;
  * @version 1.0
  * @className SkuConfigsRepsVo
  * @date 2019/5/25 10:18
- * @description TODO
  */
 @ApiModel("SKU配置信息列表返回")
 @Data

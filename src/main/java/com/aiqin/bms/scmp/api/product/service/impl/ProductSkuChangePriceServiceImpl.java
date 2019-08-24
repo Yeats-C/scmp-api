@@ -1174,7 +1174,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
             return list;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("导入异常");
         }
     }
@@ -1222,7 +1222,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             List<QuerySkuInfoRespVOForIm> list = Lists.newArrayList();
             Map<String,String> repeatMap = Maps.newHashMap();
             for (int i = 0; i < imports.size(); i++) {
-                 CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap)
+                 CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap,false)
                          .checkSkuInfo()//检查sku信息
                          .checkSupplier()//检查供应商信息
                          .checkPriceItemForPurchase()//补充采购的价格项目数据
@@ -1267,20 +1267,22 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             List<QuerySkuInfoRespVOForIm> list = Lists.newArrayList();
             Map<String,String> repeatMap = Maps.newHashMap();
             for (int i = 0; i < imports.size(); i++) {
-                CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap)
+                CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap,true)
                         .checkSkuInfo()//检查sku信息
-                        .checkPriceItem()//检查价格项目
-                        .checkSalePrice()//检查销售
+                        .checkPrice()//检查价格项目
+//                        .checkSalePrice()//检查销售
                         .checkEffectiveTimeStart()//检查生效时间
-                        .checkChangeReason()//调价原因
+//                        .checkChangeReason()//调价原因
                         ;
                 QuerySkuInfoRespVOForIm data = checkChangePrice.getData();
                 String error = data.getError();
                 if (StringUtils.isNotBlank(error)) {
                     String s2 = "第"+(i+2)+"行 "+error;
                     data.setError(s2);
+                    list.add(data);
+                }else {
+                    list.addAll(checkChangePrice.getDataForSale());
                 }
-                list.add(data);
                 repeatMap = checkChangePrice.getRepeatMap();
             }
             return list;
@@ -1340,21 +1342,23 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             List<QuerySkuInfoRespVOForIm> list = Lists.newArrayList();
             Map<String,String> repeatMap = Maps.newHashMap();
             for (int i = 0; i < imports.size(); i++) {
-                CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap)
+                CheckChangePrice checkChangePrice = new CheckChangePrice(queryNoPageMap, imports.get(i), repeatMap,dicMap,false)
                         .checkSkuInfo()//检查sku信息
-                        .checkPriceItem()//检查价格项目
-                        .checkTemporaryPrice()//检查临时价
+                        .checkTempPrice()//检查价格项目
+//                        .checkTemporaryPrice()//检查临时价
                         .checkEffectiveTimeStart()//检查生效时间
                         .checkEffectiveTimeEnd()//检查失效时间
-                        .checkChangeReason()//调价原因
+//                        .checkChangeReason()//调价原因
                         ;
                 QuerySkuInfoRespVOForIm data = checkChangePrice.getData();
                 String error = data.getError();
                 if (StringUtils.isNotBlank(error)) {
                     String s2 = "第"+(i+2)+"行 "+error;
                     data.setError(s2);
+                    list.add(data);
+                }else {
+                    list.addAll(checkChangePrice.getDataForSale());
                 }
-                list.add(data);
                 repeatMap = checkChangePrice.getRepeatMap();
             }
             return list;
@@ -1423,30 +1427,39 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         private List<String> error;
         private QuerySkuInfoRespVOForIm resp;
         private Map<String, SupplierDictionaryInfo> dicMap;
-        private CheckChangePrice(Map<String,QuerySkuInfoRespVO> queryNoPage, Object purchasePriceImport,Map<String,String> repeatMap,Map<String, SupplierDictionaryInfo> dicMap) {
+        private boolean flag =  true;
+        private boolean beSale;
+        private List<PriceChannelForChangePrice> priceList;
+        private CheckChangePrice(Map<String,QuerySkuInfoRespVO> queryNoPage, Object purchasePriceImport,Map<String,String> repeatMap,Map<String, SupplierDictionaryInfo> dicMap,boolean beSale) {
             this.queryNoPage = queryNoPage;
             this.anImport = BeanCopyUtils.copy(purchasePriceImport,PriceImport.class);
             this.repeatMap = repeatMap;
             this.error = Lists.newArrayList();
             this.resp = new QuerySkuInfoRespVOForIm();
             this.dicMap = dicMap;
+            this.priceList = Lists.newArrayList();
+            this.beSale = beSale;
         }
         //校验sku信息
         private CheckChangePrice checkSkuInfo(){
             if (StringUtils.isBlank(anImport.getSkuCode())) {
                 error.add("SKU编码不能为为空");
+                flag = false;
             }else {
                 QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
                 if (Objects.isNull(querySkuInfoRespVO)) {
                     resp.setSkuCode(anImport.getSkuCode().trim());
                     error.add("无对应的SKU编码数据或该SKU不属于所选采购组");
+                    flag = false;
                 }else {
                     if (StringUtils.isBlank(anImport.getSkuName())) {
                         error.add("SKU名称不能为空");
+                        flag = false;
                     }else {
                         if (!anImport.getSkuName().equals(querySkuInfoRespVO.getSkuName())) {
                             resp.setSkuName(anImport.getSkuName().trim());
                             error.add("SKU编码和SKU名称无法对应");
+                            flag = false;
                         }else {
                             resp.setSkuCode(querySkuInfoRespVO.getSkuCode());
                             resp.setSkuName(querySkuInfoRespVO.getSkuName());
@@ -1649,6 +1662,116 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             }
             return this;
         }
+
+        //检查价格
+        private CheckChangePrice checkPrice() {
+            //爱亲渠道价
+            if (StringUtils.isNotBlank(anImport.getReadyCol67())) {
+                checkPriceItemForSale("爱亲渠道价",anImport.getReadyCol67());
+            }
+            //萌贝树渠道价
+            if (StringUtils.isNotBlank(anImport.getReadyCol68())) {
+                checkPriceItemForSale("萌贝树渠道价",anImport.getReadyCol68());
+            }
+            //小红马渠道价
+            if (StringUtils.isNotBlank(anImport.getReadyCol69())) {
+                checkPriceItemForSale("小红马渠道价",anImport.getReadyCol69());
+            }
+            //爱亲分销价
+            if (StringUtils.isNotBlank(anImport.getReadyCol70())) {
+                checkPriceItemForSale("爱亲分销价",anImport.getReadyCol70());
+            }
+            //萌贝树分销价
+            if (StringUtils.isNotBlank(anImport.getReadyCol71())) {
+                checkPriceItemForSale("萌贝树分销价",anImport.getReadyCol71());
+            }
+            //小红马分销价
+            if (StringUtils.isNotBlank(anImport.getReadyCol72())) {
+                checkPriceItemForSale("小红马分销价",anImport.getReadyCol72());
+            }
+            //爱亲售价
+            if (StringUtils.isNotBlank(anImport.getReadyCol73())) {
+                checkPriceItemForSale("爱亲售价",anImport.getReadyCol73());
+            }
+            //萌贝树售价
+            if (StringUtils.isNotBlank(anImport.getReadyCol74())) {
+                checkPriceItemForSale("萌贝树售价",anImport.getReadyCol74());
+            }
+            //小红马售价
+            if (StringUtils.isNotBlank(anImport.getReadyCol75())) {
+                checkPriceItemForSale("小红马售价",anImport.getReadyCol75());
+            }
+            return this;
+        }
+
+        //检查价格
+        private CheckChangePrice checkTempPrice() {
+            //爱亲临时渠道价
+            if (StringUtils.isNotBlank(anImport.getReadyCol67())) {
+                checkPriceItemForSale("爱亲临时渠道价",anImport.getReadyCol67());
+            }
+            //萌贝树临时渠道价
+            if (StringUtils.isNotBlank(anImport.getReadyCol68())) {
+                checkPriceItemForSale("萌贝树临时渠道价",anImport.getReadyCol68());
+            }
+            //小红马临时渠道价
+            if (StringUtils.isNotBlank(anImport.getReadyCol69())) {
+                checkPriceItemForSale("小红马临时渠道价",anImport.getReadyCol69());
+            }
+            //爱亲临时分销价
+            if (StringUtils.isNotBlank(anImport.getReadyCol70())) {
+                checkPriceItemForSale("爱亲临时分销价",anImport.getReadyCol70());
+            }
+            //萌贝树临时分销价
+            if (StringUtils.isNotBlank(anImport.getReadyCol71())) {
+                checkPriceItemForSale("萌贝树临时分销价",anImport.getReadyCol71());
+            }
+            //小红马临时分销价
+            if (StringUtils.isNotBlank(anImport.getReadyCol72())) {
+                checkPriceItemForSale("小红马临时分销价",anImport.getReadyCol72());
+            }
+            //爱亲临时售价
+            if (StringUtils.isNotBlank(anImport.getReadyCol73())) {
+                checkPriceItemForSale("爱亲临时售价",anImport.getReadyCol73());
+            }
+            //萌贝树临时售价
+            if (StringUtils.isNotBlank(anImport.getReadyCol74())) {
+                checkPriceItemForSale("萌贝树临时售价",anImport.getReadyCol74());
+            }
+            //小红马售价
+            if (StringUtils.isNotBlank(anImport.getReadyCol75())) {
+                checkPriceItemForSale("小红马临时售价",anImport.getReadyCol75());
+            }
+            return this;
+        }
+
+        private void checkPriceItemForSale(String priceItemName,String price){
+            if(StringUtils.isNotBlank(price)){
+                if (flag) {
+                    QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(anImport.getSkuCode().trim());
+                    if (Objects.isNull(querySkuInfoRespVO)) {
+                        return;
+                    }
+                    Map<String, PriceChannelForChangePrice> collect = querySkuInfoRespVO.getPriceChannelList().stream().collect(Collectors.toMap(PriceChannelForChangePrice::getPriceItemName, Function.identity(), (k1, k2) -> k2));
+                    if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyMap(collect)) {
+                        error.add("未找到对应的价格项目信息");
+                    }else {
+                        PriceChannelForChangePrice item = collect.get(priceItemName.trim());
+                        if (Objects.isNull(item)) {
+                            error.add("库中未找到名称为"+priceItemName+"的价格项目或此价格项目被禁用");
+                        }else {
+                            try {
+                                PriceChannelForChangePrice copy = BeanCopyUtils.copy(item, PriceChannelForChangePrice.class);
+                                copy.setNewPrice(NumberConvertUtils.stringParseLong(price));
+                                priceList.add(copy);
+                            } catch (Exception e) {
+                                error.add(priceItemName+"格式不正确");
+                            }
+                        }
+                    }
+                }
+            }
+        }
         //获取数据
         private QuerySkuInfoRespVOForIm getData(){
             String s = repeatMap.get(resp.getSkuCode() + resp.getPriceItemName() + resp.getSupplierCode() + resp.getWarehouseBatchName());
@@ -1669,5 +1792,39 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             return resp;
         }
 
+        private List<QuerySkuInfoRespVOForIm> getDataForSale(){
+            List<QuerySkuInfoRespVOForIm> returnList = Lists.newArrayList();
+            List<PriceChannelForChangePrice> priceList = this.priceList;
+            for (PriceChannelForChangePrice price : priceList) {
+                String s = repeatMap.get(resp.getSkuCode() + price.getPriceItemName() + resp.getSupplierCode() + resp.getWarehouseBatchName());
+                if(StringUtils.isNotBlank(s)){
+                    error.add("该条数据中价格项目为"+price.getPriceItemName()+"与其他数据重复");
+                }
+                if (CollectionUtils.isEmpty(error)) {
+                    QuerySkuInfoRespVO querySkuInfoRespVO = queryNoPage.get(resp.getSkuCode());
+                    //补充需要的数据
+                    QuerySkuInfoRespVOForIm copy = BeanCopyUtils.copy(this.resp, QuerySkuInfoRespVOForIm.class);
+                    copy.setPriceItemCode(price.getPriceItemCode());
+                    copy.setPriceItemName(price.getPriceItemName());
+                    copy.setPriceTypeCode(price.getPriceTypeCode());
+                    copy.setPriceTypeName(price.getPriceTypeCode());
+                    copy.setPriceAttributeCode(price.getPriceAttributeCode());
+                    copy.setPriceAttributeName(price.getPriceAttributeCode());
+                    copy.setOldPrice(price.getOldPrice());
+                    copy.setOldGrossProfitMargin(price.getOldGrossProfitMargin());
+                    if(beSale){
+                        copy.setNewPrice(price.getNewPrice());
+                    }else {
+                        copy.setTemporaryPrice(price.getNewPrice());
+                    }
+                    copy.setBatchList(querySkuInfoRespVO.getBatchList());
+                    copy.setSupplierInfoVOS(querySkuInfoRespVO.getSupplierInfoVOS());
+                    copy.setPriceChannelList(querySkuInfoRespVO.getPriceChannelList());
+                    repeatMap.put(resp.getSkuCode() + resp.getPriceItemName() + resp.getSupplierCode() + resp.getWarehouseBatchName(), "检查重复数据");
+                    returnList.add(copy);
+                }
+            }
+            return returnList;
+        }
     }
 }

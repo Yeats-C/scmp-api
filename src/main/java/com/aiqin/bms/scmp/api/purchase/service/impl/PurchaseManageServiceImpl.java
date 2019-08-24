@@ -457,7 +457,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 applyPurchaseOrderDao.update(purchaseOrder);
             }else {
                 // 取消在途数
-                this.wayNum(purchaseOrderId);
+                this.wayNum(order);
             }
         }
         // 添加操作日志
@@ -485,7 +485,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             detail.setUpdateById(createByName);
             purchaseOrderDetailsDao.update(detail);
             // 手动入库完成 撤销未完成的入库单
-            inboundService.repealOrder(order.getPurchaseOrderCode(), createById, createByName);
+            inboundService.repealOrder(order.getId().toString(), createById, createByName);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
             if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
@@ -848,7 +848,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
                 log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                         PurchaseOrderLogEnum.PURCHASE_FINISH.getName() , purchaseOrder.getApplyTypeForm());
-                this.wayNum(purchaseStorage.getPurchaseOrderId());
+                this.wayNum(purchaseOrder);
             }
         }
         return HttpResponse.success();
@@ -978,19 +978,19 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
             log(purchaseOrderId, storageRequest.getCreateById(), storageRequest.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                     PurchaseOrderLogEnum.PURCHASE_FINISH.getName() , order.getApplyTypeForm());
-            this.wayNum(purchaseOrderId);
+            this.wayNum(order);
         }
         return HttpResponse.success();
     }
 
     // 修改库存在途数
-    private void wayNum(String purchaseOrderId){
+    private void wayNum(PurchaseOrder order){
         StockChangeRequest stock = new StockChangeRequest();
         stock.setOperationType(11);
         List<StockVoRequest> list = Lists.newArrayList();
         StockVoRequest stockVo;
         // 查询该采购单的商品
-        List<PurchaseApplyDetailResponse> products = purchaseOrderProductDao.orderProductInfoByGroup(purchaseOrderId);
+        List<PurchaseApplyDetailResponse> products = purchaseOrderProductDao.orderProductInfoByGroup(order.getPurchaseOrderId());
         if(CollectionUtils.isNotEmptyCollection(products)){
             for(PurchaseApplyDetailResponse product:products){
                 long singleCount =  product.getSingleCount() == null ? 0 : product.getSingleCount().longValue();
@@ -1010,6 +1010,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 stockVo.setDocumentNum(product.getPurchaseOrderCode());
                 stockVo.setDocumentType(3);
                 stockVo.setTaxRate(product.getTaxRate().longValue());
+                stockVo.setCompanyCode(order.getCompanyCode());
+                stockVo.setCompanyName(order.getCompanyName());
                 list.add(stockVo);
             }
             stock.setStockVoRequests(list);

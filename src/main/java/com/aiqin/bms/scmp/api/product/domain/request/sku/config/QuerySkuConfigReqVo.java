@@ -10,7 +10,6 @@ import lombok.Data;
  * @version 1.0
  * @className QuerySkuConfigReqVo
  * @date 2019/5/25 18:16
- * @description TODO
  */
 @ApiModel("查询SKU配置信息Vo")
 @Data

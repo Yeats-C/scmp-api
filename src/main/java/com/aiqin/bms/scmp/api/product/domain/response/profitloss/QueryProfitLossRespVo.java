@@ -12,7 +12,6 @@ import java.util.Date;
  * @version 1.0
  * @className QueryProfitLossRespVo
  * @date 2019/6/28 11:41
- * @description TODO
  */
 @ApiModel("列表查询数据返回")
 @Data

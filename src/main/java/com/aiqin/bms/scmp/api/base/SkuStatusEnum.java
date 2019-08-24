@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @className SkuStatusEnum
  * @date 2019/7/6 19:22
- * @description TODO
  */
 @ApiModel("SKU状态(商品配置)枚举")
 @Getter

@@ -13,7 +13,6 @@ import java.util.Date;
  * @version 1.0
  * @className ProductSkuInspReportRespVo
  * @date 2019/5/15 10:07
- * @description TODO
  */
 @ApiModel("sku质检信息返回")
 @Data

@@ -109,6 +109,14 @@ public class PurchaseOrder {
     @JsonProperty("gift_tax_sum")
     private Integer giftTaxSum;
 
+    @ApiModelProperty(value="公司编码")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty(value="公司名称")
+    @JsonProperty("company_name")
+    private String companyName;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

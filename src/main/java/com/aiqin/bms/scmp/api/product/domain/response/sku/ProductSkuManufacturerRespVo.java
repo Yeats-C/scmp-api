@@ -10,7 +10,6 @@ import lombok.Data;
  * @version 1.0
  * @className ProductSkuManufacturerRespVo
  * @date 2019/5/14 16:04
- * @description TODO
  */
 @Data
 @ApiModel("sku生产厂家信息返回")

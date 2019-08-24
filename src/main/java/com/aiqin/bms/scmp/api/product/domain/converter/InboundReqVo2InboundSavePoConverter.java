@@ -78,7 +78,7 @@ package com.aiqin.bms.scmp.api.product.domain.converter;//package com.aiqin.mgs.
 ////                try {
 ////                    product.setPreInboundMainNum(vo.getNum()*map.get(vo.getSkuCode()));
 ////                } catch (Exception e) {
-////                    e.printStackTrace();
+////                    log.error("error", e);
 ////                    throw new BizException("sku编码:"+vo.getSkuCode()+",对应的转换单位系数不存在");
 ////                }
 ////                product.setCreateTime(new Date());
@@ -95,7 +95,7 @@ package com.aiqin.bms.scmp.api.product.domain.converter;//package com.aiqin.mgs.
 ////            po.setInboundProducts(products);
 ////            return po;
 ////        } catch (Exception e) {
-////            e.printStackTrace();
+////            log.error("error", e);
 ////            if(e instanceof BizException){
 ////                throw new BizException(e.getMessage());
 ////            }else {

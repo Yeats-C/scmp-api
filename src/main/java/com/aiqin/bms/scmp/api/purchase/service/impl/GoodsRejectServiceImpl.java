@@ -171,7 +171,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         } catch (Exception e) {
             LOGGER.error("添加退供申请单异常:{}", e);
-            throw new GroundRuntimeException(String.format("添加退供申请单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException("添加退供申请单异常");
         }
         return HttpResponse.success();
     }
@@ -245,7 +245,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             LOGGER.info("修改退供申请详情影响条数:{}", count);
         } catch (Exception e) {
             LOGGER.error("修改退供申请详情影响条数:{}", e);
-            throw new GroundRuntimeException(String.format("修改退供申请单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException("修改退供申请单异常:{%s}");
         }
         return HttpResponse.success();
     }
@@ -312,7 +312,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     list.add(response);
                     continue;
                 }
-                rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(productTypeList.indexOf(record[6]),purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
+                rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(supplier.getSupplyCode(),productTypeList.indexOf(record[6]),purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
                 if (rejectApplyDetailHandleResponse != null) {
                     BeanUtils.copyProperties(rejectApplyDetailHandleResponse, response);
                     response.setProductCount(new Double(record[7]).intValue());
@@ -343,7 +343,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         RejectApplyDetailHandleResponse rejectApplyDetailHandleResponse;
         //查询每个商品的库存数量
         for (RejectApplyRecordDetail detailResponse : detailList) {
-            rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(detailResponse.getProductType(),detailResponse.getPurchaseGroupCode(), detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode());
+            rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(request.getSupplierCode(),detailResponse.getProductType(),detailResponse.getPurchaseGroupCode(), detailResponse.getTransportCenterCode(), detailResponse.getWarehouseCode(), detailResponse.getSkuCode());
             if (rejectApplyDetailHandleResponse != null) {
                 detailResponse.setStockCount(rejectApplyDetailHandleResponse.getStockCount());
             }
@@ -531,7 +531,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             }
             //提交退供审批
             goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
-        } catch (Exception e) {
+        } catch (GroundRuntimeException e) {
             LOGGER.error("新增退供单异常:{}", e);
             throw new GroundRuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));
         }
@@ -610,7 +610,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         } catch (Exception e) {
 
             LOGGER.error("更新退供单异常:{}", e);
-            throw new GroundRuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException("更新退供单异常");
         }
     }
 
@@ -718,7 +718,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             LOGGER.info("更新退供单信息影响条数:{}", count);
         } catch (Exception e) {
             LOGGER.error("更新退供单异常:{}", e.getMessage());
-            throw new GroundRuntimeException(String.format("更新退供单异常:{%s}", e.getMessage()));
+            throw new GroundRuntimeException("更新退供单异常");
         }
 
     }
@@ -752,7 +752,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 }
             }
             return HttpResponse.success();
-        } catch (RuntimeException e) {
+        } catch (GroundRuntimeException e) {
             LOGGER.error("取消-更改退供申请异常:{}", e);
             throw new GroundRuntimeException(String.format("取消-更改退供申请异常:{%s}", e.getMessage()));
         }

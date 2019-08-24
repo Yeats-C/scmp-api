@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
  * @version 1.0
  * @className ApplyContractFileReqVo
  * @date 2019/4/23 17:24
- * @description TODO
+
  */
 
 @Data

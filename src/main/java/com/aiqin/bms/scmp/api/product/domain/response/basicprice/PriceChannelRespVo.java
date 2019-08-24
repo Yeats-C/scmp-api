@@ -9,7 +9,6 @@ import lombok.Data;
  * @version 1.0
  * @className PriceChannelRespVo
  * @date 2019/4/19 16:03
- * @description TODO
  */
 @Data
 @ApiModel("价格渠道返回Vo")

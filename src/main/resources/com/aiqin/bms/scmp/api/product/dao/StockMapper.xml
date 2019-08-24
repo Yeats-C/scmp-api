@@ -146,11 +146,11 @@
         <result column="bad_lock_num" jdbcType="BIGINT" property="badLockNum"/>
         <result column="bad_way_num" jdbcType="BIGINT" property="badWayNum"/>
         <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
-        <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
+        <result column="stockupfinish_time" jdbcType="TIMESTAMP" property="stockupfinishTime"/>
         <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
-        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
-        <result column="update_time" jdbcType="VARCHAR" property="updateTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
 
     </resultMap>
@@ -417,19 +417,19 @@
             and st.sku_code = #{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            and st.sku_name like concat('%', #{skuName})
+            and st.sku_name like concat('', #{skuName}, '%')
         </if>
         <if test="configStatus!=null">
             and psc.config_status = #{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
-            and ps.product_property_code like concat('%',#{propertyText})
+            and ps.product_property_code = #{propertyText}
         </if>
         <if test="brandText!=null and brandText!=''">
-            and ps.product_brand_code like concat('%',#{brandText})
+            and ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            and ps.product_category_code like concat('%',#{productCategoryText})
+            and ps.product_category_code = #{productCategoryText}
         </if>
         <if test="inventoryBeginNum!=null">
             and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -480,19 +480,19 @@
             AND st.sku_code = #{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            AND st.sku_name LIKE concat('%', #{skuName, jdbcType=VARCHAR})
+            AND st.sku_name LIKE concat('', #{skuName, jdbcType=VARCHAR}, '%')
         </if>
         <if test="configStatus!=null">
             AND psc.config_status=#{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
-            AND ps.product_property_code LIKE concat('%',#{propertyText})
+            AND ps.product_property_code = #{propertyText}
         </if>
         <if test="brandText!=null and brandText!=''">
-            AND ps.product_brand_code LIKE concat('%',#{brandText})
+            AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code LIKE concat('%',#{productCategoryText})
+            AND ps.product_category_code = #{productCategoryText}
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -527,7 +527,7 @@
         <if test="badFinishNum!=null">
             AND st.bad_num <![CDATA[<=]]> #{badFinishNum}
         </if>
-        GROUP BY st.warehouse_code,st.sku_code
+        GROUP BY st.sku_code
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
 
@@ -583,19 +583,19 @@
             AND st.sku_code = #{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            AND st.sku_name LIKE concat('%', #{skuName, jdbcType=VARCHAR})
+            AND st.sku_name LIKE concat('', #{skuName, jdbcType=VARCHAR}, '%')
         </if>
         <if test="configStatus!=null">
             AND psc.config_status=#{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
-            AND ps.product_property_code LIKE concat('%',#{propertyText})
+            AND ps.product_property_code = #{propertyText}
         </if>
         <if test="brandText!=null and brandText!=''">
-            AND ps.product_brand_code LIKE concat('%',#{brandText})
+            AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code LIKE concat('%',#{productCategoryText})
+            AND ps.product_category_code = #{productCategoryText}
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -610,7 +610,7 @@
             AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
-            AND st.transport_center_code LIKE concat('%',#{transportCenterText})
+            AND st.transport_center_code = #{transportCenterText}
         </if>
         <if test="companyCode!=null and companyCode!=''">
             AND st.company_code=#{companyCode}
@@ -651,19 +651,19 @@
             and st.sku_code = #{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            and st.sku_name like concat('%', #{skuName})
+            and st.sku_name like concat('', #{skuName}, '%')
         </if>
         <if test="configStatus!=null">
             and psc.config_status=#{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
-            and ps.product_property_code like concat('%',#{propertyText})
+            and ps.product_property_code = #{propertyText}
         </if>
         <if test="brandText!=null and brandText!=''">
-            and ps.product_brand_code like concat('%',#{brandText})
+            and ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            and ps.product_category_code like concat('%',#{productCategoryText})
+            and ps.product_category_code = #{productCategoryText}
         </if>
         <if test="inventoryBeginNum!=null">
             and st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -709,19 +709,19 @@
                 and a.purchase_group_code = #{purchaseGroupCode, jdbcType=VARCHAR}
             </if>
             <if test="skuCode != null and skuCode != ''">
-                and a.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR})
+                and a.sku_code = #{skuCode, jdbcType=VARCHAR}
             </if>
             <if test="skuName != null and skuName != ''">
-                and a.sku_name like concat('%', #{skuName, jdbcType=VARCHAR})
+                and a.sku_name like concat('', #{skuName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productPropertyName != null and productPropertyName != ''">
-                and c.product_property_name like concat('%', #{productPropertyName, jdbcType=VARCHAR})
+                and c.product_property_name like concat('', #{productPropertyName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productCategoryName != null and productCategoryName != ''">
-                and c.product_category_name like concat('%', #{productCategoryName, jdbcType=VARCHAR})
+                and c.product_category_name like concat('', #{productCategoryName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productBrandName != null and productBrandName != ''">
-                and c.product_brand_name like concat('%', #{productBrandName, jdbcType=VARCHAR})
+                and c.product_brand_name like concat('', #{productBrandName, jdbcType=VARCHAR}, '%')
             </if>
             and a.available_num > 0
             <if test="skuList != null">
@@ -849,19 +849,19 @@
             AND st.sku_code=#{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            AND st.sku_name LIKE concat('%', #{skuName, jdbcType=VARCHAR})
+            AND st.sku_name LIKE concat( #{skuName, jdbcType=VARCHAR}, '%')
         </if>
         <if test="configStatus!=null">
             AND psc.config_status=#{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
-            AND ps.product_property_code LIKE concat('%',#{propertyText})
+            AND ps.product_property_code = #{propertyText}
         </if>
         <if test="brandText!=null and brandText!=''">
-            AND ps.product_brand_code LIKE concat('%',#{brandText})
+            AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code LIKE concat('%',#{productCategoryText})
+            AND ps.product_category_code = #{productCategoryText}
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -876,7 +876,7 @@
             AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
-            AND st.transport_center_code LIKE concat('%',#{transportCenterText})
+            AND st.transport_center_code = #{transportCenterText}
         </if>
         <if test="companyCode!=null and companyCode!=''">
             AND st.company_code=#{companyCode}
@@ -905,7 +905,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        GROUP BY st.transport_center_code,st.warehouse_code,st.sku_code
+        GROUP BY st.transport_center_code,st.sku_code
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
 
@@ -923,19 +923,19 @@
             AND st.sku_code=#{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            AND st.sku_name LIKE concat('%', #{skuName, jdbcType=VARCHAR})
+            AND st.sku_name LIKE concat( #{skuName, jdbcType=VARCHAR}, '%')
         </if>
         <if test="configStatus!=null">
             AND psc.config_status=#{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
-            AND ps.product_property_code LIKE concat('%',#{propertyText})
+            AND ps.product_property_code = #{propertyText}
         </if>
         <if test="brandText!=null and brandText!=''">
-            AND ps.product_brand_code LIKE concat('%',#{brandText})
+            AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code LIKE concat('%',#{productCategoryText})
+            AND ps.product_category_code = #{productCategoryText}
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -950,7 +950,7 @@
             AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
-            AND st.transport_center_code LIKE concat('%',#{transportCenterText})
+            AND st.transport_center_code = #{transportCenterText}
         </if>
         <if test="companyCode!=null and companyCode!=''">
             AND st.company_code=#{companyCode}
@@ -979,7 +979,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        group by st.transport_center_code,st.sku_code
+        group by st.warehouse_code,st.sku_code
         ) AS countTransportStockInfoByPage
     </select>
 
@@ -1009,19 +1009,19 @@
             AND st.sku_code=#{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            AND st.sku_name LIKE concat('%', #{skuName, jdbcType=VARCHAR})
+            AND st.sku_name LIKE concat('', #{skuName, jdbcType=VARCHAR}, '%')
         </if>
         <if test="configStatus!=null">
             AND psc.config_status=#{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
-            AND ps.product_property_code LIKE concat('%',#{propertyText})
+            AND ps.product_property_code = #{propertyText}
         </if>
         <if test="brandText!=null and brandText!=''">
-            AND ps.product_brand_code LIKE concat('%',#{brandText})
+            AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code LIKE concat('%',#{productCategoryText})
+            AND ps.product_category_code = #{productCategoryText}
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -1036,13 +1036,13 @@
             AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
-            AND st.transport_center_code LIKE concat('%',#{transportCenterText})
+            AND st.transport_center_code = #{transportCenterText}
         </if>
         <if test="companyCode!=null and companyCode!=''">
             AND st.company_code=#{companyCode}
         </if>
         <if test="warehouseText!=null and warehouseText!=''">
-            AND st.warehouse_code LIKE concat('%',#{warehouseText})
+            AND st.warehouse_code = #{warehouseText}
         </if>
         <if test="saleBeginNum!=null">
             AND st.sale_num <![CDATA[>=]]> #{saleBeginNum}
@@ -1068,7 +1068,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        GROUP BY st.transport_center_code,st.warehouse_code,st.sku_code
+        GROUP BY st.warehouse_code,st.sku_code
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countStorehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
@@ -1082,24 +1082,28 @@
         LEFT JOIN product_sku_box_packing AS psbp ON st.sku_code = psbp.product_sku_code
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code=pssi.product_sku_code
         LEFT JOIN product_sku_checkout AS pscc ON st.sku_code=pscc.sku_code
-        WHERE 1=1
+        WHERE
+        ps.procurement_section_code in
+        <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+            #{item.purchaseGroupCode,jdbcType=VARCHAR}
+        </foreach>
         <if test="skuCode!=null and skuCode!=''">
             AND st.sku_code=#{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            AND st.sku_name LIKE concat('%', #{skuName, jdbcType=VARCHAR})
+            AND st.sku_name LIKE concat('', #{skuName, jdbcType=VARCHAR}, )
         </if>
         <if test="configStatus!=null">
             AND psc.config_status=#{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
-            AND ps.product_property_code LIKE concat('%',#{propertyText})
+            AND ps.product_property_code = #{propertyText}
         </if>
         <if test="brandText!=null and brandText!=''">
-            AND ps.product_brand_code LIKE concat('%',#{brandText})
+            AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code LIKE concat('%',#{productCategoryText})
+            AND ps.product_category_code = #{productCategoryText}
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -1114,13 +1118,13 @@
             AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
-            AND st.transport_center_code LIKE  concat('%',#{transportCenterText})
+            AND st.transport_center_code = #{transportCenterText}
         </if>
         <if test="companyCode!=null and companyCode!=''">
             AND st.company_code=#{companyCode}
         </if>
         <if test="warehouseText!=null and warehouseText!=''">
-            AND st.warehouse_code LIKE concat('%',#{warehouseText})
+            AND st.warehouse_code = #{warehouseText}
         </if>
         <if test="saleBeginNum!=null">
             AND st.sale_num <![CDATA[>=]]> #{saleBeginNum}
@@ -1146,7 +1150,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        group by st.transport_center_code,st.warehouse_code,st.sku_code
+        group by st.warehouse_code,st.sku_code
         ) as countStorehouseStockInfoByPage
     </select>
     <insert id="insertBatch" parameterType="java.util.List">
@@ -1496,37 +1500,37 @@
         left join product_sku_stock_info as pssi on sb.sku_code = pssi.product_sku_code
         where 1=1
         <if test="companyCode!=null and companyCode!=''">
-            and sb.company_code like concat('%',#{companyCode})
+            and sb.company_code = #{companyCode}
         </if>
         <if test="companyName!=null and companyName!=''">
-            and sb.company_name like concat('%',#{companyName})
+            and sb.company_name like concat('',#{companyName}, )
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
-            and sb.transport_center_code like concat('%',#{transportCenterText})
+            and sb.transport_center_code = #{transportCenterText}
         </if>
         <if test="warehouseText!=null and warehouseText!=''">
-            and sb.warehouse_code like concat('%', #{warehouseText, jdbcType=VARCHAR})
+            and sb.warehouse_code = #{warehouseText, jdbcType=VARCHAR}
         </if>
         <if test="warehouseType!=null and warehouseType!=''">
-            and sb.warehouse_type like concat('%', #{warehouseType, jdbcType=VARCHAR})
+            and sb.warehouse_type = #{warehouseType, jdbcType=VARCHAR}
         </if>
         <if test="skuCode!=null and skuCode!=''">
             and sb.sku_code=#{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            and sb.sku_name like concat('%', #{skuName, jdbcType=VARCHAR})
+            and sb.sku_name like concat('', #{skuName, jdbcType=VARCHAR}, )
         </if>
         <if test="configStatus!=null">
-            and sb.config_status=#{configStatus}
+            and sb.config_status = #{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
-            and ps.product_property_code like concat('%',#{propertyText})
+            and ps.product_property_code = #{propertyText}
         </if>
         <if test="brandText!=null and brandText!=''">
-            and ps.product_brand_code like concat('%',#{brandText})
+            and ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            and ps.product_category_code like concat('%',#{productCategoryText})
+            and ps.product_category_code = #{productCategoryText}
         </if>
         <if test="inventoryBeginNum!=null">
             and sb.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -1566,37 +1570,37 @@
         left join product_sku_box_packing as psbp on sb.sku_code = psbp.product_sku_code
         where 1=1
         <if test="companyCode!=null and companyCode!=''">
-            and sb.company_code like concat('%',#{companyCode})
+            and sb.company_code = #{companyCode}
         </if>
         <if test="companyName!=null and companyName!=''">
-            and sb.company_name like concat('%',#{companyName})
+            and sb.company_name like concat('',#{companyName}, )
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
-            and sb.transport_center_code like concat('%',#{transportCenterText})
+            and sb.transport_center_code = #{transportCenterText}
         </if>
         <if test="warehouseText!=null and warehouseText!=''">
-            and sb.warehouse_code like concat('%', #{warehouseText, jdbcType=VARCHAR})
+            and sb.warehouse_code = #{warehouseText, jdbcType=VARCHAR}
         </if>
         <if test="warehouseType!=null and warehouseType!=''">
-            and sb.warehouse_type like concat('%', #{warehouseType, jdbcType=VARCHAR})
+            and sb.warehouse_type = #{warehouseType, jdbcType=VARCHAR}
         </if>
         <if test="skuCode!=null and skuCode!=''">
             and sb.sku_code=#{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            and sb.sku_name like concat('%', #{skuName, jdbcType=VARCHAR})
+            and sb.sku_name like concat('', #{skuName, jdbcType=VARCHAR}, '%')
         </if>
         <if test="configStatus!=null">
             and sb.config_status=#{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
-            and ps.product_property_code like concat('%',#{propertyText})
+            and ps.product_property_code = #{propertyText}
         </if>
         <if test="brandText!=null and brandText!=''">
-            and ps.product_brand_code like concat('%',#{brandText})
+            and ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            and ps.product_category_code like concat('%',#{productCategoryText})
+            and ps.product_category_code = #{productCategoryText}
         </if>
         <if test="inventoryBeginNum!=null">
             and sb.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -1668,6 +1672,9 @@
             <if test="purchaseGroupCode != null">
                 and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
             </if>
+            <if test="supplierCode != null">
+                and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
+            </if>
             <if test="skuCode != null">
                 and s.sku_code = #{skuCode,jdbcType=VARCHAR}
             </if>
@@ -1731,10 +1738,16 @@
                 and ps.product_property_name = #{productPropertyName,jdbcType=VARCHAR}
             </if>
             <if test="brandName != null">
-                and ps.product_brand_name like CONCAT( #{brandName,jdbcType=VARCHAR})
+                and ps.product_brand_name like CONCAT( #{brandName,jdbcType=VARCHAR},"%")
             </if>
             <if test="categoryName != null">
-                and ps.product_category_name like CONCAT( #{categoryName,jdbcType=VARCHAR})
+                and ps.product_category_name like CONCAT( #{categoryName,jdbcType=VARCHAR},"%")
+            </if>
+            <if test="brandId != null">
+                and ps.product_brand_code= #{brandId,jdbcType=VARCHAR}
+            </if>
+            <if test="categoryId != null">
+                and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
             </if>
         </where>
     </sql>
@@ -1767,19 +1780,19 @@
                 and ps.procurement_section_code = #{procurementSectionCode, jdbcType=VARCHAR}
             </if>
             <if test="skuCode != null and skuCode != ''">
-                and sb.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR})
+                and sb.sku_code = #{skuCode, jdbcType=VARCHAR}
             </if>
             <if test="skuName != null and skuName != ''">
-                and sb.sku_name like concat('%', #{skuName, jdbcType=VARCHAR})
+                and sb.sku_name like concat('', #{skuName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productPropertyName != null and productPropertyName != ''">
-                and ps.product_property_name like concat('%', #{productPropertyName, jdbcType=VARCHAR})
+                and ps.product_property_name like concat('', #{productPropertyName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productCategoryName != null and productCategoryName != ''">
-                and ps.product_category_name like concat('%', #{productCategoryName, jdbcType=VARCHAR})
+                and ps.product_category_name like concat('', #{productCategoryName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productBrandName != null and productBrandName != ''">
-                and ps.product_brand_name like concat('%', #{productBrandName, jdbcType=VARCHAR})
+                and ps.product_brand_name like concat('', #{productBrandName, jdbcType=VARCHAR}, '%')
             </if>
             and sb.available_num > 0
         </where>
@@ -1851,19 +1864,19 @@
                 and s.warehouse_code  = #{inWarehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="skuCode != null and skuCode != ''">
-                and s.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR})
+                and s.sku_code =  #{skuCode, jdbcType=VARCHAR}
             </if>
             <if test="skuName != null and skuName != ''">
-                and s.sku_name like concat('%', #{skuName, jdbcType=VARCHAR})
+                and s.sku_name like concat('', #{skuName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productBrandCode != null and productBrandCode != ''">
-                and ps.product_brand_code like concat('%', #{productBrandCode, jdbcType=VARCHAR})
+                and ps.product_brand_code = #{productBrandCode, jdbcType=VARCHAR}
             </if>
             <if test="productCategoryCode != null and productCategoryCode != ''">
-                and ps.product_category_code like concat('%', #{productCategoryCode, jdbcType=VARCHAR})
+                and ps.product_category_code =  #{productCategoryCode, jdbcType=VARCHAR}
             </if>
             <if test="productPropertyCode != null and productPropertyCode != ''">
-                and ps.product_property_code like concat('%', #{productPropertyCode, jdbcType=VARCHAR})
+                and ps.product_property_code = #{productPropertyCode, jdbcType=VARCHAR}
             </if>
         </where>
         group by s.sku_code
@@ -2183,19 +2196,19 @@
                 and sb.warehouse_code  = #{inWarehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="skuCode != null and skuCode != ''">
-                and sb.sku_code like concat('%', #{skuCode, jdbcType=VARCHAR})
+                and sb.sku_code = #{skuCode, jdbcType=VARCHAR}
             </if>
             <if test="skuName != null and skuName != ''">
-                and sb.sku_name like concat('%', #{skuName, jdbcType=VARCHAR})
+                and sb.sku_name like concat('', #{skuName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productBrandCode != null and productBrandCode != ''">
-                and ps.product_brand_code like concat('%', #{productBrandCode, jdbcType=VARCHAR})
+                and ps.product_brand_code = #{productBrandCode, jdbcType=VARCHAR}
             </if>
             <if test="productCategoryCode != null and productCategoryCode != ''">
-                and ps.product_category_code like concat('%', #{productCategoryCode, jdbcType=VARCHAR})
+                and ps.product_category_code = #{productCategoryCode, jdbcType=VARCHAR}
             </if>
             <if test="productPropertyCode != null and productPropertyCode != ''">
-                and ps.product_property_code like concat('%', #{productPropertyCode, jdbcType=VARCHAR})
+                and ps.product_property_code = #{productPropertyCode, jdbcType=VARCHAR}
             </if>
             <if test="skuList != null">
                 and sb.sku_code in
@@ -2265,13 +2278,13 @@
             AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
         </if>
         <if test="skuName!=null and skuName!=''">
-            AND a.sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+            AND a.sku_name LIKE CONCAT('',#{skuName,jdbcType=VARCHAR},'%')
         </if>
         <if test="productCategoryName!=null and productCategoryName!=''">
-            AND b.product_category_name LIKE CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+            AND b.product_category_name LIKE CONCAT('',#{productCategoryName,jdbcType=VARCHAR},'%')
         </if>
         <if test="productBrandName!=null and productBrandName!=''">
-            AND b.product_brand_name LIKE CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+            AND b.product_brand_name LIKE CONCAT('',#{productBrandName,jdbcType=VARCHAR},'%')
         </if>
         <if test="productPropertyCode!=null and productPropertyCode!=''">
             AND b.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
@@ -2280,7 +2293,7 @@
             AND c.product_code = #{spuCode,jdbcType=VARCHAR}
         </if>
         <if test="spuName!=null and spuName!=''">
-            AND c.product_name LIKE CONCAT('%',#{spuName,jdbcType=VARCHAR},'%')
+            AND c.product_name LIKE CONCAT('',#{spuName,jdbcType=VARCHAR},'%')
         </if>
     </select>
     <select id="getBatch" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo">
@@ -2388,5 +2401,29 @@
         sku_code skuCode,sku_name skuName,sum(tax_cost*inventory_num) taxCost,sum(inventory_num) inventoryNum
         from stock
         group by sku_code
+    </select>
+    <select id="selectStockSum" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
+        select
+        sku_code skuCode, sku_name skuName, sum(ifnull(inventory_num,0)) as inventoryNum, sum(ifnull(available_num,0)) as availableNum,
+        sum(ifnull(lock_num,0)) as lockNum, sum(ifnull(purchase_way_num,0)) as purchaseWayNum,
+        sum(ifnull(total_way_num,0)) as totalWayNum
+        from stock
+        <where>
+            <if test="transportCenterCode!=null and transportCenterCode!=''">
+                AND transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+            </if>
+            <if test="skuCode!=null and skuCode!=''">
+                AND sku_code = #{skuCode,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouseType!=null and warehouseType!=''">
+                AND warehouse_type = #{warehouseType,jdbcType=VARCHAR}
+            </if>
+            <if test="companyCode!=null and companyCode!=''">
+                AND company_code = #{companyCode,jdbcType=VARCHAR}
+            </if>
+            <if test="transportCenterCode!=null and transportCenterCode!=''">
+                AND transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+            </if>
+        </where>
     </select>
 </mapper>

@@ -10,7 +10,6 @@ import java.util.Objects;
  * @version 1.0
  * @className SkuTypeEnum
  * @date 2019/7/6 15:44
- * @description TODO
  */
 @ApiModel("SKU类型枚举")
 @Getter

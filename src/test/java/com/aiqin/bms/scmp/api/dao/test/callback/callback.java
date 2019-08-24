@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.dao.test.callback;
 
 import com.aiqin.bms.scmp.api.SpringBootTestContext;
+import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.google.common.collect.Lists;
 import lombok.Data;
 import org.junit.Test;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -37,14 +39,18 @@ import java.util.stream.Collectors;
  * 思维方式*热情*能力
  */
 public class callback extends SpringBootTestContext {
+
+    @Resource
+    private InboundService inboundService;
+
     @Test
     public void listGroupBy() {
         List<BaseOrder> orderList = Lists.newArrayList();
-        BaseOrder baseOrder = new BaseOrder(-1,"23");
+        BaseOrder baseOrder = new BaseOrder(-1, "23");
 
-        BaseOrder baseOrder1 = new BaseOrder(-2,"23");
+        BaseOrder baseOrder1 = new BaseOrder(-2, "23");
 
-        BaseOrder baseOrder2 = new BaseOrder(3,"23");
+        BaseOrder baseOrder2 = new BaseOrder(3, "23");
 
         orderList.add(baseOrder);
         orderList.add(baseOrder1);
@@ -64,6 +70,15 @@ public class callback extends SpringBootTestContext {
         for (List<BaseOrder> baseOrders : collect.values()) {
             System.out.println(baseOrders.toString());
         }
+    }
+
+    @Test
+    public void repealOrder() {
+        String orderId = "2361";
+        String createById ="123123";
+        String createByName = "123123";
+        inboundService.repealOrder(orderId,createById,createByName);
+
     }
 
     @Data

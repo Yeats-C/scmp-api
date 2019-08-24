@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @className QualityAssuranceManagements
  * @date 2019/7/18 17:27
- * @description TODO
  */
 @Getter
 public enum Generals {

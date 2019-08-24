@@ -20,7 +20,7 @@ import java.util.Date;
  * @version 1.0
  * @className DateUtils
  * @date 2019/6/25 10:53
- * @description TODO
+
  */
 public class DateUtils {
 
@@ -43,7 +43,7 @@ public class DateUtils {
 
     public static Date toDate(String productDate) {
         try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(productDate);
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(productDate);
         } catch (ParseException e) {
             throw new BizException(ResultCode.DATE_CONVERSION_FAILED);
         }

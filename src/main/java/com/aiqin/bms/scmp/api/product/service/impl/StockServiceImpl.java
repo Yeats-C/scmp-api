@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.StockStatusEnum;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.dao.StockFlowDao;
@@ -155,19 +156,22 @@ public class StockServiceImpl implements StockService {
             List<StockRespVO> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
             HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
             List<StockRespVO> lists = new ArrayList<>();
+            Stock stock = null;
+            int i = 0;
             for (StockRespVO stockRespVO : stockList) {
                 String str = stockRespVO.getSkuCode();
                 if(stockRespMap.get(str) == null){
                     stockRespMap.put(str,stockRespVO);
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }else {
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }
             }
             for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
                 lists.add(entry.getValue());
             }
-            Integer total = stockDao.countStockSumInfoByPage(stockRequest);
+      //      Integer total = stockDao.countStockSumInfoByPage(stockRequest);
+            Integer total = stockList.size();
             pageResData.setTotalCount(total);
             pageResData.setDataList(stockList);
             return pageResData;
@@ -177,27 +181,45 @@ public class StockServiceImpl implements StockService {
         }
     }
 
-    private void stockCommon(HashMap<String, StockRespVO> stockRespMap, StockRespVO stockRespVO, String str) {
+    private void stockCommon(HashMap<String, StockRespVO> stockRespMap, StockRespVO stockRespVO, String str, Stock stock, int i) {
         StockRespVO key = stockRespMap.get(str);
-        if(stockRespVO.getWarehouseType() != null){
-            if(stockRespVO.getWarehouseType().equals("销售库")){
-                key.setSaleNum(stockRespVO.getAvailableNum());
-                key.setSaleLockNum(stockRespVO.getLockNum());
-                key.setSaleWayNum(stockRespVO.getTotalWayNum());
-                key.setPurchaseWayNum(stockRespVO.getPurchaseWayNum());
-            }else if (stockRespVO.getWarehouseType().equals("赠品库")){
-                key.setGiftNum(stockRespVO.getAvailableNum());
-                key.setGiftLockNum(stockRespVO.getLockNum());
-                key.setGiftWayNum(stockRespVO.getTotalWayNum());
-                key.setGiftPurchaseWayNum(stockRespVO.getPurchaseWayNum());
-            }else if (stockRespVO.getWarehouseType().equals("特卖库")){
-                key.setSpecialSaleNum(stockRespVO.getAvailableNum());
-                key.setSpecialSaleLockNum(stockRespVO.getLockNum());
-                key.setSpecialSaleWayNum(stockRespVO.getSpecialSaleWayNum());
-            }else if(stockRespVO.getWarehouseType().equals("残品库")){
-                key.setBadNum(stockRespVO.getAvailableNum());
-                key.setBadLockNum(stockRespVO.getLockNum());
-                key.setBadWayNum(stockRespVO.getBadWayNum());
+        if(StringUtils.isNotBlank(stockRespVO.getCompanyCode()) || StringUtils.isNotBlank(stockRespVO.getSkuCode())){
+            stock = new Stock();
+            Stock stockInfo;
+            stock.setSkuCode(stockRespVO.getSkuCode());
+            stock.setCompanyCode(stockRespVO.getCompanyCode());
+            if(i == 1){
+                stock.setTransportCenterCode(stockRespVO.getTransportCenterCode());
+            }
+            stock.setWarehouseType(Global.SALE_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if(stockInfo != null){
+                key.setSaleNum(stockInfo.getAvailableNum());
+                key.setSaleLockNum(stockInfo.getLockNum());
+                key.setSaleWayNum(stockInfo.getTotalWayNum());
+                key.setPurchaseWayNum(stockInfo.getPurchaseWayNum());
+            }
+            stock.setWarehouseType(Global.GIFT_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if (stockInfo != null){
+                key.setGiftNum(stockInfo.getAvailableNum());
+                key.setGiftLockNum(stockInfo.getLockNum());
+                key.setGiftWayNum(stockInfo.getTotalWayNum());
+                key.setGiftPurchaseWayNum(stockInfo.getPurchaseWayNum());
+            }
+            stock.setWarehouseType(Global.SPECIAL_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if (stockInfo != null){
+                key.setSpecialSaleNum(stockInfo.getAvailableNum());
+                key.setSpecialSaleLockNum(stockInfo.getLockNum());
+                key.setSpecialSaleWayNum(stockInfo.getTotalWayNum());
+            }
+            stock.setWarehouseType(Global.DEFECTIVE_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if(stockInfo != null){
+                key.setBadNum(stockInfo.getAvailableNum());
+                key.setBadLockNum(stockInfo.getLockNum());
+                key.setBadWayNum(stockInfo.getTotalWayNum());
             }
             stockRespMap.put(str,key);
         }
@@ -258,19 +280,22 @@ public class StockServiceImpl implements StockService {
             List<StockRespVO> stockList = stockDao.selectTransportStockInfoByPage(stockRequest);
             HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
             List<StockRespVO> lists = new ArrayList<>();
+            Stock stock = null;
+            int i = 1;
             for (StockRespVO stockRespVO : stockList) {
                 String str = stockRespVO.getTransportCenterCode()+ stockRespVO.getSkuCode();
                 if(stockRespMap.get(str) == null){
                     stockRespMap.put(str,stockRespVO);
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }else {
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }
             }
             for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
                 lists.add(entry.getValue());
             }
-            Integer total = stockDao.countTransportStockInfoByPage(stockRequest);
+       //     Integer total = stockDao.countTransportStockInfoByPage(stockRequest);
+            Integer total = stockList.size();
             pageResData.setTotalCount(total);
             pageResData.setDataList(stockList);
             return pageResData;
@@ -361,7 +386,7 @@ public class StockServiceImpl implements StockService {
 //                httpResponse.setData(errorRespVos);
 //            }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -412,7 +437,7 @@ public class StockServiceImpl implements StockService {
                 throw new BizException(ResultCode.STOCK_LOCK_ERROR);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -442,7 +467,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -467,7 +492,7 @@ public class StockServiceImpl implements StockService {
             }
         } catch (Exception e) {
             LOGGER.error("调用退供加锁接口失败", e);
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException(e.getMessage());
         }
         return false;
@@ -491,7 +516,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -516,7 +541,7 @@ public class StockServiceImpl implements StockService {
             }
         } catch (Exception e) {
             LOGGER.error("调用退供解锁接口失败", e);
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException(e.getMessage());
         }
         return false;
@@ -547,7 +572,7 @@ public class StockServiceImpl implements StockService {
                 outboundService.updateOutBoundInfo(reqVO);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -577,7 +602,7 @@ public class StockServiceImpl implements StockService {
                 outboundService.updateOutBoundInfo(reqVo);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -893,7 +918,7 @@ public class StockServiceImpl implements StockService {
             }
             return vo;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw new BizException(e.getMessage());
             } else {
@@ -920,7 +945,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -968,7 +993,7 @@ public class StockServiceImpl implements StockService {
             }
             return Integer.valueOf(1);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw new BizException(e.getMessage());
             } else {
@@ -1025,7 +1050,7 @@ public class StockServiceImpl implements StockService {
             }
             return list;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException("采购单数据转换为 [新增] 库存数据集合失败");
         }
     }
@@ -1044,7 +1069,7 @@ public class StockServiceImpl implements StockService {
             }
             return list;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException("采购单数据转换为 [更新] 库存数据集合失败");
         }
     }
@@ -1110,7 +1135,7 @@ public class StockServiceImpl implements StockService {
             stockFlowDao.insertOne(stockFlow);
             return lockCode;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (reqVo.getLockType() == 0) {
                 throw new BizException(ResultCode.STOCK_LOCK_ERROR);
             } else {
@@ -1329,7 +1354,7 @@ public class StockServiceImpl implements StockService {
                 stockDao.insertBatch(adds);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("error", e);
             LOGGER.error("操作库存失败", e);
             throw new BizException("操作库存失败");
         }
@@ -1894,7 +1919,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -1922,7 +1947,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }

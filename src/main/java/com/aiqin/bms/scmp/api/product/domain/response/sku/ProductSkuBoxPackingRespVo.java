@@ -12,7 +12,6 @@ import java.math.BigDecimal;
  * @version 1.0
  * @className ProductSkuBoxPackingRespVo
  * @date 2019/5/14 15:12
- * @description TODO
  */
 @ApiModel("SKU整包装信息返回")
 @Data

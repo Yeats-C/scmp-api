@@ -12,7 +12,10 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGro
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.QueryPurchaseGroupResVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +34,7 @@ import java.util.List;
 @RestController
 @Api(description = "基础数据采购管理组管理")
 @RequestMapping("/purchaseGroup")
+@Slf4j
 public class PurchaseGroupController {
 
     @Autowired
@@ -117,7 +121,7 @@ public class PurchaseGroupController {
         try {
             return HttpResponse.success(purchaseGroupService.enabled(enabledSave));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

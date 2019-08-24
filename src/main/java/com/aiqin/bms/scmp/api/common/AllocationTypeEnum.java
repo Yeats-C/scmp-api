@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @className AllocationTypeEnum
  * @date 2019/7/1 17:29
- * @description TODO
  */
 @Getter
 public enum AllocationTypeEnum {

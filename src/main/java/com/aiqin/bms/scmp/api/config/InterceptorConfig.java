@@ -23,6 +23,9 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
                         "/static/**",
                         "/index.html",
                         "/order/callback/*",
+                        "/product/inbound/workFlowCallBack",
+                        "/product/outbound/workFlowCallBack",
+                        "/product/allocation/workFlowCallBack",
                         "/asset/info/detail/no_controller/*")
                 .excludePathPatterns("/workFlow/workFlowCallBack/**")
                 .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**", "/swagger-ui.htm/**");

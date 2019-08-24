@@ -12,7 +12,6 @@ import java.util.List;
  * @version 1.0
  * @className DetailConfigSupplierRespVo
  * @date 2019/7/4 21:52
- * @description TODO
  */
 @ApiModel("商品配置返回Vo")
 @Data

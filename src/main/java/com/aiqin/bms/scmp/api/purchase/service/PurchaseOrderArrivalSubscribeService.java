@@ -11,7 +11,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.QueryPurchaseOrd
  * @version 1.0
  * @className PurchaseOrderArrivalSubscribeService
  * @date 2019/6/28 19:26
- * @description TODO
+
  */
 public interface PurchaseOrderArrivalSubscribeService {
 
