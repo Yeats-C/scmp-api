@@ -1252,8 +1252,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
             //更新为该条数据生效。在这里只能加一个同步的时间 SelectionEffectiveEndTime
             ApplyProductSku applyProductSku = new ApplyProductSku();
+            applyProductSku.setId(applyProductSkus.get(i).getId());
             applyProductSku.setSelectionEffectiveEndTime(auditorTime);
-            applyProductSkuMapper.updateByPrimaryKey(applyProductSku);
+            applyProductSkuMapper.updateByPrimaryKeySelective(applyProductSku);
         }
         //更新审批状态
         applyProductSkuMapper.updateStatusByFormNo(ApplyStatus.APPROVAL_SUCCESS.getNumber(), vo.getFormNo(), vo.getApprovalUserName(), auditorTime);
@@ -1359,8 +1360,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
             //更新为该条数据生效。在这里只能加一个同步的时间 SelectionEffectiveEndTime
             ApplyProductSku applyProductSku = new ApplyProductSku();
+            applyProductSku.setId(applyProductSkus.get(i).getId());
             applyProductSku.setSelectionEffectiveEndTime(auditorTime);
-            applyProductSkuMapper.updateByPrimaryKey(applyProductSku);
+            applyProductSkuMapper.updateByPrimaryKeySelective(applyProductSku);
         }
     }
     /**
@@ -2166,6 +2168,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
         }
         return productSkuDraftMapper.getProductSkuDraft(reqVO);
+    }
+
+    @Override
+    public List<ApplyProductSku> selectUnSynData() {
+        return applyProductSkuMapper.selectUnSynData();
     }
 
     @Override

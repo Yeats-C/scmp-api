@@ -273,4 +273,10 @@ public interface SkuInfoService{
     DetailRequestRespVo getInfoByForm(String formNo);
 
     List<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO);
+
+    /**
+     * 查未同步的
+     * @return
+     */
+    List<ApplyProductSku> selectUnSynData();
 }
