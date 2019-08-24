@@ -10,7 +10,6 @@ import lombok.Data;
  * @version 1.0
  * @className ProductSkuSupplyUnitCapacityRespVo
  * @date 2019/5/14 15:48
- * @description TODO
  */
 @Data
 @ApiModel("SKU供应商产能信息返回")

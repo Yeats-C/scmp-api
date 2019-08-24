@@ -11,7 +11,6 @@ import java.util.Objects;
  * @version 1.0
  * @className PriceTypeEnum
  * @date 2019/5/20 14:54
- * @description TODO
  */
 @ApiModel("价格项目类型")
 @Getter

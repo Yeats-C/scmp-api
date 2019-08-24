@@ -1174,7 +1174,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 
             return list;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("导入异常");
         }
     }

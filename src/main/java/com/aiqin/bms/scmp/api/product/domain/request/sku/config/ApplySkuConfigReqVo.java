@@ -14,7 +14,6 @@ import java.util.List;
  * @version 1.0
  * @className ApplySkuConfigReqVo
  * @date 2019/5/25 11:29
- * @description TODO
  */
 @ApiModel("提交SKU配置申请VO")
 @Data

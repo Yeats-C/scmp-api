@@ -28,7 +28,7 @@ import java.util.List;
  * @version 1.0
  * @className ProductSkuStockInfoServiceImpl
  * @date 2019/5/9 15:12
- * @description TODO
+
  */
 @Service
 public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoService {

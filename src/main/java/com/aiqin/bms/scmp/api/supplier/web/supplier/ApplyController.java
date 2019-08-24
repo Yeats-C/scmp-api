@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,13 +25,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0
  * @className ApplyController
  * @date 2019/4/4 15:48
- * @description TODO
+
  */
 
 
 @RestController
 @RequestMapping("/apply")
 @Api(description = "改供应商申请管理")
+@Slf4j
 public class ApplyController extends SupplierBaseController {
 
     @Autowired
@@ -55,7 +57,7 @@ public class ApplyController extends SupplierBaseController {
             applyService.cancel(detailApplyReqVo);
             return HttpResponse.success("撤销成功");
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.CANCEL_ERROR);
         }
     }

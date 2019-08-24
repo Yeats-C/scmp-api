@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportReq;
 import com.aiqin.bms.scmp.api.supplier.domain.excel.SupplierImportResp;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompanyPurchaseGroup;
 import com.aiqin.bms.scmp.api.supplier.domain.request.QueryApplySupplyListComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyComDTO;
@@ -178,4 +179,15 @@ public interface ApplySupplyComServcie {
      */
     DetailRequestRespVo getInfoByForm(String formNo);
 
+
+    /**
+     *
+     * 功能描述: 保存供应商采购组申请信息
+     *
+     * @param purchaseGroups
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/23 10:52
+     */
+    int saveApplyPurchaseGroupList(List<ApplySupplyCompanyPurchaseGroup> purchaseGroups);
 }

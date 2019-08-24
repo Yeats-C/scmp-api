@@ -10,7 +10,6 @@ import lombok.Data;
  * @version 1.0
  * @className ProductSkuChannelRespVo
  * @date 2019/5/14 15:07
- * @description TODO
  */
 @ApiModel("SKU渠道信息返回")
 @Data

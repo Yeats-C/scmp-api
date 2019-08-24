@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyAccountDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierFile;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompanyPurchaseGroup;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompanyDetailDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierComAcctReqVo;
@@ -20,6 +21,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper;
+import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyPurchaseGroupMapper;
 import com.aiqin.bms.scmp.api.supplier.service.DeliveryInfoService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
@@ -65,6 +67,8 @@ public class SupplyComServiceImpl implements SupplyComService {
     private DeliveryInfoService deliveryInfoService;
     @Autowired
     private TagInfoService tagInfoService;
+    @Autowired
+    private SupplyCompanyPurchaseGroupMapper supplyCompanyPurchaseGroupMapper;
     @Override
     public BasePage<SupplyComListRespVO> getSupplyCompanyInfoList(QuerySupplyComReqVO querySupplyComReqVO) {
         try {
@@ -190,6 +194,11 @@ public class SupplyComServiceImpl implements SupplyComService {
                     });
                     supplyComDetailRespVO.setFileReqVOList(list);
                 }
+                List<SupplyCompanyPurchaseGroup> supplyCompanyPurchaseGroups = supplyCompanyPurchaseGroupMapper.selectBySupplyCompanyCode(supplyCompanyDetailDTO.getSupplyCode());
+                if(CollectionUtils.isNotEmptyCollection(supplyCompanyPurchaseGroups)){
+                    List<SupplyCompanyPurchaseGroupResVo> purchaseGroupVos = BeanCopyUtils.copyList(supplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroupResVo.class);
+                    supplyComDetailRespVO.setPurchaseGroupVos(purchaseGroupVos);
+                }
                 if (Objects.equals(StatusTypeCode.SHOW_ACCOUNT_SKU,statusTypeCode)) {
                     QuerySupplierComAcctReqVo vo = new QuerySupplierComAcctReqVo();
                     vo.setSupplyCompanyCode(supplyComDetailRespVO.getApplySupplyCode());
@@ -205,7 +214,7 @@ public class SupplyComServiceImpl implements SupplyComService {
         } catch (GroundRuntimeException e) {
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return supplyComDetailRespVO;
     }

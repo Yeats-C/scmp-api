@@ -297,7 +297,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
                     String auditorBy = Objects.nonNull(vo.getApprovalUserName()) ? vo.getAuditorBy() : applyProductSkus.get(0).getCreateBy();
                     int k = applyProductSkuMapper.updateStatusByFormNo((byte)4,vo.getFormNo(),auditorBy,currentDate);
                 } catch (Exception e){
-                    e.printStackTrace();
+                    log.error("error", e);
                     // 修改审批中的sku失败
                     return "false";
                 }

@@ -12,7 +12,6 @@ import java.util.Date;
  * @version 1.0
  * @className QueryProductSkuInspReportReqVo
  * @date 2019/7/3 18:38
- * @description TODO
  */
 @ApiModel("查询请求接口")
 @Data

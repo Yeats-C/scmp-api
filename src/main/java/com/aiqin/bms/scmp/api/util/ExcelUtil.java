@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.*;
@@ -17,6 +18,7 @@ import java.util.Objects;
 /**
  * Created by hechao on 2018/1/8.
  */
+@Slf4j
 public class ExcelUtil {
 	public static HSSFWorkbook getHSSFWorkbook(String sheetName, String[] title, List<?> list, HSSFWorkbook wb) {
 		// 第一步，创建一个webbook，对应一个Excel文件
@@ -54,10 +56,10 @@ public class ExcelUtil {
 					row.createCell(columnNum).setCellValue(field.get(obj) == null ? "" : field.get(obj).toString());
 				}
 				catch (IllegalArgumentException e){
-					e.printStackTrace();
+					log.error("error", e);
 				}
 				catch (IllegalAccessException e){
-					e.printStackTrace();
+					log.error("error", e);
 				}
 				columnNum++;
 			}
@@ -224,7 +226,7 @@ public class ExcelUtil {
 				}
 			}
 		} catch (Exception e){
-			e.printStackTrace();
+			log.error("error", e);
 			throw new GroundRuntimeException("表格解析异常");
 		}
 		return list;

@@ -20,7 +20,7 @@ import java.util.List;
  * @version 1.0
  * @className ProductSkuInspReportController
  * @date 2019/7/2 17:43
- * @description TODO
+
  */
 @RestController
 @Api(tags = "质检报告接口")
@@ -37,7 +37,7 @@ public class ProductSkuInspReportController {
         try {
             return HttpResponse.success(productSkuInspReportService.saveProductSkuInspReports(reportReqVo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -48,7 +48,7 @@ public class ProductSkuInspReportController {
         try {
             return HttpResponse.success(productSkuInspReportService.saveProductSkuInspReport(reportReqVo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -59,7 +59,7 @@ public class ProductSkuInspReportController {
         try {
             return HttpResponse.success(productSkuInspReportService.getList(reportReqVo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -70,7 +70,7 @@ public class ProductSkuInspReportController {
         try {
             return HttpResponse.success(productSkuInspReportService.deleteById(id));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -80,7 +80,7 @@ public class ProductSkuInspReportController {
         try {
             return HttpResponse.success(productSkuInspReportService.deleteBySkuCode(skuCode));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

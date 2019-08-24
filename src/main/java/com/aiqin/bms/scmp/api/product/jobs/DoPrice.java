@@ -3,8 +3,10 @@ package com.aiqin.bms.scmp.api.product.jobs;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.service.PriceJobService;
 import com.aiqin.bms.scmp.api.util.PriceThreadDo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@Slf4j
 public class DoPrice implements Runnable{
     private Stock stock;
     @Autowired
@@ -20,7 +22,7 @@ public class DoPrice implements Runnable{
         try {
             service.price(stock);
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("error", e);
         }finally {
             PriceThreadDo.subThreadNum();
         }

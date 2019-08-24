@@ -13,7 +13,7 @@ import java.util.Date;
  * @version 1.0
  * @className UpdateApplyContractFileReqVo
  * @date 2019/4/23 17:55
- * @description TODO
+
  */
 
 

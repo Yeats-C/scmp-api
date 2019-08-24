@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
  * @version 1.0
  * @className SupplierScoreController
  * @date 2019/5/23 16:40
- * @description TODO
+
  */
 @RestController
 @Api(description = "供应商-评分管理")
@@ -42,7 +42,7 @@ public class SupplierScoreController {
         try {
             return HttpResponse.success(scoreService.list(reqVo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -54,7 +54,7 @@ public class SupplierScoreController {
         try {
             return HttpResponse.success(scoreService.save(reqVo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -66,7 +66,7 @@ public class SupplierScoreController {
         try {
             return HttpResponse.success(scoreService.saveByReject(reqVo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -78,7 +78,7 @@ public class SupplierScoreController {
         try {
             return HttpResponse.success(scoreService.saveByPurchase(reqVo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -92,7 +92,7 @@ public class SupplierScoreController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -105,7 +105,7 @@ public class SupplierScoreController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

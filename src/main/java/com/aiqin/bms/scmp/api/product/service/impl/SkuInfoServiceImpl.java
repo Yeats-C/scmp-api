@@ -331,7 +331,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuStockInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
                     productSkuStockInfoService.insertDraft(productSkuStockInfoDraft);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                     throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
                 }
                 //获取采购信息
@@ -354,7 +354,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuPurchaseInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
                     productSkuPurchaseInfoService.insertDraft(productSkuPurchaseInfoDraft);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                     throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
                 }
                 //获取门店销售信息
@@ -389,7 +389,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     });
                     productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                     throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
                 }
                 //获取包装信息
@@ -574,7 +574,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuDisInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
                 productSkuDisInfoService.insertDraft(productSkuDisInfoDraft);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("error", e);
                 throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
             }
             if (!flag) {

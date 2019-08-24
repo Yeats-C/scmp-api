@@ -165,7 +165,7 @@
       and (supply_name LIKE concat('%',#{supplyComNameOrShort,jdbcType=VARCHAR},'%') or supply_abbreviation LIKE concat('%',#{supplyComNameOrShort,jdbcType=VARCHAR},'%'))
     </if>
     <if test="purchasingGroupCode!=null and purchasingGroupCode!=''">
-      and purchasing_group_code =#{purchasingGroupCode,jdbcType=VARCHAR}
+      and exists (select 1 from supply_company_purchase_group a where a.supply_code = b.supply_company_code and a.purchasing_group_code = #{purchasingGroupCode})
     </if>
     <if test="provinceId!=null and provinceId!=''">
       and province_id =#{provinceId,jdbcType=VARCHAR}
@@ -185,7 +185,7 @@
     <if test="personId != null and personId != '' ">
       and purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
     </if>
-    ORDER by supply_code desc,update_time desc
+    ORDER by create_time desc
   </select>
   <select id="getSupplyComDetail" parameterType="java.lang.Long" resultMap="SupplyComDetailMap">
     SELECT

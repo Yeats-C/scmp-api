@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.product.domain.converter;
 
 import com.aiqin.bms.scmp.api.base.InOutStatus;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.order.SupplyOrderInfo;
@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  * @time: 15:59
  */
 @Component
+@Slf4j
 public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, List<OutboundReqVo>> {
     private SkuService skuService;
     public OrderVo2OutBoundConverter(SkuService skuService) {
@@ -69,7 +71,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                 outbound.setPreMainUnitNum(reqVo.getProductNum());
                 outbound.setPreTaxAmount(reqVo.getOrderAmount());
                 outbound.setPreAmount(reqVo.getOrderAmount());
-                outbound.setPreTax(reqVo.getOrderAmount() - reqVo.getOrderAmount());
+                outbound.setPreTax(0L);
 //                order.setPraTax(order.getPreTax());
 //                order.setPraAmount(order.getPreAmount());
 //                order.setPraTaxAmount(order.getPreTaxAmount());
@@ -109,7 +111,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                         noTaxTotalAmount += noTaxTotalPrice;
 //                        product.setPreInboundMainNum(vo.getNum() * map.get(vo.getSkuCode()));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        log.error("error", e);
                         throw new BizException("sku编码:" + vo.getSkuCode() + ",对应的转换单位系数不存在");
                     }
                     product.setCreateTime(new Date());
@@ -133,7 +135,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                 list.add(outbound);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw new BizException(e.getMessage());
             } else {

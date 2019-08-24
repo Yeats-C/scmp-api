@@ -11,7 +11,6 @@ import java.util.List;
  * @version 1.0
  * @className PriceProjetGroupType
  * @date 2019/4/19 17:29
- * @description TODO
  */
 
 @Data

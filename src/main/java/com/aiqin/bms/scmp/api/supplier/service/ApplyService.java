@@ -13,7 +13,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
  * @version 1.0
  * @className ApplyService
  * @date 2019/4/8 09:34
- * @description TODO
+
  */
 public interface ApplyService {
 

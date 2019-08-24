@@ -10,7 +10,7 @@ import lombok.Data;
  * @version 1.0
  * @className QueryScoreReqVo
  * @date 2019/5/23 15:41
- * @description TODO
+
  */
 @ApiModel("查询评分VO")
 @Data

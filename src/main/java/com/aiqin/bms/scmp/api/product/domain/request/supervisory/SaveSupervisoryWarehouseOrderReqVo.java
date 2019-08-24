@@ -13,7 +13,6 @@ import java.util.List;
  * @version 1.0
  * @className SaveSupervisoryWarehouseOrderReqVo
  * @date 2019/6/29 18:05
- * @description TODO
  */
 @ApiModel("保存监管仓出入库单据")
 @Data

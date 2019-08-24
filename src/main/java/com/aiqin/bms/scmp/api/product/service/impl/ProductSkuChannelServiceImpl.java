@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @className ProductSkuChannelServiceImpl
  * @date 2019/5/7 17:33
- * @description TODO
+
  */
 @Service
 public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
