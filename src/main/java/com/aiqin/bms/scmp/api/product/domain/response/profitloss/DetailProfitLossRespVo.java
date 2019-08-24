@@ -13,7 +13,6 @@ import java.util.List;
  * @version 1.0
  * @className DetailProfitLossRespVo
  * @date 2019/6/28 12:10
- * @description TODO
  */
 @ApiModel("详情数据返回")
 @Data

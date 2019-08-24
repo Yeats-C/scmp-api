@@ -271,7 +271,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 workFlow(applySupplyCompany);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         }
         return num;
@@ -542,7 +542,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             });
             resultNum = applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
                     "系统错误"));
         }
@@ -941,7 +941,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         } catch (GroundRuntimeException e) {
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return supplyComDetailRespVO;
     }
@@ -1011,7 +1011,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     });
                     applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                     throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
                             "系统错误"));
                 }
@@ -1050,7 +1050,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 workFlow(applySupplyCompanyReqDTO);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         }
         return Boolean.TRUE;

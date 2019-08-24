@@ -10,7 +10,6 @@ import lombok.Data;
  * @version 1.0
  * @className ProductSkuAssociatedGoodsRespVo
  * @date 2019/5/14 16:02
- * @description TODO
  */
 @ApiModel("SKU关联商品信息返回")
 @Data

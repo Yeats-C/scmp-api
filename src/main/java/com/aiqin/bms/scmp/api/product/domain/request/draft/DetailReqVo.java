@@ -9,7 +9,6 @@ import lombok.Data;
  * @version 1.0
  * @className DetailReqVo
  * @date 2019/5/14 14:42
- * @description TODO
  */
 @ApiModel("获取申请单详情请求Vo")
 @Data

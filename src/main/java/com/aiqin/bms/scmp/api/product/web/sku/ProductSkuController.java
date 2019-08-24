@@ -178,7 +178,7 @@ public class ProductSkuController {
         } catch (BizException be) {
             return HttpResponse.failure(be.getMessageId());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.QUERY_ERROR);
         }
     }
@@ -194,7 +194,7 @@ public class ProductSkuController {
             querySkuListReqVO.setOrderType(orderType);
             return HttpResponse.success(skuService.getSupervisoryWarehouseSku(querySkuListReqVO));
         }  catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.QUERY_ERROR);
         }
     }

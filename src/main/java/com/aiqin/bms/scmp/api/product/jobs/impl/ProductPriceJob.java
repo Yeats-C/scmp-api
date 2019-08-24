@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.product.service.PriceJobService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.util.DayUtil;
 import com.aiqin.bms.scmp.api.util.PriceThreadDo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@Slf4j
 public class ProductPriceJob {
 
     @Autowired
@@ -37,11 +39,11 @@ public class ProductPriceJob {
         for (Stock stock : warehouse) {
             DoPrice doPrice=null;
             try {
-            doPrice=new DoPrice(priceJobService,stock);
-            PriceThreadDo.doExecutor(doPrice);
-            Thread.sleep(2000);
+                doPrice=new DoPrice(priceJobService,stock);
+                PriceThreadDo.doExecutor(doPrice);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                log.error("error", e);
             }
         }
         skuCost();

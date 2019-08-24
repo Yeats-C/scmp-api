@@ -10,7 +10,6 @@ import java.util.Objects;
  * @version 1.0
  * @className SkuSaleStatusEnum
  * @date 2019/7/6 19:29
- * @description TODO
  */
 @ApiModel("SKU销售状态枚举")
 @Getter

@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.purchase.service.PurchaseOrderArrivalSubscribeServ
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,11 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0
  * @className PurchaseOrderArrivalSubscribeController
  * @date 2019/6/28 20:07
- * @description TODO
+
  */
 @Api(tags = "采购订货预约")
 @RequestMapping("/purchase/arrival/subscribe")
 @RestController
+@Slf4j
 public class PurchaseOrderArrivalSubscribeController {
     @Autowired
     private PurchaseOrderArrivalSubscribeService purchaseOrderArrivalSubscribeService;
@@ -35,7 +37,7 @@ public class PurchaseOrderArrivalSubscribeController {
         try {
             return HttpResponse.success(purchaseOrderArrivalSubscribeService.findPage(reqVo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -46,7 +48,7 @@ public class PurchaseOrderArrivalSubscribeController {
         try {
             return HttpResponse.success(purchaseOrderArrivalSubscribeService.save(reqVo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

@@ -58,7 +58,7 @@ public class UploadFileUtil {
             ossClient.putObject(bucketName, fileName, new ByteArrayInputStream(bytes1));
             ossClient.shutdown();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         Date expiration = new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10);
         //返回文件路径
@@ -109,7 +109,7 @@ public class UploadFileUtil {
             log.info("上传成功：url=[{}]",url1.toString());
             url = url1.toString();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
             log.info("上传文件失败");
         } finally {
             // 关闭OSSClient。
@@ -154,9 +154,9 @@ public class UploadFileUtil {
             contentType = objectMetadata.getContentType();
             base64 = getBase64FromInputStream(inputStream);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            log.error("error", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         } finally {
             ossClient.shutdown();
         }
@@ -175,13 +175,13 @@ public class UploadFileUtil {
             }
             data = swapStream.toByteArray();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                 }
             }
         }

@@ -58,7 +58,6 @@ public interface ProductSkuInfoMapper {
      */
     int checkCategory(String categoryCode);
     /**
-     * TODO
      * @author NullPointException
      * @date 2019/7/21
      * @param skuNameList

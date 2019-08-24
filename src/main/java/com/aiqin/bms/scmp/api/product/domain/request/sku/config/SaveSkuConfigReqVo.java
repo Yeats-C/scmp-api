@@ -11,7 +11,6 @@ import java.util.List;
  * @version 1.0
  * @className SaveSkuConfigReqVo
  * @date 2019/5/25 10:03
- * @description TODO
  */
 @ApiModel("保存SKU配置信息VO")
 @Data

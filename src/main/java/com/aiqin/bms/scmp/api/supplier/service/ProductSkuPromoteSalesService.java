@@ -12,7 +12,7 @@ import java.util.List;
  * @version 1.0
  * @className ProductSkuPromoteSalesService
  * @date 2019/7/3 12:35
- * @description TODO
+
  */
 public interface ProductSkuPromoteSalesService {
 

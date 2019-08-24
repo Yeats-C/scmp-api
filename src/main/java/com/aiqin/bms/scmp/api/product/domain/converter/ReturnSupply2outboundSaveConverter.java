@@ -1,25 +1,23 @@
 package com.aiqin.bms.scmp.api.product.domain.converter;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundBatchReqVo;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
-import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
-import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailByCodeRespVO;
-import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.bms.scmp.api.base.InOutStatus;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.alibaba.druid.util.StringUtils;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -27,7 +25,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -36,6 +33,7 @@ import java.util.stream.Collectors;
  * @date 2019/1/17
  */
 @Component
+@Slf4j
 public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSupplyToOutBoundReqVo, OutboundReqVo> {
 //    private SkuService skuService;
 
@@ -181,7 +179,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 return outbound;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if(e instanceof BizException){
                 throw new BizException(e.getMessage());
             }else {

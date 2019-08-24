@@ -13,7 +13,7 @@ import java.util.List;
  * @version 1.0
  * @className ProductSkuStockInfoService
  * @date 2019/5/9 15:12
- * @description TODO
+
  */
 public interface ProductSkuStockInfoService {
 
