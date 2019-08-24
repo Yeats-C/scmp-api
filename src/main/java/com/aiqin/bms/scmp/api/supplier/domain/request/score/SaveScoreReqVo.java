@@ -13,7 +13,7 @@ import java.util.List;
  * @version 1.0
  * @className SaveScoreReqVo
  * @date 2019/5/23 15:51
- * @description TODO
+
  */
 @ApiModel("保存评分Vo")
 @Data

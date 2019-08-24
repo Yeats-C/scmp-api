@@ -128,7 +128,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
              temp = productBrandTypeDao.insertBrand(t);
             //TODO 保存日志
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("保存失败！");
         }
         return temp;
@@ -180,7 +180,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
             temp = productBrandTypeDao.updateByPrimaryKeySelective(t);
             //TODO 保存日志
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("修改失败！");
         }
         return temp;
@@ -231,7 +231,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
             temp = productBrandTypeDao.updateByPrimaryKeySelective(t);
             //TODO 保存日志
         } catch (BeansException e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("状态更新失败！");
         }
         return temp;

@@ -10,7 +10,6 @@ import lombok.Data;
  * @version 1.0
  * @className ProductSkuPicturesRespVo
  * @date 2019/5/14 16:06
- * @description TODO
  */
 @ApiModel("sku图片及介绍信息返回")
 @Data

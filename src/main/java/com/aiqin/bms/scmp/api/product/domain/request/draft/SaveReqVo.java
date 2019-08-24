@@ -13,7 +13,6 @@ import java.util.Date;
  * @version 1.0
  * @className SaveReqVo
  * @date 2019/5/16 14:28
- * @description TODO
  */
 @ApiModel("商品申请单提交请求Vo")
 @Data

@@ -72,7 +72,7 @@ public class SkuPurchaseVolumeServiceImpl implements SkuPurchaseVolumeService {
             }
             return HttpResponse.success();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if(e instanceof BizException){
                 throw e;
             }else{

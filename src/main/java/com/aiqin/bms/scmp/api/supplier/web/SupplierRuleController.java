@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * @version 1.0
  * @className SupplierRuleController
  * @date 2019/5/23 14:27
- * @description TODO
+
  */
 @RestController
 @Api(description = "基础资料-规则管理")
@@ -37,7 +37,7 @@ public class SupplierRuleController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -48,7 +48,7 @@ public class SupplierRuleController {
             log.info("获取规则管理 request uri:{}","/basic/rule/get");
             return HttpResponse.success(ruleService.findRule());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

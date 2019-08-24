@@ -10,7 +10,6 @@ import lombok.Data;
  * @version 1.0
  * @className PurchaseSaleStockReqVo
  * @date 2019/5/7 10:34
- * @description TODO
  */
 @Data
 @ApiModel("进销存")

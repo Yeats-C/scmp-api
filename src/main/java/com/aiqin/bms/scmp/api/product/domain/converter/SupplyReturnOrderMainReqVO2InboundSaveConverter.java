@@ -1,10 +1,11 @@
 package com.aiqin.bms.scmp.api.product.domain.converter;
 
 import com.aiqin.bms.scmp.api.base.InOutStatus;
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.*;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderProductItemReqVO;
@@ -12,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
  * @date 2019/1/17
  */
 @Component
+@Slf4j
 public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converter<SupplyReturnOrderMainReqVO, InboundReqSave> {
 
     private SkuService skuService;
@@ -68,7 +71,7 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
             inbound.setPreMainUnitNum(mainOrderInfo.getProductNum());
             inbound.setPreTaxAmount(mainOrderInfo.getProductTotalAmount());
             inbound.setPreAmount(mainOrderInfo.getProductTotalAmount());
-            inbound.setPreTax(mainOrderInfo.getProductTotalAmount()-mainOrderInfo.getProductTotalAmount());
+            inbound.setPreTax(0L);
 //            inbound.setPraTax(inbound.getPreTax());
 //            inbound.setPraAmount(inbound.getPreAmount());
 //            inbound.setPraTaxAmount(inbound.getPreTaxAmount());
@@ -112,7 +115,7 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
                     long noTaxTotalPrice = noTaxPrice * vo.getNum();
                     noTaxTotalAmount += noTaxTotalPrice;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                     throw new BizException("sku编码:"+vo.getSkuCode()+",对应的转换单位系数不存在");
                 }
                 product.setCreateTime(new Date());
@@ -133,7 +136,7 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
             inbound.setList(products);
             return inbound;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if(e instanceof BizException){
                 throw new BizException(e.getMessage());
             }else {

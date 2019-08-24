@@ -9,7 +9,6 @@ import lombok.Data;
  * @version 1.0
  * @className SpareWarehouseReqVo
  * @date 2019/6/4 16:40
- * @description TODO
  */
 @Data
 @ApiModel("备用仓库返回Vo")

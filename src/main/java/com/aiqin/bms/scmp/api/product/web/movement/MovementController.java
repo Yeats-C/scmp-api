@@ -13,6 +13,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Api(description = "移库管理")
 @RequestMapping("/product/movement")
+@Slf4j
 public class MovementController {
 
     @Autowired
@@ -42,7 +44,7 @@ public class MovementController {
         try {
             return HttpResponse.success(movementService.getList(vo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -57,7 +59,7 @@ public class MovementController {
         try {
             return HttpResponse.success(movementService.save(vo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -72,7 +74,7 @@ public class MovementController {
         try {
             return HttpResponse.success(movementService.view(id));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

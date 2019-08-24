@@ -11,7 +11,6 @@ import javax.validation.constraints.NotEmpty;
  * @version 1.0
  * @className AddPriceChannelReqVo
  * @date 2019/4/19 16:08
- * @description TODO
  */
 @ApiModel("新增价格渠道")
 @Data

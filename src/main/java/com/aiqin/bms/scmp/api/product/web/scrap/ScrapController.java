@@ -14,6 +14,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Api(description = "报废管理")
 @RequestMapping("/product/scrap")
+@Slf4j
 public class ScrapController {
 
     @Autowired
@@ -43,7 +45,7 @@ public class ScrapController {
         try {
             return HttpResponse.success(ScrapService.getList(vo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -60,7 +62,7 @@ public class ScrapController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -77,7 +79,7 @@ public class ScrapController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

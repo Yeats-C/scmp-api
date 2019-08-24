@@ -830,7 +830,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                             contractFiles.stream().forEach(item->item.setContractCode(contractDTO.getContractCode()));
                             contractFileMapper.insertBatch(contractFiles);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error("error", e);
                             throw new GroundRuntimeException("合同文件保存失败");
                         }
                     }
@@ -842,7 +842,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                             purchaseGroups.stream().forEach(item->item.setContractCode(contractDTO.getContractCode()));
                             contractPurchaseGroupMapper.insertBatch(purchaseGroups);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error("error", e);
                             throw new GroundRuntimeException("合同采购组存失败");
                         }
                     }
@@ -854,7 +854,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                             brands.stream().forEach(item->item.setContractCode(contractDTO.getContractCode()));
                             contractBrandMapper.insertBatch(brands);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error("error", e);
                             throw new GroundRuntimeException("合同品牌存失败");
                         }
                     }
@@ -866,7 +866,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                             contractCategories.stream().forEach(item->item.setContractCode(contractDTO.getContractCode()));
                             contractCategoryMapper.insertBatch(contractCategories);
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            log.error("error", e);
                             throw new GroundRuntimeException("合同品类存失败");
                         }
                     }
@@ -919,7 +919,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                                 int cf = contractFileMapper.insertBatch(contractFiles);
                                 throw new GroundRuntimeException("合同文件保存失败");
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                log.error("error", e);
                                 log.info("转化对象失败");
                             }
                         }
@@ -940,7 +940,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                                 purchaseGroups.stream().forEach(purchaseGroup->purchaseGroup.setContractCode(oldContractDTO.getContractCode()));
                                 int pn = contractPurchaseGroupMapper.insertBatch(purchaseGroups);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                log.error("error", e);
                                 throw new GroundRuntimeException("合同采购组存失败");
                             }
                         }
@@ -953,7 +953,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                                 brands.stream().forEach(item->item.setContractCode(oldContractDTO.getContractCode()));
                                 int pn =contractBrandMapper.insertBatch(brands);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                log.error("error", e);
                                 throw new GroundRuntimeException("合同品牌存失败");
                             }
                         }
@@ -966,7 +966,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                                 contractCategories.stream().forEach(item->item.setContractCode(oldContractDTO.getContractCode()));
                                 int pn =contractCategoryMapper.insertBatch(contractCategories);
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                log.error("error", e);
                                 throw new GroundRuntimeException("合同品类存失败");
                             }
                         }

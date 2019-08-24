@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * @version 1.0
  * @className SaveReqVo
  * @date 2019/5/23 10:57
- * @description TODO
+
  */
 @ApiModel("保存规则Vo")
 @Data

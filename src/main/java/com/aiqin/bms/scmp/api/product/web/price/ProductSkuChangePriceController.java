@@ -145,7 +145,7 @@ public class ProductSkuChangePriceController {
         try {
             return HttpResponse.success(productSkuChangePriceService.getSkuListByQueryVO(reqVO));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
         }
     }
@@ -157,7 +157,7 @@ public class ProductSkuChangePriceController {
         try {
             return HttpResponse.success(productSkuChangePriceService.querySkuBatchList(reqVO));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
         }
     }
@@ -207,7 +207,7 @@ public class ProductSkuChangePriceController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -221,7 +221,7 @@ public class ProductSkuChangePriceController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

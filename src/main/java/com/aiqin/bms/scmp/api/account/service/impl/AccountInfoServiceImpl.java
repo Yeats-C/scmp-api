@@ -238,7 +238,7 @@ public class AccountInfoServiceImpl implements AccountInfoService {
         request.setUsername(username);
         Account account = accountDao.selectOne(request);
         if (account == null) {
-            HttpResponse.failureGenerics(ResultCode.NO_HAVE_ACCOUNT, null);
+           return HttpResponse.failureGenerics(ResultCode.NO_HAVE_ACCOUNT, null);
         }
         AccountResponse response = new AccountResponse();
         BeanUtils.copyProperties(account, response);

@@ -9,7 +9,7 @@ import lombok.Data;
  * @version 1.0
  * @className ContractPurchaseGroupResVo
  * @date 2019/6/24 16:31
- * @description TODO
+
  */
 
 @Data

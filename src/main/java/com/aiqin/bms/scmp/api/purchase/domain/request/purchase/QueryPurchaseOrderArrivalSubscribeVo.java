@@ -13,7 +13,7 @@ import java.util.Date;
  * @version 1.0
  * @className QueryPurchaseOrderArrivalSubscribeVo
  * @date 2019/6/28 18:42
- * @description TODO
+
  */
 @ApiModel("采购到货预约查询Vo")
 @Data

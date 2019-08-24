@@ -11,7 +11,6 @@ import javax.validation.constraints.NotEmpty;
  * @version 1.0
  * @className AddPriceProjectReqVo
  * @date 2019/4/19 13:44
- * @description TODO
  */
 @Data
 @ApiModel("修改价格项目VO")

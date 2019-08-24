@@ -60,7 +60,7 @@ public class SupplierBaseController {
             fOut = response.getOutputStream();
             workbook.write(fOut);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new RuntimeException("导出失败！");
         } finally {
             try {
@@ -69,7 +69,7 @@ public class SupplierBaseController {
                     fOut.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("error", e);
             }
         }
     }
@@ -107,7 +107,7 @@ public class SupplierBaseController {
 //                default: return "false";
 //            }
 //        } catch (Exception e) {
-//            e.printStackTrace();
+//            log.error("error", e);
 //            return "false";
 //        }
 //    }

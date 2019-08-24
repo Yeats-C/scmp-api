@@ -303,7 +303,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             return outboundOderCode;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("保存出库单失败");
         }
     }
@@ -349,7 +349,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outboundProductDao.updateBatch(updateOutboundProductReqVOs);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException(ResultCode.OUTBOUND_SAVE_ERROR);
         }
     }
@@ -691,7 +691,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             returnSource(outbound.getId());
             return k;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("修改库存失败");
         }
     }
@@ -722,7 +722,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
                 int k = outboundDao.updateByPrimaryKeySelective(outbound);
             }catch (Exception e){
-                e.printStackTrace();
+                log.error("error", e);
                 log.error(e.getMessage());
                 throw new GroundRuntimeException("回传订单失败");
             }
@@ -749,7 +749,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
                 int k = outboundDao.updateByPrimaryKeySelective(outbound);
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("error", e);
                 log.error(e.getMessage());
                 throw new GroundRuntimeException("回传退供单失败");
             }
@@ -772,7 +772,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 //生成入库单
                 createInbound(allocation.getFormNo());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("error", e);
                 throw new GroundRuntimeException("调拨单更改出库状态失败");
             }
             outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
@@ -794,7 +794,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 //生成入库单
                 movementCreateInbound(allocation.getId().toString());
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("error", e);
                 throw new GroundRuntimeException("调拨单更改出库状态失败");
             }
             outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
@@ -836,7 +836,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 //              throw  new GroundRuntimeException("调用采购服务失败");
 //            }
 //        } catch (GroundRuntimeException e) {
-//            e.printStackTrace();
+//            log.error("error", e);
 //            log.error("出库单回传订单失败：[{}]",reqVO);
 //        }
 
@@ -851,7 +851,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         try {
             goodsRejectService.finishStock(reqVO);
         } catch (GroundRuntimeException e) {
-            e.printStackTrace();
+            log.error("error", e);
             log.error("出库单回传退供失败：[{}]",e);
         }
 
@@ -919,7 +919,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_INBOUND.getName());
             allocationMapper.updateByPrimaryKeySelective(allocation);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw  new GroundRuntimeException("保存出库单失败");
         }
     }

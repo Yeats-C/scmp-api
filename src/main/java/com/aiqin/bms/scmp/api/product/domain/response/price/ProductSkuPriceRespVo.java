@@ -12,7 +12,6 @@ import java.util.Date;
  * @version 1.0
  * @className ProductSkuPriceRespVo
  * @date 2019/7/5 19:58
- * @description TODO
  */
 @ApiModel("临时表价格详情返回Vo")
 @Data

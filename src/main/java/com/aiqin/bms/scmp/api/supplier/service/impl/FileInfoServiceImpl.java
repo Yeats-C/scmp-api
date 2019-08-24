@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.UploadFileUtil;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,7 @@ import java.util.List;
  * @date: 2018/12/18 0018 14:52
  */
 @Service
+@Slf4j
 public class FileInfoServiceImpl implements FileInfoService {
     @Autowired
     private UploadFileUtil uploadFileUtil;
@@ -44,7 +46,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             }
             url = uploadFileUtil.upload(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return url;
     }
@@ -61,7 +63,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             }
             url = uploadFileUtil.upload(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return url;
     }
@@ -90,7 +92,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         try {
             return uploadFileUtil.downImage(filePath);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException(ResultCode.FILE_DOWN_ERROR);
         }
     }

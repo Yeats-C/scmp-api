@@ -5,7 +5,6 @@ package com.aiqin.bms.scmp.api.common;
  * @version 1.0
  * @className PriceTypeCode
  * @date 2019/4/19 17:37
- * @description TODO
  */
 public class PriceTypeCode {
 

@@ -8,7 +8,6 @@ import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
-import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationCallbackToOutboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToOutboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
@@ -18,7 +17,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
-import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
@@ -35,9 +33,7 @@ import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
-import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
@@ -61,7 +57,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -488,7 +483,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
               return  outboundService.save(convert);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw  new GroundRuntimeException("保存出库单失败");
         }
     }
@@ -728,7 +723,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                         num = Long.valueOf(s);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                     list.add(new AllocationItemRespVo(skuCode,skuName, "数量数据格式错误"));
                     continue;
                 }
@@ -772,7 +767,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             }
             return list;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("导入异常");
         }
     }

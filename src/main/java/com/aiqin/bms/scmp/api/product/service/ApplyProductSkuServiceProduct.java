@@ -11,7 +11,7 @@ import java.util.List;
  * @version 1.0
  * @className ApplyProductSkuServiceProduct
  * @date 2019/3/29 16:04
- * @description TODO
+
  */
 public interface ApplyProductSkuServiceProduct extends BaseService {
 

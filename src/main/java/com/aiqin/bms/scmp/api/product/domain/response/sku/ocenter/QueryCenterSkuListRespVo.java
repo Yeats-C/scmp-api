@@ -10,7 +10,6 @@ import lombok.Data;
  * @version 1.0
  * @className QueryCenterSkuListRespVo
  * @date 2019/4/16 16:28
- * @description TODO
  */
 @Data
 @ApiModel("运营中心查询根据sku编码集合查询sku列表返回")

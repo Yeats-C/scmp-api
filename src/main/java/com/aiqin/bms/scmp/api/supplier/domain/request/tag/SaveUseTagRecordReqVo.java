@@ -11,7 +11,7 @@ import java.util.List;
  * @version 1.0
  * @className SaveUseTagRecordReqVo
  * @date 2019/4/30 14:45
- * @description TODO
+
  */
 @ApiModel("保存标签使用信息")
 @Data

@@ -214,7 +214,7 @@ public class SupplyComServiceImpl implements SupplyComService {
         } catch (GroundRuntimeException e) {
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return supplyComDetailRespVO;
     }

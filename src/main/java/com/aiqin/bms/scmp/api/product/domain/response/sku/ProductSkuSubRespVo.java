@@ -9,7 +9,6 @@ import lombok.Data;
  * @version 1.0
  * @className ProductSkuSubRespVo
  * @date 2019/7/6 17:59
- * @description TODO
  */
 @ApiModel("组合商品子SKU列表信息")
 @Data
