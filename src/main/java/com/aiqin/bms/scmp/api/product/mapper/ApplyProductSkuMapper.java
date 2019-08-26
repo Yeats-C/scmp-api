@@ -73,4 +73,10 @@ public interface ApplyProductSkuMapper {
     int checkCategory(String categoryCode);
 
     int checkName(@Param("skuCode") String skuCode,@Param("skuName") String skuName);
+
+    /**
+     * 查询未生效的
+     * @return
+     */
+    List<ApplyProductSku> selectUnSynData();
 }

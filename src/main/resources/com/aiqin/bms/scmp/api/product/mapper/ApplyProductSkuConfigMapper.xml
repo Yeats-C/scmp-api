@@ -132,6 +132,12 @@
   <select id="findFormNoByCode" resultType="java.lang.String">
     select distinct form_no from apply_product_sku_config where apply_code = #{applyCode,jdbcType=VARCHAR}
   </select>
+  <select id="selectUnSynData" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from apply_product_sku_config
+        where  be_effective = 0  and auditor_status = 2 and selection_effective_time = 0 and <![CDATA[selection_effective_start_time <= now() ]]>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_config
     where id = #{id,jdbcType=BIGINT}
@@ -554,5 +560,12 @@
       auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
       auditor_status = #{auditorStatus,jdbcType=TINYINT}
     where form_no = #{formNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateBySynStatus">
+    update apply_product_sku_config set be_effective = 1
+    where id in
+    <foreach collection="list" open="(" close=")" item="item" separator=",">
+         #{item.id}
+    </foreach>
   </update>
 </mapper>
