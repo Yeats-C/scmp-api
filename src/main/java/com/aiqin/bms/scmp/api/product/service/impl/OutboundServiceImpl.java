@@ -302,9 +302,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             return outboundOderCode;
 
-        } catch (Exception e) {
+        } catch (GroundRuntimeException e) {
             log.error("error", e);
-            throw new GroundRuntimeException("保存出库单失败");
+            throw new GroundRuntimeException(String.format("保存出库单失败%s",e.getMessage()));
         }
     }
 
@@ -477,65 +477,53 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outboundProductWmsReqVOs.clear();
         outboundProductWmsReqVOs.addAll(OutboundProductWmsResVOSet);
         outboundWmsReqVO.setList(outboundProductWmsReqVOs);
-//        List<OutboundBatchWmsResVO> outboundBatchWmsResVOs = outboundBatchDao.selectOutboundBatchWmsResponse(outbound.getOutboundOderCode());
-//        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
-//        outboundWmsReqVO.setOutboundBatchWmsResVOs(outboundBatchWmsResVOs);
-        try{
             //退供出库需要请求wms
-            if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
-                String createById = outboundDao.selectCreateById(outbound.getOutboundOderCode());
-                outboundWmsReqVO.setCreateById(createById);
-                url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
-                log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
-                HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO)).timeout(10000);
-                HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-                if(orderDto.getCode().equals(MessageId.SUCCESS_CODE)){
-                    ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()),ResponseWms.class);
-                    if(responseWms.getResultCode().equals(MessageId.SUCCESS_CODE)){
-                        //设置wms编号
-                        outbound.setWmsDocumentCode(responseWms.getUniquerRequestNumber());
-                        //设置入库状态
-                        outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-                        outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
-                    }else{
-                        LOGGER.error("退供出库单传入wms失败:{}",responseWms.getReason());
-                        throw new GroundRuntimeException("退供出库单传入wms失败");
-                    }
+        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
+            String createById = outboundDao.selectCreateById(outbound.getOutboundOderCode());
+            outboundWmsReqVO.setCreateById(createById);
+            url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
+            log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
+            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO)).timeout(10000);
+            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+            if(orderDto.getCode().equals(MessageId.SUCCESS_CODE)){
+                ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()),ResponseWms.class);
+                if(responseWms.getResultCode().equals(MessageId.SUCCESS_CODE)){
+                    //设置wms编号
+                    outbound.setWmsDocumentCode(responseWms.getUniquerRequestNumber());
+                    //设置入库状态
+                    outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+                    outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
                 }else{
-                    LOGGER.error("退供出库单传入wms失败:{}",orderDto.getMessage());
-                    throw new GroundRuntimeException("退供出库单传入wms失败");
+                    LOGGER.error("退供出库单传入wms失败:{}",responseWms.getReason());
+                    throw new GroundRuntimeException(String.format("退供出库单传入wms失败:%s",responseWms.getReason()));
                 }
-
             }else{
-                //其他出库 移库 预计数量=实际数量
-                //设置出库状态
-                outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-                outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
+                LOGGER.error("退供出库单传入wms失败:{}",orderDto.getMessage());
+                throw new GroundRuntimeException(String.format("退供出库单传入wms失败:%s",orderDto.getMessage()));
             }
-
-            // 更新数据库
-            int s = outboundDao.updateByPrimaryKeySelective(outbound);
-            OutboundCallBackReqVo outboundCallBackReqVo = new OutboundCallBackReqVo();
-            BeanCopyUtils.copy(outbound,outboundCallBackReqVo);
-
-            List<OutboundProductCallBackReqVo> list = new ArrayList<>();
-            for (OutboundProductWmsResVO outboundProductWmsReqVO : outboundProductWmsReqVOs) {
-                OutboundProductCallBackReqVo outboundProductCallBackReqVo = new OutboundProductCallBackReqVo();
-                outboundProductCallBackReqVo.setLinenum(outboundProductWmsReqVO.getLinenum());
-                outboundProductCallBackReqVo.setSkuCode(outboundProductWmsReqVO.getSkuCode());
-                outboundProductCallBackReqVo.setPraOutboundMainNum(outboundProductWmsReqVO.getPreInboundMainNum());
-                list.add(outboundProductCallBackReqVo);
-            }
-            outboundCallBackReqVo.setList(list);
-            //保存日志
-            productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
-
-            if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())){
-                workFlowCallBack(outboundCallBackReqVo);
-            }
-        }catch (Exception e){
-            LOGGER.error("出库单传入wms失败，错误原因为：{}", e);
-            throw new GroundRuntimeException("退供出库单传入wms失败:{}");
+        }else{
+            //其他出库 移库 预计数量=实际数量
+            //设置出库状态
+            outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+            outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
+        }
+        // 更新数据库
+        int s = outboundDao.updateByPrimaryKeySelective(outbound);
+        OutboundCallBackReqVo outboundCallBackReqVo = new OutboundCallBackReqVo();
+        BeanCopyUtils.copy(outbound,outboundCallBackReqVo);
+        List<OutboundProductCallBackReqVo> list = new ArrayList<>();
+        for (OutboundProductWmsResVO outboundProductWmsReqVO : outboundProductWmsReqVOs) {
+            OutboundProductCallBackReqVo outboundProductCallBackReqVo = new OutboundProductCallBackReqVo();
+            outboundProductCallBackReqVo.setLinenum(outboundProductWmsReqVO.getLinenum());
+            outboundProductCallBackReqVo.setSkuCode(outboundProductWmsReqVO.getSkuCode());
+            outboundProductCallBackReqVo.setPraOutboundMainNum(outboundProductWmsReqVO.getPreInboundMainNum());
+            list.add(outboundProductCallBackReqVo);
+        }
+        outboundCallBackReqVo.setList(list);
+        //保存日志
+        productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
+        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())){
+            workFlowCallBack(outboundCallBackReqVo);
         }
     }
     /**
