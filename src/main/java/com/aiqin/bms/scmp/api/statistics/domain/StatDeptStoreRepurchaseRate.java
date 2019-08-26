@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.statistics.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,6 +23,14 @@ public class StatDeptStoreRepurchaseRate {
     @ApiModelProperty(value="月")
     @JsonProperty("stat_month")
     private Long statMonth;
+
+    @ApiModelProperty(value="部门code")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty(value="部门名")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
 
     @ApiModelProperty(value="省区code")
     @JsonProperty("province_code")
@@ -53,5 +62,6 @@ public class StatDeptStoreRepurchaseRate {
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 }

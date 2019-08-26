@@ -22,12 +22,45 @@
     create_time
   </sql>
   <select id="storeRepurchaseList" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"></include>
+    select
+    <include refid="Base_Column_List"></include>
     from stat_com_store_repurchase_rate
     <where>
-      stat_year = #{year,VARCHAR}
-      and stat_month = #{month,VARCHAR}
-      order by product_sort_code
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+      order by product_sort_code, province_code
+    </where>
+  </select>
+  <select id="storeRepurchaseBySort" resultType="com.aiqin.bms.scmp.api.statistics.domain.StatComStoreRepurchaseRate">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_com_store_repurchase_rate
+    <where>
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+      group by product_sort_code
+    </where>
+  </select>
+  <select id="storeRepurchaseSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse">
+    select
+    sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(shopping_frequency,0)) as shoppingFrequency
+    from stat_com_store_repurchase_rate
+    <where>
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+    </where>
+  </select>
+  <select id="storeRepurchaseByDeptSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateSubtotalResponse">
+    select
+    sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(shopping_frequency,0)) as shoppingFrequency
+    from stat_com_store_repurchase_rate
+    <where>
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
     </where>
   </select>
 </mapper>
