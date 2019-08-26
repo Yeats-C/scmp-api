@@ -26,5 +26,5 @@ package com.aiqin.bms.scmp.api.abutment.service;
  * <p>
  * 思维方式*热情*能力
  */
-public interface SapProductService {
+public interface SapBaseDataService {
 }
