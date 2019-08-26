@@ -312,7 +312,7 @@
       on a.code = c.main_code
       left join apply_product_sku_sale_area_channel d
       on a.code = d.code
-    where a.be_effective = 0 and <![CDATA[a.selection_effective_start_time <= now() ]]>
+    where a.be_effective = 0 and <![CDATA[a.selection_effective_start_time <= now() ]]> and a.apply_status = 2 and selection_effective_time = 0
     </select>
     <select id="selectByOfficialCode"
             resultMap="BaseResultMap">

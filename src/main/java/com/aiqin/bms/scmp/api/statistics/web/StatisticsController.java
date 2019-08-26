@@ -42,10 +42,12 @@ public class StatisticsController {
     @ApiOperation("门店复购率统计")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "date", value = "日期", type = "String"),
-            @ApiImplicitParam(name = "type", value = "门店复购率统计类型: 0 公司 1 部门", type = "Integer") })
-    public HttpResponse<StoreRepurchaseRateResponse> storeRepurchaseRate(@RequestParam("date") String date,
-                                                                         @RequestParam("type") Integer type) {
-        return statisticsService.storeRepurchaseRate(date, type);
+            @ApiImplicitParam(name = "type", value = "门店复购率统计类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<StoreRepurchaseRateResponse> storeRepurchaseRate(
+            @RequestParam("date") String date,  @RequestParam("type") Integer type,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        return statisticsService.storeRepurchaseRate(date, type, productSortCode);
     }
 
 }

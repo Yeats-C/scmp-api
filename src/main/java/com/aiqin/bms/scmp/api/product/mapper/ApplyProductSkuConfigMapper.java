@@ -35,4 +35,8 @@ public interface ApplyProductSkuConfigMapper {
     List<SkuConfigsRepsVo> selectBySkuAndApplyCode(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     String findFormNoByCode(String applyCode);
+
+    int updateBySynStatus(@Param("list") List<ApplyProductSkuConfig> list);
+
+    List<ApplyProductSkuConfig> selectUnSynData();
 }
