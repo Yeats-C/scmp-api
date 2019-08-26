@@ -253,10 +253,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }
 
         // 去重已选的商品
+        List<PurchaseApplyDetailResponse> response = new ArrayList<>();
         if(CollectionUtils.isNotEmptyCollection(purchases.getSearchList())){
             Set<String> info = this.searchProductInfo(purchases.getSearchList());
             List<String> list = new ArrayList<>(info);
-            List<PurchaseApplyDetailResponse> response = new ArrayList<>();
             for(PurchaseApplyDetailResponse product : detail){
                 StringBuilder sb = new StringBuilder();
                 sb.append(product.getSkuCode()).append("_").append(product.getSupplierCode()).append("_").
@@ -270,9 +270,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
             detail.removeAll(response);
         }
-        //Integer count = productSkuDao.purchaseProductCount(purchases);
+        Integer count = productSkuDao.purchaseProductCount(purchases);
         pageResData.setDataList(detail);
-        pageResData.setTotalCount(detail.size());
+        pageResData.setTotalCount(count - response.size());
         return HttpResponse.success(pageResData);
     }
 
