@@ -425,7 +425,7 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    @Async("myTaskAsyncPool")
+//    @Async("myTaskAsyncPool")
     public void workFlowCallBack(InboundCallBackReqVo reqVo) {
 
         log.error("入库单回调实体传入实体:[{}]",JSON.toJSONString(reqVo));
@@ -560,12 +560,11 @@ public class InboundServiceImpl implements InboundService {
         //计算实际税额
         inbound.setPraTax(inbound.getPraTaxAmount()-inbound.getPraAmount());
         //实际不含税总金额
-        //修改入库单主题
+        //修改入库单主表
         int k = inboundDao.updateByPrimaryKeySelective(inbound);
         log.info("入库更新条数:{}",k);
           // 回传给来源编号
         returnSource(inbound.getId());
-        return ;
     }
 
 
