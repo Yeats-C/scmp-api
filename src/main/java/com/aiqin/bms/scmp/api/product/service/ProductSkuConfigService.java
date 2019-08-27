@@ -106,6 +106,7 @@ public interface ProductSkuConfigService {
     void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode);
 
 
+    void tobeEffective(List<ApplyProductSkuConfig> list);
 
     /**
      * 更新申请表审批状态
@@ -289,4 +290,10 @@ public interface ProductSkuConfigService {
     Boolean saveImportSupply(List<ProductSkuSupplyUnitDraft> reqVo);
 
     DetailRequestRespVo getInfoByForm(String formNo);
+
+    /**
+     * 查未同步的数据
+     * @return
+     */
+    List<ApplyProductSkuConfig> selectUnSynData();
 }

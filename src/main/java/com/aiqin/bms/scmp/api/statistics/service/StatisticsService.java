@@ -8,6 +8,6 @@ public interface StatisticsService {
 
     HttpResponse<SupplierDeliveryResponse> supplierDelivery(Integer formType, String date);
 
-    HttpResponse<StoreRepurchaseRateResponse> storeRepurchaseRate(String date, Integer type);
+    HttpResponse<StoreRepurchaseRateResponse> storeRepurchaseRate(String date, Integer type, String productSortCode);
 
 }

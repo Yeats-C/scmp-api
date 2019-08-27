@@ -567,8 +567,7 @@
         ) as tmp
     </select>
     <select id="countStockSumInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockSumRequest"
-            resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM (
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         SELECT
         st.sku_code
         from stock as st
@@ -578,7 +577,11 @@
         <if test="(propertyText !=null and propertyText!='') or (brandText!=null and brandText!='') or (productCategoryText!=null and productCategoryText!='')">
             LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
         </if>
-        where 1=1
+        where
+        ps.procurement_section_code in
+        <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+            #{item.purchaseGroupCode,jdbcType=VARCHAR}
+        </foreach>
         <if test="skuCode!=null and skuCode!=''">
             AND st.sku_code = #{skuCode}
         </if>
@@ -634,7 +637,6 @@
             AND st.bad_num <![CDATA[<=]]> #{badFinishNum}
         </if>
         group by st.warehouse_code,st.sku_code
-        ) as countStockSumInfoByPage
     </select>
 
     <select id="countWarehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
@@ -910,15 +912,18 @@
     </select>
 
     <select id="countTransportStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
-            resultType="java.lang.Integer">
-        SELECT COUNT(1) FROM (
+             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         SELECT
-        st.sku_code
+        st.sku_code,st.transport_center_code
         FROM stock AS st
         LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
         LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code=pssi.product_sku_code
-        WHERE 1=1
+        WHERE
+        ps.procurement_section_code in
+        <foreach collection="groupList" open="(" close=")" item="item" separator=",">
+            #{item.purchaseGroupCode,jdbcType=VARCHAR}
+        </foreach>
         <if test="skuCode!=null and skuCode!=''">
             AND st.sku_code=#{skuCode}
         </if>
@@ -979,8 +984,7 @@
         <if test="procurementSectionName!=null and procurementSectionName!=''">
             AND ps.procurement_section_name=#{procurementSectionName}
         </if>
-        group by st.warehouse_code,st.sku_code
-        ) AS countTransportStockInfoByPage
+        group by st.transport_center_code,st.sku_code
     </select>
 
     <select id="selectStorehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
