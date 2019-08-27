@@ -103,7 +103,7 @@ transport_company_code,
 transport_number
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from order_info
     where id = #{id,jdbcType=BIGINT}
@@ -1422,4 +1422,14 @@ update order_info
       transport_number = #{transportNumber,jdbcType=VARCHAR}
     where order_code = #{orderCode,jdbcType=BIGINT}
   </update>
+   <select id="listForSap" resultMap="BaseResultMap">
+       select
+       <include refid="Base_Column_List" />
+       from order_info
+       <where>
+          update_time <![CDATA[<=]]> #{finishTime,jdbcType=VARCHAR}
+          and update_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
+          and order_status = 12
+       </where>
+   </select>
 </mapper>

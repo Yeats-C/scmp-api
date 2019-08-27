@@ -18,10 +18,7 @@ public enum ScmpOrderEnum {
     ORDER_ZS(15, "直送订单"),
     ORDER_ASSIST(20, "辅采订单"),
     ORDER_BACK(25, "售后退货"),
-    STORAGE_CHANGE(30, "同仓库内移库"),
-    STORAGE_TRANSFER_OUT(35, "调拨出库"),
-    STORAGE_TRANSFER_IN(36, "调拨入库"),
-    STORAGE_OTHER(40, "其他库存变动"),
+    STORAGE_CHANGE(30, "出入库"),
     ;
 
     private int code;

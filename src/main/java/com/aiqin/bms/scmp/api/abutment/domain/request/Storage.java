@@ -57,8 +57,7 @@ public class Storage {
      * 来源业务单类型0 采购单 5 退供单 10 销售订单 15 配送退货
      */
     @JsonProperty("source_order_type")
-    @ApiModelProperty("来源业务单类型0 采购单 5 退供单 10 销售订单 15 配送退货 20 直送  25 直送退货 30 同仓库内移库 35 调拨出库 " +
-            "36 调拨入库 40 其他库存变动")
+    @ApiModelProperty("来源业务单类型0 采购 5 退供 10 配送订单 15 直送订单 20 辅采订单  25 售后退货 30 出入库")
     private Integer sourceOrderType;
     /**
      * 类型描述
@@ -68,13 +67,14 @@ public class Storage {
     private String sourceOrderTypeName;
 
     @JsonProperty("sub_order_type")
-    @ApiModelProperty("其他库存变动移动类型编码，当来源业务单类型为-其他库存变动必传")
+    @ApiModelProperty("出入库单据类型 0 采购入库 5 退供出库 10 配送订单出库 15 直送订单出库 " +
+            "20 辅采订单出库  25 售后退货入库 30 移库 35 调拨入库 40 调拨出库 45 报损 50 报溢")
     private String subOrderType;
     /**
      * 类型描述
      */
     @JsonProperty("sub_order_type_name")
-    @ApiModelProperty("其他库存变动移动类型描述，盘盈 盘亏 ")
+    @ApiModelProperty("出入库单据类型描述，采购入库 退供出库 等")
     private String subOrderTypeName;
 
     /**
@@ -93,7 +93,7 @@ public class Storage {
      * sap出库仓库编码
      */
     @JsonProperty("sap_transport_code")
-    @ApiModelProperty(value = "sap出库仓库编码",hidden = true)
+    @ApiModelProperty(value = "sap出库仓库编码", hidden = true)
     private String sapTransportCode;
     /**
      * 出库库房编码
@@ -111,7 +111,7 @@ public class Storage {
      * sap出库库房编码
      */
     @JsonProperty("sap_storage_code")
-    @ApiModelProperty(value = "sap出库库房编码",hidden = true)
+    @ApiModelProperty(value = "sap出库库房编码", hidden = true)
     private String sapStorageCode;
     /**
      * 入仓库编码
@@ -129,7 +129,7 @@ public class Storage {
      * sap入仓库编码
      */
     @JsonProperty("sap_transport_code1")
-    @ApiModelProperty(value = "sap入仓库编码",hidden = true)
+    @ApiModelProperty(value = "sap入仓库编码", hidden = true)
     private String sapTransportCode1;
     /**
      * 入库房编码
@@ -147,7 +147,7 @@ public class Storage {
      * sap入库房编码
      */
     @JsonProperty("sap_storage_code1")
-    @ApiModelProperty(value = "sap入库房编码",hidden = true)
+    @ApiModelProperty(value = "sap入库房编码", hidden = true)
     private String sapStorageCode1;
     /**
      * 供应商编码
