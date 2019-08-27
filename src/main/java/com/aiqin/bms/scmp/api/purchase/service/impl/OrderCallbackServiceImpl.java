@@ -231,6 +231,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 orderInfoItem.setProductLineNum(outboundDetailRequest.getProductLineNum());
                 orderInfoItem.setSkuCode(outboundDetailRequest.getSkuCode());
                 orderInfoItem.setChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
+                //金额为0 为赠品的
+                if(outboundDetailRequest.getChannelUnitPrice()==0){
+                    orderInfoItem.setGivePromotion(1);
+                }else{
+                    orderInfoItem.setGivePromotion(0);
+                }
                 orderInfoItem.setTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice() * outboundDetailRequest.getNum());
                 orderInfoItem.setOrderCode(orderInfo.getOrderCode());
                 orderInfoItem.setActualChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());

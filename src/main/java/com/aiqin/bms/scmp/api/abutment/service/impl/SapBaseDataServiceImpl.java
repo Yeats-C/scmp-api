@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.abutment.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.conts.StringConvertUtil;
 import com.aiqin.bms.scmp.api.abutment.domain.request.*;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
@@ -111,7 +112,13 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             Map<String,List<OrderDetail>> orderDetailMap = new HashMap<>();
             for (OrderInfoItem orderInfoItem : orderInfoItems) {
                 orderDetail = new OrderDetail();
-
+                orderDetail.setSkuCode(orderInfoItem.getSkuCode());
+                orderDetail.setSkuName(orderInfoItem.getSkuName());
+                orderDetail.setSkuDesc(StringConvertUtil.productDesc(orderInfoItem.getColorName(),orderInfoItem.getSpec(),orderInfoItem.getModel()));
+                orderDetail.setUnit(orderInfoItem.getUnitName());
+                orderDetail.setScatteredUnit(orderInfoItem.getZeroDisassemblyCoefficient());
+                orderDetail.setChannelPrice(orderInfoItem.getChannelUnitPrice().toString());
+                orderDetail.setGiftFlag(orderInfoItem.getGivePromotion());
 
                 if(orderDetailMap.containsKey(orderInfoItem.getOrderCode())){
                     orderDetails = orderDetailMap.get(orderInfoItem.getOrderCode());

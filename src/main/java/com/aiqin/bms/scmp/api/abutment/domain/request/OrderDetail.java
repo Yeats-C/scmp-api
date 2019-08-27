@@ -60,7 +60,7 @@ public class OrderDetail {
      * 是否赠品
      */
     @JsonProperty("gift_flag")
-    @ApiModelProperty("是否赠品")
+    @ApiModelProperty("是否是赠品(0否1是)")
     private Integer giftFlag;
     /**
      * 批次号
