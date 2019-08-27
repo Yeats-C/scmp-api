@@ -574,9 +574,7 @@
         <if test="configStatus!=null">
             LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
         </if>
-        <if test="(propertyText !=null and propertyText!='') or (brandText!=null and brandText!='') or (productCategoryText!=null and productCategoryText!='')">
-            LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
-        </if>
+        LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
         where
         ps.procurement_section_code in
         <foreach collection="groupList" open="(" close=")" item="item" separator=",">
