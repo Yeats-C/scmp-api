@@ -1430,71 +1430,77 @@ public class StockServiceImpl implements StockService {
         }
         stock.setNewDelivery(stockVoRequest.getNewDelivery());
         stock.setNewDeliveryName(stockVoRequest.getNewDeliveryName());
+        Long purchaseWayNum = stock.getPurchaseWayNum() == null ? 0L : stock.getPurchaseWayNum();
+        Long totalWayNum = stock.getTotalWayNum() == null ? 0L : stock.getTotalWayNum();
+        Long lockNum = stock.getLockNum() == null ? 0L : stock.getLockNum();
+        Long availableNum = stock.getAvailableNum() == null ? 0L : stock.getAvailableNum();
+        Long inventoryNum = stock.getInventoryNum() == null ? 0L : stock.getInventoryNum();
+        Long allocationWayNum = stock.getAllocationWayNum() == null ? 0L : stock.getAllocationWayNum();
         switch (operationType) {
             //锁定库存数
             case 1:
-                stock.setLockNum(stock.getLockNum() + stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum() - stockVoRequest.getChangeNum());
+                stock.setLockNum(lockNum + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum - stockVoRequest.getChangeNum());
                 break;
             //减少库存并解锁
             case 2:
-                stock.setInventoryNum(stock.getInventoryNum() - stockVoRequest.getChangeNum());
-                stock.setLockNum(stock.getLockNum() - stockVoRequest.getChangeNum());
+                stock.setInventoryNum(inventoryNum - stockVoRequest.getChangeNum());
+                stock.setLockNum(lockNum - stockVoRequest.getChangeNum());
                 break;
             //解锁锁定库存
             case 3:
-                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
-                stock.setLockNum(stock.getLockNum() - stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum + stockVoRequest.getChangeNum());
+                stock.setLockNum(lockNum - stockVoRequest.getChangeNum());
                 break;
             //无锁定直接减库存 总库存减可用库存减
             case 4:
-                stock.setAvailableNum(stock.getAvailableNum() - stockVoRequest.getChangeNum());
-                stock.setInventoryNum(stock.getInventoryNum() - stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum - stockVoRequest.getChangeNum());
+                stock.setInventoryNum(inventoryNum - stockVoRequest.getChangeNum());
                 break;
             //加库存并锁定库存
             case 5:
-                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
-                stock.setLockNum(stock.getLockNum() + stockVoRequest.getChangeNum());
+                stock.setInventoryNum(inventoryNum + stockVoRequest.getChangeNum());
+                stock.setLockNum(lockNum + stockVoRequest.getChangeNum());
                 break;
             //只改变采购在途数和在途总数
             case 6:
-                stock.setPurchaseWayNum(stock.getPurchaseWayNum() + stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getTotalWayNum() + stockVoRequest.getChangeNum());
+                stock.setPurchaseWayNum(purchaseWayNum + stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(totalWayNum + stockVoRequest.getChangeNum());
                 break;
             //只改变调拨在途和在途总数
             case 7:
-                stock.setAllocationWayNum(stock.getAllocationWayNum() + stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getTotalWayNum() + stockVoRequest.getChangeNum());
+                stock.setAllocationWayNum(allocationWayNum + stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(totalWayNum + stockVoRequest.getChangeNum());
                 break;
             //调拨在途变成可用及库存数
             case 8:
-                stock.setAllocationWayNum(stock.getAllocationWayNum() - stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getPurchaseWayNum() + stock.getAllocationWayNum());
-                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
+                stock.setAllocationWayNum(allocationWayNum - stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(purchaseWayNum + stock.getAllocationWayNum());
+                stock.setInventoryNum(inventoryNum + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum + stockVoRequest.getChangeNum());
                 break;
             //采购在途变成可用及库存数
             case 9:
-                stock.setPurchaseWayNum(stock.getPurchaseWayNum() - stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getPurchaseWayNum() + stock.getAllocationWayNum());
-                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
+                stock.setPurchaseWayNum(purchaseWayNum - stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(purchaseWayNum + stock.getAllocationWayNum());
+                stock.setInventoryNum(inventoryNum + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum + stockVoRequest.getChangeNum());
                 break;
             //直接加库存
             case 10:
-                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
+                stock.setInventoryNum(inventoryNum + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum + stockVoRequest.getChangeNum());
                 break;
             //只改变采购在途数和在途总数(减订单完成差异价)
             case 11:
-                stock.setPurchaseWayNum(stock.getPurchaseWayNum() - stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getTotalWayNum() - stockVoRequest.getChangeNum());
+                stock.setPurchaseWayNum(purchaseWayNum - stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(totalWayNum - stockVoRequest.getChangeNum());
                 break;
             default:
                 return null;
         }
         //库存不管是锁定数还是可以数还是库存数都不能为负
-        if (stock.getLockNum() < 0 || stock.getInventoryNum() < 0 || stock.getAvailableNum() < 0 || stock.getAllocationWayNum() < 0 || stock.getTotalWayNum() < 0) {
+        if (lockNum < 0 || inventoryNum < 0 || availableNum < 0 || allocationWayNum < 0 || totalWayNum < 0) {
             return null;
         }
         return stock;
