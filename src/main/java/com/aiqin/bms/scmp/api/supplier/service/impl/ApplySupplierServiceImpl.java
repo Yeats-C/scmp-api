@@ -516,6 +516,9 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
         applySupplierMapper.updateByPrimaryKey(applySupplier);
         //判断审核状态，存日志信息
         ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(applySupplier.getApplyStatus());
+        if(Objects.equals(ApplyStatus.APPROVAL,applyStatus)){
+            applyStatus = ApplyStatus.APPROVAL_SUCCESS;
+        }
         String content = applyStatus.getContent().replace("CREATEBY", applySupplier.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
         supplierCommonService.getInstance(applySupplier.getApplySupplierCode(), applyHandleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLIER.getStatus(), content, null, applyHandleTypeCoce.getName(), vo.getApprovalUserName());
 

@@ -768,6 +768,9 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         applySupplyCompanyAccountMapper.updateByPrimaryKey(account);
         //判断审核状态，存日志信息
         ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(account.getApplyStatus());
+        if(Objects.equals(ApplyStatus.APPROVAL,applyStatus)){
+            applyStatus = ApplyStatus.APPROVAL_SUCCESS;
+        }
         String content = applyStatus.getContent().replace("CREATEBY", account.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
         supplierCommonService.getInstance(account.getApplyCompanyAccountCode(), typeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, typeCoce.getName(),vo.getApprovalUserName());
         return "success";
