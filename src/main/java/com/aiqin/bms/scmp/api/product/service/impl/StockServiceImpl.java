@@ -154,7 +154,6 @@ public class StockServiceImpl implements StockService {
             }
             stockRequest.setGroupList(groupVoList);
             List<StockRespVO> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
-            List<StockRespVO> totals = stockDao.countStockSumInfoByPage(stockRequest);
             HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
             List<StockRespVO> lists = new ArrayList<>();
             Stock stock = null;
@@ -171,24 +170,8 @@ public class StockServiceImpl implements StockService {
             for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
                 lists.add(entry.getValue());
             }
-
-            // 遍历获取总total
-            HashMap<String, StockRespVO> totalMap = new HashMap<>();
-            List<StockRespVO> totalLists = new ArrayList<>();
-            for (StockRespVO total : totals) {
-                String str = total.getSkuCode();
-                if(totalMap.get(str) == null){
-                    totalMap.put(str,total);
-                    stockCommon(stockRespMap, total, str, stock, i);
-                }else {
-                    stockCommon(stockRespMap, total, str, stock, i);
-                }
-            }
-            for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
-                totalLists.add(entry.getValue());
-            }
-
-            pageResData.setTotalCount(totalLists.size());
+            Integer count  = stockDao.selectStockSumInfoByPageCount(stockRequest);
+            pageResData.setTotalCount(count);
             pageResData.setDataList(lists);
             return pageResData;
         } catch (Exception e) {
@@ -294,7 +277,6 @@ public class StockServiceImpl implements StockService {
             }
             stockRequest.setGroupList(groupVoList);
             List<StockRespVO> stockList = stockDao.selectTransportStockInfoByPage(stockRequest);
-            List<StockRespVO> totals = stockDao.countTransportStockInfoByPage(stockRequest);
             HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
             List<StockRespVO> lists = new ArrayList<>();
             Stock stock = null;
@@ -312,23 +294,8 @@ public class StockServiceImpl implements StockService {
             for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
                 lists.add(entry.getValue());
             }
-
-            // 遍历获取总total
-            HashMap<String, StockRespVO> totalMap = new HashMap<>();
-            List<StockRespVO> totalLists = new ArrayList<>();
-            for (StockRespVO total : totals) {
-                String str = total.getTransportCenterCode()+ total.getSkuCode();
-                if(totalMap.get(str) == null){
-                    totalMap.put(str,total);
-                    stockCommon(stockRespMap, total, str, stock, i);
-                }else {
-                    stockCommon(stockRespMap, total, str, stock, i);
-                }
-            }
-            for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
-                totalLists.add(entry.getValue());
-            }
-            pageResData.setTotalCount(totalLists.size());
+            Integer count = stockDao.selectTransportStockInfoByPageCount(stockRequest);
+            pageResData.setTotalCount(count);
             pageResData.setDataList(lists);
             return pageResData;
         } catch (Exception e) {
