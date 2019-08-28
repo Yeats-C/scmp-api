@@ -253,40 +253,40 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }
 
         // 去重已选的商品
-        List<PurchaseApplyDetailResponse> response = new ArrayList<>();
-        if(CollectionUtils.isNotEmptyCollection(purchases.getSearchList())){
-            Set<String> info = this.searchProductInfo(purchases.getSearchList());
-            List<String> list = new ArrayList<>(info);
-            for(PurchaseApplyDetailResponse product : detail){
-                StringBuilder sb = new StringBuilder();
-                sb.append(product.getSkuCode()).append("_").append(product.getSupplierCode()).append("_").
-                        append(product.getTransportCenterCode()).append("_").append(product.getWarehouseCode()).
-                        append("_").append(product.getProductType());
-                for(String str:list){
-                    if(str.equals(sb.toString())){
-                        response.add(product);
-                    }
-                }
-            }
-            detail.removeAll(response);
-        }
+//        List<PurchaseApplyDetailResponse> response = new ArrayList<>();
+//        if(CollectionUtils.isNotEmptyCollection(purchases.getSearchList())){
+//            Set<String> info = this.searchProductInfo(purchases.getSearchList());
+//            List<String> list = new ArrayList<>(info);
+//            for(PurchaseApplyDetailResponse product : detail){
+//                StringBuilder sb = new StringBuilder();
+//                sb.append(product.getSkuCode()).append("_").append(product.getSupplierCode()).append("_").
+//                        append(product.getTransportCenterCode()).append("_").append(product.getWarehouseCode()).
+//                        append("_").append(product.getProductType());
+//                for(String str:list){
+//                    if(str.equals(sb.toString())){
+//                        response.add(product);
+//                    }
+//                }
+//            }
+//            detail.removeAll(response);
+//        }
         Integer count = productSkuDao.purchaseProductCount(purchases);
         pageResData.setDataList(detail);
-        pageResData.setTotalCount(count - response.size());
+        pageResData.setTotalCount(count);
         return HttpResponse.success(pageResData);
     }
 
-    private Set<String> searchProductInfo(List<PurchaseProductSearchRequest>  searchList){
-        Set<String> set = new HashSet<>();
-        for(PurchaseProductSearchRequest search:searchList){
-            StringBuilder sb = new StringBuilder();
-            sb.append(search.getSkuCode()).append("_").append(search.getSupplierCode()).append("_").
-               append(search.getTransportCenterCode()).append("_").append(search.getWarehouseCode()).
-                    append("_").append(search.getProductType());
-            set.add(sb.toString());
-        }
-        return set;
-    }
+//    private Set<String> searchProductInfo(List<PurchaseProductSearchRequest>  searchList){
+//        Set<String> set = new HashSet<>();
+//        for(PurchaseProductSearchRequest search:searchList){
+//            StringBuilder sb = new StringBuilder();
+//            sb.append(search.getSkuCode()).append("_").append(search.getSupplierCode()).append("_").
+//               append(search.getTransportCenterCode()).append("_").append(search.getWarehouseCode()).
+//                    append("_").append(search.getProductType());
+//            set.add(sb.toString());
+//        }
+//        return set;
+//    }
 
     private PurchaseApplyRequest fourProduct(PurchaseApplyRequest purchases){
         // 查询14大A品建议补货
@@ -919,7 +919,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         () -> new TreeSet<>(Comparator.comparing(o -> o.getSkuCode() + "#" + o.getTransportCenterCode()
                         +  "#" + o.getWarehouseCode() + "#" + o.getSupplierCode() + "#" + o.getProductType()))),
                         ArrayList::new));
-        //LOGGER.info("--------------------------------------"+details);
         Long frontTurnover = 0L, frontPurchaseCost = 0L;
         PurchaseNewContrastResponse response = new PurchaseNewContrastResponse();
         Integer unsalableFrontCount = 0, stockCount = 0, unsalableAfterCount = 0;
@@ -950,6 +949,21 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 frontTurnover += availableNum * channelPrice;
                 frontPurchaseCost += availableNum * taxCost;
             }
+        }
+        List<PurchaseApplyDetailResponse> skuList =
+                list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
+                        () -> new TreeSet<>(Comparator.comparing(o -> o.getSkuCode() + "#" + o.getTransportCenterCode()
+                                +  "#" + o.getWarehouseCode() + "#" + o.getSupplierCode()))),
+                        ArrayList::new));
+        for(PurchaseApplyDetailResponse detail:skuList){
+            if(StringUtils.isBlank(detail.getSkuCode()) || StringUtils.isBlank(detail.getTransportCenterCode()) ||
+                    StringUtils.isBlank(detail.getWarehouseCode())){
+                continue;
+            }
+            PurchaseStockResponse stockResponse = stockDao.stockCountByOtherInfo(detail.getSkuCode(), detail.getTransportCenterCode(), detail.getWarehouseCode());
+            if(stockResponse == null){
+                continue;
+            }
             // 库存周转天数
             Integer daysTurnover = stockResponse.getDaysTurnover() == null ? 0 : stockResponse.getDaysTurnover().intValue();
             Integer largeInventoryWarnDay = stockResponse.getLargeInventoryWarnDay() == null ? 0 : stockResponse.getLargeInventoryWarnDay();
@@ -957,20 +971,20 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             if(daysTurnover > largeInventoryWarnDay){
                 ++unsalableFrontCount;
             }
+            Long availableNum = stockResponse.getAvailableNum() == null ? 0L : stockResponse.getAvailableNum();
             if(availableNum <= 0){
                 ++stockCount;
             }
+
             Map<String, Integer> purchaseMap = this.purchaseMap(list);
             StringBuilder sb = new StringBuilder();
             sb.append(detail.getSkuCode()).append("_");
             sb.append(detail.getTransportCenterCode()).append("_");
             sb.append(detail.getWarehouseCode()).append("_");
-            sb.append(detail.getSupplierCode()).append("_");
-            sb.append(detail.getProductType());
+            sb.append(detail.getSupplierCode());
+
             // 采购数量
             Integer purchaseCount = purchaseMap.get(sb.toString());
-            purchaseCount = purchaseCount == null ? 0 : purchaseCount;
-            // 近三月平均日销量
             Double salesAvgMonthNum = stockResponse.getSalesAvgMonthNum() == null ? 0 : stockResponse.getSalesAvgMonthNum();
             // 计算采购后的滞销数
             if(purchaseCount + availableNum > largeInventoryWarnDay * salesAvgMonthNum){
@@ -983,7 +997,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         this.purchaseAfter(list, response);
         response.setFrontUnsalableSku(unsalableFrontCount);
         response.setAfterUnsalableSku(unsalableAfterCount);
-        response.setSkuSum(details.size());
+        response.setSkuSum(skuList.size());
         response.setFrontShortageCount(stockCount);
         return HttpResponse.success(response);
     }
@@ -1018,7 +1032,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             map.put("transport", detail.getTransportCenterCode());
             map.put("warehouse", detail.getWarehouseCode());
             map.put("supplier", detail.getSupplierCode());
-            map.put("productType", detail.getProductType());
             map.put("sum", detail.getSingleCount());
             data.add(map);
         }
@@ -1027,8 +1040,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             sb.append(MapUtils.getString(m, "skuCode")).append("_");
             sb.append(MapUtils.getString(m, "transport")).append("_");
             sb.append(MapUtils.getString(m, "warehouse")).append("_");
-            sb.append(MapUtils.getString(m, "supplier")).append("_");
-            sb.append(MapUtils.getString(m, "productType"));
+            sb.append(MapUtils.getString(m, "supplier"));
             return sb.toString();
         }, Collectors.summingInt(s -> MapUtils.getInteger(s, "sum"))));
         return collect;
