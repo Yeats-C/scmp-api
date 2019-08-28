@@ -233,4 +233,13 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <update id="updateStatus" parameterType="java.util.List">
+    <foreach collection="list" open="" close="" item="item" separator=";">
+        update purchase_group_buyer
+      set
+        enable = #{item.enable,jdbcType=TINYINT},
+        del_flag = #{item.delFlag,jdbcType=TINYINT}
+      where  purchase_group_code = #{item.purchaseGroupCode} and buyer_code = #{item.buyerCode}
+    </foreach>
+  </update>
 </mapper>

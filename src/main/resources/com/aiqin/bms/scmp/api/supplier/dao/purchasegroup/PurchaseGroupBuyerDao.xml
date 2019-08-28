@@ -62,7 +62,7 @@
     and enable=0
   </select>
     <select id="selectByPurchaseCodes"
-            resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroupBuyer" parameterType="java.util.List">
+            resultMap="com.aiqin.bms.scmp.api.supplier.mapper.PurchaseGroupBuyerMapper.BaseResultMap" parameterType="java.util.List">
       select
       <include refid="Base_Column_List" />
       from purchase_group_buyer

@@ -26,4 +26,11 @@ public interface PurchaseGroupBuyerMapper {
     int insertBatch(List<PurchaseGroupBuyer> saveVos);
 
     int deleteBatch(List<PurchaseGroupBuyer> saveVos);
+
+    /**
+     *
+     * @param saveVos
+     * @return
+     */
+    int updateStatus(List<PurchaseGroupBuyer> saveVos);
 }

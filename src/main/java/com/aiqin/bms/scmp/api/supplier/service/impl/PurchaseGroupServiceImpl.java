@@ -413,11 +413,14 @@ public class PurchaseGroupServiceImpl extends BaseServiceImpl implements Purchas
                 //如果不存在，则添加。
                 PurchaseGroupBuyer copy = BeanCopyUtils.copy(buyerReqVo, PurchaseGroupBuyer.class);
                 copy.setPurchaseGroupCode(purchaseGroup.getPurchaseGroupCode());
+                copy.setDelFlag((byte) 1);
+                copy.setEnable((byte)1);
+                saveVos.add(copy);
             }
         }
-        //保存
+        //改成逻辑删除
         if (CollectionUtils.isNotEmptyCollection(saveVos)) {
-            purchaseGroupBuyerMapper.deleteBatch(saveVos);
+            purchaseGroupBuyerMapper.updateStatus(saveVos);
         }
         return Boolean.TRUE;
     }
@@ -431,22 +434,34 @@ public class PurchaseGroupServiceImpl extends BaseServiceImpl implements Purchas
         List<PurchaseGroup> purchaseGroups = reqVo.getPurchaseGroups();
         List<PurchaseGroupBuyerReqVo> groupBuyerReqVoList = reqVo.getGroupBuyerReqVoList();
         List<PurchaseGroupBuyer> saveVos = Lists.newArrayList();
+        List<PurchaseGroupBuyer> updateVOs = Lists.newArrayList();
         Date date = new Date();
         for (PurchaseGroup purchaseGroup : purchaseGroups) {
             for (PurchaseGroupBuyerReqVo buyerReqVo : groupBuyerReqVoList) {
+
+                PurchaseGroupBuyer copy = BeanCopyUtils.copy(buyerReqVo, PurchaseGroupBuyer.class);
+                copy.setPurchaseGroupCode(purchaseGroup.getPurchaseGroupCode());
+                copy.setCreateBy(getUser().getPersonName());
+                copy.setCreateTime(date);
+                //默认启用
+                copy.setDelFlag((byte) 0);
+                copy.setEnable((byte) 0);
                 //如果不存在，则添加。
-                if (!collect.containsKey(purchaseGroup.getPurchaseGroupCode() + buyerReqVo.getBuyerCode())) {
-                    PurchaseGroupBuyer copy = BeanCopyUtils.copy(buyerReqVo, PurchaseGroupBuyer.class);
-                    copy.setPurchaseGroupCode(purchaseGroup.getPurchaseGroupCode());
-                    copy.setCreateBy(getUser().getPersonName());
-                    copy.setCreateTime(date);
+                //存在 修改状态为启用
+                if ((!collect.containsKey(purchaseGroup.getPurchaseGroupCode() + buyerReqVo.getBuyerCode()))) {
                     saveVos.add(copy);
+                } else {
+                    updateVOs.add(copy);
                 }
             }
         }
         //保存
         if (CollectionUtils.isNotEmptyCollection(saveVos)) {
             purchaseGroupBuyerMapper.insertBatch(saveVos);
+        }
+        //修改
+        if (CollectionUtils.isNotEmptyCollection(updateVOs)) {
+            purchaseGroupBuyerMapper.updateStatus(updateVOs);
         }
         return Boolean.TRUE;
     }
