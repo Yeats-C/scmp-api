@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.abutment.domain.conts;
 
+import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -47,6 +48,17 @@ public  class StringConvertUtil {
         }else {
             return spec;
         }
+    }
+
+    /**
+     *
+     * @param type
+     * @return
+     */
+    public static InnerValue outboundTypeConvert(byte type){
+        InnerValue innerValue = new InnerValue();
+
+        return innerValue;
     }
 
 }

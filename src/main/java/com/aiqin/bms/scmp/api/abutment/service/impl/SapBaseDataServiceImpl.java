@@ -3,17 +3,31 @@ package com.aiqin.bms.scmp.api.abutment.service.impl;
 import com.aiqin.bms.scmp.api.abutment.domain.conts.StringConvertUtil;
 import com.aiqin.bms.scmp.api.abutment.domain.request.*;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
+import com.aiqin.bms.scmp.api.product.dao.*;
+import com.aiqin.bms.scmp.api.product.domain.ProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Outbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundProduct;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
+import com.aiqin.bms.scmp.api.product.mapper.InboundMapper;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoDao;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemDao;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoDao;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemDao;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.json.JsonUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -51,7 +65,7 @@ import java.util.stream.Collectors;
  */
 @Service
 public class SapBaseDataServiceImpl implements SapBaseDataService {
-
+    private static Logger LOGGER = LoggerFactory.getLogger(SapBaseDataServiceImpl.class);
 
     @Resource
     private OrderInfoDao orderInfoDao;
@@ -61,6 +75,16 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     private ReturnOrderInfoDao returnOrderInfoDao;
     @Resource
     private ReturnOrderInfoItemDao returnOrderInfoItemDao;
+    @Resource
+    private InboundDao inboundDao;
+    @Resource
+    private InboundProductDao inboundProductDao;
+    @Resource
+    private OutboundDao outboundDao;
+    @Resource
+    private OutboundProductDao outboundProductDao;
+    @Resource
+    private ProductSkuDao productSkuDao;
 
     /**
      * 商品数据同步
@@ -81,7 +105,71 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     /**
      * 出入库数据同步
      */
-    public void stockSynchronization() {
+    public void stockSynchronization(SapOrderRequest sapOrderRequest) {
+
+        List<Storage> storageList = Lists.newArrayList();
+
+
+    }
+
+    /**
+     * 出库单转结算sap对接
+     * @param sapOrderRequest
+     */
+    private void inboundToStock(List<Storage> storageList,SapOrderRequest sapOrderRequest){
+
+    }
+
+    /**
+     * 入库单转结算sap对接
+     * @param sapOrderRequest
+     */
+    private void outboundToStock(List<Storage> storageList,SapOrderRequest sapOrderRequest){
+        Storage storage;
+        List<Outbound> outboundList = outboundDao.listForSap(sapOrderRequest);
+        List<String> orderCodes = outboundList.stream().map(Outbound::getOutboundOderCode).collect(Collectors.toList());
+        sapOrderRequest.setOrderCodeList(orderCodes);
+        List<OutboundProduct> outboundProducts = outboundProductDao.listDetailForSap(sapOrderRequest);
+        List<String> skuCodes = outboundProducts.stream().map(OutboundProduct::getSkuCode).collect(Collectors.toList());
+        List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
+        Map<String,Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode,ProductSkuInfo::getManufacturerGuidePrice));
+        StorageDetail storageDetail;
+        List<StorageDetail> storageDetailList;
+        Map<String, List<StorageDetail> > storageDetailMap = new HashMap<>();
+        for (OutboundProduct outboundProduct : outboundProducts) {
+            storageDetail = new StorageDetail();
+            storageDetail.setSkuCode(outboundProduct.getSkuCode());
+            storageDetail.setSkuName(outboundProduct.getSkuName());
+            storageDetail.setSkuDesc(StringConvertUtil.productDesc(outboundProduct.getColorName(), outboundProduct.getNorms(), outboundProduct.getModel()));
+            storageDetail.setUnit(outboundProduct.getUnitName());
+            //固定为1
+            storageDetail.setUnitCount(1);
+            storageDetail.setTradeExponent(1);
+            storageDetail.setTaxRate(outboundProduct.getTax().intValue());
+            storageDetail.setExpectCount(outboundProduct.getPreOutboundNum().intValue());
+            storageDetail.setExpectMinUnitCount(outboundProduct.getPreOutboundNum().intValue());
+            storageDetail.setExpectTaxPrice(outboundProduct.getPreTaxPurchaseAmount().intValue());
+            storageDetail.setSingleCount(outboundProduct.getPraOutboundNum().intValue());
+            storageDetail.setMinUnitCount(outboundProduct.getPraOutboundMainNum().intValue());
+            storageDetail.setTaxRate(outboundProduct.getPraTaxPurchaseAmount().intValue());
+            //厂商指导价
+            storageDetail.setMinUnitCount(productMap.containsKey(outboundProduct.getSkuCode())?productMap.get(outboundProduct.getSkuCode()).intValue():0);
+            if (storageDetailMap.containsKey(outboundProduct.getOutboundOderCode())) {
+                storageDetailList = storageDetailMap.get(outboundProduct.getOutboundOderCode());
+                storageDetailList.add(storageDetail);
+                storageDetailMap.put(outboundProduct.getOutboundOderCode(), storageDetailList);
+            } else {
+                storageDetailMap.put(outboundProduct.getOutboundOderCode(), Collections.singletonList(storageDetail));
+            }
+        }
+        InnerValue innerValue;
+        for (Outbound outbound : outboundList) {
+            storage = new Storage();
+            innerValue = StringConvertUtil.outboundTypeConvert(outbound.getOutboundTypeCode());
+            storage.setOrderId(String.format("%s-%s", outbound.getOutboundOderCode(), innerValue.getName()));
+
+
+        }
 
     }
 
@@ -106,6 +194,16 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         //销售单list
         List<Order> orderList = Lists.newArrayList();
         orderInfoToOrder(orderList, sapOrderRequest);
+        returnInfoToOrder(orderList, sapOrderRequest);
+        LOGGER.info("调用结算sap销售单据参数:{}", JsonUtil.toJson(orderList));
+        HttpClient client = HttpClient.post("").json(orderList).timeout(10000);
+        HttpResponse httpResponse = client.action().result(HttpResponse.class);
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("调用结算sap销售单据成功:{}", httpResponse.getMessage());
+        } else {
+            LOGGER.error("调用结算sap销售单据异常:{}", httpResponse.getMessage());
+            throw new GroundRuntimeException(String.format("调用结算sap销售单据异常:%s", httpResponse.getMessage()));
+        }
 
     }
 
@@ -199,6 +297,12 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
 
     }
 
+    /**
+     * 销售退货
+     *
+     * @param orderList
+     * @param sapOrderRequest
+     */
     private void returnInfoToOrder(List<Order> orderList, SapOrderRequest sapOrderRequest) {
         Order order;
         List<ReturnOrderInfo> returnList = returnOrderInfoDao.listForSap(sapOrderRequest);
@@ -217,7 +321,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 orderDetail.setUnit(returnOrderInfoItem.getUnitName());
                 orderDetail.setScatteredUnit(returnOrderInfoItem.getZeroDisassemblyCoefficient());
                 orderDetail.setChannelPrice(returnOrderInfoItem.getChannelUnitPrice().toString());
-                orderDetail.setGiftFlag(returnOrderInfoItem.getGivePromotion());
+                //退货没有赠品
+                orderDetail.setGiftFlag(0);
                 orderDetail.setSingleCount(returnOrderInfoItem.getNum().intValue());
                 orderDetail.setDeliveryCount(returnOrderInfoItem.getActualInboundNum());
                 if (orderDetailMap.containsKey(returnOrderInfoItem.getReturnOrderCode())) {

@@ -39,7 +39,12 @@ public class SapOrderRequest {
 
     private String finishTime;
 
+    /**
+     * 父级单据code
+     */
     private List<String> orderCodeList;
-
-
+    /**
+     * 来源单号
+     */
+    private List<String> resourceCodeList;
 }

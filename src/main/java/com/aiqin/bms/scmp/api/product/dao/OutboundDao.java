@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Outbound;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateOutBoundReqVO;
@@ -53,4 +54,6 @@ public interface OutboundDao {
     String selectCreateById(String outboundOderCode);
 
     Outbound selectById(Long id);
+
+    List<Outbound> listForSap(SapOrderRequest sapOrderRequest);
 }
