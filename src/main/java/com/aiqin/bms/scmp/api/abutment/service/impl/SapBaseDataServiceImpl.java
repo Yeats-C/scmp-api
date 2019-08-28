@@ -167,8 +167,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             storage = new Storage();
             innerValue = StringConvertUtil.outboundTypeConvert(outbound.getOutboundTypeCode());
             storage.setOrderId(String.format("%s-%s", outbound.getOutboundOderCode(), innerValue.getName()));
-
-
+            storage.setOrderCode(outbound.getOutboundOderCode());
+            storage.setSourceOrderId(String.format("%s-%s", outbound.getSourceOderCode(), innerValue.getName()));
+            storage.setSourceOrderCode(outbound.getSourceOderCode());
         }
 
     }

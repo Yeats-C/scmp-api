@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.abutment.domain.conts;
 
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -56,8 +57,28 @@ public  class StringConvertUtil {
      * @return
      */
     public static InnerValue outboundTypeConvert(byte type){
+        //OutboundTypeEnum 对应类型
         InnerValue innerValue = new InnerValue();
-
+        switch (type){
+            case 1:
+                innerValue.setName(ScmpStorageChangeEnum.getByCode(5).getDesc());
+                innerValue.setValue("5");
+                break;
+            case 2:
+                innerValue.setName(ScmpStorageChangeEnum.getByCode(40).getDesc());
+                innerValue.setValue("40");
+                break;
+            case 3:
+                innerValue.setName(ScmpStorageChangeEnum.getByCode(0).getDesc());
+                innerValue.setValue("0");
+                break;
+            case 4:
+                innerValue.setName(ScmpStorageChangeEnum.getByCode(5).getDesc());
+                innerValue.setValue("5");
+                break;
+            default:
+                throw new GroundRuntimeException("未查询到对应的类型");
+        }
         return innerValue;
     }
 
