@@ -252,9 +252,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outboundService.pushWms(outbound.getOutboundOderCode());
             // 跟新数据库状态
             return j;
-        } catch (Exception e) {
+        } catch (GroundRuntimeException e) {
             LOGGER.error("保存出库单失败:{}",e.getMessage());
-            throw new GroundRuntimeException("保存出库单失败");
+            throw new GroundRuntimeException(String.format("保存出库单失败:%s",e.getMessage()));
         }
     }
 
