@@ -4,6 +4,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Objects;
+
 /**
  * <p>
  * ━━━━━━神兽出没━━━━━━
@@ -61,20 +63,20 @@ public  class StringConvertUtil {
         InnerValue innerValue = new InnerValue();
         switch (type){
             case 1:
-                innerValue.setName(ScmpStorageChangeEnum.getByCode(5).getDesc());
+                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode(5)).getDesc());
                 innerValue.setValue("5");
                 break;
             case 2:
-                innerValue.setName(ScmpStorageChangeEnum.getByCode(40).getDesc());
+                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode(40)).getDesc());
                 innerValue.setValue("40");
                 break;
             case 3:
-                innerValue.setName(ScmpStorageChangeEnum.getByCode(0).getDesc());
+                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode(0)).getDesc());
                 innerValue.setValue("0");
                 break;
             case 4:
-                innerValue.setName(ScmpStorageChangeEnum.getByCode(5).getDesc());
-                innerValue.setValue("5");
+                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode(31)).getDesc());
+                innerValue.setValue("31");
                 break;
             default:
                 throw new GroundRuntimeException("未查询到对应的类型");
