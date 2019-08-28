@@ -34,10 +34,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
-import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
-import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
-import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemMapper;
-import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemDao;
+import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoDao;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemDao;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoDao;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -104,9 +104,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private final static String COMPANY_NAME = "宁波熙耘";
     private static List<String> productTypeList = Arrays.asList("商品", "赠品", "实物返");
     @Resource
-    private OrderInfoMapper orderInfoMapper;
+    private OrderInfoDao orderInfoDao;
     @Resource
-    private OrderInfoItemMapper orderInfoItemMapper;
+    private OrderInfoItemDao orderInfoItemDao;
     @Resource
     private SupplierRuleMapper supplierRuleMapper;
     @Resource
@@ -118,9 +118,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Resource
     private PriceChannelMapper priceChannelMapper;
     @Resource
-    private ReturnOrderInfoMapper returnOrderInfoMapper;
+    private ReturnOrderInfoDao returnOrderInfoDao;
     @Resource
-    private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
+    private ReturnOrderInfoItemDao returnOrderInfoItemDao;
     @Resource
     private EncodingRuleDao encodingRuleDao;
     @Resource
@@ -270,9 +270,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 orderInfo.setOrderOriginalName(priceChannel.getPriceChannelName());
             }
             orderInfo.setDetailList(detailList);
-            Integer count = orderInfoMapper.insert(orderInfo);
+            Integer count = orderInfoDao.insert(orderInfo);
             LOGGER.info("添加订单:{}", count);
-            Integer detailCount = orderInfoItemMapper.insertList(detailList);
+            Integer detailCount = orderInfoItemDao.insertList(detailList);
             LOGGER.info("添加订单详情:{}", detailCount);
             //生成出库单
             OutboundReqVo convert = new OrderInfoToOutboundConverter(skuService, supplyComService).convert(orderInfo);
@@ -475,9 +475,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     returnOrderInfo.setSupplierName(supplyCompany.getSupplierName());
                 }
             }
-            Integer count = returnOrderInfoMapper.insertSelective(returnOrderInfo);
+            Integer count = returnOrderInfoDao.insertSelective(returnOrderInfo);
             LOGGER.info("添加退货单:{}", count);
-            Integer detailCount = returnOrderInfoItemMapper.insertList(detailList);
+            Integer detailCount = returnOrderInfoItemDao.insertList(detailList);
             LOGGER.info("添加退货单详情:{}", detailCount);
             returnOrderInfo.setDetailList(detailList);
             //入库单生成

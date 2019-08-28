@@ -23,9 +23,9 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspecti
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoInspectionItemMapper;
-import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemDao;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoLogMapper;
-import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoDao;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
@@ -60,10 +60,10 @@ import java.util.stream.Collectors;
 public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoodsService {
 
     @Autowired
-    private ReturnOrderInfoMapper returnOrderInfoMapper;
+    private ReturnOrderInfoDao returnOrderInfoDao;
 
     @Autowired
-    private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
+    private ReturnOrderInfoItemDao returnOrderInfoItemDao;
 
     @Autowired
     private WarehouseService warehouseService;
@@ -122,13 +122,13 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     @Transactional(rollbackFor = Exception.class)
     public void saveData(List<ReturnOrderInfoItem> orderItems, List<ReturnOrderInfo> orders) {
         if (CollectionUtils.isNotEmptyCollection(orders)) {
-            int i = returnOrderInfoMapper.insertBatch(orders);
+            int i = returnOrderInfoDao.insertBatch(orders);
             if (i != orderItems.size()) {
                 throw new BizException(ResultCode.SAVE_RETURN_ORDER_FAILED);
             }
         }
         if (CollectionUtils.isNotEmptyCollection(orderItems)) {
-            int i = returnOrderInfoItemMapper.insertBatch(orderItems);
+            int i = returnOrderInfoItemDao.insertBatch(orderItems);
             if (i != orderItems.size()) {
                 throw new BizException(ResultCode.SAVE_RETURN_ORDER_ITEM_FAILED);
             }
@@ -139,13 +139,13 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     public BasePage<QueryReturnOrderManagementRespVO> returnOrderManagement(QueryReturnOrderManagementReqVO reqVO) {
         PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         reqVO.setCompanyCode(getUser().getCompanyCode());
-        List<QueryReturnOrderManagementRespVO> list = returnOrderInfoMapper.selectReturnOrderManagementList(reqVO);
+        List<QueryReturnOrderManagementRespVO> list = returnOrderInfoDao.selectReturnOrderManagementList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(), list);
     }
 
     @Override
     public ReturnOrderDetailRespVO returnOrderDetail(String code) {
-        ReturnOrderDetailRespVO respVO =  returnOrderInfoMapper.selectReturnOrderDetail(code);
+        ReturnOrderDetailRespVO respVO =  returnOrderInfoDao.selectReturnOrderDetail(code);
         if(Objects.isNull(respVO)){
             throw new BizException(ResultCode.GET_RETURN_GOODS_DETAIL_FAILED);
         }
@@ -154,23 +154,23 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
     @Override
     public List<ReturnOrderInfoApplyInboundRespVO> inboundInfo(String code) {
-       return returnOrderInfoMapper.selectInbound(code);
+       return returnOrderInfoDao.selectInbound(code);
     }
     @Override
     public BasePage<QueryReturnInspectionRespVO> returnInspection(QueryReturnInspectionReqVO reqVO) {
         PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
-        List<QueryReturnInspectionRespVO> list = returnOrderInfoMapper.selectreturnInspectionList(reqVO);
+        List<QueryReturnInspectionRespVO> list = returnOrderInfoDao.selectreturnInspectionList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(), list);
     }
 
     @Override
     public InspectionDetailRespVO inspectionDetail(String code) {
         //首先查出数据
-        InspectionDetailRespVO respVO = returnOrderInfoMapper.selectInspectionDetail(code);
+        InspectionDetailRespVO respVO = returnOrderInfoDao.selectInspectionDetail(code);
         if(Objects.isNull(respVO)){
             throw new BizException(ResultCode.QUERY_INSPECTION_DETAIL_ERROR);
         }
-       List<ReturnOrderInfoInspectionItemRespVO> inspectionItemRespVO =  returnOrderInfoMapper.selectInspectionItemList(code,respVO.getOrderCode());
+       List<ReturnOrderInfoInspectionItemRespVO> inspectionItemRespVO =  returnOrderInfoDao.selectInspectionItemList(code,respVO.getOrderCode());
         //根据仓编码查询下面的库
         List<WarehouseResVo> warehouse = warehouseService.getWarehouseByLogisticsCenterCode(respVO.getTransportCenterCode());
         if(CollectionUtils.isEmptyCollection(warehouse)){
@@ -203,7 +203,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         ReturnOrderInfo info = new ReturnOrderInfo();
         info.setReturnOrderCode(items.get(0).getReturnOrderCode());
         info.setInspectionRemark(remark);
-        int i2 = returnOrderInfoMapper.updateByReturnOrderCodeSelective(info);
+        int i2 = returnOrderInfoDao.updateByReturnOrderCodeSelective(info);
         if (i2<0){
             throw new BizException(ResultCode.UPDATE_RETURN_ORDER_INFO_FAILED);
         }
@@ -245,7 +245,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             throw new BizException(ResultCode.CAN_NOT_FIND_RETURN_ORDER);
         }
         //查数据
-        ReturnOrderInfoDTO dto = returnOrderInfoMapper.selectByCode(items.get(0).getReturnOrderCode());
+        ReturnOrderInfoDTO dto = returnOrderInfoDao.selectByCode(items.get(0).getReturnOrderCode());
         if(Objects.isNull(dto)){
             throw new BizException(ResultCode.CAN_NOT_FIND_RETURN_ORDER);
         }
@@ -255,7 +255,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
     @Override
     public InspectionViewRespVO inspectionView(String code) {
-        return returnOrderInfoMapper.selectInspectionView(code);
+        return returnOrderInfoDao.selectInspectionView(code);
     }
 
     @Override
@@ -266,13 +266,13 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         orderTypes.add(OrderType.DIRECT_DELIVERY_FUCAI.getNum());
         reqVO.setOrderTypeCode(orderTypes);
         reqVO.setCompanyCode(getUser().getCompanyCode());
-        List<QueryReturnOrderManagementRespVO> list = returnOrderInfoMapper.selectReturnOrderManagementList(reqVO);
+        List<QueryReturnOrderManagementRespVO> list = returnOrderInfoDao.selectReturnOrderManagementList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(), list);
     }
 
     @Override
     public ReturnOrderDetailRespVO directReturnOrderDetail(String code) {
-        ReturnOrderDetailRespVO respVO =  returnOrderInfoMapper.selectReturnOrderDetail(code);
+        ReturnOrderDetailRespVO respVO =  returnOrderInfoDao.selectReturnOrderDetail(code);
         if(Objects.isNull(respVO)){
             throw new BizException(ResultCode.GET_RETURN_GOODS_DETAIL_FAILED);
         }
@@ -299,7 +299,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     public Boolean changeStatus(ChangeOrderStatusReqVO reqVO) {
         Date date = new Date();
         //先查后改
-        ReturnOrderInfo order = returnOrderInfoMapper.selectByCode1(reqVO.getOrderCode());
+        ReturnOrderInfo order = returnOrderInfoDao.selectByCode1(reqVO.getOrderCode());
         if (Objects.isNull(order)) {
             throw new BizException(ResultCode.CAN_NOT_FIND_ORDER);
         }
@@ -320,7 +320,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
 
     public void updateByOrderCode(ReturnOrderInfo order) {
-       int i =  returnOrderInfoMapper.updateByOrderCode(order);
+       int i =  returnOrderInfoDao.updateByOrderCode(order);
         if(i<1){
             throw new BizException(ResultCode.UPDATE_ORDER_STATUS_FAILED);
         }
@@ -329,7 +329,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveReturnReceipt(List<ReturnReceiptReqVO> reqVO) {
-        int i = returnOrderInfoItemMapper.updateActualInboundNumByIdAndReturnOrderCode(reqVO);
+        int i = returnOrderInfoItemDao.updateActualInboundNumByIdAndReturnOrderCode(reqVO);
         if (i!=reqVO.size()) {
             throw new BizException(ResultCode.SAVE_RETURN_RECEIPT_FAILED);
         }

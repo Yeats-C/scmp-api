@@ -9,7 +9,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespV
 
 import java.util.List;
 
-public interface OrderInfoMapper {
+public interface OrderInfoDao {
     int deleteByPrimaryKey(Long id);
 
     int insert(OrderInfo record);

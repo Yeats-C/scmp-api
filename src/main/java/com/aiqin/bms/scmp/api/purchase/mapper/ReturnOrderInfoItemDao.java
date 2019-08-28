@@ -1,12 +1,13 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface ReturnOrderInfoItemMapper {
+public interface ReturnOrderInfoItemDao {
     int deleteByPrimaryKey(Long id);
 
     int insert(ReturnOrderInfoItem record);
@@ -37,4 +38,6 @@ public interface ReturnOrderInfoItemMapper {
     int updateActualInboundNumByIdAndReturnOrderCode(@Param("items") List<ReturnReceiptReqVO> reqVO);
 
     Integer insertList(List<ReturnOrderInfoItem> list);
+
+    List<ReturnOrderInfoItem> listDetailForSap(SapOrderRequest sapOrderRequest);
 }
