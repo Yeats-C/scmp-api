@@ -33,6 +33,12 @@
     delete from purchase_group_buyer
     where id = #{id,jdbcType=BIGINT}
   </delete>
+  <delete id="deleteBatch" parameterType="java.util.List">
+    <foreach collection="list" open="" close="" item="item" separator=";">
+      delete from purchase_group_buyer
+      where purchase_group_code = #{item.purchaseGroupCode} and buyer_code = #{item.buyerCode}
+    </foreach>
+  </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroupBuyer">
     insert into purchase_group_buyer (id, purchase_group_code, buyer_name, 
       buyer_code, buyer_gender, position_code, 
@@ -144,7 +150,24 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroupBuyer">
+    <insert id="insertBatch" parameterType="java.util.List">
+      insert into purchase_group_buyer (id, purchase_group_code, buyer_name,
+      buyer_code, buyer_gender, position_code,
+      position_name, position_level_code, position_level_name,
+      enable, del_flag, create_by,
+      create_time, update_by, update_time
+      )
+    values
+    <foreach collection="list" open="" close="" item="item" separator=",">
+      (#{item.id,jdbcType=BIGINT}, #{item.purchaseGroupCode,jdbcType=VARCHAR}, #{item.buyerName,jdbcType=VARCHAR},
+      #{item.buyerCode,jdbcType=VARCHAR}, #{item.buyerGender,jdbcType=TINYINT}, #{item.positionCode,jdbcType=VARCHAR},
+      #{item.positionName,jdbcType=VARCHAR}, #{item.positionLevelCode,jdbcType=VARCHAR}, #{item.positionLevelName,jdbcType=VARCHAR},
+      #{item.enable,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.createBy,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}
+      )
+    </foreach>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroupBuyer">
     update purchase_group_buyer
     <set>
       <if test="purchaseGroupCode != null">

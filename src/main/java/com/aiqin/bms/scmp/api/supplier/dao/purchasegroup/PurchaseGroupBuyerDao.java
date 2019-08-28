@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.dao.purchasegroup;
 
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroupBuyer;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupBuyerDTO;
 
 import java.util.List;
@@ -34,6 +35,13 @@ public interface PurchaseGroupBuyerDao {
      * @return
      */
     int  updateList(List<PurchaseGroupBuyerDTO> purchaseGroupBuyerDTOS);
+
+    /***
+     * 查记录
+     * @param collect
+     * @return
+     */
+    List<PurchaseGroupBuyer> selectByPurchaseCodes(List<String> collect);
 //    int deleteByPrimaryKey(Long id);
 //
 //    /**
