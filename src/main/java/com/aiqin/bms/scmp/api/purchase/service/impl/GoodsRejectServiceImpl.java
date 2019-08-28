@@ -607,10 +607,9 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             LOGGER.info("调用退供出库:{}", request);
             outboundService.returnSupplySave(reqVo);
             return HttpResponse.success();
-        } catch (Exception e) {
-
+        } catch (GroundRuntimeException e) {
             LOGGER.error("更新退供单异常:{}", e);
-            throw new GroundRuntimeException("更新退供单异常");
+            throw new GroundRuntimeException(String.format("更新退供单异常:%s",e.getMessage()));
         }
     }
 
