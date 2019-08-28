@@ -2,21 +2,24 @@ package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.UrlConfig;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupBuyerDao;
 import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroupBuyer;
 import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.EnabledSave;
+import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.BatchOperatePurchaseGroupReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupBuyerDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
-import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.PurchaseGroupReqVo;
-import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.QueryPurchaseGroupReqVo;
-import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.UpdatePurchaseGroupReqVo;
-import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.UserPositionsRequest;
+import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.*;
+import com.aiqin.bms.scmp.api.supplier.mapper.PurchaseGroupBuyerMapper;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -26,6 +29,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.aop.framework.AopContext;
@@ -33,10 +37,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import javax.validation.constraints.NotNull;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 描述: 采购管理组service实现层
@@ -48,7 +52,7 @@ import java.util.Set;
  */
 @Service
 @Slf4j
-public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
+public class PurchaseGroupServiceImpl extends BaseServiceImpl implements PurchaseGroupService {
 
 
     @Autowired
@@ -62,6 +66,8 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
 
     @Autowired
     private UrlConfig urlConfig;
+    @Autowired
+    private PurchaseGroupBuyerMapper purchaseGroupBuyerMapper;
 
     /**
      * 分页查询
@@ -383,5 +389,80 @@ public class PurchaseGroupServiceImpl  implements PurchaseGroupService {
     @Transactional(rollbackFor = Exception.class)
     public Integer enabled(EnabledSave enabledSave) {
         return purchaseGroupDao.enable(enabledSave);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean batchOperatePurchaseGroup(BatchOperatePurchaseGroupReqVO reqVo) {
+        @NotNull(message = "操作类型必填1修改2删除") Integer operationType = reqVo.getOperationType();
+        if(operationType==1){
+            return updatePurchaseGroupPersonnel(reqVo);
+        }else if(operationType ==2){
+            return deletePurchaseGroupPersonnel(reqVo);
+        }else {
+            throw new BizException(ResultCode.OPERATION_TYPE_ERROR);
+        }
+    }
+    @Override
+    public Boolean deletePurchaseGroupPersonnel(BatchOperatePurchaseGroupReqVO reqVo) {
+        List<PurchaseGroupBuyer> saveVos = Lists.newArrayList();
+        List<PurchaseGroup> purchaseGroups = reqVo.getPurchaseGroups();
+        List<PurchaseGroupBuyerReqVo> groupBuyerReqVoList = reqVo.getGroupBuyerReqVoList();
+        for (PurchaseGroup purchaseGroup : purchaseGroups) {
+            for (PurchaseGroupBuyerReqVo buyerReqVo : groupBuyerReqVoList) {
+                //如果不存在，则添加。
+                PurchaseGroupBuyer copy = BeanCopyUtils.copy(buyerReqVo, PurchaseGroupBuyer.class);
+                copy.setPurchaseGroupCode(purchaseGroup.getPurchaseGroupCode());
+                copy.setDelFlag((byte) 1);
+                copy.setEnable((byte)1);
+                saveVos.add(copy);
+            }
+        }
+        //改成逻辑删除
+        if (CollectionUtils.isNotEmptyCollection(saveVos)) {
+            purchaseGroupBuyerMapper.updateStatus(saveVos);
+        }
+        return Boolean.TRUE;
+    }
+
+    @Override
+    public Boolean updatePurchaseGroupPersonnel(BatchOperatePurchaseGroupReqVO reqVo) {
+        //查数据
+        List<PurchaseGroupBuyer> buyers = purchaseGroupBuyerDao.selectByPurchaseCodes(reqVo.getPurchaseGroups().stream().map(PurchaseGroup::getPurchaseGroupCode).collect(Collectors.toList()));
+        //判重 k 采购组编码+人员编码
+        Map<String, PurchaseGroupBuyer> collect = buyers.stream().collect(Collectors.toMap(o -> o.getPurchaseGroupCode() + o.getBuyerCode(), Function.identity(), (k1, k2) -> k2));
+        List<PurchaseGroup> purchaseGroups = reqVo.getPurchaseGroups();
+        List<PurchaseGroupBuyerReqVo> groupBuyerReqVoList = reqVo.getGroupBuyerReqVoList();
+        List<PurchaseGroupBuyer> saveVos = Lists.newArrayList();
+        List<PurchaseGroupBuyer> updateVOs = Lists.newArrayList();
+        Date date = new Date();
+        for (PurchaseGroup purchaseGroup : purchaseGroups) {
+            for (PurchaseGroupBuyerReqVo buyerReqVo : groupBuyerReqVoList) {
+
+                PurchaseGroupBuyer copy = BeanCopyUtils.copy(buyerReqVo, PurchaseGroupBuyer.class);
+                copy.setPurchaseGroupCode(purchaseGroup.getPurchaseGroupCode());
+                copy.setCreateBy(getUser().getPersonName());
+                copy.setCreateTime(date);
+                //默认启用
+                copy.setDelFlag((byte) 0);
+                copy.setEnable((byte) 0);
+                //如果不存在，则添加。
+                //存在 修改状态为启用
+                if ((!collect.containsKey(purchaseGroup.getPurchaseGroupCode() + buyerReqVo.getBuyerCode()))) {
+                    saveVos.add(copy);
+                } else {
+                    updateVOs.add(copy);
+                }
+            }
+        }
+        //保存
+        if (CollectionUtils.isNotEmptyCollection(saveVos)) {
+            purchaseGroupBuyerMapper.insertBatch(saveVos);
+        }
+        //修改
+        if (CollectionUtils.isNotEmptyCollection(updateVOs)) {
+            purchaseGroupBuyerMapper.updateStatus(updateVOs);
+        }
+        return Boolean.TRUE;
     }
 }

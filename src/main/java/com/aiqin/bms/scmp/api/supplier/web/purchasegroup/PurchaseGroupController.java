@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.web.purchasegroup;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.EnabledSave;
+import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.BatchOperatePurchaseGroupReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.PurchaseGroupReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.QueryPurchaseGroupReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.UpdatePurchaseGroupReqVo;
@@ -124,5 +125,10 @@ public class PurchaseGroupController {
             log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
+    }
+
+    @PostMapping("/batchOperatePurchaseGroup")
+    public HttpResponse<Boolean> batchOperatePurchaseGroup(@RequestBody @Valid BatchOperatePurchaseGroupReqVO reqVo){
+        return HttpResponse.success(purchaseGroupService.batchOperatePurchaseGroup(reqVo));
     }
 }
