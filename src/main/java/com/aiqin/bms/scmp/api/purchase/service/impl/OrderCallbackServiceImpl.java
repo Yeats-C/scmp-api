@@ -581,14 +581,17 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             String typeName;
             String inboundOderCode = "";
             String outboundOderCode = "";
+            Integer boundRecordType ;
             if (request.getTransfersType().equals(1)) {
                 //调拨
                 type = AllocationTypeEnum.ALLOCATION.getType();
                 typeName = AllocationTypeEnum.ALLOCATION.getTypeName();
+                boundRecordType = (int)OutboundTypeEnum.ALLOCATE.getCode();
             } else {
                 //移库
                 type = AllocationTypeEnum.MOVE.getType();
                 typeName = AllocationTypeEnum.MOVE.getTypeName();
+                boundRecordType = (int)OutboundTypeEnum.MOVEMENT.getCode();
             }
             //添加调拨单
             //添加调拨单详情
@@ -613,7 +616,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             //操作类型 直接减库存 4
             stockChangeRequest.setOperationType(4);
             List<StockVoRequest> list = handleAllocationStockData(allocation.getDetailList(), allocation.getCompanyCode(), allocation.getCompanyName(), allocation.getCallOutLogisticsCenterCode()
-                    , allocation.getCallOutLogisticsCenterName(), allocation.getCallOutWarehouseCode(), allocation.getCallOutWarehouseName(), allocation.getAllocationCode(), outboundOderCode);
+                    , allocation.getCallOutLogisticsCenterName(), allocation.getCallOutWarehouseCode(), allocation.getCallOutWarehouseName(), allocation.getAllocationCode(), outboundOderCode,boundRecordType);
             stockChangeRequest.setStockVoRequests(list);
             HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -628,7 +631,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             //操作类型 直接加库存 10
             stockRequest.setOperationType(10);
             List<StockVoRequest> inboundList = handleAllocationStockData(allocation.getDetailList(), allocation.getCompanyCode(), allocation.getCompanyName(), allocation.getCallInLogisticsCenterCode()
-                    , allocation.getCallInLogisticsCenterName(), allocation.getCallInWarehouseCode(), allocation.getCallInWarehouseName(), allocation.getAllocationCode(), inboundOderCode);
+                    , allocation.getCallInLogisticsCenterName(), allocation.getCallInWarehouseCode(), allocation.getCallInWarehouseName(), allocation.getAllocationCode(), inboundOderCode,boundRecordType);
             stockRequest.setStockVoRequests(inboundList);
             HttpResponse stockResponse = stockService.changeStock(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
@@ -641,7 +644,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             allocationInsert(allocation, type, typeName, productSkuMap);
             return HttpResponse.success();
         } catch (Exception e) {
-            LOGGER.error("订单回调异常:{}", e.getCause());
+            LOGGER.error("订单回调异常:{}", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -794,7 +797,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     }
 
     private List<StockVoRequest> handleAllocationStockData(List<AllocationProduct> productList, String companyCode, String companyName, String logisticsCenterCode, String logisticsCenterName,
-                                                           String outWarehouseCode, String outWarehouseName, String allocationCode, String outboundOderCode) {
+                                                           String outWarehouseCode, String outWarehouseName, String allocationCode, String outboundOderCode,Integer type) {
         List<StockVoRequest> list = Lists.newArrayList();
         StockVoRequest stockVoRequest;
         for (AllocationProduct itemReqVo : productList) {
@@ -811,7 +814,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             stockVoRequest.setSkuName(itemReqVo.getSkuName());
             stockVoRequest.setDocumentType(0);
             stockVoRequest.setDocumentNum(outboundOderCode);
-            stockVoRequest.setSourceDocumentType((int) OutboundTypeEnum.ORDER.getCode());
+            stockVoRequest.setSourceDocumentType(type);
             stockVoRequest.setSourceDocumentNum(allocationCode);
             stockVoRequest.setOperator(itemReqVo.getCreateBy());
             list.add(stockVoRequest);
@@ -978,7 +981,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
             return HttpResponse.success();
         } catch (Exception e) {
-            LOGGER.error("订单回调异常:{}", e.getCause());
+            LOGGER.error("订单回调异常:{}", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
