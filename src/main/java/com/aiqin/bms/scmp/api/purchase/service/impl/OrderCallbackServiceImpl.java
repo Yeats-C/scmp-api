@@ -231,6 +231,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 orderInfoItem.setProductLineNum(outboundDetailRequest.getProductLineNum());
                 orderInfoItem.setSkuCode(outboundDetailRequest.getSkuCode());
                 orderInfoItem.setChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
+                orderInfoItem.setGivePromotion(Integer.valueOf(outboundDetailRequest.getGiftType()));
                 orderInfoItem.setTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice() * outboundDetailRequest.getNum());
                 orderInfoItem.setOrderCode(orderInfo.getOrderCode());
                 orderInfoItem.setActualChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
