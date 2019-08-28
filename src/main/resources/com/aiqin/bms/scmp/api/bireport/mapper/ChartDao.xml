@@ -78,7 +78,7 @@
         <where>
             1=1
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bmsa.year_month between #{beginCreateTime}
+                and bmsa.stat_year between #{beginCreateTime}
             </if>
             <if test="createTime!=null and createTime!=''">
                 and #{createTime}
@@ -247,7 +247,6 @@
         select
         bmsa.id as id,
         date_format(bmsa.create_time, '%Y-%m-%d %H:%i:%s') as createTime,
-        bmsa.year_month as yearMonth,
         bmsa.stat_year as statYear,
         bmsa.stat_month as statMonth,
         bmsa.product_sort_code as productSortCode,
