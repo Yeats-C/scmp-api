@@ -12,7 +12,6 @@ import java.util.Date;
  * @version 1.0
  * @className ProductSkuApplyVo
  * @date 2019/7/5 21:08
- * @description TODO
  */
 @ApiModel("商品审批查看详情")
 @Data

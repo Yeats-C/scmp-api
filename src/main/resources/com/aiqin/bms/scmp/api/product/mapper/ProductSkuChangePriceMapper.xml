@@ -513,7 +513,7 @@
         a.sku_code skuCode,
         a.num saleNum
         from bi_month_sales a
-        where a.`year_month` = date_format(date_sub(now(),interval 1 month),'%Y-%m')
+        where a.`year_month` = #{date}
         and a.`sku_code` in
         <foreach collection="list" open="(" close=")" item="item" separator=",">
              #{item.skuCode}

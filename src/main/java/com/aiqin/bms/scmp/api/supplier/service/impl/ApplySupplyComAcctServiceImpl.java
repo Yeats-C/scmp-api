@@ -283,7 +283,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             //调用审批
         } catch (Exception e) {
             log.error("修改供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s));
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("修改供应单位账户失败");
         }
         return temp;
@@ -303,7 +303,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             }
         } catch (Exception e) {
             log.error("修改供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s));
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("修改供应单位账户失败");
         }
         return temp;
@@ -325,7 +325,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             }
         } catch (Exception e) {
             log.error("修改供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s));
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("修改供应单位账户失败");
         }
         return temp;
@@ -349,7 +349,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             supplierCommonService.getInstance(applySupplyCompanyAccount.getApplyCompanyAccountCode(), HandleTypeCoce.DELETE.getStatus(), ObjectTypeCode.SUPPLY_COMPANY_ACCOUNT.getStatus(), HandleTypeCoce.APPLY_DELETE_SUPPLY_COMPANY_ACCOUNT.getName(),null, HandleTypeCoce.DELETE.getName());
         } catch (Exception e) {
             log.error("删除供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s));
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("删除供应单位账户失败");
         }
         return temp;
@@ -447,7 +447,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             t.setLogData(log);
             return t;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("数据异常!");
         }
     }
@@ -487,7 +487,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             }
         } catch (Exception e) {
             log.error("通过id查询供货单位账户详情失败，传入id={}", id);
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("数据异常!");
         }
     }
@@ -554,7 +554,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             }
         } catch (Exception e) {
             log.error("取消申请供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s));
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("取消申请供应单位账户失败");
         }
         return temp;
@@ -577,7 +577,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             }
         } catch (Exception e) {
             log.error("取消供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s1));
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("取消供应单位账户失败");
         }
         return temp;
@@ -694,7 +694,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             return "false";
         }
         HandleTypeCoce typeCoce = null;
-        if (account.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+        if (!account.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
             account.setApplyStatus(vo.getApplyStatus());
             if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 typeCoce = HandleTypeCoce.APPROVAL_SUCCESS;
@@ -768,6 +768,9 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         applySupplyCompanyAccountMapper.updateByPrimaryKey(account);
         //判断审核状态，存日志信息
         ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(account.getApplyStatus());
+        if(Objects.equals(ApplyStatus.APPROVAL,applyStatus)){
+            applyStatus = ApplyStatus.APPROVAL_SUCCESS;
+        }
         String content = applyStatus.getContent().replace("CREATEBY", account.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
         supplierCommonService.getInstance(account.getApplyCompanyAccountCode(), typeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, typeCoce.getName(),vo.getApprovalUserName());
         return "success";

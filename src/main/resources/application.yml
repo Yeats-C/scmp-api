@@ -1,5 +1,5 @@
 server:
-  port: 9002
+  port: 80
 spring:
   profiles:
     active: ${profile.name}
@@ -145,24 +145,69 @@ mgs:
       - code: SCMP003001
         name: 供应商集团管理
         link: '/supplier/supplierGroup'
+        methods:
+        - code: SCMP003001001
+          name: 新增
+        - code: SCMP003001002
+          name: 编辑
+        - code: SCMP003001003
+          name: 审批跟踪
       - code: SCMP003002
         name: 供应商管理
         link: '/supplier/supplier'
+        methods:
+        - code: SCMP003002001
+          name: 新增
+        - code: SCMP003002002
+          name: 编辑
+        - code: SCMP003002003
+          name: 待申请
+        - code: SCMP003002004
+          name: 审批跟踪
       - code: SCMP003003
         name: 供应商合同管理
         link: '/supplier/contract'
+        methods:
+        - code: SCMP003003001
+          name: 新增
+        - code: SCMP003003002
+          name: 编辑
+        - code: SCMP003003003
+          name: 审批跟踪
       - code: SCMP003004
         name: 供应商结算账户管理
         link: '/supplier/account'
+        methods:
+        - code: SCMP003004001
+          name: 新增
+        - code: SCMP003004002
+          name: 编辑
+        - code: SCMP003004003
+          name: 审批跟踪
       - code: SCMP003005
         name: 供应商账号管理
         link: '/basicData/accountList'
+        methods:
+        - code: SCMP003005001
+          name: 新增
+        - code: SCMP003005002
+          name: 编辑
       - code: SCMP003006
         name: 供应商评分管理
         link: '/supplier/rate'
+        methods:
+        - code: SCMP003006001
+          name: 新增
       - code: SCMP003007
         name: 制造商管理
         link: '/supplier/manufacturer'
+        methods:
+        - code: SCMP003007001
+          name: 新增
+        - code: SCMP003007002
+          name: 编辑
+        - code: SCMP003007003
+          name: 禁用
     - code: SCMP004
       name: 商品管理
       link: ''
@@ -171,15 +216,47 @@ mgs:
       - code: SCMP004001
         name: 品类管理
         link: '/product/category'
+        methods:
+        - code: SCMP004001001
+          name: 新增
+        - code: SCMP004001002
+          name: 编辑
+        - code: SCMP004001002
+          name: 禁用
       - code: SCMP004002
         name: 品牌管理
         link: '/product/brand'
+        methods:
+        - code: SCMP004002001
+          name: 新增
+        - code: SCMP004002002
+          name: 编辑
+        - code: SCMP004002003
+          name: 禁用
       - code: SCMP004003
         name: SPU管理
         link: '/product/spu'
+        methods:
+        - code: SCMP004003001
+          name: 新增
+        - code: SCMP004003002
+          name: 编辑
+        - code: SCMP004003003
+          name: 导出
       - code: SCMP004004
         name: SKU管理
         link: '/product/sku'
+        methods:
+        - code: SCMP004004001
+          name: 新增
+        - code: SCMP004004002
+          name: 编辑
+        - code: SCMP004004003
+          name: 导入
+        - code: SCMP004004004
+          name: 待申请
+        - code: SCMP004004005
+          name: 审批跟踪
       - code: SCMP004005
         name: 销售区域配置
         link: '/product/saleArea'
@@ -189,9 +266,17 @@ mgs:
       - code: SCMP004007
         name: 配置信息管理
         link: '/product/productConfig'
+        methods:
+        - code: SCMP004007001
+          name: 编辑
+        - code: SCMP004007002
+          name: 导入
       - code: SCMP004008
         name: 质检报告管理
         link: '/product/qualityReport'
+        methods:
+        - code: SCMP004008001
+          name: 编辑
     - code: SCMP005
       name: 价格管理
       link: ''
@@ -200,6 +285,9 @@ mgs:
       - code: SCMP005001
         name: 价格查询
         link: '/price/price'
+        methods:
+        - code: SCMP005001001
+          name: 新建变价
     - code: SCMP006
       name: 采购管理
       link: ''
@@ -208,15 +296,49 @@ mgs:
       - code: SCMP006001
         name: 采购申请单管理
         link: '/purchase/applyOrder'
+        methods:
+        - code: SCMP006001001
+          name: 新增
+        - code: SCMP006001002
+          name: 编辑
+        - code: SCMP006001003
+          name: 生成采购单
       - code: SCMP006002
         name: 采购单管理
         link: '/purchase/purchase'
+        methods:
+        - code: SCMP006002001
+          name: 取消
+        - code: SCMP006002002
+          name: 供应商备货
+        - code: SCMP006002003
+          name: 供应商发货
+        - code: SCMP006002004
+          name: 入库完成
+        - code: SCMP006002005
+          name: 仓储确认
       - code: SCMP006003
         name: 退供申请单管理
         link: '/purchase/refundApply'
+        methods:
+        - code: SCMP006003001
+          name: 新增
+        - code: SCMP006003002
+          name: 编辑
+        - code: SCMP006003003
+          name: 生成退供单
       - code: SCMP006004
         name: 退供单管理
         link: '/purchase/refund'
+        methods:
+        - code: SCMP006004001
+          name: 取消
+        - code: SCMP006004002
+          name: 供应商确认
+        - code: SCMP006004003
+          name: 发运
+        - code: SCMP006004004
+          name: 完成
     - code: SCMP007
       name: 销售管理
       link: ''

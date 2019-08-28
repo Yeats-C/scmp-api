@@ -9,7 +9,7 @@ import java.util.List;
  * @version 1.0
  * @className ProductSkuSupplyUnitCapacityService
  * @date 2019/5/8 15:55
- * @description TODO
+
  */
 public interface ProductSkuSupplyUnitCapacityService {
 

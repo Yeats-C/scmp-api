@@ -13,7 +13,6 @@ import java.util.List;
  * @version 1.0
  * @className UpdateProductSkuSupplyUnitReqVo
  * @date 2019/7/4 15:17
- * @description TODO
  */
 @ApiModel("修改SKU供应商信息VO")
 @Data

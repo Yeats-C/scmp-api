@@ -5,7 +5,6 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.*;
 import com.aiqin.bms.scmp.api.supplier.domain.SpecialArea;
@@ -24,10 +23,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.*;
-import com.aiqin.bms.scmp.api.supplier.mapper.ApplyDeliveryInformationMapper;
-import com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyAccountMapper;
-import com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper;
-import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper;
+import com.aiqin.bms.scmp.api.supplier.mapper.*;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.Constraint;
@@ -68,8 +64,6 @@ import java.util.stream.Collectors;
 @WorkFlowAnnotation(WorkFlow.APPLY_COMPANY)
 public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplySupplyComServcie, WorkFlowHelper {
     @Autowired
-    private ApplySettlementService applySettlementService;
-    @Autowired
     private OperationLogService operationLogService;
     @Autowired
     private SupplyCompanyMapper supplyCompanyMapper;
@@ -94,8 +88,6 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     @Autowired
     private ApplySupplyComAcctService applySupplyComAcctService;
     @Autowired
-    private ApplyDeliveryInformationMapper applyDeliveryInformationMapper;
-    @Autowired
     private ApplySupplierFileService applySupplierFileService;
     @Autowired
     private ApplySupplyCompanyAccountMapper applySupplyCompanyAccountMapper;
@@ -106,10 +98,6 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     @Autowired
     private DeliveryInfoDao deliveryInfoDao;
     @Autowired
-    private ApplyUseTagRecordService applyUseTagRecordService;
-    @Autowired
-    private TagInfoService tagInfoService;
-    @Autowired
     private SupplierDao supplierDao;
     @Autowired
     private AreaBasicInfoService areaBasicInfoService;
@@ -118,9 +106,10 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     @Autowired
     private DeliveryInfoService deliveryInfoService;
     @Autowired
-    private SkuInfoService skuInfoService;
+    private ApplySupplyCompanyPurchaseGroupMapper applySupplyCompanyPurchaseGroupMapper;
     @Autowired
-    private SupplyCompanyAccountDao supplyCompanyAccountDao;
+    private SupplyCompanyPurchaseGroupMapper supplyCompanyPurchaseGroupMapper;
+
 
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
@@ -218,6 +207,12 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 applySupplyCompany.setFormNo("GYS"+IdSequenceUtils.getInstance().nextId());
             }
             applySupplyCompany.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+            if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyReqVO.getPurchaseGroupVos())){
+                applySupplyCompany.setPurchasingGroupCode(StringUtils.join( applySupplyCompanyReqVO.getPurchaseGroupVos().
+                        stream().map(ApplySupplyCompanyPurchaseGroupReqVo :: getPurchasingGroupCode).collect(Collectors.toList()),","));
+                applySupplyCompany.setPurchasingGroupName(StringUtils.join( applySupplyCompanyReqVO.getPurchaseGroupVos().
+                        stream().map(ApplySupplyCompanyPurchaseGroupReqVo :: getPurchasingGroupName).collect(Collectors.toList()),","));
+            }
             num = ((ApplySupplyComServcie)AopContext.currentProxy()).insert(applySupplyCompany);
             String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplyCompany.getUpdateBy()).replace("APPLYTYPE", "修改");
             //存日志
@@ -226,8 +221,6 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
             //更新正式表的申请编码
             supplyCompanyMapper.updateApplyCodeBySupplyComCode(applySupplyCompany.getSupplyCompanyCode(),applySupplyCompany.getApplyCode());
-            //发货信息
-            applyDeliveryInfoDao.deleteBatch(applySupplyCompany.getApplyCode());
             //发货信息
             if(CollectionUtils.isEmptyCollection(applySupplyCompanyReqVO.getDeliveryInfoList())){
                 throw new BizException(ResultCode.DELIVERY_RETURN_EMPTY);
@@ -242,20 +235,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             if(CollectionUtils.isEmptyCollection(collect2)){
                 throw new BizException(ResultCode.RETURN_EMPTY);
             }
-            try {
-                List<ApplyDeliveryDTO> deliveryDTOS = BeanCopyUtils.copyList(applySupplyCompanyReqVO.getDeliveryInfoList(), ApplyDeliveryDTO.class);
-                deliveryDTOS.forEach(item->{
-                    item.setApplySupplyCompanyCode(applySupplyCompany.getApplyCode());
-                    item.setApplySupplyCompanyName(applySupplyCompany.getApplySupplyName());
-                });
-                applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
-                        "系统错误"));
-            }
+            List<ApplyDeliveryDTO> deliveryDTOS = BeanCopyUtils.copyList(applySupplyCompanyReqVO.getDeliveryInfoList(), ApplyDeliveryDTO.class);
+            deliveryDTOS.forEach(item->{
+                item.setApplySupplyCompanyName(applySupplyCompany.getApplySupplyName());
+                item.setApplySupplyCompanyCode(applySupplyCompany.getApplyCode());
+            });
+            applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
             //增加文件信息
-            applySupplierFileDao.deleteApplySupplierFileByApplyCode(applySupplyCompany.getApplyCode());
             List<SupplierFileReqVO> fileReqVOList = applySupplyCompanyReqVO.getFileReqVOList();
             if(CollectionUtils.isNotEmptyCollection(fileReqVOList)){
                 fileReqVOList.forEach(item->{
@@ -265,14 +251,27 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 });
                 applySupplierFileService.copySaveInfo(fileReqVOList);
             }
+            //采购组
+            List<ApplySupplyCompanyPurchaseGroupReqVo> applyPurchaseGroupVos = applySupplyCompanyReqVO.getPurchaseGroupVos();
+            if(CollectionUtils.isNotEmptyCollection(applyPurchaseGroupVos)){
+                List<ApplySupplyCompanyPurchaseGroup> applySupplyCompanyPurchaseGroups = BeanCopyUtils.copyList(applyPurchaseGroupVos, ApplySupplyCompanyPurchaseGroup.class);
+                applySupplyCompanyPurchaseGroups.forEach(item->{
+                    item.setApplySupplyCompanyName(applySupplyCompany.getApplySupplyName());
+                    item.setApplySupplyCompanyCode(applySupplyCompany.getApplyCode());
+                });
+                ((ApplySupplyComServcie) AopContext.currentProxy()).saveApplyPurchaseGroupList(applySupplyCompanyPurchaseGroups);
+            }
             if (CollectionUtils.isNotEmptyCollection(forImportList)) {
+                applyDeliveryInfoDao.deleteBatch(forImportList.get(0).getApplySupplyCompanyCode());
+                applySupplierFileDao.deleteApplySupplierFileByApplyCode(forImportList.get(0).getApplySupplyCompanyCode());
+                applySupplyCompanyPurchaseGroupMapper.deleteByApplyCode(forImportList.get(0).getApplySupplyCompanyCode());
                 applySupplyCompanyMapper.delectByIds(forImportList.stream().map(ApplySupplyCompany::getId).collect(Collectors.toList()));
             }
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 workFlow(applySupplyCompany);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         }
         return num;
@@ -464,6 +463,12 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             //根据供应商申请编码获取发货/退后申请信息
             List<ApplyDeliveryInfoRespVO> applyDeliveryInfoRespVO = applyDeliveryInfoDao.getApplyDeliveryInfoDetail(applyCode);
             applySupplyComDetailRespVO.setApplyDeliveryInfoRespVO(applyDeliveryInfoRespVO);
+            //采购组
+            List<ApplySupplyCompanyPurchaseGroup> applySupplyCompanyPurchaseGroups = applySupplyCompanyPurchaseGroupMapper.selectByApplySupplyCompanyCode(applyCode);
+            if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyPurchaseGroups)){
+                List<SupplyCompanyPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(applySupplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroupResVo.class);
+                applySupplyComDetailRespVO.setPurchaseGroupVos(purchaseGroupResVos);
+            }
             return applySupplyComDetailRespVO;
         } catch (Exception e) {
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
@@ -492,13 +497,19 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public String insertApplyAndOther(ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO){
         //此方法返回供货单位申请code，方便后面的结算及收货信息新增
+        Long resultNum = 0L;
         String applySupplyCompanyCode = null;
         //供货单位申请编码
         EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_CODE);
-
         applySupplyCompanyReqDTO.setApplyCode(String.valueOf(encodingRule.getNumberingValue()+1));
+        if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyReqDTO.getPurchaseGroupVos())){
+            applySupplyCompanyReqDTO.setPurchasingGroupCode(StringUtils.join( applySupplyCompanyReqDTO.getPurchaseGroupVos().
+                    stream().map(ApplySupplyCompanyPurchaseGroupReqVo :: getPurchasingGroupCode).collect(Collectors.toList()),","));
+            applySupplyCompanyReqDTO.setPurchasingGroupName(StringUtils.join( applySupplyCompanyReqDTO.getPurchaseGroupVos().
+                    stream().map(ApplySupplyCompanyPurchaseGroupReqVo :: getPurchasingGroupName).collect(Collectors.toList()),","));
+        }
         //新增供货单位申请
-        Long resultNum =((ApplySupplyComServcie)AopContext.currentProxy()).insert(applySupplyCompanyReqDTO);
+        resultNum = ((ApplySupplyComServcie)AopContext.currentProxy()).insert(applySupplyCompanyReqDTO);
         ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(applySupplyCompanyReqDTO.getApplyStatus());
         String content =applyStatus.getContent().replace("CREATEBY", applySupplyCompanyReqDTO.getCreateBy()).replace("APPLYTYPE", "新增");
         HandleTypeCoce handleTypeCoce = HandleTypeCoce.PENDING;
@@ -531,7 +542,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             });
             resultNum = applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
                     "系统错误"));
         }
@@ -544,6 +555,17 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 item.setApplyType(applySupplyCompanyReqDTO.getApplyType());
             });
             applySupplierFileService.copySaveInfo(fileReqVOList);
+        }
+        //增加采购组
+        if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyReqDTO.getPurchaseGroupVos())){
+            List<ApplySupplyCompanyPurchaseGroup> applySupplyCompanyPurchaseGroupReqVos = BeanCopyUtils.copyList( applySupplyCompanyReqDTO.getPurchaseGroupVos(),ApplySupplyCompanyPurchaseGroup.class);
+            if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyPurchaseGroupReqVos)){
+                applySupplyCompanyPurchaseGroupReqVos.stream().forEach(group ->{
+                    group.setApplySupplyCompanyCode(applySupplyCompanyReqDTO.getApplyCode());
+                    group.setApplySupplyCompanyName(applySupplyCompanyReqDTO.getApplySupplyName());
+                });
+                ((ApplySupplyComServcie) AopContext.currentProxy()).saveApplyPurchaseGroupList(applySupplyCompanyPurchaseGroupReqVos);
+            }
         }
         //判断是否需要新增供货单位账户申请
         //判断是否需要新增账户信息
@@ -584,6 +606,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 deliveryInfoDao.deleteDeliveryInfoBySupplyCompanyCode(oldSupplyCompany.getSupplyCode());
                 //删除原有的附件信息
                 supplierFileDao.deleteFile(oldSupplyCompany.getSupplyCode());
+                //删除原有的采购组信息
+                supplyCompanyPurchaseGroupMapper.deleteBySupplyCompanyCode(oldSupplyCompany.getSupplyCode());
                 supplyCompany.setId(oldSupplyCompany.getId());
                 supplyCompany.setSupplyName(applySupplyCompany.getApplySupplyName());
                 supplyCompany.setApplySupplyCompanyCode(applySupplyCompany.getApplySupplyCompanyCode());
@@ -623,15 +647,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     item.setApplyDeliveryInformationCode(item.getApplyCode());
                 });
                 applyDeliveryInfoDao.updateBatch(applyDeliveryInfos);
-                List<DeliveryInformation> deliveryInformations = Lists.newArrayList();
-                try {
-                    deliveryInformations = BeanCopyUtils.copyList(applyDeliveryInfos, DeliveryInformation.class);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (log.isDebugEnabled()) {
-                        log.info("供应商发货/退货信息转化失败");
-                    }
-                }
+                List<DeliveryInformation> deliveryInformations = BeanCopyUtils.copyList(applyDeliveryInfos, DeliveryInformation.class);
                 if (CollectionUtils.isNotEmptyCollection(deliveryInformations)) {
                     deliveryInformations.forEach(item -> {
                         item.setSupplyCompanyCode(supplyCompany.getSupplyCode());
@@ -643,15 +659,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             //附件信息
             List<ApplySupplierFile> applySupplierFiles = applySupplierFileDao.getApplySupplierFile(applySupplyCompany.getApplySupplyCompanyCode());
             if (CollectionUtils.isNotEmptyCollection(applySupplierFiles)) {
-                List<SupplierFile> supplierFiles = null;
-                try {
-                    supplierFiles = BeanCopyUtils.copyList(applySupplierFiles, SupplierFile.class);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (log.isDebugEnabled()) {
-                        log.info("供应商文件信息转化失败");
-                    }
-                }
+                List<SupplierFile> supplierFiles = BeanCopyUtils.copyList(applySupplierFiles, SupplierFile.class);
                 if (CollectionUtils.isNotEmptyCollection(supplierFiles)) {
                     supplierFiles.forEach(item -> {
                         item.setSupplierCode(supplyCompany.getSupplyCode());
@@ -660,7 +668,18 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     supplierFileDao.insertFileList(supplierFiles);
                 }
             }
-            //标签信息
+            //采购组信息
+            List<ApplySupplyCompanyPurchaseGroup> applySupplyCompanyPurchaseGroups = applySupplyCompanyPurchaseGroupMapper.selectByApplySupplyCompanyCode(applySupplyCompany.getApplySupplyCompanyCode());
+            if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyPurchaseGroups)){
+                List<SupplyCompanyPurchaseGroup> supplyCompanyPurchaseGroups = BeanCopyUtils.copyList(applySupplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroup.class);
+                if(CollectionUtils.isNotEmptyCollection(supplyCompanyPurchaseGroups)){
+                    supplyCompanyPurchaseGroups.forEach(item->{
+                        item.setSupplyCompanyCode(supplyCompany.getSupplyCode());
+                        item.setSupplyCompanyName(supplyCompany.getSupplyName());
+                    });
+                }
+                supplyCompanyPurchaseGroupMapper.insertBatch(supplyCompanyPurchaseGroups);
+            }
             supplierCommonService.getInstance(supplyCompany.getSupplyCode(), handleTypeCoce.getStatus(), ObjectTypeCode.SUPPLY_COMPANY.getStatus(), content, null, handleTypeCoce.getName(), applySupplyCompany.getCreateBy());
         } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
@@ -698,6 +717,9 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         applySupplyCompanyMapper.updateByPrimaryKey(applySupplyCompany);
         //判断审核状态，存日志信息
         ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(applySupplyCompany.getApplyStatus());
+        if(Objects.equals(ApplyStatus.APPROVAL,applyStatus)){
+            applyStatus = ApplyStatus.APPROVAL_SUCCESS;
+        }
         String content = applyStatus.getContent().replace("CREATEBY", applySupplyCompany.getCreateBy()).replace("AUDITORBY", vo.getApprovalUserName());
         supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode(), applyHandleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), content, null, applyHandleTypeCoce.getName(), vo.getApprovalUserName());
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
@@ -818,9 +840,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean importSupplierNewSave(SupplierImportReq req) {
+        List<ApplySupplyCompanyPurchaseGroupReqVo> purchaseGroupVos = Lists.newArrayList();
+        ApplySupplyCompanyPurchaseGroupReqVo  purchaseGroupReqVo = new ApplySupplyCompanyPurchaseGroupReqVo();
+        purchaseGroupReqVo.setPurchasingGroupCode(req.getPurchaseGroupCode());
+        purchaseGroupReqVo.setPurchasingGroupName(req.getPurchaseGroupName());
+        purchaseGroupVos.add(purchaseGroupReqVo);
         for (ApplySupplyCompanyReqVO reqVO : req.getApplyList()) {
-            reqVO.setPurchasingGroupCode(req.getPurchaseGroupCode());
-            reqVO.setPurchasingGroupName(req.getPurchaseGroupName());
+            reqVO.setPurchaseGroupVos(purchaseGroupVos);
             reqVO.setSource(Byte.valueOf("1"));
             ((ApplySupplyComServcie)AopContext.currentProxy()).saveApply(reqVO);
         }
@@ -837,9 +863,13 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
      */
     @Override
     public Boolean importSupplierNewUpdate(SupplierImportReq req) {
+        List<ApplySupplyCompanyPurchaseGroupReqVo> purchaseGroupVos = Lists.newArrayList();
+        ApplySupplyCompanyPurchaseGroupReqVo  purchaseGroupReqVo = new ApplySupplyCompanyPurchaseGroupReqVo();
+        purchaseGroupReqVo.setPurchasingGroupCode(req.getPurchaseGroupCode());
+        purchaseGroupReqVo.setPurchasingGroupName(req.getPurchaseGroupName());
+        purchaseGroupVos.add(purchaseGroupReqVo);
         for (ApplySupplyCompanyReqVO reqVO : req.getApplyList()) {
-            reqVO.setPurchasingGroupCode(req.getPurchaseGroupCode());
-            reqVO.setPurchasingGroupName(req.getPurchaseGroupName());
+            reqVO.setPurchaseGroupVos(purchaseGroupVos);
             reqVO.setSource(Byte.valueOf("1"));
             ((ApplySupplyComServcie)AopContext.currentProxy()).updateApply(reqVO);
         }
@@ -914,7 +944,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         } catch (GroundRuntimeException e) {
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return supplyComDetailRespVO;
     }
@@ -984,7 +1014,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                     });
                     applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                     throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
                             "系统错误"));
                 }
@@ -1023,7 +1053,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 workFlow(applySupplyCompanyReqDTO);
             }
         } catch (Exception e){
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         }
         return Boolean.TRUE;
@@ -1061,6 +1091,24 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         detailRequestRespVo.setId(applySupplyCompany.getId());
         detailRequestRespVo.setItemCode("1");
         return detailRequestRespVo;
+    }
+
+    /**
+     * 功能描述: 保存供应商采购组申请信息
+     *
+     * @param purchaseGroups
+     * @return
+     * @auther knight.xie
+     * @date 2019/8/23 10:52
+     */
+    @Override
+    @SaveList
+    @Transactional(rollbackFor = Exception.class)
+    public int saveApplyPurchaseGroupList(List<ApplySupplyCompanyPurchaseGroup> purchaseGroups) {
+        if(CollectionUtils.isEmptyCollection(purchaseGroups)){
+            return 0;
+        }
+        return applySupplyCompanyPurchaseGroupMapper.insertBatch(purchaseGroups);
     }
 
     @Override

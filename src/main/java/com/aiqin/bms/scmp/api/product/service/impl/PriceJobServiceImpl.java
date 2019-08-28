@@ -5,12 +5,14 @@ import com.aiqin.bms.scmp.api.product.service.PriceJobService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.product.service.TaxCostLogService;
 import com.aiqin.bms.scmp.api.util.PriceThreadDo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class PriceJobServiceImpl implements PriceJobService {
     @Autowired
     private StockService stockService;
@@ -25,7 +27,7 @@ public class PriceJobServiceImpl implements PriceJobService {
                 taxCostLogService.log(st);
             });
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }finally {
             PriceThreadDo.subThreadNum();
         }

@@ -16,6 +16,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/supplyCom/apply")
 @Api(description = "供货单位申请管理")
+@Slf4j
 public class ApplySupplyComController {
     @Autowired
     private ApplySupplyComServcie applySupplyComServcie;
@@ -52,7 +54,7 @@ public class ApplySupplyComController {
         } catch (BizException ex) {
             return HttpResponse.failure(ex.getMessageId());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.ADD_ERROR);
         }
     }

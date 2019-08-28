@@ -1,3 +1,7 @@
+package com.aiqin.bms.scmp.api.product.domain.request;
+
+import lombok.Data;
+
 /**
  * <p>
  * ━━━━━━神兽出没━━━━━━
@@ -24,4 +28,11 @@
  * <p>
  * 思维方式*热情*能力
  */
-package com.aiqin.bms.scmp.api.account.jobs;
+@Data
+public class BaseDateRequest {
+    /**
+     * 为了接收时间戳类型的时间
+     */
+    private String dateTime;
+
+}

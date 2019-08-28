@@ -19,6 +19,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,7 @@ import java.util.List;
 @RestController
 @Api(description = "调拨管理")
 @RequestMapping("/product/allocation")
+@Slf4j
 public class AllocationController {
 
 
@@ -55,7 +57,7 @@ public class AllocationController {
         try {
             return HttpResponse.success(allocationService.getList(vo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -95,7 +97,7 @@ public class AllocationController {
         } catch (GroundRuntimeException e) {
             return HttpResponse.failure(MessageId.create(Project.PRODUCT_API,52,e.getMessage()));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);
         }
     }
@@ -111,7 +113,7 @@ public class AllocationController {
         try {
             return HttpResponse.success(allocationService. view(id));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -130,7 +132,7 @@ public class AllocationController {
         try {
             return HttpResponse.success(allocationService. updateSubmit(status,formNo));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);
         }
     }
@@ -147,4 +149,5 @@ public class AllocationController {
     public HttpResponse<Long> getIdByFormNo(@RequestParam String formNo){
         return HttpResponse.success(allocationService.getIdByFormNo(formNo));
     }
+
 }

@@ -22,20 +22,20 @@ public class DashboardMonthlyLossAmountRespVo {
     private String statMonth;
 
     @ApiModelProperty("次品影响金额")
-    @JsonProperty("defective_effect_amount")
-    private Long defectiveEffectAmount;
+    @JsonProperty("defective_effect_amount_monthly")
+    private Long defectiveEffectAmountMonthly;
 
     @ApiModelProperty("次品影响金额累计值")
     @JsonProperty("defective_effect_amount_acc")
     private Long defectiveEffectAmountAcc;
 
     @ApiModelProperty("缺货影响金额")
-    @JsonProperty("stockout_effect_amount_monthly")
-    private Long stockoutEffectAmountMonthly;
+    @JsonProperty("stockout_sales_amount_monthly")
+    private Long stockoutSalesAmountMonthly;
 
     @ApiModelProperty("缺货影响金额累计值")
-    @JsonProperty("stockout_effect_amount_acc")
-    private Long stockoutEffectAmountAcc;
+    @JsonProperty("stockout_sales_amount_monthly_acc")
+    private Long stockoutSalesAmountMonthlyAcc;
 
     @ApiModelProperty("月亏损总额")
     @JsonProperty("monthly_loss_amount")

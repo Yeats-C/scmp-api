@@ -1,10 +1,8 @@
 package com.aiqin.bms.scmp.api.config;
 
-import com.aiqin.bms.scmp.api.supplier.domain.response.account.UserDataVo;
-import com.aiqin.bms.scmp.api.supplier.domain.response.account.UserPosition;
+import com.aiqin.bms.scmp.api.supplier.domain.response.account.Account;
 import com.aiqin.bms.scmp.api.supplier.service.AccountService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.SignUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.mgs.control.client.service.TicketService;
@@ -21,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 /**
  * 拦截器
@@ -51,8 +48,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Value("${evn}")
     private String evn;
 
-    @Override
-    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
+  @Override
+  public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String referer = httpServletRequest.getHeader("referer");
         boolean fromSwagger = false;
         if(null != referer){
@@ -80,7 +77,6 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 httpServletRequest.getRequestURL().indexOf("no_controller")!=-1||StringUtils.isNotBlank(httpServletRequest.getParameter("authority"))){
             return true;
         }
-        JSONObject jsonObject = new JSONObject();
         //返回重定向地址到中控登录
         if (StringUtils.isBlank(ticket) || StringUtils.isBlank(personId)) {
             returnJson(httpServletResponse, "没有登录");
@@ -94,42 +90,28 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
         AuthToken current = AuthenticationInterceptor.getCurrentAuthToken();
         if(null == current) {
-            UserDataVo userDataVo = accountService.getAccountInfoByAccountId(ticket, personId, accountId);
-            if(null == userDataVo) {
+            Account account = accountService.getAccountInfoByAccountId(accountId);
+            if(null == account) {
                 returnJson(httpServletResponse, "获取人员信息失败");
                 return false;
             }
-            if(CollectionUtils.isEmptyCollection(userDataVo.getUserPositions())) {
-                returnJson(httpServletResponse, "获取人员岗位信息失败");
-                return false;
-            }
-            List<UserPosition> userPositions = userDataVo.getUserPositions();
-            UserPosition position = null;
-            for (UserPosition userPosition : userPositions) {
-                if(accountId.equals(userPosition.getAccountId())) {
-                    position = userPosition;
-                    break;
-                }
-            }
-            if(null == position) {
-                returnJson(httpServletResponse, "获取人员岗位信息失败");
-                return false;
-            }
-            if(StringUtils.isBlank(position.getCompanyCode())) {
+
+            if(StringUtils.isBlank(account.getCompanyCode())) {
                 returnJson(httpServletResponse, "获取人员公司信息失败");
                 return false;
             }
-            if(StringUtils.isBlank(position.getCompanyName())) {
+            if(StringUtils.isBlank(account.getCompanyName())) {
                 returnJson(httpServletResponse, "获取人员公司信息失败");
                 return false;
             }
             current = new AuthToken();
             current.setPersonId(personId);
             current.setTicket(ticket);
-            current.setPersonName(position.getPersonName());
-            current.setCompanyCode(position.getCompanyCode());
-            current.setCompanyName(position.getCompanyName());
-            current.setPositionCode(position.getPositionCode());
+            current.setPersonName(account.getPersonName());
+            current.setCompanyCode(account.getCompanyCode());
+            current.setCompanyName(account.getCompanyName());
+            //现在不需要岗位
+            current.setPositionCode(null);
             current.setAccountId(accountId);
             filterThreadLocal.set(current);
         }

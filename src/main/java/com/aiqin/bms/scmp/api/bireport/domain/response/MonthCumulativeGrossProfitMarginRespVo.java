@@ -20,13 +20,9 @@ public class MonthCumulativeGrossProfitMarginRespVo {
     @JsonProperty("create_time")
     private String createTime;
 
-    @ApiModelProperty("月份")
-    @JsonProperty("month")
-    private String month;
-
-    @ApiModelProperty("月累计")
-    @JsonProperty("cumulative_month")
-    private String cumulativeMonth;
+    @ApiModelProperty("年月")
+    @JsonProperty("year_month")
+    private String yearMonth;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")

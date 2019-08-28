@@ -48,7 +48,7 @@ public class SkuInfoController {
         } catch (BizException bz){
             return HttpResponse.failure(bz.getMessageId(),0);
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,0);
         }
     }
@@ -61,7 +61,7 @@ public class SkuInfoController {
         } catch (BizException bz){
             return HttpResponse.failure(bz.getMessageId(),0);
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,0);
         }
     }
@@ -108,7 +108,7 @@ public class SkuInfoController {
         try {
             return HttpResponse.success(skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(MessageId.create(Project.PRODUCT_API, 400, e.getMessage()));
         }
     }
@@ -137,7 +137,7 @@ public class SkuInfoController {
         try {
             return HttpResponse.success(skuInfoService.getProductSkuInfos(reqVO));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
         }
     }
@@ -149,7 +149,7 @@ public class SkuInfoController {
         try {
             return HttpResponse.success(skuInfoService.getSkuListByQueryVO(reqVO));
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
         }
     }
@@ -163,7 +163,7 @@ public class SkuInfoController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -176,7 +176,7 @@ public class SkuInfoController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -190,7 +190,7 @@ public class SkuInfoController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -204,7 +204,7 @@ public class SkuInfoController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -219,7 +219,7 @@ public class SkuInfoController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -233,7 +233,7 @@ public class SkuInfoController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -246,7 +246,7 @@ public class SkuInfoController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

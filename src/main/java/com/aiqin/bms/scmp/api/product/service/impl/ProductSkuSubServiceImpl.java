@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @className ProductSkuSubServiceImpl
  * @date 2019/7/6 16:07
- * @description TODO
+
  */
 @Service
 public class ProductSkuSubServiceImpl implements ProductSkuSubService {
@@ -146,7 +146,7 @@ public class ProductSkuSubServiceImpl implements ProductSkuSubService {
         List<ApplyProductSkuSub> applyProductSkuSubList = applyMapper.getApply(skuCode, applyCode);
         if(CollectionUtils.isNotEmptyCollection(applyProductSkuSubList)){
             List<ProductSkuSub> list = BeanCopyUtils.copyList(applyProductSkuSubList,ProductSkuSub.class);
-            mapper.selectBySkuCode(skuCode);
+            mapper.deleteBySkuCode(skuCode);
             return ((ProductSkuSubService)AopContext.currentProxy()).insertBatch(list);
         }
         return 0;

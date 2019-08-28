@@ -1,13 +1,21 @@
 package com.aiqin.bms.scmp.api.dao.test;
 
 import com.aiqin.bms.scmp.api.SpringBootTestContext;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.jobs.DoPrice;
+import com.aiqin.bms.scmp.api.product.service.PriceJobService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.util.PriceThreadDo;
 import com.google.common.collect.Lists;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class SupplyTest  extends SpringBootTestContext  {
@@ -95,105 +103,148 @@ public class SupplyTest  extends SpringBootTestContext  {
         // 退供单 解锁
         //stockService.returnSupplyUnLockStocks(reqVO);
     }
-
+/*
+StockVoRequest(companyCode=04, companyName=北京天佳辰宇科技有限公司, transportCenterCode=1081, transportCenterName=华北仓,
+				 warehouseCode=1071, warehouseName=华北销售库, warehouseType=销售库, skuCode=10000000201, skuName=小猪威比AQNP001防爆玻璃奶瓶210ML, purchaseGroupCode=null,
+				 purchaseGroupName=null, taxRate=1600, changeNum=10, newDelivery=10000062, newDeliveryName=我的供应商3, newPurchasePrice=100, documentType=1, documentNum=103922,
+				sourceDocumentType=1, sourceDocumentNum=CG100342, operator=赵帅, remark=null, stockCost=null),
+ */
     @Test
     public void test2(){
         StockChangeRequest stockChangeRequest = new StockChangeRequest();
-        stockChangeRequest.setOperationType(9);
+        stockChangeRequest.setOperationType(10);
 
         List<StockVoRequest> stockVoRequests = new ArrayList<>();
 
 
         StockVoRequest stockVoRequest1 = new StockVoRequest();
         stockVoRequest1.setCompanyCode("04");
-        stockVoRequest1.setCompanyName("北京爱亲科技股份有限公司");
-        stockVoRequest1.setTransportCenterCode("1081");
-        stockVoRequest1.setTransportCenterName("华北仓");
-        stockVoRequest1.setWarehouseCode("1071");
-        stockVoRequest1.setWarehouseName("华北销售库");
-       // stockVoRequest1.setWarehouseType("1");
-        stockVoRequest1.setChangeNum(3L);
+        stockVoRequest1.setCompanyName("北京天佳辰宇科技有限公司");
+        stockVoRequest1.setTransportCenterCode("1083");
+        stockVoRequest1.setTransportCenterName("华东仓");
+        stockVoRequest1.setWarehouseCode("1080");
+        stockVoRequest1.setWarehouseName("华东特卖库");
+        stockVoRequest1.setWarehouseType("1080");
+        stockVoRequest1.setChangeNum(10L);
 
-        stockVoRequest1.setSkuCode("10000000205");
-        stockVoRequest1.setSkuName("小鹿比机器人");
+        stockVoRequest1.setSkuCode("10000000247");
+        stockVoRequest1.setSkuName("何超测试导入1");
 
-        stockVoRequest1.setDocumentType(1);
-        stockVoRequest1.setDocumentNum("入库单");
-        stockVoRequest1.setSourceDocumentType(1);
-        stockVoRequest1.setSourceDocumentNum("采购单");
+        stockVoRequest1.setNewDelivery("10000062");
+        stockVoRequest1.setNewDeliveryName("我的供应商3");
+        stockVoRequest1.setTaxRate(1600L);
+
+        stockVoRequest1.setDocumentType(4);
+        stockVoRequest1.setDocumentNum("103988");
+        stockVoRequest1.setSourceDocumentType(10);
+        stockVoRequest1.setSourceDocumentNum("12323730");
         stockVoRequest1.setOperator("ch");
-        stockVoRequest1.setRemark("华北华北销售库数据新增");
+        stockVoRequest1.setRemark("ch测试数据");
 
         stockVoRequests.add(stockVoRequest1);
-
-     /*   StockVoRequest stockVoRequest2 = new StockVoRequest();
+/*
+        StockVoRequest stockVoRequest2 = new StockVoRequest();
         stockVoRequest2.setCompanyCode("04");
-        stockVoRequest2.setCompanyName("北京爱亲科技股份有限公司");
-        stockVoRequest2.setTransportCenterCode("1026");
-        stockVoRequest2.setTransportCenterName("华东仓");
-        stockVoRequest2.setWarehouseCode("1029");
-        stockVoRequest2.setWarehouseName("华东销售库");
-        stockVoRequest2.setWarehouseType("1");
-        stockVoRequest2.setChangeNum(100L);
+        stockVoRequest2.setCompanyName("北京天佳辰宇科技有限公司");
+        stockVoRequest2.setTransportCenterCode("1081");
+        stockVoRequest2.setTransportCenterName("华北仓");
+        stockVoRequest2.setWarehouseCode("1071");
+        stockVoRequest2.setWarehouseName("华北销售库");
+        stockVoRequest2.setWarehouseType("销售库");
+        stockVoRequest2.setChangeNum(10L);
 
-        stockVoRequest2.setSkuCode("10000000205");
-        stockVoRequest2.setSkuName("小鹿比机器人");
+        stockVoRequest2.setSkuCode("10000000201");
+        stockVoRequest2.setSkuName("小猪威比AQNP001防爆玻璃奶瓶210ML");
+
+        stockVoRequest2.setNewDelivery("10000062");
+        stockVoRequest2.setNewDeliveryName("我的供应商3");
+        stockVoRequest2.setNewPurchasePrice(100L);
+        stockVoRequest2.setTaxRate(1600L);
 
         stockVoRequest2.setDocumentType(1);
-        stockVoRequest2.setDocumentNum("入库单");
+        stockVoRequest2.setDocumentNum("103922");
         stockVoRequest2.setSourceDocumentType(1);
-        stockVoRequest2.setSourceDocumentNum("采购单");
-        stockVoRequest2.setOperator("ch");
-        stockVoRequest2.setRemark("华北华东销售库数据新增");
+        stockVoRequest2.setSourceDocumentNum("CG100342");
+        stockVoRequest2.setOperator("赵帅");
+        stockVoRequest2.setRemark("ch测试数据");
+
         stockVoRequests.add(stockVoRequest2);
 
 
         StockVoRequest stockVoRequest3 = new StockVoRequest();
         stockVoRequest3.setCompanyCode("04");
-        stockVoRequest3.setCompanyName("北京爱亲科技股份有限公司");
-        stockVoRequest3.setTransportCenterCode("1082");
-        stockVoRequest3.setTransportCenterName("西南仓");
-        stockVoRequest3.setWarehouseCode("1083");
-        stockVoRequest3.setWarehouseName("西南销售库");
-        stockVoRequest3.setWarehouseType("1");
-        stockVoRequest3.setChangeNum(100L);
+        stockVoRequest3.setCompanyName("北京天佳辰宇科技有限公司");
+        stockVoRequest3.setTransportCenterCode("1081");
+        stockVoRequest3.setTransportCenterName("华北仓");
+        stockVoRequest3.setWarehouseCode("1071");
+        stockVoRequest3.setWarehouseName("华北销售库");
+        stockVoRequest3.setWarehouseType("销售库");
+        stockVoRequest3.setChangeNum(10L);
 
-        stockVoRequest3.setSkuCode("10000000205");
-        stockVoRequest3.setSkuName("小鹿比机器人");
+        stockVoRequest3.setSkuCode("10000000201");
+        stockVoRequest3.setSkuName("小猪威比AQNP001防爆玻璃奶瓶210ML");
+
+        stockVoRequest3.setNewDelivery("10000062");
+        stockVoRequest3.setNewDeliveryName("我的供应商3");
+        stockVoRequest3.setNewPurchasePrice(100L);
+        stockVoRequest3.setTaxRate(1600L);
 
         stockVoRequest3.setDocumentType(1);
-        stockVoRequest3.setDocumentNum("入库单");
+        stockVoRequest3.setDocumentNum("103922");
         stockVoRequest3.setSourceDocumentType(1);
-        stockVoRequest3.setSourceDocumentNum("采购单");
-        stockVoRequest3.setOperator("ch");
-        stockVoRequest3.setRemark("西南西南销售库数据新增");
+        stockVoRequest3.setSourceDocumentNum("CG100342");
+        stockVoRequest3.setOperator("赵帅");
+        stockVoRequest3.setRemark("ch测试数据");
+
         stockVoRequests.add(stockVoRequest3);
 
         StockVoRequest stockVoRequest4 = new StockVoRequest();
         stockVoRequest4.setCompanyCode("04");
-        stockVoRequest4.setCompanyName("北京爱亲科技股份有限公司");
-        stockVoRequest4.setTransportCenterCode("1085");
-        stockVoRequest4.setTransportCenterName("华中仓");
-        stockVoRequest4.setWarehouseCode("1086");
-        stockVoRequest4.setWarehouseName("华中销售库");
-        stockVoRequest4.setWarehouseType("1");
-        stockVoRequest4.setChangeNum(100L);
+        stockVoRequest4.setCompanyName("北京天佳辰宇科技有限公司");
+        stockVoRequest4.setTransportCenterCode("1081");
+        stockVoRequest4.setTransportCenterName("华北仓");
+        stockVoRequest4.setWarehouseCode("1071");
+        stockVoRequest4.setWarehouseName("华北销售库");
+        //stockVoRequest4.setWarehouseType(null);
+        stockVoRequest4.setChangeNum(10L);
 
-        stockVoRequest4.setSkuCode("10000000205");
-        stockVoRequest4.setSkuName("小鹿比机器人");
+        stockVoRequest4.setSkuCode("10000000201");
+        stockVoRequest4.setSkuName("小猪威比AQNP001防爆玻璃奶瓶210ML");
+
+        stockVoRequest4.setNewDelivery("10000062");
+        stockVoRequest4.setNewDeliveryName("我的供应商3");
+        stockVoRequest4.setNewPurchasePrice(100L);
+        stockVoRequest4.setTaxRate(1600L);
 
         stockVoRequest4.setDocumentType(1);
-        stockVoRequest4.setDocumentNum("入库单");
+        stockVoRequest4.setDocumentNum("103922");
         stockVoRequest4.setSourceDocumentType(1);
-        stockVoRequest4.setSourceDocumentNum("采购单");
-        stockVoRequest4.setOperator("ch");
-        stockVoRequest4.setRemark("华中华中销售库数据新增");
-        stockVoRequests.add(stockVoRequest4);
-*/
+        stockVoRequest4.setSourceDocumentNum("CG100342");
+        stockVoRequest4.setOperator("赵帅");
+        stockVoRequest4.setRemark("ch测试数据");
+
+        stockVoRequests.add(stockVoRequest4);*/
+
 
         stockChangeRequest.setStockVoRequests(stockVoRequests);
 
         stockService.changeStock(stockChangeRequest);
+    }
+
+    @Autowired
+    private PriceJobService priceJobService;
+    @Test
+    public void test3(){
+        Calendar ca = Calendar.getInstance();
+        ca.setTime(new Date());
+        int days = 0;
+        ca.add(Calendar.DATE,days);
+        Date date = ca.getTime();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        System.err.println(sf.format(date));
+       /* String encoding = System.getProperty("file.encoding");
+        System.out.println("Default System Encoding:" + encoding);*/
+
     }
 }
 /*

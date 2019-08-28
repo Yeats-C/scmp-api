@@ -39,6 +39,12 @@ public class NewProductResponseVO{
     @ApiModelProperty("条形码")
     private String barCode;
 
+    @ApiModelProperty("采购组编号")
+    private String purchasingGroupCode;
+
+    @ApiModelProperty("采购组名称")
+    private String purchasingGroupName;
+
 
 
 }

@@ -12,7 +12,7 @@ import javax.validation.constraints.NotEmpty;
  * @version 1.0
  * @className QueryApplyReqVo
  * @date 2019/4/4 15:52
- * @description TODO
+
  */
 @ApiModel("申请查询条件")
 @Data

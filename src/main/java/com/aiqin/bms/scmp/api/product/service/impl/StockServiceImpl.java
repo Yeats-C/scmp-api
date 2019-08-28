@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.StockStatusEnum;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.dao.StockFlowDao;
@@ -37,7 +38,9 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchRe
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseApiResVo;
+import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
@@ -94,6 +97,9 @@ public class StockServiceImpl implements StockService {
     private ProductSkuDao productSkuDao;
     @Autowired
     private WarehouseService supplierApiService;
+    @Autowired
+    private PurchaseGroupService purchaseGroupService;
+
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -141,50 +147,78 @@ public class StockServiceImpl implements StockService {
     public PageResData selectStockSumInfoByPage(StockRequest stockRequest) {
         try {
             LOGGER.info("中央库存列表查询");
+            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+            PageResData pageResData = new PageResData();
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+                return pageResData;
+            }
+            stockRequest.setGroupList(groupVoList);
             List<StockRespVO> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
             HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
             List<StockRespVO> lists = new ArrayList<>();
+            Stock stock = null;
+            int i = 0;
             for (StockRespVO stockRespVO : stockList) {
                 String str = stockRespVO.getSkuCode();
                 if(stockRespMap.get(str) == null){
                     stockRespMap.put(str,stockRespVO);
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }else {
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }
             }
             for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
                 lists.add(entry.getValue());
             }
-            Integer total = stockDao.countStockSumInfoByPage(stockRequest);
-            return new PageResData<>(total, lists);
+            Integer count  = stockDao.selectStockSumInfoByPageCount(stockRequest);
+            pageResData.setTotalCount(count);
+            pageResData.setDataList(lists);
+            return pageResData;
         } catch (Exception e) {
             LOGGER.error("中央列表查询失败", e);
             throw new GroundRuntimeException(e.getMessage());
         }
     }
 
-    private void stockCommon(HashMap<String, StockRespVO> stockRespMap, StockRespVO stockRespVO, String str) {
+    private void stockCommon(HashMap<String, StockRespVO> stockRespMap, StockRespVO stockRespVO, String str, Stock stock, int i) {
         StockRespVO key = stockRespMap.get(str);
-        if(stockRespVO.getWarehouseType() != null){
-            if(stockRespVO.getWarehouseType().equals("销售库")){
-                key.setSaleNum(stockRespVO.getAvailableNum());
-                key.setSaleLockNum(stockRespVO.getLockNum());
-                key.setSaleWayNum(stockRespVO.getTotalWayNum());
-                key.setPurchaseWayNum(stockRespVO.getPurchaseWayNum());
-            }else if (stockRespVO.getWarehouseType().equals("赠品库")){
-                key.setGiftNum(stockRespVO.getAvailableNum());
-                key.setGiftLockNum(stockRespVO.getLockNum());
-                key.setGiftWayNum(stockRespVO.getTotalWayNum());
-                key.setGiftPurchaseWayNum(stockRespVO.getPurchaseWayNum());
-            }else if (stockRespVO.getWarehouseType().equals("特卖库")){
-                key.setSpecialSaleNum(stockRespVO.getAvailableNum());
-                key.setSpecialSaleLockNum(stockRespVO.getLockNum());
-                key.setSpecialSaleWayNum(stockRespVO.getSpecialSaleWayNum());
-            }else if(stockRespVO.getWarehouseType().equals("残品库")){
-                key.setBadNum(stockRespVO.getAvailableNum());
-                key.setBadLockNum(stockRespVO.getLockNum());
-                key.setBadWayNum(stockRespVO.getBadWayNum());
+        if(StringUtils.isNotBlank(stockRespVO.getCompanyCode()) || StringUtils.isNotBlank(stockRespVO.getSkuCode())){
+            stock = new Stock();
+            Stock stockInfo;
+            stock.setSkuCode(stockRespVO.getSkuCode());
+            stock.setCompanyCode(stockRespVO.getCompanyCode());
+            if(i == 1){
+                stock.setTransportCenterCode(stockRespVO.getTransportCenterCode());
+            }
+            stock.setWarehouseType(Global.SALE_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if(stockInfo != null){
+                key.setSaleNum(stockInfo.getAvailableNum());
+                key.setSaleLockNum(stockInfo.getLockNum());
+                key.setSaleWayNum(stockInfo.getTotalWayNum());
+                key.setPurchaseWayNum(stockInfo.getPurchaseWayNum());
+            }
+            stock.setWarehouseType(Global.GIFT_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if (stockInfo != null){
+                key.setGiftNum(stockInfo.getAvailableNum());
+                key.setGiftLockNum(stockInfo.getLockNum());
+                key.setGiftWayNum(stockInfo.getTotalWayNum());
+                key.setGiftPurchaseWayNum(stockInfo.getPurchaseWayNum());
+            }
+            stock.setWarehouseType(Global.SPECIAL_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if (stockInfo != null){
+                key.setSpecialSaleNum(stockInfo.getAvailableNum());
+                key.setSpecialSaleLockNum(stockInfo.getLockNum());
+                key.setSpecialSaleWayNum(stockInfo.getTotalWayNum());
+            }
+            stock.setWarehouseType(Global.DEFECTIVE_TYPE);
+            stockInfo = stockDao.selectStockSum(stock);
+            if(stockInfo != null){
+                key.setBadNum(stockInfo.getAvailableNum());
+                key.setBadLockNum(stockInfo.getLockNum());
+                key.setBadWayNum(stockInfo.getTotalWayNum());
             }
             stockRespMap.put(str,key);
         }
@@ -214,12 +248,20 @@ public class StockServiceImpl implements StockService {
     @Override
     public PageResData selectWarehouseStockInfoByPage(StockRequest stockRequest) {
         try {
-            LOGGER.info("库房库存列表查询");
+            LOGGER.info("总库存管理列表查询");
+            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+            PageResData pageResData = new PageResData();
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+                return pageResData;
+            }
+            stockRequest.setGroupList(groupVoList);
             List<StockRespVO> stockList = stockDao.selectWarehouseStockInfoByPage(stockRequest);
             Integer total = stockDao.countWarehouseStockInfoByPage(stockRequest);
-            return new PageResData<>(total, stockList);
+            pageResData.setTotalCount(total);
+            pageResData.setDataList(stockList);
+            return pageResData;
         } catch (Exception e) {
-            LOGGER.error("库房库存列表查询失败", e);
+            LOGGER.error("总库存管理列表查询失败", e);
             throw new GroundRuntimeException(e.getMessage());
         }
     }
@@ -228,23 +270,34 @@ public class StockServiceImpl implements StockService {
     public PageResData selectTransportStockInfoByPage(StockRequest stockRequest) {
         try {
             LOGGER.info("物流中心库存列表查询");
+            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+            PageResData pageResData = new PageResData();
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+                return pageResData;
+            }
+            stockRequest.setGroupList(groupVoList);
             List<StockRespVO> stockList = stockDao.selectTransportStockInfoByPage(stockRequest);
             HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
             List<StockRespVO> lists = new ArrayList<>();
+            Stock stock = null;
+            int i = 1;
+            // 遍历获取分页数据
             for (StockRespVO stockRespVO : stockList) {
                 String str = stockRespVO.getTransportCenterCode()+ stockRespVO.getSkuCode();
                 if(stockRespMap.get(str) == null){
                     stockRespMap.put(str,stockRespVO);
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }else {
-                    stockCommon(stockRespMap, stockRespVO, str);
+                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
                 }
             }
             for(Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()){
                 lists.add(entry.getValue());
             }
-            Integer total = stockDao.countTransportStockInfoByPage(stockRequest);
-            return new PageResData<>(total, lists);
+            Integer count = stockDao.selectTransportStockInfoByPageCount(stockRequest);
+            pageResData.setTotalCount(count);
+            pageResData.setDataList(lists);
+            return pageResData;
         } catch (Exception e) {
             LOGGER.error("物流中心库存列表查询失败", e);
             throw new GroundRuntimeException(e.getMessage());
@@ -255,9 +308,17 @@ public class StockServiceImpl implements StockService {
     public PageResData selectStorehouseStockInfoByPage(StockRequest stockRequest) {
         try {
             LOGGER.info("物流中心库存列表查询");
+            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+            PageResData pageResData = new PageResData();
+            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+                return pageResData;
+            }
+            stockRequest.setGroupList(groupVoList);
             List<StockRespVO> stockList = stockDao.selectStorehouseStockInfoByPage(stockRequest);
             Integer total = stockDao.countStorehouseStockInfoByPage(stockRequest);
-            return new PageResData<>(total, stockList);
+            pageResData.setTotalCount(total);
+            pageResData.setDataList(stockList);
+            return pageResData;
         } catch (Exception e) {
             LOGGER.error("物流中心库存列表查询失败", e);
             throw new GroundRuntimeException(e.getMessage());
@@ -324,7 +385,7 @@ public class StockServiceImpl implements StockService {
 //                httpResponse.setData(errorRespVos);
 //            }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -375,7 +436,7 @@ public class StockServiceImpl implements StockService {
                 throw new BizException(ResultCode.STOCK_LOCK_ERROR);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -405,7 +466,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -430,7 +491,7 @@ public class StockServiceImpl implements StockService {
             }
         } catch (Exception e) {
             LOGGER.error("调用退供加锁接口失败", e);
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException(e.getMessage());
         }
         return false;
@@ -454,7 +515,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -479,7 +540,7 @@ public class StockServiceImpl implements StockService {
             }
         } catch (Exception e) {
             LOGGER.error("调用退供解锁接口失败", e);
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException(e.getMessage());
         }
         return false;
@@ -510,7 +571,7 @@ public class StockServiceImpl implements StockService {
                 outboundService.updateOutBoundInfo(reqVO);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -540,7 +601,7 @@ public class StockServiceImpl implements StockService {
                 outboundService.updateOutBoundInfo(reqVo);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -856,7 +917,7 @@ public class StockServiceImpl implements StockService {
             }
             return vo;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw new BizException(e.getMessage());
             } else {
@@ -883,7 +944,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -931,7 +992,7 @@ public class StockServiceImpl implements StockService {
             }
             return Integer.valueOf(1);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (e instanceof BizException) {
                 throw new BizException(e.getMessage());
             } else {
@@ -988,7 +1049,7 @@ public class StockServiceImpl implements StockService {
             }
             return list;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException("采购单数据转换为 [新增] 库存数据集合失败");
         }
     }
@@ -1007,7 +1068,7 @@ public class StockServiceImpl implements StockService {
             }
             return list;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new BizException("采购单数据转换为 [更新] 库存数据集合失败");
         }
     }
@@ -1073,7 +1134,7 @@ public class StockServiceImpl implements StockService {
             stockFlowDao.insertOne(stockFlow);
             return lockCode;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             if (reqVo.getLockType() == 0) {
                 throw new BizException(ResultCode.STOCK_LOCK_ERROR);
             } else {
@@ -1292,7 +1353,7 @@ public class StockServiceImpl implements StockService {
                 stockDao.insertBatch(adds);
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error("error", e);
             LOGGER.error("操作库存失败", e);
             throw new BizException("操作库存失败");
         }
@@ -1336,71 +1397,77 @@ public class StockServiceImpl implements StockService {
         }
         stock.setNewDelivery(stockVoRequest.getNewDelivery());
         stock.setNewDeliveryName(stockVoRequest.getNewDeliveryName());
+        Long purchaseWayNum = stock.getPurchaseWayNum() == null ? 0L : stock.getPurchaseWayNum();
+        Long totalWayNum = stock.getTotalWayNum() == null ? 0L : stock.getTotalWayNum();
+        Long lockNum = stock.getLockNum() == null ? 0L : stock.getLockNum();
+        Long availableNum = stock.getAvailableNum() == null ? 0L : stock.getAvailableNum();
+        Long inventoryNum = stock.getInventoryNum() == null ? 0L : stock.getInventoryNum();
+        Long allocationWayNum = stock.getAllocationWayNum() == null ? 0L : stock.getAllocationWayNum();
         switch (operationType) {
             //锁定库存数
             case 1:
-                stock.setLockNum(stock.getLockNum() + stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum() - stockVoRequest.getChangeNum());
+                stock.setLockNum(lockNum + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum - stockVoRequest.getChangeNum());
                 break;
             //减少库存并解锁
             case 2:
-                stock.setInventoryNum(stock.getInventoryNum() - stockVoRequest.getChangeNum());
-                stock.setLockNum(stock.getLockNum() - stockVoRequest.getChangeNum());
+                stock.setInventoryNum(inventoryNum - stockVoRequest.getChangeNum());
+                stock.setLockNum(lockNum - stockVoRequest.getChangeNum());
                 break;
             //解锁锁定库存
             case 3:
-                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
-                stock.setLockNum(stock.getLockNum() - stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum + stockVoRequest.getChangeNum());
+                stock.setLockNum(lockNum - stockVoRequest.getChangeNum());
                 break;
             //无锁定直接减库存 总库存减可用库存减
             case 4:
-                stock.setAvailableNum(stock.getAvailableNum() - stockVoRequest.getChangeNum());
-                stock.setInventoryNum(stock.getInventoryNum() - stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum - stockVoRequest.getChangeNum());
+                stock.setInventoryNum(inventoryNum - stockVoRequest.getChangeNum());
                 break;
             //加库存并锁定库存
             case 5:
-                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
-                stock.setLockNum(stock.getLockNum() + stockVoRequest.getChangeNum());
+                stock.setInventoryNum(inventoryNum + stockVoRequest.getChangeNum());
+                stock.setLockNum(lockNum + stockVoRequest.getChangeNum());
                 break;
             //只改变采购在途数和在途总数
             case 6:
-                stock.setPurchaseWayNum(stock.getPurchaseWayNum() + stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getTotalWayNum() + stockVoRequest.getChangeNum());
+                stock.setPurchaseWayNum(purchaseWayNum + stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(totalWayNum + stockVoRequest.getChangeNum());
                 break;
             //只改变调拨在途和在途总数
             case 7:
-                stock.setAllocationWayNum(stock.getAllocationWayNum() + stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getTotalWayNum() + stockVoRequest.getChangeNum());
+                stock.setAllocationWayNum(allocationWayNum + stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(totalWayNum + stockVoRequest.getChangeNum());
                 break;
             //调拨在途变成可用及库存数
             case 8:
-                stock.setAllocationWayNum(stock.getAllocationWayNum() - stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getPurchaseWayNum() + stock.getAllocationWayNum());
-                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
+                stock.setAllocationWayNum(allocationWayNum - stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(purchaseWayNum + stock.getAllocationWayNum());
+                stock.setInventoryNum(inventoryNum + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum + stockVoRequest.getChangeNum());
                 break;
             //采购在途变成可用及库存数
             case 9:
-                stock.setPurchaseWayNum(stock.getPurchaseWayNum() - stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getPurchaseWayNum() + stock.getAllocationWayNum());
-                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
+                stock.setPurchaseWayNum(purchaseWayNum - stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(purchaseWayNum + stock.getAllocationWayNum());
+                stock.setInventoryNum(inventoryNum + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum + stockVoRequest.getChangeNum());
                 break;
             //直接加库存
             case 10:
-                stock.setInventoryNum(stock.getInventoryNum() + stockVoRequest.getChangeNum());
-                stock.setAvailableNum(stock.getAvailableNum() + stockVoRequest.getChangeNum());
+                stock.setInventoryNum(inventoryNum + stockVoRequest.getChangeNum());
+                stock.setAvailableNum(availableNum + stockVoRequest.getChangeNum());
                 break;
             //只改变采购在途数和在途总数(减订单完成差异价)
             case 11:
-                stock.setPurchaseWayNum(stock.getPurchaseWayNum() - stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(stock.getTotalWayNum() - stockVoRequest.getChangeNum());
+                stock.setPurchaseWayNum(purchaseWayNum - stockVoRequest.getChangeNum());
+                stock.setTotalWayNum(totalWayNum - stockVoRequest.getChangeNum());
                 break;
             default:
                 return null;
         }
         //库存不管是锁定数还是可以数还是库存数都不能为负
-        if (stock.getLockNum() < 0 || stock.getInventoryNum() < 0 || stock.getAvailableNum() < 0 || stock.getAllocationWayNum() < 0 || stock.getTotalWayNum() < 0) {
+        if (lockNum < 0 || inventoryNum < 0 || availableNum < 0 || allocationWayNum < 0 || totalWayNum < 0) {
             return null;
         }
         return stock;
@@ -1857,7 +1924,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }
@@ -1885,7 +1952,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
         }
         return false;
     }

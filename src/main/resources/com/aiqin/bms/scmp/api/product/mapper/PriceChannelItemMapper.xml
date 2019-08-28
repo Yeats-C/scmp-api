@@ -44,7 +44,9 @@
         from price_channel a
         left join  price_channel_item b
         on a.price_channel_code = b.price_channel_code
-        where b.price_category_code = #{type}
+        left join price_project c
+        on c.price_project_code = b.price_project_code
+        where b.price_category_code = #{type} and c.price_project_enable = 0
         and a.price_channel_code in
         <foreach collection="codes" item="item" separator="," close=")" open="(">
           #{item}

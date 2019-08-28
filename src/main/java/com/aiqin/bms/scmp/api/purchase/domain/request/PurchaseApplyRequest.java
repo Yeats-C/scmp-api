@@ -150,6 +150,10 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("approval_code")
     private String approvalCode;
 
+    @ApiModelProperty(value="去重商品查询")
+    @JsonProperty("search_list")
+    private List<PurchaseProductSearchRequest>  searchList;
+
     public PurchaseApplyRequest() {
     }
 

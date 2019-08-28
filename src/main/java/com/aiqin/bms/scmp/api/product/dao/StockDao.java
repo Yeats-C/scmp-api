@@ -35,7 +35,9 @@ public interface StockDao {
 
     List<StockRespVO> selectTransportStockInfoByPage(StockRequest stockRequest);
 
-    Integer countTransportStockInfoByPage(StockRequest stockRequest);
+    Integer selectTransportStockInfoByPageCount(StockRequest stockRequest);
+
+    List<StockRespVO> countTransportStockInfoByPage(StockRequest stockRequest);
 
     List<StockRespVO> selectStorehouseStockInfoByPage(StockRequest stockRequest);
 
@@ -52,7 +54,9 @@ public interface StockDao {
      **/
     List<StockRespVO> selectStockSumInfoByPage(StockRequest stockRequest);
 
-    Integer countStockSumInfoByPage(StockRequest stockRequest);
+    Integer selectStockSumInfoByPageCount(StockRequest stockRequest);
+
+    List<StockRespVO> countStockSumInfoByPage(StockRequest stockRequest);
 
     List<StockFlowRespVo> selectOneStockInfoByStockId(@Param("stockCode") String stockCode);
 
@@ -144,7 +148,7 @@ public interface StockDao {
     List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
 
     QueryStockBatchSkuRespVo selectSkuBatchCode(@Param("procurementSectionCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode,@Param("batchCode") String batchCode);
-    RejectApplyDetailHandleResponse rejectProductInfo(@Param("productType") Integer productType,@Param("purchaseGroupCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode);
+    RejectApplyDetailHandleResponse rejectProductInfo(@Param("supplierCode") String supplierCode,@Param("productType") Integer productType,@Param("purchaseGroupCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode);
 
     /**
      * 库房管理新增调拨,移库,报废列表查询
@@ -191,4 +195,6 @@ public interface StockDao {
                                                 @Param("warehouseCode") String warehouseCode);
 
     List<Stock> selectSkuCost();
+
+    Stock selectStockSum(Stock stock);
 }

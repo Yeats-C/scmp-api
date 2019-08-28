@@ -14,7 +14,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.score.ScoreListRespVo;
  * @version 1.0
  * @className SupplierScoreService
  * @date 2019/5/23 15:33
- * @description TODO
+
  */
 public interface SupplierScoreService {
 

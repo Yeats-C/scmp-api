@@ -12,7 +12,7 @@ import java.util.Date;
  * @version 1.0
  * @className ContractFileResVo
  * @date 2019/4/23 19:44
- * @description TODO
+
  */
 @ApiModel("合同文件返回信息")
 @Data

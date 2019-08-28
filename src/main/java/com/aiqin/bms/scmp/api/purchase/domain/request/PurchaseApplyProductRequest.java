@@ -37,4 +37,12 @@ public class PurchaseApplyProductRequest {
     @ApiModelProperty(value="修改者")
     @JsonProperty("update_by_name")
     private String updateByName;
+
+    @ApiModelProperty(value="公司编码")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty(value="公司名称")
+    @JsonProperty("company_name")
+    private String companyName;
 }

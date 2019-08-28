@@ -47,4 +47,6 @@ public class OutboundDetailRequest {
     @ApiModelProperty("实发数量")
     private Long actualDeliverNum;
 
+    @ApiModelProperty(value="0不是，1是赠品")
+    private String giftType;
 }

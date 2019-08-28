@@ -12,7 +12,6 @@ import java.util.List;
  * @version 1.0
  * @className UpdateSkuConfigSupplierReqVo
  * @date 2019/7/4 14:27
- * @description TODO
  */
 @ApiModel("修改配置信息和供应商信息请求Vo")
 @Data

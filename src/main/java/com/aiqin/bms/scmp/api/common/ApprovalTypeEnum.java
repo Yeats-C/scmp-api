@@ -8,7 +8,6 @@ import lombok.Getter;
  * @author knight.xie
  * @version 1.0
  * @date 2019/5/9 18:50
- * @description TODO
  */
 @ApiModel("审批类型枚举")
 @Getter

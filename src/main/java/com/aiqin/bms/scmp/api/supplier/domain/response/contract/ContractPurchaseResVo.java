@@ -9,7 +9,7 @@ import lombok.Data;
  * @version 1.0
  * @className ContractPurchaseResVo
  * @date 2019/7/1 20:14
- * @description TODO
+
  */
 @ApiModel("外部调用合同返回数据")
 @Data

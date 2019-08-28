@@ -408,17 +408,17 @@
             <if test="createTime!=null and createTime!=''">
                 and bbs.create_time like concat('%', #{createTime}, '%')
             </if>
-            <if test="orderCode!=null and orderCode!=''">
-                and bbs.price_channel_code like concat('%', #{orderCode}, '%')
+            <if test="priceChannelCode!=null and priceChannelCode!=''">
+                and bbs.price_channel_code like concat('%', #{priceChannelCode}, '%')
             </if>
-            <if test="orderOriginal!=null and orderOriginal!=''">
-                and bbs.price_channel_name like concat('%', #{orderOriginal}, '%')
+            <if test="priceChannelName!=null and priceChannelName!=''">
+                and bbs.price_channel_name like concat('%', #{priceChannelName}, '%')
             </if>
-            <if test="departmentCode!=null and departmentCode!=''">
-                and bbs.department_code like concat('%', #{departmentCode}, '%')
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bbs.product_sort_code like concat('%', #{productSortCode}, '%')
             </if>
-            <if test="departmentName!=null and departmentName!=''">
-                and bbs.department_name like concat('%', #{departmentName}, '%')
+            <if test="productSortName!=null and productSortName!=''">
+                and bbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
         </where>
     </sql>
@@ -428,17 +428,17 @@
             <if test="createTime!=null and createTime!=''">
                 and bcs.create_time=#{createTime}
             </if>
-            <if test="orderCode!=null and orderCode!=''">
-                and bcs.price_channel_code=#{orderCode}
+            <if test="priceChannelCode!=null and priceChannelCode!=''">
+                and bcs.price_channel_code=#{priceChannelCode}
             </if>
-            <if test="orderOriginal!=null and orderOriginal!=''">
-                and bcs.price_channel_name like concat('%', #{orderOriginal}, '%')
+            <if test="priceChannelName!=null and priceChannelName!=''">
+                and bcs.price_channel_name like concat('%', #{priceChannelName}, '%')
             </if>
-            <if test="departmentCode!=null and departmentCode!=''">
-                and bcs.department_code=#{departmentCode}
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bcs.product_sort_code=#{productSortCode}
             </if>
-            <if test="departmentName!=null and departmentName!=''">
-                and bcs.department_name like concat('%', #{departmentName}, '%')
+            <if test="productSortName!=null and productSortName!=''">
+                and bcs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
         </where>
     </sql>
@@ -1087,7 +1087,6 @@
         bsrr.channel_order_amount as channelOrderAmount,
         bsrr.shopping_frequency as shoppingFrequency,
         bsrr.after_buy_rate as afterBuyRate,
-        bsrr.months as months,
         date_format(bsrr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_store_repurchase_rate bsrr
         <include refid="select_store_repurchase_rate"/>
@@ -1329,11 +1328,11 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BrandSaleRespVo">
         select
         bbs.id as id,
-        bbs.month as month,
-        bbs.department_code as departmentCode,
-        bbs.department_name as departmentName,
-        bbs.price_channel_code as orderCode,
-        bbs.price_channel_name as orderOriginal,
+        bbs.year_month as yearMonth,
+        bbs.product_sort_code as productSortCode,
+        bbs.product_sort_name as productSortName,
+        bbs.price_channel_code as priceChannelCode,
+        bbs.price_channel_name as priceChannelName,
         bbs.store_type_code as storeTypeCode,
         bbs.store_type as storeType,
         bbs.data_type_code as dataTypeCode,
@@ -1342,18 +1341,19 @@
         bbs.category_name as categoryName,
         bbs.product_brand_code as productBrandCode,
         bbs.product_brand_name as productBrandName,
-        bbs.channel_current_sale_amount as channelCurrentSaleAmount,
-        bbs.channel_previous_sales_amount as channelPreviousSalesAmount,
-        bbs.channel_current_gross_margin as channelCurrentGrossMargin,
-        bbs.channel_previous_gross_margin as channelPreviousGrossMargin,
-        bbs.channel_sale_link_ratio as channelSaleLinkRatio,
-        bbs.channel_gross_margin_link_ratio as channelGrossMarginLinkRatio,
-        bbs.distribution_current_sale_amount as distributionCurrentSaleAmount,
-        bbs.distribution_previous_sales_amount as distributionPreviousSalesAmount,
-        bbs.distribution_current_gross_margin as distributionCurrentGrossMargin,
-        bbs.distribution_previous_gross_margin as distributionPreviousGrossMargin,
-        bbs.distribution_sale_link_ratio as distributionSaleLinkRatio,
-        bbs.distribution_gross_margin_link_ratio as distributionGrossMarginLinkRatio,
+        bbs.stock_cost as stockCost,
+        bbs.channel_sale_amount as channelSaleAmount,
+        bbs.last_month_channel_amount_daily as lastMonthChannelAmountDaily,
+        bbs.channel_gross_margin as channelGrossMargin,
+        bbs.last_month_channel_gross_margin as lastMonthChannelGrossMargin,
+        bbs.channel_sales_sequential_add as channelSalesSequentialAdd,
+        bbs.channel_maori_sequential_add as channelMaoriSequentialAdd,
+        bbs.distribution_amount_daily as distributionAmountDaily,
+        bbs.last_month_distribution_amount_daily as lastMonthDistributionAmountDaily,
+        bbs.distribution_amount as distributionAmount,
+        bbs.last_month_distribution_amount as lastMonthDistributionAmount,
+        bbs.distribution_sales_sequential_add as distributionSalesSequentialAdd,
+        bbs.distribution_maori_sequential_add as distributionMaoriSequentialAdd,
         date_format(bbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_brand_sale bbs
         <include refid="select_brand_sale"/>
@@ -1362,18 +1362,18 @@
     <select id="sumBrandSale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.BrandSaleRespVo">
         select
-        sum(bbs.channel_current_sale_amount) as channelCurrentSaleAmounts,
-        sum(bbs.channel_previous_sales_amount) as channelPreviousSalesAmounts,
-        sum(bbs.channel_current_gross_margin) as channelCurrentGrossMargins,
-        sum(bbs.channel_previous_gross_margin ) as channelPreviousGrossMargins,
-        sum(bbs.channel_current_sale_amount)/sum(bbs.channel_previous_sales_amount) as channelSaleLinkRatios,
-        sum(bbs.channel_current_gross_margin)/sum(bbs.channel_previous_gross_margin ) as channelGrossMarginLinkRatios,
-        sum(bbs.distribution_current_sale_amount) as distributionCurrentSaleAmounts,
-        sum(bbs.distribution_previous_sales_amount) as distributionPreviousSalesAmounts,
-        sum(bbs.distribution_current_gross_margin) as distributionCurrentGrossMargins,
-        sum(bbs.distribution_previous_gross_margin) as distributionPreviousGrossMargins,
-        sum(bbs.distribution_current_sale_amount)/sum(bbs.distribution_previous_sales_amount) as distributionSaleLinkRatios,
-        sum(bbs.distribution_current_gross_margin)/sum(bbs.distribution_previous_gross_margin) as distributionGrossMarginLinkRatios
+        sum(bbs.channel_sale_amount) as channelSaleAmount,
+        sum(bbs.last_month_channel_amount_daily) as lastMonthChannelAmountDaily,
+        sum(bbs.channel_gross_margin) as channelGrossMargin,
+        sum(bbs.last_month_channel_gross_margin ) as lastMonthChannelGrossMargin,
+        sum(bbs.channel_sale_amount)/sum(bbs.last_month_channel_amount_daily) as channelSalesSequentialAdd,
+        sum(bbs.channel_gross_margin)/sum(bbs.last_month_channel_gross_margin ) as channelMaoriSequentialAdd,
+        sum(bbs.distribution_amount_daily) as distributionAmountDaily,
+        sum(bbs.last_month_distribution_amount_daily) as lastMonthDistributionAmountDaily,
+        sum(bbs.distribution_amount) as distributionAmount,
+        sum(bbs.last_month_distribution_amount) as lastMonthDistributionAmount,
+        sum(bbs.distribution_amount_daily)/sum(bbs.last_month_distribution_amount_daily) as distributionSalesSequentialAdd,
+        sum(bbs.distribution_amount)/sum(bbs.last_month_distribution_amount) as distributionMaoriSequentialAdd
         from bi_brand_sale bbs
         <include refid="select_brand_sale"/>
     </select>
@@ -1388,29 +1388,30 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.CategorySaleRespVo">
         select
         bcs.id as id,
-        bcs.month as month,
-        bcs.department_code as departmentCode,
-        bcs.department_name as departmentName,
-        bcs.price_channel_code as orderCode,
-        bcs.price_channel_name as orderOriginal,
+        bcs.year_month as yearMonth,
+        bcs.product_sort_code as productSortCode,
+        bcs.product_sort_name as productSortName,
+        bcs.price_channel_code as priceChannelCode,
+        bcs.price_channel_name as priceChannelName,
         bcs.store_type_code as storeTypeCode,
         bcs.store_type as storeType,
         bcs.data_type_code as dataTypeCode,
         bcs.data_type as dataType,
         bcs.category_code as categoryCode,
         bcs.category_name as categoryName,
-        bcs.channel_current_sale_amount as channelCurrentSaleAmount,
-        bcs.channel_previous_sales_amount as channelPreviousSalesAmount,
-        bcs.channel_current_gross_margin as channelCurrentGrossMargin,
-        bcs.channel_previous_gross_margin as channelPreviousGrossMargin,
-        bcs.channel_sale_link_ratio as channelSaleLinkRatio,
-        bcs.channel_gross_margin_link_ratio as channelGrossMarginLinkRatio,
-        bcs.distribution_current_sale_amount as distributionCurrentSaleAmount,
-        bcs.distribution_previous_sales_amount as distributionPreviousSalesAmount,
-        bcs.distribution_current_gross_margin as distributionCurrentGrossMargin,
-        bcs.distribution_previous_gross_margin as distributionPreviousGrossMargin,
-        bcs.distribution_sale_link_ratio as distributionSaleLinkRatio,
-        bcs.distribution_gross_margin_link_ratio as distributionGrossMarginLinkRatio,
+        bcs.stock_cost as stockCost,
+        bcs.channel_amount_daily as channelAmountDaily,
+        bcs.last_month_channel_amount_daily as lastMonthChannelAmountDaily,
+        bcs.channel_maori as channelMaori,
+        bcs.last_month_channel_maori as lastMonthChannelMaori,
+        bcs.channel_sales_sequential_add as channelSalesSequentialAdd,
+        bcs.channel_maori_sequential_add as channelMaoriSequentialAdd,
+        bcs.distribution_amount_daily as distributionAmountDaily,
+        bcs.last_month_distribution_amount_daily as lastMonthDistributionAmountDaily,
+        bcs.distribution_amount as distributionAmount,
+        bcs.last_month_distribution_amount as lastMonthDistributionAmount,
+        bcs.distribution_sales_sequential_add as distributionSalesSequentialAdd,
+        bcs.distribution_maori_sequential_add as distributionMaoriSequentialAdd,
         date_format(bcs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_category_sale bcs
         <include refid="select_category_sale"/>
@@ -1419,18 +1420,18 @@
     <select id="sumCategorySale" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.CategorySaleReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.CategorySaleRespVo">
         select
-        sum(bcs.channel_current_sale_amount) as channelCurrentSaleAmounts,
-        sum(bcs.channel_previous_sales_amount) as channelPreviousSalesAmounts,
-        sum(bcs.channel_current_gross_margin) as channelCurrentGrossMargins,
-        sum(bcs.channel_previous_gross_margin ) as channelPreviousGrossMargins,
-        sum(bcs.channel_current_sale_amount)/sum(bcs.channel_previous_sales_amount) as channelSaleLinkRatios,
-        sum(bcs.channel_current_gross_margin)/sum(bcs.channel_previous_gross_margin ) as channelGrossMarginLinkRatios,
-        sum(bcs.distribution_current_sale_amount) as distributionCurrentSaleAmounts,
-        sum(bcs.distribution_previous_sales_amount) as distributionPreviousSalesAmounts,
-        sum(bcs.distribution_current_gross_margin) as distributionCurrentGrossMargins,
-        sum(bcs.distribution_previous_gross_margin) as distributionPreviousGrossMargins,
-        sum(bcs.distribution_current_sale_amount)/sum(bcs.distribution_previous_sales_amount) as distributionSaleLinkRatios,
-        sum(bcs.distribution_current_gross_margin)/sum(bcs.distribution_previous_gross_margin) as distributionGrossMarginLinkRatios
+        sum(bcs.channel_amount_daily) as channelAmountDaily,
+        sum(bcs.last_month_channel_amount_daily) as lastMonthChannelAmountDaily,
+        sum(bcs.channel_maori) as channelMaori,
+        sum(bcs.last_month_channel_maori ) as lastMonthChannelMaori,
+        sum(bcs.channel_amount_daily)/sum(bcs.last_month_channel_amount_daily) as channelSalesSequentialAdd,
+        sum(bcs.channel_maori)/sum(bcs.last_month_channel_maori ) as channelMaoriSequentialAdd,
+        sum(bcs.distribution_amount_daily) as distributionAmountDaily,
+        sum(bcs.last_month_distribution_amount_daily) as lastMonthDistributionAmountDaily,
+        sum(bcs.distribution_amount) as distributionAmount,
+        sum(bcs.last_month_distribution_amount) as lastMonthDistributionAmount,
+        sum(bcs.distribution_amount_daily)/sum(bcs.last_month_distribution_amount_daily) as distributionSalesSequentialAdd,
+        sum(bcs.distribution_amount)/sum(bcs.last_month_distribution_amount) as distributionMaoriSequentialAdd
         from bi_category_sale bcs
         <include refid="select_category_sale"/>
     </select>

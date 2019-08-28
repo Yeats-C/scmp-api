@@ -9,7 +9,6 @@ import lombok.Data;
  * @version 1.0
  * @className SupervisoryWarehouseOrderProductReqVo
  * @date 2019/6/29 18:10
- * @description TODO
  */
 @Data
 @ApiModel("监管仓订单")

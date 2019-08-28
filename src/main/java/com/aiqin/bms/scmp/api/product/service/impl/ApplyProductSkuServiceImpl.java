@@ -24,7 +24,6 @@ import java.util.List;
  * @version 1.0
  * @className ApplyProductSkuServiceImp
  * @date 2019/3/29 16:06
- * @description TODO
  */
 @Service
 @Slf4j
@@ -89,7 +88,7 @@ public class ApplyProductSkuServiceImpl extends BaseServiceImpl implements Apply
                 try {
                    productSkus = BeanCopyUtils.copyList(applyProductSkus, ProductSkuInfo.class);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                     log.info("转化数据SKU数据失败");
                 }
 

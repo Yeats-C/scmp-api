@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
@@ -24,11 +25,13 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
@@ -113,6 +116,15 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
     @Autowired
     private WarehouseService warehouseService;
+
+    @Autowired
+    private ProductSkuStockInfoMapper productSkuStockInfoMapper;
+
+    @Autowired
+    private ProductSkuDao productSkuDao;
+
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -285,8 +297,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Save
     public Long insertSelective(Allocation record) {
        try{
-           record.setCompanyCode(getUser().getCompanyCode());
-           record.setCompanyName(getUser().getCompanyName());
+//           record.setCompanyCode(getUser().getCompanyCode());
+//           record.setCompanyName(getUser().getCompanyName());
+           record.setCompanyCode("04");
+           record.setCompanyName("爱亲");
             long k = allocationMapper.insertSelective(record);
             if(k>0){
                 return record.getId();
@@ -469,7 +483,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
               return  outboundService.save(convert);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw  new GroundRuntimeException("保存出库单失败");
         }
     }
@@ -709,7 +723,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                         num = Long.valueOf(s);
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("error", e);
                     list.add(new AllocationItemRespVo(skuCode,skuName, "数量数据格式错误"));
                     continue;
                 }
@@ -753,7 +767,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             }
             return list;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
             throw new GroundRuntimeException("导入异常");
         }
     }
@@ -774,4 +788,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         }
         return allocation.getId();
     }
+
+
 }

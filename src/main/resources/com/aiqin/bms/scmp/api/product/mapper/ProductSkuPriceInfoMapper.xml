@@ -264,8 +264,6 @@
         from product_sku_price_info a
         left join product_sku b
         on a.sku_code = b.sku_code
-        left join product_sku_price_area_info c
-        on a.code = c.main_code
         LEFT JOIN product_category lv4
         on lv4.category_id = b.product_category_code
         LEFT JOIN product_category lv3
@@ -954,7 +952,7 @@
     </update>
     <select id="selectPriceTax" resultType="java.lang.Long">
     select price_tax from product_sku_price_info
-    where sku_code = #{skuCode} and supplier_code = #{supplierCode} and price_attribute_code = 1 and price_type_code = 1 limit 1
+    where sku_code = #{skuCode} and supplier_code = #{supplierCode} and price_attribute_code = 2 and price_type_code = 2 limit 1
   </select>
     <select id="selectBySkuCodeForOfficial"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo">

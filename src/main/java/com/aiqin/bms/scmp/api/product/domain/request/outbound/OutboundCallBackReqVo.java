@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.outbound;
 
+import com.aiqin.bms.scmp.api.product.domain.request.BaseDateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -20,10 +21,10 @@ import java.util.List;
  */
 @Data
 @ApiOperation("出库单wms回调请求实体")
-public class OutboundCallBackReqVo {
+public class OutboundCallBackReqVo extends BaseDateRequest {
 //
-//    @ApiModelProperty("id")
-//    private Long id;
+    @ApiModelProperty("id")
+    private Long id;
 //
 //    @ApiModelProperty("入库时间")
 //    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
@@ -49,7 +50,6 @@ public class OutboundCallBackReqVo {
     @ApiModelProperty("出库单编号")
     @NotEmpty(message = "出库单编号不能为空")
     private String outboundOderCode;
-
 
     @ApiModelProperty("来源单号")
     @NotEmpty(message = "来源单号不能为空")
@@ -81,7 +81,7 @@ public class OutboundCallBackReqVo {
 
     @ApiModelProperty("出库时间")
     @NotEmpty(message = "出库时间不能为空")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date outboundTime;
 
     @ApiModelProperty("实际主单位数量")
@@ -99,9 +99,6 @@ public class OutboundCallBackReqVo {
 
     @ApiModelProperty("回调sku列表")
     private List<OutboundProductCallBackReqVo> list;
-
-    @ApiModelProperty("回调sku批次列表")
-    private List<OutboundBatchCallBackReqVo> outboundBatchCallBackReqVos;
 
 
 }

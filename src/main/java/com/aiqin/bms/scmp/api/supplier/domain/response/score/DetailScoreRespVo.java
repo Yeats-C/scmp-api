@@ -15,7 +15,7 @@ import java.util.List;
  * @version 1.0
  * @className DetailScoreRespVo
  * @date 2019/5/23 15:54
- * @description TODO
+
  */
 @ApiModel("详情返回Vo")
 @Data

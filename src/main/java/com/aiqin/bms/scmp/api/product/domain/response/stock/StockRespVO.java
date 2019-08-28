@@ -1,8 +1,11 @@
 package com.aiqin.bms.scmp.api.product.domain.response.stock;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 public class StockRespVO {
@@ -218,25 +221,28 @@ public class StockRespVO {
     @JsonProperty(value = "stockup_num")
     private Integer stockupNum;
 
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("备货完成时间")
     @JsonProperty(value = "stockupfinish_time")
-    private String stockupfinishTime;
+    private Date stockupfinishTime;
 
     @ApiModelProperty("昨天含税成本")
     @JsonProperty(value = "tax_cost")
     private Long taxCost;
 
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     @JsonProperty(value = "create_time")
-    private String createTime;
+    private Date createTime;
 
     @ApiModelProperty("创建人")
     @JsonProperty(value = "create_by")
     private String createBy;
 
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("更新时间")
     @JsonProperty(value = "update_time")
-    private String updateTime;
+    private Date updateTime;
 
     @ApiModelProperty("更新人")
     @JsonProperty(value = "update_by")
@@ -653,11 +659,11 @@ public class StockRespVO {
         this.stockupNum = stockupNum;
     }
 
-    public String getStockupfinishTime() {
+    public Date getStockupfinishTime() {
         return stockupfinishTime;
     }
 
-    public void setStockupfinishTime(String stockupfinishTime) {
+    public void setStockupfinishTime(Date stockupfinishTime) {
         this.stockupfinishTime = stockupfinishTime;
     }
 
@@ -685,11 +691,11 @@ public class StockRespVO {
         this.baseProductContent = baseProductContent;
     }
 
-    public String getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
@@ -701,11 +707,11 @@ public class StockRespVO {
         this.createBy = createBy;
     }
 
-    public String getUpdateTime() {
+    public Date getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(String updateTime) {
+    public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
 

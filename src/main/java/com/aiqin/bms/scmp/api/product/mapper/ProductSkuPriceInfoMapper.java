@@ -36,7 +36,6 @@ public interface ProductSkuPriceInfoMapper {
      */
     List<ProductSkuPriceInfo> checkRepeat(@Param("vo") QueryProductSkuPriceInfo queryVO);
     /**
-     * TODO
      * @author NullPointException
      * @date 2019/5/24
      * @param priceInsertInfos
@@ -84,7 +83,6 @@ public interface ProductSkuPriceInfoMapper {
     List<QueryProductSkuPriceInfoRespVO> selectListByQueryVO(List<Long> ids);
     List<Long> selectListByQueryVOCount(QueryProductSkuPriceInfoReqVO reqVO);
     /**
-     * TODO
      * @author NullPointException
      * @date 2019/5/30
      * @param code

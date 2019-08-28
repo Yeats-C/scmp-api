@@ -12,7 +12,6 @@ import java.util.Date;
  * @version 1.0
  * @className SaveProductSkuInspReportReqVo
  * @date 2019/7/3 17:39
- * @description TODO
  */
 @ApiModel("质检报告上传请求ItemVO")
 @Data

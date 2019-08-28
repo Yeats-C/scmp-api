@@ -632,8 +632,58 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         }
         //审批通过
         if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+            //判断是否预约时间
+            boolean b = list.get(0).getSelectionEffectiveTime() == 0 ? true : false;
+            //判断是否不立即生效
+            boolean b1 = b&list.get(0).getSelectionEffectiveStartTime().after(new Date());
             try {
                 updateApplyInfoByVO(newVO,applyCode);
+                if(!b1) {
+                    //通过applyCode查询备用仓库
+                    List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
+                            selectByApplyCode(applyCode);
+                    //获取配置编号
+                    List<String> configCodes = applySpareWarehouses.stream().map(item -> item.getConfigCode()).distinct().
+                            collect(Collectors.toList());
+                    //保存正式备用仓库信息
+                    //删除正式
+                    if (CollectionUtils.isNotEmpty(configCodes)) {
+                        spareWarehouseMapper.deleteByConfigCodes(configCodes);
+                    }
+                    //批量插入
+                    List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
+                            ProductSkuConfigSpareWarehouse.class);
+                    ((ProductSkuConfigService) AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
+                    //供应商信息
+                    productSkuSupplyUnitService.saveList(skuCode, applyCode);
+                    //供应商产能信息
+                    productSkuSupplyUnitCapacityService.saveList(skuCode, applyCode);
+                    //保存商品配置正式数据
+                    saveOfficial(newVO, list);
+                    return WorkFlowReturn.SUCCESS;
+                }
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                return WorkFlowReturn.FALSE;
+            }
+        }
+        return WorkFlowReturn.FALSE;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void tobeEffective(List<ApplyProductSkuConfig> list) {
+        for (ApplyProductSkuConfig config : list) {
+            //判断是否预约时间
+            boolean b = config.getSelectionEffectiveTime() == 0 ? true : false;
+            //判断是否不立即生效
+            boolean b1 = b & config.getSelectionEffectiveStartTime().after(new Date());
+            if (!b1) {
+                String applyCode = config.getApplyCode();
+                String skuCode = config.getSkuCode();
+                WorkFlowCallbackVO newVO = new WorkFlowCallbackVO();
+                newVO.setApprovalUserName(list.get(0).getAuditorBy());
+                newVO.setApplyStatus((byte) 2);
                 //通过applyCode查询备用仓库
                 List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
                         selectByApplyCode(applyCode);
@@ -642,26 +692,21 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                         collect(Collectors.toList());
                 //保存正式备用仓库信息
                 //删除正式
-                if(CollectionUtils.isNotEmpty(configCodes)){
+                if (CollectionUtils.isNotEmpty(configCodes)) {
                     spareWarehouseMapper.deleteByConfigCodes(configCodes);
                 }
                 //批量插入
                 List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
                         ProductSkuConfigSpareWarehouse.class);
-                ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
+                ((ProductSkuConfigService) AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
                 //供应商信息
-                productSkuSupplyUnitService.saveList(skuCode,applyCode);
+                productSkuSupplyUnitService.saveList(skuCode, applyCode);
                 //供应商产能信息
-                productSkuSupplyUnitCapacityService.saveList(skuCode,applyCode);
+                productSkuSupplyUnitCapacityService.saveList(skuCode, applyCode);
                 //保存商品配置正式数据
                 saveOfficial(newVO, list);
-                return WorkFlowReturn.SUCCESS;
-            } catch (Exception e) {
-                log.error(e.getMessage());
-                return WorkFlowReturn.FALSE;
             }
         }
-        return WorkFlowReturn.FALSE;
     }
 
     @Override
@@ -711,7 +756,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if(CollectionUtils.isNotEmpty(respVos)){
             skuInfoService.updateStatus(respVos);
         }
-
+        //设置状态为同步完成
+        applyMapper.updateBySynStatus(list);
     }
 
     /**
@@ -1062,6 +1108,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         respVo.setApplyCode(applyCode);
         respVo.setItemCode("2");
         return respVo;
+    }
+
+    @Override
+    public List<ApplyProductSkuConfig> selectUnSynData() {
+        return applyMapper.selectUnSynData();
     }
 
     @Override

@@ -181,6 +181,12 @@
             <if test="companyName != null">
                 company_name,
             </if>
+            <if test="purchasingGroupCode != null">
+                purchasing_group_code,
+            </if>
+            <if test="purchasingGroupName != null">
+                purchasing_group_name,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -272,6 +278,12 @@
             </if>
             <if test="companyName != null">
                 #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="purchasingGroupCode != null">
+                #{purchasingGroupCode,jdbcType=VARCHAR},
+            </if>
+            <if test="purchasingGroupName != null">
+                #{purchasingGroupName,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -416,6 +428,12 @@
             <if test="companyName != null">
                 company_name = #{companyName,jdbcType=VARCHAR},
             </if>
+            <if test="purchasingGroupCode != null">
+                purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR},
+            </if>
+            <if test="purchasingGroupName != null">
+                purchasing_group_name = #{purchasingGroupName,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -454,10 +472,13 @@
             parameterType="com.aiqin.bms.scmp.api.product.domain.request.newproduct.QueryNewProductReqVO">
         SELECT
         pro.id,pro.product_code as productCode,pro.product_name as productName,
-        COUNT(pku.id) as skuNumber,pro.update_time as updateTime,
+        (select count(pku.id) from product_sku pku where pro.product_code=pku.product_code) as skuNumber,
+        pro.update_time as updateTime,
         pro.update_by as updateBy,pro.create_time as createTime,
-        pro.create_by as createBy,pro.bar_code as barCode
-        FROM product pro LEFT JOIN product_sku pku on pro.product_code=pku.product_code
+        pro.create_by as createBy,pro.bar_code as barCode,
+        pro.purchasing_group_code as purchasingGroupCode,
+        pro.purchasing_group_name as purchasingGroupName
+        FROM product pro
         WHERE pro.del_flag=0
         <if test="createTimeStart != null">
             AND pro.create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
@@ -474,7 +495,12 @@
         <if test="companyCode != null and companyCode != '' ">
             and pro.company_code = #{companyCode,jdbcType=VARCHAR}
         </if>
-        GROUP BY pro.product_code
+        <if test="purchasingGroupCode != null and purchasingGroupCode != '' ">
+            and pro.purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR}
+        </if>
+        <!--<if test="personId != null and personId != '' ">-->
+            <!--and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})-->
+        <!--</if>-->
         ORDER BY pro.create_time DESC
     </select>
     <select id="productSku" resultType="com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewSkuDetailsResponseVO">
@@ -485,10 +511,10 @@
         update_time as updateTime,update_by as updateBy
         FROM product_sku psu WHERE psu.del_flag=0
         <if test="productCode!=null and productCode!=''">
-            AND product_code=#{productCode,jdbcType=VARCHAR}
+            AND psu.product_code=#{productCode,jdbcType=VARCHAR}
         </if>
         <if test="productName!=null and productName!=''">
-            AND pro.product_name LIKE CONCAT(CONCAT('%',#{productName},'%'))
+            AND psu.product_name LIKE CONCAT('%',#{productName},'%')
         </if>
     </select>
     <select id="checkName" resultType="java.lang.Integer">

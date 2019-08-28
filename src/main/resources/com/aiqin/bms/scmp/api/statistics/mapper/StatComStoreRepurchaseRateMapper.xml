@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatComStoreRepurchaseRateDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatComStoreRepurchaseRate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
+    <result column="stat_month" jdbcType="BIGINT" property="statMonth" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="sales_num" jdbcType="BIGINT" property="salesNum" />
+    <result column="channel_sales_amount" jdbcType="BIGINT" property="channelSalesAmount" />
+    <result column="distribution_sales_amount" jdbcType="BIGINT" property="distributionSalesAmount" />
+    <result column="shopping_frequency" jdbcType="BIGINT" property="shoppingFrequency" />
+    <result column="repurchase_rate" jdbcType="DECIMAL" property="repurchaseRate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    stat_year, stat_month, product_sort_code, product_sort_name, province_code, province_name,
+    sales_num, channel_sales_amount, distribution_sales_amount, shopping_frequency, repurchase_rate, 
+    create_time
+  </sql>
+  <select id="storeRepurchaseList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from stat_com_store_repurchase_rate
+    <where>
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+      order by product_sort_code, province_code
+    </where>
+  </select>
+  <select id="storeRepurchaseBySort" resultType="com.aiqin.bms.scmp.api.statistics.domain.StatComStoreRepurchaseRate">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_com_store_repurchase_rate
+    <where>
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+      group by product_sort_code
+    </where>
+  </select>
+  <select id="storeRepurchaseSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse">
+    select
+    sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(shopping_frequency,0)) as shoppingFrequency
+    from stat_com_store_repurchase_rate
+    <where>
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+    </where>
+  </select>
+  <select id="storeRepurchaseByDeptSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateSubtotalResponse">
+    select
+    sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(shopping_frequency,0)) as shoppingFrequency
+    from stat_com_store_repurchase_rate
+    <where>
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    </where>
+  </select>
+</mapper>

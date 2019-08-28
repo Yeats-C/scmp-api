@@ -138,4 +138,25 @@ public interface Global {
     String HN_CODE = "1084";
     String HZ_CODE = "1085";
 
+    /**
+     * 库房类型
+     */
+    String SALE_TYPE = "销售库";
+    String GIFT_TYPE = "赠品库";
+    String SPECIAL_TYPE = "特卖库";
+    String DEFECTIVE_TYPE = "残品库";
+
+    /**
+     * 统计报表数据类型
+     *  0 公司 1 部门
+     */
+    Integer COMPANY  = 0;
+    Integer DEPARTMENT = 1;
+    Integer ANNUAL_REPORT = 0;
+    Integer QUARTERLY_REPORT = 1;
+    Integer MONTHLY_REPORT = 2;
+    Integer WEEKLY = 3;
+
+
+
 }

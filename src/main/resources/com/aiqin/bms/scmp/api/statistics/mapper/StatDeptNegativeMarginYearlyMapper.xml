@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatDeptNegativeMarginYearlyDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatDeptNegativeMarginYearly">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="price_channel_code" jdbcType="VARCHAR" property="priceChannelCode" />
+    <result column="price_channel_name" jdbcType="VARCHAR" property="priceChannelName" />
+    <result column="lv1" jdbcType="VARCHAR" property="lv1" />
+    <result column="lv1_category_name" jdbcType="VARCHAR" property="lv1CategoryName" />
+    <result column="sales_num" jdbcType="BIGINT" property="salesNum" />
+    <result column="channel_sales_amount" jdbcType="BIGINT" property="channelSalesAmount" />
+    <result column="channel_sales_amount_yearonyear" jdbcType="DECIMAL" property="channelSalesAmountYearonyear" />
+    <result column="channel_sales_cost" jdbcType="BIGINT" property="channelSalesCost" />
+    <result column="channel_margin" jdbcType="BIGINT" property="channelMargin" />
+    <result column="channel_margin_yearonyear" jdbcType="DECIMAL" property="channelMarginYearonyear" />
+    <result column="distribution_sales_amount" jdbcType="BIGINT" property="distributionSalesAmount" />
+    <result column="distribution_sales_amount_yearonyear" jdbcType="DECIMAL" property="distributionSalesAmountYearonyear" />
+    <result column="distribution_margin" jdbcType="BIGINT" property="distributionMargin" />
+    <result column="distribution_margin_yearonyear" jdbcType="DECIMAL" property="distributionMarginYearonyear" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stat_year, product_sort_code, product_sort_name, price_channel_code, price_channel_name, 
+    lv1, lv1_category_name, sales_num, channel_sales_amount, channel_sales_amount_yearonyear, 
+    channel_sales_cost, channel_margin, channel_margin_yearonyear, distribution_sales_amount, 
+    distribution_sales_amount_yearonyear, distribution_margin, distribution_margin_yearonyear, 
+    create_time
+  </sql>
+</mapper>

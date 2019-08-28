@@ -5,9 +5,12 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +20,7 @@ import java.util.Date;
  * @version 1.0
  * @className DateUtils
  * @date 2019/6/25 10:53
- * @description TODO
+
  */
 public class DateUtils {
 
@@ -40,7 +43,7 @@ public class DateUtils {
 
     public static Date toDate(String productDate) {
         try {
-            return new SimpleDateFormat("yyyy-MM-dd").parse(productDate);
+            return new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(productDate);
         } catch (ParseException e) {
             throw new BizException(ResultCode.DATE_CONVERSION_FAILED);
         }
@@ -87,5 +90,17 @@ public class DateUtils {
         //c.add(Calendar.MONTH, -i);
         Date m = c.getTime();
         return sdf.format(m);
+    }
+
+    /**
+     * @return Stirng like "1928-09"
+     */
+    public static String getLastMonthString(Date d) {
+        DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(df1.format(d));
+        Period period = Period.ofMonths(-1);
+        LocalDate plus = date.plus(period);
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM");
+        return plus.format(df);
     }
 }

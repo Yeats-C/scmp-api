@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.util.ExcelUtil;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,9 +27,10 @@ import java.util.stream.Collectors;
  * @version 1.0
  * @className ProductSkuPromoteSalesServiceImpl
  * @date 2019/7/3 12:35
- * @description TODO
+
  */
 @Service
+@Slf4j
 public class ProductSkuPromoteSalesServiceImpl implements ProductSkuPromoteSalesService {
 
     private final static String IMPORT_TITLE="sku编码,sku名称";
@@ -124,7 +126,7 @@ public class ProductSkuPromoteSalesServiceImpl implements ProductSkuPromoteSales
         try {
             records = ExcelUtil.validValue(excelAll, IMPORT_TITLE, ProductSkuPromoteSales.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error", e);
            throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
         }
         return saveList(records);

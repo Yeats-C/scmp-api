@@ -1522,7 +1522,7 @@
 	  product_sku_supply_unit supply
     WHERE
         sku.sku_code = supply.product_sku_code
-      and supply.del_flag = 0
+--       and supply.del_flag = 0
 --       and supply.usage_status = 1
 --       and sku.sku_status = 0
       and sku.del_flag = 0
@@ -1767,6 +1767,12 @@
     <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
       and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
     </if>
+    <if test="skuCodes!=null and skuCodes.size>0">
+      AND a.sku_code in
+      <foreach collection="skuCodes" item="item" close=")" open="(" separator=",">
+        #{item}
+      </foreach>
+    </if>
     group by a.id order by a.create_time desc
   </select>
 
@@ -1804,54 +1810,49 @@
   </resultMap>
   <select id="selectSkuListForPurchasePrice" parameterType="java.util.List"
           resultMap="SkuListForPurchasePriceMap">
-select a.sku_code              as skuCode,
-       a.sku_name              as skuName,
-       CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) as productCategoryName,
-       a.product_brand_name    as productBrandName,
-       c.spec                  as spec,
-       a.color_name            as colorName,
-       a.model_number          as modelNumber,
-       c.unit_name             as unitName,
-       a.product_sort_name     as productSortName,
-       a.goods_gifts           as goodsGifts,
-       a.product_property_name as productPropertyName,
-       b.product_name          as spuName,
-       b.product_code          as spuCode,
-       f.price_project_code    as priceItemCode,
-       f.price_project_name    as priceItemName,
-       f.price_type_code       as priceTypeCode,
-       f.price_type_name       as priceTypeName,
-       f.price_category_code   as priceAttributeCode,
-       f.price_category_name   as priceAttributeName,
-       d.supply_unit_code as supplierCode,
-       d.supply_unit_name as supplierName,
-       ifnull(d.is_default,0) as isDefault,
-       ifnull(e.price_tax,0) as purchasePriceOld,
-       ifnull(g.new_purchase_price,0) purchasePriceNewest,
-       ifnull(h.stock_tax_cost,0) taxCost
-      from product_sku a
-       left join product b
-                 on a.spu_code = b.product_code
-       left join product_sku_purchase_info c
-                 on a.sku_code = c.product_sku_code
-       left join product_sku_supply_unit d
-                 on a.sku_code = d.product_sku_code
-       left join product_sku_price_info e
-                 on a.sku_code = e.sku_code and d.supply_unit_code = e.supplier_code
-       left join (select new_delivery,sku_code,max(id), new_purchase_price from stock group by new_delivery,sku_code) g
-                 on g.new_delivery = supply_unit_code and a.sku_code = g.sku_code
-       left join price_project f
-                 on f.price_category_code = 1 and f.price_project_enable = 0
-       left join tax_cost_log_stock h
-                 on h.sku_code = a.sku_code and h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
-       LEFT JOIN product_category lv4
-                 on lv4.category_id = a.product_category_code
-       LEFT JOIN product_category lv3
-                 on lv3.category_id = lv4.parent_id
-       LEFT JOIN product_category lv2
-                 on lv2.category_id = lv3.parent_id
-       LEFT JOIN product_category lv1
-                 on lv1.category_id = lv2.parent_id
+    select a.sku_code                                                                                        as skuCode,
+    a.sku_name                                                                                        as skuName,
+    CONCAT(lv1.category_name, '-', lv2.category_name, '-', lv3.category_name, '-',
+    lv4.category_name)                                                                         as productCategoryName,
+    a.product_brand_name                                                                              as productBrandName,
+    c.spec                                                                                            as spec,
+    a.color_name                                                                                      as colorName,
+    a.model_number                                                                                    as modelNumber,
+    c.unit_name                                                                                       as unitName,
+    a.product_sort_name                                                                               as productSortName,
+    a.goods_gifts                                                                                     as goodsGifts,
+    a.product_property_name                                                                           as productPropertyName,
+    b.product_name                                                                                    as spuName,
+    b.product_code                                                                                    as spuCode,
+    f.price_project_code                                                                              as priceItemCode,
+    f.price_project_name                                                                              as priceItemName,
+    f.price_type_code                                                                                 as priceTypeCode,
+    f.price_type_name                                                                                 as priceTypeName,
+    f.price_category_code                                                                             as priceAttributeCode,
+    f.price_category_name                                                                             as priceAttributeName,
+    d.supply_unit_code                                                                                as supplierCode,
+    d.supply_unit_name                                                                                as supplierName,
+    ifnull(d.is_default, 0)                                                                           as isDefault,
+    ifnull(e.price_tax, 0)                                                                            as purchasePriceOld,
+    ifnull((select max(g.new_purchase_price)
+    from stock g
+    where g.new_delivery = d.supply_unit_code and a.sku_code = g.sku_code
+    order by g.update_time desc limit 1
+    ), 0)                                                                      purchasePriceNewest,
+    ifnull(h.stock_tax_cost, 0)                                                                          taxCost
+    from product_sku a
+    left join product b on a.spu_code = b.product_code
+    left join product_sku_purchase_info c on a.sku_code = c.product_sku_code
+    left join product_sku_supply_unit d on a.sku_code = d.product_sku_code
+    left join product_sku_price_info e on a.sku_code = e.sku_code and d.supply_unit_code = e.supplier_code
+    left join price_project f on f.price_category_code = 1 and f.price_project_enable = 0
+    left join tax_cost_log_stock h on h.sku_code = a.sku_code and
+    DATE_FORMAT(h.tax_date, '%Y-%m-%d') =
+    DATE_FORMAT(DATE_SUB(NOW(), INTERVAL 1 DAY), '%Y-%m-%d')
+    LEFT JOIN product_category lv4 on lv4.category_id = a.product_category_code
+    LEFT JOIN product_category lv3 on lv3.category_id = lv4.parent_id
+    LEFT JOIN product_category lv2 on lv2.category_id = lv3.parent_id
+    LEFT JOIN product_category lv1 on lv1.category_id = lv2.parent_id
     where a.id in
     <foreach collection="list" open="(" close=")" item="item" separator=",">
          #{item}
@@ -1867,20 +1868,6 @@ select a.sku_code              as skuCode,
     on a.sku_code = c.product_sku_code
     left join product_sku_supply_unit d
     on a.sku_code = d.product_sku_code
-    left join product_sku_price_info e
-    on a.sku_code = e.sku_code and d.supply_unit_code = e.supplier_code
-    left join (select new_delivery,sku_code,max(id), new_purchase_price from stock group by new_delivery,sku_code) g
-    on g.new_delivery = supply_unit_code and a.sku_code = g.sku_code
-    left join price_project f
-    on f.price_category_code = #{changePriceType} and f.price_project_enable = 0 and f.company_code =#{companyCode}
-    LEFT JOIN product_category lv4
-    on lv4.category_id = a.product_category_code
-    LEFT JOIN product_category lv3
-    on lv3.category_id = lv4.parent_id
-    LEFT JOIN product_category lv2
-    on lv2.category_id = lv3.parent_id
-    LEFT JOIN product_category lv1
-    on lv1.category_id = lv2.parent_id
     where a.procurement_section_code = #{purchaseGroupCode} and a.company_code =#{companyCode}
     <if test="skuCode!=null and skuCode!=''">
       AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
@@ -2108,43 +2095,43 @@ select a.sku_code              as skuCode,
     <where>
       ps.del_flag = 0 and w.warehouse_type_code = 1
       and sc.config_status = 0 and ps.goods_gifts != 2
-      <if test="supplierCode != null">
+      <if test="supplierCode != null and supplierCode != ''">
         and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
-      <if test="transportCenterCode != null">
+      <if test="transportCenterCode != null and transportCenterCode != ''">
         and sc.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
       </if>
-      <if test="skuCode != null">
+      <if test="skuCode != null and skuCode != ''">
         and ps.sku_code = #{skuCode,jdbcType=VARCHAR}
       </if>
-      <if test="skuName != null">
+      <if test="skuName != null and skuName != ''">
         and ps.sku_name like CONCAT('',#{skuName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="purchaseGroupCode != null">
+      <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
         and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
-      <if test="productPropertyCode != null">
+      <if test="productPropertyCode != null and productPropertyCode != ''">
         and ps.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
       </if>
-      <if test="productPropertyName != null">
+      <if test="productPropertyName != null and productPropertyName != ''">
         and ps.product_property_name like CONCAT('', #{productPropertyName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="brandId != null">
+      <if test="brandId != null and brandId != ''">
         and ps.product_brand_code = #{brandId,jdbcType=VARCHAR}
       </if>
-      <if test="brandName != null">
+      <if test="brandName != null and brandName != ''">
         and ps.product_brand_name like CONCAT('', #{brandName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="categoryId != null">
+      <if test="categoryId != null and categoryId != ''">
         and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
       </if>
-      <if test="categoryName != null">
+      <if test="categoryName != null and categoryName != ''">
         and ps.product_category_name like CONCAT('', #{categoryName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="spuCode != null">
+      <if test="spuCode != null and spuCode != ''">
         and ps.product_code = #{spuCode,jdbcType=VARCHAR}
       </if>
-      <if test="productName != null">
+      <if test="productName != null and productName != ''">
         and ps.product_name like CONCAT('',#{productName,jdbcType=VARCHAR},"%")
       </if>
       <if test="aReplenish != null and aReplenish.size > 0">
@@ -2183,43 +2170,43 @@ select a.sku_code              as skuCode,
     <where>
       ps.del_flag = 0 and w.warehouse_type_code = 1
       and sc.config_status = 0 and ps.goods_gifts != 2
-      <if test="supplierCode != null">
+      <if test="supplierCode != null and supplierCode != ''">
         and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
       </if>
-      <if test="transportCenterCode != null">
+      <if test="transportCenterCode != null and transportCenterCode != ''">
         and sc.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
       </if>
-      <if test="skuCode != null">
+      <if test="skuCode != null and skuCode != ''">
         and ps.sku_code = #{skuCode,jdbcType=VARCHAR}
       </if>
-      <if test="skuName != null">
+      <if test="skuName != null and skuName != ''">
         and ps.sku_name like CONCAT('',#{skuName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="purchaseGroupCode != null">
+      <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
         and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
-      <if test="productPropertyCode != null">
+      <if test="productPropertyCode != null and productPropertyCode != ''">
         and ps.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
       </if>
-      <if test="productPropertyName != null">
+      <if test="productPropertyName != null and productPropertyName != ''">
         and ps.product_property_name like CONCAT('', #{productPropertyName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="brandId != null">
+      <if test="brandId != null and brandId != ''">
         and ps.product_brand_code = #{brandId,jdbcType=VARCHAR}
       </if>
-      <if test="brandName != null">
+      <if test="brandName != null and brandName != ''">
         and ps.product_brand_name like CONCAT('', #{brandName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="categoryId != null">
+      <if test="categoryId != null and categoryId != ''">
         and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
       </if>
-      <if test="categoryName != null">
+      <if test="categoryName != null and  categoryName != ''">
         and ps.product_category_name like CONCAT('', #{categoryName,jdbcType=VARCHAR},"%")
       </if>
-      <if test="spuCode != null">
+      <if test="spuCode != null and spuCode != ''">
         and ps.product_code = #{spuCode,jdbcType=VARCHAR}
       </if>
-      <if test="productName != null">
+      <if test="productName != null and productName != ''">
         and ps.product_name like CONCAT('',#{productName,jdbcType=VARCHAR},"%")
       </if>
       <if test="aReplenish != null and aReplenish.size > 0">

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatDeptNegativeMarginQuarterlyDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatDeptNegativeMarginQuarterly">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
+    <result column="quarter" jdbcType="BIGINT" property="quarter" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="price_channel_code" jdbcType="VARCHAR" property="priceChannelCode" />
+    <result column="price_channel_name" jdbcType="VARCHAR" property="priceChannelName" />
+    <result column="lv1" jdbcType="VARCHAR" property="lv1" />
+    <result column="lv1_category_name" jdbcType="VARCHAR" property="lv1CategoryName" />
+    <result column="quarter_sales_num" jdbcType="BIGINT" property="quarterSalesNum" />
+    <result column="quarter_channel_sales_amount" jdbcType="BIGINT" property="quarterChannelSalesAmount" />
+    <result column="q_channel_sales_amount_yearonyear" jdbcType="DECIMAL" property="qChannelSalesAmountYearonyear" />
+    <result column="quarter_channel_sales_cost" jdbcType="BIGINT" property="quarterChannelSalesCost" />
+    <result column="quarter_channel_margin" jdbcType="BIGINT" property="quarterChannelMargin" />
+    <result column="q_channel_margin_yearonyear" jdbcType="DECIMAL" property="qChannelMarginYearonyear" />
+    <result column="quarter_distribution_sales_amount" jdbcType="BIGINT" property="quarterDistributionSalesAmount" />
+    <result column="q_distribution_sales_amount_yearonyear" jdbcType="DECIMAL" property="qDistributionSalesAmountYearonyear" />
+    <result column="quarter_distribution_margin" jdbcType="BIGINT" property="quarterDistributionMargin" />
+    <result column="q_distribution_margin_yearonyear" jdbcType="DECIMAL" property="qDistributionMarginYearonyear" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stat_year, quarter, product_sort_code, product_sort_name, price_channel_code, 
+    price_channel_name, lv1, lv1_category_name, quarter_sales_num, quarter_channel_sales_amount, 
+    q_channel_sales_amount_yearonyear, quarter_channel_sales_cost, quarter_channel_margin, 
+    q_channel_margin_yearonyear, quarter_distribution_sales_amount, q_distribution_sales_amount_yearonyear, 
+    quarter_distribution_margin, q_distribution_margin_yearonyear, create_time
+  </sql>
+</mapper>
