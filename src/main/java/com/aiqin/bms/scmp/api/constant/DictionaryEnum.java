@@ -34,11 +34,11 @@ import lombok.Getter;
 @Getter
 public enum DictionaryEnum {
 
-    RETURN_TYPE("246","退货类型"),
-    LOSS_TYPE("245","损溢类别"),
-    PAY_TYPE("244","支付方式"),
-    ORDER_CATEGORY("243","订单类别"),
-    ORDER_TYPE("242","订单类型");
+    RETURN_TYPE("124","退货类型"),
+    LOSS_TYPE("120","损溢类别"),
+    PAY_TYPE("137","支付方式"),
+    ORDER_CATEGORY("138","订单类别"),
+    ORDER_TYPE("130","订单类型");
 
     private String code;
     private String name;

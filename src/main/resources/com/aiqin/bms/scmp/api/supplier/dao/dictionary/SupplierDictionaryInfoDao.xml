@@ -168,6 +168,6 @@
     select
      distinct concat(supplier_dictionary_code,supplier_content) as name,supplier_dictionary_value as value
     from supplier_dictionary_info
-    where supplier_dictionary_code in ('244','243','242','245','246')
+    where supplier_dictionary_code in ('120','124','130','137','138')
   </select>
 </mapper>
