@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.DictionaryEnum;
 import com.aiqin.bms.scmp.api.product.dao.*;
+import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
@@ -151,6 +152,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private ProfitLossProductMapper profitLossProductMapper;
     @Resource
     private GoodsRejectService goodsRejectService;
+    @Resource
+    private ProductSkuPicturesDao productSkuPicturesDao;
 
     /**
      * 销售出库接口
@@ -210,6 +213,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             Long sumBoxVolume = 0L;
             //总重量
             Long sumBoxGrossWeight = 0L;
+            List<String> skuCodes = request.getDetail().stream().map(OutboundDetailRequest::getSkuCode).collect(Collectors.toList());
+            List<ProductSkuPictures> picturesList = productSkuPicturesDao.listBySkuCodes(skuCodes);
+            Map<String,List<ProductSkuPictures>> picturesMap = picturesList.stream().collect(Collectors.groupingBy(ProductSkuPictures::getProductSkuCode));
             for (OutboundDetailRequest outboundDetailRequest : request.getDetail()) {
                 //查询商品信息
                 orderInfoItem = new OrderInfoItem();
@@ -227,11 +233,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                             .multiply(orderWeightCoefficient).longValue();
                 }
                 orderInfoItem.setNum(outboundDetailRequest.getNum());
+                orderInfoItem.setPictureUrl(picturesMap.containsKey(outboundDetailRequest.getSkuCode())?picturesMap.get(outboundDetailRequest.getSkuCode()).get(0).getProductPicturePath():"");
                 orderInfoItem.setActualDeliverNum(outboundDetailRequest.getActualDeliverNum());
                 orderInfoItem.setProductLineNum(outboundDetailRequest.getProductLineNum());
                 orderInfoItem.setSkuCode(outboundDetailRequest.getSkuCode());
                 orderInfoItem.setChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
-                orderInfoItem.setGivePromotion(Integer.valueOf(outboundDetailRequest.getGiftType()));
+                orderInfoItem.setGivePromotion(outboundDetailRequest.getGiftType());
                 orderInfoItem.setTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice() * outboundDetailRequest.getNum());
                 orderInfoItem.setOrderCode(orderInfo.getOrderCode());
                 orderInfoItem.setActualChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
@@ -286,7 +293,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
             return HttpResponse.success();
         } catch (Exception e) {
-            LOGGER.error("订单回调参数:{},异常:{}",request.toString(), e.getStackTrace());
+            LOGGER.error("订单回调异常:{}",e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
