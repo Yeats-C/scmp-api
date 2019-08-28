@@ -61,5 +61,9 @@ public interface DashboardDao {
     // 渠道退供金额(元)
     DashboardReturnAmountRespVo selectAmountChannelRefund(ChannelSectorMonthSalesReqVo channelSectorMonthSalesReqVo);
 
+    // 首页跳转的月不累计
+    List<DashboardHomepageMonthlySalesRespVo> selectDashboardHomepageMonthlySales(DashboardHomepageMonthlySalesReqVo dashboardHomepageMonthlySalesReqVo);
 
+    // 首页当月部门销售同环比情况
+    List<DashboardHomepageMonthlyHomocyclicRatioRespVo> selectDashboardHomepageMonthlyHomocyclicRatio(@Param("oneMonthStr") String oneMonthStr);
 }
