@@ -35,6 +35,8 @@ public interface StockDao {
 
     List<StockRespVO> selectTransportStockInfoByPage(StockRequest stockRequest);
 
+    Integer selectTransportStockInfoByPageCount(StockRequest stockRequest);
+
     List<StockRespVO> countTransportStockInfoByPage(StockRequest stockRequest);
 
     List<StockRespVO> selectStorehouseStockInfoByPage(StockRequest stockRequest);
@@ -51,6 +53,8 @@ public interface StockDao {
      *
      **/
     List<StockRespVO> selectStockSumInfoByPage(StockRequest stockRequest);
+
+    Integer selectStockSumInfoByPageCount(StockRequest stockRequest);
 
     List<StockRespVO> countStockSumInfoByPage(StockRequest stockRequest);
 

@@ -38,7 +38,7 @@ public class DashboardController {
     }
 
     @GetMapping("/dashboard/monthly/sales/stati")
-    @ApiOperation("月销售情况（不累计）")
+    @ApiOperation("月销售情况（不累计(暂时不用)）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "stat_year", value = "年", type = "String"),
     })
@@ -61,7 +61,7 @@ public class DashboardController {
     }
 
     @GetMapping("/dashboard/dep/monthly/homocyclic/ratio")
-    @ApiOperation("当月部门销售同环比")
+    @ApiOperation("当月部门销售同环比(暂时不用)")
     public HttpResponse<List<DashboardDepMonthlyHomocyclicRatioRespVo>> selectDashboardDepMonthlyHomocyclicRatio(){
         return HttpResponse.success(dashboardService.selectDashboardDepMonthlyHomocyclicRatio());
     }
@@ -144,6 +144,23 @@ public class DashboardController {
                                                                                      @RequestParam(value = "price_channel_code", required = false) String priceChannelCode){
         ChannelSectorMonthSalesReqVo dhannelSectorMonthSalesReqVo = new ChannelSectorMonthSalesReqVo(statMonth,productSortCode,priceChannelCode);
         return HttpResponse.success(dashboardService.selectChannelSectorMonthSales(dhannelSectorMonthSalesReqVo));
+    }
+
+    @GetMapping("/dashboard/homepage/monthly/sales")
+    @ApiOperation("首页跳转的月不累计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "stat_year", value = "年", type = "String"),
+    })
+    public HttpResponse<List<DashboardHomepageMonthlySalesRespVo>> selectDashboardHomepageMonthlySales(@RequestParam(value = "stat_year", required = false) String statYear){
+        DashboardHomepageMonthlySalesReqVo dashboardHomepageMonthlySalesReqVo = new DashboardHomepageMonthlySalesReqVo();
+        dashboardHomepageMonthlySalesReqVo.setStatYear(statYear);
+        return HttpResponse.success(dashboardService.selectDashboardHomepageMonthlySales(dashboardHomepageMonthlySalesReqVo));
+    }
+
+    @GetMapping("/dashboard/homepage/monthly/homocyclic/ratio")
+    @ApiOperation("首页当月部门销售同环比情况")
+    public HttpResponse<List<DashboardHomepageMonthlyHomocyclicRatioRespVo>> selectDashboardHomepageMonthlyHomocyclicRatio(){
+        return HttpResponse.success(dashboardService.selectDashboardHomepageMonthlyHomocyclicRatio());
     }
 
 }

@@ -203,4 +203,27 @@ public class DashboardServiceImpl implements DashboardService {
         return channelSectorMonthSalesRespVo;
     }
 
+    // 首页跳转的月不累计
+    @Override
+    public List<DashboardHomepageMonthlySalesRespVo> selectDashboardHomepageMonthlySales(DashboardHomepageMonthlySalesReqVo dashboardHomepageMonthlySalesReqVo) {
+        return dashboardDao.selectDashboardHomepageMonthlySales(dashboardHomepageMonthlySalesReqVo);
+    }
+
+    // 首页当月部门销售同环比情况
+    @Override
+    public List<DashboardHomepageMonthlyHomocyclicRatioRespVo> selectDashboardHomepageMonthlyHomocyclicRatio() {
+        String oneMonthStr = DayUtil.getMonthStr();
+        List<DashboardHomepageMonthlyHomocyclicRatioRespVo> dashboardHomepageMonthlyHomocyclicRatioRespVos = dashboardDao.selectDashboardHomepageMonthlyHomocyclicRatio(oneMonthStr);
+        for (DashboardHomepageMonthlyHomocyclicRatioRespVo dashboardHomepageMonthlyHomocyclicRatioRespVo : dashboardHomepageMonthlyHomocyclicRatioRespVos) {
+            String statMonth = dashboardHomepageMonthlyHomocyclicRatioRespVo.getStatMonth();
+            if (statMonth.substring(5, 6).equals("0")) {
+                dashboardHomepageMonthlyHomocyclicRatioRespVo.setStatMonth(statMonth.substring(6, 7));
+            } else {
+                dashboardHomepageMonthlyHomocyclicRatioRespVo.setStatMonth(statMonth.substring(5, 7));
+            }
+            dashboardHomepageMonthlyHomocyclicRatioRespVo.setStatYear(statMonth.substring(0, 4));
+        }
+        return dashboardHomepageMonthlyHomocyclicRatioRespVos;
+    }
+
 }

@@ -231,6 +231,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 orderInfoItem.setProductLineNum(outboundDetailRequest.getProductLineNum());
                 orderInfoItem.setSkuCode(outboundDetailRequest.getSkuCode());
                 orderInfoItem.setChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
+                orderInfoItem.setGivePromotion(Integer.valueOf(outboundDetailRequest.getGiftType()));
                 orderInfoItem.setTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice() * outboundDetailRequest.getNum());
                 orderInfoItem.setOrderCode(orderInfo.getOrderCode());
                 orderInfoItem.setActualChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
@@ -596,12 +597,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             List<String> skuList = allocation.getDetailList().stream().map(AllocationProduct::getSkuCode).collect(Collectors.toList());
             List<OrderProductSkuResponse> productSkuList = productSkuDao.selectStockSkuInfoList(skuList);
             Map<String, OrderProductSkuResponse> productSkuMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
-            //调拨生成出库单
+            //生成出库单
             OutboundReqVo convert = handleTransferOutbound(allocation, productSkuMap);
-            if (request.getTransfersType().equals(1)) {
-                //调拨才有出库 出库单号
-                outboundOderCode = outboundRecord(convert);
-            }
+            //调拨才有出库 出库单号
+            outboundOderCode = outboundRecord(convert);
             //调拨直接减库存
             StockChangeRequest stockChangeRequest = new StockChangeRequest();
             //操作类型 直接减库存 4
@@ -614,11 +613,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 LOGGER.error("dl回调   加库存异常");
                 throw new GroundRuntimeException("dl回调    减库存异常");
             }
-            //调拨生成入库单
+            //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(allocation, productSkuMap);
-            if (request.getTransfersType().equals(1)) {
-                inboundOderCode = inboundRecord(inboundReqSave);
-            }
+            inboundOderCode = inboundRecord(inboundReqSave);
             //直接加库存
             StockChangeRequest stockRequest = new StockChangeRequest();
             //操作类型 直接加库存 10
