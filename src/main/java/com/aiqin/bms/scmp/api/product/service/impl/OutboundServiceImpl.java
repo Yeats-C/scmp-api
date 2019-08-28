@@ -384,6 +384,22 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             });
             try{
                 outboundResVo.setList(BeanCopyUtils.copyList(list, OutboundProductResVo.class));
+                List<OutboundProductResVo> productList = outboundResVo.getList();
+                if(CollectionUtils.isNotEmpty(productList)){
+                    for(OutboundProductResVo vo:productList){
+                        if(Objects.isNull(vo.getPraOutboundMainNum()) || vo.getPraOutboundMainNum() == 0){
+                            vo.setPraSingleCount(vo.getPraOutboundMainNum());
+                        }else{
+                            vo.setPraSingleCount(vo.getPraOutboundMainNum() % Long.valueOf(vo.getOutboundBaseContent()));
+                        }
+
+                        if(Objects.isNull(vo.getPreOutboundMainNum()) || vo.getPreOutboundMainNum() == 0){
+                            vo.setPreSingleCount(vo.getPreOutboundMainNum());
+                        }else{
+                            vo.setPreSingleCount(vo.getPreOutboundMainNum() % Long.valueOf(vo.getOutboundBaseContent()));
+                        }
+                    }
+                }
                 if (null != outboundResVo) {
                     //获取操作日志
                     OperationLogVo operationLogVo = new OperationLogVo();
