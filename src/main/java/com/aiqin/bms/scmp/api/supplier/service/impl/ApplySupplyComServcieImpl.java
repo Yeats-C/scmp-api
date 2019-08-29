@@ -1288,7 +1288,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }
             //简称
             if(StringUtils.isBlank(supplierImport.getApplyAbbreviation())){
-                error.add("简称不能为空");
+//                error.add("简称不能为空");
             }else {
                 if(!Constraint.ckChnLetterAndNumAndChar(supplierImport.getApplyAbbreviation().trim())){
                     error.add("简称不能输入特殊字符");
@@ -1309,14 +1309,14 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 SpecialArea specialArea = SpecialArea.getAll().get(supplierImport.getProvinceName());
                 if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
                     if (StringUtils.isBlank(supplierImport.getCityName())) {
-                        error.add("市不能为空");
+//                        error.add("市不能为空");
                     }else {
                         checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.普通省市县);
                     }
                 }
                 if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
                     if (StringUtils.isBlank(supplierImport.getCityName())) {
-                        error.add("县不能为空");
+//                        error.add("县不能为空");
                     }else {
                         checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.普通省市县);
                     }
@@ -1380,11 +1380,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }
             boolean flag = true;
             if(StringUtils.isBlank(supplierImport.getMinOrderAmount())){
-                error.add("最低订货金额不能为空");
+//                error.add("最低订货金额不能为空");
                 flag = false;
             }
             if(StringUtils.isBlank(supplierImport.getMaxOrderAmount())){
-                error.add("最高订货金额不能为空");
+//                error.add("最高订货金额不能为空");
                 flag = false;
             }
             if (flag) {
