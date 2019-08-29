@@ -8,11 +8,9 @@ import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.common.SupervisoryWarehouseOrderTypeEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicDescDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.converter.supervisorywarehouseorder.WarehouseOrderToInboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.supervisorywarehouseorder.WarehouseOrderToOutboundConverter;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrder;
 import com.aiqin.bms.scmp.api.product.domain.pojo.SupervisoryWarehouseOrderProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.supervisory.SaveSupervisoryWarehouseOrderReqVo;
@@ -22,13 +20,11 @@ import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.SupervisoryWarehouseOrderService;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
-import com.aiqin.bms.scmp.api.supplier.service.EncodingRuleService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,9 +52,6 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
     private WarehouseService warehouseService;
 
     @Autowired
-    private EncodingRuleService encodingRuleService;
-
-    @Autowired
     private InboundService inboundService;
 
     @Autowired
@@ -83,20 +76,15 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
             throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
         }
         //查询仓库下面是否存在监管仓
-        WarehouseResVo warehouseResVo = warehouseService.getWarehouseTypeByLogisticsCenterCode(order.getTransportCenterCode(), Global.SUPERVISORY_WAREHOUSE_TYPE);
-        if(Objects.isNull(warehouseResVo)){
+        List<WarehouseResVo> warehouseResVos = warehouseService.getWarehouseTypeByLogisticsCenterCode(order.getTransportCenterCode(), Global.SUPERVISORY_WAREHOUSE_TYPE);
+        if(CollectionUtils.isEmptyCollection(warehouseResVos)){
             throw new BizException(ResultCode.SUPERVISORY_WAREHOUSE_NOT_EXISTS);
         }
         if (Objects.isNull(reqVo.getOrderType())) {
             throw new BizException(ResultCode.ORDER_TYPE_EMPTY);
         }
-        order.setWarehouseCode(warehouseResVo.getWarehouseCode());
-        order.setWarehouseName(warehouseResVo.getWarehouseName());
-        //获取订单编号
-//        EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPERVISORY_WAREHOUSE_ORDER_CODE);
-//        String orderCode = String.valueOf(encodingRule.getNumberingValue());
-//        order.setOrderCode(orderCode);
-//        encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        order.setWarehouseCode(warehouseResVos.get(0).getWarehouseCode());
+        order.setWarehouseName(warehouseResVos.get(0).getWarehouseName());
         synchronized (SupervisoryWarehouseOrderServiceImpl.class){
             order.setOrderCode(getCode("JG", EncodingRuleType.SUPERVISORY_WAREHOUSE_ORDER_CODE));
         }
