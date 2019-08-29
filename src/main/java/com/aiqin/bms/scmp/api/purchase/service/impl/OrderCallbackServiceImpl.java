@@ -417,6 +417,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             OrderProductSkuResponse productSku;
             ReturnOrderInfoItem returnOrderInfoItem;
             List<ReturnOrderInfoItem> detailList = new ArrayList<>();
+            List<String> skuCodes = request.getDetailRequestList().stream().map(ReturnDetailRequest::getSkuCode).collect(Collectors.toList());
+            List<ProductSkuPictures> picturesList = productSkuPicturesDao.listBySkuCodes(skuCodes);
+            Map<String,List<ProductSkuPictures>> picturesMap = picturesList.stream().collect(Collectors.groupingBy(ProductSkuPictures::getProductSkuCode));
+
             for (ReturnDetailRequest returnDetailRequest : request.getDetailRequestList()) {
                 //查询商品信息
                 returnOrderInfoItem = new ReturnOrderInfoItem();
@@ -433,6 +437,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                             .multiply(productSku.getBoxGrossWeight())
                             .multiply(orderWeightCoefficient).longValue();
                 }
+                returnOrderInfoItem.setPictureUrl(picturesMap.containsKey(returnDetailRequest.getSkuCode())?picturesMap.get(returnDetailRequest.getSkuCode()).get(0).getProductPicturePath():"");
                 returnOrderInfoItem.setReturnOrderCode(request.getReturnOrderCode());
                 returnOrderInfoItem.setNum(returnDetailRequest.getNum());
                 returnOrderInfoItem.setProductLineNum(returnDetailRequest.getProductLineNum());

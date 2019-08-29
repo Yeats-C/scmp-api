@@ -2323,9 +2323,7 @@
     product_sku as ps
     left JOIN product_sku_distribution_info  as psdi on psdi.product_sku_code = ps.sku_code
     left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code
-    left JOIN product_sku_pictures  as psp on psp.product_sku_code = ps.sku_code
-    where psp.main_picture = 1
-    and ps.sku_code   in(
+    where  ps.sku_code   in(
     <foreach collection="list" item="skuCode" separator=",">
       #{skuCode,jdbcType=VARCHAR}
     </foreach>
@@ -2338,10 +2336,8 @@
     product_sku as ps
     left JOIN product_sku_stock_info    as psdi on psdi.product_sku_code = ps.sku_code
     left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code
-    left JOIN product_sku_pictures  as psp on psp.product_sku_code = ps.sku_code
-    inner join product_sku_checkout psc on ps.sku_code = psc.sku_code
-    where psp.main_picture = 1
-    and ps.sku_code   in(
+    left join product_sku_checkout psc on ps.sku_code = psc.sku_code
+    where ps.sku_code   in(
     <foreach collection="list" item="skuCode" separator=",">
       #{skuCode,jdbcType=VARCHAR}
     </foreach>
