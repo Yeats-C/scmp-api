@@ -136,4 +136,6 @@ public interface PurchaseGroupService {
      * @return
      */
     Boolean updatePurchaseGroupPersonnel(BatchOperatePurchaseGroupReqVO reqVo);
+
+    List<PurchaseGroupVo> getPurchaseGroupForAll();
 }

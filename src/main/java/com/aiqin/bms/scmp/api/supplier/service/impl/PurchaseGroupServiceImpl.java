@@ -465,4 +465,9 @@ public class PurchaseGroupServiceImpl extends BaseServiceImpl implements Purchas
         }
         return Boolean.TRUE;
     }
+
+    @Override
+    public List<PurchaseGroupVo> getPurchaseGroupForAll() {
+            return purchaseGroupDao.getPurchaseGroup2(getUser().getCompanyCode());
+    }
 }

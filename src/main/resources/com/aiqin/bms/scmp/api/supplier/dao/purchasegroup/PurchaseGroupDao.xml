@@ -237,6 +237,23 @@
     order by a.purchase_group_order asc,a.create_time desc
   </select>
 
+
+  <select id="getPurchaseGroup2" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo">
+    select
+    a.id,
+    a.purchase_group_code as purchaseGroupCode,
+    a.purchase_group_name as purchaseGroupName,
+    a.create_time as createTime,
+    a.create_by as createBy,
+    a.update_time as updateTime,
+    a.update_by as updateBy,
+    a.del_flag as delFlag,
+    a.responsible_person_code as responsiblePersonCode,
+    a.responsible_person_name as responsiblePersonName
+    from purchase_group a
+    where a.enable != 1 and a.company_code = #{companyCode}
+    order by a.purchase_group_order asc,a.create_time desc
+  </select>
   <select id="checkName" resultType="java.lang.Integer">
     SELECT
     COUNT(1)
