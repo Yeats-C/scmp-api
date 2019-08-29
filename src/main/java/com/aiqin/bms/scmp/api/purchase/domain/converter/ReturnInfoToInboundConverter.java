@@ -133,6 +133,8 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
                 product.setInboundNorms(returnOrderInfoItem.getSpec());
                 product.setCreateBy(reqVo.getCreateByName());
                 product.setCreateTime(reqVo.getCreateDate());
+                product.setInboundBaseContent("1");
+                product.setInboundBaseUnit("1");
                 products.add(product);
                 inbound.setList(products);
             }
