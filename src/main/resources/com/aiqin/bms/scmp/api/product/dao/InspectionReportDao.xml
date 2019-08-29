@@ -33,7 +33,7 @@
       a.sku_name
     FROM
       product_sku_inspection_report a
-    ,(SELECT product_sku_code FROM product_sku_sales_info WHERE del_flag = 0 and is_default=1 AND sales_code =#{saleCode,jdbcType=VARCHAR}) b
+    ,(SELECT product_sku_code FROM product_sku_sales_info WHERE is_default=1 AND sales_code =#{saleCode,jdbcType=VARCHAR}) b
     WHERE
     a.sku_code = b.product_sku_code
     and a.del_flag = 0
@@ -48,7 +48,7 @@
       a.sku_name
     FROM
     product_sku_inspection_report a,
-    (SELECT product_sku_code FROM product_sku_sales_info WHERE del_flag = 0 AND is_default=1 and sales_code =#{saleCode,jdbcType=VARCHAR}) b
+    (SELECT product_sku_code FROM product_sku_sales_info WHERE is_default=1 and sales_code =#{saleCode,jdbcType=VARCHAR}) b
     WHERE a.sku_code = b.product_sku_code
       and a.del_flag = 0 and a.production_date=#{productionDate,jdbcType=DATE}
   </select>
