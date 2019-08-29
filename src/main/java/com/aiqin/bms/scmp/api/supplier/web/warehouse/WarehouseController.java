@@ -135,7 +135,7 @@ public class WarehouseController {
      */
     @ApiOperation("通过物流中心编码以及库房类型查询库房")
     @GetMapping("/getWarehouseByLogisticsCenterCodeAndType")
-    public HttpResponse<WarehouseResVo> getWarehouseTypeByLogisticsCenterCode(@RequestParam  @ApiParam( value = "传入物流中心编码" ,required = true) String logisticsCenterCode,@RequestParam  @ApiParam( value = "仓库类型编码  1销售库 2特卖库 3残品库 4监管库" ,required = true) Byte warehouseTypeCode){
+    public HttpResponse<List<WarehouseResVo>> getWarehouseTypeByLogisticsCenterCode(@RequestParam  @ApiParam( value = "传入物流中心编码" ,required = true) String logisticsCenterCode,@RequestParam  @ApiParam( value = "仓库类型编码  1销售库 2特卖库 3残品库 4监管库" ,required = true) Byte warehouseTypeCode){
         try {
             return HttpResponse.success(warehouseService.getWarehouseTypeByLogisticsCenterCode(logisticsCenterCode,warehouseTypeCode));
         }catch (Exception ex){
