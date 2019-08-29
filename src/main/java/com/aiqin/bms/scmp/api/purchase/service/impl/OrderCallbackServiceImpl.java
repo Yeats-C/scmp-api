@@ -788,6 +788,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             product.setPraInboundNum(allocationProduct.getQuantity());
             orderProductSkuResponse = productSkuMap.get(allocationProduct.getSkuCode());
             if (orderProductSkuResponse != null) {
+                //基商品含量固定1
+                product.setInboundBaseContent(orderProductSkuResponse.getBaseProductContent());
+                product.setInboundBaseUnit(String.valueOf(orderProductSkuResponse.getZeroDisassemblyCoefficient()));
                 product.setNorms(orderProductSkuResponse.getSpec());
                 product.setSkuName(orderProductSkuResponse.getProductName());
                 product.setPictureUrl(orderProductSkuResponse.getPictureUrl());
@@ -1020,6 +1023,5 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
         return list;
     }
-
 
 }
