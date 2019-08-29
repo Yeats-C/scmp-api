@@ -71,8 +71,8 @@ public  class StringConvertUtil {
                 innerValue.setValue("40");
                 break;
             case 3:
-                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode(0)).getDesc());
-                innerValue.setValue("0");
+                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode(10)).getDesc());
+                innerValue.setValue("10");
                 break;
             case 4:
                 innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode(31)).getDesc());
