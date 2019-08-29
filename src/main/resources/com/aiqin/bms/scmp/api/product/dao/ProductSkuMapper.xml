@@ -2282,6 +2282,7 @@
     </foreach>
   </select>
   <resultMap id="ORDER_PRODUCT_RESULTMAP" type="com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse">
+    <result column="base_product_content" jdbcType="VARCHAR" property="baseProductContent" />
     <result column="Input_tax_rate" jdbcType="VARCHAR" property="taxRate" />
     <result column="product_brand_name" jdbcType="VARCHAR" property="brandName" />
     <result column="product_brand_code" jdbcType="VARCHAR" property="brandCode" />
@@ -2313,7 +2314,7 @@
   </select>
   <sql id="SELECT_SKU_SQL">
         ps.goods_gifts as product_type,ps.sku_code,ps.sku_name ,ps.color_code,ps.color_name,ps.model_number,psdi.spec,psdi.unit_code,psdi.unit_name,
-    psdi.zero_removal_coefficient,psbp.box_volume,psbp.box_gross_weight, ps.product_category_code,ps.product_category_name,
+    psdi.zero_removal_coefficient,psdi.base_product_content,psbp.box_volume,psbp.box_gross_weight, ps.product_category_code,ps.product_category_name,
     ps.product_brand_code,ps.product_brand_name
   </sql>
   <select id="selectSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
