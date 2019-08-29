@@ -106,6 +106,20 @@ public class PurchaseGroupController {
     }
 
     /**
+     * 提供未禁用的采购组
+     * @return
+     */
+    @ApiOperation("采购组外部提供接口")
+    @PostMapping("/getPurchaseGroupForAll")
+    public HttpResponse<List<PurchaseGroupVo>> getPurchaseGroupForAll(){
+        try{
+            return HttpResponse.success(purchaseGroupService.getPurchaseGroupForAll());
+        }catch (Exception ex){
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+        }
+    }
+
+    /**
      * 获取外购专员
      * @param
      * @return
