@@ -586,7 +586,7 @@
     sku_name, picture_url, spec,color_name, color_code,model,  unit_code,
     unit_name, zero_disassembly_coefficient, num,product_line_num,
     channel_unit_price,total_channel_price, company_name,company_code,   actual_channel_unit_price,
-    actual_total_channel_price, actual_amount, actual_price)
+    actual_total_channel_price, actual_amount, actual_price,actual_deliver_num,give_promotion)
     values
     <foreach collection="list" item="item" separator="," close="" open="">
       (
@@ -598,7 +598,8 @@
       #{item.productLineNum,jdbcType=BIGINT},#{item.channelUnitPrice,jdbcType=BIGINT},#{item.totalChannelPrice,jdbcType=BIGINT},
       #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR},
       #{item.actualChannelUnitPrice,jdbcType=VARCHAR}, #{item.actualTotalChannelPrice,jdbcType=VARCHAR},
-      #{item.actualAmount,jdbcType=VARCHAR}, #{item.actualPrice,jdbcType=VARCHAR}
+      #{item.actualAmount,jdbcType=VARCHAR}, #{item.actualPrice,jdbcType=VARCHAR}, #{item.actualDeliverNum,jdbcType=BIGINT}
+      , #{item.givePromotion,jdbcType=BIGINT}
       )
     </foreach>
   </insert>
