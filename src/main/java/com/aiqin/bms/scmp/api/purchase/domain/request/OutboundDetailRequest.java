@@ -48,5 +48,5 @@ public class OutboundDetailRequest {
     private Long actualDeliverNum;
 
     @ApiModelProperty(value="0不是，1是赠品")
-    private String giftType;
+    private Integer giftType;
 }
