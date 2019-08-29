@@ -532,7 +532,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             stockVoRequest.setChangeNum(itemReqVo.getPraInboundNum());
             stockVoRequest.setSkuCode(itemReqVo.getSkuCode());
             stockVoRequest.setSkuName(itemReqVo.getSkuName());
-            stockVoRequest.setDocumentType(0);
+            stockVoRequest.setDocumentType(1);
             stockVoRequest.setDocumentNum(inboundOderCode);
             stockVoRequest.setSourceDocumentType((int) OutboundTypeEnum.ORDER.getCode());
             stockVoRequest.setSourceDocumentNum(returnOrderInfo.getReturnOrderCode());
@@ -788,6 +788,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             product.setPraInboundNum(allocationProduct.getQuantity());
             orderProductSkuResponse = productSkuMap.get(allocationProduct.getSkuCode());
             if (orderProductSkuResponse != null) {
+                //基商品含量固定1
+                product.setInboundBaseContent(orderProductSkuResponse.getBaseProductContent());
+                product.setInboundBaseUnit(String.valueOf(orderProductSkuResponse.getZeroDisassemblyCoefficient()));
                 product.setNorms(orderProductSkuResponse.getSpec());
                 product.setSkuName(orderProductSkuResponse.getProductName());
                 product.setPictureUrl(orderProductSkuResponse.getPictureUrl());
@@ -1020,6 +1023,5 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
         return list;
     }
-
 
 }
