@@ -764,7 +764,8 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                 SupplierImportNew supplierImportNew = supplierImportNews.get(i);
                 CheckSupply checkSupply = new CheckSupply(supplierImportNew, areaTree, supplyCompanies, null, supplierList, dictionaryInfoList)
                         .checkSupplyNew()
-                        .checkCommonData();
+                        .checkCommonData()
+                        .checkAccount();
                 applyList.add(checkSupply.getReqVO());
                 SupplierImport supplierImport = checkSupply.getSupplierImport();
                 String error = supplierImport.getError();
@@ -810,7 +811,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             List<SupplierImport> importVos = Lists.newArrayList();
             for (int i = 0; i < supplierImportNews.size(); i++) {
                 SupplierImportUpdate supplierImportNew = supplierImportNews.get(i);
-                CheckSupply checkSupply = new CheckSupply(supplierImportNew, areaTree, supplyCompanies, codeList, supplierList, dictionaryInfoList)
+                CheckSupplyForUpdate checkSupply = new CheckSupplyForUpdate(supplierImportNew, areaTree, supplyCompanies, codeList, supplierList, dictionaryInfoList)
                         .checkSupplyUpdate()
                         .checkCommonData();
                 applyList.add(checkSupply.getReqVO());
@@ -1196,6 +1197,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         ApplySupplyCompanyReqVO reqVO;
         ApplyDeliveryInfoReqVO sendVO;
         ApplyDeliveryInfoReqVO returnVO;
+        ApplySupplyCompanyAcctReqVO acctReqVO = null;
 
 
         public CheckSupply( Object supplierImport, Map<String, AreaInfo> areaTree, Map<String, SupplyCompany> supplyCompanyNames, Map<String, SupplyCompany> supplyCompanyCodes, Map<String, Supplier> supplierList, Map<String, SupplierDictionaryInfo> dictionaryInfoList) {
@@ -1208,6 +1210,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             this.dictionaryInfoList = dictionaryInfoList;
             this.reqVO = new ApplySupplyCompanyReqVO();
             this.sendVO = new ApplyDeliveryInfoReqVO();
+//            this.acctReqVO = new ApplySupplyCompanyAcctReqVO();
             this.returnVO = new ApplyDeliveryInfoReqVO();
         }
 
@@ -1215,6 +1218,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             List<ApplyDeliveryInfoReqVO> infos = Lists.newArrayList();
             infos.add(sendVO);
             infos.add(returnVO);
+            this.reqVO.setApplySupplyCompanyAccountReq(acctReqVO);
             this.reqVO.setDeliveryInfoList(infos);
             return this.reqVO;
         }
@@ -1288,7 +1292,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }
             //简称
             if(StringUtils.isBlank(supplierImport.getApplyAbbreviation())){
-                error.add("简称不能为空");
+//                error.add("简称不能为空");
             }else {
                 if(!Constraint.ckChnLetterAndNumAndChar(supplierImport.getApplyAbbreviation().trim())){
                     error.add("简称不能输入特殊字符");
@@ -1306,21 +1310,22 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             if (StringUtils.isBlank(supplierImport.getProvinceName())) {
                 error.add("省不能为空");
             } else {
-                SpecialArea specialArea = SpecialArea.getAll().get(supplierImport.getProvinceName());
-                if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
-                    if (StringUtils.isBlank(supplierImport.getCityName())) {
-                        error.add("市不能为空");
-                    }else {
-                        checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.普通省市县);
-                    }
-                }
-                if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
-                    if (StringUtils.isBlank(supplierImport.getCityName())) {
-                        error.add("县不能为空");
-                    }else {
-                        checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.普通省市县);
-                    }
-                }
+//                SpecialArea specialArea = SpecialArea.getAll().get(supplierImport.getProvinceName());
+//                if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+//                    if (StringUtils.isBlank(supplierImport.getCityName())) {
+////                        error.add("市不能为空");
+//                    }else {
+//                        checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.普通省市县);
+//                    }
+//                }
+//                if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+//                    if (StringUtils.isBlank(supplierImport.getCityName())) {
+////                        error.add("县不能为空");
+//                    }else {
+//                        checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.普通省市县);
+//                    }
+//                }
+                checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.普通省市县);
             }
             //详细地址
             if(StringUtils.isBlank(supplierImport.getAddress())){
@@ -1380,11 +1385,11 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             }
             boolean flag = true;
             if(StringUtils.isBlank(supplierImport.getMinOrderAmount())){
-                error.add("最低订货金额不能为空");
+//                error.add("最低订货金额不能为空");
                 flag = false;
             }
             if(StringUtils.isBlank(supplierImport.getMaxOrderAmount())){
-                error.add("最高订货金额不能为空");
+//                error.add("最高订货金额不能为空");
                 flag = false;
             }
             if (flag) {
@@ -1412,103 +1417,151 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
             if(StringUtils.isBlank(supplierImport.getSendProvinceName())){
                 error.add("发货省不能为空");
             }else {
-                SpecialArea specialArea = SpecialArea.getAll().get(supplierImport.getSendProvinceName());
-                if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
-                    if(StringUtils.isBlank(supplierImport.getSendCityName())){
-                        error.add("发货市不能为空");
-                    }else {
-                        checkArea(supplierImport.getSendProvinceName(), supplierImport.getSendCityName(), supplierImport.getSendDistrictName(), CheckAreaEnum.发货省市县);
-                    }
-                }
-                if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
-                    if(StringUtils.isBlank(supplierImport.getSendDistrictName())){
-                        error.add("发货县不能为空");
-                    }else {
-                        checkArea(supplierImport.getSendProvinceName(), supplierImport.getSendCityName(), supplierImport.getSendDistrictName(), CheckAreaEnum.发货省市县);
-                    }
-                }
-
+//                SpecialArea specialArea = SpecialArea.getAll().get(supplierImport.getSendProvinceName());
+//                if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+//                    if(StringUtils.isBlank(supplierImport.getSendCityName())){
+//                        error.add("发货市不能为空");
+//                    }else {
+//                        checkArea(supplierImport.getSendProvinceName(), supplierImport.getSendCityName(), supplierImport.getSendDistrictName(), CheckAreaEnum.发货省市县);
+//                    }
+//                }
+//                if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+//                    if(StringUtils.isBlank(supplierImport.getSendDistrictName())){
+//                        error.add("发货县不能为空");
+//                    }else {
+//                        checkArea(supplierImport.getSendProvinceName(), supplierImport.getSendCityName(), supplierImport.getSendDistrictName(), CheckAreaEnum.发货省市县);
+//                    }
+//                }
+                checkArea(supplierImport.getSendProvinceName(), supplierImport.getSendCityName(), supplierImport.getSendDistrictName(), CheckAreaEnum.发货省市县);
             }
             //详细地址
             if(StringUtils.isBlank(supplierImport.getSendingAddress())){
-                error.add("发货详细地址不能为空");
+//                error.add("发货详细地址不能为空");
             }else {
                 sendVO.setSendingAddress(supplierImport.getSendingAddress().trim());
             }
-            //发货至
-            if(StringUtils.isBlank(supplierImport.getSendTo())){
-                error.add("发货至不能为空");
-            }else {
-                SupplierDictionaryInfo info1 = dictionaryInfoList.get(supplierImport.getSendTo().trim());
-                if(Objects.isNull(info1)){
-                    error.add("未找到对应的发货至选项");
-                }else {
-                    sendVO.setSendTo(info1.getSupplierDictionaryValue());
-                    sendVO.setSendToDesc(supplierImport.getSendTo().trim());
-                }
-            }
-            //发货天数
-            if (StringUtils.isNotBlank(supplierImport.getDeliveryDays())) {
-                try {
-                    String deliveryDays = supplierImport.getDeliveryDays();
-                    if (StringUtils.isNotBlank(deliveryDays)) {
-                        sendVO.setDeliveryDays(Long.valueOf(deliveryDays));
-                    }
-                } catch (NumberFormatException e) {
-                    error.add("发货天数格式不正确");
-                }
-            }
+//            //发货至
+//            if(StringUtils.isBlank(supplierImport.getSendTo())){
+//                error.add("发货至不能为空");
+//            }else {
+//                SupplierDictionaryInfo info1 = dictionaryInfoList.get(supplierImport.getSendTo().trim());
+//                if(Objects.isNull(info1)){
+//                    error.add("未找到对应的发货至选项");
+//                }else {
+//                    sendVO.setSendTo(info1.getSupplierDictionaryValue());
+//                    sendVO.setSendToDesc(supplierImport.getSendTo().trim());
+//                }
+//            }
+//            //发货天数
+//            if (StringUtils.isNotBlank(supplierImport.getDeliveryDays())) {
+//                try {
+//                    String deliveryDays = supplierImport.getDeliveryDays();
+//                    if (StringUtils.isNotBlank(deliveryDays)) {
+//                        sendVO.setDeliveryDays(Long.valueOf(deliveryDays));
+//                    }
+//                } catch (NumberFormatException e) {
+//                    error.add("发货天数格式不正确");
+//                }
+//            }
             //收货省市区
             if(StringUtils.isBlank(supplierImport.getReturnProvinceName())){
                 error.add("收货省不能为空");
             }else {
-                SpecialArea specialArea = SpecialArea.getAll().get(supplierImport.getReturnProvinceName());
-                if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
-                    if(StringUtils.isBlank(supplierImport.getReturnCityName())){
-                        error.add("收货市不能为空");
-                    }else {
-                        checkArea(supplierImport.getReturnProvinceName(), supplierImport.getReturnCityName(), supplierImport.getReturnDistrictName(), CheckAreaEnum.退货省市县);
-                    }
-                }
-                if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
-                    if(StringUtils.isBlank(supplierImport.getReturnDistrictName())){
-                        error.add("收货县不能为空");
-                    }else {
-                        checkArea(supplierImport.getReturnProvinceName(), supplierImport.getReturnCityName(), supplierImport.getReturnDistrictName(), CheckAreaEnum.退货省市县);
-                    }
-                }
+//                SpecialArea specialArea = SpecialArea.getAll().get(supplierImport.getReturnProvinceName());
+//                if (Objects.isNull(specialArea) || specialArea.getHasCity()) {
+//                    if(StringUtils.isBlank(supplierImport.getReturnCityName())){
+//                        error.add("收货市不能为空");
+//                    }else {
+//                        checkArea(supplierImport.getReturnProvinceName(), supplierImport.getReturnCityName(), supplierImport.getReturnDistrictName(), CheckAreaEnum.退货省市县);
+//                    }
+//                }
+//                if (Objects.isNull(specialArea) || specialArea.getHasDistrict()) {
+//                    if(StringUtils.isBlank(supplierImport.getReturnDistrictName())){
+//                        error.add("收货县不能为空");
+//                    }else {
+//                        checkArea(supplierImport.getReturnProvinceName(), supplierImport.getReturnCityName(), supplierImport.getReturnDistrictName(), CheckAreaEnum.退货省市县);
+//                    }
+//                }
+                checkArea(supplierImport.getReturnProvinceName(), supplierImport.getReturnCityName(), supplierImport.getReturnDistrictName(), CheckAreaEnum.退货省市县);
             }
             //详细地址
             if(StringUtils.isBlank(supplierImport.getReturningAddress())){
-                error.add("收货详细地址不能为空");
+//                error.add("收货详细地址不能为空");
             }else {
                 returnVO.setSendingAddress(supplierImport.getReturningAddress().trim());
             }
             //收货至
-            if(StringUtils.isBlank(supplierImport.getReturnTo())){
-                error.add("收货至不能为空");
-            }else {
-                SupplierDictionaryInfo info1 = dictionaryInfoList.get(supplierImport.getReturnTo().trim());
-                if(Objects.isNull(info1)){
-                    error.add("未找到对应的收货至选项");
-                }else {
-                    returnVO.setSendTo(info1.getSupplierDictionaryValue());
-                    returnVO.setSendToDesc(supplierImport.getReturnTo().trim());
-                }
-            }
-            //收货天数
-            if (StringUtils.isNotBlank(supplierImport.getReturnDays())) {
-                try {
-                    String deliveryDays = supplierImport.getReturnDays();
-                    if (StringUtils.isNotBlank(deliveryDays)) {
-                        returnVO.setDeliveryDays(Long.valueOf(deliveryDays));
-                    }
-                } catch (NumberFormatException e) {
-                    error.add("收货天数格式不正确");
-                }
-            }
+//            if(StringUtils.isBlank(supplierImport.getReturnTo())){
+//                error.add("收货至不能为空");
+//            }else {
+//                SupplierDictionaryInfo info1 = dictionaryInfoList.get(supplierImport.getReturnTo().trim());
+//                if(Objects.isNull(info1)){
+//                    error.add("未找到对应的收货至选项");
+//                }else {
+//                    returnVO.setSendTo(info1.getSupplierDictionaryValue());
+//                    returnVO.setSendToDesc(supplierImport.getReturnTo().trim());
+//                }
+//            }
+//            //收货天数
+//            if (StringUtils.isNotBlank(supplierImport.getReturnDays())) {
+//                try {
+//                    String deliveryDays = supplierImport.getReturnDays();
+//                    if (StringUtils.isNotBlank(deliveryDays)) {
+//                        returnVO.setDeliveryDays(Long.valueOf(deliveryDays));
+//                    }
+//                } catch (NumberFormatException e) {
+//                    error.add("收货天数格式不正确");
+//                }
+//            }
             sendVO.setDeliveryType((byte) 0);
             returnVO.setDeliveryType((byte) 1);
+            return this;
+        }
+        private CheckSupply checkAccount(){
+            //
+            boolean b = StringUtils.isNotBlank(supplierImport.getBankAccount()) || StringUtils.isNotBlank(supplierImport.getAccount())
+                    || StringUtils.isNotBlank(supplierImport.getAccountName()) || StringUtils.isNotBlank(supplierImport.getMaxPaymentAmount());
+            //有一个填写了都那么都必填
+            if(b){
+                //开户银行
+                this.acctReqVO = new ApplySupplyCompanyAcctReqVO();
+                boolean flag = true;
+                if(StringUtils.isBlank(supplierImport.getBankAccount())){
+                    error.add("开户银行不能为空");
+                    flag = false;
+                }else {
+                    this.acctReqVO.setBankAccount(supplierImport.getBankAccount().trim());
+                }
+                //银行账号
+                if(StringUtils.isBlank(supplierImport.getAccount())){
+                    error.add("银行账号");
+                    flag = false;
+                }else {
+                    this.acctReqVO.setAccount(supplierImport.getAccount().trim());
+                }
+                //户名
+                if(StringUtils.isBlank(supplierImport.getAccountName())){
+                    error.add("户名");
+                    flag = false;
+                }else {
+                    this.acctReqVO.setAccountName(supplierImport.getAccountName().trim());
+                }
+                //最高付款金额
+                if(StringUtils.isBlank(supplierImport.getMaxPaymentAmount())){
+                    error.add("最高付款金额");
+                    flag = false;
+                }else {
+                    try {
+                        this.acctReqVO.setMaxPaymentAmount(NumberConvertUtils.stringParseLong(supplierImport.getMaxPaymentAmount().trim()));
+                    } catch (Exception e) {
+                        error.add("最高付款金额格式不正确");
+                        flag = false;
+                    }
+                }
+                if(flag){
+                    this.reqVO.setAddAccount((byte) 0);
+                }
+            }
             return this;
         }
         private void checkArea(String province, String city, String district,CheckAreaEnum checkAreaEnum) {
@@ -1579,34 +1632,386 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
                         returnVO.setSendProvinceName(province);
                     }
                 }
-                AreaInfo areaInfo = areaTree.get(province+city);
-                if (Objects.isNull(areaInfo)) {
-                    error.add(checkAreaEnum.getCity());
-                } else {
-                    if (checkAreaEnum.getType() == 1) {
-                        reqVO.setCityId(areaInfo.getCode());
-                        reqVO.setCityName(city);
-                    } else if (checkAreaEnum.getType() == 2) {
-                        sendVO.setSendCityId(areaInfo.getCode());
-                        sendVO.setSendCityName(city);
-                    } else if (checkAreaEnum.getType() == 3) {
-                        returnVO.setSendCityId(areaInfo.getCode());
-                        returnVO.setSendCityName(city);
+                if(city!=null){
+                    AreaInfo areaInfo = areaTree.get(province+city);
+                    if (Objects.isNull(areaInfo)) {
+                        error.add(checkAreaEnum.getCity());
+                    } else {
+                        if (checkAreaEnum.getType() == 1) {
+                            reqVO.setCityId(areaInfo.getCode());
+                            reqVO.setCityName(city);
+                        } else if (checkAreaEnum.getType() == 2) {
+                            sendVO.setSendCityId(areaInfo.getCode());
+                            sendVO.setSendCityName(city);
+                        } else if (checkAreaEnum.getType() == 3) {
+                            returnVO.setSendCityId(areaInfo.getCode());
+                            returnVO.setSendCityName(city);
+                        }
+                    }
+                    if(district!=null) {
+                        AreaInfo areaInfo2 = areaTree.get(province + city + district);
+                        if (Objects.isNull(areaInfo2)) {
+                            error.add(checkAreaEnum.getDis());
+                        } else {
+                            if (checkAreaEnum.getType() == 1) {
+                                reqVO.setDistrictId(areaInfo2.getCode());
+                                reqVO.setDistrictName(district);
+                            } else if (checkAreaEnum.getType() == 2) {
+                                sendVO.setSendDistrictId(areaInfo2.getCode());
+                                sendVO.setSendDistrictName(district);
+                            } else if (checkAreaEnum.getType() == 3) {
+                                returnVO.setSendDistrictId(areaInfo2.getCode());
+                                returnVO.setSendDistrictName(district);
+                            }
+                        }
                     }
                 }
-                AreaInfo areaInfo2 = areaTree.get(province+city+district);
-                if(Objects.isNull(areaInfo2)){
-                    error.add(checkAreaEnum.getDis());
+            }
+        }
+    }
+    private class CheckSupplyForUpdate{
+
+        private List<String> error;
+        SupplierImport supplierImport;
+        Map<String, AreaInfo> areaTree;
+        Map<String, SupplyCompany> supplyCompanyNames;
+        Map<String, SupplyCompany> supplyCompanyCodes;
+        Map<String, Supplier> supplierList;
+        Map<String, SupplierDictionaryInfo> dictionaryInfoList;
+        ApplySupplyCompanyReqVO reqVO;
+        ApplyDeliveryInfoReqVO sendVO;
+        ApplyDeliveryInfoReqVO returnVO;
+        ApplySupplyCompanyAcctReqVO acctReqVO = null;
+
+
+        public CheckSupplyForUpdate( Object supplierImport, Map<String, AreaInfo> areaTree, Map<String, SupplyCompany> supplyCompanyNames, Map<String, SupplyCompany> supplyCompanyCodes, Map<String, Supplier> supplierList, Map<String, SupplierDictionaryInfo> dictionaryInfoList) {
+            this.error = Lists.newArrayList();
+            this.supplierImport = BeanCopyUtils.copy(supplierImport,SupplierImport.class);
+            this.areaTree = areaTree;
+            this.supplyCompanyNames = supplyCompanyNames;
+            this.supplyCompanyCodes = supplyCompanyCodes;
+            this.supplierList = supplierList;
+            this.dictionaryInfoList = dictionaryInfoList;
+            this.reqVO = new ApplySupplyCompanyReqVO();
+//            this.sendVO = new ApplyDeliveryInfoReqVO();
+//            this.acctReqVO = new ApplySupplyCompanyAcctReqVO();
+//            this.returnVO = new ApplyDeliveryInfoReqVO();
+        }
+
+        public ApplySupplyCompanyReqVO getReqVO(){
+            if(CollectionUtils.isEmptyCollection(error)){
+                List<ApplyDeliveryInfoReqVO> infos = Lists.newArrayList();
+                if(Objects.nonNull(sendVO))
+                infos.add(sendVO);
+                if(Objects.nonNull(returnVO))
+                infos.add(returnVO);
+                this.reqVO.setDeliveryInfoList(infos);
+                if(Objects.nonNull(acctReqVO))
+                this.reqVO.setApplySupplyCompanyAccountReq(acctReqVO);
+            }
+            return this.reqVO;
+        }
+        public SupplierImport getSupplierImport(){
+            this.supplierImport.setError(StringUtils.strip(this.error.toString(), "[]"));
+            return this.supplierImport;
+        }
+
+        private CheckSupplyForUpdate checkSupplyUpdate(){
+            if(StringUtils.isBlank(supplierImport.getApplySupplyCode())){
+                error.add("供应商编码不能为空");
+            }else {
+                SupplyCompany supplyCompany1 = supplyCompanyCodes.get(supplierImport.getApplySupplyCode().trim());
+                if(Objects.isNull(supplyCompany1)){
+                    error.add("供应商编码不存在");
+                }else {
+                    if(StringUtils.isBlank(supplierImport.getApplySupplyName())){
+//                        error.add("供应商名称不能为空");
+                    }else {
+                        boolean equals = supplyCompany1.getSupplyName().equals(supplierImport.getApplySupplyName().trim());
+                        if (!equals) {
+                            SupplyCompany supplyCompany = supplyCompanyNames.get(supplierImport.getApplySupplyName().trim());
+                            if (Objects.nonNull(supplyCompany)) {
+                                error.add("供应商名称重复");
+                            }
+                        }
+                        reqVO.setApplySupplyCode(supplyCompany1.getSupplyCode());
+                        reqVO.setApplySupplyName(supplierImport.getApplySupplyName().trim());
+                    }
+                }
+            }
+            return this;
+        }
+
+        private CheckSupplyForUpdate checkCommonData(){
+            //供应商类型
+            if(StringUtils.isBlank(supplierImport.getApplySupplyType())){
+//                error.add("供应商类型不能为空");
+            }else {
+                SupplierDictionaryInfo info = dictionaryInfoList.get(supplierImport.getApplySupplyType().trim());
+                if(Objects.isNull(info)){
+                    error.add("未找到对应的供应商类型");
+                }else {
+                    reqVO.setApplySupplyType(info.getSupplierDictionaryValue());
+                    reqVO.setApplySupplyTypeName(info.getSupplierContent());
+                }
+            }
+            //供应商集团
+            if(StringUtils.isNotBlank(supplierImport.getSupplierName())){
+                Supplier supplier = supplierList.get(supplierImport.getSupplierName().trim());
+                if(Objects.isNull(supplier)){
+                    error.add("未找到对应名称的供应商集团");
+                }else {
+                    reqVO.setSupplierCode(supplier.getSupplierCode());
+                    reqVO.setSupplierName(supplier.getSupplierName());
+                }
+            }
+            //简称
+            if(StringUtils.isBlank(supplierImport.getApplyAbbreviation())){
+//                error.add("简称不能为空");
+            }else {
+                if(!Constraint.ckChnLetterAndNumAndChar(supplierImport.getApplyAbbreviation().trim())){
+                    error.add("简称不能输入特殊字符");
+                }
+                reqVO.setApplyAbbreviation(supplierImport.getApplyAbbreviation().trim());
+            }
+            //电话
+            if(StringUtils.isNotBlank(supplierImport.getPhone())){
+                reqVO.setPhone(supplierImport.getPhone());
+            }
+            //传真
+            if(StringUtils.isNotBlank(supplierImport.getFax())){
+                reqVO.setFax(supplierImport.getFax());
+            }
+            if (StringUtils.isBlank(supplierImport.getProvinceName())) {
+//                error.add("省不能为空");
+            } else {
+                checkArea(supplierImport.getProvinceName(), supplierImport.getCityName(), supplierImport.getDistrictName(), CheckAreaEnum.普通省市县);
+            }
+            //详细地址
+            if(StringUtils.isBlank(supplierImport.getAddress())){
+//                error.add("详细地址不能为空");
+            }else {
+                reqVO.setAddress(supplierImport.getAddress().trim());
+            }
+            //邮编
+            if(StringUtils.isNotBlank(supplierImport.getZipCode())){
+                reqVO.setZipCode(supplierImport.getZipCode().trim());
+            }
+            //邮箱
+            if(StringUtils.isBlank(supplierImport.getEmail())){
+//                error.add("邮箱不能为空");
+            }else {
+                reqVO.setEmail(supplierImport.getEmail().trim());
+            }
+            //公司网址
+            if(StringUtils.isNotBlank(supplierImport.getCompanyWebsite())){
+                reqVO.setCompanyWebsite(supplierImport.getCompanyWebsite().trim());
+            }
+            //税号
+            if(StringUtils.isBlank(supplierImport.getTaxId())){
+//                error.add("税号不能为空");
+            }else {
+                reqVO.setTaxId(supplierImport.getTaxId().trim());
+            }
+            //注册资金
+            if(StringUtils.isBlank(supplierImport.getRegisteredCapital())){
+//                error.add("注册资金不能为空");
+            }else {
+                try {
+                    reqVO.setRegisteredCapital(NumberConvertUtils.stringParseBigDecimal(supplierImport.getRegisteredCapital()));
+                } catch (NumberFormatException e) {
+                    error.add("注册资金格式不正确");
+                }
+            }
+            //法人代表
+            if(StringUtils.isBlank(supplierImport.getCorporateRepresentative())){
+//                error.add("法人代表不能为空");
+            }else {
+                reqVO.setCorporateRepresentative(supplierImport.getCorporateRepresentative());
+            }
+            if(StringUtils.isBlank(supplierImport.getContactName())){
+//                error.add("联系人姓名不能为空");
+            }else {
+                reqVO.setContactName(supplierImport.getContactName());
+            }
+            if(StringUtils.isBlank(supplierImport.getMobilePhone())){
+//                error.add("手机号不能为空");
+            }else {
+                if(!Constraint.ckCountNum(11,supplierImport.getMobilePhone())){
+                    error.add("手机号码格式不正确");
+                } else {
+                    reqVO.setMobilePhone(supplierImport.getMobilePhone());
+                }
+            }
+            boolean flag = true;
+            if(StringUtils.isBlank(supplierImport.getMinOrderAmount())){
+//                error.add("最低订货金额不能为空");
+                flag = false;
+            }
+            if(StringUtils.isBlank(supplierImport.getMaxOrderAmount())){
+//                error.add("最高订货金额不能为空");
+                flag = false;
+            }
+            if (flag) {
+                try {
+                    String minOrderAmount = supplierImport.getMinOrderAmount();
+                    String maxOrderAmount = supplierImport.getMaxOrderAmount();
+                    long l = NumberConvertUtils.stringParseLong(minOrderAmount);
+                    long l2 = NumberConvertUtils.stringParseLong(maxOrderAmount);
+                    if(l<0){
+                        error.add("最小起订金额不能小于0");
+                    }
+                    if(l2<0){
+                        error.add("最大起订金额不能小于0");
+                    }
+                    if (l > l2) {
+                        error.add("最小起订金额不能大于最大起订金额");
+                    }
+                    reqVO.setMinOrderAmount(l);
+                    reqVO.setMaxOrderAmount(l2);
+                } catch (NumberFormatException e) {
+                    error.add("最小起订金额或最大起订金额格式不正确");
+                }
+            }
+            boolean b1 = StringUtils.isNotBlank(supplierImport.getSendProvinceName()) || StringUtils.isNotBlank(supplierImport.getSendDistrictName()) ||
+                    StringUtils.isNotBlank(supplierImport.getSendCityName()) || StringUtils.isNotBlank(supplierImport.getSendingAddress());
+            boolean b2 = StringUtils.isNotBlank(supplierImport.getReturnProvinceName()) || StringUtils.isNotBlank(supplierImport.getReturnDistrictName()) ||
+                    StringUtils.isNotBlank(supplierImport.getReturnCityName()) || StringUtils.isNotBlank(supplierImport.getReturningAddress());
+
+            if(b1){
+                sendVO = new ApplyDeliveryInfoReqVO();
+                //发货省市区
+                if(StringUtils.isBlank(supplierImport.getSendProvinceName())){
+//                error.add("发货省不能为空");
+                }else {
+                    checkArea(supplierImport.getSendProvinceName(), supplierImport.getSendCityName(), supplierImport.getSendDistrictName(), CheckAreaEnum.发货省市县);
+                }
+                //详细地址
+                if(StringUtils.isBlank(supplierImport.getSendingAddress())){
+//                error.add("发货详细地址不能为空");
+                }else {
+                    sendVO.setSendingAddress(supplierImport.getSendingAddress().trim());
+                }
+                sendVO.setDeliveryType((byte) 0);
+            }
+            if(b2){
+                returnVO = new ApplyDeliveryInfoReqVO();
+                //收货省市区
+                if(StringUtils.isBlank(supplierImport.getReturnProvinceName())){
+//                error.add("收货省不能为空");
+                }else {
+                    checkArea(supplierImport.getReturnProvinceName(), supplierImport.getReturnCityName(), supplierImport.getReturnDistrictName(), CheckAreaEnum.退货省市县);
+                }
+                //详细地址
+                if(StringUtils.isBlank(supplierImport.getReturningAddress())){
+//                error.add("收货详细地址不能为空");
+                }else {
+                    returnVO.setSendingAddress(supplierImport.getReturningAddress().trim());
+                }
+                returnVO.setDeliveryType((byte) 1);
+            }
+            return this;
+        }
+        private void checkArea(String province, String city, String district,CheckAreaEnum checkAreaEnum) {
+            SpecialArea specialArea = SpecialArea.getAll().get(province);
+            if (Objects.nonNull(specialArea)) {
+                if (specialArea.getHasCity()) {
+                    AreaInfo areaInfo1 = areaTree.get(province);
+                    if(Objects.isNull(areaInfo1)){
+                        error.add(checkAreaEnum.getProvince());
+                    }else {
+                        if (checkAreaEnum.getType() == 1) {
+                            reqVO.setProvinceId(areaInfo1.getCode());
+                            reqVO.setProvinceName(province);
+                        } else if (checkAreaEnum.getType() == 2) {
+                            sendVO.setSendProvinceId(areaInfo1.getCode());
+                            sendVO.setSendProvinceName(province);
+                        } else if (checkAreaEnum.getType() == 3) {
+                            returnVO.setSendProvinceId(areaInfo1.getCode());
+                            returnVO.setSendProvinceName(province);
+                        }
+                    }
+                    AreaInfo areaInfo = areaTree.get(province+city);
+                    if(Objects.isNull(areaInfo)||!areaInfo.getParentName().equals(province)){
+                        error.add(checkAreaEnum.getCity());
+                    }else {
+                        if (checkAreaEnum.getType() == 1) {
+                            reqVO.setCityId(areaInfo.getCode());
+                            reqVO.setCityName(city);
+                        } else if (checkAreaEnum.getType() == 2) {
+                            sendVO.setSendCityId(areaInfo.getCode());
+                            sendVO.setSendCityName(city);
+                        } else if (checkAreaEnum.getType() == 3) {
+                            returnVO.setSendCityId(areaInfo.getCode());
+                            returnVO.setSendCityName(city);
+                        }
+                    }
+
+                }else{
+                    AreaInfo areaInfo = areaTree.get(province);
+                    if(Objects.isNull(areaInfo)){
+                        error.add(checkAreaEnum.getProvince());
+                    }else {
+                        if (checkAreaEnum.getType() == 1) {
+                            reqVO.setProvinceId(areaInfo.getCode());
+                            reqVO.setProvinceName(province);
+                        } else if (checkAreaEnum.getType() == 2) {
+                            sendVO.setSendProvinceId(areaInfo.getCode());
+                            sendVO.setSendProvinceName(province);
+                        } else if (checkAreaEnum.getType() == 3) {
+                            returnVO.setSendProvinceId(areaInfo.getCode());
+                            returnVO.setSendProvinceName(province);
+                        }
+                    }
+                }
+            }else {
+                AreaInfo areaInfo1 = areaTree.get(province);
+                if(Objects.isNull(areaInfo1)){
+                    error.add(checkAreaEnum.getProvince());
                 }else {
                     if (checkAreaEnum.getType() == 1) {
-                        reqVO.setDistrictId(areaInfo2.getCode());
-                        reqVO.setDistrictName(district);
+                        reqVO.setProvinceId(areaInfo1.getCode());
+                        reqVO.setProvinceName(province);
                     } else if (checkAreaEnum.getType() == 2) {
-                        sendVO.setSendDistrictId(areaInfo2.getCode());
-                        sendVO.setSendDistrictName(district);
+                        sendVO.setSendProvinceId(areaInfo1.getCode());
+                        sendVO.setSendProvinceName(province);
                     } else if (checkAreaEnum.getType() == 3) {
-                        returnVO.setSendDistrictId(areaInfo2.getCode());
-                        returnVO.setSendDistrictName(district);
+                        returnVO.setSendProvinceId(areaInfo1.getCode());
+                        returnVO.setSendProvinceName(province);
+                    }
+                }
+                if(city!=null){
+                    AreaInfo areaInfo = areaTree.get(province+city);
+                    if (Objects.isNull(areaInfo)) {
+                        error.add(checkAreaEnum.getCity());
+                    } else {
+                        if (checkAreaEnum.getType() == 1) {
+                            reqVO.setCityId(areaInfo.getCode());
+                            reqVO.setCityName(city);
+                        } else if (checkAreaEnum.getType() == 2) {
+                            sendVO.setSendCityId(areaInfo.getCode());
+                            sendVO.setSendCityName(city);
+                        } else if (checkAreaEnum.getType() == 3) {
+                            returnVO.setSendCityId(areaInfo.getCode());
+                            returnVO.setSendCityName(city);
+                        }
+                    }
+                    if(district!=null) {
+                        AreaInfo areaInfo2 = areaTree.get(province + city + district);
+                        if (Objects.isNull(areaInfo2)) {
+                            error.add(checkAreaEnum.getDis());
+                        } else {
+                            if (checkAreaEnum.getType() == 1) {
+                                reqVO.setDistrictId(areaInfo2.getCode());
+                                reqVO.setDistrictName(district);
+                            } else if (checkAreaEnum.getType() == 2) {
+                                sendVO.setSendDistrictId(areaInfo2.getCode());
+                                sendVO.setSendDistrictName(district);
+                            } else if (checkAreaEnum.getType() == 3) {
+                                returnVO.setSendDistrictId(areaInfo2.getCode());
+                                returnVO.setSendDistrictName(district);
+                            }
+                        }
                     }
                 }
             }

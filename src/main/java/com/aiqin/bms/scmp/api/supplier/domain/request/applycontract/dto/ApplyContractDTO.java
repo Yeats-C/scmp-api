@@ -169,4 +169,7 @@ public class ApplyContractDTO extends CommonBean {
     @ApiModelProperty("备注")
     private String remark;
 
+    @ApiModelProperty("最下面的备注")
+    private String comment;
+
 }

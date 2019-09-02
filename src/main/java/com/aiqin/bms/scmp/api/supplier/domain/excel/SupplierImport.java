@@ -141,6 +141,23 @@ public class SupplierImport {
     @ExcelProperty(index = 32 , value = "退送送货天数")
     private String returnDays;
 
+
+    @ApiModelProperty("开户银行")
+    @ExcelProperty(index = 28 , value = "开户银行")
+    private String bankAccount;
+
+    @ApiModelProperty("银行账号")
+    @ExcelProperty(index = 29 , value = "银行账号")
+    private String account;
+
+    @ApiModelProperty("户名")
+    @ExcelProperty(index = 30 , value = "户名")
+    private String accountName;
+
+    @ApiModelProperty("最高付款金额")
+    @ExcelProperty(index = 31 , value = "最高付款金额")
+    private String maxPaymentAmount;
+
     @ApiModelProperty("错误信息")
     private String error;
 }

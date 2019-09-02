@@ -129,7 +129,7 @@
       direct_supervisor_code,direct_supervisor_name,contract_type_code,
       contract_type_name,checkout_date,min_amount,max_amount,delivery_cycle,
       tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
-      categories_supply_channels_code,categories_supply_channels_name,remark)
+      categories_supply_channels_code,categories_supply_channels_name,remark,comment)
     values ( #{year,jdbcType=VARCHAR}, #{yearName,jdbcType=VARCHAR},
       #{supplierName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{purchasingGroupCode,jdbcType=VARCHAR}, 
       #{settlementMethod,jdbcType=TINYINT}, #{paymentPeriod,jdbcType=INTEGER}, #{shippingFee,jdbcType=BIGINT}, 
@@ -146,7 +146,7 @@
       #{rebateClause,jdbcType=TINYINT},#{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},
       #{contractTypeCode,jdbcType=VARCHAR},#{contractTypeName,jdbcType=VARCHAR},#{checkoutDate,jdbcType=VARCHAR},#{minAmount},
       #{maxAmount},#{deliveryCycle},#{taxRate},#{discount},#{returnGuarantee},#{returnGuaranteeDay},
-      #{warranty},#{categoriesSupplyChannelsCode},#{categoriesSupplyChannelsName},#{remark}
+      #{warranty},#{categoriesSupplyChannelsCode},#{categoriesSupplyChannelsName},#{remark},#{comment}
       )
   </insert>
 

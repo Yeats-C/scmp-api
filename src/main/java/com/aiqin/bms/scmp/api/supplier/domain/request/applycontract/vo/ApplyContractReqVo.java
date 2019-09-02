@@ -34,7 +34,7 @@ public class ApplyContractReqVo{
     private String supplierName;
 
     @ApiModelProperty("供货单位编号")
-    @NotEmpty(message = "供货单位编号不能为空")
+//    @NotEmpty(message = "供货单位编号不能为空")
     private String supplierCode;
 
     @ApiModelProperty(value = "采购组编号",hidden = true)
@@ -88,8 +88,8 @@ public class ApplyContractReqVo{
     @NotNull(message = "结束日期不能为空")
     private Date endTime = new Date();
 
-    @ApiModelProperty("进货价格生效标准(下单日价格,收获日价格)")
-    @NotNull(message = "进货价格生效标准(下单日价格,收获日价格)不能为空")
+    @ApiModelProperty(value = "进货价格生效标准(下单日价格,收获日价格)",hidden = true)
+//    @NotNull(message = "进货价格生效标准(下单日价格,收获日价格)不能为空")
     private Byte purchasePriceStandard;
     @ApiModelProperty(value = "采购组名称",hidden = true)
     private String purchasingGroupName;
@@ -162,7 +162,8 @@ public class ApplyContractReqVo{
     @ApiModelProperty("备注")
     private String remark;
 
-
+    @ApiModelProperty("最下面的备注")
+    private String comment;
 
     @ApiModelProperty("采购组")
     private List<ApplyContractPurchaseGroupReqVo> purchaseGroupReqVos;

@@ -189,7 +189,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
          supplierCommonService.getInstance(applyContractDTO.getApplyContractCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(),content ,null,HandleTypeCoce.PENDING.getName());
         // 更新编码数据中的最大编码
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
-        if (applyContractDTO.getRebateClause().equals((byte)1)){
+        if (CollectionUtils.isNotEmptyCollection(applyContractReqVo.getPlanTypeList())){
             List<ApplyContractPlanType> typeList = BeanCopyUtils.copyList(applyContractReqVo.getPlanTypeList(),ApplyContractPlanType.class);
             typeList.stream().forEach(planType -> planType.setApplyContractCode(applyContractDTO.getApplyContractCode()));
             savePlanTypeList(typeList);
@@ -435,10 +435,10 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applyContractDTO.getUpdateBy()).replace("APPLYTYPE", "修改");
         supplierCommonService.getInstance(applyContractDTO.getApplyContractCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(),content ,null,HandleTypeCoce.PENDING.getName());
-        if(oldApplyContractDTO.getRebateClause().equals(((byte)1))){
+//        if(oldApplyContractDTO.getRebateClause().equals(((byte)1))){
             int i = applyContractPlanTypeMapper.deleteByContractCode(updateApplyContractReqVo.getApplyContractCode());
-        }
-        if (applyContractDTO.getRebateClause().equals((byte)1)){
+//        }
+        if (CollectionUtils.isNotEmptyCollection(updateApplyContractReqVo.getPlanTypeList())){
             List<ApplyContractPlanType> typeList = BeanCopyUtils.copyList(updateApplyContractReqVo.getPlanTypeList(),ApplyContractPlanType.class);
             if(CollectionUtils.isEmptyCollection(typeList)){
                 throw new GroundRuntimeException("请选择时间!");
