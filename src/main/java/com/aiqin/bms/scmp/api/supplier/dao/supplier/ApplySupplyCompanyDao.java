@@ -100,4 +100,12 @@ public interface ApplySupplyCompanyDao {
      * @return
      */
     List<ApplySupplyComApplyListRespVO> applyList(QueryApplySupplyListComReqVO queryApplySupplyComReqVO);
+
+    /**
+     * 查询最新的一天申请通过的申请数据
+     * @param companyCode
+     * @param applySupplyCode
+     * @return
+     */
+    ApplySupplyCompany selectBySupplyCodeForNewest(@Param("companyCode") String companyCode, @Param("applySupplyCode") String applySupplyCode,@Param("applyStatus")Integer applyStatus);
 }

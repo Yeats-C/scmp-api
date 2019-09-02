@@ -487,4 +487,12 @@
     </if>
     order by create_time desc
   </select>
+    <select id="selectBySupplyCodeForNewest"
+            resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.BaseResultMap">
+      select
+      <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.Base_Column_List" />
+      from apply_supply_company
+      where company_code = #{companyCode} and supply_company_code = #{applySupplyCode} and apply_status = #{applyStatus}
+      order by create_time desc limit 1
+    </select>
 </mapper>

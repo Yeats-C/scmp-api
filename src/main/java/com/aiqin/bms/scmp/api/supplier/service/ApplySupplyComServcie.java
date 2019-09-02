@@ -45,6 +45,8 @@ public interface ApplySupplyComServcie {
      */
     Long updateApply(ApplySupplyCompanyReqVO applySupplyCompanyReqVO);
 
+    void saveImport(ApplySupplyCompanyReqVO applySupplyCompanyReqVO);
+
     /**
      * 调用DAO层修改数据
      * @param applySupplyCompany
