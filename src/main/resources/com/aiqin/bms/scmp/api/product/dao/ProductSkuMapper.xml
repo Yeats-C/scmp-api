@@ -2305,38 +2305,24 @@
 
   <select id="selectSkuInfo" resultMap="ORDER_PRODUCT_RESULTMAP">
      select
-        <include refid="SELECT_SKU_SQL"/>
+         distinct <include refid="SELECT_SKU_SQL"/>,ifnull(psbp.box_volume,'0') as box_volume,ifnull(psbp.box_gross_weight,'0') as box_gross_weight
       from
       product_sku as ps
       left JOIN product_sku_distribution_info  as psdi on psdi.product_sku_code = ps.sku_code
-      left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code
+      left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code and psbp.unit_code = psdi.unit_code
       where  ps.sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
   <sql id="SELECT_SKU_SQL">
         ps.goods_gifts as product_type,ps.sku_code,ps.sku_name ,ps.color_code,ps.color_name,ps.model_number,psdi.spec,psdi.unit_code,psdi.unit_name,
-    psdi.zero_removal_coefficient,psdi.base_product_content,psbp.box_volume,psbp.box_gross_weight, ps.product_category_code,ps.product_category_name,
+    psdi.zero_removal_coefficient,psdi.base_product_content, ps.product_category_code,ps.product_category_name,
     ps.product_brand_code,ps.product_brand_name
   </sql>
-  <select id="selectSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
-    select
-    <include refid="SELECT_SKU_SQL"/>
-   from
-    product_sku as ps
-    left JOIN product_sku_distribution_info  as psdi on psdi.product_sku_code = ps.sku_code
-    left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code
-    where  ps.sku_code   in(
-    <foreach collection="list" item="skuCode" separator=",">
-      #{skuCode,jdbcType=VARCHAR}
-    </foreach>
-    )
-  </select>
   <select id="selectStockSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
     select
-    <include refid="SELECT_SKU_SQL"/> ,psc.Input_tax_rate
+      <include refid="SELECT_SKU_SQL"/> ,psc.Input_tax_rate
    from
     product_sku as ps
     left JOIN product_sku_stock_info    as psdi on psdi.product_sku_code = ps.sku_code
-    left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code
     left join product_sku_checkout psc on ps.sku_code = psc.sku_code
     where ps.sku_code   in(
     <foreach collection="list" item="skuCode" separator=",">
