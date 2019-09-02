@@ -43,6 +43,14 @@ public class StoreRepurchaseRateSubtotalResponse {
     @JsonProperty("shopping_frequency")
     private Long shoppingFrequency;
 
+    @ApiModelProperty(value="连续2次购买次数小计")
+    @JsonProperty("repurchase_num")
+    private Long repurchaseNum;
+
+    @ApiModelProperty(value="购买总次数小计")
+    @JsonProperty("purchase_num")
+    private Long purchaseNum;
+
     @ApiModelProperty(value="复购率小计")
     @JsonProperty("repurchase_rate")
     private BigDecimal repurchaseRate;
