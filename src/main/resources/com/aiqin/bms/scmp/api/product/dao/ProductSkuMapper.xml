@@ -2305,7 +2305,7 @@
 
   <select id="selectSkuInfo" resultMap="ORDER_PRODUCT_RESULTMAP">
      select
-        <include refid="SELECT_SKU_SQL"/>
+      distinct  <include refid="SELECT_SKU_SQL"/>
       from
       product_sku as ps
       left JOIN product_sku_distribution_info  as psdi on psdi.product_sku_code = ps.sku_code
@@ -2319,7 +2319,7 @@
   </sql>
   <select id="selectSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
     select
-    <include refid="SELECT_SKU_SQL"/>
+    distinct <include refid="SELECT_SKU_SQL"/>
    from
     product_sku as ps
     left JOIN product_sku_distribution_info  as psdi on psdi.product_sku_code = ps.sku_code
@@ -2332,7 +2332,7 @@
   </select>
   <select id="selectStockSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
     select
-    <include refid="SELECT_SKU_SQL"/> ,psc.Input_tax_rate
+    distinct <include refid="SELECT_SKU_SQL"/> ,psc.Input_tax_rate
    from
     product_sku as ps
     left JOIN product_sku_stock_info    as psdi on psdi.product_sku_code = ps.sku_code
