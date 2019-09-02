@@ -162,7 +162,8 @@ public class ApplyContractReqVo{
     @ApiModelProperty("备注")
     private String remark;
 
-
+    @ApiModelProperty("最下面的备注")
+    private String comment;
 
     @ApiModelProperty("采购组")
     private List<ApplyContractPurchaseGroupReqVo> purchaseGroupReqVos;
