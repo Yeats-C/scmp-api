@@ -22,6 +22,10 @@
     <result column="distribution_margin" jdbcType="BIGINT" property="distributionMargin" />
     <result column="distribution_margin_yearonyear" jdbcType="DECIMAL" property="distributionMarginYearonyear" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="pre_channel_sales_amount" jdbcType="BIGINT" property="preChannelSalesAmount" />
+    <result column="pre_channel_margin" jdbcType="BIGINT" property="preChannelMargin" />
+    <result column="pre_distribution_sales_amount" jdbcType="BIGINT" property="preDistributionSalesAmount" />
+    <result column="pre_distribution_margin" jdbcType="BIGINT" property="preDistributionMargin" />
   </resultMap>
   <sql id="Base_Column_List">
     id, stat_year, stat_month, product_sort_code, product_sort_name, price_channel_code, 
