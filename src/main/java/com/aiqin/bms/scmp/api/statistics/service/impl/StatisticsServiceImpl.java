@@ -146,9 +146,19 @@ public class StatisticsServiceImpl implements StatisticsService {
                     if(CollectionUtils.isNotEmptyCollection(repurchaseRateList)){
                         deptRepurchase.setSubtotalList(repurchaseRateList);
                     }
+                    if(deptRepurchase.getRepurchaseNum() == null || deptRepurchase.getRepurchaseNum() == 0){
+                        deptRepurchase.setRepurchaseRate(new BigDecimal(0));
+                    }else {
+                        deptRepurchase.setRepurchaseRate(new BigDecimal(deptRepurchase.getRepurchaseNum()).divide(new BigDecimal(deptRepurchase.getPurchaseNum())));
+                    }
                     deptRepurchase.setProductSortCode(sort.getProductSortCode());
                     deptRepurchase.setProductSortName(sort.getProductSortName());
                     deptList.add(deptRepurchase);
+                }
+                if(comRepurchase.getRepurchaseNum() == null || comRepurchase.getRepurchaseNum() == 0){
+                    comRepurchase.setRepurchaseRate(new BigDecimal(0));
+                }else {
+                    comRepurchase.setRepurchaseRate(new BigDecimal(comRepurchase.getRepurchaseNum()).divide(new BigDecimal(comRepurchase.getPurchaseNum())));
                 }
                 comRepurchase.setSumList(deptList);
             }
@@ -163,6 +173,11 @@ public class StatisticsServiceImpl implements StatisticsService {
                 repurchaseRateList = statDeptStoreRepurchaseRateDao.storeRepurchaseList(year, month, productSortCode);
                 if(CollectionUtils.isNotEmptyCollection(repurchaseRateList)){
                     deptRepurchase.setSubtotalList(repurchaseRateList);
+                }
+                if(deptRepurchase.getRepurchaseNum() == null || deptRepurchase.getRepurchaseNum() == 0){
+                    deptRepurchase.setRepurchaseRate(new BigDecimal(0));
+                }else {
+                    deptRepurchase.setRepurchaseRate(new BigDecimal(deptRepurchase.getRepurchaseNum()).divide(new BigDecimal(deptRepurchase.getPurchaseNum())));
                 }
             }
             return HttpResponse.success(deptRepurchase);

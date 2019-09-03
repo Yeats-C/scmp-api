@@ -82,6 +82,9 @@ public class OrderProductSkuResponse {
     @ApiModelProperty("商品单位")
     private String unitName;
 
+    @ApiModelProperty("基商品含量")
+    private String baseProductContent;
+
     @ApiModelProperty("体积")
     private BigDecimal boxVolume;
 

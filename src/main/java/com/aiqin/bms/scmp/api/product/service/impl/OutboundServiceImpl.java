@@ -617,8 +617,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 int k = outboundProductDao.updateByPrimaryKeySelective(outboundProduct);
 
                 //累加总的出库数量，出库主数量
-                outbound.setPraOutboundNum(outbound.getPraOutboundNum() + outboundProduct.getPraOutboundNum());
-                outbound.setPraMainUnitNum(outbound.getPraMainUnitNum() + outboundProduct.getPraOutboundMainNum());
+                outbound.setPraOutboundNum(outbound.getPraOutboundNum());
+                outbound.setPraMainUnitNum(outbound.getPraMainUnitNum());
                 //累加总的含税总金额  税额 不含税总金额
 //                outbound.setPraTaxAmount(outbound.getPraTaxAmount()+outboundProduct.getPraTaxAmount());
                 //不含税总金额

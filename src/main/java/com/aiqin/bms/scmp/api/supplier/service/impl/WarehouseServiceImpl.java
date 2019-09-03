@@ -268,12 +268,10 @@ public class WarehouseServiceImpl implements WarehouseService {
      * @return
      */
     @Override
-    public WarehouseResVo getWarehouseTypeByLogisticsCenterCode(String logisticsCenterCode, Byte warehouseTypeCode) {
+    public List<WarehouseResVo> getWarehouseTypeByLogisticsCenterCode(String logisticsCenterCode, Byte warehouseTypeCode) {
         List<WarehouseDTO> dtoList = warehouseDao.getWarehouseTypeByLogisticsCenterCode(logisticsCenterCode, warehouseTypeCode);
-        if(CollectionUtils.isEmptyCollection(dtoList)){
-            WarehouseResVo warehouseResVo = new WarehouseResVo();
-            BeanCopyUtils.copy(dtoList.get(0),warehouseResVo);
-            return warehouseResVo;
+        if(CollectionUtils.isNotEmptyCollection(dtoList)){
+            return BeanCopyUtils.copyList(dtoList,WarehouseResVo.class);
         }
         return null;
     }
