@@ -34,4 +34,57 @@
     distribution_sales_amount_yearonyear, distribution_margin, pre_distribution_margin, 
     distribution_margin_yearonyear, create_time
   </sql>
+  <select id="negativeDeptSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeDeptResponse">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName,
+      sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+      sum(ifnull(channel_sales_cost,0)) as channelSalesCost, sum(ifnull(channel_margin,0)) as channelMargin,
+      sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(distribution_margin,0)) as distributionMargin,
+      sum(ifnull(pre_channel_sales_amount,0)) as preChannelSalesAmount, sum(ifnull(pre_channel_margin,0)) as preChannelMargin,
+      sum(ifnull(pre_distribution_sales_amount,0)) as preDistributionSalesAmount, sum(ifnull(pre_distribution_margin,0)) as preDistributionMargin
+    from stat_dept_negative_margin_yearly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+  </select>
+  <select id="negativeByCompany" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse">
+    select
+    product_sort_code as productSortCode, product_sort_name as productSortName,
+    price_channel_code as priceChannelCode, price_channel_name as priceChannelName
+    from stat_dept_negative_margin_yearly
+    where
+      stat_year = #{year,jdbcType=BIGINT}
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    group by price_channel_code
+    order by price_channel_code
+  </select>
+  <select id="negativeCompanySum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeCompanyResponse">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName,
+      price_channel_code as priceChannelCode, price_channel_name as priceChannelName,
+      sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+      sum(ifnull(channel_sales_cost,0)) as channelSalesCost, sum(ifnull(channel_margin,0)) as channelMargin,
+      sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(distribution_margin,0)) as distributionMargin,
+      sum(ifnull(pre_channel_sales_amount,0)) as preChannelSalesAmount, sum(ifnull(pre_channel_margin,0)) as preChannelMargin,
+      sum(ifnull(pre_distribution_sales_amount,0)) as preDistributionSalesAmount, sum(ifnull(pre_distribution_margin,0)) as preDistributionMargin
+    from stat_dept_negative_margin_yearly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    and price_channel_code = #{priceChannelCode,jdbcType=VARCHAR}
+  </select>
+  <select id="negativeCategoryList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeCategoryResponse">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName, price_channel_code as priceChannelCode,
+      price_channel_name as priceChannelName, lv1, lv1_category_name as lv1CategoryName,
+      ifnull(sales_num,0) as salesNum, ifnull(channel_sales_amount,0) as channelSalesAmount,
+      ifnull(channel_sales_cost,0) as channelSalesCost, ifnull(channel_margin,0) as channelMargin,
+      ifnull(distribution_sales_amount,0) as distributionSalesAmount, ifnull(distribution_margin,0) as distributionMargin,
+      ifnull(channel_sales_amount_yearonyear,0) as channelSalesAmountYearonyear, ifnull(channel_margin_yearonyear, 0) as channelMarginYearonyear,
+      ifnull(distribution_sales_amount_yearonyear ,0) as distributionSalesAmountYearonyear,
+      ifnull(distribution_margin_yearonyear, 0) as distributionMarginYearonyear,
+      create_time as createTime
+    from stat_dept_negative_margin_yearly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    and price_channel_code = #{priceChannelCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

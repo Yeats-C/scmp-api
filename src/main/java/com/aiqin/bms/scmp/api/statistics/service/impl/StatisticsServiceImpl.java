@@ -184,13 +184,13 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public HttpResponse negativeGross(String date, Integer type, Integer reportType, Long seasonType, String productSortCode){
-        NegativeSumResponse sumResponse = new NegativeSumResponse();
         if(StringUtils.isEmpty(date) || type == null || reportType == null){
             LOGGER.info("参数缺失");
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 计算公司的负毛利统计
         if(type.equals(Global.COMPANY)){
+            NegativeSumResponse sumResponse = new NegativeSumResponse();
             if(reportType.equals(Global.ANNUAL_REPORT)){
                 Long year = Long.valueOf(date);
                 // 计算公司的负毛利统计- 年报
@@ -210,24 +210,29 @@ public class StatisticsServiceImpl implements StatisticsService {
             }
             return HttpResponse.success(sumResponse);
         }else {
+            NegativeDeptResponse deptResponse = new NegativeDeptResponse();
             if(StringUtils.isEmpty(productSortCode) ){
                 return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
             }
             // 计算部门的负毛利统计
             if(reportType.equals(Global.ANNUAL_REPORT)){
                 // 计算部门的负毛利统计- 年报
-
+                Long year = Long.valueOf(date);
+                deptResponse = this.departmentNegative(year, null, productSortCode, deptResponse, 0);
             }else if(reportType.equals(Global.QUARTERLY_REPORT)){
                 // 计算部门的负毛利统计- 季报
                 if(seasonType == null){
                     return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
                 }
-
+                Long year = Long.valueOf(date);
+                deptResponse = this.departmentNegative(year, seasonType, productSortCode, deptResponse, 1);
             }else if(reportType.equals(Global.MONTHLY_REPORT)){
                 // 计算部门的负毛利统计- 月报
-
+                Long year = Long.valueOf(date.substring(0, 4));
+                Long month = Long.valueOf(date.substring(5, date.length()));
+                deptResponse = this.departmentNegative(year, month, productSortCode, deptResponse, 2);
             }
-            return HttpResponse.success();
+            return HttpResponse.success(deptResponse);
         }
     }
 
@@ -315,6 +320,63 @@ public class StatisticsServiceImpl implements StatisticsService {
             }
         }
         return sumResponse;
+    }
+
+    private NegativeDeptResponse departmentNegative(Long year, Long data, String productSortCode, NegativeDeptResponse deptResponse, int i) {
+        List<CompanyAndDeptResponse> companys;
+        List<NegativeCompanyResponse> companyList;
+        NegativeCompanyResponse companyResponse;
+        List<NegativeCategoryResponse> categoryList;
+        NegativeRateResponse rateResponse;
+        if (i == 0) {
+            deptResponse = statDeptNegativeMarginYearlyDao.negativeDeptSum(year, productSortCode);
+            companys = statDeptNegativeMarginYearlyDao.negativeByCompany(year, productSortCode);
+        } else if (i == 1) {
+            deptResponse = statDeptNegativeMarginQuarterlyDao.negativeDeptSum(year, data, productSortCode);
+            companys = statDeptNegativeMarginQuarterlyDao.negativeByCompany(year, data, productSortCode);
+        } else {
+            deptResponse = statDeptNegativeMarginMonthlyDao.negativeDeptSum(year, data, productSortCode);
+            companys = statDeptNegativeMarginMonthlyDao.negativeByCompany(year, data, productSortCode);
+        }
+        if (CollectionUtils.isNotEmptyCollection(companys)) {
+            companyList = new ArrayList<>();
+            for (CompanyAndDeptResponse company : companys) {
+                if (i == 0) {
+                    companyResponse = statDeptNegativeMarginYearlyDao.negativeCompanySum(year, company.getPriceChannelCode(),
+                            productSortCode);
+                } else if (i == 1) {
+                    companyResponse = statDeptNegativeMarginQuarterlyDao.negativeCompanySum(year, data, company.getPriceChannelCode(),
+                            productSortCode);
+                } else {
+                    companyResponse = statDeptNegativeMarginMonthlyDao.negativeCompanySum(year, data, company.getPriceChannelCode(),
+                            productSortCode);
+                }
+                if (companyResponse != null) {
+                    if (i == 0) {
+                        categoryList = statDeptNegativeMarginYearlyDao.negativeCategoryList(year, company.getPriceChannelCode(),
+                                productSortCode);
+                    } else if (i == 1) {
+                        categoryList = statDeptNegativeMarginQuarterlyDao.negativeCategoryList(year, data, company.getPriceChannelCode(),
+                                company.getProductSortCode());
+                    } else {
+                        categoryList = statDeptNegativeMarginMonthlyDao.negativeCategoryList(year, data, company.getPriceChannelCode(),
+                                company.getProductSortCode());
+                    }
+                    companyResponse.setCategoryList(categoryList);
+                    rateResponse = new NegativeRateResponse();
+                    BeanUtils.copyProperties(companyResponse, rateResponse);
+                    NegativeRateResponse rate = this.negativeRate(rateResponse);
+                    BeanUtils.copyProperties(rate, companyResponse);
+                    companyList.add(companyResponse);
+                }
+            }
+            rateResponse = new NegativeRateResponse();
+            BeanUtils.copyProperties(deptResponse, rateResponse);
+            NegativeRateResponse rate = this.negativeRate(rateResponse);
+            BeanUtils.copyProperties(rate, deptResponse);
+            deptResponse.setCompanyList(companyList);
+        }
+        return deptResponse;
     }
 
     private NegativeRateResponse negativeRate(NegativeRateResponse rateResponse){
