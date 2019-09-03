@@ -42,7 +42,7 @@ public class StatisticsController {
     @ApiOperation("门店复购率统计")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "date", value = "日期", type = "String"),
-            @ApiImplicitParam(name = "type", value = "部门类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
     public HttpResponse<StoreRepurchaseRateResponse> storeRepurchaseRate(
             @RequestParam("date") String date,  @RequestParam("type") Integer type,
@@ -54,14 +54,16 @@ public class StatisticsController {
     @ApiOperation("负毛利统计")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "date", value = "日期", type = "String"),
-            @ApiImplicitParam(name = "type", value = "部门类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
             @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 1 季报 2 月报", type = "Integer"),
+            @ApiImplicitParam(name = "season_type", value = "季节: 1 第一季节 2 第二季节 3 第三季节  4 第四季节", type = "Long"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
     public HttpResponse negativeGross(
             @RequestParam("date") String date,  @RequestParam("type") Integer type,
             @RequestParam(value = "report_type") Integer reportType,
+            @RequestParam(value = "season_type", required = false) Long seasonType,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
-        return statisticsService.negativeGross(date, type, reportType, productSortCode);
+        return statisticsService.negativeGross(date, type, reportType, seasonType, productSortCode);
     }
 
 }

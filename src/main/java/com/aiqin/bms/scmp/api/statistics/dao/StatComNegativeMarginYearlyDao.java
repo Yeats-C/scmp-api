@@ -11,18 +11,18 @@ import java.util.List;
 
 public interface StatComNegativeMarginYearlyDao {
 
-    NegativeSumResponse negativeByDeptSum(Long year);
+    NegativeSumResponse negativeSum(Long year);
 
     List<CompanyAndDeptResponse> negativeByDept(Long year);
 
     List<CompanyAndDeptResponse> negativeByCompany(@Param("year") Long year,
                                                    @Param("productSortCode") String productSortCode);
 
-    NegativeCompanyResponse negativeCompanyList(@Param("year") Long year,
+    NegativeCompanyResponse negativeCompanySum(@Param("year") Long year,
                                                       @Param("priceChannelCode") String priceChannelCode,
                                                       @Param("productSortCode") String productSortCode);
 
-    NegativeDeptResponse negativeDeptList(@Param("year") Long year,
+    NegativeDeptResponse negativeDeptSum(@Param("year") Long year,
                                                 @Param("productSortCode") String productSortCode);
 
     List<NegativeCategoryResponse> negativeCategoryList(@Param("year") Long year,
