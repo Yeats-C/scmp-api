@@ -289,6 +289,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         //TODO
         //查询最近审批通过的一条数据
         ApplySupplyCompany newest = applySupplyCompanyDao.selectBySupplyCodeForNewest(getUser().getCompanyCode(),applySupplyCompanyReqVO.getApplySupplyCode(),2);
+        String oldApplyCode = newest.getApplySupplyCompanyCode();
         //供货单位申请编码
         if (Objects.isNull(newest)) {
             log.error("数据异常，无法找到已审核通过的数据");
@@ -301,15 +302,27 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
         saveVO.setApplySupplyCompanyCode(code);
         saveVO.setUpdateBy(getUser().getPersonName());
         saveVO.setUpdateTime(new Date());
+        saveVO.setApplyStatus((byte) 5);
+        saveVO.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
         //补充发货信息
-        List<ApplyDeliveryInformation> deliverys = applyDeliveryInformationMapper.selectByApplyCode(newest.getApplySupplyCompanyCode());
+        List<ApplyDeliveryInformation> deliverys = applyDeliveryInformationMapper.selectByApplyCode(oldApplyCode);
         //对比
         List<ApplyDeliveryInformation> list = compareValue(applySupplyCompanyReqVO.getDeliveryInfoList(),deliverys);
-        list.forEach(o->{o.setApplySupplyCompanyCode(code);o.setApplyCode(code);o.setApplySupplyCompanyName(saveVO.getApplySupplyName());});
+        list.forEach(o->{o.setApplySupplyCompanyCode(code);o.setApplyCode(code);o.setApplySupplyCompanyName(saveVO.getApplySupplyName());o.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());o.setApplyStatus((byte) 0);});
         //补充采购组
         List<ApplySupplyCompanyPurchaseGroupReqVo> purchaseGroupVos = applySupplyCompanyReqVO.getPurchaseGroupVos();
         List<ApplySupplyCompanyPurchaseGroup> saveGroup = BeanCopyUtils.copyList(purchaseGroupVos, ApplySupplyCompanyPurchaseGroup.class);
         saveGroup.forEach(o->{o.setApplySupplyCompanyCode(code);o.setApplySupplyCompanyName(saveVO.getApplySupplyName());});
+        //补充文件信息
+        List<SupplierFileReqVO> fileReqVOList = applySupplierFileService.selectByApplyCode(oldApplyCode);
+        if(CollectionUtils.isNotEmptyCollection(fileReqVOList)){
+            fileReqVOList.forEach(item->{
+                item.setApplySupplierCode(saveVO.getApplySupplyCompanyCode());
+                item.setApplySupplierName(saveVO.getApplySupplyName());
+                item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+            });
+            applySupplierFileService.copySaveInfo(fileReqVOList);
+        }
         //保存
         //主表
         applySupplyCompanyMapper.insert(saveVO);
@@ -325,7 +338,7 @@ public class ApplySupplyComServcieImpl extends BaseServiceImpl implements ApplyS
     }
 
     /**
-     * 这里做全替换。如果退货喝发货有一个没有。那么全体换
+     * 这里做全替换。如果退货和发货有一个没有。那么全体换
      * @param deliveryInfoList
      * @param deliverys
      * @return
