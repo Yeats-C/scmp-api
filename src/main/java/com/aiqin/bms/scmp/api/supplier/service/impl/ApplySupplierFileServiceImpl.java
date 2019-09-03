@@ -83,4 +83,9 @@ public class ApplySupplierFileServiceImpl implements ApplySupplierFileService {
     public int insert(SupplierFile supplierFile) {
         return supplierFileDao.insert(supplierFile);
     }
+
+    @Override
+    public List<SupplierFileReqVO> selectByApplyCode(String oldApplyCode) {
+        return supplierFileDao.selectByApplyCode(oldApplyCode);
+    }
 }

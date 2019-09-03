@@ -33,4 +33,11 @@ public interface ApplySupplierFileService {
      * @return
      */
     int insert(SupplierFile supplierFile);
+
+    /**
+     * 保存信心
+     * @param oldApplyCode
+     * @return
+     */
+    List<SupplierFileReqVO> selectByApplyCode(String oldApplyCode);
 }

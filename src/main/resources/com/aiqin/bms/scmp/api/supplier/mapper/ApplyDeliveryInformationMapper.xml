@@ -33,11 +33,25 @@
     send_to, send_province_id, send_province_name, send_city_id, send_city_name, send_district_id,
     send_district_name, sending_address, delivery_days, delivery_type
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <insert id="insertBatch" parameterType="java.util.List">
+        insert into apply_delivery_information (send_to,send_province_id,send_province_name,send_city_id,send_city_name,send_district_id,send_district_name,sending_address,del_flag,create_time,create_by,update_time,update_by,apply_status,apply_type,auditor_by,auditor_time,apply_code,delivery_days,delivery_type,apply_supply_company_code,apply_supply_company_name)
+        values
+        <foreach collection="list" open="" close="" item="item" separator=",">
+    (#{item.sendTo,jdbcType=VARCHAR},#{item.sendProvinceId,jdbcType=VARCHAR},#{item.sendProvinceName,jdbcType=VARCHAR},#{item.sendCityId,jdbcType=VARCHAR},#{item.sendCityName,jdbcType=VARCHAR},#{item.sendDistrictId,jdbcType=VARCHAR},#{item.sendDistrictName,jdbcType=VARCHAR},#{item.sendingAddress,jdbcType=VARCHAR},#{item.delFlag,jdbcType=TINYINT},#{item.createTime,jdbcType=TIMESTAMP},#{item.createBy,jdbcType=VARCHAR},#{item.updateTime,jdbcType=TIMESTAMP},#{item.updateBy,jdbcType=VARCHAR},#{item.applyStatus,jdbcType=TINYINT},#{item.applyType,jdbcType=TINYINT},#{item.auditorBy,jdbcType=VARCHAR},#{item.auditorTime,jdbcType=TIMESTAMP},#{item.applyCode,jdbcType=VARCHAR},#{item.deliveryDays,jdbcType=BIGINT},#{item.deliveryType,jdbcType=TINYINT},#{item.applySupplyCompanyCode,jdbcType=VARCHAR},#{item.applySupplyCompanyName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from apply_delivery_information
     where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByApplyCode"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_delivery_information
+    where apply_supply_company_code = #{applySupplyCompanyCode}
   </select>
 
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyDeliveryInformation">

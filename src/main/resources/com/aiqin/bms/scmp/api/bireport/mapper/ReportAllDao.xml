@@ -607,7 +607,7 @@
         <where>
             1=1
             <if test="month!=null and month!=''">
-                and bmcbs.month = #{month}
+                and bmcbs.year_month = #{month}
             </if>
             <if test="priceChannelCode!=null and priceChannelCode!=''">
                 and bmcbs.price_channel_code=#{priceChannelCode}
@@ -1332,9 +1332,7 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeBrandSalesRespVo">
         select
         bmcbs.id as id,
-        bmcbs.month as month,
-        bmcbs.product_sort_code as productSortCode,
-        bmcbs.product_sort_name as productSortName,
+        bmcbs.year_month as yearMonth,
         bmcbs.price_channel_code as priceChannelCode,
         bmcbs.price_channel_name as priceChannelName,
         bmcbs.store_type_code as storeTypeCode,
@@ -1343,31 +1341,33 @@
         bmcbs.data_type as dataType,
         bmcbs.category_code as categoryCode,
         bmcbs.category_name as categoryName,
+        bmcbs.product_sort_code as productSortCode,
+        bmcbs.product_sort_name as productSortName,
         bmcbs.product_property_code as productPropertyCode,
         bmcbs.product_property_name as productPropertyName,
-        bmcbs.sales_cost as salesCost,
-        bmcbs.channel_sales as channelSales,
-        bmcbs.channel_last_year_sales as channelLastYearSales,
-        bmcbs.channel_last_month_sales as channelLastMonthSales,
-        bmcbs.channel_compared_same as channelComparedSame,
-        bmcbs.channel_sequential as channelSequential,
-        bmcbs.channel_maori as channelMaori,
-        bmcbs.channel_maori_rate as channelMaoriRate,
-        bmcbs.channel_last_month_maori_rate as channelLastMonthMaoriRate,
-        bmcbs.last_year_channel_maori_rate as lastYearChannelMaoriRate,
-        bmcbs.channel_margin_rate_sequential as channelMarginRateSequential,
-        bmcbs.channel_gross_margin_compared_same as channelGrossMarginComparedSame,
-        bmcbs.distribution_sales as distributionSales,
-        bmcbs.distribution_last_year_sales as distributionLastYearSales,
-        bmcbs.distribution_last_month_sales as distributionLastMonthSales,
-        bmcbs.distribution_compared_same as distributionComparedSame,
-        bmcbs.distribution_sequential as distributionSequential,
-        bmcbs.distribution_maori as distributionMaori,
-        bmcbs.distribution_maori_rate as distributionMaoriRate,
-        bmcbs.distribution_last_maori_rate as distributionLastMaoriRate,
-        bmcbs.last_year_distribution_maori_rate as lastYearDistributionMaoriRate,
-        bmcbs.distribution_margin_rate_sequential as distributionMarginRateSequential,
-        bmcbs.distribution_gross_margin_compared_same as distributionGrossMarginComparedSame,
+        bmcbs.total_stock_cost as totalStockCost,
+        bmcbs.total_channel_amount_daily as totalChannelAmountDaily,
+        bmcbs.total_last_year_channel_amount_daily as totalLastYearChannelAmountDaily,
+        bmcbs.total_last_month_channel_amount_daily as totalLastMonthChannelAmountDaily,
+        bmcbs.total_channel_amount_daily_compared_same as totalChannelAmountDailyComparedSame,
+        bmcbs.total_channel_amount_daily_sequential as totalChannelAmountDailySequential,
+        bmcbs.total_channel_maori as totalChannelMaori,
+        bmcbs.total_channel_maori_rate as totalChannelMaoriRate,
+        bmcbs.total_last_year_channel_maori_rate as totalLastYearChannelMaoriRate,
+        bmcbs.total_last_month_channel_maori_rate as totalLastMonthChannelMaoriRate,
+        bmcbs.total_channel_gross_margin_compared_same as totalChannelGrossMarginComparedSame,
+        bmcbs.total_channel_gross_margin_rate_sequential as totalChannelGrossMarginRateSequential,
+        bmcbs.total_distribution_amount_daily as totalDistributionAmountDaily,
+        bmcbs.total_last_year_distribution_amount_daily as totalLastYearDistributionAmountDaily,
+        bmcbs.total_last_month_distribution_amount_daily as totalLastMonthDistributionAmountDaily,
+        bmcbs.total_distribution_amount_daily_compared_same as totalDistributionAmountDailyComparedSame,
+        bmcbs.total_distribution_amount_daily_sequential as totalDistributionAmountDailySequential,
+        bmcbs.total_distribution_amount as totalDistributionAmount,
+        bmcbs.total_distribution_maori_rate as totalDistributionMaoriRate,
+        bmcbs.total_last_year_distribution_maori_rate as totalLastYearDistributionMaoriRate,
+        bmcbs.total_last_month_distribution_maori_rate as totalLastMonthDistributionMaoriRate,
+        bmcbs.total_distribution_margin_rate_sequential as totalDistributionMarginRateSequential,
+        bmcbs.total_distribution_gross_margin_compared_same as totalDistributionGrossMarginComparedSame,
         date_format(bmcbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_month_cumulative_brand_sales bmcbs
         <include refid="select_month_cumulative_brand_sales"/>

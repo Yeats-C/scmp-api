@@ -47,7 +47,24 @@
       a.apply_supplier_code supplier_code
     from apply_supplier_file a WHERE del_flag =0 AND a.apply_supplier_code=#{code,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteFile" parameterType="java.lang.String">
+    <select id="selectByApplyCode"
+            resultType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierFileReqVO">
+      SELECT
+        id,
+        apply_type applyType,
+        file_path filePath,
+        file_code fileCode,
+        del_flag delFlag,
+        apply_supplier_name applySupplierName,
+        file_name fileName,
+        create_time createTime,
+        create_by createBy,
+        update_time updateTime,
+        update_by updateBy,
+        apply_supplier_code applySupplierCode
+      from apply_supplier_file  where apply_supplier_code=#{oldApplyCode,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteFile" parameterType="java.lang.String">
     DELETE FROM supplier_file WHERE supplier_code=#{supplierCode,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierFile">

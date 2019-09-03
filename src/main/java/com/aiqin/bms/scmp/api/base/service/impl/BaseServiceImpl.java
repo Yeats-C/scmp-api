@@ -205,7 +205,7 @@ public class BaseServiceImpl implements BaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String getCode(String prefix, String Code){
+    public synchronized String getCode(String prefix, String Code){
         EncodingRule numberingType = encodingRuleDao.getNumberingType(Code);
         String code = prefix + numberingType.getNumberingValue();
         //更新编码
