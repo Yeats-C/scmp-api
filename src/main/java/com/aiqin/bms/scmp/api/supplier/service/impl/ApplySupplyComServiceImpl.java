@@ -331,7 +331,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             applyDeliveryInformationMapper.insertBatch(list);
         }
         if(CollectionUtils.isNotEmptyCollection(saveGroup)){
-            ((ApplySupplyComServcie) AopContext.currentProxy()).saveApplyPurchaseGroupList(saveGroup);
+            ((ApplySupplyComService) AopContext.currentProxy()).saveApplyPurchaseGroupList(saveGroup);
         }
         //存日志
         supplierCommonService.getInstance(code+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), null,null,HandleTypeCoce.PENDING.getName());
