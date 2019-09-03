@@ -10,6 +10,6 @@ public interface StatisticsService {
 
     HttpResponse<StoreRepurchaseRateResponse> storeRepurchaseRate(String date, Integer type, String productSortCode);
 
-    HttpResponse negativeGross(String date, Integer type, Integer reportType, Integer seasonType, String productSortCode);
+    HttpResponse negativeGross(String date, Integer type, Integer reportType, Long seasonType, String productSortCode);
 
 }
