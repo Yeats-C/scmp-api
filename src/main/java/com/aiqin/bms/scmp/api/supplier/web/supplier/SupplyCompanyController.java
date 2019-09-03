@@ -11,7 +11,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyCom
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailByCodeRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComListRespVO;
-import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComServcie;
+import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -41,7 +41,7 @@ import java.util.List;
 @Slf4j
 public class SupplyCompanyController extends SupplierBaseController {
     @Autowired
-    private ApplySupplyComServcie applySupplyComServcie;
+    private ApplySupplyComService applySupplyComService;
     @Autowired
     private SupplyComService supplyComService;
 
@@ -72,7 +72,7 @@ public class SupplyCompanyController extends SupplierBaseController {
     @ApiOperation("新增供应商")
     public HttpResponse addApplySupplyCompany(@RequestBody @Validated ApplySupplyCompanyReqVO applySupplyCompanyReqVO){
         try {
-            return  applySupplyComServcie.saveApply(applySupplyCompanyReqVO);
+            return  applySupplyComService.saveApply(applySupplyCompanyReqVO);
         } catch (GroundRuntimeException ex) {
             return HttpResponse.failure(MessageId .create(Project.SUPPLIER_API,13,ex.getMessage()));
         } catch (BizException ex) {
@@ -89,7 +89,7 @@ public class SupplyCompanyController extends SupplierBaseController {
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,"供应商编码不能为空"));
         }
         try {
-            return HttpResponse.success(applySupplyComServcie.updateApply(applySupplyCompanyReqVO));
+            return HttpResponse.success(applySupplyComService.updateApply(applySupplyCompanyReqVO));
         } catch (GroundRuntimeException ex) {
             return HttpResponse.failure(MessageId .create(Project.SUPPLIER_API,13,ex.getMessage()));
         } catch (BizException ex) {
@@ -145,7 +145,7 @@ public class SupplyCompanyController extends SupplierBaseController {
     @ApiOperation(value = "新增批量导入")
     public HttpResponse<SupplierImportResp> importData(MultipartFile file, String purchaseGroupCode,String purchaseGroupName){
         try {
-            return HttpResponse.success(applySupplyComServcie.dealImport(file));
+            return HttpResponse.success(applySupplyComService.dealImport(file));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
@@ -158,7 +158,7 @@ public class SupplyCompanyController extends SupplierBaseController {
     @ApiOperation(value = "新增导入保存")
     public HttpResponse<Boolean> importSupplierNewSave(@RequestBody SupplierImportReq req){
         try {
-            return HttpResponse.success(applySupplyComServcie.importSupplierNewSave(req));
+            return HttpResponse.success(applySupplyComService.importSupplierNewSave(req));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (GroundRuntimeException e) {
@@ -175,7 +175,7 @@ public class SupplyCompanyController extends SupplierBaseController {
     @ApiOperation(value = "修改批量导入")
     public HttpResponse<SupplierImportResp> importData2(MultipartFile file,String purchaseGroupCode,String purchaseGroupName){
         try {
-            return HttpResponse.success(applySupplyComServcie.dealImport2(file));
+            return HttpResponse.success(applySupplyComService.dealImport2(file));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
@@ -188,7 +188,7 @@ public class SupplyCompanyController extends SupplierBaseController {
     @ApiOperation(value = "修改导入保存")
     public HttpResponse<Boolean> importSupplierNewUpdate(@RequestBody SupplierImportReq req){
         try {
-            return HttpResponse.success(applySupplyComServcie.importSupplierNewUpdate(req));
+            return HttpResponse.success(applySupplyComService.importSupplierNewUpdate(req));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {

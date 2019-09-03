@@ -181,4 +181,7 @@ public class ApplyContractReqVo{
     @ApiModelProperty("文件信息")
     private List<ApplyContractFileReqVo> fileReqVos;
 
+    @ApiModelProperty("判断来源 0:非导入 1:导入, 如果从导入新增/修改 不进入审批流,审批状态待提交")
+    private Byte source = 0;
+
 }
