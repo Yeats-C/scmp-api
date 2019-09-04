@@ -121,4 +121,6 @@ public interface ReturnOrderInfoDao {
     int updateByReturnOrderCodeSelective(ReturnOrderInfo returnOrderInfo);
 
     List<ReturnOrderInfo> listForSap(SapOrderRequest sapOrderRequest);
+
+    int updateByOrderCodes(@Param(value = "list")List<String> orderCodes);
 }

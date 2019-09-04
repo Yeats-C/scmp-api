@@ -531,4 +531,15 @@
       </if>
     </where>
   </update>
+  <select id="listDetailForSap" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound_product
+    where
+    outbound_oder_code in(
+    <foreach collection="orderCodeList" separator="," item="item">
+      #{item}
+    </foreach>
+    )
+  </select>
 </mapper>

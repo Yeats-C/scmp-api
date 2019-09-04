@@ -685,4 +685,12 @@
     from outbound
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="listForSap" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound
+    where  synchr_time <![CDATA[<=]]> #{finishTime,jdbcType=VARCHAR}
+    and synchr_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
+    and synchr_status = 0
+  </select>
 </mapper>

@@ -1427,9 +1427,21 @@ update order_info
        <include refid="Base_Column_List" />
        from order_info
        <where>
-          update_time <![CDATA[<=]]> #{finishTime,jdbcType=VARCHAR}
-          and update_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
+           synchr_time <![CDATA[<=]]> #{finishTime,jdbcType=VARCHAR}
+          and synchr_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
           and order_status = 12
+          and synchr_status = 0
        </where>
    </select>
+    <update id="updateByOrderCodes">
+        update
+          order_info
+        set
+           synchr_status=1
+        where
+        order_code in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </update>
 </mapper>

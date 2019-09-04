@@ -58,7 +58,7 @@ public class Storage {
      */
     @JsonProperty("source_order_type")
     @ApiModelProperty("来源业务单类型0 采购 5 退供 10 配送订单 15 直送订单 20 辅采订单  25 售后退货 30 出入库")
-    private Integer sourceOrderType;
+    private String sourceOrderType;
     /**
      * 类型描述
      */

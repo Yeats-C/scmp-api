@@ -1,6 +1,4 @@
-package com.aiqin.bms.scmp.api.abutment.service;
-
-import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
+package com.aiqin.bms.scmp.api.abutment.jobs;
 
 /**
  * <p>
@@ -28,6 +26,6 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
  * <p>
  * 思维方式*热情*能力
  */
-public interface SapBaseDataService {
-    void saleSynchronization(SapOrderRequest sapOrderRequest);
+public interface SapScheduledService {
+    void orderInfoAbutment();
 }

@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -69,4 +70,6 @@ public interface OrderInfoDao {
      * @return
      */
     List<OrderInfo> listForSap(SapOrderRequest sapOrderRequest);
+
+    int updateByOrderCodes(@Param(value = "list") List<String> orderCodes);
 }
