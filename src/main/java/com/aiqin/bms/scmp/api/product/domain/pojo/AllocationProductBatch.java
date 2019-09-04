@@ -79,4 +79,10 @@ public class AllocationProductBatch extends CommonBean {
 
     @ApiModelProperty("生产日期")
     private String productDate;
+
+    @ApiModelProperty("供应商名称")
+    private String supplierName;
+
+    @ApiModelProperty("供应商code")
+    private String supplierCode;
 }

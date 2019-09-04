@@ -28,9 +28,11 @@ import lombok.Data;
  * <p>
  * <p>
  * 思维方式*热情*能力
+ * 带供应商的详情
  */
 @Data
-public class ReturnDetailRequest {
+public class OutboundSupplyDetailRequest {
+
     @ApiModelProperty("商品行号")
     private Long productLineNum;
 
@@ -46,19 +48,12 @@ public class ReturnDetailRequest {
     @ApiModelProperty("实发数量")
     private Long actualDeliverNum;
 
-    @ApiModelProperty("仓库名称")
-    private String warehouseName;
+    @ApiModelProperty(value="0不是，1是赠品")
+    private Integer giftType;
 
-    @ApiModelProperty("仓库编码")
-    private String warehouseCode ;
-
-    @ApiModelProperty("物流中心名称")
-    private String transportCenterName;
-
-    @ApiModelProperty("物流中心编码")
-    private String transportCenterCode;
-
-    @ApiModelProperty("供应商code")
+    @ApiModelProperty(value="供货单位code")
     private String supplyCode;
 
+    @ApiModelProperty(value="供货单位DL的id")
+    private String supplyId;
 }
