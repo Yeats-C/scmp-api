@@ -30,7 +30,7 @@ import java.util.List;
  * @author: wangxu
  * @date: 2018/12/3 0003 16:40
  */
-public interface ApplySupplyComServcie {
+public interface ApplySupplyComService {
     /**
      * 编码，数据设置
      * @param applySupplyCompanyReqVO

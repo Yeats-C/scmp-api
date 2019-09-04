@@ -4,11 +4,21 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.dao.ProductBrandTypeDao;
+import com.aiqin.bms.scmp.api.product.domain.request.brand.QueryProductBrandReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryProductBrandRespVO;
+import com.aiqin.bms.scmp.api.product.service.ProductCategoryService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.applycontract.ApplyContractDao;
 import com.aiqin.bms.scmp.api.supplier.dao.applycontract.ApplyContractPurchaseVolumeDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractDao;
 import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractPurchaseVolumeDao;
+import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.ContractImportResp;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.check.CheckContract;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.im.ContractImportNew;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
@@ -30,12 +40,12 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractBrandRes
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractCategoryResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractFileResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseGroupResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.*;
-import com.aiqin.bms.scmp.api.supplier.service.ApplyContractService;
-import com.aiqin.bms.scmp.api.supplier.service.ContractService;
-import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
-import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
+import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
+import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
@@ -45,17 +55,19 @@ import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 ;
 
@@ -123,6 +135,21 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
     @Autowired
     private ContractService contractService;
 
+    @Autowired
+    private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
+
+    @Autowired
+    private SupplyCompanyDao supplyCompanyDao;
+
+    @Autowired
+    private PurchaseGroupService purchaseGroupService;
+
+    @Autowired
+    private ProductCategoryService productCategoryService;
+
+    @Autowired
+    private ProductBrandTypeDao productBrandTypeDao;
+
     /**
      * 分页获取申请合同列表
      *
@@ -158,7 +185,6 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
     @Transactional(rollbackFor = GroundRuntimeException.class)
     @Save
     public int saveApplyContract(ApplyContractReqVo applyContractReqVo) {
-
         // 转化成数据库访问实体
         ApplyContractDTO applyContractDTO = new ApplyContractDTO();
         BeanCopyUtils.copy(applyContractReqVo,applyContractDTO);
@@ -167,7 +193,11 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         String code = applyContractReqVo.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(encodingRule.getNumberingValue());
         applyContractDTO.setApplyContractCode(code);
         //申请状态
-        applyContractDTO.setApplyStatus(ApplyStatus.PENDING.getNumber());
+        if(Objects.equals(Byte.valueOf("1"),applyContractReqVo.getSource())){
+            applyContractDTO.setApplyStatus(ApplyStatus.PENDING_SUBMISSION.getNumber());
+        } else {
+            applyContractDTO.setApplyStatus(ApplyStatus.PENDING.getNumber());
+        }
         //申请类型
         applyContractDTO.setApplyType(Byte.parseByte("0"));
         StringBuffer purchasingGroupCode = new StringBuffer();
@@ -1062,6 +1092,97 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         return detailRequestRespVo;
     }
 
+
+    /**
+     * 功能描述: 导入处理
+     *
+     * @param file
+     * @return
+     * @auther knight.xie
+     * @date 2019/9/2 15:50
+     */
+    @Override
+    public ContractImportResp dealImport(MultipartFile file) {
+        try {
+            List<ContractImportNew> contractImportNews = ExcelUtil.readExcel(file, ContractImportNew.class, 1, 0);
+            //验证数据
+            dataValidation(contractImportNews);
+            contractImportNews.remove(0);
+            //查询出需要验证的字典数据
+            List<String> dicName = Lists.newArrayList();
+            dicName.add("合同类型");
+            dicName.add("供货渠道类别");
+            dicName.add("合同管理-付款方式");
+            Map<String, SupplierDictionaryInfo> dictionaryInfoList = supplierDictionaryInfoDao.selectByName(dicName, getUser().getCompanyCode());
+            log.info(JSON.toJSONString(dictionaryInfoList));
+            //查询出所有供应商
+            List<String> companyNameList = Lists.newArrayList();
+            for (ContractImportNew contractImportNew : contractImportNews) {
+                if (!companyNameList.contains(contractImportNew.getSupplierName())) {
+                    companyNameList.add(contractImportNew.getSupplierName());
+                }
+            }
+            Map<String, SupplyCompany> supplyCompanies = supplyCompanyDao.selectOfficialByCompanyNameList(companyNameList, getUser().getCompanyCode());
+            //查出采购组
+            List<PurchaseGroupVo> purchaseGroups = purchaseGroupService.getPurchaseGroup(null);
+            Map<String, PurchaseGroupVo> purchaseGroupVoList = purchaseGroups.stream().collect(Collectors.toMap(PurchaseGroupVo::getPurchaseGroupName, Function.identity(), (k1, k2) -> k2));
+            //查出品类
+            List<ProductCategoryRespVO> categoryRespVos = productCategoryService.getTree((byte) 0, "0");
+            Map<String, ProductCategoryRespVO> categoryList = categoryRespVos.stream().collect(Collectors.toMap(ProductCategoryRespVO::getCategoryName, Function.identity(), (k1, k2) -> k2));
+            //查出品牌
+            QueryProductBrandReqVO vo = new QueryProductBrandReqVO();
+            vo.setBrandStatus(0);
+            vo.setCompanyCode(getUser().getCompanyCode());
+            List<QueryProductBrandRespVO> brandRespVOS = productBrandTypeDao.selectListByQueryVO(vo);
+            Map<String, QueryProductBrandRespVO> brandList = brandRespVOS.stream().collect(Collectors.toMap(QueryProductBrandRespVO::getBrandName, Function.identity(), (k1, k2) -> k2));
+            //封装返回值
+            List<ApplyContractReqVo> applyList = Lists.newArrayList();
+            List<String> errors = Lists.newArrayList();
+            CheckContract checkContract = null;
+            for (int i = 0; i < contractImportNews.size(); i++) {
+                 checkContract = new CheckContract(contractImportNews.get(i), supplyCompanies,
+                        dictionaryInfoList, purchaseGroupVoList, categoryList, brandList).checkCommonData();
+                applyList.add(checkContract.getReqVo());
+                if(CollectionUtils.isNotEmptyCollection(checkContract.getError())) {
+                    errors.add("第" + (i + 2) + "行 " + StringUtils.join(checkContract.getError(),","));
+                }
+            }
+            return new ContractImportResp(applyList,errors);
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.IMPORT_EXCEPTION);
+        }
+    }
+
+    /**
+     * 功能描述: 保存
+     *
+     * @param req
+     * @return
+     * @auther knight.xie
+     * @date 2019/9/3 19:31
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveImportData(ContractImportResp req) {
+        for (ApplyContractReqVo reqVO : req.getApplyList()) {
+            reqVO.setSource(Byte.valueOf("1"));
+            ((ApplyContractService)AopContext.currentProxy()).saveApplyContract(reqVO);
+        }
+    }
+
+    private void dataValidation(List<ContractImportNew> contractImportNews) {
+        if(CollectionUtils.isEmptyCollection(contractImportNews)) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        if (contractImportNews.size()<2) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
+        String  head = ContractImportNew.HEADER;
+        boolean equals = contractImportNews.get(0).toString().equals(head);
+        if(!equals){
+            throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
+        }
+    }
     private String fillZero(Long code){
         if (code >=0 && code <10) {
             return "00"+code;

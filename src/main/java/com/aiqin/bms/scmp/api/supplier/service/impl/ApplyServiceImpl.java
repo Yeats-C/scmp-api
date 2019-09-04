@@ -34,7 +34,7 @@ import java.util.List;
 public class ApplyServiceImpl implements ApplyService {
 
     @Autowired
-    private ApplySupplyComServcie applySupplyComServcie;
+    private ApplySupplyComService applySupplyComService;
     @Autowired
     private SupplierService supplierService;
     @Autowired
@@ -58,7 +58,7 @@ public class ApplyServiceImpl implements ApplyService {
         switch (querySupplierReqVO.getItemCode()){
 //            "功能项 1:供应商 2:供应商集团 3:账户 4:合同"
             case "1":
-                list = applySupplyComServcie.queryApplyList(querySupplierReqVO);
+                list = applySupplyComService.queryApplyList(querySupplierReqVO);
                 break;
             case "2":
                 list = supplierService.queryApplyList(querySupplierReqVO);
@@ -81,7 +81,7 @@ public class ApplyServiceImpl implements ApplyService {
         switch (applyReqVo.getItemCode()){
 //            "功能项 1:供应商 2:供应商集团 3:账户 4:合同"
             case "1":
-                ApplySupplyComDetailRespVO applySupplyComDetail = applySupplyComServcie.getApplySupplyComDetail(applyReqVo.getApplyCode());
+                ApplySupplyComDetailRespVO applySupplyComDetail = applySupplyComService.getApplySupplyComDetail(applyReqVo.getApplyCode());
                 httpResponse = HttpResponse.success(applySupplyComDetail);
                 break;
             case "2":
@@ -109,7 +109,7 @@ public class ApplyServiceImpl implements ApplyService {
             case "1":
                 CancelApplySupplyComReqVO cancelApplySupplyComReqVO = new CancelApplySupplyComReqVO();
                 cancelApplySupplyComReqVO.setId(applyReqVo.getId());
-                applySupplyComServcie.cancelApply(cancelApplySupplyComReqVO);
+                applySupplyComService.cancelApply(cancelApplySupplyComReqVO);
                 break;
             case "2":
                 CancelApplySupplierReqVO reqVO = new CancelApplySupplierReqVO();
@@ -132,7 +132,7 @@ public class ApplyServiceImpl implements ApplyService {
         DetailRequestRespVo respVo;
         switch (requsetParamReqVo.getItemCode()){
             case "1":
-                respVo = applySupplyComServcie.getInfoByForm(requsetParamReqVo.getFormNo());
+                respVo = applySupplyComService.getInfoByForm(requsetParamReqVo.getFormNo());
                 break;
             case "2":
                 respVo = applySupplierService.getInfoByForm(requsetParamReqVo.getFormNo());

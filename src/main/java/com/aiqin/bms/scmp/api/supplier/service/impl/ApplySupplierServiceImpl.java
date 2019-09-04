@@ -51,7 +51,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
     @Autowired
     private ApplySupplierDao applySupplierDao;
     @Autowired
-    private ApplySupplyComServcie applySupplyComServcie;
+    private ApplySupplyComService applySupplyComService;
     @Autowired
     private ApplySupplyComAcctService applySupplyComAcctService;
     @Autowired

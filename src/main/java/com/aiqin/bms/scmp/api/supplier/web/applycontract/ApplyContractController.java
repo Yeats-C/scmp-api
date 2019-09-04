@@ -1,20 +1,26 @@
 package com.aiqin.bms.scmp.api.supplier.web.applycontract;
 
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.ContractImportResp;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.ApplyContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.QueryApplyContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.UpdateApplyContractReqVo;
-import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.*;
+import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.ApplyContractUpdateResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.ApplyContractViewResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.QueryApplyContractResVo;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyContractService;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -122,6 +128,33 @@ public class ApplyContractController {
             return HttpResponse.success(applyContractService.updateStatusApplyContract(id));
         }catch (Exception ex){
             return HttpResponse.failure(MessageId.create(Project.MARKET_API, -1, ex.getMessage()));
+        }
+    }
+
+    @PostMapping("/import/add")
+    @ApiOperation(value = "新增批量导入")
+    public HttpResponse<ContractImportResp> importData(MultipartFile file, String purchaseGroupCode, String purchaseGroupName){
+        try {
+            return HttpResponse.success(applyContractService.dealImport(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/import/save")
+    @ApiOperation(value = "新增导入保存")
+    public HttpResponse<Boolean> saveImportData(@RequestBody ContractImportResp req){
+        try {
+            applyContractService.saveImportData(req);
+            return HttpResponse.success(true);
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (GroundRuntimeException e) {
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API,999,e.getMessage()));
+        }catch (Exception e) {
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
 }
