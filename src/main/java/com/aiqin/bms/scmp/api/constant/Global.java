@@ -149,6 +149,7 @@ public interface Global {
     /**
      * 统计报表数据类型
      *  0 公司 1 部门
+     *  报表类型: 0 年报 1 季报 2 月报 3 周报
      */
     Integer COMPANY  = 0;
     Integer DEPARTMENT = 1;

@@ -22,6 +22,10 @@
     <result column="distribution_margin" jdbcType="BIGINT" property="distributionMargin" />
     <result column="distribution_margin_yearonyear" jdbcType="DECIMAL" property="distributionMarginYearonyear" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="pre_channel_sales_amount" jdbcType="BIGINT" property="preChannelSalesAmount" />
+    <result column="pre_channel_margin" jdbcType="BIGINT" property="preChannelMargin" />
+    <result column="pre_distribution_sales_amount" jdbcType="BIGINT" property="preDistributionSalesAmount" />
+    <result column="pre_distribution_margin" jdbcType="BIGINT" property="preDistributionMargin" />
   </resultMap>
   <sql id="Base_Column_List">
     id, stat_year, stat_month, product_sort_code, product_sort_name, price_channel_code, 
@@ -30,4 +34,81 @@
     distribution_sales_amount_yearonyear, distribution_margin, distribution_margin_yearonyear, 
     create_time
   </sql>
+  <select id="negativeSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse">
+    select
+      sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+      sum(ifnull(channel_sales_cost,0)) as channelSalesCost, sum(ifnull(channel_margin,0)) as channelMargin,
+      sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(distribution_margin,0)) as distributionMargin,
+      sum(ifnull(pre_channel_sales_amount,0)) as preChannelSalesAmount, sum(ifnull(pre_channel_margin,0)) as preChannelMargin,
+      sum(ifnull(pre_distribution_sales_amount,0)) as preDistributionSalesAmount, sum(ifnull(pre_distribution_margin,0)) as preDistributionMargin
+    from stat_com_negative_margin_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+  </select>
+  <select id="negativeByDept" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse">
+    select
+     product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_com_negative_margin_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    group by product_sort_code
+    order by product_sort_code
+  </select>
+  <select id="negativeDeptSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeDeptResponse">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName,
+      sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+      sum(ifnull(channel_sales_cost,0)) as channelSalesCost, sum(ifnull(channel_margin,0)) as channelMargin,
+      sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(distribution_margin,0)) as distributionMargin,
+      sum(ifnull(pre_channel_sales_amount,0)) as preChannelSalesAmount, sum(ifnull(pre_channel_margin,0)) as preChannelMargin,
+      sum(ifnull(pre_distribution_sales_amount,0)) as preDistributionSalesAmount, sum(ifnull(pre_distribution_margin,0)) as preDistributionMargin
+    from stat_com_negative_margin_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+  </select>
+  <select id="negativeByCompany" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse">
+    select
+    product_sort_code as productSortCode, product_sort_name as productSortName,
+    price_channel_code as priceChannelCode, price_channel_name as priceChannelName
+    from stat_com_negative_margin_monthly
+    where
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    group by price_channel_code
+    order by price_channel_code
+  </select>
+  <select id="negativeCompanySum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeCompanyResponse">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName,
+      price_channel_code as priceChannelCode, price_channel_name as priceChannelName,
+      sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+      sum(ifnull(channel_sales_cost,0)) as channelSalesCost, sum(ifnull(channel_margin,0)) as channelMargin,
+      sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(distribution_margin,0)) as distributionMargin,
+      sum(ifnull(pre_channel_sales_amount,0)) as preChannelSalesAmount, sum(ifnull(pre_channel_margin,0)) as preChannelMargin,
+      sum(ifnull(pre_distribution_sales_amount,0)) as preDistributionSalesAmount, sum(ifnull(pre_distribution_margin,0)) as preDistributionMargin
+    from stat_com_negative_margin_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    and price_channel_code = #{priceChannelCode,jdbcType=VARCHAR}
+  </select>
+  <select id="negativeCategoryList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeCategoryResponse">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName, price_channel_code as priceChannelCode,
+      price_channel_name as priceChannelName, lv1, lv1_category_name as lv1CategoryName,
+      ifnull(sales_num,0) as salesNum, ifnull(channel_sales_amount,0) as channelSalesAmount,
+      ifnull(channel_sales_cost,0) as channelSalesCost, ifnull(channel_margin,0) as channelMargin,
+      ifnull(distribution_sales_amount,0) as distributionSalesAmount, ifnull(distribution_margin,0) as distributionMargin,
+      ifnull(channel_sales_amount_yearonyear,0) as channelSalesAmountYearonyear, ifnull(channel_margin_yearonyear, 0) as channelMarginYearonyear,
+      ifnull(distribution_sales_amount_yearonyear ,0) as distributionSalesAmountYearonyear,
+      ifnull(distribution_margin_yearonyear, 0) as distributionMarginYearonyear,
+      create_time as createTime
+    from stat_com_negative_margin_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    and price_channel_code = #{priceChannelCode,jdbcType=VARCHAR}
+  </select>
 </mapper>
