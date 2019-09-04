@@ -61,7 +61,17 @@
     where purchase_group_code = #{purchaseGroupCode,jdbcType=BIGINT}
     and enable=0
   </select>
-  <update id="updateList" parameterType="java.util.List">
+    <select id="selectByPurchaseCodes"
+            resultMap="com.aiqin.bms.scmp.api.supplier.mapper.PurchaseGroupBuyerMapper.BaseResultMap" parameterType="java.util.List">
+      select
+      <include refid="Base_Column_List" />
+      from purchase_group_buyer
+      where purchase_group_code in
+      <foreach collection="list" open="(" close=")" item="item" separator=",">
+           #{item}
+      </foreach>
+    </select>
+    <update id="updateList" parameterType="java.util.List">
     <foreach collection="list" item="item" index="index" open="" close="" separator=";">
       update purchase_group_buyer
       <set>

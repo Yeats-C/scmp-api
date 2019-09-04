@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.EnabledSave;
+import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.BatchOperatePurchaseGroupReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupBuyerDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.PurchaseGroupReqVo;
@@ -114,4 +115,27 @@ public interface PurchaseGroupService {
      * @date 2019/8/6 21:46
      */
     Integer enabled(EnabledSave enabledSave);
+
+    /**
+     * 批量操作采购组人员
+     * @param reqVo
+     * @return
+     */
+    Boolean batchOperatePurchaseGroup(BatchOperatePurchaseGroupReqVO reqVo);
+
+    /**
+     * 删除
+     * @param reqVo
+     * @return
+     */
+    Boolean deletePurchaseGroupPersonnel(BatchOperatePurchaseGroupReqVO reqVo);
+
+    /**
+     * 修改的
+     * @param reqVo
+     * @return
+     */
+    Boolean updatePurchaseGroupPersonnel(BatchOperatePurchaseGroupReqVO reqVo);
+
+    List<PurchaseGroupVo> getPurchaseGroupForAll();
 }

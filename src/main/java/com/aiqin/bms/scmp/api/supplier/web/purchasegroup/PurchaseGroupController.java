@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.web.purchasegroup;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.EnabledSave;
+import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.BatchOperatePurchaseGroupReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.PurchaseGroupReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.QueryPurchaseGroupReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.UpdatePurchaseGroupReqVo;
@@ -105,6 +106,20 @@ public class PurchaseGroupController {
     }
 
     /**
+     * 提供未禁用的采购组
+     * @return
+     */
+    @ApiOperation("采购组外部提供接口")
+    @PostMapping("/getPurchaseGroupForAll")
+    public HttpResponse<List<PurchaseGroupVo>> getPurchaseGroupForAll(){
+        try{
+            return HttpResponse.success(purchaseGroupService.getPurchaseGroupForAll());
+        }catch (Exception ex){
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+        }
+    }
+
+    /**
      * 获取外购专员
      * @param
      * @return
@@ -124,5 +139,10 @@ public class PurchaseGroupController {
             log.error("error", e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
+    }
+
+    @PostMapping("/batchOperatePurchaseGroup")
+    public HttpResponse<Boolean> batchOperatePurchaseGroup(@RequestBody @Valid BatchOperatePurchaseGroupReqVO reqVo){
+        return HttpResponse.success(purchaseGroupService.batchOperatePurchaseGroup(reqVo));
     }
 }
