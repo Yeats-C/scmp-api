@@ -183,7 +183,7 @@ public class StatisticsServiceImpl implements StatisticsService {
     }
 
     @Override
-    public HttpResponse negativeGross(String date, Integer type, Integer reportType, Long seasonType, String productSortCode){
+    public HttpResponse<NegativeSumResponse> negativeGross(String date, Integer type, Integer reportType, Long seasonType, String productSortCode){
         if(StringUtils.isEmpty(date) || type == null || reportType == null){
             LOGGER.info("参数缺失");
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
