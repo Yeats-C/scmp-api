@@ -405,7 +405,7 @@ transport_number
       payment_type_code, deliver_amount, product_total_amount,
       product_channel_total_amount, discount_amount,
       order_amount, payment_time, delivery_time,
-      transport_time, receiving_time, invoice_type,
+      transport_time, receiving_time,
       invoice_type_code, invoice_title, operator,
       operator_code, operator_time, activity_discount,
       volume, weight, be_master_order,
@@ -418,8 +418,7 @@ transport_number
       update_time, actual_product_channel_total_amount,
       actual_order_amount, actual_product_num, order_original_name,
       actual_weight, actual_volume, actual_product_total_amount,transport_company,
-transport_company_code,
-transport_number
+      transport_company_code,transport_number
       )
     values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR},
       #{orderTypeCode,jdbcType=INTEGER}, #{customerName,jdbcType=VARCHAR}, #{customerCode,jdbcType=VARCHAR},
@@ -435,7 +434,7 @@ transport_number
       #{paymentTypeCode,jdbcType=VARCHAR}, #{deliverAmount,jdbcType=BIGINT}, #{productTotalAmount,jdbcType=BIGINT},
       #{productChannelTotalAmount,jdbcType=BIGINT}, #{discountAmount,jdbcType=BIGINT},
       #{orderAmount,jdbcType=BIGINT}, #{paymentTime,jdbcType=TIMESTAMP}, #{deliveryTime,jdbcType=TIMESTAMP},
-      #{transportTime,jdbcType=TIMESTAMP}, #{receivingTime,jdbcType=TIMESTAMP}, #{invoiceType,jdbcType=VARCHAR},
+      #{transportTime,jdbcType=TIMESTAMP}, #{receivingTime,jdbcType=TIMESTAMP},
       #{invoiceTypeCode,jdbcType=VARCHAR}, #{invoiceTitle,jdbcType=VARCHAR}, #{operator,jdbcType=VARCHAR},
       #{operatorCode,jdbcType=VARCHAR}, #{operatorTime,jdbcType=TIMESTAMP}, #{activityDiscount,jdbcType=BIGINT},
       #{volume,jdbcType=BIGINT}, #{weight,jdbcType=BIGINT}, #{beMasterOrder,jdbcType=INTEGER},
