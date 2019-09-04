@@ -30,12 +30,14 @@
     <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
     <result column="line_num" jdbcType="BIGINT" property="lineNum" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_code, sku_code, sku_name, category, brand, color, specification, model, 
     unit, classes, type, inventory_unit, inventory, tax, tax_price, quantity, tax_amount, 
     del_flag, create_time, create_by, update_time, update_by, picture_url, batch_number, 
-    batch_number_remark, product_date, line_num
+    batch_number_remark, product_date, line_num,supplier_name,supplier_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -74,6 +76,52 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{pictureUrl,jdbcType=VARCHAR}, 
       #{batchNumber,jdbcType=VARCHAR}, #{batchNumberRemark,jdbcType=VARCHAR}, #{productDate,jdbcType=VARCHAR}, 
       #{lineNum,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertList" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProductBatch">
+    insert into profit_loss_product_batch (  order_code, sku_code,
+      sku_name, category, brand,
+      color, specification, model,
+      unit, classes, type,
+      inventory_unit, inventory, tax,
+      tax_price, quantity, tax_amount,
+      del_flag, create_time, create_by,
+      update_time, update_by, picture_url,
+      batch_number, batch_number_remark, product_date,
+      line_num,supplier_name,supplier_code)
+    values
+    <foreach collection="list" item="item" index= "index" separator =",">
+    (
+      #{item.orderCode,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR},
+      #{item.category,jdbcType=VARCHAR},
+      #{item.brand,jdbcType=VARCHAR},
+      #{item.color,jdbcType=VARCHAR},
+      #{item.specification,jdbcType=VARCHAR},
+      #{item.model,jdbcType=VARCHAR},
+      #{item.unit,jdbcType=VARCHAR},
+      #{item.classes,jdbcType=VARCHAR},
+      #{item.type,jdbcType=VARCHAR},
+      #{item.inventoryUnit,jdbcType=VARCHAR},
+      #{item.inventory,jdbcType=BIGINT},
+      #{item.tax,jdbcType=BIGINT},
+      #{item.taxPrice,jdbcType=BIGINT},
+      #{item.quantity,jdbcType=BIGINT},
+      #{item.taxAmount,jdbcType=BIGINT},
+      #{item.delFlag,jdbcType=TINYINT},
+      #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.createBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR},
+      #{item.pictureUrl,jdbcType=VARCHAR},
+      #{item.batchNumber,jdbcType=VARCHAR},
+      #{item.batchNumberRemark,jdbcType=VARCHAR},
+      #{item.productDate,jdbcType=VARCHAR},
+      #{item.lineNum,jdbcType=BIGINT},
+      #{item.supplierName,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR}
+      )
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProductBatch">
     insert into profit_loss_product_batch

@@ -115,6 +115,8 @@ public class TransfersRequest {
 
     @ApiModelProperty("调拨类型(1:调拨 2:移库 3:报废)")
     private String allocationTypeName;
-
+    @ApiModelProperty("商品详情")
     private List<AllocationProduct> detailList;
+    @ApiModelProperty("带有供应商的商品详情")
+    private List<TransfersSupplyDetailRequest> supplyDetailList;
 }
