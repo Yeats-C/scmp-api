@@ -155,6 +155,9 @@ public class OutboundRequest {
     @ApiModelProperty(value = "商品详情")
     private List<OutboundDetailRequest> detail;
 
+    @ApiModelProperty(value = "商品详情")
+    private List<OutboundSupplyDetailRequest> supplyDetail;
+
     @ApiModelProperty(value = "回单确认时间")
     private String receiptTime;
 
@@ -169,5 +172,4 @@ public class OutboundRequest {
 
     @ApiModelProperty(value = "备注")
     private String remark;
-
 }

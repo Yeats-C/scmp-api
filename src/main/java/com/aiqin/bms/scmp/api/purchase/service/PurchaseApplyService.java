@@ -4,14 +4,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseContrastResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public interface PurchaseApplyService {
 
@@ -35,8 +31,6 @@ public interface PurchaseApplyService {
 
     HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, Integer productPurchaseAmount, String skuCode,
                                                               String supplierCode, String transportCenterCode, Integer productCount);
-
-    HttpResponse<PurchaseContrastResponse> contrast(List<PurchaseApplyDetailResponse> list);
 
     HttpResponse<PurchaseNewContrastResponse> purchaseContrast(PurchaseNewContrastRequest contrastRequest);
 }
