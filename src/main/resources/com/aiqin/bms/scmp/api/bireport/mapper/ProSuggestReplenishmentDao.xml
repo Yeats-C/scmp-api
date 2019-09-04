@@ -11,9 +11,8 @@
       where basr.product_property_code = #{proStatus}
     </select>
     <select id="selectSuggestReplenishmentBySell" parameterType="java.lang.Integer" resultType="String">
-        select basr.sku_code
-        FROM bi_app_suggest_replenishment basr
-        where basr.product_property_code = #{proStatus}
+        select basrb.sku_code
+        FROM bi_app_suggest_replenishment_best basrb
     </select>
     <select id="selectOutStockByPro" parameterType="java.lang.Integer" resultType="String">
         select basr.sku_code
@@ -21,9 +20,8 @@
         where basr.product_property_code = #{proStatus} AND basr.stockout_days <![CDATA[>]]> #{continuousDays}
     </select>
     <select id="selectOutStockBySell" parameterType="java.lang.Integer" resultType="String">
-        select basr.sku_code
-        FROM bi_app_suggest_replenishment basr
-        where basr.product_property_code = #{proStatus} AND basr.stockout_days <![CDATA[>]]> #{continuousDays}
+        select basrbs.sku_code
+        FROM bi_app_suggest_replenishment_best_stock basrbs
     </select>
     <select id="selectPurchaseApplySkuList"
             parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo"
