@@ -24,27 +24,26 @@ public class QueryApplyContractResVo {
     @ApiModelProperty("申请合同编号")
     private String applyContractCode;
 
-    @ApiModelProperty("申请类型")
-    private Byte applyType;
+    @ApiModelProperty("合同编号")
+    private String contractCode;
 
-    @ApiModelProperty("供货单位编号")
+    @ApiModelProperty("合同名称")
+    private String yearName;
+
+    @ApiModelProperty("供应商编号")
     private String supplierCode;
 
-    @ApiModelProperty("供货单位名称")
+    @ApiModelProperty("供应商名称")
     private String supplierName;
 
     @ApiModelProperty("采购组编号")
     private String purchasingGroupCode;
 
-    @ApiModelProperty("申请状态(0:等待审核中 1:审核中)")
+    @ApiModelProperty("采购组名称")
+    private String purchasingGroupName;
+
+    @ApiModelProperty("申请状态(0:待审 1:审批中 2:审批通过 3:审批失败 4:已撤销 5:待提交 )")
     private Byte applyStatus;
-
-    @ApiModelProperty("审核人")
-    private String auditorBy;
-
-    @ApiModelProperty("审核时间")
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date auditorTime;
 
     @ApiModelProperty("创建人")
     private String createBy;
@@ -52,6 +51,23 @@ public class QueryApplyContractResVo {
     @ApiModelProperty("创建时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
+
+    @ApiModelProperty("修改时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime;
+
+    @ApiModelProperty("申请类型")
+    private Byte applyType;
+
+    @ApiModelProperty("审核人")
+    private String auditorBy;
+
+    @ApiModelProperty("审核时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date auditorTime;
 
 
 }

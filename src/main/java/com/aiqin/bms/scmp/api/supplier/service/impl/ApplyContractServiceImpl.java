@@ -158,21 +158,14 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
      */
     @Override
     public BasePage<QueryApplyContractResVo> findApplyContractList(QueryApplyContractReqVo vo) {
-        try {
-            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if(null != authToken){
-                vo.setCompanyCode(authToken.getCompanyCode());
-                vo.setApplyBy(authToken.getPersonName());
-            }
-            PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
-            List<QueryApplyContractResVo> applyContractList = applyContractDao.selectBySelectApplyContract(vo);
-            BasePage<QueryApplyContractResVo> basePage = PageUtil.getPageList(vo.getPageNo(),applyContractList);
-            return basePage;
-        } catch (Exception ex) {
-            log.error(ex.getMessage());
-            log.error("分页查询失败");
-            throw new GroundRuntimeException(ex.getMessage());
+        AuthToken authToken = getUser();
+        if(null != authToken){
+            vo.setCompanyCode(authToken.getCompanyCode());
         }
+        PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
+        List<QueryApplyContractResVo> applyContractList = applyContractDao.selectBySelectApplyContract(vo);
+        BasePage<QueryApplyContractResVo> basePage = PageUtil.getPageList(vo.getPageNo(),applyContractList);
+        return basePage;
     }
 
     /**
@@ -293,81 +286,83 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
      */
     @Override
     public ApplyContractViewResVo findApplyContractDetail(Long id) {
-        ApplyContractViewResVo applyContractResVo = new ApplyContractViewResVo();
-        if (id != null) {
-            ApplyContractDTO entity = applyContractDao.selectByPrimaryKey(id);
-            BeanCopyUtils.copy(entity, applyContractResVo);
-            applyContractResVo.setApplyType(entity.getApplyType());
-            if (Objects.equals(0, entity.getApplyType().intValue())) {
-                //新增修改
-                applyContractResVo.setApplyBy(entity.getCreateBy());
-                applyContractResVo.setApplyDate(entity.getCreateTime());
-            } else if (Objects.equals(1, entity.getApplyType().intValue())) {
-                applyContractResVo.setApplyBy(entity.getUpdateBy());
-                applyContractResVo.setApplyDate(entity.getUpdateTime());
-                // 根据申请合同编码去获取合同编号
-                ContractDTO contractDTO = contractDao.selectByApplyCode(entity.getApplyContractCode());
-                // 将正式合同编码set进去
-                applyContractResVo.setContractCode(contractDTO.getContractCode());
-            }
-            applyContractResVo.setModelType("合同");
-            applyContractResVo.setModelTypeCode("4");
-            applyContractResVo.setStatus(entity.getApplyStatus().toString());
-            applyContractResVo.setEnable(StatusTypeCode.DEL_FLAG.getStatus().equals(entity.getDelFlag()) ? StatusTypeCode.DIS_ABLE.getName() : StatusTypeCode.EN_ABLE.getName());
-
-            if (null != applyContractResVo) {
-                //获取操作日志
-                OperationLogVo operationLogVo = new OperationLogVo();
-                operationLogVo.setPageNo(1);
-                operationLogVo.setPageSize(100);
-                operationLogVo.setObjectType(ObjectTypeCode.APPLY_CONTRACT.getStatus());
-                operationLogVo.setObjectId(applyContractResVo.getApplyContractCode());
-                BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo, 62);
-                List<LogData> logDataList = new ArrayList<>();
-                if (null != pageList.getDataList() && pageList.getDataList().size() > 0) {
-                    logDataList = pageList.getDataList();
-                }
-                applyContractResVo.setLogDataList(logDataList);
-                List<ApplyContractPurchaseVolumeDTO> purchaseVolume = applyContractPurchaseVolumeMapperDao.selectByApplyContractPurchaseVolume(entity.getApplyContractCode());
-                List<ApplyContractFile> applyContractFiles = applyContractFileMapper.selectByApplyContractCode(entity.getApplyContractCode());
-                List<ApplyContractPurchaseGroup> applyContractPurchaseGroups = applyContractPurchaseGroupMapper.selectByApplyContractCode(entity.getApplyContractCode());
-                List<ApplyContractBrand> applyContractBrands = applyContractBrandMapper.selectByApplyContractCode(entity.getApplyContractCode());
-                List<ApplyContractCategory> applyContractCategories = applyContractCategoryMapper.selectByApplyContractCode(entity.getApplyContractCode());
-                List<ApplyContractPlanType> planTypeList = applyContractPlanTypeMapper.selectByApplyContratCode(entity.getApplyContractCode());
-                try {
-                    // 转化成返回申请合同进货额list
-                    if(CollectionUtils.isNotEmptyCollection(purchaseVolume)){
-                        List<ApplyContractPurchaseVolumeResVo> list = BeanCopyUtils.copyList(purchaseVolume, ApplyContractPurchaseVolumeResVo.class);
-                        applyContractResVo.setPurchaseList(list);
-                    }
-                    if(CollectionUtils.isNotEmptyCollection(planTypeList)){
-                        List<PlanTypeReqVO> list = BeanCopyUtils.copyList(planTypeList, PlanTypeReqVO.class);
-                        applyContractResVo.setPlanTypeList(list);
-                    }
-                    if(CollectionUtils.isNotEmptyCollection(applyContractFiles)){
-                        List<ApplyContractFileResVo> fileResVos = BeanCopyUtils.copyList(applyContractFiles, ApplyContractFileResVo.class);
-                        applyContractResVo.setFileResVos(fileResVos);
-                    }
-                    if(CollectionUtils.isNotEmptyCollection(applyContractPurchaseGroups)){
-                        List<ApplyContractPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(applyContractPurchaseGroups, ApplyContractPurchaseGroupResVo.class);
-                        applyContractResVo.setPurchaseGroupResVos(purchaseGroupResVos);
-                    }
-                    if(CollectionUtils.isNotEmptyCollection(applyContractBrands)){
-                        List<ApplyContractBrandResVo> applyContractBrandResVos = BeanCopyUtils.copyList(applyContractBrands, ApplyContractBrandResVo.class);
-                        applyContractResVo.setBrandReqVos(applyContractBrandResVos);
-                    }
-                    if(CollectionUtils.isNotEmptyCollection(applyContractCategories)){
-                        List<ApplyContractCategoryResVo> applyContractCategoryResVos = BeanCopyUtils.copyList(applyContractCategories, ApplyContractCategoryResVo.class);
-                        applyContractResVo.setCategoryReqVos(applyContractCategoryResVos);
-                    }
-                } catch (Exception e) {
-                    log.error("进货额转化实体出错");
-                    throw new GroundRuntimeException("查询进货额失败");
-                }
-            }
-            return applyContractResVo;
+        if (null == id) {
+            throw new GroundRuntimeException("查看失败");
         }
-        throw new GroundRuntimeException("查看失败");
+        ApplyContractViewResVo applyContractResVo = new ApplyContractViewResVo();
+        ApplyContractDTO entity = applyContractDao.selectByPrimaryKey(id);
+        if(null == entity){
+            throw new GroundRuntimeException("查看失败");
+        }
+        BeanCopyUtils.copy(entity, applyContractResVo);
+        applyContractResVo.setApplyType(entity.getApplyType());
+        if (Objects.equals(0, entity.getApplyType().intValue())) {
+            //新增修改
+            applyContractResVo.setApplyBy(entity.getCreateBy());
+            applyContractResVo.setApplyDate(entity.getCreateTime());
+        } else if (Objects.equals(1, entity.getApplyType().intValue())) {
+            applyContractResVo.setApplyBy(entity.getUpdateBy());
+            applyContractResVo.setApplyDate(entity.getUpdateTime());
+            // 根据申请合同编码去获取合同编号
+            ContractDTO contractDTO = contractDao.selectByApplyCode(entity.getApplyContractCode());
+            // 将正式合同编码set进去
+            applyContractResVo.setContractCode(contractDTO.getContractCode());
+        }
+        applyContractResVo.setModelType("合同");
+        applyContractResVo.setModelTypeCode("4");
+        applyContractResVo.setStatus(entity.getApplyStatus().toString());
+        applyContractResVo.setEnable(StatusTypeCode.DEL_FLAG.getStatus().equals(entity.getDelFlag()) ? StatusTypeCode.DIS_ABLE.getName() : StatusTypeCode.EN_ABLE.getName());
+        if (null != applyContractResVo) {
+            //获取操作日志
+            OperationLogVo operationLogVo = new OperationLogVo();
+            operationLogVo.setPageNo(1);
+            operationLogVo.setPageSize(100);
+            operationLogVo.setObjectType(ObjectTypeCode.APPLY_CONTRACT.getStatus());
+            operationLogVo.setObjectId(applyContractResVo.getApplyContractCode());
+            BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo, 62);
+            List<LogData> logDataList = new ArrayList<>();
+            if (null != pageList.getDataList() && pageList.getDataList().size() > 0) {
+                logDataList = pageList.getDataList();
+            }
+            applyContractResVo.setLogDataList(logDataList);
+            List<ApplyContractPurchaseVolumeDTO> purchaseVolume = applyContractPurchaseVolumeMapperDao.selectByApplyContractPurchaseVolume(entity.getApplyContractCode());
+            List<ApplyContractFile> applyContractFiles = applyContractFileMapper.selectByApplyContractCode(entity.getApplyContractCode());
+            List<ApplyContractPurchaseGroup> applyContractPurchaseGroups = applyContractPurchaseGroupMapper.selectByApplyContractCode(entity.getApplyContractCode());
+            List<ApplyContractBrand> applyContractBrands = applyContractBrandMapper.selectByApplyContractCode(entity.getApplyContractCode());
+            List<ApplyContractCategory> applyContractCategories = applyContractCategoryMapper.selectByApplyContractCode(entity.getApplyContractCode());
+            List<ApplyContractPlanType> planTypeList = applyContractPlanTypeMapper.selectByApplyContratCode(entity.getApplyContractCode());
+            try {
+                // 转化成返回申请合同进货额list
+                if (CollectionUtils.isNotEmptyCollection(purchaseVolume)) {
+                    List<ApplyContractPurchaseVolumeResVo> list = BeanCopyUtils.copyList(purchaseVolume, ApplyContractPurchaseVolumeResVo.class);
+                    applyContractResVo.setPurchaseList(list);
+                }
+                if (CollectionUtils.isNotEmptyCollection(planTypeList)) {
+                    List<PlanTypeReqVO> list = BeanCopyUtils.copyList(planTypeList, PlanTypeReqVO.class);
+                    applyContractResVo.setPlanTypeList(list);
+                }
+                if (CollectionUtils.isNotEmptyCollection(applyContractFiles)) {
+                    List<ApplyContractFileResVo> fileResVos = BeanCopyUtils.copyList(applyContractFiles, ApplyContractFileResVo.class);
+                    applyContractResVo.setFileResVos(fileResVos);
+                }
+                if (CollectionUtils.isNotEmptyCollection(applyContractPurchaseGroups)) {
+                    List<ApplyContractPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(applyContractPurchaseGroups, ApplyContractPurchaseGroupResVo.class);
+                    applyContractResVo.setPurchaseGroupResVos(purchaseGroupResVos);
+                }
+                if (CollectionUtils.isNotEmptyCollection(applyContractBrands)) {
+                    List<ApplyContractBrandResVo> applyContractBrandResVos = BeanCopyUtils.copyList(applyContractBrands, ApplyContractBrandResVo.class);
+                    applyContractResVo.setBrandReqVos(applyContractBrandResVos);
+                }
+                if (CollectionUtils.isNotEmptyCollection(applyContractCategories)) {
+                    List<ApplyContractCategoryResVo> applyContractCategoryResVos = BeanCopyUtils.copyList(applyContractCategories, ApplyContractCategoryResVo.class);
+                    applyContractResVo.setCategoryReqVos(applyContractCategoryResVos);
+                }
+            } catch (Exception e) {
+                log.error("进货额转化实体出错");
+                throw new GroundRuntimeException("查询进货额失败");
+            }
+        }
+        return applyContractResVo;
     }
 
 
@@ -445,6 +440,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_CONTRACT_CODE+updateApplyContractReqVo.getContractTypeCode());
         String code = updateApplyContractReqVo.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(encodingRule.getNumberingValue());
         applyContractDTO.setApplyContractCode(code);
+        applyContractDTO.setContractCode(oldApplyContractDTO.getContractCode());
         //申请状态
         applyContractDTO.setApplyStatus(ApplyStatus.PENDING.getNumber());
         //申请类型
@@ -825,8 +821,6 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         account.setAuditorTime(new Date());
 //        if(account.getApplyStatus().intValue()== ApplyStatus.APPROVAL.getNumber()){
             if(vo.getApplyStatus().intValue()== ApplyStatus.APPROVAL_SUCCESS.getNumber()){
-
-                int i = applyContractDao.updateByPrimaryKeySelective(account);
                 //审批通过之后，分两种情况一种是添加申请，一种是修改申请
                 String content = ApplyStatus.APPROVAL_SUCCESS.getContent().replace("CREATEBY", account.getCreateBy()).replace("AUDITORBY", vo.getApprovalUserName());
                 supplierCommonService.getInstance(account.getApplyContractCode()+"", HandleTypeCoce.APPROVAL_SUCCESS.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(), content,null,HandleTypeCoce.APPROVAL_SUCCESS.getName(),vo.getApprovalUserName());
@@ -849,6 +843,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                     BeanCopyUtils.copy(contractDTO,contractReqVo);
                     //更新数据库编码最大值
                     encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+                    account.setContractCode(contractDTO.getContractCode());
                     log.info("合同正式数据保存成功");
                     //保存日志信息
                     supplierCommonService.getInstance(contractDTO.getContractCode(),HandleTypeCoce.ADD.getStatus(),ObjectTypeCode.CONTRACT.getStatus(),HandleTypeCoce.ADD_CONTRACT.getName(),null,HandleTypeCoce.ADD.getName(),vo.getApprovalUserName());
@@ -913,6 +908,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                        list.stream().forEach(purchaselist -> purchaselist.setContractCode(contractDTO.getContractCode()));
                        int s = contractPurchaseVolumeDao.insertContractPurchaseVolume(list);
                    }
+                    applyContractDao.updateByPrimaryKeySelective(account);
                     return "success";
                 }else {
                     //修改申请
@@ -934,6 +930,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                         newContractDTO.setApplyStatus(Byte.valueOf("2"));
                         // 跟新活动主体
                         int kp = contractDao.updateByPrimaryKeySelective(newContractDTO);
+                        account.setContractCode(newContractDTO.getContractCode());
                         //保存日志
                         supplierCommonService.getInstance(newContractDTO.getContractCode(),HandleTypeCoce.UPDATE.getStatus(),ObjectTypeCode.CONTRACT.getStatus(),HandleTypeCoce.UPDATE_CONTRACT.getName(),null,HandleTypeCoce.UPDATE.getName(),vo.getApprovalUserName());
                         //更新文件信息
@@ -1012,6 +1009,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                             // 保存实体
                             int s = contractPurchaseVolumeDao.insertContractPurchaseVolume(list);
                         }
+                        applyContractDao.updateByPrimaryKeySelective(account);
                         return "success";
                     }catch (Exception e) {
                         throw new GroundRuntimeException("合同修改失败");
