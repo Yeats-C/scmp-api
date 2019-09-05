@@ -61,8 +61,9 @@ public class ProfitLossDetailRequest {
     @ApiModelProperty("原因")
     private String reason;
 
+    @ApiModelProperty("供应商code")
+    private String supplyCode;
     /**                        */
-
     @ApiModelProperty("sku名称")
     private String skuName;
 
@@ -125,6 +126,5 @@ public class ProfitLossDetailRequest {
     @ApiModelProperty(value="修改者")
     @JsonProperty("update_by_name")
     private String updateByName;
-
 
 }
