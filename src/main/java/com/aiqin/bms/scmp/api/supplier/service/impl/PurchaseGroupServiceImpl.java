@@ -335,12 +335,6 @@ public class PurchaseGroupServiceImpl extends BaseServiceImpl implements Purchas
                 personId = authToken.getPersonId();
             }
             List<PurchaseGroupVo> list = purchaseGroupDao.getPurchaseGroup(companyCode,personId,name);
-//            for (PurchaseGroupVo purchaseGroupVo : list) {
-//                //查询未禁用的关联人员
-//                List<PurchaseGroupBuyerDTO> groupBuyerDTOList = purchaseGroupBuyerDao.selectByPurchaseCode(purchaseGroupVo.getPurchaseGroupCode());
-//                //转化关联人员实体并且set到返回实体
-//                purchaseGroupVo.setList(BeanCopyUtils.copyList(groupBuyerDTOList, PurchaseGroupBuyerVo.class));
-//            }
             return list;
         }catch (Exception e){
             throw new GroundRuntimeException("转化数据出错");
