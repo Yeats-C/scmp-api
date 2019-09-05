@@ -36,8 +36,7 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
      */
     @Override
     public List<String> selectSuggestReplenishmentBySell() {
-        int proStatus = 1;
-        List<String> skuCodes = proSuggestReplenishmentDao.selectSuggestReplenishmentBySell(proStatus);
+        List<String> skuCodes = proSuggestReplenishmentDao.selectSuggestReplenishmentBySell();
         return skuCodes;
     }
 
@@ -59,9 +58,9 @@ public class ProSuggestReplenishmentServiceImpl implements ProSuggestReplenishme
      */
     @Override
     public List<String> selectOutStockBySell() {
-        int proStatus = 1;
-        int continuousDays = 0;
-        List<String> skuCodes = proSuggestReplenishmentDao.selectOutStockBySell(proStatus,continuousDays);
+     //   int proStatus = 1;
+     //   int continuousDays = 0;
+        List<String> skuCodes = proSuggestReplenishmentDao.selectOutStockBySell();
         return skuCodes;
     }
 

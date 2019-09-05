@@ -20,7 +20,7 @@ public interface ProSuggestReplenishmentDao {
      * 获取畅销建议补货
      * @return
      */
-    List<String> selectSuggestReplenishmentBySell(int proStatus);
+    List<String> selectSuggestReplenishmentBySell();
 
     /**
      *  查询14大A品缺货
@@ -32,7 +32,7 @@ public interface ProSuggestReplenishmentDao {
      * 获取畅销缺货
      * @return
      */
-    List<String> selectOutStockBySell(@Param("proStatus")  int proStatus, @Param("continuousDays")  int continuousDays);
+    List<String> selectOutStockBySell();
 
     /**
      * 获取采购申请列表
