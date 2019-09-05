@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.statistics.domain.response;
 
-import com.aiqin.bms.scmp.api.statistics.domain.StatComStoreRepurchaseRate;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

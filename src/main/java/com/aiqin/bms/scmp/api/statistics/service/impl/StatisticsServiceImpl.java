@@ -147,7 +147,8 @@ public class StatisticsServiceImpl implements StatisticsService {
                     if(deptRepurchase.getRepurchaseNum() == null || deptRepurchase.getRepurchaseNum() == 0){
                         deptRepurchase.setRepurchaseRate(new BigDecimal(0));
                     }else {
-                        deptRepurchase.setRepurchaseRate(new BigDecimal(deptRepurchase.getRepurchaseNum()).divide(new BigDecimal(deptRepurchase.getPurchaseNum())));
+                        deptRepurchase.setRepurchaseRate(new BigDecimal(deptRepurchase.getRepurchaseNum()).
+                                divide(new BigDecimal(deptRepurchase.getPurchaseNum()), 4, BigDecimal.ROUND_HALF_UP));
                     }
                     deptRepurchase.setProductSortCode(sort.getProductSortCode());
                     deptRepurchase.setProductSortName(sort.getProductSortName());
@@ -156,7 +157,8 @@ public class StatisticsServiceImpl implements StatisticsService {
                 if(comRepurchase.getRepurchaseNum() == null || comRepurchase.getRepurchaseNum() == 0){
                     comRepurchase.setRepurchaseRate(new BigDecimal(0));
                 }else {
-                    comRepurchase.setRepurchaseRate(new BigDecimal(comRepurchase.getRepurchaseNum()).divide(new BigDecimal(comRepurchase.getPurchaseNum())));
+                    comRepurchase.setRepurchaseRate(new BigDecimal(comRepurchase.getRepurchaseNum()).
+                            divide(new BigDecimal(comRepurchase.getPurchaseNum()), 4, BigDecimal.ROUND_HALF_UP));
                 }
                 comRepurchase.setSumList(deptList);
             }
@@ -175,7 +177,8 @@ public class StatisticsServiceImpl implements StatisticsService {
                 if(deptRepurchase.getRepurchaseNum() == null || deptRepurchase.getRepurchaseNum() == 0){
                     deptRepurchase.setRepurchaseRate(new BigDecimal(0));
                 }else {
-                    deptRepurchase.setRepurchaseRate(new BigDecimal(deptRepurchase.getRepurchaseNum()).divide(new BigDecimal(deptRepurchase.getPurchaseNum())));
+                    deptRepurchase.setRepurchaseRate(new BigDecimal(deptRepurchase.getRepurchaseNum()).
+                            divide(new BigDecimal(deptRepurchase.getPurchaseNum()), 4, BigDecimal.ROUND_HALF_UP));
                 }
             }
             return HttpResponse.success(deptRepurchase);
@@ -386,7 +389,7 @@ public class StatisticsServiceImpl implements StatisticsService {
             rateResponse.setChannelSalesAmountYearonyear(new BigDecimal(0));
         }else {
             rateResponse.setChannelSalesAmountYearonyear(new BigDecimal(rateResponse.getChannelSalesAmount()).
-                    divide(new BigDecimal(rateResponse.getPreChannelSalesAmount())));
+                    divide(new BigDecimal(rateResponse.getPreChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
         }
         // 渠道毛利同比
         if(rateResponse.getChannelMargin() == null || rateResponse.getChannelMargin() == 0 ||
@@ -394,7 +397,7 @@ public class StatisticsServiceImpl implements StatisticsService {
             rateResponse.setChannelMarginYearonyear(new BigDecimal(0));
         }else {
             rateResponse.setChannelMarginYearonyear(new BigDecimal(rateResponse.getChannelMargin()).
-                    divide(new BigDecimal(rateResponse.getPreChannelMargin())));
+                    divide(new BigDecimal(rateResponse.getPreChannelMargin()), 4, BigDecimal.ROUND_HALF_UP));
         }
 
         // 分销销售额同比
@@ -403,7 +406,7 @@ public class StatisticsServiceImpl implements StatisticsService {
             rateResponse.setDistributionSalesAmountYearonyear(new BigDecimal(0));
         }else {
             rateResponse.setDistributionSalesAmountYearonyear(new BigDecimal(rateResponse.getDistributionSalesAmount()).
-                    divide(new BigDecimal(rateResponse.getPreDistributionSalesAmount())));
+                    divide(new BigDecimal(rateResponse.getPreDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
         }
 
         // 分销毛利同比
@@ -412,7 +415,7 @@ public class StatisticsServiceImpl implements StatisticsService {
             rateResponse.setDistributionMarginYearonyear(new BigDecimal(0));
         }else {
             rateResponse.setDistributionMarginYearonyear(new BigDecimal(rateResponse.getDistributionMargin()).
-                    divide(new BigDecimal(rateResponse.getPreDistributionMargin())));
+                    divide(new BigDecimal(rateResponse.getPreDistributionMargin()), 4, BigDecimal.ROUND_HALF_UP));
         }
         return rateResponse;
     }
