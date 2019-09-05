@@ -1,7 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
 
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -25,4 +27,6 @@ public interface OrderInfoItemProductBatchMapper {
      * @return int
      */
     int insertBatch(List<OrderInfoItemProductBatch> list);
+
+    Integer insertList(@Param(value = "list") List<OrderInfoItemProductBatch> detailList);
 }
