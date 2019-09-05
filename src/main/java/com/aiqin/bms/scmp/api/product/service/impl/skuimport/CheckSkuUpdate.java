@@ -20,18 +20,17 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.NumberConvertUtils;
 import com.google.common.collect.Lists;
 import lombok.Data;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
-/**
- * 校验导入sku的内部类
- */
 @Data
-public class CheckSkuNew {
+public class CheckSkuUpdate {
     AddSkuInfoReqVO resp;
     Map<String, ProductSkuInfo> productSkuMap;
     Map<String, SupplyCompany> supplyCompanyMap;
@@ -48,10 +47,10 @@ public class CheckSkuNew {
     Map<String, ProductSkuDraft> productSkuDraftMap;
     Map<String, PurchaseGroupDTO> purchaseGroupMap;
 
-    private CheckSkuNew() {
+    public CheckSkuUpdate() {
     }
 
-    public CheckSkuNew(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap) {
+    public CheckSkuUpdate(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap) {
         this.error = Lists.newArrayList();
         this.resp = new AddSkuInfoReqVO();
         this.productSkuMap = productSkuMap;
@@ -68,19 +67,29 @@ public class CheckSkuNew {
     }
 
     //检查重复
-    public CheckSkuNew checkRepeat() {
+    public CheckSkuUpdate checkRepeat() {
         return this;
     }
-    //新增检查sku
-    public CheckSkuNew checkSKuNew() {
+    //修改检查sku
+    public CheckSkuUpdate checkSKuUpdate() {
         ProductSkuDraft draft = BeanCopyUtils.copy(importVo, ProductSkuDraft.class);
-        //sku名称
-        if (Objects.isNull(importVo.getSkuName())) {
-            error.add("SKU名称不能为空");
-        } else {
-            ProductSkuInfo sku = productSkuMap.get(importVo.getSkuName());
-            if (Objects.nonNull(sku)) {
-                error.add("sku名称已存在");
+        //sku编码
+        if (Objects.isNull(importVo.getSkuCode())) {
+            error.add("sku编码不能为空");
+        }else {
+            ProductSkuInfo sku = productSkuMap.get(importVo.getSkuCode());
+            //sku名称
+            if (Objects.isNull(sku)) {
+                error.add("无对应的sku编码");
+            }else {
+                if (Objects.isNull(importVo.getSkuName())) {
+                    error.add("SKU名称不能为空");
+                }
+//                    else {
+//                        if (!sku.getSkuName().equals(importVo.getSkuName())) {
+//                            error.add("sku编码和sku名称不对应");
+//                        }
+//                    }
             }
         }
         this.resp.setProductSkuDraft(draft);
@@ -88,7 +97,7 @@ public class CheckSkuNew {
     }
 
     //检查基础数据
-    public CheckSkuNew checkBaseDate() {
+    public CheckSkuUpdate checkBaseDate() {
         ProductSkuDraft productSkuDraft = this.resp.getProductSkuDraft();
         //类型
         if (Objects.isNull(importVo.getGoodsGiftsDesc())) {
@@ -185,69 +194,52 @@ public class CheckSkuNew {
                 productSkuDraft.setProductSortCode(dic.getSupplierDictionaryValue());
             }
         }
-//        boolean flag1 = false;
-//        boolean flag2 = false;
+        boolean flag1 = false;
+        boolean flag2 = false;
         //颜色
         if (Objects.nonNull(importVo.getColorName())) {
 //                error.add("颜色不能为空");
-//            flag1 = true;
+            flag1 = true;
         }
         //型号
         if (Objects.nonNull(importVo.getModelNumber())) {
 //                error.add("型号不能为空");
-//            flag2 = true;
+            flag2 = true;
         }
-//        if (flag1&&flag2) {
-//            error.add("颜色和型号只能填写一个");
-//        } else if(!(flag1 || flag2)){
-//            error.add("颜色和型号必须填写一个");
-//        }
+        if (flag1&&flag2) {
+            error.add("颜色和型号只能填写一个");
+        } else if(!(flag1 || flag2)){
+            error.add("颜色和型号必须填写一个");
+        }
         //是否管理保质期
-//        if (Objects.isNull(importVo.getQualityAssuranceManagementDesc())) {
-////            error.add("是否管理保质期不能为空");
-//        } else {
-//            QualityAssuranceManagements e = QualityAssuranceManagements.getAll().get(importVo.getQualityAssuranceManagementDesc());
-//            if (Objects.isNull(e)) {
-//                error.add("是否管理保质期请选择管理或者不管理");
-//            } else {
-//                productSkuDraft.setQualityAssuranceManagement(e.getType());
-//            }
-//            if (e.getType().equals((byte) 0)) {
-//                //管理
-//                //保质期单位
-//                if (Objects.isNull(importVo.getQualityNumber())) {
-//                    error.add("保质期单位不能为空");
-//                } else {
-//                    QualityTypes type = QualityTypes.getAll().get(importVo.getQualityNumber());
-//                    if (Objects.isNull(type)) {
-//                        error.add("保质期单位只能是年月天");
-//                    } else {
-//                        productSkuDraft.setQualityNumber(type.getType().toString());
-//                    }
-//                }
-//                //保质天数
-//                if (Objects.isNull(importVo.getQualityDate())) {
-//                    error.add("保质天数不能为空");
-//                }else {
-//                    productSkuDraft.setQualityDate(Integer.parseInt(importVo.getQualityDate())+"");
-//                }
-//            }
-//        }
-        //保质天数
-        if (StringUtils.isBlank(importVo.getQualityDate())) {
-            error.add("保质天数不能为空");
-        }else {
-            try {
-                int i = Integer.parseInt(importVo.getQualityDate());
-                if ( i == 0) {
-                    productSkuDraft.setQualityAssuranceManagement(QualityAssuranceManagements.NO.getType());
-                }else if (i>0){
-                    productSkuDraft.setQualityAssuranceManagement(QualityAssuranceManagements.YES.getType());
-                    productSkuDraft.setQualityNumber(QualityTypes.DAY.getType().toString());
-                    productSkuDraft.setQualityDate(i+"");
+        if (Objects.isNull(importVo.getQualityAssuranceManagementDesc())) {
+            error.add("是否管理保质期不能为空");
+        } else {
+            QualityAssuranceManagements e = QualityAssuranceManagements.getAll().get(importVo.getQualityAssuranceManagementDesc());
+            if (Objects.isNull(e)) {
+                error.add("是否管理保质期请选择管理或者不管理");
+            } else {
+                productSkuDraft.setQualityAssuranceManagement(e.getType());
+            }
+            if (e.getType().equals((byte) 0)) {
+                //管理
+                //保质期单位
+                if (Objects.isNull(importVo.getQualityNumber())) {
+                    error.add("保质期单位不能为空");
+                } else {
+                    QualityTypes type = QualityTypes.getAll().get(importVo.getQualityNumber());
+                    if (Objects.isNull(type)) {
+                        error.add("保质期单位只能是年月天");
+                    } else {
+                        productSkuDraft.setQualityNumber(type.getType().toString());
+                    }
                 }
-            } catch (NumberFormatException e) {
-                error.add("保质天数格式不正确");
+                //保质天数
+                if (Objects.isNull(importVo.getQualityDate())) {
+                    error.add("保质天数不能为空");
+                }else {
+                    productSkuDraft.setQualityDate(Integer.parseInt(importVo.getQualityDate())+"");
+                }
             }
         }
 
@@ -260,15 +252,7 @@ public class CheckSkuNew {
                 error.add("无对应的名称的供货渠道类别");
             } else {
                 productSkuDraft.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
-                //库存模式
-                boolean b = "直送".equals(importVo.getCategoriesSupplyChannelsName());
-                if (b) {
-                    productSkuDraft.setInventoryModel(InventoryModels.NO.getType());
-                } else {
-                    productSkuDraft.setInventoryModel(InventoryModels.YES.getType());
-                }
             }
-
         }
         //助记码
         if (false) {
@@ -284,10 +268,7 @@ public class CheckSkuNew {
             }
         }
         //适用其实月龄
-        if (StringUtils.isBlank(importVo.getApplicableMonthAge())) {
-            error.add("适用起始月龄不能为空");
-        }else {
-            productSkuDraft.setApplicableMonthAge(importVo.getApplicableMonthAge().trim());
+        if (false) {
         }
         //是否季节商品
         if (Objects.isNull(importVo.getSeasonalGoodsDesc())) {
@@ -328,6 +309,17 @@ public class CheckSkuNew {
                 productSkuDraft.setUseTime(Integer.parseInt(importVo.getUseTime()));
             } catch (Exception e) {
                 error.add("使用时长格式不正确");
+            }
+        }
+        //库存模式
+        if (Objects.isNull(importVo.getInventoryModelDesc())) {
+            error.add("库存模式不能为空");
+        } else {
+            InventoryModels generals = InventoryModels.getAll().get(importVo.getInventoryModelDesc());
+            if (Objects.isNull(generals)) {
+                error.add("库存模式请填写有库存销售或者无库存销售");
+            } else {
+                productSkuDraft.setInventoryModel(generals.getType());
             }
         }
         //唯一码管理
@@ -424,9 +416,6 @@ public class CheckSkuNew {
         //商品备注
         if (false) {
         }
-        //商品描述
-        if (false) {
-        }
         //管理方式默认写死
         productSkuDraft.setManagementStyleCode("1");
         productSkuDraft.setManagementStyleName("只管理数量");
@@ -435,7 +424,7 @@ public class CheckSkuNew {
     }
 
     //检查进销存包装
-    public CheckSkuNew checkInvoice() {
+    public CheckSkuUpdate checkInvoice() {
         List<PurchaseSaleStockReqVo> purchaseSaleStockReqVos = Lists.newArrayList();
         List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts = Lists.newArrayList();
         //库存
@@ -506,12 +495,12 @@ public class CheckSkuNew {
             }
             productSkuBoxPackingDrafts.add(stockBox);
         }
-        //库存条形码 默认使用销售条形码
-//        if (Objects.isNull(importVo.getStockBarCode())) {
-//            error.add("库存条形码不能为空");
-//        } else {
-            stock.setBarCode(importVo.getSaleBarCode());
-//        }
+        //库存条形码
+        if (Objects.isNull(importVo.getStockBarCode())) {
+            error.add("库存条形码不能为空");
+        } else {
+            stock.setBarCode(importVo.getStockBarCode().trim());
+        }
         purchaseSaleStockReqVos.add(stock);
         //采购
         PurchaseSaleStockReqVo purchase = new PurchaseSaleStockReqVo();
@@ -539,7 +528,7 @@ public class CheckSkuNew {
             }
         }
         //采购包装信息
-        if (Objects.nonNull(importVo.getStockUnitName())&&Objects.nonNull(importVo.getPurchaseUnitName())&&(!importVo.getStockUnitName().equals(importVo.getPurchaseUnitName()))) {
+        if (!importVo.getStockUnitName().equals(importVo.getPurchaseUnitName())) {
             if (Objects.nonNull(importVo.getPurchaseBoxLength())) {
                 ProductSkuBoxPackingDraft purchaseBox = new ProductSkuBoxPackingDraft();
                 purchaseBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
@@ -591,17 +580,16 @@ public class CheckSkuNew {
                 error.add("采购基商品含量不正确");
             }
         }
-        //采购拆零系数 默认是1
-        purchase.setZeroRemovalCoefficient((long) 1);
-//        if (Objects.isNull(importVo.getPurchaseZeroRemovalCoefficient())) {
-//            error.add("采购拆零系数不能为空");
-//        } else {
-//            try {
-//                purchase.setZeroRemovalCoefficient(Long.parseLong(importVo.getPurchaseZeroRemovalCoefficient()));
-//            } catch (Exception e) {
-//                error.add("采购拆零系数不正确");
-//            }
-//        }
+        //采购拆零系数
+        if (Objects.isNull(importVo.getPurchaseZeroRemovalCoefficient())) {
+            error.add("采购拆零系数不能为空");
+        } else {
+            try {
+                purchase.setZeroRemovalCoefficient(Long.parseLong(importVo.getPurchaseZeroRemovalCoefficient()));
+            } catch (Exception e) {
+                error.add("采购拆零系数不正确");
+            }
+        }
         //采购条形码
         if (Objects.isNull(importVo.getPurchaseBarCode())) {
             error.add("采购条形码不能为空");
@@ -618,33 +606,33 @@ public class CheckSkuNew {
         distribution.setProductName(this.resp.getProductSkuDraft().getProductName());
         distribution.setType((byte) 2);
         //分销规格
-//        if (Objects.isNull(importVo.getDistributionSpec())) {
-//            error.add("分销规格不能为空");
-//        } else {
-            distribution.setSpec(stock.getSpec());
-//        }
+        if (Objects.isNull(importVo.getDistributionSpec())) {
+            error.add("分销规格不能为空");
+        } else {
+            distribution.setSpec(importVo.getDistributionSpec());
+        }
         //分销单位
-//        if (Objects.isNull(importVo.getDistributionUnitName())) {
-//            error.add("分销单位不能为空");
-//        } else {
-//            SupplierDictionaryInfo info = dicMap.get(importVo.getDistributionUnitName());
-//            if (Objects.isNull(info)) {
-//                error.add("无对应名称为" + importVo.getDistributionUnitName() + "的单位");
-//            } else {
-                distribution.setUnitCode(stock.getUnitCode());
-                distribution.setUnitName(stock.getUnitName());
-//            }
-//        }
+        if (Objects.isNull(importVo.getDistributionUnitName())) {
+            error.add("分销单位不能为空");
+        } else {
+            SupplierDictionaryInfo info = dicMap.get(importVo.getDistributionUnitName());
+            if (Objects.isNull(info)) {
+                error.add("无对应名称为" + importVo.getDistributionUnitName() + "的单位");
+            } else {
+                distribution.setUnitCode(info.getSupplierDictionaryValue());
+                distribution.setUnitName(info.getSupplierContent());
+            }
+        }
         //分销基商品含量
-//        if (Objects.isNull(importVo.getDistributionBaseProductContent())) {
-//            error.add("分销基商品含量不能为空");
-//        } else {
-//            try {
-                distribution.setBaseProductContent(1);
-//            } catch (Exception e) {
-//                error.add("分销基商品含量不正确");
-//            }
-//        }
+        if (Objects.isNull(importVo.getDistributionBaseProductContent())) {
+            error.add("分销基商品含量不能为空");
+        } else {
+            try {
+                distribution.setBaseProductContent(Integer.parseInt(importVo.getDistributionBaseProductContent()));
+            } catch (Exception e) {
+                error.add("分销基商品含量不正确");
+            }
+        }
         //分销拆零系数
         if (Objects.isNull(importVo.getDistributionZeroRemovalCoefficient())) {
             error.add("分销拆零系数不能为空");
@@ -656,11 +644,11 @@ public class CheckSkuNew {
             }
         }
         //分销条形码
-//        if (Objects.isNull(importVo.getDistributionBarCode())) {
-//            error.add("分销条形码不能为空");
-//        } else {
-            distribution.setBarCode(importVo.getSaleBarCode());
-//        }
+        if (Objects.isNull(importVo.getDistributionBarCode())) {
+            error.add("分销条形码不能为空");
+        } else {
+            distribution.setBarCode(importVo.getDistributionBarCode().trim());
+        }
         //最大订购数量
         if (Objects.nonNull(importVo.getMaxOrderNum())) {
             try {
@@ -680,31 +668,51 @@ public class CheckSkuNew {
         sale.setIsDefault((byte)1);
         sale.setType((byte) 3);
         //销售规格
-//        if (Objects.isNull(importVo.getSaleSpec())) {
-//            error.add("销售规格不能为空");
-//        } else {
-            sale.setSpec(stock.getSpec());
-//        }
+        if (Objects.isNull(importVo.getSaleSpec())) {
+            error.add("销售规格不能为空");
+        } else {
+            sale.setSpec(importVo.getSaleSpec());
+        }
         //销售单位
-//        if (Objects.isNull(importVo.getSaleUnitName())) {
-//            error.add("销售单位不能为空");
-//        } else {
-//            SupplierDictionaryInfo info = dicMap.get(importVo.getSaleUnitName());
-//            if (Objects.isNull(info)) {
-//                error.add("无对应名称为" + importVo.getSaleUnitName() + "的单位");
+        if (Objects.isNull(importVo.getSaleUnitName())) {
+            error.add("销售单位不能为空");
+        } else {
+            SupplierDictionaryInfo info = dicMap.get(importVo.getSaleUnitName());
+            if (Objects.isNull(info)) {
+                error.add("无对应名称为" + importVo.getSaleUnitName() + "的单位");
+            } else {
+                sale.setUnitCode(info.getSupplierDictionaryValue());
+                sale.setUnitName(info.getSupplierContent());
+                if (!Optional.ofNullable(stock.getUnitCode()).orElse("库存").equals(info.getSupplierDictionaryValue())) {
+                    error.add("销售的单位必须和库存的单位一致");
+                }
+            }
+        }
+        //销售基商品含量
+//            if (Objects.isNull(importVo.getSaleBaseProductContent())) {
+//                error.add("销售基商品含量不能为空");
 //            } else {
-                sale.setUnitCode(stock.getUnitCode());
-                sale.setUnitName(stock.getUnitName());
-//                if (!Optional.ofNullable(stock.getUnitCode()).orElse("库存").equals(info.getSupplierDictionaryValue())) {
-//                    error.add("销售的单位必须和库存的单位一致");
+//                try {
+//                    sale.setBaseProductContent(Integer.parseInt(importVo.getSaleBaseProductContent()));
+//                } catch (Exception e) {
+//                    error.add("销售基商品含量不正确");
 //                }
 //            }
-//        }
+        //销售拆零系数
+//            if (Objects.isNull(importVo.getSaleZeroRemovalCoefficient())) {
+//                error.add("销售拆零系数不能为空");
+//            } else {
+//                try {
+//                    sale.setZeroRemovalCoefficient(Long.parseLong(importVo.getSaleZeroRemovalCoefficient()));
+//                } catch (Exception e) {
+//                    error.add("销售拆零系数不正确");
+//                }
+//            }
         //销售条形码
         if (Objects.isNull(importVo.getSaleBarCode())) {
             error.add("销售条形码不能为空");
         } else {
-            sale.setBarCode(importVo.getSaleBarCode());
+            sale.setBarCode(importVo.getSaleBarCode().trim());
         }
         //销售描述
         if (Objects.isNull(importVo.getDescription())) {
@@ -719,7 +727,7 @@ public class CheckSkuNew {
     }
 
     //检查结算信息
-    public CheckSkuNew checkSettlement() {
+    public CheckSkuUpdate checkSettlement() {
         ProductSkuCheckoutDraft draft = new ProductSkuCheckoutDraft();
         draft.setSkuCode(this.resp.getProductSkuDraft().getSkuCode());
         draft.setSkuName(this.resp.getProductSkuDraft().getSkuName());
@@ -780,7 +788,7 @@ public class CheckSkuNew {
     }
 
     //检查供应商
-    public CheckSkuNew checkSupplier() {
+    public CheckSkuUpdate checkSupplier() {
         List<ProductSkuSupplyUnitDraft> supply = Lists.newArrayList();
         ProductSkuSupplyUnitDraft supplyUnitDraft = new ProductSkuSupplyUnitDraft();
         supplyUnitDraft.setIsDefault((byte) 1);
@@ -850,8 +858,90 @@ public class CheckSkuNew {
         this.resp.setProductSkuSupplyUnitDrafts(supply);
         return this;
     }
+    //检验导入sku
+    public CheckSkuUpdate checkSupplier2() {
+        List<ProductSkuSupplyUnitDraft> supply = Lists.newArrayList();
+        ProductSkuSupplyUnitDraft supplyUnitDraft = new ProductSkuSupplyUnitDraft();
+        supplyUnitDraft.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
+        supplyUnitDraft.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
+        //供应商编码
+        if (Objects.isNull(importVo.getSupplyUnitCode())) {
+            error.add("供应商编码不能为空");
+        } else {
+            ProductSkuDraft productSkuDraft = productSkuDraftMap.get(importVo.getSkuCode());
+            if (Objects.isNull(productSkuDraft)) {
+                error.add("无对应编码的sku");
+            } else {
+                List<ProductSkuSupplyUnitDraft> supplyList = productSkuDraft.getSupplyList();
+                if (CollectionUtils.isEmpty(supplyList) || supplyList.size() < 1) {
+                    error.add("无法找修改前的供应商信息");
+                } else {
+                    if (Objects.isNull(importVo.getSupplyUnitName())) {
+                        error.add("供应商名称不能为空");
+                    } else {
+                        SupplyCompany supplyCompany = supplyCompanyMap.get(importVo.getSupplyUnitName().trim());
+
+                        String s = repeatMap.get(supplyCompany.getSupplyName() + importVo.getSkuName().trim());
+                        if (StringUtils.isNotBlank(s)) {
+                            error.add("sku名称为:" + importVo.getSkuName() + "下的供应商名称为" + supplyCompany.getSupplyName() + "已重复");
+                        } else {
+                            supplyUnitDraft.setSupplyUnitCode(supplyCompany.getSupplyCode());
+                            supplyUnitDraft.setSupplyUnitName(supplyCompany.getSupplyName());
+                            repeatMap.put(supplyCompany.getSupplyName() + importVo.getSkuName().trim(), importVo.getSkuName());
+                        }
+                    }
+                }
+            }
+        }
+        //含税采购价
+        if (Objects.isNull(importVo.getTaxIncludedPrice())) {
+            error.add("含税采购价不能为空");
+        } else {
+            try {
+                supplyUnitDraft.setTaxIncludedPrice(NumberConvertUtils.stringParseLong(importVo.getTaxIncludedPrice()));
+            } catch (Exception e) {
+                error.add("含税采购价格式不正确");
+            }
+        }
+        //联营扣点
+        if (Objects.nonNull(importVo.getJointFranchiseRate())) {
+            try {
+                supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseLong(importVo.getJointFranchiseRate().trim()));
+            } catch (Exception e) {
+                error.add("联营扣点格式不正确");
+            }
+        }
+        //返点
+        if (Objects.nonNull(importVo.getPoint())) {
+            try {
+                supplyUnitDraft.setPoint(NumberConvertUtils.stringParseLong(importVo.getPoint().trim()));
+            } catch (Exception e) {
+                error.add("返点格式不正确");
+            }
+        }
+        //厂商SKU编码
+        if (Objects.nonNull(importVo.getFactorySkuCode())) {
+            supplyUnitDraft.setFactorySkuCode(importVo.getFactorySkuCode().trim());
+        }
+        //供应商供货渠道类别
+        if (Objects.isNull(importVo.getSupplyCategoriesSupplyChannelsName())) {
+            error.add("供应商供货渠道类别不能为空");
+        } else {
+            SupplierDictionaryInfo info = dicMap.get(importVo.getSupplyCategoriesSupplyChannelsName().trim());
+            if (Objects.isNull(info)) {
+                error.add("未找到对应名称的供应商供货渠道类别");
+            } else {
+                supplyUnitDraft.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
+                supplyUnitDraft.setCategoriesSupplyChannelsName(info.getSupplierContent());
+            }
+        }
+        supply.add(supplyUnitDraft);
+        this.resp.setProductSkuSupplyUnitDrafts(supply);
+        return this;
+    }
+
     //检查价格
-    public CheckSkuNew checkPrice() {
+    public CheckSkuUpdate checkPrice() {
         List<SkuPriceDraftReqVO> priceList = Lists.newArrayList();
         Map<String, SkuPriceDraftReqVO> price = PriceAndWarehouseMap.price;
         //爱亲渠道价
@@ -927,47 +1017,47 @@ public class CheckSkuNew {
             priceList.add(xiaohongmaDistribution);
         }
         //爱亲售价
-//        if (Objects.isNull(importVo.getReadyCol73())) {
-//            error.add("爱亲售价不能为空");
-//        } else {
-//            SkuPriceDraftReqVO aiqinSale = price.get("爱亲售价");
-//            try {
-//                aiqinSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol73()));
-//            } catch (Exception e) {
-//                error.add("爱亲售价格式不正确");
-//            }
-//            priceList.add(aiqinSale);
-//        }
-        //售价
-        if (Objects.isNull(importVo.getReadyCol74())) {
-            error.add("售价不能为空");
+        if (Objects.isNull(importVo.getReadyCol73())) {
+            error.add("爱亲售价不能为空");
         } else {
-            SkuPriceDraftReqVO shoujia = price.get("售价");
+            SkuPriceDraftReqVO aiqinSale = price.get("爱亲售价");
             try {
-                shoujia.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol74()));
+                aiqinSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol73()));
             } catch (Exception e) {
-                error.add("售价格式不正确");
+                error.add("爱亲售价格式不正确");
             }
-            priceList.add(shoujia);
+            priceList.add(aiqinSale);
         }
-        //会员价
-        if (Objects.isNull(importVo.getReadyCol75())) {
-            error.add("会员价不能为空");
+        //萌贝树售价
+        if (Objects.isNull(importVo.getReadyCol74())) {
+            error.add("萌贝树售价不能为空");
         } else {
-            SkuPriceDraftReqVO huiyuanjia = price.get("会员价");
+            SkuPriceDraftReqVO mengbeishuSale = price.get("萌贝树售价");
             try {
-                huiyuanjia.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol75()));
+                mengbeishuSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol74()));
             } catch (Exception e) {
-                error.add("会员价格式不正确");
+                error.add("萌贝树售价格式不正确");
             }
-            priceList.add(huiyuanjia);
+            priceList.add(mengbeishuSale);
+        }
+        //小红马售价
+        if (Objects.isNull(importVo.getReadyCol75())) {
+            error.add("小红马售价不能为空");
+        } else {
+            SkuPriceDraftReqVO xiaohongmaSale = price.get("小红马售价");
+            try {
+                xiaohongmaSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol75()));
+            } catch (Exception e) {
+                error.add("小红马售价格式不正确");
+            }
+            priceList.add(xiaohongmaSale);
         }
         this.resp.setProductSkuPrices(priceList);
         return this;
     }
 
     //检查配置
-    public CheckSkuNew checkConfig() {
+    public CheckSkuUpdate checkConfig() {
         List<SaveSkuConfigReqVo> configReqVos = Lists.newArrayList();
         Map<String, SaveSkuConfigReqVo> warehouse = PriceAndWarehouseMap.warehouse;
         //华北仓
@@ -1045,7 +1135,7 @@ public class CheckSkuNew {
     }
 
     //检查厂家
-    public CheckSkuNew checkManufacturer() {
+    public CheckSkuUpdate checkManufacturer() {
         //生产厂家
         if (Objects.nonNull(importVo.getManufacturerName())) {
             Manufacturer manufacturer = manufactureMap.get(importVo.getManufacturerName().trim());
@@ -1077,7 +1167,7 @@ public class CheckSkuNew {
     }
 
     //检查图片
-    public CheckSkuNew checkPic() {
+    public CheckSkuUpdate checkPic() {
         if (Objects.isNull(importVo.getPicFolderCode())) {
 //                error.add("图片文件夹编号不能为空");
         }else {
@@ -1105,5 +1195,20 @@ public class CheckSkuNew {
     public SkuInfoImport getSkuInfoImport() {
         this.importVo.setError(StringUtils.strip(this.error.toString(), "[]"));
         return this.importVo;
+    }
+
+    public CheckSkuUpdate checkPurchaseGroup() {
+        if (Objects.isNull(importVo.getProcurementSectionName())) {
+            error.add("采购组不能为空");
+        }else {
+            PurchaseGroupDTO purchaseGroup = purchaseGroupMap.get(importVo.getProcurementSectionName());
+            if (Objects.isNull(purchaseGroup)) {
+                error.add("无对应名称的采购组");
+            }else {
+                this.resp.getProductSkuDraft().setProcurementSectionCode(purchaseGroup.getPurchaseGroupCode());
+                this.resp.getProductSkuDraft().setProcurementSectionName(purchaseGroup.getPurchaseGroupName());
+            }
+        }
+        return this;
     }
 }

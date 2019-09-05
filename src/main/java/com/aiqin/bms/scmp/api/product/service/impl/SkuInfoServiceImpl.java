@@ -32,6 +32,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsV
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuNew;
+import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuUpdate;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
@@ -1987,7 +1988,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             Map<String, String> reaptMap = Maps.newHashMap();
             for (int i = 0; i < skuInfoImports.size(); i++) {
                 //检查信息
-                CheckSku checkSku = new CheckSku(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap)
+                CheckSkuUpdate checkSku = new CheckSkuUpdate(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap)
                         .checkRepeat() //检查重复
                         .checkSKuUpdate() //修改检查sku
                         .checkBaseDate() //检查基础数据
@@ -2033,6 +2034,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     synchronized (SkuInfoService.class) {
                         NewProductSaveReqVO saveReqVO = new NewProductSaveReqVO();
                         saveReqVO.setProductName(reqVO.getProductSkuDraft().getProductName());
+                        saveReqVO.setPurchasingGroupCode(reqVOs.getPurchaseGroupCode());
+                        saveReqVO.setPurchasingGroupName(reqVOs.getPurchaseGroupName());
                         String s = newProductService.insertProduct(saveReqVO);
                         reqVO.getProductSkuDraft().setProductCode(s);
                         spuMap.put(reqVO.getProductSkuDraft().getProductName(), s);
@@ -2063,6 +2066,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     synchronized (SkuInfoService.class) {
                         NewProductSaveReqVO saveReqVO = new NewProductSaveReqVO();
                         saveReqVO.setProductName(reqVO.getProductSkuDraft().getProductName());
+                        saveReqVO.setPurchasingGroupCode(reqVOs.getPurchaseGroupCode());
+                        saveReqVO.setPurchasingGroupName(reqVOs.getPurchaseGroupName());
                         String s = newProductService.insertProduct(saveReqVO);
                         reqVO.getProductSkuDraft().setProductCode(s);
                         spuMap.put(reqVO.getProductSkuDraft().getProductName(), s);

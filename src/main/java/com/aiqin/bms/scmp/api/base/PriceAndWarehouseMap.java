@@ -43,15 +43,17 @@ public class PriceAndWarehouseMap {
          * "1084","华南仓"
          * "1085","华中仓"
          */
-        price.put("爱亲渠道价",new SkuPriceDraftReqVO("1083","爱亲渠道价","2","渠道类","2","销售"));
-        price.put("爱亲分销价",new SkuPriceDraftReqVO("1078","爱亲分销价","3","分销类","2","销售"));
+        price.put("爱亲渠道价",new SkuPriceDraftReqVO("1001","爱亲渠道价","2","渠道类","2","销售"));
+        price.put("爱亲分销价",new SkuPriceDraftReqVO("1007","爱亲分销价","3","分销类","2","销售"));
         price.put("爱亲售价",new SkuPriceDraftReqVO("1089","爱亲售价", "4","零售类","2","销售"));
-        price.put("萌贝树渠道价",new SkuPriceDraftReqVO("1080","萌贝树渠道价","2","渠道类","2","销售"));
-        price.put("萌贝树分销价",new SkuPriceDraftReqVO("1084","萌贝树分销价","3","分销类","2","销售"));
+        price.put("萌贝树渠道价",new SkuPriceDraftReqVO("1002","萌贝树渠道价","2","渠道类","2","销售"));
+        price.put("萌贝树分销价",new SkuPriceDraftReqVO("1008","萌贝树分销价","3","分销类","2","销售"));
         price.put("萌贝树售价",new SkuPriceDraftReqVO("1090","萌贝树售价","4","零售类","2","销售"));
-        price.put("小红马渠道价",new SkuPriceDraftReqVO("1077","小红马渠道价","2","渠道类","2","销售"));
-        price.put("小红马分销价",new SkuPriceDraftReqVO("1085","小红马分销价","3","分销类","2","销售"));
+        price.put("小红马渠道价",new SkuPriceDraftReqVO("1003","小红马渠道价","2","渠道类","2","销售"));
+        price.put("小红马分销价",new SkuPriceDraftReqVO("1009","小红马分销价","3","分销类","2","销售"));
         price.put("小红马售价",new SkuPriceDraftReqVO("1091","小红马售价","4","零售类","2","销售"));
+        price.put("售价",new SkuPriceDraftReqVO("1013","售价","4","零售类","2","销售"));
+        price.put("会员价",new SkuPriceDraftReqVO("1014","会员价","4","零售类","2","销售"));
 
         warehouse.put("华北仓",new SaveSkuConfigReqVo("1081","华北仓"));
         warehouse.put("西南仓",new SaveSkuConfigReqVo("1082","西南仓"));
