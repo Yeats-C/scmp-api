@@ -49,11 +49,12 @@ public class SaleRequest {
     @JsonProperty("product_property_code")
     private Integer productPropertyCode;
 
-    public SaleRequest(String date, Integer type, Integer reportType, Integer dataTypeCode, Integer productPropertyCode) {
+    public SaleRequest(String date, Integer type, Integer reportType, Integer dataTypeCode, Integer productPropertyCode, String productSortCode) {
         this.date = date;
         this.type = type;
         this.reportType = reportType;
         this.dataTypeCode = dataTypeCode;
         this.productPropertyCode = productPropertyCode;
+        this.productSortCode = productSortCode;
     }
 }
