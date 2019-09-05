@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.supplier.domain.excel.ContractImportResp;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.dto.ApplyContractDTO;
@@ -13,6 +14,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo
 import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.ApplyContractUpdateResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.ApplyContractViewResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.applycontract.QueryApplyContractResVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -187,4 +189,25 @@ public interface ApplyContractService{
      */
     DetailRequestRespVo getInfoByForm(String formNo);
 
+    /**
+     *
+     * 功能描述: 导入处理
+     *
+     * @param file
+     * @return
+     * @auther knight.xie
+     * @date 2019/9/2 15:50
+     */
+    ContractImportResp dealImport(MultipartFile file);
+
+    /**
+     *
+     * 功能描述: 保存
+     *
+     * @param req
+     * @return
+     * @auther knight.xie
+     * @date 2019/9/3 19:31
+     */
+    void saveImportData(ContractImportResp req);
 }

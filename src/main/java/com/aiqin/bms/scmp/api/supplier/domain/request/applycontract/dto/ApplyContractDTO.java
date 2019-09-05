@@ -81,6 +81,9 @@ public class ApplyContractDTO extends CommonBean {
     @ApiModelProperty("申请合同编号")
     private String applyContractCode;
 
+    @ApiModelProperty("合同编号")
+    private String contractCode;
+
     @ApiModelProperty("申请状态(0:等待审核中 1:审核中)")
     private Byte applyStatus;
 
@@ -92,7 +95,6 @@ public class ApplyContractDTO extends CommonBean {
 
     @ApiModelProperty("审核时间")
     private Date auditorTime;
-
 
     @ApiModelProperty("审核申请单号")
     private String formNo;
@@ -168,5 +170,8 @@ public class ApplyContractDTO extends CommonBean {
 
     @ApiModelProperty("备注")
     private String remark;
+
+    @ApiModelProperty("最下面的备注")
+    private String comment;
 
 }
