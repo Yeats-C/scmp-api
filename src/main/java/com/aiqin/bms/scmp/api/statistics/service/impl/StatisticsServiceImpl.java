@@ -51,6 +51,10 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Resource
     private StatDeptNegativeMarginMonthlyDao statDeptNegativeMarginMonthlyDao;
 
+    private final static int YEAR = 0;
+    private final static int QUARTERLYQ = 1;
+    private final static int MONTH = 2;
+
     private void currency(Integer type, String date){
         if(type == null && StringUtils.isEmpty(date)){
             type = 0;
@@ -130,7 +134,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         List<StoreRepurchaseRateSubtotalResponse> deptList = new ArrayList<>();
         StoreRepurchaseRateSubtotalResponse deptRepurchase;
         Long year = Long.valueOf(date.substring(0, 4));
-        Long month = Long.valueOf(date.substring(5, date.length()));
+        Long month = Long.valueOf(date.substring(5));
         if(type.equals(Global.COMPANY)){
             // 计算公司合计
             comRepurchase = statComStoreRepurchaseRateDao.storeRepurchaseSum(year, month);
@@ -197,19 +201,19 @@ public class StatisticsServiceImpl implements StatisticsService {
             if(reportType.equals(Global.ANNUAL_REPORT)){
                 Long year = Long.valueOf(date);
                 // 计算公司的负毛利统计- 年报
-                sumResponse = this.companyNegative(year, null, sumResponse, 0);
+                sumResponse = this.companyNegative(year, null, sumResponse, YEAR);
             }else if(reportType.equals(Global.QUARTERLY_REPORT)){
                 // 计算公司的负毛利统计- 季报
                 if(seasonType == null){
                     return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
                 }
                 Long year = Long.valueOf(date);
-                sumResponse = this.companyNegative(year, seasonType, sumResponse, 1);
+                sumResponse = this.companyNegative(year, seasonType, sumResponse, QUARTERLYQ);
             }else if(reportType.equals(Global.MONTHLY_REPORT)){
                 // 计算公司的负毛利统计- 月报
                 Long year = Long.valueOf(date.substring(0, 4));
-                Long month = Long.valueOf(date.substring(5, date.length()));
-                sumResponse = this.companyNegative(year, month, sumResponse, 2);
+                Long month = Long.valueOf(date.substring(5));
+                sumResponse = this.companyNegative(year, month, sumResponse, MONTH);
             }
             return HttpResponse.success(sumResponse);
         }else {
@@ -221,19 +225,19 @@ public class StatisticsServiceImpl implements StatisticsService {
             if(reportType.equals(Global.ANNUAL_REPORT)){
                 // 计算部门的负毛利统计- 年报
                 Long year = Long.valueOf(date);
-                deptResponse = this.departmentNegative(year, null, productSortCode, deptResponse, 0);
+                deptResponse = this.departmentNegative(year, null, productSortCode, deptResponse, YEAR);
             }else if(reportType.equals(Global.QUARTERLY_REPORT)){
                 // 计算部门的负毛利统计- 季报
                 if(seasonType == null){
                     return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
                 }
                 Long year = Long.valueOf(date);
-                deptResponse = this.departmentNegative(year, seasonType, productSortCode, deptResponse, 1);
+                deptResponse = this.departmentNegative(year, seasonType, productSortCode, deptResponse, QUARTERLYQ);
             }else if(reportType.equals(Global.MONTHLY_REPORT)){
                 // 计算部门的负毛利统计- 月报
                 Long year = Long.valueOf(date.substring(0, 4));
-                Long month = Long.valueOf(date.substring(5, date.length()));
-                deptResponse = this.departmentNegative(year, month, productSortCode, deptResponse, 2);
+                Long month = Long.valueOf(date.substring(5));
+                deptResponse = this.departmentNegative(year, month, productSortCode, deptResponse, MONTH);
             }
             return HttpResponse.success(deptResponse);
         }
@@ -248,27 +252,27 @@ public class StatisticsServiceImpl implements StatisticsService {
         NegativeCompanyResponse companyResponse;
         List<NegativeCategoryResponse> categoryList;
         NegativeRateResponse rateResponse;
-        if(i == 0){
+        if(i == YEAR){
             sumResponse = statComNegativeMarginYearlyDao.negativeSum(year);
-        }else if(i == 1){
+        }else if(i == QUARTERLYQ){
             sumResponse = statComNegativeMarginQuarterlyDao.negativeSum(year, data);
         }else{
             sumResponse = statComNegativeMarginMonthlyDao.negativeSum(year, data);
         }
         if(sumResponse != null){
-            if(i == 0){
+            if(i == YEAR){
                 departments = statComNegativeMarginYearlyDao.negativeByDept(year);
-            }else if(i == 1){
+            }else if(i == QUARTERLYQ){
                 departments = statComNegativeMarginQuarterlyDao.negativeByDept(year, data);
             }else {
                 departments = statComNegativeMarginMonthlyDao.negativeByDept(year, data);
             }
             if(CollectionUtils.isNotEmptyCollection(departments)){
                 for(CompanyAndDeptResponse dept:departments){
-                    if(i == 0){
+                    if(i == YEAR){
                         deptResponse = statComNegativeMarginYearlyDao.negativeDeptSum(year, dept.getProductSortCode());
                         companys = statComNegativeMarginYearlyDao.negativeByCompany(year, dept.getProductSortCode());
-                    }else if(i == 1){
+                    }else if(i == QUARTERLYQ){
                         deptResponse = statComNegativeMarginQuarterlyDao.negativeDeptSum(year, data, dept.getProductSortCode());
                         companys = statComNegativeMarginQuarterlyDao.negativeByCompany(year, data, dept.getProductSortCode());
                     }else {
@@ -278,10 +282,10 @@ public class StatisticsServiceImpl implements StatisticsService {
                     if(CollectionUtils.isNotEmptyCollection(companys)){
                         companyList = new ArrayList<>();
                         for (CompanyAndDeptResponse company:companys){
-                            if(i == 0){
+                            if(i == YEAR){
                                 companyResponse = statComNegativeMarginYearlyDao.negativeCompanySum(year, company.getPriceChannelCode(),
                                         company.getProductSortCode());
-                            }else if(i == 1){
+                            }else if(i == QUARTERLYQ){
                                 companyResponse = statComNegativeMarginQuarterlyDao.negativeCompanySum(year, data, company.getPriceChannelCode(),
                                         company.getProductSortCode());
                             } else{
@@ -289,10 +293,10 @@ public class StatisticsServiceImpl implements StatisticsService {
                                         company.getProductSortCode());
                             }
                             if(companyResponse != null){
-                                if(i == 0) {
+                                if(i == YEAR) {
                                     categoryList = statComNegativeMarginYearlyDao.negativeCategoryList(year, company.getPriceChannelCode(),
                                             company.getProductSortCode());
-                                }else if(i == 1){
+                                }else if(i == QUARTERLYQ){
                                         categoryList = statComNegativeMarginQuarterlyDao.negativeCategoryList(year, data, company.getPriceChannelCode(),
                                                 company.getProductSortCode());
                                 }else {
@@ -331,10 +335,10 @@ public class StatisticsServiceImpl implements StatisticsService {
         NegativeCompanyResponse companyResponse;
         List<NegativeCategoryResponse> categoryList;
         NegativeRateResponse rateResponse;
-        if (i == 0) {
+        if (i == YEAR) {
             deptResponse = statDeptNegativeMarginYearlyDao.negativeDeptSum(year, productSortCode);
             companys = statDeptNegativeMarginYearlyDao.negativeByCompany(year, productSortCode);
-        } else if (i == 1) {
+        } else if (i == QUARTERLYQ) {
             deptResponse = statDeptNegativeMarginQuarterlyDao.negativeDeptSum(year, data, productSortCode);
             companys = statDeptNegativeMarginQuarterlyDao.negativeByCompany(year, data, productSortCode);
         } else {
@@ -344,10 +348,10 @@ public class StatisticsServiceImpl implements StatisticsService {
         if (CollectionUtils.isNotEmptyCollection(companys)) {
             companyList = new ArrayList<>();
             for (CompanyAndDeptResponse company : companys) {
-                if (i == 0) {
+                if (i == YEAR) {
                     companyResponse = statDeptNegativeMarginYearlyDao.negativeCompanySum(year, company.getPriceChannelCode(),
                             productSortCode);
-                } else if (i == 1) {
+                } else if (i == QUARTERLYQ) {
                     companyResponse = statDeptNegativeMarginQuarterlyDao.negativeCompanySum(year, data, company.getPriceChannelCode(),
                             productSortCode);
                 } else {
@@ -355,10 +359,10 @@ public class StatisticsServiceImpl implements StatisticsService {
                             productSortCode);
                 }
                 if (companyResponse != null) {
-                    if (i == 0) {
+                    if (i == YEAR) {
                         categoryList = statDeptNegativeMarginYearlyDao.negativeCategoryList(year, company.getPriceChannelCode(),
                                 productSortCode);
-                    } else if (i == 1) {
+                    } else if (i == QUARTERLYQ) {
                         categoryList = statDeptNegativeMarginQuarterlyDao.negativeCategoryList(year, data, company.getPriceChannelCode(),
                                 company.getProductSortCode());
                     } else {
@@ -384,38 +388,44 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     private NegativeRateResponse negativeRate(NegativeRateResponse rateResponse){
         // 渠道销售金额同比
-        if(rateResponse.getChannelSalesAmount() == null || rateResponse.getChannelSalesAmount() == 0 ||
-                rateResponse.getPreChannelSalesAmount() == null){
-            rateResponse.setChannelSalesAmountYearonyear(new BigDecimal(0));
+        BigDecimal big = new BigDecimal(0);
+        Long rate = 0L;
+        Long channelSalesAmount = rateResponse.getChannelSalesAmount() == null ? rate : rateResponse.getChannelSalesAmount();
+        Long preChannelSalesAmount = rateResponse.getPreChannelSalesAmount() == null ? rate : rateResponse.getPreChannelSalesAmount();
+        if(channelSalesAmount == rate || preChannelSalesAmount == rate){
+            rateResponse.setChannelSalesAmountYearonyear(big);
         }else {
-            rateResponse.setChannelSalesAmountYearonyear(new BigDecimal(rateResponse.getChannelSalesAmount()).
-                    divide(new BigDecimal(rateResponse.getPreChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+            rateResponse.setChannelSalesAmountYearonyear(new BigDecimal(channelSalesAmount).
+                    divide(new BigDecimal(preChannelSalesAmount), 4, BigDecimal.ROUND_HALF_UP));
         }
         // 渠道毛利同比
-        if(rateResponse.getChannelMargin() == null || rateResponse.getChannelMargin() == 0 ||
-                rateResponse.getPreChannelMargin() == null){
-            rateResponse.setChannelMarginYearonyear(new BigDecimal(0));
+        Long channelMargin = rateResponse.getChannelMargin() == null ? rate : rateResponse.getChannelMargin();
+        Long preChannelMargin = rateResponse.getPreChannelMargin() == null ? rate : rateResponse.getPreChannelMargin();
+        if(channelMargin == rate || preChannelMargin == rate){
+            rateResponse.setChannelMarginYearonyear(big);
         }else {
-            rateResponse.setChannelMarginYearonyear(new BigDecimal(rateResponse.getChannelMargin()).
-                    divide(new BigDecimal(rateResponse.getPreChannelMargin()), 4, BigDecimal.ROUND_HALF_UP));
+            rateResponse.setChannelMarginYearonyear(new BigDecimal(channelMargin).
+                    divide(new BigDecimal(preChannelMargin), 4, BigDecimal.ROUND_HALF_UP));
         }
 
         // 分销销售额同比
-        if(rateResponse.getDistributionSalesAmount() == null || rateResponse.getDistributionSalesAmount() == 0 ||
-                rateResponse.getPreDistributionSalesAmount() == null){
-            rateResponse.setDistributionSalesAmountYearonyear(new BigDecimal(0));
+        Long distributionSalesAmount = rateResponse.getDistributionSalesAmount() == null ? rate : rateResponse.getDistributionSalesAmount();
+        Long preDistributionSalesAmount = rateResponse.getPreDistributionSalesAmount() == null ? rate : rateResponse.getPreDistributionSalesAmount();
+        if(distributionSalesAmount == rate || preDistributionSalesAmount == rate){
+            rateResponse.setDistributionSalesAmountYearonyear(big);
         }else {
-            rateResponse.setDistributionSalesAmountYearonyear(new BigDecimal(rateResponse.getDistributionSalesAmount()).
-                    divide(new BigDecimal(rateResponse.getPreDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+            rateResponse.setDistributionSalesAmountYearonyear(new BigDecimal(distributionSalesAmount).
+                    divide(new BigDecimal(preDistributionSalesAmount), 4, BigDecimal.ROUND_HALF_UP));
         }
 
         // 分销毛利同比
-        if(rateResponse.getDistributionMargin() == null || rateResponse.getDistributionMargin() == 0 ||
-                rateResponse.getPreDistributionMargin() == null){
-            rateResponse.setDistributionMarginYearonyear(new BigDecimal(0));
+        Long distributionMargin = rateResponse.getDistributionMargin() == null ? rate : rateResponse.getDistributionMargin();
+        Long preDistributionMargin = rateResponse.getPreDistributionMargin() == null ? rate : rateResponse.getPreDistributionMargin();
+        if(distributionMargin == rate || preDistributionMargin == null){
+            rateResponse.setDistributionMarginYearonyear(big);
         }else {
-            rateResponse.setDistributionMarginYearonyear(new BigDecimal(rateResponse.getDistributionMargin()).
-                    divide(new BigDecimal(rateResponse.getPreDistributionMargin()), 4, BigDecimal.ROUND_HALF_UP));
+            rateResponse.setDistributionMarginYearonyear(new BigDecimal(distributionMargin).
+                    divide(new BigDecimal(preDistributionMargin), 4, BigDecimal.ROUND_HALF_UP));
         }
         return rateResponse;
     }

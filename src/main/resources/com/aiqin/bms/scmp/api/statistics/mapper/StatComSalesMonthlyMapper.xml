@@ -72,4 +72,129 @@
     distribution_amount_last_month, distribution_margin_last_year, distribution_margin_last_month, 
     create_time
   </sql>
+  <select id="saleSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleSumResponse">
+    select
+    sum(ifnull(channel_sales_cost,0)) as channelSalesCost, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+    sum(ifnull(channel_margin,0)) as channelMargin, sum(ifnull(distribution_sales_cost,0)) as distributionSalesCost,
+    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(distribution_margin,0)) as distributionMargin,
+    sum(ifnull(channel_amount_last_year,0)) as channelAmountLastYear, sum(ifnull(channel_amount_last_month,0)) as channelAmountLastMonth,
+    sum(ifnull(channel_margin_last_year,0)) as channelMarginLastYear, sum(ifnull(channel_margin_last_month,0)) as channelMarginLastMonth,
+    sum(ifnull(distribution_amount_last_year,0)) as distributionAmountLastYear, sum(ifnull(distribution_amount_last_month,0)) as distributionAmountLastMonth,
+    sum(ifnull(distribution_margin_last_year,0)) as distributionMarginLastYear, sum(ifnull(distribution_margin_last_month,0)) as distributionMarginLastMonth,
+    sum(ifnull(channel_budget,0)) as channelBudget, sum(ifnull(distribution_budget,0)) as distributionBudget
+    from stat_com_sales_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    <if test="dataTypeCode != null">
+      and data_type_code = #{dataTypeCode,jdbcType=BIGINT}
+    </if>
+    <if test="productPropertyCode != null">
+      and product_property_code = #{productPropertyCode,jdbcType=BIGINT}
+    </if>
+  </select>
+  <select id="saleByDept" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse">
+    select
+    product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_com_sales_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    <if test="dataTypeCode != null">
+      and data_type_code = #{dataTypeCode,jdbcType=BIGINT}
+    </if>
+    <if test="productPropertyCode != null">
+      and product_property_code = #{productPropertyCode,jdbcType=BIGINT}
+    </if>
+    group by product_sort_code
+    order by product_sort_code
+  </select>
+  <select id="saleSumDept" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleDeptResponse">
+    select
+    product_sort_code as productSortCode, product_sort_name as productSortName,
+    sum(ifnull(channel_sales_cost,0)) as channelSalesCost, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+    sum(ifnull(channel_margin,0)) as channelMargin, sum(ifnull(distribution_sales_cost,0)) as distributionSalesCost,
+    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(distribution_margin,0)) as distributionMargin,
+    sum(ifnull(channel_amount_last_year,0)) as channelAmountLastYear, sum(ifnull(channel_amount_last_month,0)) as channelAmountLastMonth,
+    sum(ifnull(channel_margin_last_year,0)) as channelMarginLastYear, sum(ifnull(channel_margin_last_month,0)) as channelMarginLastMonth,
+    sum(ifnull(distribution_amount_last_year,0)) as distributionAmountLastYear, sum(ifnull(distribution_amount_last_month,0)) as distributionAmountLastMonth,
+    sum(ifnull(distribution_margin_last_year,0)) as distributionMarginLastYear, sum(ifnull(distribution_margin_last_month,0)) as distributionMarginLastMonth,
+    sum(ifnull(channel_budget,0)) as channelBudget, sum(ifnull(distribution_budget,0)) as distributionBudget
+    from stat_com_sales_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    <if test="dataTypeCode != null">
+      and data_type_code = #{dataTypeCode,jdbcType=BIGINT}
+    </if>
+    <if test="productPropertyCode != null">
+      and product_property_code = #{productPropertyCode,jdbcType=BIGINT}
+    </if>
+  </select>
+  <select id="saleByCompany" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse">
+    select
+    product_sort_code as productSortCode, product_sort_name as productSortName,
+    price_channel_code as priceChannelCode, price_channel_name as priceChannelName
+    from stat_com_sales_monthly
+    where
+    stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    <if test="dataTypeCode != null">
+      and data_type_code = #{dataTypeCode,jdbcType=BIGINT}
+    </if>
+    <if test="productPropertyCode != null">
+      and product_property_code = #{productPropertyCode,jdbcType=BIGINT}
+    </if>
+    group by price_channel_code
+    order by price_channel_code
+  </select>
+  <select id="saleSumCompany" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleCompanyResponse">
+    select
+    product_sort_code as productSortCode, product_sort_name as productSortName,
+    price_channel_code as priceChannelCode, price_channel_name as priceChannelName,
+    sum(ifnull(channel_sales_cost,0)) as channelSalesCost, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+    sum(ifnull(channel_margin,0)) as channelMargin, sum(ifnull(distribution_sales_cost,0)) as distributionSalesCost,
+    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(distribution_margin,0)) as distributionMargin,
+    sum(ifnull(channel_amount_last_year,0)) as channelAmountLastYear, sum(ifnull(channel_amount_last_month,0)) as channelAmountLastMonth,
+    sum(ifnull(channel_margin_last_year,0)) as channelMarginLastYear, sum(ifnull(channel_margin_last_month,0)) as channelMarginLastMonth,
+    sum(ifnull(distribution_amount_last_year,0)) as distributionAmountLastYear, sum(ifnull(distribution_amount_last_month,0)) as distributionAmountLastMonth,
+    sum(ifnull(distribution_margin_last_year,0)) as distributionMarginLastYear, sum(ifnull(distribution_margin_last_month,0)) as distributionMarginLastMonth
+    from stat_com_sales_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    and price_channel_code = #{priceChannelCode,jdbcType=VARCHAR}
+    <if test="dataTypeCode != null">
+      and data_type_code = #{dataTypeCode,jdbcType=BIGINT}
+    </if>
+    <if test="productPropertyCode != null">
+      and product_property_code = #{productPropertyCode,jdbcType=BIGINT}
+    </if>
+  </select>
+  <select id="saleStoreList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleStoreResponse">
+    select
+    product_sort_code as productSortCode, product_sort_name as productSortName, price_channel_code as priceChannelCode,
+    price_channel_name as priceChannelName, store_type_code as storeTypeCode, store_type as storeType,
+    product_property_code as productPropertyCode, product_property_name as productPropertyName,
+    data_type_code as dataTypeCode, data_type as dataType, sum(ifnull(channel_sales_cost,0)) as channelSalesCost,
+    sum(ifnull(channel_sales_amount,0)) as channelSalesAmount, sum(ifnull(channel_margin,0)) as channelMargin,
+    sum(ifnull(distribution_sales_cost,0)) as distributionSalesCost, sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount,
+    sum(ifnull(distribution_margin,0)) as distributionMargin, sum(ifnull(channel_amount_last_year,0)) as channelAmountLastYear,
+    sum(ifnull(channel_amount_last_month,0)) as channelAmountLastMonth, sum(ifnull(channel_margin_last_year,0)) as channelMarginLastYear,
+    sum(ifnull(channel_margin_last_month,0)) as channelMarginLastMonth, sum(ifnull(distribution_amount_last_year,0)) as distributionAmountLastYear,
+    sum(ifnull(distribution_amount_last_month,0)) as distributionAmountLastMonth,sum(ifnull(distribution_margin_last_year,0)) as distributionMarginLastYear,
+    sum(ifnull(distribution_margin_last_month,0)) as distributionMarginLastMonth, create_time as createTime
+    from stat_com_sales_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    and price_channel_code = #{priceChannelCode,jdbcType=VARCHAR}
+    <if test="dataTypeCode != null">
+      and data_type_code = #{dataTypeCode,jdbcType=BIGINT}
+    </if>
+    <if test="productPropertyCode != null">
+      and product_property_code = #{productPropertyCode,jdbcType=BIGINT}
+    </if>
+    group by store_type_code
+    order by store_type_code
+  </select>
 </mapper>

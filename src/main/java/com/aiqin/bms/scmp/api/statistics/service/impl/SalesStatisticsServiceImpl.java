@@ -38,7 +38,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
     private StatDeptSalesMonthlyDao statDeptSalesMonthlyDao;
 
     private final static int YEAR = 0;
-    private final static int MONTH = 1;
+    private final static int MONTH = 2;
 
     @Override
     public HttpResponse<SaleSumResponse> saleInfo(SaleRequest saleRequest){
@@ -181,7 +181,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             Long amount = 0L;
             Long channelSalesAmount = sale.getChannelSalesAmount() == null ? amount : sale.getChannelSalesAmount();
             Long channelAmountLastYear = sale.getChannelAmountLastYear() == null ? amount : sale.getChannelAmountLastYear();
-            if(channelSalesAmount == 0 || channelAmountLastYear == 0){
+            if(channelSalesAmount == amount || channelAmountLastYear == amount){
                 sale.setChannelSalesAmountYearonyear(big);
             }else {
                 sale.setChannelSalesAmountYearonyear(new BigDecimal(channelSalesAmount).
@@ -189,7 +189,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             }
             // 计算渠道销售金额的环比
             Long channelAmountLastMonth = sale.getChannelAmountLastMonth() == null ? amount : sale.getChannelAmountLastMonth();
-            if(channelSalesAmount == 0 || channelAmountLastMonth == 0){
+            if(channelSalesAmount == amount || channelAmountLastMonth == amount){
                 sale.setChannelSalesAmountLinkRela(big);
             }else {
                 sale.setChannelSalesAmountLinkRela(new BigDecimal(channelSalesAmount).
@@ -197,7 +197,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             }
             // 计算渠道毛利率
             Long channelSalesCost = sale.getChannelSalesCost() == null ? amount : sale.getChannelSalesCost();
-            if(channelSalesCost == 0 || channelSalesAmount == 0){
+            if(channelSalesCost == amount || channelSalesAmount == amount){
                 sale.setChannelMarginRate(big);
             }else {
                 sale.setChannelMarginRate(new BigDecimal(channelSalesAmount - channelSalesCost).
@@ -207,7 +207,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             // 计算渠道毛利同比
             Long channelMargin = sale.getChannelMargin() == null ? amount : sale.getChannelMargin();
             Long channelMarginLastYear = sale.getChannelMarginLastYear() == null ? amount : sale.getChannelMarginLastYear();
-            if(channelMargin == 0 || channelMarginLastYear == 0){
+            if(channelMargin == amount || channelMarginLastYear == amount){
                 sale.setChannelMarginYearonyear(big);
             }else {
                 sale.setChannelMarginYearonyear(new BigDecimal(channelMargin).
@@ -215,7 +215,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             }
             // 计算渠道毛利环比
             Long channelMarginLastMonth  = sale.getChannelMarginLastMonth() == null ? amount : sale.getChannelMarginLastMonth();
-            if(channelMargin == 0 || channelMarginLastMonth == 0){
+            if(channelMargin == amount || channelMarginLastMonth == amount){
                 sale.setChannelMarginLinkRela(big);
             }else {
                 sale.setChannelMarginLinkRela(new BigDecimal(channelMargin).
@@ -225,7 +225,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             // 计算分销销售额同比
             Long distributionSalesAmount = sale.getDistributionSalesAmount() == null ? amount : sale.getDistributionSalesAmount();
             Long distributionAmountLastYear = sale.getDistributionAmountLastYear() == null ? amount : sale.getDistributionAmountLastYear();
-            if(distributionSalesAmount == 0 || distributionAmountLastYear == 0){
+            if(distributionSalesAmount == amount || distributionAmountLastYear == amount){
                 sale.setDistributionSalesAmountYearonyear(big);
             }else {
                 sale.setDistributionSalesAmountYearonyear(new BigDecimal(distributionSalesAmount).
@@ -233,7 +233,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             }
             // 计算分销销售额环比
             Long distributionAmountLastMonth = sale.getDistributionAmountLastMonth() == null ? amount : sale.getDistributionAmountLastMonth();
-            if(distributionSalesAmount == 0 || distributionAmountLastMonth == 0){
+            if(distributionSalesAmount == amount || distributionAmountLastMonth == amount){
                 sale.setDistributionSalesAmountLinkRela(big);
             }else {
                 sale.setDistributionSalesAmountLinkRela(new BigDecimal(distributionSalesAmount).
@@ -241,7 +241,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             }
             // 计算分销毛利额
             Long distributionSalesCost = sale.getDistributionSalesCost() == null ? amount : sale.getDistributionSalesCost();
-            if(distributionSalesCost == 0 || distributionSalesAmount == 0){
+            if(distributionSalesCost == amount || distributionSalesAmount == amount){
                 sale.setDistributionMarginRate(big);
             }else {
                 sale.setDistributionMarginRate(new BigDecimal(distributionSalesAmount - distributionSalesCost).
@@ -250,7 +250,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             // 计算分销毛利额同比
             Long distributionMargin = sale.getDistributionMargin() == null ? amount : sale.getDistributionMargin();
             Long distributionMarginLastYear = sale.getDistributionMarginLastYear() == null ? amount : sale.getDistributionMarginLastYear();
-            if(distributionMargin == 0 || distributionMarginLastYear == 0){
+            if(distributionMargin == amount || distributionMarginLastYear == amount){
                 sale.setDistributionMarginYearonyear(big);
             }else {
                 sale.setDistributionMarginYearonyear(new BigDecimal(distributionMargin).
@@ -258,7 +258,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             }
             // 计算分销毛利额同比
             Long distributionMarginLastMonth = sale.getDistributionMarginLastMonth() == null ? amount : sale.getDistributionMarginLastMonth();
-            if(distributionMargin == 0 || distributionMarginLastMonth == 0){
+            if(distributionMargin == amount || distributionMarginLastMonth == amount){
                 sale.setDistributionMarginLinkRela(big);
             }else {
                 sale.setDistributionMarginLinkRela(new BigDecimal(distributionMargin).
@@ -268,15 +268,15 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 // 计算渠道的达成率
                 Long channelBudget = sale.getChannelBudget() == null ? amount : sale.getChannelBudget();
                 Long distributionBudget = sale.getDistributionBudget() == null ? amount : sale.getDistributionBudget();
-                if(channelSalesAmount == 0 || channelBudget == 0){
-                    sale.setChannelAchievement(new BigDecimal(0));
+                if(channelSalesAmount == amount || channelBudget == amount){
+                    sale.setChannelAchievement(big);
                 }else {
                     sale.setChannelAchievement(new BigDecimal(channelSalesAmount).
                             divide(new BigDecimal(channelBudget), 4, BigDecimal.ROUND_HALF_UP));
                 }
                 // 计算分销的达成率
-                if(distributionSalesAmount == 0 || distributionBudget == 0){
-                    sale.setDistributionAchievement(new BigDecimal(0));
+                if(distributionSalesAmount == amount || distributionBudget == amount){
+                    sale.setDistributionAchievement(big);
                 }else {
                     sale.setDistributionAchievement(new BigDecimal(distributionSalesAmount).
                             divide(new BigDecimal(distributionBudget), 4, BigDecimal.ROUND_HALF_UP));
