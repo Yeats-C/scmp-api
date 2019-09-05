@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
+import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.excel.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
@@ -65,6 +66,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -668,6 +670,94 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int importSaveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO) {
+        ProductSkuDraft productSkuDraft = addSkuInfoReqVO.getProductSkuDraft();
+        String skuCode = productSkuDraft.getSkuCode();
+        //保存主表
+        saveProductSkuDraft(productSkuDraft, skuCode);
+        //渠道
+        saveProductSkuChannelDraft(addSkuInfoReqVO, productSkuDraft);
+        //SKU标签信息
+        saveUseTagRecord(addSkuInfoReqVO, productSkuDraft);
+
+        return 0;
+    }
+
+    public void saveUseTagRecord(AddSkuInfoReqVO addSkuInfoReqVO, ProductSkuDraft productSkuDraft) {
+        List<SaveUseTagRecordItemReqVo> tagInfoList = addSkuInfoReqVO.getTagInfoList();
+        //查询标签
+
+        if (CollectionUtils.isNotEmpty(tagInfoList)) {
+            List<ApplyUseTagRecord> applyUseTagRecords = Lists.newArrayList();
+            tagInfoList.forEach(item -> {
+                ApplyUseTagRecord applyUseTagRecord = new ApplyUseTagRecord();
+                applyUseTagRecord.setApplyUseObjectCode(productSkuDraft.getSkuCode());
+                applyUseTagRecord.setTagCode(item.getTagCode());
+                applyUseTagRecord.setTagName(item.getTagName());
+                applyUseTagRecord.setUseObjectCode(productSkuDraft.getSkuCode());
+                applyUseTagRecord.setUseObjectName(productSkuDraft.getSkuName());
+                applyUseTagRecord.setTagTypeCode(TagTypeCode.SKU.getStatus());
+                applyUseTagRecord.setTagTypeName(TagTypeCode.SKU.getName());
+                applyUseTagRecord.setCreateBy(productSkuDraft.getCreateBy());
+                applyUseTagRecord.setUpdateBy(productSkuDraft.getUpdateBy());
+                applyUseTagRecord.setCreateTime(productSkuDraft.getCreateTime());
+                applyUseTagRecord.setUpdateTime(productSkuDraft.getUpdateTime());
+                applyUseTagRecords.add(applyUseTagRecord);
+            });
+            applyUseTagRecordService.saveBatch(applyUseTagRecords);
+        }
+    }
+
+    @Override
+    public void saveProductSkuChannelDraft(AddSkuInfoReqVO addSkuInfoReqVO, ProductSkuDraft productSkuDraft) {
+        List<ProductSkuChannelDraft> productSkuChannelDrafts = addSkuInfoReqVO.getProductSkuChannelDrafts();
+        //查数据
+        List<ProductSkuChannelRespVo> draftList = productSkuChannelService.getList(productSkuDraft.getSkuCode());
+        List<ProductSkuChannelDraft> oldChannelList = BeanCopyUtils.copyList(draftList, ProductSkuChannelDraft.class);
+        Map<String, ProductSkuChannelDraft> collect = oldChannelList.stream().collect(Collectors.toMap(ProductSkuChannelDraft::getPriceChannelCode, Function.identity()));
+        productSkuChannelDrafts.forEach(o->{
+            if(Objects.isNull(collect.get(o.getPriceChannelCode()))){
+                oldChannelList.add(o);
+            }
+        });
+        for (ProductSkuChannelDraft item : oldChannelList) {
+            item.setSkuCode(productSkuDraft.getSkuCode());
+            item.setSkuName(productSkuDraft.getSkuName());
+            item.setCreateBy(productSkuDraft.getCreateBy());
+            item.setUpdateBy(productSkuDraft.getUpdateBy());
+            item.setCreateTime(productSkuDraft.getCreateTime());
+            item.setUpdateTime(productSkuDraft.getUpdateTime());
+        }
+        if(!oldChannelList.isEmpty()){
+            productSkuChannelService.insertDraftList(oldChannelList);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveProductSkuDraft(ProductSkuDraft productSkuDraft, String skuCode) {
+        //查正式表数据
+        ProductSkuDraft copy = productSkuDraftMapper.getOfficialBySkuCode(skuCode);
+        BeanCopyUtils.copyValueWithoutNull(productSkuDraft, copy);
+
+        productSkuDraft.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+        productSkuDraft.setApplyTypeName(StatusTypeCode.UPDATE_APPLY.getName());
+        //判断临时表中是否存在
+        ProductSkuRespVo skuRespVo = productSkuDao.getSkuDraft(productSkuDraft.getSkuCode());
+        if(null != skuRespVo){
+            throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
+        }
+        //判断申请表中是否存在申请中的数据
+        ApplyProductSku applyProductSku = applyProductSkuMapper.selectNoExistsApprovalBySkuCode(productSkuDraft.getSkuCode());
+        if(null != applyProductSku){
+            throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
+        }
+        ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
+        productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
+    }
+
     /**
      * 更新sku所有信息
      *
@@ -689,7 +779,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<String> skuCodes = Lists.newArrayList();
         skuCodes.add(addSkuInfoReqVO.getProductSkuDraft().getSkuCode());
         ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraft(skuCodes);
-        return  ((SkuInfoService)AopContext.currentProxy()).saveDraftSkuInfo(addSkuInfoReqVO);
+        return  ((SkuInfoService)AopContext.currentProxy()).importSaveDraftSkuInfo(addSkuInfoReqVO);
     }
 
     @Override
@@ -2227,9 +2317,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuInfoImports)) {
             throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
         }
-//        if (skuInfoImports.size()<3) {
-//            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
-//        }
+        if (skuInfoImports.size()<3) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
         String  head = SkuInfoImportUpdate.HEAD;
         boolean equals = skuInfoImports.get(1).toString().equals(head);
         if(!equals){

@@ -40,6 +40,17 @@ public interface SkuInfoService{
     int saveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO);
 
     /**
+     * 新增sku所有信息
+     * @param addSkuInfoReqVO
+     * @return
+     */
+    int importSaveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO);
+
+    void saveProductSkuChannelDraft(AddSkuInfoReqVO addSkuInfoReqVO, ProductSkuDraft productSkuDraft);
+
+    void saveProductSkuDraft(ProductSkuDraft productSkuDraft, String skuCode);
+
+    /**
      * 更新sku所有信息
      * @param addSkuInfoReqVO
      * @return
