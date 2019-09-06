@@ -93,7 +93,7 @@ public interface WarehouseService {
      * @param warehouseTypeCode
      * @return
      */
-    WarehouseResVo getWarehouseTypeByLogisticsCenterCode(String logisticsCenterCode, Byte warehouseTypeCode);
+    List<WarehouseResVo> getWarehouseTypeByLogisticsCenterCode(String logisticsCenterCode, Byte warehouseTypeCode);
 
     /**
      *

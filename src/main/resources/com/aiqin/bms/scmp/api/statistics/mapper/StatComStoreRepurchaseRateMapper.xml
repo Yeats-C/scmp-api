@@ -13,13 +13,15 @@
     <result column="channel_sales_amount" jdbcType="BIGINT" property="channelSalesAmount" />
     <result column="distribution_sales_amount" jdbcType="BIGINT" property="distributionSalesAmount" />
     <result column="shopping_frequency" jdbcType="BIGINT" property="shoppingFrequency" />
+    <result column="repurchase_num" jdbcType="BIGINT" property="repurchaseNum" />
+    <result column="purchase_num" jdbcType="BIGINT" property="purchaseNum" />
     <result column="repurchase_rate" jdbcType="DECIMAL" property="repurchaseRate" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
     stat_year, stat_month, product_sort_code, product_sort_name, province_code, province_name,
-    sales_num, channel_sales_amount, distribution_sales_amount, shopping_frequency, repurchase_rate, 
-    create_time
+    sales_num, channel_sales_amount, distribution_sales_amount, shopping_frequency,
+    repurchase_num, purchase_num, repurchase_rate, create_time
   </sql>
   <select id="storeRepurchaseList" resultMap="BaseResultMap">
     select
@@ -45,7 +47,8 @@
   <select id="storeRepurchaseSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse">
     select
     sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
-    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(shopping_frequency,0)) as shoppingFrequency
+    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(shopping_frequency,0)) as shoppingFrequency,
+    sum(ifnull(repurchase_num,0)) as repurchaseNum, sum(ifnull(purchase_num,0)) as purchaseNum
     from stat_com_store_repurchase_rate
     <where>
       stat_year = #{year,jdbcType=BIGINT}
@@ -55,7 +58,8 @@
   <select id="storeRepurchaseByDeptSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateSubtotalResponse">
     select
     sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
-    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(shopping_frequency,0)) as shoppingFrequency
+    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(shopping_frequency,0)) as shoppingFrequency,
+    sum(ifnull(repurchase_num,0)) as repurchaseNum, sum(ifnull(purchase_num,0)) as purchaseNum
     from stat_com_store_repurchase_rate
     <where>
       stat_year = #{year,jdbcType=BIGINT}

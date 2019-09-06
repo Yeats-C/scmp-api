@@ -30,7 +30,7 @@ public class SupplierBaseController {
 //    private ApplySupplierService applySupplierService;
 //
 //    @Autowired
-//    private ApplySupplyComServcie applySupplyComServcie;
+//    private ApplySupplyComService applySupplyComServcie;
     /**
      * 导出数据
      *

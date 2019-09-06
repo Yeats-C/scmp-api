@@ -3,12 +3,15 @@ package com.aiqin.bms.scmp.api.statistics.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel
+@Data
 public class StatDeptNegativeMarginQuarterly {
-    @ApiModelProperty(value="id")
+
     @JsonProperty("id")
     private Long id;
 
@@ -45,206 +48,63 @@ public class StatDeptNegativeMarginQuarterly {
     private String lv1CategoryName;
 
     @ApiModelProperty(value="销售数量")
-    @JsonProperty("quarter_sales_num")
-    private Long quarterSalesNum;
+    @JsonProperty("sales_num")
+    private Long salesNum;
 
     @ApiModelProperty(value="渠道销售额")
-    @JsonProperty("quarter_channel_sales_amount")
-    private Long quarterChannelSalesAmount;
+    @JsonProperty("channel_sales_amount")
+    private Long channelSalesAmount;
+
+    @ApiModelProperty(value="同期渠道销售金额")
+    @JsonProperty("pre_channel_sales_amount")
+    private Long preChannelSalesAmount;
 
     @ApiModelProperty(value="渠道销售额同比")
-    @JsonProperty("q_channel_sales_amount_yearonyear")
-    private BigDecimal qChannelSalesAmountYearonyear;
+    @JsonProperty("channel_sales_amount_yearonyear")
+    private BigDecimal channelSalesAmountYearonyear;
 
     @ApiModelProperty(value="渠道成本")
-    @JsonProperty("quarter_channel_sales_cost")
-    private Long quarterChannelSalesCost;
+    @JsonProperty("channel_sales_cost")
+    private Long channelSalesCost;
 
     @ApiModelProperty(value="渠道毛利")
-    @JsonProperty("quarter_channel_margin")
-    private Long quarterChannelMargin;
+    @JsonProperty("channel_margin")
+    private Long channelMargin;
+
+    @ApiModelProperty(value="同期渠道毛利")
+    @JsonProperty("pre_channel_margin")
+    private Long preChannelMargin;
 
     @ApiModelProperty(value="渠道毛利同比")
-    @JsonProperty("q_channel_margin_yearonyear")
-    private BigDecimal qChannelMarginYearonyear;
+    @JsonProperty("channel_margin_yearonyear")
+    private BigDecimal channelMarginYearonyear;
 
     @ApiModelProperty(value="分销销售额")
-    @JsonProperty("quarter_distribution_sales_amount")
-    private Long quarterDistributionSalesAmount;
+    @JsonProperty("distribution_sales_amount")
+    private Long distributionSalesAmount;
+
+    @ApiModelProperty(value="同期分销销售额")
+    @JsonProperty("pre_distribution_sales_amount")
+    private Long preDistributionSalesAmount;
 
     @ApiModelProperty(value="分销销售额同比")
-    @JsonProperty("q_distribution_sales_amount_yearonyear")
-    private BigDecimal qDistributionSalesAmountYearonyear;
+    @JsonProperty("distribution_sales_amount_yearonyear")
+    private BigDecimal distributionSalesAmountYearonyear;
 
     @ApiModelProperty(value="分销毛利")
-    @JsonProperty("quarter_distribution_margin")
-    private Long quarterDistributionMargin;
+    @JsonProperty("distribution_margin")
+    private Long distributionMargin;
+
+    @ApiModelProperty(value="同期分销毛利额")
+    @JsonProperty("pre_distribution_margin")
+    private Long preDistributionMargin;
 
     @ApiModelProperty(value="分销毛利同比")
-    @JsonProperty("q_distribution_margin_yearonyear")
-    private BigDecimal qDistributionMarginYearonyear;
+    @JsonProperty("distribution_margin_yearonyear")
+    private BigDecimal distributionMarginYearonyear;
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getStatYear() {
-        return statYear;
-    }
-
-    public void setStatYear(Long statYear) {
-        this.statYear = statYear;
-    }
-
-    public Long getQuarter() {
-        return quarter;
-    }
-
-    public void setQuarter(Long quarter) {
-        this.quarter = quarter;
-    }
-
-    public String getProductSortCode() {
-        return productSortCode;
-    }
-
-    public void setProductSortCode(String productSortCode) {
-        this.productSortCode = productSortCode;
-    }
-
-    public String getProductSortName() {
-        return productSortName;
-    }
-
-    public void setProductSortName(String productSortName) {
-        this.productSortName = productSortName;
-    }
-
-    public String getPriceChannelCode() {
-        return priceChannelCode;
-    }
-
-    public void setPriceChannelCode(String priceChannelCode) {
-        this.priceChannelCode = priceChannelCode;
-    }
-
-    public String getPriceChannelName() {
-        return priceChannelName;
-    }
-
-    public void setPriceChannelName(String priceChannelName) {
-        this.priceChannelName = priceChannelName;
-    }
-
-    public String getLv1() {
-        return lv1;
-    }
-
-    public void setLv1(String lv1) {
-        this.lv1 = lv1;
-    }
-
-    public String getLv1CategoryName() {
-        return lv1CategoryName;
-    }
-
-    public void setLv1CategoryName(String lv1CategoryName) {
-        this.lv1CategoryName = lv1CategoryName;
-    }
-
-    public Long getQuarterSalesNum() {
-        return quarterSalesNum;
-    }
-
-    public void setQuarterSalesNum(Long quarterSalesNum) {
-        this.quarterSalesNum = quarterSalesNum;
-    }
-
-    public Long getQuarterChannelSalesAmount() {
-        return quarterChannelSalesAmount;
-    }
-
-    public void setQuarterChannelSalesAmount(Long quarterChannelSalesAmount) {
-        this.quarterChannelSalesAmount = quarterChannelSalesAmount;
-    }
-
-    public BigDecimal getqChannelSalesAmountYearonyear() {
-        return qChannelSalesAmountYearonyear;
-    }
-
-    public void setqChannelSalesAmountYearonyear(BigDecimal qChannelSalesAmountYearonyear) {
-        this.qChannelSalesAmountYearonyear = qChannelSalesAmountYearonyear;
-    }
-
-    public Long getQuarterChannelSalesCost() {
-        return quarterChannelSalesCost;
-    }
-
-    public void setQuarterChannelSalesCost(Long quarterChannelSalesCost) {
-        this.quarterChannelSalesCost = quarterChannelSalesCost;
-    }
-
-    public Long getQuarterChannelMargin() {
-        return quarterChannelMargin;
-    }
-
-    public void setQuarterChannelMargin(Long quarterChannelMargin) {
-        this.quarterChannelMargin = quarterChannelMargin;
-    }
-
-    public BigDecimal getqChannelMarginYearonyear() {
-        return qChannelMarginYearonyear;
-    }
-
-    public void setqChannelMarginYearonyear(BigDecimal qChannelMarginYearonyear) {
-        this.qChannelMarginYearonyear = qChannelMarginYearonyear;
-    }
-
-    public Long getQuarterDistributionSalesAmount() {
-        return quarterDistributionSalesAmount;
-    }
-
-    public void setQuarterDistributionSalesAmount(Long quarterDistributionSalesAmount) {
-        this.quarterDistributionSalesAmount = quarterDistributionSalesAmount;
-    }
-
-    public BigDecimal getqDistributionSalesAmountYearonyear() {
-        return qDistributionSalesAmountYearonyear;
-    }
-
-    public void setqDistributionSalesAmountYearonyear(BigDecimal qDistributionSalesAmountYearonyear) {
-        this.qDistributionSalesAmountYearonyear = qDistributionSalesAmountYearonyear;
-    }
-
-    public Long getQuarterDistributionMargin() {
-        return quarterDistributionMargin;
-    }
-
-    public void setQuarterDistributionMargin(Long quarterDistributionMargin) {
-        this.quarterDistributionMargin = quarterDistributionMargin;
-    }
-
-    public BigDecimal getqDistributionMarginYearonyear() {
-        return qDistributionMarginYearonyear;
-    }
-
-    public void setqDistributionMarginYearonyear(BigDecimal qDistributionMarginYearonyear) {
-        this.qDistributionMarginYearonyear = qDistributionMarginYearonyear;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }

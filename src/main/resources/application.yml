@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8081
 spring:
   profiles:
     active: ${profile.name}
@@ -477,7 +477,7 @@ mgs:
         name: 供应商到货率统计-鞋品
         link: '/statistics/supplierArrival/FBDept'
       - code: SCMP012005
-        name: 供应商到货率统计-自主品牌
+        name: 供应商到货率统计-自有品牌
         link: '/statistics/supplierArrival/PBDept'
       - code: SCMP012006
         name: 退供率统计-品采
@@ -492,7 +492,7 @@ mgs:
         name: 退供率统计-鞋品
         link: '/statistics/supplierReturn/FBDept'
       - code: SCMP012010
-        name: 退供率统计-自主品牌
+        name: 退供率统计-自有品牌
         link: '/statistics/supplierReturn/PBDept'
       - code: SCMP012011
         name: 新品动销率统计-公司
@@ -510,7 +510,7 @@ mgs:
         name: 新品动销率统计-鞋品
         link: '/statistics/newGoodsInvoicing/FBDept'
       - code: SCMP012016
-        name: 新品动销率统计-自主品牌
+        name: 新品动销率统计-自有品牌
         link: '/statistics/newGoodsInvoicing/PBDept'
       - code: SCMP012017
         name: 门店复购率统计-公司
@@ -528,7 +528,7 @@ mgs:
         name: 门店复购率统计-鞋品
         link: '/statistics/storeRepurchase/FBDept'
       - code: SCMP012022
-        name: 门店复购率统计-自主品牌
+        name: 门店复购率统计-自有品牌
         link: '/statistics/storeRepurchase/PBDept'
       - code: SCMP012023
         name: 负毛利统计-公司
@@ -546,7 +546,7 @@ mgs:
         name: 负毛利统计-鞋品
         link: '/statistics/nagativeGross/FBDept'
       - code: SCMP012028
-        name: 负毛利统计-自主品牌
+        name: 负毛利统计-自有品牌
         link: '/statistics/nagativeGross/PBDept'
       - code: SCMP012029
         name: 销售统计-公司
@@ -564,7 +564,7 @@ mgs:
         name: 销售统计-鞋品
         link: '/statistics/sale/FBDept'
       - code: SCMP012034
-        name: 销售统计-自主品牌
+        name: 销售统计-自有品牌
         link: '/statistics/sale/PBDept'
       - code: SCMP012035
         name: 月累计销售统计-公司
@@ -582,7 +582,7 @@ mgs:
         name: 月累计销售统计-鞋品
         link: '/statistics/MTDCategorySale/FBDept'
       - code: SCMP012040
-        name: 月累计销售统计-自主品牌
+        name: 月累计销售统计-自有品牌
         link: '/statistics/MTDCategorySale/PBDept'
       - code: SCMP012041
         name: 低库存统计-公司
@@ -600,7 +600,7 @@ mgs:
         name: 低库存统计-鞋品
         link: '/statistics/lowInventory/FBDept'
       - code: SCMP012046
-        name: 低库存统计-自主品牌
+        name: 低库存统计-自有品牌
         link: '/statistics/lowInventory/PBDept'
       - code: SCMP012047
         name: 高库存统计-公司
@@ -618,7 +618,7 @@ mgs:
         name: 高库存统计-鞋品
         link: '/statistics/highInventory/FBDept'
       - code: SCMP012052
-        name: 高库存统计-自主品牌
+        name: 高库存统计-自有品牌
         link: '/statistics/highInventory/PBDept'
       - code: SCMP012053
         name: 品类促销统计-公司
@@ -636,7 +636,7 @@ mgs:
         name: 品类促销统计-鞋品
         link: '/statistics/categoryPromotion/FBDept'
       - code: SCMP012058
-        name: 品类促销统计-自主品牌
+        name: 品类促销统计-自有品牌
         link: '/statistics/categoryPromotion/PBDept'
       - code: SCMP012059
         name: 缺货统计-公司
@@ -654,7 +654,7 @@ mgs:
         name: 缺货统计-鞋品
         link: '/statistics/stockout/FBDept'
       - code: SCMP012064
-        name: 缺货统计-自主品牌
+        name: 缺货统计-自有品牌
         link: '/statistics/stockout/PBDept'
       - code: SCMP012065
         name: 品类销售统计-OEM

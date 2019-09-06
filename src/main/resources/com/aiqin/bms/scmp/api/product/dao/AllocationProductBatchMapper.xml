@@ -31,6 +31,8 @@
     <result column="callin_batch_number" jdbcType="VARCHAR" property="callInBatchNumber" />
     <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
   </resultMap>
   <resultMap id="BaseResultOutboundSkuMap" type="com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductToOutboundVo">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -63,15 +65,13 @@
     id, allocation_code, sku_code, sku_name, category, brand, color, specification, model, 
     unit, classes, `type`, inventory_unit, inventory, tax, tax_price, quantity, tax_amount,
     del_flag, create_time, create_by, update_time, update_by, picture_url, line_num,
-    callout_batch_number,callin_batch_number,batch_number_remark,product_date
+    callout_batch_number,callin_batch_number,batch_number_remark,product_date,supplier_code,supplier_name
   </sql>
   <sql id="Base_Column_OutBound_List">
     a.id, a.allocation_code, a.sku_code, a.sku_name, a.category, a.brand, a.color, a.specification, a.model,
    a.unit, classes, a.type, a.inventory_unit, a.inventory, a.tax, a.tax_price, a.quantity, a.tax_amount,
     a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by, b.product_picture_path, a.line_num
   </sql>
-
-
   <resultMap id="ListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo">
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
@@ -100,7 +100,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="saveList" parameterType="java.util.List">
-    insert into allocation_product_batch (id, allocation_code, sku_code,
+    insert into allocation_product_batch ( allocation_code, sku_code,
       sku_name, category, brand, 
       color, specification, model, 
       unit, classes, type,
@@ -108,10 +108,10 @@
       tax_price, quantity, tax_amount, 
       del_flag, create_time, create_by, 
       update_time, update_by, picture_url, line_num,
-      callout_batch_number,callin_batch_number,batch_number_remark,product_date)
+      callout_batch_number,callin_batch_number,batch_number_remark,product_date,supplier_name,supplier_code)
     values
     <foreach collection="list" item="t" index= "index" separator =",">
-      (#{t.id,jdbcType=BIGINT},
+      (
       #{t.allocationCode,jdbcType=VARCHAR},
       #{t.skuCode,jdbcType=VARCHAR},
       #{t.skuName,jdbcType=VARCHAR},
@@ -139,7 +139,9 @@
       #{t.callOutBatchNumber,jdbcType=VARCHAR},
       #{t.callInBatchNumber,jdbcType=VARCHAR},
       #{t.batchNumberRemark,jdbcType=VARCHAR},
-      #{t.productDate,jdbcType=VARCHAR}
+      #{t.productDate,jdbcType=VARCHAR},
+      #{t.supplierName,jdbcType=VARCHAR},
+      #{t.supplierCode,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

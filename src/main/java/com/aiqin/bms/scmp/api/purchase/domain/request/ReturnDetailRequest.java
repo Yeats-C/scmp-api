@@ -57,4 +57,8 @@ public class ReturnDetailRequest {
 
     @ApiModelProperty("物流中心编码")
     private String transportCenterCode;
+
+    @ApiModelProperty("供应商code")
+    private String supplyCode;
+
 }

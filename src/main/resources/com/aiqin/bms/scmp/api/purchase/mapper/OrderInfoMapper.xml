@@ -418,8 +418,7 @@ transport_number
       update_time, actual_product_channel_total_amount,
       actual_order_amount, actual_product_num, order_original_name,
       actual_weight, actual_volume, actual_product_total_amount,transport_company,
-transport_company_code,
-transport_number
+      transport_company_code,transport_number
       )
     values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR},
       #{orderTypeCode,jdbcType=INTEGER}, #{customerName,jdbcType=VARCHAR}, #{customerCode,jdbcType=VARCHAR},

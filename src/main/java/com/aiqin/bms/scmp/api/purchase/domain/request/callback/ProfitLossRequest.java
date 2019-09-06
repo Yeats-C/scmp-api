@@ -79,4 +79,5 @@ public class ProfitLossRequest {
     private String profLossType;
 
     private List<ProfitLossDetailRequest> detailList;
+
 }
