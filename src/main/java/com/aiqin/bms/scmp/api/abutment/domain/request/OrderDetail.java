@@ -122,4 +122,17 @@ public class OrderDetail {
     @JsonProperty("return_count")
     @ApiModelProperty("退货数量")
     private Integer returnCount;
+
+    /**
+     * 供应商编码
+     */
+    @JsonProperty("supplier_code")
+    @ApiModelProperty("供应商编码")
+    private String supplierCode;
+    /**
+     * 供应商名称
+     */
+    @JsonProperty("supplier_name")
+    @ApiModelProperty("供应商名称")
+    private String supplierName;
 }

@@ -42,7 +42,7 @@ public class SapAbutment extends SpringBootTestContext {
     public void saleOrderAbutment() {
         SapOrderRequest sapOrderRequest = new SapOrderRequest();
         sapOrderRequest.setBeginTime("2019-09-02 00:00:00");
-        sapOrderRequest.setFinishTime("2019-09-03 00:00:00");
+        sapOrderRequest.setFinishTime("2019-09-06 00:00:00");
         sapBaseDataService.saleSynchronization(sapOrderRequest);
     }
 }

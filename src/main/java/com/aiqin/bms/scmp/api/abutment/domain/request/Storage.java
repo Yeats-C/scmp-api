@@ -149,18 +149,7 @@ public class Storage {
     @JsonProperty("sap_storage_code1")
     @ApiModelProperty(value = "sap入库房编码", hidden = true)
     private String sapStorageCode1;
-    /**
-     * 供应商编码
-     */
-    @JsonProperty("supplier_code")
-    @ApiModelProperty("供应商编码")
-    private String supplierCode;
-    /**
-     * 供应商名称
-     */
-    @JsonProperty("supplier_name")
-    @ApiModelProperty("供应商名称")
-    private String supplierName;
+
     /**
      * sap供应商物料编码
      */

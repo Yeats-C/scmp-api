@@ -109,4 +109,16 @@ public class StorageDetail {
     @JsonProperty("guide_price")
     @ApiModelProperty("厂商指导价")
     private String guidePrice;
+    /**
+     * 供应商编码
+     */
+    @JsonProperty("supplier_code")
+    @ApiModelProperty("供应商编码")
+    private String supplierCode;
+    /**
+     * 供应商名称
+     */
+    @JsonProperty("supplier_name")
+    @ApiModelProperty("供应商名称")
+    private String supplierName;
 }

@@ -1,11 +1,13 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 
 import java.util.List;
 
-public interface OrderInfoItemProductBatchMapper {
+public interface OrderInfoItemProductBatchDao {
     int deleteByPrimaryKey(Long id);
 
     int insert(OrderInfoItemProductBatch record);
@@ -25,4 +27,6 @@ public interface OrderInfoItemProductBatchMapper {
      * @return int
      */
     int insertBatch(List<OrderInfoItemProductBatch> list);
+
+    List<OrderInfoItemProductBatch> listDetailForSap(SapOrderRequest sapOrderRequest);
 }

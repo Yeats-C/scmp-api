@@ -121,18 +121,7 @@ public class Order {
     @JsonProperty("warehouse_name")
     @ApiModelProperty("库房名称")
     private String warehouseName;
-    /**
-     * 供应商编码
-     */
-    @JsonProperty("supplier_code")
-    @ApiModelProperty("供应商编码")
-    private String supplierCode;
-    /**
-     * 供应商名称
-     */
-    @JsonProperty("supplier_name")
-    @ApiModelProperty("供应商名称")
-    private String supplierName;
+
     /**
      * 商品数量
      */

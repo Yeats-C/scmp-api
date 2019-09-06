@@ -24,7 +24,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespV
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemDao;
-import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemProductBatchMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemProductBatchDao;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoDao;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
@@ -68,7 +68,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Autowired
     private StockService stockService;
     @Autowired
-    private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
+    private OrderInfoItemProductBatchDao orderInfoItemProductBatchDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -172,7 +172,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if(CollectionUtils.isEmptyCollection(list)){
             return;
         }
-        int i = orderInfoItemProductBatchMapper.insertBatch(list);
+        int i = orderInfoItemProductBatchDao.insertBatch(list);
         if(i!=list.size()){
             throw new BizException(ResultCode.SAVE_LOCK_BATCH_FAILED);
         }

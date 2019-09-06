@@ -4,19 +4,15 @@ import com.aiqin.bms.scmp.api.abutment.domain.conts.StringConvertUtil;
 import com.aiqin.bms.scmp.api.abutment.domain.request.*;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.product.dao.*;
-import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
-import com.aiqin.bms.scmp.api.product.mapper.InboundMapper;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
-import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoDao;
-import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemDao;
-import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoDao;
-import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemDao;
+import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -32,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -80,6 +77,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     private OrderInfoDao orderInfoDao;
     @Resource
     private OrderInfoItemDao orderInfoItemDao;
+    @Resource
+    private OrderInfoItemProductBatchDao orderInfoItemProductBatchDao;
     @Resource
     private ReturnOrderInfoDao returnOrderInfoDao;
     @Resource
@@ -185,8 +184,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             storage.setTransportName(inbound.getLogisticsCenterName());
             storage.setStorageCode(inbound.getWarehouseCode());
             storage.setStorageName(inbound.getWarehouseName());
-            storage.setSupplierCode(inbound.getSupplierCode());
-            storage.setSupplierName(inbound.getSupplierName());
+//            storage.setSupplierCode(inbound.getSupplierCode());
+//            storage.setSupplierName(inbound.getSupplierName());
             storage.setOrderCount(inbound.getPraInboundNum().intValue());
             storage.setAmount(inbound.getPraTaxAmount().toString());
             storage.setDiscountPrice("0");
@@ -262,8 +261,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             storage.setTransportName(outbound.getLogisticsCenterName());
             storage.setStorageCode(outbound.getWarehouseCode());
             storage.setStorageName(outbound.getWarehouseName());
-            storage.setSupplierCode(outbound.getSupplierCode());
-            storage.setSupplierName(outbound.getSupplierName());
+//            storage.setSupplierCode(outbound.getSupplierCode());
+//            storage.setSupplierName(outbound.getSupplierName());
             storage.setOrderCount(outbound.getPraOutboundNum().intValue());
             storage.setAmount(outbound.getPraTaxAmount().toString());
             storage.setDiscountPrice("0");
@@ -297,8 +296,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         orderInfoToOrder(orderList, sapOrderRequest);
         sapOrderAbutment(orderList,1);
         orderList.clear();
-        returnInfoToOrder(orderList, sapOrderRequest);
-        sapOrderAbutment(orderList,2);
+//        returnInfoToOrder(orderList, sapOrderRequest);
+//        sapOrderAbutment(orderList,2);
     }
 
     private void sapOrderAbutment( List<Order> orderList,Integer type){
@@ -344,10 +343,17 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             List<String> orderCodes = orderInfoList.stream().map(OrderInfo::getOrderCode).collect(Collectors.toList());
             sapOrderRequest.setOrderCodeList(orderCodes);
             List<OrderInfoItem> orderInfoItems = orderInfoItemDao.listDetailForSap(sapOrderRequest);
+            Map<String,OrderInfoItem> orderInfoItemMap = orderInfoItems.stream().collect(Collectors.toMap(OrderInfoItem::getSkuCode,Function.identity()));
+            List<OrderInfoItemProductBatch> batchList = orderInfoItemProductBatchDao.listDetailForSap(sapOrderRequest);
             OrderDetail orderDetail;
             List<OrderDetail> orderDetails;
+            OrderInfoItem orderInfoItem;
             Map<String, List<OrderDetail>> orderDetailMap = new HashMap<>();
-            for (OrderInfoItem orderInfoItem : orderInfoItems) {
+            for (OrderInfoItemProductBatch itemProductBatch : batchList) {
+                orderInfoItem = orderInfoItemMap.get(itemProductBatch.getSkuCode());
+                if(orderInfoItem==null){
+                    throw new GroundRuntimeException("未查询到对应的商品信息");
+                }
                 orderDetail = new OrderDetail();
                 orderDetail.setSkuCode(orderInfoItem.getSkuCode());
                 orderDetail.setSkuName(orderInfoItem.getSkuName());
@@ -390,8 +396,6 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 order.setWarehouseCode(orderInfo.getWarehouseCode());
                 order.setWarehouseName(orderInfo.getWarehouseName());
                 //供应商
-                order.setSupplierCode(orderInfo.getSupplierCode());
-                order.setSupplierName(orderInfo.getSupplierName());
                 order.setOrderCount(orderInfo.getProductNum().intValue());
                 order.setWeight(orderInfo.getWeight().toString());
                 order.setVolume(orderInfo.getVolume().toString());
@@ -481,8 +485,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 order.setWarehouseCode(returnOrderInfo.getWarehouseCode());
                 order.setWarehouseName(returnOrderInfo.getWarehouseName());
                 //供应商
-                order.setSupplierCode(returnOrderInfo.getSupplierCode());
-                order.setSupplierName(returnOrderInfo.getSupplierName());
+//                order.setSupplierCode(returnOrderInfo.getSupplierCode());
+//                order.setSupplierName(returnOrderInfo.getSupplierName());
                 order.setOrderCount(returnOrderInfo.getProductNum().intValue());
                 order.setWeight(returnOrderInfo.getWeight().toString());
                 order.setVolume(returnOrderInfo.getVolume().toString());
