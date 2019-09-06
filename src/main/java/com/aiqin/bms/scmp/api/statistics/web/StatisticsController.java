@@ -91,4 +91,21 @@ public class StatisticsController {
         return salesStatisticsService.saleInfo(saleRequest);
     }
 
+    @GetMapping("/month/sale")
+    @ApiOperation("月累计销售统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "data_type_code", value = "数据类型 0 经营数据,1 部门数据", type = "Integer"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性 1 A品，2 B品，3 C品，5 D品，6 其他", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<SaleSumResponse> monthSaleInfo(
+            @RequestParam("date") String date,  @RequestParam("type") Integer type,
+            @RequestParam(value = "data_type_code", required = false) Integer dataTypeCode,
+            @RequestParam(value = "product_property_code", required = false) Integer productPropertyCode,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        SaleRequest saleRequest = new SaleRequest(date, type, dataTypeCode, productPropertyCode, productSortCode);
+        return salesStatisticsService.monthSaleInfo(saleRequest);
+    }
+
 }

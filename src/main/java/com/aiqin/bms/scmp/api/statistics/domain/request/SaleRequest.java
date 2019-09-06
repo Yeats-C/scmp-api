@@ -57,4 +57,12 @@ public class SaleRequest {
         this.productPropertyCode = productPropertyCode;
         this.productSortCode = productSortCode;
     }
+
+    public SaleRequest(String date, Integer type, Integer dataTypeCode, Integer productPropertyCode, String productSortCode) {
+        this.date = date;
+        this.type = type;
+        this.dataTypeCode = dataTypeCode;
+        this.productPropertyCode = productPropertyCode;
+        this.productSortCode = productSortCode;
+    }
 }
