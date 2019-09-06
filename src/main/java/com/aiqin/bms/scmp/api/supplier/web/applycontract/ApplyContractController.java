@@ -41,7 +41,7 @@ public class ApplyContractController {
      * 分页获取申请合同详情
      * @return
      */
-    @ApiOperation("查询合同申请List")
+    @ApiOperation("待审请列表")
     @PostMapping("/getApplyContractList")
     public HttpResponse<BasePage<QueryApplyContractResVo>> getApplyContractList(@RequestBody @Valid QueryApplyContractReqVo vo) {
         return HttpResponse.success(applyContractService.findApplyContractList(vo));
@@ -70,15 +70,15 @@ public class ApplyContractController {
      */
     @ApiOperation("查看合同申请详情")
     @PostMapping("/getApplyContract")
-    public HttpResponse<ApplyContractViewResVo> findApplyContractDetail(@RequestParam("id")  @ApiParam(value = "传入主键id",required = true) Long id){
+    public HttpResponse<ApplyContractViewResVo> findApplyContractDetail(@RequestParam("id")  @ApiParam(value = "传入主键id",required = true) Long id) {
         try {
-                // 查看新增申请合同详情
-            ApplyContractViewResVo applyContractResVo = applyContractService.findApplyContractDetail(id);
-                return HttpResponse.success(applyContractResVo);
-
-
-        }catch (Exception ex){
-            return HttpResponse.failure(ResultCode.SEARCH_ERROR);
+            return HttpResponse.success(applyContractService.findApplyContractDetail(id));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (GroundRuntimeException e) {
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API,999,e.getMessage()));
+        }catch (Exception e) {
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
 
@@ -114,7 +114,6 @@ public class ApplyContractController {
             return HttpResponse.failure(MessageId.create(Project.MARKET_API, -1, ex.getMessage()));
         }
     }
-
 
     /**
      * 撤销申请合同
@@ -157,4 +156,5 @@ public class ApplyContractController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
 }

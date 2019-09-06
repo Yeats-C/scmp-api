@@ -1,8 +1,10 @@
 package com.aiqin.bms.scmp.api.statistics.web;
 
+import com.aiqin.bms.scmp.api.statistics.domain.request.SaleRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.SupplierDeliveryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleSumResponse;
 import com.aiqin.bms.scmp.api.statistics.service.SalesStatisticsService;
 import com.aiqin.bms.scmp.api.statistics.service.StatisticsService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -76,14 +78,17 @@ public class StatisticsController {
             @ApiImplicitParam(name = "date", value = "日期", type = "String"),
             @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
             @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 2 月报", type = "Integer"),
-            @ApiImplicitParam(name = "store_type_code", value = "数据类型 0 经营数据,1 部门数据", type = "Integer"),
-            @ApiImplicitParam(name = "product_property_code", value = "商品属性 1 A品，2 B品，3 C品，5 D品，6 其他", type = "Integer")})
-    public HttpResponse saleInfo(
+            @ApiImplicitParam(name = "data_type_code", value = "数据类型 0 经营数据,1 部门数据", type = "Integer"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性 1 A品，2 B品，3 C品，5 D品，6 其他", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<SaleSumResponse> saleInfo(
             @RequestParam("date") String date,  @RequestParam("type") Integer type,
             @RequestParam(value = "report_type") Integer reportType,
-            @RequestParam(value = "store_type_code", required = false) Integer storeTypeCode,
-            @RequestParam(value = "product_property_code", required = false) Integer productPropertyCode) {
-        return salesStatisticsService.saleInfo(date, type, reportType, storeTypeCode, productPropertyCode);
+            @RequestParam(value = "data_type_code", required = false) Integer dataTypeCode,
+            @RequestParam(value = "product_property_code", required = false) Integer productPropertyCode,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        SaleRequest saleRequest = new SaleRequest(date, type, reportType, dataTypeCode, productPropertyCode, productSortCode);
+        return salesStatisticsService.saleInfo(saleRequest);
     }
 
 }
