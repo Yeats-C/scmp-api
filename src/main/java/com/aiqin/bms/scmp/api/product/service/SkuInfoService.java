@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleA
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -56,6 +57,10 @@ public interface SkuInfoService{
      * @return
      */
     int updateDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO);
+
+    @Transactional(rollbackFor = Exception.class)
+    int updateDraftSkuInfoForImport(AddSkuInfoReqVO addSkuInfoReqVO);
+
     /**
      * 新增sku草稿信息
      * @param productSkuDraft
