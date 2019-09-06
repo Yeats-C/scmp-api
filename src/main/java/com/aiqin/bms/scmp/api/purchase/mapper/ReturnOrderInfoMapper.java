@@ -10,7 +10,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface ReturnOrderInfoDao {
+public interface ReturnOrderInfoMapper {
     int deleteByPrimaryKey(Long id);
 
     int insert(ReturnOrderInfo record);

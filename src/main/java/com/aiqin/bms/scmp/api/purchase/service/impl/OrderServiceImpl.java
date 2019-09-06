@@ -23,10 +23,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespV
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
-import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemDao;
-import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemProductBatchDao;
+import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemProductBatchMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
-import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoDao;
+import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -58,9 +58,9 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Autowired
-    private OrderInfoDao orderInfoDao;
+    private OrderInfoMapper orderInfoMapper;
     @Autowired
-    private OrderInfoItemDao orderInfoItemDao;
+    private OrderInfoItemMapper orderInfoItemMapper;
     @Autowired
     private OrderInfoLogMapper orderInfoLogMapper;
     @Autowired
@@ -68,7 +68,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Autowired
     private StockService stockService;
     @Autowired
-    private OrderInfoItemProductBatchDao orderInfoItemProductBatchDao;
+    private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -172,7 +172,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if(CollectionUtils.isEmptyCollection(list)){
             return;
         }
-        int i = orderInfoItemProductBatchDao.insertBatch(list);
+        int i = orderInfoItemProductBatchMapper.insertBatch(list);
         if(i!=list.size()){
             throw new BizException(ResultCode.SAVE_LOCK_BATCH_FAILED);
         }
@@ -228,12 +228,12 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveData(List<OrderInfoItem> infoItems, List<OrderInfo> info){
-        int insert = orderInfoDao.insertBatch(info);
+        int insert = orderInfoMapper.insertBatch(info);
         if (insert != info.size()) {
             log.error("订单主表插入影响条数：[{}]", insert);
             throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
         }
-        int i = orderInfoItemDao.insertBatch(infoItems);
+        int i = orderInfoItemMapper.insertBatch(infoItems);
         if(i!=infoItems.size()){
             log.error("订单附表插入影响条数：[{}]", insert);
             throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
@@ -244,13 +244,13 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     public BasePage<QueryOrderListRespVO> list(QueryOrderListReqVO reqVO) {
         reqVO.setCompanyCode(getUser().getCompanyCode());
         PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
-        List<QueryOrderListRespVO> list = orderInfoDao.selectListByQueryVO(reqVO);
+        List<QueryOrderListRespVO> list = orderInfoMapper.selectListByQueryVO(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
     }
 
     @Override
     public QueryOrderInfoRespVO view(String orderCode) {
-        return orderInfoDao.selectByOrderCode(orderCode);
+        return orderInfoMapper.selectByOrderCode(orderCode);
     }
 
     @Override
@@ -258,7 +258,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     public Boolean changeStatus(ChangeOrderStatusReqVO reqVO) {
         Date date = new Date();
         //先查后改
-        OrderInfo order = orderInfoDao.selectByOrderCode2(reqVO.getOrderCode());
+        OrderInfo order = orderInfoMapper.selectByOrderCode2(reqVO.getOrderCode());
         if (Objects.isNull(order)) {
             throw new BizException(ResultCode.CAN_NOT_FIND_ORDER);
         }
@@ -281,7 +281,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateByOrderCode(OrderInfo order) {
-        int i = orderInfoDao.updateByOrderCode(order);
+        int i = orderInfoMapper.updateByOrderCode(order);
         if(i<1){
             throw new BizException(ResultCode.UPDATE_ORDER_STATUS_FAILED);
         }
@@ -312,7 +312,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     public BasePage<QueryOrderProductListRespVO> orderProductList(QueryOrderProductListReqVO reqVO) {
         PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
         reqVO.setCompanyCode(getUser().getCompanyCode());
-        List<QueryOrderProductListRespVO> list = orderInfoItemDao.selectOrderProductList(reqVO);
+        List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectOrderProductList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
     }
 
@@ -320,7 +320,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     public BasePage<QueryProductUniqueCodeListRespVO> productUniqueCodeList(QueryProductUniqueCodeListReqVO reqVO) {
         PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
         reqVO.setCompanyCode(getUser().getCompanyCode());
-        List<QueryOrderProductListRespVO> list = orderInfoItemDao.selectproductUniqueCodeList(reqVO);
+        List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectproductUniqueCodeList(reqVO);
         return PageUtil.getPageList(reqVO.getPageNo(),list);
     }
 
@@ -329,7 +329,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     public Boolean delivery(List<DeliveryReqVO> reqVO, String orderCode) {
         //更新状态
         distribution(orderCode, ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
-        int i = orderInfoItemDao.updateBatchNumById(reqVO);
+        int i = orderInfoItemMapper.updateBatchNumById(reqVO);
         if (i != reqVO.size()) {
             throw new BizException(ResultCode.CHANGE_ACTUAL_DELIVERY_NUM_FAILED);
         }
@@ -338,7 +338,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     public OrderInfo selectByOrderCode(String orderCode) {
-        return orderInfoDao.selectByOrderCode2(orderCode);
+        return orderInfoMapper.selectByOrderCode2(orderCode);
     }
 
 }

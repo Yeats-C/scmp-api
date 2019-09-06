@@ -9,7 +9,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductLi
 
 import java.util.List;
 
-public interface OrderInfoItemDao {
+public interface OrderInfoItemMapper {
     int deleteByPrimaryKey(Long id);
 
     int insert(OrderInfoItem record);

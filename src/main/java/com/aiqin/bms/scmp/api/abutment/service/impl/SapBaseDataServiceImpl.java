@@ -74,15 +74,15 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     private static Logger LOGGER = LoggerFactory.getLogger(SapBaseDataServiceImpl.class);
     private static Integer SAP_API_COUNT = 100;
     @Resource
-    private OrderInfoDao orderInfoDao;
+    private OrderInfoMapper orderInfoMapper;
     @Resource
-    private OrderInfoItemDao orderInfoItemDao;
+    private OrderInfoItemMapper orderInfoItemMapper;
     @Resource
-    private OrderInfoItemProductBatchDao orderInfoItemProductBatchDao;
+    private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
     @Resource
-    private ReturnOrderInfoDao returnOrderInfoDao;
+    private ReturnOrderInfoMapper returnOrderInfoMapper;
     @Resource
-    private ReturnOrderInfoItemDao returnOrderInfoItemDao;
+    private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
     @Resource
     private InboundDao inboundDao;
     @Resource
@@ -319,9 +319,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //1 销售出库单 2 销售退货 更新同步状态
                 orderCodes = subLists.stream().map(Order::getOrderCode).collect(Collectors.toList());
                 if(type.equals(1)){
-                    orderInfoDao.updateByOrderCodes(orderCodes);
+                    orderInfoMapper.updateByOrderCodes(orderCodes);
                 }else if(type.equals(2)){
-                    returnOrderInfoDao.updateByOrderCodes(orderCodes);
+                    returnOrderInfoMapper.updateByOrderCodes(orderCodes);
                 }
             } else {
                 LOGGER.error("调用结算sap销售单据异常:{}", httpResponse.getMessage());
@@ -338,13 +338,13 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      */
     private void orderInfoToOrder(List<Order> orderList, SapOrderRequest sapOrderRequest) {
         Order order;
-        List<OrderInfo> orderInfoList = orderInfoDao.listForSap(sapOrderRequest);
+        List<OrderInfo> orderInfoList = orderInfoMapper.listForSap(sapOrderRequest);
         if (CollectionUtils.isNotEmpty(orderInfoList)) {
             List<String> orderCodes = orderInfoList.stream().map(OrderInfo::getOrderCode).collect(Collectors.toList());
             sapOrderRequest.setOrderCodeList(orderCodes);
-            List<OrderInfoItem> orderInfoItems = orderInfoItemDao.listDetailForSap(sapOrderRequest);
+            List<OrderInfoItem> orderInfoItems = orderInfoItemMapper.listDetailForSap(sapOrderRequest);
             Map<String,OrderInfoItem> orderInfoItemMap = orderInfoItems.stream().collect(Collectors.toMap(OrderInfoItem::getSkuCode,Function.identity()));
-            List<OrderInfoItemProductBatch> batchList = orderInfoItemProductBatchDao.listDetailForSap(sapOrderRequest);
+            List<OrderInfoItemProductBatch> batchList = orderInfoItemProductBatchMapper.listDetailForSap(sapOrderRequest);
             OrderDetail orderDetail;
             List<OrderDetail> orderDetails;
             OrderInfoItem orderInfoItem;
@@ -435,11 +435,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      */
     private void returnInfoToOrder(List<Order> orderList, SapOrderRequest sapOrderRequest) {
         Order order;
-        List<ReturnOrderInfo> returnList = returnOrderInfoDao.listForSap(sapOrderRequest);
+        List<ReturnOrderInfo> returnList = returnOrderInfoMapper.listForSap(sapOrderRequest);
         if (CollectionUtils.isNotEmpty(returnList)) {
             List<String> orderCodes = returnList.stream().map(ReturnOrderInfo::getOrderCode).collect(Collectors.toList());
             sapOrderRequest.setOrderCodeList(orderCodes);
-            List<ReturnOrderInfoItem> orderInfoItems = returnOrderInfoItemDao.listDetailForSap(sapOrderRequest);
+            List<ReturnOrderInfoItem> orderInfoItems = returnOrderInfoItemMapper.listDetailForSap(sapOrderRequest);
             OrderDetail orderDetail;
             List<OrderDetail> orderDetails;
             Map<String, List<OrderDetail>> orderDetailMap = new HashMap<>();

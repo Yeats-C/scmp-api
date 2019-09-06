@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface OrderInfoItemProductBatchDao {
+public interface OrderInfoItemProductBatchMapper {
     int deleteByPrimaryKey(Long id);
 
     int insert(OrderInfoItemProductBatch record);

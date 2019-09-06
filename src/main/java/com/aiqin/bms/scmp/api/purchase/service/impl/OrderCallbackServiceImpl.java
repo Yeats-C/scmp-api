@@ -100,11 +100,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private final static String COMPANY_NAME = "宁波熙耘";
     private static List<String> productTypeList = Arrays.asList("商品", "赠品", "实物返");
     @Resource
-    private OrderInfoDao orderInfoDao;
+    private OrderInfoMapper orderInfoMapper;
     @Resource
-    private OrderInfoItemDao orderInfoItemDao;
+    private OrderInfoItemMapper orderInfoItemMapper;
     @Resource
-    private OrderInfoItemProductBatchDao orderInfoItemProductBatchDao;
+    private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
     @Resource
     private SupplierRuleMapper supplierRuleMapper;
     @Resource
@@ -116,9 +116,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Resource
     private PriceChannelMapper priceChannelMapper;
     @Resource
-    private ReturnOrderInfoDao returnOrderInfoDao;
+    private ReturnOrderInfoMapper returnOrderInfoMapper;
     @Resource
-    private ReturnOrderInfoItemDao returnOrderInfoItemDao;
+    private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
     @Resource
     private EncodingRuleDao encodingRuleDao;
     @Resource
@@ -166,7 +166,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse outboundOrder(OutboundRequest request) {
         // 验证销售订单是否存在
-        OrderInfo response = orderInfoDao.selectByOrderCode2(request.getOrderCode());
+        OrderInfo response = orderInfoMapper.selectByOrderCode2(request.getOrderCode());
         if (response != null) {
             return HttpResponse.failure(ResultCode.ORDER_INFO_IS_HAVE);
         }
@@ -290,11 +290,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             supplyDetailList.add(orderInfoItemProductBatch);
         }
         orderInfo.setDetailList(detailList);
-        Integer count = orderInfoDao.insertSelective(orderInfo);
+        Integer count = orderInfoMapper.insertSelective(orderInfo);
         LOGGER.info("添加订单:{}", count);
-        Integer detailCount = orderInfoItemDao.insertList(detailList);
+        Integer detailCount = orderInfoItemMapper.insertList(detailList);
         LOGGER.info("添加订单详情:{}", detailCount);
-        Integer supplyDetailCount = orderInfoItemProductBatchDao.insertList(supplyDetailList);
+        Integer supplyDetailCount = orderInfoItemProductBatchMapper.insertList(supplyDetailList);
         LOGGER.info("添加订单供应商详情:{}", supplyDetailCount);
         //生成出库单
         OutboundReqVo convert = new OrderInfoToOutboundConverter(skuService, supplyComService).convert(orderInfo);
@@ -388,7 +388,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     public HttpResponse returnOrder(ReturnRequest request) {
         //操作时间 签收时间 等于回单时间 退货的商品对应供应商信息取入库单据相关
         //查询退货单是否存在
-        ReturnOrderInfo response = returnOrderInfoDao.selectByCode1(request.getReturnOrderCode());
+        ReturnOrderInfo response = returnOrderInfoMapper.selectByCode1(request.getReturnOrderCode());
         if (response != null) {
             return HttpResponse.failure(ResultCode.ORDER_INFO_IS_HAVE);
         }
@@ -503,9 +503,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     returnOrderInfo.setSupplierName(supplyCompany.getSupplierName());
                 }
             }
-            Integer count = returnOrderInfoDao.insertSelective(returnOrderInfo);
+            Integer count = returnOrderInfoMapper.insertSelective(returnOrderInfo);
             LOGGER.info("添加退货单:{}", count);
-            Integer detailCount = returnOrderInfoItemDao.insertList(detailList);
+            Integer detailCount = returnOrderInfoItemMapper.insertList(detailList);
             LOGGER.info("添加退货单详情:{}", detailCount);
             returnOrderInfo.setDetailList(detailList);
             //入库单生成
