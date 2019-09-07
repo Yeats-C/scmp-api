@@ -9,4 +9,6 @@ public interface SalesStatisticsService {
     HttpResponse<SaleSumResponse> saleInfo(SaleRequest saleRequest);
 
     HttpResponse<SaleSumResponse> monthSaleInfo(SaleRequest saleRequest);
+
+    HttpResponse categoryPromotion(SaleRequest saleRequest);
 }

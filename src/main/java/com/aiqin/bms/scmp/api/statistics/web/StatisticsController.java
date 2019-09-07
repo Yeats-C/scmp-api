@@ -108,4 +108,17 @@ public class StatisticsController {
         return salesStatisticsService.monthSaleInfo(saleRequest);
     }
 
+    @GetMapping("/category/promotion")
+    @ApiOperation("品类促销统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse categoryPromotion(
+            @RequestParam("date") String date,  @RequestParam("type") Integer type,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        SaleRequest saleRequest = new SaleRequest(date, type, productSortCode);
+        return salesStatisticsService.categoryPromotion(saleRequest);
+    }
+
 }
