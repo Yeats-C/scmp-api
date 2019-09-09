@@ -2490,6 +2490,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     public BasePage<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO) {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         if(null != authToken){
             reqVO.setCompanyCode(authToken.getCompanyCode());
             reqVO.setPersonId(authToken.getPersonId());
