@@ -2,9 +2,7 @@ package com.aiqin.bms.scmp.api.bireport.dao;
 
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
-import com.aiqin.bms.scmp.api.product.domain.request.StockBatchRequest;
 import org.apache.ibatis.annotations.Param;
-import org.apache.xmlbeans.impl.jam.mutable.MPackage;
 
 import java.util.List;
 import java.util.Map;

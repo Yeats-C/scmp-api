@@ -6,7 +6,6 @@ import com.aiqin.bms.scmp.api.statistics.dao.StatComSalesMonthlyDao;
 import com.aiqin.bms.scmp.api.statistics.dao.StatComSalesYearlyDao;
 import com.aiqin.bms.scmp.api.statistics.dao.StatDeptSalesMonthlyDao;
 import com.aiqin.bms.scmp.api.statistics.dao.StatDeptSalesYearlyDao;
-import com.aiqin.bms.scmp.api.statistics.domain.StatDeptSalesMonthly;
 import com.aiqin.bms.scmp.api.statistics.service.SalesStatisticsService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.commons.lang.StringUtils;

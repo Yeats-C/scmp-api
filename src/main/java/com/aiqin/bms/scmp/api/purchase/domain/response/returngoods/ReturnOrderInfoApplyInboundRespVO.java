@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response.returngoods;
 
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoApplyInboundDetail;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

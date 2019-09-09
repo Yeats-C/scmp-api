@@ -333,7 +333,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuStockInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
                     productSkuStockInfoService.insertDraft(productSkuStockInfoDraft);
                 } catch (Exception e) {
-                    log.error("error", e);
+                    log.error(Global.ERROR, e);
                     throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
                 }
                 //获取采购信息
@@ -356,7 +356,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuPurchaseInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
                     productSkuPurchaseInfoService.insertDraft(productSkuPurchaseInfoDraft);
                 } catch (Exception e) {
-                    log.error("error", e);
+                    log.error(Global.ERROR, e);
                     throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
                 }
                 //获取门店销售信息
@@ -391,7 +391,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     });
                     productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
                 } catch (Exception e) {
-                    log.error("error", e);
+                    log.error(Global.ERROR, e);
                     throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
                 }
                 //获取包装信息
@@ -576,7 +576,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuDisInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
                 productSkuDisInfoService.insertDraft(productSkuDisInfoDraft);
             } catch (Exception e) {
-                log.error("error", e);
+                log.error(Global.ERROR, e);
                 throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
             }
             if (!flag) {
@@ -715,7 +715,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Transactional(rollbackFor = BizException.class)
     public int saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO) {
         //验证重复 如果有审核中的数据，不能提交流程
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if(CollectionUtils.isNotEmpty(saveSkuApplyInfoReqVO.getSkuCodes())){
             //过滤掉重复数据
             List<String> skuCodes = saveSkuApplyInfoReqVO.getSkuCodes().stream().distinct().collect(Collectors.toList());

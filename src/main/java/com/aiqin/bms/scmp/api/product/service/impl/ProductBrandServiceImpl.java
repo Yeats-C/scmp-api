@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.Update;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductBrandTypeDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandReqDTO;
@@ -128,7 +129,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
              temp = productBrandTypeDao.insertBrand(t);
             //TODO 保存日志
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("保存失败！");
         }
         return temp;
@@ -180,7 +181,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
             temp = productBrandTypeDao.updateByPrimaryKeySelective(t);
             //TODO 保存日志
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("修改失败！");
         }
         return temp;
@@ -231,7 +232,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
             temp = productBrandTypeDao.updateByPrimaryKeySelective(t);
             //TODO 保存日志
         } catch (BeansException e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("状态更新失败！");
         }
         return temp;

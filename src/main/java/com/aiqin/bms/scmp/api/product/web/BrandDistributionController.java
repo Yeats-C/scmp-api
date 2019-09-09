@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandDistribution;
@@ -8,6 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.brand.ModifyBrandDistributi
 import com.aiqin.bms.scmp.api.product.domain.request.brand.ProductBrandDistributionPageRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.brand.QueryBrandDistributionRequest;
 import com.aiqin.bms.scmp.api.product.service.BrandDistributionService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

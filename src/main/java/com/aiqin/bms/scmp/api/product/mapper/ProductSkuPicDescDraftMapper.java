@@ -1,7 +1,6 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPicDescDraft;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPicturesDraft;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

@@ -5,8 +5,6 @@ import com.aiqin.bms.scmp.api.bireport.dao.BiGoodsSalesReportDao;
 import com.aiqin.bms.scmp.api.bireport.dao.BiStockTurnoverReportDao;
 import com.aiqin.bms.scmp.api.bireport.dao.BiStockWayTurnoverReportDao;
 import com.aiqin.bms.scmp.api.bireport.domain.BiGoodsSalesReport;
-import com.aiqin.bms.scmp.api.bireport.domain.BiStockTurnoverReport;
-import com.aiqin.bms.scmp.api.bireport.domain.BiStockWayTurnoverReport;
 import com.aiqin.bms.scmp.api.bireport.domain.request.ProductAndStockRequest;
 import com.aiqin.bms.scmp.api.bireport.domain.response.ProductAndStockResponse;
 import com.aiqin.bms.scmp.api.bireport.domain.response.StockTurnoverResponse;

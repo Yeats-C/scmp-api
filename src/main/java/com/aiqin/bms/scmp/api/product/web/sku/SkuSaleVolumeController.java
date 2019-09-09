@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.product.web.sku;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.product.domain.request.SkuSaleVolumeVo;
 import com.aiqin.bms.scmp.api.product.service.SkuSaleVolumeService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

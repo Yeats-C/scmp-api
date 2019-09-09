@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;

@@ -11,7 +11,6 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoIt
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;

@@ -1,11 +1,10 @@
 package com.aiqin.bms.scmp.api.product.web.sku;
 
-import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ocenter.QueryCenterSkuListReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.oms.OmsProductSkuListReq;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.oms.QuerySkuListPageReq;
@@ -22,9 +21,11 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsProductListItem
 import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsProductSkuItemResp;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.QuerySkuListResp;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.*;
 import com.aiqin.bms.scmp.api.product.service.InspectionReportService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -178,7 +179,7 @@ public class ProductSkuController {
         } catch (BizException be) {
             return HttpResponse.failure(be.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.QUERY_ERROR);
         }
     }
@@ -194,7 +195,7 @@ public class ProductSkuController {
             querySkuListReqVO.setOrderType(orderType);
             return HttpResponse.success(skuService.getSupervisoryWarehouseSku(querySkuListReqVO));
         }  catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.QUERY_ERROR);
         }
     }

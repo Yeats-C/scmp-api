@@ -1,14 +1,13 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.supplier.dao.manufacturer.ManufacturerBrandDao;
-import com.aiqin.bms.scmp.api.supplier.dao.manufacturer.ManufacturerDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.manufacturer.ManufacturerBrandDao;
+import com.aiqin.bms.scmp.api.supplier.dao.manufacturer.ManufacturerDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Manufacturer;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ManufacturerBrand;
@@ -20,12 +19,14 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.manufacturer.ManufacturerBrandResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.manufacturer.ManufacturerResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.manufacturer.QueryManufacturerResVo;
-import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.ManufacturerService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
@@ -165,7 +166,7 @@ public class ManufacturerServiceImp  implements ManufacturerService {
             List<ManufacturerBrandResVo> manufacturerBrandResVoList=  BeanCopyUtils.copyList(list, ManufacturerBrandResVo.class);
             manufacturerResVo.setList(manufacturerBrandResVoList);
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             log.error("制造商查看关联品牌转化失败");
             throw new GroundRuntimeException("制造商查看关联品牌转化失败");
         }
@@ -223,7 +224,7 @@ public class ManufacturerServiceImp  implements ManufacturerService {
                        saveList.stream().forEach(manufacturerBrand -> manufacturerBrand.setManufacturerCode(vo.getManufacturerCode()));
                        int kp = ((ManufacturerService) AopContext.currentProxy()).saveList(saveList);
                    }catch (Exception e){
-                       log.error("error", e);
+                       log.error(Global.ERROR, e);
                        log.error("制造商关联品牌添加失败");
                        throw new GroundRuntimeException("制造商关联品牌添加失败");
                    }
@@ -233,14 +234,14 @@ public class ManufacturerServiceImp  implements ManufacturerService {
                     updateList.stream().forEach(manufacturerBrand -> manufacturerBrand.setManufacturerCode(vo.getManufacturerCode()));
                     int kp = ((ManufacturerService) AopContext.currentProxy()).updateList(updateList);
                 }catch (Exception e){
-                    log.error("error", e);
+                    log.error(Global.ERROR, e);
                     log.error("制造商关联品牌更新失败");
                     throw new GroundRuntimeException("制造商关联品牌更新失败");
                 }
                }
                return HttpResponse.success(k) ;
            } catch (Exception e) {
-               log.error("error", e);
+               log.error(Global.ERROR, e);
                log.error("品牌实体转化失败");
                throw new GroundRuntimeException("品牌实体转化失败");
            }

@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.web.supplier;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.DetailApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.RequsetParamReqVo;
@@ -57,7 +58,7 @@ public class ApplyController extends SupplierBaseController {
             applyService.cancel(detailApplyReqVo);
             return HttpResponse.success("撤销成功");
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.CANCEL_ERROR);
         }
     }

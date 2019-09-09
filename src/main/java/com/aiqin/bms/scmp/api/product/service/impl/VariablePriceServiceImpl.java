@@ -29,8 +29,8 @@ import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
+import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -404,117 +404,7 @@ public class VariablePriceServiceImpl extends BaseServiceImpl implements Variabl
      */
     @Override
     public List<ErrorVariableResponse> encapsulation(List<ExcelData> excelData, String priceTypeCode) {
-        List<ErrorVariableResponse> errorVariableResponses = null;
-        List<String> skuCode = excelData.stream().map(a -> a.getSkuCode()).collect(Collectors.toList());
-        if (skuCode.size() > 0) {
-            errorVariableResponses = productSkuInfoDao.getSkuCode(skuCode, priceTypeCode);
-            if (errorVariableResponses == null) {
-                errorVariableResponses = new LinkedList<>();
-            }
-        }
-        Map<String, Long> longMap = getLatestPurchasePriceBySkuCodes(skuCode);
-        if (errorVariableResponses.size() > 0) {
-            errorVariableResponses.stream().forEach(
-                    errorVariable -> {
-                        longMap.forEach((key, value) -> {
-                            if (key.equals(errorVariable.getSkuCode()) && (HandlingExceptionCode.PURCHASE_PRICE.equals(errorVariable.getPriceTypeCode())
-                                    || HandlingExceptionCode.PURCHASE_PRICE_NAME.equals(errorVariable.getPriceTypeName()))) {
-                                errorVariable.setNewPurchasingPrice(value);
-                            }
-                        });
-                    });
-        }
-        List<ErrorVariableResponse> finalErrorVariableResponses2 = new LinkedList<>();
-        List<String> stringSet = errorVariableResponses.stream().map(a -> a.getSkuCode()).collect(Collectors.toList());
-        List<String> names = errorVariableResponses.stream().map(a -> a.getSkuName()).collect(Collectors.toList());
-        List<String> list = excelData.stream().map(a -> a.getSkuCode()).collect(Collectors.toList());
-        Map<String, String> stringMap = excelData.stream().collect(
-                Collectors.toMap(ExcelData::getSkuCode, ExcelData::getSkuName));
-        Map<String, Long> maps = excelData.stream().collect(
-                Collectors.toMap(ExcelData::getSkuCode, ExcelData::getPriceValue));
-        Map<String, ErrorVariableResponse> excelDataMap = errorVariableResponses.stream().collect(Collectors.toMap(b -> b.getSkuCode(), a -> a));
-        list.forEach(
-                exce -> {
-                    if (!stringSet.contains(exce)) {
-                        ErrorVariableResponse errorVariableResponse = new ErrorVariableResponse();
-                        errorVariableResponse.setErrorReason("当前skuCode,sku名称数据库不存在");
-                        errorVariableResponse.setSkuCode(exce);
-                        errorVariableResponse.setSkuName(stringMap.get(exce));
-                        getSwitch(priceTypeCode, errorVariableResponse, maps.get(exce));
-                        finalErrorVariableResponses2.add(errorVariableResponse);
-                    }
-                }
-        );
-        list.forEach(
-                exce -> {
-                    if (stringSet.contains(exce) && !names.contains(stringMap.get(exce))) {
-                        ErrorVariableResponse errorVariableResponse = excelDataMap.get(exce);
-                        errorVariableResponse.setErrorReason("sku名称数据库不存在");
-                        errorVariableResponse.setSkuCode(exce);
-                        errorVariableResponse.setSkuName(stringMap.get(exce));
-                        getSwitch(priceTypeCode, errorVariableResponse, maps.get(exce));
-                    }
-                }
-        );
-        errorVariableResponses.addAll(finalErrorVariableResponses2);
-        finalErrorVariableResponses2.clear();
-        List<ErrorVariableResponse> finalErrorVariableResponses = new LinkedList<>();
-        excelData.stream().forEach(errorVaria -> {
-            val b = finalErrorVariableResponses.stream().filter(errorVariableResponse -> {
-                if (errorVariableResponse.getSkuCode().equals(errorVaria.getSkuCode())) {
-                    switch (priceTypeCode) {
-                        case HandlingExceptionCode.PURCHASE_PRICE:
-                            errorVariableResponse.setNewPurchasingPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.DISTRIBUTION_PRICE:
-                            errorVariableResponse.setNewTaxedMembershipPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.TEMPORARY_DISTRIBUTION_PRICE:
-                            errorVariableResponse.setNewTaxedMembershipPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.PRICE:
-                            errorVariableResponse.setNewTaxedMembershipPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.TEMPORARY_SELLING_PRICE:
-                            errorVariableResponse.setTemporaryTaxedPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.MEMBERSHIP_PRICE:
-                            errorVariableResponse.setNewTaxedMembershipPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.LARGE_EFFECT_PRICE:
-                            errorVariableResponse.setNewTaxedMembershipPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.PURCHASE_PRICE_NAME:
-                            errorVariableResponse.setNewPurchasingPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.DISTRIBUTION_PRICE_NAME:
-                            errorVariableResponse.setNewTaxedMembershipPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.TEMPORARY_DISTRIBUTION_PRICE_NAME:
-                            errorVariableResponse.setNewTaxedMembershipPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.PRICE_NAME:
-                            errorVariableResponse.setNewTaxedMembershipPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.TEMPORARY_SELLING_PRICE_NAME:
-                            errorVariableResponse.setTemporaryTaxedPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.MEMBERSHIP_PRICE_NAME:
-                            errorVariableResponse.setNewTaxedMembershipPrice(errorVaria.getPriceValue());
-                            break;
-                        case HandlingExceptionCode.LARGE_EFFECT_PRICE_NAME:
-                            errorVariableResponse.setNewTaxedMembershipPrice(errorVaria.getPriceValue());
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                return true;
-            }).collect(Collectors.toList());
-        });
-        errorVariableResponses.addAll(finalErrorVariableResponses);
-        finalErrorVariableResponses.clear();
-        return errorVariableResponses;
+        return Lists.newArrayList();
     }
 
     /**

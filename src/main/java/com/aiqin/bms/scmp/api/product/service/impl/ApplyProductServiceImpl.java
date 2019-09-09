@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct;
@@ -297,7 +298,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
                     String auditorBy = Objects.nonNull(vo.getApprovalUserName()) ? vo.getAuditorBy() : applyProductSkus.get(0).getCreateBy();
                     int k = applyProductSkuMapper.updateStatusByFormNo((byte)4,vo.getFormNo(),auditorBy,currentDate);
                 } catch (Exception e){
-                    log.error("error", e);
+                    log.error(Global.ERROR, e);
                     // 修改审批中的sku失败
                     return "false";
                 }

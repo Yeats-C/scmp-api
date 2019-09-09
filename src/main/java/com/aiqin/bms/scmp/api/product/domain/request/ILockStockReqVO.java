@@ -1,7 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.request;
 
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
+import com.aiqin.bms.scmp.api.common.StockStatusEnum;
 import io.swagger.annotations.ApiModel;
 
 import java.util.Date;

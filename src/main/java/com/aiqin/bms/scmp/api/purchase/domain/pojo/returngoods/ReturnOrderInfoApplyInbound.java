@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 @ApiModel("退货入库申请单")

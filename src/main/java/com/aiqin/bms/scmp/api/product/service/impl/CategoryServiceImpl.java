@@ -1,12 +1,12 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDistributionDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategoryDistribution;
-import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse;
 import com.aiqin.bms.scmp.api.product.service.CategoryService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.stereotype.Service;
 

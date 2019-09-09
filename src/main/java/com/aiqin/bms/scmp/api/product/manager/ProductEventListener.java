@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.product.manager;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.bms.scmp.api.product.dao.ProductDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.product.domain.event.ProductEvent;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
